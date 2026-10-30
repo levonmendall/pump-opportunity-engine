@@ -1,0 +1,41 @@
+✔ native PAPER contract is separately versioned, deeply frozen, hash pinned and preserves baseline thresholds (1.136447ms)
+✔ canonical fingerprint keeps every closed-window feature while allowing actual asOf time to advance within its bucket (3.917405ms)
+✔ exact current audited evidence can be admitted only through the explicit new PAPER contract (0.901057ms)
+✔ generation, source identity, actual current feature window and fingerprint must agree exactly (1.029969ms)
+✔ actual audit/admission availability and unchanged bucket cutoff prevent backdating or stale certificate reuse (0.810623ms)
+✔ only independently verified executed completeness can waive a missing failed packet; warming or provisional flow never qualifies as ready (0.857023ms)
+✔ new native adapter opens two SDK-priced PAPER positions, retains source-independent protection and recovers two uncertain exits (545.748448ms)
+✔ new native adapter refuses financial preparation without actual monitoring admission despite complete predictive evidence (22.163104ms)
+✔ DISPOSABLE reporting-readiness admission blocks new risk while native observations and owned entry/exit work continue (63.576817ms)
+✔ DISPOSABLE native fields→audited window→real SDK PAPER entry→retained pending-exit restart→fresh exit reconcile (165.413438ms)
+✔ DISPOSABLE shadow source cannot bypass financial readiness, and a later bucket cannot reuse an older audit (22.109351ms)
+✔ DISPOSABLE reserve-changing protocol slot raises SDK quote floor without inventing a buyer trade (18.163122ms)
+✔ native PAPER CLI requires explicit resume/contract and optional flags cannot alias args[0] (2.544547ms)
+✔ wrong source contract and invalid resource selection fail before directory, lease, ledger or provider access (2.027811ms)
+✔ unbound public source and mutable/mismatched startup provenance cannot open a financial writer (16.740641ms)
+✔ 750ms holding reads retain reporting service opportunities without moving the two-second reference cadence (0.668052ms)
+✔ financial reporting admission is versioned and only gates new risk, never native capture or owned work (0.364171ms)
+✔ native PAPER reports real native flow even when the WATCH hint feed has zero normalized trades (2.228949ms)
+✔ native PAPER combines independent and financial decisions chronologically without leaking additional fields (0.403029ms)
+✔ merged native PAPER decisions retain only the latest50 actual timestamps (0.45825ms)
+✔ missing native engine remains unknown rather than borrowing WATCH zeroes or financial events (0.203222ms)
+✔ experimental portfolio uses exact account/source/outer timestamp and explicit unknown USD decomposition (36.201149ms)
+✔ reservations remain part of cash and do not create another asset or double debit (7.574394ms)
+✔ actual-size fresh liquidation includes locked rent once and stale/source-expired marks become unknown (9.067119ms)
+✔ only durable filled actions become trades; a real USD-unknown SOL exit remains visible with null costs (7.293027ms)
+✔ source projections whitelist decision and journal fields and reject unbounded history (8.138381ms)
+✔ reporting history starts with actual inception and a genuine unknown interval, and restart sequences remain durable (7.879377ms)
+✔ durable recent fills survive more than50 reconciliation rows and same-account restart without changing balances (29.843291ms)
+✔ a corrupted recent-fill projection is refused by source and backup recovery (469.822519ms)
+✔ history admission and portfolio use the same source bounds while fresh SOL marks survive unknownUSD (8.469833ms)
+✔ actual PaperTrader funnel extra diagnostic counters do not enter the strict financial snapshot (6.58109ms)
+✔ both limited-history labels fit the receiver bound without dropping limitation meanings (6.550684ms)
+✔ projection failures expose their bounded stage and known reason without exporting arbitrary exceptions (0.346445ms)
+ℹ tests 33
+ℹ suites 0
+ℹ pass 33
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2319.344087

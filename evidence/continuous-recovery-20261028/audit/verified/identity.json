@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "startedAt": "2026-10-28T16:08:31.874591+00:00",
+  "baseCommit": "e7ffe502161a3d4f965cc30c4d6a75f3776744fa",
+  "scope": "Owned source/test hashes in shared lead; concurrentindependentmodulesnotfrozen",
+  "files": [
+    {
+      "path": "src/native-flow-audit.ts",
+      "bytes": 17753,
+      "sha256": "7c6c7bdece44ed3f006f53dbafca562f97124533bedb8a25518620f13e47bbaa"
+    },
+    {
+      "path": "src/native-audit-session.ts",
+      "bytes": 6994,
+      "sha256": "7f41cb20db91c93446821f0001ad3b01401d530798aa7074a9cc64e269fc2c0e"
+    },
+    {
+      "path": "test/native-flow-audit.test.ts",
+      "bytes": 31151,
+      "sha256": "4556665f08634133f6c4df70650e55089a1eabf9993517b558967dea728814b0"
+    },
+    {
+      "path": "test/native-audit-session.test.ts",
+      "bytes": 11897,
+      "sha256": "ab51c06567f79c6d754df34541665729957915491c3409dc86f88b6c275bbb6b"
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "kind": "SOURCE93_LOCAL_PACING_ABORT_REPRODUCTION",
+  "at": "2026-10-30T00:27:25.697320+00:00",
+  "source": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
+  "appFilesUnchanged": true,
+  "appHashes": {
+    "src/pilot-rpc.ts": "9d9c0d931eafc83bac14b82c5d35718cba92662a27567d2fde79b16a90c231ef",
+    "src/component-budget.ts": "1ffe9627926bfc286f6a6040f58d5117dd37618077e3cd54c5be3c6007d65d67",
+    "src/component-transport.ts": "e986d3ecb47f95d42a9b5470505d1a21b136835cfe8ea99b8be9b0581c87e658",
+    "src/trader.ts": "c93fd6fc2f84d0ad91a52a692df9413e30f68acc667d80e7cdd1ac971d3b802c",
+    "src/execution.ts": "d046bf855754eac85153a3cb64ef68ed23fec8099dde0176ed913a58c8175f6b",
+    "src/native-paper.ts": "b256fbeb93952286bab1ad3ebca03de1b4bd8dff44282c8af75ed435dc3e91ce",
+    "src/pilot-market.ts": "f578b2821f0823bddc3d68a778fd21d7d36bad128dfcdeb44953080d48ab8984",
+    "src/research-held-market.ts": "72710b1cf1a991ac7ec5f32115761c6b99cbd4e67689a7290770ba744cb39889",
+    "src/run-native-paper.ts": "d72d67fdc80907f105f20aaf0de18f35417342a2204c22be8a8cda8f13f021b1"
+  },
+  "tests": 3,
+  "passed": 3,
+  "build": "PASS",
+  "rawSha256": "4cb411bd9b16141b6e1f7723a908538a61b2ee5297c275b122a2e8898d8f1ac8",
+  "testSha256": "d78f203a63619a0e46c886e5ea41c788e137bae65f9ee5c41f2ad06b10a55bb0",
+  "actualNetworkRequests": 0,
+  "financialDatabaseOpened": false,
+  "serviceChanges": 0,
+  "realOuterContextTimeoutMs": 3000,
+  "physicalTimeoutsInAbortedCases": 0,
+  "failedPhysicalInvocationsInAbortedCases": 0,
+  "actualLiveIncidentAttribution": "UNKNOWN; valid mechanism reproduced, live per-request event chronology unavailable"
+}

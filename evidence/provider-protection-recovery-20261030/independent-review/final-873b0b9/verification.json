@@ -1,0 +1,88 @@
+{
+  "at": "2026-10-30T00:44:06.512272+00:00",
+  "sourceCommit": "873b0b96385099d1e329deec3a14c9907ad70b74",
+  "headBefore": "873b0b96385099d1e329deec3a14c9907ad70b74",
+  "headAfter": "873b0b96385099d1e329deec3a14c9907ad70b74",
+  "sourceUnchanged": true,
+  "changedApplicationFiles": [
+    "src/pilot-rpc.ts",
+    "src/research-clock-pricing.ts",
+    "src/research-held-market.ts",
+    "src/run-native-paper.ts"
+  ],
+  "sourceHashes": {
+    "src/pilot-rpc.ts": "2fa4166edd4c2ba2b66f34a128fdf8f51f989f0ee8b3f0fba40761e0f836fa3d",
+    "src/research-clock-pricing.ts": "35ed26800ddf69b9c253dcc77c216b33f9150d17d1903cef8ce5c3246011c955",
+    "src/research-held-market.ts": "4741cdbddad025d6fcfe532644fd8b992a6ede808eb4d4160eafc37588ff38a4",
+    "src/run-native-paper.ts": "e03c84c5e5b537c79cab360cf012e3330dedd291798533c9f65221d69ce43d9a"
+  },
+  "results": [
+    {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "--test-concurrency=1",
+        "test/pilot-protection-recovery.test.ts",
+        "test/held-abort-admission-repro.test.ts",
+        "test/pilot-rpc.test.ts",
+        "test/pilot-rpc-query-timeout.test.ts",
+        "test/pilot-rpc-history-batch.test.ts",
+        "test/research-clock-pricing.test.ts",
+        "test/research-held-market.test.ts",
+        "test/native-paper-integration.test.ts",
+        "test/technical-protection-recovery.test.ts",
+        "test/operating-financial-readiness.test.ts",
+        "test/financial-provider-permission.test.ts",
+        "test/financial-provider-pressure.test.ts"
+      ],
+      "cwd": "/workspace/poe-live-provider-protection",
+      "exitCode": 0,
+      "raw": "critical-suite.raw.txt",
+      "sha256": "846389f8b1e436524d654780be36cc34af8c47a274ad8d1dff11545d59cfcaae"
+    },
+    {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "test/financial-audit-burst.test.ts"
+      ],
+      "cwd": "/workspace/poe-provider-permission-review",
+      "exitCode": 0,
+      "raw": "actual-router-audit-burst.raw.txt",
+      "sha256": "de310cd9bbbdf49ada1ddb4a5346089de9885b3448857b50f886ea8dc7528e60"
+    },
+    {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "/tmp/poe-independent-late-retry-after.mts"
+      ],
+      "cwd": "/workspace/poe-live-provider-protection",
+      "exitCode": 0,
+      "raw": "late-explicit-retry.raw.txt",
+      "sha256": "ab878ec6cc140fa93a1a98b36b678d7b2645ab1f8b524fc0e29676e3f49c8c2d"
+    },
+    {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "/tmp/poe-independent-fractional-clock.mts"
+      ],
+      "cwd": "/workspace/poe-live-provider-protection",
+      "exitCode": 0,
+      "raw": "fractional-monotonic.raw.txt",
+      "sha256": "f4a3cb45fa58116ede323e0d900500597af01284a731c3a7f5515b643f10e394"
+    }
+  ],
+  "passed": true,
+  "providerRequests": 0,
+  "realFinancialActions": 0,
+  "actualOperatingServiceChanged": false,
+  "liveAcceptance": false
+}

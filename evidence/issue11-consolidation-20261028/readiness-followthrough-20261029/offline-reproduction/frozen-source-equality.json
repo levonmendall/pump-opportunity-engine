@@ -1,0 +1,30 @@
+{
+  "src/run-native-paper.ts": {
+    "sha256": "a05fdea2afe554a67b66017c451331c4541f1f4a6cbe850de2c9b13dcd77edda",
+    "identicalToFinancial5e55": true
+  },
+  "src/native-paper.ts": {
+    "sha256": "1cd7d787e9d58923b8fcb30bb789f9562e5e1f928b14a007134e257951e4a4c6",
+    "identicalToFinancial5e55": true
+  },
+  "src/trader.ts": {
+    "sha256": "8eddd35fd1140ea3204b694b8534fd9423d34422b2cc9c35977e6f555ae7845a",
+    "identicalToFinancial5e55": true
+  },
+  "src/strategy.ts": {
+    "sha256": "ed4ca8b601da4105af5d3b003d195a664f75171647a6739e032eed0372cff07f",
+    "identicalToFinancial5e55": true
+  },
+  "src/native-candidate-runner.ts": {
+    "sha256": "1fe9411dbc9a4f5946be6bb29b421d9fbf34fe6435529a99d51fe23a7071abc6",
+    "identicalToFinancial5e55": true
+  },
+  "src/pilot-native-flow.ts": {
+    "sha256": "a7f1ab9cc398fffeeeb5a25e568cd507e611c3f0235a30afecdc224b0eb694cf",
+    "identicalToFinancial5e55": true
+  },
+  "src/native-paper-contract.ts": {
+    "sha256": "55c687fc859f3ede7c3f901256c46e5a6d716991c60a79cfcac3cb21a05fd0a1",
+    "identicalToFinancial5e55": true
+  }
+}

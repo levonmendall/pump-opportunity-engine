@@ -1,0 +1,23 @@
+{
+  "holds": 109,
+  "usable": 105,
+  "unusable": 4,
+  "gaps": [
+    {
+      "fromAt": 1793313036501,
+      "untilAt": 1793313048831,
+      "gapMs": 12330,
+      "unusableEvaluationsBetween": 3
+    },
+    {
+      "fromAt": 1793313144984,
+      "untilAt": 1793313149312,
+      "gapMs": 4328,
+      "unusableEvaluationsBetween": 1
+    }
+  ],
+  "limitations": [
+    "Bounded export contains essential held evidence and partial context records, not matching diagnostic RPC/phase records; absence does not establish that none occurred.",
+    "89.426 second historical max lies outside this fixed failure window; its exact origin remains unknown."
+  ]
+}

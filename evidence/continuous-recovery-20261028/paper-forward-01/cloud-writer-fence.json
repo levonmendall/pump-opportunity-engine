@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "at": 1793217083916,
+  "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+  "inceptionAt": 1793123773252,
+  "sourceRevision": 8934,
+  "ownerFlockHeldDuringValidationAndFence": true,
+  "sourceFinancialFilesUnchanged": true,
+  "sourceFinancialBodySha256": "70fd996bf0cf5a4bbf1a6c8ecf041f1faa15e8b8e0bf8856aa5e5277fae49430",
+  "sourceFiles": [
+    {
+      "file": "ledger.sqlite",
+      "bytes": 4788224,
+      "sha256": "9f6b1a02d4af23d82d5b3c12ba5eb2090c6da608ca972171f14c288958238db8",
+      "previousMode": "0o600"
+    },
+    {
+      "file": "ledger.sqlite.owner.lock",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "previousMode": "0o600"
+    },
+    {
+      "file": "ledger.sqlite-wal",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "previousMode": "0o600"
+    },
+    {
+      "file": "ledger.sqlite-shm",
+      "bytes": 32768,
+      "sha256": "fd4c9fda9cd3f9ae7c962b0ddf37232294d55580e1aa165aa06129b8549389eb",
+      "previousMode": "0o600"
+    },
+    {
+      "file": "pilot.json",
+      "bytes": 141139,
+      "sha256": "3cf99b6e61dfb88a3a706154e74723540bcddc0425c3de7a3370913e7300e450",
+      "previousMode": "0o600"
+    }
+  ],
+  "directoryPreviousMode": "0o700",
+  "directoryFencedMode": "0500",
+  "fileFencedMode": "0400",
+  "ordinaryCloudFinancialRestartRefusedByPermissions": true,
+  "hostImportRun": 40757848269,
+  "hostFinancialWriterStarted": false,
+  "readOnlyRecoveryMaterialPreserved": true,
+  "accountReseeded": false,
+  "purpose": "Single authoritative experimental writer handoff; source files retained. Never restore this old copy over advanced host history."
+}

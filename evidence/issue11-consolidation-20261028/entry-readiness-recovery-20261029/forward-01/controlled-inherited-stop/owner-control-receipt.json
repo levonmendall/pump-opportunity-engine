@@ -1,0 +1,12 @@
+{
+  "classification": "CONTROLLED_OWNER_ADMISSION_CLOSED_PASS_NOT_LIVE",
+  "passingNativeCertificate": true,
+  "admitNewRisk": false,
+  "additionalRpcCalls": 0,
+  "proofChecks": 0,
+  "stopRequested": true,
+  "orders": 0,
+  "fills": 0,
+  "executionCosts": "0",
+  "meaning": "The existing real runtime owner/manual variables and durable marker are independently mapped read-only; this fixture exercises the actual NativePaper admitNewRisk boundary without starting another control service."
+}

@@ -1,0 +1,178 @@
+{
+  "requestedAt": 1793201502579,
+  "receivedAt": 1793201502761,
+  "httpStatus": 200,
+  "responseBytes": 3723,
+  "receiver": {
+    "state": "reporting",
+    "snapshot": {
+      "schemaVersion": 1,
+      "kind": "experimental-pilot",
+      "authoritative": false,
+      "liveTrading": false,
+      "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+      "inceptionAt": 1793123773252,
+      "runId": "native-candidates-20261028151711944",
+      "generatedAt": 1793201497721,
+      "source": {
+        "release": "640143a5924a7ff7d98039967c2db17957f71f24",
+        "strategy": "persistent-buying-v0-unfrozen",
+        "sha256": "4c035987338ab4dfa8982b5314c2ce3aebb41b12f23268a6425d8861d3e1909a"
+      },
+      "running": true,
+      "entriesEnabled": false,
+      "status": "SHADOWv3 protocol-aware ordinary flow; strictv2 unavailable views 0, protocol effects 10. native flow disconnected or starting; validated candidate observation unavailable",
+      "mode": "candidate-evaluation",
+      "financialExecutionAuthorized": false,
+      "observationAgePolicy": {
+        "version": "observation-age-selected-24h-study-v1",
+        "minimumObservationAgeMs": 0,
+        "recentMaximumAgeMs": 7200000,
+        "selectedOlderMaximumAgeMs": 86400000
+      },
+      "sourceTimes": {
+        "lastMarketNotificationAt": 1793201481823,
+        "lastFreshSupportAt": 1793201481089,
+        "lastBankClockAt": 1793201480000,
+        "lastAuditAt": 1793201482706,
+        "lastPredictiveAt": 1793201079149,
+        "financialReconciliationAt": null
+      },
+      "portfolio": null,
+      "accounting": null,
+      "funnel": {
+        "discovered": 7,
+        "supported": null,
+        "sufficientlyObserved": 6,
+        "evaluated": 6,
+        "qualified": 0,
+        "reserved": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 0,
+        "verifiedMigrationOrigins": 124,
+        "admitted": 541,
+        "usableWindows": 6
+      },
+      "metrics": {
+        "rpcRequests": 282,
+        "providerEvents": 593546,
+        "normalizedTrades": 3091,
+        "eventLoopLagMs": 31.735807,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeMs": null,
+        "protectionBreaches": null,
+        "unavailableChecks": null,
+        "streamBytes": 934374892
+      },
+      "decisions": [
+        {
+          "at": 1793200812638,
+          "mint": "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793200836303,
+          "mint": "EzDyLqyhLBQBXGG9MDoammU79oD3dHp7mLuXC2U3pump",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793201066312,
+          "mint": "c5mcBcoBN1xyouRiy3foN7Lh8BBbZrJEFyKUAoWpump",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793201068239,
+          "mint": "EzDyLqyhLBQBXGG9MDoammU79oD3dHp7mLuXC2U3pump",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793201076279,
+          "mint": "9ojYt5LiB5FqBoyYYAZbPP6VGtGRpCWem35ENxitpump",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        },
+        {
+          "at": 1793201079149,
+          "mint": "Tp7EZyRaU7Qkb41WA5yrLTuwCyLj1Fpe2CXrChW8mdt",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met"
+        }
+      ],
+      "refusals": [
+        {
+          "reason": "migration-verification-unavailable",
+          "count": 14
+        },
+        {
+          "reason": "verification-queue-full",
+          "count": 0
+        },
+        {
+          "reason": "native-quality-gaps",
+          "count": 57
+        },
+        {
+          "reason": "independent-audit-unavailable",
+          "count": 12
+        },
+        {
+          "reason": "independent-audit-unusable",
+          "count": 1
+        },
+        {
+          "reason": "predictive-window-deadline-missed",
+          "count": 12
+        }
+      ],
+      "watch": {
+        "known": 151,
+        "watch": 35,
+        "eligibleKnown": 13,
+        "deepActive": 6,
+        "maximumDeep": 6,
+        "queued": 3,
+        "promoted": 541,
+        "repromoted": 428,
+        "demoted": 534,
+        "expired": 129,
+        "capacityExclusions": 0,
+        "structuralExclusions": 15,
+        "completeWindows": 430,
+        "strategyRejections": 0,
+        "incompleteDataExclusions": 57,
+        "enrichmentDeadlineFailures": 0,
+        "predictiveAssessments": 6,
+        "predictiveFailures": 6,
+        "observationEligibleKnown": 37,
+        "observationQueued": 3,
+        "maximumOlderResearchIdentities": 24,
+        "ageCohorts": {
+          "preEntry": 0,
+          "entryEligible": 13,
+          "olderSelected": 24
+        },
+        "waitMs": {
+          "mean": 238058.33333333334,
+          "maximum": 281895
+        },
+        "promotionWaitMs": {
+          "mean": 1038789.9747706422,
+          "maximum": 6515299
+        }
+      }
+    },
+    "receivedAt": 1793201501346,
+    "lastContactAt": 1793201501346,
+    "sourceAgeMs": 5006,
+    "receiverAgeMs": 1381,
+    "lastContactAgeMs": 1381,
+    "sourceStale": false,
+    "publisherConnected": true
+  }
+}

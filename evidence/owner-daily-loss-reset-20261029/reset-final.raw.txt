@@ -1,0 +1,21 @@
+✔ owner reset rebases only current daily risk from fresh actual equity, audits prior state, preserves history and does not arm entries (29.333543ms)
+✔ a new actual loss relatches; same stable authorization returns its old receipt without waiving the later loss (9.821035ms)
+✔ daily reset retains a genuine owner stop and cannot resume it (7.370088ms)
+✔ owner reset refuses stale-reconciliation with no financial mutation (4.90539ms)
+✔ owner reset refuses stale-price with no financial mutation (5.487333ms)
+✔ owner reset refuses future-price with no financial mutation (4.242656ms)
+✔ owner reset refuses wrong-day with no financial mutation (5.301929ms)
+✔ owner reset refuses extra-marks with no financial mutation (4.216027ms)
+✔ owner reset refuses unlatched with no financial mutation (6.686795ms)
+✔ owner reset refuses bad-reason with no financial mutation (5.70083ms)
+✔ owner reset refuses regressed-time with no financial mutation (4.733305ms)
+✔ owner reset refuses existing pending reservation without dropping its obligation (5.239746ms)
+✔ owner reset refuses existing holding without dropping its obligation (6.470593ms)
+ℹ tests 13
+ℹ suites 0
+ℹ pass 13
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 346.624828

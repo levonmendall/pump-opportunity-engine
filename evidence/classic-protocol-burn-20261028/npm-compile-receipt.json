@@ -1,0 +1,13 @@
+{
+  "name": "npm-compile",
+  "command": [
+    "npm",
+    "run",
+    "compile"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 8.151203736999832,
+  "endedAt": "2026-10-28T14:48:11.572941+00:00",
+  "logSha256": "c111cbc630b00363e00464dc58c0d48d72870d7a431b9e6ada92ca45f2fe603a",
+  "logBytes": 77
+}

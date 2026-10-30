@@ -1,0 +1,811 @@
+{
+  "createdAt": "2026-10-29T16:22:11.459Z",
+  "source": {
+    "head": "005cbba198c1dc20b902d8a46e63c21061843dca",
+    "sourceHashes": {
+      "src/pilot-rpc.ts": "93deae2203de0940eeac48914d540a2a65d02781bb6eed47c37ed0687f65ba27",
+      "src/component-budget.ts": "3279b408867b4c84e05331e2f043ea620cbe09aaf2a6959ca6385d3a3971bc52",
+      "src/component-transport.ts": "e986d3ecb47f95d42a9b5470505d1a21b136835cfe8ea99b8be9b0581c87e658",
+      "src/native-research-profile.ts": "d06ae46af807063b73cfbdc45cf7f5f0040488e04fe2f4a41a5a7766da90bd52",
+      "src/research-baseline.ts": "f516bf4d940861cac8247a243634b8ee6d646d16e16b5117a6fe77de60f5570b",
+      "src/network.ts": "a2af962c1fecff741e7be9d69780f2d2f6e3f00edaa4c4207f8fab1c62ee2c38"
+    },
+    "scriptSha256": "e48257bb3746f0a7a295a03d2b2ac916881b291db1aefc88dd93524ca7e10006",
+    "hashesUnchangedAfterRun": {
+      "src/pilot-rpc.ts": true,
+      "src/component-budget.ts": true,
+      "src/component-transport.ts": true,
+      "src/native-research-profile.ts": true,
+      "src/research-baseline.ts": true,
+      "src/network.ts": true
+    }
+  },
+  "assumptions": {
+    "horizonMs": 180000,
+    "heldIntervalMs": 2000,
+    "heldCompletionDeadlineAfterDueMs": 2000,
+    "auditIntervalMs": 10000,
+    "auditDeadlineAfterDueMs": 9999,
+    "heartbeatIntervalMs": 10000,
+    "heartbeatCompletionDeadlineAfterDueMs": 9999,
+    "supportIntervalMs": 25000,
+    "supportCompletionDeadlineAfterDueMs": 10000,
+    "latestStartReserveMs": 1500,
+    "priority": "Due held coherent reads, then earliest-deadline audits with rotating tie fairness, then heartbeat, then support. A single in-flight request is non-preemptible. Future arrivals are considered while waiting for the real shared gate.",
+    "latencies": "Injected fake-clock120ms, or1200ms with every fifth operation1400ms; every response is valid synthetic HTTP200. Real timeout timers are not exercised.",
+    "methodSemantics": "Audit is one getSignaturesForAddress page; held/heartbeat/support each modeled as one getMultipleAccounts physical request. No trade-flow/window/price/financial validation implied."
+  },
+  "limitations": [
+    "Not the installed runtime scheduler, native capture, actual historical auditing, provider latency, provider rate entitlement, hosting resource capacity or PAPER position protection acceptance.",
+    "The workload assumes exactly one history page per audit; busy multipage histories and execution actions add demand.",
+    "Real source fsync/serialization CPU and wall latency are not charged to the fake scheduling clock. Raw records preserve actual class behavior; synthetic timing is a deliberately declared model.",
+    "No HTTP429/503, response truncation, real timer timeout, reconnect or uncertain physical settlement is injected.",
+    "An arrival horizon starts with empty rolling history and includes eight support jobs over180s; steady rate differs slightly from finite-boundary rate."
+  ],
+  "scenarios": [
+    {
+      "candidates": 4,
+      "limit": 60,
+      "latencyCase": "fast120ms",
+      "classification": "SYNTHETIC_OFFLINE_GATE_EXPERIMENT_NO_PROVIDER_REQUESTS_NO_LEDGER",
+      "directory": "/tmp/poe-local-60-90-capacity-20261029-books-iiERRw",
+      "scheduledArrivalHorizonMs": 180000,
+      "actualFakeClockElapsedMs": 178000,
+      "steadyDemandPerMinute": 62.4,
+      "actualArrivals": 188,
+      "actualArrivalRatePerMinute": 62.666666666666664,
+      "jobs": {
+        "held": {
+          "arrived": 90,
+          "completedOnTime": 83,
+          "completedLate": 0,
+          "localRefused": 7,
+          "otherErrors": 0,
+          "deadlineMisses": 7,
+          "maximumDispatchDelayMs": 0
+        },
+        "audit": {
+          "arrived": 72,
+          "completedOnTime": 72,
+          "completedLate": 0,
+          "localRefused": 0,
+          "otherErrors": 0,
+          "deadlineMisses": 0,
+          "maximumDispatchDelayMs": 1000
+        },
+        "heartbeat": {
+          "arrived": 18,
+          "completedOnTime": 18,
+          "completedLate": 0,
+          "localRefused": 0,
+          "otherErrors": 0,
+          "deadlineMisses": 0,
+          "maximumDispatchDelayMs": 1250
+        },
+        "support": {
+          "arrived": 8,
+          "completedOnTime": 7,
+          "completedLate": 0,
+          "localRefused": 1,
+          "otherErrors": 0,
+          "deadlineMisses": 1,
+          "maximumDispatchDelayMs": 1500
+        }
+      },
+      "heldMaximumCompletionGapMs": 8000,
+      "heldFirstCompletedAtMs": 120,
+      "heldLastCompletedAtMs": 174120,
+      "physical": {
+        "maximumConcurrentFetch": 1,
+        "minimumStartSpacingMs": 250,
+        "maximumStartsPer10Seconds": 11,
+        "maximumStartsPerMinute": 60,
+        "completedPhysicalRequests": 180,
+        "actualDecodedResponseBytes": 10296,
+        "accountedResponseBytes": 10296,
+        "unsettledAtEnd": 0,
+        "uncertainResponseBytes": 0
+      },
+      "perCandidate": {
+        "0": {
+          "arrivals": 18,
+          "completed": 18,
+          "missed": 0
+        },
+        "1": {
+          "arrivals": 18,
+          "completed": 18,
+          "missed": 0
+        },
+        "2": {
+          "arrivals": 18,
+          "completed": 18,
+          "missed": 0
+        },
+        "3": {
+          "arrivals": 18,
+          "completed": 18,
+          "missed": 0
+        }
+      },
+      "errors": [
+        "PILOT_RPC_COMPONENT_DISPATCH_EXPIRED"
+      ],
+      "rawPath": "/tmp/poe-local-60-90-capacity-20261029-4-60-fast120ms-raw.json",
+      "rawSha256": "407c8cba2d2232e8e66c0472a5d6a3b63d76a51f09d832f3c4aa3e1393e5c08f"
+    },
+    {
+      "candidates": 4,
+      "limit": 60,
+      "latencyCase": "adverse1200_1400ms",
+      "classification": "SYNTHETIC_OFFLINE_GATE_EXPERIMENT_NO_PROVIDER_REQUESTS_NO_LEDGER",
+      "directory": "/tmp/poe-local-60-90-capacity-20261029-books-4G06Oj",
+      "scheduledArrivalHorizonMs": 180000,
+      "actualFakeClockElapsedMs": 180000,
+      "steadyDemandPerMinute": 62.4,
+      "actualArrivals": 188,
+      "actualArrivalRatePerMinute": 62.666666666666664,
+      "jobs": {
+        "held": {
+          "arrived": 90,
+          "completedOnTime": 47,
+          "completedLate": 0,
+          "localRefused": 43,
+          "otherErrors": 0,
+          "deadlineMisses": 43,
+          "maximumDispatchDelayMs": 400
+        },
+        "audit": {
+          "arrived": 72,
+          "completedOnTime": 72,
+          "completedLate": 0,
+          "localRefused": 0,
+          "otherErrors": 0,
+          "deadlineMisses": 0,
+          "maximumDispatchDelayMs": 7400
+        },
+        "heartbeat": {
+          "arrived": 18,
+          "completedOnTime": 7,
+          "completedLate": 0,
+          "localRefused": 11,
+          "otherErrors": 0,
+          "deadlineMisses": 11,
+          "maximumDispatchDelayMs": 7600
+        },
+        "support": {
+          "arrived": 8,
+          "completedOnTime": 4,
+          "completedLate": 0,
+          "localRefused": 4,
+          "otherErrors": 0,
+          "deadlineMisses": 4,
+          "maximumDispatchDelayMs": 3800
+        }
+      },
+      "heldMaximumCompletionGapMs": 6200,
+      "heldFirstCompletedAtMs": 1200,
+      "heldLastCompletedAtMs": 177400,
+      "physical": {
+        "maximumConcurrentFetch": 1,
+        "minimumStartSpacingMs": 1200,
+        "maximumStartsPer10Seconds": 9,
+        "maximumStartsPerMinute": 45,
+        "completedPhysicalRequests": 130,
+        "actualDecodedResponseBytes": 6746,
+        "accountedResponseBytes": 6746,
+        "unsettledAtEnd": 0,
+        "uncertainResponseBytes": 0
+      },
+      "perCandidate": {
+        "0": {
+          "arrivals": 18,
+          "completed": 18,
+          "missed": 0
+        },
+        "1": {
+          "arrivals": 18,
+          "completed": 18,
+          "missed": 0
+        },
+        "2": {
+          "arrivals": 18,
+          "completed": 18,
+          "missed": 0
+        },
+        "3": {
+          "arrivals": 18,
+          "completed": 18,
+          "missed": 0
+        }
+      },
+      "errors": [
+        "PILOT_RPC_COMPONENT_ADMISSION_CLOSED"
+      ],
+      "rawPath": "/tmp/poe-local-60-90-capacity-20261029-4-60-adverse1200_1400ms-raw.json",
+      "rawSha256": "cf4beb39debd11c34a9b6300fbfe2ac3fa2e2aa8aebce960a1c92a9d252d9c90"
+    },
+    {
+      "candidates": 4,
+      "limit": 90,
+      "latencyCase": "fast120ms",
+      "classification": "SYNTHETIC_OFFLINE_GATE_EXPERIMENT_NO_PROVIDER_REQUESTS_NO_LEDGER",
+      "directory": "/tmp/poe-local-60-90-capacity-20261029-books-PfqNH2",
+      "scheduledArrivalHorizonMs": 180000,
+      "actualFakeClockElapsedMs": 178120,
+      "steadyDemandPerMinute": 62.4,
+      "actualArrivals": 188,
+      "actualArrivalRatePerMinute": 62.666666666666664,
+      "jobs": {
+        "held": {
+          "arrived": 90,
+          "completedOnTime": 90,
+          "completedLate": 0,
+          "localRefused": 0,
+          "otherErrors": 0,
+          "deadlineMisses": 0,
+          "maximumDispatchDelayMs": 0
+        },
+        "audit": {
+          "arrived": 72,
+          "completedOnTime": 72,
+          "completedLate": 0,
+          "localRefused": 0,
+          "otherErrors": 0,
+          "deadlineMisses": 0,
+          "maximumDispatchDelayMs": 1000
+        },
+        "heartbeat": {
+          "arrived": 18,
+          "completedOnTime": 18,
+          "completedLate": 0,
+          "localRefused": 0,
+          "otherErrors": 0,
+          "deadlineMisses": 0,
+          "maximumDispatchDelayMs": 1250
+        },
+        "support": {
+          "arrived": 8,
+          "completedOnTime": 8,
+          "completedLate": 0,
+          "localRefused": 0,
+          "otherErrors": 0,
+          "deadlineMisses": 0,
+          "maximumDispatchDelayMs": 1500
+        }
+      },
+      "heldMaximumCompletionGapMs": 2000,
+      "heldFirstCompletedAtMs": 120,
+      "heldLastCompletedAtMs": 178120,
+      "physical": {
+        "maximumConcurrentFetch": 1,
+        "minimumStartSpacingMs": 250,
+        "maximumStartsPer10Seconds": 11,
+        "maximumStartsPerMinute": 63,
+        "completedPhysicalRequests": 188,
+        "actualDecodedResponseBytes": 10864,
+        "accountedResponseBytes": 10864,
+        "unsettledAtEnd": 0,
+        "uncertainResponseBytes": 0
+      },
+      "perCandidate": {
+        "0": {
+          "arrivals": 18,
+          "completed": 18,
+          "missed": 0
+        },
+        "1": {
+          "arrivals": 18,
+          "completed": 18,
+          "missed": 0
+        },
+        "2": {
+          "arrivals": 18,
+          "completed": 18,
+          "missed": 0
+        },
+        "3": {
+          "arrivals": 18,
+          "completed": 18,
+          "missed": 0
+        }
+      },
+      "errors": [],
+      "rawPath": "/tmp/poe-local-60-90-capacity-20261029-4-90-fast120ms-raw.json",
+      "rawSha256": "1e146fd4e2fb6e74217d316d339b3568ce875b6c7ba35d00dc4d4dfa670469e1"
+    },
+    {
+      "candidates": 4,
+      "limit": 90,
+      "latencyCase": "adverse1200_1400ms",
+      "classification": "SYNTHETIC_OFFLINE_GATE_EXPERIMENT_NO_PROVIDER_REQUESTS_NO_LEDGER",
+      "directory": "/tmp/poe-local-60-90-capacity-20261029-books-xyIxII",
+      "scheduledArrivalHorizonMs": 180000,
+      "actualFakeClockElapsedMs": 180000,
+      "steadyDemandPerMinute": 62.4,
+      "actualArrivals": 188,
+      "actualArrivalRatePerMinute": 62.666666666666664,
+      "jobs": {
+        "held": {
+          "arrived": 90,
+          "completedOnTime": 47,
+          "completedLate": 0,
+          "localRefused": 43,
+          "otherErrors": 0,
+          "deadlineMisses": 43,
+          "maximumDispatchDelayMs": 400
+        },
+        "audit": {
+          "arrived": 72,
+          "completedOnTime": 72,
+          "completedLate": 0,
+          "localRefused": 0,
+          "otherErrors": 0,
+          "deadlineMisses": 0,
+          "maximumDispatchDelayMs": 7400
+        },
+        "heartbeat": {
+          "arrived": 18,
+          "completedOnTime": 7,
+          "completedLate": 0,
+          "localRefused": 11,
+          "otherErrors": 0,
+          "deadlineMisses": 11,
+          "maximumDispatchDelayMs": 7600
+        },
+        "support": {
+          "arrived": 8,
+          "completedOnTime": 4,
+          "completedLate": 0,
+          "localRefused": 4,
+          "otherErrors": 0,
+          "deadlineMisses": 4,
+          "maximumDispatchDelayMs": 3800
+        }
+      },
+      "heldMaximumCompletionGapMs": 6200,
+      "heldFirstCompletedAtMs": 1200,
+      "heldLastCompletedAtMs": 177400,
+      "physical": {
+        "maximumConcurrentFetch": 1,
+        "minimumStartSpacingMs": 1200,
+        "maximumStartsPer10Seconds": 9,
+        "maximumStartsPerMinute": 45,
+        "completedPhysicalRequests": 130,
+        "actualDecodedResponseBytes": 6746,
+        "accountedResponseBytes": 6746,
+        "unsettledAtEnd": 0,
+        "uncertainResponseBytes": 0
+      },
+      "perCandidate": {
+        "0": {
+          "arrivals": 18,
+          "completed": 18,
+          "missed": 0
+        },
+        "1": {
+          "arrivals": 18,
+          "completed": 18,
+          "missed": 0
+        },
+        "2": {
+          "arrivals": 18,
+          "completed": 18,
+          "missed": 0
+        },
+        "3": {
+          "arrivals": 18,
+          "completed": 18,
+          "missed": 0
+        }
+      },
+      "errors": [
+        "PILOT_RPC_COMPONENT_ADMISSION_CLOSED"
+      ],
+      "rawPath": "/tmp/poe-local-60-90-capacity-20261029-4-90-adverse1200_1400ms-raw.json",
+      "rawSha256": "68f23eef7403c96448ba538908ce4b83dbd3d0cbca486cc6082f871b9d15132e"
+    },
+    {
+      "candidates": 6,
+      "limit": 60,
+      "latencyCase": "fast120ms",
+      "classification": "SYNTHETIC_OFFLINE_GATE_EXPERIMENT_NO_PROVIDER_REQUESTS_NO_LEDGER",
+      "directory": "/tmp/poe-local-60-90-capacity-20261029-books-vmcvKD",
+      "scheduledArrivalHorizonMs": 180000,
+      "actualFakeClockElapsedMs": 180120,
+      "steadyDemandPerMinute": 74.4,
+      "actualArrivals": 224,
+      "actualArrivalRatePerMinute": 74.66666666666667,
+      "jobs": {
+        "held": {
+          "arrived": 90,
+          "completedOnTime": 70,
+          "completedLate": 0,
+          "localRefused": 20,
+          "otherErrors": 0,
+          "deadlineMisses": 20,
+          "maximumDispatchDelayMs": 0
+        },
+        "audit": {
+          "arrived": 108,
+          "completedOnTime": 90,
+          "completedLate": 0,
+          "localRefused": 18,
+          "otherErrors": 0,
+          "deadlineMisses": 18,
+          "maximumDispatchDelayMs": 1500
+        },
+        "heartbeat": {
+          "arrived": 18,
+          "completedOnTime": 15,
+          "completedLate": 0,
+          "localRefused": 3,
+          "otherErrors": 0,
+          "deadlineMisses": 3,
+          "maximumDispatchDelayMs": 1750
+        },
+        "support": {
+          "arrived": 8,
+          "completedOnTime": 6,
+          "completedLate": 0,
+          "localRefused": 2,
+          "otherErrors": 0,
+          "deadlineMisses": 2,
+          "maximumDispatchDelayMs": 5000
+        }
+      },
+      "heldMaximumCompletionGapMs": 16000,
+      "heldFirstCompletedAtMs": 120,
+      "heldLastCompletedAtMs": 166120,
+      "physical": {
+        "maximumConcurrentFetch": 1,
+        "minimumStartSpacingMs": 250,
+        "maximumStartsPer10Seconds": 13,
+        "maximumStartsPerMinute": 60,
+        "completedPhysicalRequests": 181,
+        "actualDecodedResponseBytes": 9773,
+        "accountedResponseBytes": 9773,
+        "unsettledAtEnd": 0,
+        "uncertainResponseBytes": 0
+      },
+      "perCandidate": {
+        "0": {
+          "arrivals": 18,
+          "completed": 15,
+          "missed": 3
+        },
+        "1": {
+          "arrivals": 18,
+          "completed": 15,
+          "missed": 3
+        },
+        "2": {
+          "arrivals": 18,
+          "completed": 15,
+          "missed": 3
+        },
+        "3": {
+          "arrivals": 18,
+          "completed": 15,
+          "missed": 3
+        },
+        "4": {
+          "arrivals": 18,
+          "completed": 15,
+          "missed": 3
+        },
+        "5": {
+          "arrivals": 18,
+          "completed": 15,
+          "missed": 3
+        }
+      },
+      "errors": [
+        "PILOT_RPC_COMPONENT_DISPATCH_EXPIRED"
+      ],
+      "rawPath": "/tmp/poe-local-60-90-capacity-20261029-6-60-fast120ms-raw.json",
+      "rawSha256": "7532d64eb522d37b39e4080739326e32110d218075a9bb76c1df70b5f1a38fbb"
+    },
+    {
+      "candidates": 6,
+      "limit": 60,
+      "latencyCase": "adverse1200_1400ms",
+      "classification": "SYNTHETIC_OFFLINE_GATE_EXPERIMENT_NO_PROVIDER_REQUESTS_NO_LEDGER",
+      "directory": "/tmp/poe-local-60-90-capacity-20261029-books-FiiBup",
+      "scheduledArrivalHorizonMs": 180000,
+      "actualFakeClockElapsedMs": 180000,
+      "steadyDemandPerMinute": 74.4,
+      "actualArrivals": 224,
+      "actualArrivalRatePerMinute": 74.66666666666667,
+      "jobs": {
+        "held": {
+          "arrived": 90,
+          "completedOnTime": 47,
+          "completedLate": 0,
+          "localRefused": 43,
+          "otherErrors": 0,
+          "deadlineMisses": 43,
+          "maximumDispatchDelayMs": 400
+        },
+        "audit": {
+          "arrived": 108,
+          "completedOnTime": 79,
+          "completedLate": 0,
+          "localRefused": 29,
+          "otherErrors": 0,
+          "deadlineMisses": 29,
+          "maximumDispatchDelayMs": 7600
+        },
+        "heartbeat": {
+          "arrived": 18,
+          "completedOnTime": 0,
+          "completedLate": 0,
+          "localRefused": 18,
+          "otherErrors": 0,
+          "deadlineMisses": 18,
+          "maximumDispatchDelayMs": 0
+        },
+        "support": {
+          "arrived": 8,
+          "completedOnTime": 4,
+          "completedLate": 0,
+          "localRefused": 4,
+          "otherErrors": 0,
+          "deadlineMisses": 4,
+          "maximumDispatchDelayMs": 3800
+        }
+      },
+      "heldMaximumCompletionGapMs": 6200,
+      "heldFirstCompletedAtMs": 1200,
+      "heldLastCompletedAtMs": 177400,
+      "physical": {
+        "maximumConcurrentFetch": 1,
+        "minimumStartSpacingMs": 1200,
+        "maximumStartsPer10Seconds": 9,
+        "maximumStartsPerMinute": 45,
+        "completedPhysicalRequests": 130,
+        "actualDecodedResponseBytes": 6515,
+        "accountedResponseBytes": 6515,
+        "unsettledAtEnd": 0,
+        "uncertainResponseBytes": 0
+      },
+      "perCandidate": {
+        "0": {
+          "arrivals": 18,
+          "completed": 14,
+          "missed": 4
+        },
+        "1": {
+          "arrivals": 18,
+          "completed": 13,
+          "missed": 5
+        },
+        "2": {
+          "arrivals": 18,
+          "completed": 13,
+          "missed": 5
+        },
+        "3": {
+          "arrivals": 18,
+          "completed": 13,
+          "missed": 5
+        },
+        "4": {
+          "arrivals": 18,
+          "completed": 13,
+          "missed": 5
+        },
+        "5": {
+          "arrivals": 18,
+          "completed": 13,
+          "missed": 5
+        }
+      },
+      "errors": [
+        "PILOT_RPC_COMPONENT_ADMISSION_CLOSED"
+      ],
+      "rawPath": "/tmp/poe-local-60-90-capacity-20261029-6-60-adverse1200_1400ms-raw.json",
+      "rawSha256": "3e464e1add83a220475c0479f8793aad3601dbae9f544731f44ec1bdf87c777e"
+    },
+    {
+      "candidates": 6,
+      "limit": 90,
+      "latencyCase": "fast120ms",
+      "classification": "SYNTHETIC_OFFLINE_GATE_EXPERIMENT_NO_PROVIDER_REQUESTS_NO_LEDGER",
+      "directory": "/tmp/poe-local-60-90-capacity-20261029-books-2IsSLW",
+      "scheduledArrivalHorizonMs": 180000,
+      "actualFakeClockElapsedMs": 178120,
+      "steadyDemandPerMinute": 74.4,
+      "actualArrivals": 224,
+      "actualArrivalRatePerMinute": 74.66666666666667,
+      "jobs": {
+        "held": {
+          "arrived": 90,
+          "completedOnTime": 90,
+          "completedLate": 0,
+          "localRefused": 0,
+          "otherErrors": 0,
+          "deadlineMisses": 0,
+          "maximumDispatchDelayMs": 0
+        },
+        "audit": {
+          "arrived": 108,
+          "completedOnTime": 108,
+          "completedLate": 0,
+          "localRefused": 0,
+          "otherErrors": 0,
+          "deadlineMisses": 0,
+          "maximumDispatchDelayMs": 1500
+        },
+        "heartbeat": {
+          "arrived": 18,
+          "completedOnTime": 18,
+          "completedLate": 0,
+          "localRefused": 0,
+          "otherErrors": 0,
+          "deadlineMisses": 0,
+          "maximumDispatchDelayMs": 1750
+        },
+        "support": {
+          "arrived": 8,
+          "completedOnTime": 8,
+          "completedLate": 0,
+          "localRefused": 0,
+          "otherErrors": 0,
+          "deadlineMisses": 0,
+          "maximumDispatchDelayMs": 2250
+        }
+      },
+      "heldMaximumCompletionGapMs": 2000,
+      "heldFirstCompletedAtMs": 120,
+      "heldLastCompletedAtMs": 178120,
+      "physical": {
+        "maximumConcurrentFetch": 1,
+        "minimumStartSpacingMs": 250,
+        "maximumStartsPer10Seconds": 13,
+        "maximumStartsPerMinute": 75,
+        "completedPhysicalRequests": 224,
+        "actualDecodedResponseBytes": 12232,
+        "accountedResponseBytes": 12232,
+        "unsettledAtEnd": 0,
+        "uncertainResponseBytes": 0
+      },
+      "perCandidate": {
+        "0": {
+          "arrivals": 18,
+          "completed": 18,
+          "missed": 0
+        },
+        "1": {
+          "arrivals": 18,
+          "completed": 18,
+          "missed": 0
+        },
+        "2": {
+          "arrivals": 18,
+          "completed": 18,
+          "missed": 0
+        },
+        "3": {
+          "arrivals": 18,
+          "completed": 18,
+          "missed": 0
+        },
+        "4": {
+          "arrivals": 18,
+          "completed": 18,
+          "missed": 0
+        },
+        "5": {
+          "arrivals": 18,
+          "completed": 18,
+          "missed": 0
+        }
+      },
+      "errors": [],
+      "rawPath": "/tmp/poe-local-60-90-capacity-20261029-6-90-fast120ms-raw.json",
+      "rawSha256": "e65a4ae7e3b2a86917075efce1de9e2b0af9cbdba9bd4036755b898f83815cfe"
+    },
+    {
+      "candidates": 6,
+      "limit": 90,
+      "latencyCase": "adverse1200_1400ms",
+      "classification": "SYNTHETIC_OFFLINE_GATE_EXPERIMENT_NO_PROVIDER_REQUESTS_NO_LEDGER",
+      "directory": "/tmp/poe-local-60-90-capacity-20261029-books-yPnfk7",
+      "scheduledArrivalHorizonMs": 180000,
+      "actualFakeClockElapsedMs": 180000,
+      "steadyDemandPerMinute": 74.4,
+      "actualArrivals": 224,
+      "actualArrivalRatePerMinute": 74.66666666666667,
+      "jobs": {
+        "held": {
+          "arrived": 90,
+          "completedOnTime": 47,
+          "completedLate": 0,
+          "localRefused": 43,
+          "otherErrors": 0,
+          "deadlineMisses": 43,
+          "maximumDispatchDelayMs": 400
+        },
+        "audit": {
+          "arrived": 108,
+          "completedOnTime": 79,
+          "completedLate": 0,
+          "localRefused": 29,
+          "otherErrors": 0,
+          "deadlineMisses": 29,
+          "maximumDispatchDelayMs": 7600
+        },
+        "heartbeat": {
+          "arrived": 18,
+          "completedOnTime": 0,
+          "completedLate": 0,
+          "localRefused": 18,
+          "otherErrors": 0,
+          "deadlineMisses": 18,
+          "maximumDispatchDelayMs": 0
+        },
+        "support": {
+          "arrived": 8,
+          "completedOnTime": 4,
+          "completedLate": 0,
+          "localRefused": 4,
+          "otherErrors": 0,
+          "deadlineMisses": 4,
+          "maximumDispatchDelayMs": 3800
+        }
+      },
+      "heldMaximumCompletionGapMs": 6200,
+      "heldFirstCompletedAtMs": 1200,
+      "heldLastCompletedAtMs": 177400,
+      "physical": {
+        "maximumConcurrentFetch": 1,
+        "minimumStartSpacingMs": 1200,
+        "maximumStartsPer10Seconds": 9,
+        "maximumStartsPerMinute": 45,
+        "completedPhysicalRequests": 130,
+        "actualDecodedResponseBytes": 6515,
+        "accountedResponseBytes": 6515,
+        "unsettledAtEnd": 0,
+        "uncertainResponseBytes": 0
+      },
+      "perCandidate": {
+        "0": {
+          "arrivals": 18,
+          "completed": 14,
+          "missed": 4
+        },
+        "1": {
+          "arrivals": 18,
+          "completed": 13,
+          "missed": 5
+        },
+        "2": {
+          "arrivals": 18,
+          "completed": 13,
+          "missed": 5
+        },
+        "3": {
+          "arrivals": 18,
+          "completed": 13,
+          "missed": 5
+        },
+        "4": {
+          "arrivals": 18,
+          "completed": 13,
+          "missed": 5
+        },
+        "5": {
+          "arrivals": 18,
+          "completed": 13,
+          "missed": 5
+        }
+      },
+      "errors": [
+        "PILOT_RPC_COMPONENT_ADMISSION_CLOSED"
+      ],
+      "rawPath": "/tmp/poe-local-60-90-capacity-20261029-6-90-adverse1200_1400ms-raw.json",
+      "rawSha256": "c19ef966c8097260e12854191fd8c855f1b79a11916a9694cb4e7b14f7f0e4ec"
+    }
+  ]
+}

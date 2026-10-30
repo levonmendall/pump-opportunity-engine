@@ -1,0 +1,398 @@
+{
+  "frozenAt": "2026-10-30T00:55:18.039109+00:00",
+  "meaning": "Actual immutable original Render-source observations, no financial control or provider RPC. yuTSg events show bounded technical reevaluation, not proof of final qualification or executable profitable opportunity. Provider/admission deferrals distinct from strategy rejection. Source/publication age is not runtime financial reconciliation age. Historical counters are retained lower bounds.",
+  "observations": {
+    "count": 27,
+    "valid": 27,
+    "sha256": "14b571e1f47eaeea32915b324d3c9bb609090820c0f90eace624763c874c3cc1"
+  },
+  "protectionTransitions": [
+    {
+      "sourceAt": "2026-10-30T00:48:14.804Z",
+      "sequence": "10962",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T00:48:14.334Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 65,
+        "unavailableChecks": 218
+      },
+      "httpTimeouts": 626,
+      "heldRefusals": "Recorded holding-pricing refusals in this run: HELD_PRICING_ABORTED:21, HELD_PRICING_PROVIDER_TIMEOUT:11, HELD_PRICING_PROVIDER_COOLDOWN:58."
+    },
+    {
+      "sourceAt": "2026-10-30T00:53:06.148Z",
+      "sequence": "10980",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T00:53:05.825Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 66,
+        "unavailableChecks": 220
+      },
+      "httpTimeouts": 626,
+      "heldRefusals": "Recorded holding-pricing refusals in this run: HELD_PRICING_ABORTED:23, HELD_PRICING_PROVIDER_TIMEOUT:11, HELD_PRICING_PROVIDER_COOLDOWN:58."
+    },
+    {
+      "sourceAt": "2026-10-30T00:54:06.565Z",
+      "sequence": "10984",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T00:54:06.565Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 66,
+        "unavailableChecks": 220
+      },
+      "httpTimeouts": 626,
+      "heldRefusals": "Recorded holding-pricing refusals in this run: HELD_PRICING_ABORTED:23, HELD_PRICING_PROVIDER_TIMEOUT:11, HELD_PRICING_PROVIDER_COOLDOWN:58."
+    }
+  ],
+  "yuTSgEvents": [
+    {
+      "mint": "yuTSg7144Rv1Em7v7thmrQkYJNK21vecgNTwsaepump",
+      "at": "2026-10-30T00:48:56.039Z",
+      "stage": "adaptive-predictive-not-rejected",
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "firstSeenInSourceSnapshot": "10965",
+      "sourceAt": "2026-10-30T00:49:00.310Z",
+      "observedProjectionIds": [
+        "native-paper-20261029234856700:31:1793321336039",
+        "native-paper-20261029234856700:28:1793321336039",
+        "native-paper-20261029234856700:26:1793321336039",
+        "native-paper-20261029234856700:24:1793321336039",
+        "native-paper-20261029234856700:22:1793321336039",
+        "native-paper-20261029234856700:20:1793321336039",
+        "native-paper-20261029234856700:17:1793321336039"
+      ]
+    },
+    {
+      "mint": "yuTSg7144Rv1Em7v7thmrQkYJNK21vecgNTwsaepump",
+      "at": "2026-10-30T00:49:06.076Z",
+      "stage": "adaptive-predictive-not-rejected",
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "firstSeenInSourceSnapshot": "10966",
+      "sourceAt": "2026-10-30T00:49:16.177Z",
+      "observedProjectionIds": [
+        "native-paper-20261029234856700:30:1793321346076",
+        "native-paper-20261029234856700:28:1793321346076",
+        "native-paper-20261029234856700:26:1793321346076",
+        "native-paper-20261029234856700:24:1793321346076",
+        "native-paper-20261029234856700:22:1793321346076",
+        "native-paper-20261029234856700:19:1793321346076"
+      ]
+    },
+    {
+      "mint": "yuTSg7144Rv1Em7v7thmrQkYJNK21vecgNTwsaepump",
+      "at": "2026-10-30T00:49:16.124Z",
+      "stage": "adaptive-predictive-not-rejected",
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "firstSeenInSourceSnapshot": "10966",
+      "sourceAt": "2026-10-30T00:49:16.177Z",
+      "observedProjectionIds": [
+        "native-paper-20261029234856700:32:1793321356124",
+        "native-paper-20261029234856700:30:1793321356124",
+        "native-paper-20261029234856700:28:1793321356124",
+        "native-paper-20261029234856700:26:1793321356124",
+        "native-paper-20261029234856700:24:1793321356124",
+        "native-paper-20261029234856700:21:1793321356124"
+      ]
+    },
+    {
+      "mint": "yuTSg7144Rv1Em7v7thmrQkYJNK21vecgNTwsaepump",
+      "at": "2026-10-30T00:49:25.002Z",
+      "stage": "adaptive-predictive-not-rejected",
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "firstSeenInSourceSnapshot": "10967",
+      "sourceAt": "2026-10-30T00:49:31.198Z",
+      "observedProjectionIds": [
+        "native-paper-20261029234856700:32:1793321365002",
+        "native-paper-20261029234856700:30:1793321365002",
+        "native-paper-20261029234856700:28:1793321365002",
+        "native-paper-20261029234856700:26:1793321365002",
+        "native-paper-20261029234856700:23:1793321365002"
+      ]
+    },
+    {
+      "mint": "yuTSg7144Rv1Em7v7thmrQkYJNK21vecgNTwsaepump",
+      "at": "2026-10-30T00:49:27.945Z",
+      "stage": "risk-rejection",
+      "reason": "entries-not-authorized-by-ledger",
+      "firstSeenInSourceSnapshot": "10967",
+      "sourceAt": "2026-10-30T00:49:31.198Z",
+      "observedProjectionIds": [
+        "native-paper-20261029234856700:33:1793321367945",
+        "native-paper-20261029234856700:31:1793321367945",
+        "native-paper-20261029234856700:29:1793321367945",
+        "native-paper-20261029234856700:27:1793321367945",
+        "native-paper-20261029234856700:24:1793321367945"
+      ]
+    },
+    {
+      "mint": "yuTSg7144Rv1Em7v7thmrQkYJNK21vecgNTwsaepump",
+      "at": "2026-10-30T00:49:46.604Z",
+      "stage": "adaptive-predictive-not-rejected",
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "firstSeenInSourceSnapshot": "10970",
+      "sourceAt": "2026-10-30T00:50:16.389Z",
+      "observedProjectionIds": [
+        "native-paper-20261029234856700:32:1793321386604",
+        "native-paper-20261029234856700:30:1793321386604",
+        "native-paper-20261029234856700:28:1793321386604",
+        "native-paper-20261029234856700:25:1793321386604"
+      ]
+    },
+    {
+      "mint": "yuTSg7144Rv1Em7v7thmrQkYJNK21vecgNTwsaepump",
+      "at": "2026-10-30T00:49:48.681Z",
+      "stage": "missing-data",
+      "reason": "fresh-size-specific-quote-unavailable",
+      "firstSeenInSourceSnapshot": "10970",
+      "sourceAt": "2026-10-30T00:50:16.389Z",
+      "observedProjectionIds": [
+        "native-paper-20261029234856700:33:1793321388681",
+        "native-paper-20261029234856700:31:1793321388681",
+        "native-paper-20261029234856700:29:1793321388681",
+        "native-paper-20261029234856700:26:1793321388681"
+      ]
+    },
+    {
+      "mint": "yuTSg7144Rv1Em7v7thmrQkYJNK21vecgNTwsaepump",
+      "at": "2026-10-30T00:50:03.391Z",
+      "stage": "adaptive-predictive-not-rejected",
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "firstSeenInSourceSnapshot": "10970",
+      "sourceAt": "2026-10-30T00:50:16.389Z",
+      "observedProjectionIds": [
+        "native-paper-20261029234856700:34:1793321403391",
+        "native-paper-20261029234856700:32:1793321403391",
+        "native-paper-20261029234856700:30:1793321403391",
+        "native-paper-20261029234856700:27:1793321403391"
+      ]
+    },
+    {
+      "mint": "yuTSg7144Rv1Em7v7thmrQkYJNK21vecgNTwsaepump",
+      "at": "2026-10-30T00:50:16.743Z",
+      "stage": "adaptive-predictive-not-rejected",
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "firstSeenInSourceSnapshot": "10971",
+      "sourceAt": "2026-10-30T00:50:31.500Z",
+      "observedProjectionIds": [
+        "native-paper-20261029234856700:33:1793321416743",
+        "native-paper-20261029234856700:31:1793321416743",
+        "native-paper-20261029234856700:28:1793321416743"
+      ]
+    },
+    {
+      "mint": "yuTSg7144Rv1Em7v7thmrQkYJNK21vecgNTwsaepump",
+      "at": "2026-10-30T00:50:26.737Z",
+      "stage": "adaptive-predictive-not-rejected",
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "firstSeenInSourceSnapshot": "10971",
+      "sourceAt": "2026-10-30T00:50:31.500Z",
+      "observedProjectionIds": [
+        "native-paper-20261029234856700:34:1793321426737",
+        "native-paper-20261029234856700:32:1793321426737",
+        "native-paper-20261029234856700:29:1793321426737"
+      ]
+    }
+  ],
+  "scorecard": {
+    "sourceAt": "2026-10-30T00:54:51.970Z",
+    "sequence": "10987",
+    "source": {
+      "release": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
+      "strategy": "adaptive-momentum-v2-paper-v1"
+    },
+    "account": {
+      "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "initialUsd": 1000
+    },
+    "status": {
+      "runtime": "running",
+      "market": "observing",
+      "entries": "enabled",
+      "reconciled": true,
+      "blocker": null
+    },
+    "receiverSourceAgeMs": 16485,
+    "reconciliationAgeAtSourceMs": 921,
+    "quoteAgeAtSourceMs": 1970,
+    "run": {
+      "id": "native-paper-20261029234856700",
+      "startedAt": "2026-10-29T23:48:56.700Z",
+      "mode": "persistent-paper",
+      "configurationSha256": "44b82455003f04f75eb1ad7a3dc21555406c1d4d0c7626386d3d21661fdb47c9",
+      "strategyVersion": "adaptive-momentum-v2-paper-v1"
+    },
+    "candidates": {
+      "migrationsReceived": 564,
+      "verifiedOrigins": 168,
+      "known": 174,
+      "watch": 64,
+      "eligible": 37,
+      "deepActive": 4,
+      "deepMaximum": 4,
+      "queued": 34,
+      "promoted": 4827,
+      "repromoted": 4364,
+      "demoted": 4814,
+      "completeWindows": 2476,
+      "auditedWindows": 2498,
+      "uniqueEvaluated": 69,
+      "uniqueAudited": null,
+      "predictiveAssessments": 379,
+      "predictivePasses": 175,
+      "predictiveFailures": 204,
+      "predictiveUnavailable": 0,
+      "waitMeanMs": null,
+      "waitMaximumMs": 2339065,
+      "olderSelected": 24
+    },
+    "quality": {
+      "captureConnected": true,
+      "qualityGaps": 1424,
+      "auditUnavailable": 131,
+      "auditUnusable": 198,
+      "decisionDeadlineMisses": 346,
+      "enrichmentDeadlineFailures": 0,
+      "incompleteExclusions": 1424,
+      "capacityExclusions": 0,
+      "structuralExclusions": 56,
+      "limitations": [
+        "ACTIVE Adaptive Momentum v2 preliminary assessments use complete independently audited60s flow; they are not executable financial qualifications. Actual-size liquidity quotes and ledger controls remain required. Frozen persistent-buying counters are a separate benchmark. Overlapping windows are not distinct tokens.",
+        "Beneficial-owner independence, acceleration, executable price trend and reserve stability are unknown unless separately measured. No theoretical upside is realized profit.",
+        "Current $50/$150 sizing/exposure are explicit temporary legacy risk fallbacks. Four deep slots and two protected positions remain; old holdings retain their entry-strategy exit policy.",
+        "Protection totals and maxima retain known prior-run failures as lower bounds; completion freshness and recovery progress belong to the current run.",
+        "Recorded holding-pricing refusals in this run: HELD_PRICING_ABORTED:23, HELD_PRICING_PROVIDER_TIMEOUT:11, HELD_PRICING_PROVIDER_COOLDOWN:58.",
+        "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump: Adaptive Momentum v2 historical executable net peak 0.609836253 SOL at 2026-10-30T00:54:51.014Z; cost stop and high-water trailing configured; see completed protection status. No fixed profit or profitable holding-time exit."
+      ]
+    },
+    "financialFunnel": {
+      "discovered": 130,
+      "supported": 130,
+      "sufficientlyObserved": 6,
+      "evaluated": 6,
+      "qualified": 0,
+      "attempted": 0,
+      "paperFilled": 0,
+      "exited": 0,
+      "reconciled": 1900
+    },
+    "positions": [
+      {
+        "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+        "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+        "quantity": "65278155",
+        "enteredAt": "2026-10-29T22:23:36.537Z",
+        "entryCostUsd": 49.708013,
+        "netLiquidationUsd": 57.690509,
+        "executionCostsUsd": 0.00068,
+        "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+      }
+    ],
+    "pendingOrders": [],
+    "balances": {
+      "cashSol": "9.391335448",
+      "reservedSol": "0",
+      "equitySol": "10.022187661",
+      "equityUsd": 948.098953,
+      "realizedUsd": -3.612409,
+      "unrealizedUsd": 9.339493,
+      "tradingPnlUsd": 5.727084,
+      "economicPnlUsd": null,
+      "positionCostUsd": 49.708013,
+      "markedExposureUsd": 57.690509,
+      "drawdownUsd": null,
+      "executionCostsUsd": null,
+      "operatingCostsUsd": null,
+      "passiveSolEquityUsd": 942.371869,
+      "solPriceUsd": 94.6
+    },
+    "protection": {
+      "state": "monitored",
+      "targetCadenceMs": 2000,
+      "completedEvaluationBoundaryMs": 4000,
+      "lastCompletedAt": "2026-10-30T00:54:51.067Z",
+      "maximumCompletedGapMs": 89426,
+      "maximumQuoteAgeAtUseMs": 70,
+      "breaches": 66,
+      "unavailableChecks": 220
+    },
+    "provider": {
+      "rpcRequests": 3778,
+      "rpcResponseBytes": 443909987,
+      "nativeStreamBytes": 1383736652,
+      "broadWatchBytes": 71845174489,
+      "discoveryConnected": true,
+      "watchConnected": true,
+      "httpTimeouts": 626,
+      "httpErrors": 0,
+      "throttles": 0,
+      "rollingStartsPerMinute": 52,
+      "maximumStartsPerMinute": 90,
+      "minimumSpacingMs": 250,
+      "primaryCooldownUntil": "2026-10-30T00:35:40.425Z",
+      "historyCooldownUntil": "2026-10-30T00:29:47.824Z",
+      "controlCooldownUntil": null
+    },
+    "resources": {
+      "sampleAt": "2026-10-30T00:54:51.969Z",
+      "cpuOneCoreFraction": 0.16735468204583395,
+      "rssBytes": 385810432,
+      "availableMemoryBytes": 6828027904,
+      "availableDiskBytes": 286997491712,
+      "eventLoopLagMs": 27.131903,
+      "state": "normal"
+    },
+    "admission": {
+      "financialProjectionReady": true,
+      "supervisedNewRiskAllowed": true,
+      "candidateResourceAdmissionAllowed": true,
+      "evidenceAdmissionAllowed": true,
+      "evidencePressureReasonCode": null,
+      "evidenceDiagnosticBytes": 5640557,
+      "evidenceDiagnosticLimitBytes": 134217728,
+      "evidenceRequiresCriticalRecovery": false,
+      "evidenceRefusedRecords": 0,
+      "sourceRecoveryGeneration": 0,
+      "sourceRecoveryFailures": 0,
+      "sourceRecoveryReasonCode": null,
+      "sourceRecoveryRetryAt": null,
+      "sourceRecoveryClosingSettled": false,
+      "sourceRestartRequired": false,
+      "proofPreparationState": "complete"
+    }
+  },
+  "eventIdentityNote": "Dashboard projection IDs include ring indices and can shift between snapshots. Events are deduplicated by mint, event time, stage and reason; all observed projection IDs retained. This is not evidence of duplicate trading execution."
+}

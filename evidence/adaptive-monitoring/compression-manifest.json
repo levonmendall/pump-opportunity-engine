@@ -1,0 +1,23 @@
+{
+  "classification": "LOSSLESS_COMPACT_RECORDS_ORIGINAL_RESULTS_PRESERVED",
+  "records": [
+    {
+      "raw": "monitoring-results.json",
+      "compressed": "monitoring-results.json.gz",
+      "rawBytes": 2072876,
+      "compressedBytes": 46105,
+      "rawSha256": "f2232d13c5e261bd845ebb6f7c4e53f68299877c3cf1195722e097b5fe147b50",
+      "gzipSha256": "340483ff7bee00d01dc6ed7a495e41fd675fdfa2e8efaf41c3bb96f8c0720fe3",
+      "losslessRoundTripVerified": true
+    },
+    {
+      "raw": "monitoring-results-initial-wsol-lamports.json",
+      "compressed": "monitoring-results-initial-wsol-lamports.json.gz",
+      "rawBytes": 2072897,
+      "compressedBytes": 46066,
+      "rawSha256": "d2d7a0aa91ded8915c996711775781029b489f9a543b51d76ef1a8f0b73d6cc4",
+      "gzipSha256": "ca7f824164c35f9acafc1b5fc1328609f3e144d846a7edacb54dd0dff5bb8744",
+      "losslessRoundTripVerified": true
+    }
+  ]
+}

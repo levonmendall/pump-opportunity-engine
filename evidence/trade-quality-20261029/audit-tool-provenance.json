@@ -1,0 +1,29 @@
+{
+  "classification": "OFFLINE_AUDIT_IMPLEMENTATION_AND_FROZEN_INPUT_PROVENANCE",
+  "implementationBaseCommit": "84bd3f09995fcbd347710cae5c1ddb8c5f517157",
+  "implementationBranch": "poe-trade-quality-audit-20261029",
+  "implementationFiles": [
+    {
+      "path": "scripts/freeze-retained-paper-audit.py",
+      "sha256": "2c8eac534c2aeb1e5c7cdb6dea6e0d3bf0df70e7408f2f2ec05badfe76c54f85"
+    },
+    {
+      "path": "scripts/audit-retained-paper-trades.py",
+      "sha256": "2ef09b0604f5c3fd28c3fca1c717a12b6062745a6038ce8a1eeaeb7a17994fb8"
+    },
+    {
+      "path": "test/test_retained_paper_trade_audit.py",
+      "sha256": "dc45a04b31dfe593142cb27d3f0ce144e048482a6eab98b8f7d9c478e90e0e91"
+    }
+  ],
+  "manifestSha256": "7089fab7548fb3258951039b2eb7be8c4b0014f3fc7a04c3035308d92b98dfef",
+  "factsSha256": "40bf38d9d22d3470f34dde48a68cd96343821286bce80dbfdb2e4c5fedb77a1f",
+  "scorecardSha256": "2ee7988ee1654bbf5d951a6008464956d15179f567f5e525bff335a056a9a7a2",
+  "testCommand": "python3 -m unittest discover -s test -p test_retained_paper_trade_audit.py -v",
+  "testExitCode": 0,
+  "testCount": 7,
+  "financialWrites": 0,
+  "privateDatabaseReads": 0,
+  "networkRequests": 0,
+  "runtimeChanges": 0
+}

@@ -551,3 +551,15 @@ test('first snapshot paint immediately preserves stopped and stale source truth'
  new Script("readFailure='REPORTING_HTTP_503';paintFreshness()").runInContext(context);assert.match(signals.at(-1)![0]!,/Data link interrupted.*STALE SOURCE SNAPSHOT/);assert.equal(signals.at(-1)![2],'DASHBOARD READ FAILED');assert.equal(signals.at(-1)![3],'error');
  paint(sample('3'),'fresh');assert.equal(signals.at(-1)![3],'connected');assert.equal(new Script('readFailure').runInContext(context),null);
 });
+
+test('single portfolio viewer retires the experimental channel and retains original authenticated snapshots',async t=>{
+ const app=await serve(t,{...config,publicViewer:true});
+ assert.equal((await app.get('/api/pilot')).status,410);assert.equal((await fetch(app.url+'/api/pilot',{method:'POST',body:'{}'})).status,410);assert.equal((await app.get('/api/connections')).status,404);
+ assert.equal((await app.post(sample())).status,200);const response=await app.get('/api/snapshot').then(r=>r.json());assert.equal(response.snapshot.account.id,config.accountId);assert.equal(response.connections,undefined);
+ const html=await app.get('/').then(r=>r.text());for(const text of ['Experimental portfolio','Experimental trades','Pilot diagnostics','pilot-telemetry-panel','experimental-portfolio'])assert.equal(html.includes(text),false,text);
+ assert.equal((html.match(/id="portfolio"/g)||[]).length,1);assert.match(html,/Pending orders and reservations/);assert.match(html,/visibilitychange/);assert.match(html,/setInterval\(refresh,15000\)/);assert.match(html,/refreshInFlight/);
+ const scripts=[...html.matchAll(/<script>([\s\S]*?)<\/script>/g)];assert.equal(scripts.length,1);for(const script of scripts)assert.doesNotThrow(()=>new Function(script[1]!));
+ assert.equal((await app.get('/healthz').then(r=>r.json())).unifiedPortfolio,true);
+});
+
+test('compact one-account command view keeps metrics accessible without a duplicate portfolio',async t=>{const app=await serve(t,{...config,publicViewer:true}),html=await app.get('/').then(r=>r.text());assert.match(html,/Show all /);assert.match(html,/portfolio metrics/);assert.match(html,/compact-disclosure/);assert.match(html,/focus-visible/);assert.match(html,/overflow-wrap:anywhere/);assert.doesNotMatch(html,/experimental-portfolio|pilotIntelligence|setPilotIntelligence/);});

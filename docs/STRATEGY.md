@@ -1,6 +1,6 @@
 # Provisional offline continuation rule
 
-Status: **UNPROVEN, UNFROZEN, NOT CONNECTED TO ENTRY EXECUTION**. This module
+Status: **UNPROVEN, UNFROZEN, NOT CONNECTED TO PRODUCTION ENTRY EXECUTION**. This module
 implements one deterministic candidate rule and feature core. It does not prove
 PumpPortal field compatibility, enable entries, obtain quotes, spend data money,
 create orders, fill trades or change an account. No shadow resident or optimization
@@ -113,6 +113,12 @@ A15-minute holding limit requests an exit even if pricing is unavailable, but
 still requires a real supported quote/attempt; it never creates a free fill.
 USD risk/equity reconciliation remains the ledger's separate responsibility.
 A stop does not guarantee the trigger price or any live fill.
+
+These holding exits use full-size net liquidation, cost and time; they do not
+use flow. Candidate qualification still requires every declared flow feature.
+Pool-state monitoring cannot recover buyer identity/concentration or a complete
+trade sequence. A future flow-dependent exit must retain its required feed.
+See OBSERVATION_DESIGN.md; no rule was removed for a cost comparison.
 
 Remaining integration includes measured PumpPortal mapping/coverage/delay/cost,
 pool-state/quote scheduling, order orchestration and reservations, current-size

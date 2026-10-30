@@ -1,0 +1,41 @@
+{
+  "baseCommit": "2ce3cf6a2c846bab6987cf0cd3f462fc88ab8be9",
+  "branch": "poe-native-paper-interop-20261028",
+  "node": "v24.19.0",
+  "startedAt": "2026-10-28T14:22:33.910309+00:00",
+  "commands": [
+    [
+      "node",
+      "--import",
+      "tsx",
+      "--test",
+      "test/native-paper-interop.test.ts",
+      "test/pilot-trader.test.ts",
+      "test/pilot-market.test.ts",
+      "test/native-flow-audit.test.ts",
+      "test/program-log-mapping.test.ts",
+      "test/program-log-identity.test.ts",
+      "test/paper-mode-readiness.test.ts"
+    ],
+    [
+      "npm",
+      "test"
+    ],
+    [
+      "npm",
+      "run",
+      "build"
+    ],
+    [
+      "npm",
+      "run",
+      "compile"
+    ]
+  ],
+  "fileHashes": {
+    "src/trader.ts": "ba1e7c024db9a27f44dffba07a27a9571209657dbaaede7db4b0acd026b1519c",
+    "test/native-paper-interop.test.ts": "1ae1a0adba35f82a006ad8822939963eb05e5d51f4d54bb5fd863142c0830f81",
+    "test/pilot-trader.test.ts": "791f7649eb92d5c0fb66110a0818919a59a0a989c3774067e27a03f4d90e39dc"
+  },
+  "scope": "Controlled disposable offline tests, build and compile for narrow same-bucket audit-readiness repair. No live market, actual pilot account, providers, production or financial authorization."
+}

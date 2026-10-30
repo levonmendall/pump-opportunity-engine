@@ -1,0 +1,17 @@
+{
+  "frozenAt": "2026-10-29T23:51:23.680496+00:00",
+  "files": {
+    "summary.json": {
+      "bytes": 2880,
+      "sha256": "e3d3a3ca95be523c89897f5787bb85472d93f07f192d260f86a423e87d2b0889"
+    },
+    "latest-old-source.json": {
+      "bytes": 25308,
+      "sha256": "d8cc17085304ae930d232cf00b195d7fa982f5542c5d5104ccdb837663e15d01"
+    },
+    "accepted-source-observations.ndjson": {
+      "bytes": 282733,
+      "sha256": "94c297536835deff2fdc785e886d602ee0c8ee6b7019ae65599042d0440131c9"
+    }
+  }
+}

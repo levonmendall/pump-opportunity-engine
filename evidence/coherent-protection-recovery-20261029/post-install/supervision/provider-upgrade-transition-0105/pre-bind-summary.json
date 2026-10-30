@@ -1,0 +1,10 @@
+{
+  "frozenAt": "2026-10-30T01:05:59.244580+00:00",
+  "rows": 19,
+  "sha256": "cc6778687118cc45a0205884631153845ae4f02543b8b4d1aeaa8df97e5bc726",
+  "firstStoppedSourceAt": "2026-10-30T01:04:44.159Z",
+  "firstStoppedSourceSequence": "11027",
+  "lastSourceAt": null,
+  "lastSource": null,
+  "meaning": "Controlled upgrade reporting transition: oldRender93expectedsource remains until host567installation verified and same receiver rebound. Last oldsource saysstopped; this historical snapshotdoesnotprove newruntime stopped. Actualnewhoststatus pendingparentreadonlyinspection. Publiccoverage/protectionafter oldstop isUNKNOWN until newsource accepted. No financial control/restart/providerRPC by Cloud observer. Collector195904 remainsdetachedactive."
+}

@@ -1,0 +1,32 @@
+{
+  "classification": "OFFLINE_EXACT_RETAINED_OBSERVATION_REPLAY_NOT_NEW_FORWARD_EVIDENCE",
+  "source": {
+    "path": "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/events.ndjson",
+    "bytes": 5345367,
+    "sha256": "9c6b70ae0d6785a962a9f67a87db9cfbf2160126e30d4bc14ca85fb26c846189"
+  },
+  "enrichmentTransactions": 54,
+  "originalNormalizedEvents": 51,
+  "matchedFingerprints": 51,
+  "ordinaryMappedTransactions": 51,
+  "refusals": [
+    {
+      "signature": "EnfeNDxBPVBx5PhyMgNdK71t5NU5m7krQpuG7wHxDLY1crrkeR8KCmfaDWqG1yQF2rHrCenvyZagznvZ77BCJA9",
+      "error": "UNSUPPORTED_BOOST_BUY_AND_BURN_FLOW",
+      "actualSuccessfulTransaction": true
+    },
+    {
+      "signature": "3zsTrJwj48m6qaLupCjS2jsPMeQRF3HyzhVYhrrM8uF3xUf3EmpXbXXinGbQWYbHKt5L66oF2rVLYqsMPyakaayx",
+      "error": "UNSUPPORTED_BOOST_BUY_AND_BURN_FLOW",
+      "actualSuccessfulTransaction": true
+    },
+    {
+      "signature": "5R31su8FXv46CpuYhrG7JDTZRL1Rh4Vgjf3NVPNF2KNKrquRT1FLRFnpkMiCVvSvDQP1S3tKqS2AmaQ3P96bCJ3t",
+      "error": "UNSUPPORTED_BOOST_BUY_AND_BURN_FLOW",
+      "actualSuccessfulTransaction": true
+    }
+  ],
+  "sourceBytesUnchanged": true,
+  "networkRequests": 0,
+  "financialWrites": 0
+}

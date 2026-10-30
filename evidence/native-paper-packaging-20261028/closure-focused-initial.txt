@@ -1,0 +1,10 @@
+✔ unbundled helper cannot grant compiled PAPER provenance (1.059662ms)
+✔ compiled PAPER provenance pins executable worker addon source and exact input without initializing account (75.984814ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 310.193613

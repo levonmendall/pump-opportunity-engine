@@ -1,0 +1,192 @@
+{
+  "kind": "ORIGINAL_RENDER_PUBLIC_SOURCE_FROZEN_HANDOFF",
+  "frozenAt": "2026-10-29T23:43:52.104000+00:00",
+  "firstReceivedAt": "2026-10-29T23:36:23.992000+00:00",
+  "lastReceivedAt": "2026-10-29T23:43:45.955000+00:00",
+  "observedDurationMs": 441963,
+  "observations": 30,
+  "successfulObservations": 30,
+  "distinctSourceSequences": 30,
+  "originalAccount": {
+    "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "initialUsd": 1000
+  },
+  "installedSourceObserved": {
+    "release": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+    "strategy": "adaptive-momentum-v2-paper-v1"
+  },
+  "actualRunObserved": {
+    "id": "native-paper-20261029221651345",
+    "startedAt": "2026-10-29T22:16:51.345Z",
+    "mode": "persistent-paper",
+    "configurationSha256": "797f8c1f0a1e23a9771b05356ff51d71f081b520e994f4cf6b2ed1c7c44c6511",
+    "strategyVersion": "adaptive-momentum-v2-paper-v1"
+  },
+  "latestSequence": "10713",
+  "latestSourceTimes": {
+    "generatedAt": "2026-10-29T23:43:36.458Z",
+    "marketAt": null,
+    "reconciledAt": "2026-10-29T23:43:31.357Z",
+    "usefulProgressAt": "2026-10-29T23:43:31.357Z"
+  },
+  "latestStatus": {
+    "runtime": "running",
+    "market": "unavailable",
+    "entries": "paused",
+    "reconciled": false,
+    "blocker": "POE_ENTRY_LIQUIDATION_UNAVAILABLE"
+  },
+  "latestPositions": [
+    {
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "quantity": "65278155",
+      "enteredAt": "2026-10-29T22:23:36.537Z",
+      "entryCostUsd": 49.708013,
+      "netLiquidationUsd": null,
+      "executionCostsUsd": 0.00068,
+      "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+    }
+  ],
+  "latestProtection": {
+    "state": "degraded",
+    "targetCadenceMs": 2000,
+    "completedEvaluationBoundaryMs": 4000,
+    "lastCompletedAt": "2026-10-29T23:43:31.371Z",
+    "maximumCompletedGapMs": 89426,
+    "maximumQuoteAgeAtUseMs": 67,
+    "breaches": 29,
+    "unavailableChecks": 111
+  },
+  "latestProvider": {
+    "rpcRequests": 4533,
+    "rpcResponseBytes": 525965517,
+    "nativeStreamBytes": 1262118835,
+    "broadWatchBytes": 66477342327,
+    "discoveryConnected": true,
+    "watchConnected": true,
+    "httpTimeouts": 583,
+    "httpErrors": 0,
+    "throttles": 0,
+    "rollingStartsPerMinute": 61,
+    "maximumStartsPerMinute": 90,
+    "minimumSpacingMs": 250,
+    "primaryCooldownUntil": "2026-10-29T23:43:41.296Z",
+    "historyCooldownUntil": "2026-10-29T23:19:08.641Z",
+    "controlCooldownUntil": null
+  },
+  "latestResources": {
+    "sampleAt": "2026-10-29T23:43:36.348Z",
+    "cpuOneCoreFraction": 0.17324006683995544,
+    "rssBytes": 424919040,
+    "availableMemoryBytes": 6769201152,
+    "availableDiskBytes": 287582744576,
+    "eventLoopLagMs": 37.584895,
+    "state": "normal"
+  },
+  "latestAdmission": {
+    "financialProjectionReady": true,
+    "supervisedNewRiskAllowed": true,
+    "candidateResourceAdmissionAllowed": true,
+    "evidenceAdmissionAllowed": true,
+    "evidencePressureReasonCode": null,
+    "evidenceDiagnosticBytes": 18105754,
+    "evidenceDiagnosticLimitBytes": 134217728,
+    "evidenceRequiresCriticalRecovery": false,
+    "evidenceRefusedRecords": 0,
+    "sourceRecoveryGeneration": 0,
+    "sourceRecoveryFailures": 0,
+    "sourceRecoveryReasonCode": null,
+    "sourceRecoveryRetryAt": null,
+    "sourceRecoveryClosingSettled": false,
+    "sourceRestartRequired": false,
+    "proofPreparationState": "complete"
+  },
+  "latestFunnel": {
+    "discovered": 220,
+    "supported": 220,
+    "sufficientlyObserved": 4,
+    "evaluated": 4,
+    "qualified": 4,
+    "attempted": 4,
+    "paperFilled": 1,
+    "exited": 0,
+    "reconciled": 2647
+  },
+  "latestCandidates": {
+    "migrationsReceived": 537,
+    "verifiedOrigins": 178,
+    "known": 174,
+    "watch": 87,
+    "eligible": 58,
+    "deepActive": 4,
+    "deepMaximum": 4,
+    "queued": 54,
+    "promoted": 4686,
+    "repromoted": 4245,
+    "demoted": 4673,
+    "completeWindows": 2291,
+    "auditedWindows": 2313,
+    "uniqueEvaluated": 85,
+    "uniqueAudited": null,
+    "predictiveAssessments": 194,
+    "predictivePasses": 83,
+    "predictiveFailures": 111,
+    "predictiveUnavailable": 0,
+    "waitMeanMs": null,
+    "waitMaximumMs": 3429722,
+    "olderSelected": 24
+  },
+  "latestPendingOrders": [],
+  "statusSamples": {
+    "POE_ENTRY_FINANCIAL_PAUSED": 25,
+    "POE_ENTRY_LIQUIDATION_UNAVAILABLE": 4,
+    "POE_ENTRY_PROVIDER_UNAVAILABLE": 1
+  },
+  "captureDisconnectedSamples": 0,
+  "counterDeltas": {
+    "rpcRequests": 410,
+    "rpcResponseBytes": 97059669,
+    "httpTimeouts": 11,
+    "throttles": 0,
+    "completeWindows": 14,
+    "auditedWindows": 14,
+    "protectionBreaches": 8,
+    "protectionUnavailableChecks": 19,
+    "qualityGaps": 3,
+    "auditUnavailable": 0,
+    "auditUnusable": 2,
+    "decisionDeadlineMisses": 0
+  },
+  "resourceObservedMax": {
+    "cpuOneCoreFraction": 0.19528799959713292,
+    "rssBytes": 435621888,
+    "eventLoopLagMs": 38.469631
+  },
+  "resourceObservedMin": {
+    "availableMemoryBytes": 6740070400,
+    "availableDiskBytes": 287582744576
+  },
+  "observationGap": {
+    "previousObservationReceivedAt": 1793316715805,
+    "monitorRecoveryRequestedAt": 1793316983675,
+    "unobservedCloudSupervisionMsAtLeast": 267870,
+    "lastOriginalObservationSha256": "2f1963cac1ad36f3745079ed9d3046b1fb6afbb2bd3fb99d9c450f0620e87faa",
+    "runtimeStopped": false,
+    "runtimeAvailabilityDuringGap": "UNKNOWN: no Cloud supervision; no claim made about independent EC2 availability",
+    "scope": "Existing original Render read-only snapshot channel only"
+  },
+  "monitorRemainsRunning": true,
+  "financialWritesByObserver": 0,
+  "marketRpcRequestsByObserver": 0,
+  "runtimeControlActionsByObserver": 0,
+  "limitations": [
+    "Sampled original Render sources are not every protection evaluation or a complete native-event trace.",
+    "Current source remains ba33; repaired93 bundle is staged only, not observed installed.",
+    "No claim that strict60s protection recovery succeeded.",
+    "USD holding liquidation is unrealized.",
+    "Cloud supervision gap is not attributed to EC2 downtime.",
+    "Public resources are source-projected sampled measurements, not a new independent host resource read."
+  ]
+}

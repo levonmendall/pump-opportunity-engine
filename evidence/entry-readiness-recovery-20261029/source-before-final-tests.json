@@ -1,0 +1,13 @@
+{
+  "base": "e82ee83663036dc3f89cad10a7a3b82206f6138e",
+  "files": {
+    "src/execution.ts": "d046bf855754eac85153a3cb64ef68ed23fec8099dde0176ed913a58c8175f6b",
+    "src/native-paper.ts": "546ab5112fcba3a9e282645a1b94106e04e0a7a24bea2a9498ace60bffb57d1c",
+    "src/trader.ts": "a052a57e331e284b6ca6b9c017052343a84a429182992f57f932a80888545281",
+    "src/run-native-paper.ts": "a2b7641bfd8ed74366e75bb14bb5b6dc0bd378388da8f8f90bfef4444bff2738",
+    "test/native-paper-readiness.test.ts": "e747c3e212f74fa755c2373f4a58f4a10b702e75c5546c5599bd62b25a603160",
+    "test/native-paper-integration.test.ts": "b7207b23f06c6bdc009dce8a1af1e8e8bb19939a3e635cd2743d84c5e580a44b",
+    "test/native-paper-launcher.test.ts": "7b1759bc19953198f2036d8c868e3aabfaf8360acbebce82ba547cee70a18a0e"
+  },
+  "meaning": "Frozen final offline source identity after reviewed safety/metrics/classification corrections; no deployment."
+}

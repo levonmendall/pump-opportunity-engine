@@ -1,0 +1,22 @@
+{
+  "completedAt": "2026-10-28T17:07:41.421409+00:00",
+  "exitStatus": {
+    "focused": 0,
+    "build": 0,
+    "full": 1
+  },
+  "logs": {
+    "focused-final.log": {
+      "bytes": 9870,
+      "sha256": "79fb50f4b0c1ea7e6b1a0141b622f910f435f46e81e86a8c2041bf9d1b93a652"
+    },
+    "build-final.log": {
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    "full-final.log": {
+      "bytes": 155858,
+      "sha256": "b965876dd9f3e70deab0864a13b4903b7f4a29d71ffd5c4a4af771f158261db9"
+    }
+  }
+}

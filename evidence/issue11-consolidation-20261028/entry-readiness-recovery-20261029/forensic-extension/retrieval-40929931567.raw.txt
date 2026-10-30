@@ -1,0 +1,137 @@
+reporting-forensics	Set up job	﻿2026-10-29T18:20:55.5979693Z Current runner version: '2.338.0'
+reporting-forensics	Set up job	2026-10-29T18:20:55.5986203Z Runner name: 'meme-machine-ec2-admin'
+reporting-forensics	Set up job	2026-10-29T18:20:55.5986969Z Runner group name: 'Default'
+reporting-forensics	Set up job	2026-10-29T18:20:55.5987910Z Machine name: 'ip-172-31-15-198'
+reporting-forensics	Set up job	2026-10-29T18:20:55.5990369Z ##[group]GITHUB_TOKEN Permissions
+reporting-forensics	Set up job	2026-10-29T18:20:55.5992603Z Contents: read
+reporting-forensics	Set up job	2026-10-29T18:20:55.5993447Z Metadata: read
+reporting-forensics	Set up job	2026-10-29T18:20:55.5993949Z ##[endgroup]
+reporting-forensics	Set up job	2026-10-29T18:20:55.5996266Z Secret source: Actions
+reporting-forensics	Set up job	2026-10-29T18:20:55.5997134Z Cache mode: write
+reporting-forensics	Set up job	2026-10-29T18:20:55.5997782Z Prepare workflow directory
+reporting-forensics	Set up job	2026-10-29T18:20:55.6342453Z Prepare all required actions
+reporting-forensics	Set up job	2026-10-29T18:20:55.6394786Z Getting action download info
+reporting-forensics	Set up job	2026-10-29T18:20:56.0326341Z Download action repository 'actions/checkout@11d5960a326750d5838078e36cf38b85af677262' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+reporting-forensics	Set up job	2026-10-29T18:20:56.3324039Z Complete job name: reporting-forensics
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	﻿2026-10-29T18:20:56.4274978Z ##[group]Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.4276457Z with:
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.4277106Z   ref: 7b44e9206651911f205e4fe6bbdb608a4cb4e52c
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.4277747Z   persist-credentials: false
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.4278310Z   sparse-checkout-cone-mode: false
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.4279425Z   sparse-checkout: operator/native-paper-ec2/stage-reporting-forensics.py
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	operator/native-paper-ec2/reporting-forensics-package/
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.4280594Z   repository: levonmendall/meme-machine-admin
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.4284637Z   token: ***
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.4285124Z   ssh-strict: true
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.4285607Z   ssh-user: git
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.4286296Z   clean: true
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.4286777Z   fetch-depth: 1
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.4287295Z   fetch-tags: false
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.4287802Z   show-progress: true
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.4288323Z   lfs: false
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.4288832Z   submodules: false
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.4289346Z   set-safe-directory: true
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.4290033Z   allow-unsafe-pr-checkout: false
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.4290939Z ##[endgroup]
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.5400620Z Syncing repository: levonmendall/meme-machine-admin
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.5402686Z ##[group]Getting Git version info
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.5403984Z Working directory is '/opt/mm-ec2-admin-runner/_work/meme-machine-admin/meme-machine-admin'
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.5405383Z [command]/usr/bin/git version
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.5406310Z git version 2.43.0
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.5408848Z ##[endgroup]
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.5413869Z Temporarily overriding HOME='/opt/mm-ec2-admin-runner/_work/_temp/20b24587-bd00-4e78-9eff-7c5e2ce8937c' before making global git config changes
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.5415251Z Adding repository directory to the temporary git global config as a safe directory
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.5416874Z [command]/usr/bin/git config --global --add safe.directory /opt/mm-ec2-admin-runner/_work/meme-machine-admin/meme-machine-admin
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.5444788Z [command]/usr/bin/git config --local --get remote.origin.url
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.5467141Z https://github.com/levonmendall/meme-machine-admin
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.5479092Z ##[group]Removing previously created refs, to avoid conflicts
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.5482363Z [command]/usr/bin/git rev-parse --symbolic-full-name --verify --quiet HEAD
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.5501326Z HEAD
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.5538141Z ##[endgroup]
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.5539124Z [command]/usr/bin/git submodule status
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.5754077Z ##[group]Cleaning the repository
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.5758022Z [command]/usr/bin/git clean -ffdx
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.5796313Z [command]/usr/bin/git reset --hard HEAD
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.6041871Z HEAD is now at 7b44e92 Measure original POE service cgroup I/O without private access
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.6051539Z ##[endgroup]
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.6053247Z ##[group]Disabling automatic garbage collection
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.6057213Z [command]/usr/bin/git config --local gc.auto 0
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.6087418Z ##[endgroup]
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.6088450Z ##[group]Setting up auth
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.6093198Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.6126738Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.6334109Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.6359958Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.6551893Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.6595519Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.6819582Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.6865637Z ##[endgroup]
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.6867233Z ##[group]Fetching the repository
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:56.6877275Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --filter=blob:none --depth=1 origin 7b44e9206651911f205e4fe6bbdb608a4cb4e52c
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.0863996Z From https://github.com/levonmendall/meme-machine-admin
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.0865689Z  * branch            7b44e9206651911f205e4fe6bbdb608a4cb4e52c -> FETCH_HEAD
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.0888621Z ##[endgroup]
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.0889731Z ##[group]Determining the checkout info
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.0890821Z ##[endgroup]
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.0891648Z ##[group]Setting up sparse checkout
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.0894129Z [command]/usr/bin/git config core.sparseCheckout true
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.0922285Z [command]/usr/bin/git rev-parse --git-path info/sparse-checkout
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.0940563Z .git/info/sparse-checkout
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.0946991Z ##[endgroup]
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.0948661Z ##[group]Checking out the ref
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.0951610Z [command]/usr/bin/git checkout --progress --force 7b44e9206651911f205e4fe6bbdb608a4cb4e52c
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.1158508Z HEAD is now at 7b44e92 Measure original POE service cgroup I/O without private access
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.1214311Z ##[endgroup]
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.1216881Z [command]/usr/bin/git log -1 --format=%H
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.1245060Z 7b44e9206651911f205e4fe6bbdb608a4cb4e52c
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.1253636Z ##[group]Removing auth
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.1256515Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.1280041Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.1458439Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.1479190Z http.https://github.com/.extraheader
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.1487157Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.1515019Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.1694204Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.1722231Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+reporting-forensics	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.1908976Z ##[endgroup]
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	﻿2026-10-29T18:20:57.2142051Z ##[group]Run set -euo pipefail
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	2026-10-29T18:20:57.2142977Z [36;1mset -euo pipefail[0m
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	2026-10-29T18:20:57.2143643Z [36;1mtest "$ACTUAL_RUNNER" = meme-machine-ec2-admin[0m
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	2026-10-29T18:20:57.2144293Z [36;1mtest "$(id -u)" = 994[0m
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	2026-10-29T18:20:57.2144910Z [36;1m/usr/bin/python3 -B -I - <<'PYHASH'[0m
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	2026-10-29T18:20:57.2145689Z [36;1mimport hashlib,os,stat[0m
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	2026-10-29T18:20:57.2146847Z [36;1mf=os.open('operator/native-paper-ec2/stage-reporting-forensics.py',os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)[0m
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	2026-10-29T18:20:57.2147878Z [36;1mtry:[0m
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	2026-10-29T18:20:57.2148332Z [36;1m  s=os.fstat(f)[0m
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	2026-10-29T18:20:57.2149227Z [36;1m  assert stat.S_ISREG(s.st_mode) and s.st_uid==994 and s.st_nlink==1 and not s.st_mode&0o022 and 0<s.st_size<=32768[0m
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	2026-10-29T18:20:57.2150182Z [36;1m  b=os.read(f,s.st_size+1)[0m
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	2026-10-29T18:20:57.2151191Z [36;1m  assert len(b)==s.st_size and hashlib.sha256(b).hexdigest()=='57ab69e52127d7367a020554000c12e204d6208a8566e8a00ee02babaf763905'[0m
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	2026-10-29T18:20:57.2152336Z [36;1mfinally:os.close(f)[0m
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	2026-10-29T18:20:57.2152855Z [36;1mPYHASH[0m
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	2026-10-29T18:20:57.2153631Z [36;1m/usr/bin/env -i PATH=/usr/bin:/bin LANG=C ACTUAL_RUNNER="$ACTUAL_RUNNER" \[0m
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	2026-10-29T18:20:57.2154498Z [36;1m  /usr/bin/timeout --signal=TERM --kill-after=3s 30s \[0m
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	2026-10-29T18:20:57.2155318Z [36;1m  /usr/bin/nice -n 19 /usr/bin/prlimit \[0m
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	2026-10-29T18:20:57.2156455Z [36;1m  --cpu=5:5 --as=134217728:134217728 --nofile=64:64 --fsize=4194304:4194304 --core=0:0 -- \[0m
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	2026-10-29T18:20:57.2157621Z [36;1m  /usr/bin/python3 -B -I operator/native-paper-ec2/stage-reporting-forensics.py "$FORENSIC_ACTION"[0m
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	2026-10-29T18:20:57.2175326Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	2026-10-29T18:20:57.2176404Z env:
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	2026-10-29T18:20:57.2176905Z   ACTUAL_RUNNER: meme-machine-ec2-admin
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	2026-10-29T18:20:57.2177530Z   FORENSIC_ACTION: retrieve
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	2026-10-29T18:20:57.2178065Z ##[endgroup]
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	2026-10-29T18:20:57.2861074Z {"kind": "POE_FORENSICS_ADMIN_REFUSED", "reason": "FIXED_STAGE_OR_PUBLIC_ARTIFACT_UNAVAILABLE", "privateLedgerReads": 0, "serviceChanges": 0}
+reporting-forensics	Nonroot fixed stage or sanitized public retrieval only	2026-10-29T18:20:57.2934262Z ##[error]Process completed with exit code 1.
+reporting-forensics	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	﻿2026-10-29T18:20:57.3147775Z Post job cleanup.
+reporting-forensics	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.4061074Z [command]/usr/bin/git version
+reporting-forensics	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.4096455Z git version 2.43.0
+reporting-forensics	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.4137140Z Temporarily overriding HOME='/opt/mm-ec2-admin-runner/_work/_temp/e14e03d1-c308-42ec-8da1-5ba51e968e55' before making global git config changes
+reporting-forensics	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.4141590Z Adding repository directory to the temporary git global config as a safe directory
+reporting-forensics	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.4144211Z [command]/usr/bin/git config --global --add safe.directory /opt/mm-ec2-admin-runner/_work/meme-machine-admin/meme-machine-admin
+reporting-forensics	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.4176891Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+reporting-forensics	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.4207621Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+reporting-forensics	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.4399938Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+reporting-forensics	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.4434904Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+reporting-forensics	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.4610200Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+reporting-forensics	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T18:20:57.4635368Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+reporting-forensics	Complete job	﻿2026-10-29T18:20:57.4947411Z Cleaning up orphan processes
+reporting-forensics	Complete job	2026-10-29T18:20:57.5281211Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11d5960a326750d5838078e36cf38b85af677262. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

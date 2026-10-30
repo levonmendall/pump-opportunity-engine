@@ -1,0 +1,219 @@
+{
+  "frozenAt": "2026-10-30T00:51:42.536009+00:00",
+  "meaning": "Read-only public actual-source snapshots. One-hour boundary survival is not sustained operational acceptance. No financial control or provider RPC. Missing periods are unknown.",
+  "collector": {
+    "pid": 195904,
+    "ppid": 1,
+    "sid": 195904
+  },
+  "sourceFilesRead": [
+    {
+      "path": "detached-after-0006/rolling-supervision/material-transitions.ndjson",
+      "bytes": 3138410,
+      "sha256": "bd955e11c968a5475704052fddd296c93ef9ee39d11b2eb7184516ab576ff4f9",
+      "partialOrMalformedLinesSkipped": 0
+    },
+    {
+      "path": "detached-after-0006/rolling-supervision/routine-0.ndjson",
+      "bytes": 1046163,
+      "sha256": "9f8d01abfe7a40632e1ff8df9f0c66c3d277219a3ffbb8b0253c84a82e01d55d",
+      "partialOrMalformedLinesSkipped": 0
+    },
+    {
+      "path": "detached-after-0006/rolling-supervision/routine-1.ndjson",
+      "bytes": 1040987,
+      "sha256": "3f7999e7a3b123a66262170c8b29e4b082afe88e192a12900eba2186729c466a",
+      "partialOrMalformedLinesSkipped": 0
+    },
+    {
+      "path": "detached-after-0006/rolling-supervision/routine-2.ndjson",
+      "bytes": 1046448,
+      "sha256": "2ece40a4a1e412214c786c5afead2c781dab130c722ea5563de94a35b28c0607",
+      "partialOrMalformedLinesSkipped": 0
+    },
+    {
+      "path": "detached-after-0006/rolling-supervision/routine-3.ndjson",
+      "bytes": 302921,
+      "sha256": "abc1ab67060fd73fcd588603deabf32b13fc02af823ae07efa0081ff0824d2db",
+      "partialOrMalformedLinesSkipped": 0
+    }
+  ],
+  "observations": {
+    "rows": 34,
+    "valid": 34,
+    "unavailable": 0,
+    "sha256": "0808c236f497d22e42f004750ddf63d542a417f52891bbda0e5af217fb98cf53",
+    "firstRequested": 1793320992267,
+    "lastRequested": 1793321495162,
+    "maximumRequestGapMs": 15471
+  },
+  "originalAccount": {
+    "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "initialUsd": 1000
+  },
+  "run": {
+    "id": "native-paper-20261029234856700",
+    "startedAt": "2026-10-29T23:48:56.700Z",
+    "mode": "persistent-paper",
+    "configurationSha256": "44b82455003f04f75eb1ad7a3dc21555406c1d4d0c7626386d3d21661fdb47c9",
+    "strategyVersion": "adaptive-momentum-v2-paper-v1"
+  },
+  "source": {
+    "release": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
+    "strategy": "adaptive-momentum-v2-paper-v1"
+  },
+  "status": {
+    "runtime": "running",
+    "market": "observing",
+    "entries": "enabled",
+    "reconciled": true,
+    "blocker": null
+  },
+  "transitions": [
+    {
+      "sourceAt": "2026-10-30T00:42:59.369Z",
+      "sequence": "10942",
+      "entries": "enabled",
+      "blocker": null,
+      "breaches": 64,
+      "unavailable": 215,
+      "httpTimeouts": 626,
+      "heldRefusals": [
+        "Recorded holding-pricing refusals in this run: HELD_PRICING_ABORTED:18, HELD_PRICING_PROVIDER_TIMEOUT:11, HELD_PRICING_PROVIDER_COOLDOWN:58."
+      ],
+      "capture": true
+    },
+    {
+      "sourceAt": "2026-10-30T00:45:42.184Z",
+      "sequence": "10952",
+      "entries": "paused",
+      "blocker": "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED",
+      "breaches": 65,
+      "unavailable": 218,
+      "httpTimeouts": 626,
+      "heldRefusals": [
+        "Recorded holding-pricing refusals in this run: HELD_PRICING_ABORTED:21, HELD_PRICING_PROVIDER_TIMEOUT:11, HELD_PRICING_PROVIDER_COOLDOWN:58."
+      ],
+      "capture": true
+    },
+    {
+      "sourceAt": "2026-10-30T00:46:44.552Z",
+      "sequence": "10956",
+      "entries": "enabled",
+      "blocker": null,
+      "breaches": 65,
+      "unavailable": 218,
+      "httpTimeouts": 626,
+      "heldRefusals": [
+        "Recorded holding-pricing refusals in this run: HELD_PRICING_ABORTED:21, HELD_PRICING_PROVIDER_TIMEOUT:11, HELD_PRICING_PROVIDER_COOLDOWN:58."
+      ],
+      "capture": true
+    }
+  ],
+  "startFunnel": {
+    "discovered": 107,
+    "supported": 107,
+    "sufficientlyObserved": 3,
+    "evaluated": 3,
+    "qualified": 0,
+    "attempted": 0,
+    "paperFilled": 0,
+    "exited": 0,
+    "reconciled": 1534
+  },
+  "endFunnel": {
+    "discovered": 123,
+    "supported": 123,
+    "sufficientlyObserved": 5,
+    "evaluated": 5,
+    "qualified": 0,
+    "attempted": 0,
+    "paperFilled": 0,
+    "exited": 0,
+    "reconciled": 1800
+  },
+  "positions": [
+    {
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "quantity": "65278155",
+      "enteredAt": "2026-10-29T22:23:36.537Z",
+      "entryCostUsd": 49.708013,
+      "netLiquidationUsd": 57.407015,
+      "executionCostsUsd": 0.00068,
+      "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+    }
+  ],
+  "pendingOrders": [],
+  "balances": {
+    "cashSol": "9.391335448",
+    "reservedSol": "0",
+    "equitySol": "10.021800059",
+    "equityUsd": 944.003457,
+    "realizedUsd": -3.596943,
+    "unrealizedUsd": 9.262999,
+    "tradingPnlUsd": 5.666055,
+    "economicPnlUsd": null,
+    "positionCostUsd": 49.708013,
+    "markedExposureUsd": 57.407015,
+    "drawdownUsd": null,
+    "executionCostsUsd": null,
+    "operatingCostsUsd": null,
+    "passiveSolEquityUsd": 938.337401,
+    "solPriceUsd": 94.195
+  },
+  "oneHourBoundary": "2026-10-30T00:48:56.700Z",
+  "boundaryAfterSnapshots": 10,
+  "admissionAllHealthy": true,
+  "allCaptureDiscoveryWatchConnected": true,
+  "resources": {
+    "cpuOneCoreFraction": {
+      "min": 0.13608027334239997,
+      "max": 0.17603237567941663
+    },
+    "rssBytes": {
+      "min": 387067904,
+      "max": 404848640
+    },
+    "availableMemoryBytes": {
+      "min": 6764883968,
+      "max": 6836813824
+    },
+    "availableDiskBytes": {
+      "min": 286998343680,
+      "max": 287027568640
+    },
+    "eventLoopLagMs": {
+      "min": 27.164671,
+      "max": 27.246591
+    }
+  },
+  "counterDeltas": {
+    "candidates": {
+      "migrationsReceived": 3,
+      "known": 0,
+      "promoted": 16,
+      "completeWindows": 22,
+      "auditedWindows": 22,
+      "uniqueEvaluated": 7,
+      "predictiveAssessments": 22
+    },
+    "quality": {
+      "qualityGaps": 4,
+      "auditUnavailable": 0,
+      "auditUnusable": 3,
+      "decisionDeadlineMisses": 8
+    },
+    "provider": {
+      "rpcRequests": 497,
+      "rpcResponseBytes": 49680872,
+      "nativeStreamBytes": 4466772,
+      "httpTimeouts": 0
+    },
+    "protection": {
+      "breaches": 1,
+      "unavailableChecks": 3
+    }
+  }
+}

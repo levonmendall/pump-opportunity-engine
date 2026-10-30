@@ -1,0 +1,459 @@
+{
+  "purpose": "Activity-biased transport-source preparation, not market/opportunity performance or current-support proof",
+  "runId": "pilot-native-prepare-20261028011313592",
+  "sourceCommit": "b2907175c20b0b3be8007d1ac8f6b3d11753dd1f",
+  "startedAt": 1793149993592,
+  "finishedAt": 1793149995319,
+  "elapsedMs": 1727,
+  "limits": {
+    "maximumSeeds": 3,
+    "units": 9,
+    "totalMs": 30000,
+    "actualResponses": 4194304,
+    "conservativeAccounting": 8388608,
+    "retained": 524288,
+    "perSeedHistory": 20,
+    "perSeedTransaction": 2,
+    "automaticRetries": 0
+  },
+  "outcomes": [
+    {
+      "mint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
+      "pool": "46ZfGg4F6r93ZNGBrQywzA9dQfgbyJu2ye7vb58UhXnR",
+      "origin": {
+        "classification": "SOL_IDENTITY_REQUIRES_CURRENT_SUPPORT",
+        "reason": null,
+        "signature": "hxBAS8Khz3HtbgdZYuViWq5L819918YmTg21o9iedXkfW5VxYftzvf8cuo1x8Vn2Y314F9eH2J3UbeKzvdUvcuT",
+        "slot": 462273152,
+        "chainBlockTime": 1793147241,
+        "commitment": "finalized",
+        "availableAt": 1793147277525,
+        "confirmationProvenance": "caller-declared-RPC-request-commitment",
+        "pool": "46ZfGg4F6r93ZNGBrQywzA9dQfgbyJu2ye7vb58UhXnR",
+        "baseMint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "creator": "CHoKWeqMYEcfq8AzcuRBsY2CQXQsC7WxnYoz54x8Dip5",
+        "lpMint": "FSKkpR4xzZy1xagWkEtaikg9RUrK89ctGnmcBdAv1JYN",
+        "baseVault": "4MYrELDf9jCjMz4nFWkuEFoMRvA78dUKqcAvSkPrRgyc",
+        "quoteVault": "3Nd2Wp8kcbiUzHBfJLabYKK4C1CtHkHMPfF4qDThHidp",
+        "baseTokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+        "quoteTokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+        "feedHintRole": "base",
+        "migration": {
+          "outerInstructionIndex": 3,
+          "innerInstructionIndex": null,
+          "stackHeight": 1,
+          "name": "migrate_v2"
+        },
+        "creation": {
+          "outerInstructionIndex": 3,
+          "innerInstructionIndex": 22,
+          "stackHeight": 2
+        },
+        "event": {
+          "outerInstructionIndex": 3,
+          "innerInstructionIndex": 34,
+          "stackHeight": 3,
+          "name": "CreatePoolEvent",
+          "exactPackagedLayout": true
+        },
+        "proof": {
+          "canonicalActualQuotePda": true,
+          "index": 0,
+          "pumpCreatorAuthority": true,
+          "canonicalLpMint": true,
+          "eventRoleAgreement": true,
+          "eventAuthority": true,
+          "sdk": "@pump-fun/pump-swap-sdk@2.2.0"
+        },
+        "currentPoolStateVerified": false,
+        "currentMintVaultFeeAndExtensionSupportVerified": false,
+        "entryEligibilityVerified": false
+      },
+      "evidence": "pilot-finalized-migration:1f0dab84d9e4d8c2b719f60bcf8129b40c3c85d0ebe3c8b64d1a57a637f3933a",
+      "checks": [
+        {
+          "signature": "5q1H3DkPh3LfxUSEtVxRWUeg6UF6yYL6hgpnxamW3txksXzwKHKEuNwxqTCo8xkdiiwmfffjrrpVqpNnqNQoHCx3",
+          "slot": 462286053,
+          "blockTime": 1793149993,
+          "events": 1,
+          "sides": [
+            "buy"
+          ]
+        },
+        {
+          "signature": "2w5yA7qspRMm7Ah486pYXn37ZoJG3zM4MLqfFX9Kx5F4yvDcFqVpbpBnts97hTxcaJ9Uwmi8CrpH42eU5PMmioQk",
+          "slot": 462286040,
+          "blockTime": 1793149990,
+          "events": 1,
+          "sides": [
+            "buy"
+          ]
+        }
+      ],
+      "selected": true,
+      "historyCount": 20,
+      "newestBlockTime": 1793149993,
+      "reason": "recent-executed-swap-verified"
+    },
+    {
+      "mint": "7B5F2CmoQaRee6mdy4sSWt1XSz4aUrKQx4cAmVMpump",
+      "pool": "Es7yDdPnroiHX7fac7T9W5TLhEVBgyPUjdtbkZd1a9Nb",
+      "origin": {
+        "classification": "SOL_IDENTITY_REQUIRES_CURRENT_SUPPORT",
+        "reason": null,
+        "signature": "SzChCRR4GTei9gYpAygxnXAXUM4BRGAFRC9YfCUcLpkiZFiSwprYRmHmyCqDe7D3EoDUG8BoABEVYeNGTZU2cQG",
+        "slot": 462273027,
+        "chainBlockTime": 1793147214,
+        "commitment": "finalized",
+        "availableAt": 1793147250434,
+        "confirmationProvenance": "caller-declared-RPC-request-commitment",
+        "pool": "Es7yDdPnroiHX7fac7T9W5TLhEVBgyPUjdtbkZd1a9Nb",
+        "baseMint": "7B5F2CmoQaRee6mdy4sSWt1XSz4aUrKQx4cAmVMpump",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "creator": "DcSfQmUsFUz6sPFFEWguEhNZJ1ok5AS7eACmoocLXNT1",
+        "lpMint": "GenjBUEzo9qyYEHBr6PCPNQMqDcBFexKDooFGPUdAzjH",
+        "baseVault": "FxoWkZeZvQMJcgJQJMjnjNjbeK5S7ybKCmapPMVzL41P",
+        "quoteVault": "BHpqB5CWuWH9CiBGMAommJdThAHnLJQ5yg4XGFJicsfz",
+        "baseTokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+        "quoteTokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+        "feedHintRole": "base",
+        "migration": {
+          "outerInstructionIndex": 2,
+          "innerInstructionIndex": null,
+          "stackHeight": 1,
+          "name": "migrate_v2"
+        },
+        "creation": {
+          "outerInstructionIndex": 2,
+          "innerInstructionIndex": 22,
+          "stackHeight": 2
+        },
+        "event": {
+          "outerInstructionIndex": 2,
+          "innerInstructionIndex": 34,
+          "stackHeight": 3,
+          "name": "CreatePoolEvent",
+          "exactPackagedLayout": true
+        },
+        "proof": {
+          "canonicalActualQuotePda": true,
+          "index": 0,
+          "pumpCreatorAuthority": true,
+          "canonicalLpMint": true,
+          "eventRoleAgreement": true,
+          "eventAuthority": true,
+          "sdk": "@pump-fun/pump-swap-sdk@2.2.0"
+        },
+        "currentPoolStateVerified": false,
+        "currentMintVaultFeeAndExtensionSupportVerified": false,
+        "entryEligibilityVerified": false
+      },
+      "evidence": "pilot-finalized-migration:30129c888340149100eb0e45f38859dddc279407512306616a931ff08c58668f",
+      "checks": [],
+      "selected": false,
+      "historyCount": 20,
+      "newestBlockTime": 1793149761,
+      "reason": "no-successful-pool-address-transaction-within120s"
+    },
+    {
+      "mint": "9tVNgpiLGvGoZWyGCu4fQDD93XCw8pmdLRmPxTWapump",
+      "pool": "CztHycQsHC2BuYLFDDuveVAJGgJAjN74E2hUSQGFGcYY",
+      "origin": {
+        "classification": "SOL_IDENTITY_REQUIRES_CURRENT_SUPPORT",
+        "reason": null,
+        "signature": "3Cz6ukdP7NpKGnfHHY1yoB3J1kbsU1MDhDEoYqGApXVa1MmmgKLRbmuZaEaTSvLoEVwvMq35jtGvKc5WoLpK5t9f",
+        "slot": 462272615,
+        "chainBlockTime": 1793147127,
+        "commitment": "finalized",
+        "availableAt": 1793147163324,
+        "confirmationProvenance": "caller-declared-RPC-request-commitment",
+        "pool": "CztHycQsHC2BuYLFDDuveVAJGgJAjN74E2hUSQGFGcYY",
+        "baseMint": "9tVNgpiLGvGoZWyGCu4fQDD93XCw8pmdLRmPxTWapump",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "creator": "8XjKVSVEyUTSjYEBAVTjVWuoM5yGLj8g9Sume8aNr7ES",
+        "lpMint": "DBz3xiii152s1LLLkZB9aDNcUHJDcMGAPUJ7CWDUvrYy",
+        "baseVault": "AGSV8igpxRpuE9onbW41CGsJ5LV5aDv4vqE9PMquFAgr",
+        "quoteVault": "6xpRdkhJkHpMxvCfwqoFFeGUqd2jDfZQWtAzYbkphEt1",
+        "baseTokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+        "quoteTokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+        "feedHintRole": "base",
+        "migration": {
+          "outerInstructionIndex": 2,
+          "innerInstructionIndex": null,
+          "stackHeight": 1,
+          "name": "migrate_v2"
+        },
+        "creation": {
+          "outerInstructionIndex": 2,
+          "innerInstructionIndex": 22,
+          "stackHeight": 2
+        },
+        "event": {
+          "outerInstructionIndex": 2,
+          "innerInstructionIndex": 34,
+          "stackHeight": 3,
+          "name": "CreatePoolEvent",
+          "exactPackagedLayout": true
+        },
+        "proof": {
+          "canonicalActualQuotePda": true,
+          "index": 0,
+          "pumpCreatorAuthority": true,
+          "canonicalLpMint": true,
+          "eventRoleAgreement": true,
+          "eventAuthority": true,
+          "sdk": "@pump-fun/pump-swap-sdk@2.2.0"
+        },
+        "currentPoolStateVerified": false,
+        "currentMintVaultFeeAndExtensionSupportVerified": false,
+        "entryEligibilityVerified": false
+      },
+      "evidence": "pilot-finalized-migration:f3a0d3033a963f897a786a9fbc717f778bca7ae3a94f78778d48becb405ce1f7",
+      "checks": [
+        {
+          "signature": "rQmseiwPRTNomddP79Q9EQrLgBpVzkt3rwD6nyaGRe1jDcQ2QyQ2vA38GbDMkf9vHj5rocPqChibjLH9g8MTPVo",
+          "slot": 462285865,
+          "blockTime": 1793149952,
+          "events": 1,
+          "sides": [
+            "sell"
+          ]
+        },
+        {
+          "signature": "3kuKurM6toEyNPHiUwcByrnLMiFW112iLzzF6viDV9yVwzJ8rQ5S7Vqtrzr5LT62qL14wZ9Vqt5Ast1z5PQCvGqr",
+          "slot": 462285859,
+          "blockTime": 1793149950,
+          "events": 1,
+          "sides": [
+            "sell"
+          ]
+        }
+      ],
+      "selected": false,
+      "historyCount": 20,
+      "newestBlockTime": 1793149952,
+      "reason": "recent-executed-swap-verified"
+    }
+  ],
+  "selected": {
+    "mint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
+    "pool": "46ZfGg4F6r93ZNGBrQywzA9dQfgbyJu2ye7vb58UhXnR",
+    "origin": {
+      "classification": "SOL_IDENTITY_REQUIRES_CURRENT_SUPPORT",
+      "reason": null,
+      "signature": "hxBAS8Khz3HtbgdZYuViWq5L819918YmTg21o9iedXkfW5VxYftzvf8cuo1x8Vn2Y314F9eH2J3UbeKzvdUvcuT",
+      "slot": 462273152,
+      "chainBlockTime": 1793147241,
+      "commitment": "finalized",
+      "availableAt": 1793147277525,
+      "confirmationProvenance": "caller-declared-RPC-request-commitment",
+      "pool": "46ZfGg4F6r93ZNGBrQywzA9dQfgbyJu2ye7vb58UhXnR",
+      "baseMint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "creator": "CHoKWeqMYEcfq8AzcuRBsY2CQXQsC7WxnYoz54x8Dip5",
+      "lpMint": "FSKkpR4xzZy1xagWkEtaikg9RUrK89ctGnmcBdAv1JYN",
+      "baseVault": "4MYrELDf9jCjMz4nFWkuEFoMRvA78dUKqcAvSkPrRgyc",
+      "quoteVault": "3Nd2Wp8kcbiUzHBfJLabYKK4C1CtHkHMPfF4qDThHidp",
+      "baseTokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "quoteTokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "feedHintRole": "base",
+      "migration": {
+        "outerInstructionIndex": 3,
+        "innerInstructionIndex": null,
+        "stackHeight": 1,
+        "name": "migrate_v2"
+      },
+      "creation": {
+        "outerInstructionIndex": 3,
+        "innerInstructionIndex": 22,
+        "stackHeight": 2
+      },
+      "event": {
+        "outerInstructionIndex": 3,
+        "innerInstructionIndex": 34,
+        "stackHeight": 3,
+        "name": "CreatePoolEvent",
+        "exactPackagedLayout": true
+      },
+      "proof": {
+        "canonicalActualQuotePda": true,
+        "index": 0,
+        "pumpCreatorAuthority": true,
+        "canonicalLpMint": true,
+        "eventRoleAgreement": true,
+        "eventAuthority": true,
+        "sdk": "@pump-fun/pump-swap-sdk@2.2.0"
+      },
+      "currentPoolStateVerified": false,
+      "currentMintVaultFeeAndExtensionSupportVerified": false,
+      "entryEligibilityVerified": false
+    },
+    "evidence": "pilot-finalized-migration:1f0dab84d9e4d8c2b719f60bcf8129b40c3c85d0ebe3c8b64d1a57a637f3933a",
+    "activitySignature": "5q1H3DkPh3LfxUSEtVxRWUeg6UF6yYL6hgpnxamW3txksXzwKHKEuNwxqTCo8xkdiiwmfffjrrpVqpNnqNQoHCx3",
+    "activityAvailableAt": 1793149994016,
+    "currentSupportVerified": false
+  },
+  "failure": null,
+  "settled": true,
+  "actualBytes": 70750,
+  "usage": {
+    "runId": "pilot-native-prepare-20261028011313592",
+    "startedAt": 1793149993598,
+    "deadlineAt": 1793150018598,
+    "remainingMs": 23279,
+    "chapter": 1,
+    "chapterPaths": [
+      "/workspace/pump-opportunity-engine/evidence/free-data-20261027/active-approved-rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/public-component-20261027/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/01-basic/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/02-multi/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/03-discovery/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/04-active/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/05-sampler/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/06-targeted/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/07-field/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/08-audit/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/09-notifications/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/10-notifications/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/11-combined/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/12-combined-audit/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/13-buy-finality/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/14-retained-buy/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/scheduler-forward-20261027/01-preflight/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/scheduler-forward-20261027/02-combined/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/scheduler-forward-20261027/03-audit/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/01-paced-combined/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/02-failed-buy-audit/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/03-corrected-combined/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/04-current-subject/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/06-targeted-retry-subject/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/08-current-combined/rpc-budget.json",
+      "/workspace/poe-pilot/runs/pilot-20261027175613061-393704a5/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027175710755-f4320bd5/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027180216582-fc8d1a1d/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027180216582-fc8d1a1d/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-005.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-006.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-007.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-008.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-009.json",
+      "/workspace/poe-pilot/runs/pilot-20261027195343952-418513ae/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027200603791-46c145af/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027201954438-c75c4513/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027201954438-c75c4513/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027205459767-1840d6f4/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-005.json",
+      "/workspace/poe-pilot/runs/pilot-20261027211320693-9bb70ba1/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027211320693-9bb70ba1/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-005.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-006.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-007.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-008.json",
+      "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-005.json",
+      "/workspace/poe-pilot/research/pilot-migration-diagnostic-1793138401524/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223455745-ec07c3bc/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223455745-ec07c3bc/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027230222347-7a5dc2cf/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027230222347-7a5dc2cf/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027230222347-7a5dc2cf/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027232426805/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027232707767/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027232852598/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027233451534/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027234046662/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027234449066/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027235124302-99e43f99/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027235124302-99e43f99/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261028001353575-91ed5596/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261028001353575-91ed5596/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261028001353575-91ed5596/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-native-flow-20261028004053347/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-native-audit-20261028004404407/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-native-anchor-20261028004722611/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-native-flow-20261028011013865/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-native-prepare-20261028011313592/rpc/chapter-001.json"
+    ],
+    "activeChapterPath": null,
+    "cumulativeUnits": 3654,
+    "newUnits": 7,
+    "accountedCumulativeResponseBytes": 101207062,
+    "newAccountedResponseBytes": 70750,
+    "maximumNewUnits": 9,
+    "maximumNewResponseBytes": 8388608,
+    "requestLimits": {
+      "maxStartsPer10s": 20,
+      "maxGetTransactionStartsPer10s": 8,
+      "maxStartsPerMinute": 60,
+      "minSpacingMs": 250,
+      "physicalInFlight": 1
+    },
+    "methodPacing": {
+      "getTransactionStartsLast10s": [
+        {
+          "at": 1793149993913,
+          "origin": "getTransaction"
+        },
+        {
+          "at": 1793149994167,
+          "origin": "getTransaction"
+        },
+        {
+          "at": 1793149994929,
+          "origin": "getTransaction"
+        },
+        {
+          "at": 1793149995182,
+          "origin": "getTransaction"
+        }
+      ],
+      "capacityRefusals": 0,
+      "baselineUnknownMethodsCountConservatively": true
+    },
+    "inFlight": 0,
+    "waitingOrOperating": false,
+    "uncertainResponseBytes": 37748736,
+    "currentChapterUncertainResponseBytes": 0,
+    "inheritedUncertaintyIsRetainedInBaseline": true,
+    "cooldownUntil": 1793147036106,
+    "controlCooldownUntil": 0,
+    "lastFailureWasDataControl": false,
+    "closed": true,
+    "fatal": null,
+    "chapterUsage": null,
+    "dispatchWindow": null,
+    "automaticRequestRetries": 0
+  },
+  "financialWriterOpened": false
+}

@@ -1,0 +1,258 @@
+{
+  "classification": "ACTUAL_FORWARD_ORIGINAL_ACCOUNT_NOT_ACCEPTANCE",
+  "runtimeSource": {
+    "release": "a97799e88e4313ed94d0c6b5d250eeeea5f5fdc5",
+    "strategy": "persistent-buying-pilot-v1"
+  },
+  "configuration": {
+    "id": "native-paper-20261029135518603",
+    "startedAt": "2026-10-29T13:55:18.603Z",
+    "mode": "persistent-paper",
+    "configurationSha256": "5e99ebe042521b3917a11b86ef4b46264205b11d38c407cba264a01046a79344",
+    "strategyVersion": "persistent-buying-pilot-v1"
+  },
+  "verificationObserver": {
+    "readOnlyObservationFinished": true,
+    "elapsedMs": 914233.300948,
+    "requests": 60,
+    "receivedBytes": 3725998,
+    "retainedBytes": 425409,
+    "failures": 0,
+    "runtimeStopped": false
+  },
+  "observedSourcePeriod": {
+    "from": "2026-10-29T14:04:24.522Z",
+    "through": "2026-10-29T14:19:38.260Z"
+  },
+  "initialReceiverSourceTime": "2026-10-29T14:00:05.307Z",
+  "samples": 60,
+  "sampleFailures": 0,
+  "maximumSampledDeep": 6,
+  "sampledDisconnectedCapture": 20,
+  "uniqueTokensWithObservedIndependentAssessmentLowerBound": 18,
+  "observedDecisionStagesLowerBound": {
+    "shadow-predictive-failed": 26,
+    "shadow-predictive-not-rejected": 6,
+    "qualified": 1,
+    "missing-data": 2,
+    "strategy-rejection": 4
+  },
+  "decisionRetentionLimit": "Snapshots retain at most50recentdecisions and pollingcanmissinterveningevents. Do not equate overlapping audits with independentminutes or makewholemarketrecallclaim. uniqueEvaluated resets with sourcegeneration; do not sum it.",
+  "observerPeriodCounterDeltas": {
+    "candidates": {
+      "migrationsReceived": 11,
+      "verifiedOrigins": 7,
+      "completeWindows": 16,
+      "auditedWindows": 23,
+      "predictiveAssessments": 23,
+      "predictivePasses": 0,
+      "predictiveFailures": 16,
+      "promoted": 63,
+      "repromoted": 53
+    },
+    "quality": {
+      "qualityGaps": 25,
+      "auditUnavailable": 1,
+      "auditUnusable": 2,
+      "decisionDeadlineMisses": 4
+    },
+    "provider": {
+      "rpcRequests": 328,
+      "rpcResponseBytes": 51833398,
+      "nativeStreamBytes": 14702636,
+      "broadWatchBytes": 717192958,
+      "httpTimeouts": 15,
+      "httpErrors": 0,
+      "throttles": 0
+    }
+  },
+  "sinceFirstNewSourcePublicSnapshotDeltas": {
+    "candidates": {
+      "migrationsReceived": 14,
+      "verifiedOrigins": 8,
+      "completeWindows": 28,
+      "auditedWindows": 37,
+      "predictiveAssessments": 37,
+      "predictivePasses": 2,
+      "predictiveFailures": 26,
+      "promoted": 83,
+      "repromoted": 71
+    },
+    "quality": {
+      "qualityGaps": 27,
+      "auditUnavailable": 1,
+      "auditUnusable": 3,
+      "decisionDeadlineMisses": 4
+    },
+    "provider": {
+      "rpcRequests": 471,
+      "rpcResponseBytes": 62771788,
+      "nativeStreamBytes": 18171193,
+      "broadWatchBytes": 981004738,
+      "httpTimeouts": 18,
+      "httpErrors": 0,
+      "throttles": 0
+    }
+  },
+  "lastFinancialFunnel": {
+    "discovered": 83,
+    "supported": 83,
+    "sufficientlyObserved": 7,
+    "evaluated": 7,
+    "qualified": 1,
+    "attempted": 1,
+    "paperFilled": 0,
+    "exited": 0,
+    "reconciled": 293
+  },
+  "positionsAtLastSample": 0,
+  "newSegmentFillsObserved": [],
+  "retainedPriorTrades": [
+    {
+      "id": "paper-fill:4f60a80e3a2a1138b54933655b1b7c13",
+      "mint": "Fa24xN13pzjmcx1dtKP9nBMMFCwLtXCJrtP5hSPKpump",
+      "side": "sell",
+      "quantity": "400582323928",
+      "at": "2026-10-29T09:18:01.660Z",
+      "valueUsd": 41.245086,
+      "executionCostsUsd": 0.000701,
+      "status": "PAPER filled",
+      "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:41776:1793265480459"
+    },
+    {
+      "id": "paper-fill:f57e6eff547ba02b388fd8a44502d794",
+      "mint": "Fa24xN13pzjmcx1dtKP9nBMMFCwLtXCJrtP5hSPKpump",
+      "side": "buy",
+      "quantity": "400582323928",
+      "at": "2026-10-29T09:15:17.693Z",
+      "valueUsd": 49.698409,
+      "executionCostsUsd": 0.000701,
+      "status": "PAPER filled",
+      "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:41696:1793265315521"
+    }
+  ],
+  "financialMeaning": "Two prior5e55PAPERfills are preserved acrossupgrade; no newa977fill in thissegment. RealizedUSD is currentSOL/USDtranslationofrealizedSOL, nothistoricalfixedUSDprofit. No profitability/continuousprotectionacceptance.",
+  "resources": {
+    "sourceCpuSamePid": 2451073,
+    "measuredWallSeconds": 1889.097,
+    "measuredCpuSeconds": 200.59,
+    "averageOneCoreFraction": 0.10618300701340376,
+    "firstRssBytes": 213565440,
+    "lastRssBytes": 284880896,
+    "maximumSampledRssBytes": 288739328,
+    "maximumSampledEventLoopMs": 25.919487,
+    "maximumSampledRollingStartsPerMinute": 60,
+    "hostAndCgroup": {
+      "sampleAt": 1793284081048,
+      "hostScope": "HOST-AGGREGATE; includes unrelated applications and administration runner, not POE-attributable",
+      "serviceScope": "poe-runtime.service cgroup, including owned children",
+      "hostMemory": {
+        "available": true,
+        "totalBytes": 8153255936,
+        "availableBytes": 6906621952
+      },
+      "rootFilesystem": {
+        "available": true,
+        "capacityBytes": 331712798720,
+        "availableBytes": 289110609920
+      },
+      "serviceCpu": {
+        "available": true,
+        "usage_usec": 230735022,
+        "user_usec": 217010797,
+        "system_usec": 13724224,
+        "nr_periods": 19633,
+        "nr_throttled": 700,
+        "throttled_usec": 56227118
+      },
+      "serviceMemory": {
+        "current": {
+          "available": true,
+          "bytes": 505499648,
+          "unlimited": false
+        },
+        "max": {
+          "available": true,
+          "bytes": 805306368,
+          "unlimited": false
+        },
+        "peak": {
+          "available": true,
+          "bytes": 545001472,
+          "unlimited": false
+        }
+      },
+      "hostNetwork": {
+        "available": true,
+        "scope": "HOST-AGGREGATE; not POE-attributable",
+        "interfaceCount": 2,
+        "truncated": false,
+        "interfaces": [
+          {
+            "interface": "lo",
+            "receivedBytes": 561446005,
+            "receivedPackets": 3780048,
+            "transmittedBytes": 561446005,
+            "transmittedPackets": 3780048
+          },
+          {
+            "interface": "ens5",
+            "receivedBytes": 79405257926,
+            "receivedPackets": 66255376,
+            "transmittedBytes": 10536611643,
+            "transmittedPackets": 25368718
+          }
+        ]
+      }
+    }
+  },
+  "reportingReceipts": [
+    {
+      "source": {
+        "commit": "a97799e88e4313ed94d0c6b5d250eeeea5f5fdc5",
+        "sha256": "a44243b03673f29061db4030524b326b4f8929ff2a7bf5b057807ec1d0af049d"
+      },
+      "runId": "native-paper-20261029135518603",
+      "sourceAtMs": 1793282527769,
+      "acknowledgedAtMs": 1793282554678,
+      "acceptedDistinctSourcesThisSupervisor": 10,
+      "sequence": "8430",
+      "rawSourceSha256": "c79d28c3a3010996eef72bbd008b20f77e0e79ffe5688cfaef2e102a9c500634"
+    },
+    {
+      "source": {
+        "commit": "a97799e88e4313ed94d0c6b5d250eeeea5f5fdc5",
+        "sha256": "a44243b03673f29061db4030524b326b4f8929ff2a7bf5b057807ec1d0af049d"
+      },
+      "runId": "native-paper-20261029135518603",
+      "sourceAtMs": 1793283126797,
+      "acknowledgedAtMs": 1793283127700,
+      "acceptedDistinctSourcesThisSupervisor": 48,
+      "sequence": "8469",
+      "rawSourceSha256": "8296c284fc2498c2fdbb6cc7a8cc14e6afef0db2f54319585e9d3576fc2c4ec0"
+    },
+    {
+      "source": {
+        "commit": "a97799e88e4313ed94d0c6b5d250eeeea5f5fdc5",
+        "sha256": "a44243b03673f29061db4030524b326b4f8929ff2a7bf5b057807ec1d0af049d"
+      },
+      "runId": "native-paper-20261029135518603",
+      "sourceAtMs": 1793284072565,
+      "acknowledgedAtMs": 1793284079241,
+      "acceptedDistinctSourcesThisSupervisor": 110,
+      "sequence": "8531",
+      "rawSourceSha256": "b35f6aba79e96a88ea18753873e2a166c2b87637b8e219380ebdc34fe6fd6cd3"
+    }
+  ],
+  "remainingFailures": [
+    "Capture/interruptedcandidate scopes, audit/deadlinefailures andHTTPtimeoutsrecurred; highactivitythroughputnotaccepted.",
+    "Qualifiedbutunfilledfreshquoteobserved; exactperoperationcauseunavailablefrompublicprojection.",
+    "Recorderrestart5minpressuremechanismreproducedoffline, actualprivatepressureattributionnotyetavailable.",
+    "No currentheldprotection/concurrentpositionorrestartwithopenexposureproof fromthisflatinterval."
+  ],
+  "nextRepair": "OfflinecoherentBUYreadreduction, earlyfullpositioncapacityrefusal, protectedcostevidence andoptionalsafeadmissiontelemetry; separateversion/forwardvalidationrequired.",
+  "runtimeStoppedByObserver": false,
+  "historicalCountersReset": false,
+  "newSpending": false,
+  "costs": "Existingcompute/storage/transferratesunverified; actualincomingapplicationbytesandhostaggregateNICcountersrecordedseparately; noclaimzerocost."
+}

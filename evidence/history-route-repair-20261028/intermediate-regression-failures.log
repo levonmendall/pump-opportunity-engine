@@ -1,0 +1,252 @@
+✔ HTTP429 stops at headers, retains uncertain body reserve and prior refusal, and never retries (39.846019ms)
+✔ a fully received bounded HTTP503 body is charged exactly without an unknown response reservation (20.510161ms)
+✔ stalled HTTP503 body times out, charges partial receipt and preserves uncertain response bytes (14.555852ms)
+✔ canceling a partially received HTTP503 cannot turn cancellation into a complete response (5.226169ms)
+✔ declared oversize HTTP503 is canceled before reading and preserves uncertainty (3.843286ms)
+✔ streamed oversize HTTP503 charges delivered chunks and cannot mark a partial body complete (4.631907ms)
+✔ truncated HTTP503 body does not clear uncertainty when the identity Content-Length disagrees (4.476125ms)
+✔ upgrade, ACK and passive data share counters without double-counting socket/payload (6.247115ms)
+✔ raw partial and oversized receipt is charged before application parsing (4.948707ms)
+✔ notification before subscribe ACK preserves receipt time and resolves only the acknowledged scope (3.811018ms)
+✔ rejected invalid ACK halts without an automatic second request (4.187097ms)
+✔ rejected error ACK halts without an automatic second request (3.919129ms)
+✔ missing ACK cancellation retains uncertain response and cannot release a replacement request (3.742887ms)
+✔ planned reconnect waits for CLOSED and ignores stale first-socket events (4.295617ms)
+✔ close timeout halts without opening a second session (8.005196ms)
+✔ unsupported request methods are denied before network and budget use (2.668091ms)
+✔ HTTP lifecycle separates headers, body transfer and JSON availability without claiming pool reuse (3.83242ms)
+✔ HTTP lifecycle retains partial successful-body timing after timeout without logging payload (13.623246ms)
+✔ HTTP lifecycle does not emit a settled-body claim while timed-out fetch still owns physical gate (13.084036ms)
+✔ HTTP lifecycle distinguishes fully received malformed JSON from a validated response (3.383824ms)
+✔ retained strict actual origin imports without RPC; candidate warming begins only at actual source ACK (18.783778ms)
+✔ fresh complete quiet window receives independent audit and same-bucket predictive rejection without financial authorization (13.705909ms)
+✔ late independently verified audit stays recorded but cannot be backdated into an earlier predictive decision bucket (14.913532ms)
+✔ missing independent pool history invalidates candidate data instead of becoming a strategy failure (14.943297ms)
+✔ SYNTHETIC six-slot saturation preserves seventh watch identity and releases actual unsubscribe ownership before replacement (23.315577ms)
+✔ SYNTHETIC six ready rejection audits finish before replacement support/setup with 50 ms jitter (34.489948ms)
+✔ SYNTHETIC six ready rejection audits finish before replacement support/setup with 100 ms jitter (33.061897ms)
+✔ verification refusal retains its exact seed and respects the watch retry time instead of disappearing (2.044375ms)
+✔ a complete audit helper cannot start near native liveness deadline; bounded heartbeat preparation creates a new service interval (4.879364ms)
+✔ absolute support-refresh runway deadline is advanced by its own domain without moving the other deadline (4.89589ms)
+✔ absolute heartbeat runway deadline is advanced by its own domain without moving the other deadline (4.18293ms)
+✔ future peer-pong runway blocker waits for its own service without inventing a heartbeat (5.158629ms)
+✔ future unsubscribe runway blocker waits for its own service without inventing a heartbeat (4.208528ms)
+✔ early heartbeat runway preparation respects the control gate without moving support or requesting a blocked heartbeat (4.374305ms)
+✔ closed owner admission and unsettled shared physical gate start no verification, audit or source work (1.3669ms)
+✔ due native setup retains its service opportunity after deferred, busy or backoff outcomes without origin-preparation fallthrough (19.477307ms)
+✔ due native control uses the shared control window during an HTTP-only cooldown (6.278372ms)
+✔ due native support and ready audits use the RPC window during a control-only cooldown (18.11092ms)
+✖ an RPC cooldown defers audit preparation without manufacturing completeness or a source gap (14.448061ms)
+✔ known structural outside-family seed is excluded once without converting its provisional token into an unsupported market (1.101325ms)
+✔ SYNTHETIC migration churn prunes evicted verification seeds and does not strand newest retained identities (925.197772ms)
+✔ SYNTHETIC six strong scopes retain every rolling predictive decision with 50 ms step jitter and 200 ms audit responses (137.478329ms)
+✔ SYNTHETIC six strong scopes retain every rolling predictive decision with 100 ms step jitter and 200 ms audit responses (97.530326ms)
+✔ SYNTHETIC slow settled audit response exceeds its per-page operation envelope without a false predictive decision or hidden retry (9.439131ms)
+✔ served-node context below the audit floor cannot become an independent predictive pass (8.812521ms)
+✔ SYNTHETIC protocol-aware audited predictive pass remains shadow-only with strict baseline unavailable and no financial qualification (9.598658ms)
+✔ SYNTHETIC busy audit yields one page per step and services a due native control between pages without backdating (119.015726ms)
+✔ SYNTHETIC gap after page one cancels its generation and cannot qualify using later retained history (92.794153ms)
+✔ SYNTHETIC graceful stop preserves a between-page audit diagnostic without dispatching more history (95.842408ms)
+✔ independent lower-fence warming is not a scheduler deadline miss; the next complete target can still be assessed (6.50744ms)
+✔ independently fence-ready work still misses its deadline when the shared physical gate prevents every dispatch (4.644123ms)
+✔ a partial physical history timeout remains an unavailable evaluation and a true deadline miss (4.69559ms)
+✔ a known independent lower context does not copy a busy notification ledger merely to classify dispatch readiness (8.41413ms)
+✔ diagnostic audit tail uses exact ACK generation and cannot alter frozen features (none) (5.532593ms)
+✔ diagnostic audit tail uses exact ACK generation and cannot alter frozen features (connection) (4.374334ms)
+✔ diagnostic audit tail uses exact ACK generation and cannot alter frozen features (closed-admission) (4.259883ms)
+✔ SYNTHETIC one pool timeout does not retry its unavailable target or starve five other ready audits (13.167005ms)
+✖ audit dispatch evidence coalesces repeated physical waits without inventing a provider failure or physical start (8.152962ms)
+✖ audit state transition retention is bounded and target expiry preserves the actual last wait and full reason counts (8.48746ms)
+✔ actual audit page admission and validated outcome remain separate from local readiness diagnostics (5.081924ms)
+✔ ready peer diagnostics identify the single selected mint without claiming every target was dispatched (8.614427ms)
+✖ a settled but unrecoverable chapter guard is distinguished from an actual in-flight request in audit diagnostics (5.017027ms)
+✖ an expired between-page audit cannot relabel a newly observed target or erase its first-ready timestamp (90.60216ms)
+✔ SYNTHETIC six quiet first pages share one bounded request with independent logical outcomes (none) (15.329956ms)
+✔ SYNTHETIC six quiet first pages share one bounded request with independent logical outcomes (rpc-item) (10.006273ms)
+✔ SYNTHETIC six quiet first pages share one bounded request with independent logical outcomes (malformed-item) (10.217086ms)
+✔ SYNTHETIC six quiet first pages share one bounded request with independent logical outcomes (retired-item) (9.407454ms)
+✔ a pre-dispatch quiet-batch admission refusal retains logical pages for a separately admitted next service turn (5.606292ms)
+✖ one cooling peer is excluded from a healthy quiet batch without dropping its own pending audit target (8.525585ms)
+✔ closed admission and occupied shared physical work prevent every quiet-batch start (4.223319ms)
+✔ SYNTHETIC one busy pool and five quiet peers keep fair service with six-page ceiling and original deadline (667ms responses) (216.453303ms)
+✔ SYNTHETIC one busy pool and five quiet peers keep fair service with six-page ceiling and original deadline (1500ms responses) (183.362293ms)
+✔ a disabled quiet-batch optimization falls back to separately paced complete audits without losing candidate evidence (12.110777ms)
+✔ COHERENT future first window reserves discretionary runway before any predictive assessment exists (9.140929ms)
+✔ COHERENT one origin coroutine yields after every physical read and progresses between rolling audits (10.733142ms)
+✔ COHERENT six declared two-second page obligations are disclosed as infeasible, without dropping scopes or evidence (42.733814ms)
+✔ COHERENT paused origin continuation cancels on stop without dispatching its pending read or admitting partial proof (0.889311ms)
+✔ COHERENT stale support during HTTP cooldown does not indefinitely suppress local degraded reporting (3.782495ms)
+✔ COHERENT deadline admission reads bounded readiness scalars without repeating feature or notification-ledger work (3.660714ms)
+✔ COHERENT an expired heartbeat cannot hide a live PONG deadline from local or physical admission (0.26942ms)
+✔ native PAPER CLI requires explicit resume/contract and optional flags cannot alias args[0] (1.651032ms)
+✔ wrong source contract and invalid resource selection fail before directory, lease, ledger or provider access (1.88579ms)
+✔ unbound public source and mutable/mismatched startup provenance cannot open a financial writer (30.823023ms)
+✔ 750ms holding reads retain reporting service opportunities without moving the two-second reference cadence (0.843693ms)
+✔ financial reporting admission is versioned and only gates new risk, never native capture or owned work (0.294878ms)
+✔ COHERENT report and checkpoint service obey committed candidate latest-start alongside owned financial priority (0.155961ms)
+✔ chapter rollover preserves cumulative counters, inherited uncertainty, real spacing and frozen prior books (58.224626ms)
+✔ optional getTransaction gate refuses without a physical reservation or hidden wait and keeps held-price methods available (25.458718ms)
+✔ immediate linked run conservatively inherits all recent unknown-method starts and persists its bounded method cache (5.566044ms)
+✔ legacy method pacing is unrestricted beyond shared caps, with explicit bounded configuration and reserve validation (11.337643ms)
+✔ failed actual getTransaction attempts count, while dispatch refusal and cancellation do not invent starts or bypass HTTP429 (22.493747ms)
+✔ HTTP429 never retries; Retry-After plus5s gates a settled new chapter and retains both uncertainty reservations (10.481592ms)
+✔ settled HTTP refusal preserves its Retry-After while permitting separately admitted control on the same gate (9.582808ms)
+✔ actual control Retry-After blocks only controls and cannot be cleared by successful HTTP work (8.876509ms)
+✔ mixed HTTP and control work share the same sixty-start minute and short-window pacing (42.60779ms)
+✔ an unsettled timed-out control operation blocks both domains until actual settlement (14.127966ms)
+✔ a canceled physical request remains occupied after cooldown and cannot create a replacement slot (14.944077ms)
+✔ malformed responses fail closed rather than starting another chapter or inventing data (5.108564ms)
+✔ PAPER submission/signing and paid data methods are rejected before a chapter or physical operation (0.82831ms)
+✔ free control requests share the HTTP physical gate and measured bytes remain chargeable while it is occupied (6.315026ms)
+✔ global time/response allowances remain finite across chapters; a new constructor cannot overwrite the run (5.062577ms)
+✔ WS throttle observation respects an HTTP-date cooldown without retrying the original control operation (9.249132ms)
+✔ a periodic chapter expiry caused by passive control receipt preserves bytes and allows only a settled rollover (7.459265ms)
+✔ passive chapter-expiry receipt cannot cancel or replace an in-flight physical request (4.761219ms)
+✔ passive receipt during a retained RPC cooldown neither clears it nor drops byte reservations (5.63773ms)
+✔ global time and response bounds still stop passive receipt after charging actual bytes once (9.093661ms)
+✔ explicit research burst gate permits at most20 starts while the default stays10 and actual spacing stays250ms (28.581615ms)
+✔ new run requires the retained throttle receipt and cannot guess a long provider Retry-After (15.213097ms)
+✔ settled transient RPC failures use bounded2/5/10s backoff without automatic retry or dropping old reservations (14.993481ms)
+✔ invalid feed protocol remains isolated from held-price RPC while global accounting failures still block it (10.844721ms)
+✔ single admission timestamp avoids one-millisecond method refusals without weakening the real cap (9.021364ms)
+✔ public read-only log subscriptions use the existing gate without authorizing financial WS methods (4.463057ms)
+✔ long settled baseline leaves bounded chapter runway without discarding paths, counters or uncertainty (30.55872ms)
+✔ native research response envelope is explicit and leaves default finite limits unchanged (5.457854ms)
+✔ native profile does not silently authorize longer runs, more starts, larger payload budgets or unknown profiles (0.749693ms)
+✔ local admission and deadline refusals before a reservation preserve the healthy shared gate without provider cooldown (7.447327ms)
+✔ durably reserved COMPONENT_DISPATCH_EXPIRED before physical invocation stays charged and rolls over only after settlement (9.236633ms)
+✔ durably reserved COMPONENT_ADMISSION_CLOSED before physical invocation stays charged and rolls over only after settlement (8.456425ms)
+✔ a local refusal cannot roll a chapter or release a physical operation that has not actually settled (6.683553ms)
+✔ repeated rolling-minute pacing refusals reuse the unhalted chapter beyond32 attempts and consume no additional units (69.418195ms)
+✔ WATCH pacing cannot hold the shared gate across the next native deadline or start after native becomes due (6.234997ms)
+✔ served-node context-floor lag is paced unavailable data through real HTTP decoding, never a permanent fatal or audit success (9.347098ms)
+✔ context-floor recovery does not reclassify unrelated invalid-request RPC errors as transient (3.709147ms)
+✔ opt-in history route is method-fixed and shares primary/control accounting and pacing (7.890675ms)
+✔ history429 preserves Retry-After/uncertainty while primary pricing and healthy controls continue on the same gate (17.730664ms)
+✔ primary HTTP throttle does not silently reroute it to history or erase a history service opportunity (9.821482ms)
+✔ history503 and explicit provider Retry-After remain history-local and survive chapter rollover (9.543289ms)
+✔ history physically unsettled timeout blocks every domain until actual settlement; no fallback or extra slot (14.692525ms)
+✔ inherited history cooldown is enforced without transferring it to primary and invalid route values are refused (4.224793ms)
+✔ history batches use the same fixed history method endpoint, never primary and never one budget per item (5.321551ms)
+✔ late history429 headers retain their provider cooldown without changing primary or bypassing actual settlement (12.221425ms)
+✔ a linked HTTP429 book requires an explicit history cooldown receipt when enabling the separate history route (1.052422ms)
+ℹ tests 132
+ℹ suites 0
+ℹ pass 126
+ℹ fail 6
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3454.947911
+
+✖ failing tests:
+
+test at test/native-candidate-runner.test.ts:1:26765
+✖ an RPC cooldown defers audit preparation without manufacturing completeness or a source gap (14.448061ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'audit-ceiling-support'
+  - 'wait'
+  
+      at TestContext.<anonymous> (/workspace/poe-history-route-repair/test/native-candidate-runner.test.ts:151:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'audit-ceiling-support',
+    expected: 'wait',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/native-candidate-runner.test.ts:1:46132
+✖ audit dispatch evidence coalesces repeated physical waits without inventing a provider failure or physical start (8.152962ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+    [
+      'eligible',
+  +   'scheduler-wait'
+  -   'rpc-gate-wait'
+    ]
+  
+      at TestContext.<anonymous> (/workspace/poe-history-route-repair/test/native-candidate-runner.test.ts:260:128)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'eligible', 'scheduler-wait' ],
+    expected: [ 'eligible', 'rpc-gate-wait' ],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/native-candidate-runner.test.ts:1:47557
+✖ audit state transition retention is bounded and target expiry preserves the actual last wait and full reason counts (8.48746ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  undefined !== 100
+  
+      at TestContext.<anonymous> (/workspace/poe-history-route-repair/test/native-candidate-runner.test.ts:267:145)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: 100,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/native-candidate-runner.test.ts:1:51253
+✖ a settled but unrecoverable chapter guard is distinguished from an actual in-flight request in audit diagnostics (5.017027ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'audit:2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump'
+  - 'wait'
+  
+      at TestContext.<anonymous> (/workspace/poe-history-route-repair/test/native-candidate-runner.test.ts:280:362)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'audit:2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump',
+    expected: 'wait',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/native-candidate-runner.test.ts:1:52145
+✖ an expired between-page audit cannot relabel a newly observed target or erase its first-ready timestamp (90.60216ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'scheduler-wait'
+  - 'rpc-gate-wait'
+  
+      at TestContext.<anonymous> (/workspace/poe-history-route-repair/test/native-candidate-runner.test.ts:284:592)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'scheduler-wait',
+    expected: 'rpc-gate-wait',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/native-candidate-runner.test.ts:1:55727
+✖ one cooling peer is excluded from a healthy quiet batch without dropping its own pending audit target (8.525585ms)
+  AssertionError [ERR_ASSERTION]: unserved target remains pending; not declared complete
+      at TestContext.<anonymous> (/workspace/poe-history-route-repair/test/native-candidate-runner.test.ts:296:555)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

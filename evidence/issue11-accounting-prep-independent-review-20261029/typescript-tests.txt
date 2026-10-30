@@ -1,0 +1,23 @@
+✔ stopped fixture seals exact source usage and preserves uncertain debits without importing financial state (24.484225ms)
+✔ refuses running source before writing a handoff (6.722544ms)
+✔ refuses wrong source before writing a handoff (3.774013ms)
+✔ refuses unresolved position before writing a handoff (1.070043ms)
+✔ refuses unresolved action before writing a handoff (5.169939ms)
+✔ refuses unsettled transport before writing a handoff (9.973955ms)
+✔ refuses request still in flight before writing a handoff (27.265995ms)
+✔ refuses status counters changed before writing a handoff (1.520029ms)
+✔ refuses unresolved provider cooldown before writing a handoff (1.52759ms)
+✔ refuses wrong original portfolio before writing a handoff (7.665941ms)
+✔ refuses unresolved manifest before writing a handoff (11.575243ms)
+✔ refuses manifest status path disagreement before writing a handoff (1.021531ms)
+✔ computed counter disagreement is refused even when final status repeats the wrong expected totals (1.219164ms)
+✔ writable or changed existing lease witnesses are refused (3.752792ms)
+✔ symlinked input cannot become source authority and unsafe output permissions are refused (1.431108ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 572.362731

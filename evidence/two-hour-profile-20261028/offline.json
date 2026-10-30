@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "kind": "OFFLINE_RESEARCH_PROFILE_PREPARATION",
+  "baseCommit": "60b93929bf3373a84a024b8712da2ca2e69e71e2",
+  "profile": "candidate-native-two-hour-research-v1",
+  "networkRequests": 0,
+  "canonicalRuntimeModified": false,
+  "productionDeployment": false,
+  "measuredExistingCloudCounterMetadata": {
+    "paths": 114,
+    "inputBytes": 2954312,
+    "cumulativeCalls": 4643,
+    "lastBookBytes": 66397,
+    "limitation": "Read-only metadata at preparation time; current EC2 trial additions not yet linked."
+  },
+  "fixtures": {
+    "largeHistoryCalls": 20000,
+    "syntheticControlBytes": 314572800,
+    "immutableOriginalFiles": true,
+    "aggregateInputStopBytes": 33554432
+  },
+  "firstFullRegression": {
+    "passed": 1039,
+    "failed": 0,
+    "limitation": "Before final reporting-archive/publisher-bound adjustments; final result recorded after completion."
+  },
+  "actualFinancialDatabasesOpened": 0,
+  "newProfileTestsFinancialDatabasesOpened": 0,
+  "repositoryRegressionFixtures": "Existing disposable financial fixtures remain in the full suite; no original or experimental financial account was opened.",
+  "finalValidation": {
+    "build": "passed",
+    "compile": "passed",
+    "repositoryTests": 1041,
+    "failed": 0,
+    "elapsedMs": 80446.607918,
+    "classification": "OFFLINE REGRESSION; NOT FORWARD ELAPSED OPERATION"
+  },
+  "reportingEvidenceFixture": {
+    "sourceObjectBytes": 2018836,
+    "legacyAllCycleCopies": 482,
+    "sparseTwoHourCopiesIncludingBothFinalRecords": 7,
+    "sparseProjectedBytes": 14131852,
+    "sourceReadLimitBytes": 4194304,
+    "classification": "SYNTHETIC STRUCTURAL STORAGE ESTIMATE, NOT LIVE STATUS SIZE"
+  },
+  "finalResourceCeilings": {
+    "durationMs": 7200000,
+    "newUnits": 7500,
+    "newChapters": 64,
+    "inputHistoryPaths": 192,
+    "totalHistoryPaths": 256,
+    "counterbookBytes": 524288,
+    "aggregateCounterbookReadBytes": 33554432,
+    "rpcMetadataBytes": 2097152,
+    "relatedResponseBytes": 2415919104,
+    "broadWatchReceiptBytes": 8589934592,
+    "evidenceBytes": 1073741824,
+    "cpuMicros": 1920000000,
+    "rssBytes": 402653184,
+    "startupFreeDiskBytes": 1409286144,
+    "ongoingFreeDiskBytes": 268435456
+  },
+  "beforeForwardUse": [
+    "Merge separately reviewed startup/dispatch/subscription core repairs and rerun affected regressions.",
+    "Use actual current900second trial rates, snapshots, CPU, disk and existing infrastructure allocation to review these provisional ceilings.",
+    "Verify actual provider cooldowns and physical settlement; never drop prior history or uncertain reservations."
+  ]
+}

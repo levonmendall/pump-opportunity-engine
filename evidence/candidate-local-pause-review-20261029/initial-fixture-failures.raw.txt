@@ -1,0 +1,496 @@
+✔ all internal stop/finally intents survive many later one-second reconciliations and do not clear the raw stop (258.175316ms)
+✔ a failed resume cannot hide an owner stop or become the successful recovery boundary (16.665102ms)
+✔ only the last successful resume is an anchor and a later failed resume does not discard internal stops (14.790082ms)
+✔ resume result reasons must match the exact durable success and failure outcomes (27.448804ms)
+✔ absence of a successful resume uses validated inception and every control intention, never a bounded journal tail (173.45232ms)
+✔ owner, unknown-run and malformed-looking stop identities remain blocked even after an internal finally (66.780671ms)
+✔ hard or owner pause intent cannot be masked by later internal stops and restore markers (99.812416ms)
+✔ restore-hard-pause with safe-stop wording requires an earlier already-proven internal stop (12.442207ms)
+✔ only typed temporary readiness and ordinary shutdown pauses are recoverable provenance (9.884335ms)
+✔ unknown or invalid run sets and future/inconsistent source times fail closed (20.640669ms)
+✔ more than128 stops or512 filtered control intentions are unavailable rather than silently truncated (183.360035ms)
+✔ malformed joined actions, payloads and current control state do not yield provenance proof (71.57609ms)
+✔ new native adapter opens two SDK-priced PAPER positions, retains source-independent protection and recovers two uncertain exits (702.252625ms)
+✔ new native adapter refuses financial preparation without actual monitoring admission despite complete predictive evidence (23.675352ms)
+✔ DISPOSABLE reporting-readiness admission blocks new risk while native observations and owned entry/exit work continue (78.668231ms)
+✔ native regular protection performs one durable reconciliation per completed evaluation, including reused context (19.731396ms)
+✔ real native runner certificates restore temporary cash readiness without SDK/RPC work or an order; entry still requires full preparation (42.33302ms)
+✔ a genuinely audited weak window arms an inherited internal checkpoint before retirement, without a qualification or any market request (34.776811ms)
+▶ owner or unknown stop is not armed by an otherwise complete weak audit
+  ✔ operator-stop:CONTROLLED (31.892565ms)
+  ✔ unknown-stop:CONTROLLED (27.057514ms)
+✔ owner or unknown stop is not armed by an otherwise complete weak audit (59.709666ms)
+✔ routine checkpoints cancel only safely unattempted buys and do not invent an owner stop or erase uncertain obligations (42.250318ms)
+✔ ordinary per-entry capacity refusal preserves independently armed financial permission and creates no order (22.396045ms)
+✔ routine checkpoint preserves a buy with uncertain commit, without an invented financial outcome (39.142177ms)
+✔ routine checkpoint retains an existing sell and its holding until actual-size delayed exit execution completes (51.468953ms)
+✔ a new hard failure after inherited internal stop cannot be laundered by its older machine-stop proof (32.025022ms)
+✔ due native PAPER entry retains a distinct fresh execution reconciliation before the modeled attempt (45.768298ms)
+✔ temporary entry preparation failure receives a bounded new audited window and a new qualification before one PAPER fill (48.999056ms)
+✔ an unresolved financial attempt cannot queue a duplicate entry; terminal technical failure preserves state and requires a later full decision (44.609059ms)
+✔ a terminal missing execution quote retains charged gas and may create only a separately qualified later order (65.480455ms)
+✔ certificate expiry during a checkpoint rearms a consumed claim without using earlier features or creating an order (22.17652ms)
+✔ a full SDK-priced candidate cannot clear owner-stop merely because new-risk capacity is available (18.753937ms)
+✔ a full SDK-priced candidate cannot clear owner-pause merely because new-risk capacity is available (17.426149ms)
+✔ a full SDK-priced candidate cannot clear hard-pause merely because new-risk capacity is available (22.176485ms)
+✔ a owner-stop arriving during awaited SDK preparation is retained at its current revision (27.609783ms)
+✔ a owner-pause arriving during awaited SDK preparation is retained at its current revision (25.473597ms)
+✔ a hard-pause arriving during awaited SDK preparation is retained at its current revision (27.488138ms)
+✖ temporary second-entry preparation refusal recovers from a new audited window while first holding stays owned and protected (45.833875ms)
+✔ stage two protects and recovers a legacy single-profile held through the established restart rules (88.291349ms)
+✔ stage two protects and recovers a legacy single-profile reserved-buy through the established restart rules (39.242075ms)
+✔ two SDK-priced holdings execute independent strategy exits; simultaneous=false (126.863191ms)
+✔ two SDK-priced holdings execute independent strategy exits; simultaneous=true (132.697744ms)
+✔ candidate-local SDK preparation failure preserves healthy held-account permission and obligations (50.310635ms)
+✖ operating readiness recovers temporary held-account finance from fresh existing protection without a new qualifying candidate or extra RPC (51.807444ms)
+✔ fresh held prices cannot clear a genuine protection hard stop through operating financial readiness (59.975386ms)
+✔ an unknown post-commit operating permission write failure closes financial recovery instead of masquerading as candidate-local failure (60.116454ms)
+✔ flat five-second reconciliation creates a derived pause without changing controls; local maintenance preserves two-second guard (59.612523ms)
+✔ expired USD closes entries, new original-timestamp USD and fresh complete window recover without predictive pass or RPC (19.619726ms)
+✔ fresh audit-completion timestamp cannot substitute for an old executed-flow cutoff (10.002957ms)
+▶ owner pause, safe stop, daily loss, admission failure, disconnected source and absent certificate do not auto-resume
+  ✔ owner (11.018792ms)
+  ✔ stop (8.173656ms)
+  ✔ loss (9.38452ms)
+  ✔ admission (8.598664ms)
+  ✔ connection (15.470961ms)
+  ✔ certificate (8.093406ms)
+✔ owner pause, safe stop, daily loss, admission failure, disconnected source and absent certificate do not auto-resume (62.470503ms)
+✔ pending action and actual held inventory block cash-only maintenance without changing obligations (8.348774ms)
+✔ unknown post-commit financial failure latches closed; later maintenance and restart cannot reinterpret success (16.953057ms)
+✔ recorder failure after permission recovery closes controls and preserves the evidence latch (19.440154ms)
+✔ nonthrowing recovery recorder that revokes current admission cannot report a successful recovery (19.016946ms)
+✔ a terminal failed entry cannot release cash maintenance while its actual execution adapter remains unsettled (116.310665ms)
+✔ slow reconciliation never backdates the resume after the actual two-second deadline (8.67024ms)
+✔ hard failure after a soft pause is durable across restart instead of hiding behind the old soft reason (11.510822ms)
+✔ a recorded hard restriction cannot be laundered by complete candidate preparation (9.740567ms)
+✔ cash maintenance continues during source waits, defers financial ownership, and measures true synchronous lateness (18.160768ms)
+✔ actual maintenance timer contains unexpected callback failure and keeps retry bounded (1.680231ms)
+✔ old startup reconciliation and known FX-unavailable intervals are not maintenance deadline misses (7.939748ms)
+✔ backup failure retries at the bounded next attempt rather than waiting five minutes; success restores the normal cadence (0.211414ms)
+✔ verified backup recovery unlocks temporary readiness only after success and a current audited cutoff (14.2755ms)
+✔ actual interval runs local maintenance while an awaited source operation is unsettled (23.387575ms)
+✔ current derived source/provider/monitoring restrictions remain distinct from unchanged durable permission (13.133908ms)
+✔ explicit owner daily-loss reset recovers through ordinary fresh audited readiness without fabricating a qualification (16.572132ms)
+▶ controlled arming boundary distinguishes valid audited decision windows from two-second general-permission cutoff
+  ✔ 1500ms original audited cutoff (7.28661ms)
+  ✔ 3000ms original audited cutoff (10.194745ms)
+✔ controlled arming boundary distinguishes valid audited decision windows from two-second general-permission cutoff (17.981938ms)
+✔ selected operating mode recovers financial permission without fabricating a candidate window or predictive pass (9.850841ms)
+▶ operating financial permission requires real connected source Clock and preserves owner and protection stops
+  ✔ connection (8.654658ms)
+  ✔ clock (6.375169ms)
+  ✔ owner (6.675365ms)
+  ✔ protection (7.440679ms)
+✔ operating financial permission requires real connected source Clock and preserves owner and protection stops (29.873589ms)
+✔ known current protection controls have a precise blocker without using historical breach counts or clearing the stop (9.931405ms)
+✖ new versioned financial-only permission preserves account/history and asserts no candidate window (1.468236ms)
+▶ operating readiness cannot clear owner stop, owner pause, unknown or protection hard controls
+  ✖ operator paused new entries (0.38468ms)
+  ✖ completed PAPER protection gap exceeded research boundary (0.139837ms)
+  ✖ PAPER protection currently overdue; candidate admissions closed (0.19504ms)
+  ✖ unknown hard failure (0.2159ms)
+  ✖ STOP (0.14882ms)
+✖ operating readiness cannot clear owner stop, owner pause, unknown or protection hard controls (2.413628ms)
+✖ current-day loss latch is never reset by operating financial readiness (0.200567ms)
+▶ malformed, stale and foreign financial permission proofs fail closed before any control change
+  ✖ version (0.279024ms)
+  ✖ candidate assertion (0.302949ms)
+  ✖ purpose (0.137835ms)
+  ✖ foreign account (0.116453ms)
+  ✖ stale reconciliation (0.105957ms)
+  ✖ future reconciliation (0.111636ms)
+  ✖ missing inventory (0.122211ms)
+  ✖ future clock (0.14807ms)
+  ✖ clock expiry mismatch (0.165045ms)
+  ✖ unknown source (0.143353ms)
+  ✖ future receive (0.119106ms)
+  ✖ unready inventory (0.109413ms)
+  ✖ no reserve (0.10784ms)
+✖ malformed, stale and foreign financial permission proofs fail closed before any control change (3.365238ms)
+▶ same-writer revision, exact inventory and no-pending checks refuse outdated accounting without enabling entries
+  ✖ revision (0.253275ms)
+  ✖ inventory (0.118456ms)
+  ✖ pending (0.106968ms)
+✖ same-writer revision, exact inventory and no-pending checks refuse outdated accounting without enabling entries (1.000393ms)
+✖ strict control-history proof accepts the new financial receipt alongside unchanged legacy receipts (0.238854ms)
+ℹ tests 109
+ℹ suites 0
+ℹ pass 80
+ℹ fail 29
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3504.856389
+
+✖ failing tests:
+
+test at test/native-paper-integration.test.ts:1:40769
+✖ temporary second-entry preparation refusal recovers from a new audited window while first holding stays owned and protected (45.833875ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  true !== false
+  
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/native-paper-integration.test.ts:165:238)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: true,
+    expected: false,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/native-paper-integration.test.ts:1:48711
+✖ operating readiness recovers temporary held-account finance from fresh existing protection without a new qualifying candidate or extra RPC (51.807444ms)
+  AssertionError [ERR_ASSERTION]: existing steady held-price read supplies all facts; recovery adds no network request
+  
+  2 !== 1
+  
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/native-paper-integration.test.ts:202:143)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 2,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/operating-financial-readiness.test.ts:1:1832
+✖ new versioned financial-only permission preserves account/history and asserts no candidate window (1.468236ms)
+  Error: explicit POE or disposable fixture identity required
+      at new PaperLedger (/workspace/poe-general-arming-window/src/ledger.ts:217:154)
+      at new DisposableLedger (/workspace/poe-general-arming-window/src/ledger.ts:917:59)
+      at fixture (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:10:88)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:19:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at startSubtestAfterBootstrap (node:internal/test_runner/harness:387:17)
+
+test at test/operating-financial-readiness.test.ts:1:3167
+✖ operator paused new entries (0.38468ms)
+  Error: explicit POE or disposable fixture identity required
+      at new PaperLedger (/workspace/poe-general-arming-window/src/ledger.ts:217:154)
+      at new DisposableLedger (/workspace/poe-general-arming-window/src/ledger.ts:917:59)
+      at fixture (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:10:88)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:27:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:26:219)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+
+test at test/operating-financial-readiness.test.ts:1:3167
+✖ completed PAPER protection gap exceeded research boundary (0.139837ms)
+  Error: explicit POE or disposable fixture identity required
+      at new PaperLedger (/workspace/poe-general-arming-window/src/ledger.ts:217:154)
+      at new DisposableLedger (/workspace/poe-general-arming-window/src/ledger.ts:917:59)
+      at fixture (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:10:88)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:27:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:26:219)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+
+test at test/operating-financial-readiness.test.ts:1:3167
+✖ PAPER protection currently overdue; candidate admissions closed (0.19504ms)
+  Error: explicit POE or disposable fixture identity required
+      at new PaperLedger (/workspace/poe-general-arming-window/src/ledger.ts:217:154)
+      at new DisposableLedger (/workspace/poe-general-arming-window/src/ledger.ts:917:59)
+      at fixture (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:10:88)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:27:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:26:219)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+
+test at test/operating-financial-readiness.test.ts:1:3167
+✖ unknown hard failure (0.2159ms)
+  Error: explicit POE or disposable fixture identity required
+      at new PaperLedger (/workspace/poe-general-arming-window/src/ledger.ts:217:154)
+      at new DisposableLedger (/workspace/poe-general-arming-window/src/ledger.ts:917:59)
+      at fixture (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:10:88)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:27:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:26:219)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+
+test at test/operating-financial-readiness.test.ts:1:3167
+✖ STOP (0.14882ms)
+  Error: explicit POE or disposable fixture identity required
+      at new PaperLedger (/workspace/poe-general-arming-window/src/ledger.ts:217:154)
+      at new DisposableLedger (/workspace/poe-general-arming-window/src/ledger.ts:917:59)
+      at fixture (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:10:88)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:27:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:26:219)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+
+test at test/operating-financial-readiness.test.ts:1:3559
+✖ current-day loss latch is never reset by operating financial readiness (0.200567ms)
+  Error: explicit POE or disposable fixture identity required
+      at new PaperLedger (/workspace/poe-general-arming-window/src/ledger.ts:217:154)
+      at new DisposableLedger (/workspace/poe-general-arming-window/src/ledger.ts:917:59)
+      at fixture (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:10:88)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:34:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at test/operating-financial-readiness.test.ts:1:4833
+✖ version (0.279024ms)
+  Error: explicit POE or disposable fixture identity required
+      at new PaperLedger (/workspace/poe-general-arming-window/src/ledger.ts:217:154)
+      at new DisposableLedger (/workspace/poe-general-arming-window/src/ledger.ts:917:59)
+      at fixture (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:10:88)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:69)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:45)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+
+test at test/operating-financial-readiness.test.ts:1:4833
+✖ candidate assertion (0.302949ms)
+  Error: explicit POE or disposable fixture identity required
+      at new PaperLedger (/workspace/poe-general-arming-window/src/ledger.ts:217:154)
+      at new DisposableLedger (/workspace/poe-general-arming-window/src/ledger.ts:917:59)
+      at fixture (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:10:88)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:69)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:45)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+
+test at test/operating-financial-readiness.test.ts:1:4833
+✖ purpose (0.137835ms)
+  Error: explicit POE or disposable fixture identity required
+      at new PaperLedger (/workspace/poe-general-arming-window/src/ledger.ts:217:154)
+      at new DisposableLedger (/workspace/poe-general-arming-window/src/ledger.ts:917:59)
+      at fixture (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:10:88)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:69)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:45)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+
+test at test/operating-financial-readiness.test.ts:1:4833
+✖ foreign account (0.116453ms)
+  Error: explicit POE or disposable fixture identity required
+      at new PaperLedger (/workspace/poe-general-arming-window/src/ledger.ts:217:154)
+      at new DisposableLedger (/workspace/poe-general-arming-window/src/ledger.ts:917:59)
+      at fixture (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:10:88)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:69)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:45)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+
+test at test/operating-financial-readiness.test.ts:1:4833
+✖ stale reconciliation (0.105957ms)
+  Error: explicit POE or disposable fixture identity required
+      at new PaperLedger (/workspace/poe-general-arming-window/src/ledger.ts:217:154)
+      at new DisposableLedger (/workspace/poe-general-arming-window/src/ledger.ts:917:59)
+      at fixture (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:10:88)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:69)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:45)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+
+test at test/operating-financial-readiness.test.ts:1:4833
+✖ future reconciliation (0.111636ms)
+  Error: explicit POE or disposable fixture identity required
+      at new PaperLedger (/workspace/poe-general-arming-window/src/ledger.ts:217:154)
+      at new DisposableLedger (/workspace/poe-general-arming-window/src/ledger.ts:917:59)
+      at fixture (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:10:88)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:69)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:45)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+
+test at test/operating-financial-readiness.test.ts:1:4833
+✖ missing inventory (0.122211ms)
+  Error: explicit POE or disposable fixture identity required
+      at new PaperLedger (/workspace/poe-general-arming-window/src/ledger.ts:217:154)
+      at new DisposableLedger (/workspace/poe-general-arming-window/src/ledger.ts:917:59)
+      at fixture (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:10:88)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:69)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:45)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+
+test at test/operating-financial-readiness.test.ts:1:4833
+✖ future clock (0.14807ms)
+  Error: explicit POE or disposable fixture identity required
+      at new PaperLedger (/workspace/poe-general-arming-window/src/ledger.ts:217:154)
+      at new DisposableLedger (/workspace/poe-general-arming-window/src/ledger.ts:917:59)
+      at fixture (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:10:88)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:69)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:45)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+
+test at test/operating-financial-readiness.test.ts:1:4833
+✖ clock expiry mismatch (0.165045ms)
+  Error: explicit POE or disposable fixture identity required
+      at new PaperLedger (/workspace/poe-general-arming-window/src/ledger.ts:217:154)
+      at new DisposableLedger (/workspace/poe-general-arming-window/src/ledger.ts:917:59)
+      at fixture (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:10:88)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:69)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:45)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+
+test at test/operating-financial-readiness.test.ts:1:4833
+✖ unknown source (0.143353ms)
+  Error: explicit POE or disposable fixture identity required
+      at new PaperLedger (/workspace/poe-general-arming-window/src/ledger.ts:217:154)
+      at new DisposableLedger (/workspace/poe-general-arming-window/src/ledger.ts:917:59)
+      at fixture (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:10:88)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:69)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:45)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+
+test at test/operating-financial-readiness.test.ts:1:4833
+✖ future receive (0.119106ms)
+  Error: explicit POE or disposable fixture identity required
+      at new PaperLedger (/workspace/poe-general-arming-window/src/ledger.ts:217:154)
+      at new DisposableLedger (/workspace/poe-general-arming-window/src/ledger.ts:917:59)
+      at fixture (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:10:88)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:69)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:45)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+
+test at test/operating-financial-readiness.test.ts:1:4833
+✖ unready inventory (0.109413ms)
+  Error: explicit POE or disposable fixture identity required
+      at new PaperLedger (/workspace/poe-general-arming-window/src/ledger.ts:217:154)
+      at new DisposableLedger (/workspace/poe-general-arming-window/src/ledger.ts:917:59)
+      at fixture (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:10:88)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:69)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:45)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+
+test at test/operating-financial-readiness.test.ts:1:4833
+✖ no reserve (0.10784ms)
+  Error: explicit POE or disposable fixture identity required
+      at new PaperLedger (/workspace/poe-general-arming-window/src/ledger.ts:217:154)
+      at new DisposableLedger (/workspace/poe-general-arming-window/src/ledger.ts:917:59)
+      at fixture (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:10:88)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:69)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:40:45)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+
+test at test/operating-financial-readiness.test.ts:1:5259
+✖ revision (0.253275ms)
+  Error: explicit POE or disposable fixture identity required
+      at new PaperLedger (/workspace/poe-general-arming-window/src/ledger.ts:217:154)
+      at new DisposableLedger (/workspace/poe-general-arming-window/src/ledger.ts:917:59)
+      at fixture (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:10:88)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:45:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:44:66)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+
+test at test/operating-financial-readiness.test.ts:1:5259
+✖ inventory (0.118456ms)
+  Error: explicit POE or disposable fixture identity required
+      at new PaperLedger (/workspace/poe-general-arming-window/src/ledger.ts:217:154)
+      at new DisposableLedger (/workspace/poe-general-arming-window/src/ledger.ts:917:59)
+      at fixture (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:10:88)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:45:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:44:66)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+
+test at test/operating-financial-readiness.test.ts:1:5259
+✖ pending (0.106968ms)
+  Error: explicit POE or disposable fixture identity required
+      at new PaperLedger (/workspace/poe-general-arming-window/src/ledger.ts:217:154)
+      at new DisposableLedger (/workspace/poe-general-arming-window/src/ledger.ts:917:59)
+      at fixture (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:10:88)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:45:11)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.start (node:internal/test_runner/test:1242:17)
+      at TestContext.test (node:internal/test_runner/test:394:20)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:44:66)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+
+test at test/operating-financial-readiness.test.ts:1:6114
+✖ strict control-history proof accepts the new financial receipt alongside unchanged legacy receipts (0.238854ms)
+  Error: explicit POE or disposable fixture identity required
+      at new PaperLedger (/workspace/poe-general-arming-window/src/ledger.ts:217:154)
+      at new DisposableLedger (/workspace/poe-general-arming-window/src/ledger.ts:917:59)
+      at fixture (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:10:88)
+      at TestContext.<anonymous> (/workspace/poe-general-arming-window/test/operating-financial-readiness.test.ts:59:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

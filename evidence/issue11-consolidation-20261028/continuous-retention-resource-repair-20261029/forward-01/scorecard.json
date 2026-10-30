@@ -1,0 +1,97 @@
+{
+  "kind": "actual-forward-continuous-retention-repair-not-acceptance",
+  "run": "native-paper-20261029164842357",
+  "source": {
+    "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+    "strategy": "persistent-buying-pilot-v1"
+  },
+  "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+  "runtimeStartedAt": "2026-10-29T16:48:42.357Z",
+  "measuredFirstSourceAt": "2026-10-29T16:51:15.759Z",
+  "measuredLastSourceAt": "2026-10-29T17:06:00.099Z",
+  "samples": 57,
+  "snapshotSha256": "149e3ff8686e7513a092c1feaae347c9a00b33fd67605b78f50b2db12eb9024b",
+  "maximumDeepObserved": 4,
+  "deepMaximum": 4,
+  "financialPositionLimit": 1,
+  "nativeCaptureDisconnectedSamples": 2,
+  "discoveryDisconnectedSamples": 0,
+  "broadWatchDisconnectedSamples": 0,
+  "sourceRecoveries": 0,
+  "requiredEvidenceRefusals": 0,
+  "diagnosticBytes": {
+    "first": 130922312,
+    "peak": 164144114,
+    "minimum": 12880861,
+    "last": 18370284,
+    "baseLimitBytes": 134217728,
+    "maximumEffectiveLimitBytes": 189309938
+  },
+  "newCounters": {
+    "migrationsReceived": 7,
+    "verifiedOrigins": 7,
+    "completeWindows": 30,
+    "auditedWindows": 30,
+    "predictiveAssessments": 30,
+    "predictivePasses": 6,
+    "predictiveFailures": 24,
+    "predictiveUnavailable": 3,
+    "uniqueEvaluated": 23,
+    "qualityGaps": 19,
+    "auditUnavailable": 2,
+    "auditUnusable": 5,
+    "decisionDeadlineMisses": 6,
+    "enrichmentDeadlineFailures": 0,
+    "rpcRequests": 392,
+    "rpcResponseBytes": 88525240,
+    "nativeStreamBytes": 29503469,
+    "broadWatchBytes": 1097293392,
+    "httpTimeouts": 22,
+    "httpErrors": 0,
+    "throttles": 0
+  },
+  "uniqueEvaluatedSinceCurrentUnrecoveredRun": 27,
+  "maximumQueue": 33,
+  "maximumWaitMs": 1095899,
+  "peakPhysicalStartsPerMinuteObserved": 68,
+  "configuredStartsPerMinute": 90,
+  "reportingReadFailuresObserved": 0,
+  "financial": {
+    "qualifiedCandidatesObserved": 1,
+    "distinctFeaturePassMintsObserved": 2,
+    "primaryAttempts": 1,
+    "newBuyFills": 0,
+    "newExits": 0,
+    "positionsAtEnd": 0,
+    "pendingAtEnd": 0,
+    "firstEquitySol": "9.881404612",
+    "lastEquitySol": "9.881397612",
+    "equityChangeLamports": -7000,
+    "qualificationUnfilled": [
+      {
+        "id": "native-paper-20261029164842357:7:1793292826187",
+        "mint": "8ZZ8z349rrZG8VoJBBRpmgV5HFw2reESviaSoLoDpump",
+        "at": "2026-10-29T16:53:46.187Z",
+        "stage": "qualified",
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      }
+    ],
+    "unfilledFailureCause": "Not established by public projection. Do not attribute to single-position cap: no position was held.",
+    "entryEligibleDuration": "Not established from15second polling; brief permission changes can occur between snapshots."
+  },
+  "resources": {
+    "sourceRssPeakBytes": 461606912,
+    "cpuOneCoreFractionPeak": 0.37730467042740257,
+    "eventLoopLagMsPeak": 45.481983,
+    "availableHostMemoryBytesMinimum": 6764281856,
+    "availableDiskBytesMinimum": 288690495488
+  },
+  "limits": [
+    "Source-only reporting transition16:48\u201316:51 is not continuous public reporting acceptance; the measured series starts after receiver source rebinding.",
+    "No held position occurred in this repaired segment; prior successful natural holding/restart/exit used239source.",
+    "No full-market denominator or verified profitable missed-trade recall is established.",
+    "Overlapping audited windows are not independent market minutes.",
+    "Provider and candidate-data failures remain distinct from repaired storage-driven source closure.",
+    "No24hour or live two-position acceptance claim."
+  ]
+}

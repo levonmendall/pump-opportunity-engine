@@ -1,0 +1,13 @@
+{
+  "capturedAt": "2026-10-30T14:31:08.847343+00:00",
+  "bytes": 112132,
+  "sha256": "997cdbbdeed45821e1c4e0b6990c4f3fc3725b3d641589b42dd7785d10c804e8",
+  "sourceAt": "2026-10-30T14:30:55.590Z",
+  "account": {
+    "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "initialUsd": 1000
+  },
+  "equitySamples": 453,
+  "classification": "PUBLIC_REPORTING_CAPTURE_NOT_A_FINANCIAL_LEDGER_BACKUP"
+}

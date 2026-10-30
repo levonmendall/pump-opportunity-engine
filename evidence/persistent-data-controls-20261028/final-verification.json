@@ -1,0 +1,26 @@
+{
+  "verifiedAt": "2026-10-28T23:36:23.175231+00:00",
+  "sourceCommit": "ca0fca0cb0b122969d5a590727b376ca4bf5c0ca",
+  "requiredCodeCommits": [
+    "3755b13728e3443a8f5070f782e32073aef4eee7",
+    "77798fcac6083e6a255d336c751963190e90461b",
+    "ca0fca0cb0b122969d5a590727b376ca4bf5c0ca"
+  ],
+  "files": {
+    "src/component-budget.ts": "17b3da2b3fa906c2e5e8932b21eaa2fd8bc2289cd9b30403b752317d41a2db98",
+    "src/persistent-data-window.ts": "f7805c755b0a1c70f23ba806b4b82e73b0872cf1b78f698d80f071ebf6b8b15b",
+    "src/pilot-rpc.ts": "93deae2203de0940eeac48914d540a2a65d02781bb6eed47c37ed0687f65ba27",
+    "src/research-baseline.ts": "f516bf4d940861cac8247a243634b8ee6d646d16e16b5117a6fe77de60f5570b",
+    "src/pilot-native-flow.ts": "a7f1ab9cc398fffeeeb5a25e568cd507e611c3f0235a30afecdc224b0eb694cf",
+    "src/pilot-feeds.ts": "c2c7c1fc4c696de7a67686da92f2ee5cdb18a12a240b888f40aad39c94e8daa4"
+  },
+  "focusedTestsPassed": 214,
+  "build": "PASS",
+  "independentFocusedTestsPassed": 214,
+  "independentBuild": "PASS",
+  "independentReview": "GO for combined integration and forward validation, not acceptance",
+  "providerRequests": 0,
+  "financialAccountReads": 0,
+  "financialAccountWrites": 0,
+  "deploymentPerformed": false
+}

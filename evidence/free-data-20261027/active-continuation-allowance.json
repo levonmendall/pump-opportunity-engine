@@ -1,0 +1,157 @@
+{
+  "schemaVersion": 1,
+  "authorization": "Owner explicitly approved one bounded selection continuation and the unused sole live capture, without increasing cumulative allowances",
+  "recordedAt": "2026-10-27T03:14:27.253Z",
+  "status": "PREFLIGHT_REFUSED_NO_STREAM",
+  "limits": {
+    "cumulativeSocketBytes": 268435456,
+    "cumulativeReservedMs": 300000,
+    "newSocketReservation": 134217728,
+    "newSocketStop": 133169152,
+    "applicationStop": 132120576,
+    "captureMs": 90000,
+    "shutdownMs": 5000,
+    "retainedBytes": 33554432,
+    "recordBytes": 12582912,
+    "payloadBytes": 65536,
+    "rssBytes": 268435456,
+    "cpuMs": 30000,
+    "eventLoopLagMs": 500,
+    "parentWallMs": 250000,
+    "enrichmentAttempts": 48,
+    "auditCalls": 24,
+    "pricingCycles": 45
+  },
+  "phaseReservations": {
+    "selection": {
+      "calls": 48,
+      "bytes": 8388608,
+      "elapsedMs": 70000,
+      "candidates": 6
+    },
+    "capture": {
+      "calls": 142,
+      "bytes": 41943040,
+      "pricingCalls": 94,
+      "enrichmentCalls": 48
+    },
+    "audit": {
+      "calls": 24,
+      "bytes": 12582912,
+      "elapsedMs": 45000
+    },
+    "shutdown": {
+      "calls": 4,
+      "bytes": 2097152
+    }
+  },
+  "startingRpc": {
+    "schemaVersion": 1,
+    "budgetId": "active-approved-20261027",
+    "calls": 6,
+    "bytes": 81729,
+    "lastObservedAt": 1793069031683,
+    "starts": [
+      1793069031002,
+      1793069031314,
+      1793069031396,
+      1793069031462,
+      1793069031573,
+      1793069031683
+    ],
+    "byMethod": {
+      "getSignaturesForAddress": 2,
+      "getTransaction": 4
+    },
+    "pending": [],
+    "durationsMs": [
+      304.78645199999994,
+      79.82907999999998,
+      63.27412699999991,
+      108.85056099999997,
+      101.71139500000004,
+      91.33581299999992
+    ],
+    "blockedReason": null
+  },
+  "priorGrantSha256": "e642dc2329470b34a8554e684c19afd02ef02bfbd905bcb4b3fcbad8e18f7739",
+  "arithmetic": {
+    "remainingCalls": 234,
+    "reservedCalls": 218,
+    "unallocatedCalls": 16,
+    "remainingResponseBytes": 67027135,
+    "reservedResponseBytes": 65011712,
+    "unallocatedResponseBytes": 2015423
+  },
+  "priorPumpApiBudgetSha256": "0463bcd146160fe2ba6eb3a175b1fbafe35325ccb3bd2948f6ee243b15f0af03",
+  "prior": {
+    "reservedBytes": 117440512,
+    "reservedMs": 100000,
+    "attempts": [
+      {
+        "id": "schema-2026-10-27T01-30-23-258Z",
+        "stage": "schema",
+        "at": "2026-10-27T01:30:23.259Z",
+        "reservedBytes": 8388608,
+        "reservedMs": 15000,
+        "status": "completed-with-receipt",
+        "record": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/pumpapi-schema-2026-10-27T01-30-23-258Z.ndjson",
+        "summary": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/pumpapi-schema-2026-10-27T01-30-23-258Z.json",
+        "supervisorStop": null,
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "observedSocketBytes": 7341091
+      },
+      {
+        "id": "capture-2026-10-27T01-35-40-166Z",
+        "stage": "capture",
+        "at": "2026-10-27T01:35:40.166Z",
+        "reservedBytes": 109051904,
+        "reservedMs": 85000,
+        "status": "completed-with-receipt",
+        "record": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/pumpapi-capture-2026-10-27T01-35-40-166Z.ndjson",
+        "summary": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/pumpapi-capture-2026-10-27T01-35-40-166Z.json",
+        "supervisorStop": null,
+        "exit": {
+          "code": 0,
+          "signal": null
+        },
+        "observedSocketBytes": 99653847
+      }
+    ]
+  },
+  "rpc": {
+    "requests": 240,
+    "responseBytes": 67108864,
+    "startsPerMinute": 150,
+    "startsPer10Seconds": 30,
+    "inFlight": 1
+  },
+  "sources": {
+    "version": {
+      "commit": "9aa46448a046404c88787cd897fbdf884a00740e",
+      "dirty": true
+    },
+    "sha256": {
+      "/workspace/pump-opportunity-engine/scripts/active-pumpapi-continuation.ts": "3ff4a855a3d10e6f656593e46a7c2a55a2db019b56480878b3d4b17c2ecd78a8",
+      "/workspace/pump-opportunity-engine/src/research-rpc.ts": "9e092ce044cc5879c7602bfebca64baa262def2b8a597c58d2aba322b1e9628b",
+      "/workspace/pump-opportunity-engine/src/active-selection.ts": "54c5568227d31b8af64e0b5c878f87745ca545a0f9d8e8f75c22fdf80b72836d",
+      "/workspace/pump-opportunity-engine/src/active-pipeline.ts": "bab2a70727447f023adc724e32262af0262e90ff2455afe069a4f2ac62883205",
+      "/workspace/pump-opportunity-engine/src/pumpapi-mapping.ts": "eb0c3edf3769c5c20791ed8c62bd167b4aa5b0aaea7934d50478c13829044ef5",
+      "/workspace/pump-opportunity-engine/src/pool.ts": "7ad31c8eff0eb6331bd439889c897e0cd58b536a1ca370d3311f23b4d7a1915c",
+      "/workspace/pump-opportunity-engine/src/strategy.ts": "b076dfd34410ae5ef6d3a626d6b7852f4dc21eaacca8d6cba0e4de228c105084",
+      "/workspace/pump-opportunity-engine/src/research-pricing.ts": "85983c284c3475b1d60587390a8d68e1cbbdbb363b1e94ea580cf146016dc92d",
+      "/workspace/pump-opportunity-engine/src/research-phase.ts": "c43c39cb1ccd3ebf0ede49e87c78ddfad756875555c808b8b0410b3a5ccff724",
+      "/workspace/pump-opportunity-engine/scripts/active-pumpapi-trial.ts": "47b42221c02e7d7c5e2e20f0f096e8b1df921bac2859d895fa6701ab3a4b18ce",
+      "/workspace/pump-opportunity-engine/package-lock.json": "552d1fc533ec47be8913f220d5d1c08286432fc0e3d3ce54457c488de73ddd4a"
+    }
+  },
+  "providers": [
+    "PumpApi credential-free stream",
+    "Solana public RPC"
+  ],
+  "productionChanged": false,
+  "completedAt": "2026-10-27T03:14:29.460Z"
+}

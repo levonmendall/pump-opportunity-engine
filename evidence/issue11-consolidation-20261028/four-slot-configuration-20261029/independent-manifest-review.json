@@ -1,0 +1,24 @@
+{
+  "classification": "Independent offline exact manifest comparison; not applied or runtime acceptance",
+  "oldFile": "evidence/issue11-consolidation-20261028/coherent-entry-repair-20261029/upgrade-package/service.json",
+  "newFile": "evidence/issue11-consolidation-20261028/four-slot-configuration-20261029/package/service.json",
+  "oldSha256": "6e4549b41db60a4b58d3d61d8eb0becfeb03699071edf34a50b5b0c9e4015779",
+  "newSha256": "a1dbed9db61e259f759701d6aae2bd102ec3dc7cb357ef121312d7ddb3e4354b",
+  "changes": {
+    "deepSlots": {
+      "before": 6,
+      "after": 4
+    },
+    "configurationSha256": {
+      "before": "5e99ebe042521b3917a11b86ef4b46264205b11d38c407cba264a01046a79344",
+      "after": "f6ce54d7594e14d87955f211cca21f594b3d3eb52e20a75fa2245290f22a4857"
+    }
+  },
+  "sourceUnchanged": true,
+  "allFilesUnchanged": true,
+  "supervisorPolicyUnchanged": true,
+  "stageAndStrategyUnchanged": true,
+  "financialRiskPositionCapacityUnchanged": true,
+  "networkRequests": 0,
+  "serviceOperations": 0
+}

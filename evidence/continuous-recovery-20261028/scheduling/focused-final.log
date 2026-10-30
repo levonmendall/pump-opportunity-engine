@@ -1,0 +1,36 @@
+✔ retained strict actual origin imports without RPC; candidate warming begins only at actual source ACK (15.583744ms)
+✔ fresh complete quiet window receives independent audit and same-bucket predictive rejection without financial authorization (15.583348ms)
+✔ late independently verified audit stays recorded but cannot be backdated into an earlier predictive decision bucket (8.883661ms)
+✔ missing independent pool history invalidates candidate data instead of becoming a strategy failure (13.865973ms)
+✔ SYNTHETIC six-slot saturation preserves seventh watch identity and releases actual unsubscribe ownership before replacement (15.194642ms)
+✔ SYNTHETIC six ready rejection audits finish before replacement support/setup with 50 ms jitter (26.278432ms)
+✔ SYNTHETIC six ready rejection audits finish before replacement support/setup with 100 ms jitter (22.685444ms)
+✔ verification refusal retains its exact seed and respects the watch retry time instead of disappearing (2.829041ms)
+✔ a complete audit helper cannot start near native liveness deadline; bounded heartbeat preparation creates a new service interval (6.147939ms)
+✔ closed owner admission and unsettled shared physical gate start no verification, audit or source work (1.844914ms)
+✔ due native setup retains its service opportunity after deferred, busy or backoff outcomes without origin-preparation fallthrough (20.855282ms)
+✔ due native control uses the shared control window during an HTTP-only cooldown (6.738343ms)
+✔ due native support and ready audits use the RPC window during a control-only cooldown (18.398408ms)
+✔ an RPC cooldown defers audit preparation without manufacturing completeness or a source gap (4.904156ms)
+✔ known structural outside-family seed is excluded once without converting its provisional token into an unsupported market (0.794797ms)
+✔ SYNTHETIC migration churn prunes evicted verification seeds and does not strand newest retained identities (1152.109546ms)
+✔ SYNTHETIC six strong scopes retain every rolling predictive decision with 50 ms step jitter and 200 ms audit responses (144.645163ms)
+✔ SYNTHETIC six strong scopes retain every rolling predictive decision with 100 ms step jitter and 200 ms audit responses (107.844841ms)
+✔ SYNTHETIC slow settled audit response exceeds its per-page operation envelope without a false predictive decision or hidden retry (10.07659ms)
+✔ served-node context below the audit floor cannot become an independent predictive pass (10.319178ms)
+✔ SYNTHETIC protocol-aware audited predictive pass remains shadow-only with strict baseline unavailable and no financial qualification (13.843511ms)
+✔ SYNTHETIC busy audit yields one page per step and services a due native control between pages without backdating (131.06022ms)
+✔ SYNTHETIC gap after page one cancels its generation and cannot qualify using later retained history (104.139187ms)
+✔ SYNTHETIC graceful stop preserves a between-page audit diagnostic without dispatching more history (111.63094ms)
+✔ independent lower-fence warming is not a scheduler deadline miss; the next complete target can still be assessed (9.039453ms)
+✔ independently fence-ready work still misses its deadline when the shared physical gate prevents every dispatch (6.909857ms)
+✔ a partial physical history timeout remains an unavailable evaluation and a true deadline miss (5.666925ms)
+✔ a known independent lower context does not copy a busy notification ledger merely to classify dispatch readiness (15.839908ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3023.475816

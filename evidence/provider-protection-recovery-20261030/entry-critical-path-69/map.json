@@ -1,0 +1,69 @@
+{
+  "source": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+  "at": "2026-10-30T02:27:55.192319+00:00",
+  "scope": "Read-only exact deployed-source mapping; no production or disposable financial actions, no test/forward claim",
+  "files": {
+    "src/run-native-paper.ts": "284d4c5febb2088b7f5563a00ded45c820693da4a5f5b32e19054af753deb5fa",
+    "src/native-paper.ts": "b256fbeb93952286bab1ad3ebca03de1b4bd8dff44282c8af75ed435dc3e91ce",
+    "src/pilot-market.ts": "d6fc6ca621cfab4028ba0b03aeb1b1ac683667c2846f4d807d5cd5d576bb4fe7",
+    "src/trader.ts": "9c0ddab5318dcea0e8fbda574073c41042e5071e9cae07edb990f128b3bc0b14",
+    "src/execution.ts": "d046bf855754eac85153a3cb64ef68ed23fec8099dde0176ed913a58c8175f6b",
+    "src/research-held-market.ts": "4741cdbddad025d6fcfe532644fd8b992a6ede808eb4d4160eafc37588ff38a4",
+    "src/native-paper-work.ts": "19f11d5e19fee40296fe71ed153110822a9822713426ead632068fa504cfa5fb"
+  },
+  "observedPromptEvidence": {
+    "mintPrefix": "AoV6",
+    "phase": "rent",
+    "reasonCode": "PILOT_RPC_COMPONENT_ADMISSION_CLOSED",
+    "elapsedMs": 115,
+    "callerAborted": false,
+    "deadlineAborted": false,
+    "holdingCompletionChecks": "146/146 healthy as supplied by parent",
+    "causeBoundary": "Local admission refused an entry read; this code does not identify which individual admission predicate failed."
+  },
+  "decisionPath": [
+    "Launcher chooses exact current independently audited certificate; candidateDue/window/history/age/capacity and riskCapacity must pass.",
+    "Qualification raw evidence must be durably pinned before candidate work. Current certificate/deadline is rechecked after asynchronous retention.",
+    "Outer workOwner becomes candidate. NativePaper performs bounded fresh cost preparation outside active Trader tick; its between-read hook can call normal complete protection while physical gate and Trader are idle.",
+    "NativePaper performs fresh whole-inventory protection/reconciliation before the candidate tick. Its existing financial permission is controlled independently.",
+    "PaperTrader.tick enters active drain, prioritizes due actions, context/reconciliation and held exits, then candidate evidence/entry gates.",
+    "Decision estimate invokes PaperTrader.read, which holds outstanding until the entire entry adapter settles; a due financial action limits its read deadline.",
+    "PilotMarket buy decision quote holds active, obtains current rent first against validated preparation account lengths, then obtains final exact-size SDK state/Clock at current minimum slot. All final ownership, account length, deposit, slot, freshness, generation and post-record checks remain mandatory.",
+    "Each candidate-owned rent/SDK call passes source admission; six-start entry headroom; shared rolling financial reserves; optional setup smoothing; financial lower-view runway; engine committed audit/native deadline admission; provider cooldown, quota, spacing, one physical gate and caller deadline.",
+    "Trader revalidates current features/certificate via candidateReadiness, actual-size quote, liquidity, financial readiness, sizing and identity before idempotent ledger reservation. A preliminary pass grants no order.",
+    "NativePaper returns to actual complete protection after candidate tick. Technical failures can request a genuinely new independently audited window, never retry an uncertain order."
+  ],
+  "pendingExecutionPath": [
+    "Top-level runtime pending/protection phase marks financially owned existing obligations. Context uses withProtectionWork and getMultipleAccounts selects bounded callProtection.",
+    "Existing pending execution normally bypasses discretionary source/headroom/engine gates, while respecting authoritative provider restrictions, exact shared quota/spacing/settlement, fixed deadlines, identity and financial protections.",
+    "Only financially owned getMultipleAccounts selects callProtection. Rent requests still use ordinary PilotRpc.call and retain its ordinary primary cooldown, including candidate-only unthrottled timeout backoff; financial phase ownership does not bypass those provider/client gates.",
+    "Coordinator has one total context-plus-quote preparation deadline of at most3000ms, also capped by original order expiry. Each real attempt uses fresh post-modeled-delay evidence; decision-time quotes cannot serve as a later fill.",
+    "Sell execution reuses only its immediately preceding exact-size coherent context after modeled delay; buy execution obtains new rent/SDK data and matches the pending order/deposit/known slot.",
+    "One action result is durably keyed by execution-attempt:orderId. Unknown financial actions and restarts do not re-quote uncertain transactions."
+  ],
+  "reentrancyFacts": [
+    "PaperTrader.tick returns its existing active Promise when called while active. A decision quote that calls NativePaper.protection would await the same outer tick that is awaiting that quote: a self-dependency.",
+    "PaperTrader.read independently refuses another request while outstanding remains. ExecutionCoordinator.runDue similarly returns its active Promise on reentry.",
+    "PilotMarket.context refuses while entryQuote is active unless protectionYield is explicitly set; existing protectionYield is confined to the outside-tick cost-preparation hook.",
+    "A price-only market.context refresh is not a completed protection evaluation: financial reconciliation, held strategy/exit decisions and strict required trader-held-evaluation records must occur. No completion/recovery clock may advance merely from a fresh price."
+  ],
+  "conditionalPendingOwnershipIssue": {
+    "codeFact": "NativePaper wraps execution context withProtectionWork but passes bare market.executionQuote to pilotExecution.quote. Thus an existing pending execution serviced by a tick whose outer phase is candidate restores candidate before its execution quote. That quote can inherit optional source/headroom/native/audit gates.",
+    "reachableCondition": "Pre-entry protection can reserve a held exit; a subsequent candidate/protection tick under the outer candidate phase can make it due while awaiting context. The single writer and maximumDueActions pending early return otherwise prevent assuming arbitrary new actions appear in the middle of a decision quote.",
+    "status": "Mapped conditional control path; not a claim it occurred in AoV6 or a new live financial failure.",
+    "safeCorrectionBoundary": "Wrap the existing pending execution quote in a trusted account/order-bound financial work scope without reentering Trader and without resetting lastProtectionStart for quote-only work. All original order/financial/execution checks remain required."
+  },
+  "safeYieldDesignBoundaries": [
+    "Do not reuse the cost-preparation normal protection callback inside active Trader decision/execution quotes.",
+    "One option is one-shot actual-size decision quote preparation outside active Trader tick, where the existing complete protection operation can run between settled physical reads. Consumption must remain exact request/size/deposit/inventory/window/certificate-bound, once only, genuinely fresh and current-slot validated.",
+    "USD or budget changes, expired audit/quote, owner control, pending obligation, changed inventory or liquidity must invalidate preprepared results; no price or original timestamp may be rewritten.",
+    "An alternative in-tick priority primitive would require factoring the existing full context/reconciliation/held exit/evidence phase, explicit ownership and cancellation, and exclusion of execution reentry. It has a larger financial refactor surface and cannot consist of calling tick/read/runDue again.",
+    "No quota, physical timeout, four-second completed protection boundary, two-second quote/reconciliation freshness, qualification or duplicate-order protection is weakened by this mapping."
+  ],
+  "nextMeasurement": "Capture each failed quote admission subpredicate (financial runway, source/entry reserve, optional smoothing, engine deadline, pending ownership and raw dispatch readiness), rather than assuming a generic admission code proves quota exhaustion. Parent is building the actual combined-class reproduction separately.",
+  "providerRequests": 0,
+  "financialAccountRead": false,
+  "financialActions": 0,
+  "serviceChanges": 0,
+  "sourceChanges": 0
+}

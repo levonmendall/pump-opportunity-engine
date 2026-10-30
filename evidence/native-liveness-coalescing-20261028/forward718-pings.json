@@ -1,0 +1,1466 @@
+{
+  "classification": "RETAINED_FORWARD_TIMING_NOT_SAVINGS_OR_CORRECTED_REPLAY",
+  "source": {
+    "commit": "71896104f07faa2b193b90d3d3133a8e29236f35",
+    "sha256": "80071522cc6943b5ff743f3106904641bf4e21cac5ffdd6c96b8ee7566dd91e3"
+  },
+  "runId": "native-candidates-20261028172713245",
+  "elapsedSeconds": 890.33,
+  "nativeClientPings": 110,
+  "earlyHeartbeatRequests": 59,
+  "physicalStarts": 673,
+  "physicalStartsByMethod": {
+    "upgrade": 4,
+    "subscribeMigration": 1,
+    "getMultipleAccounts": 226,
+    "logsSubscribe": 85,
+    "ping": 110,
+    "getTransaction": 61,
+    "getSignaturesForAddress": 113,
+    "logsUnsubscribe": 73
+  },
+  "pingUnitsPerMinute": 7.412981703413341,
+  "pingShareOfPhysicalStarts": 0.16344725111441308,
+  "pingCountsByRecentCurrentConnectionAck": {
+    "500": 15,
+    "1000": 26,
+    "3000": 36,
+    "5000": 44,
+    "10000": 60
+  },
+  "earlyVersusPeriodic": {
+    "False": {
+      "count": 52,
+      "withAckWithin10s": 17
+    },
+    "True": {
+      "count": 58,
+      "withAckWithin10s": 43
+    }
+  },
+  "pings": [
+    {
+      "at": 1793208438579,
+      "connection": 1,
+      "operationId": 6210,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208438016,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 563,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208440234,
+      "connection": 1,
+      "operationId": 6214,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208438016,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 2218,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208444582,
+      "connection": 1,
+      "operationId": 6218,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208438016,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 6566,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208446531,
+      "connection": 1,
+      "operationId": 6222,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208438016,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 8515,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208448180,
+      "connection": 1,
+      "operationId": 6226,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208438016,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 10164,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208449865,
+      "connection": 1,
+      "operationId": 6230,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208438016,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 11849,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208451673,
+      "connection": 1,
+      "operationId": 6234,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208438016,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 13657,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208454606,
+      "connection": 1,
+      "operationId": 6238,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208438016,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 16590,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208456549,
+      "connection": 1,
+      "operationId": 6242,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208438016,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 18533,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208458230,
+      "connection": 1,
+      "operationId": 6246,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208438016,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 20214,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208468647,
+      "connection": 1,
+      "operationId": 6249,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208438016,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 30631,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208478762,
+      "connection": 1,
+      "operationId": 6250,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208438016,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 40746,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208488849,
+      "connection": 1,
+      "operationId": 6252,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208438016,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 50833,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208498981,
+      "connection": 1,
+      "operationId": 6253,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208438016,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 60965,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208510152,
+      "connection": 1,
+      "operationId": 6274,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208509600,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 552,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208520271,
+      "connection": 1,
+      "operationId": 6282,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208516592,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 3679,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208524273,
+      "connection": 1,
+      "operationId": 6290,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208523648,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 625,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208528669,
+      "connection": 1,
+      "operationId": 6294,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208523648,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 5021,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208539002,
+      "connection": 1,
+      "operationId": 6297,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208523648,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 15354,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208549145,
+      "connection": 1,
+      "operationId": 6298,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208523648,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 25497,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208559375,
+      "connection": 1,
+      "operationId": 6300,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208523648,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 35727,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208569469,
+      "connection": 1,
+      "operationId": 6301,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208523648,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 45821,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208579540,
+      "connection": 1,
+      "operationId": 6309,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208573840,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 5700,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208584869,
+      "connection": 1,
+      "operationId": 6322,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208584126,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 743,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208586337,
+      "connection": 1,
+      "operationId": 6326,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208584126,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 2211,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208594280,
+      "connection": 1,
+      "operationId": 6333,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208594194,
+        "connection": 1,
+        "kind": "logsUnsubscribe"
+      },
+      "ackAgeMs": 86,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208602619,
+      "connection": 1,
+      "operationId": 6343,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208597163,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 5456,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208607053,
+      "connection": 1,
+      "operationId": 6347,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208597163,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 9890,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208613761,
+      "connection": 1,
+      "operationId": 6356,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208613301,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 460,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208618467,
+      "connection": 1,
+      "operationId": 6360,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208613301,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 5166,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208619971,
+      "connection": 1,
+      "operationId": 6364,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208613301,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 6670,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208630684,
+      "connection": 1,
+      "operationId": 6367,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208613301,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 17383,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208641075,
+      "connection": 1,
+      "operationId": 6372,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208633401,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 7674,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208651490,
+      "connection": 1,
+      "operationId": 6374,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208633401,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 18089,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208661724,
+      "connection": 1,
+      "operationId": 6377,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208633401,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 28323,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208668034,
+      "connection": 1,
+      "operationId": 6392,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208667560,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 474,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208676430,
+      "connection": 1,
+      "operationId": 6400,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208667560,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 8870,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208688030,
+      "connection": 1,
+      "operationId": 6412,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208687935,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 95,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208696863,
+      "connection": 1,
+      "operationId": 6422,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208696345,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 518,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208707157,
+      "connection": 1,
+      "operationId": 6432,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208705211,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 1946,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208717272,
+      "connection": 1,
+      "operationId": 6433,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208705211,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 12061,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208727737,
+      "connection": 1,
+      "operationId": 6435,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208705211,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 22526,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208737675,
+      "connection": 1,
+      "operationId": 6451,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208737120,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 555,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208742034,
+      "connection": 1,
+      "operationId": 6455,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208737120,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 4914,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208752085,
+      "connection": 1,
+      "operationId": 6464,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208750137,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 1948,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208754170,
+      "connection": 1,
+      "operationId": 6471,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208753801,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 369,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208764469,
+      "connection": 1,
+      "operationId": 6476,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208753801,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 10668,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208772399,
+      "connection": 1,
+      "operationId": 6481,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208772145,
+        "connection": 1,
+        "kind": "logsUnsubscribe"
+      },
+      "ackAgeMs": 254,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208779537,
+      "connection": 1,
+      "operationId": 6489,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208774321,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 5216,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208789661,
+      "connection": 1,
+      "operationId": 6492,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208774321,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 15340,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208799912,
+      "connection": 1,
+      "operationId": 6494,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208774321,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 25591,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208805435,
+      "connection": 1,
+      "operationId": 6506,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208804785,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 650,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208810051,
+      "connection": 1,
+      "operationId": 6510,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208804785,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 5266,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208814662,
+      "connection": 1,
+      "operationId": 6514,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208804785,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 9877,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208824265,
+      "connection": 1,
+      "operationId": 6521,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208824032,
+        "connection": 1,
+        "kind": "logsUnsubscribe"
+      },
+      "ackAgeMs": 233,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208827841,
+      "connection": 1,
+      "operationId": 6529,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208826955,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 886,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208838484,
+      "connection": 1,
+      "operationId": 6542,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208838397,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 87,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208848609,
+      "connection": 1,
+      "operationId": 6553,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208845519,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 3090,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208858682,
+      "connection": 1,
+      "operationId": 6554,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208845519,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 13163,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208867824,
+      "connection": 1,
+      "operationId": 6557,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208845519,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 22305,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208874044,
+      "connection": 1,
+      "operationId": 6567,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208873382,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 662,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208884395,
+      "connection": 1,
+      "operationId": 6570,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208873382,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 11013,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208894730,
+      "connection": 1,
+      "operationId": 6571,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208873382,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 21348,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208904972,
+      "connection": 1,
+      "operationId": 6580,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208903378,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 1594,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208913104,
+      "connection": 1,
+      "operationId": 6587,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208912958,
+        "connection": 1,
+        "kind": "logsUnsubscribe"
+      },
+      "ackAgeMs": 146,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208923301,
+      "connection": 1,
+      "operationId": 6596,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208915206,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 8095,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208930234,
+      "connection": 1,
+      "operationId": 6598,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208915206,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 15028,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208936740,
+      "connection": 1,
+      "operationId": 6611,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208935839,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 901,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208945530,
+      "connection": 1,
+      "operationId": 6623,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208945038,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 492,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208949938,
+      "connection": 1,
+      "operationId": 6627,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208945038,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 4900,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793208960037,
+      "connection": 1,
+      "operationId": 6630,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208945038,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 14999,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208970311,
+      "connection": 1,
+      "operationId": 6632,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208945038,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 25273,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208980427,
+      "connection": 1,
+      "operationId": 6641,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208975498,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 4929,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208990606,
+      "connection": 1,
+      "operationId": 6643,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208975498,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 15108,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793208999145,
+      "connection": 1,
+      "operationId": 6654,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793208995247,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 3898,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793209007716,
+      "connection": 1,
+      "operationId": 6664,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209004921,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 2795,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793209017948,
+      "connection": 1,
+      "operationId": 6676,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209015744,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 2204,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793209028366,
+      "connection": 1,
+      "operationId": 6677,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209015744,
+        "connection": 1,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 12622,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793209042458,
+      "connection": 2,
+      "operationId": 6689,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209042069,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 389,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793209049864,
+      "connection": 2,
+      "operationId": 6697,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209044678,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 5186,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793209056145,
+      "connection": 2,
+      "operationId": 6700,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209044678,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 11467,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793209061430,
+      "connection": 2,
+      "operationId": 6704,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209044678,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 16752,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793209070549,
+      "connection": 2,
+      "operationId": 6708,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209044678,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 25871,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793209080701,
+      "connection": 2,
+      "operationId": 6711,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209044678,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 36023,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793209090809,
+      "connection": 2,
+      "operationId": 6712,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209044678,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 46131,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793209100894,
+      "connection": 2,
+      "operationId": 6714,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209044678,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 56216,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793209111104,
+      "connection": 2,
+      "operationId": 6716,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209044678,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 66426,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793209121629,
+      "connection": 2,
+      "operationId": 6737,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209120217,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 1412,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793209124520,
+      "connection": 2,
+      "operationId": 6740,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209120217,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 4303,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793209135756,
+      "connection": 2,
+      "operationId": 6753,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209135542,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 214,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793209145870,
+      "connection": 2,
+      "operationId": 6754,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209135542,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 10328,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793209156121,
+      "connection": 2,
+      "operationId": 6755,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209135542,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 20579,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793209166253,
+      "connection": 2,
+      "operationId": 6757,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209135542,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 30711,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793209176554,
+      "connection": 2,
+      "operationId": 6758,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209135542,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 41012,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793209186665,
+      "connection": 2,
+      "operationId": 6766,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209183380,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 3285,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793209195282,
+      "connection": 2,
+      "operationId": 6782,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209194871,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 411,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793209196915,
+      "connection": 2,
+      "operationId": 6786,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209194871,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 2044,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793209207449,
+      "connection": 2,
+      "operationId": 6791,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209194871,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 12578,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793209218042,
+      "connection": 2,
+      "operationId": 6795,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209194871,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 23171,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793209228641,
+      "connection": 2,
+      "operationId": 6809,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209228270,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 371,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793209238850,
+      "connection": 2,
+      "operationId": 6812,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209228270,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 10580,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793209249034,
+      "connection": 2,
+      "operationId": 6814,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209228270,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 20764,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793209259828,
+      "connection": 2,
+      "operationId": 6819,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209228270,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 31558,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793209271622,
+      "connection": 2,
+      "operationId": 6836,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209271530,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 92,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793209281958,
+      "connection": 2,
+      "operationId": 6837,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209271530,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 10428,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793209292192,
+      "connection": 2,
+      "operationId": 6840,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209271530,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 20662,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793209298003,
+      "connection": 2,
+      "operationId": 6843,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209271530,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 26473,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793209308309,
+      "connection": 2,
+      "operationId": 6854,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209305627,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 2682,
+      "precededByEarlyRequestSinceLastPing": false
+    },
+    {
+      "at": 1793209315954,
+      "connection": 2,
+      "operationId": 6863,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209315257,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 697,
+      "precededByEarlyRequestSinceLastPing": true
+    },
+    {
+      "at": 1793209321035,
+      "connection": 2,
+      "operationId": 6867,
+      "previousCurrentConnectionManagedAck": {
+        "at": 1793209315257,
+        "connection": 2,
+        "kind": "logsSubscribe"
+      },
+      "ackAgeMs": 5778,
+      "precededByEarlyRequestSinceLastPing": true
+    }
+  ],
+  "segments": [
+    {
+      "path": "events/events-001.ndjson",
+      "bytes": 8155370,
+      "sha256": "43c8ead2288941a55da66662e59d64305f063906f49f82b87dcda3b85438ccb1"
+    },
+    {
+      "path": "events/events-002.ndjson",
+      "bytes": 7942150,
+      "sha256": "5d2ec329254b70fc8f0fc9cdf829e22583becb26d3e544ded4ae4c346918b499"
+    },
+    {
+      "path": "events/events-003.ndjson",
+      "bytes": 7529160,
+      "sha256": "eb000c07ea7fee805c457a0c4aae01213b0aeb90a63640bea8a8c73b850bccd7"
+    },
+    {
+      "path": "events/events-004.ndjson",
+      "bytes": 7659634,
+      "sha256": "d23719e5c10ec38a13e4cc79fd28bb69705734cb503ad62347a1970e55c532f3"
+    },
+    {
+      "path": "events/events-005.ndjson",
+      "bytes": 7599346,
+      "sha256": "c627e72c1aba996a0b0572e7adb429481b66985bf865354045eaa92995ea259d"
+    },
+    {
+      "path": "events/events-006.ndjson",
+      "bytes": 7575990,
+      "sha256": "33dd696e5f13a8ad9f310a16608dcc87a2f3e92dc899fce26dcc1d9492a498e6"
+    },
+    {
+      "path": "events/events-007.ndjson",
+      "bytes": 7715293,
+      "sha256": "c3635cda33ea794972937363222a3087e28595c0b05af0a1934c9dced648526c"
+    },
+    {
+      "path": "events/events-008.ndjson",
+      "bytes": 7565156,
+      "sha256": "089f925ab3b7d58990855c20a010e239920230348e6c06f2a616de163e5c7799"
+    },
+    {
+      "path": "events/events-009.ndjson",
+      "bytes": 7599340,
+      "sha256": "90cfb7f5983f5e10b3cf23626080a323c636febee08c4c5efa02018cb15cae13"
+    },
+    {
+      "path": "events/events-010.ndjson",
+      "bytes": 7604138,
+      "sha256": "da6263cc5e127c6f826476e3bae0e51244e7f43a7d0c5824d0e27d1e86bf300a"
+    },
+    {
+      "path": "events/events-011.ndjson",
+      "bytes": 7699339,
+      "sha256": "1e8acb92dec91eea8d28a82230f4863b08b5e0a0156a2fe923305d6ab675ee48"
+    },
+    {
+      "path": "events/events-012.ndjson",
+      "bytes": 7552566,
+      "sha256": "22f4dc81846f7327a70602c8622080d911926d900f12b78dfe690f79c058b17c"
+    },
+    {
+      "path": "events/events-013.ndjson",
+      "bytes": 7643098,
+      "sha256": "11a1133da9dbda5f2133a80fc07bdd3fd616a4b307207b1796a6093011e38ba0"
+    },
+    {
+      "path": "events/events-014.ndjson",
+      "bytes": 7561258,
+      "sha256": "e57b4a433072f17d1cb18b052fb46d7ddb3f2d22b766295844bccb81aafaa706"
+    },
+    {
+      "path": "events/events-015.ndjson",
+      "bytes": 7626656,
+      "sha256": "0388836a8319a5eacddcccb467b77907aff053d9aa7d6c0d6e180b606d0beea1"
+    },
+    {
+      "path": "events/events-016.ndjson",
+      "bytes": 7572808,
+      "sha256": "c684e02efda609f5559cd426508fc60668c89a12bfb6c95160d2b52dabdc594e"
+    },
+    {
+      "path": "events/events-017.ndjson",
+      "bytes": 7517548,
+      "sha256": "40ce5bab3a69de648df1b0a157e85714e256bea78c98d80d754fd1ef65bb0555"
+    },
+    {
+      "path": "events/events-018.ndjson",
+      "bytes": 6988113,
+      "sha256": "4e42cf14e0de381f48a6cb3f63511085baf0abe7e5750c628a747e267c9e332d"
+    },
+    {
+      "path": "events/events-019.ndjson",
+      "bytes": 1594926,
+      "sha256": "fbc29fdaa05114ac2648e55896e93728691e30dfeecb4a1c4c24ea3cec63fa44"
+    }
+  ],
+  "limitations": [
+    "Managed ACK timestamps here are original handler/availability times because source718 did not retain separate conservative ACK receipt. The corrected source records both.",
+    "Recent-ACK overlap is not measured savings: explicit early-runway needs and rescheduled future requests differ.",
+    "Ordinary inbound notifications cannot prove outbound round-trip liveness. They are not used to postpone PING.",
+    "No new provider capacity, complete market coverage or trading profitability is established."
+  ]
+}

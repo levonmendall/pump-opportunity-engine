@@ -1,0 +1,13 @@
+✔ protocol heartbeat requires matching pong, cleans listeners and preserves a healthy connection (1.131737ms)
+✔ missing pong and cancellation settle only after transport close; a fresh connection works afterward (0.744053ms)
+✔ protocol ping shares physical accounting and pacing; JSON-RPC ping and signing remain forbidden (8.964767ms)
+✔ cancelled ping cannot settle on queued pong before actual close, including an already closed pre-aborted socket (0.623774ms)
+✔ cancelled managed unsubscribe retains actual physical ownership through a queued ACK until transport close (12.228744ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 982.929898

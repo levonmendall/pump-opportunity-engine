@@ -1,0 +1,107 @@
+{
+  "classification": "READ_ONLY_RETAINED_PUBLIC_TELEMETRY_ANALYSIS_AND_OFFLINE_REPORTING_REGRESSION",
+  "actualSource": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+  "firstRun": "native-paper-20261029145012717",
+  "fourSlotRun": "native-paper-20261029161536720",
+  "evidence": [
+    "evidence/issue11-consolidation-20261028/coherent-entry-forward-20261029/forward-snapshots.ndjson",
+    "evidence/issue11-consolidation-20261028/coherent-entry-forward-20261029/current-financial-1793288269357.json",
+    "evidence/issue11-consolidation-20261028/coherent-entry-forward-20261029/rolling-supervision/material-transitions.ndjson",
+    "evidence/issue11-consolidation-20261028/coherent-entry-forward-20261029/rolling-supervision/routine-0.ndjson"
+  ],
+  "originalHolding": {
+    "mint": "AcBX8a8eHbzQghgqMfqXeAz4kQSRbtHWKUSGXvwMpump",
+    "enteredAt": "2026-10-29T15:01:47.821Z",
+    "exitedAt": "2026-10-29T15:16:50.857Z",
+    "heldMs": 903036,
+    "quantity": "6411268419",
+    "exitDecisionAt": "2026-10-29T15:16:49.656Z",
+    "exitReason": "maximum-holding-time; fresh executable quote still required",
+    "postExitTelemetry": {
+      "at": "2026-10-29T15:37:32.064Z",
+      "lastCompletedProtectionAt": "2026-10-29T15:16:49.680Z",
+      "breaches": 4,
+      "unavailableChecks": 14,
+      "maximumGapHiddenByFlatProjection": true
+    }
+  },
+  "secondHolding": {
+    "mint": "8TJ1uhidGn7PmzEtmftDUJkAxEcLpPNWqdvh42SZpump",
+    "enteredAt": "2026-10-29T16:08:35.958Z",
+    "quantity": "319987598",
+    "lastPreRestartTelemetry": {
+      "at": "2026-10-29T16:15:34.062Z",
+      "lastCompletedProtectionAt": "2026-10-29T16:15:31.174Z",
+      "breaches": 5,
+      "unavailableChecks": 17,
+      "maximumCompletedGapMs": 19446
+    },
+    "postRestartObserved": {
+      "at": "2026-10-29T16:17:09.562Z",
+      "lastCompletedProtectionAt": "2026-10-29T16:17:09.561Z",
+      "breaches": 1,
+      "unavailableChecks": 2,
+      "maximumCompletedGapMs": 6337,
+      "maximumQuoteAgeAtUseMs": 172,
+      "scope": "NEW RUN ONLY; does not replace prior5/17"
+    }
+  },
+  "measuredAttribution": {
+    "firstThreeBreaches": "Counter increments observed by15:02:48.330,15:03:26.482,15:08:46.047; each added3unavailable checks. Physical HTTP timeout counter stayed132;HTTP errors/throttles0;primary cooldown expired15:01:43.056. CPU normal6-12%,p95looplag~25ms;rollingstarts54/55/60 at increment snapshots.",
+    "newPreRestartBreach": "By16:14:32.530:5breaches17unavailable;HTTPtimeout179unchanged,primarycooldownexpired16:07:57.041,CPU6.3%,loop23.8ms,rolling52.",
+    "conclusion": "Strong support for local dispatch/minute-gate contention, not proof for every occurrence. Runtime waiting before a physical request can time out via the3000ms trader outer timer without a component-physical-timeout event. Other unavailable mark/price/data paths remain possible.",
+    "missingEvidence": "Private per-operation component-pacing-wait, held-context, held-evaluation and source-generation event sequence inaccessible;public15s polling cannot establish exact request cause. Manual observation gap15:13\u201315:37 preserved."
+  },
+  "qualificationVsFill": {
+    "qualifiedDecisionEvents": 3,
+    "uniqueQualifiedTokens": 2,
+    "qualifiedAt": [
+      "2026-10-29T15:01:46.169Z",
+      "2026-10-29T16:08:24.724Z",
+      "2026-10-29T16:08:34.262Z"
+    ],
+    "buyFills": 2,
+    "sellFills": 1,
+    "firstUnfilledQualification": "16:08:24.724 8TJ repeated qualification before16:08:34.262 then fill16:08:35.958. Public retained fields do not establish exact failed attempt reason. Portfolio was flat; do not blame full single-position capacity.",
+    "riskRefusals": "No explicit risk-rejection events in retained public decision sample;bounded/replacement lists are not an exhaustive refusal census. Independent predictive-not-rejected while held does not prove executable qualification or missed trade."
+  },
+  "futureTwoReadiness": {
+    "enabled": false,
+    "financialLimitUnchanged": 1,
+    "provenFixtures": [
+      "test/native-paper-integration.test.ts twoSDK-pricedpositions,coherentone-readsteadyvaluation,recoveryoftwouncertainexits,financialreconciliation",
+      "test/native-paper.test.ts one-positioncapacityrefusesbeforeproof/rent/quoteswhileheldprotectioncontinues",
+      "test/pilot-concurrency.test.ts realpacedComponentBudgetmechanicsandnegativeoverlappingentry/exitfreshnesscase"
+    ],
+    "limitations": [
+      "Native two-position fixture RPC resolves immediately and does not prove actual physical pacing or provider latency.",
+      "One coherent batch prices two holdings, so steady rate need not double;actualtwo-poolpayload/decode/servicelatencystillunmeasured.",
+      "Existing paced overlap fixture safely refuses stale-reconciliation entry;successfulconcurrententry/exitcapacitynotestablished.",
+      "Sustainedone-positionprotectionalreadybreaches4scompletionboundary;mustrepair/measurebeforeenablingtwo.",
+      "Need real position-sized quotes,concurrentdueactions,providerdelay/recovery,sourceindependence,restartandreporting evidence without changing risk rules."
+    ]
+  },
+  "reportingFix": {
+    "files": [
+      "src/operating-intelligence.ts",
+      "test/operating-intelligence.test.ts"
+    ],
+    "behavior": "Retain measured maximumCompletedGapMs/maximumQuoteAgeAtUseMs while flat if valid lastCompletedProtectionAt exists;nullifnevercompleted or futureinvalid;no schema/channel changes.",
+    "before": "Regression fails:null!=19446",
+    "after": "15/15reporting;49/49relevantheld/native/trader/concurrency;TypeScriptbuild anddiffcheckpass",
+    "deployed": false
+  },
+  "providerEvidence": {
+    "officialSolanaReceipt": "evidence/migration-age-20261028/public-rpc-current-limits.json",
+    "publishedChangeableUpperLimits": {
+      "requestsPer10sPerIP": 100,
+      "singleMethodPer10sPerIP": 40,
+      "concurrentConnectionsPerIP": 40,
+      "newConnectionsPer10sPerIP": 40,
+      "bytesPer30s": 100000000
+    },
+    "PublicNode": "No numericquota/concurrency/SLAestablished fromretainedofficialterms.",
+    "localLimits": "60/min,250ms,physical1arelocalcontrols\u2014notproviderentitlement.",
+    "runtime90": "No hotsetter:readonlyconstructorvalue;nativehardcoded60profile/omittedrateoption.Requireversionedsource/configandpinnedaccount-preservingtransition."
+  }
+}

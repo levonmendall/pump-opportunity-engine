@@ -1,0 +1,9 @@
+# Rollback boundary for the V2 protection/recovery upgrade
+
+The existing predecessor is ba33ee535ad1703da36905a5e2f44088ae19a43d with active Adaptive Momentum v2, two holdings and four deep slots. Before any possible new-runtime start, a failed installation may restore its exact backed-up code/configuration only after fresh physical writer settlement, account/prefix verification and the original exclusive financial-owner lease. The financial ledger and provider counterbooks are never restored.
+
+After a new-runtime start is requested, might have occurred, or is inferred from its selected release/configuration, retain the new financial manager. This applies even if it opened no positions and made no PAPER fill. The new ComponentBudget continuous schema-v2 accounting can durably reserve a four-MiB passive byte lease (two-MiB maximum received chunk plus two-MiB batching window) before any fill. The old ba33 executable rejects that schema and cannot safely interpret its reserved or uncertain provider-response tails. Restart/recovery must preserve those obligations and use the compatible new accounting reader.
+
+A later baseline trading-policy rollback must be implemented on an executable that understands the current provider accounting and all existing V2 holding/round-trip metadata. Directly selecting ba33 or the older 5648606 baseline executable is prohibited after a possible upgraded start. Neither absence of fills, flat financial inventory, passing old tests, nor a desire to refresh reporting proves a safe downgrade.
+
+The original ledger, account identity/inception, fills, journal, risk controls, held positions, pending financial actions, provider books and uncertainty remain authoritative. The upgrade does not clear the current hard protection pause or repeat the owner daily-loss waiver.

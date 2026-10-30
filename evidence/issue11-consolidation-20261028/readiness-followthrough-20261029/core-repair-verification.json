@@ -1,0 +1,48 @@
+{
+  "recordedAt": "2026-10-29T04:12:40.191711+00:00",
+  "liveSourceUnchanged": "5e55d8b939de99698ddb311a282461931fcbc957",
+  "ownerHealthVerified": {
+    "matchedACK": 111,
+    "outputErrors": 111,
+    "newRiskAllowed": true,
+    "proofPreparation": null,
+    "sourceRecoveryGeneration": 9
+  },
+  "defects": [
+    {
+      "name": "same-packet bridge observation loss",
+      "repro": "two native events with one availability time; first callback advanceswallclock1ms; old presence check advanceswindow, secondbridgeevent rejected",
+      "oldResult": "native2/bridge1",
+      "fixedResult": "native2/bridge2; receivedAt/amounts/identity/slotfloors/featurehash unchanged",
+      "fix": "PaperTrader.hasCandidate replaces mutating feature reads in bridge slot/gap presence checks",
+      "liveAttribution": "Not yet proven from private liveevents."
+    },
+    {
+      "name": "status/report/candidate reads reuse an earlier clock",
+      "repro": "real FlowWindow + native certificate; fresh status advances1ms; old time lookup throws",
+      "fix": "Sample certificate availability at actual use after status/report; never clamp or rewrite source time; expiry still rejects",
+      "liveAttribution": "Conditional defect demonstrated; no claim all recoveries caused by it."
+    },
+    {
+      "name": "public delivery receipt rejects real provenance shape",
+      "repro": "actual startup bundle source has6additional verifiedprovenance fields; status accepts2pins but receipt demandedexactdict equality",
+      "fix": "Match exactcommit/SHA pins consistently with statusvalidation; preserve rawhash/account/ACK/timeguards andprivateprovenance",
+      "liveEvidence": "Owner111matchedACK/111outputErrors +missingpublicreceipt +actualsourcecode shape is consistent; independentold/newfixture reproduces111/111 versus111/0."
+    }
+  ],
+  "tests": {
+    "repository": {
+      "passed": 1687,
+      "failed": 0
+    },
+    "timingFocused": 15,
+    "supervisorPython": 27,
+    "cutoverPython": 28,
+    "broaderNativeTradeExecutionFocus": 119,
+    "build": "PASS"
+  },
+  "unchangedFinancialStrategySources": "",
+  "deploymentStatus": "NOT DEPLOYED; preparing same-service account-preserving forward upgrade",
+  "noRealTransactions": true,
+  "noLedgerReset": true
+}

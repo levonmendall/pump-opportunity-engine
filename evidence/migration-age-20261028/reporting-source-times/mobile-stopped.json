@@ -1,0 +1,19 @@
+{
+  "title": "POE // Opportunity Command Center",
+  "href": "https://meme-machine-dashboard-staging.onrender.com/",
+  "viewport": 390,
+  "documentWidth": 390,
+  "bodyWidth": 390,
+  "agePolicy": "Observation 0–120 min; selected older research 120–360 min · observation-age-v1. Baseline entry comparison remains 5–120 minutes. Cohort counts describe observation allocation, not predictive quality or returns.",
+  "watchText": "Recent identities known112Baseline entry-age verified identities (5–120 min)10Watch candidates30Deep slots active / maximum0 / 6Ready deep-analysis queue10Current queue wait: average / maximum (s)2,348.24 / 4,814.99Completed admission wait: average / maximum (s)1,072.82 / 6,515.3Promotions / re-promotions418 / 325Demotions418Complete 60-second windows415Feature-only assessments0Feature-only failures0Primary strategy rejections0Capacity exclusions0Incomplete-data exclusions0Enrichment deadline failures0Structural exclusions13Expired identities91Observation-eligible identities29Observation-ready queue29Pre-entry observation cohort (<5 min)0Baseline entry-age cohort (5–120 min)10Selected older research cohort19Selected older watch capacity24",
+  "sourceTimesText": "",
+  "portfolioCardCount": 0,
+  "portfolioPositionText": "No experimental position projection reported.",
+  "scriptTagCount": 0,
+  "pilotState": "PUBLISHER DISCONNECTED · STOPPED · SOURCE STALE",
+  "sourceText": "",
+  "checkedAt": "2026-10-28T04:24:15.872Z",
+  "errors": [],
+  "horizontalOverflow": false,
+  "tlsVerificationEnabled": true
+}

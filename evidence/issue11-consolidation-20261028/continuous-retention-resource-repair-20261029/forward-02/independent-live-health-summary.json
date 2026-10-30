@@ -1,0 +1,594 @@
+{
+  "classification": "INDEPENDENT READ-ONLY ANALYSIS OF RETAINED AUTHENTICATED PUBLIC SAMPLES; no provider requests, runtime edits or financial DB opens",
+  "sourceCommit": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+  "runIds": [
+    "native-paper-20261029164842357"
+  ],
+  "configurationSha256": [
+    "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae"
+  ],
+  "interval": {
+    "firstSourceAt": "2026-10-29T17:06:00.099Z",
+    "lastSourceAt": "2026-10-29T17:34:50.887Z",
+    "elapsedMs": 1730788,
+    "uniqueSourceSnapshots": 114,
+    "firstSequence": "9146",
+    "lastSequence": "9260",
+    "sourceSequencesNotRetained": [
+      9238
+    ]
+  },
+  "inputFilesAtRead": [
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-0.ndjson",
+      "bytesAtRead": 1043903,
+      "sha256AtRead": "1b0122a0405ad4cd939326f6af3e0b21ece9771b0ba52923f5a44b4c7147c559"
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-1.ndjson",
+      "bytesAtRead": 1044980,
+      "sha256AtRead": "9584ab50c1a04c5bfd8c3ad6fcd836817f9e55057870ce3472a14cb5160f988e"
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+      "bytesAtRead": 1041064,
+      "sha256AtRead": "69f8e737af1c212069d6ae0e5c4fe6088a7e02c7e5268cd1af88afa278128669"
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+      "bytesAtRead": 1035830,
+      "sha256AtRead": "6d386e44ff663f7149a2bf4054812d101500fb13254d10f557fff41ff186a810"
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-4.ndjson",
+      "bytesAtRead": 466162,
+      "sha256AtRead": "5031d5ff32754557a8d5c3d670f93a0556c6e4962d19259a2e7d0a8fe3456828"
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/material-transitions.ndjson",
+      "bytesAtRead": 1674820,
+      "sha256AtRead": "bd5c98fcbbc18903c1ca526ce04b5a68d80bec0018c4e797185b84179e238969"
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/latest.json",
+      "bytesAtRead": 15781,
+      "sha256AtRead": "a9dd49e42d95f70d14c57588502175b356365407867d93a0855310d531f82783"
+    }
+  ],
+  "partialLinesSkipped": [],
+  "sameSequenceSnapshotConflicts": [],
+  "monotonicCounterRegressions": [],
+  "counterDeltas": {
+    "candidates": {
+      "migrationsReceived": {
+        "before": 276,
+        "after": 300,
+        "delta": 24
+      },
+      "verifiedOrigins": {
+        "before": 109,
+        "after": 130,
+        "delta": 21
+      },
+      "promoted": {
+        "before": 3547,
+        "after": 3627,
+        "delta": 80
+      },
+      "repromoted": {
+        "before": 3325,
+        "after": 3388,
+        "delta": 63
+      },
+      "demoted": {
+        "before": 3541,
+        "after": 3619,
+        "delta": 78
+      },
+      "completeWindows": {
+        "before": 1520,
+        "after": 1559,
+        "delta": 39
+      },
+      "auditedWindows": {
+        "before": 1541,
+        "after": 1580,
+        "delta": 39
+      },
+      "uniqueEvaluated": {
+        "before": 27,
+        "after": 53,
+        "delta": 26
+      },
+      "predictiveAssessments": {
+        "before": 1541,
+        "after": 1580,
+        "delta": 39
+      },
+      "predictivePasses": {
+        "before": 53,
+        "after": 55,
+        "delta": 2
+      },
+      "predictiveFailures": {
+        "before": 1467,
+        "after": 1504,
+        "delta": 37
+      },
+      "predictiveUnavailable": {
+        "before": 3,
+        "after": 3,
+        "delta": 0
+      }
+    },
+    "quality": {
+      "qualityGaps": {
+        "before": 912,
+        "after": 953,
+        "delta": 41
+      },
+      "auditUnavailable": {
+        "before": 35,
+        "after": 39,
+        "delta": 4
+      },
+      "auditUnusable": {
+        "before": 101,
+        "after": 108,
+        "delta": 7
+      },
+      "decisionDeadlineMisses": {
+        "before": 38,
+        "after": 51,
+        "delta": 13
+      },
+      "enrichmentDeadlineFailures": {
+        "before": 0,
+        "after": 0,
+        "delta": 0
+      },
+      "incompleteExclusions": {
+        "before": 912,
+        "after": 953,
+        "delta": 41
+      },
+      "capacityExclusions": {
+        "before": 0,
+        "after": 0,
+        "delta": 0
+      },
+      "structuralExclusions": {
+        "before": 28,
+        "after": 31,
+        "delta": 3
+      }
+    },
+    "provider": {
+      "rpcRequests": {
+        "before": 473,
+        "after": 1243,
+        "delta": 770
+      },
+      "rpcResponseBytes": {
+        "before": 103959981,
+        "after": 261293353,
+        "delta": 157333372
+      },
+      "nativeStreamBytes": {
+        "before": 529200418,
+        "after": 599578598,
+        "delta": 70378180
+      },
+      "broadWatchBytes": {
+        "before": 33502730693,
+        "after": 35587423428,
+        "delta": 2084692735
+      },
+      "httpTimeouts": {
+        "before": 240,
+        "after": 277,
+        "delta": 37
+      },
+      "httpErrors": {
+        "before": 0,
+        "after": 0,
+        "delta": 0
+      },
+      "throttles": {
+        "before": 0,
+        "after": 0,
+        "delta": 0
+      }
+    }
+  },
+  "capture": {
+    "disconnectedSampleCount": 21,
+    "disconnectedEpisodes": [
+      {
+        "previousConnectedSampleAt": "2026-10-29T17:08:01.769Z",
+        "firstDisconnectedSampleAt": "2026-10-29T17:08:16.773Z",
+        "firstSequence": "9155",
+        "lastDisconnectedSampleAt": "2026-10-29T17:08:46.812Z",
+        "lastSequence": "9157",
+        "samples": 3,
+        "firstReconnectedSampleAt": "2026-10-29T17:09:01.852Z",
+        "reconnectedSequence": "9158",
+        "observedDisconnectedSpanMs": 30039,
+        "outerSamplingBracketMs": 60083
+      },
+      {
+        "previousConnectedSampleAt": "2026-10-29T17:24:31.810Z",
+        "firstDisconnectedSampleAt": "2026-10-29T17:24:46.820Z",
+        "firstSequence": "9220",
+        "lastDisconnectedSampleAt": "2026-10-29T17:26:47.266Z",
+        "lastSequence": "9228",
+        "samples": 9,
+        "firstReconnectedSampleAt": "2026-10-29T17:27:02.280Z",
+        "reconnectedSequence": "9229",
+        "observedDisconnectedSpanMs": 120446,
+        "outerSamplingBracketMs": 150470
+      },
+      {
+        "previousConnectedSampleAt": "2026-10-29T17:27:17.297Z",
+        "firstDisconnectedSampleAt": "2026-10-29T17:27:32.308Z",
+        "firstSequence": "9231",
+        "lastDisconnectedSampleAt": "2026-10-29T17:28:17.396Z",
+        "lastSequence": "9234",
+        "samples": 4,
+        "firstReconnectedSampleAt": "2026-10-29T17:28:33.852Z",
+        "reconnectedSequence": "9235",
+        "observedDisconnectedSpanMs": 45088,
+        "outerSamplingBracketMs": 76555
+      },
+      {
+        "previousConnectedSampleAt": "2026-10-29T17:31:50.478Z",
+        "firstDisconnectedSampleAt": "2026-10-29T17:32:05.552Z",
+        "firstSequence": "9249",
+        "lastDisconnectedSampleAt": "2026-10-29T17:33:05.638Z",
+        "lastSequence": "9253",
+        "samples": 5,
+        "firstReconnectedSampleAt": "2026-10-29T17:33:20.662Z",
+        "reconnectedSequence": "9254",
+        "observedDisconnectedSpanMs": 60086,
+        "outerSamplingBracketMs": 90184
+      }
+    ],
+    "allDiscoveryConnected": true,
+    "allWatchConnected": true,
+    "gapIncrements": [
+      {
+        "at": "2026-10-29T17:08:16.773Z",
+        "sequence": "9155",
+        "gapDelta": 4,
+        "timeoutDeltaSameSample": 0,
+        "capture": false,
+        "previousCapture": true,
+        "auditUnusableDelta": 1,
+        "promotedDelta": 4,
+        "held": 0
+      },
+      {
+        "at": "2026-10-29T17:12:04.093Z",
+        "sequence": "9170",
+        "gapDelta": 4,
+        "timeoutDeltaSameSample": 1,
+        "capture": true,
+        "previousCapture": true,
+        "auditUnusableDelta": 0,
+        "promotedDelta": 4,
+        "held": 0
+      },
+      {
+        "at": "2026-10-29T17:13:05.198Z",
+        "sequence": "9174",
+        "gapDelta": 4,
+        "timeoutDeltaSameSample": 1,
+        "capture": true,
+        "previousCapture": true,
+        "auditUnusableDelta": 0,
+        "promotedDelta": 4,
+        "held": 0
+      },
+      {
+        "at": "2026-10-29T17:15:36.374Z",
+        "sequence": "9184",
+        "gapDelta": 4,
+        "timeoutDeltaSameSample": 3,
+        "capture": true,
+        "previousCapture": true,
+        "auditUnusableDelta": 0,
+        "promotedDelta": 4,
+        "held": 0
+      },
+      {
+        "at": "2026-10-29T17:18:27.886Z",
+        "sequence": "9195",
+        "gapDelta": 1,
+        "timeoutDeltaSameSample": 2,
+        "capture": true,
+        "previousCapture": true,
+        "auditUnusableDelta": 1,
+        "promotedDelta": 1,
+        "held": 0
+      },
+      {
+        "at": "2026-10-29T17:18:57.905Z",
+        "sequence": "9197",
+        "gapDelta": 1,
+        "timeoutDeltaSameSample": 0,
+        "capture": true,
+        "previousCapture": true,
+        "auditUnusableDelta": 1,
+        "promotedDelta": 3,
+        "held": 0
+      },
+      {
+        "at": "2026-10-29T17:24:46.820Z",
+        "sequence": "9220",
+        "gapDelta": 3,
+        "timeoutDeltaSameSample": 0,
+        "capture": false,
+        "previousCapture": true,
+        "auditUnusableDelta": 0,
+        "promotedDelta": 4,
+        "held": 1
+      },
+      {
+        "at": "2026-10-29T17:25:47.004Z",
+        "sequence": "9224",
+        "gapDelta": 4,
+        "timeoutDeltaSameSample": 0,
+        "capture": false,
+        "previousCapture": false,
+        "auditUnusableDelta": 0,
+        "promotedDelta": 4,
+        "held": 0
+      },
+      {
+        "at": "2026-10-29T17:27:17.297Z",
+        "sequence": "9230",
+        "gapDelta": 4,
+        "timeoutDeltaSameSample": 2,
+        "capture": true,
+        "previousCapture": true,
+        "auditUnusableDelta": 0,
+        "promotedDelta": 3,
+        "held": 0
+      },
+      {
+        "at": "2026-10-29T17:27:32.308Z",
+        "sequence": "9231",
+        "gapDelta": 4,
+        "timeoutDeltaSameSample": 0,
+        "capture": false,
+        "previousCapture": true,
+        "auditUnusableDelta": 0,
+        "promotedDelta": 5,
+        "held": 0
+      },
+      {
+        "at": "2026-10-29T17:29:34.584Z",
+        "sequence": "9239",
+        "gapDelta": 1,
+        "timeoutDeltaSameSample": 0,
+        "capture": true,
+        "previousCapture": true,
+        "auditUnusableDelta": 1,
+        "promotedDelta": 1,
+        "held": 0
+      },
+      {
+        "at": "2026-10-29T17:31:20.383Z",
+        "sequence": "9246",
+        "gapDelta": 2,
+        "timeoutDeltaSameSample": 1,
+        "capture": true,
+        "previousCapture": true,
+        "auditUnusableDelta": 2,
+        "promotedDelta": 0,
+        "held": 0
+      },
+      {
+        "at": "2026-10-29T17:32:05.552Z",
+        "sequence": "9249",
+        "gapDelta": 4,
+        "timeoutDeltaSameSample": 0,
+        "capture": false,
+        "previousCapture": true,
+        "auditUnusableDelta": 0,
+        "promotedDelta": 0,
+        "held": 0
+      },
+      {
+        "at": "2026-10-29T17:34:20.791Z",
+        "sequence": "9258",
+        "gapDelta": 1,
+        "timeoutDeltaSameSample": 0,
+        "capture": true,
+        "previousCapture": true,
+        "auditUnusableDelta": 1,
+        "promotedDelta": 2,
+        "held": 0
+      }
+    ],
+    "multiGapSteps": 9,
+    "gapsInMultiGapSteps": 35,
+    "gapStepsWithAuditUnusableIncrease": 6
+  },
+  "provider": {
+    "sampledMaximumRollingStartsPerMinute": 66,
+    "sampledRateLimit": [
+      90
+    ],
+    "samplesWithActivePrimaryCooldown": 16,
+    "samplesWithActiveHistoryCooldown": 0
+  },
+  "resources": {
+    "cpuOneCoreFraction": {
+      "first": 0.12270718306535881,
+      "last": 0.14044270172410875,
+      "minimum": 0.10331579386675124,
+      "maximum": 0.5572043106340154
+    },
+    "rssBytes": {
+      "first": 418902016,
+      "last": 436146176,
+      "minimum": 391643136,
+      "maximum": 449605632
+    },
+    "availableMemoryBytes": {
+      "first": 6872940544,
+      "last": 6798606336,
+      "minimum": 6786887680,
+      "maximum": 6872940544
+    },
+    "availableDiskBytes": {
+      "first": 288766193664,
+      "last": 288757448704,
+      "minimum": 288709431296,
+      "maximum": 288778047488
+    },
+    "eventLoopLagMs": {
+      "first": 28.213247,
+      "last": 25.985023,
+      "minimum": 25.903103,
+      "maximum": 28.442623
+    }
+  },
+  "storageRecovery": {
+    "generation": [
+      0
+    ],
+    "failures": [
+      0
+    ],
+    "evidenceRefusedRecords": [
+      0
+    ],
+    "allEvidenceAdmissionAllowed": true,
+    "allCandidateResourceAdmissionAllowed": true,
+    "evidencePressureReasons": [
+      null
+    ]
+  },
+  "paperTrade": {
+    "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+    "trades": [
+      {
+        "id": "paper-fill:b48482a338aeb715f088a5ac1b2d5514",
+        "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+        "side": "buy",
+        "quantity": "1028422062926",
+        "at": "2026-10-29T17:20:07.003Z",
+        "valueUsd": 49.694512,
+        "executionCostsUsd": 0.00071,
+        "status": "PAPER filled",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:48034:1793294405324"
+      },
+      {
+        "id": "paper-fill:a3642f8273dedd56f127555852b6bf13",
+        "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+        "side": "sell",
+        "quantity": "1028422062926",
+        "at": "2026-10-29T17:25:39.189Z",
+        "valueUsd": 42.251924,
+        "executionCostsUsd": 0.000711,
+        "status": "PAPER filled",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:48201:1793294738055"
+      }
+    ],
+    "holdDurationMs": 332186,
+    "firstHeldSampleAt": "2026-10-29T17:20:13.404Z",
+    "lastHeldSampleAt": "2026-10-29T17:25:31.950Z",
+    "heldSnapshots": 22,
+    "maximumSimultaneousPositionsObserved": 1,
+    "lastProtection": {
+      "state": "flat",
+      "targetCadenceMs": 2000,
+      "completedEvaluationBoundaryMs": 4000,
+      "lastCompletedAt": "2026-10-29T17:25:38.079Z",
+      "maximumCompletedGapMs": 2555,
+      "maximumQuoteAgeAtUseMs": 72,
+      "breaches": 0,
+      "unavailableChecks": 0
+    },
+    "maxProtectionCompletionGapMs": 2555,
+    "maxQuoteAgeAtUseMs": 72,
+    "protectionBreaches": 0,
+    "protectionUnavailableChecks": 0,
+    "accountBalanceChangeOverIntervalSOL": {
+      "cashSol": "-0.076863756",
+      "equitySol": "-0.073861476",
+      "reservedSol": "0"
+    },
+    "balanceBefore": {
+      "cashSol": "9.872390772",
+      "reservedSol": "0",
+      "equitySol": "9.881397612",
+      "equityUsd": 1003.900591,
+      "realizedUsd": -8.153003,
+      "unrealizedUsd": 0,
+      "tradingPnlUsd": -8.153003,
+      "economicPnlUsd": null,
+      "positionCostUsd": 0,
+      "markedExposureUsd": 0,
+      "drawdownUsd": null,
+      "executionCostsUsd": null,
+      "operatingCostsUsd": null,
+      "passiveSolEquityUsd": 1012.053594,
+      "solPriceUsd": 101.595
+    },
+    "balanceAfter": {
+      "cashSol": "9.795527016",
+      "reservedSol": "0",
+      "equitySol": "9.807536136",
+      "equityUsd": 995.366843,
+      "realizedUsd": -15.640778,
+      "unrealizedUsd": 0,
+      "tradingPnlUsd": -15.640778,
+      "economicPnlUsd": null,
+      "positionCostUsd": 0,
+      "markedExposureUsd": 0,
+      "drawdownUsd": null,
+      "executionCostsUsd": null,
+      "operatingCostsUsd": null,
+      "passiveSolEquityUsd": 1011.007621,
+      "solPriceUsd": 101.49
+    },
+    "pendingAtEnd": [],
+    "openPositionsAtEnd": [],
+    "bracketFile": "8NTU-entry-exit-brackets.json",
+    "bracketFileSha256": "b5fc6d93be3d6469d25eb4c84b4692223c05fd1dd421de7d987ee6eaa507a176"
+  },
+  "interpretation": {
+    "verified": [
+      "Four selected-capture disconnection episodes are represented by sampled connection=false, while broad discovery and watch stay connected.",
+      "The compared counters do not regress, and source/run/configuration/generation stay fixed. Large totals preserve earlier service/watch history; interval deltas are the relevant growth.",
+      "Resource/evidence admission remains open with no evidence refusal, generation increment or critical recovery.",
+      "A natural PAPER buy and stop-triggered sell for8NTU are durably reported with equal quantities; current reported protection gap remains below4s boundary."
+    ],
+    "notProven": [
+      "Public15s snapshots cannot attribute each quality gap to a specific private event, or distinguish a shared event from several candidate-local events within a sampling interval.",
+      "A connection=true sample does not prove uninterrupted capture between samples or that every candidate has valid flow/support/audit.",
+      "Unique current-generation evaluations are not whole-market recall. Repeated complete windows/promotions are not distinct profitable opportunities.",
+      "Reported per-fill USD values use different timestamps; subtracting them does not establish exact realized trading P&L. The account SOL delta is exact as reported, but independent per-action accounting requires ledger evidence."
+    ],
+    "privateFactsRequired": [
+      "native-candidate-quality-gap events with at,mint,reason; native-flow-disconnected events with connection/reason/retryAt and provider/control event traces.",
+      "RPC per-operation method/domain/request/first-byte/body/settlement/error timing, and support refresh deferral events, to classify timeouts and shared propagation.",
+      "Candidate/watch demotion and promotion histories, audit dispatch traces, and current source/service baseline totals, to distinguish retry churn and historical counter carryover.",
+      "Read-only durable order/action results and exact quote/cost/locked-deposit projections to independently reconcile this trade and assign the account SOL delta."
+    ]
+  },
+  "frozenInput": {
+    "file": "snapshots.ndjson",
+    "bytes": 1684921,
+    "sha256": "4a777f85c946f519241a0ef89eed7ffed8fcc649e85eaa50e0e7cb0b9c6efcc3",
+    "rows": 114,
+    "firstSequence": "9146",
+    "lastSequence": "9260",
+    "provenanceFile": "frozen-input-provenance.json",
+    "provenanceSha256": "af0a4aaf3321a6d0364f2a9971a3af096b6397f15e93d51deba283233128121b",
+    "allBracketRowsExactlyMatched": true
+  }
+}

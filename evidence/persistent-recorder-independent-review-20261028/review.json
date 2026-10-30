@@ -1,0 +1,32 @@
+{
+  "schemaVersion": 1,
+  "decision": "GO FOR OFFLINE TESTED SOFTWARE SCOPE",
+  "reviewedSource": "85b0bdb2f01067dffa7241101f7af704c1b96bd9",
+  "reviewedAt": "2026-10-28T23:58:19.228787+00:00",
+  "sourceFiles": [
+    {
+      "path": "src/retained-recorder.ts",
+      "sha256": "d9599c7041a86bbf597f814f939c22aa8137ae42c43231a4bf17a342c92048a3"
+    },
+    {
+      "path": "test/retained-recorder.test.ts",
+      "sha256": "aacfaa136cca46f0c0f9f86e28ec230466e0b0f0af875e287a091f0fb3cde2b8"
+    }
+  ],
+  "verification": {
+    "testsPassed": 23,
+    "buildExit": 0,
+    "exactPriorRepros": [
+      "Foreign hardlinked state.pending retains outside inode contents.",
+      "Concurrent second writer rejected while original continues.",
+      "A pin arriving during awaited retirement verification retains every selected source.",
+      "Refused second timestamp remains represented despite coalesced receipt and prevents a complete pin."
+    ],
+    "additionalDefectFoundAndFixed": "An entirely lost committed essential prefix (zero surviving bytes) previously reopened with admissions allowed. New explicit invalidCommittedPrefix metadata preserves expected hash/bytes; critical recovery blocks admissions and diagnostic range cannot certify evidence."
+  },
+  "limitations": [
+    "No original account or financial records accessed.",
+    "No live provider or transport measurement.",
+    "Persistent proof growth is bounded by genuine filesystem admission guards rather than arbitrary lifetime allowances; live resource behavior still requires original service validation."
+  ]
+}

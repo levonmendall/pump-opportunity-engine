@@ -1,0 +1,128 @@
+{
+  "kind": "POE_ORIGINAL_FORWARD_UPGRADE_STAGED_NOT_INSTALLED",
+  "at": 1793302684543,
+  "directory": "/var/tmp/poe-original-entry-arming-upgrade",
+  "source": {
+    "commit": "5648606bf78f6687c47632be5c789af5e7f19772",
+    "sha256": "cf2089281edcdf03e7ee40492ebe06fc0e715de9c1b31f94b732905dea8318eb"
+  },
+  "indexSha256": "35ea9f83861eec05c3cb3ec4746f11d949016aac84317cb8e980faa5f06dffd2",
+  "driverSha256": "775ba8c3ddea2ffaefb7b1d92b43b0bdbf04381b784b9f6f3f87fb695c000346",
+  "transportSha256": "313f8bcbcddd5abe5df04c3c5d02f049a0c156e74d14f9337d03f048a1880df7",
+  "files": [
+    {
+      "file": "native-paper.mjs",
+      "bytes": 5108246,
+      "sha256": "cf2089281edcdf03e7ee40492ebe06fc0e715de9c1b31f94b732905dea8318eb"
+    },
+    {
+      "file": "backup-worker.mjs",
+      "bytes": 74060,
+      "sha256": "815f2a215111d09a9216f3fa2235481865e6f22f76773636e2f10022957ac656"
+    },
+    {
+      "file": "better_sqlite3.node",
+      "bytes": 2226168,
+      "sha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d"
+    },
+    {
+      "file": "metadata.json",
+      "bytes": 154493,
+      "sha256": "c6499e358f8a47ad0d0e6168e281236adfab09cd3477301b3f2cc7bf98360554"
+    },
+    {
+      "file": "snapshot-publisher.mjs",
+      "bytes": 31949,
+      "sha256": "29831f3b18a806f767a578b8ead424441d6d8421c43936abe1a9ad9f16f0c27f"
+    },
+    {
+      "file": "run-authoritative-service.py",
+      "bytes": 37498,
+      "sha256": "025abb6631f94cbc97ec30d855ab7d5d11cb257025317e4cee186c5ee00695ed"
+    },
+    {
+      "file": "poe-runtime-persistent.conf",
+      "bytes": 925,
+      "sha256": "d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df"
+    },
+    {
+      "file": "forward-original-upgrade.py",
+      "bytes": 48816,
+      "sha256": "775ba8c3ddea2ffaefb7b1d92b43b0bdbf04381b784b9f6f3f87fb695c000346"
+    },
+    {
+      "file": "export-source-recovery-forensics-20261029.py",
+      "bytes": 30782,
+      "sha256": "4fab80d8ce4a1a39d33a37a3a3d9570ae841614abe1cfe4dd3a006db538c3986"
+    },
+    {
+      "file": "service.json",
+      "bytes": 1715,
+      "sha256": "18363e1e925239d7b5fcd9d2e032b68be9fdc8bbb8a48a079ba46d5e9d92a417"
+    },
+    {
+      "file": "index.json",
+      "bytes": 1699,
+      "sha256": "35ea9f83861eec05c3cb3ec4746f11d949016aac84317cb8e980faa5f06dffd2"
+    }
+  ],
+  "exactStagedUnitParserVerified": true,
+  "actualUnit": {
+    "LoadState": "loaded",
+    "User": "poe-runtime",
+    "Group": "poe-runtime",
+    "ActiveState": "active",
+    "SubState": "running",
+    "MainPID": "2465804",
+    "ControlPID": "0",
+    "KillMode": "mixed",
+    "Restart": "always",
+    "NoNewPrivileges": "yes",
+    "PrivateTmp": "yes",
+    "ProtectSystem": "strict",
+    "ProtectHome": "yes",
+    "UMask": "0077",
+    "TimeoutStopUSec": "1min",
+    "CPUQuotaPerSecUSec": "infinity",
+    "CPUQuotaPeriodUSec": "100ms",
+    "CPUWeight": "100",
+    "Nice": "0",
+    "MemoryHigh": "2684354560",
+    "MemoryMax": "3221225472",
+    "MemorySwapMax": "0",
+    "TasksMax": "64",
+    "LimitNOFILE": "256",
+    "LimitCORE": "0",
+    "LimitCPU": "infinity",
+    "LimitFSIZE": "infinity",
+    "LimitAS": "infinity",
+    "OOMPolicy": "stop"
+  },
+  "runtimeIdentity": {
+    "uid": 988,
+    "gid": 982
+  },
+  "serviceBefore": {
+    "MainPID": "2465804",
+    "NRestarts": "0",
+    "User": "poe-runtime",
+    "LoadState": "loaded",
+    "ActiveState": "active",
+    "SubState": "running"
+  },
+  "serviceAfter": {
+    "MainPID": "2465804",
+    "NRestarts": "0",
+    "User": "poe-runtime",
+    "LoadState": "loaded",
+    "ActiveState": "active",
+    "SubState": "running"
+  },
+  "sameSupervisor": true,
+  "preservedPriorPartial": null,
+  "providerRequests": 0,
+  "financialDatabaseOpened": false,
+  "credentialsRead": false,
+  "serviceControlOperations": 0,
+  "executed": false
+}

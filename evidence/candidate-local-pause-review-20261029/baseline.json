@@ -1,0 +1,17 @@
+{
+  "sourceCommit": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+  "reproductionPassed": true,
+  "tests": 1,
+  "holdingRemainsPresent": true,
+  "financialStateUnaffectedByReadonlyPreparationFailure": true,
+  "globalEntriesErroneouslyDisabled": true,
+  "freshProtectionAndReconciliationCannotRecoverViaCashTimerWhileHeld": true,
+  "applicationChanged": false,
+  "providerRequests": 0,
+  "actualFinancialReadOrWrite": false,
+  "files": {
+    "src/native-paper.ts": "5d2734c6c9a8ba2384431baf92472e0f5a6bfcdcec4ac5a4ab9a94b44ecca3c6",
+    "src/ledger.ts": "3d15e3a56f5b8520fbcb95ca600fc1e0d356c297c64179c8c02ff9b1d1f54a06",
+    "evidence/candidate-local-pause-review-20261029/baseline-reproduction.raw.txt": "700bd49162d6f168ea3cfe21612b795e0d0dc3eae7cea6aa44d3c2527684d256"
+  }
+}

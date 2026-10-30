@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "kind": "POE_NATIVE_PAPER_BOUNDED_SUPERVISION",
+  "source": {
+    "commit": "c189a54b7978692ef2f7d098d6b3374aea8deb72",
+    "sha256": "02d455d81e672bddb08958fc822520aefaaa6241e78b8b9b32ee57146895556c"
+  },
+  "packageSha256": "55f6a7108f551be72d48f52c86d3d1ba09d696ed0e9216e6f9d73f79f7a592f0",
+  "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+  "inceptionAt": 1793123773252,
+  "nodeVersion": "v24.21.0",
+  "host": {
+    "accountId": "133857166104",
+    "region": "us-west-2",
+    "instanceId": "i-00044d4ea1471b957"
+  },
+  "metadataReads": 2,
+  "sourceTransition": {
+    "schemaVersion": 1,
+    "kind": "poe-paper-settled-source-transition-v1",
+    "changed": true,
+    "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+    "inceptionAt": 1793123773252,
+    "previousSource": {
+      "commit": "6d894c1262b93d22f288e214016bfb314799e0ae",
+      "sha256": "9baf5500b40eb26bc1ae898c8dbdb8801b9798e8c03de0280bb3896556cb6553"
+    },
+    "nextSource": {
+      "commit": "c189a54b7978692ef2f7d098d6b3374aea8deb72",
+      "sha256": "02d455d81e672bddb08958fc822520aefaaa6241e78b8b9b32ee57146895556c"
+    },
+    "previousInputSha256": "0dbd2af50ca2a2a50a28532fab592a4a2ca663a93fc28b07ec4e068f657c4b26",
+    "nextInputSha256": "0fc09c914fc840a2bbecf1dc25c3ccfe5ce9583aa171147a62fc3596b29d4544",
+    "priorRunId": "native-paper-20261028195247298",
+    "priorStoppedAt": 1793218468523,
+    "transitionedAt": 1793221684806,
+    "monitoringGapAtTransitionMs": 3216283,
+    "positionsRetained": 0,
+    "pendingActionsRetained": 0,
+    "physicalSettlementConfirmed": true,
+    "financialOwnerLeaseVerified": true,
+    "financialDatabaseOpened": false,
+    "financialStateModified": false,
+    "oldSourceStatusPreserved": true,
+    "continuousOperationClaimed": false
+  },
+  "segments": [
+    {
+      "ordinal": 0,
+      "managementOnly": false,
+      "startedAt": 1793221684872,
+      "previousSourceGroupSettledBeforeStart": true,
+      "sourceSpanMs": 1414250,
+      "initialTargetReached": false,
+      "sourceStopReason": "resource pressure; financial checkpoint required",
+      "stoppedAt": 1793223099545,
+      "elapsedSeconds": 1414.6730878190137,
+      "sourceExit": 0,
+      "sourcePid": 2417310,
+      "sourceGroupSettled": true,
+      "publisherGroupSettled": null,
+      "publisherKeptAcrossFinancialTransition": true,
+      "reason": null,
+      "transition": {
+        "action": "complete",
+        "reason": "fresh-stopped-source-and-settlement-flat",
+        "flatVerified": true
+      },
+      "sourceRunId": "native-paper-20261028210805129",
+      "lastSourceAt": 1793223099379,
+      "positions": 0,
+      "pending": 0,
+      "finalStoppedReportAccepted": null,
+      "finalStatusSha256": "b1514ab1d2532fdb6b42dffcbf1ee5c09b9f4e09bfa5987657d29f44c3a8e9ae",
+      "privateStatusPath": "/home/mm-ec2-runner/.local/share/poe-native-paper/account/status.json",
+      "funnelCounters": {
+        "discovered": 11,
+        "evaluated": 0,
+        "qualified": 0,
+        "reserved": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 280,
+        "usableWindows": 38
+      },
+      "protectionTiming": {
+        "firstCompletedProtectionAt": null,
+        "lastCompletedProtectionAt": null,
+        "maximumCompletedGapMs": 0,
+        "maximumQuoteAgeAtUseMs": 0,
+        "protectionBreaches": 0,
+        "unavailableChecks": 0
+      },
+      "publisherRestarts": 0,
+      "lastAcceptedSourceAt": 1793223089239,
+      "maximumSourceGroupRssBytes": 374710272,
+      "maximumPublisherGroupRssBytes": 95539200,
+      "maximumParentRssBytes": 51802112,
+      "financialDatabaseReadBySupervisor": false,
+      "financialHistoryRewritten": false,
+      "lastCompletedProtectionAt": null,
+      "priorCompletedProtectionAt": null,
+      "firstRecoveryCompletedProtectionAt": null,
+      "crossSegmentProtectionGapMs": null,
+      "acceptedSourceWitness": {
+        "acceptedDistinctSources": 94,
+        "unmatchedAcknowledgements": 0,
+        "disabledReason": null,
+        "retainedSourceFiles": 4,
+        "sourceInformationReconstructed": false
+      }
+    }
+  ],
+  "supervisionFailure": null,
+  "flatVerifiedAtEnd": true,
+  "publisherGroupSettled": true,
+  "finalStoppedReportAccepted": true,
+  "operationalAcceptance": false,
+  "continuous24HourOperation": false,
+  "originalObserverIdentityPidRestartsUnchanged": true,
+  "financialDatabaseReadBySupervisor": false,
+  "realTradingEnabled": false,
+  "newServicePurchase": false,
+  "costMeaning": "Existing compute, transfer and storage allowances/cost are unverified; no new purchase.",
+  "result": "interrupted-or-unresolved; inspect retained financial state and supervision evidence"
+}

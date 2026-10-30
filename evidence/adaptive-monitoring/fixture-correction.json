@@ -1,0 +1,9 @@
+{
+  "classification": "OFFLINE_SYNTHETIC_FIXTURE_COHERENCE_CORRECTION",
+  "reason": "Keep synthetic WSOL vault lamports equal to native reserve plus synthetic token amount. No price/policy/parameter optimization.",
+  "initialResultSha256": "d2d7a0aa91ded8915c996711775781029b489f9a543b51d76ef1a8f0b73d6cc4",
+  "correctedResultSha256": "f2232d13c5e261bd845ebb6f7c4e53f68299877c3cf1195722e097b5fe147b50",
+  "allDecisionsRequestsPricesAndOutcomesIdentical": true,
+  "priorResultPreserved": true,
+  "networkRequests": 0
+}

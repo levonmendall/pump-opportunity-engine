@@ -1,0 +1,30 @@
+✖ known retired late notification stays outside selected evidence and does not fault another active scope (18.724931ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 640.422809
+
+✖ failing tests:
+
+test at test/pilot-native-flow.test.ts:1:24575
+✖ known retired late notification stays outside selected evidence and does not fault another active scope (18.724931ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  + actual - expected
+  
+  + 'NATIVE_FLOW_UNSCOPED_NOTIFICATION'
+  - null
+  
+      at TestContext.<anonymous> (/workspace/poe-native-retired-recovery/test/pilot-native-flow.test.ts:158:222)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'NATIVE_FLOW_UNSCOPED_NOTIFICATION',
+    expected: null,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

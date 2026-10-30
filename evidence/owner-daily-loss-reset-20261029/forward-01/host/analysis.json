@@ -1,0 +1,300 @@
+{
+  "kind": "original-authoritative-poe-owner-reset-host-proof-v1",
+  "workflowRunId": 40964701519,
+  "workflowUrl": "https://github.com/levonmendall/meme-machine-admin/actions/runs/40964701519",
+  "actualHostCheckedAt": 1793312249691,
+  "source": {
+    "commit": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+    "sha256": "870ac98a2377fefde564b9a3a252a7cc7cb3a561582abd48bda22ee18a14bee7"
+  },
+  "configurationSha256": "797f8c1f0a1e23a9771b05356ff51d71f081b520e994f4cf6b2ed1c7c44c6511",
+  "installedInputSha256": "1fde663f1c8e97134745f730f1e71f273c3bdf594cfc88e0a6ac7d154afe0ff4",
+  "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+  "inceptionAt": "2026-10-26T22:07:36.212Z",
+  "mode": "PAPER",
+  "liveTrading": false,
+  "service": {
+    "state": "active",
+    "subState": "running",
+    "startedAt": "Thu 2026-10-29 22:16:50 UTC",
+    "supervisorPid": "2474047",
+    "restarts": "0",
+    "processRoles": [
+      {
+        "pid": 2474047,
+        "role": "original-supervisor",
+        "ownerUid": 988,
+        "cpuSeconds": 0.35,
+        "rssBytes": 31412224,
+        "nice": 0,
+        "explicitMaxOldSpaceSizeMiB": [],
+        "argvExported": false
+      },
+      {
+        "pid": 2474050,
+        "role": "native-source",
+        "ownerUid": 988,
+        "cpuSeconds": 7.74,
+        "rssBytes": 303366144,
+        "nice": 0,
+        "explicitMaxOldSpaceSizeMiB": [
+          1024
+        ],
+        "argvExported": false
+      },
+      {
+        "pid": 2474051,
+        "role": "original-publisher",
+        "ownerUid": 988,
+        "cpuSeconds": 0.35,
+        "rssBytes": 93483008,
+        "nice": 0,
+        "explicitMaxOldSpaceSizeMiB": [
+          128
+        ],
+        "argvExported": false
+      }
+    ]
+  },
+  "financialPrefix": {
+    "actions": {
+      "priorRows": 61163,
+      "exactPriorRowsRetained": true,
+      "currentRows": 61167
+    },
+    "journal": {
+      "priorRows": 61164,
+      "exactPriorRowsRetained": true,
+      "currentRows": 61168
+    }
+  },
+  "identityAndInceptionPreserved": true,
+  "initialFundingAndRoundingPreserved": true,
+  "dailyReset": {
+    "appliedAt": 1793312215020,
+    "oldBaselineMicroUsd": "1019176172",
+    "newBaselineMicroUsd": "959551142",
+    "revisionBefore": 61166,
+    "revisionAfter": 61167,
+    "controlsPreserved": true,
+    "lossPausedAfter": false,
+    "entryPermissionGranted": false,
+    "orderCreated": false,
+    "financialHistoryReset": false,
+    "backupRestored": false
+  },
+  "financial": {
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": 1793052456212,
+    "inceptionIso": "2026-10-26T22:07:36.212Z",
+    "initialMicroUsd": "1000000000",
+    "mode": "PAPER",
+    "revision": 61167,
+    "stateBodySha256": "2de6abfed6d1c7da703172c43183d9eb040f93cf22fd4430cc89419b0e477e15",
+    "stateBodyBytes": 1222,
+    "tableCounts": {
+      "actions": 61167,
+      "financial_state": 1,
+      "journal": 61168,
+      "metadata": 10
+    },
+    "quickCheck": "ok",
+    "journalRangeContiguous": true,
+    "actionJournalLinksValid": true,
+    "inceptionPriceSha256": "4c7a71e1f041418b30772cae07339d4ba9f7b55610cb961f23da373310b78225",
+    "inceptionLamports": "9961647656",
+    "roundingResidualMicroUsd": "1",
+    "cashLamports": "9905468832",
+    "reservedLamports": "0",
+    "lockedDepositLamports": "18013680",
+    "openPositions": 0,
+    "pendingActions": 0,
+    "positionsStateSha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "pendingStateSha256": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "realizedLamports": "-38165144",
+    "executionCostsLamports": "112000",
+    "gasReserveLamports": "5000000",
+    "financialControls": {
+      "entriesEnabled": false,
+      "stopRequested": false,
+      "changedAt": 1793312211454,
+      "readinessVersion": "confirmed-program-ordinary-flow-paper-v1"
+    },
+    "controlReasonSha256": "ee4cab20bb233ac90d1de43b62c54dd60e89f7d1d50e72a3abcda452b687dfbe",
+    "dailyControls": {
+      "day": "2026-10-29",
+      "paused": true,
+      "lossPaused": false,
+      "reconciledAt": 1793312214510
+    },
+    "flatAtSnapshot": true,
+    "metadataValuesExported": false,
+    "rawStateExported": false,
+    "walletFilesRead": false
+  },
+  "lastPublicSourceAt": "2026-10-29T22:17:23.003Z",
+  "lastPublicBlocker": "POE_ENTRY_PROVIDER_UNAVAILABLE",
+  "lastPublicReconciledAt": "2026-10-29T22:17:22.845Z",
+  "lastAcceptedRenderSource": {
+    "commit": "5648606bf78f6687c47632be5c789af5e7f19772",
+    "sha256": "cf2089281edcdf03e7ee40492ebe06fc0e715de9c1b31f94b732905dea8318eb"
+  },
+  "resources": {
+    "sampleAt": 1793312249692,
+    "hostScope": "HOST-AGGREGATE; includes unrelated applications and administration runner, not POE-attributable",
+    "serviceScope": "poe-runtime.service cgroup, including owned children",
+    "hostMemory": {
+      "available": true,
+      "totalBytes": 8153255936,
+      "availableBytes": 6930296832
+    },
+    "rootFilesystem": {
+      "available": true,
+      "capacityBytes": 331712798720,
+      "availableBytes": 288228835328
+    },
+    "serviceIo": {
+      "available": true,
+      "scope": "poe-runtime.service cgroup only; not host I/O",
+      "deviceCount": 1,
+      "devices": [
+        {
+          "device": "259:0",
+          "rbytes": 11141120,
+          "wbytes": 74821632,
+          "rios": 2489,
+          "wios": 746,
+          "dbytes": 0,
+          "dios": 0
+        }
+      ],
+      "totals": {
+        "rbytes": 11141120,
+        "wbytes": 74821632,
+        "rios": 2489,
+        "wios": 746,
+        "dbytes": 0,
+        "dios": 0
+      },
+      "meaning": "Kernel-accounted cumulative I/O; missing fields are not invented and an empty device set does not independently prove no writes."
+    },
+    "serviceCpu": {
+      "available": true,
+      "usage_usec": 8494044,
+      "user_usec": 7755138,
+      "system_usec": 738905,
+      "nr_periods": 0,
+      "nr_throttled": 0,
+      "throttled_usec": 0
+    },
+    "serviceMemory": {
+      "current": {
+        "available": true,
+        "bytes": 372203520,
+        "unlimited": false
+      },
+      "max": {
+        "available": true,
+        "bytes": 3221225472,
+        "unlimited": false
+      },
+      "peak": {
+        "available": true,
+        "bytes": 391626752,
+        "unlimited": false
+      }
+    },
+    "hostNetwork": {
+      "available": true,
+      "scope": "HOST-AGGREGATE; not POE-attributable",
+      "interfaceCount": 2,
+      "truncated": false,
+      "interfaces": [
+        {
+          "interface": "lo",
+          "receivedBytes": 566523344,
+          "receivedPackets": 3824088,
+          "transmittedBytes": 566523344,
+          "transmittedPackets": 3824088
+        },
+        {
+          "interface": "ens5",
+          "receivedBytes": 117375003517,
+          "receivedPackets": 95413159,
+          "transmittedBytes": 11197287960,
+          "transmittedPackets": 32964322
+        }
+      ]
+    }
+  },
+  "effectivePerformanceControls": {
+    "sampleAt": 1793312249693,
+    "logicalCpuCount": 4,
+    "systemd": {
+      "CPUQuotaPerSecUSec": "infinity",
+      "CPUQuotaPeriodUSec": "100ms",
+      "CPUWeight": "100",
+      "Nice": "0",
+      "MemoryHigh": "2684354560",
+      "MemoryMax": "3221225472",
+      "MemorySwapMax": "0",
+      "TasksMax": "64",
+      "LimitNOFILE": "256",
+      "LimitAS": "infinity",
+      "OOMPolicy": "stop",
+      "IOWeight": "[not set]",
+      "CPUAffinity": "",
+      "AllowedCPUs": "",
+      "ProtectSystem": "strict",
+      "ReadWritePaths": "/var/lib/poe /run/poe -/var/lib/poe-public /var/lib/poe /run/poe -/var/lib/poe-public"
+    },
+    "systemdMissingProperties": [],
+    "cgroupCpuMax": {
+      "available": true,
+      "unlimited": true,
+      "quotaUsec": null,
+      "periodUsec": 100000,
+      "equivalentCpuCores": null
+    },
+    "cgroupCpuWeight": {
+      "available": true,
+      "value": 100
+    },
+    "cgroupMemory": {
+      "high": {
+        "available": true,
+        "unlimited": false,
+        "bytes": 2684354560
+      },
+      "max": {
+        "available": true,
+        "unlimited": false,
+        "bytes": 3221225472
+      }
+    },
+    "cgroupMemoryEvents": {
+      "available": true,
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  },
+  "limitations": [
+    "Current public blocker is POE_ENTRY_PROVIDER_UNAVAILABLE; no daily-loss restriction remains in the verified reset receipt. This does not yet prove recovered entry eligibility.",
+    "Render accepted-source receipt is still old564 at this sample; parent is updating existing expected-source/strategy binding after installed host proof.",
+    "Exact installed configuration hash797f binds frozen two-position/four-slot configuration; this sanitized host report does not expose current maxPositions or deepMaximum fields. Verify actual public deepMaximum after Render binding. Historical fourSlotVerification belongs old239a source and is not new-source proof.",
+    "Only one native source process in existing original service cgroup is observed. Do not claim a separate host-wide financial-writer census.",
+    "No actual V2 PAPER fill, two natural concurrent holdings, holding protection, profitability or sustained reliability acceptance is established by this bounded read-only upgrade check."
+  ],
+  "verificationPerformedNoMutation": {
+    "financialDatabaseOpened": false,
+    "financialWrites": 0,
+    "serviceChanges": 0,
+    "credentialReads": 0,
+    "providerRequests": 0
+  }
+}

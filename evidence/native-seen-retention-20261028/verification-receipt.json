@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_REPAIR_NOT_FORWARD_ACCEPTANCE",
+  "baseCommit": "71896104f07faa2b193b90d3d3133a8e29236f35",
+  "at": "2026-10-28T18:27:19.622838+00:00",
+  "node": "v24.19.0",
+  "focusedTests": {
+    "pass": 71,
+    "fail": 0
+  },
+  "build": "PASS",
+  "review": "independent arena/scope-mask correctness GO; requested bit-reuse and atomic-refusal checks pass",
+  "files": [
+    {
+      "path": "src/native-transaction-retention.ts",
+      "bytes": 7172,
+      "sha256": "5718d42b35bfcf66767b6e6f2e796fec20f37c55f58d08cf9e61365ba0e0b993"
+    },
+    {
+      "path": "src/pilot-native-flow.ts",
+      "bytes": 68970,
+      "sha256": "211b5fe226949d1d65071743a85a5216497f8eb57fe5a574509ac27969f748ad"
+    },
+    {
+      "path": "test/native-transaction-retention.test.ts",
+      "bytes": 6838,
+      "sha256": "d7fc71e6b60baf160cff923a8431c624e0ee90a47cb8df675478180d94d5d825"
+    },
+    {
+      "path": "test/pilot-native-flow.test.ts",
+      "bytes": 93562,
+      "sha256": "7d8bfdaf92b1da5680f68a2f5c9cc08852ea62879813c1293af33b00240783a8"
+    },
+    {
+      "path": "evidence/native-seen-retention-20261028/README.md",
+      "bytes": 4899,
+      "sha256": "57f86a8e73b57c3f6fcf5cc5f1e095c58f07c34903828ee1b0f117682f479068"
+    },
+    {
+      "path": "evidence/native-seen-retention-20261028/draft-memory-observations.json",
+      "bytes": 1118,
+      "sha256": "e60f1c608b9d18c268d9f29ed8b55d8bb944cbbb8e84730a3a092fdc3126bc33"
+    },
+    {
+      "path": "evidence/native-seen-retention-20261028/memory-baseline-full16384.json",
+      "bytes": 504,
+      "sha256": "4987d27685e5a32c15c96a0f02b6a0e48d1dca25b78f95095deab18fd87c95fb"
+    },
+    {
+      "path": "evidence/native-seen-retention-20261028/memory-benchmark.mjs",
+      "bytes": 1876,
+      "sha256": "c070174d292aeac19e2c820d42db117eb795053f113c7269e68985a51aaab68c"
+    },
+    {
+      "path": "evidence/native-seen-retention-20261028/memory-compact-retired16384-active16384.json",
+      "bytes": 1323,
+      "sha256": "91cfcb4a6e0518a8f939c42237d9423ed18a323a7864ec6b3dbc03530069f5fb"
+    },
+    {
+      "path": "evidence/native-seen-retention-20261028/memory-naive-full32768.json",
+      "bytes": 505,
+      "sha256": "a40b3b7843227dab15a22f9217dfc066cbb63b90f38f59ffa18c0ae51c8b0c45"
+    },
+    {
+      "path": "evidence/native-seen-retention-20261028/replay-forward718.json",
+      "bytes": 13858,
+      "sha256": "43db5803dcffadcc43062cc5f42a34d81068da401e2635a1cfce21016de4a2a9"
+    },
+    {
+      "path": "evidence/native-seen-retention-20261028/replay-forward718.mjs",
+      "bytes": 4352,
+      "sha256": "1f52f1db7b611ae857f2d38c8804d869685743a309e69a9a55dbb1ccb66fe3e7"
+    },
+    {
+      "path": "evidence/native-seen-retention-20261028/focused-tests.txt",
+      "bytes": 8639,
+      "sha256": "22febb00f7505aca804a818769213619792bb07a2f891d68933b89e05c84eda6"
+    },
+    {
+      "path": "evidence/native-seen-retention-20261028/build.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    }
+  ]
+}

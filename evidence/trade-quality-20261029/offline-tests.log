@@ -1,0 +1,12 @@
+test_duplicate_historical_fill_lists_do_not_duplicate_fills (test_retained_paper_trade_audit.HistoricalAuditSafetyTests.test_duplicate_historical_fill_lists_do_not_duplicate_fills) ... ok
+test_inherited_run_counters_are_not_assigned_to_new_trade (test_retained_paper_trade_audit.HistoricalAuditSafetyTests.test_inherited_run_counters_are_not_assigned_to_new_trade) ... ok
+test_missing_native_sol_does_not_become_profitable_usd_trade (test_retained_paper_trade_audit.HistoricalAuditSafetyTests.test_missing_native_sol_does_not_become_profitable_usd_trade) ... ok
+test_partial_unmatched_close_cannot_be_certified (test_retained_paper_trade_audit.HistoricalAuditSafetyTests.test_partial_unmatched_close_cannot_be_certified) ... ok
+test_profit_never_excuses_failed_protection (test_retained_paper_trade_audit.HistoricalAuditSafetyTests.test_profit_never_excuses_failed_protection) ... ok
+test_restart_keeps_counter_scopes_and_visible_observation_gap (test_retained_paper_trade_audit.HistoricalAuditSafetyTests.test_restart_keeps_counter_scopes_and_visible_observation_gap) ... ok
+test_retained_four_round_trips_and_protection_findings_reproduce (test_retained_paper_trade_audit.HistoricalAuditSafetyTests.test_retained_four_round_trips_and_protection_findings_reproduce) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.013s
+
+OK

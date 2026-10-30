@@ -1,0 +1,15 @@
+{
+  "sourceCommit": "880512fa9f59470f202c86aaeda724abb2898ca2",
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "--test",
+    "test/native-control-recovery.test.ts"
+  ],
+  "exitCode": 1,
+  "elapsedSeconds": 2.0306157809995966,
+  "endedAt": "2026-10-28T14:36:17.657625+00:00",
+  "logSha256": "19a296e4e9f2a06b43bafb8d8ca439382e94b05f8ea9670685d391f5390d0042",
+  "classification": "OFFLINE_REAL_WS_IN_MEMORY_NEGATIVE_REPRODUCTION_NO_NETWORK"
+}

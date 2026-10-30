@@ -1,0 +1,172 @@
+{
+  "gaps": {
+    "LOG_NATIVE_UNSUPPORTED_SWAP_LABEL": 10,
+    "LOG_NATIVE_RECEIPT_DEADLINE": 2,
+    "NATIVE_FLOW_PROCESSING_DEADLINE": 4,
+    "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT": 11,
+    "NATIVE_FLOW_REBOUND_GENERATION_AMBIGUOUS": 2,
+    "LOG_NATIVE_PROTOCOL_CHILD_SHAPE": 1,
+    "NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT": 1,
+    "NATIVE_FLOW_SUPPORT_EXPIRED": 5,
+    "NATIVE_FLOW_INFORMATION_CUTOFF": 1
+  },
+  "gapEpisodes": 24,
+  "auditStatus": {
+    "unavailable": 19,
+    "verified": 48
+  },
+  "misses": {
+    "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT": 10,
+    "NATIVE_AUDIT_TARGET_SLOT_BOUNDARY_AMBIGUOUS": 1,
+    "undispatched": 1,
+    "PILOT_RPC_COMPONENT_DISPATCH_EXPIRED": 2
+  },
+  "pages": {
+    "100": {
+      "count": 43,
+      "bytes": 991933,
+      "elapsedMs": {
+        "count": 43,
+        "p50": 213.35188299999572,
+        "p95": 669.4133920000168,
+        "maximum": 1303.7678459999734
+      },
+      "headersDelayMs": {
+        "count": 43,
+        "p50": 67,
+        "p95": 221,
+        "maximum": 481
+      },
+      "bodyAfterHeadersMs": {
+        "count": 43,
+        "p50": 144,
+        "p95": 504,
+        "maximum": 1202
+      },
+      "jsonDecodeMs": {
+        "count": 43,
+        "p50": 0.10173699998995289,
+        "p95": 0.14730300000519492,
+        "maximum": 0.15688300000329036
+      }
+    },
+    "1000": {
+      "count": 5,
+      "bytes": 1128535,
+      "elapsedMs": {
+        "count": 5,
+        "p50": 1047.2182610000018,
+        "p95": 1427.3036459999857,
+        "maximum": 1427.3036459999857
+      },
+      "headersDelayMs": {
+        "count": 5,
+        "p50": 199,
+        "p95": 423,
+        "maximum": 423
+      },
+      "bodyAfterHeadersMs": {
+        "count": 5,
+        "p50": 896,
+        "p95": 1287,
+        "maximum": 1287
+      },
+      "jsonDecodeMs": {
+        "count": 5,
+        "p50": 0.7711669999407604,
+        "p95": 0.9932839999673888,
+        "maximum": 0.9932839999673888
+      }
+    }
+  },
+  "provider": {
+    "physicalStarts": 595,
+    "physicalSettlements": 595,
+    "startsByKind": {
+      "ws-upgrade:upgrade": 5,
+      "ws:subscribeMigration": 1,
+      "http:getMultipleAccounts": 195,
+      "ws:logsSubscribe": 88,
+      "ws:ping": 99,
+      "http:getTransaction": 44,
+      "http:getSignaturesForAddress": 91,
+      "ws:logsUnsubscribe": 72
+    },
+    "peakStarts": {
+      "10000": 20,
+      "60000": 65
+    },
+    "timeoutsByKind": {
+      "http:getSignaturesForAddress": 38,
+      "http:getMultipleAccounts": 8,
+      "ws:logsUnsubscribe": 1,
+      "http:getTransaction": 1,
+      "ws:ping": 1
+    },
+    "httpStatuses": {
+      "200": 304,
+      "None": 26
+    },
+    "newUnits": 595,
+    "newAccountedResponseBytes": 170187537,
+    "cumulativeUnits": 7464,
+    "cumulativeAccountedResponseBytes": 811609562,
+    "cumulativeUncertainResponseBytes": 389808128,
+    "fatal": null,
+    "closed": true
+  },
+  "passes": [
+    [
+      "EV5xprdyM2kfE72xu52v1G9GJFvVK2NyzYV83cZKpump",
+      1793213283478,
+      true
+    ],
+    [
+      "EV5xprdyM2kfE72xu52v1G9GJFvVK2NyzYV83cZKpump",
+      1793213291866,
+      true
+    ],
+    [
+      "EV5xprdyM2kfE72xu52v1G9GJFvVK2NyzYV83cZKpump",
+      1793213303228,
+      true
+    ],
+    [
+      "EV5xprdyM2kfE72xu52v1G9GJFvVK2NyzYV83cZKpump",
+      1793213313549,
+      true
+    ]
+  ],
+  "throughput": {
+    "informationRecords": 27518,
+    "successful": 12588,
+    "failed": 14930,
+    "receiptToAvailabilityMs": {
+      "count": 27518,
+      "p50": 1221,
+      "p95": 3516,
+      "maximum": 4999
+    },
+    "peakReceiptRecords": {
+      "1000": 1358,
+      "10000": 3103,
+      "60000": 8470
+    },
+    "sixAckedScopeMs": 690989,
+    "sixLongestMs": 68829,
+    "scopeConcurrencyMs": {
+      "0": 19275,
+      "1": 4935,
+      "2": 16484,
+      "3": 14395,
+      "4": 23828,
+      "5": 120094,
+      "6": 690989
+    }
+  },
+  "reportingMatchedStopped": 1,
+  "reportingProofPass": [
+    true,
+    true
+  ]
+}

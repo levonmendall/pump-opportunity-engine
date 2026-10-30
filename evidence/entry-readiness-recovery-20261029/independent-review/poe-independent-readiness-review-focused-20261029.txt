@@ -1,0 +1,39 @@
+✔ actual ACK time crossing a bucket preserves identical six-bucket warming in native and trader windows (53.848566ms)
+✔ protocol slot received during decision recording invalidates its earlier quote before financial reservation (17.730434ms)
+✔ audit certificate is an immutable exact-window generation fact and is unavailable after expiry, reconnect or retirement (30.407803ms)
+✔ status/report work cannot backdate the next certificate read or extend an expired certificate (12.739917ms)
+✔ financial ownership survives source retirement and age expiry without deleting HELD identity or origin proof (7.934175ms)
+✔ resolved unfilled entry keeps genuinely continuous observation but invalidates the old certificate before a new audited decision (12.354977ms)
+✔ resolved entry after a real observation gap cannot preserve the former subscription or old certificate (9.689351ms)
+✔ an unfilled pending action resolving after observation age expires retires normally rather than restoring ineligible deep state (11.10355ms)
+✔ entry cost and exact-size quote evidence survives diagnostic rotation without protecting unrelated diagnostics (0.533241ms)
+✔ flat five-second reconciliation creates a derived pause without changing controls; local maintenance preserves two-second guard (52.514485ms)
+✔ expired USD closes entries, new original-timestamp USD and fresh complete window recover without predictive pass or RPC (13.655095ms)
+✔ fresh audit-completion timestamp cannot substitute for an old executed-flow cutoff (6.921031ms)
+▶ owner pause, safe stop, daily loss, admission failure, disconnected source and absent certificate do not auto-resume
+  ✔ owner (6.108335ms)
+  ✔ stop (8.116666ms)
+  ✔ loss (5.743303ms)
+  ✔ admission (6.965417ms)
+  ✔ connection (7.943379ms)
+  ✔ certificate (9.375123ms)
+✔ owner pause, safe stop, daily loss, admission failure, disconnected source and absent certificate do not auto-resume (45.532834ms)
+✔ pending action and actual held inventory block cash-only maintenance without changing obligations (10.478832ms)
+✔ unknown post-commit financial failure latches closed; later maintenance and restart cannot reinterpret success (11.571473ms)
+✔ recorder failure after permission recovery closes controls and preserves the evidence latch (12.404078ms)
+✔ slow reconciliation never backdates the resume after the actual two-second deadline (6.986283ms)
+✔ hard failure after a soft pause is durable across restart instead of hiding behind the old soft reason (9.756665ms)
+✔ historical restriction latch clears only after the real complete candidate-preparation path succeeds (18.298688ms)
+✔ cash maintenance continues during source waits, defers financial ownership, and measures true synchronous lateness (19.131115ms)
+✔ actual maintenance timer contains unexpected callback failure and keeps retry bounded (3.561967ms)
+✔ backup failure retries at the bounded next attempt rather than waiting five minutes; success restores the normal cadence (0.628753ms)
+✔ verified backup recovery unlocks temporary readiness only after success and a current audited cutoff (11.576452ms)
+✔ actual interval runs local maintenance while an awaited source operation is unsettled (19.467483ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1411.18225

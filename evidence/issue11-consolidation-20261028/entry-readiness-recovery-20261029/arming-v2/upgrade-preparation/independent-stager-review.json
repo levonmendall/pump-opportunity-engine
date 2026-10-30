@@ -1,0 +1,27 @@
+{
+  "actualEC2Actions": false,
+  "completedAt": 1793302653627,
+  "diffCheckExitCode": 0,
+  "embeddedPythonAST": true,
+  "gzipRoundTrips": 11,
+  "head": "615421256a5cc10b019e0b047fd8fa81d079d642",
+  "kind": "POE_INDEPENDENT_FINAL_ARMING_NONROOT_STAGER_REVIEW",
+  "metadataOnlySystemctlShowPreserved": true,
+  "newStage": "/var/tmp/poe-original-entry-arming-upgrade",
+  "noApplyMainOrFinancialCalls": true,
+  "packedBytes": 2060051,
+  "payloadExactCopyOfReviewedFinalTransport": true,
+  "payloadFilesIncludingTransport": 12,
+  "pins": {
+    "driver_sha": "775ba8c3ddea2ffaefb7b1d92b43b0bdbf04381b784b9f6f3f87fb695c000346",
+    "index_sha": "35ea9f83861eec05c3cb3ec4746f11d949016aac84317cb8e980faa5f06dffd2",
+    "transport_sha": "313f8bcbcddd5abe5df04c3c5d02f049a0c156e74d14f9337d03f048a1880df7"
+  },
+  "rawBytes": 7716351,
+  "reverseSubstitutionsRecoverPriorWorkflowExactly": true,
+  "rootOrServiceControlActions": false,
+  "sameSupervisorBeforeAfterRequired": true,
+  "uid994AndBoundedWrapperPreserved": true,
+  "workflowSha256": "470dabf28c39c0415d56b9eb5b1812ae45a9b940f157552afeb431b27ee8163b",
+  "workflowUnchangedDuringReview": true
+}

@@ -1,0 +1,7 @@
+
+> pump-opportunity-engine@0.1.0 build
+> tsc --noEmit
+
+test/pilot-rpc-derived-status.test.ts(38,834): error TS2345: Argument of type '{ directory: string; runId: string; baselinePaths: any[]; priorPhysicalSettled: boolean; maxResponseBytes: number; now: () => number; monotonic: () => number; }' is not assignable to parameter of type 'PilotRpcOptions'.
+  Types of property 'priorPhysicalSettled' are incompatible.
+    Type 'boolean' is not assignable to type 'true'.

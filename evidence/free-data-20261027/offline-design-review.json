@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-27T03:56:37.534317+00:00",
+  "classification": "OFFLINE_DESIGN_AND_SOFTWARE_VALIDATION_ONLY",
+  "marketDataRpcProductionNetworkRequests": 0,
+  "priorEvidenceSha256": {
+    "pumpapi-budget.json": "0463bcd146160fe2ba6eb3a175b1fbafe35325ccb3bd2948f6ee243b15f0af03",
+    "active-approved-rpc-budget.json": "6fb4891e22baaecfc6725bebd4016ee1b3464e6b2392bdd7dbd54f10b8b2fa04",
+    "active-approved-allowance.json": "e642dc2329470b34a8554e684c19afd02ef02bfbd905bcb4b3fcbad8e18f7739",
+    "active-approved-summary.json": "f7196f38b711ce98205411eb46eb99e67490b4cc2d6b44f4e5dfdd1aaa13554d",
+    "active-approved-supervisor.json": "b968e488cdbaebe870af153b0eae1537e6d016dbba3c53e36de1f9ae77812c62",
+    "active-continuation-allowance.json": "b5cc427b2865e63afd54537655c2ad602c016e0e94cfd6331da28bb952120a48",
+    "active-continuation-summary.json": "d8ca6ee0466ab21aa60d16b788646d69a9eb39c3e794578470e7a8b9e79a687e",
+    "active-continuation-supervisor.json": "434badd9aa670cd2cb0e69cac852d8c044506f0b35a310b7ade55ba888599c3e",
+    "active-continuation-record.ndjson": "543acfe252cf225f44f8f35cfe9bb7b0606004a0b3e899635ebd9ff96bc652e3"
+  },
+  "priorEvidenceUnchanged": true,
+  "rpc": {
+    "calls": 20,
+    "responseBytes": 272634,
+    "remainingCalls": 220,
+    "remainingResponseBytes": 66836230,
+    "blockedReason": "RPC_HTTP_429",
+    "pending": []
+  },
+  "pumpApi": {
+    "priorReservedBytes": 117440512,
+    "priorReservedMs": 100000,
+    "attempts": 2,
+    "newCaptureOpened": false,
+    "newReservation": false
+  },
+  "newRejectionProjection": {
+    "records": 3,
+    "distinctPools": 2,
+    "seededFromOriginalTimes": true,
+    "authority": "replaceable research selection context, not financial or provider budget"
+  },
+  "validation": {
+    "build": "PASS",
+    "compile": "PASS",
+    "strictResearchRunnerTypecheck": "PASS",
+    "testsPassed": 324,
+    "testsFailed": 0,
+    "durationMs": 35509.488146,
+    "logSha256": "52ca2fac4f7c0f19d67b945aeeb6a46ca1a6149e9a223bf47fcc75461ddf4c1f",
+    "independentReview": "capacity/provenance/counters and research-only boundary reviewed; observed delayed-settlement and global-failure classification defects corrected"
+  },
+  "sourceSha256": {
+    "src/research-pacing.ts": "48d100d4178984275fceb44249c600fc5d8521bc20d59eecb9cb86ece1200d19",
+    "src/selection-rejections.ts": "cbb8c07b18cf400f3b17acb181f64c22cfd4464aeee5e8666d22bc120800efd4",
+    "src/active-selection.ts": "6eaf7ea9dc09f4ec02094d284407a864f40e7dc0ad374558c138be1b532adeef",
+    "src/research-clock-pricing.ts": "ad7ef578042c8ade59e4160ef063b822438cf7cea1df58b119b466fb0422b0d5",
+    "src/pool.ts": "353f9e6f67460a9ec84d12be03752a9fe9fc158a1ab94fdff553e4afe75f8870",
+    "scripts/active-pumpapi-trial.ts": "e4ebdeb76363d2f48166b0b09cd728955e447e87fe84197ebb2a70efb455b7d3",
+    "scripts/active-pumpapi-continuation.ts": "2123947b236705f4588b13b34bac527b453b9a01a947455f9cfb53166b51c774",
+    "src/strategy.ts": "b076dfd34410ae5ef6d3a626d6b7852f4dc21eaacca8d6cba0e4de228c105084",
+    "src/network.ts": "db385176ffe1f89eb7f5a3811a5b81c39b98a0d755e825b05af0d73d06294505"
+  },
+  "unchangedProductionSourceFiles": {
+    "src/strategy.ts": true,
+    "src/network.ts": true,
+    "src/runtime.ts": true,
+    "src/trader.ts": true,
+    "src/ledger.ts": true,
+    "src/dashboard.ts": true
+  },
+  "runtimeDeployed": false,
+  "observerRestarted": false,
+  "accountCreatedOrReset": false,
+  "testDataPublished": false,
+  "entriesEnabled": false,
+  "liveTrading": false,
+  "acceptanceClockStarted": false,
+  "proposal": "offline-next-measurement.json; not executable authorization",
+  "actualClockAccountObserved": false,
+  "combinedCapacityAccepted": false
+}

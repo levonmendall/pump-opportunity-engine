@@ -1,0 +1,1288 @@
+{
+  "recordedAt": "2026-10-27T04:59:22.829Z",
+  "schemaVersion": 1,
+  "classification": "SYNTHETIC_OFFLINE_CANDIDATE_CADENCE_REPLAY",
+  "strategy": "persistent-buying-v0-unfrozen",
+  "simulatedDurationMs": 600000,
+  "candidates": 12,
+  "source": {
+    "kind": "generated synthetic normalized actions; no matched real PumpApi payload",
+    "actions": 9096,
+    "sha256": "09604508e2adff63414fb3a57e19fc802c16f3b023fd5399ae36e6d2087ad923"
+  },
+  "frequent": {
+    "cadenceMs": 1000,
+    "featureCalculations": 7200,
+    "wallMs": 121.397967,
+    "cpuMs": 194.795,
+    "ingestion": {
+      "accepted": 7200,
+      "duplicate": 660,
+      "confirmed": 1200,
+      "invalidated": 12,
+      "gaps": 12,
+      "reversals": 12
+    },
+    "firstQualifiedAt": [
+      36060000,
+      36060000,
+      36060000,
+      36060000,
+      36060000,
+      36060000,
+      36060000,
+      36060000,
+      36060000,
+      36060000,
+      36060000,
+      36060000
+    ],
+    "transitions": [
+      {
+        "candidate": 0,
+        "at": 36001000,
+        "qualified": false,
+        "reason": "warming"
+      },
+      {
+        "candidate": 1,
+        "at": 36001000,
+        "qualified": false,
+        "reason": "warming"
+      },
+      {
+        "candidate": 2,
+        "at": 36001000,
+        "qualified": false,
+        "reason": "warming"
+      },
+      {
+        "candidate": 3,
+        "at": 36001000,
+        "qualified": false,
+        "reason": "warming"
+      },
+      {
+        "candidate": 4,
+        "at": 36001000,
+        "qualified": false,
+        "reason": "warming"
+      },
+      {
+        "candidate": 5,
+        "at": 36001000,
+        "qualified": false,
+        "reason": "warming"
+      },
+      {
+        "candidate": 6,
+        "at": 36001000,
+        "qualified": false,
+        "reason": "warming"
+      },
+      {
+        "candidate": 7,
+        "at": 36001000,
+        "qualified": false,
+        "reason": "warming"
+      },
+      {
+        "candidate": 8,
+        "at": 36001000,
+        "qualified": false,
+        "reason": "warming"
+      },
+      {
+        "candidate": 9,
+        "at": 36001000,
+        "qualified": false,
+        "reason": "warming"
+      },
+      {
+        "candidate": 10,
+        "at": 36001000,
+        "qualified": false,
+        "reason": "warming"
+      },
+      {
+        "candidate": 11,
+        "at": 36001000,
+        "qualified": false,
+        "reason": "warming"
+      },
+      {
+        "candidate": 0,
+        "at": 36060000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 1,
+        "at": 36060000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 2,
+        "at": 36060000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 3,
+        "at": 36060000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 4,
+        "at": 36060000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 5,
+        "at": 36060000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 6,
+        "at": 36060000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 7,
+        "at": 36060000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 8,
+        "at": 36060000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 9,
+        "at": 36060000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 10,
+        "at": 36060000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 11,
+        "at": 36060000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 0,
+        "at": 36091000,
+        "qualified": false,
+        "reason": "correction"
+      },
+      {
+        "candidate": 1,
+        "at": 36091000,
+        "qualified": false,
+        "reason": "correction"
+      },
+      {
+        "candidate": 2,
+        "at": 36091000,
+        "qualified": false,
+        "reason": "correction"
+      },
+      {
+        "candidate": 3,
+        "at": 36091000,
+        "qualified": false,
+        "reason": "correction"
+      },
+      {
+        "candidate": 4,
+        "at": 36091000,
+        "qualified": false,
+        "reason": "correction"
+      },
+      {
+        "candidate": 5,
+        "at": 36091000,
+        "qualified": false,
+        "reason": "correction"
+      },
+      {
+        "candidate": 6,
+        "at": 36091000,
+        "qualified": false,
+        "reason": "correction"
+      },
+      {
+        "candidate": 7,
+        "at": 36091000,
+        "qualified": false,
+        "reason": "correction"
+      },
+      {
+        "candidate": 8,
+        "at": 36091000,
+        "qualified": false,
+        "reason": "correction"
+      },
+      {
+        "candidate": 9,
+        "at": 36091000,
+        "qualified": false,
+        "reason": "correction"
+      },
+      {
+        "candidate": 10,
+        "at": 36091000,
+        "qualified": false,
+        "reason": "correction"
+      },
+      {
+        "candidate": 11,
+        "at": 36091000,
+        "qualified": false,
+        "reason": "correction"
+      },
+      {
+        "candidate": 0,
+        "at": 36160000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 1,
+        "at": 36160000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 2,
+        "at": 36160000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 3,
+        "at": 36160000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 4,
+        "at": 36160000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 5,
+        "at": 36160000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 6,
+        "at": 36160000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 7,
+        "at": 36160000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 8,
+        "at": 36160000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 9,
+        "at": 36160000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 10,
+        "at": 36160000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 11,
+        "at": 36160000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 0,
+        "at": 36181000,
+        "qualified": false,
+        "reason": "feed-gap"
+      },
+      {
+        "candidate": 1,
+        "at": 36181000,
+        "qualified": false,
+        "reason": "feed-gap"
+      },
+      {
+        "candidate": 2,
+        "at": 36181000,
+        "qualified": false,
+        "reason": "feed-gap"
+      },
+      {
+        "candidate": 3,
+        "at": 36181000,
+        "qualified": false,
+        "reason": "feed-gap"
+      },
+      {
+        "candidate": 4,
+        "at": 36181000,
+        "qualified": false,
+        "reason": "feed-gap"
+      },
+      {
+        "candidate": 5,
+        "at": 36181000,
+        "qualified": false,
+        "reason": "feed-gap"
+      },
+      {
+        "candidate": 6,
+        "at": 36181000,
+        "qualified": false,
+        "reason": "feed-gap"
+      },
+      {
+        "candidate": 7,
+        "at": 36181000,
+        "qualified": false,
+        "reason": "feed-gap"
+      },
+      {
+        "candidate": 8,
+        "at": 36181000,
+        "qualified": false,
+        "reason": "feed-gap"
+      },
+      {
+        "candidate": 9,
+        "at": 36181000,
+        "qualified": false,
+        "reason": "feed-gap"
+      },
+      {
+        "candidate": 10,
+        "at": 36181000,
+        "qualified": false,
+        "reason": "feed-gap"
+      },
+      {
+        "candidate": 11,
+        "at": 36181000,
+        "qualified": false,
+        "reason": "feed-gap"
+      },
+      {
+        "candidate": 0,
+        "at": 36250000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 1,
+        "at": 36250000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 2,
+        "at": 36250000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 3,
+        "at": 36250000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 4,
+        "at": 36250000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 5,
+        "at": 36250000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 6,
+        "at": 36250000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 7,
+        "at": 36250000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 8,
+        "at": 36250000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 9,
+        "at": 36250000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 10,
+        "at": 36250000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 11,
+        "at": 36250000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 0,
+        "at": 36301000,
+        "qualified": false,
+        "reason": "reversal"
+      },
+      {
+        "candidate": 1,
+        "at": 36301000,
+        "qualified": false,
+        "reason": "reversal"
+      },
+      {
+        "candidate": 2,
+        "at": 36301000,
+        "qualified": false,
+        "reason": "reversal"
+      },
+      {
+        "candidate": 3,
+        "at": 36301000,
+        "qualified": false,
+        "reason": "reversal"
+      },
+      {
+        "candidate": 4,
+        "at": 36301000,
+        "qualified": false,
+        "reason": "reversal"
+      },
+      {
+        "candidate": 5,
+        "at": 36301000,
+        "qualified": false,
+        "reason": "reversal"
+      },
+      {
+        "candidate": 6,
+        "at": 36301000,
+        "qualified": false,
+        "reason": "reversal"
+      },
+      {
+        "candidate": 7,
+        "at": 36301000,
+        "qualified": false,
+        "reason": "reversal"
+      },
+      {
+        "candidate": 8,
+        "at": 36301000,
+        "qualified": false,
+        "reason": "reversal"
+      },
+      {
+        "candidate": 9,
+        "at": 36301000,
+        "qualified": false,
+        "reason": "reversal"
+      },
+      {
+        "candidate": 10,
+        "at": 36301000,
+        "qualified": false,
+        "reason": "reversal"
+      },
+      {
+        "candidate": 11,
+        "at": 36301000,
+        "qualified": false,
+        "reason": "reversal"
+      },
+      {
+        "candidate": 0,
+        "at": 36370000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 1,
+        "at": 36370000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 2,
+        "at": 36370000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 3,
+        "at": 36370000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 4,
+        "at": 36370000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 5,
+        "at": 36370000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 6,
+        "at": 36370000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 7,
+        "at": 36370000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 8,
+        "at": 36370000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 9,
+        "at": 36370000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 10,
+        "at": 36370000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 11,
+        "at": 36370000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      }
+    ]
+  },
+  "boundary": {
+    "cadenceMs": 10000,
+    "featureCalculations": 720,
+    "wallMs": 36.99955900000003,
+    "cpuMs": 59.396,
+    "ingestion": {
+      "accepted": 7200,
+      "duplicate": 660,
+      "confirmed": 1200,
+      "invalidated": 12,
+      "gaps": 12,
+      "reversals": 12
+    },
+    "firstQualifiedAt": [
+      36060000,
+      36060000,
+      36060000,
+      36060000,
+      36060000,
+      36060000,
+      36060000,
+      36060000,
+      36060000,
+      36060000,
+      36060000,
+      36060000
+    ],
+    "transitions": [
+      {
+        "candidate": 0,
+        "at": 36010000,
+        "qualified": false,
+        "reason": "warming"
+      },
+      {
+        "candidate": 1,
+        "at": 36010000,
+        "qualified": false,
+        "reason": "warming"
+      },
+      {
+        "candidate": 2,
+        "at": 36010000,
+        "qualified": false,
+        "reason": "warming"
+      },
+      {
+        "candidate": 3,
+        "at": 36010000,
+        "qualified": false,
+        "reason": "warming"
+      },
+      {
+        "candidate": 4,
+        "at": 36010000,
+        "qualified": false,
+        "reason": "warming"
+      },
+      {
+        "candidate": 5,
+        "at": 36010000,
+        "qualified": false,
+        "reason": "warming"
+      },
+      {
+        "candidate": 6,
+        "at": 36010000,
+        "qualified": false,
+        "reason": "warming"
+      },
+      {
+        "candidate": 7,
+        "at": 36010000,
+        "qualified": false,
+        "reason": "warming"
+      },
+      {
+        "candidate": 8,
+        "at": 36010000,
+        "qualified": false,
+        "reason": "warming"
+      },
+      {
+        "candidate": 9,
+        "at": 36010000,
+        "qualified": false,
+        "reason": "warming"
+      },
+      {
+        "candidate": 10,
+        "at": 36010000,
+        "qualified": false,
+        "reason": "warming"
+      },
+      {
+        "candidate": 11,
+        "at": 36010000,
+        "qualified": false,
+        "reason": "warming"
+      },
+      {
+        "candidate": 0,
+        "at": 36060000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 1,
+        "at": 36060000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 2,
+        "at": 36060000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 3,
+        "at": 36060000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 4,
+        "at": 36060000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 5,
+        "at": 36060000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 6,
+        "at": 36060000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 7,
+        "at": 36060000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 8,
+        "at": 36060000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 9,
+        "at": 36060000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 10,
+        "at": 36060000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 11,
+        "at": 36060000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 0,
+        "at": 36100000,
+        "qualified": false,
+        "reason": "correction"
+      },
+      {
+        "candidate": 1,
+        "at": 36100000,
+        "qualified": false,
+        "reason": "correction"
+      },
+      {
+        "candidate": 2,
+        "at": 36100000,
+        "qualified": false,
+        "reason": "correction"
+      },
+      {
+        "candidate": 3,
+        "at": 36100000,
+        "qualified": false,
+        "reason": "correction"
+      },
+      {
+        "candidate": 4,
+        "at": 36100000,
+        "qualified": false,
+        "reason": "correction"
+      },
+      {
+        "candidate": 5,
+        "at": 36100000,
+        "qualified": false,
+        "reason": "correction"
+      },
+      {
+        "candidate": 6,
+        "at": 36100000,
+        "qualified": false,
+        "reason": "correction"
+      },
+      {
+        "candidate": 7,
+        "at": 36100000,
+        "qualified": false,
+        "reason": "correction"
+      },
+      {
+        "candidate": 8,
+        "at": 36100000,
+        "qualified": false,
+        "reason": "correction"
+      },
+      {
+        "candidate": 9,
+        "at": 36100000,
+        "qualified": false,
+        "reason": "correction"
+      },
+      {
+        "candidate": 10,
+        "at": 36100000,
+        "qualified": false,
+        "reason": "correction"
+      },
+      {
+        "candidate": 11,
+        "at": 36100000,
+        "qualified": false,
+        "reason": "correction"
+      },
+      {
+        "candidate": 0,
+        "at": 36160000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 1,
+        "at": 36160000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 2,
+        "at": 36160000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 3,
+        "at": 36160000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 4,
+        "at": 36160000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 5,
+        "at": 36160000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 6,
+        "at": 36160000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 7,
+        "at": 36160000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 8,
+        "at": 36160000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 9,
+        "at": 36160000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 10,
+        "at": 36160000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 11,
+        "at": 36160000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 0,
+        "at": 36190000,
+        "qualified": false,
+        "reason": "feed-gap"
+      },
+      {
+        "candidate": 1,
+        "at": 36190000,
+        "qualified": false,
+        "reason": "feed-gap"
+      },
+      {
+        "candidate": 2,
+        "at": 36190000,
+        "qualified": false,
+        "reason": "feed-gap"
+      },
+      {
+        "candidate": 3,
+        "at": 36190000,
+        "qualified": false,
+        "reason": "feed-gap"
+      },
+      {
+        "candidate": 4,
+        "at": 36190000,
+        "qualified": false,
+        "reason": "feed-gap"
+      },
+      {
+        "candidate": 5,
+        "at": 36190000,
+        "qualified": false,
+        "reason": "feed-gap"
+      },
+      {
+        "candidate": 6,
+        "at": 36190000,
+        "qualified": false,
+        "reason": "feed-gap"
+      },
+      {
+        "candidate": 7,
+        "at": 36190000,
+        "qualified": false,
+        "reason": "feed-gap"
+      },
+      {
+        "candidate": 8,
+        "at": 36190000,
+        "qualified": false,
+        "reason": "feed-gap"
+      },
+      {
+        "candidate": 9,
+        "at": 36190000,
+        "qualified": false,
+        "reason": "feed-gap"
+      },
+      {
+        "candidate": 10,
+        "at": 36190000,
+        "qualified": false,
+        "reason": "feed-gap"
+      },
+      {
+        "candidate": 11,
+        "at": 36190000,
+        "qualified": false,
+        "reason": "feed-gap"
+      },
+      {
+        "candidate": 0,
+        "at": 36250000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 1,
+        "at": 36250000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 2,
+        "at": 36250000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 3,
+        "at": 36250000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 4,
+        "at": 36250000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 5,
+        "at": 36250000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 6,
+        "at": 36250000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 7,
+        "at": 36250000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 8,
+        "at": 36250000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 9,
+        "at": 36250000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 10,
+        "at": 36250000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 11,
+        "at": 36250000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 0,
+        "at": 36310000,
+        "qualified": false,
+        "reason": "reversal"
+      },
+      {
+        "candidate": 1,
+        "at": 36310000,
+        "qualified": false,
+        "reason": "reversal"
+      },
+      {
+        "candidate": 2,
+        "at": 36310000,
+        "qualified": false,
+        "reason": "reversal"
+      },
+      {
+        "candidate": 3,
+        "at": 36310000,
+        "qualified": false,
+        "reason": "reversal"
+      },
+      {
+        "candidate": 4,
+        "at": 36310000,
+        "qualified": false,
+        "reason": "reversal"
+      },
+      {
+        "candidate": 5,
+        "at": 36310000,
+        "qualified": false,
+        "reason": "reversal"
+      },
+      {
+        "candidate": 6,
+        "at": 36310000,
+        "qualified": false,
+        "reason": "reversal"
+      },
+      {
+        "candidate": 7,
+        "at": 36310000,
+        "qualified": false,
+        "reason": "reversal"
+      },
+      {
+        "candidate": 8,
+        "at": 36310000,
+        "qualified": false,
+        "reason": "reversal"
+      },
+      {
+        "candidate": 9,
+        "at": 36310000,
+        "qualified": false,
+        "reason": "reversal"
+      },
+      {
+        "candidate": 10,
+        "at": 36310000,
+        "qualified": false,
+        "reason": "reversal"
+      },
+      {
+        "candidate": 11,
+        "at": 36310000,
+        "qualified": false,
+        "reason": "reversal"
+      },
+      {
+        "candidate": 0,
+        "at": 36370000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 1,
+        "at": 36370000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 2,
+        "at": 36370000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 3,
+        "at": 36370000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 4,
+        "at": 36370000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 5,
+        "at": 36370000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 6,
+        "at": 36370000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 7,
+        "at": 36370000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 8,
+        "at": 36370000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 9,
+        "at": 36370000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 10,
+        "at": 36370000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      },
+      {
+        "candidate": 11,
+        "at": 36370000,
+        "qualified": true,
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required"
+      }
+    ]
+  },
+  "commonBoundariesCompared": 720,
+  "commonBoundaryMismatches": [],
+  "firstQualificationEqual": true,
+  "featureCalculationReductionFraction": 0.9,
+  "externalContextExamples": {
+    "classification": "SYNTHETIC_EXTERNAL_CONTEXT_COUNTEREXAMPLES_NOT_MARKET_PERFORMANCE",
+    "riskResumeAvailableAt": 36075001,
+    "continuingFlow": {
+      "oneSecondFirstQualifiedAt": 36076000,
+      "tenSecondFirstQualifiedAt": 36080000,
+      "additionalDelayMs": 4000
+    },
+    "expiringBuyerBins": {
+      "oneSecondFirstQualifiedAt": 36076000,
+      "tenSecondFirstQualifiedAt": null,
+      "boundaryPlusExplicitContextQualifiedAt": 36075001,
+      "contextRecalculationCount": 1,
+      "explanation": "Five initial buyer bins qualify after risk resume at76s; one expires at80s. Boundary-only calculation can miss that short-lived qualification when external context changes between boundaries. An explicit context calculation at actual availability75.001s retains the next80s boundary and catches this fixture."
+    },
+    "implication": "Boundary feature equality does not authorize postponing risk/data invalidations or prove all opportunity timings equivalent. Event-driven reevaluation on independently changing context uses fresh features and quote context; it adds explicitly counted calculation work, not RPC savings."
+  },
+  "rpcRequestSavings": 0,
+  "providerNetworkRequests": 0,
+  "entriesEnabled": false,
+  "naturalPaperTrades": 0,
+  "limitations": [
+    "Common-boundary equality does not prove equivalent decisions between boundaries when risk, quote availability, age or data quality changes.",
+    "Confirmations can update provisional counts inside a closed bin; retained snapshot asOf is never refreshed.",
+    "Corrections, reversals and gaps invalidate immediately, independent of calculation frequency.",
+    "Synthetic passing features/contexts are not natural eligibility, fills, economic outcomes or a verified provider contract.",
+    "Reduced feature calls save calculation work, not the mandatory collection or transaction-enrichment requests.",
+    "CPU/wall measurements are this offline process only, not EC2 compatibility or provider latency."
+  ],
+  "sourceCodeSha256": "112aa69dcb77622048a2adf3fc311572e8c11ed7e96c46aba7c9a9f3152428e6",
+  "strategySourceSha256": "b076dfd34410ae5ef6d3a626d6b7852f4dc21eaacca8d6cba0e4de228c105084",
+  "validation": {
+    "focusedTests": 6,
+    "pass": true,
+    "networkRequests": 0,
+    "productionChanged": false,
+    "accountCreated": false
+  },
+  "priorOfflineMeasurement": {
+    "recordedAt": "2026-10-27T04:56:32.087Z",
+    "sourceCodeSha256": "a1fded808aa82d14d0e498b5127b89de5351a59d29f9cd855ad672be9ec1fda8",
+    "featureCalculations": [
+      7200,
+      720
+    ],
+    "cpuMs": [
+      235.018,
+      61.837
+    ],
+    "wallMs": [
+      142.06895199999997,
+      36.60704700000002
+    ],
+    "actions": 9096,
+    "commonBoundaries": 720,
+    "mismatches": 0,
+    "regeneratedReason": "Added explicitly tested context-triggered recalculation hook; no new input data or provider requests."
+  },
+  "measurementInterpretation": "Single latest offline Cloud run with preceding measurement preserved; fixed lane order and JIT effects make CPU/wall descriptive, not a capacity guarantee. Feature-call reduction is exact."
+}

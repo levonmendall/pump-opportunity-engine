@@ -1,0 +1,23 @@
+This is a read-only analysis of 114 distinct authenticated public source snapshots from 17:06:00.099 through 17:34:50.887 UTC on October 29, 2026. Source cdba9d483fdcef105e74e3053a8d4bbf28bdff0c, run native-paper-20261029164842357, four deep slots and the single-position risk configuration remain fixed. No provider request, runtime modification, restart or financial database access was performed for this analysis.
+
+The large displayed totals include preserved prior service/watch history. Relevant interval changes are 41 quality gaps, 80 promotions (63 re-promotions), 39 completed/audited predictive windows, and 26 additional unique current-generation tokens evaluated. Two additional feature-only predictive passes are repeated assessments, not two independently tradable opportunities. No counter regression or conflicting same-sequence source snapshot was found. Sequence 9238 was not retained by the public sampler; this is a sampling limitation, not proof of lost market notifications.
+
+Four groups of sampled selected-capture disconnections appear. The longest spans false reports from 17:24:46 through 17:26:47, with a true report at 17:27:02. Thirty-five of the 41 new gaps occur in sample increments of three or four. This supports investigating shared selected-scope interruptions, but does not identify the exact event cause: multiple candidate-local events can also coalesce between 15-second samples. An interval between false samples is not proof that capture was continuously disconnected for that entire duration.
+
+The same interval records 37 additional HTTP timeouts, zero additional HTTP errors or throttles, and 16 snapshots with an active primary cooldown. Peak sampled rolling demand is 66 starts/minute against the local 90/minute profile. These facts do not establish provider reliability at 90/minute. Broad discovery and watch remain connected in every retained sample. Source recovery generation/failures, evidence refusals and critical recovery remain zero; candidate-resource and evidence admission remain open. The storage repair is holding in these samples while selected capture and provider performance remain impaired.
+
+Source telemetry reports peak CPU use of 0.557 of one core, peak RSS 449,605,632 bytes, minimum host available RAM 6,786,887,680 bytes and minimum free disk 288,709,431,296 bytes. The interval records 2,084,692,735 additional broad-stream bytes, 70,378,180 native-stream bytes and 157,333,372 accounted RPC response bytes. Infrastructure/transfer cost is unverified; no paid service was purchased. These are source-reported measurements, not an independent host performance audit.
+
+The natural 8NTU PAPER buy filled at 17:20:07.003 and its stop-triggered sell at 17:25:39.189, holding for 5 minutes 32.186 seconds. Both fills report the same 1,028,422,062,926 base units. The stop was reserved at 17:25:38.055. Held protection continued through the selected-capture interruption: reported maximum completion gap 2,555 ms, against a 2,000 ms target and 4,000 ms boundary; maximum quote age at use 72 ms; zero protection breaches or unavailable checks. The final account is flat with no pending orders. This demonstrates one natural simulated lifecycle, not concurrent positions or sustained operational acceptance.
+
+Whole-account cash changed by -0.076863756 SOL and equity by -0.073861476 SOL over this interval. Exact per-action cost attribution and independent financial reconciliation require durable ledger/action/quote evidence. Subtracting the two displayed fill USD values would mix timestamps and is not an exact net trading P&L calculation. The adverse outcome is preserved.
+
+`snapshots.ndjson` freezes the exact 114 original sampler rows, 1,684,921 bytes, SHA-256 4a777f85c946f519241a0ef89eed7ffed8fcc649e85eaa50e0e7cb0b9c6efcc3. `frozen-input-provenance.json` binds every row to the original hash-verified routine/material prefix and identifies the replaceable latest pointer that was unnecessary for reconstruction. All four entry/exit bracket frames exactly match those rows. The original running sampler and its files were not changed.
+
+Reproduce the summary solely from the frozen rows, independently of future sampler rotation:
+
+```bash
+python3 evidence/issue11-consolidation-20261028/continuous-retention-resource-repair-20261029/forward-02/analyze-retained-supervision.py
+```
+
+Exact causes still require bounded private native-flow disconnect/support-refresh events, candidate gap reasons and audit dispatch traces. Public sampling cannot reliably distinguish actual shared provider failure, local scheduling propagation and independent candidate failures. The summary lists the minimum private facts required; it does not invent those causes.

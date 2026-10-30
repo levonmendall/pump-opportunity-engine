@@ -1,0 +1,12 @@
+✔ synthetic interleaved audit pages retain candidate identity and union overlapping lookbacks (11.734195ms)
+✔ synthetic429 and local refusal stay separate; failed history request gets no invented candidate (7.597806ms)
+✔ synthetic partial callback normalization remains visible after candidate-local refusal (8.703325ms)
+✔ artifact tampering rejects analysis before drawing a completion conclusion (3.854797ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 117.920783

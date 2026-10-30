@@ -23,6 +23,12 @@ may need up to 70 seconds after an unaligned activation.
 Explicit supported activation is required; elapsed time without a subscription
 cannot warm a candidate. Feed gaps invalidate windows and close entries. A reconnect
 needs fresh activation and a complete new window; it does not replay an outage.
+Intentional deactivateFlow invalidates that token's selected flow without
+discarding its position or disabling RPC exits. It refuses an unexpired pending
+BUY until cancellation/outcome; actual upstream unsubscribe remains the caller's
+job. The current holding exit rule consumes no trade-flow feature. Observation
+planning preserves required RPC capacity and never treats pool polling as the
+entry flow rule. See OBSERVATION_DESIGN.md.
 The outer runtime still supplies a bounded periodic management/evaluation cadence;
 `nextDueAt` adds pending-order deadlines and is not the entire scheduling policy.
 

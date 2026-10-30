@@ -1,0 +1,80 @@
+{
+  "recordedAt": "2026-10-29T01:43:34.710903+00:00",
+  "repairSourceCommit": "6a3973fe547dbf6d69ee7588569f42f299b6c5b8",
+  "repairDriverSha256": "93f23cb18b67f72749b34f11c28e8af777195da2832a25b68867d80ea89d8b3e",
+  "driverBytes": 42341,
+  "reviewedPackageIndexUnchanged": "fa616981e2a86aec0f9c2711d0b3c961eb5ab922791f49e2a4e7e372497a84dd",
+  "applicationSourceUnchanged": "5e55d8b939de99698ddb311a282461931fcbc957",
+  "executableSha256Unchanged": "531012e82b6cb86149350ec4478c1f7a7b87b6f35f08f3b1f32447f05cd31eaa",
+  "adminStageCommit": "662d6d11864330a785f94cd8341ffc2359f3a967",
+  "adminStageRun": 40801911352,
+  "hostReadbackRun": 40798966387,
+  "hostReadbackAdminCommit": "d635cd6e5b6182e3236dbf940cf79b84557312c9",
+  "checks": {
+    "repositoryOps": 63,
+    "independentAdditionalRefusals": 6,
+    "actualStagedHashReadback": true,
+    "originalServiceSameBeforeAfterStage": true,
+    "ownerCommandSyntaxParsed": true
+  },
+  "stageOldIndexMeaning": "Expected retained package binding, not a fresh root-index read. The hash-pinned resumer independently reads and verifies the protected root package before imports or cutover.",
+  "actualRootResumeExecuted": false,
+  "newRuntimeStarted": false,
+  "originalFinancialHistoryPrivateAuditVerifiedByReadOnlyRunner": false,
+  "oldFailureMetadata": "unknown",
+  "reportingCompatibility": {
+    "serviceId": "srv-daqon53tqb8s73bdceq0",
+    "deployId": "dep-dbha06qfngtc73b2dgo0",
+    "commit": "79195ecfb2aaf138715a730194edf1a489937fc1",
+    "status": "live",
+    "finishedAt": "2026-10-29T01:24:20.876677Z",
+    "confirmedBy": "Render get_deploy; original receiver secret/account/source restrictions unchanged",
+    "claim": "Legacy source remains accepted. Optional original-account intelligence is now schema-compatible. New source binding and matched local/public parity remain pending actual cutover."
+  },
+  "files": {
+    "RESUME_OWNER_COMMAND.txt": {
+      "bytes": 698,
+      "sha256": "4b66a2792111d89ede4717a1f2338bf3f7fbb1f616bbc62d0f7302a5b91eca8b"
+    },
+    "actual-host-readback.json": {
+      "bytes": 2230,
+      "sha256": "442a50552afe4f1bffbdb8fb61908f31a65524b115d5e5fffce1cce444939c16"
+    },
+    "actual-host-readback.log": {
+      "bytes": 25536,
+      "sha256": "d86f54edf60752c89bd9bcc43fb97e98a8c7c6b1662ed185f678cee236a6bd4a"
+    },
+    "actual-resume-stage.json": {
+      "bytes": 847,
+      "sha256": "e6823443ec829275307543a5412eaaeddd970c37a32a210d494e215e473c998e"
+    },
+    "actual-resume-stage.log": {
+      "bytes": 31806,
+      "sha256": "31103875fcfcf6c7332c76ea9f848a93cdf2fa51f434d8b364eed13f26085c13"
+    },
+    "original-public-post-receiver-cycles.json": {
+      "bytes": 3527,
+      "sha256": "f75d652445d16918c70bb0199772546db2e07ab2f4a30d281f575bf1f0d47af7"
+    },
+    "owner-refusal.json": {
+      "bytes": 821,
+      "sha256": "3c7e66c9941c8dab4fc055e10ae554ad1526411249428f057c08141048e2e35f"
+    },
+    "unauthorized-original-post.json": {
+      "bytes": 468,
+      "sha256": "a3218e290f1c50ac703acc38a5550743ae13041d9b6166a0d0df8fbdfaae5cdd"
+    }
+  },
+  "finalIndependentReview": {
+    "reviewer": "/root/finish_financial_history",
+    "result": "GO",
+    "ownerCommandComputedBodyHashAndOriginalIndexVerified": true,
+    "originalRollbackCommandValidUnderFinancialCompatibilityGuards": true,
+    "docCorrectionsApplied": [
+      "Distinguish old before-stop backup from never-created stopped ledger backup",
+      "Label original54 checks separately from new63 plus6",
+      "Private protected hashes not yet read back, rather than never read by prior command"
+    ],
+    "actualRootExecutionClaimed": false
+  }
+}

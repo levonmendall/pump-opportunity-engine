@@ -1,0 +1,46 @@
+{
+  "reviewer": "upgrade_independent_review",
+  "at": "2026-10-29T23:40:40.526712+00:00",
+  "readerSha256": "e2d80bfe28108cab7c61ae99dffa4b1fb81429cdbeefbbffd0b324a760296e4f",
+  "inspectorSha256": "caf7554cfffcc78c12366f15ec21ccec0aafebbef67cc1a979c80090a1e413d1",
+  "nonrootStagerSha256": "a78af3d09e87f2249d24e9de16087d5ceb50bd86a7c4d63bd85dc53418585b23",
+  "readOnlyWorkflowSha256": "5499b6005316b3ad3f40bb3f8972fe1ac4363ebf883a479442541f8cb8905c64",
+  "adminTransportMatchesReviewedPackage": true,
+  "nonrootStageOnly": "PASS fixed994/pinnedbytes/immutableclosure/supervisorbefore-after/effectiveunitparser",
+  "publicForensics": "PASS hashboundoldsource/run/account/UID988export/rootreceipt; no privatefileaccess",
+  "configurationImport": "PASS service/V2/two/four hash44b824",
+  "results": [
+    {
+      "command": [
+        "python3",
+        "-B",
+        "operator/native-paper-ec2/test-read-current-run-forensics.py"
+      ],
+      "exitCode": 0,
+      "raw": "test-read-current-run-forensics.py.raw.txt"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "operator/native-paper-ec2/test-inspect-original-source-forensics.py"
+      ],
+      "exitCode": 0,
+      "raw": "test-inspect-original-source-forensics.py.raw.txt"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "operator/native-paper-ec2/test-inspect-original-service-io.py"
+      ],
+      "exitCode": 0,
+      "raw": "test-inspect-original-service-io.py.raw.txt"
+    }
+  ],
+  "allPassed": true,
+  "workflowDispatched": false,
+  "rootCommandExecuted": false,
+  "financialDatabaseOpened": false,
+  "serviceControlOperations": 0
+}

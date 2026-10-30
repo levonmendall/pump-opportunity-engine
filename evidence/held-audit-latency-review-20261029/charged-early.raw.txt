@@ -1,0 +1,20 @@
+HELD_CHARGED_EARLY_CHARACTERIZATION {"responseDelayMs":500,"early":false,"target":1793058330000,"completedAssessments":2,"expiredTargets":2,"physicalFetches":8,"protectionFetches":4,"historyFetches":4,"physicalTimeouts":0,"earlyTurns":0,"maximumStartsPer10SecondsObserved":8,"minuteStarts":8,"protectionCompletions":4,"maximumSyntheticProtectionGapMs":2000,"meaning":"CONTROLLED original-target timing; realPilotRpc20per10s/90perminute/250mspacing/onephysical; injected warmheldbatch150ms charged; sourcecontrols and genuine SDKquotes not modeled"}
+HELD_CHARGED_EARLY_CHARACTERIZATION {"responseDelayMs":500,"early":true,"target":1793058330000,"completedAssessments":3,"expiredTargets":1,"physicalFetches":12,"protectionFetches":6,"historyFetches":6,"physicalTimeouts":0,"earlyTurns":3,"maximumStartsPer10SecondsObserved":12,"minuteStarts":12,"protectionCompletions":6,"maximumSyntheticProtectionGapMs":2000,"meaning":"CONTROLLED original-target timing; realPilotRpc20per10s/90perminute/250mspacing/onephysical; injected warmheldbatch150ms charged; sourcecontrols and genuine SDKquotes not modeled"}
+HELD_CHARGED_EARLY_CHARACTERIZATION {"responseDelayMs":750,"early":false,"target":1793058330000,"completedAssessments":2,"expiredTargets":2,"physicalFetches":8,"protectionFetches":4,"historyFetches":4,"physicalTimeouts":0,"earlyTurns":0,"maximumStartsPer10SecondsObserved":8,"minuteStarts":8,"protectionCompletions":4,"maximumSyntheticProtectionGapMs":2000,"meaning":"CONTROLLED original-target timing; realPilotRpc20per10s/90perminute/250mspacing/onephysical; injected warmheldbatch150ms charged; sourcecontrols and genuine SDKquotes not modeled"}
+HELD_CHARGED_EARLY_CHARACTERIZATION {"responseDelayMs":750,"early":true,"target":1793058330000,"completedAssessments":3,"expiredTargets":1,"physicalFetches":12,"protectionFetches":6,"historyFetches":6,"physicalTimeouts":0,"earlyTurns":4,"maximumStartsPer10SecondsObserved":12,"minuteStarts":12,"protectionCompletions":6,"maximumSyntheticProtectionGapMs":2000,"meaning":"CONTROLLED original-target timing; realPilotRpc20per10s/90perminute/250mspacing/onephysical; injected warmheldbatch150ms charged; sourcecontrols and genuine SDKquotes not modeled"}
+HELD_CHARGED_EARLY_CHARACTERIZATION {"responseDelayMs":1200,"early":false,"target":1793058330000,"completedAssessments":1,"expiredTargets":3,"physicalFetches":8,"protectionFetches":4,"historyFetches":4,"physicalTimeouts":0,"earlyTurns":0,"maximumStartsPer10SecondsObserved":8,"minuteStarts":8,"protectionCompletions":4,"maximumSyntheticProtectionGapMs":2000,"meaning":"CONTROLLED original-target timing; realPilotRpc20per10s/90perminute/250mspacing/onephysical; injected warmheldbatch150ms charged; sourcecontrols and genuine SDKquotes not modeled"}
+HELD_CHARGED_EARLY_CHARACTERIZATION {"responseDelayMs":1200,"early":true,"target":1793058330000,"completedAssessments":3,"expiredTargets":1,"physicalFetches":10,"protectionFetches":5,"historyFetches":5,"physicalTimeouts":0,"earlyTurns":3,"maximumStartsPer10SecondsObserved":10,"minuteStarts":10,"protectionCompletions":5,"maximumSyntheticProtectionGapMs":2000,"meaning":"CONTROLLED original-target timing; realPilotRpc20per10s/90perminute/250mspacing/onephysical; injected warmheldbatch150ms charged; sourcecontrols and genuine SDKquotes not modeled"}
+✔ CONTROLLED charged shared-budget held epochs ordinary at 500ms history latency (362.934693ms)
+✔ CONTROLLED charged shared-budget held epochs early at 500ms history latency (365.533276ms)
+✔ CONTROLLED charged shared-budget held epochs ordinary at 750ms history latency (339.821946ms)
+✔ CONTROLLED charged shared-budget held epochs early at 750ms history latency (259.421716ms)
+✔ CONTROLLED charged shared-budget held epochs ordinary at 1200ms history latency (167.5697ms)
+✔ CONTROLLED charged shared-budget held epochs early at 1200ms history latency (195.040582ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2912.240229

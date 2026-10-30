@@ -1,0 +1,324 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_INVENTORY_OF_RETAINED_ACTUAL_MARKET_OBSERVATIONS",
+  "recordedAt": "2026-10-27T04:54:17.677Z",
+  "newProviderOrProductionNetworkRequests": 0,
+  "source": {
+    "record": "evidence/rpc-observation-comparison.ndjson",
+    "recordSha256": "9f3b9f6575878595beb532fee8a0bcaa9579dda96a01ded308101cfc0714a304",
+    "proof": "evidence/integration-proof-2026-10-26T23-32-41.255Z.json",
+    "proofSha256": "266564115883ab3be50fac6157d21dbb95d3e55a505eb87508a75f4693f1356b",
+    "metadata": "evidence/rpc-observation-comparison.json",
+    "metadataSha256": "50575be692798dd79117386d743ce8f8b2ca7b3b828a6dd5e6ac3d279755f2f1",
+    "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+    "pool": "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+    "hypotheticalBaseUnits": "25229743127804"
+  },
+  "actual": {
+    "coherentBatches": 16,
+    "usableSizeSpecificQuotes": 15,
+    "unavailableQuotes": 1,
+    "uniqueSuccessfulSellOutputs": [
+      "229733"
+    ],
+    "uniqueCanonicalAccountByteSets": 1,
+    "observedCoherentStateChanges": 0,
+    "firstAvailableAt": 1793060947960,
+    "lastAvailableAt": 1793061001163,
+    "availableSpanMs": 53203,
+    "commonStart": 1793060948313,
+    "commonEnd": 1793061008383,
+    "attemptedWindowMs": 60070,
+    "ackReadyOverlapMs": 58329,
+    "quoteAvailabilitySpacingMs": {
+      "samples": 15,
+      "min": 160,
+      "p50": 2539,
+      "p95": 7628,
+      "max": 7628
+    },
+    "coherentBatchHttpResponseMs": {
+      "samples": 16,
+      "min": 38,
+      "p50": 50,
+      "p95": 89,
+      "max": 89
+    },
+    "originalAvailabilityAfterBatchReceiveMs": {
+      "samples": 16,
+      "min": 40,
+      "p50": 59,
+      "p95": 80,
+      "max": 80
+    },
+    "combinedRecordedFreshCacheCoverage": {
+      "freshMs": 23615,
+      "windowMs": 60070,
+      "fraction": 0.3931246878641585,
+      "scope": "Union of originally recorded quote lanes, not an evaluated2s/5s/10s schedule or new provider availability measure."
+    },
+    "notifications": {
+      "frames": 17,
+      "changedContent": 0,
+      "watchedPoolOrVaultChanges": 0,
+      "byAddress": {
+        "ADyA8hdefvWN2dbGGWFotbzWxrAvLW83WG6QCVXvJKqw": 15,
+        "So11111111111111111111111111111111111111112": 2
+      },
+      "bytes": 24825,
+      "websocketRequestStarts": 14,
+      "acknowledgements": 14,
+      "connections": [
+        {
+          "connection": 1,
+          "openedAt": 1793060948176,
+          "readyAt": 1793060948312,
+          "readyEndedAt": 1793060978333,
+          "closedAt": 1793060978334,
+          "reason": "initial",
+          "code": 1006
+        },
+        {
+          "connection": 2,
+          "openedAt": 1793060978574,
+          "readyAt": 1793060978648,
+          "readyEndedAt": 1793061006957,
+          "closedAt": 1793061006957,
+          "reason": "planned-reconnect",
+          "code": 1006
+        }
+      ],
+      "plannedReconnectRestored": true,
+      "postPlannedReconnectCoherentRecoveryMs": 623,
+      "gaps": [
+        {
+          "at": 1793061006957,
+          "reason": "unexpected socket close"
+        }
+      ]
+    },
+    "failure": [
+      {
+        "lane": "poll",
+        "at": 1793060993522,
+        "reason": "RPC_ERROR_-32004:Block not available for slot 461867743"
+      }
+    ]
+  },
+  "samples": [
+    {
+      "index": 0,
+      "lane": "setup",
+      "requestedAt": 1793060947802,
+      "sourceReceivedAt": 1793060947884,
+      "availableAt": 1793060947960,
+      "slot": 461867526,
+      "marketBlockTime": 1793060947,
+      "status": "fresh-verified-size-quote",
+      "fullSizeSellLamports": "229733",
+      "canonicalAccountBytesSha256": "2cba518fb5cb87603f464686fca02becb08663d6fca68786ee0f0745389ad180"
+    },
+    {
+      "index": 1,
+      "lane": "poll",
+      "requestedAt": 1793060948393,
+      "sourceReceivedAt": 1793060948474,
+      "availableAt": 1793060948536,
+      "slot": 461867529,
+      "marketBlockTime": 1793060948,
+      "status": "fresh-verified-size-quote",
+      "fullSizeSellLamports": "229733",
+      "canonicalAccountBytesSha256": "2cba518fb5cb87603f464686fca02becb08663d6fca68786ee0f0745389ad180"
+    },
+    {
+      "index": 2,
+      "lane": "subscription-periodic-reconcile",
+      "requestedAt": 1793060948585,
+      "sourceReceivedAt": 1793060948674,
+      "availableAt": 1793060948733,
+      "slot": 461867530,
+      "marketBlockTime": 1793060948,
+      "status": "fresh-verified-size-quote",
+      "fullSizeSellLamports": "229733",
+      "canonicalAccountBytesSha256": "2cba518fb5cb87603f464686fca02becb08663d6fca68786ee0f0745389ad180"
+    },
+    {
+      "index": 3,
+      "lane": "subscription-change-reconcile",
+      "requestedAt": 1793060950309,
+      "sourceReceivedAt": 1793060950358,
+      "availableAt": 1793060950437,
+      "slot": 461867537,
+      "marketBlockTime": 1793060949,
+      "status": "fresh-verified-size-quote",
+      "fullSizeSellLamports": "229733",
+      "canonicalAccountBytesSha256": "2cba518fb5cb87603f464686fca02becb08663d6fca68786ee0f0745389ad180"
+    },
+    {
+      "index": 4,
+      "lane": "subscription-change-reconcile",
+      "requestedAt": 1793060953825,
+      "sourceReceivedAt": 1793060953906,
+      "availableAt": 1793060953952,
+      "slot": 461867554,
+      "marketBlockTime": 1793060953,
+      "status": "fresh-verified-size-quote",
+      "fullSizeSellLamports": "229733",
+      "canonicalAccountBytesSha256": "2cba518fb5cb87603f464686fca02becb08663d6fca68786ee0f0745389ad180"
+    },
+    {
+      "index": 5,
+      "lane": "poll",
+      "requestedAt": 1793060955944,
+      "sourceReceivedAt": 1793060955994,
+      "availableAt": 1793060956058,
+      "slot": 461867564,
+      "marketBlockTime": 1793060955,
+      "status": "fresh-verified-size-quote",
+      "fullSizeSellLamports": "229733",
+      "canonicalAccountBytesSha256": "2cba518fb5cb87603f464686fca02becb08663d6fca68786ee0f0745389ad180"
+    },
+    {
+      "index": 6,
+      "lane": "subscription-change-reconcile",
+      "requestedAt": 1793060958435,
+      "sourceReceivedAt": 1793060958482,
+      "availableAt": 1793060958541,
+      "slot": 461867576,
+      "marketBlockTime": 1793060958,
+      "status": "fresh-verified-size-quote",
+      "fullSizeSellLamports": "229733",
+      "canonicalAccountBytesSha256": "2cba518fb5cb87603f464686fca02becb08663d6fca68786ee0f0745389ad180"
+    },
+    {
+      "index": 7,
+      "lane": "poll",
+      "requestedAt": 1793060963439,
+      "sourceReceivedAt": 1793060963489,
+      "availableAt": 1793060963555,
+      "slot": 461867601,
+      "marketBlockTime": 1793060963,
+      "status": "fresh-verified-size-quote",
+      "fullSizeSellLamports": "229733",
+      "canonicalAccountBytesSha256": "2cba518fb5cb87603f464686fca02becb08663d6fca68786ee0f0745389ad180"
+    },
+    {
+      "index": 8,
+      "lane": "poll",
+      "requestedAt": 1793060971021,
+      "sourceReceivedAt": 1793060971103,
+      "availableAt": 1793060971183,
+      "slot": 461867636,
+      "marketBlockTime": 1793060970,
+      "status": "fresh-verified-size-quote",
+      "fullSizeSellLamports": "229733",
+      "canonicalAccountBytesSha256": "2cba518fb5cb87603f464686fca02becb08663d6fca68786ee0f0745389ad180"
+    },
+    {
+      "index": 9,
+      "lane": "subscription-periodic-reconcile",
+      "requestedAt": 1793060973630,
+      "sourceReceivedAt": 1793060973670,
+      "availableAt": 1793060973722,
+      "slot": 461867649,
+      "marketBlockTime": 1793060973,
+      "status": "fresh-verified-size-quote",
+      "fullSizeSellLamports": "229733",
+      "canonicalAccountBytesSha256": "2cba518fb5cb87603f464686fca02becb08663d6fca68786ee0f0745389ad180"
+    },
+    {
+      "index": 10,
+      "lane": "poll",
+      "requestedAt": 1793060978707,
+      "sourceReceivedAt": 1793060978750,
+      "availableAt": 1793060978796,
+      "slot": 461867674,
+      "marketBlockTime": 1793060978,
+      "status": "fresh-verified-size-quote",
+      "fullSizeSellLamports": "229733",
+      "canonicalAccountBytesSha256": "2cba518fb5cb87603f464686fca02becb08663d6fca68786ee0f0745389ad180"
+    },
+    {
+      "index": 11,
+      "lane": "subscription-periodic-reconcile",
+      "requestedAt": 1793060978849,
+      "sourceReceivedAt": 1793060978897,
+      "availableAt": 1793060978956,
+      "slot": 461867675,
+      "marketBlockTime": 1793060978,
+      "status": "fresh-verified-size-quote",
+      "fullSizeSellLamports": "229733",
+      "canonicalAccountBytesSha256": "2cba518fb5cb87603f464686fca02becb08663d6fca68786ee0f0745389ad180"
+    },
+    {
+      "index": 12,
+      "lane": "poll",
+      "requestedAt": 1793060986023,
+      "sourceReceivedAt": 1793060986096,
+      "availableAt": 1793060986160,
+      "slot": 461867708,
+      "marketBlockTime": 1793060985,
+      "status": "fresh-verified-size-quote",
+      "fullSizeSellLamports": "229733",
+      "canonicalAccountBytesSha256": "2cba518fb5cb87603f464686fca02becb08663d6fca68786ee0f0745389ad180"
+    },
+    {
+      "index": 13,
+      "lane": "poll",
+      "requestedAt": 1793060993433,
+      "sourceReceivedAt": 1793060993476,
+      "availableAt": 1793060993522,
+      "slot": 461867743,
+      "marketBlockTime": null,
+      "status": "unavailable",
+      "fullSizeSellLamports": null,
+      "canonicalAccountBytesSha256": "2cba518fb5cb87603f464686fca02becb08663d6fca68786ee0f0745389ad180"
+    },
+    {
+      "index": 14,
+      "lane": "subscription-periodic-reconcile",
+      "requestedAt": 1793060994063,
+      "sourceReceivedAt": 1793060994101,
+      "availableAt": 1793060994141,
+      "slot": 461867745,
+      "marketBlockTime": 1793060993,
+      "status": "fresh-verified-size-quote",
+      "fullSizeSellLamports": "229733",
+      "canonicalAccountBytesSha256": "2cba518fb5cb87603f464686fca02becb08663d6fca68786ee0f0745389ad180"
+    },
+    {
+      "index": 15,
+      "lane": "poll",
+      "requestedAt": 1793061001019,
+      "sourceReceivedAt": 1793061001103,
+      "availableAt": 1793061001163,
+      "slot": 461867778,
+      "marketBlockTime": 1793061000,
+      "status": "fresh-verified-size-quote",
+      "fullSizeSellLamports": "229733",
+      "canonicalAccountBytesSha256": "2cba518fb5cb87603f464686fca02becb08663d6fca68786ee0f0745389ad180"
+    }
+  ],
+  "interpretation": {
+    "crossingTiming": "UNAVAILABLE: no observed liquidation-value change; unobserved intervals could contain changes. Constant recorded endpoints do not prove constant intervening market state.",
+    "counterfactualFixedScheduleComparison": "Not identified by sparse actual data. At a simulated decision time, expose only a quote whose original availableAt has occurred and whose original sourceReceivedAt remains<=2000ms old. Otherwise record unavailable; never mint a fresh receipt timestamp or interpolate a price.",
+    "counterfactualRequests": "Additional replay poll timers are modeled requests, not real actual RPC responses. Same retained observations cannot establish what provider would have returned at unobserved times.",
+    "eventDrivenBenefit": "UNMEASURED on actual data:17notifications all unchanged globalconfig/nativeSOLmint content,0 changed selectedpool/vault notices; no changed-state delivery/coverage denominator.",
+    "productionSubscriptions": "Current RpcMarket has noaccountsubscribepath. Historicalresearchscriptonlyverified7accountSubscribeACKsperconnection; no currenteligibilityorcontinuousprotection claim.",
+    "naturalVersusInjectedFailure": "Planned reconnect was an injected drill; later unexpected socketclose is actual historicalfailure with no automaticnaturalrecovery observed.",
+    "additionalRetainedSources": "Other integrations are isolated single snapshots or widely spaced states; the two-poolbatchprobe has3immediate rounds with unchanged outputs. Neither provides dense changing-price evidence for2s/5s/10s exitresponse.",
+    "naturalPositionExitThresholdCrossings": "NOT_APPLICABLE: no natural position was held; recorded output did not change."
+  },
+  "allowedConclusions": [
+    "Original availability, exact same-byte integer quote decoder parity, quiet observed output, historicalsubscriptionACK/reconnect behavior and recorded unavailableblocktime.",
+    "Synthetic dense rapidfall/rally/notificationfailure/RPCdelay scenarios must be labeledsynthetic; notnaturalperformance."
+  ],
+  "forbiddenConclusions": [
+    "Natural stop/takeprofitresponse timing",
+    "Profitable exits or natural PAPER trades",
+    "Event-triggered savings during changing state",
+    "2s/5s/10s live equivalence",
+    "Continuous public RPC capacity"
+  ],
+  "financialAccountOrWalletSecretFilesRead": false
+}

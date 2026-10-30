@@ -1,0 +1,24 @@
+✔ actual ACK time crossing a bucket preserves identical six-bucket warming in native and trader windows (83.736927ms)
+✔ protocol slot received during decision recording invalidates its earlier quote before financial reservation (22.616069ms)
+✔ audit certificate is an immutable exact-window generation fact and is unavailable after expiry, reconnect or retirement (64.596964ms)
+✔ status/report work cannot backdate the next certificate read or extend an expired certificate (22.581598ms)
+✔ financial ownership survives source retirement and age expiry without deleting HELD identity or origin proof (15.348821ms)
+✔ entry cost and exact-size quote evidence survives diagnostic rotation without protecting unrelated diagnostics (0.335798ms)
+✔ resumed exposure is evaluated before each discretionary startup connection (9.554759ms)
+✔ unavailable or unusable recovery defers only source startup and can be retried after a fresh financial check (0.550897ms)
+✔ management-only recovery attempts owned obligations while never connecting candidate/discovery feeds (0.475255ms)
+✔ management-only is explicit and frozen into configuration rather than implied by source failure (1.236094ms)
+✔ reported all-position completion uses the final actual callback, not the oldest scheduling watermark (1.01795ms)
+✔ candidate CPU work gives way before management handoff without weakening quote or cadence contracts (4.613231ms)
+✔ native bridge retains every same-packet event when callback recording advances the clock (96.309872ms)
+✔ full frozen position capacity avoids proof/rent/quote work while holding protection continues (44.419081ms)
+✔ pending buys occupy capacity without cancellation or unneeded candidate preparation (19.797079ms)
+✔ a free concurrent-stage slot still permits preparation and feature-only assessment without forcing a fill (45.665129ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2791.430184

@@ -1,0 +1,13 @@
+{
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "--test",
+    "--test-name-pattern=final admission clock",
+    "test/native-flow-audit.test.ts"
+  ],
+  "exitCode": 1,
+  "logSha256": "74be42052aa7a4ce9e4eff36ab18a408212aadad34e6e48d713c9c3fdba3da8e",
+  "meaning": "New flag admission metadata bug discovered by independent review; original actual market evidence unaffected."
+}

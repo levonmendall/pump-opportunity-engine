@@ -1,0 +1,1 @@
+{"accepted":6,"refusedAt":1000050,"recordAccepted":false,"newAccepted":true,"refusedRecords":2,"refusalReceipts":[1000000],"pin":{"complete":false,"proofId":"actual-refusal-inside","files":[],"bytes":0,"manifestSha256":null,"reason":"RANGE_CONTAINS_REFUSAL"}}

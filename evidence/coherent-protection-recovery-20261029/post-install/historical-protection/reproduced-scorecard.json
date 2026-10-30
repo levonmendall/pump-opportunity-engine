@@ -1,0 +1,1190 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_RETAINED_PUBLIC_TRADE_QUALITY_AUDIT_NOT_OPERATIONAL_ACCEPTANCE",
+  "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+  "networkRequests": 0,
+  "financialDatabaseOpened": false,
+  "manifestSha256": "5af2f89cba4d5625ac55cac0918bc68042b050b7aca8ab9284a3bbed8ff4c9c8",
+  "uniqueModeledFills": 8,
+  "closedRoundTrips": 4,
+  "trades": [
+    {
+      "name": "Fa24",
+      "mint": "Fa24xN13pzjmcx1dtKP9nBMMFCwLtXCJrtP5hSPKpump",
+      "classification": "INCOMPLETE_OR_UNVERIFIED_EVIDENCE",
+      "entry": {
+        "at": "2026-10-29T09:15:17.693Z",
+        "executionCostsUsd": 0.000701,
+        "id": "paper-fill:f57e6eff547ba02b388fd8a44502d794",
+        "mint": "Fa24xN13pzjmcx1dtKP9nBMMFCwLtXCJrtP5hSPKpump",
+        "quantity": "400582323928",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:41696:1793265315521",
+        "side": "buy",
+        "status": "PAPER filled",
+        "valueUsd": 49.698409,
+        "quantityUnit": "token atomic units; token decimals not established by this public projection",
+        "nativeSolConsideration": null,
+        "nativeSolCostsAndRent": null,
+        "attemptIdentity": "execution-attempt:buy:41696:1793265315521",
+        "attemptTimestampAt": "2026-10-29T09:15:15.521Z",
+        "attemptTimestampToFillMs": 2172,
+        "delayInterpretation": "Difference from timestamp encoded in durable attempt identity; not independently measured provider transport or quote freshness"
+      },
+      "exit": {
+        "at": "2026-10-29T09:18:01.660Z",
+        "executionCostsUsd": 0.000701,
+        "id": "paper-fill:4f60a80e3a2a1138b54933655b1b7c13",
+        "mint": "Fa24xN13pzjmcx1dtKP9nBMMFCwLtXCJrtP5hSPKpump",
+        "quantity": "400582323928",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:41776:1793265480459",
+        "side": "sell",
+        "status": "PAPER filled",
+        "valueUsd": 41.245086,
+        "quantityUnit": "token atomic units; token decimals not established by this public projection",
+        "nativeSolConsideration": null,
+        "nativeSolCostsAndRent": null,
+        "attemptIdentity": "execution-attempt:sell:41776:1793265480459",
+        "attemptTimestampAt": "2026-10-29T09:18:00.459Z",
+        "attemptTimestampToFillMs": 1201,
+        "delayInterpretation": "Difference from timestamp encoded in durable attempt identity; not independently measured provider transport or quote freshness"
+      },
+      "fillEvidence": {
+        "entry": {
+          "firstRetainedPublicMentionAt": "2026-10-29T13:55:15.861Z",
+          "nativeExecutionSourceIndependentlyEstablished": false
+        },
+        "exit": {
+          "firstRetainedPublicMentionAt": "2026-10-29T13:55:15.861Z",
+          "nativeExecutionSourceIndependentlyEstablished": false
+        }
+      },
+      "holdingMs": 163967,
+      "sourceProvenance": "Run source/configuration shown only when contemporaneous held snapshots exist; later preserved fill lists do not establish original execution source",
+      "decisionTimeEntryProofs": {
+        "canonical_pool_and_chain_migration_timestamp": "NOT_RETAINED_IN_PUBLIC_INPUTS",
+        "complete_60_second_executed_flow_with_six_10_second_buckets": "NOT_RETAINED_IN_PUBLIC_INPUTS",
+        "independent_window_audit_and_completeness_proof": "NOT_RETAINED_IN_PUBLIC_INPUTS",
+        "decision_time_buying_pressure_buyers_concentration_and_price_features": "NOT_RETAINED_IN_PUBLIC_INPUTS",
+        "actual_size_entry_quote_pool_state_liquidity_and_quote_clock": "NOT_RETAINED_IN_PUBLIC_INPUTS",
+        "reservation_risk_checks_and_reconciliation_at_order_admission": "NOT_RETAINED_IN_PUBLIC_INPUTS",
+        "native_sol_consideration_gas_fees_rent_and_journal_actions": "NOT_RETAINED_IN_PUBLIC_INPUTS"
+      },
+      "entryQuality": "UNVERIFIED; a public qualified badge or modeled fill is not independent proof of a valid entry",
+      "observedDecisions": [],
+      "observedExitSignals": [],
+      "protection": {
+        "heldSnapshotCount": 0,
+        "segments": [],
+        "observedBreachesLowerBound": 0,
+        "observedUnavailableChecksLowerBound": 0,
+        "restartDuringHoldingObserved": false,
+        "continuousProtectionIndependentlyProven": false,
+        "interpretation": "Public counters are source assertions, not all per-check quote and timing proofs"
+      },
+      "sampledAccountInterval": {
+        "available": false,
+        "reason": "No retained immediate flat before-and-after account brackets; USD fills do not establish SOL P&L"
+      },
+      "verifiedTradeNetSol": null,
+      "economicInterpretation": "Public USD observations are not native SOL proceeds/costs; no winner/loser certification without native actions/journal and quote evidence"
+    },
+    {
+      "name": "AcBX",
+      "mint": "AcBX8a8eHbzQghgqMfqXeAz4kQSRbtHWKUSGXvwMpump",
+      "classification": "INADEQUATELY_PROTECTED_POSITION",
+      "entry": {
+        "at": "2026-10-29T15:01:47.821Z",
+        "executionCostsUsd": 0.000711,
+        "id": "paper-fill:783fb910281022ac56bff60190469d36",
+        "mint": "AcBX8a8eHbzQghgqMfqXeAz4kQSRbtHWKUSGXvwMpump",
+        "quantity": "6411268419",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:45874:1793286106180",
+        "side": "buy",
+        "status": "PAPER filled",
+        "valueUsd": 49.694031,
+        "quantityUnit": "token atomic units; token decimals not established by this public projection",
+        "nativeSolConsideration": null,
+        "nativeSolCostsAndRent": null,
+        "attemptIdentity": "execution-attempt:buy:45874:1793286106180",
+        "attemptTimestampAt": "2026-10-29T15:01:46.180Z",
+        "attemptTimestampToFillMs": 1641,
+        "delayInterpretation": "Difference from timestamp encoded in durable attempt identity; not independently measured provider transport or quote freshness"
+      },
+      "exit": {
+        "at": "2026-10-29T15:16:50.857Z",
+        "executionCostsUsd": 0.000714,
+        "id": "paper-fill:6dd8e14067d2b21a203ce5f5f1ecb921",
+        "mint": "AcBX8a8eHbzQghgqMfqXeAz4kQSRbtHWKUSGXvwMpump",
+        "quantity": "6411268419",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:46296:1793287009656",
+        "side": "sell",
+        "status": "PAPER filled",
+        "valueUsd": 50.035441,
+        "quantityUnit": "token atomic units; token decimals not established by this public projection",
+        "nativeSolConsideration": null,
+        "nativeSolCostsAndRent": null,
+        "attemptIdentity": "execution-attempt:sell:46296:1793287009656",
+        "attemptTimestampAt": "2026-10-29T15:16:49.656Z",
+        "attemptTimestampToFillMs": 1201,
+        "delayInterpretation": "Difference from timestamp encoded in durable attempt identity; not independently measured provider transport or quote freshness"
+      },
+      "fillEvidence": {
+        "entry": {
+          "firstRetainedPublicMentionAt": "2026-10-29T15:01:49.035Z",
+          "nativeExecutionSourceIndependentlyEstablished": false
+        },
+        "exit": {
+          "firstRetainedPublicMentionAt": "2026-10-29T15:37:32.064Z",
+          "nativeExecutionSourceIndependentlyEstablished": false
+        }
+      },
+      "holdingMs": 903036,
+      "sourceProvenance": "Run source/configuration shown only when contemporaneous held snapshots exist; later preserved fill lists do not establish original execution source",
+      "decisionTimeEntryProofs": {
+        "canonical_pool_and_chain_migration_timestamp": "NOT_RETAINED_IN_PUBLIC_INPUTS",
+        "complete_60_second_executed_flow_with_six_10_second_buckets": "NOT_RETAINED_IN_PUBLIC_INPUTS",
+        "independent_window_audit_and_completeness_proof": "NOT_RETAINED_IN_PUBLIC_INPUTS",
+        "decision_time_buying_pressure_buyers_concentration_and_price_features": "NOT_RETAINED_IN_PUBLIC_INPUTS",
+        "actual_size_entry_quote_pool_state_liquidity_and_quote_clock": "NOT_RETAINED_IN_PUBLIC_INPUTS",
+        "reservation_risk_checks_and_reconciliation_at_order_admission": "NOT_RETAINED_IN_PUBLIC_INPUTS",
+        "native_sol_consideration_gas_fees_rent_and_journal_actions": "NOT_RETAINED_IN_PUBLIC_INPUTS"
+      },
+      "entryQuality": "UNVERIFIED; a public qualified badge or modeled fill is not independent proof of a valid entry",
+      "observedDecisions": [
+        {
+          "mint": "AcBX8a8eHbzQghgqMfqXeAz4kQSRbtHWKUSGXvwMpump",
+          "at": "2026-10-29T15:01:44.078Z",
+          "stage": "shadow-predictive-not-rejected",
+          "reason": "persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed",
+          "observedPublicIds": [
+            "native-paper-20261029145012717:0:1793286104078"
+          ]
+        },
+        {
+          "mint": "AcBX8a8eHbzQghgqMfqXeAz4kQSRbtHWKUSGXvwMpump",
+          "at": "2026-10-29T15:01:46.169Z",
+          "stage": "qualified",
+          "reason": "provisional-rule-passed; execution-and-accounting-still-required",
+          "observedPublicIds": [
+            "native-paper-20261029145012717:1:1793286106169",
+            "native-paper-20261029145012717:0:1793286106169"
+          ]
+        },
+        {
+          "mint": "AcBX8a8eHbzQghgqMfqXeAz4kQSRbtHWKUSGXvwMpump",
+          "at": "2026-10-29T15:16:49.656Z",
+          "stage": "exit-reserved",
+          "reason": "maximum-holding-time; fresh executable quote still required",
+          "observedPublicIds": [
+            "native-paper-20261029145012717:1:1793287009656"
+          ]
+        },
+        {
+          "mint": "AcBX8a8eHbzQghgqMfqXeAz4kQSRbtHWKUSGXvwMpump",
+          "at": "2026-10-29T16:08:22.680Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met",
+          "observedPublicIds": [
+            "native-paper-20261029145012717:10:1793290102680"
+          ]
+        }
+      ],
+      "observedExitSignals": [
+        {
+          "mint": "AcBX8a8eHbzQghgqMfqXeAz4kQSRbtHWKUSGXvwMpump",
+          "at": "2026-10-29T15:16:49.656Z",
+          "stage": "exit-reserved",
+          "reason": "maximum-holding-time; fresh executable quote still required",
+          "observedPublicIds": [
+            "native-paper-20261029145012717:1:1793287009656"
+          ]
+        }
+      ],
+      "protection": {
+        "heldSnapshotCount": 41,
+        "segments": [
+          {
+            "runId": "native-paper-20261029145012717",
+            "sourceRelease": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+            "configurationSha256": "5e99ebe042521b3917a11b86ef4b46264205b11d38c407cba264a01046a79344",
+            "runStartedAt": "2026-10-29T14:50:12.717Z",
+            "heldSnapshotCount": 41,
+            "firstHeldSnapshotAt": "2026-10-29T15:01:49.035Z",
+            "lastHeldSnapshotAt": "2026-10-29T15:13:11.551Z",
+            "baselineKind": "last_retained_pre_entry_run_counter",
+            "baselineAt": "2026-10-29T15:01:34.032Z",
+            "baselineCounters": {
+              "breaches": 0,
+              "unavailableChecks": 0
+            },
+            "endpointAt": "2026-10-29T15:37:32.064Z",
+            "endpointCounters": {
+              "breaches": 4,
+              "unavailableChecks": 14
+            },
+            "observedCounterDelta": {
+              "breaches": 4,
+              "unavailableChecks": 14
+            },
+            "reportedRunMaximumCompletedGapMs": 13745,
+            "maximumAttributableToThisHolding": true,
+            "maximumInterpretation": "No earlier held trade in this run and zero counter baseline",
+            "maximumQuoteAgeAtUseMs": 164,
+            "completedBoundaryMs": 4000,
+            "lastReportedCompletedAt": "2026-10-29T15:16:49.680Z",
+            "counterIncreaseBrackets": [
+              {
+                "beforeAt": "2026-10-29T15:02:19.262Z",
+                "byAt": "2026-10-29T15:02:48.330Z",
+                "counterIncrease": {
+                  "breaches": 1,
+                  "unavailableChecks": 3
+                },
+                "lastCompletedAt": "2026-10-29T15:02:47.886Z",
+                "runMaximumCompletedGapMs": 13138,
+                "providerCounterDelta": {
+                  "httpTimeouts": 0,
+                  "httpErrors": 0,
+                  "throttles": 0,
+                  "rpcRequests": 17
+                },
+                "providerAtBracketEnd": {
+                  "broadWatchBytes": 26476995656,
+                  "controlCooldownUntil": null,
+                  "discoveryConnected": true,
+                  "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+                  "httpErrors": 0,
+                  "httpTimeouts": 132,
+                  "maximumStartsPerMinute": 60,
+                  "minimumSpacingMs": 250,
+                  "nativeStreamBytes": 449265387,
+                  "primaryCooldownUntil": "2026-10-29T15:01:43.056Z",
+                  "rollingStartsPerMinute": 54,
+                  "rpcRequests": 300,
+                  "rpcResponseBytes": 27719080,
+                  "throttles": 0,
+                  "watchConnected": true
+                },
+                "resourcesAtBracketEnd": {
+                  "availableDiskBytes": 288993722368,
+                  "availableMemoryBytes": null,
+                  "cpuOneCoreFraction": 0.0829854555203673,
+                  "eventLoopLagMs": 25.853951,
+                  "rssBytes": 301973504,
+                  "sampleAt": "2026-10-29T15:02:47.888Z",
+                  "state": "normal"
+                },
+                "qualityAtBracketEnd": {
+                  "auditUnavailable": 30,
+                  "auditUnusable": 94,
+                  "capacityExclusions": 0,
+                  "captureConnected": true,
+                  "decisionDeadlineMisses": 22,
+                  "enrichmentDeadlineFailures": 0,
+                  "incompleteExclusions": 625,
+                  "limitations": [
+                    "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+                  ],
+                  "qualityGaps": 625,
+                  "structuralExclusions": 25
+                },
+                "causation": "Correlation only; physical dispatch/response and per-check traces still required"
+              },
+              {
+                "beforeAt": "2026-10-29T15:03:03.368Z",
+                "byAt": "2026-10-29T15:03:26.482Z",
+                "counterIncrease": {
+                  "breaches": 1,
+                  "unavailableChecks": 3
+                },
+                "lastCompletedAt": "2026-10-29T15:03:26.482Z",
+                "runMaximumCompletedGapMs": 13138,
+                "providerCounterDelta": {
+                  "httpTimeouts": 0,
+                  "httpErrors": 0,
+                  "throttles": 0,
+                  "rpcRequests": 17
+                },
+                "providerAtBracketEnd": {
+                  "broadWatchBytes": 26528685572,
+                  "controlCooldownUntil": null,
+                  "discoveryConnected": true,
+                  "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+                  "httpErrors": 0,
+                  "httpTimeouts": 132,
+                  "maximumStartsPerMinute": 60,
+                  "minimumSpacingMs": 250,
+                  "nativeStreamBytes": 449265431,
+                  "primaryCooldownUntil": "2026-10-29T15:01:43.056Z",
+                  "rollingStartsPerMinute": 55,
+                  "rpcRequests": 340,
+                  "rpcResponseBytes": 76093460,
+                  "throttles": 0,
+                  "watchConnected": true
+                },
+                "resourcesAtBracketEnd": {
+                  "availableDiskBytes": 288993017856,
+                  "availableMemoryBytes": null,
+                  "cpuOneCoreFraction": 0.061760818000067774,
+                  "eventLoopLagMs": 25.739263,
+                  "rssBytes": 303771648,
+                  "sampleAt": "2026-10-29T15:03:25.203Z",
+                  "state": "normal"
+                },
+                "qualityAtBracketEnd": {
+                  "auditUnavailable": 30,
+                  "auditUnusable": 94,
+                  "capacityExclusions": 0,
+                  "captureConnected": true,
+                  "decisionDeadlineMisses": 22,
+                  "enrichmentDeadlineFailures": 0,
+                  "incompleteExclusions": 625,
+                  "limitations": [
+                    "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+                  ],
+                  "qualityGaps": 625,
+                  "structuralExclusions": 25
+                },
+                "causation": "Correlation only; physical dispatch/response and per-check traces still required"
+              },
+              {
+                "beforeAt": "2026-10-29T15:08:22.774Z",
+                "byAt": "2026-10-29T15:08:46.047Z",
+                "counterIncrease": {
+                  "breaches": 1,
+                  "unavailableChecks": 3
+                },
+                "lastCompletedAt": "2026-10-29T15:08:46.046Z",
+                "runMaximumCompletedGapMs": 13745,
+                "providerCounterDelta": {
+                  "httpTimeouts": 0,
+                  "httpErrors": 0,
+                  "throttles": 0,
+                  "rpcRequests": 19
+                },
+                "providerAtBracketEnd": {
+                  "broadWatchBytes": 26912277574,
+                  "controlCooldownUntil": null,
+                  "discoveryConnected": true,
+                  "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+                  "httpErrors": 0,
+                  "httpTimeouts": 132,
+                  "maximumStartsPerMinute": 60,
+                  "minimumSpacingMs": 250,
+                  "nativeStreamBytes": 449470103,
+                  "primaryCooldownUntil": "2026-10-29T15:01:43.056Z",
+                  "rollingStartsPerMinute": 60,
+                  "rpcRequests": 590,
+                  "rpcResponseBytes": 123275706,
+                  "throttles": 0,
+                  "watchConnected": true
+                },
+                "resourcesAtBracketEnd": {
+                  "availableDiskBytes": 288991784960,
+                  "availableMemoryBytes": null,
+                  "cpuOneCoreFraction": 0.061053130481716365,
+                  "eventLoopLagMs": 25.001983,
+                  "rssBytes": 305225728,
+                  "sampleAt": "2026-10-29T15:08:45.793Z",
+                  "state": "normal"
+                },
+                "qualityAtBracketEnd": {
+                  "auditUnavailable": 30,
+                  "auditUnusable": 94,
+                  "capacityExclusions": 0,
+                  "captureConnected": true,
+                  "decisionDeadlineMisses": 22,
+                  "enrichmentDeadlineFailures": 0,
+                  "incompleteExclusions": 658,
+                  "limitations": [
+                    "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+                  ],
+                  "qualityGaps": 658,
+                  "structuralExclusions": 25
+                },
+                "causation": "Correlation only; physical dispatch/response and per-check traces still required"
+              },
+              {
+                "beforeAt": "2026-10-29T15:13:11.551Z",
+                "byAt": "2026-10-29T15:37:32.064Z",
+                "counterIncrease": {
+                  "breaches": 1,
+                  "unavailableChecks": 5
+                },
+                "lastCompletedAt": "2026-10-29T15:16:49.680Z",
+                "runMaximumCompletedGapMs": null,
+                "providerCounterDelta": {
+                  "httpTimeouts": 31,
+                  "httpErrors": 0,
+                  "throttles": 0,
+                  "rpcRequests": 597
+                },
+                "providerAtBracketEnd": {
+                  "broadWatchBytes": 28705427704,
+                  "controlCooldownUntil": null,
+                  "discoveryConnected": true,
+                  "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+                  "httpErrors": 0,
+                  "httpTimeouts": 163,
+                  "maximumStartsPerMinute": 60,
+                  "minimumSpacingMs": 250,
+                  "nativeStreamBytes": 460308453,
+                  "primaryCooldownUntil": "2026-10-29T15:36:53.788Z",
+                  "rollingStartsPerMinute": 38,
+                  "rpcRequests": 1390,
+                  "rpcResponseBytes": 225553865,
+                  "throttles": 0,
+                  "watchConnected": true
+                },
+                "resourcesAtBracketEnd": {
+                  "availableDiskBytes": 288983076864,
+                  "availableMemoryBytes": null,
+                  "cpuOneCoreFraction": 0.11048655931976432,
+                  "eventLoopLagMs": 24.231935,
+                  "rssBytes": 305754112,
+                  "sampleAt": "2026-10-29T15:37:31.716Z",
+                  "state": "normal"
+                },
+                "qualityAtBracketEnd": {
+                  "auditUnavailable": 30,
+                  "auditUnusable": 94,
+                  "capacityExclusions": 0,
+                  "captureConnected": true,
+                  "decisionDeadlineMisses": 22,
+                  "enrichmentDeadlineFailures": 0,
+                  "incompleteExclusions": 783,
+                  "limitations": [
+                    "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+                  ],
+                  "qualityGaps": 783,
+                  "structuralExclusions": 27
+                },
+                "causation": "Correlation only; physical dispatch/response and per-check traces still required"
+              }
+            ],
+            "gapAccounting": "Sampled counter evidence only; absence of retained samples is not continuous supervision proof"
+          }
+        ],
+        "observedBreachesLowerBound": 4,
+        "observedUnavailableChecksLowerBound": 14,
+        "restartDuringHoldingObserved": false,
+        "continuousProtectionIndependentlyProven": false,
+        "interpretation": "Public counters are source assertions, not all per-check quote and timing proofs"
+      },
+      "sampledAccountInterval": {
+        "available": true,
+        "beforeAt": "2026-10-29T15:01:34.032Z",
+        "afterAt": "2026-10-29T15:37:32.064Z",
+        "beforeSequence": "8667",
+        "afterSequence": "8798",
+        "beforeBalances": {
+          "cashSol": "9.874427482",
+          "drawdownUsd": null,
+          "economicPnlUsd": null,
+          "equitySol": "9.877429762",
+          "equityUsd": 1004.880317,
+          "executionCostsUsd": null,
+          "markedExposureUsd": 0,
+          "operatingCostsUsd": null,
+          "passiveSolEquityUsd": 1013.448225,
+          "positionCostUsd": 0,
+          "realizedUsd": -8.567907,
+          "reservedSol": "0",
+          "solPriceUsd": 101.735,
+          "tradingPnlUsd": -8.567907,
+          "unrealizedUsd": 0
+        },
+        "afterBalances": {
+          "cashSol": "9.872648612",
+          "drawdownUsd": null,
+          "economicPnlUsd": null,
+          "equitySol": "9.878653172",
+          "equityUsd": 1010.28986,
+          "executionCostsUsd": null,
+          "markedExposureUsd": 0,
+          "operatingCostsUsd": null,
+          "passiveSolEquityUsd": 1018.777706,
+          "positionCostUsd": 0,
+          "realizedUsd": -8.487845,
+          "reservedSol": "0",
+          "solPriceUsd": 102.27,
+          "tradingPnlUsd": -8.487845,
+          "unrealizedUsd": 0
+        },
+        "otherRecordedFillIdsWithinBrackets": [],
+        "classification": "SAMPLED_FLAT_ACCOUNT_INTERVAL_DELTA_NOT_PER_ACTION_SOL_LEDGER_AUDIT",
+        "limitations": "May include failed-attempt costs and locked modeled deposit/rent effects; no historical SOL/USD conversion or candle peak used",
+        "cashSolDelta": "-0.001778870",
+        "reservedSolDelta": "0.000000000",
+        "equitySolDelta": "0.001223410"
+      },
+      "verifiedTradeNetSol": null,
+      "economicInterpretation": "Public USD observations are not native SOL proceeds/costs; no winner/loser certification without native actions/journal and quote evidence"
+    },
+    {
+      "name": "8TJ1",
+      "mint": "8TJ1uhidGn7PmzEtmftDUJkAxEcLpPNWqdvh42SZpump",
+      "classification": "INADEQUATELY_PROTECTED_POSITION",
+      "entry": {
+        "at": "2026-10-29T16:08:35.958Z",
+        "executionCostsUsd": 0.00072,
+        "id": "paper-fill:c5c94babc37540a39bd3cf70c18d4cf2",
+        "mint": "8TJ1uhidGn7PmzEtmftDUJkAxEcLpPNWqdvh42SZpump",
+        "quantity": "319987598",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:46914:1793290114273",
+        "side": "buy",
+        "status": "PAPER filled",
+        "valueUsd": 49.690465,
+        "quantityUnit": "token atomic units; token decimals not established by this public projection",
+        "nativeSolConsideration": null,
+        "nativeSolCostsAndRent": null,
+        "attemptIdentity": "execution-attempt:buy:46914:1793290114273",
+        "attemptTimestampAt": "2026-10-29T16:08:34.273Z",
+        "attemptTimestampToFillMs": 1685,
+        "delayInterpretation": "Difference from timestamp encoded in durable attempt identity; not independently measured provider transport or quote freshness"
+      },
+      "exit": {
+        "at": "2026-10-29T16:23:37.938Z",
+        "executionCostsUsd": 0.000715,
+        "id": "paper-fill:8c86a04e730c26bd139f4d3e5783a07c",
+        "mint": "8TJ1uhidGn7PmzEtmftDUJkAxEcLpPNWqdvh42SZpump",
+        "quantity": "319987598",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:47355:1793291016775",
+        "side": "sell",
+        "status": "PAPER filled",
+        "valueUsd": 49.63868,
+        "quantityUnit": "token atomic units; token decimals not established by this public projection",
+        "nativeSolConsideration": null,
+        "nativeSolCostsAndRent": null,
+        "attemptIdentity": "execution-attempt:sell:47355:1793291016775",
+        "attemptTimestampAt": "2026-10-29T16:23:36.775Z",
+        "attemptTimestampToFillMs": 1163,
+        "delayInterpretation": "Difference from timestamp encoded in durable attempt identity; not independently measured provider transport or quote freshness"
+      },
+      "fillEvidence": {
+        "entry": {
+          "firstRetainedPublicMentionAt": "2026-10-29T16:08:36.232Z",
+          "nativeExecutionSourceIndependentlyEstablished": false
+        },
+        "exit": {
+          "firstRetainedPublicMentionAt": "2026-10-29T16:23:41.665Z",
+          "nativeExecutionSourceIndependentlyEstablished": false
+        }
+      },
+      "holdingMs": 901980,
+      "sourceProvenance": "Run source/configuration shown only when contemporaneous held snapshots exist; later preserved fill lists do not establish original execution source",
+      "decisionTimeEntryProofs": {
+        "canonical_pool_and_chain_migration_timestamp": "NOT_RETAINED_IN_PUBLIC_INPUTS",
+        "complete_60_second_executed_flow_with_six_10_second_buckets": "NOT_RETAINED_IN_PUBLIC_INPUTS",
+        "independent_window_audit_and_completeness_proof": "NOT_RETAINED_IN_PUBLIC_INPUTS",
+        "decision_time_buying_pressure_buyers_concentration_and_price_features": "NOT_RETAINED_IN_PUBLIC_INPUTS",
+        "actual_size_entry_quote_pool_state_liquidity_and_quote_clock": "NOT_RETAINED_IN_PUBLIC_INPUTS",
+        "reservation_risk_checks_and_reconciliation_at_order_admission": "NOT_RETAINED_IN_PUBLIC_INPUTS",
+        "native_sol_consideration_gas_fees_rent_and_journal_actions": "NOT_RETAINED_IN_PUBLIC_INPUTS"
+      },
+      "entryQuality": "UNVERIFIED; a public qualified badge or modeled fill is not independent proof of a valid entry",
+      "observedDecisions": [
+        {
+          "mint": "8TJ1uhidGn7PmzEtmftDUJkAxEcLpPNWqdvh42SZpump",
+          "at": "2026-10-29T16:08:22.389Z",
+          "stage": "shadow-predictive-not-rejected",
+          "reason": "persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed",
+          "observedPublicIds": [
+            "native-paper-20261029145012717:9:1793290102389"
+          ]
+        },
+        {
+          "mint": "8TJ1uhidGn7PmzEtmftDUJkAxEcLpPNWqdvh42SZpump",
+          "at": "2026-10-29T16:08:24.724Z",
+          "stage": "qualified",
+          "reason": "provisional-rule-passed; execution-and-accounting-still-required",
+          "observedPublicIds": [
+            "native-paper-20261029145012717:11:1793290104724",
+            "native-paper-20261029145012717:2:1793290104724"
+          ]
+        },
+        {
+          "mint": "8TJ1uhidGn7PmzEtmftDUJkAxEcLpPNWqdvh42SZpump",
+          "at": "2026-10-29T16:08:32.334Z",
+          "stage": "shadow-predictive-not-rejected",
+          "reason": "persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed",
+          "observedPublicIds": [
+            "native-paper-20261029145012717:13:1793290112334"
+          ]
+        },
+        {
+          "mint": "8TJ1uhidGn7PmzEtmftDUJkAxEcLpPNWqdvh42SZpump",
+          "at": "2026-10-29T16:08:34.262Z",
+          "stage": "qualified",
+          "reason": "provisional-rule-passed; execution-and-accounting-still-required",
+          "observedPublicIds": [
+            "native-paper-20261029145012717:14:1793290114262",
+            "native-paper-20261029145012717:3:1793290114262"
+          ]
+        },
+        {
+          "mint": "8TJ1uhidGn7PmzEtmftDUJkAxEcLpPNWqdvh42SZpump",
+          "at": "2026-10-29T16:23:36.775Z",
+          "stage": "exit-reserved",
+          "reason": "maximum-holding-time; fresh executable quote still required",
+          "observedPublicIds": [
+            "native-paper-20261029161536720:0:1793291016775"
+          ]
+        }
+      ],
+      "observedExitSignals": [
+        {
+          "mint": "8TJ1uhidGn7PmzEtmftDUJkAxEcLpPNWqdvh42SZpump",
+          "at": "2026-10-29T16:23:36.775Z",
+          "stage": "exit-reserved",
+          "reason": "maximum-holding-time; fresh executable quote still required",
+          "observedPublicIds": [
+            "native-paper-20261029161536720:0:1793291016775"
+          ]
+        }
+      ],
+      "protection": {
+        "heldSnapshotCount": 54,
+        "segments": [
+          {
+            "runId": "native-paper-20261029145012717",
+            "sourceRelease": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+            "configurationSha256": "5e99ebe042521b3917a11b86ef4b46264205b11d38c407cba264a01046a79344",
+            "runStartedAt": "2026-10-29T14:50:12.717Z",
+            "heldSnapshotCount": 25,
+            "firstHeldSnapshotAt": "2026-10-29T16:08:36.232Z",
+            "lastHeldSnapshotAt": "2026-10-29T16:15:34.062Z",
+            "baselineKind": "last_retained_pre_entry_run_counter",
+            "baselineAt": "2026-10-29T16:08:20.381Z",
+            "baselineCounters": {
+              "breaches": 4,
+              "unavailableChecks": 14
+            },
+            "endpointAt": "2026-10-29T16:15:34.062Z",
+            "endpointCounters": {
+              "breaches": 5,
+              "unavailableChecks": 17
+            },
+            "observedCounterDelta": {
+              "breaches": 1,
+              "unavailableChecks": 3
+            },
+            "reportedRunMaximumCompletedGapMs": 19446,
+            "maximumAttributableToThisHolding": false,
+            "maximumInterpretation": "Run maximum may belong to an earlier holding",
+            "maximumQuoteAgeAtUseMs": 176,
+            "completedBoundaryMs": 4000,
+            "lastReportedCompletedAt": "2026-10-29T16:15:31.174Z",
+            "counterIncreaseBrackets": [
+              {
+                "beforeAt": "2026-10-29T16:14:08.029Z",
+                "byAt": "2026-10-29T16:14:32.530Z",
+                "counterIncrease": {
+                  "breaches": 1,
+                  "unavailableChecks": 3
+                },
+                "lastCompletedAt": "2026-10-29T16:14:32.530Z",
+                "runMaximumCompletedGapMs": 19446,
+                "providerCounterDelta": {
+                  "httpTimeouts": 0,
+                  "httpErrors": 0,
+                  "throttles": 0,
+                  "rpcRequests": 12
+                },
+                "providerAtBracketEnd": {
+                  "broadWatchBytes": 30449443382,
+                  "controlCooldownUntil": null,
+                  "discoveryConnected": true,
+                  "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+                  "httpErrors": 0,
+                  "httpTimeouts": 179,
+                  "maximumStartsPerMinute": 60,
+                  "minimumSpacingMs": 250,
+                  "nativeStreamBytes": 476623006,
+                  "primaryCooldownUntil": "2026-10-29T16:07:57.041Z",
+                  "rollingStartsPerMinute": 52,
+                  "rpcRequests": 2194,
+                  "rpcResponseBytes": 305834120,
+                  "throttles": 0,
+                  "watchConnected": true
+                },
+                "resourcesAtBracketEnd": {
+                  "availableDiskBytes": 288961462272,
+                  "availableMemoryBytes": null,
+                  "cpuOneCoreFraction": 0.06302589391628538,
+                  "eventLoopLagMs": 23.822335,
+                  "rssBytes": 331321344,
+                  "sampleAt": "2026-10-29T16:14:32.008Z",
+                  "state": "normal"
+                },
+                "qualityAtBracketEnd": {
+                  "auditUnavailable": 32,
+                  "auditUnusable": 94,
+                  "capacityExclusions": 0,
+                  "captureConnected": true,
+                  "decisionDeadlineMisses": 28,
+                  "enrichmentDeadlineFailures": 0,
+                  "incompleteExclusions": 816,
+                  "limitations": [
+                    "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+                  ],
+                  "qualityGaps": 816,
+                  "structuralExclusions": 28
+                },
+                "causation": "Correlation only; physical dispatch/response and per-check traces still required"
+              }
+            ],
+            "gapAccounting": "Sampled counter evidence only; absence of retained samples is not continuous supervision proof"
+          },
+          {
+            "runId": "native-paper-20261029161536720",
+            "sourceRelease": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+            "configurationSha256": "f6ce54d7594e14d87955f211cca21f594b3d3eb52e20a75fa2245290f22a4857",
+            "runStartedAt": "2026-10-29T16:15:36.720Z",
+            "heldSnapshotCount": 29,
+            "firstHeldSnapshotAt": "2026-10-29T16:15:38.342Z",
+            "lastHeldSnapshotAt": "2026-10-29T16:23:26.622Z",
+            "baselineKind": "new_run_zero_counter_baseline",
+            "baselineAt": "2026-10-29T16:15:36.720Z",
+            "baselineCounters": {
+              "breaches": 0,
+              "unavailableChecks": 0
+            },
+            "endpointAt": "2026-10-29T16:23:41.665Z",
+            "endpointCounters": {
+              "breaches": 2,
+              "unavailableChecks": 5
+            },
+            "observedCounterDelta": {
+              "breaches": 2,
+              "unavailableChecks": 5
+            },
+            "reportedRunMaximumCompletedGapMs": 13500,
+            "maximumAttributableToThisHolding": true,
+            "maximumInterpretation": "No earlier held trade in this run and zero counter baseline",
+            "maximumQuoteAgeAtUseMs": 172,
+            "completedBoundaryMs": 4000,
+            "lastReportedCompletedAt": "2026-10-29T16:23:36.799Z",
+            "counterIncreaseBrackets": [
+              {
+                "beforeAt": "2026-10-29T16:15:38.342Z",
+                "byAt": "2026-10-29T16:15:53.353Z",
+                "counterIncrease": {
+                  "breaches": 1,
+                  "unavailableChecks": 2
+                },
+                "lastCompletedAt": "2026-10-29T16:15:52.307Z",
+                "runMaximumCompletedGapMs": 6337,
+                "providerCounterDelta": {
+                  "httpTimeouts": 1,
+                  "httpErrors": 0,
+                  "throttles": 0,
+                  "rpcRequests": 20
+                },
+                "providerAtBracketEnd": {
+                  "broadWatchBytes": 30531375339,
+                  "controlCooldownUntil": null,
+                  "discoveryConnected": true,
+                  "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+                  "httpErrors": 0,
+                  "httpTimeouts": 180,
+                  "maximumStartsPerMinute": 60,
+                  "minimumSpacingMs": 250,
+                  "nativeStreamBytes": 479660152,
+                  "primaryCooldownUntil": "2026-10-29T16:15:41.651Z",
+                  "rollingStartsPerMinute": 53,
+                  "rpcRequests": 20,
+                  "rpcResponseBytes": 2365126,
+                  "throttles": 0,
+                  "watchConnected": true
+                },
+                "resourcesAtBracketEnd": {
+                  "availableDiskBytes": 288900001792,
+                  "availableMemoryBytes": null,
+                  "cpuOneCoreFraction": 0.17928885390809468,
+                  "eventLoopLagMs": 38.764543,
+                  "rssBytes": 233738240,
+                  "sampleAt": "2026-10-29T16:15:53.352Z",
+                  "state": "normal"
+                },
+                "qualityAtBracketEnd": {
+                  "auditUnavailable": 32,
+                  "auditUnusable": 94,
+                  "capacityExclusions": 0,
+                  "captureConnected": true,
+                  "decisionDeadlineMisses": 28,
+                  "enrichmentDeadlineFailures": 0,
+                  "incompleteExclusions": 819,
+                  "limitations": [
+                    "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+                  ],
+                  "qualityGaps": 819,
+                  "structuralExclusions": 28
+                },
+                "causation": "Correlation only; physical dispatch/response and per-check traces still required"
+              },
+              {
+                "beforeAt": "2026-10-29T16:21:57.013Z",
+                "byAt": "2026-10-29T16:22:41.402Z",
+                "counterIncrease": {
+                  "breaches": 1,
+                  "unavailableChecks": 3
+                },
+                "lastCompletedAt": "2026-10-29T16:22:41.401Z",
+                "runMaximumCompletedGapMs": 13500,
+                "providerCounterDelta": {
+                  "httpTimeouts": 0,
+                  "httpErrors": 0,
+                  "throttles": 0,
+                  "rpcRequests": 26
+                },
+                "providerAtBracketEnd": {
+                  "broadWatchBytes": 30750893418,
+                  "controlCooldownUntil": null,
+                  "discoveryConnected": true,
+                  "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+                  "httpErrors": 0,
+                  "httpTimeouts": 180,
+                  "maximumStartsPerMinute": 60,
+                  "minimumSpacingMs": 250,
+                  "nativeStreamBytes": 484776920,
+                  "primaryCooldownUntil": "2026-10-29T16:15:41.651Z",
+                  "rollingStartsPerMinute": 60,
+                  "rpcRequests": 291,
+                  "rpcResponseBytes": 44136548,
+                  "throttles": 0,
+                  "watchConnected": true
+                },
+                "resourcesAtBracketEnd": {
+                  "availableDiskBytes": 288895660032,
+                  "availableMemoryBytes": null,
+                  "cpuOneCoreFraction": 0.056233169047140076,
+                  "eventLoopLagMs": 23.543807,
+                  "rssBytes": 267186176,
+                  "sampleAt": "2026-10-29T16:22:40.816Z",
+                  "state": "normal"
+                },
+                "qualityAtBracketEnd": {
+                  "auditUnavailable": 33,
+                  "auditUnusable": 94,
+                  "capacityExclusions": 0,
+                  "captureConnected": false,
+                  "decisionDeadlineMisses": 28,
+                  "enrichmentDeadlineFailures": 0,
+                  "incompleteExclusions": 834,
+                  "limitations": [
+                    "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+                  ],
+                  "qualityGaps": 834,
+                  "structuralExclusions": 28
+                },
+                "causation": "Correlation only; physical dispatch/response and per-check traces still required"
+              }
+            ],
+            "gapAccounting": "Sampled counter evidence only; absence of retained samples is not continuous supervision proof"
+          }
+        ],
+        "observedBreachesLowerBound": 3,
+        "observedUnavailableChecksLowerBound": 8,
+        "restartDuringHoldingObserved": true,
+        "continuousProtectionIndependentlyProven": false,
+        "interpretation": "Public counters are source assertions, not all per-check quote and timing proofs"
+      },
+      "sampledAccountInterval": {
+        "available": true,
+        "beforeAt": "2026-10-29T16:08:20.381Z",
+        "afterAt": "2026-10-29T16:23:41.665Z",
+        "beforeSequence": "8920",
+        "afterSequence": "8977",
+        "beforeBalances": {
+          "cashSol": "9.872648612",
+          "drawdownUsd": null,
+          "economicPnlUsd": null,
+          "equitySol": "9.878653172",
+          "equityUsd": 1015.72312,
+          "executionCostsUsd": null,
+          "markedExposureUsd": 0,
+          "operatingCostsUsd": null,
+          "passiveSolEquityUsd": 1024.256612,
+          "positionCostUsd": 0,
+          "realizedUsd": -8.533492,
+          "reservedSol": "0",
+          "solPriceUsd": 102.82,
+          "tradingPnlUsd": -8.533492,
+          "unrealizedUsd": 0
+        },
+        "afterBalances": {
+          "cashSol": "9.872404772",
+          "drawdownUsd": null,
+          "economicPnlUsd": null,
+          "equitySol": "9.881411612",
+          "equityUsd": 1009.534418,
+          "executionCostsUsd": null,
+          "markedExposureUsd": 0,
+          "operatingCostsUsd": null,
+          "passiveSolEquityUsd": 1017.731733,
+          "positionCostUsd": 0,
+          "realizedUsd": -8.197315,
+          "reservedSol": "0",
+          "solPriceUsd": 102.165,
+          "tradingPnlUsd": -8.197315,
+          "unrealizedUsd": 0
+        },
+        "otherRecordedFillIdsWithinBrackets": [],
+        "classification": "SAMPLED_FLAT_ACCOUNT_INTERVAL_DELTA_NOT_PER_ACTION_SOL_LEDGER_AUDIT",
+        "limitations": "May include failed-attempt costs and locked modeled deposit/rent effects; no historical SOL/USD conversion or candle peak used",
+        "cashSolDelta": "-0.000243840",
+        "reservedSolDelta": "0.000000000",
+        "equitySolDelta": "0.002758440"
+      },
+      "verifiedTradeNetSol": null,
+      "economicInterpretation": "Public USD observations are not native SOL proceeds/costs; no winner/loser certification without native actions/journal and quote evidence"
+    },
+    {
+      "name": "8NTU",
+      "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+      "classification": "INCOMPLETE_OR_UNVERIFIED_EVIDENCE",
+      "entry": {
+        "at": "2026-10-29T17:20:07.003Z",
+        "executionCostsUsd": 0.00071,
+        "id": "paper-fill:b48482a338aeb715f088a5ac1b2d5514",
+        "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+        "quantity": "1028422062926",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:48034:1793294405324",
+        "side": "buy",
+        "status": "PAPER filled",
+        "valueUsd": 49.694512,
+        "quantityUnit": "token atomic units; token decimals not established by this public projection",
+        "nativeSolConsideration": null,
+        "nativeSolCostsAndRent": null,
+        "attemptIdentity": "execution-attempt:buy:48034:1793294405324",
+        "attemptTimestampAt": "2026-10-29T17:20:05.324Z",
+        "attemptTimestampToFillMs": 1679,
+        "delayInterpretation": "Difference from timestamp encoded in durable attempt identity; not independently measured provider transport or quote freshness"
+      },
+      "exit": {
+        "at": "2026-10-29T17:25:39.189Z",
+        "executionCostsUsd": 0.000711,
+        "id": "paper-fill:a3642f8273dedd56f127555852b6bf13",
+        "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+        "quantity": "1028422062926",
+        "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:48201:1793294738055",
+        "side": "sell",
+        "status": "PAPER filled",
+        "valueUsd": 42.251924,
+        "quantityUnit": "token atomic units; token decimals not established by this public projection",
+        "nativeSolConsideration": null,
+        "nativeSolCostsAndRent": null,
+        "attemptIdentity": "execution-attempt:sell:48201:1793294738055",
+        "attemptTimestampAt": "2026-10-29T17:25:38.055Z",
+        "attemptTimestampToFillMs": 1134,
+        "delayInterpretation": "Difference from timestamp encoded in durable attempt identity; not independently measured provider transport or quote freshness"
+      },
+      "fillEvidence": {
+        "entry": {
+          "firstRetainedPublicMentionAt": "2026-10-29T17:20:13.404Z",
+          "nativeExecutionSourceIndependentlyEstablished": false
+        },
+        "exit": {
+          "firstRetainedPublicMentionAt": "2026-10-29T17:25:47.004Z",
+          "nativeExecutionSourceIndependentlyEstablished": false
+        }
+      },
+      "holdingMs": 332186,
+      "sourceProvenance": "Run source/configuration shown only when contemporaneous held snapshots exist; later preserved fill lists do not establish original execution source",
+      "decisionTimeEntryProofs": {
+        "canonical_pool_and_chain_migration_timestamp": "NOT_RETAINED_IN_PUBLIC_INPUTS",
+        "complete_60_second_executed_flow_with_six_10_second_buckets": "NOT_RETAINED_IN_PUBLIC_INPUTS",
+        "independent_window_audit_and_completeness_proof": "NOT_RETAINED_IN_PUBLIC_INPUTS",
+        "decision_time_buying_pressure_buyers_concentration_and_price_features": "NOT_RETAINED_IN_PUBLIC_INPUTS",
+        "actual_size_entry_quote_pool_state_liquidity_and_quote_clock": "NOT_RETAINED_IN_PUBLIC_INPUTS",
+        "reservation_risk_checks_and_reconciliation_at_order_admission": "NOT_RETAINED_IN_PUBLIC_INPUTS",
+        "native_sol_consideration_gas_fees_rent_and_journal_actions": "NOT_RETAINED_IN_PUBLIC_INPUTS"
+      },
+      "entryQuality": "UNVERIFIED; a public qualified badge or modeled fill is not independent proof of a valid entry",
+      "observedDecisions": [
+        {
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "at": "2026-10-29T17:05:14.924Z",
+          "stage": "shadow-predictive-failed",
+          "reason": "persistent-broad-buying-rule-not-met",
+          "observedPublicIds": [
+            "native-paper-20261029164842357:8:1793293514924",
+            "native-paper-20261029164842357:7:1793293514924",
+            "native-paper-20261029164842357:6:1793293514924",
+            "native-paper-20261029164842357:4:1793293514924",
+            "native-paper-20261029164842357:2:1793293514924",
+            "native-paper-20261029164842357:1:1793293514924"
+          ]
+        },
+        {
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "at": "2026-10-29T17:19:52.738Z",
+          "stage": "shadow-predictive-not-rejected",
+          "reason": "persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed",
+          "observedPublicIds": [
+            "native-paper-20261029164842357:30:1793294392738",
+            "native-paper-20261029164842357:29:1793294392738",
+            "native-paper-20261029164842357:28:1793294392738",
+            "native-paper-20261029164842357:26:1793294392738",
+            "native-paper-20261029164842357:24:1793294392738",
+            "native-paper-20261029164842357:23:1793294392738",
+            "native-paper-20261029164842357:22:1793294392738",
+            "native-paper-20261029164842357:20:1793294392738",
+            "native-paper-20261029164842357:19:1793294392738"
+          ]
+        },
+        {
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "at": "2026-10-29T17:20:03.307Z",
+          "stage": "shadow-predictive-not-rejected",
+          "reason": "persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed",
+          "observedPublicIds": [
+            "native-paper-20261029164842357:30:1793294403307",
+            "native-paper-20261029164842357:29:1793294403307",
+            "native-paper-20261029164842357:27:1793294403307",
+            "native-paper-20261029164842357:25:1793294403307",
+            "native-paper-20261029164842357:24:1793294403307",
+            "native-paper-20261029164842357:23:1793294403307",
+            "native-paper-20261029164842357:21:1793294403307",
+            "native-paper-20261029164842357:20:1793294403307"
+          ]
+        },
+        {
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "at": "2026-10-29T17:20:05.313Z",
+          "stage": "qualified",
+          "reason": "provisional-rule-passed; execution-and-accounting-still-required",
+          "observedPublicIds": [
+            "native-paper-20261029164842357:31:1793294405313",
+            "native-paper-20261029164842357:30:1793294405313",
+            "native-paper-20261029164842357:28:1793294405313",
+            "native-paper-20261029164842357:26:1793294405313",
+            "native-paper-20261029164842357:25:1793294405313",
+            "native-paper-20261029164842357:24:1793294405313",
+            "native-paper-20261029164842357:22:1793294405313",
+            "native-paper-20261029164842357:21:1793294405313"
+          ]
+        },
+        {
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "at": "2026-10-29T17:25:38.055Z",
+          "stage": "exit-reserved",
+          "reason": "net-liquidation-stop; fill-price-not-guaranteed",
+          "observedPublicIds": [
+            "native-paper-20261029164842357:32:1793294738055"
+          ]
+        }
+      ],
+      "observedExitSignals": [
+        {
+          "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+          "at": "2026-10-29T17:25:38.055Z",
+          "stage": "exit-reserved",
+          "reason": "net-liquidation-stop; fill-price-not-guaranteed",
+          "observedPublicIds": [
+            "native-paper-20261029164842357:32:1793294738055"
+          ]
+        }
+      ],
+      "protection": {
+        "heldSnapshotCount": 22,
+        "segments": [
+          {
+            "runId": "native-paper-20261029164842357",
+            "sourceRelease": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+            "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+            "runStartedAt": "2026-10-29T16:48:42.357Z",
+            "heldSnapshotCount": 22,
+            "firstHeldSnapshotAt": "2026-10-29T17:20:13.404Z",
+            "lastHeldSnapshotAt": "2026-10-29T17:25:31.950Z",
+            "baselineKind": "last_retained_pre_entry_run_counter",
+            "baselineAt": "2026-10-29T17:19:57.967Z",
+            "baselineCounters": {
+              "breaches": 0,
+              "unavailableChecks": 0
+            },
+            "endpointAt": "2026-10-29T17:25:47.004Z",
+            "endpointCounters": {
+              "breaches": 0,
+              "unavailableChecks": 0
+            },
+            "observedCounterDelta": {
+              "breaches": 0,
+              "unavailableChecks": 0
+            },
+            "reportedRunMaximumCompletedGapMs": 2555,
+            "maximumAttributableToThisHolding": true,
+            "maximumInterpretation": "No earlier held trade in this run and zero counter baseline",
+            "maximumQuoteAgeAtUseMs": 72,
+            "completedBoundaryMs": 4000,
+            "lastReportedCompletedAt": "2026-10-29T17:25:38.079Z",
+            "counterIncreaseBrackets": [],
+            "gapAccounting": "Sampled counter evidence only; absence of retained samples is not continuous supervision proof"
+          }
+        ],
+        "observedBreachesLowerBound": 0,
+        "observedUnavailableChecksLowerBound": 0,
+        "restartDuringHoldingObserved": false,
+        "continuousProtectionIndependentlyProven": false,
+        "interpretation": "Public counters are source assertions, not all per-check quote and timing proofs"
+      },
+      "sampledAccountInterval": {
+        "available": true,
+        "beforeAt": "2026-10-29T17:19:57.967Z",
+        "afterAt": "2026-10-29T17:25:47.004Z",
+        "beforeSequence": "9201",
+        "afterSequence": "9224",
+        "beforeBalances": {
+          "cashSol": "9.872390772",
+          "drawdownUsd": null,
+          "economicPnlUsd": null,
+          "equitySol": "9.881397612",
+          "equityUsd": 1003.110079,
+          "executionCostsUsd": null,
+          "markedExposureUsd": 0,
+          "operatingCostsUsd": null,
+          "passiveSolEquityUsd": 1011.256662,
+          "positionCostUsd": 0,
+          "realizedUsd": -8.146583,
+          "reservedSol": "0",
+          "solPriceUsd": 101.515,
+          "tradingPnlUsd": -8.146583,
+          "unrealizedUsd": 0
+        },
+        "afterBalances": {
+          "cashSol": "9.795527016",
+          "drawdownUsd": null,
+          "economicPnlUsd": null,
+          "equitySol": "9.807536136",
+          "equityUsd": 996.887011,
+          "executionCostsUsd": null,
+          "markedExposureUsd": 0,
+          "operatingCostsUsd": null,
+          "passiveSolEquityUsd": 1012.551676,
+          "positionCostUsd": 0,
+          "realizedUsd": -15.664665,
+          "reservedSol": "0",
+          "solPriceUsd": 101.645,
+          "tradingPnlUsd": -15.664665,
+          "unrealizedUsd": 0
+        },
+        "otherRecordedFillIdsWithinBrackets": [],
+        "classification": "SAMPLED_FLAT_ACCOUNT_INTERVAL_DELTA_NOT_PER_ACTION_SOL_LEDGER_AUDIT",
+        "limitations": "May include failed-attempt costs and locked modeled deposit/rent effects; no historical SOL/USD conversion or candle peak used",
+        "cashSolDelta": "-0.076863756",
+        "reservedSolDelta": "0.000000000",
+        "equitySolDelta": "-0.073861476"
+      },
+      "verifiedTradeNetSol": null,
+      "economicInterpretation": "Public USD observations are not native SOL proceeds/costs; no winner/loser certification without native actions/journal and quote evidence"
+    }
+  ],
+  "summary": {
+    "inadequatelyProtected": 2,
+    "incompletelyVerified": 2,
+    "independentlyCertifiedGoodEntries": 0,
+    "independentlyCertifiedNetSolProfits": 0,
+    "wholeMarketOpportunityRecall": null
+  }
+}

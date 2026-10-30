@@ -1,0 +1,53 @@
+✔ new native adapter opens two SDK-priced PAPER positions, retains source-independent protection and recovers two uncertain exits (412.473537ms)
+✔ new native adapter refuses financial preparation without actual monitoring admission despite complete predictive evidence (22.416953ms)
+✔ DISPOSABLE reporting-readiness admission blocks new risk while native observations and owned entry/exit work continue (66.768085ms)
+✔ native regular protection performs one durable reconciliation per completed evaluation, including reused context (17.064461ms)
+✔ real native runner certificates restore temporary cash readiness without SDK/RPC work or an order; entry still requires full preparation (35.237137ms)
+✔ a genuinely audited weak window arms an inherited internal checkpoint before retirement, without a qualification or any market request (31.688912ms)
+▶ owner or unknown stop is not armed by an otherwise complete weak audit
+  ✔ operator-stop:CONTROLLED (27.667139ms)
+  ✔ unknown-stop:CONTROLLED (33.355355ms)
+✔ owner or unknown stop is not armed by an otherwise complete weak audit (61.721811ms)
+✔ routine checkpoints cancel only safely unattempted buys and do not invent an owner stop or erase uncertain obligations (33.441522ms)
+✔ ordinary per-entry capacity refusal preserves independently armed financial permission and creates no order (17.600026ms)
+✔ routine checkpoint preserves a buy with uncertain commit, without an invented financial outcome (33.568551ms)
+✔ routine checkpoint retains an existing sell and its holding until actual-size delayed exit execution completes (55.414977ms)
+✔ a new hard failure after inherited internal stop cannot be laundered by its older machine-stop proof (32.544918ms)
+✔ due native PAPER entry retains a distinct fresh execution reconciliation before the modeled attempt (39.090274ms)
+✔ temporary entry preparation failure receives a bounded new audited window and a new qualification before one PAPER fill (42.267683ms)
+✔ an unresolved financial attempt cannot queue a duplicate entry; terminal technical failure preserves state and requires a later full decision (43.29252ms)
+✔ a terminal missing execution quote retains charged gas and may create only a separately qualified later order (52.975829ms)
+✔ certificate expiry during a checkpoint rearms a consumed claim without using earlier features or creating an order (20.814226ms)
+✔ a full SDK-priced candidate cannot clear owner-stop merely because new-risk capacity is available (17.845751ms)
+✔ a full SDK-priced candidate cannot clear owner-pause merely because new-risk capacity is available (18.608087ms)
+✔ a full SDK-priced candidate cannot clear hard-pause merely because new-risk capacity is available (20.967212ms)
+✔ a owner-stop arriving during awaited SDK preparation is retained at its current revision (21.204114ms)
+✔ a owner-pause arriving during awaited SDK preparation is retained at its current revision (21.574954ms)
+✔ a hard-pause arriving during awaited SDK preparation is retained at its current revision (21.468546ms)
+✔ temporary second-entry preparation refusal recovers from a new audited window while first holding stays owned and protected (84.361921ms)
+✔ stage two protects and recovers a legacy single-profile held through the established restart rules (57.913325ms)
+✔ stage two protects and recovers a legacy single-profile reserved-buy through the established restart rules (36.30486ms)
+✔ persistent original service is explicit and cannot hide a finite duration or substitute a financial ledger (2.026667ms)
+✔ actual runtime RPC configuration selects the explicit90 service profile without changing finite verification or physical gates (49.557155ms)
+✔ original binding preserves inception and virtual funding; fixture exception is explicit and cannot bless another live account (0.540272ms)
+✔ persistent management uses rolling shared headroom, never cumulative CPU or completed chapter exhaustion (0.223562ms)
+✔ sealed recovery anchor includes only later unsealed chapter suffix; old actual usage cannot be counted twice (0.447554ms)
+✔ qualification proof work is async and unavailable until settled; expired or different evidence never authorizes an entry (8.331383ms)
+✔ rolling unqualified inputs are not permanently pinned, while actual financial and owned protection evidence are retained (0.433904ms)
+✔ root-owned immutable provenance exception is confined to exact commit release path (0.186547ms)
+✔ candidate diagnostic pressure and recorder failure close new risk without throwing through owned financial work (0.313075ms)
+✔ restart run-index rotation preserves the last referenced current-market recovery checkpoint (0.416899ms)
+✔ only explicit supplementary representatives and local phase metrics may omit capacity diagnostics (0.180448ms)
+✔ an explicit optional capacity omission stays unaccepted without closing healthy capture or inventing required flow (0.187609ms)
+✔ required, essential, IO, unknown and thrown recorder failures still close new risk while preserving held obligations (0.450839ms)
+✔ a required constructor record failure during actual source rebuild cannot be overwritten by a later healthy reset (2.178823ms)
+✔ actual continuous recorder optional omission preserves complete required proof and financial-essential recording through caller wiring (37.468097ms)
+✔ rolling short-window financial reserve blocks new risk before a burst consumes protection and pending-entry starts (0.304271ms)
+ℹ tests 44
+ℹ suites 0
+ℹ pass 44
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2346.011966

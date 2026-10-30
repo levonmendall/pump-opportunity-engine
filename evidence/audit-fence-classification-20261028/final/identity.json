@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "baseCommit": "880512fa9f59470f202c86aaeda724abb2898ca2",
+  "at": "2026-10-28T14:52:16.967995+00:00",
+  "files": [
+    {
+      "path": "src/native-candidate-runner.ts",
+      "bytes": 35669,
+      "sha256": "a6dbe0f32695e48000eee3bda6d43efeec4f10b044e1542a69237b0522888f3b"
+    },
+    {
+      "path": "test/native-candidate-runner.test.ts",
+      "bytes": 32983,
+      "sha256": "e29f3a76220815165b5883d6744bf5ebd8b656b20fdcf04ed9be1fa6d3729929"
+    }
+  ],
+  "scope": "Offline exact-source diagnostic classification and redundant-copy avoidance; no network or financial state"
+}

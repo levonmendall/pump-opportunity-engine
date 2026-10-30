@@ -1,0 +1,503 @@
+{
+  "kind": "source-derived-public-assessment-cutoff-timing",
+  "sourceCommit": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+  "deduplication": "mint,at,stage,reason; public decision id contains a sliding-view index and is not a durable action identity",
+  "derivedFrom": [
+    "strategy.ts:140 FlowWindow.features floor(now/10000)*10000",
+    "native-candidate-runner.ts:219 availableAt used for snapshot and activeassessment",
+    "native-candidate-runner.ts:223-224 reject mismatch between currentwindowend andtargetend"
+  ],
+  "meaning": "Necessary general weak-window arming guard; does not prove every otherguard satisfied or exactreadinesscallback outcome. Financialreconciliation freshness is distinct. Genuineenabledsnapshot10403 provesautomaticrecovery. No source/policychanges made.",
+  "rows": [
+    {
+      "observedDecisionId": "native-paper-20261029221651345:0:1793312321691",
+      "mint": "Dr24BUPzDZzxeZW9SXu6ctNU8TcHv54bEfPDbyXagaDw",
+      "assessmentAt": "2026-10-29T22:18:41.691Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:18:40+00:00",
+      "cutoffAgeMs": 1691,
+      "withinTwoSecondGeneralArmingCutoff": true,
+      "reason": "adaptive-genuine-demand-floor-not-met",
+      "status": "adaptive-predictive-failed"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:0:1793312321951",
+      "mint": "AqrUMQuM6rYyiHuXPRwK4EUCoKPQp2qvtC9XFBRTpump",
+      "assessmentAt": "2026-10-29T22:18:41.951Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:18:40+00:00",
+      "cutoffAgeMs": 1951,
+      "withinTwoSecondGeneralArmingCutoff": true,
+      "reason": "adaptive-near-neutral-executed-flow",
+      "status": "adaptive-predictive-failed"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:0:1793312342356",
+      "mint": "9m3m3NMUFY9BfGXmbFKzJ3B9QSfzrujsH9LxyRogpump",
+      "assessmentAt": "2026-10-29T22:19:02.356Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:19:00+00:00",
+      "cutoffAgeMs": 2356,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-genuine-demand-floor-not-met",
+      "status": "adaptive-predictive-failed"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:1:1793312342627",
+      "mint": "HBD7DGsdCqmDkbUmwBwWEnxrHDybTzHyjtTpszGGpump",
+      "assessmentAt": "2026-10-29T22:19:02.627Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:19:00+00:00",
+      "cutoffAgeMs": 2627,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-genuine-demand-floor-not-met",
+      "status": "adaptive-predictive-failed"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:0:1793312395552",
+      "mint": "NxDvZADiACbBazaiH1mKa3i2qQx31KVdgcNxaaDpump",
+      "assessmentAt": "2026-10-29T22:19:55.552Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:19:50+00:00",
+      "cutoffAgeMs": 5552,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-genuine-demand-floor-not-met",
+      "status": "adaptive-predictive-failed"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:1:1793312412099",
+      "mint": "5Tw5TBEGYHAcPbkQaaLMaN8KyLPEESq34EHUdyAtpump",
+      "assessmentAt": "2026-10-29T22:20:12.099Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:20:10+00:00",
+      "cutoffAgeMs": 2099,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-genuine-demand-floor-not-met",
+      "status": "adaptive-predictive-failed"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:0:1793312422769",
+      "mint": "39PZDwPdqt7dGB6GXu1mcwsjBDBwYDH1eVsKRn8epump",
+      "assessmentAt": "2026-10-29T22:20:22.769Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:20:20+00:00",
+      "cutoffAgeMs": 2769,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-genuine-demand-floor-not-met",
+      "status": "adaptive-predictive-failed"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:0:1793312434259",
+      "mint": "ae3Cq5PZo6MZvdnLGGubQkKviw9MuZBoWvXwPTapump",
+      "assessmentAt": "2026-10-29T22:20:34.259Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:20:30+00:00",
+      "cutoffAgeMs": 4259,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-genuine-demand-floor-not-met",
+      "status": "adaptive-predictive-failed"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:1:1793312492091",
+      "mint": "6FvMhHrcDiogqHxB3D1CHzXcShTTyu7xZ2t5Sy4Xpump",
+      "assessmentAt": "2026-10-29T22:21:32.091Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:21:30+00:00",
+      "cutoffAgeMs": 2091,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-genuine-demand-floor-not-met",
+      "status": "adaptive-predictive-failed"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:2:1793312492355",
+      "mint": "4Rc8uLrUm3bqMrbjcBSPkRTSXJLdh1DBawYBX9tspump",
+      "assessmentAt": "2026-10-29T22:21:32.355Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:21:30+00:00",
+      "cutoffAgeMs": 2355,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-genuine-demand-floor-not-met",
+      "status": "adaptive-predictive-failed"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:0:1793312502357",
+      "mint": "7EfosxNa5BqfdgbwS8Steyc7xn1H7xXBC9o3iwyopump",
+      "assessmentAt": "2026-10-29T22:21:42.357Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:21:40+00:00",
+      "cutoffAgeMs": 2357,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-genuine-demand-floor-not-met",
+      "status": "adaptive-predictive-failed"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:1:1793312503419",
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "assessmentAt": "2026-10-29T22:21:43.419Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:21:40+00:00",
+      "cutoffAgeMs": 3419,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:3:1793312512751",
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "assessmentAt": "2026-10-29T22:21:52.751Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:21:50+00:00",
+      "cutoffAgeMs": 2751,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:1:1793312522732",
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "assessmentAt": "2026-10-29T22:22:02.732Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:22:00+00:00",
+      "cutoffAgeMs": 2732,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:1:1793312532880",
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "assessmentAt": "2026-10-29T22:22:12.880Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:22:10+00:00",
+      "cutoffAgeMs": 2880,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:2:1793312541476",
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "assessmentAt": "2026-10-29T22:22:21.476Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:22:20+00:00",
+      "cutoffAgeMs": 1476,
+      "withinTwoSecondGeneralArmingCutoff": true,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:1:1793312552016",
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "assessmentAt": "2026-10-29T22:22:32.016Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:22:30+00:00",
+      "cutoffAgeMs": 2016,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:1:1793312563897",
+      "mint": "Gi1LR9NRZyYt5oY9rRLAVzBBMx69tQyrqx368utpump",
+      "assessmentAt": "2026-10-29T22:22:43.897Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:22:40+00:00",
+      "cutoffAgeMs": 3897,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:1:1793312564168",
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "assessmentAt": "2026-10-29T22:22:44.168Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:22:40+00:00",
+      "cutoffAgeMs": 4168,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:2:1793312572156",
+      "mint": "ND7eJuucPrjo8aMogx8fMnpHY22ovDkdh9zCJrtpump",
+      "assessmentAt": "2026-10-29T22:22:52.156Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:22:50+00:00",
+      "cutoffAgeMs": 2156,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-genuine-demand-floor-not-met",
+      "status": "adaptive-predictive-failed"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:3:1793312572414",
+      "mint": "Gi1LR9NRZyYt5oY9rRLAVzBBMx69tQyrqx368utpump",
+      "assessmentAt": "2026-10-29T22:22:52.414Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:22:50+00:00",
+      "cutoffAgeMs": 2414,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:4:1793312572747",
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "assessmentAt": "2026-10-29T22:22:52.747Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:22:50+00:00",
+      "cutoffAgeMs": 2747,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:5:1793312581266",
+      "mint": "Gi1LR9NRZyYt5oY9rRLAVzBBMx69tQyrqx368utpump",
+      "assessmentAt": "2026-10-29T22:23:01.266Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:23:00+00:00",
+      "cutoffAgeMs": 1266,
+      "withinTwoSecondGeneralArmingCutoff": true,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:6:1793312581561",
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "assessmentAt": "2026-10-29T22:23:01.561Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:23:00+00:00",
+      "cutoffAgeMs": 1561,
+      "withinTwoSecondGeneralArmingCutoff": true,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:7:1793312591446",
+      "mint": "gEYL94W8sDev2BV411JHrAz9nMngJi1AmaZ6ZUspump",
+      "assessmentAt": "2026-10-29T22:23:11.446Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:23:10+00:00",
+      "cutoffAgeMs": 1446,
+      "withinTwoSecondGeneralArmingCutoff": true,
+      "reason": "adaptive-genuine-demand-floor-not-met",
+      "status": "adaptive-predictive-failed"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:8:1793312591725",
+      "mint": "Gi1LR9NRZyYt5oY9rRLAVzBBMx69tQyrqx368utpump",
+      "assessmentAt": "2026-10-29T22:23:11.725Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:23:10+00:00",
+      "cutoffAgeMs": 1725,
+      "withinTwoSecondGeneralArmingCutoff": true,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:9:1793312592206",
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "assessmentAt": "2026-10-29T22:23:12.206Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:23:10+00:00",
+      "cutoffAgeMs": 2206,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:11:1793312602364",
+      "mint": "Gi1LR9NRZyYt5oY9rRLAVzBBMx69tQyrqx368utpump",
+      "assessmentAt": "2026-10-29T22:23:22.364Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:23:20+00:00",
+      "cutoffAgeMs": 2364,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:12:1793312602912",
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "assessmentAt": "2026-10-29T22:23:22.912Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:23:20+00:00",
+      "cutoffAgeMs": 2912,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:13:1793312612806",
+      "mint": "Gi1LR9NRZyYt5oY9rRLAVzBBMx69tQyrqx368utpump",
+      "assessmentAt": "2026-10-29T22:23:32.806Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:23:30+00:00",
+      "cutoffAgeMs": 2806,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-genuine-demand-floor-not-met",
+      "status": "adaptive-predictive-failed"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:14:1793312613072",
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "assessmentAt": "2026-10-29T22:23:33.072Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:23:30+00:00",
+      "cutoffAgeMs": 3072,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:16:1793312644075",
+      "mint": "5A1PXbM4APygDoccyANwaXEg3zudevAbY4zcEAupump",
+      "assessmentAt": "2026-10-29T22:24:04.075Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:24:00+00:00",
+      "cutoffAgeMs": 4075,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:17:1793312656693",
+      "mint": "5A1PXbM4APygDoccyANwaXEg3zudevAbY4zcEAupump",
+      "assessmentAt": "2026-10-29T22:24:16.693Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:24:10+00:00",
+      "cutoffAgeMs": 6693,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:18:1793312667142",
+      "mint": "5A1PXbM4APygDoccyANwaXEg3zudevAbY4zcEAupump",
+      "assessmentAt": "2026-10-29T22:24:27.142Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:24:20+00:00",
+      "cutoffAgeMs": 7142,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:19:1793312715542",
+      "mint": "3BmsSJMVumEyZnquHpuSUA3jP4up78NVkuRzRSPjpump",
+      "assessmentAt": "2026-10-29T22:25:15.542Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:25:10+00:00",
+      "cutoffAgeMs": 5542,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-genuine-demand-floor-not-met",
+      "status": "adaptive-predictive-failed"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:20:1793312717532",
+      "mint": "39SKZ1sREa6Mq5fjfFBLFHWD5fiNHZqQFGZpcQHHpump",
+      "assessmentAt": "2026-10-29T22:25:17.532Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:25:10+00:00",
+      "cutoffAgeMs": 7532,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-genuine-demand-floor-not-met",
+      "status": "adaptive-predictive-failed"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:21:1793312735954",
+      "mint": "6QSMygP6A6cyTGSfB8WQ8tmbB9Mb5Q8Rg9PRfn59pump",
+      "assessmentAt": "2026-10-29T22:25:35.954Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:25:30+00:00",
+      "cutoffAgeMs": 5954,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-genuine-demand-floor-not-met",
+      "status": "adaptive-predictive-failed"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:22:1793312843539",
+      "mint": "MBWKHuUsB8eDgdmrDkQ5F2wtQr8WsViB83WncUBpump",
+      "assessmentAt": "2026-10-29T22:27:23.539Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:27:20+00:00",
+      "cutoffAgeMs": 3539,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:23:1793312847984",
+      "mint": "5SfcDpLPFSqFuqme4dmtUCwTLMPcohpA3S9F2yuTF8Wr",
+      "assessmentAt": "2026-10-29T22:27:27.984Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:27:20+00:00",
+      "cutoffAgeMs": 7984,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-genuine-demand-floor-not-met",
+      "status": "adaptive-predictive-failed"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:24:1793312853730",
+      "mint": "MBWKHuUsB8eDgdmrDkQ5F2wtQr8WsViB83WncUBpump",
+      "assessmentAt": "2026-10-29T22:27:33.730Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:27:30+00:00",
+      "cutoffAgeMs": 3730,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:25:1793312876120",
+      "mint": "MBWKHuUsB8eDgdmrDkQ5F2wtQr8WsViB83WncUBpump",
+      "assessmentAt": "2026-10-29T22:27:56.120Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:27:50+00:00",
+      "cutoffAgeMs": 6120,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:26:1793312878033",
+      "mint": "94DSTidemqevZJst4HH6vnzJbe7J9EpsC7oEqE4Bpump",
+      "assessmentAt": "2026-10-29T22:27:58.033Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:27:50+00:00",
+      "cutoffAgeMs": 8033,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-genuine-demand-floor-not-met",
+      "status": "adaptive-predictive-failed"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:27:1793312882604",
+      "mint": "MBWKHuUsB8eDgdmrDkQ5F2wtQr8WsViB83WncUBpump",
+      "assessmentAt": "2026-10-29T22:28:02.604Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:28:00+00:00",
+      "cutoffAgeMs": 2604,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:28:1793312894327",
+      "mint": "MBWKHuUsB8eDgdmrDkQ5F2wtQr8WsViB83WncUBpump",
+      "assessmentAt": "2026-10-29T22:28:14.327Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:28:10+00:00",
+      "cutoffAgeMs": 4327,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:29:1793312902693",
+      "mint": "MBWKHuUsB8eDgdmrDkQ5F2wtQr8WsViB83WncUBpump",
+      "assessmentAt": "2026-10-29T22:28:22.693Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:28:20+00:00",
+      "cutoffAgeMs": 2693,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:30:1793312912567",
+      "mint": "MBWKHuUsB8eDgdmrDkQ5F2wtQr8WsViB83WncUBpump",
+      "assessmentAt": "2026-10-29T22:28:32.567Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:28:30+00:00",
+      "cutoffAgeMs": 2567,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "status": "adaptive-predictive-not-rejected"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:31:1793312924821",
+      "mint": "MBWKHuUsB8eDgdmrDkQ5F2wtQr8WsViB83WncUBpump",
+      "assessmentAt": "2026-10-29T22:28:44.821Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:28:40+00:00",
+      "cutoffAgeMs": 4821,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-genuine-demand-floor-not-met",
+      "status": "adaptive-predictive-failed"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:32:1793312986666",
+      "mint": "36N3vQ9AHj5VNceTquAsRDfoYL2kfp88QASQa965pump",
+      "assessmentAt": "2026-10-29T22:29:46.666Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:29:40+00:00",
+      "cutoffAgeMs": 6666,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-genuine-demand-floor-not-met",
+      "status": "adaptive-predictive-failed"
+    },
+    {
+      "observedDecisionId": "native-paper-20261029221651345:33:1793313016866",
+      "mint": "As75kPFC8n4WE8LZUmXoaZmBLV4cE2ea1vJC6Uhcpump",
+      "assessmentAt": "2026-10-29T22:30:16.866Z",
+      "derivedOriginalWindowEndAt": "2026-10-29T22:30:10+00:00",
+      "cutoffAgeMs": 6866,
+      "withinTwoSecondGeneralArmingCutoff": false,
+      "reason": "adaptive-genuine-demand-floor-not-met",
+      "status": "adaptive-predictive-failed"
+    }
+  ]
+}

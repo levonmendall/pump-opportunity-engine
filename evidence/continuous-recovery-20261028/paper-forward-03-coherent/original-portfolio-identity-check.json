@@ -1,0 +1,24 @@
+{
+  "verifiedAt": "2026-10-28T22:43:41.615177+00:00",
+  "publicGetRequests": 1,
+  "responseBytes": 25512,
+  "responseSha256": "9eb9bb6c08e1e8ce6bace2f35f23baa846be97d76d667a1a3383a9c66a40ca10",
+  "originalAccountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+  "originalInceptionAt": "2026-10-26T22:07:36.212Z",
+  "source": {
+    "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+    "strategy": "UNIMPLEMENTED_FLOW_BLOCKED"
+  },
+  "freshness": {
+    "state": "observing-with-zero-trades",
+    "receivedAt": "2026-10-28T22:43:11.616Z",
+    "generatedAt": "2026-10-28T22:43:04.209Z",
+    "marketAt": "2026-10-28T22:43:04.209Z",
+    "reconciledAt": "2026-10-28T22:43:04.209Z",
+    "usefulProgressAt": "2026-10-28T22:43:04.209Z",
+    "sourceAgeMs": 25793,
+    "marketAgeMs": 25793,
+    "reconciliationAgeMs": 25793
+  },
+  "meaning": "Public reporting identity check during isolated interval. Does not establish trading readiness or host process resource compatibility."
+}

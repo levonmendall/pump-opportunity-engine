@@ -1,0 +1,26 @@
+{
+  "kind": "READ_ONLY_CLOUD_MONITOR_PROCESS_RECOVERY",
+  "recordedAt": "2026-10-30T00:04:34.801609+00:00",
+  "priorPid": 187144,
+  "priorLastReceivedAt": 1793318493298,
+  "priorLastSourceAt": "2026-10-30T00:01:24.649Z",
+  "priorLastSourceSequence": "10782",
+  "priorProcessAbsentVerified": true,
+  "noOtherMatchingCollectorProcessVerified": true,
+  "priorGracefulLifecycleReceiptAvailable": false,
+  "oldFilesPreserved": true,
+  "newScriptSha256": "4c5f2ec023f7db358a06186272f0b554dc4a2f1298a91cbbfa20a06048ec3c1b",
+  "networkPolicy": "same existing GET snapshot endpoint,15-second interval,8x1MiB routine rotations",
+  "meaning": "Cloud read-only supervision interrupted for unknown process cause. No EC2 service or ledger action; runtime coverage during observation gap UNKNOWN.",
+  "financialControlsChanged": false,
+  "serviceControlOperations": 0,
+  "firstRecoveredReceivedAt": 1793318675011,
+  "observationGapMs": 181713,
+  "firstRecoveredSourceAt": "2026-10-30T00:04:23.987Z",
+  "firstRecoveredSourceSequence": "10793",
+  "priorToRecoveredProtectionCounterChange": {
+    "breaches": 1,
+    "unavailableChecks": 5,
+    "classification": "counter change over Cloud observation gap, not an actively supervised interval"
+  }
+}

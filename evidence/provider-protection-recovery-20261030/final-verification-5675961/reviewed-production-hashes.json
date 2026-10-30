@@ -1,0 +1,10 @@
+{
+  "source": "5675961a0ad05df508eec6928644c9e403be0811",
+  "identicalToReviewedSource": "873b0b96385099d1e329deec3a14c9907ad70b74",
+  "files": {
+    "src/pilot-rpc.ts": "2fa4166edd4c2ba2b66f34a128fdf8f51f989f0ee8b3f0fba40761e0f836fa3d",
+    "src/research-clock-pricing.ts": "35ed26800ddf69b9c253dcc77c216b33f9150d17d1903cef8ce5c3246011c955",
+    "src/research-held-market.ts": "4741cdbddad025d6fcfe532644fd8b992a6ede808eb4d4160eafc37588ff38a4",
+    "src/run-native-paper.ts": "e03c84c5e5b537c79cab360cf012e3330dedd291798533c9f65221d69ce43d9a"
+  }
+}

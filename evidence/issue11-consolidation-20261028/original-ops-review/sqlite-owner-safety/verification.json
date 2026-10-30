@@ -1,0 +1,85 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "cd43ecf70f8ccee11ee3cf177a9c7918aa317675",
+  "verifiedAt": "2026-10-29T00:42:49.753109+00:00",
+  "tests": [
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-I",
+        "operator/native-paper-ec2/test-authoritative-service.py"
+      ],
+      "exitCode": 0,
+      "sha256": "de2e2fc1e2e756c2ac97fa7400fff00ec613d6282629590c5fa635291d9ce5ac",
+      "bytes": 125
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-I",
+        "operator/native-paper-ec2/test-cutover-original-service.py"
+      ],
+      "exitCode": 0,
+      "sha256": "edf0385f102ffc094a93f8b806272f8cb2acd237e336c7c53080e01c27235180",
+      "bytes": 118
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-I",
+        "operator/native-paper-ec2/test-audit-original-account.py"
+      ],
+      "exitCode": 0,
+      "sha256": "133449d6f429f0588126e0403937f271f33f90517460d5c4b39d69c2eeda0f25",
+      "bytes": 106
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-I",
+        "operator/native-paper-ec2/test-prepare-original-service-package.py"
+      ],
+      "exitCode": 0,
+      "sha256": "280e93b8dda473146a11b2c2442101a0b71ddc2211e7d3d5cad5befad6e1d457",
+      "bytes": 98
+    }
+  ],
+  "totalPurposeSpecificTests": 54,
+  "independentReview": {
+    "reviewer": "/root/finish_original_ops/review_ops_supervisor",
+    "result": "CONDITIONAL_GO_FOR_OFFLINE_SCOPE",
+    "independentlyRerunTests": 54,
+    "sourceCommit": "cd43ecf70f8ccee11ee3cf177a9c7918aa317675"
+  },
+  "files": [
+    {
+      "file": "operator/native-paper-ec2/cutover-original-service.py",
+      "sha256": "2b1eb71355697fbdc9459b2dd354ed869102aa448a1e500b769b57fa91890fab"
+    },
+    {
+      "file": "operator/native-paper-ec2/audit-original-account.py",
+      "sha256": "08947c651488089e2eb2274404e69132ab54cfb89e30a640255c756746dad2c1"
+    },
+    {
+      "file": "operator/native-paper-ec2/run-authoritative-service.py",
+      "sha256": "d90ea175e17ef165afc8a4dcc24ab302204d500aad738bd4554cdc5f32e3d6fb"
+    }
+  ],
+  "defect": "SQLite mode=ro may create WAL/SHM even for a clean WAL-mode database. A root reader can create root-owned auxiliary files and obstruct its legitimate financial writer.",
+  "repair": [
+    "All original SQLite opens, queries, backup reads and closes execute within original_owner using legitimate existing nonroot EUID/EGID",
+    "Root supplementary groups are cleared during read context and restored finally with identity on failure",
+    "Backup is constructed, normalized to DELETE, audited and closed in same-owner temporary directory, then exact bytes frozen root-private",
+    "Prefix compares all historical action/journal columns via bounded ordered streams; only protected frozen-backup connection is preinitialized as root"
+  ],
+  "actualRootPrivilegeTransitionTested": false,
+  "originalHostLedgerRead": false,
+  "ec2Mutation": false,
+  "actualServiceStarted": false,
+  "actualRenderParityVerified": false,
+  "claim": "Offline fixtures and independent review only. The one reviewed owner command must still prove actual host privilege transition, original financial history, fresh source and original-channel reporting."
+}

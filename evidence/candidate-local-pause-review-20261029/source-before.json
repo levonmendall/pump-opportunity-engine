@@ -1,0 +1,27 @@
+{
+  "baseCommit": "e551212807c5f5fe55d23cbaae7fc7cc47b34125",
+  "ownedFiles": [
+    "src/ledger.ts",
+    "src/native-paper.ts",
+    "test/native-paper-integration.test.ts",
+    "test/native-paper-readiness.test.ts",
+    "test/operating-financial-readiness.test.ts"
+  ],
+  "peerCompileOverlays": [
+    "src/pilot-market.ts",
+    "src/research-held-market.ts",
+    "src/trader.ts",
+    "src/technical-protection-recovery.ts"
+  ],
+  "sha256": {
+    "src/ledger.ts": "99e81fa26cda5fe89124fb231c72ad5aa2b89bf785d7663a32fd546295ceaa7b",
+    "src/native-paper.ts": "219c1c67047acbfa0a49e6de1225557b2a59da69fd05840a2eda5c92fb78ca88",
+    "test/native-paper-integration.test.ts": "4a0f23c184415fe0a8830e0817994ec945749645d32d99623f1e2f25379fcaeb",
+    "test/native-paper-readiness.test.ts": "f3ef44bdaee85a517004b910cd3a11b911ae715564d7793493d2a3066175b0dc",
+    "test/operating-financial-readiness.test.ts": "afd144e4cf4798f4f6cdf1331aa8de8ec60b3125b8a5fb4c87fc383fa987acb3",
+    "src/pilot-market.ts": "f578b2821f0823bddc3d68a778fd21d7d36bad128dfcdeb44953080d48ab8984",
+    "src/research-held-market.ts": "72710b1cf1a991ac7ec5f32115761c6b99cbd4e67689a7290770ba744cb39889",
+    "src/trader.ts": "e6133e4bd270b9ebd6b045bda90234d9b5abc85fcaf4b430e488f86f85e5b735",
+    "src/technical-protection-recovery.ts": "759e7431ba0ba70c6673095b546bdae8b0e30f14796190ab6d56b2935dfd99f1"
+  }
+}

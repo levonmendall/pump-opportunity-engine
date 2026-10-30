@@ -1,0 +1,40 @@
+{
+  "at": "2026-10-30T01:35:57.854695+00:00",
+  "sourceCommit": "5e7538d100a485c6bdac1429ace4059d24eb1be3",
+  "applicationFiles": {
+    "src/pilot-market.ts": "d6fc6ca621cfab4028ba0b03aeb1b1ac683667c2846f4d807d5cd5d576bb4fe7",
+    "src/run-native-paper.ts": "e7a92632f027b259fa7b76be0a40746e7ea7b7a08f086f7130ae752985bbe6dc"
+  },
+  "sourceUnchanged": true,
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "--test",
+    "test/pilot-market.test.ts",
+    "test/native-paper-current-protection.test.ts",
+    "test/independent-entry-quote-review.test.ts"
+  ],
+  "exitCode": 0,
+  "rawSha256": "7688d9a9023e2c481c659b54a05e4dcc335bf3fb8576d52c66df7fba87ba03b9",
+  "independentProbeSha256": "225c8e02d56e1d14f3c52f97a0e8bbc220d78374ae2199672c5459cf2b9e42b7",
+  "reviewedChanges": "Current rent is read using validated preparation lengths before the final actual-size SDK/Clock state; final lengths, slot floor, generation, inventory/deposit identity and post-record freshness remain mandatory. Bounded phase diagnostics do not create entry permission. Current-run maxima preserve retained failures.",
+  "adversarialCoverage": [
+    "same three physical reads under250ms pacing and native400ms slot advancement",
+    "changed rent between two current size reads",
+    "zero/negative/NaN/infinite/noninteger/unsafe rent",
+    "final base/quote ATA length mismatch",
+    "actual pool/config/mint/vault owner corruption",
+    "post-record aging, newer slot, source invalidation and cancellation",
+    "caller abort/local timeout retains physical ownership",
+    "changed expected deposit before any RPC",
+    "returned plan mutation cannot alter stored preparation",
+    "real disposable delayed entry/exit and retained rent accounting",
+    "current-run metrics do not erase historical breaches"
+  ],
+  "providerRequests": 0,
+  "originalAccountRead": false,
+  "operatingServiceChanged": false,
+  "liveQualificationOrProfitabilityClaim": false,
+  "passed": true
+}

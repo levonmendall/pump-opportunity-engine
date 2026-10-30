@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-29T21:20:45.448501+00:00",
+  "strategy": "adaptive-momentum-v2-paper-v1",
+  "contractSha256": "8e404a11d1868e3a2c3a4a708133f9831a555a590201c8e70e62c35a44c4d0bb",
+  "purePolicySha256": "b4fa586df1b6d89c04b250a1ff3ea4e394a4cbf9b7900c7a3ebd0317c7c56a07",
+  "maximumPositions": 2,
+  "deepSlots": 4,
+  "baselineContractsUnchanged": true,
+  "tests": 3,
+  "buildExit": 0,
+  "liveTradingEnabled": false,
+  "financialAccountRead": false,
+  "providerRequests": 0,
+  "installed": false,
+  "dollarLimits": "explicit temporary legacy technical fallback; active adaptive sizing not yet implemented",
+  "files": {
+    "src/pilot-contract.ts": "16f8c38d827eceea2cb74ab2964fc718fa8d36d3a81ec0aa07e797508d87015b",
+    "src/pilot.ts": "e7117f353b885407f30776adcf9948125279846f2639226222d806fc16c97a2d",
+    "test/adaptive-pilot-binding.test.ts": "a279075663d7dc3ea15d7034c223d7d263456aad0a5f731ab67e0900d441bd20",
+    "evidence/adaptive-momentum-v2-20261029/profile/focused.raw.txt": "7829b7a01ceb62448e96cc5995ac3df1e0e322a8f7ffe7eb2a6523b472dd4b84",
+    "evidence/adaptive-momentum-v2-20261029/profile/build.raw.txt": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+  }
+}

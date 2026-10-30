@@ -1,0 +1,87 @@
+{
+  "kind": "POST_OWNER_APPLY_PRE_RECEIVER_REBIND_OBSERVATION",
+  "frozenAt": "2026-10-29T23:51:23.679738+00:00",
+  "observations": 14,
+  "firstReceivedAt": 1793317684961,
+  "lastReceivedAt": 1793317883441,
+  "lastAcceptedSource": {
+    "release": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+    "strategy": "adaptive-momentum-v2-paper-v1"
+  },
+  "lastAcceptedSequence": "10734",
+  "lastAcceptedSourceTimes": {
+    "generatedAt": "2026-10-29T23:48:54.115Z",
+    "marketAt": null,
+    "reconciledAt": "2026-10-29T23:48:51.698Z",
+    "usefulProgressAt": "2026-10-29T23:48:51.698Z"
+  },
+  "lastAcceptedStatus": {
+    "runtime": "stopped",
+    "market": "unavailable",
+    "entries": "paused",
+    "reconciled": false,
+    "blocker": "POE_ENTRY_LIQUIDATION_UNAVAILABLE"
+  },
+  "freshness": {
+    "state": "stale",
+    "receivedAt": "2026-10-29T23:48:54.738Z",
+    "generatedAt": "2026-10-29T23:48:54.115Z",
+    "marketAt": null,
+    "reconciledAt": "2026-10-29T23:48:51.698Z",
+    "usefulProgressAt": "2026-10-29T23:48:51.698Z",
+    "sourceAgeMs": 149178,
+    "marketAgeMs": null,
+    "reconciliationAgeMs": 151595,
+    "operating": {
+      "kind": "operating-source-v1",
+      "state": "stale",
+      "market": "unavailable",
+      "reporting": "source-stale",
+      "sourceAgeMs": 149178,
+      "receivedAgeMs": 148555,
+      "selectedCapture": false,
+      "discovery": false,
+      "watch": false,
+      "entryRestriction": "POE_ENTRY_LIQUIDATION_UNAVAILABLE",
+      "financial": {
+        "usdValuation": "unavailable",
+        "reconciled": false,
+        "valuationAgeMs": null,
+        "reconciliationAgeMs": 151595
+      },
+      "protection": {
+        "state": "monitored",
+        "completedAt": "2026-10-29T23:48:51.716Z",
+        "completedAgeAtSourceMs": 2399,
+        "boundaryMs": 4000
+      },
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "USD_VALUATION_UNAVAILABLE",
+        "VALUATION_UNAVAILABLE",
+        "RECONCILIATION_NOT_CURRENT",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_LIQUIDATION_UNAVAILABLE"
+      ]
+    }
+  },
+  "lastAcceptedProtection": {
+    "state": "monitored",
+    "targetCadenceMs": 2000,
+    "completedEvaluationBoundaryMs": 4000,
+    "lastCompletedAt": "2026-10-29T23:48:51.716Z",
+    "maximumCompletedGapMs": 89426,
+    "maximumQuoteAgeAtUseMs": 67,
+    "breaches": 34,
+    "unavailableChecks": 128
+  },
+  "meaning": "Existing receiver still serves the last accepted old ba33 source. New93 engine availability and coverage are UNKNOWN until independent host verification and receiver binding. No inference of new-runtime shutdown from old stopped snapshot.",
+  "newSourceForwardRecoveryVerified": false,
+  "financialControlsChanged": false,
+  "additionalNetworkCollectorStarted": false
+}

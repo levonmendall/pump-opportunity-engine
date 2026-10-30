@@ -1,0 +1,92 @@
+✔ new native adapter opens two SDK-priced PAPER positions, retains source-independent protection and recovers two uncertain exits (633.20165ms)
+✔ new native adapter refuses financial preparation without actual monitoring admission despite complete predictive evidence (31.584885ms)
+✔ DISPOSABLE reporting-readiness admission blocks new risk while native observations and owned entry/exit work continue (103.164655ms)
+✔ native regular protection performs one durable reconciliation per completed evaluation, including reused context (23.286925ms)
+✔ real native runner certificates restore temporary cash readiness without SDK/RPC work or an order; entry still requires full preparation (49.142945ms)
+✔ a genuinely audited weak window arms an inherited internal checkpoint before retirement, without a qualification or any market request (45.603945ms)
+▶ owner or unknown stop is not armed by an otherwise complete weak audit
+  ✔ operator-stop:CONTROLLED (47.869364ms)
+  ✔ unknown-stop:CONTROLLED (42.600951ms)
+✔ owner or unknown stop is not armed by an otherwise complete weak audit (91.199319ms)
+✔ routine checkpoints cancel only safely unattempted buys and do not invent an owner stop or erase uncertain obligations (55.339587ms)
+✔ ordinary per-entry capacity refusal preserves independently armed financial permission and creates no order (22.524653ms)
+✔ routine checkpoint preserves a buy with uncertain commit, without an invented financial outcome (53.424217ms)
+✔ routine checkpoint retains an existing sell and its holding until actual-size delayed exit execution completes (60.935829ms)
+✔ a new hard failure after inherited internal stop cannot be laundered by its older machine-stop proof (26.592393ms)
+✔ due native PAPER entry retains a distinct fresh execution reconciliation before the modeled attempt (39.231379ms)
+✔ temporary entry preparation failure receives a bounded new audited window and a new qualification before one PAPER fill (47.458053ms)
+✔ an unresolved financial attempt cannot queue a duplicate entry; terminal technical failure preserves state and requires a later full decision (50.982973ms)
+✔ a terminal missing execution quote retains charged gas and may create only a separately qualified later order (81.381191ms)
+✔ certificate expiry during a checkpoint rearms a consumed claim without using earlier features or creating an order (32.085084ms)
+✔ a full SDK-priced candidate cannot clear owner-stop merely because new-risk capacity is available (31.649336ms)
+✔ a full SDK-priced candidate cannot clear owner-pause merely because new-risk capacity is available (27.31104ms)
+✔ a full SDK-priced candidate cannot clear hard-pause merely because new-risk capacity is available (29.682566ms)
+✔ a owner-stop arriving during awaited SDK preparation is retained at its current revision (32.097076ms)
+✔ a owner-pause arriving during awaited SDK preparation is retained at its current revision (35.504926ms)
+✔ a hard-pause arriving during awaited SDK preparation is retained at its current revision (31.466716ms)
+✔ temporary second-entry preparation refusal recovers from a new audited window while first holding stays owned and protected (114.384933ms)
+✔ stage two protects and recovers a legacy single-profile held without rewriting its obligation (104.979788ms)
+✖ stage two protects and recovers a legacy single-profile reserved-buy without rewriting its obligation (50.392935ms)
+✔ persistent original service is explicit and cannot hide a finite duration or substitute a financial ledger (2.399353ms)
+✔ actual runtime RPC configuration selects the explicit90 service profile without changing finite verification or physical gates (55.88124ms)
+✔ original binding preserves inception and virtual funding; fixture exception is explicit and cannot bless another live account (0.715953ms)
+✔ persistent management uses rolling shared headroom, never cumulative CPU or completed chapter exhaustion (0.279886ms)
+✔ sealed recovery anchor includes only later unsealed chapter suffix; old actual usage cannot be counted twice (0.596135ms)
+✔ qualification proof work is async and unavailable until settled; expired or different evidence never authorizes an entry (8.649483ms)
+✔ rolling unqualified inputs are not permanently pinned, while actual financial and owned protection evidence are retained (0.526362ms)
+✔ root-owned immutable provenance exception is confined to exact commit release path (0.227958ms)
+✔ candidate diagnostic pressure and recorder failure close new risk without throwing through owned financial work (0.465291ms)
+✔ restart run-index rotation preserves the last referenced current-market recovery checkpoint (0.590657ms)
+✔ only explicit supplementary representatives and local phase metrics may omit capacity diagnostics (0.19524ms)
+✔ an explicit optional capacity omission stays unaccepted without closing healthy capture or inventing required flow (0.207628ms)
+✔ required, essential, IO, unknown and thrown recorder failures still close new risk while preserving held obligations (0.36391ms)
+✔ a required constructor record failure during actual source rebuild cannot be overwritten by a later healthy reset (2.85567ms)
+✔ actual continuous recorder optional omission preserves complete required proof and financial-essential recording through caller wiring (20.389594ms)
+✔ rolling short-window financial reserve blocks new risk before a burst consumes protection and pending-entry starts (0.324211ms)
+ℹ tests 44
+ℹ suites 0
+ℹ pass 43
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3520.053448
+
+✖ failing tests:
+
+test at test/native-paper-integration.test.ts:1:41929
+✖ stage two protects and recovers a legacy single-profile reserved-buy without rewriting its obligation (50.392935ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {}
+  - {
+  -   'buy:4:1793058320000': {
+  -     decidedAt: 1793058320000,
+  -     decisionEvidence: 'rpc-market:f9b2d40e6b65ad9077dbae4313cfadcea435a8a7ec79b6cb47073835d9ebe638',
+  -     deposit: '2000335',
+  -     executeAt: 1793058321000,
+  -     expiresAt: 1793058325000,
+  -     gas: '7000',
+  -     id: 'buy:4:1793058320000',
+  -     maxSpend: '47992665',
+  -     minReceive: '22050310429',
+  -     mint: '7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump',
+  -     reserved: '50000000',
+  -     side: 'buy'
+  -   }
+  - }
+  
+      at Object.restart (/workspace/poe-two-position-operating/test/native-paper-integration.test.ts:40:3188)
+      at Object.stageTwo (/workspace/poe-two-position-operating/test/native-paper-integration.test.ts:40:2821)
+      at TestContext.<anonymous> (/workspace/poe-two-position-operating/test/native-paper-integration.test.ts:173:34)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: {},
+    expected: { 'buy:4:1793058320000': { id: 'buy:4:1793058320000', side: 'buy', mint: '7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump', decidedAt: 1793058320000, executeAt: 1793058321000, expiresAt: 1793058325000, gas: '7000', deposit: '2000335', maxSpend: '47992665', minReceive: '22050310429', decisionEvidence: 'rpc-market:f9b2d40e6b65ad9077dbae4313cfadcea435a8a7ec79b6cb47073835d9ebe638', reserved: '50000000' } },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

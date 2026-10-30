@@ -1,0 +1,18 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+
+  assert.ok((await page.locator('body').innerText()).includes(first.generatedAt))
+
+    at file:///workspace/pump-opportunity-engine/evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/arming-v2/forward-01/browser/verify-browser.mjs:15:3098 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v24.19.0

@@ -1,0 +1,18 @@
+{"file": "operator/native-paper-ec2/test-audit-original-account.py", "exitCode": 0}
+........
+----------------------------------------------------------------------
+Ran 8 tests in 0.007s
+
+OK
+{"file": "operator/native-paper-ec2/test-authoritative-service.py", "exitCode": 0}
+..........................
+----------------------------------------------------------------------
+Ran 26 tests in 0.492s
+
+OK
+{"file": "operator/native-paper-ec2/test-prepare-original-service-package.py", "exitCode": 0}
+.
+----------------------------------------------------------------------
+Ran 1 test in 0.111s
+
+OK

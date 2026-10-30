@@ -1,0 +1,78 @@
+{
+  "schemaVersion": 1,
+  "classification": "PREPARED_PROPOSAL_NOT_ACTIVE_GRANT",
+  "executed": false,
+  "prior429Preserved": true,
+  "priorCounters": {
+    "requests": 20,
+    "bytes": 272634,
+    "remainingRequests": 220,
+    "remainingResponseBytes": 66836230
+  },
+  "purpose": "Validate one active pool coherent Clock pricing and account-change triggers/recovery. Live three-pool trigger coverage and entry economics are outside this first component.",
+  "providers": [
+    "publicSolanaRPC"
+  ],
+  "pumpApiConnections": 0,
+  "maximumTotalMs": 90000,
+  "maximumSetupMs": 15000,
+  "maximumCommonObservationMs": 60000,
+  "shutdownReserveMs": 5000,
+  "httpRpcUnits": {
+    "identityActivity": 4,
+    "coldLinks": 1,
+    "extraTriggeredBatches": 5,
+    "actualSlotBlockTimeChecks": 2,
+    "clockBatchesIncludingOnePreflight": 31
+  },
+  "webSocketUnits": {
+    "initialSubscriptions": 7,
+    "onePlannedResubscription": 7,
+    "finalUnsubscriptions": 7,
+    "connectionUpgrades": 2
+  },
+  "shutdownHeadroomUnits": 4,
+  "totalRequestUnitCeiling": 70,
+  "rolling60SecondCeiling": 60,
+  "rolling10SecondCeiling": 30,
+  "minimumStartSpacingMs": 1000,
+  "physicalInFlight": 1,
+  "httpResponseBytesCeiling": 25165824,
+  "wsResponseBytesCeiling": 8388608,
+  "aggregateResponseBytesCeiling": 33554432,
+  "wsSocketStopBytes": 7340032,
+  "wsApplicationStopBytes": 6291456,
+  "retainedEvidenceBytesCeiling": 8388608,
+  "resources": {
+    "nonrootCloudOnly": true,
+    "heapMiB": 128,
+    "rssMiB": 256,
+    "cpuSeconds": 20,
+    "fileBytes": 16777216,
+    "fds": 64,
+    "payloadBytes": 65536,
+    "eventLoopLagMs": 500
+  },
+  "reconnect": "Atmostonepredeclaredreconnect; noautomaticretryorsecondsession. Ifoperationcannotfitphaseceiling, stopwithmissingobservations.",
+  "stopConditions": [
+    "429orprovider-overload",
+    "request/byte/time/resourceceiling",
+    "unverifiableidentity/support/currentClock",
+    "stalledphysicalslot",
+    "payload/retentionpressure"
+  ],
+  "qualityConditions": "Cadencemiss/gaps/stalequotes recorded; notificationsneverprices. BatchingmustmatchindependentSDKsamebytes/time. Missingactualchanges=>exitresponsenotverified.",
+  "remainingAtCeilings": {
+    "requestUnits": 150,
+    "responseBytes": 33281798
+  },
+  "authority": "Userinstructionrequiresnewexplicitliveresearchapprovalbecausepreviousgrantcompleted. Thisfiledoesnotclearoroverrideitsrefusalorresetcumulativeusage. Noauthorizationmachinerywasbuilt.",
+  "productionDeployment": false,
+  "paperEntries": false,
+  "liveTrading": false,
+  "acceptanceClock": false,
+  "heldPoolsForFirstComponent": 1,
+  "maximumCleanupMs": 10000,
+  "phaseArithmetic": "15ssetup+60scommonwindow+10scleanup+5sshutdown=90s. Cleanupcanfit7unsubscribestartsat1sspacing;unusedshutdownrequestheadroomisnotordinarywork.",
+  "preflightClockClarification": "OnefullClock/supportbatchbeforecommonwindow;30additional2speriodicbatchesduringcommon60s. Totalsunchangedbyreducingextrartriggerallowance6to5."
+}

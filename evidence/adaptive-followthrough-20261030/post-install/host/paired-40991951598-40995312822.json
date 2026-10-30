@@ -1,0 +1,213 @@
+{
+  "frozenAt": "2026-10-30T03:08:20.431075+00:00",
+  "sourceFiles": [
+    {
+      "path": "host-40991951598.json",
+      "sha256": "c9c39c855ce690409d9b342aa42fef162b7de948e5fcad21d8b83bf3dbfffc93"
+    },
+    {
+      "path": "host-40995312822.json",
+      "sha256": "c73733344a455d2426380212647cd7349c664418714aa3fdb948cefbc67aa1e2"
+    }
+  ],
+  "sampleBefore": "2026-10-30T02:29:13.322000+00:00",
+  "sampleAfter": "2026-10-30T03:04:47.065000+00:00",
+  "elapsedSeconds": 2133.743,
+  "sameSource": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+  "sameOriginalAccount": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+  "sameMainPid": "2482038",
+  "sameCgroupPids": [
+    2482038,
+    2482041,
+    2482042
+  ],
+  "restartsBefore": "0",
+  "restartsAfter": "0",
+  "serviceCgroupCpu": {
+    "deltas": {
+      "usage_usec": 452416856,
+      "user_usec": 433113009,
+      "system_usec": 19303847,
+      "nr_throttled": 0,
+      "throttled_usec": 0
+    },
+    "meanOneCpuFraction": 0.21202968492456684,
+    "actualCumulativeUsageSeconds": 671.309603,
+    "quota": {
+      "available": true,
+      "unlimited": true,
+      "quotaUsec": null,
+      "periodUsec": 100000,
+      "equivalentCpuCores": null
+    }
+  },
+  "serviceCgroupIo": {
+    "deltas": {
+      "rbytes": 16384,
+      "wbytes": 3578814464,
+      "rios": 4,
+      "wios": 39868,
+      "dbytes": 0,
+      "dios": 0
+    },
+    "meanWriteBytesPerSecond": 1677247.1961243693,
+    "meanWriteOperationsPerSecond": 18.6845369850071
+  },
+  "processRoles": [
+    {
+      "pid": 2482038,
+      "role": "original-supervisor",
+      "cpuSecondsBefore": 9.25,
+      "cpuSecondsAfter": 29.41,
+      "cpuSecondsDelta": 20.16,
+      "rssBefore": 31768576,
+      "rssAfter": 31969280
+    },
+    {
+      "pid": 2482041,
+      "role": "native-source",
+      "cpuSecondsBefore": 204.8,
+      "cpuSecondsAfter": 627.22,
+      "cpuSecondsDelta": 422.42,
+      "rssBefore": 379985920,
+      "rssAfter": 378355712
+    },
+    {
+      "pid": 2482042,
+      "role": "original-publisher",
+      "cpuSecondsBefore": 4.74,
+      "cpuSecondsAfter": 14.43,
+      "cpuSecondsDelta": 9.69,
+      "rssBefore": 135376896,
+      "rssAfter": 182755328
+    }
+  ],
+  "serviceMemoryBefore": {
+    "current": {
+      "available": true,
+      "bytes": 565399552,
+      "unlimited": false
+    },
+    "max": {
+      "available": true,
+      "bytes": 3221225472,
+      "unlimited": false
+    },
+    "peak": {
+      "available": true,
+      "bytes": 618196992,
+      "unlimited": false
+    }
+  },
+  "serviceMemoryAfter": {
+    "current": {
+      "available": true,
+      "bytes": 822853632,
+      "unlimited": false
+    },
+    "max": {
+      "available": true,
+      "bytes": 3221225472,
+      "unlimited": false
+    },
+    "peak": {
+      "available": true,
+      "bytes": 872820736,
+      "unlimited": false
+    }
+  },
+  "serviceMemoryBreakdownAfter": {
+    "available": true,
+    "anon": 463396864,
+    "file": 335687680,
+    "file_dirty": 81920,
+    "file_writeback": 0,
+    "slab": 9432200,
+    "meaning": "Kernel cgroup bytes; file/dirty/writeback/slab overlap. These counters alone cannot diagnose a heap leak."
+  },
+  "serviceMemoryEvents": {
+    "available": true,
+    "low": 0,
+    "high": 0,
+    "max": 0,
+    "oom": 0,
+    "oom_kill": 0,
+    "oom_group_kill": 0,
+    "sock_throttled": 0
+  },
+  "hostMemoryAfter": {
+    "available": true,
+    "totalBytes": 8153255936,
+    "availableBytes": 6758592512
+  },
+  "rootFilesystemAfter": {
+    "available": true,
+    "capacityBytes": 331712798720,
+    "availableBytes": 286145556480
+  },
+  "rootAvailableBytesDelta": -203096064,
+  "hostAggregateNetwork": {
+    "scope": "HOST-AGGREGATE; includes unrelated applications/admin runner; not POE-attributable",
+    "interfaces": [
+      {
+        "interface": "lo",
+        "deltas": {
+          "receivedBytes": 330241,
+          "receivedPackets": 2868,
+          "transmittedBytes": 330241,
+          "transmittedPackets": 2868
+        },
+        "meanReceivedBytesPerSecond": 154.77074792981162,
+        "meanTransmittedBytesPerSecond": 154.77074792981162
+      },
+      {
+        "interface": "ens5",
+        "deltas": {
+          "receivedBytes": 2383036408,
+          "receivedPackets": 1815620,
+          "transmittedBytes": 44969705,
+          "transmittedPackets": 456478
+        },
+        "meanReceivedBytesPerSecond": 1116833.8492498863,
+        "meanTransmittedBytesPerSecond": 21075.502063744323
+      }
+    ]
+  },
+  "currentPublicSourceAtInspection": {
+    "sha256": "f5262c861cef08ac96401a15c557a637a5b159becc9ad641023bc7e4ef3830e9",
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "release": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+    "strategy": "adaptive-momentum-v2-paper-v1",
+    "generatedAt": "2026-10-30T03:04:36.669Z",
+    "entriesDisabled": true,
+    "flowVerified": false,
+    "mode": "PAPER",
+    "liveTrading": false,
+    "blocker": "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED",
+    "shortlistCount": 4,
+    "feedConnected": true,
+    "lastUsefulProgressAt": "2026-10-30T03:04:36.320Z",
+    "lastReconciledAt": "2026-10-30T03:04:36.320Z",
+    "lastMigrationReceivedAt": "2026-10-30T03:03:37.621Z",
+    "reportingConfigured": true
+  },
+  "actualAcceptedSource": {
+    "source": {
+      "commit": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+      "sha256": "bbdd0515089a823600c158c668e6a3f76a0a92525422d63677989d963ae43480"
+    },
+    "runId": "native-paper-20261030021230118",
+    "sequence": "11497",
+    "sourceAt": "2026-10-30T03:04:08.852000+00:00",
+    "acknowledgedAt": "2026-10-30T03:04:21.325000+00:00",
+    "supervisorObservedAt": "2026-10-30T03:04:21.808000+00:00"
+  },
+  "inspectionActions": {
+    "financialDatabaseOpened": false,
+    "credentialReads": 0,
+    "serviceChanges": 0,
+    "providerRequests": 0
+  },
+  "meaning": "Actualsame69kernelcgroup/processmeasurements span naturalPAPERsecondentry/exitandtwo laterprotectionfailures. Native627.22CPUsecondsobservedwithsamePID, beyondformer480CPU-secondresearchallowance; runtimekeptoperating. KernelCPUthrottling/memoryevents0. No I/Olatencydistributionorproviderphysical-latencyclaim. Memorycategoriesoverlap; noleakclaim. Lastquota-refusal03:04:23.990precededinspectiondispatch03:04:41. Sourcepausedatinspectionforrealprotectionrecovery, notservicestop. No controls/restarts/provider/ledger/credentialreadsbyinspection."
+}

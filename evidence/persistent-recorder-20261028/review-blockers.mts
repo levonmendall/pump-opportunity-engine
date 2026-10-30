@@ -1,0 +1,14 @@
+import{mkdtempSync,writeFileSync,readFileSync,linkSync,existsSync,readdirSync}from'node:fs';import{tmpdir}from'node:os';import{join}from'node:path';import{BoundedRotatingRecorder}from'../../src/retained-recorder.ts';
+function fixture(){const root=mkdtempSync(join(tmpdir(),'poe-OFFLINE-review-recorder-'));let at=1000000,mono=0;const config={directory:join(root,'service'),segmentBytes:4096,diagnosticBytes:12288,minRetentionMs:300000,minimumDiskReserveBytes:0,now:()=>at,monotonic:()=>mono};return{root,config,advance(){at+=300001;mono+=300001},now:()=>at}}
+{
+ const f=fixture(),r=new BoundedRotatingRecorder(f.config),outside=join(f.root,'external-important-file');writeFileSync(outside,'IRREPLACEABLE_ORIGINAL');linkSync(outside,join(f.config.directory,'state.pending'));const accepted=r.record('financial-proof',{value:7},{essential:true});console.log(JSON.stringify({case:'hardlink-state-pending',accepted,outsideBytes:readFileSync(outside).length,outsideValue:readFileSync(outside,'utf8')}));
+}
+{
+ const f=fixture(),r=new BoundedRotatingRecorder(f.config);r.record('one',{raw:'A'});let second:BoundedRotatingRecorder|null=null,code='';try{second=new BoundedRotatingRecorder(f.config);code='SECOND_WRITER_ACCEPTED'}catch(e){code=String(e)}console.log(JSON.stringify({case:'concurrent-writer',code,firstStillWrites:r.record('late-original',{raw:'B'}),secondStillWrites:second?.record('parallel-new',{raw:'C'})}));
+}
+{
+ const f=fixture(),r=new BoundedRotatingRecorder(f.config),start=f.now();for(let i=0;i<6;i++){if(!r.record('raw',{raw:'x'.repeat(1500)}))throw Error('fixturecapacity');}await r.maintenance();f.advance();
+ let releaseMaintenance!:()=>void,maintenanceReached!:()=>void,releasePin!:()=>void,pinReached!:()=>void;const maintenanceGate=new Promise<void>(res=>releaseMaintenance=res),seenMaintenance=new Promise<void>(res=>maintenanceReached=res),pinGate=new Promise<void>(res=>releasePin=res),seenPin=new Promise<void>(res=>pinReached=res);const original=(r as any).verifyFile.bind(r);let paused=false,pausePin=false;
+ (r as any).verifyFile=async(m:any,destination?:string)=>{if(!destination&&!paused){paused=true;await original(m,destination);maintenanceReached();await maintenanceGate;return;}if(destination&&!pausePin){pausePin=true;pinReached();await pinGate;}return original(m,destination);};
+ const maintenance=r.maintenance();await seenMaintenance;const files=readdirSync(f.config.directory).filter(x=>/^diagnostic-.*ndjson$/.test(x));const task=r.pinRange('in-progress-proof',start,f.now());await seenPin;releaseMaintenance();await maintenance;const removedWhilePinPending=files.filter(x=>!existsSync(join(f.config.directory,x)));releasePin();const pin=await task;console.log(JSON.stringify({case:'maintenance-starts-before-pin',removedWhilePinPending,pinComplete:pin.complete,reason:pin.reason}));await r.close();
+}

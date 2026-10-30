@@ -1,0 +1,17 @@
+{
+  "verifiedAt": "2026-10-29T15:57:34.720Z",
+  "sourceCommit": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+  "executableBytes": 5052930,
+  "executableSha256": "fa10982125bd77c1586606283a9fabed4daee5434792dcef90be2bd312cc5315",
+  "args": {
+    "stage": "single",
+    "deepSlots": 4,
+    "service": true,
+    "ledgerPath": "/var/lib/poe/state/ledger.sqlite"
+  },
+  "configurationSha256": "f6ce54d7594e14d87955f211cca21f594b3d3eb52e20a75fa2245290f22a4857",
+  "verification": "Imported the hash-verified frozen installed executable; not the modified working tree.",
+  "marketRequests": 0,
+  "financialLedgerOpened": false,
+  "installed": false
+}

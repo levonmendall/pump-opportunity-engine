@@ -1,0 +1,40 @@
+{
+  "sourceCommit": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+  "startedAt": "2026-10-30T01:41:22.821940+00:00",
+  "commands": [
+    {
+      "name": "npm-test",
+      "command": [
+        "npm",
+        "test"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "npm-build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "standalone-build",
+      "command": [
+        "node",
+        "scripts/build-native-paper-ec2.mjs",
+        "--output-directory",
+        "/tmp/poe-native-paper-output-quote-adaptive-69aa1ef-final"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "providerRequests": 0,
+  "originalFinancialAccountRead": false,
+  "financialActions": 0,
+  "passed": true,
+  "sourceUnchanged": true,
+  "completedAt": "2026-10-30T01:43:28.426718+00:00",
+  "elapsedSeconds": 125.605
+}

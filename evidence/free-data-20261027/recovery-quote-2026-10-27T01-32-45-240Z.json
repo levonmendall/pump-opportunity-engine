@@ -1,0 +1,1081 @@
+{
+  "schemaVersion": 1,
+  "classification": "FREE_DATA_CAPTURED_QUOTE_REPLAY_WITH_SYNTHETIC_NOTIONAL_EXITS",
+  "actualStartedAt": "2026-10-27T01:32:44.909Z",
+  "actualCompletedAt": "2026-10-27T01:32:45.239Z",
+  "actualWallMs": 329.313,
+  "networkRequests": 0,
+  "providerCredentialsLoaded": false,
+  "financialAccountCreated": false,
+  "paperEntriesEnabled": false,
+  "naturalPaperTrades": 0,
+  "acceptanceClockStarted": false,
+  "liveTradingDisabled": true,
+  "source": {
+    "record": "evidence/rpc-observation-comparison.ndjson",
+    "recordSha256": "9f3b9f6575878595beb532fee8a0bcaa9579dda96a01ded308101cfc0714a304",
+    "originProof": "evidence/integration-proof-2026-10-26T23-32-41.255Z.json",
+    "originProofSha256": "266564115883ab3be50fac6157d21dbb95d3e55a505eb87508a75f4693f1356b",
+    "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+    "comparisonBaseUnits": "25229743127804",
+    "capturedBatches": 16,
+    "usableCapturedQuotes": 15,
+    "notifications": 17,
+    "changedContentNotifications": 0
+  },
+  "versions": {
+    "sdk": "@pump-fun/pump-swap-sdk@2.2.0",
+    "rule": {
+      "version": "persistent-buying-v0-unfrozen",
+      "windowMs": 60000,
+      "bucketMs": 10000,
+      "minimumAgeMs": 300000,
+      "maximumAgeMs": 7200000,
+      "minimumNetBuyLamports": "1000000000",
+      "minimumPositiveBuckets": 4,
+      "minimumBuyers": 5,
+      "maximumLargestBuyerBps": 3500,
+      "maximumSizeToLiquidityBps": 500,
+      "maximumInitialCostMicroUsd": "50000000",
+      "maximumHoldingMs": 900000,
+      "stopLossBps": 1500,
+      "takeProfitBps": 3000,
+      "modeledDelayMs": 1000,
+      "orderExpiryMs": 5000,
+      "maximumQuoteAgeMs": 2000
+    },
+    "scriptSha256": "c12aab8498699058ad419ee904b8fe2de9bd19b31068389051e705617673daa8",
+    "sourceHashes": {
+      "rpc-market": "47dae5888ed17f5d663c5a0f9346fef626ff34dc879347bc9d56fe9517e1cdf1",
+      "pool": "bfb685bc73f20799af87ed89613243160ec297bbb75ca49a4d329d436ba26d2d",
+      "strategy": "b076dfd34410ae5ef6d3a626d6b7852f4dc21eaacca8d6cba0e4de228c105084",
+      "network": "db385176ffe1f89eb7f5a3811a5b81c39b98a0d755e825b05af0d73d06294505"
+    }
+  },
+  "gasAssumption": {
+    "lamports": "7000",
+    "classification": "synthetic; net marks subtract once; no refundable rent assumed"
+  },
+  "quoteRows": [
+    {
+      "index": 0,
+      "lane": "setup",
+      "availableAt": 1793060947960,
+      "sourceReceivedAt": 1793060947884,
+      "slot": 461867526,
+      "pricedBaseUnits": "25229743127804",
+      "grossLamports": "229733",
+      "baselineNetLamports": "222733",
+      "adapterNetLamports": "222733",
+      "batchNetLamports": "222733",
+      "sourceStatus": "fresh-verified-size-quote",
+      "baselineCalls": 3,
+      "adapterCalls": 3,
+      "batchCalls": 3
+    },
+    {
+      "index": 1,
+      "lane": "poll",
+      "availableAt": 1793060948536,
+      "sourceReceivedAt": 1793060948474,
+      "slot": 461867529,
+      "pricedBaseUnits": "25229743127804",
+      "grossLamports": "229733",
+      "baselineNetLamports": "222733",
+      "adapterNetLamports": "222733",
+      "batchNetLamports": "222733",
+      "sourceStatus": "fresh-verified-size-quote",
+      "baselineCalls": 3,
+      "adapterCalls": 3,
+      "batchCalls": 3
+    },
+    {
+      "index": 2,
+      "lane": "subscription-periodic-reconcile",
+      "availableAt": 1793060948733,
+      "sourceReceivedAt": 1793060948674,
+      "slot": 461867530,
+      "pricedBaseUnits": "25229743127804",
+      "grossLamports": "229733",
+      "baselineNetLamports": "222733",
+      "adapterNetLamports": "222733",
+      "batchNetLamports": "222733",
+      "sourceStatus": "fresh-verified-size-quote",
+      "baselineCalls": 3,
+      "adapterCalls": 3,
+      "batchCalls": 3
+    },
+    {
+      "index": 3,
+      "lane": "subscription-change-reconcile",
+      "availableAt": 1793060950437,
+      "sourceReceivedAt": 1793060950358,
+      "slot": 461867537,
+      "pricedBaseUnits": "25229743127804",
+      "grossLamports": "229733",
+      "baselineNetLamports": "222733",
+      "adapterNetLamports": "222733",
+      "batchNetLamports": "222733",
+      "sourceStatus": "fresh-verified-size-quote",
+      "baselineCalls": 3,
+      "adapterCalls": 3,
+      "batchCalls": 3
+    },
+    {
+      "index": 4,
+      "lane": "subscription-change-reconcile",
+      "availableAt": 1793060953952,
+      "sourceReceivedAt": 1793060953906,
+      "slot": 461867554,
+      "pricedBaseUnits": "25229743127804",
+      "grossLamports": "229733",
+      "baselineNetLamports": "222733",
+      "adapterNetLamports": "222733",
+      "batchNetLamports": "222733",
+      "sourceStatus": "fresh-verified-size-quote",
+      "baselineCalls": 3,
+      "adapterCalls": 3,
+      "batchCalls": 3
+    },
+    {
+      "index": 5,
+      "lane": "poll",
+      "availableAt": 1793060956058,
+      "sourceReceivedAt": 1793060955994,
+      "slot": 461867564,
+      "pricedBaseUnits": "25229743127804",
+      "grossLamports": "229733",
+      "baselineNetLamports": "222733",
+      "adapterNetLamports": "222733",
+      "batchNetLamports": "222733",
+      "sourceStatus": "fresh-verified-size-quote",
+      "baselineCalls": 3,
+      "adapterCalls": 3,
+      "batchCalls": 3
+    },
+    {
+      "index": 6,
+      "lane": "subscription-change-reconcile",
+      "availableAt": 1793060958541,
+      "sourceReceivedAt": 1793060958482,
+      "slot": 461867576,
+      "pricedBaseUnits": "25229743127804",
+      "grossLamports": "229733",
+      "baselineNetLamports": "222733",
+      "adapterNetLamports": "222733",
+      "batchNetLamports": "222733",
+      "sourceStatus": "fresh-verified-size-quote",
+      "baselineCalls": 3,
+      "adapterCalls": 3,
+      "batchCalls": 3
+    },
+    {
+      "index": 7,
+      "lane": "poll",
+      "availableAt": 1793060963555,
+      "sourceReceivedAt": 1793060963489,
+      "slot": 461867601,
+      "pricedBaseUnits": "25229743127804",
+      "grossLamports": "229733",
+      "baselineNetLamports": "222733",
+      "adapterNetLamports": "222733",
+      "batchNetLamports": "222733",
+      "sourceStatus": "fresh-verified-size-quote",
+      "baselineCalls": 3,
+      "adapterCalls": 3,
+      "batchCalls": 3
+    },
+    {
+      "index": 8,
+      "lane": "poll",
+      "availableAt": 1793060971183,
+      "sourceReceivedAt": 1793060971103,
+      "slot": 461867636,
+      "pricedBaseUnits": "25229743127804",
+      "grossLamports": "229733",
+      "baselineNetLamports": "222733",
+      "adapterNetLamports": "222733",
+      "batchNetLamports": "222733",
+      "sourceStatus": "fresh-verified-size-quote",
+      "baselineCalls": 3,
+      "adapterCalls": 3,
+      "batchCalls": 3
+    },
+    {
+      "index": 9,
+      "lane": "subscription-periodic-reconcile",
+      "availableAt": 1793060973722,
+      "sourceReceivedAt": 1793060973670,
+      "slot": 461867649,
+      "pricedBaseUnits": "25229743127804",
+      "grossLamports": "229733",
+      "baselineNetLamports": "222733",
+      "adapterNetLamports": "222733",
+      "batchNetLamports": "222733",
+      "sourceStatus": "fresh-verified-size-quote",
+      "baselineCalls": 3,
+      "adapterCalls": 3,
+      "batchCalls": 3
+    },
+    {
+      "index": 10,
+      "lane": "poll",
+      "availableAt": 1793060978796,
+      "sourceReceivedAt": 1793060978750,
+      "slot": 461867674,
+      "pricedBaseUnits": "25229743127804",
+      "grossLamports": "229733",
+      "baselineNetLamports": "222733",
+      "adapterNetLamports": "222733",
+      "batchNetLamports": "222733",
+      "sourceStatus": "fresh-verified-size-quote",
+      "baselineCalls": 3,
+      "adapterCalls": 3,
+      "batchCalls": 3
+    },
+    {
+      "index": 11,
+      "lane": "subscription-periodic-reconcile",
+      "availableAt": 1793060978956,
+      "sourceReceivedAt": 1793060978897,
+      "slot": 461867675,
+      "pricedBaseUnits": "25229743127804",
+      "grossLamports": "229733",
+      "baselineNetLamports": "222733",
+      "adapterNetLamports": "222733",
+      "batchNetLamports": "222733",
+      "sourceStatus": "fresh-verified-size-quote",
+      "baselineCalls": 3,
+      "adapterCalls": 3,
+      "batchCalls": 3
+    },
+    {
+      "index": 12,
+      "lane": "poll",
+      "availableAt": 1793060986160,
+      "sourceReceivedAt": 1793060986096,
+      "slot": 461867708,
+      "pricedBaseUnits": "25229743127804",
+      "grossLamports": "229733",
+      "baselineNetLamports": "222733",
+      "adapterNetLamports": "222733",
+      "batchNetLamports": "222733",
+      "sourceStatus": "fresh-verified-size-quote",
+      "baselineCalls": 3,
+      "adapterCalls": 3,
+      "batchCalls": 3
+    },
+    {
+      "index": 13,
+      "lane": "poll",
+      "availableAt": 1793060993522,
+      "sourceReceivedAt": 1793060993476,
+      "slot": 461867743,
+      "pricedBaseUnits": "25229743127804",
+      "grossLamports": null,
+      "baselineNetLamports": null,
+      "adapterNetLamports": null,
+      "batchNetLamports": null,
+      "sourceStatus": "unavailable",
+      "baselineCalls": 3,
+      "adapterCalls": 3,
+      "batchCalls": 3
+    },
+    {
+      "index": 14,
+      "lane": "subscription-periodic-reconcile",
+      "availableAt": 1793060994141,
+      "sourceReceivedAt": 1793060994101,
+      "slot": 461867745,
+      "pricedBaseUnits": "25229743127804",
+      "grossLamports": "229733",
+      "baselineNetLamports": "222733",
+      "adapterNetLamports": "222733",
+      "batchNetLamports": "222733",
+      "sourceStatus": "fresh-verified-size-quote",
+      "baselineCalls": 3,
+      "adapterCalls": 3,
+      "batchCalls": 3
+    },
+    {
+      "index": 15,
+      "lane": "poll",
+      "availableAt": 1793061001163,
+      "sourceReceivedAt": 1793061001103,
+      "slot": 461867778,
+      "pricedBaseUnits": "25229743127804",
+      "grossLamports": "229733",
+      "baselineNetLamports": "222733",
+      "adapterNetLamports": "222733",
+      "batchNetLamports": "222733",
+      "sourceStatus": "fresh-verified-size-quote",
+      "baselineCalls": 3,
+      "adapterCalls": 3,
+      "batchCalls": 3
+    }
+  ],
+  "comparisons": [
+    {
+      "id": "no-price-trigger",
+      "cost": "222733",
+      "enteredAt": 1793060946960,
+      "syntheticNotional": true,
+      "syntheticTriggerAvailableAt": null,
+      "matchedEvidenceRecognitionDelayMs": null,
+      "recognitionDelayInterpretation": "Replay sampling delay from the declared synthetic time boundary or first captured quote; no naturally observed adverse price change or provider source-latency claim.",
+      "matchedEvidenceDecisionsEqual": true,
+      "matchedEvidenceRecognition": null,
+      "originalConfoundedSchedule": {
+        "pollRecognition": null,
+        "notificationAndPeriodicRecognition": null,
+        "interpretation": "Different recorded schedules/cadences; not a causal same-protection comparison."
+      },
+      "chronologicalDecisions": [
+        {
+          "index": 0,
+          "availableAt": 1793060947960,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "hold",
+            "reason": "no-provisional-exit-trigger"
+          }
+        },
+        {
+          "index": 1,
+          "availableAt": 1793060948536,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "hold",
+            "reason": "no-provisional-exit-trigger"
+          }
+        },
+        {
+          "index": 2,
+          "availableAt": 1793060948733,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "hold",
+            "reason": "no-provisional-exit-trigger"
+          }
+        },
+        {
+          "index": 3,
+          "availableAt": 1793060950437,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "hold",
+            "reason": "no-provisional-exit-trigger"
+          }
+        },
+        {
+          "index": 4,
+          "availableAt": 1793060953952,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "hold",
+            "reason": "no-provisional-exit-trigger"
+          }
+        },
+        {
+          "index": 5,
+          "availableAt": 1793060956058,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "hold",
+            "reason": "no-provisional-exit-trigger"
+          }
+        },
+        {
+          "index": 6,
+          "availableAt": 1793060958541,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "hold",
+            "reason": "no-provisional-exit-trigger"
+          }
+        },
+        {
+          "index": 7,
+          "availableAt": 1793060963555,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "hold",
+            "reason": "no-provisional-exit-trigger"
+          }
+        },
+        {
+          "index": 8,
+          "availableAt": 1793060971183,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "hold",
+            "reason": "no-provisional-exit-trigger"
+          }
+        },
+        {
+          "index": 9,
+          "availableAt": 1793060973722,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "hold",
+            "reason": "no-provisional-exit-trigger"
+          }
+        },
+        {
+          "index": 10,
+          "availableAt": 1793060978796,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "hold",
+            "reason": "no-provisional-exit-trigger"
+          }
+        },
+        {
+          "index": 11,
+          "availableAt": 1793060978956,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "hold",
+            "reason": "no-provisional-exit-trigger"
+          }
+        },
+        {
+          "index": 12,
+          "availableAt": 1793060986160,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "hold",
+            "reason": "no-provisional-exit-trigger"
+          }
+        },
+        {
+          "index": 13,
+          "availableAt": 1793060993522,
+          "executableQuoteAvailable": false,
+          "decision": {
+            "action": "quote-required",
+            "reason": "actual-size-net-liquidation-unavailable"
+          }
+        },
+        {
+          "index": 14,
+          "availableAt": 1793060994141,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "hold",
+            "reason": "no-provisional-exit-trigger"
+          }
+        },
+        {
+          "index": 15,
+          "availableAt": 1793061001163,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "hold",
+            "reason": "no-provisional-exit-trigger"
+          }
+        }
+      ]
+    },
+    {
+      "id": "synthetic-stop-cost-basis",
+      "cost": "262039",
+      "enteredAt": 1793060946960,
+      "syntheticNotional": true,
+      "syntheticTriggerAvailableAt": 1793060947960,
+      "matchedEvidenceRecognitionDelayMs": 0,
+      "recognitionDelayInterpretation": "Replay sampling delay from the declared synthetic time boundary or first captured quote; no naturally observed adverse price change or provider source-latency claim.",
+      "matchedEvidenceDecisionsEqual": true,
+      "matchedEvidenceRecognition": {
+        "index": 0,
+        "availableAt": 1793060947960,
+        "executableQuoteAvailable": true,
+        "decision": {
+          "action": "request-exit",
+          "reason": "net-liquidation-stop; fill-price-not-guaranteed"
+        }
+      },
+      "originalConfoundedSchedule": {
+        "pollRecognition": {
+          "index": 1,
+          "availableAt": 1793060948536,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-stop; fill-price-not-guaranteed"
+          }
+        },
+        "notificationAndPeriodicRecognition": {
+          "index": 2,
+          "availableAt": 1793060948733,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-stop; fill-price-not-guaranteed"
+          }
+        },
+        "interpretation": "Different recorded schedules/cadences; not a causal same-protection comparison."
+      },
+      "chronologicalDecisions": [
+        {
+          "index": 0,
+          "availableAt": 1793060947960,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-stop; fill-price-not-guaranteed"
+          }
+        },
+        {
+          "index": 1,
+          "availableAt": 1793060948536,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-stop; fill-price-not-guaranteed"
+          }
+        },
+        {
+          "index": 2,
+          "availableAt": 1793060948733,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-stop; fill-price-not-guaranteed"
+          }
+        },
+        {
+          "index": 3,
+          "availableAt": 1793060950437,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-stop; fill-price-not-guaranteed"
+          }
+        },
+        {
+          "index": 4,
+          "availableAt": 1793060953952,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-stop; fill-price-not-guaranteed"
+          }
+        },
+        {
+          "index": 5,
+          "availableAt": 1793060956058,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-stop; fill-price-not-guaranteed"
+          }
+        },
+        {
+          "index": 6,
+          "availableAt": 1793060958541,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-stop; fill-price-not-guaranteed"
+          }
+        },
+        {
+          "index": 7,
+          "availableAt": 1793060963555,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-stop; fill-price-not-guaranteed"
+          }
+        },
+        {
+          "index": 8,
+          "availableAt": 1793060971183,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-stop; fill-price-not-guaranteed"
+          }
+        },
+        {
+          "index": 9,
+          "availableAt": 1793060973722,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-stop; fill-price-not-guaranteed"
+          }
+        },
+        {
+          "index": 10,
+          "availableAt": 1793060978796,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-stop; fill-price-not-guaranteed"
+          }
+        },
+        {
+          "index": 11,
+          "availableAt": 1793060978956,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-stop; fill-price-not-guaranteed"
+          }
+        },
+        {
+          "index": 12,
+          "availableAt": 1793060986160,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-stop; fill-price-not-guaranteed"
+          }
+        },
+        {
+          "index": 13,
+          "availableAt": 1793060993522,
+          "executableQuoteAvailable": false,
+          "decision": {
+            "action": "quote-required",
+            "reason": "actual-size-net-liquidation-unavailable"
+          }
+        },
+        {
+          "index": 14,
+          "availableAt": 1793060994141,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-stop; fill-price-not-guaranteed"
+          }
+        },
+        {
+          "index": 15,
+          "availableAt": 1793061001163,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-stop; fill-price-not-guaranteed"
+          }
+        }
+      ]
+    },
+    {
+      "id": "synthetic-profit-cost-basis",
+      "cost": "171333",
+      "enteredAt": 1793060946960,
+      "syntheticNotional": true,
+      "syntheticTriggerAvailableAt": 1793060947960,
+      "matchedEvidenceRecognitionDelayMs": 0,
+      "recognitionDelayInterpretation": "Replay sampling delay from the declared synthetic time boundary or first captured quote; no naturally observed adverse price change or provider source-latency claim.",
+      "matchedEvidenceDecisionsEqual": true,
+      "matchedEvidenceRecognition": {
+        "index": 0,
+        "availableAt": 1793060947960,
+        "executableQuoteAvailable": true,
+        "decision": {
+          "action": "request-exit",
+          "reason": "net-liquidation-take-profit"
+        }
+      },
+      "originalConfoundedSchedule": {
+        "pollRecognition": {
+          "index": 1,
+          "availableAt": 1793060948536,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-take-profit"
+          }
+        },
+        "notificationAndPeriodicRecognition": {
+          "index": 2,
+          "availableAt": 1793060948733,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-take-profit"
+          }
+        },
+        "interpretation": "Different recorded schedules/cadences; not a causal same-protection comparison."
+      },
+      "chronologicalDecisions": [
+        {
+          "index": 0,
+          "availableAt": 1793060947960,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-take-profit"
+          }
+        },
+        {
+          "index": 1,
+          "availableAt": 1793060948536,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-take-profit"
+          }
+        },
+        {
+          "index": 2,
+          "availableAt": 1793060948733,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-take-profit"
+          }
+        },
+        {
+          "index": 3,
+          "availableAt": 1793060950437,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-take-profit"
+          }
+        },
+        {
+          "index": 4,
+          "availableAt": 1793060953952,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-take-profit"
+          }
+        },
+        {
+          "index": 5,
+          "availableAt": 1793060956058,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-take-profit"
+          }
+        },
+        {
+          "index": 6,
+          "availableAt": 1793060958541,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-take-profit"
+          }
+        },
+        {
+          "index": 7,
+          "availableAt": 1793060963555,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-take-profit"
+          }
+        },
+        {
+          "index": 8,
+          "availableAt": 1793060971183,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-take-profit"
+          }
+        },
+        {
+          "index": 9,
+          "availableAt": 1793060973722,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-take-profit"
+          }
+        },
+        {
+          "index": 10,
+          "availableAt": 1793060978796,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-take-profit"
+          }
+        },
+        {
+          "index": 11,
+          "availableAt": 1793060978956,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-take-profit"
+          }
+        },
+        {
+          "index": 12,
+          "availableAt": 1793060986160,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-take-profit"
+          }
+        },
+        {
+          "index": 13,
+          "availableAt": 1793060993522,
+          "executableQuoteAvailable": false,
+          "decision": {
+            "action": "quote-required",
+            "reason": "actual-size-net-liquidation-unavailable"
+          }
+        },
+        {
+          "index": 14,
+          "availableAt": 1793060994141,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-take-profit"
+          }
+        },
+        {
+          "index": 15,
+          "availableAt": 1793061001163,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "net-liquidation-take-profit"
+          }
+        }
+      ]
+    },
+    {
+      "id": "synthetic-15min-boundary",
+      "cost": "222733",
+      "enteredAt": 1793060048960,
+      "syntheticNotional": true,
+      "syntheticTriggerAvailableAt": 1793060948960,
+      "matchedEvidenceRecognitionDelayMs": 1477,
+      "recognitionDelayInterpretation": "Replay sampling delay from the declared synthetic time boundary or first captured quote; no naturally observed adverse price change or provider source-latency claim.",
+      "matchedEvidenceDecisionsEqual": true,
+      "matchedEvidenceRecognition": {
+        "index": 3,
+        "availableAt": 1793060950437,
+        "executableQuoteAvailable": true,
+        "decision": {
+          "action": "request-exit",
+          "reason": "maximum-holding-time; fresh executable quote still required"
+        }
+      },
+      "originalConfoundedSchedule": {
+        "pollRecognition": {
+          "index": 5,
+          "availableAt": 1793060956058,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "maximum-holding-time; fresh executable quote still required"
+          }
+        },
+        "notificationAndPeriodicRecognition": {
+          "index": 3,
+          "availableAt": 1793060950437,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "maximum-holding-time; fresh executable quote still required"
+          }
+        },
+        "interpretation": "Different recorded schedules/cadences; not a causal same-protection comparison."
+      },
+      "chronologicalDecisions": [
+        {
+          "index": 0,
+          "availableAt": 1793060947960,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "hold",
+            "reason": "no-provisional-exit-trigger"
+          }
+        },
+        {
+          "index": 1,
+          "availableAt": 1793060948536,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "hold",
+            "reason": "no-provisional-exit-trigger"
+          }
+        },
+        {
+          "index": 2,
+          "availableAt": 1793060948733,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "hold",
+            "reason": "no-provisional-exit-trigger"
+          }
+        },
+        {
+          "index": 3,
+          "availableAt": 1793060950437,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "maximum-holding-time; fresh executable quote still required"
+          }
+        },
+        {
+          "index": 4,
+          "availableAt": 1793060953952,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "maximum-holding-time; fresh executable quote still required"
+          }
+        },
+        {
+          "index": 5,
+          "availableAt": 1793060956058,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "maximum-holding-time; fresh executable quote still required"
+          }
+        },
+        {
+          "index": 6,
+          "availableAt": 1793060958541,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "maximum-holding-time; fresh executable quote still required"
+          }
+        },
+        {
+          "index": 7,
+          "availableAt": 1793060963555,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "maximum-holding-time; fresh executable quote still required"
+          }
+        },
+        {
+          "index": 8,
+          "availableAt": 1793060971183,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "maximum-holding-time; fresh executable quote still required"
+          }
+        },
+        {
+          "index": 9,
+          "availableAt": 1793060973722,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "maximum-holding-time; fresh executable quote still required"
+          }
+        },
+        {
+          "index": 10,
+          "availableAt": 1793060978796,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "maximum-holding-time; fresh executable quote still required"
+          }
+        },
+        {
+          "index": 11,
+          "availableAt": 1793060978956,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "maximum-holding-time; fresh executable quote still required"
+          }
+        },
+        {
+          "index": 12,
+          "availableAt": 1793060986160,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "maximum-holding-time; fresh executable quote still required"
+          }
+        },
+        {
+          "index": 13,
+          "availableAt": 1793060993522,
+          "executableQuoteAvailable": false,
+          "decision": {
+            "action": "request-exit",
+            "reason": "maximum-holding-time; fresh executable quote still required"
+          }
+        },
+        {
+          "index": 14,
+          "availableAt": 1793060994141,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "maximum-holding-time; fresh executable quote still required"
+          }
+        },
+        {
+          "index": 15,
+          "availableAt": 1793061001163,
+          "executableQuoteAvailable": true,
+          "decision": {
+            "action": "request-exit",
+            "reason": "maximum-holding-time; fresh executable quote still required"
+          }
+        }
+      ]
+    }
+  ],
+  "recoveryEvidence": {
+    "path": "evidence/recovery-load.json",
+    "sha256": "5e01922c444b8840d13bafc87935d857d8cedb28700a209a101e10fbdc1aae45",
+    "reuse": "Prior disposable actual SIGKILL, WAL interruption, uncertainty quarantine and consistent restore drill; not repeated or relabeled as current forward operation."
+  },
+  "limits": [
+    "Identical captured coherent batches and original completion times are supplied to both primary paths; exact agreement proves offline price/rule parity, not transport coverage or profitable fills.",
+    "Synthetic entry costs and entry times intentionally exercise unchanged 15%/30%/15min thresholds; none are natural positions, signals, fills or performance.",
+    "Notional costs are derived from the first captured quote to exercise branches; they are not chronologically entered trades or usable economic backtests.",
+    "Source window had no changed content and no observed price move; it cannot prove change-trigger latency, adverse-move protection, full coverage or economic savings.",
+    "Individual account notifications never become priced marks; only a recorded coherent batch with successful block-time validation can supply a mark.",
+    "Source receive time remains the mark time, successful result appears only at original completed quote availability, and unavailable block-time sample remains unknown.",
+    "Original poll and subscription schedules are shown separately and are confounded by cadence, request ordering and a reconnect; no causal superiority is inferred.",
+    "Replay invokes SDK/RpcMarket on retained public bytes using injected clocks/transport; call counts are offline method work, not new provider usage or reduced daily costs.",
+    "The uncaptured initial pool-discovery response is reconstructed from the later captured coherent pool bytes; this cannot test intermediate pool-link changes or original discovery timing. Results still remain unavailable until recorded quote completion.",
+    "Provider/RPC exhaustion and runtime restart/capacity failures are evaluated separately; no FREE_DATA deployment or acceptance interval is authorized by this artifact."
+  ],
+  "capturedTimings": {
+    "classification": "Original capture timing only; replay wall time is not provider latency.",
+    "coherentBatchHttpResponseMs": {
+      "samples": 16,
+      "p50": 50,
+      "p95": 89,
+      "p99": 89,
+      "maximum": 89
+    },
+    "quoteAvailabilityAfterBatchReceiveMs": {
+      "samples": 16,
+      "p50": 59,
+      "p95": 80,
+      "p99": 80,
+      "maximum": 80
+    },
+    "successfulQuoteAgeAtAvailabilityMs": {
+      "samples": 15,
+      "p50": 60,
+      "p95": 80,
+      "p99": 80,
+      "maximum": 80
+    },
+    "requestedAtMeaning": "Start of the retained coherent account batch; earlier link-discovery HTTP timing was not captured here."
+  }
+}

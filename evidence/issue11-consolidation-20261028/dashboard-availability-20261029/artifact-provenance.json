@@ -1,0 +1,38 @@
+[
+  {
+    "originalPath": "/tmp/poe-151411-host-bracket-archive-review-20261029.json",
+    "retainedFile": "poe-151411-host-bracket-archive-review-20261029.json",
+    "bytes": 8215,
+    "sha256": "f5ffd38299734db39c3cae86ddff8fbdd640657fc1a6168253623bce22e4ca38"
+  },
+  {
+    "originalPath": "/tmp/poe-compressed-1516-1524-coverage-review-20261029.json",
+    "retainedFile": "poe-compressed-1516-1524-coverage-review-20261029.json",
+    "bytes": 8344,
+    "sha256": "409f444c0cdbc29c283a37dd22cd863edcf9b43df8b316d8442abb92227b9473"
+  },
+  {
+    "originalPath": "/tmp/poe-effective-performance-controls-20261029/ec2-controls-40899463759.json",
+    "retainedFile": "ec2-controls-40899463759.json",
+    "bytes": 17972,
+    "sha256": "2d6ea94d07cc58835641c093a4a77b81ccfb9bd375d496a1404b128345d0cc32"
+  },
+  {
+    "originalPath": "/tmp/poe-effective-performance-controls-20261029/ec2-controls-40899463759.raw.txt",
+    "retainedFile": "ec2-controls-40899463759.raw.txt",
+    "bytes": 37248,
+    "sha256": "3cbcc6a19a25f64581d0d4560ddfc4067212d9fea6add12807eb33928216b886"
+  },
+  {
+    "originalPath": "/tmp/poe-effective-performance-controls-20261029/ec2-controls-40899276799.json",
+    "retainedFile": "ec2-controls-40899276799.json",
+    "bytes": 17796,
+    "sha256": "99d19029b1faaaec73e66676a1ad0978391527ea8202ee8ea1899924aea156f4"
+  },
+  {
+    "originalPath": "/tmp/poe-effective-performance-controls-20261029/ec2-controls-40899276799.raw.txt",
+    "retainedFile": "ec2-controls-40899276799.raw.txt",
+    "bytes": 37104,
+    "sha256": "637cfe4e8dd1a3a81d009c535ee82dc95ac46307b26331e306b7fd29bf352a42"
+  }
+]

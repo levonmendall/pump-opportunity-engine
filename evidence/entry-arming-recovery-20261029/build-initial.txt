@@ -1,0 +1,5 @@
+
+> pump-opportunity-engine@0.1.0 build
+> tsc --noEmit
+
+test/native-paper-integration.test.ts(84,578): error TS2322: Type 'number' is not assignable to type 'string'.

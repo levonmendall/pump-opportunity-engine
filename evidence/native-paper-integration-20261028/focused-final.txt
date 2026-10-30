@@ -1,0 +1,24 @@
+✔ native PAPER contract is separately versioned, deeply frozen, hash pinned and preserves baseline thresholds (0.924039ms)
+✔ canonical fingerprint keeps every closed-window feature while allowing actual asOf time to advance within its bucket (3.920933ms)
+✔ exact current audited evidence can be admitted only through the explicit new PAPER contract (0.953844ms)
+✔ generation, source identity, actual current feature window and fingerprint must agree exactly (1.159028ms)
+✔ actual audit/admission availability and unchanged bucket cutoff prevent backdating or stale certificate reuse (0.843539ms)
+✔ only independently verified executed completeness can waive a missing failed packet; warming or provisional flow never qualifies as ready (3.553645ms)
+✔ actual ACK time crossing a bucket preserves identical six-bucket warming in native and trader windows (36.470075ms)
+✔ protocol slot received during decision recording invalidates its earlier quote before financial reservation (21.048547ms)
+✔ audit certificate is an immutable exact-window generation fact and is unavailable after expiry, reconnect or retirement (29.698293ms)
+✔ financial ownership survives source retirement and age expiry without deleting HELD identity or origin proof (7.583215ms)
+✔ new native adapter opens two SDK-priced PAPER positions, retains source-independent protection and recovers two uncertain exits (587.570111ms)
+✔ new native adapter refuses financial preparation without actual monitoring admission despite complete predictive evidence (21.748414ms)
+✔ native PAPER CLI requires explicit resume/contract and optional flags cannot alias args[0] (1.917761ms)
+✔ wrong source contract and invalid resource selection fail before directory, lease, ledger or provider access (1.277713ms)
+✔ unbound public source and mutable/mismatched startup provenance cannot open a financial writer (17.225367ms)
+✔ 750ms holding reads retain reporting service opportunities without moving the two-second reference cadence (1.360256ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1729.52742

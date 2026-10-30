@@ -1,0 +1,42 @@
+{
+  "kind": "poe-original69-actual-nonroot-stage-verification",
+  "workflowRunId": 40988921520,
+  "url": "https://github.com/levonmendall/meme-machine-admin/actions/runs/40988921520",
+  "adminCommit": "ffde072d311149a2f24df75861c8436c42ddc267",
+  "source": {
+    "commit": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+    "sha256": "bbdd0515089a823600c158c668e6a3f76a0a92525422d63677989d963ae43480"
+  },
+  "stage": "/var/tmp/poe-original-adaptive-followthrough-upgrade",
+  "all11FileHashesMatched": true,
+  "exactUnitParserVerified": true,
+  "sameSupervisor": true,
+  "serviceBefore": {
+    "MainPID": "2479299",
+    "NRestarts": "0",
+    "User": "poe-runtime",
+    "LoadState": "loaded",
+    "ActiveState": "active",
+    "SubState": "running"
+  },
+  "serviceAfter": {
+    "MainPID": "2479299",
+    "NRestarts": "0",
+    "User": "poe-runtime",
+    "LoadState": "loaded",
+    "ActiveState": "active",
+    "SubState": "running"
+  },
+  "runtimeIdentity": {
+    "uid": 988,
+    "gid": 982
+  },
+  "rawLogSha256": "c122beff3888ae8012eba66171ec7db7299e92a215a71109a6fe5d8f31ea5220",
+  "receiptSha256": "d6f17ed77055ace24208ac6598d0824fcd63ec9ad1fd89e2e34ea0c7bede2dba",
+  "staged": true,
+  "installed": false,
+  "rootCommandExecuted": false,
+  "serviceControlOperations": 0,
+  "financialDatabaseOpened": false,
+  "providerRequests": 0
+}

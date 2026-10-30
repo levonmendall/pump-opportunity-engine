@@ -1,0 +1,14 @@
+{
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "--test",
+    "test/native-candidate-runner.test.ts"
+  ],
+  "sourceBase": "880512fa9f59470f202c86aaeda724abb2898ca2",
+  "newTestSha256": "f0543ae323af8a1077ff90eef79deb98f0867655ab221c48ef71cb0d3a867cd3",
+  "exitCode": 1,
+  "endedAt": "2026-10-28T14:48:49.471942+00:00",
+  "logSha256": "dcfa942c3f84148bd660b306fffee5af97131ea97c051777bea63038a1bea929"
+}

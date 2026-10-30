@@ -1,0 +1,96 @@
+{
+  "classification": "OFFLINE_AUDIT_OF_REAL_CAPTURED_PRICING",
+  "networkRequests": 0,
+  "method": "Use validated-current-state record timestamp, emitted after synchronous parity, as post-parity use-time evidence. Original availability fields and receipts remain unchanged.",
+  "samples": [
+    {
+      "leg": "01-basic",
+      "pool": "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+      "slot": 461972483,
+      "receivedAt": "2026-10-27T06:40:53.330Z",
+      "initialAvailableAt": 1793083253338,
+      "recordedAfterParityAt": 1793083253342,
+      "postParityQuoteAgeMs": 12.0,
+      "postParityClockAgeMs": 1342,
+      "sdkParity": true
+    },
+    {
+      "leg": "01-basic",
+      "pool": "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+      "slot": 461972493,
+      "receivedAt": "2026-10-27T06:40:55.313Z",
+      "initialAvailableAt": 1793083255318,
+      "recordedAfterParityAt": 1793083255324,
+      "postParityQuoteAgeMs": 11.0,
+      "postParityClockAgeMs": 324,
+      "sdkParity": true
+    },
+    {
+      "leg": "02-multi",
+      "pool": "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+      "slot": 461973263,
+      "receivedAt": "2026-10-27T06:43:40.799Z",
+      "initialAvailableAt": 1793083420816,
+      "recordedAfterParityAt": 1793083420821,
+      "postParityQuoteAgeMs": 22.0,
+      "postParityClockAgeMs": 821,
+      "sdkParity": true
+    },
+    {
+      "leg": "02-multi",
+      "pool": "6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv",
+      "slot": 461973263,
+      "receivedAt": "2026-10-27T06:43:40.799Z",
+      "initialAvailableAt": 1793083420816,
+      "recordedAfterParityAt": 1793083420825,
+      "postParityQuoteAgeMs": 26.0,
+      "postParityClockAgeMs": 825,
+      "sdkParity": true
+    },
+    {
+      "leg": "02-multi",
+      "pool": "7fQkV54AAoUUqkTu1nVCCguZNwr34kbRuXGqx8ZLvgXU",
+      "slot": 461973263,
+      "receivedAt": "2026-10-27T06:43:40.799Z",
+      "initialAvailableAt": 1793083420816,
+      "recordedAfterParityAt": 1793083420830,
+      "postParityQuoteAgeMs": 31.0,
+      "postParityClockAgeMs": 830,
+      "sdkParity": true
+    },
+    {
+      "leg": "02-multi",
+      "pool": "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+      "slot": 461973272,
+      "receivedAt": "2026-10-27T06:43:42.786Z",
+      "initialAvailableAt": 1793083422794,
+      "recordedAfterParityAt": 1793083422798,
+      "postParityQuoteAgeMs": 12.0,
+      "postParityClockAgeMs": 798,
+      "sdkParity": true
+    },
+    {
+      "leg": "02-multi",
+      "pool": "6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv",
+      "slot": 461973272,
+      "receivedAt": "2026-10-27T06:43:42.786Z",
+      "initialAvailableAt": 1793083422794,
+      "recordedAfterParityAt": 1793083422800,
+      "postParityQuoteAgeMs": 14.0,
+      "postParityClockAgeMs": 800,
+      "sdkParity": true
+    },
+    {
+      "leg": "02-multi",
+      "pool": "7fQkV54AAoUUqkTu1nVCCguZNwr34kbRuXGqx8ZLvgXU",
+      "slot": 461973272,
+      "receivedAt": "2026-10-27T06:43:42.786Z",
+      "initialAvailableAt": 1793083422794,
+      "recordedAfterParityAt": 1793083422806,
+      "postParityQuoteAgeMs": 20.0,
+      "postParityClockAgeMs": 806,
+      "sdkParity": true
+    }
+  ],
+  "allAtMostTwoSeconds": true
+}

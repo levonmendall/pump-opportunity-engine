@@ -1,0 +1,118 @@
+✔ native registration is local; fresh support, shared upgrade and actual confirmed ACK precede flow opening (12.692427ms)
+✔ retained actual program events preserve economics, true log identities and availability without claiming SPL checks (8.911948ms)
+✔ confirmed failed and non-swap notifications remain auditable without inventing trades or a data gap (3.688553ms)
+✔ duplicate actual event identity is not re-admitted; synthetic changed amounts invalidate the candidate as a correction (4.74233ms)
+✔ unsupported whole AMM frame suspends only its candidate and requires an explicit fresh rearm (8.681635ms)
+✔ disconnect invalidates market context; bounded service-driven reconnect requires fresh ACK and warming (5.503921ms)
+✔ stale support and delayed recording cannot turn old program information into valid fresh evidence (19.42775ms)
+✔ HTTP cooldown defers support without the observed six-candidate teardown or losing fresh capture (25.887753ms)
+✔ a retained HTTP cooldown never extends support validity or admits trades after actual source expiry (7.84367ms)
+✔ control cooldown retains an owed pong while independent support work can proceed (2.977726ms)
+✔ first-turn external HTTP cooldown cannot hide a simultaneously due native heartbeat behind support work (3.73997ms)
+✔ a cooldown refusal at its expiry remains a non-destructive admission refusal with no same-turn retry (1.683232ms)
+✔ forbidden control recovery does not postpone the existing owed-pong deadline or send an unadmitted frame (1.859334ms)
+✔ six distinct candidates share one socket and filtered subscriptions; capacity refusal starts no seventh work (16.029098ms)
+✔ closed financial-priority admission starts no native control, and stop waits for actual transport settlement (1.691595ms)
+✔ transport receipt beyond its finite allowance is counted and invalidates admission before trade decoding (1.35875ms)
+✔ synthetic same transaction delivered after a second pool ACK admits its unseen pool event without duplicating the first pool (7.239622ms)
+✔ peer pongs and liveness pings require explicit service and use the same physical control gate (3.059959ms)
+✔ a late old-connection protocol attempt cannot consume a new connection managed operation (4.063661ms)
+✔ stop during an unfinished upgrade settles its physical operation before another service can run (1.231551ms)
+✔ ordinary pre-ACK warming is separate from an initial supported-state refusal with an auditable cause (0.662885ms)
+✔ SYNTHETIC17/18 selected-transaction bursts admit every event once without enrichment, support or control requests (37.666582ms)
+✔ already received socket bytes remain fully visible when shared charging fails partway through a large delta (1.831703ms)
+✔ synthetic program-clock source expiry during otherwise allowed recording is rejected at actual information admission (2.49574ms)
+✔ shared information cutoff rejects already delivered bytes at final admission without a fake accepted trade (2.134173ms)
+✔ fresh union support exposes original ACK floor and later independent confirmed Clock ceiling (1.989057ms)
+✔ early heartbeat is explicit, uses the same physical gate and preserves fresh-source deadlines (1.528091ms)
+✔ retiring the last scope closes promptly and a closed empty source leaves no stale heartbeat reservation (2.943976ms)
+✔ known retired late notification stays outside selected evidence and does not fault another active scope (4.091543ms)
+✔ unknown or expired subscription IDs remain fail-closed and their received bytes are still counted (31.441398ms)
+✔ an unknown early-notification burst records the actual ACK and queue boundary without accepting unscoped flow (3.84844ms)
+✔ well-formed unknown subscription recovers only after actual close, bounded backoff and a new ACK window (5.353489ms)
+✔ malformed unknown subscription remains a hard safety refusal without logging its raw payload (1.976979ms)
+✔ a retired packet cannot hide a confirmed correction of a signature already used by an active scope (18.255847ms)
+✔ retired tombstones are connection-scoped and cannot turn an arbitrary new-connection ID into known traffic (5.551122ms)
+✔ a retired subscription ID cannot be reassigned to a different canonical pool (5.445845ms)
+✔ malformed subscription results retain bounded refusal diagnostics without accepting the ID or raw payload (2.436412ms)
+✔ subscription RPC errors retain only the numeric error code before generic budget normalization (2.984878ms)
+✔ malformed known-retired payloads still fail closed instead of receiving an arbitrary-ID exemption (2.802956ms)
+✔ retirement metadata is capped per connection and capacity exhaustion causes explicit fresh-window recovery (316.019428ms)
+✔ eight successful raw shapes cannot consume the independent first-refusal evidence reserve (17.237003ms)
+✔ actual five-to-zero freshness timeline is classified as expired support before parsing, even before a delayed watchdog runs (17.95494ms)
+✔ actual retained Boost is a separate shadow pool effect and never invents an ordinary buyer or net buying (22.440017ms)
+✔ strict source stays the default and the identical retained Boost remains refused (11.192988ms)
+✔ ordinary retained trade and feature values are identical in strict and explicit shadow sources (4.118172ms)
+✔ SYNTHETIC mixed-pool delivery propagates first-availability baseline markers without duplicate-time inflation (36.620267ms)
+✔ SYNTHETIC 4097 unique notices over the measured overload duration retain the full closed window and partial bucket (695.466811ms)
+✔ bounded per-candidate ledger overflow preserves the actual refusal without a second throw or loss of another scope (5.630919ms)
+✔ SYNTHETIC two-scope signature demand beyond8192 keeps the correction horizon and does not hide a later correction (790.875751ms)
+✔ native support forwards its validated base mint owner into classic protocol effect decoding (9.43161ms)
+✔ recorded same-filter ID reuse after acknowledged retirement opens only a new current-context window (33.403233ms)
+✔ an unseen old or same-bank-slot packet after ID reuse is an explicit candidate-local ambiguity, not invented current flow (11.477477ms)
+✔ known old copies do not reenter a rebound window and an actual correction still invalidates it (6.726344ms)
+✔ an active ID collision cannot be accepted as a retired-filter rebind (2.76206ms)
+✔ an unsubscribe still in flight cannot create a tombstone or admit a replacement on the same physical gate (4.176519ms)
+✔ rearming the same candidate after a gap refreshes support after its unsubscribe ACK (5.596097ms)
+✔ SYNTHETIC cross-pool decoding applies a rebound fence to its actual affected pool without losing the other scope (6.687016ms)
+✔ SYNTHETIC protocol effects arriving through another subscription cannot bypass a rebound context fence (10.477968ms)
+✔ SYNTHETIC an old cross-pool duplicate cannot enter a rebound window when a third scope requires transaction reparsing (12.192609ms)
+✔ a confirmed failed transaction at a reused ID context fence remains diagnostic without invented executed flow (10.161985ms)
+✖ RETAINED718 timing-shaped failed refresh preserves five fresh scopes and recovers before original expiry (53.224316ms)
+✔ recoverable supportCOMPONENT_HTTP_TRANSPORT retains healthy capture, real retry floor and independent controls (5.931935ms)
+✔ recoverable supportCOMPONENT_HTTP_429 retains healthy capture, real retry floor and independent controls (4.130081ms)
+✔ recoverable supportCOMPONENT_HTTP_STATUS_502 retains healthy capture, real retry floor and independent controls (3.19988ms)
+✔ recoverable supportCOMPONENT_HTTP_STATUS_503 retains healthy capture, real retry floor and independent controls (3.226439ms)
+✔ recoverable supportCOMPONENT_HTTP_STATUS_504 retains healthy capture, real retry floor and independent controls (4.059346ms)
+✔ recoverable supportCOMPONENT_RPC_OVERLOAD retains healthy capture, real retry floor and independent controls (3.524622ms)
+✔ recoverable supportCOMPONENT_RPC_ERROR_-32016 retains healthy capture, real retry floor and independent controls (3.919038ms)
+✖ actual support expiry during provider backoff invalidates the scope without invented refresh or whole-socket loss (7.923432ms)
+✔ support transport backoff is bounded and grows only on explicit service failures, then resets on success (6.037512ms)
+✔ support failureRESEARCH_CLOCK_MINT_PROGRAM is not excused by valid older state (1.309203ms)
+✔ support failurePILOT_RPC_STORAGE_UNAVAILABLE is not excused by valid older state (1.466857ms)
+✔ support failurePILOT_RPC_COMPONENT_RESPONSE_BYTES_LIMIT is not excused by valid older state (1.337866ms)
+✔ a structurally invalid refreshed pool immediately invalidates its own scope despite still-fresh prior state (1.744109ms)
+ℹ tests 74
+ℹ suites 0
+ℹ pass 72
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3381.667905
+
+✖ failing tests:
+
+test at test/pilot-native-flow.test.ts:1:86201
+✖ RETAINED718 timing-shaped failed refresh preserves five fresh scopes and recovers before original expiry (53.224316ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 1
+  
+      at TestContext.<anonymous> (/workspace/poe-native-support-containment/test/pilot-native-flow.test.ts:410:26)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 1,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/pilot-native-flow.test.ts:1:89718
+✖ actual support expiry during provider backoff invalidates the scope without invented refresh or whole-socket loss (7.923432ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'close' !== 'support'
+  
+      at TestContext.<anonymous> (/workspace/poe-native-support-containment/test/pilot-native-flow.test.ts:419:712)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'close',
+    expected: 'support',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

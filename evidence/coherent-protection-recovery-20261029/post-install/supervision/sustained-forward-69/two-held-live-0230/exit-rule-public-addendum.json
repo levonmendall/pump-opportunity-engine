@@ -1,0 +1,107 @@
+{
+  "frozenAt": "2026-10-30T02:45:00.949043+00:00",
+  "source": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+  "reportedExitDecision": {
+    "at": "2026-10-30T02:33:21.701Z",
+    "stage": "exit-reserved",
+    "reason": "adaptive-net-liquidation-high-water-trailing-stop",
+    "firstObservedSourceAt": "2026-10-30T02:33:33.181Z",
+    "firstObservedSequence": "11377",
+    "projectionIds": [
+      "native-paper-20261030021230118:33:1793327601701",
+      "native-paper-20261030021230118:32:1793327601701",
+      "native-paper-20261030021230118:30:1793327601701",
+      "native-paper-20261030021230118:29:1793327601701",
+      "native-paper-20261030021230118:26:1793327601701",
+      "native-paper-20261030021230118:25:1793327601701"
+    ]
+  },
+  "actualReportedSell": {
+    "id": "paper-fill:97844fecbc7122d16fd5803963f4709b",
+    "mint": "8r7gzXUXgqy4PaKfQ4bKUadUcVfZuFafMRJyJiEYpump",
+    "side": "sell",
+    "quantity": "4987415586352",
+    "at": "2026-10-30T02:33:22.864Z",
+    "valueUsd": 43.327651,
+    "executionCostsUsd": 0.000664,
+    "status": "PAPER filled",
+    "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:69032:1793327601701"
+  },
+  "decisionToFillMs": 1163,
+  "actualReportedHoldingDurationMs": 214707,
+  "publicDecisionEvents": [
+    {
+      "at": "2026-10-30T02:29:33.724Z",
+      "stage": "adaptive-predictive-not-rejected",
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "firstObservedSourceAt": "2026-10-30T02:29:46.721Z",
+      "firstObservedSequence": "11362",
+      "projectionIds": [
+        "native-paper-20261030021230118:32:1793327373724",
+        "native-paper-20261030021230118:29:1793327373724",
+        "native-paper-20261030021230118:27:1793327373724",
+        "native-paper-20261030021230118:25:1793327373724",
+        "native-paper-20261030021230118:23:1793327373724",
+        "native-paper-20261030021230118:22:1793327373724",
+        "native-paper-20261030021230118:20:1793327373724",
+        "native-paper-20261030021230118:19:1793327373724",
+        "native-paper-20261030021230118:16:1793327373724",
+        "native-paper-20261030021230118:15:1793327373724"
+      ]
+    },
+    {
+      "at": "2026-10-30T02:29:44.995Z",
+      "stage": "adaptive-predictive-not-rejected",
+      "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required",
+      "firstObservedSourceAt": "2026-10-30T02:29:46.721Z",
+      "firstObservedSequence": "11362",
+      "projectionIds": [
+        "native-paper-20261030021230118:33:1793327384995",
+        "native-paper-20261030021230118:30:1793327384995",
+        "native-paper-20261030021230118:28:1793327384995",
+        "native-paper-20261030021230118:26:1793327384995",
+        "native-paper-20261030021230118:24:1793327384995",
+        "native-paper-20261030021230118:23:1793327384995",
+        "native-paper-20261030021230118:21:1793327384995",
+        "native-paper-20261030021230118:20:1793327384995",
+        "native-paper-20261030021230118:17:1793327384995",
+        "native-paper-20261030021230118:16:1793327384995"
+      ]
+    },
+    {
+      "at": "2026-10-30T02:29:46.455Z",
+      "stage": "qualified",
+      "reason": "adaptive-score-and-current-execution-checks-passed; accounting-and-fill-still-required",
+      "firstObservedSourceAt": "2026-10-30T02:29:46.721Z",
+      "firstObservedSequence": "11362",
+      "projectionIds": [
+        "native-paper-20261030021230118:34:1793327386455",
+        "native-paper-20261030021230118:31:1793327386455",
+        "native-paper-20261030021230118:29:1793327386455",
+        "native-paper-20261030021230118:27:1793327386455",
+        "native-paper-20261030021230118:25:1793327386455",
+        "native-paper-20261030021230118:24:1793327386455",
+        "native-paper-20261030021230118:22:1793327386455",
+        "native-paper-20261030021230118:21:1793327386455",
+        "native-paper-20261030021230118:18:1793327386455",
+        "native-paper-20261030021230118:17:1793327386455"
+      ]
+    },
+    {
+      "at": "2026-10-30T02:33:21.701Z",
+      "stage": "exit-reserved",
+      "reason": "adaptive-net-liquidation-high-water-trailing-stop",
+      "firstObservedSourceAt": "2026-10-30T02:33:33.181Z",
+      "firstObservedSequence": "11377",
+      "projectionIds": [
+        "native-paper-20261030021230118:33:1793327601701",
+        "native-paper-20261030021230118:32:1793327601701",
+        "native-paper-20261030021230118:30:1793327601701",
+        "native-paper-20261030021230118:29:1793327601701",
+        "native-paper-20261030021230118:26:1793327601701",
+        "native-paper-20261030021230118:25:1793327601701"
+      ]
+    }
+  ],
+  "meaning": "Correction/addendum: the publicdecisionringexplicitlystatesadaptive-net-liquidation-high-water-trailing-stop; it is a reported rule, not independent verification that the decision-time quote/minReceive/input evidence justified it. Pending-sell snapshot absent. Financial order/fill IDs are stable; ring-index projection IDs can shift and are deduplicated by mint/time/stage/reason. No evidence overwritten."
+}

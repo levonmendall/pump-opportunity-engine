@@ -1,0 +1,50 @@
+✖ OFFLINE real RPC gate prices and reconciles two holdings under candidate pressure, then closes once after same-account recovery (265.445024ms)
+✖ OFFLINE two held positions survive HTTP429 and an unsettled physical timeout without false marks, duplicate actions or lost accounting (44.978778ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1513.001672
+
+✖ failing tests:
+
+test at test/native-paper-integration.test.ts:1:20237
+✖ OFFLINE real RPC gate prices and reconciles two holdings under candidate pressure, then closes once after same-account recovery (265.445024ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 2
+  
+      at Object.audit (/workspace/pump-opportunity-engine/test/native-paper-integration.test.ts:47:1569)
+      at async twoPacedPositions (/workspace/pump-opportunity-engine/test/native-paper-integration.test.ts:90:55)
+      at async TestContext.<anonymous> (/workspace/pump-opportunity-engine/test/native-paper-integration.test.ts:96:26)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at test/native-paper-integration.test.ts:1:24108
+✖ OFFLINE two held positions survive HTTP429 and an unsettled physical timeout without false marks, duplicate actions or lost accounting (44.978778ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  0 !== 2
+  
+      at Object.audit (/workspace/pump-opportunity-engine/test/native-paper-integration.test.ts:47:1569)
+      at async twoPacedPositions (/workspace/pump-opportunity-engine/test/native-paper-integration.test.ts:90:55)
+      at async TestContext.<anonymous> (/workspace/pump-opportunity-engine/test/native-paper-integration.test.ts:114:20)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 0,
+    expected: 2,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

@@ -1,0 +1,76 @@
+{
+  "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+  "canonicalPool": "E3mK971V24Phmma1fyLxNzdXCvik1scQSqeN5dd4LY6u",
+  "holdingRawUnits": "65278155",
+  "mintDecimals": 6,
+  "holdingUiTokens": "65.278155",
+  "tokenMetadataName": "USOE",
+  "evidenceMethod": "Unauthenticated read-only HTTPS JSON-RPC to https://api.mainnet-beta.solana.com through inherited session proxy; retained original responses on disk. SDK2.2.0 Borsh event decoding and SPL pre/postTokenBalance cross-checks. No production controls changed.",
+  "publicPositionEntry": {
+    "at": "2026-10-29T22:23:36.537Z",
+    "valueUsd": 49.707332,
+    "costIncludingEntryGasUsd": 49.708013
+  },
+  "entryAdjacentChainEvidence": {
+    "at": "2026-10-29T22:23:34Z",
+    "slot": 463047847,
+    "signature": "3EpXLGfPYMer9tdzGFmSVYbtGES8Fxzi5XGUDh1M7agNPXaJu24tBABGN3EK4nA1CPgdmQVHxuWkRYqU6F2HqEmR",
+    "postBaseReserveRaw": "1502814559693",
+    "postQuoteReserveLamports": "11713178068043",
+    "virtualQuoteReservesLamports": "17584358449",
+    "meaning": "Adjacent real pool trade supports reported PAPER entry price scale. Original POE quote and entry dependency batch absent."
+  },
+  "collapse": {
+    "before": "2026-10-30T14:00:40Z",
+    "beforeQuoteReserveLamports": "13922791387180",
+    "beforeBaseReserveRaw": "1265191649494",
+    "burstAt": "2026-10-30T14:00:42Z",
+    "burstSlot": 463311116,
+    "poolTransactionsInBurst": 90,
+    "firstBurstTransaction": "4rSF1TmE99bgFEK8TyKXkaXNqELsqxDUGVhcNbH3Ea4b9k2tDpN1gcYBMLQb8zQywWEvVESjVM6uk6bYrz62k7oN",
+    "firstBurstTransactionSells": 2,
+    "firstSellBaseRaw": "499016907863",
+    "secondSellBaseRaw": "499016902437",
+    "firstTransactionPostBaseReserveRaw": "2263225459794",
+    "firstTransactionPostQuoteReserveLamports": "7785944947833",
+    "followingStateAt": "2026-10-30T14:00:44Z",
+    "followingStateSlot": 463311124,
+    "followingStateSignature": "2aTuMiq4xDqmej2v4VtK85ZjFPieNWeb9k1ySNHoCQhavUNVdZ3EaByeCNcGDpLafr2ahhjEBricjizU9uorp3on",
+    "followingStatePostBaseReserveRaw": "101068468743767",
+    "followingStatePostQuoteReserveLamports": "158532839530",
+    "nextPoolTransactionSlot": 463311127,
+    "poeExitSourceSlot": 463311125
+  },
+  "indicativeHistoricalHoldingSell": {
+    "preCollapseNetLamports": "717065245",
+    "postCollapseNetLamports": "112441",
+    "estimatedQuoteDeclinePercent": 99.98431927906366,
+    "method": "Constant-product gross using transaction event virtual reserves and raw balances; subtract rounded event lp/protocol/creator fee rates. Does not reproduce full historical config batch, original source receipt availability, or realistic counterfactual fill."
+  },
+  "reportedExit": {
+    "reservedAt": "2026-10-30T14:00:45.249Z",
+    "filledAt": "2026-10-30T14:00:46.386Z",
+    "valueUsd": 0.010675,
+    "executionCostsUsd": 0.000664,
+    "executionModel": "LEGACY_HELD_ACCOUNT_MODEL: original 1second deterministic PAPER component"
+  },
+  "retentionScan": {
+    "matchingJsonNdjsonFiles": 104,
+    "distinctPositionSnapshotPoints": 669,
+    "datedPoints": 664,
+    "firstAt": "2026-10-29T22:23:44.746Z",
+    "lastAt": "2026-10-30T03:53:42.415Z",
+    "latestHeldValueUsd": 60.898355,
+    "latestReportedHistoricalPeakSol": "0.628640931",
+    "latestReportedPeakAt": "2026-10-30T03:53:33.132Z",
+    "originalQi6QuotePoolReserveDecimalFeatureRecords": 0,
+    "compressedEvidenceWithQi6": 0
+  },
+  "conclusions": [
+    "Historical SPL transfers and decoded program events independently prove an abrupt real pool sell cascade at14:00:42Z.",
+    "Historical reserve scale around original PAPER entry and source-slot-matched reserves around exit corroborate the reported outcome; no decimals bug found.",
+    "The first sell alone moved beyond a15percent stop, and90pooltransactions occurred in the same slot. This evidence cannot establish an executable15percent exit.",
+    "Unrelated protection failures remain operationally material but are not sufficient evidence that they caused this particular loss.",
+    "Original entry/exit source dependency batches, ledger order/action rows and exact holding marks through the audit window remain inaccessible; original causal reconstruction still needs read-only EC2 export."
+  ]
+}

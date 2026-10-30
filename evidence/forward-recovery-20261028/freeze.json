@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "at": "2026-10-28T15:16:19.124914+00:00",
+  "source": {
+    "commit": "640143a5924a7ff7d98039967c2db17957f71f24",
+    "sha256": "4c035987338ab4dfa8982b5314c2ce3aebb41b12f23268a6425d8861d3e1909a"
+  },
+  "configurationSha256": "29d9de0d148c52a10ebad22eb66875636fa06beacbe66004862cd8f0505597bf",
+  "packageManifestSha256": "33f555a3cec5d78dbd43afe4cd894f7f18b1e740085b6c552839ddb6716a63f8",
+  "inputSha256": "2de69d23390902cc28e99e0ee672ccd2e24ea1f9a7f79cc777217435296d7c46",
+  "researchProfile": "candidate-native-two-hour-90-research-v1",
+  "verifiedBeforeAndAfterBuild": true,
+  "sourcePublicationUsesStartupInput": true,
+  "startupAccountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+  "financialWriterOpened": false
+}

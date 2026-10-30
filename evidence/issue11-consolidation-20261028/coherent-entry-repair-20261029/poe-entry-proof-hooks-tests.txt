@@ -1,0 +1,14 @@
+✔ actual ACK time crossing a bucket preserves identical six-bucket warming in native and trader windows (31.15489ms)
+✔ protocol slot received during decision recording invalidates its earlier quote before financial reservation (15.205338ms)
+✔ audit certificate is an immutable exact-window generation fact and is unavailable after expiry, reconnect or retirement (27.396206ms)
+✔ status/report work cannot backdate the next certificate read or extend an expired certificate (8.05564ms)
+✔ financial ownership survives source retirement and age expiry without deleting HELD identity or origin proof (6.106846ms)
+✔ entry cost and exact-size quote evidence survives diagnostic rotation without protecting unrelated diagnostics (0.448445ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1214.466213

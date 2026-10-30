@@ -1,0 +1,132 @@
+{
+  "checkedAt": "2026-10-27T00:33:19.195Z",
+  "scope": "Read-only GitHub metadata and workflow/configuration references only; no credential values, provider calls, transfers or secret-extraction workflow.",
+  "repositoriesDiscovered": [
+    "levonmendall/capital-intelligence-platform",
+    "levonmendall/crypto-inefficiency-engine",
+    "levonmendall/solana-roi-convergence",
+    "levonmendall/The-Meme-Machine",
+    "levonmendall/meme-machine-admin",
+    "levonmendall/pump-opportunity-engine"
+  ],
+  "search": {
+    "allRepositoriesCodeSearchIndexed": false,
+    "queries": [
+      "Helius",
+      "Alchemy"
+    ],
+    "searchResults": 0,
+    "limitation": "Zero search results are not evidence of absence; configuration/workflow paths were read directly.",
+    "additionalWorkflowsScanned": 26,
+    "additionalWorkflowProviderReferencesFound": 0
+  },
+  "bindings": [
+    {
+      "provider": "Alchemy",
+      "repository": "levonmendall/solana-roi-convergence",
+      "path": ".env.example",
+      "line": 21,
+      "blobSha": "e9226d74e50d5004de5c0c6c942d8bc64c81b263",
+      "runtimeVariable": "SOLANA_ROI_ALCHEMY_API_KEY",
+      "evidenceClass": "configuration-reference",
+      "actualSecretPresent": "unknown"
+    },
+    {
+      "provider": "Alchemy",
+      "repository": "levonmendall/solana-roi-convergence",
+      "path": "render.yaml",
+      "line": 43,
+      "blobSha": "4254bbb5e69281231b06b1dd7e58b33ee4e82d47",
+      "runtimeVariable": "SOLANA_ROI_ALCHEMY_API_KEY",
+      "declaredProvisioning": "sync:false",
+      "serviceName": "solana-roi-convergence",
+      "evidenceClass": "Render-configuration-reference",
+      "actualSecretPresent": "unknown"
+    },
+    {
+      "provider": "Solana RPC endpoint set",
+      "repository": "levonmendall/solana-roi-convergence",
+      "path": "render.yaml",
+      "line": 41,
+      "blobSha": "4254bbb5e69281231b06b1dd7e58b33ee4e82d47",
+      "runtimeVariable": "SOLANA_ROI_RPC_ENDPOINTS_JSON",
+      "evidenceClass": "configuration-reference",
+      "actualSecretPresent": "unknown"
+    },
+    {
+      "provider": "Alchemy",
+      "repository": "levonmendall/The-Meme-Machine",
+      "path": "deployment/paper.env.example",
+      "line": 10,
+      "blobSha": "08eada8aae7b256df6dad05fc3814eca997d3a64",
+      "runtimeVariable": "MM_SOLANA_READ_RPC_URL",
+      "publicHost": "solana-mainnet.g.alchemy.com",
+      "evidenceClass": "example-configuration-reference",
+      "actualSecretPresent": "unknown"
+    },
+    {
+      "provider": "Alchemy host environment",
+      "repository": "levonmendall/The-Meme-Machine",
+      "path": "deployment/meme-machine-paper.service",
+      "line": 15,
+      "blobSha": "21c2381c4b72f5c66b7088dc1ad81fc0e3db6b46",
+      "environmentFile": "/etc/meme-machine/paper.env",
+      "evidenceClass": "service-configuration-reference",
+      "actualSecretPresent": "unknown"
+    },
+    {
+      "provider": "Helius",
+      "repository": "levonmendall/solana-roi-convergence",
+      "path": "docs/DEPLOYMENT_AUTOMATION_PLAN.md",
+      "line": 21,
+      "blobSha": "84fd5f82c02092be864b16a143505c5f3c4d3a9f",
+      "runtimeVariable": "HELIUS_API_KEY",
+      "declaredProvisioning": "historical Render Blueprint prompt; not present in current render.yaml",
+      "evidenceClass": "historical-deployment-document-reference",
+      "actualSecretPresent": "unknown"
+    }
+  ],
+  "githubEnvironments": [
+    {
+      "repository": "levonmendall/solana-roi-convergence",
+      "name": "main - solana-roi-convergence",
+      "secretMetadataStatus": 403
+    },
+    {
+      "repository": "levonmendall/The-Meme-Machine",
+      "name": "release/portfolio-dashboard-v1 - meme-machine-dashboard-staging",
+      "secretMetadataStatus": 403
+    }
+  ],
+  "permissions": {
+    "repositorySecretMetadata": {
+      "repositories": [
+        "levonmendall/The-Meme-Machine",
+        "levonmendall/solana-roi-convergence"
+      ],
+      "httpStatus": 403,
+      "message": "Resource not accessible by integration"
+    },
+    "environmentSecretMetadata": {
+      "httpStatus": 403,
+      "message": "Resource not accessible by integration"
+    },
+    "githubConnectorSecretEndpoint": "unsupported",
+    "existingSecretValues": "GitHub Actions API does not return stored values; no extraction attempted"
+  },
+  "accessRoute": {
+    "verified": "GitHub repository/config metadata and git transport; administration runner route remains separate.",
+    "notVerified": "No current workflow binds an identified Alchemy/Helius repository/environment secret for POE execution.",
+    "hostCandidate": "Existing administration runner may inspect presence of approved known environment names in /etc/meme-machine/paper.env without returning values; no run or credential access performed by this lookup."
+  },
+  "budget": {
+    "providerAccountOrProject": "unknown",
+    "plan": "unknown",
+    "remainingFreeCredits": "unknown",
+    "autoUpgradeOrOverage": "unknown",
+    "reuseAuthorization": "Must be tied explicitly to this venture and current quota; reference/key presence alone grants neither.",
+    "providerCalls": 0,
+    "providerCreditsConsumedByThisLookup": 0
+  },
+  "minimumOwnerInformation": "Identify the existing repository + repository/environment scope + exact Alchemy/Helius secret names, or confirm which discovered existing runtime binding is intended; no replacement key or value in chat. Also identify the provider project and verified remaining free quota/overage setting before reuse."
+}

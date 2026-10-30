@@ -1,0 +1,43 @@
+{
+  "verifiedAt": "2026-10-28T22:00:29.997332+00:00",
+  "classification": "OFFLINE helper and readback verification; no live resource-capacity claim",
+  "sourceBase": "03953491cecb2e9ae07dbfadd34185fc6712adf6",
+  "supervisorTests": {
+    "passed": 32,
+    "failed": 0
+  },
+  "readerTests": {
+    "passed": 32,
+    "failed": 0
+  },
+  "pyCompile": "PASS",
+  "independentReview": "Parent conditional GO; both requested own-UID-before-stat and bounded wall-time fixes applied and final suites rerun",
+  "codeSizeGuardRequired": 65536,
+  "resourceLimitsChanged": false,
+  "cpuProfilingEnabled": false,
+  "networkRequests": 0,
+  "financialAccountWrites": 0,
+  "files": [
+    {
+      "path": "operator/native-paper-ec2/run-bounded.py",
+      "bytes": 54358,
+      "sha256": "b2d3b0f2a7d0ad30983827125c9326baf81ba772b3bb4fbbbf0934ccfee305c5"
+    },
+    {
+      "path": "operator/native-paper-ec2/readback-results.py",
+      "bytes": 44324,
+      "sha256": "6b24e7bc9a95b39c7fb94bffec0f64771fa8e4ad6b86d1fe9b02e231e39b2696"
+    },
+    {
+      "path": "operator/native-paper-ec2/test-run-bounded.py",
+      "bytes": 43337,
+      "sha256": "5df4ca65519391ad07d5d7cbf60b60097a8b1b988ebd5b4ba0aaff26950452a9"
+    },
+    {
+      "path": "operator/native-paper-ec2/test-readback-results.py",
+      "bytes": 31706,
+      "sha256": "1229d9341e8da5434b91b4202d10b2515a5e8b0b0723f58ca2c8b056ae045daa"
+    }
+  ],
+  "httpTimingHookSemantics": "Undici sendHeaders pre-write hook, not successful bytes transmission; final key names retained"
+}

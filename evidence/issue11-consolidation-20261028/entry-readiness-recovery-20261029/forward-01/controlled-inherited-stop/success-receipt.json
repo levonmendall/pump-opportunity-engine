@@ -1,0 +1,215 @@
+{
+  "classification": "CONTROLLED_SYNTHETIC_INHERITED_STOP_PATH_PASS_NOT_LIVE",
+  "beforeNativeStartup": {
+    "stopRequested": true,
+    "historicalRestrictionPreserved": true
+  },
+  "completeNativeAudit": {
+    "schemaVersion": 1,
+    "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+    "pool": "6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv",
+    "dataContract": "confirmed-program-activity-v3-shadow",
+    "openedAt": 1793058260000,
+    "connectionId": 1,
+    "subscriptionId": 42,
+    "windowStartAt": 1793058260000,
+    "windowEndAt": 1793058320000,
+    "auditAvailableAt": 1793058320000,
+    "admittedAt": 1793058320000,
+    "deadlineAt": 1793058329999,
+    "notificationCompletenessVerified": true,
+    "executedFlowCompletenessVerified": true,
+    "featuresSha256": "b691b7c3600015d3522dc904e7c68bc53bdd2fcde306168bb3648dbe3ef96e2b"
+  },
+  "proof": {
+    "complete": true,
+    "proofId": "entry:7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump:1793058320000:1793058320000:b691b7c3600015d3522dc904e7c68bc53bdd2fcde306168bb3648dbe3ef96e2b",
+    "files": [
+      "proof-6cc822215656f9114a81b7ec55b4aa28dea49af04b19de0896e729645249c9c9/diagnostic-000000000001.ndjson"
+    ],
+    "bytes": 53345,
+    "manifestSha256": "703925ce6d7e719a1073aefaacf7566ef586157eb8058617d71e60885244e38d"
+  },
+  "proofChecks": 1,
+  "financial": {
+    "reservationId": "buy:8:1793058320000",
+    "filledMint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+    "quantity": "22273040838",
+    "executionCosts": "7000",
+    "stopRequested": false,
+    "filledActions": 1
+  },
+  "calls": [
+    {
+      "method": "getSignaturesForAddress",
+      "at": 1793058320000,
+      "accounts": 0
+    },
+    {
+      "method": "getSignaturesForAddress",
+      "at": 1793058320000,
+      "accounts": 0
+    },
+    {
+      "method": "getMultipleAccounts",
+      "at": 1793058320000,
+      "accounts": 1
+    },
+    {
+      "method": "getMultipleAccounts",
+      "at": 1793058320000,
+      "accounts": 8
+    },
+    {
+      "method": "getMinimumBalanceForRentExemption",
+      "at": 1793058320000,
+      "accounts": 0
+    },
+    {
+      "method": "getMinimumBalanceForRentExemption",
+      "at": 1793058320000,
+      "accounts": 0
+    },
+    {
+      "method": "getMultipleAccounts",
+      "at": 1793058320000,
+      "accounts": 8
+    },
+    {
+      "method": "getMinimumBalanceForRentExemption",
+      "at": 1793058320000,
+      "accounts": 0
+    },
+    {
+      "method": "getMinimumBalanceForRentExemption",
+      "at": 1793058320000,
+      "accounts": 0
+    },
+    {
+      "method": "getMultipleAccounts",
+      "at": 1793058321000,
+      "accounts": 8
+    },
+    {
+      "method": "getMinimumBalanceForRentExemption",
+      "at": 1793058321000,
+      "accounts": 0
+    },
+    {
+      "method": "getMinimumBalanceForRentExemption",
+      "at": 1793058321000,
+      "accounts": 0
+    },
+    {
+      "method": "getMultipleAccounts",
+      "at": 1793058321000,
+      "accounts": 8
+    },
+    {
+      "method": "getMultipleAccounts",
+      "at": 1793058321000,
+      "accounts": 8
+    }
+  ],
+  "events": [
+    {
+      "kind": "pilot-entry-cost-preparation",
+      "data": {
+        "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+        "depositLamports": "2000335",
+        "at": 1793058320000,
+        "accountModel": "per-mint-dedicated-base-and-WSOL-accounts-v1",
+        "accountLengths": {
+          "base": 170,
+          "quote": 165
+        },
+        "rentLamportsByBytes": {
+          "165": "1000165",
+          "170": "1000170"
+        },
+        "sourceSlot": 461852056,
+        "lockedDepositLamports": "0",
+        "evidence": "pilot-entry-costs:c01dd1234bbe2ff8e57191488c7e058a9c05390610872e2fe887428820ff8bec",
+        "accountPlan": {
+          "baseExists": false,
+          "quoteExists": false,
+          "at": 1793058320000,
+          "evidence": "pilot-entry-costs:c01dd1234bbe2ff8e57191488c7e058a9c05390610872e2fe887428820ff8bec"
+        },
+        "classification": "simulated account inventory; actual read-only rent and supported account lengths",
+        "requests": "One current coherent Clock/state batch plus cold dependency discovery if needed, and one rent read per distinct missing-account length; every physical request uses the shared RPC budget.",
+        "depositRefund": "Not assumed; retained locked capital after exit."
+      }
+    },
+    {
+      "kind": "native-paper-entry-permission",
+      "data": {
+        "at": 1793058320000,
+        "result": {
+          "enabled": true,
+          "reason": "explicit verified runtime readiness"
+        },
+        "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+        "windowEndAt": 1793058320000
+      }
+    },
+    {
+      "kind": "trader-decision",
+      "data": {
+        "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+        "at": 1793058320000,
+        "stage": "qualified",
+        "reason": "provisional-rule-passed; execution-and-accounting-still-required",
+        "ruleVersion": "persistent-buying-pilot-concurrent-stage-2-v1",
+        "features": {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "asOf": 1793058320000,
+          "windowStartAt": 1793058260000,
+          "windowEndAt": 1793058320000,
+          "sufficientlyObserved": true,
+          "qualityReason": null,
+          "buyLamports": "1800000000",
+          "sellLamports": "0",
+          "netBuyLamports": "1800000000",
+          "tradeCount": 6,
+          "provisionalTradeCount": 0,
+          "distinctBuyerWallets": 6,
+          "largestBuyerBps": 1667,
+          "positiveNetBuckets": 6,
+          "priceReturnBps": 5000,
+          "firstPrice": {
+            "quoteLamports": "300000000",
+            "tokenUnits": "300000"
+          },
+          "lastPrice": {
+            "quoteLamports": "300000000",
+            "tokenUnits": "200000"
+          }
+        },
+        "quote": {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "side": "buy",
+          "inputUnits": "47992665",
+          "outputUnits": "22273040838",
+          "at": 1793058320000,
+          "evidence": "rpc-market:f9b2d40e6b65ad9077dbae4313cfadcea435a8a7ec79b6cb47073835d9ebe638",
+          "slot": 461852056,
+          "effectiveQuoteLiquidityLamports": "117583801706",
+          "requiredDepositLamports": "2000335",
+          "depositEvidence": "pilot-entry-validated-costs:54b5e1d2712d4be9780131d84a8535b1d1f023c80c207cf979b9b5ac78e8183a"
+        }
+      }
+    },
+    {
+      "kind": "trader-execution",
+      "data": {
+        "orderId": "buy:8:1793058320000",
+        "status": "filled",
+        "reason": "single modeled PAPER attempt; no live fill claim",
+        "at": 1793058321000,
+        "side": "buy"
+      }
+    }
+  ],
+  "meaning": "One disposable fixture position. Existing controlled two-capacity helper does not alter installed financial limit one. No manual resume or operating account/provider access."
+}

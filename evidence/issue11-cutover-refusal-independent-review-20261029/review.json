@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "kind": "read-only-source-analysis-of-reported-cutover-refusal",
+  "reviewedAt": "2026-10-29T01:09:21.088314+00:00",
+  "sourceCommit": "e120c28cfc12b1fc0e288abf0e9764f2d028a701",
+  "cutoverDriverSha256": "2b1eb71355697fbdc9459b2dd354ed869102aa448a1e500b769b57fa91890fab",
+  "oldObserverCommit": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+  "reportedRefusal": "ORIGINAL_WRITER_MUST_BE_SETTLED",
+  "offlineBaselineTestsPassed": 19,
+  "demonstratedControlFlow": [
+    "The guard is inside stopped_install after systemctl stop returned success and the original database owner lease was acquired exclusively. It is not the lease-acquisition refusal.",
+    "The predicate requires both ActiveState inactive and MainPID string zero; the reported guard alone does not identify which field failed.",
+    "Refusal precedes stopped financial re-audit, stopped ledger.sqlite backup, native-engine/service directories, new manifest/drop-in, current-release switch and new runtime start.",
+    "Before refusal, root bootstrap code/package directories, the immutable target release, verified before-stop backup and append-only preflight transition receipt have already been created.",
+    "Stopped-phase recovery releases the acquired database lease before requesting the original source restart. It does not restore or replace the ledger.",
+    "The recorded recovery phase proves successful start request, not subsequent runtime health."
+  ],
+  "preserveForRetry": [
+    "Current original ledger, WAL, owner lock, all safe-stop/start/reconciliation/history/sequence changes.",
+    "Root prepared package/tools and immutable release; validate hashes before any reuse.",
+    "The before-stop verified backup and all append-only phase receipts.",
+    "Any stopped-phase partial files and actual systemd/journal evidence."
+  ],
+  "retryLimitations": [
+    "Unchanged bootstrap refuses existing package/tools; unchanged upgrade also refuses an existing target release or transition. Do not delete evidence to rerun.",
+    "A reviewed continuation must validate exact prior refusal phase, original identity/funding, current flat unchanged financial obligations, indexed source bytes and actual stopped-process/cgroup state."
+  ],
+  "unknowns": [
+    "Actual ActiveState/MainPID/ControlPID/Result/ExecMainCode/ExecMainStatus and cgroup members at the refusal.",
+    "Whether the original observer is presently healthy after its recovery start request.",
+    "An old observer SIGTERM callback can access the ledger after asynchronous close; a failed-but-dead exit is plausible, but not the established host cause."
+  ],
+  "noHostOperation": true,
+  "financialDatabaseOpened": false,
+  "serviceChanges": 0
+}

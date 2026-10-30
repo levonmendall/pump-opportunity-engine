@@ -1,0 +1,23 @@
+✔ actual original publisher child environment resolves the existing systemd credential without a second secret (1.288152ms)
+✔ persistent original service is explicit and cannot hide a finite duration or substitute a financial ledger (1.560466ms)
+✔ original binding preserves inception and virtual funding; fixture exception is explicit and cannot bless another live account (0.477278ms)
+✔ persistent management uses rolling shared headroom, never cumulative CPU or completed chapter exhaustion (0.261348ms)
+✔ sealed recovery anchor includes only later unsealed chapter suffix; old actual usage cannot be counted twice (1.115135ms)
+✔ qualification proof work is async and unavailable until settled; expired or different evidence never authorizes an entry (9.10341ms)
+✔ rolling unqualified inputs are not permanently pinned, while actual financial and owned protection evidence are retained (0.431671ms)
+✔ root-owned immutable provenance exception is confined to exact commit release path (0.254298ms)
+✔ candidate diagnostic pressure and recorder failure close new risk without throwing through owned financial work (0.47847ms)
+✔ restart run-index rotation preserves the last referenced current-market recovery checkpoint (0.694641ms)
+✔ service resource admission is rolling across days and never expires on cumulative CPU (309.838939ms)
+✔ rolling CPU, actual memory and disk pressure suspend admission and recover with hysteresis (1.718059ms)
+✔ reporting supervision is account/source/run bound, recovers without owner approval and cannot freshen an older source (0.23561ms)
+✔ actual original Python supervisor marker authorizes only the exact current source and run in TypeScript (72.877486ms)
+✔ existing public file moves to the original persistent source without changing account identity or freshening market facts (5.224995ms)
+ℹ tests 15
+ℹ suites 0
+ℹ pass 15
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1079.568412

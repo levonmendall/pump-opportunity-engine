@@ -1,0 +1,29 @@
+{
+  "allOtherSupervisorPolicyAccountSpawnRecoveryASTUnchanged": true,
+  "completedAt": 1793308459440,
+  "deploymentPerformed": false,
+  "diffCheckExitCode": 0,
+  "exactActiveStrategyVersion": "adaptive-momentum-v2-paper-v1",
+  "hashesAfter": {
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/run-authoritative-service.py": "66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-authoritative-service.py": "b76ee3444e0ad58d528c9fcebe3e53b3feb7f52ebec44cc902aef58f5bfa7403"
+  },
+  "hashesBefore": {
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/run-authoritative-service.py": "66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-authoritative-service.py": "b76ee3444e0ad58d528c9fcebe3e53b3feb7f52ebec44cc902aef58f5bfa7403"
+  },
+  "hashesUnchanged": true,
+  "head": "603f67605469a259d40be413f21d2adec603b13e",
+  "kind": "POE_INDEPENDENT_ACTIVE_ADAPTIVE_SUPERVISOR_REVIEW",
+  "nativeStrategyFlag": "adaptive-momentum-v2",
+  "oldSourceArgsASTByteEquivalent": true,
+  "oldSourceRollbackOmitsStrategyFlag": true,
+  "requiredDeepSlots": 4,
+  "requiredStage": "two",
+  "rootServiceOrFinancialActions": false,
+  "runtimeActivationVerified": false,
+  "scope": "supervisor and its tests only",
+  "testsExitCode": 0,
+  "testsLog": "/tmp/poe-independent-adaptive-supervisor-tests-20261029.txt",
+  "testsLogSha256": "eae47df3a87a618c2a866e27c86d6f72c27e04735edb9d14a2bdcbe975ffc8c7"
+}

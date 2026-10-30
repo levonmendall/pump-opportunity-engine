@@ -1,0 +1,9 @@
+{
+  "beforeAt": "2026-10-29T20:43:56.562497+00:00",
+  "afterAt": "2026-10-29T20:43:58.359116+00:00",
+  "command": "gh workflow run poe-original-cutover-refusal.yml --repo levonmendall/meme-machine-admin --ref main",
+  "exitCode": 0,
+  "stdout": "",
+  "stderr": "",
+  "purpose": "One existing fixed read-only EC2 metadata check; no service control/DB/credential/provider request"
+}

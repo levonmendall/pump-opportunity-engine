@@ -1,0 +1,57 @@
+{
+  "schemaVersion": 1,
+  "kind": "poe-original-forward-upgrade-package-v1",
+  "sourceCommit": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+  "previousSource": {
+    "commit": "a97799e88e4313ed94d0c6b5d250eeeea5f5fdc5",
+    "sha256": "a44243b03673f29061db4030524b326b4f8929ff2a7bf5b057807ec1d0af049d"
+  },
+  "compatibility": {
+    "scope": "native-coherent-entry-quotes-and-admission-telemetry-only",
+    "financialSchemaChanged": false,
+    "strategyChanged": false,
+    "riskChanged": false
+  },
+  "files": [
+    {
+      "file": "native-paper.mjs",
+      "bytes": 5052930,
+      "sha256": "fa10982125bd77c1586606283a9fabed4daee5434792dcef90be2bd312cc5315"
+    },
+    {
+      "file": "backup-worker.mjs",
+      "bytes": 73859,
+      "sha256": "53700fadf7172fd5f85b9f368256b0b6592abfc3a55adce8481812c0c154ea34"
+    },
+    {
+      "file": "better_sqlite3.node",
+      "bytes": 2226168,
+      "sha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d"
+    },
+    {
+      "file": "metadata.json",
+      "bytes": 154477,
+      "sha256": "aa8f59dfc9659199a872cea5086250dde9120c2b92379c69cab63cec9b1f92ec"
+    },
+    {
+      "file": "snapshot-publisher.mjs",
+      "bytes": 31949,
+      "sha256": "29831f3b18a806f767a578b8ead424441d6d8421c43936abe1a9ad9f16f0c27f"
+    },
+    {
+      "file": "run-authoritative-service.py",
+      "bytes": 36245,
+      "sha256": "1c993f89ec08c2ec6b8dfa05c5657bd2d572636361c8f32bff3febbeae729a79"
+    },
+    {
+      "file": "forward-original-upgrade.py",
+      "bytes": 38063,
+      "sha256": "7e22683f8b170f0d16a6e2f7867e1e995a1661ff99544df3da8fa34c87f79691"
+    },
+    {
+      "file": "service.json",
+      "bytes": 1950,
+      "sha256": "6e4549b41db60a4b58d3d61d8eb0becfeb03699071edf34a50b5b0c9e4015779"
+    }
+  ]
+}

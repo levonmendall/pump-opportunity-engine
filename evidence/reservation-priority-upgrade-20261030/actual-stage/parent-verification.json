@@ -1,0 +1,28 @@
+{
+  "kind": "parent-independent-actual-reservation-priority-stage-verification",
+  "verifiedAt": "2026-10-30T03:47:30.274705+00:00",
+  "workflowRun": 40999151889,
+  "adminSource": "b48f535f593b0b8f37e7632b9bb49b1c02c7038a",
+  "rawStageLogSha256": "43fef1981fc7f5e460c99107d33c91be7fdf5d4f474e6971d940bbfa0c79f912",
+  "source": {
+    "commit": "a1c16c7510ddcc09aa6a9962a70d24ea94b8a12a",
+    "sha256": "d7c1bde2a08d1e805302671639c8d2a56223e0a52470035443c6880fdbe80bce"
+  },
+  "allElevenStagedFilePinsMatch": true,
+  "exactOwnerCommandAstAndShellVerified": true,
+  "ownerCommandSha256": "fc190b5abd89129452947ebcd5c17ca6bd8293364b86be9815c8b590cfccd0d2",
+  "sameOriginalSupervisor": {
+    "MainPID": "2482038",
+    "NRestarts": "0",
+    "User": "poe-runtime",
+    "LoadState": "loaded",
+    "ActiveState": "active",
+    "SubState": "running"
+  },
+  "installed": false,
+  "financialDatabaseOpened": false,
+  "providerRequests": 0,
+  "serviceControlOperations": 0,
+  "credentialReads": 0,
+  "nextRequiredAction": "Protected owner-root installation of this concrete reviewed package; no repeat69 command."
+}

@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "runId": "native-candidates-20261028142028669",
+  "startedAt": 1793197228669,
+  "sourceCommit": "63f4ac439c6b22c7d532c284890cf47e78ad5d62",
+  "endedAt": 1793197662292,
+  "provenance": "Actual stopped runtime snapshot received through authenticated publisher/publicRender; final local receipt verification pending. Source stopped before cancellation request, which GitHub rejected as already completed."
+}

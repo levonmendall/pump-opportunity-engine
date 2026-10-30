@@ -1,0 +1,26 @@
+{
+  "classification": "ACTUAL_EC2_SAME_SERVICE_ROLLING_RESOURCE_SAMPLES",
+  "from": 1793284081048,
+  "through": 1793285018359,
+  "elapsedSeconds": 937.311,
+  "serviceCgroupCpuSeconds": 114.937738,
+  "serviceCgroupAverageOneCoreFraction": 0.12262497506163908,
+  "additionalThrottledUsec": 18069058,
+  "additionalThrottledPeriods": 236,
+  "serviceMemoryLastBytes": 556363776,
+  "serviceMemoryPeakBytes": 595030016,
+  "serviceMemoryLimitBytes": 805306368,
+  "diskAvailableDeltaBytes": -21884928,
+  "hostNetwork": {
+    "scope": "HOST-AGGREGATE includes unrelatedapps/runner; not POE attribution",
+    "interface": "ens5",
+    "receivedBytesDelta": 1018942581,
+    "transmittedBytesDelta": 19636533,
+    "averageReceivedBytesPerSecond": 1087091.2439947892
+  },
+  "sameSupervisor": true,
+  "sameNativePid": true,
+  "publisherRestartObserved": "publisherPID changed independently while source/supervisorcontinued; originalACK receiptsadvanced110\u2192171",
+  "costRatesVerified": false,
+  "noOperationalAcceptance": true
+}

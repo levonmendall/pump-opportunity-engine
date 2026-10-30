@@ -1,0 +1,55 @@
+{
+  "verifiedAt": "2026-10-28T22:15:27.148200+00:00",
+  "parentCommit": "34f4b48f84abe7ded559e80b7cbd49a381a6818e",
+  "experimentVersion": "post-c189-publicnode-history-only-availability-v3",
+  "focusedTests": 14,
+  "build": "PASS",
+  "marketRequests": 0,
+  "operatingAuditChanged": false,
+  "financialStateChanged": false,
+  "wrapperBytesUnchanged": true,
+  "oldEvidenceRewritten": false,
+  "independentReview": "GO; independently14/14PASS; fixed per-method routes/limits/settlement/isolation reviewed; pins regenerated",
+  "files": [
+    {
+      "path": "operator/native-paper-ec2/http-latency-probe.mjs",
+      "bytes": 16211,
+      "sha256": "2e4ee21f25f81699f6c8390d5f928417a87ba98bfd5e93bdc1b840034b1b1409"
+    },
+    {
+      "path": "operator/native-paper-ec2/http-latency-plan.json",
+      "bytes": 1540,
+      "sha256": "56e600923818ea94720b13e7bd405230edfe80372a1c60624e74e44e065446ca"
+    },
+    {
+      "path": "operator/native-paper-ec2/http-latency-run.py",
+      "bytes": 9174,
+      "sha256": "9f3befc3a691fb3d5f82e46e79d8359378e58219cce19454989fa5348098a946"
+    },
+    {
+      "path": "operator/native-paper-ec2/proposed-http-latency-workflow.yml",
+      "bytes": 2686,
+      "sha256": "2f014f6bd459d90e0b16ce0c8f90ea4c92ce28abb17d84855621cb792fcad99a"
+    },
+    {
+      "path": "test/http-latency-component.test.ts",
+      "bytes": 11452,
+      "sha256": "44409dfdcfaa65b4d818d98c5181588ffc49e3dca9c63119ad2b670194993da6"
+    },
+    {
+      "path": "evidence/http-latency-component-20261028/publicnode-intervention/focused-tests.txt",
+      "bytes": 1709,
+      "sha256": "46287a602a3381fdad027212c3087f4ebe917049e50c2b5b6ec5e47f5cd06fb2"
+    },
+    {
+      "path": "evidence/http-latency-component-20261028/publicnode-intervention/build.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "path": "evidence/http-latency-component-20261028/publicnode-intervention/page20-rejected-summary.json",
+      "bytes": 2508,
+      "sha256": "0c35f3a2ac9b8416de9f87d91733ada5fa18f05dcd41bf0da120668775cabb64"
+    }
+  ]
+}

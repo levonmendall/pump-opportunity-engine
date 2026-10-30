@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_EXECUTED_FLOW_INFORMATION_EQUIVALENCE_REPAIR_NOT_FORWARD_ACCEPTANCE",
+  "baseCommit": "7b4cdd876c5a2dc93ae36f792aa4097b1fc49caf",
+  "at": "2026-10-28T19:22:20.635741+00:00",
+  "tests": {
+    "pass": 151,
+    "fail": 0
+  },
+  "build": "PASS",
+  "review": "Independent final GO; successful/unusable evidence mandatory, all correction fingerprints retained, bounded optional anchors, certificate unchanged",
+  "networkRequests": 0,
+  "files": [
+    {
+      "path": "src/native-failed-packet-diagnostics.ts",
+      "bytes": 3209,
+      "sha256": "e38d008ba46cd1180c51c5b809c1485e1dc5f4d931ee3edab40c7dfdb66f1795"
+    },
+    {
+      "path": "src/native-transaction-retention.ts",
+      "bytes": 8245,
+      "sha256": "0eaea49a9796134ce2aa942154e27bd9ccf22f5dd53583f847a4355cadf4157d"
+    },
+    {
+      "path": "src/pilot-native-flow.ts",
+      "bytes": 76130,
+      "sha256": "2fe87b2c217a2325f77ded20a9060116fbd90ee6efede79be268869121de3b51"
+    },
+    {
+      "path": "test/native-failed-high-volume.test.ts",
+      "bytes": 5941,
+      "sha256": "293dfc69dad5347fba442d58e32381be74857aa4dcdb50a731e6b2b5f720874c"
+    },
+    {
+      "path": "test/native-failed-packet-diagnostics.test.ts",
+      "bytes": 4103,
+      "sha256": "77a34199b045ace93785513671ceb31f66da151fdec245914e26a067c52fb2aa"
+    },
+    {
+      "path": "test/native-flow-fixture.ts",
+      "bytes": 10642,
+      "sha256": "55a67e1e7c949941a9d4e38814405e4b311847eb53c3a23c1768545ecdc89a40"
+    },
+    {
+      "path": "test/native-transaction-retention.test.ts",
+      "bytes": 7843,
+      "sha256": "36658aec82015bc4db6881ae2ab93e07c4fafc21e8c42f3ecb88ac460afdfff5"
+    },
+    {
+      "path": "test/pilot-native-flow.test.ts",
+      "bytes": 103244,
+      "sha256": "37efb2c570dcb98eb6f2fdc12e24fa5319dbb60f8d1c883b84167772280ae202"
+    },
+    {
+      "path": "evidence/native-failed-diagnostics-20261028/README.md",
+      "bytes": 6564,
+      "sha256": "52ff42a249b68c16c08fc9638267db852826940af14ec99592b4f8c0f6f00b9f"
+    },
+    {
+      "path": "evidence/native-failed-diagnostics-20261028/actual-blayt-replay.json",
+      "bytes": 8719,
+      "sha256": "b9c67ea14a2ee0883ca3d62318514e9de636130c31468af1c3cd64f783bfe1e7"
+    },
+    {
+      "path": "evidence/native-failed-diagnostics-20261028/bounded-fixture-stress.txt",
+      "bytes": 1335,
+      "sha256": "a47f7a18b2f815f2093d3ba818e4ba560e569c4eaf6dd265f9e6bdf3abcfa19d"
+    },
+    {
+      "path": "evidence/native-failed-diagnostics-20261028/build.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "path": "evidence/native-failed-diagnostics-20261028/combined-inprocess-fixture-rss-failure.txt",
+      "bytes": 24146,
+      "sha256": "f364c307b55b3bf180b4a24ddfaeb49be11cb3b1da0da6ca7888f61df904baca"
+    },
+    {
+      "path": "evidence/native-failed-diagnostics-20261028/focused-tests.txt",
+      "bytes": 19397,
+      "sha256": "4487e6ae682ba4a6c382ab4df7fcf2d0fb833610e002fde32fe8709ac07881ef"
+    },
+    {
+      "path": "evidence/native-failed-diagnostics-20261028/initial-unbounded-fixture-failure.txt",
+      "bytes": 17761,
+      "sha256": "07daa9ddc780b9ba15589cbeba4d00e1d57c5dc39ecd40d4d206ca49760ea5bf"
+    },
+    {
+      "path": "evidence/native-failed-diagnostics-20261028/isolated-unbounded-fixture-failure.txt",
+      "bytes": 5697,
+      "sha256": "5dbe0236d3598c7f05df0de2c099c1acf1cbc66d100a75ab13946390d77f7965"
+    },
+    {
+      "path": "evidence/native-failed-diagnostics-20261028/replay-blayt-retention.mjs",
+      "bytes": 4542,
+      "sha256": "64465a97e32c788370091a7ef093737d3b1b9f3600826075dc4e64287bb705e0"
+    }
+  ]
+}

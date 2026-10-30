@@ -1,0 +1,151 @@
+{
+  "scope": "OFFLINE actual PilotRpc/ComponentBudget, exact timeout/deadline/probe policy; not actual incident attribution",
+  "rows": [
+    {
+      "label": "two-physical-timeouts",
+      "began": 202000,
+      "ended": 203875,
+      "newPhysical": 2,
+      "code": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+      "heldCode": "HELD_PRICING_PROVIDER_TIMEOUT",
+      "probeAt": 205875,
+      "readyAt": 205875,
+      "headroom10s": 17,
+      "headroomMinute": 87,
+      "lastFailure": {
+        "at": 203875,
+        "stage": "physical-timeout",
+        "physicalInFlight": true
+      }
+    },
+    {
+      "label": "third-physical-timeout-second-context",
+      "began": 205876,
+      "ended": 206876,
+      "newPhysical": 1,
+      "code": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+      "heldCode": "HELD_PRICING_PROVIDER_TIMEOUT",
+      "probeAt": 208876,
+      "readyAt": 208876,
+      "headroom10s": 16,
+      "headroomMinute": 86,
+      "lastFailure": {
+        "at": 206876,
+        "stage": "physical-settlement-wait",
+        "physicalInFlight": true
+      }
+    },
+    {
+      "label": "logical-followup-0",
+      "began": 206886,
+      "ended": 206886,
+      "newPhysical": 0,
+      "code": "PILOT_RPC_COMPONENT_DISPATCH_EXPIRED",
+      "heldCode": "HELD_PRICING_DISPATCH_UNAVAILABLE",
+      "probeAt": 208876,
+      "readyAt": 208876,
+      "headroom10s": 16,
+      "headroomMinute": 86,
+      "lastFailure": {
+        "at": 206886,
+        "stage": "uninvoked-quota-or-spacing",
+        "physicalInFlight": false
+      }
+    },
+    {
+      "label": "logical-followup-1",
+      "began": 206896,
+      "ended": 206896,
+      "newPhysical": 0,
+      "code": "PILOT_RPC_COMPONENT_DISPATCH_EXPIRED",
+      "heldCode": "HELD_PRICING_DISPATCH_UNAVAILABLE",
+      "probeAt": 208876,
+      "readyAt": 208876,
+      "headroom10s": 16,
+      "headroomMinute": 86,
+      "lastFailure": {
+        "at": 206896,
+        "stage": "uninvoked-quota-or-spacing",
+        "physicalInFlight": false
+      }
+    },
+    {
+      "label": "logical-followup-2",
+      "began": 206906,
+      "ended": 206906,
+      "newPhysical": 0,
+      "code": "PILOT_RPC_COMPONENT_DISPATCH_EXPIRED",
+      "heldCode": "HELD_PRICING_DISPATCH_UNAVAILABLE",
+      "probeAt": 208876,
+      "readyAt": 208876,
+      "headroom10s": 16,
+      "headroomMinute": 86,
+      "lastFailure": {
+        "at": 206906,
+        "stage": "uninvoked-quota-or-spacing",
+        "physicalInFlight": false
+      }
+    },
+    {
+      "label": "logical-followup-3",
+      "began": 206916,
+      "ended": 206916,
+      "newPhysical": 0,
+      "code": "PILOT_RPC_COMPONENT_DISPATCH_EXPIRED",
+      "heldCode": "HELD_PRICING_DISPATCH_UNAVAILABLE",
+      "probeAt": 208876,
+      "readyAt": 208876,
+      "headroom10s": 16,
+      "headroomMinute": 86,
+      "lastFailure": {
+        "at": 206916,
+        "stage": "uninvoked-quota-or-spacing",
+        "physicalInFlight": false
+      }
+    },
+    {
+      "label": "logical-followup-4",
+      "began": 206926,
+      "ended": 206926,
+      "newPhysical": 0,
+      "code": "PILOT_RPC_COMPONENT_DISPATCH_EXPIRED",
+      "heldCode": "HELD_PRICING_DISPATCH_UNAVAILABLE",
+      "probeAt": 208876,
+      "readyAt": 208876,
+      "headroom10s": 16,
+      "headroomMinute": 86,
+      "lastFailure": {
+        "at": 206926,
+        "stage": "uninvoked-quota-or-spacing",
+        "physicalInFlight": false
+      }
+    },
+    {
+      "label": "provider-healthy-after-probe",
+      "began": 208877,
+      "ended": 208927,
+      "newPhysical": 1,
+      "code": null,
+      "heldCode": null,
+      "probeAt": 0,
+      "readyAt": 209127,
+      "headroom10s": 15,
+      "headroomMinute": 85,
+      "lastFailure": {
+        "at": 206926,
+        "stage": "uninvoked-quota-or-spacing",
+        "physicalInFlight": false
+      }
+    }
+  ],
+  "physicalTimeouts": [
+    1000,
+    1000,
+    800,
+    1000,
+    1000
+  ],
+  "physicalStarts": 5,
+  "completedGapAfterRecoveryMs": 8877,
+  "providerRequests": 0
+}

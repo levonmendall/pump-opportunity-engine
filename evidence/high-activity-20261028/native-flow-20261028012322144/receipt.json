@@ -1,0 +1,369 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Targeted confirmed-program-events-v2 complete-window research; no financial admission",
+  "runId": "pilot-native-flow-20261028012322144",
+  "mint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
+  "pool": "46ZfGg4F6r93ZNGBrQywzA9dQfgbyJu2ye7vb58UhXnR",
+  "startedAt": 1793150602144,
+  "finishedAt": 1793150658109,
+  "elapsedMs": 55965,
+  "limits": {
+    "totalMs": 150000,
+    "observationMs": 90000,
+    "maximumUnits": 32,
+    "maximumMeasuredResponses": 8388608,
+    "conservativeAccountingAllowance": 16777216,
+    "httpInFlightMaximum": 2097152,
+    "accountingHeadroomPerAdmission": 4194304,
+    "shutdownReserveMs": 5000,
+    "preAuditReserveMs": 15000,
+    "heartbeatEveryMs": 10000,
+    "heartbeatPongTimeoutMs": 1000,
+    "socketStopBytes": 6291456,
+    "notificationPayloadBytes": 65536,
+    "notificationMaximum": 512,
+    "retainedBytes": 4194304,
+    "rawRetainedBytes": 8388608,
+    "retainedStreamSoftBytes": 3145728,
+    "rssBytes": 268435456,
+    "cpuUs": 20000000
+  },
+  "sourceCommit": "6659472ae5d82226d51f43389a686f6a8d966299",
+  "preflight": {
+    "mint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
+    "evidence": "pilot-observation-support:0c262b366e9d0f83b50bc5d7178d9d390b825551b6c238a563085f06d0c1fd22",
+    "at": 1793150631473,
+    "sourceSlot": 462289064
+  },
+  "activity": {
+    "signature": "fWjPkz7uVT5nWbb5wC8wkt8KSbha4fpAjwsn7vgngQN8PiR4mLUZyPEJ7HWsoGiGisPM65MkFFr9LxfVGF9c7Cv",
+    "slot": 462288900,
+    "blockTime": 1793150596,
+    "swaps": 1,
+    "availableAt": 1793150603332
+  },
+  "preflightActivityChecks": [
+    {
+      "signature": "fWjPkz7uVT5nWbb5wC8wkt8KSbha4fpAjwsn7vgngQN8PiR4mLUZyPEJ7HWsoGiGisPM65MkFFr9LxfVGF9c7Cv",
+      "slot": 462288900,
+      "blockTime": 1793150596,
+      "mappedSwaps": 1,
+      "reason": "supported-executed-swap"
+    }
+  ],
+  "dataContract": "confirmed-program-events-v2",
+  "supportRefreshes": [
+    {
+      "mint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
+      "evidence": "pilot-observation-support:65f1101694218bdc4938a5cd595765d1a04e5fec88eb148d6e545490a389d30e",
+      "at": 1793150602834,
+      "sourceSlot": 462288929
+    },
+    {
+      "mint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
+      "evidence": "pilot-observation-support:0c262b366e9d0f83b50bc5d7178d9d390b825551b6c238a563085f06d0c1fd22",
+      "at": 1793150631473,
+      "sourceSlot": 462289064
+    }
+  ],
+  "normalizedEvents": 4,
+  "qualityGaps": [],
+  "predictive": {
+    "dataContract": "confirmed-program-events-v2",
+    "assessmentAt": 1793150658109,
+    "featureWindowEndAt": 1793150690000,
+    "currentBucket": false,
+    "captureReachedTargetEnd": false,
+    "assessmentTiming": "retrospective-only",
+    "signatureAuditUsable": false,
+    "targetBoundaryUnverified": true,
+    "entryAgeEligible": true,
+    "financialQualified": false,
+    "features": {
+      "mint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
+      "asOf": 1793150658109,
+      "windowStartAt": 1793150590000,
+      "windowEndAt": 1793150650000,
+      "sufficientlyObserved": false,
+      "qualityReason": "warming",
+      "buyLamports": "54241973",
+      "sellLamports": "19970485",
+      "netBuyLamports": "34271488",
+      "tradeCount": 3,
+      "provisionalTradeCount": 0,
+      "distinctBuyerWallets": 2,
+      "largestBuyerBps": 6373,
+      "positiveNetBuckets": 1,
+      "priceReturnBps": 15,
+      "firstPrice": {
+        "quoteLamports": "19970485",
+        "tokenUnits": "284111205891"
+      },
+      "lastPrice": {
+        "quoteLamports": "34567900",
+        "tokenUnits": "491032902473"
+      }
+    },
+    "result": {
+      "status": "unavailable",
+      "reason": "capture-ended-before-required-target",
+      "qualified": false
+    }
+  },
+  "socket": {
+    "socketOpenedAt": 1793150603695,
+    "subscriptionAt": 1793150603793,
+    "subscription": 238348504,
+    "logicalCutoffAt": 1793150658048,
+    "lastAcceptedAt": 1793150656274,
+    "stopRequestedAt": 1793150658048,
+    "transportSettledAt": 1793150658049,
+    "closed": true,
+    "heartbeatCount": 5,
+    "lastHeartbeatAt": 1793150654117,
+    "applicationBytes": 26808,
+    "socketBytes": 27754,
+    "connections": 1
+  },
+  "calls": [
+    {
+      "method": "getSignaturesForAddress",
+      "params": [
+        "46ZfGg4F6r93ZNGBrQywzA9dQfgbyJu2ye7vb58UhXnR",
+        {
+          "limit": 100,
+          "commitment": "confirmed"
+        }
+      ],
+      "requestedAt": 1793150602834,
+      "availableAt": 1793150603072
+    },
+    {
+      "method": "getTransaction",
+      "params": [
+        "fWjPkz7uVT5nWbb5wC8wkt8KSbha4fpAjwsn7vgngQN8PiR4mLUZyPEJ7HWsoGiGisPM65MkFFr9LxfVGF9c7Cv",
+        {
+          "encoding": "json",
+          "commitment": "confirmed",
+          "maxSupportedTransactionVersion": 1
+        }
+      ],
+      "requestedAt": 1793150603072,
+      "availableAt": 1793150603327
+    }
+  ],
+  "matches": [],
+  "notifications": {
+    "received": 7,
+    "withinLogicalInterval": 7,
+    "successful": 5,
+    "failed": 2,
+    "parsedEvents": 4,
+    "refused": [
+      {
+        "signature": "2zEJ23kSfuYNrmNSCZ2UAqYLpqiXyYLFm3Rb1N23U5S8uHpkKWaEn216fN4ctN8nbGsxYRq5aHvrR1ZM4jvGwXFf",
+        "reason": "LOG_NATIVE_TRANSACTION_NOT_SUCCESSFUL"
+      },
+      {
+        "signature": "4HjaJZHvEQ5X5incEcHkr6LiPXPa3DohcfzXJKq7MKUTMa6icBHVvg26wA4zyaPurdrm4EUzYYTsTm4Tk9bN96P1",
+        "reason": "LOG_NATIVE_TRANSACTION_NOT_SUCCESSFUL"
+      }
+    ],
+    "uniqueSignatures": 7,
+    "duplicates": 0
+  },
+  "independentAudit": {
+    "beforeRows": 100,
+    "afterRows": 0,
+    "historyPages": [],
+    "maximumPages": 4,
+    "verifiedAnchor": null,
+    "strictBoundarySlotsExcluded": true,
+    "interiorSlotRange": [
+      462288967,
+      462289153
+    ],
+    "denominatorCovered": false,
+    "interiorPoolAddressTransactions": 0,
+    "missingNotificationSignatures": [],
+    "notAllRowsAreSwaps": true,
+    "completenessClaim": "Unavailable: bounded history does not establish the whole target interval."
+  },
+  "failure": "COMPONENT_WS_TRANSPORT",
+  "captureStopReason": null,
+  "physicalSettled": true,
+  "usage": {
+    "runId": "pilot-native-flow-20261028012322144",
+    "startedAt": 1793150602149,
+    "deadlineAt": 1793150752149,
+    "remainingMs": 94033.33262,
+    "chapter": 1,
+    "chapterPaths": [
+      "/workspace/pump-opportunity-engine/evidence/free-data-20261027/active-approved-rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/public-component-20261027/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/01-basic/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/02-multi/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/03-discovery/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/04-active/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/05-sampler/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/06-targeted/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/07-field/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/08-audit/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/09-notifications/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/10-notifications/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/11-combined/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/12-combined-audit/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/13-buy-finality/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/14-retained-buy/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/scheduler-forward-20261027/01-preflight/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/scheduler-forward-20261027/02-combined/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/scheduler-forward-20261027/03-audit/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/01-paced-combined/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/02-failed-buy-audit/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/03-corrected-combined/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/04-current-subject/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/06-targeted-retry-subject/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/08-current-combined/rpc-budget.json",
+      "/workspace/poe-pilot/runs/pilot-20261027175613061-393704a5/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027175710755-f4320bd5/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027180216582-fc8d1a1d/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027180216582-fc8d1a1d/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-005.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-006.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-007.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-008.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-009.json",
+      "/workspace/poe-pilot/runs/pilot-20261027195343952-418513ae/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027200603791-46c145af/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027201954438-c75c4513/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027201954438-c75c4513/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027205459767-1840d6f4/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-005.json",
+      "/workspace/poe-pilot/runs/pilot-20261027211320693-9bb70ba1/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027211320693-9bb70ba1/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-005.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-006.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-007.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-008.json",
+      "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-005.json",
+      "/workspace/poe-pilot/research/pilot-migration-diagnostic-1793138401524/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223455745-ec07c3bc/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223455745-ec07c3bc/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027230222347-7a5dc2cf/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027230222347-7a5dc2cf/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027230222347-7a5dc2cf/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027232426805/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027232707767/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027232852598/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027233451534/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027234046662/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027234449066/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027235124302-99e43f99/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027235124302-99e43f99/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261028001353575-91ed5596/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261028001353575-91ed5596/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261028001353575-91ed5596/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-native-flow-20261028004053347/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-native-audit-20261028004404407/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-native-anchor-20261028004722611/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-native-flow-20261028011013865/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-native-prepare-20261028011313592/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-native-flow-20261028011331673/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-xgo-prepare-20261028012145775/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-native-flow-20261028012322144/rpc/chapter-001.json"
+    ],
+    "activeChapterPath": null,
+    "cumulativeUnits": 3680,
+    "newUnits": 15,
+    "accountedCumulativeResponseBytes": 101406997,
+    "newAccountedResponseBytes": 87929,
+    "maximumNewUnits": 32,
+    "maximumNewResponseBytes": 16777216,
+    "requestLimits": {
+      "maxStartsPer10s": 20,
+      "maxGetTransactionStartsPer10s": 8,
+      "maxStartsPerMinute": 60,
+      "minSpacingMs": 250,
+      "physicalInFlight": 1
+    },
+    "methodPacing": {
+      "getTransactionStartsLast10s": [],
+      "capacityRefusals": 0,
+      "baselineUnknownMethodsCountConservatively": true
+    },
+    "inFlight": 0,
+    "waitingOrOperating": false,
+    "uncertainResponseBytes": 37748736,
+    "currentChapterUncertainResponseBytes": 0,
+    "inheritedUncertaintyIsRetainedInBaseline": true,
+    "cooldownUntil": 1793147036106,
+    "controlCooldownUntil": 0,
+    "lastFailureWasDataControl": false,
+    "closed": true,
+    "fatal": null,
+    "chapterUsage": null,
+    "dispatchWindow": null,
+    "automaticRequestRetries": 0
+  },
+  "measuredResponses": {
+    "httpBodyBytes": 60175,
+    "socketBytes": 27754,
+    "combined": 87929,
+    "httpHeadersAndEncryptedWireBytes": "unmeasured under existing decoded-body accounting convention",
+    "priorUncertaintyRetained": true
+  },
+  "resource": {
+    "maximumRss": 162107392,
+    "cpu": {
+      "user": 1013952,
+      "system": 163793
+    },
+    "retainedEventBytes": 108298,
+    "rawRetainedBytes": 129962
+  },
+  "packetContract": {
+    "identity": "solana-program-log-v1:signature:program:actualLogArrayIndex",
+    "commitment": "explicit confirmed subscription request; notification context slot",
+    "amounts": "Exact pinned SDK event integers for known shapes, matched against full transactions only where fetched",
+    "trader": "event.user, not fee payer; no claim of independent people",
+    "fullTransferChecks": "UNAVAILABLE_FROM_LOGS; verified only for each separately retrieved representative transaction",
+    "compiledInstructionIdentity": "UNAVAILABLE_FROM_LOGS; no invented indices",
+    "sourceTime": "Program Clock timestamp separate from RPC blockTime; actual receive/validation times retained",
+    "adoption": "Research-only v2 candidate feature assessment; not the baseline v1 contract, no financial qualification or execution"
+  },
+  "financialWriterOpened": false,
+  "financialExecution": false,
+  "productionChanged": false,
+  "automaticRetries": 0
+}

@@ -1,0 +1,18 @@
+✔ actual executed trade classification preserves amounts/roles/transfers and never admits the historical window (9.120935ms)
+✔ exact known non-swap fixture is distinguishable from unknown/missing trade data (2.322797ms)
+✔ unknown instruction, missing event, mismatched slot and absent transaction cannot be excused as nontrades (2.943417ms)
+✔ fixed two-case diagnostic uses only finalized getTransaction with one physical operation and actual750ms pacing (19.004802ms)
+✔ plan refuses duplicate/unbounded identities, endpoint changes and fabricated source roles before network (0.407004ms)
+✔ provider429 stops after one request, records Retry-After and retains unknown response reservation without retry (1.33377ms)
+✔ physical timeout with unsettled injected fetch stops every further request and retains uncertainty (6.88048ms)
+✔ pre-start durable admission overrun sends no request and cannot fabricate uncertainty or an earlier availability (0.623676ms)
+✔ offline adjudication verifies raw response hash and actual response availability (11.831737ms)
+✔ actual CLI refuses privileged execution before touching paths or providers (0.312564ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 858.507874

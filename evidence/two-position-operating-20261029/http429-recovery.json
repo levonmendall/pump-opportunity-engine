@@ -1,0 +1,252 @@
+{
+  "classification": "OFFLINE_DISPOSABLE_FAKE_HTTP429_GENUINE_INTERRUPTION_FAIL_CLOSED",
+  "networkRequests": 0,
+  "positionsOpened": 1,
+  "secondExposureWithheld": true,
+  "protectionBreaches": [
+    {
+      "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+      "at": 1793058334850,
+      "gapMs": 9300
+    }
+  ],
+  "providerRecoveryProtectionCompletedAt": 1793058344500,
+  "duplicateFills": 0,
+  "restartPositionsPreserved": true,
+  "physicalStarts": [
+    {
+      "at": 1793058320000,
+      "method": "getSignaturesForAddress"
+    },
+    {
+      "at": 1793058320350,
+      "method": "getSignaturesForAddress"
+    },
+    {
+      "at": 1793058320700,
+      "method": "getMultipleAccounts"
+    },
+    {
+      "at": 1793058321050,
+      "method": "getMultipleAccounts"
+    },
+    {
+      "at": 1793058321400,
+      "method": "getMinimumBalanceForRentExemption"
+    },
+    {
+      "at": 1793058321750,
+      "method": "getMinimumBalanceForRentExemption"
+    },
+    {
+      "at": 1793058322100,
+      "method": "getMultipleAccounts"
+    },
+    {
+      "at": 1793058322450,
+      "method": "getMinimumBalanceForRentExemption"
+    },
+    {
+      "at": 1793058322800,
+      "method": "getMinimumBalanceForRentExemption"
+    },
+    {
+      "at": 1793058324150,
+      "method": "getMultipleAccounts"
+    },
+    {
+      "at": 1793058324500,
+      "method": "getMinimumBalanceForRentExemption"
+    },
+    {
+      "at": 1793058324850,
+      "method": "getMinimumBalanceForRentExemption"
+    },
+    {
+      "at": 1793058325200,
+      "method": "getMultipleAccounts"
+    },
+    {
+      "at": 1793058325550,
+      "method": "getMultipleAccounts"
+    },
+    {
+      "at": 1793058334150,
+      "method": "getMultipleAccounts"
+    },
+    {
+      "at": 1793058334500,
+      "method": "getMultipleAccounts"
+    },
+    {
+      "at": 1793058334850,
+      "method": "getSignaturesForAddress"
+    },
+    {
+      "at": 1793058336150,
+      "method": "getMultipleAccounts"
+    },
+    {
+      "at": 1793058338150,
+      "method": "getMultipleAccounts"
+    },
+    {
+      "at": 1793058340150,
+      "method": "getMultipleAccounts"
+    },
+    {
+      "at": 1793058340500,
+      "method": "getSignaturesForAddress"
+    },
+    {
+      "at": 1793058342150,
+      "method": "getMultipleAccounts"
+    },
+    {
+      "at": 1793058344150,
+      "method": "getMultipleAccounts"
+    },
+    {
+      "at": 1793058345550,
+      "method": "getMultipleAccounts"
+    },
+    {
+      "at": 1793058345900,
+      "method": "getMultipleAccounts"
+    }
+  ],
+  "records": [
+    {
+      "kind": "native-paper-entry-permission",
+      "data": {
+        "at": 1793058322100,
+        "result": {
+          "enabled": true,
+          "reason": "explicit verified runtime readiness"
+        },
+        "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+        "windowEndAt": 1793058320000
+      }
+    },
+    {
+      "kind": "http-headers",
+      "data": {
+        "id": 14,
+        "method": "getMultipleAccounts",
+        "endpoint": "https://api.mainnet.solana.com",
+        "status": 429,
+        "retryAfter": "2",
+        "at": 1793058325550,
+        "byteAccounting": "measured-body; response-header-and-wire-overhead-unmeasured"
+      }
+    },
+    {
+      "kind": "native-paper-entry-preparation-unavailable",
+      "data": {
+        "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+        "at": 1793058325550,
+        "windowEndAt": 1793058320000,
+        "predictiveOnly": true,
+        "executableQualification": false,
+        "orderCreated": false,
+        "reason": "PILOT_RPC_COMPONENT_HTTP_429"
+      }
+    },
+    {
+      "kind": "native-paper-technical-reevaluation-request",
+      "data": {
+        "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+        "reason": "entry-preparation-unavailable",
+        "at": 1793058325550,
+        "failedWindowEndAt": 1793058320000,
+        "oldOrderRetried": false,
+        "newCurrentAuditedWindowRequired": true,
+        "financialPermission": false
+      }
+    },
+    {
+      "kind": "pilot-watch-technical-reevaluation-requested",
+      "data": {
+        "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+        "at": 1793058325550,
+        "reason": "entry-preparation-unavailable",
+        "requestedAt": 1793058325550,
+        "failedWindowEndAt": 1793058320000,
+        "notBefore": 1793058330550,
+        "expiresAt": 1793058625550,
+        "attempts": 0,
+        "lastClaimedWindowEndAt": null,
+        "state": "WAITING",
+        "freshFullCurrentWindowRequired": true,
+        "financialPermission": false
+      }
+    },
+    {
+      "kind": "pilot-watch-technical-reevaluation-claimed",
+      "data": {
+        "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+        "at": 1793058335200,
+        "reason": "entry-preparation-unavailable",
+        "requestedAt": 1793058325550,
+        "failedWindowEndAt": 1793058320000,
+        "notBefore": 1793058330550,
+        "expiresAt": 1793058625550,
+        "attempts": 1,
+        "lastClaimedWindowEndAt": 1793058330000,
+        "state": "CLAIMED",
+        "freshFullCurrentWindowRequired": true,
+        "financialPermission": false
+      }
+    },
+    {
+      "kind": "pilot-watch-technical-reevaluation-finished",
+      "data": {
+        "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+        "at": 1793058335200,
+        "reason": "new complete strategy or risk assessment finished",
+        "technicalReevaluation": {
+          "reason": "entry-preparation-unavailable",
+          "requestedAt": 1793058325550,
+          "failedWindowEndAt": 1793058320000,
+          "notBefore": 1793058330550,
+          "expiresAt": 1793058625550,
+          "attempts": 1,
+          "lastClaimedWindowEndAt": 1793058330000,
+          "state": "FINISHED"
+        },
+        "ordinaryWatchPreserved": true,
+        "financialPermission": false
+      }
+    },
+    {
+      "kind": "native-paper-entry-unavailable",
+      "data": {
+        "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+        "at": 1793058335200,
+        "windowEndAt": 1793058330000,
+        "reason": "financial-entry-control-authority-unavailable",
+        "predictiveOnly": true,
+        "executableQualification": false,
+        "orderCreated": false,
+        "existingFinancialActionsPreserved": true
+      }
+    },
+    {
+      "kind": "native-paper-entry-unavailable",
+      "data": {
+        "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+        "at": 1793058340850,
+        "windowEndAt": 1793058340000,
+        "reason": "financial-entry-control-authority-unavailable",
+        "predictiveOnly": true,
+        "executableQualification": false,
+        "orderCreated": false,
+        "existingFinancialActionsPreserved": true
+      }
+    }
+  ],
+  "limitations": [
+    "Synthetic provider latency and429; actual existing backoff causes unavailable protection and is not an accepted healthy-provider interval.",
+    "No claim that free resources can eliminate provider outages or preserve valid marks during missing data."
+  ]
+}

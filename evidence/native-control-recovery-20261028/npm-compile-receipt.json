@@ -1,0 +1,18 @@
+{
+  "baseCommit": "880512fa9f59470f202c86aaeda724abb2898ca2",
+  "sourceSha256": "90eabfb00525e2705c2bcce0c7159cb8d96185ea8142c68cf740b965bfdb483c",
+  "testSha256": {
+    "test/native-control-recovery.test.ts": "fcd32abc22cae5a79a5835185d3133d8e4e39504d38d27148d28aace01dc493b",
+    "test/pilot-native-flow.test.ts": "4953791baf7fb1d1b4261e9f58f19bf4a799526053a14018f372f3690669437f"
+  },
+  "command": [
+    "npm",
+    "run",
+    "compile"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 7.518694144999699,
+  "endedAt": "2026-10-28T14:43:20.214924+00:00",
+  "logSha256": "c111cbc630b00363e00464dc58c0d48d72870d7a431b9e6ada92ca45f2fe603a",
+  "classification": "OFFLINE_NO_NETWORK_LEDGER_OR_PRODUCTION_ACCESS"
+}

@@ -1,0 +1,13 @@
+{
+  "verifiedUnchanged": {
+    "src/ledger.ts": "071b83b6a937fd18b17f0a142e981f88948ee16507e9f5845f85c1c351c92b8b",
+    "src/native-paper.ts": "c7bd8a655e7a61716edaec2f26014d25824e50418082f5beffbec08d970e37ef",
+    "src/trader.ts": "4660376629f38458fc7bd399fb27a60ff9261b38a1501727e26936ccc068aa37",
+    "src/strategy.ts": "ed4ca8b601da4105af5d3b003d195a664f75171647a6739e032eed0372cff07f",
+    "src/pilot.ts": "8a3e361fc03907ab24f3ca4c9588adeafc99ed720162c036ce276299e087177d",
+    "src/paper-service-policy.ts": "a833a7e08f8b2b378bf2103cded61ea4fb066f216a9f90c33770a56cb7ef29f6"
+  },
+  "operatingAccountsOpened": 0,
+  "providerRequests": 0,
+  "serviceControls": 0
+}

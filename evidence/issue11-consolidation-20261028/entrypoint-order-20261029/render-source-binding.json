@@ -1,0 +1,31 @@
+{
+  "checkedAt": "2026-10-29T02:03:50.600Z",
+  "serviceId": "srv-daqon53tqb8s73bdceq0",
+  "sourceBindingUpdate": {
+    "POE_RUNTIME_RELEASE": "5e55d8b939de99698ddb311a282461931fcbc957",
+    "POE_STRATEGY_VERSION": "persistent-buying-pilot-v1"
+  },
+  "replace": false,
+  "originalAccountAndSecretUnchanged": true,
+  "receiverCommit": "79195ecfb2aaf138715a730194edf1a489937fc1",
+  "deployId": "dep-dbhai58n74is73cqva40",
+  "deployFinishedAt": "2026-10-29T02:02:40.0461Z",
+  "deployStatus": "live",
+  "claim": "Only expected source binding prepared. No source/runtime/financial health claimed.",
+  "/healthz": {
+    "status": 200,
+    "body": {
+      "ok": true,
+      "service": "poe-dashboard",
+      "dashboardRelease": "79195ecfb2aaf138715a730194edf1a489937fc1",
+      "connectivityDiagnostics": 1
+    }
+  },
+  "/api/snapshot": {
+    "status": 503,
+    "body": {
+      "state": "waiting",
+      "message": "Awaiting POE data"
+    }
+  }
+}

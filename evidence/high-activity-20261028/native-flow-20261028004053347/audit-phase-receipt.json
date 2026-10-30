@@ -1,0 +1,18 @@
+{
+  "runId": "pilot-native-audit-20261028004259207",
+  "originalRunId": "pilot-native-flow-20261028004053347",
+  "originalFailurePreserved": "NATIVE_FLOW_RETAINED_SOFT_STOP",
+  "phase": "Reserved post-capture matching/audit; no second capture or retry",
+  "phaseSourceSha256": "f69d25b07ed871209e613312aa5a7ecf8de21c394bbba205eb4bdabe6562d315",
+  "finishedAt": 1793148179208,
+  "aggregateElapsedMs": 125861,
+  "matches": [],
+  "audit": null,
+  "failure": "ORIGINAL_TIME_EXPIRED",
+  "settled": false,
+  "aggregateActualUnits": 7,
+  "aggregateMeasuredBytes": 1019094,
+  "aggregateRetainedBytesBeforeThisReceipt": 1338297,
+  "usage": null,
+  "financialWriterOpened": false
+}

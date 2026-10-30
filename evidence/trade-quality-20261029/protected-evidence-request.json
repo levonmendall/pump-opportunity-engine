@@ -1,0 +1,67 @@
+{
+  "classification": "MINIMUM_BOUNDED_PROTECTED_FORENSIC_EXPORT_REQUEST_NOT_EXECUTED",
+  "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+  "purpose": "Complete decision-time entry/exit economic and protection proofs for four historical round trips without copying or exposing the whole ledger",
+  "implementationBoundary": "Use the existing privileged maintenance/forensic mechanism and account-preserving read-only snapshot; no service restart, database mutation, reseed, credential reads or new reporting path",
+  "attemptActionIds": [
+    "execution-attempt:buy:41696:1793265315521",
+    "execution-attempt:sell:41776:1793265480459",
+    "execution-attempt:buy:45874:1793286106180",
+    "execution-attempt:sell:46296:1793287009656",
+    "execution-attempt:buy:46914:1793290114273",
+    "execution-attempt:sell:47355:1793291016775",
+    "execution-attempt:buy:48034:1793294405324",
+    "execution-attempt:sell:48201:1793294738055"
+  ],
+  "journalLookup": "Eight exact attempt action_id rows: revision, action_id, at, kind, detail. Read the matching order:<orderId> journal row for each attempt using orderId inside its detail. Include matching actions.result/id rows and validated filled-trade cache records. Export native SOL spend/receive/gas/deposit/refund fields and the exact account revision only; no unrelated private rows.",
+  "evidenceWindows": [
+    {
+      "mint": "Fa24xN13pzjmcx1dtKP9nBMMFCwLtXCJrtP5hSPKpump",
+      "fromAt": "2026-10-29T09:13:17.693Z",
+      "untilAt": "2026-10-29T09:18:01.660Z",
+      "entryAt": "2026-10-29T09:15:17.693Z",
+      "exitAt": "2026-10-29T09:18:01.660Z"
+    },
+    {
+      "mint": "AcBX8a8eHbzQghgqMfqXeAz4kQSRbtHWKUSGXvwMpump",
+      "fromAt": "2026-10-29T14:59:47.821Z",
+      "untilAt": "2026-10-29T15:16:50.857Z",
+      "entryAt": "2026-10-29T15:01:47.821Z",
+      "exitAt": "2026-10-29T15:16:50.857Z"
+    },
+    {
+      "mint": "8TJ1uhidGn7PmzEtmftDUJkAxEcLpPNWqdvh42SZpump",
+      "fromAt": "2026-10-29T16:06:35.958Z",
+      "untilAt": "2026-10-29T16:23:37.938Z",
+      "entryAt": "2026-10-29T16:08:35.958Z",
+      "exitAt": "2026-10-29T16:23:37.938Z"
+    },
+    {
+      "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+      "fromAt": "2026-10-29T17:18:07.003Z",
+      "untilAt": "2026-10-29T17:25:39.189Z",
+      "entryAt": "2026-10-29T17:20:07.003Z",
+      "exitAt": "2026-10-29T17:25:39.189Z"
+    }
+  ],
+  "requiredNativeKinds": [
+    "trader-config",
+    "trader-input (candidate, flow-start, trade, candidate-gap, flow-stop)",
+    "trader-context",
+    "trader-predictive-assessment",
+    "trader-decision",
+    "trader-pilot-entry-deposit",
+    "trader-pilot-execution-quote",
+    "trader-pilot-execution-refusal",
+    "trader-execution",
+    "trader-held-evaluation"
+  ],
+  "additionalRequiredProofs": [
+    "Canonical verified pool and finalized migration chain timestamp available before decision",
+    "Independent executed-flow history audit boundaries/completeness and exact 60-second qualification features",
+    "Actual-size entry and liquidation quote raw pool-state references, source clocks, quote slot, information availability and modeled delay",
+    "Each completed protection evaluation and unavailable check through close, with physical RPC dispatch/response and scheduler deadlines",
+    "Run/source/configuration identities and process interruption brackets; original snapshot hashes and collection receipt"
+  ],
+  "missingHistoricalEvidencePolicy": "Explicit missing record/path is acceptable; never substitute current pool state, future prices or listener receipt as migration time."
+}

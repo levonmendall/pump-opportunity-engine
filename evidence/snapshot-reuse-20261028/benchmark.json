@@ -1,0 +1,520 @@
+{
+  "measuredAt": "2026-10-28T23:01:19.380Z",
+  "sourceCommit": "4674122e79da12ca8343719b8f2f0ab5b1155a02",
+  "sourceHashes": {
+    "src/pilot-native-flow.ts": "d94d7b5a9e836ec48f898fbd2ad31c018d2db8e54643e353679dd0750dcb331d",
+    "src/strategy.ts": "ed4ca8b601da4105af5d3b003d195a664f75171647a6739e032eed0372cff07f",
+    "test/pilot-native-flow.test.ts": "de393b498d5443ca78ebc30a34487bbd77c5351722f84c9d8c87e3e707d4d7b2"
+  },
+  "kind": "synthetic-same-call-feature-projection-microbenchmark",
+  "naturalAuditedControlDistribution": {
+    "population": "32 retained audited assessment projections; excludes unavailable/unusable/unassessed windows",
+    "tradeCount": {
+      "median": 0,
+      "p95": 260,
+      "maximum": 513
+    },
+    "distinctBuyers": {
+      "median": 0,
+      "p95": 48,
+      "maximum": 199
+    },
+    "meaning": "Synthetic combinations approximate observed bounds; not replay of original token, amount or wallet evidence."
+  },
+  "results": [
+    {
+      "name": "quiet",
+      "trades": 0,
+      "buyers": 0,
+      "iterationsPerRound": 3000,
+      "rounds": 7,
+      "features": {
+        "mint": "SYNTHETIC_BENCH",
+        "asOf": 1793226900000,
+        "windowStartAt": 1793226840000,
+        "windowEndAt": 1793226900000,
+        "sufficientlyObserved": true,
+        "qualityReason": null,
+        "buyLamports": "0",
+        "sellLamports": "0",
+        "netBuyLamports": "0",
+        "tradeCount": 0,
+        "provisionalTradeCount": 0,
+        "distinctBuyerWallets": 0,
+        "largestBuyerBps": 0,
+        "positiveNetBuckets": 0,
+        "priceReturnBps": null,
+        "firstPrice": null,
+        "lastPrice": null
+      },
+      "medianBeforeCpuMicros": 6709,
+      "medianAfterCpuMicros": 1843,
+      "cpuReductionFraction": 0.725294380682665,
+      "medianBeforeWallMs": 6.707447000000002,
+      "medianAfterWallMs": 1.9686629999999923,
+      "paired": [
+        {
+          "round": 1,
+          "order": "four-then-one",
+          "before": {
+            "wallMs": 11.122151000000002,
+            "cpuMicros": 16485
+          },
+          "after": {
+            "wallMs": 2.1746479999999906,
+            "cpuMicros": 6358
+          }
+        },
+        {
+          "round": 2,
+          "order": "one-then-four",
+          "before": {
+            "wallMs": 7.04998599999999,
+            "cpuMicros": 8557
+          },
+          "after": {
+            "wallMs": 5.136155000000002,
+            "cpuMicros": 3593
+          }
+        },
+        {
+          "round": 3,
+          "order": "four-then-one",
+          "before": {
+            "wallMs": 5.471051999999986,
+            "cpuMicros": 5501
+          },
+          "after": {
+            "wallMs": 1.9686629999999923,
+            "cpuMicros": 1318
+          }
+        },
+        {
+          "round": 4,
+          "order": "one-then-four",
+          "before": {
+            "wallMs": 5.500365000000016,
+            "cpuMicros": 5732
+          },
+          "after": {
+            "wallMs": 1.8182900000000188,
+            "cpuMicros": 1389
+          }
+        },
+        {
+          "round": 5,
+          "order": "four-then-one",
+          "before": {
+            "wallMs": 5.0830760000000055,
+            "cpuMicros": 6035
+          },
+          "after": {
+            "wallMs": 3.468104000000011,
+            "cpuMicros": 2333
+          }
+        },
+        {
+          "round": 6,
+          "order": "one-then-four",
+          "before": {
+            "wallMs": 7.953271999999998,
+            "cpuMicros": 7400
+          },
+          "after": {
+            "wallMs": 1.414449999999988,
+            "cpuMicros": 1313
+          }
+        },
+        {
+          "round": 7,
+          "order": "four-then-one",
+          "before": {
+            "wallMs": 6.707447000000002,
+            "cpuMicros": 6709
+          },
+          "after": {
+            "wallMs": 1.833662000000004,
+            "cpuMicros": 1843
+          }
+        }
+      ]
+    },
+    {
+      "name": "audited-p95-like",
+      "trades": 260,
+      "buyers": 48,
+      "iterationsPerRound": 3000,
+      "rounds": 7,
+      "features": {
+        "mint": "SYNTHETIC_BENCH",
+        "asOf": 1793226900000,
+        "windowStartAt": 1793226840000,
+        "windowEndAt": 1793226900000,
+        "sufficientlyObserved": true,
+        "qualityReason": null,
+        "buyLamports": "260033670",
+        "sellLamports": "0",
+        "netBuyLamports": "260033670",
+        "tradeCount": 260,
+        "provisionalTradeCount": 0,
+        "distinctBuyerWallets": 48,
+        "largestBuyerBps": 231,
+        "positiveNetBuckets": 6,
+        "priceReturnBps": -24,
+        "firstPrice": {
+          "quoteLamports": "1000000",
+          "tokenUnits": "100000"
+        },
+        "lastPrice": {
+          "quoteLamports": "1000259",
+          "tokenUnits": "100259"
+        }
+      },
+      "medianBeforeCpuMicros": 18990,
+      "medianAfterCpuMicros": 5140,
+      "cpuReductionFraction": 0.7293312269615587,
+      "medianBeforeWallMs": 18.925635999999997,
+      "medianAfterWallMs": 5.07001600000001,
+      "paired": [
+        {
+          "round": 1,
+          "order": "four-then-one",
+          "before": {
+            "wallMs": 22.589833999999996,
+            "cpuMicros": 30844
+          },
+          "after": {
+            "wallMs": 5.067563000000007,
+            "cpuMicros": 6522
+          }
+        },
+        {
+          "round": 2,
+          "order": "one-then-four",
+          "before": {
+            "wallMs": 18.446253000000013,
+            "cpuMicros": 18448
+          },
+          "after": {
+            "wallMs": 4.725816000000009,
+            "cpuMicros": 4749
+          }
+        },
+        {
+          "round": 3,
+          "order": "four-then-one",
+          "before": {
+            "wallMs": 18.295548999999994,
+            "cpuMicros": 18312
+          },
+          "after": {
+            "wallMs": 5.169553999999948,
+            "cpuMicros": 5161
+          }
+        },
+        {
+          "round": 4,
+          "order": "one-then-four",
+          "before": {
+            "wallMs": 19.482812000000024,
+            "cpuMicros": 19488
+          },
+          "after": {
+            "wallMs": 4.994844999999998,
+            "cpuMicros": 4844
+          }
+        },
+        {
+          "round": 5,
+          "order": "four-then-one",
+          "before": {
+            "wallMs": 19.04427099999998,
+            "cpuMicros": 19075
+          },
+          "after": {
+            "wallMs": 5.07001600000001,
+            "cpuMicros": 5059
+          }
+        },
+        {
+          "round": 6,
+          "order": "one-then-four",
+          "before": {
+            "wallMs": 18.920827999999972,
+            "cpuMicros": 18990
+          },
+          "after": {
+            "wallMs": 5.149835000000053,
+            "cpuMicros": 5140
+          }
+        },
+        {
+          "round": 7,
+          "order": "four-then-one",
+          "before": {
+            "wallMs": 18.925635999999997,
+            "cpuMicros": 18946
+          },
+          "after": {
+            "wallMs": 5.75189899999998,
+            "cpuMicros": 5771
+          }
+        }
+      ]
+    },
+    {
+      "name": "audited-maximum-like",
+      "trades": 513,
+      "buyers": 199,
+      "iterationsPerRound": 3000,
+      "rounds": 7,
+      "features": {
+        "mint": "SYNTHETIC_BENCH",
+        "asOf": 1793226900000,
+        "windowStartAt": 1793226840000,
+        "windowEndAt": 1793226900000,
+        "sufficientlyObserved": true,
+        "qualityReason": null,
+        "buyLamports": "513131328",
+        "sellLamports": "0",
+        "netBuyLamports": "513131328",
+        "tradeCount": 513,
+        "provisionalTradeCount": 0,
+        "distinctBuyerWallets": 199,
+        "largestBuyerBps": 59,
+        "positiveNetBuckets": 6,
+        "priceReturnBps": -46,
+        "firstPrice": {
+          "quoteLamports": "1000000",
+          "tokenUnits": "100000"
+        },
+        "lastPrice": {
+          "quoteLamports": "1000512",
+          "tokenUnits": "100512"
+        }
+      },
+      "medianBeforeCpuMicros": 34989,
+      "medianAfterCpuMicros": 8382,
+      "cpuReductionFraction": 0.7604389951127497,
+      "medianBeforeWallMs": 34.98240800000008,
+      "medianAfterWallMs": 7.867248999999902,
+      "paired": [
+        {
+          "round": 1,
+          "order": "four-then-one",
+          "before": {
+            "wallMs": 35.01525000000004,
+            "cpuMicros": 39070
+          },
+          "after": {
+            "wallMs": 7.853819000000044,
+            "cpuMicros": 9706
+          }
+        },
+        {
+          "round": 2,
+          "order": "one-then-four",
+          "before": {
+            "wallMs": 29.030036000000052,
+            "cpuMicros": 29029
+          },
+          "after": {
+            "wallMs": 7.31650099999996,
+            "cpuMicros": 7343
+          }
+        },
+        {
+          "round": 3,
+          "order": "four-then-one",
+          "before": {
+            "wallMs": 31.57255500000008,
+            "cpuMicros": 31595
+          },
+          "after": {
+            "wallMs": 7.867248999999902,
+            "cpuMicros": 7824
+          }
+        },
+        {
+          "round": 4,
+          "order": "one-then-four",
+          "before": {
+            "wallMs": 34.75074200000006,
+            "cpuMicros": 34767
+          },
+          "after": {
+            "wallMs": 8.371987999999988,
+            "cpuMicros": 8382
+          }
+        },
+        {
+          "round": 5,
+          "order": "four-then-one",
+          "before": {
+            "wallMs": 49.276915999999915,
+            "cpuMicros": 49283
+          },
+          "after": {
+            "wallMs": 12.460896999999932,
+            "cpuMicros": 12472
+          }
+        },
+        {
+          "round": 6,
+          "order": "one-then-four",
+          "before": {
+            "wallMs": 49.03123100000005,
+            "cpuMicros": 49039
+          },
+          "after": {
+            "wallMs": 12.356641999999965,
+            "cpuMicros": 12353
+          }
+        },
+        {
+          "round": 7,
+          "order": "four-then-one",
+          "before": {
+            "wallMs": 34.98240800000008,
+            "cpuMicros": 34989
+          },
+          "after": {
+            "wallMs": 6.7922419999999875,
+            "cpuMicros": 6788
+          }
+        }
+      ]
+    },
+    {
+      "name": "synthetic-stress-only",
+      "trades": 3000,
+      "buyers": 1500,
+      "iterationsPerRound": 3000,
+      "rounds": 7,
+      "features": {
+        "mint": "SYNTHETIC_BENCH",
+        "asOf": 1793226900000,
+        "windowStartAt": 1793226840000,
+        "windowEndAt": 1793226900000,
+        "sufficientlyObserved": true,
+        "qualityReason": null,
+        "buyLamports": "3004498500",
+        "sellLamports": "0",
+        "netBuyLamports": "3004498500",
+        "tradeCount": 3000,
+        "provisionalTradeCount": 0,
+        "distinctBuyerWallets": 1500,
+        "largestBuyerBps": 7,
+        "positiveNetBuckets": 6,
+        "priceReturnBps": -263,
+        "firstPrice": {
+          "quoteLamports": "1000000",
+          "tokenUnits": "100000"
+        },
+        "lastPrice": {
+          "quoteLamports": "1002999",
+          "tokenUnits": "102999"
+        }
+      },
+      "medianBeforeCpuMicros": 119583,
+      "medianAfterCpuMicros": 28491,
+      "cpuReductionFraction": 0.7617470710719751,
+      "medianBeforeWallMs": 119.5792019999999,
+      "medianAfterWallMs": 28.506334000000038,
+      "paired": [
+        {
+          "round": 1,
+          "order": "four-then-one",
+          "before": {
+            "wallMs": 137.89749399999994,
+            "cpuMicros": 144148
+          },
+          "after": {
+            "wallMs": 32.12384899999995,
+            "cpuMicros": 32182
+          }
+        },
+        {
+          "round": 2,
+          "order": "one-then-four",
+          "before": {
+            "wallMs": 132.48465800000008,
+            "cpuMicros": 132495
+          },
+          "after": {
+            "wallMs": 28.506334000000038,
+            "cpuMicros": 28491
+          }
+        },
+        {
+          "round": 3,
+          "order": "four-then-one",
+          "before": {
+            "wallMs": 113.6581329999999,
+            "cpuMicros": 113837
+          },
+          "after": {
+            "wallMs": 28.548841999999922,
+            "cpuMicros": 28534
+          }
+        },
+        {
+          "round": 4,
+          "order": "one-then-four",
+          "before": {
+            "wallMs": 117.17341600000009,
+            "cpuMicros": 117152
+          },
+          "after": {
+            "wallMs": 26.665130999999974,
+            "cpuMicros": 26661
+          }
+        },
+        {
+          "round": 5,
+          "order": "four-then-one",
+          "before": {
+            "wallMs": 122.45941700000003,
+            "cpuMicros": 122465
+          },
+          "after": {
+            "wallMs": 31.914023000000043,
+            "cpuMicros": 31899
+          }
+        },
+        {
+          "round": 6,
+          "order": "one-then-four",
+          "before": {
+            "wallMs": 119.5792019999999,
+            "cpuMicros": 119583
+          },
+          "after": {
+            "wallMs": 26.557281000000103,
+            "cpuMicros": 26556
+          }
+        },
+        {
+          "round": 7,
+          "order": "four-then-one",
+          "before": {
+            "wallMs": 115.22088200000007,
+            "cpuMicros": 115235
+          },
+          "after": {
+            "wallMs": 27.869298999999955,
+            "cpuMicros": 27853
+          }
+        }
+      ]
+    }
+  ],
+  "checksum": 10238634000,
+  "limitations": [
+    "Times only repeated feature projections and equal small return objects, not full snapshot or runtime.",
+    "FlowWindow already incrementally maintains its sixty-second aggregates; ten-second strategy cadence is unchanged.",
+    "No provider/RPC/storage/trading/financial operation.",
+    "CPU microbenchmark savings cannot establish whole-process savings or new live capacity.",
+    "Synthetic stress-only scenario is not a claimed observed live workload."
+  ]
+}

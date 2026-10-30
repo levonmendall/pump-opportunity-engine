@@ -1,0 +1,130 @@
+{
+  "workflowRunId": 40964080507,
+  "workflowUrl": "https://github.com/levonmendall/meme-machine-admin/actions/runs/40964080507",
+  "adminCommit": "d4d12f9de18c1d0ed2bd52fc45e9e2d2911355f4",
+  "conclusion": "success",
+  "rawSha256": "e379bb77ab52a37928dd88ea7dde67ac7b32d732c48d1851dff45ef6f7fdbb18",
+  "receipt": {
+    "kind": "POE_ORIGINAL_FORWARD_UPGRADE_STAGED_NOT_INSTALLED",
+    "at": 1793311966579,
+    "directory": "/var/tmp/poe-original-adaptive-v2-upgrade",
+    "source": {
+      "commit": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+      "sha256": "870ac98a2377fefde564b9a3a252a7cc7cb3a561582abd48bda22ee18a14bee7"
+    },
+    "indexSha256": "196b38ef950804ab93da1b5f86c027a83c85e18097df2eca0975986684d1cc49",
+    "driverSha256": "f65a95224c23244ec19ad1984d85e484e51161c53396a887483a74952bf9f816",
+    "transportSha256": "dfb5a8d56ae4000851eefb4cb008038443699ac23827bffa474b6e6d96739a3a",
+    "files": [
+      {
+        "file": "native-paper.mjs",
+        "bytes": 5167136,
+        "sha256": "870ac98a2377fefde564b9a3a252a7cc7cb3a561582abd48bda22ee18a14bee7"
+      },
+      {
+        "file": "backup-worker.mjs",
+        "bytes": 75375,
+        "sha256": "7ff2e950011cf10fb2d3b820f31099e3acac46fcf64abcf8d5bf800abba43062"
+      },
+      {
+        "file": "better_sqlite3.node",
+        "bytes": 2226168,
+        "sha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d"
+      },
+      {
+        "file": "metadata.json",
+        "bytes": 154711,
+        "sha256": "9980fb53f5e4700703af140a44ddaaa147fca7321499b9a60ff901948e036580"
+      },
+      {
+        "file": "snapshot-publisher.mjs",
+        "bytes": 32314,
+        "sha256": "7da8c7388a5ec3e4f2e0b46a8226ce457d0a68578e5b5225c50b97f1a508ff44"
+      },
+      {
+        "file": "run-authoritative-service.py",
+        "bytes": 37955,
+        "sha256": "66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e"
+      },
+      {
+        "file": "poe-runtime-persistent.conf",
+        "bytes": 925,
+        "sha256": "d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df"
+      },
+      {
+        "file": "forward-original-upgrade.py",
+        "bytes": 63594,
+        "sha256": "f65a95224c23244ec19ad1984d85e484e51161c53396a887483a74952bf9f816"
+      },
+      {
+        "file": "service.json",
+        "bytes": 1715,
+        "sha256": "e37b9ec56a9aa0f3e24f42619214ef64f7779c2b7b3ae715a7553ff3654aab42"
+      },
+      {
+        "file": "index.json",
+        "bytes": 1860,
+        "sha256": "196b38ef950804ab93da1b5f86c027a83c85e18097df2eca0975986684d1cc49"
+      }
+    ],
+    "exactStagedUnitParserVerified": true,
+    "actualUnit": {
+      "LoadState": "loaded",
+      "User": "poe-runtime",
+      "Group": "poe-runtime",
+      "ActiveState": "active",
+      "SubState": "running",
+      "MainPID": "2469893",
+      "ControlPID": "0",
+      "KillMode": "mixed",
+      "Restart": "always",
+      "NoNewPrivileges": "yes",
+      "PrivateTmp": "yes",
+      "ProtectSystem": "strict",
+      "ProtectHome": "yes",
+      "UMask": "0077",
+      "TimeoutStopUSec": "1min",
+      "CPUQuotaPerSecUSec": "infinity",
+      "CPUQuotaPeriodUSec": "100ms",
+      "CPUWeight": "100",
+      "Nice": "0",
+      "MemoryHigh": "2684354560",
+      "MemoryMax": "3221225472",
+      "MemorySwapMax": "0",
+      "TasksMax": "64",
+      "LimitNOFILE": "256",
+      "LimitCORE": "0",
+      "LimitCPU": "infinity",
+      "LimitFSIZE": "infinity",
+      "LimitAS": "infinity",
+      "OOMPolicy": "stop"
+    },
+    "runtimeIdentity": {
+      "uid": 988,
+      "gid": 982
+    },
+    "serviceBefore": {
+      "MainPID": "2469893",
+      "NRestarts": "0",
+      "User": "poe-runtime",
+      "LoadState": "loaded",
+      "ActiveState": "active",
+      "SubState": "running"
+    },
+    "serviceAfter": {
+      "MainPID": "2469893",
+      "NRestarts": "0",
+      "User": "poe-runtime",
+      "LoadState": "loaded",
+      "ActiveState": "active",
+      "SubState": "running"
+    },
+    "sameSupervisor": true,
+    "preservedPriorPartial": null,
+    "providerRequests": 0,
+    "financialDatabaseOpened": false,
+    "credentialsRead": false,
+    "serviceControlOperations": 0,
+    "executed": false
+  }
+}

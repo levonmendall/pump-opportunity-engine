@@ -1,0 +1,29 @@
+# Holding RPC stage reporting through the original dashboard
+
+Source commit: `fd6e12e79be654c547686578234f32346cc4c1f0`, following initial stage projection `cd354281ea36123fa3df5db118d05db6752df091`. This source-only followthrough is not installed and did not change the operating EC2 service.
+
+The deployed 567 source records financially owned acquisition stages in `usage.rpc.protectionRecovery`, but its original operating projection discards them. Historical exports consequently retained unavailable holding evaluations while lacking the RPC phase facts needed for exact attribution. This correction projects only existing, allowlisted source facts; it does not reconstruct missing historical causes.
+
+The existing bounded `quality.limitations` channel now carries at most three additional notes:
+
+- Calls, logical attempts, actual rolling holding starts, bounded recovery probes, RPC retry successes and dispatch refusals.
+- Positive counts for the eight fixed acquisition stages: provider restriction, quota/spacing, physical settlement, physical timeout, caller cancellation before/during a physical request, transport/node response and local admission.
+- A valid last-failure stage, original timestamp and observed physical-in-flight boolean.
+
+These are explicitly scoped to the current RPC instance, which may be replaced inside a persistent service run. They are not completed holding evaluations, durable lifetime counters or a diagnosis of every interruption. Missing counts stay unavailable; arbitrary errors, URLs, credentials, local paths, policy objects and unknown stages are ignored. The public schema remains unchanged. The original Render receiver at `bb1e91eb7c9f00d00aa459c6984cdbddfc0a27a1` accepted an actual new projection in the offline compatibility check, and its existing dashboard renders these notes as text. No frontend merge or UI replacement is needed.
+
+The projector also used ordinary RPC cooldown to classify fresh holding protection as degraded. Since 567 financially owned recovery can operate through optional-work backoff, new sources now use their authoritative `providerRestrictionUntil` for this diagnostic classification. Actual provider restrictions, malformed new restriction metadata, missing completed evaluations and overdue protection remain degraded/unavailable. Legacy sources retain their old cooldown interpretation. Entry blockers, ledger controls, strategy decisions and all financial gates are unchanged.
+
+Validation: 133 focused operating/reporting/financial-readiness/publisher/dashboard tests and the TypeScript build passed with exact source hashes unchanged before/after. Four added regressions cover stage retention/privacy, optional versus authoritative cooldown, malformed/future metadata, and maximum counters. Independent review passed 44 tests and a worst-case payload with three holdings, six existing refusal categories and all eight maximum stage counts: ten notes, maximum 410 of 512 characters, total intelligence 5,198 bytes below the existing 32 KiB bound.
+
+The follow-up pairs with emitter `a1420337c041eaa942cc29d0d0806a311923f49b`: `timing.currentRunMaximumCompletedGapMs` and `currentRunMaximumQuoteAgeAtUseMs` are displayed in one existing note, independently from retained historical maxima and failures. Unknown startup evidence, a prior-run completion or future completion never becomes a current runtime measurement. Explicit valid zero is preserved. The note states that observed completed maxima do not bound currently open or unmonitored gaps. Final validation passed 134 tests, build, unchanged-source guard and the original Render receiver compatibility check; independent follow-up passed 45 tests and a maximum combined ten-note, 410-character, 5,415-byte payload. Evidence is under `final-with-current-run-maxima/`.
+
+No provider requests, original financial account reads, service controls, credentials, new account, new reporting channel or new writer were involved. Existing financial and qualification evidence requirements remain unchanged.
+
+## Combined source facts
+
+Final component source `5dd5fe775aa7cf205f79acd61ff6bbcd0b5f8571` adds the emitter-agreed candidate quote facts and actual held-trailing diagnostics. Candidate failures remain explicitly distinct from qualification or order execution; unknown error hashes and raw errors never enter public notes. Last candidate and financial RPC facts share one note to preserve the existing bounds. Held strategy rows now distinguish fresh measured width from the functioning fallback and from unavailable protection information; source-expired, stale, malformed or unknown diagnostics do not claim an active 15% fallback. Historical peaks remain separately identified. These are source diagnostics, not a guarantee of executable fills.
+
+The ninth RPC classification, `protection-retry-paced`, distinguishes the existing bounded recovery-probe delay from quota/spacing and authoritative provider restrictions. This projection does not change its pacing or reinterpret a failed protection interval as successful.
+
+Final validation: 139 focused tests, TypeScript build, exact unchanged-source guard and original Render receiver compatibility passed. Static candidate phase/code arrays exactly match emitter `1bf5f78edf959420ec5703a02be6689aee8eb65f`; all nine RPC stages exactly match classification `8d37c66f8c50bcbff20e0f4eba4ef466764abba1`. The actual old receiver accepted a two-held scenario with entry failures, all nine maximum stage counts and current/historical protection facts: ten notes, maximum 451 characters, total intelligence 5,234 bytes. Existing schema and frontend remain unchanged. Earlier stage/current-maxima independent reviews passed; the combined candidate/getter additions are undergoing the parent's independent composed review. Evidence is in `final-combined/`.

@@ -1,0 +1,73 @@
+[
+  {
+    "name": "focused",
+    "command": [
+      "node",
+      "--import",
+      "tsx",
+      "--test",
+      "test/native-flow-audit-tail.test.ts",
+      "test/native-flow-audit.test.ts",
+      "test/native-audit-session.test.ts",
+      "test/native-flow-audit-batch.test.ts",
+      "test/native-candidate-runner.test.ts",
+      "test/pilot-native-flow.test.ts"
+    ],
+    "startedAt": "2026-10-28T16:42:34.221557+00:00",
+    "completedAt": "2026-10-28T16:42:39.738491+00:00",
+    "exitCode": 0,
+    "log": "focused.log",
+    "sha256": "c84dd0517d4ca7782d7b4e923f87cf2fad6ed15cc8ed98ae76f41784abaea950"
+  },
+  {
+    "name": "full",
+    "command": [
+      "npm",
+      "test"
+    ],
+    "startedAt": "2026-10-28T16:42:39.738814+00:00",
+    "completedAt": "2026-10-28T16:43:54.776931+00:00",
+    "exitCode": 0,
+    "log": "full.log",
+    "sha256": "d99fab83ef098c02a68a8eaf50c6906b960076dc6c37f162e5601395a56169b1"
+  },
+  {
+    "name": "build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "startedAt": "2026-10-28T16:43:54.777456+00:00",
+    "completedAt": "2026-10-28T16:44:03.018300+00:00",
+    "exitCode": 0,
+    "log": "build.log",
+    "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+  },
+  {
+    "name": "compile",
+    "command": [
+      "npm",
+      "run",
+      "compile"
+    ],
+    "startedAt": "2026-10-28T16:44:03.018850+00:00",
+    "completedAt": "2026-10-28T16:44:11.222519+00:00",
+    "exitCode": 0,
+    "log": "compile.log",
+    "sha256": "c111cbc630b00363e00464dc58c0d48d72870d7a431b9e6ada92ca45f2fe603a"
+  },
+  {
+    "name": "diffcheck",
+    "command": [
+      "git",
+      "diff",
+      "--check"
+    ],
+    "startedAt": "2026-10-28T16:44:11.222848+00:00",
+    "completedAt": "2026-10-28T16:44:11.228083+00:00",
+    "exitCode": 0,
+    "log": "diffcheck.log",
+    "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+]

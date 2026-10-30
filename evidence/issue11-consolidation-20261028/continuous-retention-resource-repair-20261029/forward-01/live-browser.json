@@ -1,0 +1,263 @@
+{
+  "checkedAt": "2026-10-29T16:53:46.867Z",
+  "dashboardRelease": "cb4f53d3afc6253ff7f9b9cc79515a04c058a86c",
+  "networkRequests": 6,
+  "method": "Actual public GETs forwarded through verified-TLS session proxy; Chromium rendered returned live HTML/JSON",
+  "fixturesPublished": false,
+  "credentialsRead": false,
+  "financialFilesRead": false,
+  "results": [
+    {
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "first": {
+        "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "source": {
+          "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+          "strategy": "persistent-buying-pilot-v1"
+        },
+        "generatedAt": "2026-10-29T16:52:46.408Z",
+        "sequence": "9094",
+        "assessments": 1513,
+        "passes": 47,
+        "entries": "paused",
+        "positions": 0,
+        "trades": 6,
+        "receiver": "2026-10-29T16:53:13.343Z",
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 146367998,
+          "evidenceDiagnosticLimitBytes": 171533822,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "not-started"
+        },
+        "candidates": {
+          "migrationsReceived": 269,
+          "verifiedOrigins": 102,
+          "known": 174,
+          "watch": 58,
+          "eligible": 30,
+          "deepActive": 4,
+          "deepMaximum": 4,
+          "queued": 27,
+          "promoted": 3508,
+          "repromoted": 3293,
+          "demoted": 3502,
+          "completeWindows": 1492,
+          "auditedWindows": 1513,
+          "uniqueEvaluated": 6,
+          "uniqueAudited": null,
+          "predictiveAssessments": 1513,
+          "predictivePasses": 47,
+          "predictiveFailures": 1445,
+          "predictiveUnavailable": 0,
+          "waitMeanMs": null,
+          "waitMaximumMs": 915444,
+          "olderSelected": 24
+        },
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "provider": {
+          "rpcRequests": 120,
+          "rpcResponseBytes": 28395897,
+          "nativeStreamBytes": 507771196,
+          "broadWatchBytes": 32513621770,
+          "discoveryConnected": true,
+          "watchConnected": true,
+          "httpTimeouts": 220,
+          "httpErrors": 0,
+          "throttles": 0,
+          "rollingStartsPerMinute": 35,
+          "maximumStartsPerMinute": 90,
+          "minimumSpacingMs": 250,
+          "primaryCooldownUntil": "2026-10-29T16:52:33.049Z",
+          "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+          "controlCooldownUntil": null
+        },
+        "resources": {
+          "sampleAt": "2026-10-29T16:52:45.919Z",
+          "cpuOneCoreFraction": 0.27921117264225126,
+          "rssBytes": 391962624,
+          "availableMemoryBytes": 6930321408,
+          "availableDiskBytes": 288765198336,
+          "eventLoopLagMs": 35.586047,
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        }
+      },
+      "last": {
+        "generatedAt": "2026-10-29T16:53:01.454Z",
+        "sequence": "9095",
+        "assessments": 1513,
+        "passes": 47,
+        "receiver": "2026-10-29T16:53:28.444Z",
+        "entries": "paused",
+        "market": "observing"
+      },
+      "errors": [],
+      "paths": [
+        "/",
+        "/api/snapshot",
+        "/api/snapshot",
+        "/api/snapshot"
+      ],
+      "oneOriginalPortfolio": true,
+      "noHorizontalOverflow": true,
+      "pnlVisible": true,
+      "liveMarketSource": true
+    },
+    {
+      "viewport": {
+        "width": 1280,
+        "height": 900
+      },
+      "first": {
+        "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "source": {
+          "release": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+          "strategy": "persistent-buying-pilot-v1"
+        },
+        "generatedAt": "2026-10-29T16:53:16.902Z",
+        "sequence": "9096",
+        "assessments": 1514,
+        "passes": 48,
+        "entries": "paused",
+        "positions": 0,
+        "trades": 6,
+        "receiver": "2026-10-29T16:53:43.523Z",
+        "admission": {
+          "financialProjectionReady": true,
+          "supervisedNewRiskAllowed": true,
+          "candidateResourceAdmissionAllowed": true,
+          "evidenceAdmissionAllowed": true,
+          "evidencePressureReasonCode": null,
+          "evidenceDiagnosticBytes": 159231054,
+          "evidenceDiagnosticLimitBytes": 184396878,
+          "evidenceRequiresCriticalRecovery": false,
+          "evidenceRefusedRecords": 0,
+          "sourceRecoveryGeneration": 0,
+          "sourceRecoveryFailures": 0,
+          "sourceRecoveryReasonCode": null,
+          "sourceRecoveryRetryAt": null,
+          "sourceRecoveryClosingSettled": false,
+          "sourceRestartRequired": false,
+          "proofPreparationState": "complete"
+        },
+        "candidates": {
+          "migrationsReceived": 269,
+          "verifiedOrigins": 102,
+          "known": 174,
+          "watch": 58,
+          "eligible": 30,
+          "deepActive": 4,
+          "deepMaximum": 4,
+          "queued": 28,
+          "promoted": 3508,
+          "repromoted": 3293,
+          "demoted": 3502,
+          "completeWindows": 1493,
+          "auditedWindows": 1514,
+          "uniqueEvaluated": 7,
+          "uniqueAudited": null,
+          "predictiveAssessments": 1514,
+          "predictivePasses": 48,
+          "predictiveFailures": 1445,
+          "predictiveUnavailable": 0,
+          "waitMeanMs": null,
+          "waitMaximumMs": 945937,
+          "olderSelected": 24
+        },
+        "run": {
+          "id": "native-paper-20261029164842357",
+          "startedAt": "2026-10-29T16:48:42.357Z",
+          "mode": "persistent-paper",
+          "configurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+          "strategyVersion": "persistent-buying-pilot-v1"
+        },
+        "provider": {
+          "rpcRequests": 131,
+          "rpcResponseBytes": 37754960,
+          "nativeStreamBytes": 514525926,
+          "broadWatchBytes": 32548508218,
+          "discoveryConnected": true,
+          "watchConnected": true,
+          "httpTimeouts": 221,
+          "httpErrors": 0,
+          "throttles": 0,
+          "rollingStartsPerMinute": 24,
+          "maximumStartsPerMinute": 90,
+          "minimumSpacingMs": 250,
+          "primaryCooldownUntil": "2026-10-29T16:53:02.222Z",
+          "historyCooldownUntil": "2026-10-29T14:09:36.089Z",
+          "controlCooldownUntil": null
+        },
+        "resources": {
+          "sampleAt": "2026-10-29T16:53:16.305Z",
+          "cpuOneCoreFraction": 0.37730467042740257,
+          "rssBytes": 396615680,
+          "availableMemoryBytes": 6925799424,
+          "availableDiskBytes": 288725544960,
+          "eventLoopLagMs": 38.043647,
+          "state": "normal"
+        },
+        "protection": {
+          "state": "flat",
+          "targetCadenceMs": 2000,
+          "completedEvaluationBoundaryMs": 4000,
+          "lastCompletedAt": null,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeAtUseMs": null,
+          "breaches": 0,
+          "unavailableChecks": 0
+        }
+      },
+      "last": {
+        "generatedAt": "2026-10-29T16:53:16.902Z",
+        "sequence": "9096",
+        "assessments": 1514,
+        "passes": 48,
+        "receiver": "2026-10-29T16:53:43.523Z",
+        "entries": "paused",
+        "market": "observing"
+      },
+      "errors": [],
+      "paths": [
+        "/",
+        "/api/snapshot"
+      ],
+      "oneOriginalPortfolio": true,
+      "noHorizontalOverflow": true,
+      "pnlVisible": true,
+      "liveMarketSource": true
+    }
+  ]
+}

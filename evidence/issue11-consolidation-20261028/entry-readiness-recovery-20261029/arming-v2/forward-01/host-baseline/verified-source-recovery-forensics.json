@@ -1,0 +1,568 @@
+{
+  "available": true,
+  "receiptVerified": true,
+  "sha256": "4d036b6a2717fe830605caa21d4aa98166c4ef27860c123a35b988ff39d97c5e",
+  "bytes": 10694,
+  "scriptSha256": "4fab80d8ce4a1a39d33a37a3a3d9570ae841614abe1cfe4dd3a006db538c3986",
+  "value": {
+    "schemaVersion": 1,
+    "kind": "POE_ORIGINAL_SOURCE_RECOVERY_FORENSICS",
+    "generatedAt": 1793302939010,
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": 1793052456212,
+    "source": {
+      "commit": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+      "sha256": "b3ec5aa43b877a4c5ff44f6217be32a4539766c351deb143d557894ccb118ec9"
+    },
+    "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+    "readerUid": 988,
+    "readerGid": 982,
+    "financialDatabaseOpened": false,
+    "financialWrites": 0,
+    "serviceControlOperations": 0,
+    "credentialReads": 0,
+    "window": {
+      "fromAt": 1793299740000,
+      "untilAtExclusive": 1793299920000
+    },
+    "runs": [
+      {
+        "runId": "native-paper-20261029183807362",
+        "result": {
+          "available": false,
+          "reason": "RESULT_UNAVAILABLE_OR_BOUND"
+        },
+        "settlement": {
+          "available": false,
+          "reason": "SETTLEMENT_UNAVAILABLE_OR_BOUND"
+        }
+      },
+      {
+        "runId": "native-paper-20261029185051115",
+        "result": {
+          "available": false,
+          "reason": "RESULT_UNAVAILABLE_OR_BOUND"
+        },
+        "settlement": {
+          "available": false,
+          "reason": "SETTLEMENT_UNAVAILABLE_OR_BOUND"
+        }
+      }
+    ],
+    "diagnostics": {
+      "files": [
+        {
+          "file": "supervisor-0.log",
+          "available": true,
+          "bytesRead": 263201,
+          "sha256": "db73a844a0b8a0f8661c98648730d5ea350baeeb7cebcf2079853fccd8b3330f",
+          "lines": 260,
+          "oversizedLines": 0,
+          "changedDuringRead": false,
+          "trailingFragmentDiscarded": false
+        },
+        {
+          "file": "supervisor-1.log",
+          "available": true,
+          "bytesRead": 592178,
+          "sha256": "7bf58a562e41f18196b4ca7bf381b115827fae880487cf2d8b3dfa012a09e5fd",
+          "lines": 626,
+          "oversizedLines": 0,
+          "changedDuringRead": false,
+          "trailingFragmentDiscarded": false
+        },
+        {
+          "file": "supervisor-2.log",
+          "available": false,
+          "reason": "LOG_UNAVAILABLE_OR_BOUND"
+        },
+        {
+          "file": "supervisor-3.log",
+          "available": false,
+          "reason": "LOG_UNAVAILABLE_OR_BOUND"
+        },
+        {
+          "file": "source-0.log",
+          "available": true,
+          "bytesRead": 458,
+          "sha256": "ddc29ef06ed83d6ef7b8d2bd5a68040a707af66af0709d5e5fd480f0947fdc15",
+          "lines": 5,
+          "oversizedLines": 0,
+          "changedDuringRead": false,
+          "trailingFragmentDiscarded": false
+        },
+        {
+          "file": "source-1.log",
+          "available": false,
+          "reason": "LOG_UNAVAILABLE_OR_BOUND"
+        },
+        {
+          "file": "source-2.log",
+          "available": false,
+          "reason": "LOG_UNAVAILABLE_OR_BOUND"
+        },
+        {
+          "file": "source-3.log",
+          "available": false,
+          "reason": "LOG_UNAVAILABLE_OR_BOUND"
+        }
+      ],
+      "facts": [
+        {
+          "file": "supervisor-0.log",
+          "line": 47,
+          "kind": "rolling-resource-sample",
+          "at": 1793299753807,
+          "runId": "native-paper-20261029183807362",
+          "sourceSnapshotAt": 1793299742259,
+          "resource": {
+            "critical": false,
+            "newRiskPressure": false,
+            "healthy": true,
+            "publisherRestart": false
+          },
+          "resources": {
+            "availableMemoryBytes": 6890065920,
+            "availableDiskBytes": 288582918144,
+            "parentRssBytes": 31281152,
+            "healthySamples": 45
+          },
+          "cpu": {
+            "source": 0.13405849956188437,
+            "publisher": 0.004122340084928796
+          },
+          "processes": {
+            "source": {
+              "rssBytes": 395325440,
+              "cpuSeconds": 96.49
+            },
+            "publisher": {
+              "rssBytes": 127533056,
+              "cpuSeconds": 3.23
+            }
+          }
+        },
+        {
+          "file": "supervisor-0.log",
+          "line": 48,
+          "kind": "rolling-resource-sample",
+          "at": 1793299768972,
+          "runId": "native-paper-20261029183807362",
+          "sourceSnapshotAt": 1793299757283,
+          "resource": {
+            "critical": false,
+            "newRiskPressure": false,
+            "healthy": true,
+            "publisherRestart": false
+          },
+          "resources": {
+            "availableMemoryBytes": 6888017920,
+            "availableDiskBytes": 288590618624,
+            "parentRssBytes": 31281152,
+            "healthySamples": 46
+          },
+          "cpu": {
+            "source": 0.14031822766312638,
+            "publisher": 0.004122157099386795
+          },
+          "processes": {
+            "source": {
+              "rssBytes": 395440128,
+              "cpuSeconds": 98.99
+            },
+            "publisher": {
+              "rssBytes": 127533056,
+              "cpuSeconds": 3.29
+            }
+          }
+        },
+        {
+          "file": "supervisor-0.log",
+          "line": 49,
+          "kind": "rolling-resource-sample",
+          "at": 1793299784145,
+          "runId": "native-paper-20261029183807362",
+          "sourceSnapshotAt": 1793299772414,
+          "resource": {
+            "critical": false,
+            "newRiskPressure": false,
+            "healthy": true,
+            "publisherRestart": false
+          },
+          "resources": {
+            "availableMemoryBytes": 6897537024,
+            "availableDiskBytes": 288590225408,
+            "parentRssBytes": 31281152,
+            "healthySamples": 47
+          },
+          "cpu": {
+            "source": 0.14524002866281124,
+            "publisher": 0.004121453707798275
+          },
+          "processes": {
+            "source": {
+              "rssBytes": 395436032,
+              "cpuSeconds": 101.14
+            },
+            "publisher": {
+              "rssBytes": 127795200,
+              "cpuSeconds": 3.35
+            }
+          }
+        },
+        {
+          "file": "supervisor-0.log",
+          "line": 50,
+          "kind": "rolling-resource-sample",
+          "at": 1793299799306,
+          "runId": "native-paper-20261029183807362",
+          "sourceSnapshotAt": 1793299787448,
+          "resource": {
+            "critical": false,
+            "newRiskPressure": false,
+            "healthy": true,
+            "publisherRestart": false
+          },
+          "resources": {
+            "availableMemoryBytes": 6874796032,
+            "availableDiskBytes": 288589901824,
+            "parentRssBytes": 31281152,
+            "healthySamples": 48
+          },
+          "cpu": {
+            "source": 0.1478776510012616,
+            "publisher": 0.004121450696802163
+          },
+          "processes": {
+            "source": {
+              "rssBytes": 395456512,
+              "cpuSeconds": 103.39
+            },
+            "publisher": {
+              "rssBytes": 127926272,
+              "cpuSeconds": 3.42
+            }
+          }
+        },
+        {
+          "file": "supervisor-0.log",
+          "line": 51,
+          "kind": "rolling-resource-sample",
+          "at": 1793299814468,
+          "runId": "native-paper-20261029183807362",
+          "sourceSnapshotAt": 1793299802686,
+          "resource": {
+            "critical": false,
+            "newRiskPressure": false,
+            "healthy": true,
+            "publisherRestart": false
+          },
+          "resources": {
+            "availableMemoryBytes": 6878486528,
+            "availableDiskBytes": 288588177408,
+            "parentRssBytes": 31281152,
+            "healthySamples": 49
+          },
+          "cpu": {
+            "source": 0.16254308170759976,
+            "publisher": 0.0041212748911663225
+          },
+          "processes": {
+            "source": {
+              "rssBytes": 395735040,
+              "cpuSeconds": 106.35
+            },
+            "publisher": {
+              "rssBytes": 130285568,
+              "cpuSeconds": 3.48
+            }
+          }
+        },
+        {
+          "file": "supervisor-0.log",
+          "line": 52,
+          "kind": "rolling-resource-sample",
+          "at": 1793299829635,
+          "runId": "native-paper-20261029183807362",
+          "sourceSnapshotAt": 1793299817711,
+          "resource": {
+            "critical": false,
+            "newRiskPressure": false,
+            "healthy": true,
+            "publisherRestart": false
+          },
+          "resources": {
+            "availableMemoryBytes": 6885457920,
+            "availableDiskBytes": 288587657216,
+            "parentRssBytes": 31281152,
+            "healthySamples": 50
+          },
+          "cpu": {
+            "source": 0.16055999433008578,
+            "publisher": 0.004285995741870866
+          },
+          "processes": {
+            "source": {
+              "rssBytes": 396410880,
+              "cpuSeconds": 108.73
+            },
+            "publisher": {
+              "rssBytes": 130809856,
+              "cpuSeconds": 3.55
+            }
+          }
+        },
+        {
+          "file": "supervisor-0.log",
+          "line": 53,
+          "kind": "rolling-resource-sample",
+          "at": 1793299844800,
+          "runId": "native-paper-20261029183807362",
+          "sourceSnapshotAt": 1793299833103,
+          "resource": {
+            "critical": false,
+            "newRiskPressure": false,
+            "healthy": true,
+            "publisherRestart": false
+          },
+          "resources": {
+            "availableMemoryBytes": 6885232640,
+            "availableDiskBytes": 288585953280,
+            "parentRssBytes": 31281152,
+            "healthySamples": 51
+          },
+          "cpu": {
+            "source": 0.16948122105368682,
+            "publisher": 0.004286490026649662
+          },
+          "processes": {
+            "source": {
+              "rssBytes": 396558336,
+              "cpuSeconds": 111.42
+            },
+            "publisher": {
+              "rssBytes": 131203072,
+              "cpuSeconds": 3.61
+            }
+          }
+        },
+        {
+          "file": "supervisor-0.log",
+          "line": 54,
+          "kind": "source-stop-request",
+          "at": 1793299848854,
+          "reason": {
+            "code": "source exited; retained-obligation restart",
+            "sha256": "0d1e87faebb2d8e8570614212ed120a35019cf662f548446719dd67c9be1cdec"
+          }
+        },
+        {
+          "file": "supervisor-0.log",
+          "line": 55,
+          "kind": "source-transport-process-settlement",
+          "at": 1793299848856,
+          "settled": true,
+          "monitoringInterruption": true,
+          "financialHistoryPreserved": true,
+          "reason": {
+            "code": "source exited; retained-obligation restart",
+            "sha256": "0d1e87faebb2d8e8570614212ed120a35019cf662f548446719dd67c9be1cdec"
+          }
+        },
+        {
+          "file": "supervisor-0.log",
+          "line": 56,
+          "kind": "source-started",
+          "at": 1793299850871,
+          "pid": 2467686
+        },
+        {
+          "file": "supervisor-0.log",
+          "line": 57,
+          "kind": "rolling-resource-sample",
+          "at": 1793299859945,
+          "runId": "native-paper-20261029185051115",
+          "sourceSnapshotAt": 1793299852107,
+          "resource": {
+            "critical": false,
+            "newRiskPressure": false,
+            "healthy": true,
+            "publisherRestart": false
+          },
+          "resources": {
+            "availableMemoryBytes": 6959185920,
+            "availableDiskBytes": 288570601472,
+            "parentRssBytes": 31281152,
+            "healthySamples": 1
+          },
+          "cpu": {
+            "publisher": 0.0042877174640560565
+          },
+          "processes": {
+            "source": {
+              "rssBytes": 290123776,
+              "cpuSeconds": 3.18
+            },
+            "publisher": {
+              "rssBytes": 131334144,
+              "cpuSeconds": 3.68
+            }
+          }
+        },
+        {
+          "file": "supervisor-0.log",
+          "line": 58,
+          "kind": "rolling-resource-sample",
+          "at": 1793299875093,
+          "runId": "native-paper-20261029185051115",
+          "sourceSnapshotAt": 1793299867132,
+          "resource": {
+            "critical": false,
+            "newRiskPressure": false,
+            "healthy": true,
+            "publisherRestart": false
+          },
+          "resources": {
+            "availableMemoryBytes": 6968193024,
+            "availableDiskBytes": 288570171392,
+            "parentRssBytes": 31281152,
+            "healthySamples": 2
+          },
+          "cpu": {
+            "publisher": 0.0042886510615864175
+          },
+          "processes": {
+            "source": {
+              "rssBytes": 298442752,
+              "cpuSeconds": 5.27
+            },
+            "publisher": {
+              "rssBytes": 131596288,
+              "cpuSeconds": 3.74
+            }
+          }
+        },
+        {
+          "file": "supervisor-0.log",
+          "line": 59,
+          "kind": "rolling-resource-sample",
+          "at": 1793299890257,
+          "runId": "native-paper-20261029185051115",
+          "sourceSnapshotAt": 1793299882134,
+          "resource": {
+            "critical": false,
+            "newRiskPressure": false,
+            "healthy": true,
+            "publisherRestart": false
+          },
+          "resources": {
+            "availableMemoryBytes": 6937120768,
+            "availableDiskBytes": 288570093568,
+            "parentRssBytes": 31281152,
+            "healthySamples": 3
+          },
+          "cpu": {
+            "publisher": 0.0041239207822530806
+          },
+          "processes": {
+            "source": {
+              "rssBytes": 345997312,
+              "cpuSeconds": 7.38
+            },
+            "publisher": {
+              "rssBytes": 131727360,
+              "cpuSeconds": 3.8
+            }
+          }
+        },
+        {
+          "file": "supervisor-0.log",
+          "line": 60,
+          "kind": "rolling-resource-sample",
+          "at": 1793299905412,
+          "runId": "native-paper-20261029185051115",
+          "sourceSnapshotAt": 1793299897175,
+          "resource": {
+            "critical": false,
+            "newRiskPressure": false,
+            "healthy": true,
+            "publisherRestart": false
+          },
+          "resources": {
+            "availableMemoryBytes": 6930407424,
+            "availableDiskBytes": 288569995264,
+            "parentRssBytes": 31281152,
+            "healthySamples": 4
+          },
+          "cpu": {
+            "publisher": 0.004124630502872762
+          },
+          "processes": {
+            "source": {
+              "rssBytes": 350859264,
+              "cpuSeconds": 9.32
+            },
+            "publisher": {
+              "rssBytes": 131989504,
+              "cpuSeconds": 3.86
+            }
+          }
+        },
+        {
+          "file": "source-0.log",
+          "line": 1,
+          "kind": "source-console-line",
+          "timingUnknown": true,
+          "reason": {
+            "code": "SOURCE_RECOVERY_UNKNOWN",
+            "sha256": "8b75fb682e67f3ff0027f798bdd7768f72c7b9b44a1dc347e8ede5c846bc1d72"
+          }
+        },
+        {
+          "file": "source-0.log",
+          "line": 2,
+          "kind": "source-console-line",
+          "timingUnknown": true,
+          "reason": {
+            "code": "SOURCE_RECOVERY_UNKNOWN",
+            "sha256": "00a4d170ab41e28106b6898e309b58402fc1cbe339aa0512ce2183b18459decb"
+          }
+        },
+        {
+          "file": "source-0.log",
+          "line": 3,
+          "kind": "source-console-line",
+          "timingUnknown": true,
+          "reason": {
+            "code": "SOURCE_RECOVERY_UNKNOWN",
+            "sha256": "cdf7ee598459c470c51f19a667d6d16085c70e5e6b26ee57d7239068fd7611fa"
+          }
+        },
+        {
+          "file": "source-0.log",
+          "line": 4,
+          "kind": "source-console-line",
+          "timingUnknown": true,
+          "reason": {
+            "code": "SOURCE_RECOVERY_UNKNOWN",
+            "sha256": "c7d9ed720cca320649137b1f2f74d86c48b3651871e85a8c31b786d22bc1c728"
+          }
+        },
+        {
+          "file": "source-0.log",
+          "line": 5,
+          "kind": "source-console-line",
+          "timingUnknown": true,
+          "reason": {
+            "code": "SOURCE_RECOVERY_UNKNOWN",
+            "sha256": "00a4d170ab41e28106b6898e309b58402fc1cbe339aa0512ce2183b18459decb"
+          }
+        }
+      ],
+      "factCapacityReached": false
+    },
+    "limitations": [
+      "Hash-matched sanitized export only; missing bounded records do not establish absence, causal attribution or continuous supervision."
+    ]
+  }
+}

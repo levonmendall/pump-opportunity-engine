@@ -1,0 +1,19 @@
+[
+  {
+    "name": "focused",
+    "command": [
+      "node",
+      "--import",
+      "tsx",
+      "--test",
+      "test/native-flow-audit.test.ts",
+      "test/native-audit-session.test.ts",
+      "test/native-flow-audit-batch.test.ts"
+    ],
+    "exitCode": 1,
+    "elapsedSeconds": 0.9811280189996978,
+    "endedAt": "2026-10-28T16:08:01.573666+00:00",
+    "logBytes": 8524,
+    "logSha256": "bd6f089967359742e2a559ea2e5a6e280f88971292c59df5892ee8c9c24792f6"
+  }
+]

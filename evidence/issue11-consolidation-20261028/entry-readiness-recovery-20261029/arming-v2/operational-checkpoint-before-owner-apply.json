@@ -1,0 +1,181 @@
+{
+  "kind": "authoritative-operational-checkpoint-v1",
+  "createdAt": "2026-10-29T19:41:08.443343+00:00",
+  "account": {
+    "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "initialUsd": 1000
+  },
+  "installedSource": {
+    "release": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+    "strategy": "persistent-buying-pilot-v1"
+  },
+  "run": {
+    "id": "native-paper-20261029185051115",
+    "startedAt": "2026-10-29T18:50:51.115Z",
+    "mode": "persistent-paper",
+    "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+    "strategyVersion": "persistent-buying-pilot-v1"
+  },
+  "sourceSequence": "9761",
+  "sourceTimes": {
+    "generatedAt": "2026-10-29T19:40:50.147Z",
+    "marketAt": "2026-10-29T19:40:46.315Z",
+    "reconciledAt": "2026-10-29T19:40:49.442Z",
+    "usefulProgressAt": "2026-10-29T19:40:49.442Z"
+  },
+  "status": {
+    "runtime": "running",
+    "market": "observing",
+    "entries": "paused",
+    "reconciled": true,
+    "blocker": "POE_ENTRY_READINESS_REQUIRED"
+  },
+  "slots": {
+    "active": 4,
+    "maximum": 4
+  },
+  "financialMaximumPositions": 1,
+  "positions": [],
+  "pendingOrders": [],
+  "uniqueHistoricalFills": 10,
+  "financialFunnelCurrentRun": {
+    "discovered": 160,
+    "supported": 160,
+    "sufficientlyObserved": 2,
+    "evaluated": 2,
+    "qualified": 1,
+    "attempted": 2,
+    "paperFilled": 1,
+    "exited": 1,
+    "reconciled": 2489
+  },
+  "independentPredictiveCumulative": {
+    "migrationsReceived": 383,
+    "verifiedOrigins": 174,
+    "known": 174,
+    "watch": 90,
+    "eligible": 61,
+    "deepActive": 4,
+    "deepMaximum": 4,
+    "queued": 59,
+    "promoted": 4014,
+    "repromoted": 3702,
+    "demoted": 4005,
+    "completeWindows": 1827,
+    "auditedWindows": 1849,
+    "uniqueEvaluated": 83,
+    "uniqueAudited": null,
+    "predictiveAssessments": 1849,
+    "predictivePasses": 89,
+    "predictiveFailures": 1738,
+    "predictiveUnavailable": 3,
+    "waitMeanMs": null,
+    "waitMaximumMs": 2128925,
+    "olderSelected": 24
+  },
+  "protectionCurrentRun": {
+    "state": "flat",
+    "targetCadenceMs": 2000,
+    "completedEvaluationBoundaryMs": 4000,
+    "lastCompletedAt": "2026-10-29T19:28:55.113Z",
+    "maximumCompletedGapMs": 2243,
+    "maximumQuoteAgeAtUseMs": 75,
+    "breaches": 0,
+    "unavailableChecks": 0
+  },
+  "balances": {
+    "cashSol": "9.79170004",
+    "reservedSol": "0",
+    "equitySol": "9.80671144",
+    "equityUsd": 981.259547,
+    "realizedUsd": -15.502917,
+    "unrealizedUsd": 0,
+    "tradingPnlUsd": -15.502917,
+    "economicPnlUsd": null,
+    "positionCostUsd": 0,
+    "markedExposureUsd": 0,
+    "drawdownUsd": null,
+    "executionCostsUsd": null,
+    "operatingCostsUsd": null,
+    "passiveSolEquityUsd": 996.762465,
+    "solPriceUsd": 100.06
+  },
+  "provider": {
+    "rpcRequests": 1693,
+    "rpcResponseBytes": 168650041,
+    "nativeStreamBytes": 802538912,
+    "broadWatchBytes": 45200167942,
+    "discoveryConnected": true,
+    "watchConnected": true,
+    "httpTimeouts": 387,
+    "httpErrors": 0,
+    "throttles": 0,
+    "rollingStartsPerMinute": 26,
+    "maximumStartsPerMinute": 90,
+    "minimumSpacingMs": 250,
+    "primaryCooldownUntil": "2026-10-29T19:39:53.026Z",
+    "historyCooldownUntil": "2026-10-29T17:50:16.332Z",
+    "controlCooldownUntil": null
+  },
+  "quality": {
+    "captureConnected": true,
+    "qualityGaps": 1092,
+    "auditUnavailable": 74,
+    "auditUnusable": 137,
+    "decisionDeadlineMisses": 89,
+    "enrichmentDeadlineFailures": 0,
+    "incompleteExclusions": 1092,
+    "capacityExclusions": 0,
+    "structuralExclusions": 38,
+    "limitations": [
+      "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+    ]
+  },
+  "admission": {
+    "financialProjectionReady": true,
+    "supervisedNewRiskAllowed": true,
+    "candidateResourceAdmissionAllowed": true,
+    "evidenceAdmissionAllowed": true,
+    "evidencePressureReasonCode": null,
+    "evidenceDiagnosticBytes": 42710398,
+    "evidenceDiagnosticLimitBytes": 134217728,
+    "evidenceRequiresCriticalRecovery": false,
+    "evidenceRefusedRecords": 0,
+    "sourceRecoveryGeneration": 0,
+    "sourceRecoveryFailures": 0,
+    "sourceRecoveryReasonCode": null,
+    "sourceRecoveryRetryAt": null,
+    "sourceRecoveryClosingSettled": false,
+    "sourceRestartRequired": false,
+    "proofPreparationState": "complete"
+  },
+  "sampledResources": {
+    "sampleAt": "2026-10-29T19:40:49.621Z",
+    "cpuOneCoreFraction": 0.4777951132220624,
+    "rssBytes": 414224384,
+    "availableMemoryBytes": 6785433600,
+    "availableDiskBytes": 288491520000,
+    "eventLoopLagMs": 29.409279,
+    "state": "normal"
+  },
+  "frozenNextSource": "5648606bf78f6687c47632be5c789af5e7f19772",
+  "nextConfiguration": "96ec314c0b0256365286659f64680a81e7225386848f3c12567854ced76cd69c",
+  "actualNonrootStage": "40941840470",
+  "installedNewRepair": false,
+  "remaining": [
+    "Owner root execution of reviewed original-service upgrade",
+    "Verify full historical prefix and actual installed source/config",
+    "Same Render expected release rebind and current ACK/browser verification",
+    "Forward verification of general arming and automatic temporary recovery",
+    "Coherent correction and actual attribution of held-audit pre-admission failure",
+    "Protected decision-time trade-quality proof and current independent executable-opportunity denominator",
+    "Sustained acceptance; no24hour claim"
+  ],
+  "limitations": [
+    "Current source counters span scopes/restarts; repeated windows are not unique tokens",
+    "Public USD translation is not exact native per-trade P&L proof",
+    "Natural PAPER lifecycle is not real blockchain execution",
+    "Cloud observer gaps and native18:50interruption retained explicitly"
+  ]
+}

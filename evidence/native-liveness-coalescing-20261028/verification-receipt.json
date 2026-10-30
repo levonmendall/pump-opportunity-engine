@@ -1,0 +1,55 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_EQUIVALENT_MANAGED_ROUND_TRIP_REUSE_NOT_FORWARD_ACCEPTANCE",
+  "baseCommit": "9a520267f8e446a634b3e7ca773dd7471e14e7bc",
+  "at": "2026-10-28T18:59:15.785008+00:00",
+  "tests": {
+    "pass": 92,
+    "fail": 0
+  },
+  "build": "PASS",
+  "independentReview": "GO; exact current validated managed ACK / nonce PONG only; ordinary notifications never renew",
+  "networkRequests": 0,
+  "files": [
+    {
+      "path": "src/pilot-native-flow.ts",
+      "bytes": 74593,
+      "sha256": "dd40bd71ff21132dc8794917dd3e6e43c4ea734fe34cc826e0342282e4dbd32f"
+    },
+    {
+      "path": "test/pilot-native-flow.test.ts",
+      "bytes": 109121,
+      "sha256": "a836b588de76d24780ad2684410ece1ecaa2e937be3317c9b179b746f568bfb4"
+    },
+    {
+      "path": "evidence/native-liveness-coalescing-20261028/README.md",
+      "bytes": 4040,
+      "sha256": "b9949b90ad1d5f001d3014e4d96c2fe8ba30b3326342578dd2e211becf1942b2"
+    },
+    {
+      "path": "evidence/native-liveness-coalescing-20261028/analyze-forward718-pings.py",
+      "bytes": 3109,
+      "sha256": "5352f6d02c5b1c8c7a681aaf2f30fa0a0a874351ad0fe4b97681055876759581"
+    },
+    {
+      "path": "evidence/native-liveness-coalescing-20261028/build.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "path": "evidence/native-liveness-coalescing-20261028/focused-tests-initial.txt",
+      "bytes": 11876,
+      "sha256": "da7de0b545ea9781f20f3f0e40604d94b775f5a193502d4f990de5e94ec2703f"
+    },
+    {
+      "path": "evidence/native-liveness-coalescing-20261028/focused-tests.txt",
+      "bytes": 11172,
+      "sha256": "90d3afff0dee997b3f4dae59ad896d239b29b7055212717c4c06de78c56c65dd"
+    },
+    {
+      "path": "evidence/native-liveness-coalescing-20261028/forward718-pings.json",
+      "bytes": 38433,
+      "sha256": "e0f6755b282351244073c4e5feb2567d37da7e4a7f89e45e903c0397456fdf76"
+    }
+  ]
+}

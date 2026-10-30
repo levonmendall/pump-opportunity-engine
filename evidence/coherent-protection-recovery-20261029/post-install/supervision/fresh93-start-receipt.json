@@ -1,0 +1,40 @@
+{
+  "frozenAt": "2026-10-30T00:00:08.968305+00:00",
+  "firstFreshAcceptedSource": {
+    "receivedAt": 1793318340569,
+    "generatedAt": "2026-10-29T23:58:46.466Z",
+    "sequence": "10773",
+    "source": {
+      "release": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
+      "strategy": "adaptive-momentum-v2-paper-v1"
+    },
+    "run": {
+      "id": "native-paper-20261029234856700",
+      "startedAt": "2026-10-29T23:48:56.700Z",
+      "mode": "persistent-paper",
+      "configurationSha256": "44b82455003f04f75eb1ad7a3dc21555406c1d4d0c7626386d3d21661fdb47c9",
+      "strategyVersion": "adaptive-momentum-v2-paper-v1"
+    },
+    "status": {
+      "runtime": "running",
+      "market": "observing",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+    },
+    "protection": {
+      "state": "monitored",
+      "targetCadenceMs": 2000,
+      "completedEvaluationBoundaryMs": 4000,
+      "lastCompletedAt": "2026-10-29T23:58:45.432Z",
+      "maximumCompletedGapMs": 89426,
+      "maximumQuoteAgeAtUseMs": 67,
+      "breaches": 43,
+      "unavailableChecks": 146
+    }
+  },
+  "file": "first-fresh93-source.json",
+  "bytes": 24474,
+  "sha256": "e8b8b93145a83db8c39214ac292362a6c73bf8bd5d9b3fc1f22f20b5850d6db7",
+  "comparisonPolicy": "Only same new93 run counter deltas from first accepted source establish observed-forward increments; historical maxima are preserved, not reclassified as new failures. Pre-binding new engine coverage remains independently host-evidenced or unknown."
+}

@@ -1,0 +1,55 @@
+{
+  "kind": "poe-original567-to69-offline-package-verification",
+  "at": 1793325097765,
+  "results": [
+    {
+      "file": "test-forward-original-upgrade.py",
+      "exitCode": 0,
+      "rawSha256": "7ff0eec510ad4d970b9fc609b6e98d8dc612da25b7145220f539e08b82c388ac"
+    },
+    {
+      "file": "test-export-adaptive-followthrough-forensics-20261030.py",
+      "exitCode": 0,
+      "rawSha256": "7cc15e95651176b2bccb523e7f73671fcb8d90a9a8563d5c5663773b93380b91"
+    },
+    {
+      "file": "test-read-adaptive-followthrough-forensics-20261030.py",
+      "exitCode": 0,
+      "rawSha256": "c7de476d1b78f867b2bbe4e9d11b5587cebe9384a2c3f2a5dc48ff78e0c49d6d"
+    },
+    {
+      "file": "test-prepare-adaptive-followthrough-package-20261030.py",
+      "exitCode": 0,
+      "rawSha256": "921b60a7fd52e978fbb551cacd29df2d6708879400278e1fcc70fceeb0c6f8e0"
+    }
+  ],
+  "allPassed": true,
+  "before": {
+    "forward-original-upgrade.py": "cafe8a627066b0abda46a7b77944e4ea6c82a640866b1c1f1d96eb1f0cdbadb7",
+    "export-adaptive-followthrough-forensics-20261030.py": "d31e59fe85b2935455c27798199287e072bae4e951d629dd6729322294bd7b75",
+    "read-adaptive-followthrough-forensics-20261030.py": "07dedc82d5920926d906749de09c524966cc4199a5b93bd12b9a009083ed4d39",
+    "prepare-adaptive-followthrough-package-20261030.py": "3d990f702a1280f3bd3fb1ded21074919e6bc10c149aadf2bcfa061d4439fd0a",
+    "test-forward-original-upgrade.py": "9eb949d6f85ab882e8126c857ca28905f9625c67fdb9e83b842e7eac3c444dbf",
+    "test-export-adaptive-followthrough-forensics-20261030.py": "629459fec722632b2223bef3fe212e5e8b8e686be4e57707e3cc14e3b2b91457",
+    "test-read-adaptive-followthrough-forensics-20261030.py": "ec1a0228959e2668b668e2c42227adf05bd8a63429dc69bc275936294959a008",
+    "test-prepare-adaptive-followthrough-package-20261030.py": "16ac96cdc6f946141f53a7e644da001d35a3be184730854993de463140133b2e"
+  },
+  "after": {
+    "forward-original-upgrade.py": "cafe8a627066b0abda46a7b77944e4ea6c82a640866b1c1f1d96eb1f0cdbadb7",
+    "export-adaptive-followthrough-forensics-20261030.py": "d31e59fe85b2935455c27798199287e072bae4e951d629dd6729322294bd7b75",
+    "read-adaptive-followthrough-forensics-20261030.py": "07dedc82d5920926d906749de09c524966cc4199a5b93bd12b9a009083ed4d39",
+    "prepare-adaptive-followthrough-package-20261030.py": "3d990f702a1280f3bd3fb1ded21074919e6bc10c149aadf2bcfa061d4439fd0a",
+    "test-forward-original-upgrade.py": "9eb949d6f85ab882e8126c857ca28905f9625c67fdb9e83b842e7eac3c444dbf",
+    "test-export-adaptive-followthrough-forensics-20261030.py": "629459fec722632b2223bef3fe212e5e8b8e686be4e57707e3cc14e3b2b91457",
+    "test-read-adaptive-followthrough-forensics-20261030.py": "ec1a0228959e2668b668e2c42227adf05bd8a63429dc69bc275936294959a008",
+    "test-prepare-adaptive-followthrough-package-20261030.py": "16ac96cdc6f946141f53a7e644da001d35a3be184730854993de463140133b2e"
+  },
+  "sourceUnchanged": true,
+  "driverMatchesFrozenPackage": true,
+  "source": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+  "stageExecuted": false,
+  "rootCommandExecuted": false,
+  "authoritativeFinancialDatabaseOpened": false,
+  "serviceChanges": 0,
+  "providerRequests": 0
+}

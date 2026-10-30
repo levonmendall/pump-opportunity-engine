@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "decision": "RETAIN_EXPLICIT_V1_FLOW_REFUSAL_FOR_PROTOCOL_BUY_AND_BURN",
+  "actualEvidence": {
+    "successfulConfirmedTransactions": 3,
+    "ordinaryNormalizedFingerprintParity": {
+      "matched": 51,
+      "original": 51
+    },
+    "rpcBodiesNullOrFailed": 0,
+    "sdk": "@pump-fun/pump-swap-sdk@2.2.0",
+    "instruction": "boost_buy_and_burn",
+    "instructionExactPackagedLayout": true,
+    "events": [
+      "BuyEvent",
+      "BoostBuyAndBurnEvent"
+    ],
+    "eventUserRole": "per-pool boost_vault_authority PDA, not the signing authority or fee payer",
+    "eventUserBaseTokenAccount": "11111111111111111111111111111111",
+    "quoteMovement": "exact integer TransferChecked from boost vault to pool quote vault",
+    "baseMovement": "exact integer Burn from pool base vault; no user token-account transfer",
+    "fees": "all six examined executed fee fields are zero in these three retained examples"
+  },
+  "defectCorrections": [
+    "Unknown pool-relevant AMM instruction can no longer disappear as zero mapped events in audit or selected mapping.",
+    "Exact known ordinary-swap compiled count remains visible even when its event is missing.",
+    "Exact known non-swap is distinguished from supported swap and route wrapper.",
+    "Known AMM route wrapper requires a supported scoped descendant.",
+    "Decoded unrelated-pool event is scoped before interpreting its parent as the selected token trade.",
+    "Protocol boost now has specific UNSUPPORTED_BOOST_BUY_AND_BURN_FLOW refusal rather than generic direction mismatch."
+  ],
+  "unchanged": [
+    "Original successful ordinary Buy/Sell fingerprints, integer amounts, actor roles, fees, transfer checks and event identities.",
+    "All old raw observations and old failed-window classifications.",
+    "No new normalizer convention, candidate qualification, entry policy, risk setting or financial state."
+  ],
+  "limitations": [
+    "No new live request or forward capture.",
+    "No additional natural trade shape or fill was observed.",
+    "Protocol actions are not included as ordinary wallet buys and their SOL amounts are not silently excluded while claiming v1 flow completeness.",
+    "Supporting mixed protocol and wallet flow needs an explicitly versioned actor/amount convention before affected v1 windows can qualify.",
+    "Post-boost actual-size liquidation pricing was not tested by this offline mapper review."
+  ],
+  "tests": {
+    "focusedMappingAndAuditsPass": 66,
+    "newSpecificTests": 5,
+    "strictScopedTypecheck": "PASS",
+    "wholeWorktreeBuild": "initial PASS; later unrelated pilot.ts candidateReadiness API was in flight",
+    "networkRequests": 0,
+    "financialWrites": 0
+  },
+  "sources": {
+    "evidence/pilot-mapper-20261027/boost-buy-and-burn.json": "0e0fb93194c0358d275a802ef2cb7a2d6044f6dd88b4faa58ef025601631779d",
+    "evidence/pilot-mapper-20261027/replay-analysis.json": "7b60d4bc20114f984fcfe12276717cd3668620018fb029ccea87df137a63696e",
+    "src/pumpapi-mapping.ts": "a6de636396846594ab881e09d3e2983ad3ba58426c2388a1bf444c824e684d68",
+    "src/scheduler-forward-audit.ts": "5a457c4498c41fec1230e131bc84038f1d82c47d3acd1d0ae4b12e99c5f1bd47"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "time": "2026-10-28T19:42:44.480761+00:00",
+  "source": "19cdd8c5a6bb23874bd8179cdc698ee7e355e442",
+  "status": "INTERRUPTED_NO_COMPLETION_SUMMARY",
+  "bytes": 11642,
+  "sha256": "404623504c6bf63f68e96f11bdf1db3ab39807b7f0debb82cf02a54096a3853a",
+  "reason": "No live test process and prior PTY unavailable after resumed environment; retained raw output contains no final TAP summary. No pass claimed."
+}

@@ -1,0 +1,8 @@
+{
+  "at": "2026-10-29T19:25:37.615056+00:00",
+  "archive": "evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/cloud-recovery-1925.tar.gz",
+  "sha256": "65e3b5ae5e8fd65727a6909e23a3bf4b8aa595adce28cc5b7edbda9b89e23468",
+  "bytes": 291808,
+  "lastSourceAt": "2026-10-29T19:23:48.787Z",
+  "reason": "Detached Cloud sampler became defunct; switching to tracked execution session. No EC2 service control."
+}

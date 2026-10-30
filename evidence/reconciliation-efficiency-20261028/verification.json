@@ -1,0 +1,71 @@
+{
+  "verifiedAt": "2026-10-28T21:12:21.331060+00:00",
+  "baselineCommit": "c189a54b7978692ef2f7d098d6b3374aea8deb72",
+  "kind": "isolated-offline-equivalent-write-reduction",
+  "focusedTests": {
+    "pass": 83,
+    "fail": 0
+  },
+  "build": "PASS",
+  "independentReview": "GO; four independently rerun integration tests passed; no financial safety blocker",
+  "liveForwardVerified": false,
+  "deployed": false,
+  "files": {
+    "src/native-paper.ts": {
+      "bytes": 10842,
+      "sha256": "ddda1fe3dc6d5ec4c779c3bf5d9dc7e7059fe1f278794b0f8e1ec7b3674905a3"
+    },
+    "test/native-paper-integration.test.ts": {
+      "bytes": 18727,
+      "sha256": "f320835ad5af0204695ae8da1f4f0cf7d62fa9ab0b68c19b08003a37564df555"
+    },
+    "scripts/reconciliation-write-benchmark.ts": {
+      "bytes": 4724,
+      "sha256": "0139b355f4d606e81338cc306d4b5b223788045a885db16dd561bb9711fa3633"
+    },
+    "evidence/reconciliation-efficiency-20261028/README.md": {
+      "bytes": 5605,
+      "sha256": "54d2441c8634986c1d02b37da6ed48d0fb4a5a8a24d072c62eb107d0e596dae2"
+    },
+    "evidence/reconciliation-efficiency-20261028/baseline-regression.txt": {
+      "bytes": 1824,
+      "sha256": "ea61438b45f5a07d68848a9848d4844571b084c24317a7dfcc400e9cadbf6b6d"
+    },
+    "evidence/reconciliation-efficiency-20261028/build-final.txt": {
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    "evidence/reconciliation-efficiency-20261028/build.txt": {
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    "evidence/reconciliation-efficiency-20261028/focused-tests-final.txt": {
+      "bytes": 9862,
+      "sha256": "fba906b6f02dbeb3a60d8ff251c14c31e22274da7a78d55f10081150080cdc63"
+    },
+    "evidence/reconciliation-efficiency-20261028/focused-tests.txt": {
+      "bytes": 9861,
+      "sha256": "d323b264de0cc7d4d03b06080cf1ed1ea9dbb4236925013ab1a7cbc328496b31"
+    },
+    "evidence/reconciliation-efficiency-20261028/write-benchmark-fixed-output.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence/reconciliation-efficiency-20261028/write-benchmark-output.txt": {
+      "bytes": 1279,
+      "sha256": "5caee3e4dd80171ebe33599ad31eaec81d6c18961773232246a35d51e3b3b43f"
+    },
+    "evidence/reconciliation-efficiency-20261028/write-benchmark-with-base-output.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence/reconciliation-efficiency-20261028/write-benchmark-with-base.json": {
+      "bytes": 4288,
+      "sha256": "434609e121bab291d681b3f9fda4f3a84995030cea25a37bf5d2a5fcbbcb5ef9"
+    },
+    "evidence/reconciliation-efficiency-20261028/write-benchmark.json": {
+      "bytes": 3846,
+      "sha256": "2536e2c01c6a6b805b54a12c2f7754dc18c1f63b0352a95840ab82e10fef58d8"
+    }
+  }
+}

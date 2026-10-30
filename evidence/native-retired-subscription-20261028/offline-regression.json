@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "kind": "OFFLINE_CONTROLLED_SOCKET_REGRESSION",
+  "recordedAt": "2026-10-28T04:58:25.490042+00:00",
+  "baselineSourceCommit": "bb6fd9fa899c6a4d07c19643e0cff86b42deb408",
+  "baselineSourceSha256": "4868234a9323361347487b20a92782ff0c18c43d923e87a434bf4779da592f12",
+  "correctedSourceSha256": "91ba7a8bc7a957abac8dbefeb56e02844f3711a94cec2f6336d8a4d521894597",
+  "testSha256": "9ff5df2d5eedfd2077b60cb022831fea34d74b2477c85791e2389868c223a8c4",
+  "counterexample": "A valid unsubscribe ACK removes subscription B; a later notification for B then incorrectly faults still-active scope A as NATIVE_FLOW_UNSCOPED_NOTIFICATION.",
+  "baselineResult": "reproduced; baseline-before.txt preserves original failure",
+  "correctedResult": "28 focused adapter tests and TypeScript build passed",
+  "networkRequests": 0,
+  "financialWrites": 0,
+  "syntheticScopeAndTiming": true,
+  "retainedProgramLogs": "Unchanged economic fixture bytes except separately labeled synthetic correction tests.",
+  "limits": {
+    "retiredIdsPerConnection": 256,
+    "retentionMs": 180000
+  },
+  "liveRunAttribution": "Not established by this reproduction. The completed live segment requires its own original raw trace.",
+  "reproduce": "node --import tsx --test test/pilot-native-flow.test.ts"
+}

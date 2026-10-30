@@ -1,0 +1,24 @@
+{
+  "recordedAt": "2026-10-27T23:06:55.404641+00:00",
+  "runId": "pilot-20261027230222347-7a5dc2cf",
+  "source": {
+    "commit": "92b50f8f331021da8da5b7ced366abffcd3a4e5a",
+    "sha256": "d9b9b87d23a663fd6d4afc4c37b5d604c16cdd95bbf448126708f401e05f839d"
+  },
+  "configurationSha256": "7420a232157049667de8758614d9093ea782fa6a2b4a0a97f6673189f5634a5f",
+  "strategyContractSha256": "ebec988c7b87a5be0cdc2e9ddcc0d9ff42a35363418dd528dc3eb9e26d7474dd",
+  "mode": "candidate-evaluation",
+  "maximumCandidates": 6,
+  "effectiveMaximumPositions": 0,
+  "financialExecutionAuthorized": false,
+  "startedAt": 1793142142347,
+  "durationMs": 900000,
+  "finiteStops": "900sec aggregate,1GiBPumpApi,32MiBrelatedresponses,1500requestunits,384MiBRSS,240CPUsec,event14MiB/soft8MiB; first applicable guard wins",
+  "financialRevisionAtStart": 7745,
+  "financialReferenceAt": 1793141415677,
+  "fullRepositoryTests": 800,
+  "typecheck": "passed",
+  "compile": "passed",
+  "independentReview": "GO",
+  "purpose": "Frozen six-slot candidate-only forward test; financial execution disabled independently of predictive outcome; same account/inception retained."
+}

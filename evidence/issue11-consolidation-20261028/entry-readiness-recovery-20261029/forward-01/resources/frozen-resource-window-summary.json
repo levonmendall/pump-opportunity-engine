@@ -1,0 +1,39 @@
+{
+  "classification": "FIRST_FROZEN_NEW_RUN_RESOURCE_WINDOW_NOT_OPERATIONAL_ACCEPTANCE",
+  "source": {
+    "commit": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+    "sha256": "b3ec5aa43b877a4c5ff44f6217be32a4539766c351deb143d557894ccb118ec9"
+  },
+  "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+  "sampleCount": 4,
+  "validPairs": 2,
+  "excludedOldAckPairs": 1,
+  "fromAt": 1793299353110,
+  "untilAt": 1793299786549,
+  "runBoundSeconds": 433.439,
+  "serviceCpuOneCoreFraction": 0.15019297525141947,
+  "serviceWrittenBytes": 340295680,
+  "serviceWrittenBytesPerSecond": 785106.2779306893,
+  "throttledUsecDelta": 0,
+  "nativeRssStart": 389500928,
+  "nativeRssEnd": 395472896,
+  "cgroupCurrentEnd": 514891776,
+  "cgroupPeakEnd": 567697408,
+  "reconciliationAgesAtObservedSourceGenerationMs": [
+    729,
+    4,
+    231,
+    254
+  ],
+  "lastEntryRestriction": "POE_ENTRY_SAFE_STOP",
+  "currentRun": "native-paper-20261029183807362",
+  "allSamplesSameNewSupervisorAndNativePid": true,
+  "currentSupervisor": "2465804",
+  "currentNativePid": 2465812,
+  "caveats": [
+    "Only matching source, native PID, supervisor PID, run ACK and restart generation produce deltas.",
+    "No financial database, credential or provider calls are made by this analysis.",
+    "Point resource samples and cumulative interval counters do not prove continuous market or position coverage.",
+    "Source reconciliation age is assessed at original source generation, never refreshed from receiver time."
+  ]
+}

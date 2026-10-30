@@ -1,0 +1,30 @@
+✔ actual drained boost close is compiled-role and SPL verified without creating an ordinary buyer (9.281818ms)
+✔ compiled close proof rejects close source (2.32413ms)
+✔ compiled close proof rejects close destination (1.422903ms)
+✔ compiled close proof rejects close authority (1.518644ms)
+✔ compiled close proof rejects close token program (6.022881ms)
+✔ compiled close proof rejects close opcode (1.718491ms)
+✔ compiled close proof rejects close data trailing bytes (1.28699ms)
+✔ compiled close proof rejects extra token instruction (1.345788ms)
+✔ compiled close proof rejects missing close (1.409873ms)
+✔ compiled close proof rejects nested close (1.473768ms)
+✔ compiled close proof rejects fee-like transfer after events (1.383083ms)
+✔ compiled close proof rejects incorrect transfer amount (2.392301ms)
+✔ compiled close proof rejects incorrect burn amount (2.238433ms)
+✔ compiled close proof rejects event order (1.597632ms)
+✔ compiled close proof rejects base token owner (0.907016ms)
+✔ compiled close proof rejects authority not transaction signer (1.382082ms)
+✔ compiled close proof rejects closed account still funded (2.100748ms)
+✔ compiled close proof rejects base post reserve (2.332933ms)
+✔ compiled close proof rejects wrong source token balance (2.414505ms)
+✔ compiled close proof rejects recreated boost token balance (2.399332ms)
+✔ proof cannot be transferred to a different source packet, unsuccessful transaction or unverified identity (6.867895ms)
+✔ the independent helper refuses legacy four-child proof rather than broadening the existing logs-only grammar (2.595173ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 887.81739

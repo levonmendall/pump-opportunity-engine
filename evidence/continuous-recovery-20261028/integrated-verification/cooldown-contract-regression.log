@@ -1,0 +1,96 @@
+✔ retained strict actual origin imports without RPC; candidate warming begins only at actual source ACK (16.321845ms)
+✔ fresh complete quiet window receives independent audit and same-bucket predictive rejection without financial authorization (24.619269ms)
+✔ late independently verified audit stays recorded but cannot be backdated into an earlier predictive decision bucket (9.706163ms)
+✔ missing independent pool history invalidates candidate data instead of becoming a strategy failure (16.594218ms)
+✔ SYNTHETIC six-slot saturation preserves seventh watch identity and releases actual unsubscribe ownership before replacement (20.123858ms)
+✔ SYNTHETIC six ready rejection audits finish before replacement support/setup with 50 ms jitter (29.307035ms)
+✔ SYNTHETIC six ready rejection audits finish before replacement support/setup with 100 ms jitter (37.191087ms)
+✔ verification refusal retains its exact seed and respects the watch retry time instead of disappearing (2.899186ms)
+✔ a complete audit helper cannot start near native liveness deadline; bounded heartbeat preparation creates a new service interval (7.264634ms)
+✔ closed owner admission and unsettled shared physical gate start no verification, audit or source work (2.082896ms)
+✔ due native setup retains its service opportunity after deferred, busy or backoff outcomes without origin-preparation fallthrough (24.078718ms)
+✔ due native control uses the shared control window during an HTTP-only cooldown (6.638827ms)
+✔ due native support and ready audits use the RPC window during a control-only cooldown (18.060631ms)
+✔ an RPC cooldown defers audit preparation without manufacturing completeness or a source gap (9.437964ms)
+✔ known structural outside-family seed is excluded once without converting its provisional token into an unsupported market (0.997628ms)
+✔ SYNTHETIC migration churn prunes evicted verification seeds and does not strand newest retained identities (1145.152927ms)
+✔ SYNTHETIC six strong scopes retain every rolling predictive decision with 50 ms step jitter and 200 ms audit responses (130.91366ms)
+✔ SYNTHETIC six strong scopes retain every rolling predictive decision with 100 ms step jitter and 200 ms audit responses (106.344051ms)
+✔ SYNTHETIC slow settled audit response exceeds its per-page operation envelope without a false predictive decision or hidden retry (12.954579ms)
+✔ served-node context below the audit floor cannot become an independent predictive pass (10.959342ms)
+✔ SYNTHETIC protocol-aware audited predictive pass remains shadow-only with strict baseline unavailable and no financial qualification (14.095359ms)
+✔ SYNTHETIC busy audit yields one page per step and services a due native control between pages without backdating (127.343178ms)
+✔ SYNTHETIC gap after page one cancels its generation and cannot qualify using later retained history (97.97981ms)
+✔ SYNTHETIC graceful stop preserves a between-page audit diagnostic without dispatching more history (95.76319ms)
+✔ independent lower-fence warming is not a scheduler deadline miss; the next complete target can still be assessed (13.663896ms)
+✔ independently fence-ready work still misses its deadline when the shared physical gate prevents every dispatch (4.554465ms)
+✔ a partial physical history timeout remains an unavailable evaluation and a true deadline miss (9.963031ms)
+✔ a known independent lower context does not copy a busy notification ledger merely to classify dispatch readiness (13.035229ms)
+✔ settled timeout uncertainty does not deadlock native service behind the coordinator planning guard (85.472107ms)
+✖ settled chapter recovery preserves cooldown readiness, raw history, and held/pending priority (22.14302ms)
+✔ control cooldown is enforced at native admission without blocking unrelated HTTP or losing monotonic wait (13.609685ms)
+✔ native planner defers a settled context-floor cooldown without disconnecting healthy scopes (30.601053ms)
+✔ chapter rollover preserves cumulative counters, inherited uncertainty, real spacing and frozen prior books (60.468403ms)
+✔ optional getTransaction gate refuses without a physical reservation or hidden wait and keeps held-price methods available (52.013546ms)
+✔ immediate linked run conservatively inherits all recent unknown-method starts and persists its bounded method cache (5.970636ms)
+✔ legacy method pacing is unrestricted beyond shared caps, with explicit bounded configuration and reserve validation (14.923433ms)
+✔ failed actual getTransaction attempts count, while dispatch refusal and cancellation do not invent starts or bypass HTTP429 (26.908041ms)
+✔ HTTP429 never retries; Retry-After plus5s gates a settled new chapter and retains both uncertainty reservations (12.331812ms)
+✔ settled HTTP refusal preserves its Retry-After while permitting separately admitted control on the same gate (11.096682ms)
+✔ actual control Retry-After blocks only controls and cannot be cleared by successful HTTP work (12.983233ms)
+✔ mixed HTTP and control work share the same sixty-start minute and short-window pacing (41.880642ms)
+✔ an unsettled timed-out control operation blocks both domains until actual settlement (21.783793ms)
+✔ a canceled physical request remains occupied after cooldown and cannot create a replacement slot (22.386171ms)
+✔ malformed responses fail closed rather than starting another chapter or inventing data (6.095742ms)
+✔ PAPER submission/signing and paid data methods are rejected before a chapter or physical operation (1.858393ms)
+✔ free control requests share the HTTP physical gate and measured bytes remain chargeable while it is occupied (10.178461ms)
+✔ global time/response allowances remain finite across chapters; a new constructor cannot overwrite the run (5.880914ms)
+✔ WS throttle observation respects an HTTP-date cooldown without retrying the original control operation (11.447232ms)
+✔ a periodic chapter expiry caused by passive control receipt preserves bytes and allows only a settled rollover (8.597839ms)
+✔ passive chapter-expiry receipt cannot cancel or replace an in-flight physical request (5.849282ms)
+✔ passive receipt during a retained RPC cooldown neither clears it nor drops byte reservations (7.056391ms)
+✔ global time and response bounds still stop passive receipt after charging actual bytes once (10.997069ms)
+✔ explicit research burst gate permits at most20 starts while the default stays10 and actual spacing stays250ms (29.707128ms)
+✔ new run requires the retained throttle receipt and cannot guess a long provider Retry-After (6.846485ms)
+✔ settled transient RPC failures use bounded2/5/10s backoff without automatic retry or dropping old reservations (15.548899ms)
+✔ invalid feed protocol remains isolated from held-price RPC while global accounting failures still block it (12.689253ms)
+✔ single admission timestamp avoids one-millisecond method refusals without weakening the real cap (11.361114ms)
+✔ public read-only log subscriptions use the existing gate without authorizing financial WS methods (5.339428ms)
+✔ long settled baseline leaves bounded chapter runway without discarding paths, counters or uncertainty (24.622064ms)
+✔ native research response envelope is explicit and leaves default finite limits unchanged (10.426929ms)
+✔ native profile does not silently authorize longer runs, more starts, larger payload budgets or unknown profiles (1.704926ms)
+✔ local admission and deadline refusals before a reservation preserve the healthy shared gate without provider cooldown (17.955275ms)
+✔ durably reserved COMPONENT_DISPATCH_EXPIRED before physical invocation stays charged and rolls over only after settlement (20.14549ms)
+✔ durably reserved COMPONENT_ADMISSION_CLOSED before physical invocation stays charged and rolls over only after settlement (15.959448ms)
+✔ a local refusal cannot roll a chapter or release a physical operation that has not actually settled (14.252558ms)
+✔ repeated rolling-minute pacing refusals reuse the unhalted chapter beyond32 attempts and consume no additional units (85.797228ms)
+✔ WATCH pacing cannot hold the shared gate across the next native deadline or start after native becomes due (7.404441ms)
+✔ served-node context-floor lag is paced unavailable data through real HTTP decoding, never a permanent fatal or audit success (15.02257ms)
+✔ context-floor recovery does not reclassify unrelated invalid-request RPC errors as transient (6.783602ms)
+ℹ tests 69
+ℹ suites 0
+ℹ pass 68
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3261.352224
+
+✖ failing tests:
+
+test at test/native-settled-recovery.test.ts:1:6800
+✖ settled chapter recovery preserves cooldown readiness, raw history, and held/pending priority (22.14302ms)
+  AssertionError [ERR_ASSERTION]: settled HTTP failure does not block an independent native control
+  
+  'wait' !== 'connect'
+  
+      at TestContext.<anonymous> (/workspace/pump-opportunity-engine/test/native-settled-recovery.test.ts:72:10)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'wait',
+    expected: 'connect',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

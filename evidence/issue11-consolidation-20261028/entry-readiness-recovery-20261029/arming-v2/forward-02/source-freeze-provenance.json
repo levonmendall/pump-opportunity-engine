@@ -1,0 +1,80 @@
+{
+  "kind": "retained-source-interval-freeze-v1",
+  "createdAt": "2026-10-29T20:55:53.260460+00:00",
+  "inputProvenance": [
+    {
+      "path": "entry-readiness-recovery-20261029/arming-v2/forward-01/natural-cntd-lifecycle-01/complete-lifecycle.snapshots.ndjson",
+      "bytes": 1141820,
+      "sha256": "3307010b1cd2a67d4e97da291876981234765da5f5d5aa8573a21d00dcab86a4",
+      "partialTrailingLine": false
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/material-transitions.ndjson",
+      "bytes": 5302085,
+      "sha256": "da4710b059d86ccff43d368096babb9b49e7d9a08907de810e348a12ebc39ee1",
+      "partialTrailingLine": false
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/rotation-receipts.ndjson",
+      "bytes": 2769,
+      "sha256": "da1b4c3b4914b191985d1621968e72ee25146363a028b0d56ced86d28517d5f1",
+      "partialTrailingLine": false
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-0.ndjson",
+      "bytes": 1014701,
+      "sha256": "929d905c2be9e310072fbe22eaefea9a03b03b1e62c088063b1bea1df9a87579",
+      "partialTrailingLine": false
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-1.ndjson",
+      "bytes": 1048490,
+      "sha256": "e7ab0f7a7de9f50fa3c4cf0e45da3ba5512efb18173b62d83142a97c3527519b",
+      "partialTrailingLine": false
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-2.ndjson",
+      "bytes": 1044343,
+      "sha256": "393e7d48fd29fcc89a45f8180298ba4eebb9d7137beb2054edf9dec42375b3e0",
+      "partialTrailingLine": false
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-3.ndjson",
+      "bytes": 1047826,
+      "sha256": "6e21a9bd8ff2794484263565f8914eb42609eda29d6c5f4796f5bbe09b524281",
+      "partialTrailingLine": false
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-4.ndjson",
+      "bytes": 394277,
+      "sha256": "4659bbf9a5884a96ebb16f4f36918ea3257f763e52392029d7dd8d8dca10fbe7",
+      "partialTrailingLine": false
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/routine-5.ndjson",
+      "bytes": 451270,
+      "sha256": "0d810d92725e60ab0406e187ce64a08b978f35851634a4a461f3b41fc850a32d",
+      "partialTrailingLine": false
+    },
+    {
+      "path": "coherent-entry-forward-20261029/rolling-supervision/latest.json",
+      "bytes": 17207,
+      "sha256": "146a80395f3c807fd67cf0114818fe37a83d8946737967a4475188fcae497dad",
+      "partialTrailingLine": false
+    }
+  ],
+  "sourceConflicts": [],
+  "output": {
+    "path": "post-close-source-interval.snapshots.ndjson",
+    "bytes": 2905097,
+    "sha256": "8416846cb6629203584ef67f2fba5d227b95f3b941f79d3f20136e1935c64ea1",
+    "sourceFrames": 169,
+    "firstSourceAt": "2026-10-29T20:08:17.026Z",
+    "lastSourceAt": "2026-10-29T20:55:23.645Z"
+  },
+  "rootReportedCloudObserverAbsence": {
+    "from": "2026-10-29T20:36:41Z",
+    "until": "2026-10-29T20:41:01Z",
+    "meaning": "Parent-reported Cloud supervision gap, not an inferred POE stop or reporting outage."
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "baseCommit": "2ce3cf6a2c846bab6987cf0cd3f462fc88ab8be9",
+  "branch": "poe-native-paper-interop-20261028",
+  "node": "v24.19.0",
+  "startedAt": "2026-10-28T14:21:13.302564+00:00",
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "--test",
+    "test/native-paper-interop.test.ts",
+    "test/pilot-trader.test.ts",
+    "test/pilot-market.test.ts",
+    "test/native-flow-audit.test.ts",
+    "test/program-log-mapping.test.ts",
+    "test/program-log-identity.test.ts",
+    "test/paper-mode-readiness.test.ts"
+  ],
+  "fileHashes": {
+    "src/trader.ts": "5aa9ec8a282056d21f26cc5690f46a5a06b3cbe174a2b52476218473d83a037d",
+    "test/native-paper-interop.test.ts": "10c27ddc5255475782978b8c21c424a10eacf4a180fa25e6b023db131fcaf19d",
+    "test/pilot-trader.test.ts": "791f7649eb92d5c0fb66110a0818919a59a0a989c3774067e27a03f4d90e39dc",
+    "test/pilot-market.test.ts": "477fd814f8678ee147d80efa29154e8c380699205e214e061fe87bf6197ac57f",
+    "test/native-flow-audit.test.ts": "bc789ad149473a002a7e6851c3ba052e30e92f329e809cac2e694f13d1ffad10",
+    "test/program-log-mapping.test.ts": "df8ba16a096e6b2c6b0a012e69131ecc156ef3e195685f0f6638bf683600b9ce",
+    "test/program-log-identity.test.ts": "f082f8337ba68cba4e83b6de3f5c5e08a6a5f2b47c4e4bd7cc3b3199edba1b7f",
+    "test/paper-mode-readiness.test.ts": "fa04f8d711fd441398e3b513675bf75670cdfff2353b1ca8a607bcc2f51fd4b8"
+  },
+  "scope": "Controlled disposable offline fixtures; narrow same-bucket audit-readiness repair. No live market, real ledger, provider, production or financial-mode change."
+}

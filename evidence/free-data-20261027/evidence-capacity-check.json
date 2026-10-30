@@ -1,0 +1,11 @@
+{
+  "checkedAt": "2026-10-27T01:35:00.350829+00:00",
+  "existingBytes": 211910,
+  "existingFiles": 13,
+  "maximumBytes": 33554432,
+  "reservedNextPumpApiEvidenceBytes": 8388608,
+  "reservedRemainingBatchEvidenceBytes": 4194304,
+  "eligible": true,
+  "allocation": "PumpApi16MiB,batch4MiB,replay4MiB,docs1MiB,root4MiB; total29MiB within32MiB",
+  "scope": "Cloud isolated research only; noEC2 compatibility claim"
+}

@@ -1,0 +1,267 @@
+{
+  "schemaVersion": 1,
+  "mode": "FROZEN_CANDIDATE_ONLY_NO_FINANCIAL_EXECUTION",
+  "originalFrozenScorecard": "evidence/age-forward-20261028/final/scorecard.json",
+  "allThreeRuns": [
+    {
+      "id": "pilot-20261028015809342-f9514585",
+      "commit": "1657bb407d82ada68e9b6aa82f93c1573119ec24",
+      "config": "4f159a554019e1d9c52af7df825b4ccbd4e43dedae5ead7ef771013c2001a18d",
+      "elapsedMs": 318444,
+      "uniqueAdmitted": 4,
+      "uniquePredictivelyAssessed": 3,
+      "featureWindows": 3,
+      "auditCoveredWindows": 3,
+      "timelyAuditWindows": 3,
+      "actualPredictiveAssessments": 3,
+      "predictiveCounts": {
+        "failed": 3
+      },
+      "maximumConcurrent": 2,
+      "earlyAuditWindows": 0,
+      "olderAuditWindows": 0,
+      "baselineAgeEligibleAllocatedMs": 271090,
+      "financialEntryEnabledMs": 0,
+      "auditedLookbackUnionMs": 180000,
+      "auditedWallUnionMs": 120000,
+      "selectedHints": 0,
+      "confirmedEnrichments": 0,
+      "normalisedTradeRecords": 0,
+      "resources": {
+        "cpuSeconds": 63.057948,
+        "cpuUserSeconds": 60.364707,
+        "cpuSystemSeconds": 2.693241,
+        "cpuSecondsPerWallHour": 712.868236801447,
+        "pumpApiReceivedBytes": 224991433,
+        "discoveryReceivedBytes": 1049,
+        "rpcAccountedResponseBytes": 802386,
+        "rpcRequestStarts": 35,
+        "rpcStartsPerMinute": 6.594566077552097,
+        "pumpApiMiBPerMinute": 40.42818537580314,
+        "cpuSecondsPerPumpApiMiB": 0.29388252699403006,
+        "maximumRssBytes": 337240064,
+        "eventLoopDelayP95Ms": 23.625727,
+        "retainedEventBytes": 995619,
+        "watchActivity": {
+          "semantics": "unverified selection hints only; observed only while a deep stream is already open",
+          "knownIdentities": 83,
+          "framesExamined": 140282,
+          "matchedPayloadParses": 68,
+          "hints": 66,
+          "failures": 0,
+          "processingMs": 780.2441489947305,
+          "coalesceMs": 10000
+        },
+        "recordedStopReason": "graceful local stop request; exposure retained",
+        "resourceFailure": null,
+        "meaning": "Actual whole-process counters and received bytes; normalized rates compare different chronological markets, not controlled causal speedup or provider entitlement. API charges, existing hosting and unverified transfer costs remain separate."
+      }
+    },
+    {
+      "id": "pilot-20261028022044929-0a67e810",
+      "commit": "e69ad8bf012582a004b1820f28743e6e3e34d056",
+      "config": "4f159a554019e1d9c52af7df825b4ccbd4e43dedae5ead7ef771013c2001a18d",
+      "elapsedMs": 765250,
+      "uniqueAdmitted": 22,
+      "uniquePredictivelyAssessed": 17,
+      "featureWindows": 36,
+      "auditCoveredWindows": 33,
+      "timelyAuditWindows": 32,
+      "actualPredictiveAssessments": 32,
+      "predictiveCounts": {
+        "failed": 32
+      },
+      "maximumConcurrent": 6,
+      "earlyAuditWindows": 0,
+      "olderAuditWindows": 6,
+      "baselineAgeEligibleAllocatedMs": 1902890,
+      "financialEntryEnabledMs": 0,
+      "auditedLookbackUnionMs": 1930000,
+      "auditedWallUnionMs": 650000,
+      "selectedHints": 158,
+      "confirmedEnrichments": 116,
+      "normalisedTradeRecords": 108,
+      "resources": {
+        "cpuSeconds": 240.41467,
+        "cpuUserSeconds": 231.599544,
+        "cpuSystemSeconds": 8.815126,
+        "cpuSecondsPerWallHour": 1130.9935472067953,
+        "pumpApiReceivedBytes": 678746349,
+        "discoveryReceivedBytes": 1488,
+        "rpcAccountedResponseBytes": 11002824,
+        "rpcRequestStarts": 390,
+        "rpcStartsPerMinute": 30.578242404442996,
+        "pumpApiMiBPerMinute": 50.75227392845316,
+        "cpuSecondsPerPumpApiMiB": 0.37140981072138335,
+        "maximumRssBytes": 357449728,
+        "eventLoopDelayP95Ms": 35.225599,
+        "retainedEventBytes": 7458201,
+        "watchActivity": {
+          "semantics": "unverified selection hints only; observed only while a deep stream is already open",
+          "knownIdentities": 82,
+          "framesExamined": 416979,
+          "matchedPayloadParses": 292,
+          "hints": 292,
+          "failures": 0,
+          "processingMs": 3544.510280009759,
+          "coalesceMs": 10000
+        },
+        "recordedStopReason": "bounded resource reserve reached",
+        "resourceFailure": "bounded resource reserve reached",
+        "meaning": "Actual whole-process counters and received bytes; normalized rates compare different chronological markets, not controlled causal speedup or provider entitlement. API charges, existing hosting and unverified transfer costs remain separate."
+      }
+    },
+    {
+      "id": "pilot-20261028024343351-654738bd",
+      "commit": "cf8d8bcd5b674ba6d510e92c1ae181d3cc6e5e4d",
+      "config": "4f159a554019e1d9c52af7df825b4ccbd4e43dedae5ead7ef771013c2001a18d",
+      "elapsedMs": 895320,
+      "uniqueAdmitted": 25,
+      "uniquePredictivelyAssessed": 21,
+      "featureWindows": 57,
+      "auditCoveredWindows": 51,
+      "timelyAuditWindows": 51,
+      "actualPredictiveAssessments": 50,
+      "predictiveCounts": {
+        "failed": 50
+      },
+      "maximumConcurrent": 6,
+      "earlyAuditWindows": 1,
+      "olderAuditWindows": 12,
+      "baselineAgeEligibleAllocatedMs": 2872393,
+      "financialEntryEnabledMs": 0,
+      "auditedLookbackUnionMs": 3010000,
+      "auditedWallUnionMs": 860000,
+      "selectedHints": 145,
+      "confirmedEnrichments": 123,
+      "normalisedTradeRecords": 122,
+      "resources": {
+        "cpuSeconds": 165.92891,
+        "cpuUserSeconds": 154.874425,
+        "cpuSystemSeconds": 11.054485,
+        "cpuSecondsPerWallHour": 667.1850020104544,
+        "pumpApiReceivedBytes": 870659855,
+        "discoveryReceivedBytes": 1895,
+        "rpcAccountedResponseBytes": 9203850,
+        "rpcRequestStarts": 491,
+        "rpcStartsPerMinute": 32.90443640262699,
+        "pumpApiMiBPerMinute": 55.64441375415425,
+        "cpuSecondsPerPumpApiMiB": 0.19983587359975383,
+        "maximumRssBytes": 358334464,
+        "eventLoopDelayP95Ms": 25.624575,
+        "retainedEventBytes": 9592215,
+        "watchActivity": {
+          "semantics": "unverified selection hints only; observed only while a deep stream is already open",
+          "knownIdentities": 87,
+          "framesExamined": 542773,
+          "matchedPayloadParses": 356,
+          "hints": 352,
+          "failures": 0,
+          "processingMs": 2044.9088219964206,
+          "coalesceMs": 10000
+        },
+        "recordedStopReason": "finite research interval ended",
+        "resourceFailure": null,
+        "meaning": "Actual whole-process counters and received bytes; normalized rates compare different chronological markets, not controlled causal speedup or provider entitlement. API charges, existing hosting and unverified transfer costs remain separate."
+      }
+    }
+  ],
+  "observedChangesE69ToCf8": {
+    "elapsedPct": 16.997059784384195,
+    "cpuSecondsPct": -30.98220254196634,
+    "pumpApiBytesPct": 28.274701776701573,
+    "cpuPerReceivedMiBPct": -46.19531637798803,
+    "rpcStartsPct": 25.897435897435894,
+    "rpcResponseBytesPct": -16.350111571356585
+  },
+  "interpretation": [
+    "The lean-lookup interval finished its finite observation schedule with CPU below the unchanged240-second control; prior e69 stopped at its CPU/resource reserve.",
+    "Different chronological markets, candidate ages, activity, run lengths and RPC mixtures prevent a controlled causal speedup or opportunity-recall claim.",
+    "Broader indexed PumpApi receipt still imposes high network usage; local filtering reduces neither received bytes nor uncertain infrastructure-transfer cost.",
+    "One valid early assessment was observed, but it was a zero-trade buying-rule failure; unavailable active early scopes remain separate.",
+    "No price/fee/fill/P&L or holding-protection conclusion follows from candidate-only windows."
+  ],
+  "remainingRecognitionLoss": [
+    {
+      "mint": "5jVzdN5zkzKPcE58AUH2PfzGHozwZ13jTov4C36epump",
+      "startAt": 1793156090000,
+      "endAt": 1793156150000,
+      "auditedReadyAt": 1793156156767,
+      "independentAuditAvailableInOriginalClosedBucket": true
+    }
+  ],
+  "independentReference": [
+    {
+      "mint": "2mPwr92SEnFKdMPGJYbCkuicCmXHtVFPse2AvFXTpump",
+      "name": "INGUS / SOL",
+      "strictOriginAvailable": false,
+      "run": {
+        "runId": "pilot-20261028024343351-654738bd",
+        "referenceCollectionOverlapsRun": false,
+        "strictOriginAvailableByRunEnd": false,
+        "withinVerifiedZeroToSixHourObservation": false,
+        "admitted": false,
+        "auditedWindows": 0,
+        "predictive": []
+      }
+    },
+    {
+      "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+      "name": "FRONGUS / SOL",
+      "strictOriginAvailable": true,
+      "run": {
+        "runId": "pilot-20261028024343351-654738bd",
+        "referenceCollectionOverlapsRun": false,
+        "strictOriginAvailableByRunEnd": true,
+        "withinVerifiedZeroToSixHourObservation": true,
+        "admitted": false,
+        "auditedWindows": 0,
+        "predictive": []
+      }
+    },
+    {
+      "mint": "AZdhikmyj6ibsejv7EjML9SfNmuiMvwDrKXTEU2zpump",
+      "name": "Something / SOL",
+      "strictOriginAvailable": false,
+      "run": {
+        "runId": "pilot-20261028024343351-654738bd",
+        "referenceCollectionOverlapsRun": false,
+        "strictOriginAvailableByRunEnd": false,
+        "withinVerifiedZeroToSixHourObservation": false,
+        "admitted": false,
+        "auditedWindows": 0,
+        "predictive": []
+      }
+    },
+    {
+      "mint": "ait5y3tFCVxk9yFjpNv6rUQ2fciBHT4JScGsggopump",
+      "name": "USOE / SOL",
+      "strictOriginAvailable": false,
+      "run": {
+        "runId": "pilot-20261028024343351-654738bd",
+        "referenceCollectionOverlapsRun": false,
+        "strictOriginAvailableByRunEnd": false,
+        "withinVerifiedZeroToSixHourObservation": false,
+        "admitted": false,
+        "auditedWindows": 0,
+        "predictive": []
+      }
+    },
+    {
+      "mint": "FYUyPWNLQtF4nNQ8nSHwpmwQ4j41UqAUz8gWEeWWpump",
+      "name": "DOCK / SOL",
+      "strictOriginAvailable": false,
+      "run": {
+        "runId": "pilot-20261028024343351-654738bd",
+        "referenceCollectionOverlapsRun": false,
+        "strictOriginAvailableByRunEnd": false,
+        "withinVerifiedZeroToSixHourObservation": false,
+        "admitted": false,
+        "auditedWindows": 0,
+        "predictive": []
+      }
+    }
+  ],
+  "networkRequests": 0,
+  "financialDatabaseOpened": false
+}

@@ -1,0 +1,24 @@
+{
+  "classification": "OFFLINE_SELECTION_DIAGNOSTIC_REPAIR",
+  "fullSuite": {
+    "passed": 787,
+    "failed": 0,
+    "durationMs": 48723.794269
+  },
+  "rootFocused": 24,
+  "agentCombined": 68,
+  "newDiagnosticTests": 6,
+  "typecheck": "PASS",
+  "independentReview": "GO after guarded DEEP-only reason update",
+  "primaryStrategyUnchanged": true,
+  "riskDecisionsUnchanged": true,
+  "extraRpcRequests": 0,
+  "selectionPolicy": "watch-fair-repromotion-v3-independent-predictive-assessment",
+  "separateCounters": [
+    "actual primary strategy rejections",
+    "feature-only predictive assessments",
+    "feature-only predictive failures"
+  ],
+  "noPermissionGrantedByAssessment": true,
+  "qualifiedStatePreserved": true
+}

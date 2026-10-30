@@ -1,0 +1,17 @@
+{
+  "offlineBundleValidation": "PASS actual f.bundle UID1000 with SHA-pinned legacy d90 validator and new index-pinned V2 validator",
+  "oldFourSlotManifestSha256": "a1dbed9db61e259f759701d6aae2bd102ec3dc7cb357ef121312d7ddb3e4354b",
+  "fourSlotSingleStagePreserved": true,
+  "exactPreservedManifestValidation": "PASS",
+  "metadataCommit": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+  "reporterUnchangedFromInstalled239": true,
+  "immutableBackupWorkerAndAddon": true,
+  "ownerCommandPythonSyntaxAndShellRoundTrip": "PASS",
+  "packageFileCount": 9,
+  "transportFileCount": 10,
+  "transportSha256": "5daa9577150e805d1e3a4fd86dcae5ca11c95b63d5eb6a7f255590e848102feb",
+  "transportPackedBytes": 2039040,
+  "transportUnpackedBytes": 7634557,
+  "rootCommandExecuted": false,
+  "deployed": false
+}

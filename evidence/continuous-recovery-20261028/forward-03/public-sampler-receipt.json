@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Retain exact hashes of private/public sampler evidence without archiving broad market data",
+  "files": [
+    {
+      "path": "evidence/continuous-recovery-20261028/forward-03/render-cycles.ndjson",
+      "bytes": 456,
+      "sha256": "05e53f6297977d2e6721a04fcae9f0083e382b674bbcbdc7272860d19b96d2d3"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/forward-03/render-cycles-proxy.ndjson",
+      "bytes": 1084621,
+      "sha256": "49b932246ceec116d9e857793c3b108528283dc4f94d188ed603514fb7c6eb84"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/forward-03/sample-render.mjs",
+      "bytes": 1751,
+      "sha256": "3d589fd08fab61f324ce8c087ee380c10bf278f188a4ba90512fcc12150a0dbd"
+    },
+    {
+      "path": "evidence/continuous-recovery-20261028/forward-03/sample-render-proxy.mjs",
+      "bytes": 1757,
+      "sha256": "c13392a0b0229cd556840b7299d4002eb73a0a462930cd4a38af8b1ad7338d79"
+    }
+  ],
+  "twoRunningLocalPublicCyclesVerified": false,
+  "stoppedLocalPublicCyclesVerified": 1,
+  "initialSamplerFailureWasCloudProxyConfiguration": true
+}

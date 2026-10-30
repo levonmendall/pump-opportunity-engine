@@ -1,0 +1,80 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-27T02:10:57.339233+00:00",
+  "status": "PROPOSED_NOT_APPROVED_OR_EXECUTABLE",
+  "classification": "ONE_NARROW_ACTIVE_POOL_COMBINED_TEST_ALLOWANCE",
+  "providers": [
+    "PumpApi credential-free stream",
+    "Solana public read-only RPC"
+  ],
+  "alchemyOrHeliusRequired": false,
+  "priorBudgetFileSha256": "0463bcd146160fe2ba6eb3a175b1fbafe35325ccb3bd2948f6ee243b15f0af03",
+  "priorPumpApi": {
+    "socketBytes": 106994938,
+    "reservedBytes": 117440512,
+    "reservedMs": 100000,
+    "openSeconds": 84.52554098499999,
+    "existingMaximumBytes": 134217728,
+    "existingMaximumMs": 1800000,
+    "unreservedBytes": 16777216,
+    "unusedActualByteDifferenceNotAutomaticallyRefunded": 27222790
+  },
+  "measured70sBytes": {
+    "longerRate": 87822964.65421037,
+    "shorterHigherRate": 100846264.44730453
+  },
+  "requested": {
+    "cumulativePumpApiBytes": 268435456,
+    "cumulativeProviderMs": 300000,
+    "singleNewCaptureMs": 90000,
+    "singleNewShutdownReserveMs": 5000,
+    "newPumpApiReservedBytes": 134217728,
+    "totalReservedBytesAfterApproval": 251658240,
+    "unmeteredTransportHeadroomBytes": 16777216,
+    "additionalPublicRpcCalls": 240,
+    "additionalRpcResponseBytes": 67108864,
+    "maximumRetainedEvidenceBytes": 33554432,
+    "maximumConnectionsPerIp": 1,
+    "automaticRetries": 0,
+    "maximumRpcStartsPer10s": 30,
+    "maximumRpcStartsPerMinute": 150,
+    "maximumRpcInFlight": 1
+  },
+  "rpcAllocation": {
+    "preflightIdentityActivityAndSupportedPool": 12,
+    "pricing45ThreeCallCyclesAt2s": 135,
+    "uniqueTransactionEnrichment": 48,
+    "postWindowHistoryAndTransactionAudit": 12,
+    "failureOrInFlightHeadroomNoAutomaticRetry": 33
+  },
+  "preconditions": [
+    "Offline mapper/enrichment orchestration and failure tests pass.",
+    "Bounded preflight independently confirms recent successful trades in one supported canonical SOL pool; nonswap mentions and custom quotes excluded.",
+    "Recent activity and burst allowance fit48distinct-tx-enrichment allocation plus protected pricing reserve for a complete60\u201370s feature window. If they do not, no stream opens.",
+    "Keep real receive/RPC availability times; compute explicitly labeled curve/user research views without changing primary strategy.",
+    "If direct/routed/Buy/Sell cases are not observed, report that exact coverage gap rather than extending."
+  ],
+  "stopConditions": [
+    "At90s,127MiBsocket headroom,resource/evidence cap,unusable required window or unsupported/ambiguous mapping:stop and mark affected evidence unavailable.",
+    "No second empty capture or automatic retry. No spending, credential use, provider change or production action."
+  ],
+  "runtimeConstraint": "Current production runtime client remains60starts/min. Research150/min cap is isolated and must be separately enforced, never inherited into production. 3-call2s quoting alone requires90/min before enrichment; this is a measured design arithmetic gap, not a tested protection pass.",
+  "alreadyPerformedNarrowFollowupRpc": {
+    "calls": 5,
+    "responseBytes": 37006,
+    "pumpApiConnections": 0,
+    "selectionOutcome": "Retained higher-liquidity pool had no recent activity; one bounded program page supplied3transactions but no supported active pool."
+  },
+  "costs": {
+    "apiDataFeesUsd": "0.00 documented public/credential-free paths",
+    "infrastructure": "Existing Cloud only; no new infrastructure or spending authorization",
+    "networkTransferAllocation": "UNVERIFIED; approval of test limits does not authorize an additional charge"
+  },
+  "production": {
+    "deployment": false,
+    "accountReset": false,
+    "paperEntriesEnabled": false,
+    "liveTrading": false,
+    "walletAction": false
+  }
+}

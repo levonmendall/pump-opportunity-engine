@@ -1,0 +1,50 @@
+✖ OFFLINE guarded two-position lifecycle at synthetic 120ms per physical response (403.823485ms)
+✖ OFFLINE guarded two-position lifecycle at synthetic 350ms per physical response (225.916828ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 0
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1633.471163
+
+✖ failing tests:
+
+test at evidence/two-position-operating-20261029/guarded-two-position.mts:1:18007
+✖ OFFLINE guarded two-position lifecycle at synthetic 120ms per physical response (403.823485ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  3 !== 4
+  
+      at Object.audit (/workspace/poe-two-position-operating/evidence/two-position-operating-20261029/guarded-two-position.mts:54:2805)
+      at async openTwo (/workspace/poe-two-position-operating/evidence/two-position-operating-20261029/guarded-two-position.mts:74:89)
+      at async TestContext.<anonymous> (/workspace/poe-two-position-operating/evidence/two-position-operating-20261029/guarded-two-position.mts:87:26)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 3,
+    expected: 4,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at evidence/two-position-operating-20261029/guarded-two-position.mts:1:18007
+✖ OFFLINE guarded two-position lifecycle at synthetic 350ms per physical response (225.916828ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  3 !== 4
+  
+      at Object.audit (/workspace/poe-two-position-operating/evidence/two-position-operating-20261029/guarded-two-position.mts:54:2805)
+      at async openTwo (/workspace/poe-two-position-operating/evidence/two-position-operating-20261029/guarded-two-position.mts:74:89)
+      at async TestContext.<anonymous> (/workspace/poe-two-position-operating/evidence/two-position-operating-20261029/guarded-two-position.mts:87:26)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 3,
+    expected: 4,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

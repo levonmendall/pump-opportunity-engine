@@ -1,0 +1,15 @@
+{
+  "name": "two-hour-package",
+  "command": [
+    "python3",
+    "-B",
+    "operator/native-candidate-ec2/test-two-hour-package.py"
+  ],
+  "sourceCommit": "5362e007280191dafeac7fe6dae717c288ecc57d",
+  "startedAt": "2026-10-28T14:15:09.701508+00:00",
+  "endedAt": "2026-10-28T14:15:11.544847+00:00",
+  "elapsedSeconds": 1.843354085999863,
+  "exitCode": 0,
+  "logBytes": 106,
+  "logSha256": "26a199f1d10dbdf30c6b894848f96836ed2f74ff0cb1285d15fcc50ebea5d090"
+}

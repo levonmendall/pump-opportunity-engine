@@ -1,0 +1,25 @@
+{
+  "serviceId": "srv-daqon53tqb8s73bdceq0",
+  "workspaceId": "tea-daqk6h8jo6nc73eojtp0",
+  "replace": false,
+  "changedKeys": [
+    "POE_RUNTIME_RELEASE",
+    "POE_STRATEGY_VERSION"
+  ],
+  "expectedRuntimeRelease": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+  "expectedStrategy": "adaptive-momentum-v2-paper-v1",
+  "deployment": {
+    "commit": {
+      "createdAt": "2026-10-30T01:55:00Z",
+      "id": "4c7b4a1a58a86bef2e5504b840caa40ee750ee60",
+      "message": "Retain byte-accounting source trace and existing owner dashboard verification"
+    },
+    "createdAt": "2026-10-30T02:15:28.563975Z",
+    "id": "dep-dbhvrg6c6qcc73f4epe0",
+    "startedAt": "2026-10-30T02:15:28.537452Z",
+    "status": "build_in_progress",
+    "trigger": "api",
+    "updatedAt": "2026-10-30T02:15:28.563975Z"
+  },
+  "financialServiceRestarted": false
+}

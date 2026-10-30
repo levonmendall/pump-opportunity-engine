@@ -1,0 +1,12 @@
+
+> pump-opportunity-engine@0.1.0 build
+> tsc --noEmit
+
+test/owner-daily-loss-reset.test.ts(20,784): error TS2345: Argument of type '{ "fixture-owned": { at: number; netLamports: string; pricedBaseUnits: string; evidence: string; }; } | { "fixture-owned"?: undefined; }' is not assignable to parameter of type 'Record<string, Mark> | undefined'.
+  Type '{ "fixture-owned"?: undefined; }' is not assignable to type 'Record<string, Mark>'.
+    Property '"fixture-owned"' is incompatible with index signature.
+      Type 'undefined' is not assignable to type 'Mark'.
+test/owner-daily-loss-reset.test.ts(20,934): error TS2345: Argument of type '{ "fixture-owned": { at: number; netLamports: string; pricedBaseUnits: string; evidence: string; }; } | { "fixture-owned"?: undefined; }' is not assignable to parameter of type 'Record<string, Mark>'.
+  Type '{ "fixture-owned"?: undefined; }' is not assignable to type 'Record<string, Mark>'.
+    Property '"fixture-owned"' is incompatible with index signature.
+      Type 'undefined' is not assignable to type 'Mark'.

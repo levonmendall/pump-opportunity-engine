@@ -1,0 +1,1832 @@
+{
+  "kind": "independent-actual-weak-window-arming-v1",
+  "state": "VERIFIED_FORWARD_GENERAL_PERMISSION_RECOVERY",
+  "createdAt": "2026-10-29T19:52:03.105899+00:00",
+  "source": {
+    "release": "5648606bf78f6687c47632be5c789af5e7f19772",
+    "strategy": "persistent-buying-pilot-v1"
+  },
+  "run": {
+    "configurationSha256": "96ec314c0b0256365286659f64680a81e7225386848f3c12567854ced76cd69c",
+    "id": "native-paper-20261029194223241",
+    "mode": "persistent-paper",
+    "startedAt": "2026-10-29T19:42:23.241Z",
+    "strategyVersion": "persistent-buying-pilot-v1"
+  },
+  "frozenSourceFrames": {
+    "path": "actual-first-arming.snapshots.ndjson",
+    "bytes": 261228,
+    "sha256": "acab4c9ba9a73d67f41851f595bbf6b22aa31d1551b2277bd962856fbc4cd16f",
+    "count": 22
+  },
+  "sourceTransition": {
+    "lastPausedSequence": "9790",
+    "lastPausedGeneratedAt": "2026-10-29T19:47:42.182Z",
+    "firstEnabledSequence": "9791",
+    "firstEnabledGeneratedAt": "2026-10-29T19:47:57.195Z",
+    "lastEnabledSequence": "9800",
+    "lastEnabledGeneratedAt": "2026-10-29T19:50:14.149Z",
+    "enabledSamples": 10,
+    "observedEnabledSpanMs": 136954
+  },
+  "newWeakDecision": {
+    "at": "2026-10-29T19:47:50.853Z",
+    "id": "native-paper-20261029194223241:12:1793303270853",
+    "mint": "BCjPUs9bjKLxCJTSp98rd25Rj1q8KTjqgjggMcqypump",
+    "reason": "persistent-broad-buying-rule-not-met",
+    "stage": "shadow-predictive-failed"
+  },
+  "closedCutoff": {
+    "inferredWindowEndAt": "2026-10-29T19:47:50.000Z",
+    "assessmentLagMs": 853,
+    "basis": "Frozen NativeCandidateRunner validates current.features.windowEndAt equals the original target, then records assessment with actual this.now(); original target is its current closed10s bucket. Private raw certificate/auditAvailableAt not exported."
+  },
+  "newPrimaryQualifications": 0,
+  "newFinancialAttempts": 0,
+  "newBuyFills": 0,
+  "newSellFills": 0,
+  "inheritedPredictivePassBaseline": 89,
+  "newPredictivePasses": 0,
+  "proofPreparation": "not-started in every retained source frame",
+  "hostCorroboration": {
+    "path": "resources/host-40943421169.json",
+    "sha256": "99691fbcf4ac55633f4638c62923b37ed842008bdc2d6878fd1d6c6533ea75c7",
+    "checkedAt": 1793303331100,
+    "publicStatus": {
+      "sha256": "722224c1526b1671e59cc64184633c5b05de27c2abc3b9ddb73a71c021b6dd51",
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "release": "5648606bf78f6687c47632be5c789af5e7f19772",
+      "strategy": "persistent-buying-pilot-v1",
+      "generatedAt": "2026-10-29T19:48:43.715Z",
+      "entriesDisabled": false,
+      "flowVerified": false,
+      "mode": "PAPER",
+      "liveTrading": false,
+      "blocker": null,
+      "shortlistCount": 4,
+      "feedConnected": true,
+      "lastUsefulProgressAt": "2026-10-29T19:48:42.756Z",
+      "lastReconciledAt": "2026-10-29T19:48:42.756Z",
+      "lastMigrationReceivedAt": null,
+      "reportingConfigured": true
+    },
+    "service": {
+      "MainPID": "2469893",
+      "ActiveState": "active",
+      "SubState": "running",
+      "NRestarts": "0",
+      "ExecMainStartTimestamp": "Thu 2026-10-29 19:42:22 UTC"
+    }
+  },
+  "sampleFacts": [
+    {
+      "sequence": "9779",
+      "generatedAt": "2026-10-29T19:44:56.835Z",
+      "status": {
+        "blocker": "POE_ENTRY_SAFE_STOP",
+        "entries": "paused",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "reconciliationAgeAtSourceMs": 284,
+      "originalFlatUsdAgeAtSourceMs": 1745,
+      "deepActive": 4,
+      "maximumDeep": 4,
+      "demoted": 4017,
+      "promoted": 4026,
+      "repromoted": 3711,
+      "uniqueEvaluated": 4,
+      "auditedWindows": 1854,
+      "predictivePasses": 89,
+      "predictiveFailures": 1743,
+      "proofPreparationState": "not-started",
+      "quality": {
+        "auditUnavailable": 74,
+        "auditUnusable": 137,
+        "capacityExclusions": 0,
+        "captureConnected": true,
+        "decisionDeadlineMisses": 89,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1096,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ],
+        "qualityGaps": 1096,
+        "structuralExclusions": 38
+      },
+      "refusals": [
+        {
+          "count": 1096,
+          "reason": "native-quality-gaps"
+        },
+        {
+          "count": 74,
+          "reason": "independent-audit-unavailable"
+        },
+        {
+          "count": 137,
+          "reason": "independent-audit-unusable"
+        },
+        {
+          "count": 89,
+          "reason": "predictive-window-deadline-missed"
+        },
+        {
+          "count": 267,
+          "reason": "optional-diagnostic-omissions-not-required-flow"
+        }
+      ],
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 60844016,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "not-started",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": false
+      },
+      "positions": 0,
+      "pending": 0
+    },
+    {
+      "sequence": "9780",
+      "generatedAt": "2026-10-29T19:45:11.905Z",
+      "status": {
+        "blocker": "POE_ENTRY_SAFE_STOP",
+        "entries": "paused",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "reconciliationAgeAtSourceMs": 999,
+      "originalFlatUsdAgeAtSourceMs": 1644,
+      "deepActive": 4,
+      "maximumDeep": 4,
+      "demoted": 4017,
+      "promoted": 4026,
+      "repromoted": 3711,
+      "uniqueEvaluated": 4,
+      "auditedWindows": 1854,
+      "predictivePasses": 89,
+      "predictiveFailures": 1743,
+      "proofPreparationState": "not-started",
+      "quality": {
+        "auditUnavailable": 74,
+        "auditUnusable": 137,
+        "capacityExclusions": 0,
+        "captureConnected": true,
+        "decisionDeadlineMisses": 89,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1096,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ],
+        "qualityGaps": 1096,
+        "structuralExclusions": 38
+      },
+      "refusals": [
+        {
+          "count": 1096,
+          "reason": "native-quality-gaps"
+        },
+        {
+          "count": 74,
+          "reason": "independent-audit-unavailable"
+        },
+        {
+          "count": 137,
+          "reason": "independent-audit-unusable"
+        },
+        {
+          "count": 89,
+          "reason": "predictive-window-deadline-missed"
+        },
+        {
+          "count": 267,
+          "reason": "optional-diagnostic-omissions-not-required-flow"
+        }
+      ],
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 61247304,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "not-started",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "positions": 0,
+      "pending": 0
+    },
+    {
+      "sequence": "9781",
+      "generatedAt": "2026-10-29T19:45:26.918Z",
+      "status": {
+        "blocker": "POE_ENTRY_SAFE_STOP",
+        "entries": "paused",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "reconciliationAgeAtSourceMs": 226,
+      "originalFlatUsdAgeAtSourceMs": 1473,
+      "deepActive": 2,
+      "maximumDeep": 4,
+      "demoted": 4020,
+      "promoted": 4027,
+      "repromoted": 3712,
+      "uniqueEvaluated": 7,
+      "auditedWindows": 1857,
+      "predictivePasses": 89,
+      "predictiveFailures": 1746,
+      "proofPreparationState": "not-started",
+      "quality": {
+        "auditUnavailable": 74,
+        "auditUnusable": 137,
+        "capacityExclusions": 0,
+        "captureConnected": true,
+        "decisionDeadlineMisses": 89,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1096,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ],
+        "qualityGaps": 1096,
+        "structuralExclusions": 38
+      },
+      "refusals": [
+        {
+          "count": 1096,
+          "reason": "native-quality-gaps"
+        },
+        {
+          "count": 74,
+          "reason": "independent-audit-unavailable"
+        },
+        {
+          "count": 137,
+          "reason": "independent-audit-unusable"
+        },
+        {
+          "count": 89,
+          "reason": "predictive-window-deadline-missed"
+        },
+        {
+          "count": 267,
+          "reason": "optional-diagnostic-omissions-not-required-flow"
+        }
+      ],
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 61754117,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "not-started",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "positions": 0,
+      "pending": 0
+    },
+    {
+      "sequence": "9782",
+      "generatedAt": "2026-10-29T19:45:41.942Z",
+      "status": {
+        "blocker": "POE_ENTRY_SAFE_STOP",
+        "entries": "paused",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "reconciliationAgeAtSourceMs": 341,
+      "originalFlatUsdAgeAtSourceMs": 1426,
+      "deepActive": 4,
+      "maximumDeep": 4,
+      "demoted": 4021,
+      "promoted": 4030,
+      "repromoted": 3714,
+      "uniqueEvaluated": 8,
+      "auditedWindows": 1858,
+      "predictivePasses": 89,
+      "predictiveFailures": 1747,
+      "proofPreparationState": "not-started",
+      "quality": {
+        "auditUnavailable": 74,
+        "auditUnusable": 137,
+        "capacityExclusions": 0,
+        "captureConnected": true,
+        "decisionDeadlineMisses": 89,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1096,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ],
+        "qualityGaps": 1096,
+        "structuralExclusions": 38
+      },
+      "refusals": [
+        {
+          "count": 1096,
+          "reason": "native-quality-gaps"
+        },
+        {
+          "count": 74,
+          "reason": "independent-audit-unavailable"
+        },
+        {
+          "count": 137,
+          "reason": "independent-audit-unusable"
+        },
+        {
+          "count": 89,
+          "reason": "predictive-window-deadline-missed"
+        },
+        {
+          "count": 267,
+          "reason": "optional-diagnostic-omissions-not-required-flow"
+        }
+      ],
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 61949140,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "not-started",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "positions": 0,
+      "pending": 0
+    },
+    {
+      "sequence": "9783",
+      "generatedAt": "2026-10-29T19:45:56.968Z",
+      "status": {
+        "blocker": "POE_ENTRY_SAFE_STOP",
+        "entries": "paused",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "reconciliationAgeAtSourceMs": 251,
+      "originalFlatUsdAgeAtSourceMs": 1365,
+      "deepActive": 4,
+      "maximumDeep": 4,
+      "demoted": 4021,
+      "promoted": 4030,
+      "repromoted": 3714,
+      "uniqueEvaluated": 8,
+      "auditedWindows": 1858,
+      "predictivePasses": 89,
+      "predictiveFailures": 1747,
+      "proofPreparationState": "not-started",
+      "quality": {
+        "auditUnavailable": 74,
+        "auditUnusable": 137,
+        "capacityExclusions": 0,
+        "captureConnected": true,
+        "decisionDeadlineMisses": 89,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1096,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ],
+        "qualityGaps": 1096,
+        "structuralExclusions": 38
+      },
+      "refusals": [
+        {
+          "count": 1096,
+          "reason": "native-quality-gaps"
+        },
+        {
+          "count": 74,
+          "reason": "independent-audit-unavailable"
+        },
+        {
+          "count": 137,
+          "reason": "independent-audit-unusable"
+        },
+        {
+          "count": 89,
+          "reason": "predictive-window-deadline-missed"
+        },
+        {
+          "count": 267,
+          "reason": "optional-diagnostic-omissions-not-required-flow"
+        }
+      ],
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 62029183,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "not-started",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "positions": 0,
+      "pending": 0
+    },
+    {
+      "sequence": "9784",
+      "generatedAt": "2026-10-29T19:46:11.997Z",
+      "status": {
+        "blocker": "POE_ENTRY_SAFE_STOP",
+        "entries": "paused",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "reconciliationAgeAtSourceMs": 117,
+      "originalFlatUsdAgeAtSourceMs": 1255,
+      "deepActive": 4,
+      "maximumDeep": 4,
+      "demoted": 4021,
+      "promoted": 4030,
+      "repromoted": 3714,
+      "uniqueEvaluated": 8,
+      "auditedWindows": 1858,
+      "predictivePasses": 89,
+      "predictiveFailures": 1747,
+      "proofPreparationState": "not-started",
+      "quality": {
+        "auditUnavailable": 74,
+        "auditUnusable": 137,
+        "capacityExclusions": 0,
+        "captureConnected": true,
+        "decisionDeadlineMisses": 89,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1096,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ],
+        "qualityGaps": 1096,
+        "structuralExclusions": 38
+      },
+      "refusals": [
+        {
+          "count": 1096,
+          "reason": "native-quality-gaps"
+        },
+        {
+          "count": 74,
+          "reason": "independent-audit-unavailable"
+        },
+        {
+          "count": 137,
+          "reason": "independent-audit-unusable"
+        },
+        {
+          "count": 89,
+          "reason": "predictive-window-deadline-missed"
+        },
+        {
+          "count": 267,
+          "reason": "optional-diagnostic-omissions-not-required-flow"
+        }
+      ],
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 62104124,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "not-started",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "positions": 0,
+      "pending": 0
+    },
+    {
+      "sequence": "9785",
+      "generatedAt": "2026-10-29T19:46:27.017Z",
+      "status": {
+        "blocker": "POE_ENTRY_SAFE_STOP",
+        "entries": "paused",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "reconciliationAgeAtSourceMs": 897,
+      "originalFlatUsdAgeAtSourceMs": 1201,
+      "deepActive": 4,
+      "maximumDeep": 4,
+      "demoted": 4021,
+      "promoted": 4030,
+      "repromoted": 3714,
+      "uniqueEvaluated": 8,
+      "auditedWindows": 1858,
+      "predictivePasses": 89,
+      "predictiveFailures": 1747,
+      "proofPreparationState": "not-started",
+      "quality": {
+        "auditUnavailable": 74,
+        "auditUnusable": 137,
+        "capacityExclusions": 0,
+        "captureConnected": true,
+        "decisionDeadlineMisses": 89,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1096,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ],
+        "qualityGaps": 1096,
+        "structuralExclusions": 38
+      },
+      "refusals": [
+        {
+          "count": 1096,
+          "reason": "native-quality-gaps"
+        },
+        {
+          "count": 74,
+          "reason": "independent-audit-unavailable"
+        },
+        {
+          "count": 137,
+          "reason": "independent-audit-unusable"
+        },
+        {
+          "count": 89,
+          "reason": "predictive-window-deadline-missed"
+        },
+        {
+          "count": 267,
+          "reason": "optional-diagnostic-omissions-not-required-flow"
+        }
+      ],
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 62191782,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "not-started",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "positions": 0,
+      "pending": 0
+    },
+    {
+      "sequence": "9786",
+      "generatedAt": "2026-10-29T19:46:42.063Z",
+      "status": {
+        "blocker": "POE_ENTRY_SAFE_STOP",
+        "entries": "paused",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "reconciliationAgeAtSourceMs": 791,
+      "originalFlatUsdAgeAtSourceMs": 1155,
+      "deepActive": 4,
+      "maximumDeep": 4,
+      "demoted": 4021,
+      "promoted": 4030,
+      "repromoted": 3714,
+      "uniqueEvaluated": 8,
+      "auditedWindows": 1858,
+      "predictivePasses": 89,
+      "predictiveFailures": 1747,
+      "proofPreparationState": "not-started",
+      "quality": {
+        "auditUnavailable": 74,
+        "auditUnusable": 137,
+        "capacityExclusions": 0,
+        "captureConnected": true,
+        "decisionDeadlineMisses": 89,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1096,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ],
+        "qualityGaps": 1096,
+        "structuralExclusions": 38
+      },
+      "refusals": [
+        {
+          "count": 1096,
+          "reason": "native-quality-gaps"
+        },
+        {
+          "count": 74,
+          "reason": "independent-audit-unavailable"
+        },
+        {
+          "count": 137,
+          "reason": "independent-audit-unusable"
+        },
+        {
+          "count": 89,
+          "reason": "predictive-window-deadline-missed"
+        },
+        {
+          "count": 267,
+          "reason": "optional-diagnostic-omissions-not-required-flow"
+        }
+      ],
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 62303908,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "not-started",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "positions": 0,
+      "pending": 0
+    },
+    {
+      "sequence": "9787",
+      "generatedAt": "2026-10-29T19:46:57.111Z",
+      "status": {
+        "blocker": "POE_ENTRY_SAFE_STOP",
+        "entries": "paused",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "reconciliationAgeAtSourceMs": 694,
+      "originalFlatUsdAgeAtSourceMs": 1093,
+      "deepActive": 4,
+      "maximumDeep": 4,
+      "demoted": 4023,
+      "promoted": 4032,
+      "repromoted": 3716,
+      "uniqueEvaluated": 10,
+      "auditedWindows": 1860,
+      "predictivePasses": 89,
+      "predictiveFailures": 1749,
+      "proofPreparationState": "not-started",
+      "quality": {
+        "auditUnavailable": 74,
+        "auditUnusable": 137,
+        "capacityExclusions": 0,
+        "captureConnected": true,
+        "decisionDeadlineMisses": 89,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1096,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ],
+        "qualityGaps": 1096,
+        "structuralExclusions": 38
+      },
+      "refusals": [
+        {
+          "count": 1096,
+          "reason": "native-quality-gaps"
+        },
+        {
+          "count": 74,
+          "reason": "independent-audit-unavailable"
+        },
+        {
+          "count": 137,
+          "reason": "independent-audit-unusable"
+        },
+        {
+          "count": 89,
+          "reason": "predictive-window-deadline-missed"
+        },
+        {
+          "count": 267,
+          "reason": "optional-diagnostic-omissions-not-required-flow"
+        }
+      ],
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 62629569,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "not-started",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "positions": 0,
+      "pending": 0
+    },
+    {
+      "sequence": "9788",
+      "generatedAt": "2026-10-29T19:47:12.166Z",
+      "status": {
+        "blocker": "POE_ENTRY_SAFE_STOP",
+        "entries": "paused",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "reconciliationAgeAtSourceMs": 386,
+      "originalFlatUsdAgeAtSourceMs": 1104,
+      "deepActive": 4,
+      "maximumDeep": 4,
+      "demoted": 4025,
+      "promoted": 4034,
+      "repromoted": 3718,
+      "uniqueEvaluated": 12,
+      "auditedWindows": 1862,
+      "predictivePasses": 89,
+      "predictiveFailures": 1751,
+      "proofPreparationState": "not-started",
+      "quality": {
+        "auditUnavailable": 74,
+        "auditUnusable": 137,
+        "capacityExclusions": 0,
+        "captureConnected": true,
+        "decisionDeadlineMisses": 89,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1096,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ],
+        "qualityGaps": 1096,
+        "structuralExclusions": 38
+      },
+      "refusals": [
+        {
+          "count": 1096,
+          "reason": "native-quality-gaps"
+        },
+        {
+          "count": 74,
+          "reason": "independent-audit-unavailable"
+        },
+        {
+          "count": 137,
+          "reason": "independent-audit-unusable"
+        },
+        {
+          "count": 89,
+          "reason": "predictive-window-deadline-missed"
+        },
+        {
+          "count": 267,
+          "reason": "optional-diagnostic-omissions-not-required-flow"
+        }
+      ],
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 62937878,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "not-started",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "positions": 0,
+      "pending": 0
+    },
+    {
+      "sequence": "9789",
+      "generatedAt": "2026-10-29T19:47:27.169Z",
+      "status": {
+        "blocker": "POE_ENTRY_SAFE_STOP",
+        "entries": "paused",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "reconciliationAgeAtSourceMs": 60,
+      "originalFlatUsdAgeAtSourceMs": 1035,
+      "deepActive": 4,
+      "maximumDeep": 4,
+      "demoted": 4025,
+      "promoted": 4034,
+      "repromoted": 3718,
+      "uniqueEvaluated": 12,
+      "auditedWindows": 1862,
+      "predictivePasses": 89,
+      "predictiveFailures": 1751,
+      "proofPreparationState": "not-started",
+      "quality": {
+        "auditUnavailable": 74,
+        "auditUnusable": 137,
+        "capacityExclusions": 0,
+        "captureConnected": true,
+        "decisionDeadlineMisses": 89,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1096,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ],
+        "qualityGaps": 1096,
+        "structuralExclusions": 38
+      },
+      "refusals": [
+        {
+          "count": 1096,
+          "reason": "native-quality-gaps"
+        },
+        {
+          "count": 74,
+          "reason": "independent-audit-unavailable"
+        },
+        {
+          "count": 137,
+          "reason": "independent-audit-unusable"
+        },
+        {
+          "count": 89,
+          "reason": "predictive-window-deadline-missed"
+        },
+        {
+          "count": 267,
+          "reason": "optional-diagnostic-omissions-not-required-flow"
+        }
+      ],
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 12698033,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "not-started",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "positions": 0,
+      "pending": 0
+    },
+    {
+      "sequence": "9790",
+      "generatedAt": "2026-10-29T19:47:42.182Z",
+      "status": {
+        "blocker": "POE_ENTRY_SAFE_STOP",
+        "entries": "paused",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "reconciliationAgeAtSourceMs": 790,
+      "originalFlatUsdAgeAtSourceMs": 922,
+      "deepActive": 4,
+      "maximumDeep": 4,
+      "demoted": 4025,
+      "promoted": 4034,
+      "repromoted": 3718,
+      "uniqueEvaluated": 12,
+      "auditedWindows": 1862,
+      "predictivePasses": 89,
+      "predictiveFailures": 1751,
+      "proofPreparationState": "not-started",
+      "quality": {
+        "auditUnavailable": 74,
+        "auditUnusable": 137,
+        "capacityExclusions": 0,
+        "captureConnected": true,
+        "decisionDeadlineMisses": 89,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1096,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ],
+        "qualityGaps": 1096,
+        "structuralExclusions": 38
+      },
+      "refusals": [
+        {
+          "count": 1096,
+          "reason": "native-quality-gaps"
+        },
+        {
+          "count": 74,
+          "reason": "independent-audit-unavailable"
+        },
+        {
+          "count": 137,
+          "reason": "independent-audit-unusable"
+        },
+        {
+          "count": 89,
+          "reason": "predictive-window-deadline-missed"
+        },
+        {
+          "count": 267,
+          "reason": "optional-diagnostic-omissions-not-required-flow"
+        }
+      ],
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 12680268,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "not-started",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "positions": 0,
+      "pending": 0
+    },
+    {
+      "sequence": "9791",
+      "generatedAt": "2026-10-29T19:47:57.195Z",
+      "status": {
+        "blocker": null,
+        "entries": "enabled",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "reconciliationAgeAtSourceMs": 228,
+      "originalFlatUsdAgeAtSourceMs": 958,
+      "deepActive": 4,
+      "maximumDeep": 4,
+      "demoted": 4026,
+      "promoted": 4035,
+      "repromoted": 3719,
+      "uniqueEvaluated": 13,
+      "auditedWindows": 1863,
+      "predictivePasses": 89,
+      "predictiveFailures": 1752,
+      "proofPreparationState": "not-started",
+      "quality": {
+        "auditUnavailable": 74,
+        "auditUnusable": 137,
+        "capacityExclusions": 0,
+        "captureConnected": true,
+        "decisionDeadlineMisses": 89,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1096,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ],
+        "qualityGaps": 1096,
+        "structuralExclusions": 38
+      },
+      "refusals": [
+        {
+          "count": 1096,
+          "reason": "native-quality-gaps"
+        },
+        {
+          "count": 74,
+          "reason": "independent-audit-unavailable"
+        },
+        {
+          "count": 137,
+          "reason": "independent-audit-unusable"
+        },
+        {
+          "count": 89,
+          "reason": "predictive-window-deadline-missed"
+        },
+        {
+          "count": 267,
+          "reason": "optional-diagnostic-omissions-not-required-flow"
+        }
+      ],
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 12874041,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "not-started",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "positions": 0,
+      "pending": 0
+    },
+    {
+      "sequence": "9792",
+      "generatedAt": "2026-10-29T19:48:12.484Z",
+      "status": {
+        "blocker": null,
+        "entries": "enabled",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "reconciliationAgeAtSourceMs": 56,
+      "originalFlatUsdAgeAtSourceMs": 1118,
+      "deepActive": 3,
+      "maximumDeep": 4,
+      "demoted": 4027,
+      "promoted": 4035,
+      "repromoted": 3719,
+      "uniqueEvaluated": 14,
+      "auditedWindows": 1864,
+      "predictivePasses": 89,
+      "predictiveFailures": 1753,
+      "proofPreparationState": "not-started",
+      "quality": {
+        "auditUnavailable": 74,
+        "auditUnusable": 137,
+        "capacityExclusions": 0,
+        "captureConnected": true,
+        "decisionDeadlineMisses": 89,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1096,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ],
+        "qualityGaps": 1096,
+        "structuralExclusions": 38
+      },
+      "refusals": [
+        {
+          "count": 1096,
+          "reason": "native-quality-gaps"
+        },
+        {
+          "count": 74,
+          "reason": "independent-audit-unavailable"
+        },
+        {
+          "count": 137,
+          "reason": "independent-audit-unusable"
+        },
+        {
+          "count": 89,
+          "reason": "predictive-window-deadline-missed"
+        },
+        {
+          "count": 267,
+          "reason": "optional-diagnostic-omissions-not-required-flow"
+        }
+      ],
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 13052951,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "not-started",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "positions": 0,
+      "pending": 0
+    },
+    {
+      "sequence": "9793",
+      "generatedAt": "2026-10-29T19:48:27.497Z",
+      "status": {
+        "blocker": null,
+        "entries": "enabled",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "reconciliationAgeAtSourceMs": 998,
+      "originalFlatUsdAgeAtSourceMs": 917,
+      "deepActive": 4,
+      "maximumDeep": 4,
+      "demoted": 4029,
+      "promoted": 4038,
+      "repromoted": 3722,
+      "uniqueEvaluated": 16,
+      "auditedWindows": 1866,
+      "predictivePasses": 89,
+      "predictiveFailures": 1755,
+      "proofPreparationState": "not-started",
+      "quality": {
+        "auditUnavailable": 74,
+        "auditUnusable": 137,
+        "capacityExclusions": 0,
+        "captureConnected": true,
+        "decisionDeadlineMisses": 89,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1096,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ],
+        "qualityGaps": 1096,
+        "structuralExclusions": 38
+      },
+      "refusals": [
+        {
+          "count": 1096,
+          "reason": "native-quality-gaps"
+        },
+        {
+          "count": 74,
+          "reason": "independent-audit-unavailable"
+        },
+        {
+          "count": 137,
+          "reason": "independent-audit-unusable"
+        },
+        {
+          "count": 89,
+          "reason": "predictive-window-deadline-missed"
+        },
+        {
+          "count": 267,
+          "reason": "optional-diagnostic-omissions-not-required-flow"
+        }
+      ],
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 13349715,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "not-started",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "positions": 0,
+      "pending": 0
+    },
+    {
+      "sequence": "9794",
+      "generatedAt": "2026-10-29T19:48:43.715Z",
+      "status": {
+        "blocker": null,
+        "entries": "enabled",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "reconciliationAgeAtSourceMs": 959,
+      "originalFlatUsdAgeAtSourceMs": 2106,
+      "deepActive": 4,
+      "maximumDeep": 4,
+      "demoted": 4029,
+      "promoted": 4038,
+      "repromoted": 3722,
+      "uniqueEvaluated": 16,
+      "auditedWindows": 1866,
+      "predictivePasses": 89,
+      "predictiveFailures": 1755,
+      "proofPreparationState": "not-started",
+      "quality": {
+        "auditUnavailable": 74,
+        "auditUnusable": 137,
+        "capacityExclusions": 0,
+        "captureConnected": true,
+        "decisionDeadlineMisses": 89,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1096,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ],
+        "qualityGaps": 1096,
+        "structuralExclusions": 38
+      },
+      "refusals": [
+        {
+          "count": 1096,
+          "reason": "native-quality-gaps"
+        },
+        {
+          "count": 74,
+          "reason": "independent-audit-unavailable"
+        },
+        {
+          "count": 137,
+          "reason": "independent-audit-unusable"
+        },
+        {
+          "count": 89,
+          "reason": "predictive-window-deadline-missed"
+        },
+        {
+          "count": 267,
+          "reason": "optional-diagnostic-omissions-not-required-flow"
+        }
+      ],
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 5006355,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "not-started",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "positions": 0,
+      "pending": 0
+    },
+    {
+      "sequence": "9795",
+      "generatedAt": "2026-10-29T19:48:58.735Z",
+      "status": {
+        "blocker": null,
+        "entries": "enabled",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "reconciliationAgeAtSourceMs": 741,
+      "originalFlatUsdAgeAtSourceMs": 2022,
+      "deepActive": 4,
+      "maximumDeep": 4,
+      "demoted": 4029,
+      "promoted": 4038,
+      "repromoted": 3722,
+      "uniqueEvaluated": 16,
+      "auditedWindows": 1866,
+      "predictivePasses": 89,
+      "predictiveFailures": 1755,
+      "proofPreparationState": "not-started",
+      "quality": {
+        "auditUnavailable": 74,
+        "auditUnusable": 137,
+        "capacityExclusions": 0,
+        "captureConnected": true,
+        "decisionDeadlineMisses": 89,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1096,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ],
+        "qualityGaps": 1096,
+        "structuralExclusions": 38
+      },
+      "refusals": [
+        {
+          "count": 1096,
+          "reason": "native-quality-gaps"
+        },
+        {
+          "count": 74,
+          "reason": "independent-audit-unavailable"
+        },
+        {
+          "count": 137,
+          "reason": "independent-audit-unusable"
+        },
+        {
+          "count": 89,
+          "reason": "predictive-window-deadline-missed"
+        },
+        {
+          "count": 267,
+          "reason": "optional-diagnostic-omissions-not-required-flow"
+        }
+      ],
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 5067291,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "not-started",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "positions": 0,
+      "pending": 0
+    },
+    {
+      "sequence": "9796",
+      "generatedAt": "2026-10-29T19:49:13.922Z",
+      "status": {
+        "blocker": null,
+        "entries": "enabled",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "reconciliationAgeAtSourceMs": 774,
+      "originalFlatUsdAgeAtSourceMs": 2060,
+      "deepActive": 4,
+      "maximumDeep": 4,
+      "demoted": 4029,
+      "promoted": 4038,
+      "repromoted": 3722,
+      "uniqueEvaluated": 16,
+      "auditedWindows": 1866,
+      "predictivePasses": 89,
+      "predictiveFailures": 1755,
+      "proofPreparationState": "not-started",
+      "quality": {
+        "auditUnavailable": 74,
+        "auditUnusable": 137,
+        "capacityExclusions": 0,
+        "captureConnected": true,
+        "decisionDeadlineMisses": 89,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1096,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ],
+        "qualityGaps": 1096,
+        "structuralExclusions": 38
+      },
+      "refusals": [
+        {
+          "count": 1096,
+          "reason": "native-quality-gaps"
+        },
+        {
+          "count": 74,
+          "reason": "independent-audit-unavailable"
+        },
+        {
+          "count": 137,
+          "reason": "independent-audit-unusable"
+        },
+        {
+          "count": 89,
+          "reason": "predictive-window-deadline-missed"
+        },
+        {
+          "count": 267,
+          "reason": "optional-diagnostic-omissions-not-required-flow"
+        }
+      ],
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 5142018,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "not-started",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "positions": 0,
+      "pending": 0
+    },
+    {
+      "sequence": "9797",
+      "generatedAt": "2026-10-29T19:49:28.958Z",
+      "status": {
+        "blocker": null,
+        "entries": "enabled",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "reconciliationAgeAtSourceMs": 520,
+      "originalFlatUsdAgeAtSourceMs": 2132,
+      "deepActive": 4,
+      "maximumDeep": 4,
+      "demoted": 4030,
+      "promoted": 4039,
+      "repromoted": 3723,
+      "uniqueEvaluated": 17,
+      "auditedWindows": 1867,
+      "predictivePasses": 89,
+      "predictiveFailures": 1756,
+      "proofPreparationState": "not-started",
+      "quality": {
+        "auditUnavailable": 74,
+        "auditUnusable": 137,
+        "capacityExclusions": 0,
+        "captureConnected": true,
+        "decisionDeadlineMisses": 89,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1096,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ],
+        "qualityGaps": 1096,
+        "structuralExclusions": 38
+      },
+      "refusals": [
+        {
+          "count": 1096,
+          "reason": "native-quality-gaps"
+        },
+        {
+          "count": 74,
+          "reason": "independent-audit-unavailable"
+        },
+        {
+          "count": 137,
+          "reason": "independent-audit-unusable"
+        },
+        {
+          "count": 89,
+          "reason": "predictive-window-deadline-missed"
+        },
+        {
+          "count": 267,
+          "reason": "optional-diagnostic-omissions-not-required-flow"
+        }
+      ],
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 5334225,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "not-started",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "positions": 0,
+      "pending": 0
+    },
+    {
+      "sequence": "9798",
+      "generatedAt": "2026-10-29T19:49:44.102Z",
+      "status": {
+        "blocker": null,
+        "entries": "enabled",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "reconciliationAgeAtSourceMs": 862,
+      "originalFlatUsdAgeAtSourceMs": 2044,
+      "deepActive": 4,
+      "maximumDeep": 4,
+      "demoted": 4033,
+      "promoted": 4042,
+      "repromoted": 3726,
+      "uniqueEvaluated": 20,
+      "auditedWindows": 1870,
+      "predictivePasses": 89,
+      "predictiveFailures": 1759,
+      "proofPreparationState": "not-started",
+      "quality": {
+        "auditUnavailable": 74,
+        "auditUnusable": 137,
+        "capacityExclusions": 0,
+        "captureConnected": true,
+        "decisionDeadlineMisses": 89,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1096,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ],
+        "qualityGaps": 1096,
+        "structuralExclusions": 38
+      },
+      "refusals": [
+        {
+          "count": 1096,
+          "reason": "native-quality-gaps"
+        },
+        {
+          "count": 74,
+          "reason": "independent-audit-unavailable"
+        },
+        {
+          "count": 137,
+          "reason": "independent-audit-unusable"
+        },
+        {
+          "count": 89,
+          "reason": "predictive-window-deadline-missed"
+        },
+        {
+          "count": 267,
+          "reason": "optional-diagnostic-omissions-not-required-flow"
+        }
+      ],
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 5713590,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "not-started",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "positions": 0,
+      "pending": 0
+    },
+    {
+      "sequence": "9799",
+      "generatedAt": "2026-10-29T19:49:59.116Z",
+      "status": {
+        "blocker": null,
+        "entries": "enabled",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "reconciliationAgeAtSourceMs": 743,
+      "originalFlatUsdAgeAtSourceMs": 1920,
+      "deepActive": 4,
+      "maximumDeep": 4,
+      "demoted": 4033,
+      "promoted": 4042,
+      "repromoted": 3726,
+      "uniqueEvaluated": 20,
+      "auditedWindows": 1870,
+      "predictivePasses": 89,
+      "predictiveFailures": 1759,
+      "proofPreparationState": "not-started",
+      "quality": {
+        "auditUnavailable": 74,
+        "auditUnusable": 137,
+        "capacityExclusions": 0,
+        "captureConnected": true,
+        "decisionDeadlineMisses": 89,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1096,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ],
+        "qualityGaps": 1096,
+        "structuralExclusions": 38
+      },
+      "refusals": [
+        {
+          "count": 1096,
+          "reason": "native-quality-gaps"
+        },
+        {
+          "count": 74,
+          "reason": "independent-audit-unavailable"
+        },
+        {
+          "count": 137,
+          "reason": "independent-audit-unusable"
+        },
+        {
+          "count": 89,
+          "reason": "predictive-window-deadline-missed"
+        },
+        {
+          "count": 267,
+          "reason": "optional-diagnostic-omissions-not-required-flow"
+        }
+      ],
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 5971917,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "not-started",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "positions": 0,
+      "pending": 0
+    },
+    {
+      "sequence": "9800",
+      "generatedAt": "2026-10-29T19:50:14.149Z",
+      "status": {
+        "blocker": null,
+        "entries": "enabled",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "reconciliationAgeAtSourceMs": 406,
+      "originalFlatUsdAgeAtSourceMs": 1935,
+      "deepActive": 4,
+      "maximumDeep": 4,
+      "demoted": 4033,
+      "promoted": 4042,
+      "repromoted": 3726,
+      "uniqueEvaluated": 20,
+      "auditedWindows": 1870,
+      "predictivePasses": 89,
+      "predictiveFailures": 1759,
+      "proofPreparationState": "not-started",
+      "quality": {
+        "auditUnavailable": 74,
+        "auditUnusable": 137,
+        "capacityExclusions": 0,
+        "captureConnected": true,
+        "decisionDeadlineMisses": 89,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1096,
+        "limitations": [
+          "Native executed-flow counts include independent predictive assessments. Financial funnel/portfolio remain separate trader facts; overlapping windows are not distinct tokens."
+        ],
+        "qualityGaps": 1096,
+        "structuralExclusions": 38
+      },
+      "refusals": [
+        {
+          "count": 1096,
+          "reason": "native-quality-gaps"
+        },
+        {
+          "count": 74,
+          "reason": "independent-audit-unavailable"
+        },
+        {
+          "count": 137,
+          "reason": "independent-audit-unusable"
+        },
+        {
+          "count": 89,
+          "reason": "predictive-window-deadline-missed"
+        },
+        {
+          "count": 267,
+          "reason": "optional-diagnostic-omissions-not-required-flow"
+        }
+      ],
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 6367239,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "not-started",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "positions": 0,
+      "pending": 0
+    }
+  ],
+  "conclusions": [
+    "Actual running source permission changed SAFE_STOP\u2192enabled after a failed strategy assessment, without qualification,SDK-proof preparation,new order or fill.",
+    "The installed source derives enabled only from actual ledger controls plus financial and global safety gates; code inspection, offline weak-audit integration, live zero-qualification counters and independent protected-process public status corroborate this actual weak-window arming path.",
+    "General permission remains enabled through later weak-candidate retirement/rotation and3\u20134 active scopes. This is a financial readiness success, not a strategy signal or an execution claim.",
+    "Every retained flat reconciliation is within2s and original USD within10s. Financial protections were not relaxed.",
+    "The first12 late weak audits do not prove infeasibility; a valid853ms-cutoff audit actually supplied readiness. No age/deadline relaxation is warranted.",
+    "No negative stop-provenance counter appeared. Exact private resume action/anchor/proof digest remains unexported and is not invented.",
+    "No new PAPER trade or new-position protection workload occurred in this v2 sample. Earlier qoRX lifecycle belongs to f96.",
+    "This short sampled interval is not sustained acceptance; continue source-accurate observation for at least10min after first arming and retain real observer/reporting gaps."
+  ]
+}

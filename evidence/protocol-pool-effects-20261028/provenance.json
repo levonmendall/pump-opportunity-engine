@@ -1,0 +1,16 @@
+{
+  "schemaVersion": 1,
+  "classification": "PUBLIC_RETAINED_HISTORICAL_TRANSACTION_FIXTURE",
+  "signature": "2qmMggRknoppWHZKXpQs8LGvczsQMYbkeP44EW4GpmpDo6iSjndVzwwBSmuQ2NswPgiqh61J7DF6gcEsCpcuPxa6",
+  "slot": 462345920,
+  "transactionSha256": "6803384c9438212d8182272be8b6aca74ecaecf926e5f516db5dace36fd4c81d",
+  "originalSourceTransactionPath": "/workspace/poe-pilot/runs/refusal-tx-20261028051439999/transaction.json",
+  "historicalFetchResultAvailableAt": 1793164480504,
+  "originalForwardRefusalUnchanged": true,
+  "backdatedIntoOriginalDecision": false,
+  "newNetworkRequestsForThisImplementation": 0,
+  "sourceContract": "confirmed-program-activity-v3-shadow",
+  "financialQualificationAllowed": false,
+  "fullTransactionChecksEvidenceCommit": "983de96",
+  "meaning": "Real original transaction bytes. Mutations and delivery timing in test/protocol-pool-effect.test.ts are explicitly offline fixtures; no corrected forward pass is claimed."
+}

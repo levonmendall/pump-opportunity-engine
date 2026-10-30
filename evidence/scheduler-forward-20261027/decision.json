@@ -1,0 +1,124 @@
+{
+  "schemaVersion": 1,
+  "classification": "SINGLE_APPROVED_DIAGNOSTIC_CLOSED_MIXED_RESULT_NOT_PRODUCTION_ACCEPTANCE",
+  "generatedAt": "2026-10-27T15:35:29.689477+00:00",
+  "captureSourceCommit": "349e67b",
+  "approvedProposalCommit": "de102ee",
+  "classifications": {
+    "tradeMapping": "SUPPORTED_FOR_OBSERVED_SHAPES: five independently matched swaps, one routed buy_v2 and four Sells; exact-quote Buy variants and multi-swap transactions not observed",
+    "applicationWindow": "ONE_USABLE_RECORDED_60S_WINDOW_WITH_BOUNDED_5_OF_5_CHAIN_AND_HINT_AUDIT; generic receive-window completeness remains unproved",
+    "sharedScheduler": "MEASURED_FOR_THIS_LIGHT_INTERVAL: no selected enrichment refusal/deadline failure; continuous protection not accepted",
+    "observationHardBound": "RECORDED_2MS_DEVIATION:75,002ms open-to-end versus75,000ms limit, retained without rounding; no selected/normalized/feature/price decision data after cutoff",
+    "productionIntegration": "BLOCKED: accepted max completed-evaluation gap unfrozen; known high-jitter, three-event burst and pending contention failures remain; diagnostic stop behavior is not production position management"
+  },
+  "actualEvidence": {
+    "elapsedMs": 88802,
+    "openMs": 75002,
+    "observationStopDeviationMs": 2,
+    "selectedMessages": 5,
+    "validatedMarketSwaps": 5,
+    "buys": 1,
+    "sells": 4,
+    "pending": 0,
+    "flowQualityGaps": [],
+    "target": {
+      "startAt": 1793114350000,
+      "endAt": 1793114410000
+    },
+    "distinctRawUsableClosedWindows": 1,
+    "auditVerifiedCompiledSwaps": 5,
+    "auditMatchedSwaps": 5,
+    "auditCalls": 8,
+    "finalizedExecutedRechecks": 2,
+    "holdingEvaluations": 40,
+    "hypotheticalHoldings": 3,
+    "earlyRefreshes": 4,
+    "maxCompletedGapMs": 2056,
+    "p95CompletedGapMs": 2033,
+    "completedGapsAbove2sReference": 21,
+    "noNaturalStopTakeProfitOrMaxHoldCrossing": true,
+    "quoteAgeAtUseMs": {
+      "minimum": 14,
+      "maximum": 39
+    },
+    "maxValidatedEnrichmentAvailabilityMs": 3582,
+    "cacheUnavailableMs": 1323,
+    "cacheUnavailableFraction": 0.01763952961254367,
+    "newRpcUnits": 58,
+    "cumulativeRpcUnits": 221,
+    "remainingRpcUnits": 19,
+    "newRelatedBytes": 823802,
+    "cumulativeAccountedRelatedBytes": 4411710,
+    "oldUnknownBytesRetained": 2097152,
+    "newPumpApiReceivedBytes": 76013520,
+    "cumulativePumpApiActualBytes": 271949619,
+    "cumulativePumpApiReservedBytes": 415236096,
+    "cumulativePumpApiReservedMs": 320000,
+    "noReservationRefund": true,
+    "new429": false
+  },
+  "costs": {
+    "additionalApiFeesUsd": 0,
+    "infrastructureTransferStorageCosts": "unverified; not zeroed",
+    "paperProfit": null
+  },
+  "scopeLimitations": [
+    "Activity-biased one-pool sample; two hypothetical pools were quiet.",
+    "Only buy_v2 forward Buy appeared; prior exact-quote Buy fixes remain separately supported by retained on-chain/offline proofs.",
+    "No multi-swap instruction, feed duplicate/correction/reversal or natural exit-threshold crossing appeared.",
+    "The history denominator uses blockTime, distinct from original validated application availability.",
+    "Actual two-second target misses and 2ms recorded stop deviation do not create a newly accepted protection tolerance.",
+    "No EC2 capacity, production readiness, 24/72-hour unattended interval or edge demonstrated."
+  ],
+  "nextDecision": "KEEP_SCHEDULER_RESEARCH_ONLY. No further live capture under this completed grant. Next offline work must separate/enforce the fixed admission cutoff from actual shutdown timestamps and address already-inadequate jitter/burst/pending workloads before production review.",
+  "integrity": {
+    "allPriorEvidenceUnchanged": true,
+    "allLaunchedSourcesUnchanged": true,
+    "sourceManifestEntries": 74,
+    "priorEvidenceManifestEntries": 259,
+    "rawReceipts": [
+      {
+        "path": "evidence/scheduler-forward-20261027/summary.json",
+        "sha256": "59d374166cc0a01b4a0e4eab8e656309a1e5e36c3f6d5c874dc9129650bbbfc8"
+      },
+      {
+        "path": "evidence/scheduler-forward-20261027/capture.json",
+        "sha256": "a5fd07ed8b6d464dd942106b9b893d70b704f547d53169da02e44b9d6b298cce"
+      },
+      {
+        "path": "evidence/scheduler-forward-20261027/audit.json",
+        "sha256": "c3c5cd6dd605e5e6f2b89a8930aa0a1f4470e246342c5b6a59afa50b4c651fd5"
+      },
+      {
+        "path": "evidence/scheduler-forward-20261027/supervisor.json",
+        "sha256": "67a2e999ec4a70523d06f6bc23ac5b60e6837bd5acf6e6bf481569e3b5a04a24"
+      },
+      {
+        "path": "evidence/scheduler-forward-20261027/observations.ndjson",
+        "sha256": "77a672b1202ba0dcfc5be0cd5d6b8aa90a03e4a4e098ab2df708235b2f26130b"
+      },
+      {
+        "path": "evidence/scheduler-forward-20261027/pumpapi-budget.json",
+        "sha256": "8c82938fb754d7fadc7439f6e9825bdcfa7e48fc4d29b7898bf1f6719d5a3878"
+      }
+    ]
+  },
+  "offlineValidation": {
+    "build": "PASS",
+    "compile": "PASS",
+    "tests": 550,
+    "failed": 0,
+    "logSha256": "ec8823ec8015a4af9b46018a699099a6bd3fe965528d7f9d6a2568120e5f8ae7"
+  },
+  "production": {
+    "checkedThisTask": false,
+    "changed": false,
+    "originalAccountAndInceptionPreserved": true,
+    "dashboardChangedOrResearchPublished": false,
+    "paperEntriesEnabled": false,
+    "paperOrdersOrFillsCreated": 0,
+    "liveTrading": false,
+    "acceptanceClockStarted": false
+  },
+  "grantStatus": "COMPLETED_SINGLE_ATTEMPT; no retry or unused-budget reuse authorized"
+}

@@ -1,0 +1,143 @@
+read-original-lifecycle	Set up job	﻿2026-10-29T01:54:19.7607893Z Current runner version: '2.338.0'
+read-original-lifecycle	Set up job	2026-10-29T01:54:19.7613915Z Runner name: 'meme-machine-ec2-admin'
+read-original-lifecycle	Set up job	2026-10-29T01:54:19.7614726Z Runner group name: 'Default'
+read-original-lifecycle	Set up job	2026-10-29T01:54:19.7615507Z Machine name: 'ip-172-31-15-198'
+read-original-lifecycle	Set up job	2026-10-29T01:54:19.7618120Z ##[group]GITHUB_TOKEN Permissions
+read-original-lifecycle	Set up job	2026-10-29T01:54:19.7620118Z Contents: read
+read-original-lifecycle	Set up job	2026-10-29T01:54:19.7620677Z Metadata: read
+read-original-lifecycle	Set up job	2026-10-29T01:54:19.7621237Z ##[endgroup]
+read-original-lifecycle	Set up job	2026-10-29T01:54:19.7623140Z Secret source: Actions
+read-original-lifecycle	Set up job	2026-10-29T01:54:19.7623996Z Cache mode: write
+read-original-lifecycle	Set up job	2026-10-29T01:54:19.7624620Z Prepare workflow directory
+read-original-lifecycle	Set up job	2026-10-29T01:54:19.7960392Z Prepare all required actions
+read-original-lifecycle	Set up job	2026-10-29T01:54:19.8005467Z Getting action download info
+read-original-lifecycle	Set up job	2026-10-29T01:54:20.1831527Z Download action repository 'actions/checkout@11d5960a326750d5838078e36cf38b85af677262' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+read-original-lifecycle	Set up job	2026-10-29T01:54:20.5548579Z Complete job name: read-original-lifecycle
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	﻿2026-10-29T01:54:20.6277791Z ##[group]Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.6279003Z with:
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.6279611Z   ref: 952c2e98c6d8e8856312dba040bc70cb8f796cfb
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.6280250Z   persist-credentials: false
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.6280808Z   sparse-checkout-cone-mode: false
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.6281616Z   sparse-checkout: operator/native-paper-ec2/inspect-original-cutover-refusal.py
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.6282475Z   repository: levonmendall/meme-machine-admin
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.6286584Z   token: ***
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.6287074Z   ssh-strict: true
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.6287550Z   ssh-user: git
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.6288028Z   clean: true
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.6288506Z   fetch-depth: 1
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.6288976Z   fetch-tags: false
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.6289489Z   show-progress: true
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.6289977Z   lfs: false
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.6290427Z   submodules: false
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.6290976Z   set-safe-directory: true
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.6291655Z   allow-unsafe-pr-checkout: false
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.6292611Z ##[endgroup]
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7243808Z Syncing repository: levonmendall/meme-machine-admin
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7247419Z ##[group]Getting Git version info
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7249164Z Working directory is '/opt/mm-ec2-admin-runner/_work/meme-machine-admin/meme-machine-admin'
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7251416Z [command]/usr/bin/git version
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7252588Z git version 2.43.0
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7255623Z ##[endgroup]
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7262499Z Temporarily overriding HOME='/opt/mm-ec2-admin-runner/_work/_temp/44355ebe-a8c9-486b-ba0f-c95d544892af' before making global git config changes
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7264648Z Adding repository directory to the temporary git global config as a safe directory
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7267384Z [command]/usr/bin/git config --global --add safe.directory /opt/mm-ec2-admin-runner/_work/meme-machine-admin/meme-machine-admin
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7293953Z [command]/usr/bin/git config --local --get remote.origin.url
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7319264Z https://github.com/levonmendall/meme-machine-admin
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7338456Z ##[group]Removing previously created refs, to avoid conflicts
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7342438Z [command]/usr/bin/git rev-parse --symbolic-full-name --verify --quiet HEAD
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7351184Z HEAD
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7384382Z ##[endgroup]
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7385402Z [command]/usr/bin/git submodule status
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7562425Z ##[group]Cleaning the repository
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7564517Z [command]/usr/bin/git clean -ffdx
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7594303Z [command]/usr/bin/git reset --hard HEAD
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7743497Z HEAD is now at 662d6d1 Stage pinned continuation for the retained original POE upgrade without restarting it
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7746819Z ##[endgroup]
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7747966Z ##[group]Disabling automatic garbage collection
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7751176Z [command]/usr/bin/git config --local gc.auto 0
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7774409Z ##[endgroup]
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7775220Z ##[group]Setting up auth
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7781043Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7804970Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7973298Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.7994884Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.8169927Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.8194516Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.8420020Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.8449910Z ##[endgroup]
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.8450894Z ##[group]Fetching the repository
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:20.8460645Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --filter=blob:none --depth=1 origin 952c2e98c6d8e8856312dba040bc70cb8f796cfb
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.1882673Z From https://github.com/levonmendall/meme-machine-admin
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.1883709Z  * branch            952c2e98c6d8e8856312dba040bc70cb8f796cfb -> FETCH_HEAD
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.1904488Z ##[endgroup]
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.1906228Z ##[group]Determining the checkout info
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.1907775Z ##[endgroup]
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.1909078Z ##[group]Setting up sparse checkout
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.1910650Z [command]/usr/bin/git config core.sparseCheckout true
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.1938197Z [command]/usr/bin/git rev-parse --git-path info/sparse-checkout
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.1955799Z .git/info/sparse-checkout
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.1961273Z ##[endgroup]
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.1964636Z ##[group]Checking out the ref
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.1966173Z [command]/usr/bin/git checkout --progress --force 952c2e98c6d8e8856312dba040bc70cb8f796cfb
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.5551787Z Warning: you are leaving 1 commit behind, not connected to
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.5553432Z any of your branches:
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.5553950Z 
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.5554634Z   662d6d1 Stage pinned continuation for the retained original POE upgrade without restarting it
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.5555495Z 
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.5556472Z If you want to keep it by creating a new branch, this may be a good time
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.5557371Z to do so with:
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.5557705Z 
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.5558004Z  git branch <new-branch-name> 662d6d1
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.5558478Z 
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.5561167Z HEAD is now at 952c2e9 Inspect effective original POE entrypoint and override order without exposing arguments
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.5565780Z ##[endgroup]
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.5598993Z [command]/usr/bin/git log -1 --format=%H
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.5623952Z 952c2e98c6d8e8856312dba040bc70cb8f796cfb
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.5632892Z ##[group]Removing auth
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.5635245Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.5659058Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.5833473Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.5851271Z http.https://github.com/.extraheader
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.5860904Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.5889545Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.6057022Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.6082337Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+read-original-lifecycle	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.6249666Z ##[endgroup]
+read-original-lifecycle	Read metadata without changing or starting a service	﻿2026-10-29T01:54:21.6450837Z ##[group]Run set -euo pipefail
+read-original-lifecycle	Read metadata without changing or starting a service	2026-10-29T01:54:21.6451644Z [36;1mset -euo pipefail[0m
+read-original-lifecycle	Read metadata without changing or starting a service	2026-10-29T01:54:21.6452374Z [36;1mtest "$ACTUAL_RUNNER" = meme-machine-ec2-admin[0m
+read-original-lifecycle	Read metadata without changing or starting a service	2026-10-29T01:54:21.6453195Z [36;1mtest "$(id -u)" = 994[0m
+read-original-lifecycle	Read metadata without changing or starting a service	2026-10-29T01:54:21.6453813Z [36;1mpython3 -B -I - <<'PYHASH'[0m
+read-original-lifecycle	Read metadata without changing or starting a service	2026-10-29T01:54:21.6454487Z [36;1mimport hashlib,os,stat[0m
+read-original-lifecycle	Read metadata without changing or starting a service	2026-10-29T01:54:21.6455788Z [36;1mf=os.open('operator/native-paper-ec2/inspect-original-cutover-refusal.py',os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)[0m
+read-original-lifecycle	Read metadata without changing or starting a service	2026-10-29T01:54:21.6457386Z [36;1mtry:[0m
+read-original-lifecycle	Read metadata without changing or starting a service	2026-10-29T01:54:21.6457918Z [36;1m    s=os.fstat(f)[0m
+read-original-lifecycle	Read metadata without changing or starting a service	2026-10-29T01:54:21.6459019Z [36;1m    assert stat.S_ISREG(s.st_mode) and s.st_uid==994 and s.st_nlink==1 and not s.st_mode&0o022 and 0<s.st_size<=16384[0m
+read-original-lifecycle	Read metadata without changing or starting a service	2026-10-29T01:54:21.6460260Z [36;1m    b=os.read(f,s.st_size+1)[0m
+read-original-lifecycle	Read metadata without changing or starting a service	2026-10-29T01:54:21.6461596Z [36;1m    assert len(b)==s.st_size and hashlib.sha256(b).hexdigest()=='d1f1c4839778b8c63f4feff577963629c22fa8843964785c6b478da159a71a4a'[0m
+read-original-lifecycle	Read metadata without changing or starting a service	2026-10-29T01:54:21.6463057Z [36;1mfinally:os.close(f)[0m
+read-original-lifecycle	Read metadata without changing or starting a service	2026-10-29T01:54:21.6463637Z [36;1mPYHASH[0m
+read-original-lifecycle	Read metadata without changing or starting a service	2026-10-29T01:54:21.6464394Z [36;1m/usr/bin/env -i PATH=/usr/bin:/bin LANG=C ACTUAL_RUNNER="$ACTUAL_RUNNER" \[0m
+read-original-lifecycle	Read metadata without changing or starting a service	2026-10-29T01:54:21.6465481Z [36;1m  /usr/bin/timeout --signal=TERM --kill-after=3s 30s \[0m
+read-original-lifecycle	Read metadata without changing or starting a service	2026-10-29T01:54:21.6466567Z [36;1m  /usr/bin/nice -n 19 /usr/bin/prlimit \[0m
+read-original-lifecycle	Read metadata without changing or starting a service	2026-10-29T01:54:21.6467618Z [36;1m  --cpu=5:5 --as=134217728:134217728 --nofile=64:64 --fsize=1048576:1048576 --core=0:0 -- \[0m
+read-original-lifecycle	Read metadata without changing or starting a service	2026-10-29T01:54:21.6468989Z [36;1m  /usr/bin/python3 -B -I operator/native-paper-ec2/inspect-original-cutover-refusal.py[0m
+read-original-lifecycle	Read metadata without changing or starting a service	2026-10-29T01:54:21.6487425Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+read-original-lifecycle	Read metadata without changing or starting a service	2026-10-29T01:54:21.6488308Z env:
+read-original-lifecycle	Read metadata without changing or starting a service	2026-10-29T01:54:21.6488859Z   ACTUAL_RUNNER: meme-machine-ec2-admin
+read-original-lifecycle	Read metadata without changing or starting a service	2026-10-29T01:54:21.6489501Z ##[endgroup]
+read-original-lifecycle	Read metadata without changing or starting a service	2026-10-29T01:54:21.7218202Z {"kind":"POE_ORIGINAL_CUTOVER_REFUSAL_READ_ONLY","checkedAt":1793238861719,"service":{"Restart":"always","MainPID":"0","ControlPID":"0","Result":"exit-code","NRestarts":"25","ExecMainStartTimestamp":"Thu 2026-10-29 01:54:13 UTC","ExecMainExitTimestamp":"Thu 2026-10-29 01:54:13 UTC","ExecMainPID":"2433624","ExecMainCode":"1","ExecMainStatus":"1","ControlGroup":"","TasksCurrent":"[not set]","User":"poe-runtime","Group":"poe-runtime","LoadState":"loaded","ActiveState":"activating","SubState":"auto-restart","StateChangeTimestamp":"Thu 2026-10-29 01:54:13 UTC","ActiveEnterTimestamp":"Thu 2026-10-29 01:54:13 UTC","InactiveEnterTimestamp":"Thu 2026-10-29 01:54:13 UTC","Job":""},"lastExecStop":{"ignore_errors":"no","start_time":"[n/a]","stop_time":"[n/a]","pid":"0","code":"(null)","status":"0/0"},"effectiveExecStart":{"executable":"/opt/poe/node/bin/node","nativeSupervisorEntrypoint":false,"obsoleteObserverEntrypoint":true,"valueSha256":"9f9887305fa21852532c4076f30fdbaac64f0e34123f32dcb60e081ac0f38fbe","argumentsExported":false},"dropInBasenames":["90-native-engine.conf","entrypoint.conf","reporting.conf"],"serviceReceipt":{"exitCode":0,"stdoutBytes":1235,"stderrBytes":0,"stdoutSha256":"4a9fe3e51931a99ffcb632d29672dae7d09307a06f83acbeb388708aa82b9817","stderrSha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"},"publicStatus":{"sha256":"76a0bf5fb7af628d839f28ade8ab1c5da4f113aa05545b8bc83e5e31af47bc19","accountId":"poe-3123e352-4581-455b-85db-acd7e825e99e","inceptionAt":"2026-10-26T22:07:36.212Z","release":"bce3d22bb434eb429aafacb788a18f39ec189c1b","strategy":"UNIMPLEMENTED_FLOW_BLOCKED","generatedAt":"2026-10-29T01:49:54.048Z","entriesDisabled":true,"flowVerified":false,"mode":"PAPER","liveTrading":false},"currentReleaseLink":null,"currentCgroup":{"available":false,"absent":true},"managerJournal":[],"journalReceipt":{"exitCode":1,"stdoutBytes":0,"stderrBytes":62,"stdoutSha256":"e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855","stderrSha256":"69290b924ebefd68d1806a463f5c072523b1c5ed4c35e4096eee215ff5916e2e"},"financialDatabaseOpened":false,"credentialReads":0,"serviceChanges":0,"providerRequests":0}
+read-original-lifecycle	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	﻿2026-10-29T01:54:21.7405698Z Post job cleanup.
+read-original-lifecycle	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.8214557Z [command]/usr/bin/git version
+read-original-lifecycle	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.8247672Z git version 2.43.0
+read-original-lifecycle	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.8280095Z Temporarily overriding HOME='/opt/mm-ec2-admin-runner/_work/_temp/32706581-9c12-4f53-bdb1-0b642dc5ed20' before making global git config changes
+read-original-lifecycle	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.8281733Z Adding repository directory to the temporary git global config as a safe directory
+read-original-lifecycle	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.8283990Z [command]/usr/bin/git config --global --add safe.directory /opt/mm-ec2-admin-runner/_work/meme-machine-admin/meme-machine-admin
+read-original-lifecycle	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.8316092Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+read-original-lifecycle	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.8344553Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+read-original-lifecycle	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.8521788Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+read-original-lifecycle	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.8549798Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+read-original-lifecycle	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.8728795Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+read-original-lifecycle	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:54:21.8756598Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+read-original-lifecycle	Complete job	﻿2026-10-29T01:54:21.9093123Z Cleaning up orphan processes
+read-original-lifecycle	Complete job	2026-10-29T01:54:21.9571345Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11d5960a326750d5838078e36cf38b85af677262. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

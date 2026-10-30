@@ -1,0 +1,5926 @@
+{
+  "schemaVersion": 1,
+  "outcome": "STANDING_AUDIT_INCOMPLETE",
+  "reason": null,
+  "startedAt": 1793121278248,
+  "completedAt": 1793121375706,
+  "elapsedMs": 97458.056981,
+  "streamAttempted": true,
+  "streamReserved": true,
+  "physicalSettled": true,
+  "preflight": {
+    "startedAt": 1793121278309,
+    "completedAt": 1793121278706,
+    "scope": {
+      "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+      "pool": "DJQn3LTe85fYUBGXiQ9XzNJ3HGxYDmgBQPpVUzhrKwAw",
+      "baseUnits": "1",
+      "minSlot": 462151282,
+      "supportedPoolEvidence": "UNVERIFIED_ADDRESS_SEED_FROM_RETAINED_HINT; CURRENT_FULL_SUPPORT_REQUIRED"
+    },
+    "verifiedSwap": {
+      "signature": "4fKnQCGbYDAXuyTRa56cYxCyodD8LnR9biCrisDD1DwFUAeV4RXsfYP4zdWAdfeRTqLeUNEtQ5ELrA7UW5WReAg6",
+      "slot": 462151282,
+      "blockTime": 1793121276,
+      "trades": [
+        {
+          "identity": {
+            "signature": "4fKnQCGbYDAXuyTRa56cYxCyodD8LnR9biCrisDD1DwFUAeV4RXsfYP4zdWAdfeRTqLeUNEtQ5ELrA7UW5WReAg6",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 4,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "pool": "DJQn3LTe85fYUBGXiQ9XzNJ3HGxYDmgBQPpVUzhrKwAw",
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "trader": "ETi8n2aRep6cfgUHhCkd2r7QL9oc6xaTv66c8zCLgp6h",
+          "side": "buy",
+          "tokenUnits": "26739",
+          "curveQuoteLamports": "226467",
+          "userQuoteLamports": "227148",
+          "fees": {
+            "lp_fee": "453",
+            "protocol_fee": "114",
+            "coin_creator_fee": "114",
+            "cashback": "0",
+            "buyback_fee": "57",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "slot": 462151282,
+          "identityKey": "4fKnQCGbYDAXuyTRa56cYxCyodD8LnR9biCrisDD1DwFUAeV4RXsfYP4zdWAdfeRTqLeUNEtQ5ELrA7UW5WReAg6:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:4:outer:6:0",
+          "chainBlockTime": 1793121276,
+          "commitment": "confirmed",
+          "providerReceivedAt": null,
+          "availableAt": 1793121278693,
+          "transferChecks": {
+            "baseTransfer": true,
+            "userQuoteTransfer": true
+          },
+          "fingerprint": "72ee144740c5675e841b7c5cd1d8f3b3933889888313c39d024e8ab88ff1ec9a",
+          "normalizedForStrategy": false,
+          "limitations": [
+            "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+            "The strategy quoteLamports economic convention is not frozen by this mapper.",
+            "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+          ]
+        }
+      ]
+    },
+    "history": {
+      "historyAvailableAt": 1793121278576,
+      "oldestAt": 1793120994000,
+      "spanMs": 284576,
+      "poolAddressTransactionsLast75s": 16,
+      "expectedEnrichmentUpperBound": 16,
+      "maximumAllowedEnrichments": 18,
+      "projectionOnly": true,
+      "swapsNotInferredFromAddressCounts": true
+    },
+    "checked": [
+      {
+        "signature": "4fKnQCGbYDAXuyTRa56cYxCyodD8LnR9biCrisDD1DwFUAeV4RXsfYP4zdWAdfeRTqLeUNEtQ5ELrA7UW5WReAg6",
+        "compiledSelectedSwaps": 1
+      }
+    ],
+    "currentPoolAccounts": "REQUIRES_FRESH_PREWARM",
+    "entryEligibility": "PUMP_ORIGIN_AND_ENTRY_AGE_UNVERIFIED; no entry permitted"
+  },
+  "capture": {
+    "openedAt": 1793121289959,
+    "logicalCutoff": {
+      "enabled": true,
+      "durationMs": 75000,
+      "logicalCutoffAt": 1793121364959,
+      "logicalCutoffMonotonicAt": 87631.79329,
+      "exclusive": true,
+      "lastAcceptedInformationAt": 1793121364945,
+      "lastAcceptedTradeAt": 1793121347176,
+      "lastAcceptedPriceAt": 1793121364945,
+      "admittedObservationEndAt": 1793121364959,
+      "admissionClosedAt": 1793121364960,
+      "admissionClosedMonotonicAt": 87633.041142,
+      "transportStopRequestedAt": 1793121364960,
+      "transportStopRequestedMonotonicAt": 87633.4113,
+      "transportSettledAt": 1793121364962,
+      "transportSettledMonotonicAt": 87634.602576,
+      "socketBytesAtStop": 68057169,
+      "applicationBytesAtStop": 67881872,
+      "socketBytesAfterStop": 0,
+      "applicationBytesAfterStop": 0,
+      "drainFrames": 0,
+      "drainApplicationBytes": 0,
+      "postCutoffFrames": 0,
+      "postCutoffApplicationBytes": 0,
+      "transportTimingGuarantee": "Logical data admission is bounded; actual OS/socket closure may occur later and is measured separately."
+    },
+    "openMs": 75001,
+    "normalizedEvents": 11,
+    "normalizedBuys": 11,
+    "normalizedSells": 0,
+    "pending": 0,
+    "qualityGaps": [],
+    "firstQualityFailure": null,
+    "socketBytes": 68057169,
+    "applicationBytes": 67881872,
+    "protection": {
+      "everyMs": 2000,
+      "attempts": 39,
+      "unavailable": 0,
+      "unavailableQuoteFraction": 0,
+      "pricingCacheUnavailableFraction": 0.014533333333333287,
+      "missedSchedules": 0,
+      "maxCompletedEvaluationGapMs": 2046,
+      "p95CompletedEvaluationGapMs": 2042,
+      "maxUsableEvaluationGapMs": 2046,
+      "maximumScheduleDelayMs": 7,
+      "gaps": [],
+      "serviceQuality": "NO_PROTECTION_GAP_OBSERVED",
+      "outcomes": [
+        {
+          "scheduledAt": 1793121289959,
+          "requestedAt": 1793121289966,
+          "availableAt": 1793121290187,
+          "pricingReturnedAt": 1793121290186,
+          "decisionAt": 1793121290187,
+          "deadlineAt": 1793121293959,
+          "startDelayMs": 7,
+          "requests": 1,
+          "quoteAgeAtUseMs": 30,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121291959,
+          "requestedAt": 1793121291961,
+          "availableAt": 1793121292048,
+          "pricingReturnedAt": 1793121292048,
+          "decisionAt": 1793121292048,
+          "deadlineAt": 1793121294187,
+          "startDelayMs": 2,
+          "requests": 1,
+          "quoteAgeAtUseMs": 32,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121293959,
+          "requestedAt": 1793121293962,
+          "availableAt": 1793121294085,
+          "pricingReturnedAt": 1793121294085,
+          "decisionAt": 1793121294085,
+          "deadlineAt": 1793121296048,
+          "startDelayMs": 3,
+          "requests": 1,
+          "quoteAgeAtUseMs": 23,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121295959,
+          "requestedAt": 1793121295603,
+          "availableAt": 1793121295731,
+          "pricingReturnedAt": 1793121295731,
+          "decisionAt": 1793121295731,
+          "deadlineAt": 1793121298085,
+          "startDelayMs": -356,
+          "requests": 1,
+          "quoteAgeAtUseMs": 26,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121297606,
+          "requestedAt": 1793121297607,
+          "availableAt": 1793121297707,
+          "pricingReturnedAt": 1793121297707,
+          "decisionAt": 1793121297707,
+          "deadlineAt": 1793121299731,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 20,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121299606,
+          "requestedAt": 1793121299607,
+          "availableAt": 1793121299685,
+          "pricingReturnedAt": 1793121299684,
+          "decisionAt": 1793121299684,
+          "deadlineAt": 1793121301707,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 20,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121301606,
+          "requestedAt": 1793121301608,
+          "availableAt": 1793121301727,
+          "pricingReturnedAt": 1793121301727,
+          "decisionAt": 1793121301727,
+          "deadlineAt": 1793121303685,
+          "startDelayMs": 2,
+          "requests": 1,
+          "quoteAgeAtUseMs": 42,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121303606,
+          "requestedAt": 1793121303607,
+          "availableAt": 1793121303727,
+          "pricingReturnedAt": 1793121303727,
+          "decisionAt": 1793121303727,
+          "deadlineAt": 1793121305727,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 27,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121305606,
+          "requestedAt": 1793121305608,
+          "availableAt": 1793121305718,
+          "pricingReturnedAt": 1793121305717,
+          "decisionAt": 1793121305717,
+          "deadlineAt": 1793121307727,
+          "startDelayMs": 2,
+          "requests": 1,
+          "quoteAgeAtUseMs": 23,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121307606,
+          "requestedAt": 1793121307608,
+          "availableAt": 1793121307704,
+          "pricingReturnedAt": 1793121307703,
+          "decisionAt": 1793121307704,
+          "deadlineAt": 1793121309718,
+          "startDelayMs": 2,
+          "requests": 1,
+          "quoteAgeAtUseMs": 23,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121309606,
+          "requestedAt": 1793121309607,
+          "availableAt": 1793121309683,
+          "pricingReturnedAt": 1793121309683,
+          "decisionAt": 1793121309683,
+          "deadlineAt": 1793121311704,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 20,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121311606,
+          "requestedAt": 1793121311608,
+          "availableAt": 1793121311710,
+          "pricingReturnedAt": 1793121311710,
+          "decisionAt": 1793121311710,
+          "deadlineAt": 1793121313683,
+          "startDelayMs": 2,
+          "requests": 1,
+          "quoteAgeAtUseMs": 22,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121313606,
+          "requestedAt": 1793121313607,
+          "availableAt": 1793121313684,
+          "pricingReturnedAt": 1793121313683,
+          "decisionAt": 1793121313683,
+          "deadlineAt": 1793121315710,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 22,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121315606,
+          "requestedAt": 1793121315607,
+          "availableAt": 1793121315709,
+          "pricingReturnedAt": 1793121315708,
+          "decisionAt": 1793121315708,
+          "deadlineAt": 1793121317684,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 28,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121317606,
+          "requestedAt": 1793121317607,
+          "availableAt": 1793121317695,
+          "pricingReturnedAt": 1793121317694,
+          "decisionAt": 1793121317695,
+          "deadlineAt": 1793121319709,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 23,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121319606,
+          "requestedAt": 1793121319608,
+          "availableAt": 1793121319696,
+          "pricingReturnedAt": 1793121319696,
+          "decisionAt": 1793121319696,
+          "deadlineAt": 1793121321695,
+          "startDelayMs": 2,
+          "requests": 1,
+          "quoteAgeAtUseMs": 24,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121321606,
+          "requestedAt": 1793121321607,
+          "availableAt": 1793121321671,
+          "pricingReturnedAt": 1793121321671,
+          "decisionAt": 1793121321671,
+          "deadlineAt": 1793121323696,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 14,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121323606,
+          "requestedAt": 1793121323608,
+          "availableAt": 1793121323717,
+          "pricingReturnedAt": 1793121323717,
+          "decisionAt": 1793121323717,
+          "deadlineAt": 1793121325671,
+          "startDelayMs": 2,
+          "requests": 1,
+          "quoteAgeAtUseMs": 24,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121325606,
+          "requestedAt": 1793121325606,
+          "availableAt": 1793121325678,
+          "pricingReturnedAt": 1793121325678,
+          "decisionAt": 1793121325678,
+          "deadlineAt": 1793121327717,
+          "startDelayMs": 0,
+          "requests": 1,
+          "quoteAgeAtUseMs": 18,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121327606,
+          "requestedAt": 1793121327606,
+          "availableAt": 1793121327677,
+          "pricingReturnedAt": 1793121327677,
+          "decisionAt": 1793121327677,
+          "deadlineAt": 1793121329678,
+          "startDelayMs": 0,
+          "requests": 1,
+          "quoteAgeAtUseMs": 17,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121329606,
+          "requestedAt": 1793121329607,
+          "availableAt": 1793121329695,
+          "pricingReturnedAt": 1793121329694,
+          "decisionAt": 1793121329694,
+          "deadlineAt": 1793121331677,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 17,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121331606,
+          "requestedAt": 1793121331607,
+          "availableAt": 1793121331693,
+          "pricingReturnedAt": 1793121331693,
+          "decisionAt": 1793121331693,
+          "deadlineAt": 1793121333695,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 24,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121333606,
+          "requestedAt": 1793121333285,
+          "availableAt": 1793121333368,
+          "pricingReturnedAt": 1793121333368,
+          "decisionAt": 1793121333368,
+          "deadlineAt": 1793121335693,
+          "startDelayMs": -321,
+          "requests": 1,
+          "quoteAgeAtUseMs": 21,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121335293,
+          "requestedAt": 1793121335294,
+          "availableAt": 1793121335381,
+          "pricingReturnedAt": 1793121335381,
+          "decisionAt": 1793121335381,
+          "deadlineAt": 1793121337368,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 26,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121337293,
+          "requestedAt": 1793121337293,
+          "availableAt": 1793121337378,
+          "pricingReturnedAt": 1793121337377,
+          "decisionAt": 1793121337378,
+          "deadlineAt": 1793121339381,
+          "startDelayMs": 0,
+          "requests": 1,
+          "quoteAgeAtUseMs": 20,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121339293,
+          "requestedAt": 1793121339294,
+          "availableAt": 1793121339388,
+          "pricingReturnedAt": 1793121339388,
+          "decisionAt": 1793121339388,
+          "deadlineAt": 1793121341378,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 25,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121341293,
+          "requestedAt": 1793121341293,
+          "availableAt": 1793121341376,
+          "pricingReturnedAt": 1793121341375,
+          "decisionAt": 1793121341376,
+          "deadlineAt": 1793121343388,
+          "startDelayMs": 0,
+          "requests": 1,
+          "quoteAgeAtUseMs": 26,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121343293,
+          "requestedAt": 1793121343293,
+          "availableAt": 1793121343366,
+          "pricingReturnedAt": 1793121343365,
+          "decisionAt": 1793121343366,
+          "deadlineAt": 1793121345376,
+          "startDelayMs": 0,
+          "requests": 1,
+          "quoteAgeAtUseMs": 21,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121345293,
+          "requestedAt": 1793121345295,
+          "availableAt": 1793121345399,
+          "pricingReturnedAt": 1793121345398,
+          "decisionAt": 1793121345399,
+          "deadlineAt": 1793121347366,
+          "startDelayMs": 2,
+          "requests": 1,
+          "quoteAgeAtUseMs": 20,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121347293,
+          "requestedAt": 1793121346850,
+          "availableAt": 1793121346935,
+          "pricingReturnedAt": 1793121346935,
+          "decisionAt": 1793121346935,
+          "deadlineAt": 1793121349399,
+          "startDelayMs": -443,
+          "requests": 1,
+          "quoteAgeAtUseMs": 22,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121348855,
+          "requestedAt": 1793121348855,
+          "availableAt": 1793121348961,
+          "pricingReturnedAt": 1793121348960,
+          "decisionAt": 1793121348960,
+          "deadlineAt": 1793121350935,
+          "startDelayMs": 0,
+          "requests": 1,
+          "quoteAgeAtUseMs": 32,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121350855,
+          "requestedAt": 1793121350856,
+          "availableAt": 1793121350939,
+          "pricingReturnedAt": 1793121350939,
+          "decisionAt": 1793121350939,
+          "deadlineAt": 1793121352961,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 23,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121352855,
+          "requestedAt": 1793121352856,
+          "availableAt": 1793121352928,
+          "pricingReturnedAt": 1793121352928,
+          "decisionAt": 1793121352928,
+          "deadlineAt": 1793121354939,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 16,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121354855,
+          "requestedAt": 1793121354857,
+          "availableAt": 1793121354938,
+          "pricingReturnedAt": 1793121354938,
+          "decisionAt": 1793121354938,
+          "deadlineAt": 1793121356928,
+          "startDelayMs": 2,
+          "requests": 1,
+          "quoteAgeAtUseMs": 22,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121356855,
+          "requestedAt": 1793121356856,
+          "availableAt": 1793121356955,
+          "pricingReturnedAt": 1793121356955,
+          "decisionAt": 1793121356955,
+          "deadlineAt": 1793121358938,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 31,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121358855,
+          "requestedAt": 1793121358856,
+          "availableAt": 1793121358927,
+          "pricingReturnedAt": 1793121358927,
+          "decisionAt": 1793121358927,
+          "deadlineAt": 1793121360955,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 18,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121360855,
+          "requestedAt": 1793121360856,
+          "availableAt": 1793121360963,
+          "pricingReturnedAt": 1793121360963,
+          "decisionAt": 1793121360963,
+          "deadlineAt": 1793121362927,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 23,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121362855,
+          "requestedAt": 1793121362856,
+          "availableAt": 1793121362956,
+          "pricingReturnedAt": 1793121362955,
+          "decisionAt": 1793121362956,
+          "deadlineAt": 1793121364963,
+          "startDelayMs": 1,
+          "requests": 1,
+          "quoteAgeAtUseMs": 36,
+          "usable": true,
+          "late": false,
+          "reason": null
+        },
+        {
+          "scheduledAt": 1793121364855,
+          "requestedAt": 1793121364855,
+          "availableAt": 1793121364945,
+          "pricingReturnedAt": 1793121364945,
+          "decisionAt": 1793121364945,
+          "deadlineAt": 1793121366956,
+          "startDelayMs": 0,
+          "requests": 1,
+          "quoteAgeAtUseMs": 20,
+          "usable": true,
+          "late": false,
+          "reason": null
+        }
+      ]
+    },
+    "sharedScheduler": {
+      "policy": "protected-deadline-proposed",
+      "schedulerWaits": 738,
+      "schedulerRefusals": 0,
+      "earlyEvaluations": 3,
+      "earlyEvaluationCap": 5,
+      "totalProtectionCap": 43,
+      "phaseChangesAreEquivalent": false,
+      "acceptedMaximumCompletedEvaluationGapMs": null,
+      "proposedTimingStandard": {
+        "status": "PROPOSED_UNAPPROVED",
+        "targetMs": 2000,
+        "maximumUsableEvaluationGapMs": 4000,
+        "quoteAgeMs": 2000,
+        "sourceAgeMs": 30000,
+        "enrichmentDeadlineMs": 5000
+      },
+      "candidateSuspended": false,
+      "candidateSuspensions": [],
+      "timingContract": {
+        "targetPollingMs": 2000,
+        "quoteAgeAtUseMs": 2000,
+        "sourceStateAgeMs": 30000,
+        "enrichmentDelayMs": 1000,
+        "enrichmentCompletionDeadlineMs": 5000,
+        "postProcessingReserveMs": 200,
+        "dispatchQuantumMs": 100
+      },
+      "completedGapsOverTarget": 14,
+      "maximumTargetStartMissMs": 7
+    }
+  },
+  "audit": {
+    "classification": "BOUNDED_INDEPENDENT_CHAIN_AND_CAPTURED_HINT_AUDIT",
+    "complete": false,
+    "completeScope": "Exact nominal chain interval plus every explicitly recorded selected signature; not proof of receive-window completeness",
+    "applicationAvailabilityTarget": {
+      "startAt": 1793121290000,
+      "endAt": 1793121350000,
+      "interval": "[startAt,endAt)",
+      "timeBasis": "fully validated application availability; never chain or feed time"
+    },
+    "chainAuditTarget": {
+      "startAt": 1793121290000,
+      "endAt": 1793121350000,
+      "interval": "[startAt,endAt)",
+      "boundaryExclusionMs": 0,
+      "timeBasis": "on-chain blockTime seconds; separate from the application window"
+    },
+    "limits": {
+      "historyPages": 2,
+      "signaturesPerPage": 50,
+      "independentTransactions": 20,
+      "finalityRechecks": 2,
+      "requestUnits": 24,
+      "elapsedMs": 25000
+    },
+    "startedAt": 1793121364969,
+    "history": [
+      {
+        "blockTime": 1793121363,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "TQxmTvNxKZDygbVwbZLDx2G9j9qeqLLww2VnBnQZQ6XToY7rmeKQu7ZJiD5iKKtZLKshWS2wDsnzqMfxUZJSwKj",
+        "slot": 462151689,
+        "transactionIndex": 365
+      },
+      {
+        "blockTime": 1793121355,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "4YKkw52TipD1JdkRxpLg29s5cFGCD3JcSPuKWH55YYPJVfG3e1NtQArJD31DkAU7UETtsJ7ULpLNsdgXfzMe48M2",
+        "slot": 462151652,
+        "transactionIndex": 386
+      },
+      {
+        "blockTime": 1793121355,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "526P6YLdFAFofscRNfZeEZSxeLaNWh5ii82RvLG4BZd3iyyAo2av9fQFVhhquiYrwQxAPNEhnyj1xAGtFZxmwAUL",
+        "slot": 462151652,
+        "transactionIndex": 101
+      },
+      {
+        "blockTime": 1793121345,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "3PfPQ2xfT8wxFhFyAzaPAc6jWBqVKsTqVzMrb4p8q4UxXjMwEYX7zYccuaHNXDuoiW4L71GSwNCdcRwtbCTe278c",
+        "slot": 462151604,
+        "transactionIndex": 50
+      },
+      {
+        "blockTime": 1793121337,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "XrCh4SWxahbzyQWEQNFe9GKY1dDwfEokpUuVbzQ9KZZL2ovLxEBTEGvw7QaEDGGcynEt2GeDghXGcYrffJxvpMA",
+        "slot": 462151562,
+        "transactionIndex": 292
+      },
+      {
+        "blockTime": 1793121332,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "4cSd2AMRJw3qUAukdMUxWznUk7uj8Pk8WNAEVh8uxNVrKpAA1fH7mmRe75ooyzRNzSryNJFSxxnk9MVpVJff4GhB",
+        "slot": 462151540,
+        "transactionIndex": 399
+      },
+      {
+        "blockTime": 1793121325,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "2K7QbqS57qbBFghYKoDSNHCXTMgFGu7VfUHRXVFVsgxvcLEcPQHSLBSyVMwtRFjZDoPPYAEtNSkevzTwoSFy4ftq",
+        "slot": 462151507,
+        "transactionIndex": 192
+      },
+      {
+        "blockTime": 1793121324,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "pSjxBAuDsFGSQK5iFbky5knLFcXQs6jLEesJsLyTGrYzNEoHvBABDEbudVmq6JYcLscQZqsxFTfLq6uisZ7FBcV",
+        "slot": 462151505,
+        "transactionIndex": 249
+      },
+      {
+        "blockTime": 1793121318,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "aT4M1yKF3AHCCgwb2tTzHbfrbyavytFDYPVDCrBPPkLbvNt16Atc1CJuwFW9YJ3SnKBMHPgTCgMnPKGPzzZ4wzf",
+        "slot": 462151478,
+        "transactionIndex": 64
+      },
+      {
+        "blockTime": 1793121312,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "3YuA263Moqxbmeqarmavn1H6arQZf9tSToLAGgrADb4rik1cRdqwXCfz8L3okbsShfW4FS6C6DMwRZGAVSExztcv",
+        "slot": 462151450,
+        "transactionIndex": 508
+      },
+      {
+        "blockTime": 1793121306,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "2XxViSzRrkMUBHh4TxtvFmAkTVrYmMXAR3PwwNk51Nw8CN6qVX6EBC9LVdkTiUuZEmmaEU5AqsbQe7nWtk6ah9Yk",
+        "slot": 462151422,
+        "transactionIndex": 428
+      },
+      {
+        "blockTime": 1793121300,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "4VqUkwkDdoUFk9Xt7iGrdDLjn1ujBwCB77gRpqpEBE9gbsbkxUTy7nGc3kdT9iSonL4kgzxWBNACKW7owaZDnTnd",
+        "slot": 462151394,
+        "transactionIndex": 368
+      },
+      {
+        "blockTime": 1793121294,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "5Czgd2LaMVSbrFrtR5JzmYx1X7VdrLezZ3C5akzDgqtu9pffwm9eLMqxm6zifzG1eXDfMGM1ij4q4KSdxmyEYqEj",
+        "slot": 462151367,
+        "transactionIndex": 234
+      },
+      {
+        "blockTime": 1793121294,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "4DUwR5wUjRx4D1xrj4UNezoSvBcK4Jn7Mphyaskd3GqcuxVJWkgK3kMBfBp54zptdrc25NzHgzSEwRzqet2mzwJH",
+        "slot": 462151365,
+        "transactionIndex": 349
+      },
+      {
+        "blockTime": 1793121288,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "3UrMcUWQEz4L2owRVvm32XpDYfhzvpDEtkihM6CkPx5ANvEfZpFPFPM4Q1WjJDtmkdhbDgwavUncy6XzqD6GZbhS",
+        "slot": 462151338,
+        "transactionIndex": 394
+      },
+      {
+        "blockTime": 1793121283,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "3q5P3MjvB6PFN7iHXEhkogpyyoJkp5ZdxWWHKoB7VGHtv7JaDpZ9EihXiyzgquy9Z2j59q2Givj3cUfiUi9c86Kq",
+        "slot": 462151312,
+        "transactionIndex": 131
+      },
+      {
+        "blockTime": 1793121279,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "2e9xnfLtJvybymcitpkzDDVTMtJ6G3TCfj9wMJhZQ9oTPuhwXPaP3raaS5APPKapPz7b1R6uBAmfphTQAkgT5G9v",
+        "slot": 462151297,
+        "transactionIndex": 132
+      },
+      {
+        "blockTime": 1793121276,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "4fKnQCGbYDAXuyTRa56cYxCyodD8LnR9biCrisDD1DwFUAeV4RXsfYP4zdWAdfeRTqLeUNEtQ5ELrA7UW5WReAg6",
+        "slot": 462151282,
+        "transactionIndex": 202
+      },
+      {
+        "blockTime": 1793121270,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "2qKYzq1F6Ji7cKs1pJowVzAJwZvBh2iPCprLDhjNtecA3AWv6XsBGRaMteNhntYD6qpvfrKdhf1KjXRjF5i8ngoD",
+        "slot": 462151255,
+        "transactionIndex": 415
+      },
+      {
+        "blockTime": 1793121264,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "5Z7QqtNGpAwoVRPzQH5qvzgBQiDMBsEukrL7UfcFT1sTvgn4UUY6qJr4J37tzCFkuUPH4CRRyiT3iJRMF8dmLao7",
+        "slot": 462151227,
+        "transactionIndex": 38
+      },
+      {
+        "blockTime": 1793121263,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "2YiysShuRxwUJSUWzGYm5U6japSidsphsyz6i2T6gTwqWCpB31Jr1HCoMFWGi7QMx4j76d25pYv9EySJqqMggBCK",
+        "slot": 462151221,
+        "transactionIndex": 37
+      },
+      {
+        "blockTime": 1793121258,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "5boKB7jQ68mAajUTyvdZ48q3HswexPFKyhscwPfxPFddGMah7UXepAjAbQLL4SHuxaKw5ELCB6gtesn34ZDHxG2W",
+        "slot": 462151198,
+        "transactionIndex": 329
+      },
+      {
+        "blockTime": 1793121249,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "Cu16NPN4JYQNjCcNQ8j6g7Fmihk7kR5GSroeb9wbgbb8gim6GSPJksacZWayrzp1VCpyDP4Q4JHwmg9HFyYWy1k",
+        "slot": 462151158,
+        "transactionIndex": 193
+      },
+      {
+        "blockTime": 1793121249,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "DnhGPZdeQNYLyJmgZq1VHvjSeNxVNSeZ1YjjnEoiR7kAX4sJgLbknCKYBEoCCsA2Zg9Pzotk1pPE1UePtYDTooy",
+        "slot": 462151157,
+        "transactionIndex": 177
+      },
+      {
+        "blockTime": 1793121241,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "3AsTrPQqqYqFQ5mrvE82EEVJFJCd4Re3nBnuFevxKWF48c5TRWkctrP1Jr4xNezdWQ3S14cnq7zWzM8YUqg9BKCM",
+        "slot": 462151120,
+        "transactionIndex": 352
+      },
+      {
+        "blockTime": 1793121235,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "4j1on8RmodvqNfahkrTa2ejEByHLkqtETT5BhKGUpxgCcK6BmoyEvvPoqFnrnSZ5n6QLFSkjKQahU2js61Js3Lfw",
+        "slot": 462151088,
+        "transactionIndex": 42
+      },
+      {
+        "blockTime": 1793121228,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "46bRLYw4fb4cCSY4yLw8SB5GMQUG4NmTKYKBKwxc1gbaaB4NZbX4komSrAT3QHW3suQaGfvZWQ8LY1m4GUiH52sE",
+        "slot": 462151055,
+        "transactionIndex": 310
+      },
+      {
+        "blockTime": 1793121227,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "5U86oXovGgN6nwCShEzTFg7wmL2G5stu6aTyyzCjsDxBTNSdxTEgRHXE1ShJHL4zoBVTtm3A3qfGXhPb8d47SbGq",
+        "slot": 462151049,
+        "transactionIndex": 134
+      },
+      {
+        "blockTime": 1793121222,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "66D1Sci3ngytWhV4ExCcAeqVH7M7BQo1MYDefAVGfm2Cfaamy8hNbmvEejAJ2kZEUYtYUC8h9G6M4UzWtWaLzfYy",
+        "slot": 462151028,
+        "transactionIndex": 112
+      },
+      {
+        "blockTime": 1793121219,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "5LPXfYhoeWkE99JuX6GkBBd4BuLR1zDqRGabzJU95RULqJSSYYDHzKaueE3zef9zi11mKSZKZ372PPuNKaNosiFF",
+        "slot": 462151014,
+        "transactionIndex": 79
+      },
+      {
+        "blockTime": 1793121210,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "5Nxi5gboDrJGYoj95tQBpKDFyGLAfATpcXEEZkoUxzSKrpmsXHzEXiN3zXk9y9kmy8GW5w1otfCL4oiunyYWixPt",
+        "slot": 462150972,
+        "transactionIndex": 221
+      },
+      {
+        "blockTime": 1793121204,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "63n8ocVDBSeN8GB9QSh6echsiscdEecNk8XUb8o335Z4Xs3NFcbnyGnjHCogA3bTWMPQ95XvCksav2WXDnzboq1Y",
+        "slot": 462150941,
+        "transactionIndex": 407
+      },
+      {
+        "blockTime": 1793121204,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "57BHZGWD5HNJ8Q3oGALLSAMBNqNwF2ZD75kCuA3fjgd8BDQU35GM3Cv1B3Qnsvei8taDhm2enBriWgVXZgQeyZs3",
+        "slot": 462150940,
+        "transactionIndex": 1324
+      },
+      {
+        "blockTime": 1793121198,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "2cjLVhQZvRqAZs6tyZ2UZTbTnhqFqh5LntEJA6n8fJNJhVB1xyE5cvzVE6VE5mLbuAFp1xmx52oomqMNWmTJ6u5w",
+        "slot": 462150912,
+        "transactionIndex": 568
+      },
+      {
+        "blockTime": 1793121192,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "YREM1CG74MLUS24kLQw22rizacKomsNsbyR7dydcTrDEZtjZ5Qo55FQCT4qUc78ey9aDfRfRSF8KxGozXZga6to",
+        "slot": 462150889,
+        "transactionIndex": 381
+      },
+      {
+        "blockTime": 1793121190,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "2hwvnyAyK7AEL2M5t18ePn31FXYEKjkGfHHAPy4e3yXKCBPyU8HXRVyA2UaxhUACGJWRbtjrcZKvXdHVKJ1cb91b",
+        "slot": 462150880,
+        "transactionIndex": 417
+      },
+      {
+        "blockTime": 1793121189,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "4xmYzAnCmt6R1fRiggkG68RgnyGCMeE2eguyYP2T3Y95KJLBwm3C8WXMBYvirHS7v9rFYB615MHs9XU3WcDPzCLe",
+        "slot": 462150876,
+        "transactionIndex": 189
+      },
+      {
+        "blockTime": 1793121180,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "4CJ9T3QhXnD9F7QNZQsbREg4pgXLCKHRg9TEvWX74zDAJ72mZCS8ue5xTX2vKxTDxmBTmSsq2L6PRNHwt9bzVB9c",
+        "slot": 462150831,
+        "transactionIndex": 275
+      },
+      {
+        "blockTime": 1793121174,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "3QW9Cftb3sKZZ8bsZ3uSVrPGrhF987xMDZRPvbdKyY5Ry9T5UVczbvTvFc82oZGRKhKpVLuScPx8RKUxkxXvQ81f",
+        "slot": 462150804,
+        "transactionIndex": 498
+      },
+      {
+        "blockTime": 1793121174,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "56CgbR5k4mLybcNZsR4PXtfsVvwrXsm7HQVKeLCmaAfPfMRTHj5kJpEthG8dvbDfLtuYkCs4gf1KNYhwXUnK3Wf2",
+        "slot": 462150804,
+        "transactionIndex": 324
+      },
+      {
+        "blockTime": 1793121168,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "szkLLyJHzvkP5hHpzkD5Jr2urVBU23gRUBXXqKeL2MEL5Kpu68rWTbknXhiWcibaFMdWkRX4tNPnFYsofYVCuwa",
+        "slot": 462150774,
+        "transactionIndex": 240
+      },
+      {
+        "blockTime": 1793121159,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "4s4vNJZ72xmGr18GtqN1Kf5tF8QbiYh7Pee9dqCCUTxHR71fRUSWrVHRqxQNJkkNqd8SbBtwpRmUuKRZ4c1uvegz",
+        "slot": 462150735,
+        "transactionIndex": 547
+      },
+      {
+        "blockTime": 1793121156,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "3HiN2mUkqJzgFuhK31wiANnRfmQipShJmtUbFRqBfGaPWahP77sttYkW7GWr9vyaEkFmG573PU66yBJxjK4WFwqu",
+        "slot": 462150720,
+        "transactionIndex": 1300
+      },
+      {
+        "blockTime": 1793121144,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "5mM5E3RFCNKwCLPsYfR5fcFevPgYGZDRLW6TWnRvqg3G1D8ypukc2mL323E59drJLd3MEQSEMBSQMuu5xMvG69j8",
+        "slot": 462150662,
+        "transactionIndex": 854
+      },
+      {
+        "blockTime": 1793121144,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "5wcDE4NPm6qGiGZP5KZWiWYf1VtG3pkVQ4ApopiGJjEKTzoXt5NJmJn3gv4zdhxJEen31gJ4diTTDtErLcAB71Gu",
+        "slot": 462150661,
+        "transactionIndex": 672
+      },
+      {
+        "blockTime": 1793121138,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "3QHSWyisspSxVKw1UBEbcZK7Zexkumuu72MbKSUhXiZJ1iUg9xykuFzDJ5urNhYVXt8ZKzxZvb95cVqBq7dHnzgY",
+        "slot": 462150632,
+        "transactionIndex": 1106
+      },
+      {
+        "blockTime": 1793121132,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "3LJPix7s4Cjp44LohXnRA7a6kU1Nu4oyLxeNCa4Qto4ZUnKZ5QmFuo4Fa72SgXdNibEahFHnuGqLnBUcX6aEq1kN",
+        "slot": 462150603,
+        "transactionIndex": 364
+      },
+      {
+        "blockTime": 1793121126,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "5m4VbHregE6ZtgdR3KkYxTaCszHCZbLMXFdvN33NMwfHodVXZ8QWFgPndJnAbSy2bKoxS2nicJBLsi4919BRUBtN",
+        "slot": 462150576,
+        "transactionIndex": 114
+      },
+      {
+        "blockTime": 1793121120,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "2N6mWDh7KVyHvnwmSdkBgFfSXbB3auoE6dtwpncy2iVwmTLozyWfsT83UEg99TZcMkvjaVHNcmXC6m18yLpUxBvv",
+        "slot": 462150548,
+        "transactionIndex": 419
+      },
+      {
+        "blockTime": 1793121115,
+        "confirmationStatus": "finalized",
+        "err": null,
+        "memo": null,
+        "signature": "3kcUWnaFAdDRukjxHji15YGX6zH3EAFUgK8tSpqEHysLAtW7WJvhnyTcid2nx6vr9rr8AVong8E3nt2QpQhie8oG",
+        "slot": 462150522,
+        "transactionIndex": 19
+      }
+    ],
+    "historyPages": [
+      {
+        "page": 0,
+        "requestedAt": 1793121364969,
+        "availableAt": 1793121365169,
+        "before": null,
+        "limit": 50,
+        "rows": [
+          {
+            "blockTime": 1793121363,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "TQxmTvNxKZDygbVwbZLDx2G9j9qeqLLww2VnBnQZQ6XToY7rmeKQu7ZJiD5iKKtZLKshWS2wDsnzqMfxUZJSwKj",
+            "slot": 462151689,
+            "transactionIndex": 365
+          },
+          {
+            "blockTime": 1793121355,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "4YKkw52TipD1JdkRxpLg29s5cFGCD3JcSPuKWH55YYPJVfG3e1NtQArJD31DkAU7UETtsJ7ULpLNsdgXfzMe48M2",
+            "slot": 462151652,
+            "transactionIndex": 386
+          },
+          {
+            "blockTime": 1793121355,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "526P6YLdFAFofscRNfZeEZSxeLaNWh5ii82RvLG4BZd3iyyAo2av9fQFVhhquiYrwQxAPNEhnyj1xAGtFZxmwAUL",
+            "slot": 462151652,
+            "transactionIndex": 101
+          },
+          {
+            "blockTime": 1793121345,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "3PfPQ2xfT8wxFhFyAzaPAc6jWBqVKsTqVzMrb4p8q4UxXjMwEYX7zYccuaHNXDuoiW4L71GSwNCdcRwtbCTe278c",
+            "slot": 462151604,
+            "transactionIndex": 50
+          },
+          {
+            "blockTime": 1793121337,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "XrCh4SWxahbzyQWEQNFe9GKY1dDwfEokpUuVbzQ9KZZL2ovLxEBTEGvw7QaEDGGcynEt2GeDghXGcYrffJxvpMA",
+            "slot": 462151562,
+            "transactionIndex": 292
+          },
+          {
+            "blockTime": 1793121332,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "4cSd2AMRJw3qUAukdMUxWznUk7uj8Pk8WNAEVh8uxNVrKpAA1fH7mmRe75ooyzRNzSryNJFSxxnk9MVpVJff4GhB",
+            "slot": 462151540,
+            "transactionIndex": 399
+          },
+          {
+            "blockTime": 1793121325,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "2K7QbqS57qbBFghYKoDSNHCXTMgFGu7VfUHRXVFVsgxvcLEcPQHSLBSyVMwtRFjZDoPPYAEtNSkevzTwoSFy4ftq",
+            "slot": 462151507,
+            "transactionIndex": 192
+          },
+          {
+            "blockTime": 1793121324,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "pSjxBAuDsFGSQK5iFbky5knLFcXQs6jLEesJsLyTGrYzNEoHvBABDEbudVmq6JYcLscQZqsxFTfLq6uisZ7FBcV",
+            "slot": 462151505,
+            "transactionIndex": 249
+          },
+          {
+            "blockTime": 1793121318,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "aT4M1yKF3AHCCgwb2tTzHbfrbyavytFDYPVDCrBPPkLbvNt16Atc1CJuwFW9YJ3SnKBMHPgTCgMnPKGPzzZ4wzf",
+            "slot": 462151478,
+            "transactionIndex": 64
+          },
+          {
+            "blockTime": 1793121312,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "3YuA263Moqxbmeqarmavn1H6arQZf9tSToLAGgrADb4rik1cRdqwXCfz8L3okbsShfW4FS6C6DMwRZGAVSExztcv",
+            "slot": 462151450,
+            "transactionIndex": 508
+          },
+          {
+            "blockTime": 1793121306,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "2XxViSzRrkMUBHh4TxtvFmAkTVrYmMXAR3PwwNk51Nw8CN6qVX6EBC9LVdkTiUuZEmmaEU5AqsbQe7nWtk6ah9Yk",
+            "slot": 462151422,
+            "transactionIndex": 428
+          },
+          {
+            "blockTime": 1793121300,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "4VqUkwkDdoUFk9Xt7iGrdDLjn1ujBwCB77gRpqpEBE9gbsbkxUTy7nGc3kdT9iSonL4kgzxWBNACKW7owaZDnTnd",
+            "slot": 462151394,
+            "transactionIndex": 368
+          },
+          {
+            "blockTime": 1793121294,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "5Czgd2LaMVSbrFrtR5JzmYx1X7VdrLezZ3C5akzDgqtu9pffwm9eLMqxm6zifzG1eXDfMGM1ij4q4KSdxmyEYqEj",
+            "slot": 462151367,
+            "transactionIndex": 234
+          },
+          {
+            "blockTime": 1793121294,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "4DUwR5wUjRx4D1xrj4UNezoSvBcK4Jn7Mphyaskd3GqcuxVJWkgK3kMBfBp54zptdrc25NzHgzSEwRzqet2mzwJH",
+            "slot": 462151365,
+            "transactionIndex": 349
+          },
+          {
+            "blockTime": 1793121288,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "3UrMcUWQEz4L2owRVvm32XpDYfhzvpDEtkihM6CkPx5ANvEfZpFPFPM4Q1WjJDtmkdhbDgwavUncy6XzqD6GZbhS",
+            "slot": 462151338,
+            "transactionIndex": 394
+          },
+          {
+            "blockTime": 1793121283,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "3q5P3MjvB6PFN7iHXEhkogpyyoJkp5ZdxWWHKoB7VGHtv7JaDpZ9EihXiyzgquy9Z2j59q2Givj3cUfiUi9c86Kq",
+            "slot": 462151312,
+            "transactionIndex": 131
+          },
+          {
+            "blockTime": 1793121279,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "2e9xnfLtJvybymcitpkzDDVTMtJ6G3TCfj9wMJhZQ9oTPuhwXPaP3raaS5APPKapPz7b1R6uBAmfphTQAkgT5G9v",
+            "slot": 462151297,
+            "transactionIndex": 132
+          },
+          {
+            "blockTime": 1793121276,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "4fKnQCGbYDAXuyTRa56cYxCyodD8LnR9biCrisDD1DwFUAeV4RXsfYP4zdWAdfeRTqLeUNEtQ5ELrA7UW5WReAg6",
+            "slot": 462151282,
+            "transactionIndex": 202
+          },
+          {
+            "blockTime": 1793121270,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "2qKYzq1F6Ji7cKs1pJowVzAJwZvBh2iPCprLDhjNtecA3AWv6XsBGRaMteNhntYD6qpvfrKdhf1KjXRjF5i8ngoD",
+            "slot": 462151255,
+            "transactionIndex": 415
+          },
+          {
+            "blockTime": 1793121264,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "5Z7QqtNGpAwoVRPzQH5qvzgBQiDMBsEukrL7UfcFT1sTvgn4UUY6qJr4J37tzCFkuUPH4CRRyiT3iJRMF8dmLao7",
+            "slot": 462151227,
+            "transactionIndex": 38
+          },
+          {
+            "blockTime": 1793121263,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "2YiysShuRxwUJSUWzGYm5U6japSidsphsyz6i2T6gTwqWCpB31Jr1HCoMFWGi7QMx4j76d25pYv9EySJqqMggBCK",
+            "slot": 462151221,
+            "transactionIndex": 37
+          },
+          {
+            "blockTime": 1793121258,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "5boKB7jQ68mAajUTyvdZ48q3HswexPFKyhscwPfxPFddGMah7UXepAjAbQLL4SHuxaKw5ELCB6gtesn34ZDHxG2W",
+            "slot": 462151198,
+            "transactionIndex": 329
+          },
+          {
+            "blockTime": 1793121249,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "Cu16NPN4JYQNjCcNQ8j6g7Fmihk7kR5GSroeb9wbgbb8gim6GSPJksacZWayrzp1VCpyDP4Q4JHwmg9HFyYWy1k",
+            "slot": 462151158,
+            "transactionIndex": 193
+          },
+          {
+            "blockTime": 1793121249,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "DnhGPZdeQNYLyJmgZq1VHvjSeNxVNSeZ1YjjnEoiR7kAX4sJgLbknCKYBEoCCsA2Zg9Pzotk1pPE1UePtYDTooy",
+            "slot": 462151157,
+            "transactionIndex": 177
+          },
+          {
+            "blockTime": 1793121241,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "3AsTrPQqqYqFQ5mrvE82EEVJFJCd4Re3nBnuFevxKWF48c5TRWkctrP1Jr4xNezdWQ3S14cnq7zWzM8YUqg9BKCM",
+            "slot": 462151120,
+            "transactionIndex": 352
+          },
+          {
+            "blockTime": 1793121235,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "4j1on8RmodvqNfahkrTa2ejEByHLkqtETT5BhKGUpxgCcK6BmoyEvvPoqFnrnSZ5n6QLFSkjKQahU2js61Js3Lfw",
+            "slot": 462151088,
+            "transactionIndex": 42
+          },
+          {
+            "blockTime": 1793121228,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "46bRLYw4fb4cCSY4yLw8SB5GMQUG4NmTKYKBKwxc1gbaaB4NZbX4komSrAT3QHW3suQaGfvZWQ8LY1m4GUiH52sE",
+            "slot": 462151055,
+            "transactionIndex": 310
+          },
+          {
+            "blockTime": 1793121227,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "5U86oXovGgN6nwCShEzTFg7wmL2G5stu6aTyyzCjsDxBTNSdxTEgRHXE1ShJHL4zoBVTtm3A3qfGXhPb8d47SbGq",
+            "slot": 462151049,
+            "transactionIndex": 134
+          },
+          {
+            "blockTime": 1793121222,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "66D1Sci3ngytWhV4ExCcAeqVH7M7BQo1MYDefAVGfm2Cfaamy8hNbmvEejAJ2kZEUYtYUC8h9G6M4UzWtWaLzfYy",
+            "slot": 462151028,
+            "transactionIndex": 112
+          },
+          {
+            "blockTime": 1793121219,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "5LPXfYhoeWkE99JuX6GkBBd4BuLR1zDqRGabzJU95RULqJSSYYDHzKaueE3zef9zi11mKSZKZ372PPuNKaNosiFF",
+            "slot": 462151014,
+            "transactionIndex": 79
+          },
+          {
+            "blockTime": 1793121210,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "5Nxi5gboDrJGYoj95tQBpKDFyGLAfATpcXEEZkoUxzSKrpmsXHzEXiN3zXk9y9kmy8GW5w1otfCL4oiunyYWixPt",
+            "slot": 462150972,
+            "transactionIndex": 221
+          },
+          {
+            "blockTime": 1793121204,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "63n8ocVDBSeN8GB9QSh6echsiscdEecNk8XUb8o335Z4Xs3NFcbnyGnjHCogA3bTWMPQ95XvCksav2WXDnzboq1Y",
+            "slot": 462150941,
+            "transactionIndex": 407
+          },
+          {
+            "blockTime": 1793121204,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "57BHZGWD5HNJ8Q3oGALLSAMBNqNwF2ZD75kCuA3fjgd8BDQU35GM3Cv1B3Qnsvei8taDhm2enBriWgVXZgQeyZs3",
+            "slot": 462150940,
+            "transactionIndex": 1324
+          },
+          {
+            "blockTime": 1793121198,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "2cjLVhQZvRqAZs6tyZ2UZTbTnhqFqh5LntEJA6n8fJNJhVB1xyE5cvzVE6VE5mLbuAFp1xmx52oomqMNWmTJ6u5w",
+            "slot": 462150912,
+            "transactionIndex": 568
+          },
+          {
+            "blockTime": 1793121192,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "YREM1CG74MLUS24kLQw22rizacKomsNsbyR7dydcTrDEZtjZ5Qo55FQCT4qUc78ey9aDfRfRSF8KxGozXZga6to",
+            "slot": 462150889,
+            "transactionIndex": 381
+          },
+          {
+            "blockTime": 1793121190,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "2hwvnyAyK7AEL2M5t18ePn31FXYEKjkGfHHAPy4e3yXKCBPyU8HXRVyA2UaxhUACGJWRbtjrcZKvXdHVKJ1cb91b",
+            "slot": 462150880,
+            "transactionIndex": 417
+          },
+          {
+            "blockTime": 1793121189,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "4xmYzAnCmt6R1fRiggkG68RgnyGCMeE2eguyYP2T3Y95KJLBwm3C8WXMBYvirHS7v9rFYB615MHs9XU3WcDPzCLe",
+            "slot": 462150876,
+            "transactionIndex": 189
+          },
+          {
+            "blockTime": 1793121180,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "4CJ9T3QhXnD9F7QNZQsbREg4pgXLCKHRg9TEvWX74zDAJ72mZCS8ue5xTX2vKxTDxmBTmSsq2L6PRNHwt9bzVB9c",
+            "slot": 462150831,
+            "transactionIndex": 275
+          },
+          {
+            "blockTime": 1793121174,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "3QW9Cftb3sKZZ8bsZ3uSVrPGrhF987xMDZRPvbdKyY5Ry9T5UVczbvTvFc82oZGRKhKpVLuScPx8RKUxkxXvQ81f",
+            "slot": 462150804,
+            "transactionIndex": 498
+          },
+          {
+            "blockTime": 1793121174,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "56CgbR5k4mLybcNZsR4PXtfsVvwrXsm7HQVKeLCmaAfPfMRTHj5kJpEthG8dvbDfLtuYkCs4gf1KNYhwXUnK3Wf2",
+            "slot": 462150804,
+            "transactionIndex": 324
+          },
+          {
+            "blockTime": 1793121168,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "szkLLyJHzvkP5hHpzkD5Jr2urVBU23gRUBXXqKeL2MEL5Kpu68rWTbknXhiWcibaFMdWkRX4tNPnFYsofYVCuwa",
+            "slot": 462150774,
+            "transactionIndex": 240
+          },
+          {
+            "blockTime": 1793121159,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "4s4vNJZ72xmGr18GtqN1Kf5tF8QbiYh7Pee9dqCCUTxHR71fRUSWrVHRqxQNJkkNqd8SbBtwpRmUuKRZ4c1uvegz",
+            "slot": 462150735,
+            "transactionIndex": 547
+          },
+          {
+            "blockTime": 1793121156,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "3HiN2mUkqJzgFuhK31wiANnRfmQipShJmtUbFRqBfGaPWahP77sttYkW7GWr9vyaEkFmG573PU66yBJxjK4WFwqu",
+            "slot": 462150720,
+            "transactionIndex": 1300
+          },
+          {
+            "blockTime": 1793121144,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "5mM5E3RFCNKwCLPsYfR5fcFevPgYGZDRLW6TWnRvqg3G1D8ypukc2mL323E59drJLd3MEQSEMBSQMuu5xMvG69j8",
+            "slot": 462150662,
+            "transactionIndex": 854
+          },
+          {
+            "blockTime": 1793121144,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "5wcDE4NPm6qGiGZP5KZWiWYf1VtG3pkVQ4ApopiGJjEKTzoXt5NJmJn3gv4zdhxJEen31gJ4diTTDtErLcAB71Gu",
+            "slot": 462150661,
+            "transactionIndex": 672
+          },
+          {
+            "blockTime": 1793121138,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "3QHSWyisspSxVKw1UBEbcZK7Zexkumuu72MbKSUhXiZJ1iUg9xykuFzDJ5urNhYVXt8ZKzxZvb95cVqBq7dHnzgY",
+            "slot": 462150632,
+            "transactionIndex": 1106
+          },
+          {
+            "blockTime": 1793121132,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "3LJPix7s4Cjp44LohXnRA7a6kU1Nu4oyLxeNCa4Qto4ZUnKZ5QmFuo4Fa72SgXdNibEahFHnuGqLnBUcX6aEq1kN",
+            "slot": 462150603,
+            "transactionIndex": 364
+          },
+          {
+            "blockTime": 1793121126,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "5m4VbHregE6ZtgdR3KkYxTaCszHCZbLMXFdvN33NMwfHodVXZ8QWFgPndJnAbSy2bKoxS2nicJBLsi4919BRUBtN",
+            "slot": 462150576,
+            "transactionIndex": 114
+          },
+          {
+            "blockTime": 1793121120,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "2N6mWDh7KVyHvnwmSdkBgFfSXbB3auoE6dtwpncy2iVwmTLozyWfsT83UEg99TZcMkvjaVHNcmXC6m18yLpUxBvv",
+            "slot": 462150548,
+            "transactionIndex": 419
+          },
+          {
+            "blockTime": 1793121115,
+            "confirmationStatus": "finalized",
+            "err": null,
+            "memo": null,
+            "signature": "3kcUWnaFAdDRukjxHji15YGX6zH3EAFUgK8tSpqEHysLAtW7WJvhnyTcid2nx6vr9rr8AVong8E3nt2QpQhie8oG",
+            "slot": 462150522,
+            "transactionIndex": 19
+          }
+        ]
+      }
+    ],
+    "historyRangeCovered": true,
+    "historyBoundary": "OLDER_THAN_EXACT_TARGET_START_OBSERVED",
+    "requiredIndependentSignatures": [
+      "3PfPQ2xfT8wxFhFyAzaPAc6jWBqVKsTqVzMrb4p8q4UxXjMwEYX7zYccuaHNXDuoiW4L71GSwNCdcRwtbCTe278c",
+      "XrCh4SWxahbzyQWEQNFe9GKY1dDwfEokpUuVbzQ9KZZL2ovLxEBTEGvw7QaEDGGcynEt2GeDghXGcYrffJxvpMA",
+      "4cSd2AMRJw3qUAukdMUxWznUk7uj8Pk8WNAEVh8uxNVrKpAA1fH7mmRe75ooyzRNzSryNJFSxxnk9MVpVJff4GhB",
+      "2K7QbqS57qbBFghYKoDSNHCXTMgFGu7VfUHRXVFVsgxvcLEcPQHSLBSyVMwtRFjZDoPPYAEtNSkevzTwoSFy4ftq",
+      "pSjxBAuDsFGSQK5iFbky5knLFcXQs6jLEesJsLyTGrYzNEoHvBABDEbudVmq6JYcLscQZqsxFTfLq6uisZ7FBcV",
+      "aT4M1yKF3AHCCgwb2tTzHbfrbyavytFDYPVDCrBPPkLbvNt16Atc1CJuwFW9YJ3SnKBMHPgTCgMnPKGPzzZ4wzf",
+      "3YuA263Moqxbmeqarmavn1H6arQZf9tSToLAGgrADb4rik1cRdqwXCfz8L3okbsShfW4FS6C6DMwRZGAVSExztcv",
+      "2XxViSzRrkMUBHh4TxtvFmAkTVrYmMXAR3PwwNk51Nw8CN6qVX6EBC9LVdkTiUuZEmmaEU5AqsbQe7nWtk6ah9Yk",
+      "4VqUkwkDdoUFk9Xt7iGrdDLjn1ujBwCB77gRpqpEBE9gbsbkxUTy7nGc3kdT9iSonL4kgzxWBNACKW7owaZDnTnd",
+      "5Czgd2LaMVSbrFrtR5JzmYx1X7VdrLezZ3C5akzDgqtu9pffwm9eLMqxm6zifzG1eXDfMGM1ij4q4KSdxmyEYqEj",
+      "4DUwR5wUjRx4D1xrj4UNezoSvBcK4Jn7Mphyaskd3GqcuxVJWkgK3kMBfBp54zptdrc25NzHgzSEwRzqet2mzwJH"
+    ],
+    "independentTransactions": [
+      {
+        "signature": "3PfPQ2xfT8wxFhFyAzaPAc6jWBqVKsTqVzMrb4p8q4UxXjMwEYX7zYccuaHNXDuoiW4L71GSwNCdcRwtbCTe278c",
+        "requestedAt": 1793121365170,
+        "availableAt": 1793121365423,
+        "slot": 462151604,
+        "chainBlockTime": 1793121345,
+        "inChainTarget": true,
+        "compiledSwapInstructions": 1,
+        "events": [
+          {
+            "identity": {
+              "signature": "3PfPQ2xfT8wxFhFyAzaPAc6jWBqVKsTqVzMrb4p8q4UxXjMwEYX7zYccuaHNXDuoiW4L71GSwNCdcRwtbCTe278c",
+              "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+              "outerInstructionIndex": 5,
+              "swapInnerInstructionIndex": null,
+              "eventInnerInstructionIndex": 6,
+              "eventIndex": 0
+            },
+            "identityKey": "3PfPQ2xfT8wxFhFyAzaPAc6jWBqVKsTqVzMrb4p8q4UxXjMwEYX7zYccuaHNXDuoiW4L71GSwNCdcRwtbCTe278c:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:5:outer:6:0",
+            "fingerprint": "3b010f6d0fc16f751042114b175ee50c07e266e8d3568a7b3d4242aea98970e3",
+            "matchedOriginal": true,
+            "originalRpcAvailableAt": 1793121347174,
+            "originalValidationCompletedAt": 1793121347176,
+            "validationInsideApplicationTarget": true,
+            "independentAvailableAt": 1793121365423
+          }
+        ]
+      },
+      {
+        "signature": "XrCh4SWxahbzyQWEQNFe9GKY1dDwfEokpUuVbzQ9KZZL2ovLxEBTEGvw7QaEDGGcynEt2GeDghXGcYrffJxvpMA",
+        "requestedAt": 1793121365428,
+        "availableAt": 1793121365680,
+        "slot": 462151562,
+        "chainBlockTime": 1793121337,
+        "inChainTarget": true,
+        "compiledSwapInstructions": 1,
+        "events": [
+          {
+            "identity": {
+              "signature": "XrCh4SWxahbzyQWEQNFe9GKY1dDwfEokpUuVbzQ9KZZL2ovLxEBTEGvw7QaEDGGcynEt2GeDghXGcYrffJxvpMA",
+              "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+              "outerInstructionIndex": 5,
+              "swapInnerInstructionIndex": null,
+              "eventInnerInstructionIndex": 6,
+              "eventIndex": 0
+            },
+            "identityKey": "XrCh4SWxahbzyQWEQNFe9GKY1dDwfEokpUuVbzQ9KZZL2ovLxEBTEGvw7QaEDGGcynEt2GeDghXGcYrffJxvpMA:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:5:outer:6:0",
+            "fingerprint": "2157f8a2e19ea3edc6e4dfc5172990ebf6292e18f5168206a48d49178692c3ee",
+            "matchedOriginal": true,
+            "originalRpcAvailableAt": 1793121338130,
+            "originalValidationCompletedAt": 1793121338131,
+            "validationInsideApplicationTarget": true,
+            "independentAvailableAt": 1793121365680
+          }
+        ]
+      },
+      {
+        "signature": "4cSd2AMRJw3qUAukdMUxWznUk7uj8Pk8WNAEVh8uxNVrKpAA1fH7mmRe75ooyzRNzSryNJFSxxnk9MVpVJff4GhB",
+        "requestedAt": 1793121365683,
+        "availableAt": 1793121365934,
+        "slot": 462151540,
+        "chainBlockTime": 1793121332,
+        "inChainTarget": true,
+        "compiledSwapInstructions": 1,
+        "events": [
+          {
+            "identity": {
+              "signature": "4cSd2AMRJw3qUAukdMUxWznUk7uj8Pk8WNAEVh8uxNVrKpAA1fH7mmRe75ooyzRNzSryNJFSxxnk9MVpVJff4GhB",
+              "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+              "outerInstructionIndex": 4,
+              "swapInnerInstructionIndex": null,
+              "eventInnerInstructionIndex": 6,
+              "eventIndex": 0
+            },
+            "identityKey": "4cSd2AMRJw3qUAukdMUxWznUk7uj8Pk8WNAEVh8uxNVrKpAA1fH7mmRe75ooyzRNzSryNJFSxxnk9MVpVJff4GhB:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:4:outer:6:0",
+            "fingerprint": "57ad82d6c3ac421f9fcf7358194dcd62ffd6ddf5c38bc1f92d61a6bdcf12d8c4",
+            "matchedOriginal": true,
+            "originalRpcAvailableAt": 1793121333618,
+            "originalValidationCompletedAt": 1793121333620,
+            "validationInsideApplicationTarget": true,
+            "independentAvailableAt": 1793121365934
+          }
+        ]
+      },
+      {
+        "signature": "2K7QbqS57qbBFghYKoDSNHCXTMgFGu7VfUHRXVFVsgxvcLEcPQHSLBSyVMwtRFjZDoPPYAEtNSkevzTwoSFy4ftq",
+        "requestedAt": 1793121365937,
+        "availableAt": 1793121366180,
+        "slot": 462151507,
+        "chainBlockTime": 1793121325,
+        "inChainTarget": true,
+        "compiledSwapInstructions": 1,
+        "events": [
+          {
+            "identity": {
+              "signature": "2K7QbqS57qbBFghYKoDSNHCXTMgFGu7VfUHRXVFVsgxvcLEcPQHSLBSyVMwtRFjZDoPPYAEtNSkevzTwoSFy4ftq",
+              "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+              "outerInstructionIndex": 6,
+              "swapInnerInstructionIndex": null,
+              "eventInnerInstructionIndex": 6,
+              "eventIndex": 0
+            },
+            "identityKey": "2K7QbqS57qbBFghYKoDSNHCXTMgFGu7VfUHRXVFVsgxvcLEcPQHSLBSyVMwtRFjZDoPPYAEtNSkevzTwoSFy4ftq:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:6:outer:6:0",
+            "fingerprint": "ee13cd89fe751cf58281600533a0f4445fec3f9d521b7e21896d30ea780ab03f",
+            "matchedOriginal": true,
+            "originalRpcAvailableAt": 1793121326172,
+            "originalValidationCompletedAt": 1793121326175,
+            "validationInsideApplicationTarget": true,
+            "independentAvailableAt": 1793121366180
+          }
+        ]
+      },
+      {
+        "signature": "pSjxBAuDsFGSQK5iFbky5knLFcXQs6jLEesJsLyTGrYzNEoHvBABDEbudVmq6JYcLscQZqsxFTfLq6uisZ7FBcV",
+        "requestedAt": 1793121366182,
+        "availableAt": 1793121366918,
+        "slot": 462151505,
+        "chainBlockTime": 1793121324,
+        "inChainTarget": true,
+        "compiledSwapInstructions": 1,
+        "events": [
+          {
+            "identity": {
+              "signature": "pSjxBAuDsFGSQK5iFbky5knLFcXQs6jLEesJsLyTGrYzNEoHvBABDEbudVmq6JYcLscQZqsxFTfLq6uisZ7FBcV",
+              "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+              "outerInstructionIndex": 5,
+              "swapInnerInstructionIndex": null,
+              "eventInnerInstructionIndex": 6,
+              "eventIndex": 0
+            },
+            "identityKey": "pSjxBAuDsFGSQK5iFbky5knLFcXQs6jLEesJsLyTGrYzNEoHvBABDEbudVmq6JYcLscQZqsxFTfLq6uisZ7FBcV:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:5:outer:6:0",
+            "fingerprint": "fad9657927bf24590225e9d2a902e7200d6752e95527eea81038ed0f88d6dbd8",
+            "matchedOriginal": true,
+            "originalRpcAvailableAt": 1793121325928,
+            "originalValidationCompletedAt": 1793121325930,
+            "validationInsideApplicationTarget": true,
+            "independentAvailableAt": 1793121366918
+          }
+        ]
+      },
+      {
+        "signature": "aT4M1yKF3AHCCgwb2tTzHbfrbyavytFDYPVDCrBPPkLbvNt16Atc1CJuwFW9YJ3SnKBMHPgTCgMnPKGPzzZ4wzf",
+        "requestedAt": 1793121366920,
+        "availableAt": 1793121368922,
+        "slot": 462151478,
+        "chainBlockTime": 1793121318,
+        "inChainTarget": true,
+        "compiledSwapInstructions": 1,
+        "events": [
+          {
+            "identity": {
+              "signature": "aT4M1yKF3AHCCgwb2tTzHbfrbyavytFDYPVDCrBPPkLbvNt16Atc1CJuwFW9YJ3SnKBMHPgTCgMnPKGPzzZ4wzf",
+              "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+              "outerInstructionIndex": 5,
+              "swapInnerInstructionIndex": null,
+              "eventInnerInstructionIndex": 6,
+              "eventIndex": 0
+            },
+            "identityKey": "aT4M1yKF3AHCCgwb2tTzHbfrbyavytFDYPVDCrBPPkLbvNt16Atc1CJuwFW9YJ3SnKBMHPgTCgMnPKGPzzZ4wzf:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:5:outer:6:0",
+            "fingerprint": "c37c93e352386a1b74df40593bbaae21368bc5844b7f0d76fa1b117c584a810b",
+            "matchedOriginal": true,
+            "originalRpcAvailableAt": 1793121319920,
+            "originalValidationCompletedAt": 1793121319922,
+            "validationInsideApplicationTarget": true,
+            "independentAvailableAt": 1793121368922
+          }
+        ]
+      },
+      {
+        "signature": "3YuA263Moqxbmeqarmavn1H6arQZf9tSToLAGgrADb4rik1cRdqwXCfz8L3okbsShfW4FS6C6DMwRZGAVSExztcv",
+        "requestedAt": 1793121368925,
+        "availableAt": 1793121370939,
+        "slot": 462151450,
+        "chainBlockTime": 1793121312,
+        "inChainTarget": true,
+        "compiledSwapInstructions": 1,
+        "events": [
+          {
+            "identity": {
+              "signature": "3YuA263Moqxbmeqarmavn1H6arQZf9tSToLAGgrADb4rik1cRdqwXCfz8L3okbsShfW4FS6C6DMwRZGAVSExztcv",
+              "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+              "outerInstructionIndex": 4,
+              "swapInnerInstructionIndex": null,
+              "eventInnerInstructionIndex": 6,
+              "eventIndex": 0
+            },
+            "identityKey": "3YuA263Moqxbmeqarmavn1H6arQZf9tSToLAGgrADb4rik1cRdqwXCfz8L3okbsShfW4FS6C6DMwRZGAVSExztcv:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:4:outer:6:0",
+            "fingerprint": "4612227153870ca892964ce3530a1281a12520bbafc1e4b20fb829c4b197fcf9",
+            "matchedOriginal": true,
+            "originalRpcAvailableAt": 1793121313919,
+            "originalValidationCompletedAt": 1793121313921,
+            "validationInsideApplicationTarget": true,
+            "independentAvailableAt": 1793121370939
+          }
+        ]
+      },
+      {
+        "signature": "2XxViSzRrkMUBHh4TxtvFmAkTVrYmMXAR3PwwNk51Nw8CN6qVX6EBC9LVdkTiUuZEmmaEU5AqsbQe7nWtk6ah9Yk",
+        "requestedAt": 1793121370941,
+        "availableAt": 1793121372919,
+        "slot": 462151422,
+        "chainBlockTime": 1793121306,
+        "inChainTarget": true,
+        "compiledSwapInstructions": 1,
+        "events": [
+          {
+            "identity": {
+              "signature": "2XxViSzRrkMUBHh4TxtvFmAkTVrYmMXAR3PwwNk51Nw8CN6qVX6EBC9LVdkTiUuZEmmaEU5AqsbQe7nWtk6ah9Yk",
+              "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+              "outerInstructionIndex": 4,
+              "swapInnerInstructionIndex": null,
+              "eventInnerInstructionIndex": 6,
+              "eventIndex": 0
+            },
+            "identityKey": "2XxViSzRrkMUBHh4TxtvFmAkTVrYmMXAR3PwwNk51Nw8CN6qVX6EBC9LVdkTiUuZEmmaEU5AqsbQe7nWtk6ah9Yk:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:4:outer:6:0",
+            "fingerprint": "666e1524b0cf5462fa0789cd3f5373fc3a9f06cdf35bb3f66b64fe852103edcd",
+            "matchedOriginal": true,
+            "originalRpcAvailableAt": 1793121307931,
+            "originalValidationCompletedAt": 1793121307934,
+            "validationInsideApplicationTarget": true,
+            "independentAvailableAt": 1793121372919
+          }
+        ]
+      },
+      {
+        "signature": "4VqUkwkDdoUFk9Xt7iGrdDLjn1ujBwCB77gRpqpEBE9gbsbkxUTy7nGc3kdT9iSonL4kgzxWBNACKW7owaZDnTnd",
+        "requestedAt": 1793121372921,
+        "availableAt": 1793121374918,
+        "slot": 462151394,
+        "chainBlockTime": 1793121300,
+        "inChainTarget": true,
+        "compiledSwapInstructions": 1,
+        "events": [
+          {
+            "identity": {
+              "signature": "4VqUkwkDdoUFk9Xt7iGrdDLjn1ujBwCB77gRpqpEBE9gbsbkxUTy7nGc3kdT9iSonL4kgzxWBNACKW7owaZDnTnd",
+              "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+              "outerInstructionIndex": 4,
+              "swapInnerInstructionIndex": null,
+              "eventInnerInstructionIndex": 6,
+              "eventIndex": 0
+            },
+            "identityKey": "4VqUkwkDdoUFk9Xt7iGrdDLjn1ujBwCB77gRpqpEBE9gbsbkxUTy7nGc3kdT9iSonL4kgzxWBNACKW7owaZDnTnd:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:4:outer:6:0",
+            "fingerprint": "c084651e327cc5331f9aff8539da3b738f54d7cf7189efadac2e02464c4a53b8",
+            "matchedOriginal": true,
+            "originalRpcAvailableAt": 1793121301947,
+            "originalValidationCompletedAt": 1793121301950,
+            "validationInsideApplicationTarget": true,
+            "independentAvailableAt": 1793121374918
+          }
+        ]
+      },
+      {
+        "signature": "5Czgd2LaMVSbrFrtR5JzmYx1X7VdrLezZ3C5akzDgqtu9pffwm9eLMqxm6zifzG1eXDfMGM1ij4q4KSdxmyEYqEj",
+        "requestedAt": 1793121374921,
+        "availableAt": 1793121375182,
+        "slot": 462151367,
+        "chainBlockTime": 1793121294,
+        "inChainTarget": true,
+        "compiledSwapInstructions": 1,
+        "events": [
+          {
+            "identity": {
+              "signature": "5Czgd2LaMVSbrFrtR5JzmYx1X7VdrLezZ3C5akzDgqtu9pffwm9eLMqxm6zifzG1eXDfMGM1ij4q4KSdxmyEYqEj",
+              "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+              "outerInstructionIndex": 6,
+              "swapInnerInstructionIndex": null,
+              "eventInnerInstructionIndex": 6,
+              "eventIndex": 0
+            },
+            "identityKey": "5Czgd2LaMVSbrFrtR5JzmYx1X7VdrLezZ3C5akzDgqtu9pffwm9eLMqxm6zifzG1eXDfMGM1ij4q4KSdxmyEYqEj:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:6:outer:6:0",
+            "fingerprint": "27d957cb55c1c2416935d9b4a7c48ba47c429611ec9251d219cd742b69f3c236",
+            "matchedOriginal": true,
+            "originalRpcAvailableAt": 1793121296188,
+            "originalValidationCompletedAt": 1793121296190,
+            "validationInsideApplicationTarget": true,
+            "independentAvailableAt": 1793121375182
+          }
+        ]
+      },
+      {
+        "signature": "4DUwR5wUjRx4D1xrj4UNezoSvBcK4Jn7Mphyaskd3GqcuxVJWkgK3kMBfBp54zptdrc25NzHgzSEwRzqet2mzwJH",
+        "requestedAt": 1793121375184,
+        "availableAt": 1793121375435,
+        "slot": 462151365,
+        "chainBlockTime": 1793121294,
+        "inChainTarget": true,
+        "compiledSwapInstructions": 1,
+        "events": [
+          {
+            "identity": {
+              "signature": "4DUwR5wUjRx4D1xrj4UNezoSvBcK4Jn7Mphyaskd3GqcuxVJWkgK3kMBfBp54zptdrc25NzHgzSEwRzqet2mzwJH",
+              "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+              "outerInstructionIndex": 5,
+              "swapInnerInstructionIndex": null,
+              "eventInnerInstructionIndex": 6,
+              "eventIndex": 0
+            },
+            "identityKey": "4DUwR5wUjRx4D1xrj4UNezoSvBcK4Jn7Mphyaskd3GqcuxVJWkgK3kMBfBp54zptdrc25NzHgzSEwRzqet2mzwJH:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:5:outer:6:0",
+            "fingerprint": "30be3c0829e0d8b36b324be4fae8033349d4e5b3c80a03234dbab5fd4818ba2b",
+            "matchedOriginal": true,
+            "originalRpcAvailableAt": 1793121295968,
+            "originalValidationCompletedAt": 1793121295974,
+            "validationInsideApplicationTarget": true,
+            "independentAvailableAt": 1793121375435
+          }
+        ]
+      }
+    ],
+    "unretrievedSignatures": [],
+    "denominatorChecks": [
+      {
+        "signature": "3PfPQ2xfT8wxFhFyAzaPAc6jWBqVKsTqVzMrb4p8q4UxXjMwEYX7zYccuaHNXDuoiW4L71GSwNCdcRwtbCTe278c",
+        "requestCommitment": "confirmed",
+        "compiledSwapInstructions": 1,
+        "decodedSwapEvents": 1
+      },
+      {
+        "signature": "XrCh4SWxahbzyQWEQNFe9GKY1dDwfEokpUuVbzQ9KZZL2ovLxEBTEGvw7QaEDGGcynEt2GeDghXGcYrffJxvpMA",
+        "requestCommitment": "confirmed",
+        "compiledSwapInstructions": 1,
+        "decodedSwapEvents": 1
+      },
+      {
+        "signature": "4cSd2AMRJw3qUAukdMUxWznUk7uj8Pk8WNAEVh8uxNVrKpAA1fH7mmRe75ooyzRNzSryNJFSxxnk9MVpVJff4GhB",
+        "requestCommitment": "confirmed",
+        "compiledSwapInstructions": 1,
+        "decodedSwapEvents": 1
+      },
+      {
+        "signature": "2K7QbqS57qbBFghYKoDSNHCXTMgFGu7VfUHRXVFVsgxvcLEcPQHSLBSyVMwtRFjZDoPPYAEtNSkevzTwoSFy4ftq",
+        "requestCommitment": "confirmed",
+        "compiledSwapInstructions": 1,
+        "decodedSwapEvents": 1
+      },
+      {
+        "signature": "pSjxBAuDsFGSQK5iFbky5knLFcXQs6jLEesJsLyTGrYzNEoHvBABDEbudVmq6JYcLscQZqsxFTfLq6uisZ7FBcV",
+        "requestCommitment": "confirmed",
+        "compiledSwapInstructions": 1,
+        "decodedSwapEvents": 1
+      },
+      {
+        "signature": "aT4M1yKF3AHCCgwb2tTzHbfrbyavytFDYPVDCrBPPkLbvNt16Atc1CJuwFW9YJ3SnKBMHPgTCgMnPKGPzzZ4wzf",
+        "requestCommitment": "confirmed",
+        "compiledSwapInstructions": 1,
+        "decodedSwapEvents": 1
+      },
+      {
+        "signature": "3YuA263Moqxbmeqarmavn1H6arQZf9tSToLAGgrADb4rik1cRdqwXCfz8L3okbsShfW4FS6C6DMwRZGAVSExztcv",
+        "requestCommitment": "confirmed",
+        "compiledSwapInstructions": 1,
+        "decodedSwapEvents": 1
+      },
+      {
+        "signature": "2XxViSzRrkMUBHh4TxtvFmAkTVrYmMXAR3PwwNk51Nw8CN6qVX6EBC9LVdkTiUuZEmmaEU5AqsbQe7nWtk6ah9Yk",
+        "requestCommitment": "confirmed",
+        "compiledSwapInstructions": 1,
+        "decodedSwapEvents": 1
+      },
+      {
+        "signature": "4VqUkwkDdoUFk9Xt7iGrdDLjn1ujBwCB77gRpqpEBE9gbsbkxUTy7nGc3kdT9iSonL4kgzxWBNACKW7owaZDnTnd",
+        "requestCommitment": "confirmed",
+        "compiledSwapInstructions": 1,
+        "decodedSwapEvents": 1
+      },
+      {
+        "signature": "5Czgd2LaMVSbrFrtR5JzmYx1X7VdrLezZ3C5akzDgqtu9pffwm9eLMqxm6zifzG1eXDfMGM1ij4q4KSdxmyEYqEj",
+        "requestCommitment": "confirmed",
+        "compiledSwapInstructions": 1,
+        "decodedSwapEvents": 1
+      },
+      {
+        "signature": "4DUwR5wUjRx4D1xrj4UNezoSvBcK4Jn7Mphyaskd3GqcuxVJWkgK3kMBfBp54zptdrc25NzHgzSEwRzqet2mzwJH",
+        "requestCommitment": "confirmed",
+        "compiledSwapInstructions": 1,
+        "decodedSwapEvents": 1
+      }
+    ],
+    "relevantInstructionChecks": [
+      {
+        "signature": "3PfPQ2xfT8wxFhFyAzaPAc6jWBqVKsTqVzMrb4p8q4UxXjMwEYX7zYccuaHNXDuoiW4L71GSwNCdcRwtbCTe278c",
+        "requestCommitment": "confirmed",
+        "outerInstructionIndex": 5,
+        "innerInstructionIndex": null,
+        "discriminatorHex": "66063d1201daebea",
+        "instructionName": "buy",
+        "exactRecognizedLayout": true,
+        "exactPackagedLayout": true,
+        "instructionLayout": "pinned-sdk",
+        "trackVolumeAvailable": true,
+        "knownNonSwap": false
+      },
+      {
+        "signature": "XrCh4SWxahbzyQWEQNFe9GKY1dDwfEokpUuVbzQ9KZZL2ovLxEBTEGvw7QaEDGGcynEt2GeDghXGcYrffJxvpMA",
+        "requestCommitment": "confirmed",
+        "outerInstructionIndex": 5,
+        "innerInstructionIndex": null,
+        "discriminatorHex": "66063d1201daebea",
+        "instructionName": "buy",
+        "exactRecognizedLayout": true,
+        "exactPackagedLayout": true,
+        "instructionLayout": "pinned-sdk",
+        "trackVolumeAvailable": true,
+        "knownNonSwap": false
+      },
+      {
+        "signature": "4cSd2AMRJw3qUAukdMUxWznUk7uj8Pk8WNAEVh8uxNVrKpAA1fH7mmRe75ooyzRNzSryNJFSxxnk9MVpVJff4GhB",
+        "requestCommitment": "confirmed",
+        "outerInstructionIndex": 4,
+        "innerInstructionIndex": null,
+        "discriminatorHex": "66063d1201daebea",
+        "instructionName": "buy",
+        "exactRecognizedLayout": true,
+        "exactPackagedLayout": true,
+        "instructionLayout": "pinned-sdk",
+        "trackVolumeAvailable": true,
+        "knownNonSwap": false
+      },
+      {
+        "signature": "2K7QbqS57qbBFghYKoDSNHCXTMgFGu7VfUHRXVFVsgxvcLEcPQHSLBSyVMwtRFjZDoPPYAEtNSkevzTwoSFy4ftq",
+        "requestCommitment": "confirmed",
+        "outerInstructionIndex": 6,
+        "innerInstructionIndex": null,
+        "discriminatorHex": "66063d1201daebea",
+        "instructionName": "buy",
+        "exactRecognizedLayout": true,
+        "exactPackagedLayout": true,
+        "instructionLayout": "pinned-sdk",
+        "trackVolumeAvailable": true,
+        "knownNonSwap": false
+      },
+      {
+        "signature": "pSjxBAuDsFGSQK5iFbky5knLFcXQs6jLEesJsLyTGrYzNEoHvBABDEbudVmq6JYcLscQZqsxFTfLq6uisZ7FBcV",
+        "requestCommitment": "confirmed",
+        "outerInstructionIndex": 5,
+        "innerInstructionIndex": null,
+        "discriminatorHex": "66063d1201daebea",
+        "instructionName": "buy",
+        "exactRecognizedLayout": true,
+        "exactPackagedLayout": true,
+        "instructionLayout": "pinned-sdk",
+        "trackVolumeAvailable": true,
+        "knownNonSwap": false
+      },
+      {
+        "signature": "aT4M1yKF3AHCCgwb2tTzHbfrbyavytFDYPVDCrBPPkLbvNt16Atc1CJuwFW9YJ3SnKBMHPgTCgMnPKGPzzZ4wzf",
+        "requestCommitment": "confirmed",
+        "outerInstructionIndex": 5,
+        "innerInstructionIndex": null,
+        "discriminatorHex": "66063d1201daebea",
+        "instructionName": "buy",
+        "exactRecognizedLayout": true,
+        "exactPackagedLayout": true,
+        "instructionLayout": "pinned-sdk",
+        "trackVolumeAvailable": true,
+        "knownNonSwap": false
+      },
+      {
+        "signature": "3YuA263Moqxbmeqarmavn1H6arQZf9tSToLAGgrADb4rik1cRdqwXCfz8L3okbsShfW4FS6C6DMwRZGAVSExztcv",
+        "requestCommitment": "confirmed",
+        "outerInstructionIndex": 4,
+        "innerInstructionIndex": null,
+        "discriminatorHex": "66063d1201daebea",
+        "instructionName": "buy",
+        "exactRecognizedLayout": true,
+        "exactPackagedLayout": true,
+        "instructionLayout": "pinned-sdk",
+        "trackVolumeAvailable": true,
+        "knownNonSwap": false
+      },
+      {
+        "signature": "2XxViSzRrkMUBHh4TxtvFmAkTVrYmMXAR3PwwNk51Nw8CN6qVX6EBC9LVdkTiUuZEmmaEU5AqsbQe7nWtk6ah9Yk",
+        "requestCommitment": "confirmed",
+        "outerInstructionIndex": 4,
+        "innerInstructionIndex": null,
+        "discriminatorHex": "66063d1201daebea",
+        "instructionName": "buy",
+        "exactRecognizedLayout": true,
+        "exactPackagedLayout": true,
+        "instructionLayout": "pinned-sdk",
+        "trackVolumeAvailable": true,
+        "knownNonSwap": false
+      },
+      {
+        "signature": "4VqUkwkDdoUFk9Xt7iGrdDLjn1ujBwCB77gRpqpEBE9gbsbkxUTy7nGc3kdT9iSonL4kgzxWBNACKW7owaZDnTnd",
+        "requestCommitment": "confirmed",
+        "outerInstructionIndex": 4,
+        "innerInstructionIndex": null,
+        "discriminatorHex": "66063d1201daebea",
+        "instructionName": "buy",
+        "exactRecognizedLayout": true,
+        "exactPackagedLayout": true,
+        "instructionLayout": "pinned-sdk",
+        "trackVolumeAvailable": true,
+        "knownNonSwap": false
+      },
+      {
+        "signature": "5Czgd2LaMVSbrFrtR5JzmYx1X7VdrLezZ3C5akzDgqtu9pffwm9eLMqxm6zifzG1eXDfMGM1ij4q4KSdxmyEYqEj",
+        "requestCommitment": "confirmed",
+        "outerInstructionIndex": 6,
+        "innerInstructionIndex": null,
+        "discriminatorHex": "66063d1201daebea",
+        "instructionName": "buy",
+        "exactRecognizedLayout": true,
+        "exactPackagedLayout": true,
+        "instructionLayout": "pinned-sdk",
+        "trackVolumeAvailable": true,
+        "knownNonSwap": false
+      },
+      {
+        "signature": "4DUwR5wUjRx4D1xrj4UNezoSvBcK4Jn7Mphyaskd3GqcuxVJWkgK3kMBfBp54zptdrc25NzHgzSEwRzqet2mzwJH",
+        "requestCommitment": "confirmed",
+        "outerInstructionIndex": 5,
+        "innerInstructionIndex": null,
+        "discriminatorHex": "66063d1201daebea",
+        "instructionName": "buy",
+        "exactRecognizedLayout": true,
+        "exactPackagedLayout": true,
+        "instructionLayout": "pinned-sdk",
+        "trackVolumeAvailable": true,
+        "knownNonSwap": false
+      }
+    ],
+    "compiledSwapInstructions": 11,
+    "verifiedSwapEvents": 11,
+    "matchedOriginalEvents": 11,
+    "unmatchedOriginalEvents": [],
+    "unsupported": [],
+    "unresolvedSelectedHints": [],
+    "rechecks": [],
+    "calls": 13,
+    "attemptedOperations": {
+      "history": 1,
+      "independent": 11,
+      "finality": 1
+    },
+    "originalResponseReuse": false,
+    "reason": "COMPONENT_HTTP_429",
+    "receiveWindowCompleteness": "NOT_ESTABLISHED_BY_CHAIN_TIME_ALONE",
+    "entryEligibility": "UNVERIFIED_SEPARATE_REQUIREMENT",
+    "primaryStrategyEnabled": false,
+    "paperTradesCreated": 0,
+    "financialAccountChanged": false,
+    "profile": "standing-measured-18",
+    "finishedAt": 1793121375676,
+    "elapsedMs": 10707.32388299999,
+    "physicalSlotUncertain": false,
+    "independentTransactionAttempts": [
+      "3PfPQ2xfT8wxFhFyAzaPAc6jWBqVKsTqVzMrb4p8q4UxXjMwEYX7zYccuaHNXDuoiW4L71GSwNCdcRwtbCTe278c",
+      "XrCh4SWxahbzyQWEQNFe9GKY1dDwfEokpUuVbzQ9KZZL2ovLxEBTEGvw7QaEDGGcynEt2GeDghXGcYrffJxvpMA",
+      "4cSd2AMRJw3qUAukdMUxWznUk7uj8Pk8WNAEVh8uxNVrKpAA1fH7mmRe75ooyzRNzSryNJFSxxnk9MVpVJff4GhB",
+      "2K7QbqS57qbBFghYKoDSNHCXTMgFGu7VfUHRXVFVsgxvcLEcPQHSLBSyVMwtRFjZDoPPYAEtNSkevzTwoSFy4ftq",
+      "pSjxBAuDsFGSQK5iFbky5knLFcXQs6jLEesJsLyTGrYzNEoHvBABDEbudVmq6JYcLscQZqsxFTfLq6uisZ7FBcV",
+      "aT4M1yKF3AHCCgwb2tTzHbfrbyavytFDYPVDCrBPPkLbvNt16Atc1CJuwFW9YJ3SnKBMHPgTCgMnPKGPzzZ4wzf",
+      "3YuA263Moqxbmeqarmavn1H6arQZf9tSToLAGgrADb4rik1cRdqwXCfz8L3okbsShfW4FS6C6DMwRZGAVSExztcv",
+      "2XxViSzRrkMUBHh4TxtvFmAkTVrYmMXAR3PwwNk51Nw8CN6qVX6EBC9LVdkTiUuZEmmaEU5AqsbQe7nWtk6ah9Yk",
+      "4VqUkwkDdoUFk9Xt7iGrdDLjn1ujBwCB77gRpqpEBE9gbsbkxUTy7nGc3kdT9iSonL4kgzxWBNACKW7owaZDnTnd",
+      "5Czgd2LaMVSbrFrtR5JzmYx1X7VdrLezZ3C5akzDgqtu9pffwm9eLMqxm6zifzG1eXDfMGM1ij4q4KSdxmyEYqEj",
+      "4DUwR5wUjRx4D1xrj4UNezoSvBcK4Jn7Mphyaskd3GqcuxVJWkgK3kMBfBp54zptdrc25NzHgzSEwRzqet2mzwJH"
+    ],
+    "firstQualityFailure": null,
+    "stopsOnFirstQualityFailure": true,
+    "noRetry": true,
+    "laterAuditInformationBackdated": false
+  },
+  "usage": {
+    "grantId": "standing-08-current-combined",
+    "limits": {
+      "maxNewUnits": 100,
+      "maxCumulativeUnits": null,
+      "maxHttpBytes": 25165824,
+      "maxWsBytes": 8388608,
+      "maxCombinedBytes": 33554432,
+      "maxCumulativeBytes": null,
+      "minSpacingMs": 250,
+      "maxStartsPerMinute": 60,
+      "maxStartsPer10s": 10
+    },
+    "baseline": {
+      "calls": 280,
+      "bytes": 5205789,
+      "starts": [
+        1793069031002,
+        1793069031314,
+        1793069031396,
+        1793069031462,
+        1793069031573,
+        1793069031683,
+        1793070868114,
+        1793070868438,
+        1793070868560,
+        1793070868620,
+        1793070868784,
+        1793070868860,
+        1793070868907,
+        1793070868987,
+        1793070869076,
+        1793070869128,
+        1793070869216,
+        1793070869294,
+        1793070869347,
+        1793070869405,
+        1793081386306,
+        1793081387309,
+        1793081388313,
+        1793081389315,
+        1793083252240,
+        1793083253245,
+        1793083254248,
+        1793083255251,
+        1793083256255,
+        1793083419722,
+        1793083420725,
+        1793083421729,
+        1793083422732,
+        1793083423735,
+        1793083780796,
+        1793083781799,
+        1793084322691,
+        1793084323694,
+        1793084666467,
+        1793084713873,
+        1793084714877,
+        1793084715881,
+        1793084716884,
+        1793084911356,
+        1793084921822,
+        1793084922823,
+        1793084937183,
+        1793085437929,
+        1793085438942,
+        1793085439945,
+        1793085440949,
+        1793085771700,
+        1793085772703,
+        1793085773707,
+        1793085774709,
+        1793085775711,
+        1793085776716,
+        1793085777718,
+        1793085778721,
+        1793085779723,
+        1793085780726,
+        1793085781729,
+        1793085782732,
+        1793085783781,
+        1793085785780,
+        1793085787779,
+        1793085789779,
+        1793085790782,
+        1793085791784,
+        1793086393178,
+        1793086394181,
+        1793086395184,
+        1793086396187,
+        1793086397190,
+        1793086398193,
+        1793086399199,
+        1793086400202,
+        1793086401205,
+        1793086402208,
+        1793086403210,
+        1793086404213,
+        1793086405256,
+        1793086407255,
+        1793086409255,
+        1793086411256,
+        1793086412260,
+        1793086413263,
+        1793086414266,
+        1793086415269,
+        1793086416271,
+        1793086417275,
+        1793086418278,
+        1793086419281,
+        1793086420284,
+        1793086421288,
+        1793086422291,
+        1793086423294,
+        1793086424297,
+        1793086425300,
+        1793086426302,
+        1793086427305,
+        1793086428308,
+        1793086429314,
+        1793086431255,
+        1793086433254,
+        1793086434258,
+        1793086435262,
+        1793086436265,
+        1793086437268,
+        1793086438271,
+        1793086439275,
+        1793087302346,
+        1793087303348,
+        1793087304352,
+        1793087305356,
+        1793087306926,
+        1793087307929,
+        1793087308962,
+        1793087310169,
+        1793087311172,
+        1793087312174,
+        1793087313177,
+        1793087315004,
+        1793087316916,
+        1793087318949,
+        1793087320975,
+        1793087322989,
+        1793087325000,
+        1793087326912,
+        1793087328936,
+        1793087330958,
+        1793087332967,
+        1793087334988,
+        1793087337000,
+        1793087338915,
+        1793087340922,
+        1793087342934,
+        1793087343937,
+        1793087344949,
+        1793087346059,
+        1793087347062,
+        1793087348979,
+        1793087350993,
+        1793087353000,
+        1793087354914,
+        1793087356926,
+        1793087358940,
+        1793087360954,
+        1793087362966,
+        1793087364977,
+        1793087366991,
+        1793087368998,
+        1793087370909,
+        1793087372923,
+        1793087373932,
+        1793088220236,
+        1793088221239,
+        1793088222242,
+        1793088223245,
+        1793088224248,
+        1793088581011,
+        1793088582014,
+        1793090239498,
+        1793114342630,
+        1793114343632,
+        1793114344635,
+        1793114345638,
+        1793114346641,
+        1793114347646,
+        1793114349298,
+        1793114351298,
+        1793114353299,
+        1793114355297,
+        1793114357299,
+        1793114359300,
+        1793114361298,
+        1793114363297,
+        1793114365299,
+        1793114367297,
+        1793114369299,
+        1793114371300,
+        1793114373299,
+        1793114375297,
+        1793114376303,
+        1793114377306,
+        1793114378311,
+        1793114380311,
+        1793114382308,
+        1793114384308,
+        1793114386309,
+        1793114388308,
+        1793114390016,
+        1793114391022,
+        1793114392028,
+        1793114393033,
+        1793114394036,
+        1793114395042,
+        1793114396044,
+        1793114397049,
+        1793114398054,
+        1793114399058,
+        1793114400065,
+        1793114402063,
+        1793114404062,
+        1793114406060,
+        1793114408062,
+        1793114410063,
+        1793114412060,
+        1793114414060,
+        1793114416059,
+        1793114418061,
+        1793114420063,
+        1793114422059,
+        1793114423062,
+        1793114424065,
+        1793114425070,
+        1793114426074,
+        1793114427093,
+        1793114428097,
+        1793114429102,
+        1793114430106,
+        1793117874977,
+        1793117875312,
+        1793117875565,
+        1793117875818,
+        1793117886068,
+        1793117886726,
+        1793117888731,
+        1793117890722,
+        1793117892726,
+        1793117894278,
+        1793117894531,
+        1793117894784,
+        1793117896287,
+        1793117898283,
+        1793117900294,
+        1793117902283,
+        1793117904283,
+        1793117906284,
+        1793117906568,
+        1793117908283,
+        1793117910283,
+        1793117912287,
+        1793117914284,
+        1793117916283,
+        1793117918283,
+        1793117920287,
+        1793117922283,
+        1793117924283,
+        1793117926284,
+        1793117928283,
+        1793117930285,
+        1793117932284,
+        1793117934285,
+        1793117936285,
+        1793117938283,
+        1793117940284,
+        1793117942284,
+        1793117944284,
+        1793117946284,
+        1793117948289,
+        1793117950289,
+        1793117952285,
+        1793117953843,
+        1793117954096,
+        1793117955850,
+        1793117957848,
+        1793117959849,
+        1793118496697,
+        1793118497101,
+        1793118644708,
+        1793119669182,
+        1793119669476,
+        1793119705016,
+        1793119705493,
+        1793119706014,
+        1793119706271,
+        1793119706556,
+        1793120202610,
+        1793120202880
+      ],
+      "refusal": "RPC_HTTP_429",
+      "refusalAt": 1793070869405,
+      "sha256": "a4b5a3c31f5ba3cbce5d3e824220c12c10f7801eaab0ba09c58d7453d8c0a5d3"
+    },
+    "cumulativeUnits": 348,
+    "newUnits": 68,
+    "actualInvokedUnits": 68,
+    "cumulativeResponseBytes": 6101320,
+    "httpBytes": 885782,
+    "wsBytes": 9749,
+    "newResponseBytes": 895531,
+    "remainingGrantUnits": 32,
+    "remainingCumulativeUnits": null,
+    "remainingGrantResponseBytes": 30561749,
+    "remainingCumulativeResponseBytes": null,
+    "pending": [
+      {
+        "id": 348,
+        "transport": "http",
+        "reservedBytes": 2097152
+      }
+    ],
+    "uncertainResponseBytes": 2097152,
+    "rolling60SecondStarts": 44,
+    "rolling10SecondStarts": 10,
+    "starts": [
+      1793121278311,
+      1793121278578,
+      1793121278832,
+      1793121279083,
+      1793121289170,
+      1793121289970,
+      1793121291967,
+      1793121293967,
+      1793121295606,
+      1793121295861,
+      1793121296114,
+      1793121297611,
+      1793121299612,
+      1793121301612,
+      1793121301867,
+      1793121303617,
+      1793121305613,
+      1793121307613,
+      1793121307869,
+      1793121309611,
+      1793121311612,
+      1793121313611,
+      1793121313865,
+      1793121315614,
+      1793121317611,
+      1793121319612,
+      1793121319865,
+      1793121321611,
+      1793121323612,
+      1793121325611,
+      1793121325864,
+      1793121326117,
+      1793121327611,
+      1793121329613,
+      1793121331612,
+      1793121333293,
+      1793121333548,
+      1793121335299,
+      1793121337297,
+      1793121338077,
+      1793121339298,
+      1793121341298,
+      1793121343297,
+      1793121345300,
+      1793121346855,
+      1793121347110,
+      1793121348862,
+      1793121350860,
+      1793121352860,
+      1793121354862,
+      1793121356862,
+      1793121358860,
+      1793121360861,
+      1793121362862,
+      1793121364861,
+      1793121365114,
+      1793121365371,
+      1793121365626,
+      1793121365879,
+      1793121366132,
+      1793121366864,
+      1793121368864,
+      1793121370863,
+      1793121372865,
+      1793121374866,
+      1793121375123,
+      1793121375377,
+      1793121375629
+    ],
+    "actualInvocations": [
+      {
+        "id": 281,
+        "at": 1793121278311
+      },
+      {
+        "id": 282,
+        "at": 1793121278578
+      },
+      {
+        "id": 283,
+        "at": 1793121278832
+      },
+      {
+        "id": 284,
+        "at": 1793121279083
+      },
+      {
+        "id": 285,
+        "at": 1793121289170
+      },
+      {
+        "id": 286,
+        "at": 1793121289970
+      },
+      {
+        "id": 287,
+        "at": 1793121291967
+      },
+      {
+        "id": 288,
+        "at": 1793121293967
+      },
+      {
+        "id": 289,
+        "at": 1793121295606
+      },
+      {
+        "id": 290,
+        "at": 1793121295861
+      },
+      {
+        "id": 291,
+        "at": 1793121296114
+      },
+      {
+        "id": 292,
+        "at": 1793121297611
+      },
+      {
+        "id": 293,
+        "at": 1793121299612
+      },
+      {
+        "id": 294,
+        "at": 1793121301612
+      },
+      {
+        "id": 295,
+        "at": 1793121301867
+      },
+      {
+        "id": 296,
+        "at": 1793121303617
+      },
+      {
+        "id": 297,
+        "at": 1793121305613
+      },
+      {
+        "id": 298,
+        "at": 1793121307613
+      },
+      {
+        "id": 299,
+        "at": 1793121307869
+      },
+      {
+        "id": 300,
+        "at": 1793121309611
+      },
+      {
+        "id": 301,
+        "at": 1793121311612
+      },
+      {
+        "id": 302,
+        "at": 1793121313611
+      },
+      {
+        "id": 303,
+        "at": 1793121313865
+      },
+      {
+        "id": 304,
+        "at": 1793121315614
+      },
+      {
+        "id": 305,
+        "at": 1793121317611
+      },
+      {
+        "id": 306,
+        "at": 1793121319612
+      },
+      {
+        "id": 307,
+        "at": 1793121319865
+      },
+      {
+        "id": 308,
+        "at": 1793121321611
+      },
+      {
+        "id": 309,
+        "at": 1793121323612
+      },
+      {
+        "id": 310,
+        "at": 1793121325611
+      },
+      {
+        "id": 311,
+        "at": 1793121325864
+      },
+      {
+        "id": 312,
+        "at": 1793121326117
+      },
+      {
+        "id": 313,
+        "at": 1793121327611
+      },
+      {
+        "id": 314,
+        "at": 1793121329613
+      },
+      {
+        "id": 315,
+        "at": 1793121331612
+      },
+      {
+        "id": 316,
+        "at": 1793121333293
+      },
+      {
+        "id": 317,
+        "at": 1793121333548
+      },
+      {
+        "id": 318,
+        "at": 1793121335299
+      },
+      {
+        "id": 319,
+        "at": 1793121337297
+      },
+      {
+        "id": 320,
+        "at": 1793121338077
+      },
+      {
+        "id": 321,
+        "at": 1793121339298
+      },
+      {
+        "id": 322,
+        "at": 1793121341298
+      },
+      {
+        "id": 323,
+        "at": 1793121343297
+      },
+      {
+        "id": 324,
+        "at": 1793121345300
+      },
+      {
+        "id": 325,
+        "at": 1793121346855
+      },
+      {
+        "id": 326,
+        "at": 1793121347110
+      },
+      {
+        "id": 327,
+        "at": 1793121348862
+      },
+      {
+        "id": 328,
+        "at": 1793121350860
+      },
+      {
+        "id": 329,
+        "at": 1793121352860
+      },
+      {
+        "id": 330,
+        "at": 1793121354862
+      },
+      {
+        "id": 331,
+        "at": 1793121356862
+      },
+      {
+        "id": 332,
+        "at": 1793121358860
+      },
+      {
+        "id": 333,
+        "at": 1793121360861
+      },
+      {
+        "id": 334,
+        "at": 1793121362862
+      },
+      {
+        "id": 335,
+        "at": 1793121364861
+      },
+      {
+        "id": 336,
+        "at": 1793121365114
+      },
+      {
+        "id": 337,
+        "at": 1793121365371
+      },
+      {
+        "id": 338,
+        "at": 1793121365626
+      },
+      {
+        "id": 339,
+        "at": 1793121365879
+      },
+      {
+        "id": 340,
+        "at": 1793121366132
+      },
+      {
+        "id": 341,
+        "at": 1793121366864
+      },
+      {
+        "id": 342,
+        "at": 1793121368864
+      },
+      {
+        "id": 343,
+        "at": 1793121370863
+      },
+      {
+        "id": 344,
+        "at": 1793121372865
+      },
+      {
+        "id": 345,
+        "at": 1793121374866
+      },
+      {
+        "id": 346,
+        "at": 1793121375123
+      },
+      {
+        "id": 347,
+        "at": 1793121375377
+      },
+      {
+        "id": 348,
+        "at": 1793121375629
+      }
+    ],
+    "reservationStarts": [
+      1793121278310,
+      1793121278577,
+      1793121278830,
+      1793121279082,
+      1793121289169,
+      1793121289968,
+      1793121291963,
+      1793121293965,
+      1793121295605,
+      1793121295858,
+      1793121296112,
+      1793121297609,
+      1793121299609,
+      1793121301610,
+      1793121301864,
+      1793121303609,
+      1793121305610,
+      1793121307610,
+      1793121307867,
+      1793121309609,
+      1793121311610,
+      1793121313609,
+      1793121313863,
+      1793121315610,
+      1793121317609,
+      1793121319610,
+      1793121319863,
+      1793121321609,
+      1793121323609,
+      1793121325608,
+      1793121325862,
+      1793121326115,
+      1793121327609,
+      1793121329608,
+      1793121331609,
+      1793121333287,
+      1793121333546,
+      1793121335296,
+      1793121337295,
+      1793121338075,
+      1793121339296,
+      1793121341296,
+      1793121343295,
+      1793121345297,
+      1793121346852,
+      1793121347107,
+      1793121348859,
+      1793121350858,
+      1793121352858,
+      1793121354860,
+      1793121356860,
+      1793121358857,
+      1793121360858,
+      1793121362857,
+      1793121364859,
+      1793121365113,
+      1793121365366,
+      1793121365622,
+      1793121365878,
+      1793121366130,
+      1793121366862,
+      1793121368861,
+      1793121370861,
+      1793121372863,
+      1793121374862,
+      1793121375118,
+      1793121375374,
+      1793121375627
+    ],
+    "byOperation": {
+      "http:getSignaturesForAddress": 2,
+      "http:getTransaction": 24,
+      "http:getMultipleAccounts": 41,
+      "ws-upgrade:upgrade": 1
+    },
+    "durationsMs": [
+      263.0024699999999,
+      114.28014699999994,
+      107.03355099999999,
+      45.465797000000066,
+      792.6042849999994,
+      186.0548089999993,
+      48.66345299999921,
+      94.01842300000135,
+      97.51202999999805,
+      106.78131300000314,
+      73.54117399999814,
+      73.1326020000015,
+      52.345196999998734,
+      72.01703400000042,
+      76.09971600000063,
+      86.51902399999744,
+      79.32816000000093,
+      66.86109299999953,
+      59.56283199999962,
+      50.34594199999992,
+      75.72176399999444,
+      48.850876999997126,
+      52.83481400000164,
+      66.00470499999938,
+      57.2282320000013,
+      58.27365899999859,
+      53.52371999999741,
+      45.06906599999638,
+      79.568846999995,
+      48.31476499999553,
+      62.81729899999482,
+      54.78477399999974,
+      47.7576440000048,
+      62.94073199999548,
+      55.32751299999654,
+      52.7660939999987,
+      69.36717299999873,
+      54.9742000000042,
+      59.87867200000619,
+      51.01114600000437,
+      60.31739699999889,
+      51.06155000000581,
+      47.34113400000206,
+      75.18594499999017,
+      57.61904000000504,
+      62.5243860000046,
+      60.80226500000572,
+      54.32416600000579,
+      50.307795000000624,
+      52.409187000012025,
+      59.802521999998135,
+      48.06278599999496,
+      75.75025699999242,
+      56.212246000010055,
+      63.11453400000755,
+      53.421899000008125,
+      50.80533000000287,
+      53.485759999995935,
+      53.39639900000475,
+      46.4164269999892,
+      51.95670299998892,
+      56.56991299999936,
+      74.31566700000258,
+      52.79874800000107,
+      50.72332499999902,
+      57.400261999995564,
+      57.65605200000573,
+      45.61316199999419
+    ],
+    "inFlight": 0,
+    "waitingOrOperating": false,
+    "haltedReason": "COMPONENT_HTTP_429",
+    "startedAt": 1793121278248,
+    "totalMs": 150000,
+    "deadlineAt": 1793121428248,
+    "closed": false,
+    "storageFailed": false
+  },
+  "actualCumulative": {
+    "requestUnits": 348,
+    "observedRelatedBytes": 4004168,
+    "unknownRelatedBytesRetained": 4194304,
+    "accountedRelatedBytes": 8198472,
+    "observedPumpApiSocketBytes": 437709271,
+    "observedPumpApiBytesAreLowerBound": false,
+    "unknownPumpApiReservationBytesRetained": 0,
+    "historicLifetimeCeilingsAreNotProviderLimits": true
+  },
+  "resources": {
+    "peakRssBytes": 206790656,
+    "peakCpuMs": 9156.69,
+    "peakEventLoopLagMs": 21.602313000010327,
+    "externalPrlimitRequired": true,
+    "externalWallGuardRequired": true
+  },
+  "oldEvidenceUnchanged": true,
+  "oldMismatches": [],
+  "sourceUnchanged": true,
+  "sourceMismatches": [],
+  "phaseReceipts": [
+    {
+      "phase": "01-preflight",
+      "at": 1793121278707,
+      "usage": {
+        "grantId": "standing-08-current-combined",
+        "limits": {
+          "maxNewUnits": 100,
+          "maxCumulativeUnits": null,
+          "maxHttpBytes": 25165824,
+          "maxWsBytes": 8388608,
+          "maxCombinedBytes": 33554432,
+          "maxCumulativeBytes": null,
+          "minSpacingMs": 250,
+          "maxStartsPerMinute": 60,
+          "maxStartsPer10s": 10
+        },
+        "baseline": {
+          "calls": 280,
+          "bytes": 5205789,
+          "starts": [
+            1793069031002,
+            1793069031314,
+            1793069031396,
+            1793069031462,
+            1793069031573,
+            1793069031683,
+            1793070868114,
+            1793070868438,
+            1793070868560,
+            1793070868620,
+            1793070868784,
+            1793070868860,
+            1793070868907,
+            1793070868987,
+            1793070869076,
+            1793070869128,
+            1793070869216,
+            1793070869294,
+            1793070869347,
+            1793070869405,
+            1793081386306,
+            1793081387309,
+            1793081388313,
+            1793081389315,
+            1793083252240,
+            1793083253245,
+            1793083254248,
+            1793083255251,
+            1793083256255,
+            1793083419722,
+            1793083420725,
+            1793083421729,
+            1793083422732,
+            1793083423735,
+            1793083780796,
+            1793083781799,
+            1793084322691,
+            1793084323694,
+            1793084666467,
+            1793084713873,
+            1793084714877,
+            1793084715881,
+            1793084716884,
+            1793084911356,
+            1793084921822,
+            1793084922823,
+            1793084937183,
+            1793085437929,
+            1793085438942,
+            1793085439945,
+            1793085440949,
+            1793085771700,
+            1793085772703,
+            1793085773707,
+            1793085774709,
+            1793085775711,
+            1793085776716,
+            1793085777718,
+            1793085778721,
+            1793085779723,
+            1793085780726,
+            1793085781729,
+            1793085782732,
+            1793085783781,
+            1793085785780,
+            1793085787779,
+            1793085789779,
+            1793085790782,
+            1793085791784,
+            1793086393178,
+            1793086394181,
+            1793086395184,
+            1793086396187,
+            1793086397190,
+            1793086398193,
+            1793086399199,
+            1793086400202,
+            1793086401205,
+            1793086402208,
+            1793086403210,
+            1793086404213,
+            1793086405256,
+            1793086407255,
+            1793086409255,
+            1793086411256,
+            1793086412260,
+            1793086413263,
+            1793086414266,
+            1793086415269,
+            1793086416271,
+            1793086417275,
+            1793086418278,
+            1793086419281,
+            1793086420284,
+            1793086421288,
+            1793086422291,
+            1793086423294,
+            1793086424297,
+            1793086425300,
+            1793086426302,
+            1793086427305,
+            1793086428308,
+            1793086429314,
+            1793086431255,
+            1793086433254,
+            1793086434258,
+            1793086435262,
+            1793086436265,
+            1793086437268,
+            1793086438271,
+            1793086439275,
+            1793087302346,
+            1793087303348,
+            1793087304352,
+            1793087305356,
+            1793087306926,
+            1793087307929,
+            1793087308962,
+            1793087310169,
+            1793087311172,
+            1793087312174,
+            1793087313177,
+            1793087315004,
+            1793087316916,
+            1793087318949,
+            1793087320975,
+            1793087322989,
+            1793087325000,
+            1793087326912,
+            1793087328936,
+            1793087330958,
+            1793087332967,
+            1793087334988,
+            1793087337000,
+            1793087338915,
+            1793087340922,
+            1793087342934,
+            1793087343937,
+            1793087344949,
+            1793087346059,
+            1793087347062,
+            1793087348979,
+            1793087350993,
+            1793087353000,
+            1793087354914,
+            1793087356926,
+            1793087358940,
+            1793087360954,
+            1793087362966,
+            1793087364977,
+            1793087366991,
+            1793087368998,
+            1793087370909,
+            1793087372923,
+            1793087373932,
+            1793088220236,
+            1793088221239,
+            1793088222242,
+            1793088223245,
+            1793088224248,
+            1793088581011,
+            1793088582014,
+            1793090239498,
+            1793114342630,
+            1793114343632,
+            1793114344635,
+            1793114345638,
+            1793114346641,
+            1793114347646,
+            1793114349298,
+            1793114351298,
+            1793114353299,
+            1793114355297,
+            1793114357299,
+            1793114359300,
+            1793114361298,
+            1793114363297,
+            1793114365299,
+            1793114367297,
+            1793114369299,
+            1793114371300,
+            1793114373299,
+            1793114375297,
+            1793114376303,
+            1793114377306,
+            1793114378311,
+            1793114380311,
+            1793114382308,
+            1793114384308,
+            1793114386309,
+            1793114388308,
+            1793114390016,
+            1793114391022,
+            1793114392028,
+            1793114393033,
+            1793114394036,
+            1793114395042,
+            1793114396044,
+            1793114397049,
+            1793114398054,
+            1793114399058,
+            1793114400065,
+            1793114402063,
+            1793114404062,
+            1793114406060,
+            1793114408062,
+            1793114410063,
+            1793114412060,
+            1793114414060,
+            1793114416059,
+            1793114418061,
+            1793114420063,
+            1793114422059,
+            1793114423062,
+            1793114424065,
+            1793114425070,
+            1793114426074,
+            1793114427093,
+            1793114428097,
+            1793114429102,
+            1793114430106,
+            1793117874977,
+            1793117875312,
+            1793117875565,
+            1793117875818,
+            1793117886068,
+            1793117886726,
+            1793117888731,
+            1793117890722,
+            1793117892726,
+            1793117894278,
+            1793117894531,
+            1793117894784,
+            1793117896287,
+            1793117898283,
+            1793117900294,
+            1793117902283,
+            1793117904283,
+            1793117906284,
+            1793117906568,
+            1793117908283,
+            1793117910283,
+            1793117912287,
+            1793117914284,
+            1793117916283,
+            1793117918283,
+            1793117920287,
+            1793117922283,
+            1793117924283,
+            1793117926284,
+            1793117928283,
+            1793117930285,
+            1793117932284,
+            1793117934285,
+            1793117936285,
+            1793117938283,
+            1793117940284,
+            1793117942284,
+            1793117944284,
+            1793117946284,
+            1793117948289,
+            1793117950289,
+            1793117952285,
+            1793117953843,
+            1793117954096,
+            1793117955850,
+            1793117957848,
+            1793117959849,
+            1793118496697,
+            1793118497101,
+            1793118644708,
+            1793119669182,
+            1793119669476,
+            1793119705016,
+            1793119705493,
+            1793119706014,
+            1793119706271,
+            1793119706556,
+            1793120202610,
+            1793120202880
+          ],
+          "refusal": "RPC_HTTP_429",
+          "refusalAt": 1793070869405,
+          "sha256": "a4b5a3c31f5ba3cbce5d3e824220c12c10f7801eaab0ba09c58d7453d8c0a5d3"
+        },
+        "cumulativeUnits": 282,
+        "newUnits": 2,
+        "actualInvokedUnits": 2,
+        "cumulativeResponseBytes": 5229849,
+        "httpBytes": 24060,
+        "wsBytes": 0,
+        "newResponseBytes": 24060,
+        "remainingGrantUnits": 98,
+        "remainingCumulativeUnits": null,
+        "remainingGrantResponseBytes": 33530372,
+        "remainingCumulativeResponseBytes": null,
+        "pending": [],
+        "uncertainResponseBytes": 0,
+        "rolling60SecondStarts": 2,
+        "rolling10SecondStarts": 2,
+        "starts": [
+          1793121278311,
+          1793121278578
+        ],
+        "actualInvocations": [
+          {
+            "id": 281,
+            "at": 1793121278311
+          },
+          {
+            "id": 282,
+            "at": 1793121278578
+          }
+        ],
+        "reservationStarts": [
+          1793121278310,
+          1793121278577
+        ],
+        "byOperation": {
+          "http:getSignaturesForAddress": 1,
+          "http:getTransaction": 1
+        },
+        "durationsMs": [
+          263.0024699999999,
+          114.28014699999994
+        ],
+        "inFlight": 0,
+        "waitingOrOperating": false,
+        "haltedReason": null,
+        "startedAt": 1793121278248,
+        "totalMs": 150000,
+        "deadlineAt": 1793121428248,
+        "closed": false,
+        "storageFailed": false
+      }
+    },
+    {
+      "phase": "02-combined",
+      "at": 1793121364967,
+      "usage": {
+        "grantId": "standing-08-current-combined",
+        "limits": {
+          "maxNewUnits": 100,
+          "maxCumulativeUnits": null,
+          "maxHttpBytes": 25165824,
+          "maxWsBytes": 8388608,
+          "maxCombinedBytes": 33554432,
+          "maxCumulativeBytes": null,
+          "minSpacingMs": 250,
+          "maxStartsPerMinute": 60,
+          "maxStartsPer10s": 10
+        },
+        "baseline": {
+          "calls": 280,
+          "bytes": 5205789,
+          "starts": [
+            1793069031002,
+            1793069031314,
+            1793069031396,
+            1793069031462,
+            1793069031573,
+            1793069031683,
+            1793070868114,
+            1793070868438,
+            1793070868560,
+            1793070868620,
+            1793070868784,
+            1793070868860,
+            1793070868907,
+            1793070868987,
+            1793070869076,
+            1793070869128,
+            1793070869216,
+            1793070869294,
+            1793070869347,
+            1793070869405,
+            1793081386306,
+            1793081387309,
+            1793081388313,
+            1793081389315,
+            1793083252240,
+            1793083253245,
+            1793083254248,
+            1793083255251,
+            1793083256255,
+            1793083419722,
+            1793083420725,
+            1793083421729,
+            1793083422732,
+            1793083423735,
+            1793083780796,
+            1793083781799,
+            1793084322691,
+            1793084323694,
+            1793084666467,
+            1793084713873,
+            1793084714877,
+            1793084715881,
+            1793084716884,
+            1793084911356,
+            1793084921822,
+            1793084922823,
+            1793084937183,
+            1793085437929,
+            1793085438942,
+            1793085439945,
+            1793085440949,
+            1793085771700,
+            1793085772703,
+            1793085773707,
+            1793085774709,
+            1793085775711,
+            1793085776716,
+            1793085777718,
+            1793085778721,
+            1793085779723,
+            1793085780726,
+            1793085781729,
+            1793085782732,
+            1793085783781,
+            1793085785780,
+            1793085787779,
+            1793085789779,
+            1793085790782,
+            1793085791784,
+            1793086393178,
+            1793086394181,
+            1793086395184,
+            1793086396187,
+            1793086397190,
+            1793086398193,
+            1793086399199,
+            1793086400202,
+            1793086401205,
+            1793086402208,
+            1793086403210,
+            1793086404213,
+            1793086405256,
+            1793086407255,
+            1793086409255,
+            1793086411256,
+            1793086412260,
+            1793086413263,
+            1793086414266,
+            1793086415269,
+            1793086416271,
+            1793086417275,
+            1793086418278,
+            1793086419281,
+            1793086420284,
+            1793086421288,
+            1793086422291,
+            1793086423294,
+            1793086424297,
+            1793086425300,
+            1793086426302,
+            1793086427305,
+            1793086428308,
+            1793086429314,
+            1793086431255,
+            1793086433254,
+            1793086434258,
+            1793086435262,
+            1793086436265,
+            1793086437268,
+            1793086438271,
+            1793086439275,
+            1793087302346,
+            1793087303348,
+            1793087304352,
+            1793087305356,
+            1793087306926,
+            1793087307929,
+            1793087308962,
+            1793087310169,
+            1793087311172,
+            1793087312174,
+            1793087313177,
+            1793087315004,
+            1793087316916,
+            1793087318949,
+            1793087320975,
+            1793087322989,
+            1793087325000,
+            1793087326912,
+            1793087328936,
+            1793087330958,
+            1793087332967,
+            1793087334988,
+            1793087337000,
+            1793087338915,
+            1793087340922,
+            1793087342934,
+            1793087343937,
+            1793087344949,
+            1793087346059,
+            1793087347062,
+            1793087348979,
+            1793087350993,
+            1793087353000,
+            1793087354914,
+            1793087356926,
+            1793087358940,
+            1793087360954,
+            1793087362966,
+            1793087364977,
+            1793087366991,
+            1793087368998,
+            1793087370909,
+            1793087372923,
+            1793087373932,
+            1793088220236,
+            1793088221239,
+            1793088222242,
+            1793088223245,
+            1793088224248,
+            1793088581011,
+            1793088582014,
+            1793090239498,
+            1793114342630,
+            1793114343632,
+            1793114344635,
+            1793114345638,
+            1793114346641,
+            1793114347646,
+            1793114349298,
+            1793114351298,
+            1793114353299,
+            1793114355297,
+            1793114357299,
+            1793114359300,
+            1793114361298,
+            1793114363297,
+            1793114365299,
+            1793114367297,
+            1793114369299,
+            1793114371300,
+            1793114373299,
+            1793114375297,
+            1793114376303,
+            1793114377306,
+            1793114378311,
+            1793114380311,
+            1793114382308,
+            1793114384308,
+            1793114386309,
+            1793114388308,
+            1793114390016,
+            1793114391022,
+            1793114392028,
+            1793114393033,
+            1793114394036,
+            1793114395042,
+            1793114396044,
+            1793114397049,
+            1793114398054,
+            1793114399058,
+            1793114400065,
+            1793114402063,
+            1793114404062,
+            1793114406060,
+            1793114408062,
+            1793114410063,
+            1793114412060,
+            1793114414060,
+            1793114416059,
+            1793114418061,
+            1793114420063,
+            1793114422059,
+            1793114423062,
+            1793114424065,
+            1793114425070,
+            1793114426074,
+            1793114427093,
+            1793114428097,
+            1793114429102,
+            1793114430106,
+            1793117874977,
+            1793117875312,
+            1793117875565,
+            1793117875818,
+            1793117886068,
+            1793117886726,
+            1793117888731,
+            1793117890722,
+            1793117892726,
+            1793117894278,
+            1793117894531,
+            1793117894784,
+            1793117896287,
+            1793117898283,
+            1793117900294,
+            1793117902283,
+            1793117904283,
+            1793117906284,
+            1793117906568,
+            1793117908283,
+            1793117910283,
+            1793117912287,
+            1793117914284,
+            1793117916283,
+            1793117918283,
+            1793117920287,
+            1793117922283,
+            1793117924283,
+            1793117926284,
+            1793117928283,
+            1793117930285,
+            1793117932284,
+            1793117934285,
+            1793117936285,
+            1793117938283,
+            1793117940284,
+            1793117942284,
+            1793117944284,
+            1793117946284,
+            1793117948289,
+            1793117950289,
+            1793117952285,
+            1793117953843,
+            1793117954096,
+            1793117955850,
+            1793117957848,
+            1793117959849,
+            1793118496697,
+            1793118497101,
+            1793118644708,
+            1793119669182,
+            1793119669476,
+            1793119705016,
+            1793119705493,
+            1793119706014,
+            1793119706271,
+            1793119706556,
+            1793120202610,
+            1793120202880
+          ],
+          "refusal": "RPC_HTTP_429",
+          "refusalAt": 1793070869405,
+          "sha256": "a4b5a3c31f5ba3cbce5d3e824220c12c10f7801eaab0ba09c58d7453d8c0a5d3"
+        },
+        "cumulativeUnits": 335,
+        "newUnits": 55,
+        "actualInvokedUnits": 55,
+        "cumulativeResponseBytes": 5940661,
+        "httpBytes": 725123,
+        "wsBytes": 9749,
+        "newResponseBytes": 734872,
+        "remainingGrantUnits": 45,
+        "remainingCumulativeUnits": null,
+        "remainingGrantResponseBytes": 32819560,
+        "remainingCumulativeResponseBytes": null,
+        "pending": [],
+        "uncertainResponseBytes": 0,
+        "rolling60SecondStarts": 39,
+        "rolling10SecondStarts": 5,
+        "starts": [
+          1793121278311,
+          1793121278578,
+          1793121278832,
+          1793121279083,
+          1793121289170,
+          1793121289970,
+          1793121291967,
+          1793121293967,
+          1793121295606,
+          1793121295861,
+          1793121296114,
+          1793121297611,
+          1793121299612,
+          1793121301612,
+          1793121301867,
+          1793121303617,
+          1793121305613,
+          1793121307613,
+          1793121307869,
+          1793121309611,
+          1793121311612,
+          1793121313611,
+          1793121313865,
+          1793121315614,
+          1793121317611,
+          1793121319612,
+          1793121319865,
+          1793121321611,
+          1793121323612,
+          1793121325611,
+          1793121325864,
+          1793121326117,
+          1793121327611,
+          1793121329613,
+          1793121331612,
+          1793121333293,
+          1793121333548,
+          1793121335299,
+          1793121337297,
+          1793121338077,
+          1793121339298,
+          1793121341298,
+          1793121343297,
+          1793121345300,
+          1793121346855,
+          1793121347110,
+          1793121348862,
+          1793121350860,
+          1793121352860,
+          1793121354862,
+          1793121356862,
+          1793121358860,
+          1793121360861,
+          1793121362862,
+          1793121364861
+        ],
+        "actualInvocations": [
+          {
+            "id": 281,
+            "at": 1793121278311
+          },
+          {
+            "id": 282,
+            "at": 1793121278578
+          },
+          {
+            "id": 283,
+            "at": 1793121278832
+          },
+          {
+            "id": 284,
+            "at": 1793121279083
+          },
+          {
+            "id": 285,
+            "at": 1793121289170
+          },
+          {
+            "id": 286,
+            "at": 1793121289970
+          },
+          {
+            "id": 287,
+            "at": 1793121291967
+          },
+          {
+            "id": 288,
+            "at": 1793121293967
+          },
+          {
+            "id": 289,
+            "at": 1793121295606
+          },
+          {
+            "id": 290,
+            "at": 1793121295861
+          },
+          {
+            "id": 291,
+            "at": 1793121296114
+          },
+          {
+            "id": 292,
+            "at": 1793121297611
+          },
+          {
+            "id": 293,
+            "at": 1793121299612
+          },
+          {
+            "id": 294,
+            "at": 1793121301612
+          },
+          {
+            "id": 295,
+            "at": 1793121301867
+          },
+          {
+            "id": 296,
+            "at": 1793121303617
+          },
+          {
+            "id": 297,
+            "at": 1793121305613
+          },
+          {
+            "id": 298,
+            "at": 1793121307613
+          },
+          {
+            "id": 299,
+            "at": 1793121307869
+          },
+          {
+            "id": 300,
+            "at": 1793121309611
+          },
+          {
+            "id": 301,
+            "at": 1793121311612
+          },
+          {
+            "id": 302,
+            "at": 1793121313611
+          },
+          {
+            "id": 303,
+            "at": 1793121313865
+          },
+          {
+            "id": 304,
+            "at": 1793121315614
+          },
+          {
+            "id": 305,
+            "at": 1793121317611
+          },
+          {
+            "id": 306,
+            "at": 1793121319612
+          },
+          {
+            "id": 307,
+            "at": 1793121319865
+          },
+          {
+            "id": 308,
+            "at": 1793121321611
+          },
+          {
+            "id": 309,
+            "at": 1793121323612
+          },
+          {
+            "id": 310,
+            "at": 1793121325611
+          },
+          {
+            "id": 311,
+            "at": 1793121325864
+          },
+          {
+            "id": 312,
+            "at": 1793121326117
+          },
+          {
+            "id": 313,
+            "at": 1793121327611
+          },
+          {
+            "id": 314,
+            "at": 1793121329613
+          },
+          {
+            "id": 315,
+            "at": 1793121331612
+          },
+          {
+            "id": 316,
+            "at": 1793121333293
+          },
+          {
+            "id": 317,
+            "at": 1793121333548
+          },
+          {
+            "id": 318,
+            "at": 1793121335299
+          },
+          {
+            "id": 319,
+            "at": 1793121337297
+          },
+          {
+            "id": 320,
+            "at": 1793121338077
+          },
+          {
+            "id": 321,
+            "at": 1793121339298
+          },
+          {
+            "id": 322,
+            "at": 1793121341298
+          },
+          {
+            "id": 323,
+            "at": 1793121343297
+          },
+          {
+            "id": 324,
+            "at": 1793121345300
+          },
+          {
+            "id": 325,
+            "at": 1793121346855
+          },
+          {
+            "id": 326,
+            "at": 1793121347110
+          },
+          {
+            "id": 327,
+            "at": 1793121348862
+          },
+          {
+            "id": 328,
+            "at": 1793121350860
+          },
+          {
+            "id": 329,
+            "at": 1793121352860
+          },
+          {
+            "id": 330,
+            "at": 1793121354862
+          },
+          {
+            "id": 331,
+            "at": 1793121356862
+          },
+          {
+            "id": 332,
+            "at": 1793121358860
+          },
+          {
+            "id": 333,
+            "at": 1793121360861
+          },
+          {
+            "id": 334,
+            "at": 1793121362862
+          },
+          {
+            "id": 335,
+            "at": 1793121364861
+          }
+        ],
+        "reservationStarts": [
+          1793121278310,
+          1793121278577,
+          1793121278830,
+          1793121279082,
+          1793121289169,
+          1793121289968,
+          1793121291963,
+          1793121293965,
+          1793121295605,
+          1793121295858,
+          1793121296112,
+          1793121297609,
+          1793121299609,
+          1793121301610,
+          1793121301864,
+          1793121303609,
+          1793121305610,
+          1793121307610,
+          1793121307867,
+          1793121309609,
+          1793121311610,
+          1793121313609,
+          1793121313863,
+          1793121315610,
+          1793121317609,
+          1793121319610,
+          1793121319863,
+          1793121321609,
+          1793121323609,
+          1793121325608,
+          1793121325862,
+          1793121326115,
+          1793121327609,
+          1793121329608,
+          1793121331609,
+          1793121333287,
+          1793121333546,
+          1793121335296,
+          1793121337295,
+          1793121338075,
+          1793121339296,
+          1793121341296,
+          1793121343295,
+          1793121345297,
+          1793121346852,
+          1793121347107,
+          1793121348859,
+          1793121350858,
+          1793121352858,
+          1793121354860,
+          1793121356860,
+          1793121358857,
+          1793121360858,
+          1793121362857,
+          1793121364859
+        ],
+        "byOperation": {
+          "http:getSignaturesForAddress": 1,
+          "http:getTransaction": 12,
+          "http:getMultipleAccounts": 41,
+          "ws-upgrade:upgrade": 1
+        },
+        "durationsMs": [
+          263.0024699999999,
+          114.28014699999994,
+          107.03355099999999,
+          45.465797000000066,
+          792.6042849999994,
+          186.0548089999993,
+          48.66345299999921,
+          94.01842300000135,
+          97.51202999999805,
+          106.78131300000314,
+          73.54117399999814,
+          73.1326020000015,
+          52.345196999998734,
+          72.01703400000042,
+          76.09971600000063,
+          86.51902399999744,
+          79.32816000000093,
+          66.86109299999953,
+          59.56283199999962,
+          50.34594199999992,
+          75.72176399999444,
+          48.850876999997126,
+          52.83481400000164,
+          66.00470499999938,
+          57.2282320000013,
+          58.27365899999859,
+          53.52371999999741,
+          45.06906599999638,
+          79.568846999995,
+          48.31476499999553,
+          62.81729899999482,
+          54.78477399999974,
+          47.7576440000048,
+          62.94073199999548,
+          55.32751299999654,
+          52.7660939999987,
+          69.36717299999873,
+          54.9742000000042,
+          59.87867200000619,
+          51.01114600000437,
+          60.31739699999889,
+          51.06155000000581,
+          47.34113400000206,
+          75.18594499999017,
+          57.61904000000504,
+          62.5243860000046,
+          60.80226500000572,
+          54.32416600000579,
+          50.307795000000624,
+          52.409187000012025,
+          59.802521999998135,
+          48.06278599999496,
+          75.75025699999242,
+          56.212246000010055,
+          63.11453400000755
+        ],
+        "inFlight": 0,
+        "waitingOrOperating": false,
+        "haltedReason": null,
+        "startedAt": 1793121278248,
+        "totalMs": 150000,
+        "deadlineAt": 1793121428248,
+        "closed": false,
+        "storageFailed": false
+      }
+    },
+    {
+      "phase": "03-audit",
+      "at": 1793121375677,
+      "usage": {
+        "grantId": "standing-08-current-combined",
+        "limits": {
+          "maxNewUnits": 100,
+          "maxCumulativeUnits": null,
+          "maxHttpBytes": 25165824,
+          "maxWsBytes": 8388608,
+          "maxCombinedBytes": 33554432,
+          "maxCumulativeBytes": null,
+          "minSpacingMs": 250,
+          "maxStartsPerMinute": 60,
+          "maxStartsPer10s": 10
+        },
+        "baseline": {
+          "calls": 280,
+          "bytes": 5205789,
+          "starts": [
+            1793069031002,
+            1793069031314,
+            1793069031396,
+            1793069031462,
+            1793069031573,
+            1793069031683,
+            1793070868114,
+            1793070868438,
+            1793070868560,
+            1793070868620,
+            1793070868784,
+            1793070868860,
+            1793070868907,
+            1793070868987,
+            1793070869076,
+            1793070869128,
+            1793070869216,
+            1793070869294,
+            1793070869347,
+            1793070869405,
+            1793081386306,
+            1793081387309,
+            1793081388313,
+            1793081389315,
+            1793083252240,
+            1793083253245,
+            1793083254248,
+            1793083255251,
+            1793083256255,
+            1793083419722,
+            1793083420725,
+            1793083421729,
+            1793083422732,
+            1793083423735,
+            1793083780796,
+            1793083781799,
+            1793084322691,
+            1793084323694,
+            1793084666467,
+            1793084713873,
+            1793084714877,
+            1793084715881,
+            1793084716884,
+            1793084911356,
+            1793084921822,
+            1793084922823,
+            1793084937183,
+            1793085437929,
+            1793085438942,
+            1793085439945,
+            1793085440949,
+            1793085771700,
+            1793085772703,
+            1793085773707,
+            1793085774709,
+            1793085775711,
+            1793085776716,
+            1793085777718,
+            1793085778721,
+            1793085779723,
+            1793085780726,
+            1793085781729,
+            1793085782732,
+            1793085783781,
+            1793085785780,
+            1793085787779,
+            1793085789779,
+            1793085790782,
+            1793085791784,
+            1793086393178,
+            1793086394181,
+            1793086395184,
+            1793086396187,
+            1793086397190,
+            1793086398193,
+            1793086399199,
+            1793086400202,
+            1793086401205,
+            1793086402208,
+            1793086403210,
+            1793086404213,
+            1793086405256,
+            1793086407255,
+            1793086409255,
+            1793086411256,
+            1793086412260,
+            1793086413263,
+            1793086414266,
+            1793086415269,
+            1793086416271,
+            1793086417275,
+            1793086418278,
+            1793086419281,
+            1793086420284,
+            1793086421288,
+            1793086422291,
+            1793086423294,
+            1793086424297,
+            1793086425300,
+            1793086426302,
+            1793086427305,
+            1793086428308,
+            1793086429314,
+            1793086431255,
+            1793086433254,
+            1793086434258,
+            1793086435262,
+            1793086436265,
+            1793086437268,
+            1793086438271,
+            1793086439275,
+            1793087302346,
+            1793087303348,
+            1793087304352,
+            1793087305356,
+            1793087306926,
+            1793087307929,
+            1793087308962,
+            1793087310169,
+            1793087311172,
+            1793087312174,
+            1793087313177,
+            1793087315004,
+            1793087316916,
+            1793087318949,
+            1793087320975,
+            1793087322989,
+            1793087325000,
+            1793087326912,
+            1793087328936,
+            1793087330958,
+            1793087332967,
+            1793087334988,
+            1793087337000,
+            1793087338915,
+            1793087340922,
+            1793087342934,
+            1793087343937,
+            1793087344949,
+            1793087346059,
+            1793087347062,
+            1793087348979,
+            1793087350993,
+            1793087353000,
+            1793087354914,
+            1793087356926,
+            1793087358940,
+            1793087360954,
+            1793087362966,
+            1793087364977,
+            1793087366991,
+            1793087368998,
+            1793087370909,
+            1793087372923,
+            1793087373932,
+            1793088220236,
+            1793088221239,
+            1793088222242,
+            1793088223245,
+            1793088224248,
+            1793088581011,
+            1793088582014,
+            1793090239498,
+            1793114342630,
+            1793114343632,
+            1793114344635,
+            1793114345638,
+            1793114346641,
+            1793114347646,
+            1793114349298,
+            1793114351298,
+            1793114353299,
+            1793114355297,
+            1793114357299,
+            1793114359300,
+            1793114361298,
+            1793114363297,
+            1793114365299,
+            1793114367297,
+            1793114369299,
+            1793114371300,
+            1793114373299,
+            1793114375297,
+            1793114376303,
+            1793114377306,
+            1793114378311,
+            1793114380311,
+            1793114382308,
+            1793114384308,
+            1793114386309,
+            1793114388308,
+            1793114390016,
+            1793114391022,
+            1793114392028,
+            1793114393033,
+            1793114394036,
+            1793114395042,
+            1793114396044,
+            1793114397049,
+            1793114398054,
+            1793114399058,
+            1793114400065,
+            1793114402063,
+            1793114404062,
+            1793114406060,
+            1793114408062,
+            1793114410063,
+            1793114412060,
+            1793114414060,
+            1793114416059,
+            1793114418061,
+            1793114420063,
+            1793114422059,
+            1793114423062,
+            1793114424065,
+            1793114425070,
+            1793114426074,
+            1793114427093,
+            1793114428097,
+            1793114429102,
+            1793114430106,
+            1793117874977,
+            1793117875312,
+            1793117875565,
+            1793117875818,
+            1793117886068,
+            1793117886726,
+            1793117888731,
+            1793117890722,
+            1793117892726,
+            1793117894278,
+            1793117894531,
+            1793117894784,
+            1793117896287,
+            1793117898283,
+            1793117900294,
+            1793117902283,
+            1793117904283,
+            1793117906284,
+            1793117906568,
+            1793117908283,
+            1793117910283,
+            1793117912287,
+            1793117914284,
+            1793117916283,
+            1793117918283,
+            1793117920287,
+            1793117922283,
+            1793117924283,
+            1793117926284,
+            1793117928283,
+            1793117930285,
+            1793117932284,
+            1793117934285,
+            1793117936285,
+            1793117938283,
+            1793117940284,
+            1793117942284,
+            1793117944284,
+            1793117946284,
+            1793117948289,
+            1793117950289,
+            1793117952285,
+            1793117953843,
+            1793117954096,
+            1793117955850,
+            1793117957848,
+            1793117959849,
+            1793118496697,
+            1793118497101,
+            1793118644708,
+            1793119669182,
+            1793119669476,
+            1793119705016,
+            1793119705493,
+            1793119706014,
+            1793119706271,
+            1793119706556,
+            1793120202610,
+            1793120202880
+          ],
+          "refusal": "RPC_HTTP_429",
+          "refusalAt": 1793070869405,
+          "sha256": "a4b5a3c31f5ba3cbce5d3e824220c12c10f7801eaab0ba09c58d7453d8c0a5d3"
+        },
+        "cumulativeUnits": 348,
+        "newUnits": 68,
+        "actualInvokedUnits": 68,
+        "cumulativeResponseBytes": 6101320,
+        "httpBytes": 885782,
+        "wsBytes": 9749,
+        "newResponseBytes": 895531,
+        "remainingGrantUnits": 32,
+        "remainingCumulativeUnits": null,
+        "remainingGrantResponseBytes": 30561749,
+        "remainingCumulativeResponseBytes": null,
+        "pending": [
+          {
+            "id": 348,
+            "transport": "http",
+            "reservedBytes": 2097152
+          }
+        ],
+        "uncertainResponseBytes": 2097152,
+        "rolling60SecondStarts": 44,
+        "rolling10SecondStarts": 10,
+        "starts": [
+          1793121278311,
+          1793121278578,
+          1793121278832,
+          1793121279083,
+          1793121289170,
+          1793121289970,
+          1793121291967,
+          1793121293967,
+          1793121295606,
+          1793121295861,
+          1793121296114,
+          1793121297611,
+          1793121299612,
+          1793121301612,
+          1793121301867,
+          1793121303617,
+          1793121305613,
+          1793121307613,
+          1793121307869,
+          1793121309611,
+          1793121311612,
+          1793121313611,
+          1793121313865,
+          1793121315614,
+          1793121317611,
+          1793121319612,
+          1793121319865,
+          1793121321611,
+          1793121323612,
+          1793121325611,
+          1793121325864,
+          1793121326117,
+          1793121327611,
+          1793121329613,
+          1793121331612,
+          1793121333293,
+          1793121333548,
+          1793121335299,
+          1793121337297,
+          1793121338077,
+          1793121339298,
+          1793121341298,
+          1793121343297,
+          1793121345300,
+          1793121346855,
+          1793121347110,
+          1793121348862,
+          1793121350860,
+          1793121352860,
+          1793121354862,
+          1793121356862,
+          1793121358860,
+          1793121360861,
+          1793121362862,
+          1793121364861,
+          1793121365114,
+          1793121365371,
+          1793121365626,
+          1793121365879,
+          1793121366132,
+          1793121366864,
+          1793121368864,
+          1793121370863,
+          1793121372865,
+          1793121374866,
+          1793121375123,
+          1793121375377,
+          1793121375629
+        ],
+        "actualInvocations": [
+          {
+            "id": 281,
+            "at": 1793121278311
+          },
+          {
+            "id": 282,
+            "at": 1793121278578
+          },
+          {
+            "id": 283,
+            "at": 1793121278832
+          },
+          {
+            "id": 284,
+            "at": 1793121279083
+          },
+          {
+            "id": 285,
+            "at": 1793121289170
+          },
+          {
+            "id": 286,
+            "at": 1793121289970
+          },
+          {
+            "id": 287,
+            "at": 1793121291967
+          },
+          {
+            "id": 288,
+            "at": 1793121293967
+          },
+          {
+            "id": 289,
+            "at": 1793121295606
+          },
+          {
+            "id": 290,
+            "at": 1793121295861
+          },
+          {
+            "id": 291,
+            "at": 1793121296114
+          },
+          {
+            "id": 292,
+            "at": 1793121297611
+          },
+          {
+            "id": 293,
+            "at": 1793121299612
+          },
+          {
+            "id": 294,
+            "at": 1793121301612
+          },
+          {
+            "id": 295,
+            "at": 1793121301867
+          },
+          {
+            "id": 296,
+            "at": 1793121303617
+          },
+          {
+            "id": 297,
+            "at": 1793121305613
+          },
+          {
+            "id": 298,
+            "at": 1793121307613
+          },
+          {
+            "id": 299,
+            "at": 1793121307869
+          },
+          {
+            "id": 300,
+            "at": 1793121309611
+          },
+          {
+            "id": 301,
+            "at": 1793121311612
+          },
+          {
+            "id": 302,
+            "at": 1793121313611
+          },
+          {
+            "id": 303,
+            "at": 1793121313865
+          },
+          {
+            "id": 304,
+            "at": 1793121315614
+          },
+          {
+            "id": 305,
+            "at": 1793121317611
+          },
+          {
+            "id": 306,
+            "at": 1793121319612
+          },
+          {
+            "id": 307,
+            "at": 1793121319865
+          },
+          {
+            "id": 308,
+            "at": 1793121321611
+          },
+          {
+            "id": 309,
+            "at": 1793121323612
+          },
+          {
+            "id": 310,
+            "at": 1793121325611
+          },
+          {
+            "id": 311,
+            "at": 1793121325864
+          },
+          {
+            "id": 312,
+            "at": 1793121326117
+          },
+          {
+            "id": 313,
+            "at": 1793121327611
+          },
+          {
+            "id": 314,
+            "at": 1793121329613
+          },
+          {
+            "id": 315,
+            "at": 1793121331612
+          },
+          {
+            "id": 316,
+            "at": 1793121333293
+          },
+          {
+            "id": 317,
+            "at": 1793121333548
+          },
+          {
+            "id": 318,
+            "at": 1793121335299
+          },
+          {
+            "id": 319,
+            "at": 1793121337297
+          },
+          {
+            "id": 320,
+            "at": 1793121338077
+          },
+          {
+            "id": 321,
+            "at": 1793121339298
+          },
+          {
+            "id": 322,
+            "at": 1793121341298
+          },
+          {
+            "id": 323,
+            "at": 1793121343297
+          },
+          {
+            "id": 324,
+            "at": 1793121345300
+          },
+          {
+            "id": 325,
+            "at": 1793121346855
+          },
+          {
+            "id": 326,
+            "at": 1793121347110
+          },
+          {
+            "id": 327,
+            "at": 1793121348862
+          },
+          {
+            "id": 328,
+            "at": 1793121350860
+          },
+          {
+            "id": 329,
+            "at": 1793121352860
+          },
+          {
+            "id": 330,
+            "at": 1793121354862
+          },
+          {
+            "id": 331,
+            "at": 1793121356862
+          },
+          {
+            "id": 332,
+            "at": 1793121358860
+          },
+          {
+            "id": 333,
+            "at": 1793121360861
+          },
+          {
+            "id": 334,
+            "at": 1793121362862
+          },
+          {
+            "id": 335,
+            "at": 1793121364861
+          },
+          {
+            "id": 336,
+            "at": 1793121365114
+          },
+          {
+            "id": 337,
+            "at": 1793121365371
+          },
+          {
+            "id": 338,
+            "at": 1793121365626
+          },
+          {
+            "id": 339,
+            "at": 1793121365879
+          },
+          {
+            "id": 340,
+            "at": 1793121366132
+          },
+          {
+            "id": 341,
+            "at": 1793121366864
+          },
+          {
+            "id": 342,
+            "at": 1793121368864
+          },
+          {
+            "id": 343,
+            "at": 1793121370863
+          },
+          {
+            "id": 344,
+            "at": 1793121372865
+          },
+          {
+            "id": 345,
+            "at": 1793121374866
+          },
+          {
+            "id": 346,
+            "at": 1793121375123
+          },
+          {
+            "id": 347,
+            "at": 1793121375377
+          },
+          {
+            "id": 348,
+            "at": 1793121375629
+          }
+        ],
+        "reservationStarts": [
+          1793121278310,
+          1793121278577,
+          1793121278830,
+          1793121279082,
+          1793121289169,
+          1793121289968,
+          1793121291963,
+          1793121293965,
+          1793121295605,
+          1793121295858,
+          1793121296112,
+          1793121297609,
+          1793121299609,
+          1793121301610,
+          1793121301864,
+          1793121303609,
+          1793121305610,
+          1793121307610,
+          1793121307867,
+          1793121309609,
+          1793121311610,
+          1793121313609,
+          1793121313863,
+          1793121315610,
+          1793121317609,
+          1793121319610,
+          1793121319863,
+          1793121321609,
+          1793121323609,
+          1793121325608,
+          1793121325862,
+          1793121326115,
+          1793121327609,
+          1793121329608,
+          1793121331609,
+          1793121333287,
+          1793121333546,
+          1793121335296,
+          1793121337295,
+          1793121338075,
+          1793121339296,
+          1793121341296,
+          1793121343295,
+          1793121345297,
+          1793121346852,
+          1793121347107,
+          1793121348859,
+          1793121350858,
+          1793121352858,
+          1793121354860,
+          1793121356860,
+          1793121358857,
+          1793121360858,
+          1793121362857,
+          1793121364859,
+          1793121365113,
+          1793121365366,
+          1793121365622,
+          1793121365878,
+          1793121366130,
+          1793121366862,
+          1793121368861,
+          1793121370861,
+          1793121372863,
+          1793121374862,
+          1793121375118,
+          1793121375374,
+          1793121375627
+        ],
+        "byOperation": {
+          "http:getSignaturesForAddress": 2,
+          "http:getTransaction": 24,
+          "http:getMultipleAccounts": 41,
+          "ws-upgrade:upgrade": 1
+        },
+        "durationsMs": [
+          263.0024699999999,
+          114.28014699999994,
+          107.03355099999999,
+          45.465797000000066,
+          792.6042849999994,
+          186.0548089999993,
+          48.66345299999921,
+          94.01842300000135,
+          97.51202999999805,
+          106.78131300000314,
+          73.54117399999814,
+          73.1326020000015,
+          52.345196999998734,
+          72.01703400000042,
+          76.09971600000063,
+          86.51902399999744,
+          79.32816000000093,
+          66.86109299999953,
+          59.56283199999962,
+          50.34594199999992,
+          75.72176399999444,
+          48.850876999997126,
+          52.83481400000164,
+          66.00470499999938,
+          57.2282320000013,
+          58.27365899999859,
+          53.52371999999741,
+          45.06906599999638,
+          79.568846999995,
+          48.31476499999553,
+          62.81729899999482,
+          54.78477399999974,
+          47.7576440000048,
+          62.94073199999548,
+          55.32751299999654,
+          52.7660939999987,
+          69.36717299999873,
+          54.9742000000042,
+          59.87867200000619,
+          51.01114600000437,
+          60.31739699999889,
+          51.06155000000581,
+          47.34113400000206,
+          75.18594499999017,
+          57.61904000000504,
+          62.5243860000046,
+          60.80226500000572,
+          54.32416600000579,
+          50.307795000000624,
+          52.409187000012025,
+          59.802521999998135,
+          48.06278599999496,
+          75.75025699999242,
+          56.212246000010055,
+          63.11453400000755,
+          53.421899000008125,
+          50.80533000000287,
+          53.485759999995935,
+          53.39639900000475,
+          46.4164269999892,
+          51.95670299998892,
+          56.56991299999936,
+          74.31566700000258,
+          52.79874800000107,
+          50.72332499999902,
+          57.400261999995564,
+          57.65605200000573,
+          45.61316199999419
+        ],
+        "inFlight": 0,
+        "waitingOrOperating": false,
+        "haltedReason": "COMPONENT_HTTP_429",
+        "startedAt": 1793121278248,
+        "totalMs": 150000,
+        "deadlineAt": 1793121428248,
+        "closed": false,
+        "storageFailed": false
+      }
+    }
+  ],
+  "admittedHoldingEvaluations": [
+    {
+      "preparedAt": 1793121279157,
+      "usedAt": 1793121279158,
+      "slot": 462151291,
+      "requests": 2,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 28,
+          "bankClockAgeAtUseMs": 1158
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 28,
+          "bankClockAgeAtUseMs": 1158
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 28,
+          "bankClockAgeAtUseMs": 1158
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121290186,
+      "usedAt": 1793121290186,
+      "slot": 462151344,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 29,
+          "bankClockAgeAtUseMs": 1186
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 29,
+          "bankClockAgeAtUseMs": 1186
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 29,
+          "bankClockAgeAtUseMs": 1186
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121292047,
+      "usedAt": 1793121292048,
+      "slot": 462151353,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 32,
+          "bankClockAgeAtUseMs": 1048
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 32,
+          "bankClockAgeAtUseMs": 1048
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 32,
+          "bankClockAgeAtUseMs": 1048
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121294085,
+      "usedAt": 1793121294085,
+      "slot": 462151361,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 23,
+          "bankClockAgeAtUseMs": 1085
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 23,
+          "bankClockAgeAtUseMs": 1085
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 23,
+          "bankClockAgeAtUseMs": 1085
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121295730,
+      "usedAt": 1793121295730,
+      "slot": 462151369,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 25,
+          "bankClockAgeAtUseMs": 730
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 25,
+          "bankClockAgeAtUseMs": 730
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 25,
+          "bankClockAgeAtUseMs": 730
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121297707,
+      "usedAt": 1793121297707,
+      "slot": 462151378,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 20,
+          "bankClockAgeAtUseMs": 707
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 20,
+          "bankClockAgeAtUseMs": 707
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 20,
+          "bankClockAgeAtUseMs": 707
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121299684,
+      "usedAt": 1793121299684,
+      "slot": 462151388,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 19,
+          "bankClockAgeAtUseMs": 684
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 19,
+          "bankClockAgeAtUseMs": 684
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 19,
+          "bankClockAgeAtUseMs": 684
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121301727,
+      "usedAt": 1793121301727,
+      "slot": 462151396,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 42,
+          "bankClockAgeAtUseMs": 727
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 42,
+          "bankClockAgeAtUseMs": 727
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 42,
+          "bankClockAgeAtUseMs": 727
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121303727,
+      "usedAt": 1793121303727,
+      "slot": 462151407,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 27,
+          "bankClockAgeAtUseMs": 727
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 27,
+          "bankClockAgeAtUseMs": 727
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 27,
+          "bankClockAgeAtUseMs": 727
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121305717,
+      "usedAt": 1793121305717,
+      "slot": 462151416,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 717
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 717
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 717
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121307703,
+      "usedAt": 1793121307703,
+      "slot": 462151424,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 703
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 703
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 703
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121309682,
+      "usedAt": 1793121309683,
+      "slot": 462151434,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 20,
+          "bankClockAgeAtUseMs": 683
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 20,
+          "bankClockAgeAtUseMs": 683
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 20,
+          "bankClockAgeAtUseMs": 683
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121311709,
+      "usedAt": 1793121311710,
+      "slot": 462151444,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 710
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 710
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 710
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121313683,
+      "usedAt": 1793121313683,
+      "slot": 462151452,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 21,
+          "bankClockAgeAtUseMs": 683
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 21,
+          "bankClockAgeAtUseMs": 683
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 21,
+          "bankClockAgeAtUseMs": 683
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121315707,
+      "usedAt": 1793121315708,
+      "slot": 462151462,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 27,
+          "bankClockAgeAtUseMs": 708
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 27,
+          "bankClockAgeAtUseMs": 708
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 27,
+          "bankClockAgeAtUseMs": 708
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121317694,
+      "usedAt": 1793121317694,
+      "slot": 462151471,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 694
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 694
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 694
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121319695,
+      "usedAt": 1793121319696,
+      "slot": 462151480,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 24,
+          "bankClockAgeAtUseMs": 696
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 24,
+          "bankClockAgeAtUseMs": 696
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 24,
+          "bankClockAgeAtUseMs": 696
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121321671,
+      "usedAt": 1793121321671,
+      "slot": 462151490,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 14,
+          "bankClockAgeAtUseMs": 671
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 14,
+          "bankClockAgeAtUseMs": 671
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 14,
+          "bankClockAgeAtUseMs": 671
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121323717,
+      "usedAt": 1793121323717,
+      "slot": 462151498,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 24,
+          "bankClockAgeAtUseMs": 717
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 24,
+          "bankClockAgeAtUseMs": 717
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 24,
+          "bankClockAgeAtUseMs": 717
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121325677,
+      "usedAt": 1793121325678,
+      "slot": 462151508,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 18,
+          "bankClockAgeAtUseMs": 678
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 18,
+          "bankClockAgeAtUseMs": 678
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 18,
+          "bankClockAgeAtUseMs": 678
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121327677,
+      "usedAt": 1793121327677,
+      "slot": 462151517,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 17,
+          "bankClockAgeAtUseMs": 677
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 17,
+          "bankClockAgeAtUseMs": 677
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 17,
+          "bankClockAgeAtUseMs": 677
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121329694,
+      "usedAt": 1793121329694,
+      "slot": 462151525,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 16,
+          "bankClockAgeAtUseMs": 1694
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 16,
+          "bankClockAgeAtUseMs": 1694
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 16,
+          "bankClockAgeAtUseMs": 1694
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121331693,
+      "usedAt": 1793121331693,
+      "slot": 462151535,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 24,
+          "bankClockAgeAtUseMs": 693
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 24,
+          "bankClockAgeAtUseMs": 693
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 24,
+          "bankClockAgeAtUseMs": 693
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121333367,
+      "usedAt": 1793121333367,
+      "slot": 462151543,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 20,
+          "bankClockAgeAtUseMs": 1367
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 20,
+          "bankClockAgeAtUseMs": 1367
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 20,
+          "bankClockAgeAtUseMs": 1367
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121335381,
+      "usedAt": 1793121335381,
+      "slot": 462151552,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 26,
+          "bankClockAgeAtUseMs": 1381
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 26,
+          "bankClockAgeAtUseMs": 1381
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 26,
+          "bankClockAgeAtUseMs": 1381
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121337377,
+      "usedAt": 1793121337377,
+      "slot": 462151562,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 19,
+          "bankClockAgeAtUseMs": 377
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 19,
+          "bankClockAgeAtUseMs": 377
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 19,
+          "bankClockAgeAtUseMs": 377
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121339388,
+      "usedAt": 1793121339388,
+      "slot": 462151572,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 25,
+          "bankClockAgeAtUseMs": 388
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 25,
+          "bankClockAgeAtUseMs": 388
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 25,
+          "bankClockAgeAtUseMs": 388
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121341375,
+      "usedAt": 1793121341375,
+      "slot": 462151581,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 25,
+          "bankClockAgeAtUseMs": 1375
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 25,
+          "bankClockAgeAtUseMs": 1375
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 25,
+          "bankClockAgeAtUseMs": 1375
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121343365,
+      "usedAt": 1793121343365,
+      "slot": 462151591,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 20,
+          "bankClockAgeAtUseMs": 1365
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 20,
+          "bankClockAgeAtUseMs": 1365
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 20,
+          "bankClockAgeAtUseMs": 1365
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121345398,
+      "usedAt": 1793121345398,
+      "slot": 462151602,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 19,
+          "bankClockAgeAtUseMs": 398
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 19,
+          "bankClockAgeAtUseMs": 398
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 19,
+          "bankClockAgeAtUseMs": 398
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121346934,
+      "usedAt": 1793121346934,
+      "slot": 462151609,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 21,
+          "bankClockAgeAtUseMs": 934
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 21,
+          "bankClockAgeAtUseMs": 934
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 21,
+          "bankClockAgeAtUseMs": 934
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121348960,
+      "usedAt": 1793121348960,
+      "slot": 462151617,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 31,
+          "bankClockAgeAtUseMs": 960
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 31,
+          "bankClockAgeAtUseMs": 960
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 31,
+          "bankClockAgeAtUseMs": 960
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121350938,
+      "usedAt": 1793121350939,
+      "slot": 462151628,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 23,
+          "bankClockAgeAtUseMs": 939
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 23,
+          "bankClockAgeAtUseMs": 939
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 23,
+          "bankClockAgeAtUseMs": 939
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121352928,
+      "usedAt": 1793121352928,
+      "slot": 462151636,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 16,
+          "bankClockAgeAtUseMs": 928
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 16,
+          "bankClockAgeAtUseMs": 928
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 16,
+          "bankClockAgeAtUseMs": 928
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121354938,
+      "usedAt": 1793121354938,
+      "slot": 462151647,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 938
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 938
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 22,
+          "bankClockAgeAtUseMs": 938
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121356954,
+      "usedAt": 1793121356955,
+      "slot": 462151656,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 31,
+          "bankClockAgeAtUseMs": 955
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 31,
+          "bankClockAgeAtUseMs": 955
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 31,
+          "bankClockAgeAtUseMs": 955
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121358927,
+      "usedAt": 1793121358927,
+      "slot": 462151666,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 18,
+          "bankClockAgeAtUseMs": 927
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 18,
+          "bankClockAgeAtUseMs": 927
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 18,
+          "bankClockAgeAtUseMs": 927
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121360962,
+      "usedAt": 1793121360963,
+      "slot": 462151676,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 23,
+          "bankClockAgeAtUseMs": 963
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 23,
+          "bankClockAgeAtUseMs": 963
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 23,
+          "bankClockAgeAtUseMs": 963
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121362954,
+      "usedAt": 1793121362955,
+      "slot": 462151685,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 35,
+          "bankClockAgeAtUseMs": 955
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 35,
+          "bankClockAgeAtUseMs": 955
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 35,
+          "bankClockAgeAtUseMs": 955
+        }
+      ]
+    },
+    {
+      "preparedAt": 1793121364945,
+      "usedAt": 1793121364945,
+      "slot": 462151694,
+      "requests": 1,
+      "holdings": [
+        {
+          "mint": "fH3MjM69dpcJk7PqUURumh2nDqduBYhspMqTRDYpump",
+          "quoteAgeAtUseMs": 20,
+          "bankClockAgeAtUseMs": 945
+        },
+        {
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "quoteAgeAtUseMs": 20,
+          "bankClockAgeAtUseMs": 945
+        },
+        {
+          "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+          "quoteAgeAtUseMs": 20,
+          "bankClockAgeAtUseMs": 945
+        }
+      ]
+    }
+  ],
+  "protectionAcceptance": false,
+  "productionChanged": false,
+  "financialAccountChanged": false,
+  "paperEntries": false,
+  "naturalPaperTrades": 0,
+  "liveTrading": false,
+  "acceptanceClock": false
+}

@@ -1,0 +1,22 @@
+{
+  "recordedAt": "2026-10-29 18:34:30 UTC",
+  "serviceId": "srv-daqon53tqb8s73bdceq0",
+  "result": {
+    "commit": {
+      "createdAt": "2026-10-29T18:29:07Z",
+      "id": "79586698694f8b850bb3d75186878134c8276567",
+      "message": "Verify entry reasons with owner graph and trade disclosure updates"
+    },
+    "createdAt": "2026-10-29T18:29:42.792963Z",
+    "finishedAt": "2026-10-29T18:30:47.154689Z",
+    "id": "dep-dbhp15mtlv9c739bf7v0",
+    "startedAt": "2026-10-29T18:29:42.765889Z",
+    "status": "deactivated",
+    "trigger": "api",
+    "updatedAt": "2026-10-29T18:32:29.812764Z"
+  },
+  "financialSourceUnchanged": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+  "financialServiceRestarted": false,
+  "sourceBindingChanged": false,
+  "ownerGraphAndTradeDisclosurePreserved": true
+}

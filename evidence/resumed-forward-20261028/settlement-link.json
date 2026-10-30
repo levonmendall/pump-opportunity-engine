@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "label": "native-retention-20261028142017",
+  "administrationRun": 40704936322,
+  "source": {
+    "commit": "63f4ac439c6b22c7d532c284890cf47e78ad5d62",
+    "sha256": "130b02f614b46b3576e1659cf2f0a18ce8f56e288b76578d05bd23398d920dd0"
+  },
+  "configurationSha256": "29d9de0d148c52a10ebad22eb66875636fa06beacbe66004862cd8f0505597bf",
+  "classification": "FAILED_FORWARD_DIAGNOSTIC_WITH_COMPLETE_RETAINED_EVIDENCE",
+  "runtimeStop": "NATIVE_RESEARCH_UNMANAGED_CONTROL_REQUIRES_ACCOUNTING",
+  "actualElapsedMs": 433623,
+  "applicationAndProcessGroupsSettled": true,
+  "wholeArchiveHashVerified": true,
+  "actualManagedStarts": 207,
+  "actualManagedSettlements": 207,
+  "extraObservedUnmanagedControls": 1,
+  "newAccountedUnits": 208,
+  "cumulativeAccountedUnits": 5033,
+  "cumulativeAccountedResponseBytes": 209285767,
+  "cumulativeUncertainResponseBytes": 53477376,
+  "cumulativeObservedResponseBytes": 155808391,
+  "newPaths": [
+    {
+      "path": "/workspace/poe-pilot/runs/native-retention-20261028142017/artifact/run/rpc/chapter-001.json",
+      "sha256": "74647e8d1b6947b692a33d94bd2f02551a37b113aec19e7c4ca9e32797d52074"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-retention-20261028142017/artifact/run/rpc/chapter-002.json",
+      "sha256": "804da74fa885d2c6cdf72aec03759df3ea52d9b4a994b9da260985f0a29c01b6"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-retention-20261028142017/artifact/run/rpc/chapter-003.json",
+      "sha256": "7570a075c5c8840bb458ce67e519b968d9f766926e4b662e77f0047fd12483b7"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-retention-20261028142017/artifact/run/rpc/chapter-004.json",
+      "sha256": "6e59b275c85fa954b57a82c9c62fffbeddd7d3e5ec9e0eac618992cae0525d9b"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-retention-20261028142017/artifact/run/rpc/chapter-005.json",
+      "sha256": "7d13ce697923e33f3bd6b9b2f1119a02581ec68d80a7dfcb1ecf8caebb0d6c5d"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-retention-20261028142017/artifact/run/rpc/chapter-006.json",
+      "sha256": "09e6505718121895d129f7628f5ba400f9d079edde81d91b68c054309f3c3a84"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-retention-20261028142017/observed-unmanaged-control.json",
+      "sha256": "b48c5df418f65860f3409c2198e7e2b39d108459620ce938aeec172489c458e3"
+    }
+  ],
+  "priorBooksRetainedUnchanged": true,
+  "financialLedgerOpened": false,
+  "settledAt": 1793198142732
+}

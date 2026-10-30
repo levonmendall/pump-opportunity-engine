@@ -1,0 +1,19 @@
+{
+  "linked": true,
+  "sourceRun": 40726448588,
+  "source": {
+    "commit": "90625f53b686578637accf73ebc457f841743ee2",
+    "sha256": "be2a5fc3132c7a2bfefe04ec7717d61e0d7030c6c462ccebca2e384d5558915a"
+  },
+  "starts": 508,
+  "settlements": 508,
+  "newBooks": 29,
+  "allBooks": 216,
+  "cumulativeUnits": 6189,
+  "accountedResponseBytes": 466063534,
+  "observedResponseBytes": 269324462,
+  "uncertainResponseBytes": 196739072,
+  "manifestBeforeSha256": "bb5d086b6cc99ecb09ec19ea01d14cca120c92b02a78c1ff3ada0f26812ba9c6",
+  "manifestAfterSha256": "938ba363fd4ca937ecdb3bab78fa09f8483c76eb10aa17347f4cb21348b8a559",
+  "financialStateTouched": false
+}

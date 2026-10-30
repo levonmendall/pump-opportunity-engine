@@ -1,0 +1,120 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "repository": "levonmendall/meme-machine-admin",
+    "commit": "76ce77134edc27b92b72bbca4aabbcc71a90938f",
+    "runId": 40619930479,
+    "jobId": 122591225512,
+    "completedAt": "2026-10-28T02:17:48Z"
+  },
+  "records": [
+    {
+      "networkProbeStarted": false,
+      "preflight": {
+        "accountId": "133857166104",
+        "diskAvailableBytes": 57825566720,
+        "financialFilesRead": false,
+        "hostMutations": false,
+        "instanceId": "i-00044d4ea1471b957",
+        "memoryAvailableBytes": 7079784448,
+        "metadataReadUnits": 2,
+        "nodePath": "/opt/mm-ec2-admin-runner/externals.2.338.0/node24/bin/node",
+        "nodeVersion": "v24.21.0",
+        "probeStartedAt": 1793153778607,
+        "publicStatus": {
+          "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+          "entriesDisabled": true,
+          "feedConnected": true,
+          "generatedAt": "2026-10-28T02:16:17.967Z",
+          "inceptionAt": "2026-10-26T22:07:36.212Z",
+          "lastReconciledAt": "2026-10-28T02:16:17.967Z",
+          "lastUsefulProgressAt": "2026-10-28T02:16:17.967Z",
+          "liveTrading": false,
+          "mode": "PAPER",
+          "project": "pump-opportunity-engine",
+          "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+          "strategy": "UNIMPLEMENTED_FLOW_BLOCKED"
+        },
+        "region": "us-west-2",
+        "secretsRead": false,
+        "service": {
+          "ActiveState": "active",
+          "MainPID": "2333724",
+          "NRestarts": "0",
+          "SubState": "running",
+          "User": "poe-runtime"
+        },
+        "uid": 994
+      }
+    },
+    {
+      "sourceCommit": "76ce77134edc27b92b72bbca4aabbcc71a90938f",
+      "componentSource": "82a9c10f163ce5d01a13fd52cc33de1be236c562",
+      "bundleSha256": "43a3f249a81501f776c863804ced0442d1a2d3badd52b8568664385fc4dca796",
+      "inputSha256": "e4cf78d0620c6b3f716871e3df601a1f3dc418b45e19dfefd1eb9a132cc9b983",
+      "metadataSha256": "3432f633c54d8369f75694d0750be45354f831e193ba3ccf81a8c58a8be17bae",
+      "baselineCalls": 3726,
+      "target": {
+        "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+        "pool": "2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT"
+      },
+      "preparation": "offline hash-verified gzip only",
+      "lifecycleScriptsExecuted": false,
+      "globalRuntimeInstalled": false,
+      "financialFilesRead": false,
+      "secretsRead": false
+    },
+    {
+      "runId": "ec2-native-flow-20261028021619992",
+      "evidenceDir": "/opt/mm-ec2-admin-runner/_work/_temp/poe-native-40619930479-1/evidence",
+      "failure": null,
+      "captureStopReason": null,
+      "preflightVerified": true,
+      "subscriptionAcknowledged": true,
+      "notifications": 296,
+      "matchedTransactions": 4,
+      "physicalSettled": true,
+      "newUnits": 24,
+      "cumulativeUnits": 3750,
+      "measuredBytes": 1493492,
+      "retainedBytes": 688141,
+      "evidenceGzipSha256": "1effd8e6b71ae7ab38f8a6bfa2150d49bcc215302a31a62dee19b70237637473",
+      "eventsNdjsonSha256": "e6bf31012c795628b56d4d19d40fe2c147e597038b02eadbf5cdc6f1b221cd14",
+      "evidenceGzipBytes": 520922
+    },
+    {
+      "aggregateElapsedMs": 86395,
+      "checkedAt": 1793153865002,
+      "componentFailure": null,
+      "componentUnits": 24,
+      "diagnosticReceiptExists": true,
+      "financialFilesRead": false,
+      "hostMutations": false,
+      "originalIdentityPidRestartsUnchanged": true,
+      "originalService": {
+        "ActiveState": "active",
+        "MainPID": "2333724",
+        "NRestarts": "0",
+        "SubState": "running",
+        "User": "poe-runtime"
+      },
+      "probeTransportSettled": true,
+      "publicStatus": {
+        "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "entriesDisabled": true,
+        "feedConnected": true,
+        "generatedAt": "2026-10-28T02:17:42.973Z",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "lastReconciledAt": "2026-10-28T02:17:42.973Z",
+        "lastUsefulProgressAt": "2026-10-28T02:17:42.973Z",
+        "liveTrading": false,
+        "mode": "PAPER",
+        "project": "pump-opportunity-engine",
+        "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+        "strategy": "UNIMPLEMENTED_FLOW_BLOCKED"
+      },
+      "secretsRead": false,
+      "temporaryDirectoryBytes": 4919668
+    }
+  ]
+}

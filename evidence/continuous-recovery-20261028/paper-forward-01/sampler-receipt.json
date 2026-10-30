@@ -1,0 +1,8 @@
+{
+  "bytes": 987447,
+  "sha256": "e184eab58c51d18f9eef93c1f8397b755a50643a12c518842b0b4b410e58eae3",
+  "privateRawPath": "/workspace/pump-opportunity-engine/evidence/continuous-recovery-20261028/paper-forward-01/render-cycles.ndjson",
+  "finalProcessLog": "{\"samplerStarted\":true,\"pid\":125785,\"maximumBytes\":33554432,\"maximumMs\":3960000,\"firstHttpStatus\":200,\"publicReportingOnly\":true}\n{\"samplerStopped\":true,\"calls\":387,\"receivedBytes\":946069,\"retainedBytes\":987447,\"elapsedMs\":3966562.99493,\"continuousExecutionBeyondThisProcessClaimed\":false}\n",
+  "sourceDataNotMadeFreshByRepeatedGET": true,
+  "financialProjectionDefectsPreserved": true
+}

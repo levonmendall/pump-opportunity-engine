@@ -1,0 +1,25 @@
+{
+  "frozenAt": "2026-10-30T00:24:35.844323+00:00",
+  "files": {
+    "observe-existing-collector.py": {
+      "bytes": 4876,
+      "sha256": "9d1900f052e6949b66842cfe68c1439c96b646ba9c61190ba95462961f02f84a"
+    },
+    "summary.json": {
+      "bytes": 6625,
+      "sha256": "1d1e1d181296ebaa14fceb0ab7ca193811c8828c04ae786ab6cb1148fdb9f325"
+    },
+    "source-observations.ndjson": {
+      "bytes": 786923,
+      "sha256": "77941b54e96232bee847a83bad1ea02403a76c55b5c18ad0defdefeb2d05c59b"
+    },
+    "material-transitions.ndjson": {
+      "bytes": 69968,
+      "sha256": "963c51f619876c06f1e72d6a525dd244e0f0d043ee024a0b0bb6c29b8b587710"
+    },
+    "scorecard.json": {
+      "bytes": 7998,
+      "sha256": "bfe0e3ad76ea5784bf38d222b94f7fa2746b812417a0ae2f7f87f4d11b1835c8"
+    }
+  }
+}

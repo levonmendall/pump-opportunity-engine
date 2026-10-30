@@ -1,0 +1,31 @@
+{
+  "verifiedAt": "2026-10-28T23:20:50.450428+00:00",
+  "mode": "OFFLINE_CORRECTION_AND_REPLAY_AFTER_BOUNDED_QUERY",
+  "networkRequestsByThisReview": 0,
+  "originalInputSha256": "25e0d5477365325b04ecda522ad75fef008e1b6ada41d548679fcb3e9e2ab0e5",
+  "initialOutputRetained": true,
+  "focusedTestsPassed": 26,
+  "buildPassed": true,
+  "sourceFiles": {
+    "scripts/adjudicate-missing-audit.ts": "42642c201bb1941f405f8ea643179ae5c23d46d1b1d2b3d2462252ffad3518af",
+    "test/missing-audit-adjudication.test.ts": "326f92dfd2aaa029947278545ae5f9110628418e199be8d934156c6c8443a575",
+    "evidence/missing-audit-adjudication-20261028/compare-real-sell-logs.ts": "49d9bd478640b587c87103bd6e146afb614f0b8bbe7a3ab160af70efbddaf023"
+  },
+  "policy": "validated-legacy-v0-only-v2",
+  "actualClassifications": {
+    "knownNonSwap": 1,
+    "missingExecutedSell": 3,
+    "unsupportedVersionUnresolved": 2
+  },
+  "nativeSellParities": 3,
+  "historicalWindowsChanged": false,
+  "runtimeOrFinancialWrites": 0,
+  "limitations": [
+    "Generic full-transaction mapper version1 syntax acceptance is not validated version1 semantics.",
+    "A matching later full RPC log body is not proof of what the original WebSocket delivered.",
+    "Static-key pool presence excludes an address-table-only pool explanation for these three cases; not all packets."
+  ],
+  "independentFocusedTestsPassed": 26,
+  "independentBuildPassed": true,
+  "independentActualReplayParity": true
+}

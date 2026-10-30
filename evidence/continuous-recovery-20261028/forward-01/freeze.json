@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "commit": "90625f53b686578637accf73ebc457f841743ee2",
+    "sha256": "be2a5fc3132c7a2bfefe04ec7717d61e0d7030c6c462ccebca2e384d5558915a"
+  },
+  "configurationSha256": "5a55cc6635b814cb4b76d5b9636d2eecca1439ebd534ed1c84ed587c03aa377b",
+  "packageManifestSha256": "0b328f3419e5d69dd3c8e1347501a393700b53eb130fe632ba7b31c2cd43085e",
+  "supervisorSha256": "dde1e5ea8af45ecc91b3b6cb44574f9382852ca869a28a3a1a136bf8d4155a67",
+  "observationSeconds": 900,
+  "maximumDeep": 6,
+  "researchProfile": "candidate-native-two-hour-90-research-v1",
+  "auditProfile": "native-resumable-executed-flow-adaptive-history-v3",
+  "strategyThresholdsChanged": false,
+  "entriesEnabled": false,
+  "financialWriterOpened": false,
+  "apiPurchase": false
+}

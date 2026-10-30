@@ -1,0 +1,14 @@
+{
+  "sourceCommit": "880512fa9f59470f202c86aaeda724abb2898ca2",
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "--test",
+    "test/pilot-trader.test.ts"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 0.8251621510000859,
+  "endedAt": "2026-10-28T14:27:56.047277+00:00",
+  "logSha256": "f2325b3d0b0f76ffa3130b79a5c2f01f4b13bf7bd03d48d9668c41b1f2f0dc5e"
+}

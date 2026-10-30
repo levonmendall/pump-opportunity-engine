@@ -1,0 +1,163 @@
+{
+  "schemaVersion": 1,
+  "classification": "PUMPAPI_FREE_SCHEMA_AND_RESOURCE_TEST_NOT_QUALIFICATION_EQUIVALENCE",
+  "recordedAt": "2026-10-27T01:38:18.963838+00:00",
+  "branch": "poe-free-data-evaluation-20261027",
+  "runs": [
+    {
+      "sourceSummary": "evidence/free-data-20261027/pumpapi-schema-2026-10-27T01-30-23-258Z.json",
+      "stage": "schema",
+      "openedAt": "2026-10-27T01:30:24.225000+00:00",
+      "stoppedAt": "2026-10-27T01:30:29.320000+00:00",
+      "openSeconds": 5.095641101,
+      "processSeconds": 6.072850707000001,
+      "messages": 5101,
+      "applicationBytes": 7320474,
+      "socketBytes": 7341091,
+      "socketBytesPerSecond": 1440660.920675779,
+      "messagesPerSecond": 1001.0516633518299,
+      "selectedMessages": 0,
+      "normalizedTrades": 0,
+      "usableVerifiedFlowWindowSeconds": 0,
+      "rawTransportClosedWindowObserved": false,
+      "cpuSecondsIncludingStartup": 0.63497,
+      "peakRssBytes": 77463552,
+      "peakEventLoopLagMs": 8.793860000000024,
+      "actionCounts": null,
+      "venueCounts": null,
+      "queueHighWater": 0,
+      "selectedQueueAgeP95Ms": null,
+      "stopReason": "transport-byte-headroom",
+      "duringObservationUnexpectedDisconnects": 0,
+      "plannedTerminalGap": true
+    },
+    {
+      "sourceSummary": "evidence/free-data-20261027/pumpapi-capture-2026-10-27T01-35-40-166Z.json",
+      "stage": "capture",
+      "openedAt": "2026-10-27T01:35:40.961000+00:00",
+      "stoppedAt": "2026-10-27T01:37:00.391000+00:00",
+      "openSeconds": 79.429899884,
+      "processSeconds": 80.237613432,
+      "messages": 61948,
+      "applicationBytes": 99405838,
+      "socketBytes": 99653847,
+      "socketBytesPerSecond": 1254613.7807744339,
+      "messagesPerSecond": 779.9078192276373,
+      "selectedMessages": 0,
+      "normalizedTrades": 0,
+      "usableVerifiedFlowWindowSeconds": 0,
+      "rawTransportClosedWindowObserved": true,
+      "cpuSecondsIncludingStartup": 4.607286,
+      "peakRssBytes": 109260800,
+      "peakEventLoopLagMs": 9.228587999999974,
+      "actionCounts": {
+        "transfer": 28973,
+        "sell": 14263,
+        "buy": 17833,
+        "leaders": 374,
+        "add": 111,
+        "create": 70,
+        "distributeFees": 169,
+        "remove": 137,
+        "createPool": 9,
+        "migrate": 6,
+        "createConfig": 3
+      },
+      "venueCounts": {
+        "pump-amm": 17018,
+        "orca-whirlpool": 1857,
+        "pump": 3862,
+        "meteora-dlmm": 1544,
+        "raydium-clmm": 1929,
+        "meteora-damm-v2": 4210,
+        "meteora-launchpad": 1476,
+        "raydium-cpmm": 480,
+        "raydium-launchpad": 63,
+        "raydium-v4": 130,
+        "meteora-damm-v1": 32
+      },
+      "queueHighWater": 0,
+      "selectedQueueAgeP95Ms": null,
+      "stopReason": "duration-limit",
+      "duringObservationUnexpectedDisconnects": 0,
+      "plannedTerminalGap": true
+    }
+  ],
+  "aggregate": {
+    "connections": 2,
+    "simultaneousConnections": 1,
+    "applicationBytes": 106726312,
+    "socketBytes": 106994938,
+    "openSeconds": 84.52554098499999,
+    "reservedTransportBytes": 117440512,
+    "maximumAssignmentBytes": 134217728,
+    "reservedProviderDurationMs": 100000,
+    "maximumAssignmentDurationMs": 1800000,
+    "pumpapiEvidenceBytes": 24354,
+    "noFurtherLiveAttemptAuthorizedByThisResult": true
+  },
+  "informationQuality": {
+    "selectedMints": [
+      "CRpqtPYyBckKTwgrixiPBYQsi6YESBxA8LMJ5p3fpump",
+      "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump"
+    ],
+    "selectedEvents": 0,
+    "matchedIndependentTrades": 0,
+    "independentOnChainCompletenessDenominator": null,
+    "underlyingTradeCount": null,
+    "instructionIdentity": "UNVERIFIED",
+    "commitmentAndCorrections": "UNVERIFIED",
+    "integerAmountsAndFeeConvention": "UNVERIFIED; numericUIfields observed, nestedbalances/transfers notverified withoutselectedsamples",
+    "traderAttribution": "UNVERIFIED; breakdown.trader fieldtype observed only",
+    "featureWindow": "Rawsocketcontinuouspast60/70s warmcondition inlongleg, but0verifiedusablequalificationseconds; noinventedzero-flowfeature",
+    "providerReceiptLatency": "UNAVAILABLE withoutsameunderlyingselectedevents andindependentorigincontext",
+    "repeatedSignatures": "Observed counts withinbounded256signaturecache; notdeduplicated andnotproofduplicates",
+    "quietVersusBusyCohort": "Bothpreselectedsupportedpools producednoselectedevents; noverifiedbusiercandidatecohort. Broadpump-amm eventactivity isnotPOEselectedactivity."
+  },
+  "conditionalMonthlyProjection": {
+    "assumptions": "Allsupportedvenues arrive evenforonePOEpool. Continuous24h/day30days; sameobservedbroad rates asshortsamples; noadditionalretries. Higher scenarioisfirst5srate, notuniversalpeak; neitherforecastguaranteesdeliverycapacity/quota/networkcost.",
+    "longerSample": {
+      "bytesPerDay": 108398630658.91109,
+      "bytesPer30Days": 3251958919767.3325
+    },
+    "higherShortSample": {
+      "bytesPerDay": 124473103546.3873,
+      "bytesPer30Days": 3734193106391.619
+    },
+    "oneFullWorstCase70sWindowBytesAtLongerRate": 87822964.65421037,
+    "candidateCountReductionSavesBroadIngress": false,
+    "heldOnlyDoesNotRequireFlowUnderCurrentPriceTimeExitRule": true
+  },
+  "costs": {
+    "providerDataFeesUsd": "0.00 underdocumentedcredential-freestream; nofundingoraccount",
+    "actualProviderBillingReceipt": "UNAVAILABLE/noaccount",
+    "existingInfrastructure": "unchanged/notzeroed",
+    "transferAndStorageAllocation": "UNVERIFIED; ingressvolume measured atNode socketlayernotfullwireorhostbill",
+    "maintenance": "OnebroadJSONdecodepathandboundedlocalfilter; noindexer; flowcontract/mappingsstillneedverification"
+  },
+  "faultsTestedOffline": [
+    "duplicateswithoutsignaturesuppression",
+    "malformedJSON",
+    "unsupportedarrays",
+    "missingselectedfields",
+    "oversizedpayload",
+    "selectedqueuepressure",
+    "evidencestoragelimit/writefailure",
+    "disconnect/reconnectwarmreset",
+    "firstframeabsence/stalereceive",
+    "clock/regression",
+    "CPU/RSS/eventloop/duration/bytecaps",
+    "supervisorSIGKILL/childconnectionlock/IPCdisconnect"
+  ],
+  "production": {
+    "ec2Touched": false,
+    "accountCreatedOrReset": false,
+    "entriesEnabled": false,
+    "ledgerOrRenderWrites": false,
+    "walletOrCredentialRead": false,
+    "transactionSigningSimulationBroadcast": false,
+    "newSpending": false,
+    "acceptanceClocksStarted": false
+  },
+  "classificationRecommendation": "PROMISING_WITH_NAMED_EVIDENCE_GAPS fordata-onlyconnectivity/resourcecapacity inCloud; NOTVERIFIEDFORSTRATEGY orproductionpositionprotection."
+}

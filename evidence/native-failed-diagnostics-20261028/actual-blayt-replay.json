@@ -1,0 +1,236 @@
+{
+  "schemaVersion": 1,
+  "classification": "RETAINED_ACTUAL_PACKET_METADATA_REPLAY_NOT_FORWARD_COMPLETENESS",
+  "source": {
+    "commit": "9a520267f8e446a634b3e7ca773dd7471e14e7bc",
+    "sha256": "395d7c9effb4a16004f511ed5647fc02c8666c5af18e5c81995884160f116812"
+  },
+  "runId": "native-candidates-20261028183837830",
+  "mint": "BLAytV5xTVEkYJYS1RoFR5Ypgm3JZ44CvVdZHTExpump",
+  "ack": {
+    "mint": "BLAytV5xTVEkYJYS1RoFR5Ypgm3JZ44CvVdZHTExpump",
+    "pool": "EdQzwtmWkH5iB5Q6KPWQbQUYo1NPaCfY3zNCpoW9NDpV",
+    "at": 1793213401590,
+    "subscription": 102679089,
+    "connection": 3,
+    "dataContract": "confirmed-program-activity-v3-shadow",
+    "ref": "events/events-008.ndjson:4181"
+  },
+  "originalRefusal": {
+    "mint": "BLAytV5xTVEkYJYS1RoFR5Ypgm3JZ44CvVdZHTExpump",
+    "at": 1793213446755,
+    "rows": 8192,
+    "maximumRows": 8192,
+    "retainedFence": null,
+    "windowUsable": false,
+    "candidateLocal": true,
+    "allReceivedBytesStillAccounted": true,
+    "validatedPacketRetained": true,
+    "refusalEvidence": "actual offending signature retained outside capped live ledger; source window remains unusable",
+    "ref": "events/events-010.ndjson:8595"
+  },
+  "ackToRefusalMs": 45165,
+  "firstTransportReceiptToRefusalMs": 45209,
+  "validatedAvailabilitySpanMs": 44376,
+  "firstPacketReceiptAt": 1793213401546,
+  "firstValidatedPacketAvailableAt": 1793213402371,
+  "validatedPacketMetadata": 8193,
+  "successful": 1318,
+  "sourceReportedFailed": 6875,
+  "acceptedBeforeOriginalRefusal": 8192,
+  "acceptedSuccessful": 1318,
+  "acceptedSourceReportedFailed": 6874,
+  "requiredSuccessfulRowsRetained": 1318,
+  "failedDiagnosticSummary": {
+    "policy": "executed-flow-failed-diagnostics-v1",
+    "sourceReportedPackets": 6875,
+    "duplicatePackets": 0,
+    "first": {
+      "signature": "4L1PHTKDzSACDHq1vHmtJjfCyRKyavyDgVXfkknMAJGHfnUuhAuiD2CXZReUSSNpwqiS8FBXgPkx1LGZg8tJjfzD",
+      "slot": 462583881,
+      "receivedAt": 1793213401546,
+      "availableAt": 1793213402416,
+      "success": false,
+      "rawHash": "ada71585491b4c9394c0689254cfeb845b4dc858a7814d170f1caf82d7f750b1",
+      "subscriptionMint": "BLAytV5xTVEkYJYS1RoFR5Ypgm3JZ44CvVdZHTExpump",
+      "subscriptionPool": "EdQzwtmWkH5iB5Q6KPWQbQUYo1NPaCfY3zNCpoW9NDpV",
+      "subscriptionId": 102679089,
+      "connectionId": 3,
+      "parsedEvents": 0,
+      "eventsAccepted": 0,
+      "duplicate": false,
+      "correction": false,
+      "classification": "failed-transaction",
+      "reason": null,
+      "chainBlockTime": null,
+      "protocolEffects": 0,
+      "protocolFramesObserved": 0,
+      "strictV2Unavailable": false
+    },
+    "last": {
+      "signature": "4ERKE14RKYKBH8pt8zAUsJkGnTWKs356P9BNkkPzPimbp3pJJhmdxyKJ4yQZ9cKnnLiHYgoQFWv6xHdcqz6VQvXK",
+      "slot": 462584086,
+      "receivedAt": 1793213445535,
+      "availableAt": 1793213446747,
+      "success": false,
+      "rawHash": "22b57e4c7dd2033558fbb1b787f6c282ad36aeb6dc2f379a75dc55f5c53a2834",
+      "subscriptionMint": "BLAytV5xTVEkYJYS1RoFR5Ypgm3JZ44CvVdZHTExpump",
+      "subscriptionPool": "EdQzwtmWkH5iB5Q6KPWQbQUYo1NPaCfY3zNCpoW9NDpV",
+      "subscriptionId": 102679089,
+      "connectionId": 3,
+      "parsedEvents": 0,
+      "eventsAccepted": 0,
+      "duplicate": false,
+      "correction": false,
+      "classification": "failed-transaction",
+      "reason": null,
+      "chainBlockTime": null,
+      "protocolEffects": 0,
+      "protocolFramesObserved": 0,
+      "strictV2Unavailable": false
+    },
+    "retainedFenceRows": 5,
+    "peakFenceRows": 5,
+    "maximumFenceRows": 8,
+    "maximumExposedBoundaryRows": 2,
+    "independentlyFailedStatusVerified": false,
+    "interiorPacketCensusRetained": false,
+    "qualificationEvidence": false
+  },
+  "optionalActualBoundaryRows": [
+    {
+      "signature": "4pGUjjW2sgw95GiGM4Te3VGKvGFBzgRpFPbzALd1wxt2kJiBP4odurY711wk7Gy5ge3DmkJ4YfGoZXc4hDeqdpWP",
+      "slot": 462584086,
+      "receivedAt": 1793213445535,
+      "availableAt": 1793213446747,
+      "success": false,
+      "rawHash": "c981101d274b28b8a6c59b7ca05f3b65a3f2a4eeee680f4ba6b6ae866c7e11d2",
+      "subscriptionMint": "BLAytV5xTVEkYJYS1RoFR5Ypgm3JZ44CvVdZHTExpump",
+      "subscriptionPool": "EdQzwtmWkH5iB5Q6KPWQbQUYo1NPaCfY3zNCpoW9NDpV",
+      "subscriptionId": 102679089,
+      "connectionId": 3,
+      "parsedEvents": 0,
+      "eventsAccepted": 0,
+      "duplicate": false,
+      "correction": false,
+      "classification": "failed-transaction",
+      "reason": null,
+      "chainBlockTime": null,
+      "protocolEffects": 0,
+      "protocolFramesObserved": 0,
+      "strictV2Unavailable": false
+    }
+  ],
+  "transactionRetention": {
+    "version": "native-active-ownership-compact-corrections-v2",
+    "records": 8193,
+    "activeRecords": 1318,
+    "compactRecords": 6875,
+    "maximumActiveRecords": 16384,
+    "maximumFingerprints": 32768,
+    "compactPayloadBytes": 357500,
+    "allocatedCompactArenaBytes": 1703936,
+    "maximumCompactPayloadBytes": 1703936,
+    "compactPayloadMeaning": "One fixedarena52B/slot: exacthash32B+slot8B+firstAvailability8B+liveCorrectionScopeMask4B; map/key/free-index overhead is additional and measured separately",
+    "correctionScopeIdentities": 1,
+    "maximumCorrectionScopeIdentities": 6,
+    "peakCorrectionScopeIdentities": 1,
+    "peakRecords": 8193,
+    "peakActiveRecords": 1318,
+    "compactionOperations": 0,
+    "diagnosticFingerprintStores": 6875,
+    "expiredRecords": 0,
+    "activeCapacityRefusals": 0,
+    "fingerprintCapacityRefusals": 0,
+    "correctionRetentionMs": 180000,
+    "firstAvailabilityPreserved": true,
+    "reparseRequiredAfterCompaction": true
+  },
+  "originalCapWas8192": true,
+  "newRequiredMetadataOverflows": 0,
+  "allExecutedAmountsUnmodified": true,
+  "financialQualification": false,
+  "originalWindowWarm": false,
+  "independentAuditVerified": false,
+  "segments": [
+    {
+      "path": "events/events-001.ndjson",
+      "bytes": 7491950,
+      "sha256": "5f18975b6a14550cbb269976e2e126329dd433087341658c582d564793fccf42",
+      "lines": 595
+    },
+    {
+      "path": "events/events-002.ndjson",
+      "bytes": 7884852,
+      "sha256": "c661d7afe01a2d6621af47b05737b8ef7cdb929637b29e5854b5b16c61cb4a38",
+      "lines": 5128
+    },
+    {
+      "path": "events/events-003.ndjson",
+      "bytes": 7528016,
+      "sha256": "7a79d6721607de0bc4b22c50486eda39ef9ec53624670755062b3df4fd711fc9",
+      "lines": 8848
+    },
+    {
+      "path": "events/events-004.ndjson",
+      "bytes": 7605878,
+      "sha256": "106c24db23677624b6e631b3879d3ebdb25beb46cc735fc8f4237f7f2dddfb52",
+      "lines": 8046
+    },
+    {
+      "path": "events/events-005.ndjson",
+      "bytes": 7597620,
+      "sha256": "a14bdfeddc54b65be1b5bc378dde9581b5a770fdf9a1f474d4c942e403b9658a",
+      "lines": 8119
+    },
+    {
+      "path": "events/events-006.ndjson",
+      "bytes": 7707760,
+      "sha256": "78b9be129119af2d34cbcd1653562606fc64539700f795d862424bbfb58482da",
+      "lines": 6997
+    },
+    {
+      "path": "events/events-007.ndjson",
+      "bytes": 7844437,
+      "sha256": "f5c8d3788a41c6cd15e0cbf24edeffc3f58ba3d194c49a4a6f3cc08c26021d95",
+      "lines": 5588
+    },
+    {
+      "path": "events/events-008.ndjson",
+      "bytes": 7624163,
+      "sha256": "f45e38122f6a54c446a78a7eaa90f378b19aa64d5fa8f44e8db89fc1e4f069ee",
+      "lines": 7846
+    },
+    {
+      "path": "events/events-009.ndjson",
+      "bytes": 7598583,
+      "sha256": "367c0dbbb31ce02432b443c650f4bd16fa79145facb1f482f6f4e03695caf4ea",
+      "lines": 8120
+    },
+    {
+      "path": "events/events-010.ndjson",
+      "bytes": 7544880,
+      "sha256": "3f9dc8202828dacbb0b437a4e6ffcecbedb7fd1153472aa61e09fb9e31700dcf",
+      "lines": 8617
+    },
+    {
+      "path": "events/events-011.ndjson",
+      "bytes": 7599028,
+      "sha256": "fe16694e4bd6c00ad531f7f95a0bad04892a002f4b31eec279f7ed3aa879bd28",
+      "lines": 8116
+    },
+    {
+      "path": "events/events-012.ndjson",
+      "bytes": 6493480,
+      "sha256": "bb46e0de7deb0d47cea484ae540947420c745e7dbaf4b1186e68a8cb87f81941",
+      "lines": 5027
+    }
+  ],
+  "limits": [
+    "The original source stopped accepting this candidate before60seconds; later activity is unavailable and is not fabricated.",
+    "Only exact retained notification metadata is replayed; existing validated program event bytes remain unchanged.",
+    "The compact fingerprints here model this one candidate, not all simultaneous source scopes. Peer correction obligations are tested separately.",
+    "Failed history still consumes audit pages; the current4×1000 page bound cannot independently verify every busy8511-packetminute.",
+    "32768 total fingerprints/180s remains a measured-envelope limit; this repair does not establish indefinite high-activity coverage."
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "runId": "pilot-20261028024343351-654738bd",
+  "sourceCommit": "cf8d8bcd5b674ba6d510e92c1ae181d3cc6e5e4d",
+  "sourceSha256": "97369ba7ea222caa3008c97d189718e75b36f56d19dd3fb40a57d6efdf66c258",
+  "reportingCommit": "9161d3849eae1ffa549a6afa2a1c263b6f3d1185",
+  "deploymentId": "dep-dbgl96ugekts73889s40",
+  "configurationHash": "4f159a554019e1d9c52af7df825b4ccbd4e43dedae5ead7ef771013c2001a18d",
+  "samplerStartedAt": "2026-10-28T02:58:22.176Z",
+  "samplerFinishedAt": "2026-10-28T02:58:44.030Z",
+  "fullSnapshotMatched": true,
+  "runningSourceTimestamps": [
+    "2026-10-28T02:58:23.401Z"
+  ],
+  "actualStoppedSourceTimestamp": "2026-10-28T02:58:38.671Z",
+  "requestedTwoRunningCyclesVerified": false,
+  "limitation": "One running cycle plus the actual stopped final cycle were matched. Only one running report remained before final settlement; a second running cycle was not verified and is not inferred.",
+  "dashboardRequests": 5,
+  "newMarketRequests": 0,
+  "financialQueries": 0,
+  "sourceCodeChanges": false,
+  "uiRetests": 0,
+  "errors": [],
+  "flags": {
+    "generatedAt": 1793156318671,
+    "running": false,
+    "mode": "candidate-evaluation",
+    "entriesEnabled": false,
+    "financialExecutionAuthorized": false
+  }
+}

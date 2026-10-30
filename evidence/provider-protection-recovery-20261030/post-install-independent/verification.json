@@ -1,0 +1,219 @@
+{
+  "kind": "poe-independent-actual567-install-verification",
+  "workflowRunId": 40983714483,
+  "source": {
+    "commit": "5675961a0ad05df508eec6928644c9e403be0811",
+    "sha256": "157c34efd86bc0b5ae78aa268afe5afc7d3a4c4db8edcbb181445cad92ccb6ae"
+  },
+  "phase": "new-source-post-start-prefix-verified-render-gate-pending",
+  "installationVerified": true,
+  "configurationSha256": "ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db",
+  "financialPrefix": {
+    "identityAndInceptionPreserved": true,
+    "initialFundingAndRoundingPreserved": true,
+    "journalAndActionPrefixPreserved": true,
+    "priorRevision": 66216,
+    "currentRevision": 66217,
+    "currentStateBodySha256": "3376fedc4992d7d9dc60cb9edd64ebcf77944ef990c1056aaf7ffa01b4019494",
+    "prefix": {
+      "actions": {
+        "priorRows": 66216,
+        "exactPriorRowsRetained": true,
+        "currentRows": 66217
+      },
+      "journal": {
+        "priorRows": 66217,
+        "exactPriorRowsRetained": true,
+        "currentRows": 66218
+      }
+    },
+    "comparison": "whole-column-ordered-exact-prefix",
+    "originalSqliteOwnerUid": 988,
+    "financialDatabaseWrites": 0,
+    "backupRestored": false
+  },
+  "service": {
+    "MainPID": "2479299",
+    "NRestarts": "0",
+    "ActiveState": "active",
+    "SubState": "running",
+    "User": "poe-runtime",
+    "Group": "poe-runtime"
+  },
+  "processes": [
+    {
+      "pid": 2479299,
+      "role": "original-supervisor",
+      "ownerUid": 988,
+      "cpuSeconds": 0.41,
+      "rssBytes": 31399936,
+      "nice": 0,
+      "explicitMaxOldSpaceSizeMiB": [],
+      "argvExported": false
+    },
+    {
+      "pid": 2479302,
+      "role": "native-source",
+      "ownerUid": 988,
+      "cpuSeconds": 7.54,
+      "rssBytes": 327475200,
+      "nice": 0,
+      "explicitMaxOldSpaceSizeMiB": [
+        1024
+      ],
+      "argvExported": false
+    },
+    {
+      "pid": 2479303,
+      "role": "original-publisher",
+      "ownerUid": 988,
+      "cpuSeconds": 0.37,
+      "rssBytes": 94183424,
+      "nice": 0,
+      "explicitMaxOldSpaceSizeMiB": [
+        128
+      ],
+      "argvExported": false
+    }
+  ],
+  "publicStatus": {
+    "sha256": "4270591650c3e41e6f398ace53a4eeda40ada1ca541477cb757d955365ecf31a",
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "release": "5675961a0ad05df508eec6928644c9e403be0811",
+    "strategy": "adaptive-momentum-v2-paper-v1",
+    "generatedAt": "2026-10-30T01:05:17.549Z",
+    "entriesDisabled": true,
+    "flowVerified": false,
+    "mode": "PAPER",
+    "liveTrading": false,
+    "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE",
+    "shortlistCount": 4,
+    "feedConnected": true,
+    "lastUsefulProgressAt": "2026-10-30T01:05:17.250Z",
+    "lastReconciledAt": "2026-10-30T01:05:17.250Z",
+    "lastMigrationReceivedAt": null,
+    "reportingConfigured": true
+  },
+  "sameOriginalCgroupOnlyThreeProcesses": true,
+  "hardControlsCleared": false,
+  "dailyResetInvoked": false,
+  "interruption": {
+    "stopRequestedAt": 1793322283230,
+    "physicalStopVerifiedAt": 1793322286023,
+    "startRequestedAt": 1793322286225,
+    "localVerificationAt": 1793322288218,
+    "stopToStartMs": 202,
+    "observedNewSource": {
+      "available": true,
+      "sourceTimestamp": "2026-10-30T01:04:47.492Z",
+      "statusSha256": "66c0941a836ccaaf48b3383b99a5aa1f616f5d20948647dc875260e0f1391a72",
+      "observedAt": 1793322287741,
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "release": "5675961a0ad05df508eec6928644c9e403be0811"
+    },
+    "continuousCoverageClaimed": false
+  },
+  "forensic": {
+    "sha256": "dd8118e369dbb5b008223b0d0e14b10f4a14b8c00aaf175b2f007a6dae09e6d1",
+    "bytes": 100707,
+    "strictReaderVerified": true,
+    "originalPriorHoldingCount": 1,
+    "currentHoldingIdentityIndependentlyVisible": false,
+    "priorProtectionAtStop": {
+      "targetMs": 2000,
+      "experimentalCompletedEvaluationLimitMs": 4000,
+      "maximumQuoteAgeAtUseMs": 70,
+      "firstCompletedProtectionAt": 1793317742332,
+      "lastCompletedProtectionAt": 1793322273953,
+      "maximumCompletedGapMs": 89426,
+      "protectionBreaches": 72,
+      "unavailableChecks": 233,
+      "openProtectionGaps": [
+        {
+          "mint": {
+            "code": "UNKNOWN_HASHED",
+            "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+          },
+          "at": 1793322274410
+        }
+      ]
+    },
+    "priorFailuresAtStop": {
+      "HELD_PRICING_PROVIDER_TIMEOUT": 13,
+      "HELD_PRICING_PROVIDER_COOLDOWN": 66,
+      "HELD_PRICING_ABORTED": 26
+    },
+    "diagnosticScan": {
+      "matchingKindCounts": {
+        "research-clock-pool-state": 131,
+        "research-clock-position-sell-quote": 131,
+        "trader-context": 163,
+        "trader-held-evaluation": 163,
+        "research-clock-cache-invalidation": 32
+      },
+      "bytesRead": 66868564,
+      "scanBudgetReached": true,
+      "factCapacityReached": true,
+      "selectionUnknown": false
+    },
+    "sampledWindows": [
+      {
+        "window": {
+          "fromAt": 1793319075000,
+          "untilAtExclusive": 1793319150000
+        },
+        "sampledFacts": 57,
+        "kindCounts": {
+          "research-clock-cache-invalidation": 21,
+          "trader-held-evaluation": 26,
+          "research-clock-position-sell-quote": 5,
+          "trader-context": 5
+        },
+        "sampledHeldEvaluations": 26,
+        "sampledUsable": 5,
+        "verifiedUnusable": 21,
+        "firstUnusable": "2026-10-30T00:11:29.283000+00:00",
+        "lastUnusable": "2026-10-30T00:12:09.838000+00:00",
+        "selectedValidGaps": []
+      },
+      {
+        "window": {
+          "fromAt": 1793319490000,
+          "untilAtExclusive": 1793319750000
+        },
+        "sampledFacts": 122,
+        "kindCounts": {
+          "research-clock-cache-invalidation": 11,
+          "trader-held-evaluation": 43,
+          "trader-context": 37,
+          "research-clock-position-sell-quote": 31
+        },
+        "sampledHeldEvaluations": 43,
+        "sampledUsable": 32,
+        "verifiedUnusable": 11,
+        "firstUnusable": "2026-10-30T00:18:33.844000+00:00",
+        "lastUnusable": "2026-10-30T00:21:51.954000+00:00",
+        "selectedValidGaps": [
+          {
+            "prior": "2026-10-30T00:21:12.549000+00:00",
+            "next": "2026-10-30T00:21:26.359000+00:00",
+            "gapMs": 13810,
+            "interpretation": "Sampled retained evaluations only: a gap may include omitted valid facts; bracket is not an asserted complete monitoring interval."
+          },
+          {
+            "prior": "2026-10-30T00:21:50.045000+00:00",
+            "next": "2026-10-30T00:21:54.737000+00:00",
+            "gapMs": 4692,
+            "interpretation": "Sampled retained evaluations only: a gap may include omitted valid facts; bracket is not an asserted complete monitoring interval."
+          }
+        ]
+      }
+    ],
+    "causalLimit": "Only essential financial/SDK events were available within the bounded scan; detailed physical RPC starts/settlement, quota and cooldown evidence absent. Their absence cannot establish non-occurrence or distinguish provider latency from quota admission."
+  },
+  "noFinancialOperationsFromReadOnlyInspection": true,
+  "publicNewSourceAcknowledged": false,
+  "operationalAcceptance": false
+}

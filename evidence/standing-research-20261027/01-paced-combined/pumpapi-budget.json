@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "authority": "Standing bounded free-data research authorization; separate per-experiment allocation.",
+  "reservedAt": 1793117886035,
+  "reconciliation": {
+    "path": "evidence/standing-research-20261027/reservation-reconciliation.json",
+    "sha256": "657b97a1ccce23ddfb4ac68bbd3ac8fb26f716aea14cac562e0fa15f27813f0f"
+  },
+  "newReservedBytes": 146800640,
+  "newReservedMs": 90000,
+  "maximumConnections": 1,
+  "preflightAndFreshPrewarmPassed": true,
+  "grossHistoricReservationBytes": 415236096,
+  "retainedHistoricConsumedBytes": 271949619,
+  "earlierExplicitExperiments": [],
+  "oldCounterbooksModified": false
+}

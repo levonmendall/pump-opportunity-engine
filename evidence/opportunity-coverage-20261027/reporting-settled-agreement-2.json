@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-28T00:06:07.450Z",
+  "run": "pilot-20261027235124302-99e43f99",
+  "sourceAt": 1793145679600,
+  "running": false,
+  "oldDeployedSchemaAgreement": true,
+  "sourceAgeMs": 287616,
+  "publisherConnected": true,
+  "receiverState": "stopped",
+  "unauthorizedPostStatus": 401,
+  "schemaUpgradeNotYetDeployed": true
+}

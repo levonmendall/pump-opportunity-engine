@@ -1,0 +1,22 @@
+{
+  "kind": "poe-original-four-slot-configuration-only",
+  "source": {
+    "commit": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+    "sha256": "fa10982125bd77c1586606283a9fabed4daee5434792dcef90be2bd312cc5315"
+  },
+  "priorManifestSha256": "6e4549b41db60a4b58d3d61d8eb0becfeb03699071edf34a50b5b0c9e4015779",
+  "targetManifestSha256": "a1dbed9db61e259f759701d6aae2bd102ec3dc7cb357ef121312d7ddb3e4354b",
+  "priorConfigurationSha256": "5e99ebe042521b3917a11b86ef4b46264205b11d38c407cba264a01046a79344",
+  "configurationSha256": "f6ce54d7594e14d87955f211cca21f594b3d3eb52e20a75fa2245290f22a4857",
+  "priorDeepSlots": 6,
+  "deepSlots": 4,
+  "changedManifestKeys": [
+    "configurationSha256",
+    "deepSlots"
+  ],
+  "applicationRebuilt": false,
+  "accountChanged": false,
+  "strategyChanged": false,
+  "riskChanged": false,
+  "rootInstallPerformed": false
+}

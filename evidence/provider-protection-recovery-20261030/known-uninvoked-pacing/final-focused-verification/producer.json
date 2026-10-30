@@ -1,0 +1,65 @@
+{
+  "scope": "OFFLINE actual69 RPC/ComponentBudget/source reserve/compaction with injected final-admission closure; four synthetic candidate scopes and normal2s owned reads. Not actual02:48cause attribution.",
+  "ghosts": 60,
+  "physicalStarts": 60,
+  "maximumCompletedGapMs": 2250,
+  "timeouts": 0,
+  "failures": [],
+  "compactions": [
+    {
+      "at": 262300,
+      "during": "held-read",
+      "before": {
+        "short": 4,
+        "minute": 29
+      },
+      "after": {
+        "short": 6,
+        "minute": 31,
+        "readyAt": 262500,
+        "compacted": 1
+      },
+      "checkpoint": {
+        "retainedSinceAt": 202000,
+        "omittedCount": 32,
+        "conservativeUnknownAtSeal": 1,
+        "times": [
+          202000,
+          204000,
+          206000,
+          208000,
+          210000,
+          212000,
+          214000,
+          216000,
+          218000,
+          220000,
+          222000,
+          224000,
+          226000,
+          228000,
+          230000,
+          232000,
+          234000,
+          236000,
+          238000,
+          240000,
+          242000,
+          244000,
+          246000,
+          248000,
+          250000,
+          252000,
+          254000,
+          256000,
+          258000,
+          260000,
+          262000
+        ]
+      },
+      "physicalStarts": 32,
+      "ghosts": 31
+    }
+  ],
+  "providerRequests": 0
+}

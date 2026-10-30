@@ -1,0 +1,169 @@
+{
+  "schemaVersion": 1,
+  "decision": "INDEPENDENT_BIASED_NONEXHAUSTIVE_LEAD_POPULATION_FROZEN_FOR_LATER_AUDIT",
+  "frozenRun": {
+    "id": "pilot-20261028015809342-f9514585",
+    "startedAt": "2026-10-28T01:58:09.342Z",
+    "durationSeconds": 900,
+    "deepSlots": 6,
+    "mode": "CANDIDATE_ONLY",
+    "sourceCommit": "1657bb407d82ada68e9b6aa82f93c1573119ec24",
+    "configurationHash": "4f159a554019e1d9c52af7df825b4ccbd4e43dedae5ead7ef771013c2001a18d"
+  },
+  "referenceStartedAt": "2026-10-28T02:00:52.706Z",
+  "frozenAt": "2026-10-28T02:01:29.051Z",
+  "requests": [
+    {
+      "ordinal": 1,
+      "page": 1,
+      "status": 200,
+      "startedAt": "2026-10-28T02:00:52.707Z",
+      "finishedAt": "2026-10-28T02:00:52.903Z",
+      "elapsedMs": 196.50352399999997,
+      "bodyBytes": 35478
+    },
+    {
+      "ordinal": 2,
+      "page": 2,
+      "status": 200,
+      "startedAt": "2026-10-28T02:01:04.710Z",
+      "finishedAt": "2026-10-28T02:01:04.870Z",
+      "elapsedMs": 160.00759899999866,
+      "bodyBytes": 35829
+    },
+    {
+      "ordinal": 3,
+      "page": 3,
+      "status": 200,
+      "startedAt": "2026-10-28T02:01:16.716Z",
+      "finishedAt": "2026-10-28T02:01:17.206Z",
+      "elapsedMs": 489.76865800000087,
+      "bodyBytes": 36126
+    },
+    {
+      "ordinal": 4,
+      "page": 4,
+      "status": 200,
+      "startedAt": "2026-10-28T02:01:28.717Z",
+      "finishedAt": "2026-10-28T02:01:29.050Z",
+      "elapsedMs": 333.05496100000164,
+      "bodyBytes": 35924
+    }
+  ],
+  "physicalStartGapsMs": [
+    12003.354957000001,
+    12006.294058,
+    12000.302204
+  ],
+  "uniqueIndexedRows": 80,
+  "duplicatePositions": 0,
+  "classes": {
+    "NONCANONICAL_ADDRESS": 64,
+    "OUTSIDE_INDEXED_ZERO_TO_SIX_HOUR_RANGE": 10,
+    "LEAD_REQUIRES_ONCHAIN_ORIGIN_AND_SUPPORT_PROOF": 5,
+    "OUTSIDE_SOL_QUOTE": 1
+  },
+  "frozenLeads": [
+    {
+      "mint": "2mPwr92SEnFKdMPGJYbCkuicCmXHtVFPse2AvFXTpump",
+      "pool": "GbRwMFqRTTfSqZ5yyYG83Y3okcAq9sjtyy4WrVkEyvWt",
+      "name": "INGUS / SOL",
+      "indexedCreatedAt": "2026-10-27T22:05:09Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:04.856Z",
+      "indexedAgeAtReceiptMs": 14155856,
+      "reportedM5Transactions": {
+        "buys": 0,
+        "sells": 1,
+        "buyers": 0,
+        "sellers": 1
+      },
+      "reportedM5VolumeUsd": "0.776777926",
+      "reportedReserveUsd": "3978.1704"
+    },
+    {
+      "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+      "pool": "2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT",
+      "name": "FRONGUS / SOL",
+      "indexedCreatedAt": "2026-10-27T21:13:41Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 17268037,
+      "reportedM5Transactions": {
+        "buys": 114,
+        "sells": 49,
+        "buyers": 42,
+        "sellers": 24
+      },
+      "reportedM5VolumeUsd": "2492.7217375035",
+      "reportedReserveUsd": "42427.5575"
+    },
+    {
+      "mint": "AZdhikmyj6ibsejv7EjML9SfNmuiMvwDrKXTEU2zpump",
+      "pool": "FAHXgxDGMw5sfFW77SCHBcT9qiQ2ArrPzo98xJxMf9kk",
+      "name": "Something / SOL",
+      "indexedCreatedAt": "2026-10-27T21:23:36Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 16673037,
+      "reportedM5Transactions": {
+        "buys": 272,
+        "sells": 47,
+        "buyers": 91,
+        "sellers": 22
+      },
+      "reportedM5VolumeUsd": "17247.2640089246",
+      "reportedReserveUsd": "112829.2792"
+    },
+    {
+      "mint": "ait5y3tFCVxk9yFjpNv6rUQ2fciBHT4JScGsggopump",
+      "pool": "GzLL3vHnPVSQbHVUZAKT5noRc1AUU6iFB8nreAiWzXEz",
+      "name": "USOE / SOL",
+      "indexedCreatedAt": "2026-10-28T01:17:03Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 2666037,
+      "reportedM5Transactions": {
+        "buys": 71,
+        "sells": 2,
+        "buyers": 71,
+        "sellers": 2
+      },
+      "reportedM5VolumeUsd": "836.9281568717",
+      "reportedReserveUsd": "4468637.1621"
+    },
+    {
+      "mint": "FYUyPWNLQtF4nNQ8nSHwpmwQ4j41UqAUz8gWEeWWpump",
+      "pool": "7yuhUK4zNynheUiRsQW7amkvv7T7PAcD88udqWVrTxYi",
+      "name": "DOCK / SOL",
+      "indexedCreatedAt": "2026-10-27T20:37:44Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 19425037,
+      "reportedM5Transactions": {
+        "buys": 11,
+        "sells": 4,
+        "buyers": 11,
+        "sellers": 4
+      },
+      "reportedM5VolumeUsd": "1051.9276006013",
+      "reportedReserveUsd": "12769.7125"
+    }
+  ],
+  "newUsage": {
+    "requestStarts": 4,
+    "measuredBodyBytes": 143357,
+    "uncertainBodyBytes": 0,
+    "rawRetainedBytes": 143357,
+    "elapsedMs": 36345.151989
+  },
+  "cumulativeUsage": {
+    "requestStarts": 40,
+    "measuredBodyBytes": 1038730,
+    "uncertainBodyBytes": 262416
+  },
+  "noHindsightSelection": true,
+  "noActivityFilter": true,
+  "noRecallPercentage": true,
+  "next": "Match every frozen lead to genuine on-chain migration evidence later; evaluate only temporally available observations. Current indexed times, liquidity and volume are not support, eligibility, strategy qualification or executable-profit proof."
+}

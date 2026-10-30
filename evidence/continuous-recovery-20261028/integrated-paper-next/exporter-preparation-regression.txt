@@ -1,0 +1,18 @@
+✔ legacy exporter input keeps its exact explicit source list and does not inspect an anchor (1.486366ms)
+✔ first sealed input provides only untrusted raw candidates until original source guards and exact handoff verification run (3.968981ms)
+✔ multiple anchors, absent source list and unsafe anchor names refuse before file access (1.236215ms)
+✔ a changed anchor cannot be adopted merely because its sources are plausible (0.84233ms)
+✔ recursive seals and duplicate/self-referential source lists are explicitly unsupported for this first handoff (1.585282ms)
+✔ updating the local anchor pin cannot hide a changed counter or archived source (2.199254ms)
+✔ importing exporter has no CLI side effects and invalid explicit arguments refuse before accessing an account (1.627796ms)
+✔ repinning an anchor cannot erase or backdate unknown physical demand during adoption (2.304911ms)
+✔ only the fixed zero-request local timeout refusal accepts an append-only source identity correction (4.189528ms)
+✔ both retained preparation vocabularies require explicit disabled financial declarations and a separate runtime receipt (1.198268ms)
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 989.89203

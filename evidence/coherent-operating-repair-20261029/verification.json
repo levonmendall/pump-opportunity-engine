@@ -1,0 +1,19 @@
+{
+  "kind": "combined-offline-verification-v1",
+  "at": "2026-10-29T20:18:59.345493+00:00",
+  "sourceCommit": "3ef284cbc713010fcdf9f9e6f5842a64e153b093",
+  "sourceHashesUnchanged": true,
+  "testCommand": "npm test",
+  "testExitCode": 0,
+  "passed": 1820,
+  "failed": 0,
+  "buildCommand": "npm run build",
+  "buildExitCode": 0,
+  "testRawSha256": "ec4509b6a53cb956de6a44bfd1b7efa4a5af7c290af0d33521c1abe5407fc35b",
+  "buildRawSha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+  "configuration": "1f969ad6844ccee9278ec5d00fc871afcb80b12930f65f714c42b872c23d7181",
+  "maximumDeep": 4,
+  "maximumPositions": 1,
+  "financialSafetyAndStrategyUnchanged": true,
+  "deployed": false
+}

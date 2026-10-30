@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "helperSha256": "7e71be1d75030b44d9ce44bf704f6159ac0582a37c382de4d5cdf541faf43f1e",
+  "fixedSourceRun": 40714364745,
+  "targetSourceAt": 1793201088374,
+  "independentReview": "GO: fixed UID/path/source, public event types only, read-only; output<=2MiBdecoded/~2.9MiBbase64; prefixcomplete requiresposttargetevent",
+  "actualExecutableFileHashAlsoChecked": true,
+  "networkRequestsByHelper": 0,
+  "financialOrCredentialReads": false,
+  "runtimeMutations": false,
+  "sourceNotChanged": true,
+  "bounds": {
+    "cpuSeconds": 15,
+    "addressSpaceMiB": 256,
+    "wallSeconds": 43,
+    "inputMiB": 192,
+    "decodedOutputMiB": 2
+  },
+  "adminCommit": "5a0bae18845419cf78eafa23eace943165a54427",
+  "savedManifestSha256": "2c06e5e7d4fe8be52ae6a35c8df50f0c09b5d12eab73f511c89f96839e638e54",
+  "packageFileReencodedByExistingSupervisor": true
+}

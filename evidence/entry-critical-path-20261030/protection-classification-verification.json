@@ -1,0 +1,35 @@
+{
+  "source": "8d37c66f8c50bcbff20e0f4eba4ef466764abba1",
+  "change": "classification only; provider restrictions, physical occupancy, deadlines, rolling quotas, request timers and financial entry gates unchanged",
+  "newStage": "protection-retry-paced",
+  "appFiles": {
+    "src/pilot-rpc.ts": "9f089185d82f3441dfe4cae7bd700e6d0d22f42fb2de0005599615ea3f20e0a4",
+    "src/pilot-market.ts": "d6fc6ca621cfab4028ba0b03aeb1b1ac683667c2846f4d807d5cd5d576bb4fe7",
+    "src/run-native-paper.ts": "e7a92632f027b259fa7b76be0a40746e7ea7b7a08f086f7130ae752985bbe6dc"
+  },
+  "actualClassProbe": "PilotRpc, ComponentBudget, ComponentTransport and heldPricingFailureCode under injected timeouts; not a real provider or NativePaper/financial lifecycle",
+  "positiveProbe": {
+    "physicalTimeouts": 3,
+    "timeoutLogicalCalls": 2,
+    "dispatchRefusals": 5,
+    "extraPhysicalStartsForDispatchRefusals": 0,
+    "minimumShortHeadroom": 16,
+    "minimumMinuteHeadroom": 86,
+    "recoveredCompletedGapMs": 8877,
+    "gapRemainsFailure": true
+  },
+  "negativeProbe": "Real rolling quota later than retry probe retains uninvoked-quota-or-spacing",
+  "testsPassed": 2,
+  "additionalProviderProtectionRegressionTestsPassed": 19,
+  "buildPassed": true,
+  "networkRequests": 0,
+  "financialDatabaseOpened": false,
+  "liveIncidentAttribution": "UNKNOWN without private phase timing; matching counters alone are not definitive proof",
+  "artifacts": {
+    "current-run-maxima-tests.raw.txt": "6c6879e5785906b436afc470bb22a550a8bdc149387aee3d8ae953209a5a55b2",
+    "current-run-maxima-build.raw.txt": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+    "protection-classification-regressions.raw.txt": "ddcf0dd9607508c17a69a7d51fb4b7d0be21d7e86a32a4af209713d6bab37a97",
+    "protection-classification-final.raw.txt": "7a5a9867ef41b302552f57bdfa04604120b95b593593f6392f79eb64b22ba955",
+    "protection-classification-build.raw.txt": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+  }
+}

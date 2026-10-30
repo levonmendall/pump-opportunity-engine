@@ -1,0 +1,233 @@
+{
+  "schemaVersion": 1,
+  "classification": "READ_ONLY_ACTIVE_POOL_PREFLIGHT_NOT_STRATEGY_OR_FEED_COVERAGE",
+  "recordedAt": "2026-10-27T02:00:01.950Z",
+  "sourceVersion": {
+    "commit": "6cb938f5478c64c2791171c1a18b941a0e24f666",
+    "dirty": true
+  },
+  "scriptSha256": "2e6e040f9b89cdea26ee9946549eca30c3a707b50592119e945e79bfc404224f",
+  "selected": {
+    "mint": "7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump",
+    "pool": "6ztGkeEPFbrBVh53fKbRtJk4Y74UBjPE8R5q5Ke2hvZv",
+    "proof": "evidence/integration-proof-2026-10-26T19-57-35.882Z.json",
+    "selection": "Highest effective SOL reserve among retained independently verified distinct canonical pools; recent activity checked before any stream. This is transport selection, outside entry age, not unbiased strategy evidence."
+  },
+  "queryAt": 1793066401700,
+  "recentWindowMs": 600000,
+  "signatures": [
+    {
+      "blockTime": 1793065160,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "64ZiLpcM1upeYcT32reaWZV8heaaM4CzSehqsDAwVHdbDb5ekQtRWFVskuuntAA2abGzWtCmKft1aHZJCiEyo2ds",
+      "slot": 461887363,
+      "transactionIndex": 252
+    },
+    {
+      "blockTime": 1793064569,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "57fxNpZcokt3Tsziezns6VXAikeqdzuUJR3GNJu9SFCnsN42j66HpdEb3UpFVV1o3PuXGWVksNeYp9evCw7Lb9WF",
+      "slot": 461884573,
+      "transactionIndex": 131
+    },
+    {
+      "blockTime": 1793062242,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "3YZDSwbKfWa5m13QvgbmJgpGEVm6a21DPiBstCWi1mdk6DRYWs3rq3ZKKxFwD95yeDB1zP3FGQXuvrFyhHqpr3AT",
+      "slot": 461873628,
+      "transactionIndex": 472
+    },
+    {
+      "blockTime": 1793057772,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "Z69fqDZfo5CT19c8SKSwCqhh1XVwADQ4V7cvCe6PgQ24Qd2QcegMX6dgLNLAbqFt2zPnexQqEe8sr147yCVLBEP",
+      "slot": 461852608,
+      "transactionIndex": 200
+    },
+    {
+      "blockTime": 1793050737,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "4rvzcAXqx4WqSQQpDUwcVrkTh2G1hmazpp55ui9zzABdgkWtCAsStiHF8dSEiVHfJ7sSHzdpbt6MFRhG3tE6NyCq",
+      "slot": 461819485,
+      "transactionIndex": 152
+    },
+    {
+      "blockTime": 1793050264,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "31TTjpaFEPgafs7V49m5bUT16w9MEzLFMGyA5gahe3gzSXj3tGTW6zS4yWZm2VAD9BdVc8Pjiag91LmpzrFR6zZ1",
+      "slot": 461817262,
+      "transactionIndex": 430
+    },
+    {
+      "blockTime": 1793049912,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "2rarNSrxZNSpQ7VYm1gNX21fFWazsZPSyAfGLeW91t1awfVTTVfbQFELJ6rGz6rSHJ172QQWTde42PcDAUBXSPCj",
+      "slot": 461815615,
+      "transactionIndex": 96
+    },
+    {
+      "blockTime": 1793049856,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "WYSri9eXuJXWihyazL5wPt5J9YzsTEFHG5w3tnHkWpdnEGZhxqPP4oHhkegwc8T3cnuwNm6RtERimmeQHWm1wgu",
+      "slot": 461815347,
+      "transactionIndex": 305
+    },
+    {
+      "blockTime": 1793049681,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "54XPzP1zpykUh1itA5GdmR1vrkdK23mnNqG42LBZGzKNBw9pJKUL75yYZMZQTA5FgZQNnPHzLzzmrQLPCBSfManL",
+      "slot": 461814519,
+      "transactionIndex": 214
+    },
+    {
+      "blockTime": 1793049681,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "4W1D6zHMXMc3rXZE3PgB62TdNXAih2Gwz1A7uJPUzX8LccK6nG6od1YNwY8jch8ZDAiHSPc15G7fbJzdyuNjKMRx",
+      "slot": 461814518,
+      "transactionIndex": 319
+    },
+    {
+      "blockTime": 1793049679,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "3wF5Y34kTiLVMQpodAP1mqC3ntchbYRqTdBdbL9t444gdHR8CM74v1h9E5x2HEx2uAAUz6UoVJxKGnHs57t8o62Q",
+      "slot": 461814512,
+      "transactionIndex": 234
+    },
+    {
+      "blockTime": 1793049679,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "3PLkmaeioQbQy2wn4bmMhCGQ6SSkQwBBoz9UeJuep9u1DGYxrPZbQmVGq2Ybn5nwZjGci9mstASjP3MhNQ12iJuj",
+      "slot": 461814510,
+      "transactionIndex": 68
+    },
+    {
+      "blockTime": 1793049679,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "2Q9NwU4wXTMoBaavnbWuu1hUxRm4mpRqyhPa86Gv7WW5m5ieWmSLfTehWVuEU3j1y1UQWong7SafdisQNEDPfzeL",
+      "slot": 461814509,
+      "transactionIndex": 92
+    },
+    {
+      "blockTime": 1793049661,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "3tTEdx28XLPsypAZU3FpK3rQzBK6G4xhR87FwaoL33nsWtvtTigiEwQpDRQeGTKDqJzVobqtiffpYB38MiZpCydR",
+      "slot": 461814425,
+      "transactionIndex": 294
+    },
+    {
+      "blockTime": 1793049655,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "3SKNEzx7fLGmWhqvd6nZZTZURx4yZctkV2fVZ73VkQdHfdGEtAeWmUPWB16Tdqi2RbtNXrmTKFVocDQ6sEFuev7v",
+      "slot": 461814399,
+      "transactionIndex": 165
+    },
+    {
+      "blockTime": 1793049614,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "Md8ysUC4HhmzZVbeCb8UDeKyCYnCYgg2RskAzesTYvLHkD4AfqBVq4NRK7azP1YC3ZJuhdHQK2LqekfKvtPteBX",
+      "slot": 461814203,
+      "transactionIndex": 488
+    },
+    {
+      "blockTime": 1793049612,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "W6yHejFGEENe9rKuMK3Z7iLHyu4Jn2tHgf3jL4yWZYyQrCyiB9v1rWnZU16pxdn1SigPfVSPXcnP5SNTMUt9D9u",
+      "slot": 461814193,
+      "transactionIndex": 333
+    },
+    {
+      "blockTime": 1793049605,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "Ed3YNaBWdkQr3jeiv4Fn9ZvZbzEhfd8ndvaD9guSQd2U9wKC4Uviv4udQQYJrzUrG8Q2tS7qt7byHLYTiXn52ii",
+      "slot": 461814159,
+      "transactionIndex": 114
+    },
+    {
+      "blockTime": 1793049603,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "64gjMe18umVzrZiLhSNVVCqW5GiSeCtN4rG2horqRVVBjXqy39RU16BCMAB3VJDXBcZyATnjNsyax8CC9meX96h8",
+      "slot": 461814147,
+      "transactionIndex": 251
+    },
+    {
+      "blockTime": 1793049602,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "3TioSY75TWSaM9gAC6A9NHFZ7HsMe9tn8s8Ho7x3KgomshV4Xn39jU8sbAomxZi7w82hdkNz2j1EBdVHiAvH3v2o",
+      "slot": 461814145,
+      "transactionIndex": 456
+    }
+  ],
+  "successfulRecentAddressTransactions": 0,
+  "transactions": [],
+  "independentlyDecodedSwapCount": null,
+  "activitySelectionVerified": false,
+  "apiDataFeeUsd": "0",
+  "networkTransferAllocationVerified": false,
+  "pumpApiConnections": 0,
+  "paidProviderRequests": 0,
+  "credentialsLoaded": false,
+  "productionChanged": false,
+  "financialAccountCreated": false,
+  "limits": {
+    "reads": 5,
+    "bytes": 8000000,
+    "wallMs": 30000,
+    "retainedBytes": 2000000
+  },
+  "rpc": {
+    "profile": "runtime",
+    "calls": 1,
+    "bytes": 4508,
+    "inFlight": 0,
+    "rollingMinuteCalls": 1,
+    "rollingMinuteLimit": 5,
+    "durationSamples": 1
+  },
+  "actualWallMs": 264.21592599999997,
+  "failure": null,
+  "limitations": [
+    "Address activity includes nonswaps; instruction/event decoder must verify swaps before pool is considered active.",
+    "Retained pool is outside strategy migration age and selected for transport/pricing only.",
+    "A later capture must independently recheck current activity; this is not permission to stream or proof of ongoing future activity."
+  ]
+}

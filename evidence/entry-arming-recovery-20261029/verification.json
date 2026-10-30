@@ -1,0 +1,60 @@
+{
+  "kind": "entry-arming-recovery-offline-verification-v1",
+  "verifiedAt": "2026-10-29T19:30:28.453925+00:00",
+  "state": "VERIFIED_OFFLINE_NOT_DEPLOYED",
+  "base": "84bd3f09995fcbd347710cae5c1ddb8c5f517157",
+  "installedComparison": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+  "sourceManifestSha256": "927be670ea7079ce3abcf55da5b7f4a0389bb99fb2d3b2152ed4404280805a2b",
+  "files": {
+    "src/ledger.ts": "071b83b6a937fd18b17f0a142e981f88948ee16507e9f5845f85c1c351c92b8b",
+    "src/native-candidate-runner.ts": "21b3621853bdce2573974e8bf084fe405e1cf9d70de9c92a12775bffce4f87ef",
+    "src/native-paper.ts": "c7bd8a655e7a61716edaec2f26014d25824e50418082f5beffbec08d970e37ef",
+    "src/run-native-paper.ts": "feae8730e40f5d688abae695d5a844e2bb309f1b8777700a6487c9ee4c334687",
+    "src/trader.ts": "4660376629f38458fc7bd399fb27a60ff9261b38a1501727e26936ccc068aa37",
+    "test/internal-shutdown-provenance.test.ts": "7149007febdf67772bf7fbd5db3525843ab802163bc5592be9c71041b54b3833",
+    "test/native-paper-integration.test.ts": "8bccc3418ed4d23692b10ca6376a767f77ef7126e617a3339a46ad614c7497bf",
+    "test/native-paper-launcher.test.ts": "2023d34428df484569ba1a8024274fb8707028884f93f120c6ab4bc060489c46",
+    "test/native-paper-readiness.test.ts": "bb8cf97eea8c49048a0d2abd184037129a0311cb768afaec3d9a46810cf61553",
+    "test/operating-intelligence.test.ts": "41f50a05cad18bbb8b8862baca3a0459ff3a6c34d1263e82a6abd368e73837a0"
+  },
+  "configurationSha256": "96ec314c0b0256365286659f64680a81e7225386848f3c12567854ced76cd69c",
+  "tests": {
+    "command": "npm test",
+    "exitCode": 0,
+    "passed": 1799,
+    "failed": 0,
+    "raw": "full-tests.txt"
+  },
+  "build": {
+    "command": "npm run build",
+    "exitCode": 0,
+    "raw": "build-final.txt"
+  },
+  "independentReview": {
+    "state": "APPROVED",
+    "passedDelta": 35,
+    "failedDelta": 0,
+    "receipt": "independent-review/final-ten-file-review.json"
+  },
+  "artifactSha256": {
+    "full-tests.txt": "b8ef9daffe55f5a8adf80afca2d5ce642b14d8f21dd33ca6e8ba542ff241fe7e",
+    "build-final.txt": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+    "source-before-final-tests.json": "927be670ea7079ce3abcf55da5b7f4a0389bb99fb2d3b2152ed4404280805a2b",
+    "repair.patch": "7eadd2767e0d2ce586454987e7427f4016e741ca803503bfe3768dd4d31c75e5",
+    "service4-configuration-sha256.txt": "9e22c19b171303036d4494bda86db5f07c37a5df3bba2ad5e66b3455f39e58f7",
+    "focused-final.txt": "66206a26e3e038ae6bb5aae66c0cfc8facda418603afbaba0afb010679478b2d",
+    "public-verdict-focused-corrected.txt": "bd0889ddc6f848104711a365671ae247ba0d0d86fc2fed9b13939019037d8fa1",
+    "provenance-ledger-focused.txt": "087a586f90a4ed8cae7b43e85de97af0256518028e807317554f8dcc65c60919",
+    "provenance-build.txt": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+    "provenance-timing.raw.txt": "4a234c6ce8bff53f71a824349e688df9ef26b8a3cdff921b50a4f871cdca37d3",
+    "provenance-timing.json": "d901c87528452dc50a8438a93805d19e7ccfc148092378f2765d9eb9403bbfed",
+    "independent-review/final-ten-file-review.json": "4e69eac924aeab435051e862c83e1373fe806eeb761d7cb962b11444a6e0ed47",
+    "independent-review/final-ten-file-focused-tests.txt": "76a9e9e90f7336882d75ae470a4809d64739376c910609a2c49d384720aceb3f"
+  },
+  "remaining": [
+    "Parent integrated source freeze and source-pinned original-service upgrade",
+    "Forward verification of general arming from independently audited weak candidates on actual original account",
+    "Actual EC2 sustained CPU/memory/disk/provider and protection/reporting measurements"
+  ],
+  "boundaries": "No operating ledger/provider access, deployment, service control, new account, financial schema change or funded transaction by this repair worker. Synthetic tests are not natural PAPER trades."
+}

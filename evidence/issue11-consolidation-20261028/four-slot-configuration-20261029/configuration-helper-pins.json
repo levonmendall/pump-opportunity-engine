@@ -1,0 +1,16 @@
+{
+  "deployed": false,
+  "committed": false,
+  "files": [
+    {
+      "file": "reconfigure-original-deep-slots.py",
+      "bytes": 16222,
+      "sha256": "4c5390a9792bf2ac895fb0a09fc1c80829545c330d01bf04849b402c4b751a45"
+    },
+    {
+      "file": "test-reconfigure-original-deep-slots.py",
+      "bytes": 13822,
+      "sha256": "d58af8b07c7fe11710f5f3ea735240a52f8907489d883394a268cad650974efe"
+    }
+  ]
+}

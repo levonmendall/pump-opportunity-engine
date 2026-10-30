@@ -1,0 +1,26 @@
+✔ a baseline-failed independently audited window survives for active V2 exact-size evaluation (27.184133ms)
+✔ baseline rollback keeps its unchanged weak-window retirement and does not claim adaptive decisions (12.248514ms)
+✔ active native V2 turns a baseline-rejected early audited window into a real PAPER reservation and preserves winner beyond old caps (95.348173ms)
+✔ active native age eligibility also retains an older audited token beyond120minutes (30.063114ms)
+✔ active native reporting uses adaptive preliminary counts and preserves baseline benchmark separately (16.891762ms)
+✔ active native public intelligence retains honest limitations in the existing strict schema (7.775416ms)
+▶ active adaptive score cannot clear an owner stop or a genuine daily-loss latch
+  ✔ owner-stop (13.405149ms)
+  ✔ daily-loss (13.054509ms)
+✔ active adaptive score cannot clear an owner stop or a genuine daily-loss latch (27.12144ms)
+✔ active native entry still fails closed after genuine source evidence is lost (13.334534ms)
+✔ active adaptive native mode is explicit, versioned, two positions and four deep slots (2.260894ms)
+✔ baseline rollback selection and its configuration remain unchanged when strategy is omitted (0.402827ms)
+✔ unknown or mismatched adaptive strategy controls refuse before account access (0.760328ms)
+✔ native PAPER reports real native flow even when the WATCH hint feed has zero normalized trades (2.595491ms)
+✔ native PAPER combines independent and financial decisions chronologically without leaking additional fields (0.333786ms)
+✔ merged native PAPER decisions retain only the latest50 actual timestamps (0.481285ms)
+✔ missing native engine remains unknown rather than borrowing WATCH zeroes or financial events (0.177504ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1540.285077

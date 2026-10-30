@@ -1,0 +1,28 @@
+{
+  "kind": "offline-analysis-classification-correction-v1",
+  "createdAt": "2026-10-29T20:00:08.561237+00:00",
+  "toolSha256": "7010454233c06da587d7b3944a1643ddf8ec2a9156976862a15034348d055a11",
+  "analysisVersion": "retained-forward-financial-permission-v2",
+  "supersededScorecard": {
+    "path": "post-arming-ten-minutes.scorecard.json",
+    "sha256": "871712a2264f24531c50308c443a1198983587f266a989558c6f1b0311015c25",
+    "falseHeldCapacityFlags": 29
+  },
+  "correctedScorecard": {
+    "path": "post-arming-ten-minutes-corrected-analysis.scorecard.json",
+    "sha256": "2f4bfea8c95c3daaeb18cf91f1e4f03c623be3c02b2fd3b2e1d4fdb2672c3bb3",
+    "integrityFailures": 0
+  },
+  "sameSourceInputSha256": "5c5034770aaa2a9df54b35443171987253eaf036dd4d15667ef806a6db606199",
+  "controlledOfflineAssertionsPassed": 5,
+  "cause": "Old analysis incorrectly classified general financial permission enabled while holding one position as a financial-integrity failure. One held position is valid; entry capacity is checked separately.",
+  "preservedChecks": [
+    "More than one position remains invalid.",
+    "Enabled with reconciliation older than2s remains invalid.",
+    "Enabled flat account with original USD older than10s remains invalid.",
+    "Enabled without available current equity remains invalid."
+  ],
+  "runtimeChanges": 0,
+  "financialWrites": 0,
+  "providerRequests": 0
+}

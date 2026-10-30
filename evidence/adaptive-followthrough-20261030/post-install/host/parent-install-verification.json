@@ -1,0 +1,63 @@
+{
+  "verifiedAt": "2026-10-30T02:15:16.414287+00:00",
+  "workflow": 40990386819,
+  "rawSha256": "113c9f19fef39082a64ec8401174983beff259127c4e233838ee6566332f1646",
+  "source": {
+    "commit": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+    "sha256": "bbdd0515089a823600c158c668e6a3f76a0a92525422d63677989d963ae43480"
+  },
+  "configurationSha256": "ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db",
+  "installedInputSha256": "6034e83be9ddbb8233c38141c36af97e03d55e3cf99155b65e7f14b0aed469c0",
+  "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+  "financialVerification": {
+    "identityAndInceptionPreserved": true,
+    "initialFundingAndRoundingPreserved": true,
+    "journalAndActionPrefixPreserved": true,
+    "priorRevision": 68385,
+    "currentRevision": 68386,
+    "currentStateBodySha256": "cd9fd4f5668f1ecca2d2673f765c5280439bf11575b5df1e7fa19a66072a2df6",
+    "prefix": {
+      "actions": {
+        "priorRows": 68385,
+        "exactPriorRowsRetained": true,
+        "currentRows": 68386
+      },
+      "journal": {
+        "priorRows": 68386,
+        "exactPriorRowsRetained": true,
+        "currentRows": 68387
+      }
+    },
+    "comparison": "whole-column-ordered-exact-prefix",
+    "originalSqliteOwnerUid": 988,
+    "financialDatabaseWrites": 0,
+    "backupRestored": false
+  },
+  "interruption": {
+    "stopRequestedAt": 1793326346236,
+    "physicalStopVerifiedAt": 1793326349473,
+    "startRequestedAt": 1793326349715,
+    "localVerificationAt": 1793326351757,
+    "stopToStartMs": 242,
+    "observedNewSource": {
+      "available": true,
+      "sourceTimestamp": "2026-10-30T02:12:31.109Z",
+      "statusSha256": "67551e5e55dade12b09f77eeb785d10310c07c65dfb1a3b8230928cf2a7ac633",
+      "observedAt": 1793326351239,
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "release": "69aa1ef214a8c79524a25a8aca79299ccaad93dc"
+    },
+    "continuousCoverageClaimed": false
+  },
+  "service": {
+    "MainPID": "2482038",
+    "NRestarts": "0",
+    "ActiveState": "active",
+    "SubState": "running",
+    "ExecMainStartTimestamp": "Fri 2026-10-30 02:12:29 UTC"
+  },
+  "financialHistoryReset": false,
+  "backupRestored": false,
+  "operationalAcceptance": false
+}

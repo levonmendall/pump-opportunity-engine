@@ -1,0 +1,22 @@
+{
+  "sourceCommit": "31e5016b3bf17711bc8b326c961994e6f04df404",
+  "headUnchanged": true,
+  "sourceBytesUnchanged": true,
+  "results": {
+    "npm-test": {
+      "command": [
+        "npm",
+        "test"
+      ],
+      "startedAt": "2026-10-29T23:20:10.162317+00:00",
+      "finishedAt": "2026-10-29T23:21:55.383820+00:00",
+      "exitCode": 1,
+      "sha256": "eec987b5637e3feccbea87b696f051fd6eb6332c866519a658e4ce2476eedf2e"
+    }
+  },
+  "installed": false,
+  "protectionPauseCleared": false,
+  "forwardAcceptance": false,
+  "financialWrites": 0,
+  "providerRequests": 0
+}

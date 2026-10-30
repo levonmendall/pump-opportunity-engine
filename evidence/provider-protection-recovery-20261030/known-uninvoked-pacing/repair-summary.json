@@ -1,0 +1,37 @@
+{
+  "sourceCommit": "f96e1ccede6c27e8d4b70ffa14a113c1cef2bf63",
+  "baselineSource": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+  "repair": "Durable exact pre-transport refusal attestations exclude known never-invoked allocations only from physical request pacing. Canonical allocated units/IDs, observed bytes, full pending reservations and historical hashes stay unchanged.",
+  "rootCauseReproduced": "Post-reservation local admission failures leave allocated starts without physical invocation stamps. Service compaction had treated all such absent stamps as possibly physical at the new seal time, manufacturing a short-window burst from old requests that were never sent. The holding client could then refuse its bounded read deadline for about10seconds without any HTTP failure.",
+  "beforeOffline": {
+    "maximumCompletedHoldingRpcGapMs": 12000,
+    "holdingDispatchRefusals": 5,
+    "physicalHttpTimeouts": 0,
+    "shortWindowAtCompaction": 36
+  },
+  "afterOffline": {
+    "maximumCompletedHoldingRpcGapMs": 2250,
+    "holdingDispatchRefusals": 0,
+    "physicalHttpTimeouts": 0,
+    "physicalStarts": 60,
+    "retainedLocallyRefusedAllocations": 60,
+    "unknownAtSeal": 1
+  },
+  "validation": {
+    "focusedTestsPassed": 273,
+    "typescriptBuildPassed": true,
+    "sourceGuardUnchanged": true,
+    "independentReview": "PASS exactf96,53independenttests +actualold69reader/checkpoint/budgetcompatibility+duplicate timestamp multiplicity; root retains separate review artifact",
+    "providerLimits": "unchanged20starts/10s,90/minute,250msminimumspacing,onephysicaloperation",
+    "protectionAndQuoteDeadlines": "unchanged",
+    "financialAndStrategyChanges": false
+  },
+  "proofBoundary": "Attest only fixed pre-transport local refusal reasons before the invocation flag is set. Persist the attestation before activating in-memory exclusion. Missing, malformed, duplicate, conflicting, partial or ambiguous evidence retains conservative pacing. Provider errors after work invocation never attest.",
+  "restartAndCompatibility": "Canonical raw allocated baseline remains byte-shape compatible with69; separately verified timestamp multiset supplies live pacing exclusions. Existing checkpoint shape is unchanged, old reader accepts it, and raw hash-linked attestation books remain retained for audit.",
+  "migrationLimitation": "Existing69 raw books without attestations remain ambiguous. A first verified seal can create a one-time conservative provider window (synthetic31-unattested test showed10s); the actual initial delay depends on actual short/minute counts and can be longer. Already sealed upper bounds retain their original timestamps across subsequent seals and age normally. No legacy absence is retroactively called never-invoked.",
+  "liveAttributionAndAcceptance": "The producer is proven by actual classes with injected local failures. Attribution of particular02:48/03:04EC2gaps still requires actual private compaction timing/counterbooks. No deployment or forward operational acceptance is claimed by this branch.",
+  "providerRequests": 0,
+  "financialAccountRead": false,
+  "financialActions": 0,
+  "serviceChanges": 0
+}

@@ -1,0 +1,189 @@
+{
+  "scope": "ACTUAL_CLOSED_OVERNIGHT_RESEARCH; not production or performance acceptance",
+  "generatedAt": "2026-10-27T08:22:46.506Z",
+  "legs": [
+    {
+      "leg": "01-basic",
+      "outcome": "CURRENT_STATE_VALIDATED",
+      "reason": null,
+      "newUnits": 5,
+      "httpBytes": 20097,
+      "wsBytes": 0,
+      "pendingReservedBytes": 0,
+      "elapsedMs": 4809
+    },
+    {
+      "leg": "02-multi",
+      "outcome": "CURRENT_STATE_VALIDATED",
+      "reason": null,
+      "newUnits": 5,
+      "httpBytes": 29383,
+      "wsBytes": 0,
+      "pendingReservedBytes": 0,
+      "elapsedMs": 4892
+    },
+    {
+      "leg": "03-discovery",
+      "outcome": "STOPPED_COMPONENT_PARENT_STOP",
+      "reason": "COMPONENT_PARENT_STOP",
+      "newUnits": 2,
+      "httpBytes": 0,
+      "wsBytes": 467,
+      "pendingReservedBytes": 0,
+      "elapsedMs": 466388
+    },
+    {
+      "leg": "04-active",
+      "outcome": "ACTIVE_PREPARATION_INCONCLUSIVE",
+      "reason": "NO_CURRENT_SUPPORTED_SWAP_IN_BOUNDED_MIGRATION_SAMPLE",
+      "newUnits": 2,
+      "httpBytes": 24451,
+      "wsBytes": 0,
+      "pendingReservedBytes": 0,
+      "elapsedMs": 2004
+    },
+    {
+      "leg": "05-sampler",
+      "outcome": "PUMPAPI_CANDIDATE_HINT_SAMPLE",
+      "reason": null,
+      "newUnits": 1,
+      "httpBytes": 0,
+      "wsBytes": 213,
+      "pendingReservedBytes": 0,
+      "elapsedMs": null
+    },
+    {
+      "leg": "06-targeted",
+      "outcome": "SUPPORTED_ACTIVE_SUBJECT_VERIFIED",
+      "reason": null,
+      "newUnits": 4,
+      "httpBytes": 20892,
+      "wsBytes": 0,
+      "pendingReservedBytes": 0,
+      "elapsedMs": 3943
+    },
+    {
+      "leg": "07-field",
+      "outcome": "PUMPAPI_MATCHED_FIELD_SAMPLE",
+      "reason": null,
+      "newUnits": 4,
+      "httpBytes": 40237,
+      "wsBytes": 213,
+      "pendingReservedBytes": 0,
+      "elapsedMs": null
+    },
+    {
+      "leg": "08-audit",
+      "outcome": "BOUNDED_AUDIT_COMPLETE",
+      "reason": null,
+      "newUnits": 4,
+      "httpBytes": 38587,
+      "wsBytes": 0,
+      "pendingReservedBytes": 0,
+      "elapsedMs": 3988
+    },
+    {
+      "leg": "09-notifications",
+      "outcome": "STOPPED_NOTIFICATION_COMPONENT",
+      "reason": "COMPONENT_PARENT_STOP",
+      "newUnits": 18,
+      "httpBytes": 58847,
+      "wsBytes": 5848,
+      "pendingReservedBytes": 2097152,
+      "elapsedMs": 21191
+    },
+    {
+      "leg": "10-notifications",
+      "outcome": "NOTIFICATION_COMPONENT_COMPLETED",
+      "reason": null,
+      "newUnits": 42,
+      "httpBytes": 155797,
+      "wsBytes": 14698,
+      "pendingReservedBytes": 0,
+      "elapsedMs": 46992
+    },
+    {
+      "leg": "11-combined",
+      "outcome": "COMBINED_RESEARCH_SAMPLE_CAPTURED",
+      "reason": null,
+      "newUnits": 44,
+      "httpBytes": 600921,
+      "wsBytes": 213,
+      "pendingReservedBytes": 0,
+      "elapsedMs": null
+    },
+    {
+      "leg": "12-combined-audit",
+      "outcome": "BOUNDED_AUDIT_INCOMPLETE",
+      "reason": null,
+      "newUnits": 5,
+      "httpBytes": 38492,
+      "wsBytes": 0,
+      "pendingReservedBytes": 0,
+      "elapsedMs": 4948
+    },
+    {
+      "leg": "13-buy-finality",
+      "outcome": "RETAINED_BUY_FINALITY_CHECK",
+      "reason": null,
+      "newUnits": 2,
+      "httpBytes": 51015,
+      "wsBytes": 0,
+      "pendingReservedBytes": 0,
+      "elapsedMs": 2014
+    }
+  ],
+  "network": {
+    "cumulativeUnits": 162,
+    "newOvernightUnits": 138,
+    "observedRelatedResponseBytes": 1477429,
+    "retainedUncertainResponseReservationBytes": 2097152,
+    "accountedRelatedBytes": 3574581,
+    "remainingUnits": 78,
+    "remainingAccountedBytes": 63534283,
+    "methods": {
+      "http:getMultipleAccounts": 70,
+      "http:getBlockTime": 7,
+      "ws-upgrade:upgrade": 8,
+      "ws:subscribeMigration": 1,
+      "http:getTransaction": 17,
+      "http:getSignaturesForAddress": 7,
+      "ws:accountSubscribe": 21,
+      "ws:accountUnsubscribe": 7
+    },
+    "minimumNewStartGapMs": 1001,
+    "maxRolling60s": 42,
+    "maxRolling10s": 10,
+    "httpResponseMs": {
+      "samples": 100,
+      "p50": 70,
+      "p95": 227,
+      "maximum": 275
+    },
+    "new429Count": 0
+  },
+  "pumpApi": {
+    "actualPriorReceivedBytes": 106994938,
+    "actualNewReceivedBytes": 88941161,
+    "actualCumulativeReceivedBytes": 195936099,
+    "cumulativeReservedBytes": 268435456,
+    "cumulativeReservedMs": 230000,
+    "unreservedBytes": 0,
+    "remainingReservedTimeMs": 70000,
+    "noReservationRefund": true
+  },
+  "evidence": {
+    "oldFilesUnchanged": true,
+    "newBytesBeforeThisSummary": 3414877,
+    "priorPlusNewBytesBeforeThisSummary": 8767673,
+    "ceilingBytes": 33554432
+  },
+  "administration": {
+    "readOnlyRenderGetRequests": 2,
+    "recordedSeparatelyFromMarketResearch": true
+  },
+  "productionChanged": false,
+  "liveTrading": false,
+  "paperEntries": false,
+  "acceptanceClock": false
+}

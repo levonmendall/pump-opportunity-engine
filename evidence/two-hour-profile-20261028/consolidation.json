@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_CONSOLIDATION_NOT_FORWARD_CAPACITY",
+  "parentCommit": "7959d18c29d28915f1c2e2f4ceb2540a8d67d909",
+  "integratedChanges": [
+    "optional selected24-hour observation study bd37970/244f288",
+    "finite two-hour research profile39a382b",
+    "age/profile runner and launcher integration2728f02 with760b87a tests",
+    "unwired independent history HTTP batch305de37",
+    "every-page served-node upper-slot floor6316099",
+    "exact -32016 paced data-unavailability correction"
+  ],
+  "preserved": [
+    "native callback yielding and conservative queued/fragmented receipt lower bound",
+    "native-control priority at WATCH reconnect eligibility and actual request admission",
+    "one physical gate;60starts/min,20starts/10s,250ms spacing",
+    "per-connection retired subscription tombstones",
+    "independent bounded first-refusal raw retention",
+    "all prior receipts, failures, cumulative counters and uncertainty",
+    "unchanged frozen persistent-buying baseline, entry age5\u2013120min and quote validity",
+    "candidate-only mode, no ledger/financial writer or execution"
+  ],
+  "defaults": {
+    "observationAgePolicy": "observation-age-v1",
+    "observationRegularMaximumMs": 7200000,
+    "selectedOlderMaximumMs": 21600000,
+    "candidateDurationMs": 900000,
+    "maximumCandidateDurationMs": 1800000,
+    "maximumDeepScopes": 6,
+    "financialExecutionAuthorized": false
+  },
+  "optIn": {
+    "observationStudy": "observation-age-selected-24h-study-v1",
+    "selectedOlderMaximumMs": 86400000,
+    "maximumOlderRegistry": 24,
+    "maximumOlderDeep": 1,
+    "resourceProfile": "candidate-native-two-hour-research-v1",
+    "maximumDurationMs": 7200000,
+    "maximumUnits": 7500,
+    "relatedResponseBytes": 2415919104,
+    "nativeSocketBytes": 2147483648,
+    "broadWatchBytes": 8589934592,
+    "retainedEvidenceBytes": 1073741824,
+    "maximumRssBytes": 402653184,
+    "maximumCpuMicros": 1920000000,
+    "meaning": "Finite provisional research ceilings. Resource-profile selection alone never enables24-hour observation. Neither option broadens entry eligibility or establishes provider entitlement."
+  },
+  "contextFloorRecovery": {
+    "recognizedExactError": "COMPONENT_RPC_ERROR_-32016",
+    "handling": "Existing bounded paced recovery after measured/drained unavailable response, preserving counters and inherited uncertainty; no internal retry or audit pass; unrelated invalid-request errors remain fatal."
+  },
+  "verification": {
+    "build": "PASS",
+    "fullRepositoryTests": 1122,
+    "failures": 0,
+    "fullSuiteDurationMs": 69914.288856,
+    "actualSharedConstructorComposition": "PASS: real PilotRpc,Clock support,NativeFlow,PilotFeeds andRunner instantiate together under explicit two-hour study settings without network or financial writer.",
+    "independentAgeProfileReview": "GO;114 focused tests",
+    "independentBatchContextReview": "GO;91 focused tests",
+    "batchRuntimeWiring": "ABSENT; helper remains component-only until provider proof and reviewed scheduling integration"
+  },
+  "limitations": [
+    "No network request or forward interval occurred during consolidation.",
+    "Two-hour/six-scope capacity,24-hour-study opportunity quality and batch provider eligibility remain unverified.",
+    "The existing EC2 supervisor remains its reviewed900-second profile; a longer host run needs a separately reviewed finite packaging profile.",
+    "Whole-market recall, executable profitability and autonomous financial operation are not established."
+  ]
+}

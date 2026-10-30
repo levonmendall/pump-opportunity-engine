@@ -1,0 +1,88 @@
+{
+  "schemaVersion": 1,
+  "result": "BLOCKED_THIS_BOUNDED_ATTEMPT_BY_NEW_PROVIDER_THROTTLE",
+  "identityProven": false,
+  "migrationAgeKnown": false,
+  "firstFailureMethod": "getBlockTime",
+  "methodStartsBeforeAndIncludingRefusal": 11,
+  "firstToLastSameMethodStartMs": 2539,
+  "minimumRecordedPhysicalStartGapMs": 252,
+  "lastSuccessfulTimeHints": [
+    {
+      "slot": 462326408,
+      "blockTime": 1793158588,
+      "blockTimeIso": "2026-10-28T03:36:28.000Z",
+      "availableAt": 1793158589610
+    },
+    {
+      "slot": 462266747,
+      "blockTime": 1793145875,
+      "blockTimeIso": "2026-10-28T00:04:35.000Z",
+      "availableAt": 1793158589842
+    },
+    {
+      "slot": 462207086,
+      "blockTime": 1793133169,
+      "blockTimeIso": "2026-10-27T20:32:49.000Z",
+      "availableAt": 1793158590251
+    },
+    {
+      "slot": 462236916,
+      "blockTime": 1793139536,
+      "blockTimeIso": "2026-10-27T22:18:56.000Z",
+      "availableAt": 1793158590383
+    },
+    {
+      "slot": 462222001,
+      "blockTime": 1793136358,
+      "blockTimeIso": "2026-10-27T21:25:58.000Z",
+      "availableAt": 1793158590755
+    },
+    {
+      "slot": 462229458,
+      "blockTime": 1793137945,
+      "blockTimeIso": "2026-10-27T21:52:25.000Z",
+      "availableAt": 1793158590877
+    },
+    {
+      "slot": 462233187,
+      "blockTime": 1793138741,
+      "blockTimeIso": "2026-10-27T22:05:41.000Z",
+      "availableAt": 1793158591114
+    },
+    {
+      "slot": 462231322,
+      "blockTime": 1793138343,
+      "blockTimeIso": "2026-10-27T21:59:03.000Z",
+      "availableAt": 1793158591360
+    },
+    {
+      "slot": 462232254,
+      "blockTime": 1793138540,
+      "blockTimeIso": "2026-10-27T22:02:20.000Z",
+      "availableAt": 1793158591607
+    },
+    {
+      "slot": 462232720,
+      "blockTime": 1793138642,
+      "blockTimeIso": "2026-10-27T22:04:02.000Z",
+      "availableAt": 1793158591865
+    }
+  ],
+  "indexedCreatedAt": "2026-10-27T22:05:09Z",
+  "indexedTimeAuthority": false,
+  "scopeReached": "finalized slot/time hint search only; no block-signature cursor, pool history, strict origin, current support or quotes",
+  "limitsRespected": {
+    "actualRemoteStarts": 12,
+    "maximumRemoteStarts": 24,
+    "actualElapsedMs": 3008,
+    "maximumHelperMs": 20000,
+    "measuredBodyBytes": 527,
+    "newUncertainReservedBytes": 2097152,
+    "maximumResponseHeadroomBytes": 4194304
+  },
+  "interpretation": "The response is direct evidence of throttling for this actual method burst, not proof of a universal numerical method quota or inadequate general provider capacity. No endpoint rotation, retry, expanded search or historical-counter reset occurred.",
+  "offlineRepairHypothesis": "If this identity remains valuable, pace getBlockTime separately in the existing shared caller, while retaining the unchanged helper read/time/byte limits, and establish beforehand whether the projected complete search fits. This record authorizes no automatic rerun.",
+  "financialDatabaseOpened": false,
+  "networkRequestsDuringAnalysis": 0
+}

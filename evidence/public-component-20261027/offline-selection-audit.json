@@ -1,0 +1,164 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_ONLY_RETAINED_SELECTION_AUDIT",
+  "generatedAt": "2026-10-27T06:12:26.328Z",
+  "networkRequests": 0,
+  "newRequestUnits": 0,
+  "newProviderBytes": 0,
+  "source": "evidence/public-component-20261027/observations.ndjson",
+  "sourceSha256": "e310f4ba3354b0b2898977f47e410a76c523056c180359d1854f6c548a4da4d8",
+  "sdk": "@pump-fun/pump-swap-sdk@2.2.0",
+  "idlSha256": "c2f8ce0bc0a740d9125644b2d95494c97199fce1604802f5ab0497184bdcce61",
+  "method": "Read retained confirmed compiled top-level/inner instructions using pinned SDK IDL. Match event-CPI discriminator separately from callable instruction decoder. For multi_hop_swap use SDK documented remaining-account groups of five after sixteen fixed accounts; derive canonical PDA for actual quote, SOL quote, and bonding curve. No source file, grant, counter or receipt is modified.",
+  "transactions": [
+    {
+      "signature": "5WvCi1F74EGNea1mMuTQMKVgn8gQaMtbQS2CHLa7TnV3bbHJvw9nWE2Lsa3oevmTtAWTuRgb1DXRyizH8MBtuqQ1",
+      "slot": 461963736,
+      "blockTime": 1793081386,
+      "blockTimeISO": "2026-10-27T06:09:46.000Z",
+      "requestedAt": 1793081387434,
+      "availableAt": 1793081388367,
+      "availableAtISO": "2026-10-27T06:09:48.367Z",
+      "version": 1,
+      "successful": true,
+      "metaError": null,
+      "programAddressMentioned": true,
+      "programInvocations": [
+        {
+          "outerInstructionIndex": 2,
+          "innerInstructionIndex": 12,
+          "stackHeight": 2,
+          "rawDiscriminatorHex": "2b644913e9f66f94",
+          "bytes": 24,
+          "decodedInstruction": "multi_hop_swap",
+          "classification": "RECOGNIZED_PROGRAM_INSTRUCTION",
+          "event": null
+        },
+        {
+          "outerInstructionIndex": 2,
+          "innerInstructionIndex": 15,
+          "stackHeight": 3,
+          "rawDiscriminatorHex": "e445a52e51cb9a1d",
+          "bytes": 516,
+          "decodedInstruction": null,
+          "classification": "RECOGNIZED_EVENT_SELF_CPI",
+          "event": {
+            "name": "BuyEvent",
+            "exactPackagedLayout": true,
+            "pool": "3M9sVgL4u6ATKaiExf3XhQqNfMB6ijvzk3meMcQaen1w",
+            "user": "6sb6efddoaWG1ojhhsoFRmneMjBi8vofAEBNMX4PLGGx",
+            "ixName": "multi_hop_swap",
+            "timestamp": "1793081386",
+            "baseAmountOut": "1399789101",
+            "quoteAmountIn": "11318",
+            "note": "Decoded executed event only; not normalized for strategy and not an independent pool-account/transfer-support proof."
+          }
+        },
+        {
+          "outerInstructionIndex": 2,
+          "innerInstructionIndex": 17,
+          "stackHeight": 3,
+          "rawDiscriminatorHex": "e445a52e51cb9a1d",
+          "bytes": 516,
+          "decodedInstruction": null,
+          "classification": "RECOGNIZED_EVENT_SELF_CPI",
+          "event": {
+            "name": "BuyEvent",
+            "exactPackagedLayout": true,
+            "pool": "A6NVngsLGMzxewmNACcBeQ8zt7gy5aeeRiJpbqoe5dLi",
+            "user": "6sb6efddoaWG1ojhhsoFRmneMjBi8vofAEBNMX4PLGGx",
+            "ixName": "multi_hop_swap",
+            "timestamp": "1793081386",
+            "baseAmountOut": "23167951608",
+            "quoteAmountIn": "1399789101",
+            "note": "Decoded executed event only; not normalized for strategy and not an independent pool-account/transfer-support proof."
+          }
+        }
+      ],
+      "routeHops": [
+        {
+          "hopIndex": 0,
+          "baseMint": "C5xph2yL6gMdxmuLGxJBkGpmuDFfyi5fqkBNhvL6pump",
+          "quoteMint": "3NZ9JMVBmGAqocybic2c7LQCJScmgsAZ6vQqTDzcqmJh",
+          "venue": "3M9sVgL4u6ATKaiExf3XhQqNfMB6ijvzk3meMcQaen1w",
+          "baseVault": "AhVBxmfr4s7W4ZcGnwp5eNo5i4Nv4tCE1YQrCcGDWgas",
+          "quoteVault": "3nQRB2Tsf7VFt3kv5eeD8zT9nB1Ad6DHTTmULC7mfnUd",
+          "canonicalPoolForActualQuote": "3M9sVgL4u6ATKaiExf3XhQqNfMB6ijvzk3meMcQaen1w",
+          "canonicalSolPool": "3XDymbcnJgSN8GDUZ49Ngj5MHvJGrEcNG7TTeM3JBFgg",
+          "bondingCurvePda": "9nzxFL6UXZiMhPSyCqNDTXmPNdCUhtY3jwKoh7FTdeEP",
+          "actualQuoteCanonicalPool": true,
+          "solQuoted": false,
+          "canonicalSolPoolMatch": false,
+          "bondingCurveMatch": false,
+          "scopeReason": "NON_SOL_QUOTE_OUTSIDE_SCOPE"
+        },
+        {
+          "hopIndex": 1,
+          "baseMint": "83WuTBUf1vMDShCZyMD2PrDbd5ZY9DZVQd6vpfy1pump",
+          "quoteMint": "C5xph2yL6gMdxmuLGxJBkGpmuDFfyi5fqkBNhvL6pump",
+          "venue": "A6NVngsLGMzxewmNACcBeQ8zt7gy5aeeRiJpbqoe5dLi",
+          "baseVault": "FQ7KhiPqguh6QL5WJEQizgeYWWecmuiwAo6mxMRky9CJ",
+          "quoteVault": "6b5ZuCDFia1yfSHKoiwnNj4fzY3BsYoVxj37NtXZbST",
+          "canonicalPoolForActualQuote": "A6NVngsLGMzxewmNACcBeQ8zt7gy5aeeRiJpbqoe5dLi",
+          "canonicalSolPool": "nNo9WcwbvT3sgHxbYXMB3ngRcvsUoAMftV9djHCZkdX",
+          "bondingCurvePda": "BSTMrH2n4H4PZn9VUvACDBQFqkfywRQEVdKPHYz2jrkN",
+          "actualQuoteCanonicalPool": true,
+          "solQuoted": false,
+          "canonicalSolPoolMatch": false,
+          "bondingCurveMatch": false,
+          "scopeReason": "NON_SOL_QUOTE_OUTSIDE_SCOPE"
+        },
+        {
+          "hopIndex": 2,
+          "baseMint": "JBB3eqEBLQJcgSMnECtVFx9iWFWF1n3J7GFHenA6pump",
+          "quoteMint": "83WuTBUf1vMDShCZyMD2PrDbd5ZY9DZVQd6vpfy1pump",
+          "venue": "9ou3u8JkgNSXoj16oAEp1WyqVZe299oeaG4JeGppjfV8",
+          "baseVault": "8Ax6g76wPa6oYMeHyMefxuWcjcEiueBBrbVRcvwAkLqi",
+          "quoteVault": "Hvg2vrZNhMPaBGvwd9Hqi7sg63RQW8Q1xDkTmwDHk6Mh",
+          "canonicalPoolForActualQuote": "3VsQ4gcqBsP5ctfb9SvpzZ3aP5iML3X13qNMX544NQtG",
+          "canonicalSolPool": "BAnH1z9Si1xMfaoQZC7283KaqqrEZpha1msHk7SkJ2V5",
+          "bondingCurvePda": "9ou3u8JkgNSXoj16oAEp1WyqVZe299oeaG4JeGppjfV8",
+          "actualQuoteCanonicalPool": false,
+          "solQuoted": false,
+          "canonicalSolPoolMatch": false,
+          "bondingCurveMatch": true,
+          "scopeReason": "BONDING_CURVE_AND_NON_SOL_QUOTE_OUTSIDE_SCOPE"
+        }
+      ],
+      "existingSelectorScopes": [],
+      "exactExclusionReason": "RECOGNIZED_MULTI_HOP_SWAP_HAS_ZERO_SOL_QUOTED_POOL_HOPS",
+      "decoderLimitation": "Current selector deliberately recognizes only buy/buy_exact_quote_in/buy_v2/buy_exact_quote_in_v2/sell/sell_v2. It does not discover or normalize multi_hop_swap. This particular retained route is independently outside SOL-pool scope anyway; this sample cannot establish coverage of routed SOL-pool swaps.",
+      "supportVerified": false,
+      "logsRelevant": [
+        "Program log: Instruction: MultiHopJupiterBuy",
+        "Program pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA invoke [2]",
+        "Program log: Instruction: MultiHopSwap",
+        "Program log: Instruction: MultiHopCurveSwap"
+      ]
+    },
+    {
+      "signature": "4pZDAea8kuWavcWGmA5FKV6wLXjVGQovTnyTd1B6rsQjQjjLpJFSdbuyYEmo5YLWrERHfpxHwBRqw44KxeboFAtj",
+      "slot": 461963735,
+      "blockTime": 1793081386,
+      "blockTimeISO": "2026-10-27T06:09:46.000Z",
+      "requestedAt": 1793081388368,
+      "availableAt": 1793081389444,
+      "availableAtISO": "2026-10-27T06:09:49.444Z",
+      "version": 0,
+      "successful": true,
+      "metaError": null,
+      "programAddressMentioned": true,
+      "programInvocations": [],
+      "routeHops": [],
+      "existingSelectorScopes": [],
+      "exactExclusionReason": "PROGRAM_ADDRESS_MENTION_ONLY_NO_PUMPSWAP_INVOCATION",
+      "decoderLimitation": null,
+      "supportVerified": false,
+      "logsRelevant": [
+        "Program log: No profitable route"
+      ]
+    }
+  ],
+  "conclusion": "Neither sampled transaction supplies a supported SOL-quoted canonical PumpSwap pool: one successful routed multi_hop_swap trades two canonical non-SOL pools plus one non-SOL bonding curve; the other only carries the PumpSwap program as an unused account and invokes no PumpSwap instruction. The refusal is appropriate for these two records. This does not prove that no suitable active pool existed or that free RPC/Clock pricing is unsuitable.",
+  "remainingEvidence": "Actual current supported SOL-pool Clock/support pricing, account notifications/reconnect, changing-price protection and request-capacity behavior remain unobserved. No new capture or retry is authorized by this audit."
+}

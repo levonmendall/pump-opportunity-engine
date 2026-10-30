@@ -1,0 +1,78 @@
+✔ only a durable pre-transport refusal excludes physical pacing; every allocated unit, pending byte and operation ID survives reopen (22.467975ms)
+✔ an identical refusal string thrown after transport invocation cannot manufacture a never-invoked proof (5.246673ms)
+✔ failed proof persistence leaves the reservation conservative and does not publish an exclusion (7.198999ms)
+✔ post-reservation deadline expiry is attested without invoking transport or changing allocated accounting (4.7594ms)
+✔ post-reservation cancellation is attested only before transport invocation (4.629287ms)
+✔ invalid, spliced, duplicate, ambiguous and partial proof records never exclude pacing (4.9685ms)
+▶ actual held protection can complete strict recovery despite recurring candidate-only timeout backoff
+  ✔ old coupled admission (153.484987ms)
+  ✔ held explicit-restriction admission (121.680316ms)
+✔ actual held protection can complete strict recovery despite recurring candidate-only timeout backoff (276.443654ms)
+✔ cash inventory retains ordinary provider backoff and cannot invent held recovery credit (110.583996ms)
+✔ actual provider restriction resets the recovery interval even with complete fresh held contexts (128.025548ms)
+▶ held provider admission cannot override owner stop or missing liquidation evidence
+  ✔ owner-stop (66.432439ms)
+  ✔ missing-marks (83.891499ms)
+✔ held provider admission cannot override owner stop or missing liquidation evidence (151.007212ms)
+✔ real durable proof survives raw-chain restart and repeated seals without refunding a unit, pending byte or old unknown (74.939474ms)
+✔ many unattested69 allocations stay conservative on migration, then their first sealed upper bounds age out once (27.550755ms)
+ℹ {"scope":"OFFLINE legacy69-format startup/migration, not current EC2 book counts","unattestedAllocations":31,"initialShortWindowRefusalMs":10000,"unknownUpperBoundRetimedAgain":false,"allAllocatedCallsAndPendingBytesRetained":true,"providerRequests":0}
+✔ durable pre-transport refusal proof preserves full two-held PAPER protection through compaction (1681.724734ms)
+ℹ {"scope":"OFFLINE actual NativePaper/Trader/SDK/TWO held ledger plus actual physical budget, rollover and checkpoint; synthetic flow/Clock/liquidity and injected final-admission failures; not live protection acceptance","ghosts":60,"physical":60,"maximumCompletedWholeInventoryGapMs":2250,"unavailableHeldEvaluations":0,"failures":[],"compactions":[{"at":1793058384000,"short":6,"where":"full-NativePaper-protection"}],"allocated":120,"uncertainBytes":125829120,"financialInventoryAndCostsUnchanged":true,"providerRequests":0}
+✔ owned buy and independent two-position exits retain financial quote priority inside a candidate caller (143.794715ms)
+✔ new native adapter opens two SDK-priced PAPER positions, retains source-independent protection and recovers two uncertain exits (382.216252ms)
+✔ new native adapter refuses financial preparation without actual monitoring admission despite complete predictive evidence (16.191917ms)
+✔ DISPOSABLE reporting-readiness admission blocks new risk while native observations and owned entry/exit work continue (55.895886ms)
+✔ native regular protection performs one durable reconciliation per completed evaluation, including reused context (15.791594ms)
+✔ real native runner certificates restore temporary cash readiness without SDK/RPC work or an order; entry still requires full preparation (29.802574ms)
+✔ a genuinely audited weak window arms an inherited internal checkpoint before retirement, without a qualification or any market request (26.494665ms)
+▶ owner or unknown stop is not armed by an otherwise complete weak audit
+  ✔ operator-stop:CONTROLLED (24.035437ms)
+  ✔ unknown-stop:CONTROLLED (20.487993ms)
+✔ owner or unknown stop is not armed by an otherwise complete weak audit (45.029511ms)
+✔ routine checkpoints cancel only safely unattempted buys and do not invent an owner stop or erase uncertain obligations (29.71133ms)
+✔ ordinary per-entry capacity refusal preserves independently armed financial permission and creates no order (24.800537ms)
+✔ routine checkpoint preserves a buy with uncertain commit, without an invented financial outcome (31.871225ms)
+✔ routine checkpoint retains an existing sell and its holding until actual-size delayed exit execution completes (41.767559ms)
+✔ a new hard failure after inherited internal stop cannot be laundered by its older machine-stop proof (24.001817ms)
+✔ due native PAPER entry retains a distinct fresh execution reconciliation before the modeled attempt (39.469209ms)
+✔ temporary entry preparation failure receives a bounded new audited window and a new qualification before one PAPER fill (47.938227ms)
+✔ an unresolved financial attempt cannot queue a duplicate entry; terminal technical failure preserves state and requires a later full decision (41.799136ms)
+✔ a terminal missing execution quote retains charged gas and may create only a separately qualified later order (53.286443ms)
+✔ certificate expiry during a checkpoint rearms a consumed claim without using earlier features or creating an order (20.434994ms)
+✔ a full SDK-priced candidate cannot clear owner-stop merely because new-risk capacity is available (17.039655ms)
+✔ a full SDK-priced candidate cannot clear owner-pause merely because new-risk capacity is available (14.990895ms)
+✔ a full SDK-priced candidate cannot clear hard-pause merely because new-risk capacity is available (17.152704ms)
+✔ a owner-stop arriving during awaited SDK preparation is retained at its current revision (20.4657ms)
+✔ a owner-pause arriving during awaited SDK preparation is retained at its current revision (26.711117ms)
+✔ a hard-pause arriving during awaited SDK preparation is retained at its current revision (19.084765ms)
+✔ temporary second-entry preparation refusal recovers from a new audited window while first holding stays owned and protected (70.108796ms)
+✔ stage two protects and recovers a legacy single-profile held through the established restart rules (65.138781ms)
+✔ stage two protects and recovers a legacy single-profile reserved-buy through the established restart rules (55.064341ms)
+✔ two SDK-priced holdings execute independent strategy exits; simultaneous=false (118.04578ms)
+✔ two SDK-priced holdings execute independent strategy exits; simultaneous=true (99.473525ms)
+✔ candidate-local SDK preparation failure preserves healthy held-account permission and obligations (44.614775ms)
+✔ operating readiness recovers temporary held-account finance from fresh existing protection without a new qualifying candidate or extra RPC (78.737189ms)
+✔ fresh held prices cannot clear a genuine protection hard stop through operating financial readiness (52.80274ms)
+✔ an unknown post-commit operating permission write failure closes financial recovery instead of masquerading as candidate-local failure (56.318933ms)
+✔ known technical protection stop recovers only after a new full healthy holding interval and original failure remains durable (228.489015ms)
+✔ a slow mandatory technical-readiness record recloses issued permission and allows a wholly new healthy interval to recover (356.904205ms)
+✔ failed technical-readiness retention preserves a new owner-pause during the required record (180.150647ms)
+✔ failed technical-readiness retention preserves a new owner-stop during the required record (182.36208ms)
+✔ operating candidate cannot bypass canonical owner-history refusal with fresh audited SDK preparation (18.246489ms)
+✔ operating candidate rechecks canonical owner history after awaited SDK preparation (19.864419ms)
+✔ operating candidate retains genuine temporary readiness recovery through the canonical financial branch (39.353141ms)
+✔ operating candidate preserves only the separately authenticated known-run internal shutdown recovery exception (39.036091ms)
+✔ DISPOSABLE native fields→audited window→real SDK PAPER entry→retained pending-exit restart→fresh exit reconcile (120.611217ms)
+✔ DISPOSABLE shadow source cannot bypass financial readiness, and a later bucket cannot reuse an older audit (20.070403ms)
+✔ DISPOSABLE reserve-changing protocol slot raises SDK quote floor without inventing a buyer trade (15.899924ms)
+✔ durably proved uninvoked candidate reservations cannot starve actual holding reads at service compaction (611.881853ms)
+ℹ {"scope":"OFFLINE actual69 RPC/ComponentBudget/source reserve/compaction with injected final-admission closure; four synthetic candidate scopes and normal2s owned reads. Not actual02:48cause attribution.","ghosts":60,"physicalStarts":60,"maximumCompletedGapMs":2250,"timeouts":0,"failures":[],"compactions":[{"at":262300,"during":"held-read","before":{"short":4,"minute":29},"after":{"short":6,"minute":31,"readyAt":262500,"compacted":1},"checkpoint":{"retainedSinceAt":202000,"omittedCount":32,"conservativeUnknownAtSeal":1,"times":[202000,204000,206000,208000,210000,212000,214000,216000,218000,220000,222000,224000,226000,228000,230000,232000,234000,236000,238000,240000,242000,244000,246000,248000,250000,252000,254000,256000,258000,260000,262000]},"physicalStarts":32,"ghosts":31}],"providerRequests":0}
+ℹ tests 64
+ℹ suites 0
+ℹ pass 64
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6283.416156

@@ -1,0 +1,12 @@
+✔ a stable managed-round-trip minute resets retry escalation after an isolated later disconnect (50.305381ms)
+✔ successful upgrade and quick re-subscription do not reset a flapping transport (49.525414ms)
+✔ an unserviced minute plus one late proof cannot impersonate continuous managed health (21.945255ms)
+✔ healthy recovery does not override an independent provider control cooldown or fresh-window requirement (60.969481ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1304.248055

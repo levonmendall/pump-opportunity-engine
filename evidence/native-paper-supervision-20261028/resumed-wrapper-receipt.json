@@ -1,0 +1,43 @@
+{
+  "schemaVersion": 1,
+  "kind": "offline-resumed-native-paper-supervisor-verification",
+  "createdAt": "2026-10-28T18:21:35.192706+00:00",
+  "coreCommit": "83652f68231274142276dec5ed16b219dc931e05",
+  "tests": 16,
+  "result": "PASS",
+  "providerRequests": 0,
+  "realFinancialStateAccessed": false,
+  "naturalPaperTrades": 0,
+  "files": [
+    {
+      "file": "operator/native-paper-ec2/run-bounded.py",
+      "bytes": 36314,
+      "sha256": "d05aaf8cb2eae6d6255697874fa039588486530dd6fc03101693435ae401804b"
+    },
+    {
+      "file": "operator/native-paper-ec2/test-run-bounded.py",
+      "bytes": 25925,
+      "sha256": "8838c43e230d1651c67e204fbf659fae093eba0bbb0316979dac195607d1eff3"
+    },
+    {
+      "file": "operator/native-paper-ec2/SUPERVISION.md",
+      "bytes": 7903,
+      "sha256": "057e494169220b3736ec33b18506313b9b8b07b91300367ed340f14c985e84a8"
+    },
+    {
+      "file": ".github/workflows/poe-native-paper-research.yml",
+      "bytes": 2662,
+      "sha256": "cc0cd2efc197f68ff11fc06e83865192f38c0ddf264e61a74d91740e20ea2316"
+    },
+    {
+      "file": "evidence/native-paper-supervision-20261028/resumed-wrapper-final.log",
+      "bytes": 115,
+      "sha256": "a56196f8a960f9ff5c7399406fa80b703fa774a8d805f926a52a20de07c27afb"
+    },
+    {
+      "file": "src/run-native-paper.ts",
+      "bytes": 44517,
+      "sha256": "244eefa74165936ac5d2770030380ad90a9bd90963d1cca12061574df726bbdb"
+    }
+  ]
+}

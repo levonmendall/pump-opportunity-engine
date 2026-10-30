@@ -1,0 +1,22 @@
+✔ adaptive high-water persists per roundtrip in original reconciliation; invalid evidence cannot raise it (36.666725ms)
+✔ closed adaptive roundtrip requires fresh post-close window and new identity; old attempts cannot duplicate reentry (10.9133ms)
+✔ legacy full-sale history without new metadata permits V2 only after receipt-verified closure and new complete window (12.067447ms)
+✔ V2 metadata never overrides owner stop, daily/risk controls or pending obligations (4.50848ms)
+✔ corrupt optional cycle index blocks local reentry but never a valid protective sale, preserving raw prior evidence (15.846745ms)
+✔ unavailable or stale SOL peak input stays unavailable without altering cash, daily or valid peak (6.431334ms)
+✔ consistent original-account backup retains V2 peak, cycle and complete journal on independent restore (236.00895ms)
+✔ historical proof cache cannot reuse a previous closure after a newer completed roundtrip (14.358157ms)
+✔ ACTIVE V2 qualifies genuine complete lower baseline flow through sized quote/reserve/fill; audit or quote loss remains closed (56.679939ms)
+✔ V2 profitable holding survives +30percent and15minutes; persisted highwater trails independently across restart (27.401052ms)
+✔ two V2 holdings independently retain and exit under highwater/15percent protection (30.044824ms)
+✔ closed V2 token reenters only after full fresh post-close observation, new audit and unique order cycle (29.113202ms)
+✔ legacy holding keeps original max-hold exit after ACTIVE V2 upgrade (17.480801ms)
+✔ fresh SOL highwater persists during unavailable USD; restart cannot lose the protective trail (23.832796ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 627.041103

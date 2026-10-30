@@ -1,0 +1,25 @@
+{
+  "sourceFilesUnchanged": true,
+  "sourceFiles": {
+    "src/component-budget.ts": "17b3da2b3fa906c2e5e8932b21eaa2fd8bc2289cd9b30403b752317d41a2db98",
+    "src/research-baseline.ts": "f516bf4d940861cac8247a243634b8ee6d646d16e16b5117a6fe77de60f5570b",
+    "src/pilot-rpc.ts": "93deae2203de0940eeac48914d540a2a65d02781bb6eed47c37ed0687f65ba27",
+    "src/pilot-native-flow.ts": "a7f1ab9cc398fffeeeb5a25e568cd507e611c3f0235a30afecdc224b0eb694cf",
+    "src/pilot-feeds.ts": "c2c7c1fc4c696de7a67686da92f2ee5cdb18a12a240b888f40aad39c94e8daa4",
+    "src/persistent-data-window.ts": "f7805c755b0a1c70f23ba806b4b82e73b0872cf1b78f698d80f071ebf6b8b15b"
+  },
+  "results": [
+    {
+      "label": "focused",
+      "code": 0,
+      "elapsedSeconds": 4.992759993998334,
+      "log": "/tmp/poe-independent-persistent-final-focused.txt"
+    },
+    {
+      "label": "build",
+      "code": 0,
+      "elapsedSeconds": 7.596983766998164,
+      "log": "/tmp/poe-independent-persistent-final-build.txt"
+    }
+  ]
+}

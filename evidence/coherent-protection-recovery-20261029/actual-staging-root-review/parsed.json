@@ -1,0 +1,130 @@
+[
+  {
+    "kind": "POE_ORIGINAL_FORWARD_UPGRADE_STAGED_NOT_INSTALLED",
+    "at": 1793317258528,
+    "directory": "/var/tmp/poe-original-v2-protection-upgrade",
+    "source": {
+      "commit": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
+      "sha256": "8a0f001a3ae0c6acedaae6fb8a0370e02293a8b0c35142d74daf19086a41203c"
+    },
+    "indexSha256": "823365cd07361885f2097b64fdf0a7503eeba8c8252a2835b77eb806a0a9ad9e",
+    "driverSha256": "dc386c823e85b5c607a8643d7034a5e7c02d031e5de9051b083b48821020750c",
+    "transportSha256": "b311481b272d48625a28a022dbc436ca1cdaab8ce4be29326202567088a845b3",
+    "files": [
+      {
+        "file": "native-paper.mjs",
+        "bytes": 5230480,
+        "sha256": "8a0f001a3ae0c6acedaae6fb8a0370e02293a8b0c35142d74daf19086a41203c"
+      },
+      {
+        "file": "backup-worker.mjs",
+        "bytes": 75762,
+        "sha256": "042ca47275d0ba287bc6444c31a98c4b215c1f228bfca36cdd02de64c81e8a2a"
+      },
+      {
+        "file": "better_sqlite3.node",
+        "bytes": 2226168,
+        "sha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d"
+      },
+      {
+        "file": "metadata.json",
+        "bytes": 155512,
+        "sha256": "33161968dd3e7e77787508b02f9945cf67a437eedf10d313a1d7c092e687d097"
+      },
+      {
+        "file": "snapshot-publisher.mjs",
+        "bytes": 32314,
+        "sha256": "7da8c7388a5ec3e4f2e0b46a8226ce457d0a68578e5b5225c50b97f1a508ff44"
+      },
+      {
+        "file": "run-authoritative-service.py",
+        "bytes": 37955,
+        "sha256": "66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e"
+      },
+      {
+        "file": "forward-original-upgrade.py",
+        "bytes": 52472,
+        "sha256": "dc386c823e85b5c607a8643d7034a5e7c02d031e5de9051b083b48821020750c"
+      },
+      {
+        "file": "export-current-run-forensics-20261029.py",
+        "bytes": 24429,
+        "sha256": "1c684b1c88c95c75488f056ad00a8ea756c906e45dcb0f4f8725f5e75b193c59"
+      },
+      {
+        "file": "poe-runtime-persistent.conf",
+        "bytes": 925,
+        "sha256": "d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df"
+      },
+      {
+        "file": "service.json",
+        "bytes": 1715,
+        "sha256": "7c80563b76fa9cab96d7addcb2a272409db0ad9ad0d3208bdcd1f606b320e51d"
+      },
+      {
+        "file": "index.json",
+        "bytes": 2216,
+        "sha256": "823365cd07361885f2097b64fdf0a7503eeba8c8252a2835b77eb806a0a9ad9e"
+      }
+    ],
+    "exactStagedUnitParserVerified": true,
+    "actualUnit": {
+      "LoadState": "loaded",
+      "User": "poe-runtime",
+      "Group": "poe-runtime",
+      "ActiveState": "active",
+      "SubState": "running",
+      "MainPID": "2474047",
+      "ControlPID": "0",
+      "KillMode": "mixed",
+      "Restart": "always",
+      "NoNewPrivileges": "yes",
+      "PrivateTmp": "yes",
+      "ProtectSystem": "strict",
+      "ProtectHome": "yes",
+      "UMask": "0077",
+      "TimeoutStopUSec": "1min",
+      "CPUQuotaPerSecUSec": "infinity",
+      "CPUQuotaPeriodUSec": "100ms",
+      "CPUWeight": "100",
+      "Nice": "0",
+      "MemoryHigh": "2684354560",
+      "MemoryMax": "3221225472",
+      "MemorySwapMax": "0",
+      "TasksMax": "64",
+      "LimitNOFILE": "256",
+      "LimitCORE": "0",
+      "LimitCPU": "infinity",
+      "LimitFSIZE": "infinity",
+      "LimitAS": "infinity",
+      "OOMPolicy": "stop"
+    },
+    "runtimeIdentity": {
+      "uid": 988,
+      "gid": 982
+    },
+    "serviceBefore": {
+      "MainPID": "2474047",
+      "NRestarts": "0",
+      "User": "poe-runtime",
+      "LoadState": "loaded",
+      "ActiveState": "active",
+      "SubState": "running"
+    },
+    "serviceAfter": {
+      "MainPID": "2474047",
+      "NRestarts": "0",
+      "User": "poe-runtime",
+      "LoadState": "loaded",
+      "ActiveState": "active",
+      "SubState": "running"
+    },
+    "sameSupervisor": true,
+    "preservedPriorPartial": null,
+    "providerRequests": 0,
+    "financialDatabaseOpened": false,
+    "credentialsRead": false,
+    "serviceControlOperations": 0,
+    "executed": false
+  }
+]

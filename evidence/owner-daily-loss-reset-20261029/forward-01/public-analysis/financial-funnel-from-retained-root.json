@@ -1,0 +1,758 @@
+{
+  "readOnly": true,
+  "meaning": "Existingrootpublicsamplesreadlocally; noadditionalnetworkrequests. Nativepreliminaryassessmentsandtraderfunnelnotinterchangeable.",
+  "rows": [
+    {
+      "observedAt": 1793312433747,
+      "sourceAt": "2026-10-29T22:20:12.161Z",
+      "sequence": "10394",
+      "funnel": {
+        "discovered": 12,
+        "supported": 12,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 201
+      }
+    },
+    {
+      "observedAt": 1793312448942,
+      "sourceAt": "2026-10-29T22:20:27.179Z",
+      "sequence": "10395",
+      "funnel": {
+        "discovered": 15,
+        "supported": 15,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 216
+      }
+    },
+    {
+      "observedAt": 1793312464116,
+      "sourceAt": "2026-10-29T22:20:42.228Z",
+      "sequence": "10396",
+      "funnel": {
+        "discovered": 16,
+        "supported": 16,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 231
+      }
+    },
+    {
+      "observedAt": 1793312479308,
+      "sourceAt": "2026-10-29T22:20:57.273Z",
+      "sequence": "10397",
+      "funnel": {
+        "discovered": 16,
+        "supported": 16,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 246
+      }
+    },
+    {
+      "observedAt": 1793312494450,
+      "sourceAt": "2026-10-29T22:21:12.298Z",
+      "sequence": "10398",
+      "funnel": {
+        "discovered": 16,
+        "supported": 16,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 261
+      }
+    },
+    {
+      "observedAt": 1793312509647,
+      "sourceAt": "2026-10-29T22:21:27.316Z",
+      "sequence": "10399",
+      "funnel": {
+        "discovered": 16,
+        "supported": 16,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 276
+      }
+    },
+    {
+      "observedAt": 1793312524804,
+      "sourceAt": "2026-10-29T22:21:42.414Z",
+      "sequence": "10400",
+      "funnel": {
+        "discovered": 18,
+        "supported": 18,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 292
+      }
+    },
+    {
+      "observedAt": 1793312540246,
+      "sourceAt": "2026-10-29T22:21:57.450Z",
+      "sequence": "10401",
+      "funnel": {
+        "discovered": 19,
+        "supported": 19,
+        "sufficientlyObserved": 1,
+        "evaluated": 1,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 306
+      }
+    },
+    {
+      "observedAt": 1793312555377,
+      "sourceAt": "2026-10-29T22:22:12.936Z",
+      "sequence": "10402",
+      "funnel": {
+        "discovered": 19,
+        "supported": 19,
+        "sufficientlyObserved": 1,
+        "evaluated": 1,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 322
+      }
+    },
+    {
+      "observedAt": 1793312570526,
+      "sourceAt": "2026-10-29T22:22:27.976Z",
+      "sequence": "10403",
+      "funnel": {
+        "discovered": 19,
+        "supported": 19,
+        "sufficientlyObserved": 1,
+        "evaluated": 1,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 337
+      }
+    },
+    {
+      "observedAt": 1793312585752,
+      "sourceAt": "2026-10-29T22:22:42.977Z",
+      "sequence": "10404",
+      "funnel": {
+        "discovered": 19,
+        "supported": 19,
+        "sufficientlyObserved": 1,
+        "evaluated": 1,
+        "qualified": 1,
+        "attempted": 1,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 352
+      }
+    },
+    {
+      "observedAt": 1793312600907,
+      "sourceAt": "2026-10-29T22:22:58.026Z",
+      "sequence": "10405",
+      "funnel": {
+        "discovered": 20,
+        "supported": 20,
+        "sufficientlyObserved": 2,
+        "evaluated": 2,
+        "qualified": 2,
+        "attempted": 2,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 370
+      }
+    },
+    {
+      "observedAt": 1793312616149,
+      "sourceAt": "2026-10-29T22:23:14.393Z",
+      "sequence": "10406",
+      "funnel": {
+        "discovered": 20,
+        "supported": 20,
+        "sufficientlyObserved": 3,
+        "evaluated": 3,
+        "qualified": 3,
+        "attempted": 2,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 389
+      }
+    },
+    {
+      "observedAt": 1793312631319,
+      "sourceAt": "2026-10-29T22:23:29.406Z",
+      "sequence": "10407",
+      "funnel": {
+        "discovered": 20,
+        "supported": 20,
+        "sufficientlyObserved": 3,
+        "evaluated": 3,
+        "qualified": 3,
+        "attempted": 3,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 404
+      }
+    },
+    {
+      "observedAt": 1793312646669,
+      "sourceAt": "2026-10-29T22:23:44.746Z",
+      "sequence": "10408",
+      "funnel": {
+        "discovered": 23,
+        "supported": 23,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 416
+      }
+    },
+    {
+      "observedAt": 1793312661826,
+      "sourceAt": "2026-10-29T22:24:00.170Z",
+      "sequence": "10409",
+      "funnel": {
+        "discovered": 23,
+        "supported": 23,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 423
+      }
+    },
+    {
+      "observedAt": 1793312677002,
+      "sourceAt": "2026-10-29T22:24:15.245Z",
+      "sequence": "10410",
+      "funnel": {
+        "discovered": 23,
+        "supported": 23,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 430
+      }
+    },
+    {
+      "observedAt": 1793312692269,
+      "sourceAt": "2026-10-29T22:24:30.327Z",
+      "sequence": "10411",
+      "funnel": {
+        "discovered": 23,
+        "supported": 23,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 438
+      }
+    },
+    {
+      "observedAt": 1793312707470,
+      "sourceAt": "2026-10-29T22:24:45.370Z",
+      "sequence": "10412",
+      "funnel": {
+        "discovered": 23,
+        "supported": 23,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 445
+      }
+    },
+    {
+      "observedAt": 1793312722830,
+      "sourceAt": "2026-10-29T22:25:00.825Z",
+      "sequence": "10413",
+      "funnel": {
+        "discovered": 23,
+        "supported": 23,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 453
+      }
+    },
+    {
+      "observedAt": 1793312738013,
+      "sourceAt": "2026-10-29T22:25:17.919Z",
+      "sequence": "10414",
+      "funnel": {
+        "discovered": 23,
+        "supported": 23,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 461
+      }
+    },
+    {
+      "observedAt": 1793312753178,
+      "sourceAt": "2026-10-29T22:25:33.024Z",
+      "sequence": "10415",
+      "funnel": {
+        "discovered": 23,
+        "supported": 23,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 468
+      }
+    },
+    {
+      "observedAt": 1793312768351,
+      "sourceAt": "2026-10-29T22:25:48.579Z",
+      "sequence": "10416",
+      "funnel": {
+        "discovered": 23,
+        "supported": 23,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 476
+      }
+    },
+    {
+      "observedAt": 1793312783642,
+      "sourceAt": "2026-10-29T22:26:03.985Z",
+      "sequence": "10417",
+      "funnel": {
+        "discovered": 23,
+        "supported": 23,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 484
+      }
+    },
+    {
+      "observedAt": 1793312798797,
+      "sourceAt": "2026-10-29T22:26:19.413Z",
+      "sequence": "10418",
+      "funnel": {
+        "discovered": 27,
+        "supported": 27,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 491
+      }
+    },
+    {
+      "observedAt": 1793312813954,
+      "sourceAt": "2026-10-29T22:26:34.468Z",
+      "sequence": "10419",
+      "funnel": {
+        "discovered": 27,
+        "supported": 27,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 499
+      }
+    },
+    {
+      "observedAt": 1793312829179,
+      "sourceAt": "2026-10-29T22:26:49.522Z",
+      "sequence": "10420",
+      "funnel": {
+        "discovered": 27,
+        "supported": 27,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 506
+      }
+    },
+    {
+      "observedAt": 1793312844391,
+      "sourceAt": "2026-10-29T22:27:04.837Z",
+      "sequence": "10421",
+      "funnel": {
+        "discovered": 27,
+        "supported": 27,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 514
+      }
+    },
+    {
+      "observedAt": 1793312859575,
+      "sourceAt": "2026-10-29T22:27:20.067Z",
+      "sequence": "10422",
+      "funnel": {
+        "discovered": 27,
+        "supported": 27,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 521
+      }
+    },
+    {
+      "observedAt": 1793312874844,
+      "sourceAt": "2026-10-29T22:27:35.408Z",
+      "sequence": "10423",
+      "funnel": {
+        "discovered": 27,
+        "supported": 27,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 529
+      }
+    },
+    {
+      "observedAt": 1793312890040,
+      "sourceAt": "2026-10-29T22:28:05.902Z",
+      "sequence": "10425",
+      "funnel": {
+        "discovered": 27,
+        "supported": 27,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 544
+      }
+    },
+    {
+      "observedAt": 1793312905393,
+      "sourceAt": "2026-10-29T22:28:20.904Z",
+      "sequence": "10426",
+      "funnel": {
+        "discovered": 27,
+        "supported": 27,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 551
+      }
+    },
+    {
+      "observedAt": 1793312920729,
+      "sourceAt": "2026-10-29T22:28:36.309Z",
+      "sequence": "10427",
+      "funnel": {
+        "discovered": 30,
+        "supported": 30,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 559
+      }
+    },
+    {
+      "observedAt": 1793312935884,
+      "sourceAt": "2026-10-29T22:28:51.339Z",
+      "sequence": "10428",
+      "funnel": {
+        "discovered": 31,
+        "supported": 31,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 566
+      }
+    },
+    {
+      "observedAt": 1793312951061,
+      "sourceAt": "2026-10-29T22:29:07.600Z",
+      "sequence": "10429",
+      "funnel": {
+        "discovered": 31,
+        "supported": 31,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 574
+      }
+    },
+    {
+      "observedAt": 1793312966253,
+      "sourceAt": "2026-10-29T22:29:22.655Z",
+      "sequence": "10430",
+      "funnel": {
+        "discovered": 31,
+        "supported": 31,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 581
+      }
+    },
+    {
+      "observedAt": 1793312981436,
+      "sourceAt": "2026-10-29T22:29:38.122Z",
+      "sequence": "10431",
+      "funnel": {
+        "discovered": 31,
+        "supported": 31,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 589
+      }
+    },
+    {
+      "observedAt": 1793312996625,
+      "sourceAt": "2026-10-29T22:29:53.128Z",
+      "sequence": "10432",
+      "funnel": {
+        "discovered": 31,
+        "supported": 31,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 596
+      }
+    },
+    {
+      "observedAt": 1793313011907,
+      "sourceAt": "2026-10-29T22:30:08.165Z",
+      "sequence": "10433",
+      "funnel": {
+        "discovered": 31,
+        "supported": 31,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 604
+      }
+    },
+    {
+      "observedAt": 1793313027251,
+      "sourceAt": "2026-10-29T22:30:23.179Z",
+      "sequence": "10434",
+      "funnel": {
+        "discovered": 39,
+        "supported": 39,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 611
+      }
+    },
+    {
+      "observedAt": 1793313042428,
+      "sourceAt": "2026-10-29T22:30:23.179Z",
+      "sequence": "10434",
+      "funnel": {
+        "discovered": 39,
+        "supported": 39,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 611
+      }
+    },
+    {
+      "observedAt": 1793313057603,
+      "sourceAt": "2026-10-29T22:30:48.842Z",
+      "sequence": "10435",
+      "funnel": {
+        "discovered": 39,
+        "supported": 39,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 619
+      }
+    },
+    {
+      "observedAt": 1793313072811,
+      "sourceAt": "2026-10-29T22:31:03.857Z",
+      "sequence": "10436",
+      "funnel": {
+        "discovered": 43,
+        "supported": 43,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 627
+      }
+    },
+    {
+      "observedAt": 1793313088005,
+      "sourceAt": "2026-10-29T22:31:20.258Z",
+      "sequence": "10437",
+      "funnel": {
+        "discovered": 43,
+        "supported": 43,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 635
+      }
+    },
+    {
+      "observedAt": 1793313103368,
+      "sourceAt": "2026-10-29T22:31:35.308Z",
+      "sequence": "10438",
+      "funnel": {
+        "discovered": 43,
+        "supported": 43,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 642
+      }
+    },
+    {
+      "observedAt": 1793313118504,
+      "sourceAt": "2026-10-29T22:31:50.754Z",
+      "sequence": "10439",
+      "funnel": {
+        "discovered": 43,
+        "supported": 43,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 650
+      }
+    },
+    {
+      "observedAt": 1793313133687,
+      "sourceAt": "2026-10-29T22:32:05.763Z",
+      "sequence": "10440",
+      "funnel": {
+        "discovered": 43,
+        "supported": 43,
+        "sufficientlyObserved": 4,
+        "evaluated": 4,
+        "qualified": 4,
+        "attempted": 4,
+        "paperFilled": 1,
+        "exited": 0,
+        "reconciled": 657
+      }
+    }
+  ]
+}

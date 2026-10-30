@@ -1,0 +1,882 @@
+{
+  "kind": "verified-forward-protection-breach",
+  "sourceCommit": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+  "runId": "native-paper-20261029221651345",
+  "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+  "financialStatePreserved": true,
+  "controlsChangedByAnalyzer": false,
+  "verified": {
+    "lastPreFailureSourceAt": "2026-10-29T22:30:23.179Z",
+    "lastPreFailureCompletedProtectionAt": "2026-10-29T22:30:22.359Z",
+    "firstPostFailureSourceAt": "2026-10-29T22:30:48.842Z",
+    "maximumCompletedGapMs": 12329,
+    "breaches": 1,
+    "unavailableChecks": 3,
+    "physicalHttpTimeoutCounterBefore": 547,
+    "physicalHttpTimeoutCounterAfter": 547,
+    "reportSourceIntervalMs": 25663
+  },
+  "unknown": [
+    "ExactfailedRPCmethod/providerresponse/queuewait/adapterfailure",
+    "Exactinitiatingreasonforselectedcaptureunavailable",
+    "Whetherproviderorlocaldispatchcontentioncausedtheprotectionfailure"
+  ],
+  "meaning": "Actualcompletedprotectionboundaryfailure despiteeventualfreshrecovery. Do notclearhardentrypauseorcertifysustainedone/twoholdingreliabilityfromeventualrecovery. Publiccountercorrelationisnotcausalproof.",
+  "frames": [
+    {
+      "observedAt": "2026-10-29T22:29:41.436000+00:00",
+      "sourceAt": "2026-10-29T22:29:38.122Z",
+      "sequence": "10431",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 1285,
+        "auditUnavailable": 114,
+        "auditUnusable": 169,
+        "decisionDeadlineMisses": 152,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1285,
+        "capacityExclusions": 0,
+        "structuralExclusions": 54,
+        "limitations": [
+          "ACTIVE Adaptive Momentum v2 preliminary assessments use complete independently audited60s flow; they are not executable financial qualifications. Actual-size liquidity quotes and ledger controls remain required. Frozen persistent-buying counters are a separate benchmark. Overlapping windows are not distinct tokens.",
+          "Beneficial-owner independence, acceleration, executable price trend and reserve stability are unknown unless separately measured. No theoretical upside is realized profit.",
+          "Current $50/$150 sizing/exposure are explicit temporary legacy risk fallbacks. Four deep slots and two protected positions remain; old holdings retain their entry-strategy exit policy.",
+          "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump: Adaptive Momentum v2 historical executable net peak 0.509317304 SOL at 2026-10-29T22:29:37.501Z; cost stop and high-water trailing configured; see completed protection status. No fixed profit or profitable holding-time exit."
+        ]
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T22:29:37.549Z",
+        "maximumCompletedGapMs": 2342,
+        "maximumQuoteAgeAtUseMs": 56,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "provider": {
+        "rpcRequests": 597,
+        "rpcResponseBytes": 82829863,
+        "nativeStreamBytes": 1088152866,
+        "broadWatchBytes": 60946553676,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 547,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 51,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T22:22:43.025Z",
+        "historyCooldownUntil": "2026-10-29T21:07:34.654Z",
+        "controlCooldownUntil": null
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T22:29:38.121Z",
+        "cpuOneCoreFraction": 0.2219534211587579,
+        "rssBytes": 416907264,
+        "availableMemoryBytes": 6846111744,
+        "availableDiskBytes": 288124067840,
+        "eventLoopLagMs": 37.224447,
+        "state": "normal"
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 33764289,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "positions": [
+        {
+          "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+          "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+          "quantity": "65278155",
+          "enteredAt": "2026-10-29T22:23:36.537Z",
+          "entryCostUsd": 49.708013,
+          "netLiquidationUsd": 49.421604,
+          "executionCostsUsd": 0.00068,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ]
+    },
+    {
+      "observedAt": "2026-10-29T22:29:56.625000+00:00",
+      "sourceAt": "2026-10-29T22:29:53.128Z",
+      "sequence": "10432",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 1286,
+        "auditUnavailable": 114,
+        "auditUnusable": 170,
+        "decisionDeadlineMisses": 152,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1286,
+        "capacityExclusions": 0,
+        "structuralExclusions": 54,
+        "limitations": [
+          "ACTIVE Adaptive Momentum v2 preliminary assessments use complete independently audited60s flow; they are not executable financial qualifications. Actual-size liquidity quotes and ledger controls remain required. Frozen persistent-buying counters are a separate benchmark. Overlapping windows are not distinct tokens.",
+          "Beneficial-owner independence, acceleration, executable price trend and reserve stability are unknown unless separately measured. No theoretical upside is realized profit.",
+          "Current $50/$150 sizing/exposure are explicit temporary legacy risk fallbacks. Four deep slots and two protected positions remain; old holdings retain their entry-strategy exit policy.",
+          "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump: Adaptive Momentum v2 historical executable net peak 0.509484862 SOL at 2026-10-29T22:29:51.734Z; cost stop and high-water trailing configured; see completed protection status. No fixed profit or profitable holding-time exit."
+        ]
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T22:29:51.782Z",
+        "maximumCompletedGapMs": 2342,
+        "maximumQuoteAgeAtUseMs": 56,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "provider": {
+        "rpcRequests": 612,
+        "rpcResponseBytes": 84186679,
+        "nativeStreamBytes": 1088919614,
+        "broadWatchBytes": 60967032358,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 547,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 48,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T22:22:43.025Z",
+        "historyCooldownUntil": "2026-10-29T21:07:34.654Z",
+        "controlCooldownUntil": null
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T22:29:52.312Z",
+        "cpuOneCoreFraction": 0.2197504349147905,
+        "rssBytes": 418615296,
+        "availableMemoryBytes": 6844305408,
+        "availableDiskBytes": 288130658304,
+        "eventLoopLagMs": 37.617663,
+        "state": "normal"
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 27086559,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "positions": [
+        {
+          "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+          "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+          "quantity": "65278155",
+          "enteredAt": "2026-10-29T22:23:36.537Z",
+          "entryCostUsd": 49.708013,
+          "netLiquidationUsd": 49.404747,
+          "executionCostsUsd": 0.00068,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ]
+    },
+    {
+      "observedAt": "2026-10-29T22:30:11.907000+00:00",
+      "sourceAt": "2026-10-29T22:30:08.165Z",
+      "sequence": "10433",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 1287,
+        "auditUnavailable": 114,
+        "auditUnusable": 171,
+        "decisionDeadlineMisses": 154,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1287,
+        "capacityExclusions": 0,
+        "structuralExclusions": 54,
+        "limitations": [
+          "ACTIVE Adaptive Momentum v2 preliminary assessments use complete independently audited60s flow; they are not executable financial qualifications. Actual-size liquidity quotes and ledger controls remain required. Frozen persistent-buying counters are a separate benchmark. Overlapping windows are not distinct tokens.",
+          "Beneficial-owner independence, acceleration, executable price trend and reserve stability are unknown unless separately measured. No theoretical upside is realized profit.",
+          "Current $50/$150 sizing/exposure are explicit temporary legacy risk fallbacks. Four deep slots and two protected positions remain; old holdings retain their entry-strategy exit policy.",
+          "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump: Adaptive Momentum v2 historical executable net peak 0.509626770 SOL at 2026-10-29T22:30:07.999Z; cost stop and high-water trailing configured; see completed protection status. No fixed profit or profitable holding-time exit."
+        ]
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T22:30:08.047Z",
+        "maximumCompletedGapMs": 2342,
+        "maximumQuoteAgeAtUseMs": 56,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "provider": {
+        "rpcRequests": 626,
+        "rpcResponseBytes": 84636568,
+        "nativeStreamBytes": 1089029854,
+        "broadWatchBytes": 60986441958,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 547,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 52,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T22:22:43.025Z",
+        "historyCooldownUntil": "2026-10-29T21:07:34.654Z",
+        "controlCooldownUntil": null
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T22:30:08.047Z",
+        "cpuOneCoreFraction": 0.2048980096572842,
+        "rssBytes": 420163584,
+        "availableMemoryBytes": 6845566976,
+        "availableDiskBytes": 288129904640,
+        "eventLoopLagMs": 37.322751,
+        "state": "normal"
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 27696044,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "positions": [
+        {
+          "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+          "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+          "quantity": "65278155",
+          "enteredAt": "2026-10-29T22:23:36.537Z",
+          "entryCostUsd": 49.708013,
+          "netLiquidationUsd": 49.438892,
+          "executionCostsUsd": 0.00068,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ]
+    },
+    {
+      "observedAt": "2026-10-29T22:30:27.251000+00:00",
+      "sourceAt": "2026-10-29T22:30:23.179Z",
+      "sequence": "10434",
+      "status": {
+        "runtime": "running",
+        "market": "unavailable",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "quality": {
+        "captureConnected": false,
+        "qualityGaps": 1291,
+        "auditUnavailable": 114,
+        "auditUnusable": 171,
+        "decisionDeadlineMisses": 155,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1291,
+        "capacityExclusions": 0,
+        "structuralExclusions": 54,
+        "limitations": [
+          "ACTIVE Adaptive Momentum v2 preliminary assessments use complete independently audited60s flow; they are not executable financial qualifications. Actual-size liquidity quotes and ledger controls remain required. Frozen persistent-buying counters are a separate benchmark. Overlapping windows are not distinct tokens.",
+          "Beneficial-owner independence, acceleration, executable price trend and reserve stability are unknown unless separately measured. No theoretical upside is realized profit.",
+          "Current $50/$150 sizing/exposure are explicit temporary legacy risk fallbacks. Four deep slots and two protected positions remain; old holdings retain their entry-strategy exit policy.",
+          "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump: Adaptive Momentum v2 historical executable net peak 0.509779408 SOL at 2026-10-29T22:30:14.120Z; cost stop and high-water trailing configured; see completed protection status. No fixed profit or profitable holding-time exit."
+        ]
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T22:30:22.359Z",
+        "maximumCompletedGapMs": 2342,
+        "maximumQuoteAgeAtUseMs": 56,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "provider": {
+        "rpcRequests": 646,
+        "rpcResponseBytes": 87104275,
+        "nativeStreamBytes": 1089109835,
+        "broadWatchBytes": 61006532233,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 547,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 62,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T22:22:43.025Z",
+        "historyCooldownUntil": "2026-10-29T21:07:34.654Z",
+        "controlCooldownUntil": null
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T22:30:22.463Z",
+        "cpuOneCoreFraction": 0.19045501578982732,
+        "rssBytes": 420294656,
+        "availableMemoryBytes": 6846283776,
+        "availableDiskBytes": 288129466368,
+        "eventLoopLagMs": 37.224447,
+        "state": "normal"
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 27983183,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "positions": [
+        {
+          "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+          "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+          "quantity": "65278155",
+          "enteredAt": "2026-10-29T22:23:36.537Z",
+          "entryCostUsd": 49.708013,
+          "netLiquidationUsd": 49.443504,
+          "executionCostsUsd": 0.00068,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ]
+    },
+    {
+      "observedAt": "2026-10-29T22:30:42.428000+00:00",
+      "sourceAt": "2026-10-29T22:30:23.179Z",
+      "sequence": "10434",
+      "status": {
+        "runtime": "running",
+        "market": "unavailable",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_READINESS_REQUIRED"
+      },
+      "quality": {
+        "captureConnected": false,
+        "qualityGaps": 1291,
+        "auditUnavailable": 114,
+        "auditUnusable": 171,
+        "decisionDeadlineMisses": 155,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1291,
+        "capacityExclusions": 0,
+        "structuralExclusions": 54,
+        "limitations": [
+          "ACTIVE Adaptive Momentum v2 preliminary assessments use complete independently audited60s flow; they are not executable financial qualifications. Actual-size liquidity quotes and ledger controls remain required. Frozen persistent-buying counters are a separate benchmark. Overlapping windows are not distinct tokens.",
+          "Beneficial-owner independence, acceleration, executable price trend and reserve stability are unknown unless separately measured. No theoretical upside is realized profit.",
+          "Current $50/$150 sizing/exposure are explicit temporary legacy risk fallbacks. Four deep slots and two protected positions remain; old holdings retain their entry-strategy exit policy.",
+          "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump: Adaptive Momentum v2 historical executable net peak 0.509779408 SOL at 2026-10-29T22:30:14.120Z; cost stop and high-water trailing configured; see completed protection status. No fixed profit or profitable holding-time exit."
+        ]
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T22:30:22.359Z",
+        "maximumCompletedGapMs": 2342,
+        "maximumQuoteAgeAtUseMs": 56,
+        "breaches": 0,
+        "unavailableChecks": 0
+      },
+      "provider": {
+        "rpcRequests": 646,
+        "rpcResponseBytes": 87104275,
+        "nativeStreamBytes": 1089109835,
+        "broadWatchBytes": 61006532233,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 547,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 62,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T22:22:43.025Z",
+        "historyCooldownUntil": "2026-10-29T21:07:34.654Z",
+        "controlCooldownUntil": null
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T22:30:22.463Z",
+        "cpuOneCoreFraction": 0.19045501578982732,
+        "rssBytes": 420294656,
+        "availableMemoryBytes": 6846283776,
+        "availableDiskBytes": 288129466368,
+        "eventLoopLagMs": 37.224447,
+        "state": "normal"
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 27983183,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "positions": [
+        {
+          "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+          "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+          "quantity": "65278155",
+          "enteredAt": "2026-10-29T22:23:36.537Z",
+          "entryCostUsd": 49.708013,
+          "netLiquidationUsd": 49.443504,
+          "executionCostsUsd": 0.00068,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ]
+    },
+    {
+      "observedAt": "2026-10-29T22:30:57.603000+00:00",
+      "sourceAt": "2026-10-29T22:30:48.842Z",
+      "sequence": "10435",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_FINANCIAL_PAUSED"
+      },
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 1291,
+        "auditUnavailable": 114,
+        "auditUnusable": 171,
+        "decisionDeadlineMisses": 155,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1291,
+        "capacityExclusions": 0,
+        "structuralExclusions": 54,
+        "limitations": [
+          "ACTIVE Adaptive Momentum v2 preliminary assessments use complete independently audited60s flow; they are not executable financial qualifications. Actual-size liquidity quotes and ledger controls remain required. Frozen persistent-buying counters are a separate benchmark. Overlapping windows are not distinct tokens.",
+          "Beneficial-owner independence, acceleration, executable price trend and reserve stability are unknown unless separately measured. No theoretical upside is realized profit.",
+          "Current $50/$150 sizing/exposure are explicit temporary legacy risk fallbacks. Four deep slots and two protected positions remain; old holdings retain their entry-strategy exit policy.",
+          "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump: Adaptive Momentum v2 historical executable net peak 0.509794474 SOL at 2026-10-29T22:30:48.793Z; cost stop and high-water trailing configured; see completed protection status. No fixed profit or profitable holding-time exit."
+        ]
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T22:30:48.841Z",
+        "maximumCompletedGapMs": 12329,
+        "maximumQuoteAgeAtUseMs": 56,
+        "breaches": 1,
+        "unavailableChecks": 3
+      },
+      "provider": {
+        "rpcRequests": 672,
+        "rpcResponseBytes": 100182241,
+        "nativeStreamBytes": 1089110630,
+        "broadWatchBytes": 61043822440,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 547,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 78,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T22:22:43.025Z",
+        "historyCooldownUntil": "2026-10-29T21:07:34.654Z",
+        "controlCooldownUntil": null
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T22:30:47.482Z",
+        "cpuOneCoreFraction": 0.13644816965412773,
+        "rssBytes": 420134912,
+        "availableMemoryBytes": 6850863104,
+        "availableDiskBytes": 288137265152,
+        "eventLoopLagMs": 36.863999,
+        "state": "normal"
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 19786547,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "positions": [
+        {
+          "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+          "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+          "quantity": "65278155",
+          "enteredAt": "2026-10-29T22:23:36.537Z",
+          "entryCostUsd": 49.708013,
+          "netLiquidationUsd": 49.511239,
+          "executionCostsUsd": 0.00068,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ]
+    },
+    {
+      "observedAt": "2026-10-29T22:31:12.811000+00:00",
+      "sourceAt": "2026-10-29T22:31:03.857Z",
+      "sequence": "10436",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_FINANCIAL_PAUSED"
+      },
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 1295,
+        "auditUnavailable": 114,
+        "auditUnusable": 171,
+        "decisionDeadlineMisses": 155,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1295,
+        "capacityExclusions": 0,
+        "structuralExclusions": 54,
+        "limitations": [
+          "ACTIVE Adaptive Momentum v2 preliminary assessments use complete independently audited60s flow; they are not executable financial qualifications. Actual-size liquidity quotes and ledger controls remain required. Frozen persistent-buying counters are a separate benchmark. Overlapping windows are not distinct tokens.",
+          "Beneficial-owner independence, acceleration, executable price trend and reserve stability are unknown unless separately measured. No theoretical upside is realized profit.",
+          "Current $50/$150 sizing/exposure are explicit temporary legacy risk fallbacks. Four deep slots and two protected positions remain; old holdings retain their entry-strategy exit policy.",
+          "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump: Adaptive Momentum v2 historical executable net peak 0.509795249 SOL at 2026-10-29T22:31:03.752Z; cost stop and high-water trailing configured; see completed protection status. No fixed profit or profitable holding-time exit."
+        ]
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T22:31:03.799Z",
+        "maximumCompletedGapMs": 12329,
+        "maximumQuoteAgeAtUseMs": 56,
+        "breaches": 1,
+        "unavailableChecks": 3
+      },
+      "provider": {
+        "rpcRequests": 690,
+        "rpcResponseBytes": 100473012,
+        "nativeStreamBytes": 1089222335,
+        "broadWatchBytes": 61065215091,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 547,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 84,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T22:22:43.025Z",
+        "historyCooldownUntil": "2026-10-29T21:07:34.654Z",
+        "controlCooldownUntil": null
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T22:31:03.570Z",
+        "cpuOneCoreFraction": 0.1277180035412421,
+        "rssBytes": 419086336,
+        "availableMemoryBytes": 6854856704,
+        "availableDiskBytes": 288136900608,
+        "eventLoopLagMs": 36.798463,
+        "state": "normal"
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 20048494,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "positions": [
+        {
+          "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+          "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+          "quantity": "65278155",
+          "enteredAt": "2026-10-29T22:23:36.537Z",
+          "entryCostUsd": 49.708013,
+          "netLiquidationUsd": 49.511314,
+          "executionCostsUsd": 0.00068,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ]
+    },
+    {
+      "observedAt": "2026-10-29T22:31:28.005000+00:00",
+      "sourceAt": "2026-10-29T22:31:20.258Z",
+      "sequence": "10437",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_FINANCIAL_PAUSED"
+      },
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 1295,
+        "auditUnavailable": 114,
+        "auditUnusable": 171,
+        "decisionDeadlineMisses": 155,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1295,
+        "capacityExclusions": 0,
+        "structuralExclusions": 54,
+        "limitations": [
+          "ACTIVE Adaptive Momentum v2 preliminary assessments use complete independently audited60s flow; they are not executable financial qualifications. Actual-size liquidity quotes and ledger controls remain required. Frozen persistent-buying counters are a separate benchmark. Overlapping windows are not distinct tokens.",
+          "Beneficial-owner independence, acceleration, executable price trend and reserve stability are unknown unless separately measured. No theoretical upside is realized profit.",
+          "Current $50/$150 sizing/exposure are explicit temporary legacy risk fallbacks. Four deep slots and two protected positions remain; old holdings retain their entry-strategy exit policy.",
+          "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump: Adaptive Momentum v2 historical executable net peak 0.509951063 SOL at 2026-10-29T22:31:19.939Z; cost stop and high-water trailing configured; see completed protection status. No fixed profit or profitable holding-time exit."
+        ]
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T22:31:19.987Z",
+        "maximumCompletedGapMs": 12329,
+        "maximumQuoteAgeAtUseMs": 56,
+        "breaches": 1,
+        "unavailableChecks": 3
+      },
+      "provider": {
+        "rpcRequests": 700,
+        "rpcResponseBytes": 101126416,
+        "nativeStreamBytes": 1089798385,
+        "broadWatchBytes": 61089527900,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 547,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 73,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T22:22:43.025Z",
+        "historyCooldownUntil": "2026-10-29T21:07:34.654Z",
+        "controlCooldownUntil": null
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T22:31:20.257Z",
+        "cpuOneCoreFraction": 0.1298814074717637,
+        "rssBytes": 420438016,
+        "availableMemoryBytes": 6856572928,
+        "availableDiskBytes": 288136138752,
+        "eventLoopLagMs": 36.995071,
+        "state": "normal"
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 20644440,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "positions": [
+        {
+          "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+          "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+          "quantity": "65278155",
+          "enteredAt": "2026-10-29T22:23:36.537Z",
+          "entryCostUsd": 49.708013,
+          "netLiquidationUsd": 49.536646,
+          "executionCostsUsd": 0.00068,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ]
+    },
+    {
+      "observedAt": "2026-10-29T22:31:43.368000+00:00",
+      "sourceAt": "2026-10-29T22:31:35.308Z",
+      "sequence": "10438",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_FINANCIAL_PAUSED"
+      },
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 1295,
+        "auditUnavailable": 114,
+        "auditUnusable": 171,
+        "decisionDeadlineMisses": 155,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1295,
+        "capacityExclusions": 0,
+        "structuralExclusions": 54,
+        "limitations": [
+          "ACTIVE Adaptive Momentum v2 preliminary assessments use complete independently audited60s flow; they are not executable financial qualifications. Actual-size liquidity quotes and ledger controls remain required. Frozen persistent-buying counters are a separate benchmark. Overlapping windows are not distinct tokens.",
+          "Beneficial-owner independence, acceleration, executable price trend and reserve stability are unknown unless separately measured. No theoretical upside is realized profit.",
+          "Current $50/$150 sizing/exposure are explicit temporary legacy risk fallbacks. Four deep slots and two protected positions remain; old holdings retain their entry-strategy exit policy.",
+          "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump: Adaptive Momentum v2 historical executable net peak 0.509951063 SOL at 2026-10-29T22:31:19.939Z; cost stop and high-water trailing configured; see completed protection status. No fixed profit or profitable holding-time exit."
+        ]
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-29T22:31:34.143Z",
+        "maximumCompletedGapMs": 12329,
+        "maximumQuoteAgeAtUseMs": 56,
+        "breaches": 1,
+        "unavailableChecks": 3
+      },
+      "provider": {
+        "rpcRequests": 715,
+        "rpcResponseBytes": 101954223,
+        "nativeStreamBytes": 1090264495,
+        "broadWatchBytes": 61112955693,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 547,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 74,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-29T22:22:43.025Z",
+        "historyCooldownUntil": "2026-10-29T21:07:34.654Z",
+        "controlCooldownUntil": null
+      },
+      "resources": {
+        "sampleAt": "2026-10-29T22:31:34.468Z",
+        "cpuOneCoreFraction": 0.14317736529165054,
+        "rssBytes": 420446208,
+        "availableMemoryBytes": 6854737920,
+        "availableDiskBytes": 288135217152,
+        "eventLoopLagMs": 37.224447,
+        "state": "normal"
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 21469483,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "positions": [
+        {
+          "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+          "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+          "quantity": "65278155",
+          "enteredAt": "2026-10-29T22:23:36.537Z",
+          "entryCostUsd": 49.708013,
+          "netLiquidationUsd": 49.57908,
+          "executionCostsUsd": 0.00068,
+          "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+        }
+      ]
+    }
+  ]
+}

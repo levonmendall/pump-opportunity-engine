@@ -1,0 +1,109 @@
+[
+  {
+    "name": "focused",
+    "command": [
+      "node",
+      "--import",
+      "tsx",
+      "--test",
+      "test/native-candidate-runner.test.ts",
+      "test/native-audit-session.test.ts",
+      "test/native-flow-audit.test.ts"
+    ],
+    "baseCommit": "880512fa9f59470f202c86aaeda724abb2898ca2",
+    "testedSourceHashes": [
+      {
+        "path": "src/native-candidate-runner.ts",
+        "bytes": 35669,
+        "sha256": "a6dbe0f32695e48000eee3bda6d43efeec4f10b044e1542a69237b0522888f3b"
+      },
+      {
+        "path": "test/native-candidate-runner.test.ts",
+        "bytes": 32983,
+        "sha256": "e29f3a76220815165b5883d6744bf5ebd8b656b20fdcf04ed9be1fa6d3729929"
+      }
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 3.0427323369999613,
+    "endedAt": "2026-10-28T14:52:20.011382+00:00",
+    "logBytes": 7138,
+    "logSha256": "30cab7a8ae760228900210bc11b6591f049d3fd717014c0b037d2105cf646087"
+  },
+  {
+    "name": "build",
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "baseCommit": "880512fa9f59470f202c86aaeda724abb2898ca2",
+    "testedSourceHashes": [
+      {
+        "path": "src/native-candidate-runner.ts",
+        "bytes": 35669,
+        "sha256": "a6dbe0f32695e48000eee3bda6d43efeec4f10b044e1542a69237b0522888f3b"
+      },
+      {
+        "path": "test/native-candidate-runner.test.ts",
+        "bytes": 32983,
+        "sha256": "e29f3a76220815165b5883d6744bf5ebd8b656b20fdcf04ed9be1fa6d3729929"
+      }
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 7.517548159999933,
+    "endedAt": "2026-10-28T14:52:27.529410+00:00",
+    "logBytes": 55,
+    "logSha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+  },
+  {
+    "name": "compile",
+    "command": [
+      "npm",
+      "run",
+      "compile"
+    ],
+    "baseCommit": "880512fa9f59470f202c86aaeda724abb2898ca2",
+    "testedSourceHashes": [
+      {
+        "path": "src/native-candidate-runner.ts",
+        "bytes": 35669,
+        "sha256": "a6dbe0f32695e48000eee3bda6d43efeec4f10b044e1542a69237b0522888f3b"
+      },
+      {
+        "path": "test/native-candidate-runner.test.ts",
+        "bytes": 32983,
+        "sha256": "e29f3a76220815165b5883d6744bf5ebd8b656b20fdcf04ed9be1fa6d3729929"
+      }
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 8.574124223000126,
+    "endedAt": "2026-10-28T14:52:36.104113+00:00",
+    "logBytes": 77,
+    "logSha256": "c111cbc630b00363e00464dc58c0d48d72870d7a431b9e6ada92ca45f2fe603a"
+  },
+  {
+    "name": "full",
+    "command": [
+      "npm",
+      "test"
+    ],
+    "baseCommit": "880512fa9f59470f202c86aaeda724abb2898ca2",
+    "testedSourceHashes": [
+      {
+        "path": "src/native-candidate-runner.ts",
+        "bytes": 35669,
+        "sha256": "a6dbe0f32695e48000eee3bda6d43efeec4f10b044e1542a69237b0522888f3b"
+      },
+      {
+        "path": "test/native-candidate-runner.test.ts",
+        "bytes": 32983,
+        "sha256": "e29f3a76220815165b5883d6744bf5ebd8b656b20fdcf04ed9be1fa6d3729929"
+      }
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 73.92566632999979,
+    "endedAt": "2026-10-28T14:53:50.030585+00:00",
+    "logBytes": 143766,
+    "logSha256": "cd20ce261d314b99fad67d9e2d9923448d1f4cb14f1ac538be2a2015389a9bd5"
+  }
+]

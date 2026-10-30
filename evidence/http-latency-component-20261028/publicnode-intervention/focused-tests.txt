@@ -1,0 +1,22 @@
+✔ fixed diagnostic plan permits only selected public endpoint and historical exact first-page shape (1.337393ms)
+✔ standalone Clock closure agrees with established decoder and refuses ownership,layout,context and source-age faults (1.05211ms)
+✔ nine physical calls are serial, paced and alternate historical/fresh order after validated Clock (21.836789ms)
+✔ genuine undici socket-object hooks report reuse without exporting credentials or requiring successful keepalive closure (0.851332ms)
+✔ unknown abort settlement stops immediately and retains full uncertainty even for small Clock responses (0.954875ms)
+✔ 429 preserves Retry-After and stops without a second application request (1.259487ms)
+✔ a complete malformed body is a validation refusal, not missing physical settlement or a successful retry (0.624966ms)
+✔ response, RSS and aggregate shutdown guards prevent unbounded follow-up work (0.835298ms)
+✔ never-settled reader cancellation cannot leak into another physical request (5.002638ms)
+✔ host wrapper proves source isolation, old rate fence and actual parent-death/lease settlement without provider calls (158.998545ms)
+✔ probe refusal cooldown is append-only handoff; long Retry-After is never shortened (0.333805ms)
+✔ actual fetch invocation spacing survives variable durable-reservation latency (2.413167ms)
+✔ a durable reservation crossing the physical-admission cutoff causes no request and no fabricated timeout (0.257903ms)
+✔ v3 fixes one keyless alternative endpoint and restores baseline100-row pages without arbitrary routing (1.876633ms)
+ℹ tests 14
+ℹ suites 0
+ℹ pass 14
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1009.324971

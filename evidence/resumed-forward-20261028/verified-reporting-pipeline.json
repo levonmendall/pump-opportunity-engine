@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-28T15:01:22.485Z",
+  "actualSourceRunningCycleMatches": [
+    {
+      "sourceAt": 1793197230913,
+      "publicReceiptAt": 1793197238762,
+      "sourceSha256": "6235819afe22785e1dd732f8c24520baea672d43e5d19564bba1b95b386efb38",
+      "countersDecisionsIdentityAndSourceTimesEqual": true
+    },
+    {
+      "sourceAt": 1793197245935,
+      "publicReceiptAt": 1793197248955,
+      "sourceSha256": "a627f1869d9c58f06ec25afd66dfee752e2d68321deb82b99b8d007386f05172",
+      "countersDecisionsIdentityAndSourceTimesEqual": true
+    }
+  ],
+  "stoppedSourceExactMatch": true,
+  "currentStoppedFreshness": {
+    "state": "stopped",
+    "sourceAt": 1793197662292,
+    "sourceStale": true,
+    "publisherConnected": false
+  },
+  "unauthorizedPostStatus": 401,
+  "healthStatus": 200,
+  "originalPortfolio": {
+    "httpStatus": 200,
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "source": {
+      "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+      "strategy": "UNIMPLEMENTED_FLOW_BLOCKED"
+    },
+    "times": {
+      "generatedAt": "2026-10-28T15:01:08.675Z",
+      "marketAt": "2026-10-28T15:01:08.675Z",
+      "reconciledAt": "2026-10-28T15:01:08.675Z",
+      "usefulProgressAt": "2026-10-28T15:01:08.675Z"
+    }
+  },
+  "reportingCredentialsRead": false,
+  "productionMutation": false
+}

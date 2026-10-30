@@ -1,0 +1,13 @@
+{
+  "testsPassed": 4,
+  "testsFailed": 0,
+  "buildPassed": true,
+  "meaning": "A late asynchronous financial yield cannot restore an expired candidate phase after outer timeout; nested live ownership still restores normally",
+  "financialControlsChanged": false,
+  "deployed": false,
+  "files": {
+    "src/native-paper-work.ts": "4b194651c2370fa37061694ab7a392bf2567e69d552fb1148e0cc90c578221dc",
+    "src/run-native-paper.ts": "7237f0635493536b99059af25d1caec3a63756ef9f56f11e483bb49acaa119da",
+    "test/native-paper-work.test.ts": "476c4440af59768b37e4b71dee95749e7674a70b9b0315089760b2c84cbe0d6d"
+  }
+}

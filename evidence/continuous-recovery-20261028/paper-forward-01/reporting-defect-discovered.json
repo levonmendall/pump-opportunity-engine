@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "at": 1793217787547,
+  "runId": "native-paper-20261028195247298",
+  "sourceCommit": "6d894c1262b93d22f288e214016bfb314799e0ae",
+  "observedPublicCycles": 60,
+  "portfolioUnavailableCycles": 60,
+  "firstSourceAt": 1793217169335,
+  "latestSourceAt": 1793217770798,
+  "financialFailureNotInferredFromMissingPortfolio": true,
+  "offlineRootCause": "actual PaperTrader.funnel includes reserved; strict Snapshot.funnel schema rejects extra key; caught by runtime generic projection catch",
+  "repairCommit": "ce16f0f",
+  "repairNotDeployedInThisInterval": true,
+  "additionalTelemetryDefect": "raw WATCH-feed normalizedTrades=0 is used instead of native-flow normalization count; independent predictive decisions not projected",
+  "sourceEvidenceSha256AtCapture": "63dcd4600ec2d224b70ed40f121ed93836be853e5d84fc6e55effeff354c54d1",
+  "accountReseeded": false
+}

@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "at": "2026-10-28T20:24:55.824058+00:00",
+  "classification": "OFFLINE_EXACT_HISTORICAL_PACKAGE_REPRESENTATION_COMPATIBILITY",
+  "actualPrivateHostVerification": "Not performed by this offline development; lead must perform bounded post-settlement readback",
+  "historicalFailedReadbackRun": 40762380491,
+  "failurePreserved": "SUPERVISION_PACKAGE_HASH_MISMATCH",
+  "reviewedSourceRepository": "levonmendall/meme-machine-admin",
+  "reviewedCommit": "255a4ab073e98316bf99eff72d273bac0a8c223a",
+  "reviewedPath": "operator/native-paper-ec2/run-package.json",
+  "reviewedBytes": 1810,
+  "reviewedSha256": "6fc4cddff7e7c53489c8bcdf643d6ee7415868d9fd370281a0a9fa510dec5260",
+  "offlineKnownCompactBytes": 1498,
+  "offlineKnownCompactSha256": "482a619b9772646aa623dbe6af1cd7ce78d66fa4a5c9e3b524502f8efe1103bc",
+  "testsPassed": 27,
+  "independentReview": "GO; exact compact saved bytes and exact reconstructed reviewed hash required, no semantic-only bypass",
+  "historicalFilesRewritten": false,
+  "networkRequests": 0,
+  "realFinancialFilesRead": false,
+  "files": [
+    {
+      "path": "operator/native-paper-ec2/readback-results.py",
+      "bytes": 39143,
+      "sha256": "1cec1c6e40614f46d6b437a53b43a60263cfbf5b7b3318027ae75e45e66a1810"
+    },
+    {
+      "path": "operator/native-paper-ec2/test-readback-results.py",
+      "bytes": 25704,
+      "sha256": "df09031abe6bdce6edaafc8d67f13417d0d486c176443eeffd24ad2ff632addc"
+    },
+    {
+      "path": "evidence/paper-observation-readback-20261028/package-identity/tests.txt",
+      "bytes": 126,
+      "sha256": "662853b88d188aabbfef2d9339178ba32fc7143a0b3e11d5617cbdaa0e30d6a5"
+    }
+  ]
+}

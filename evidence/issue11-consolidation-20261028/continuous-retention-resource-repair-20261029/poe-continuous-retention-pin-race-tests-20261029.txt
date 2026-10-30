@@ -1,0 +1,47 @@
+✔ finite research Recorder still has its original capacity and append shape (2.556539ms)
+✔ young diagnostic pressure is explicit while durable financial proof continues (9.743194ms)
+✔ old closed diagnostics rotate with hash-linked receipts; new and historical files survive (18.109538ms)
+✔ wall-clock jumps cannot expire five-minute monotonic retention (4.675353ms)
+✔ full raw qualification and quote proof survives diagnostic eviction with no hardlinks (14.206864ms)
+✔ pending async pin owns its source files before maintenance can retire them (14.95258ms)
+✔ an absent historical range and identity-conflicting proof never become complete (6.714114ms)
+✔ restart recovers both diagnostic and essential append state and conservatively retains old files (213.271633ms)
+✔ foreign directories and symlink proof targets are refused without touching external files (3.956573ms)
+✔ tampered segment bytes cannot be promoted into a qualification proof (10.376659ms)
+✔ a torn diagnostic tail is retained opaque and cannot certify an old window (187.191492ms)
+✔ torn essential proof closes new-risk admission while financial recording and verified recovery continue (192.736044ms)
+✔ durably receipted deletion interrupted before checkpoint resumes without losing financial proof (9.080817ms)
+✔ missing diagnostics without a valid eviction receipt fail closed (12.396892ms)
+✔ the actual filesystem reserve blocks records honestly rather than consuming financial recovery space (2.930934ms)
+✔ a completed protected proof remains idempotently verifiable after its diagnostic source is retired (14.379751ms)
+✔ overlapping pins retain shared source files until both copies have settled (15.557285ms)
+✔ a foreign hardlinked legacy pending file is never opened for truncation (4.378279ms)
+✔ only one recorder writer can own a namespace and a settled writer permits restart (15.533195ms)
+✔ a pin arriving during asynchronous retirement verification prevents source deletion (8.482591ms)
+✔ every refused timestamp invalidates a requested proof range despite coalesced receipts (12.224436ms)
+✔ loss of an entire committed essential prefix blocks new risk even with a zero-byte surviving file (183.967809ms)
+✔ loss of an entire committed diagnostic prefix cannot certify its historical window (174.781927ms)
+✔ proactive verified retirement preserves capture admission across a mature-history hard-watermark crossing (8.1141ms)
+✔ proactive maintenance keeps young required evidence and the unchanged hard admission guard (6.829642ms)
+✔ bounded proactive passes verify at most two files and concurrent callers share one worker (12.070999ms)
+✔ mature segments owned by a pending proof cannot be retired by proactive maintenance (8.806962ms)
+✔ proactive retirement refuses corrupted files and small namespaces avoid maintenance below a segment (8.78555ms)
+✔ continuous service sizes young mandatory flow from actual disk headroom without changing the legacy base policy (13.345979ms)
+✔ continuous service grants bounded legacy working room on restart without pretending old diagnostics have matured (10.290013ms)
+✔ continuous rotation retires verified mature diagnostics below the old capacity trigger while retaining financial proof (10.549865ms)
+✔ adaptive capacity is bounded by its explicit maximum and cannot consume the actual filesystem reserve (7.502458ms)
+✔ the adaptive allocation uses a bounded fraction of a measured disk snapshot and accounts for pending proof reservations (3.058913ms)
+✔ continuous retirement remains limited to two verified files per pass even below every occupancy threshold (10.112818ms)
+✔ explicit optional capacity omissions cannot grow allocation, close capture, or invalidate a complete mandatory-flow proof (16.686283ms)
+✔ adaptive proof larger than the legacy base remains verifiable after its raw diagnostic source rotates (17.20711ms)
+✔ an optional append with partial filesystem failure is unavailable rather than a harmless diagnostic omission (6.20055ms)
+✔ required refusals and integrity failures during raw-copy or manifest awaits cannot publish a complete proof; optional omissions remain distinct (35.432555ms)
+✔ protected-proof revalidation rechecks concurrent mandatory loss without deleting the original historical proof (18.910674ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 39
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1573.495185

@@ -1,0 +1,38 @@
+{
+  "at": "2026-10-28T04:08:57.314Z",
+  "checks": {
+    "/healthz": {
+      "status": 200,
+      "ok": true,
+      "service": "poe-dashboard",
+      "dashboardRelease": "a40c75e7256ffdf4aff720cf79e53a0960252246",
+      "connectivityDiagnostics": 1
+    },
+    "/api/pilot": {
+      "status": 200,
+      "state": "awaiting-data",
+      "accountId": null,
+      "sourceAt": null
+    },
+    "/api/snapshot": {
+      "status": 200,
+      "keys": [
+        "snapshot",
+        "fingerprint",
+        "receivedAt",
+        "freshness",
+        "connections"
+      ],
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+        "strategy": "UNIMPLEMENTED_FLOW_BLOCKED"
+      }
+    }
+  },
+  "unauthorizedPilotPost": 401
+}

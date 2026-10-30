@@ -1,0 +1,36 @@
+{
+  "at": "2026-10-30T01:41:40.783578+00:00",
+  "sourceCommit": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+  "headAfter": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+  "sourceUnchanged": true,
+  "guardScope": "All tracked src/scripts/test/package.json/package-lock.json; separate parent freeze includes operator files. Rolling evidence/document changes are outside the executable guard.",
+  "testsPassed": 82,
+  "testsFailed": 0,
+  "actualLegacyReceiverCommit": "bb1e91eb7c9f00d00aa459c6984cdbddfc0a27a1",
+  "actualLegacyValidatorAccepted": true,
+  "originalDashboardTextNotesCompatible": true,
+  "integratedComponents": {
+    "pilotMarketMatchesReviewed5e": true,
+    "rpcChangeClassificationOnly": true,
+    "projectionNoFinancialGateChange": true,
+    "getterProjectionReadOnly": true,
+    "adaptiveSeriesComponentPriorIndependentReviewRetained": true
+  },
+  "sourceHashes": {
+    "src/pilot-market.ts": "d6fc6ca621cfab4028ba0b03aeb1b1ac683667c2846f4d807d5cd5d576bb4fe7",
+    "src/pilot-rpc.ts": "9f089185d82f3441dfe4cae7bd700e6d0d22f42fb2de0005599615ea3f20e0a4",
+    "src/operating-intelligence.ts": "c083240adb16f26e4c9192084a7ec8dc038b0d4be2ca4a1e4e0b1e2c2391f513",
+    "src/run-native-paper.ts": "284d4c5febb2088b7f5563a00ded45c820693da4a5f5b32e19054af753deb5fa",
+    "src/trader.ts": "9c0ddab5318dcea0e8fbda574073c41042e5071e9cae07edb990f128b3bc0b14",
+    "src/adaptive-held-series.ts": "7e46330fd1ce704754e8934339e579bdde732b6d2f2abd3fdd006d8e5f63fec2"
+  },
+  "rawSha256": "ab7868a0033d27f8f6287ec98ab33f21ad172631f17b1a57d117bdf29ca1a6e4",
+  "legacyRawSha256": "ff6ff83a258ad98cfe4f4b5f42b3f264c9b4aa7806629374db773aa2e654a874",
+  "legacyScriptSha256": "99b32b829c6d9435c824e78ee33130d0505a56cb2b35533c2da4ac5be8ef4872",
+  "knownLimit": "Retry-paced labels do not repair or erase the genuinely failed multi-timeout protection interval; the actual-class fixture still measures8877ms. Functional quote ordering and independently reviewed adaptive signal are separate changes. No live economic or operational acceptance claim.",
+  "networkRequests": 0,
+  "realFinancialAccountRead": false,
+  "financialActions": 0,
+  "serviceControlOperations": 0,
+  "passed": true
+}

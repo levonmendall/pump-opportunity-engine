@@ -1,0 +1,129 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {readFileSync} from 'node:fs';
+import {createHash} from 'node:crypto';
+import {createRequire} from 'node:module';
+import {PublicKey,SystemProgram,ComputeBudgetProgram} from '@solana/web3.js';
+import {TOKEN_PROGRAM_ID,TOKEN_2022_PROGRAM_ID,ASSOCIATED_TOKEN_PROGRAM_ID,ExtensionType} from '@solana/spl-token';
+import {buildPaperUnsignedPumpSwap,PAPER_CONSTRUCTION_WALLET,type PaperUnsignedMarketBatch,type PaperUnsignedRequest} from '../src/paper-unsigned-pumpswap.js';
+import {PUMP_AMM_PROGRAM_ID,PUMP_AMM_SDK} from '../src/sdk.js';
+import {PAPER_EXECUTION_POLICY} from '../src/execution-realism.js';
+const SDK=createRequire(import.meta.url)('@pump-fun/pump-swap-sdk') as typeof import('@pump-fun/pump-swap-sdk');
+function fixture(run='2026-10-26T19-42-16.130Z'){
+ const rows=readFileSync(`evidence/integration-${run}.ndjson`,'utf8').trim().split('\n').map(x=>JSON.parse(x)),proof=JSON.parse(readFileSync(`evidence/integration-proof-${run}.json`,'utf8')),raw=structuredClone(rows.find(x=>x.kind==='pool-state').data),at=Date.parse(proof.quote.validatedAt);
+ const batch:PaperUnsignedMarketBatch={mint:proof.quote.mint,slot:raw.context.slot,requestedAt:proof.quote.requestedAt,receivedAt:proof.quote.receivedAt,accounts:raw.value};
+ const request:PaperUnsignedRequest={side:'buy',inputUnits:proof.quote.buy.inputLamports,minimumOutputUnits:'1',quoteRentLamports:'2039280',accountPlan:{baseExists:false,quoteExists:false,at,evidence:'retained actual market bytes; explicitly simulated PAPER account inventory'}};
+ return {batch,request,at,proof};
+}
+const decode=(data:string)=>(SDK.OFFLINE_PUMP_AMM_PROGRAM.coder.instruction as unknown as {decode:(data:Buffer)=>{name:string;data:unknown}|null}).decode(Buffer.from(data,'base64'));
+test('unsigned buy and sell encode exactly the charged compute bid before all SDK swap instructions',async()=>{
+ const f=fixture();for(const side of ['buy','sell']as const){const q=await buildPaperUnsignedPumpSwap(f.batch,{...f.request,side,inputUnits:side==='buy'?f.request.inputUnits:f.proof.quote.buy.outputBaseUnits,accountPlan:{...f.request.accountPlan,baseExists:side==='sell'}},()=>f.at),budget=q.instructions.filter(i=>i.programId==='ComputeBudget111111111111111111111111111111');
+  assert.equal(budget.length,2);assert.deepEqual(q.instructions.slice(0,2),budget);assert.ok(budget.every(i=>i.keys.length===0));const limit=Buffer.from(budget[0]!.dataBase64,'base64'),price=Buffer.from(budget[1]!.dataBase64,'base64');
+  assert.equal(limit.length,5);assert.equal(limit[0],2);assert.equal(limit.readUInt32LE(1),200000);assert.equal(price.length,9);assert.equal(price[0],3);assert.equal(price.readBigUInt64LE(1),10000n);
+  assert.equal(PAPER_EXECUTION_POLICY.computeUnitLimitScenario,limit.readUInt32LE(1));assert.equal(BigInt(PAPER_EXECUTION_POLICY.computeUnitPriceMicroLamportsScenario),price.readBigUInt64LE(1));assert.equal((BigInt(limit.readUInt32LE(1))*price.readBigUInt64LE(1)+999999n)/1000000n,2000n);
+  assert.equal(q.accounts.quoteClosedByInstructions,true);assert.equal(q.requiredSignerCount,1);
+ }
+});
+test('SDK-supplied duplicate or conflicting compute bids fail closed instead of creating an ambiguous fee',async t=>{
+ const original=PUMP_AMM_SDK.buyInstructions;t.mock.method(PUMP_AMM_SDK,'buyInstructions',async(...args:Parameters<typeof original>)=>[ComputeBudgetProgram.setComputeUnitLimit({units:100000}),...await original.apply(PUMP_AMM_SDK,args)]);const f=fixture();
+ await assert.rejects(buildPaperUnsignedPumpSwap(f.batch,f.request,()=>f.at),/SDK_COMPUTE_BUDGET_CONFLICT/);
+});
+for(const run of ['2026-10-26T19-41-20.717Z','2026-10-26T19-42-16.130Z'])test(`actual SDK exact-input unsigned buy bytes and same-state cost reproduction: ${run}`,async()=>{
+ const f=fixture(run),old=globalThis.fetch;let requests=0;globalThis.fetch=(async()=>{requests++;throw Error('OFFLINE_NETWORK_FORBIDDEN');})as typeof fetch;
+ try{
+  const q=await buildPaperUnsignedPumpSwap(f.batch,f.request,()=>f.at),again=await buildPaperUnsignedPumpSwap(f.batch,f.request,()=>f.at);
+  assert.equal(requests,0);assert.equal(q.networkRequests,0);assert.equal(q.preflight,'NOT_RUN');assert.equal(q.landing,'UNVERIFIED');assert.equal(q.wallet.signerAvailable,false);assert.equal(q.wallet.chainBalancesVerified,false);assert.equal(PublicKey.isOnCurve(new PublicKey(PAPER_CONSTRUCTION_WALLET)),false);
+  assert.equal(q.expectedOutputUnits,f.proof.quote.buy.outputBaseUnits);assert.equal(q.poolCosts.buyBudgetAboveInternalCurveInputLamports,(BigInt(f.proof.quote.buy.inputLamports)-BigInt(f.proof.quote.buy.internalQuoteWithoutFees)).toString());assert.equal(q.constructionSha256,again.constructionSha256);assert.deepEqual(q.instructions,again.instructions);
+  const swap=q.instructions.filter(i=>i.programId===PUMP_AMM_PROGRAM_ID.toBase58()&&decode(i.dataBase64)?.name==='buyExactQuoteIn');assert.equal(swap.length,1);
+  const ix=swap[0]!,decoded=decode(ix.dataBase64)!.data as any;assert.equal(decoded.spendableQuoteIn.toString(),f.request.inputUnits);assert.equal(decoded.minBaseAmountOut.toString(),'1');assert.equal(ix.keys[1]!.pubkey,PAPER_CONSTRUCTION_WALLET);assert.equal(ix.keys[1]!.isSigner,true);
+  assert.equal(Buffer.from(ix.dataBase64,'base64').subarray(0,8).toString('hex'),createHash('sha256').update('global:buy_exact_quote_in').digest().subarray(0,8).toString('hex'));
+  assert.equal(q.requiredSignerCount,1);assert.equal(q.accounts.baseCreationRequired,true);assert.equal(q.accounts.quoteCreationRequired,true);assert.equal(q.accounts.quoteClosedByInstructions,true);assert.ok(q.accounts.baseAccountLengthBytes>=165&&q.accounts.baseAccountLengthBytes<=170);
+  assert.ok(q.instructions.some(i=>i.programId===ASSOCIATED_TOKEN_PROGRAM_ID.toBase58()));assert.ok(q.instructions.some(i=>i.programId===SystemProgram.programId.toBase58()));
+  assert.equal(q.instructions.filter(i=>i.programId===TOKEN_PROGRAM_ID.toBase58()&&Buffer.from(i.dataBase64,'base64')[0]===9).length,1,'actual SDK close unwraps liquid output and returns transient quote rent within atomic success');assert.equal(q.temporaryQuoteRentLamports,f.request.quoteRentLamports);assert.match(q.quoteRentProofSha256,/^[a-f0-9]{64}$/);
+ }finally{globalThis.fetch=old;}
+});
+test('actual full-size sell uses current fee-adjusted liquidation and independent slippage constraint',async()=>{
+ const f=fixture();f.request={...f.request,side:'sell',inputUnits:f.proof.quote.correspondingSell.inputBaseUnits,minimumOutputUnits:f.proof.quote.correspondingSell.outputLamports,accountPlan:{...f.request.accountPlan,baseExists:true}};
+ const q=await buildPaperUnsignedPumpSwap(f.batch,f.request,()=>f.at),swap=q.instructions.find(i=>i.programId===PUMP_AMM_PROGRAM_ID.toBase58()&&decode(i.dataBase64)?.name==='sell')!,decoded=decode(swap.dataBase64)!.data as any;
+ assert.equal(q.expectedOutputUnits,f.proof.quote.correspondingSell.outputLamports);assert.equal(q.quoteMeetsMinimum,true);assert.equal(q.accounts.baseCreationRequired,false);assert.equal(decoded.baseAmountIn.toString(),f.request.inputUnits);assert.equal(decoded.minQuoteAmountOut.toString(),f.request.minimumOutputUnits);
+ const failure=await buildPaperUnsignedPumpSwap(f.batch,{...f.request,minimumOutputUnits:(BigInt(f.request.minimumOutputUnits)+1n).toString()},()=>f.at);assert.equal(failure.quoteMeetsMinimum,false,'validly constructed instruction can fail its current market minimum; never an optimistic fill');assert.equal(failure.landing,'UNVERIFIED');assert.notEqual(failure.constructionSha256,q.constructionSha256);
+});
+test('exact-input buy minimum constraint is preserved rather than repriced downward',async()=>{
+ const f=fixture(),minimum=(BigInt(f.proof.quote.buy.outputBaseUnits)+1n).toString(),q=await buildPaperUnsignedPumpSwap(f.batch,{...f.request,minimumOutputUnits:minimum},()=>f.at),ix=q.instructions.find(i=>i.programId===PUMP_AMM_PROGRAM_ID.toBase58()&&decode(i.dataBase64)?.name==='buyExactQuoteIn')!;
+ assert.equal(q.quoteMeetsMinimum,false);assert.equal((decode(ix.dataBase64)!.data as any).minBaseAmountOut.toString(),minimum);assert.equal(q.inputUnits,f.request.inputUnits);
+});
+test('unsupported, incomplete, stale, future or malformed source/account assumptions fail closed',async()=>{
+ for(const perturb of [
+  (f:ReturnType<typeof fixture>)=>{f.batch.accounts=[...f.batch.accounts.slice(0,6)];},
+  (f:ReturnType<typeof fixture>)=>{f.batch.accounts=[null,...f.batch.accounts.slice(1)];},
+  (f:ReturnType<typeof fixture>)=>{f.batch.slot=-1;},
+  (f:ReturnType<typeof fixture>)=>{f.batch.receivedAt=new Date(f.at+1).toISOString();},
+  (f:ReturnType<typeof fixture>)=>{f.batch.receivedAt=new Date(f.at-2001).toISOString();f.batch.requestedAt=f.batch.receivedAt;},
+  (f:ReturnType<typeof fixture>)=>{f.batch.accounts[0]!.owner=TOKEN_PROGRAM_ID.toBase58();},
+  (f:ReturnType<typeof fixture>)=>{const b=Buffer.from(f.batch.accounts[3]!.data[0],'base64');b.writeUInt16LE(ExtensionType.TransferHook,166);f.batch.accounts[3]!.data[0]=b.toString('base64');},
+  (f:ReturnType<typeof fixture>)=>{f.request.accountPlan.at=f.at-10001;},
+  (f:ReturnType<typeof fixture>)=>{f.request.accountPlan.evidence='';},
+ ]){const f=fixture();perturb(f);await assert.rejects(buildPaperUnsignedPumpSwap(f.batch,f.request,()=>f.at));}
+ for(const value of ['0','-1','1.2','01',String(1n<<64n)]){const f=fixture();await assert.rejects(buildPaperUnsignedPumpSwap(f.batch,{...f.request,inputUnits:value},()=>f.at),/POSITIVE_U64_REQUIRED/);await assert.rejects(buildPaperUnsignedPumpSwap(f.batch,{...f.request,minimumOutputUnits:value},()=>f.at),/POSITIVE_U64_REQUIRED/);}
+ const f=fixture();await assert.rejects(buildPaperUnsignedPumpSwap(f.batch,{...f.request,side:'sell'},()=>f.at),/SELL_REQUIRES_SIMULATED_BASE_ACCOUNT/);
+});
+test('construction snapshots caller inputs before async work and retains source association',async()=>{
+ const f=fixture(),original=structuredClone(f.batch),a=buildPaperUnsignedPumpSwap(f.batch,f.request,()=>f.at);f.batch.accounts[6]!.owner=TOKEN_2022_PROGRAM_ID.toBase58();f.request.inputUnits='1';
+ const q=await a,b=await buildPaperUnsignedPumpSwap(original,fixture().request,()=>f.at);assert.equal(q.sourceSha256,b.sourceSha256);assert.equal(q.constructionSha256,b.constructionSha256);
+ const source=structuredClone(original),buffer=Buffer.from(source.accounts[6]!.data[0],'base64');buffer.writeBigUInt64LE(buffer.readBigUInt64LE(64)+1000000n,64);source.accounts[6]!.data[0]=buffer.toString('base64');const changed=await buildPaperUnsignedPumpSwap(source,fixture().request,()=>f.at);assert.notEqual(changed.sourceSha256,q.sourceSha256);assert.notEqual(changed.expectedOutputUnits,q.expectedOutputUnits);
+});
+
+test('the exact SDK quote create/close pair and every real swap/setup byte remain intact',async()=>{
+ const f=fixture(),original=SDK.PUMP_AMM_SDK.buyInstructions;let produced:import('@solana/web3.js').TransactionInstruction[]=[];
+ SDK.PUMP_AMM_SDK.buyInstructions=async function(...args){produced=await original.apply(this,args);return produced;};
+ try{
+  const q=await buildPaperUnsignedPumpSwap(f.batch,f.request,()=>f.at);
+  const closes=produced.filter(i=>i.programId.equals(TOKEN_PROGRAM_ID)&&i.data.length===1&&i.data[0]===9);assert.equal(closes.length,1);assert.equal(q.instructions.length,produced.length+2);
+  const retained=produced.map(i=>({programId:i.programId.toBase58(),keys:i.keys.map(k=>({pubkey:k.pubkey.toBase58(),isSigner:k.isSigner,isWritable:k.isWritable})),dataBase64:i.data.toString('base64')}));
+  assert.deepEqual(q.instructions.slice(2),retained,'after the policy compute prefix, every SDK instruction is retained exactly; buy bytes are the checked exact-quote variant');
+  assert.equal(q.accounts.quoteClosedByInstructions,true);assert.ok(q.limitations.some(x=>x.includes('collectible sell proceeds unwrap to SOL')));
+ }finally{SDK.PUMP_AMM_SDK.buyInstructions=original;}
+});
+test('missing, duplicate or changed WSOL close layout fails closed rather than dropping unrelated instructions',async()=>{
+ const original=SDK.PUMP_AMM_SDK.buyInstructions;
+ for(const mode of ['missing','duplicate','authority','writable']){
+  SDK.PUMP_AMM_SDK.buyInstructions=async function(...args){const ix=await original.apply(this,args),close=ix.find(i=>i.programId.equals(TOKEN_PROGRAM_ID)&&i.data.length===1&&i.data[0]===9)!;
+   if(mode==='missing')return ix.filter(i=>i!==close);if(mode==='duplicate')return [...ix,close];if(mode==='authority')close.keys[2]!.pubkey=SystemProgram.programId;if(mode==='writable')close.keys[2]!.isWritable=true;return ix;
+  };
+  try{const f=fixture();await assert.rejects(buildPaperUnsignedPumpSwap(f.batch,f.request,()=>f.at),/WSOL_CLOSE/);}finally{SDK.PUMP_AMM_SDK.buyInstructions=original;}
+ }
+});
+test('base ATA persists while the quote ATA is recreated and unwrapped on every round trip',async()=>{
+ const f=fixture(),q=await buildPaperUnsignedPumpSwap(f.batch,{...f.request,accountPlan:{...f.request.accountPlan,baseExists:true,quoteExists:false}},()=>f.at);
+ assert.equal(q.accounts.baseCreationRequired,false);assert.equal(q.accounts.quoteCreationRequired,true);assert.equal(q.accounts.quoteClosedByInstructions,true);assert.equal(q.instructions.filter(i=>i.programId===ASSOCIATED_TOKEN_PROGRAM_ID.toBase58()).length,1);
+ assert.equal(q.temporaryQuoteRentLamports,f.request.quoteRentLamports);assert.equal('rentRefundLamports'in q,false);assert.equal(q.wallet.chainOwnershipVerified,false);
+});
+test('instruction construction cannot relabel a source which becomes stale while awaiting SDK work',async()=>{
+ const f=fixture(),original=SDK.PUMP_AMM_SDK.buyInstructions;let at=f.at;
+ SDK.PUMP_AMM_SDK.buyInstructions=async function(...args){const result=await original.apply(this,args);at+=2001;return result;};
+ try{await assert.rejects(buildPaperUnsignedPumpSwap(f.batch,f.request,()=>at),/FRESH_COHERENT_BATCH_REQUIRED/);}finally{SDK.PUMP_AMM_SDK.buyInstructions=original;}
+});
+
+test('strict transient quote model rejects retained quote inventory and absent/invalid current rent assumptions',async()=>{
+ const f=fixture();await assert.rejects(buildPaperUnsignedPumpSwap(f.batch,{...f.request,accountPlan:{...f.request.accountPlan,quoteExists:true}},()=>f.at),/TRANSIENT_QUOTE_ACCOUNT_REQUIRED/);
+ for(const rent of ['0','-1','01','1.5','',String(1n<<64n),undefined])await assert.rejects(buildPaperUnsignedPumpSwap(f.batch,{...f.request,quoteRentLamports:rent as string},()=>f.at),/POSITIVE_U64_REQUIRED/);
+});
+test('exact quote creation layout, single occurrence and atomic swap ordering are mandatory',async()=>{
+ const original=SDK.PUMP_AMM_SDK.buyInstructions;
+ for(const mode of ['missing','duplicate','wrong-owner','wrong-token-program','wrong-data','reordered-create','reordered-close']){
+  SDK.PUMP_AMM_SDK.buyInstructions=async function(...args){const ix=await original.apply(this,args),quote=args[0].userQuoteTokenAccount,create=ix.find(i=>i.programId.equals(ASSOCIATED_TOKEN_PROGRAM_ID)&&i.keys[1]?.pubkey.equals(quote))!,close=ix.find(i=>i.programId.equals(TOKEN_PROGRAM_ID)&&i.data.length===1&&i.data[0]===9)!;
+   if(mode==='missing')return ix.filter(i=>i!==create);if(mode==='duplicate')return [...ix,create];if(mode==='wrong-owner')create.keys[2]!.pubkey=SystemProgram.programId;if(mode==='wrong-token-program')create.keys[5]!.pubkey=TOKEN_2022_PROGRAM_ID;if(mode==='wrong-data')create.data=Buffer.from([0]);if(mode==='reordered-create')return [...ix.filter(i=>i!==create),create];if(mode==='reordered-close')return [close,...ix.filter(i=>i!==close)];return ix;
+  };
+  try{const f=fixture();await assert.rejects(buildPaperUnsignedPumpSwap(f.batch,f.request,()=>f.at),/WSOL_CREATE|WSOL_CREATE_SWAP_CLOSE/);}finally{SDK.PUMP_AMM_SDK.buyInstructions=original;}
+ }
+});
+test('temporary quote rent proof binds amount, prep evidence, coherent source and exact atomic pair without inventing income',async()=>{
+ const f=fixture(),q=await buildPaperUnsignedPumpSwap(f.batch,f.request,()=>f.at),moreRent=await buildPaperUnsignedPumpSwap(f.batch,{...f.request,quoteRentLamports:(BigInt(f.request.quoteRentLamports)+1n).toString()},()=>f.at),otherEvidence=await buildPaperUnsignedPumpSwap(f.batch,{...f.request,accountPlan:{...f.request.accountPlan,evidence:'a different current read-only RPC rent preparation'}},()=>f.at);
+ assert.match(q.quoteRentProofSha256,/^[a-f0-9]{64}$/);assert.notEqual(q.quoteRentProofSha256,moreRent.quoteRentProofSha256);assert.notEqual(q.quoteRentProofSha256,otherEvidence.quoteRentProofSha256);assert.deepEqual(q.instructions,moreRent.instructions,'rent amount is a current runtime requirement, not an invented transfer instruction or extra swap spend');assert.equal(q.expectedOutputUnits,moreRent.expectedOutputUnits);assert.equal(q.poolCosts.buyBudgetAboveInternalCurveInputLamports,moreRent.poolCosts.buyBudgetAboveInternalCurveInputLamports);
+ assert.equal('rentIncomeLamports'in q,false);assert.equal('rentFeeLamports'in q,false);assert.equal('permanentQuoteDepositLamports'in q,false);assert.ok(q.limitations.some(x=>x.includes('never fee or profit')));
+});
+test('different mint transactions safely reuse the same global WSOL ATA only because every atomic template creates and closes it',async()=>{
+ const a=fixture('2026-10-26T19-41-20.717Z'),b=fixture('2026-10-26T19-42-16.130Z'),first=await buildPaperUnsignedPumpSwap(a.batch,a.request,()=>a.at),second=await buildPaperUnsignedPumpSwap(b.batch,b.request,()=>b.at);
+ assert.notEqual(first.mint,second.mint);assert.equal(first.accounts.quoteAssociatedAccount,second.accounts.quoteAssociatedAccount);assert.notEqual(first.accounts.baseAssociatedAccount,second.accounts.baseAssociatedAccount);
+ for(const q of [first,second]){assert.equal(q.accounts.quoteCreationRequired,true);assert.equal(q.accounts.quoteClosedByInstructions,true);assert.equal(q.instructions.filter(i=>i.programId===ASSOCIATED_TOKEN_PROGRAM_ID.toBase58()&&i.keys[1]?.pubkey===q.accounts.quoteAssociatedAccount).length,1);assert.equal(q.instructions.filter(i=>i.programId===TOKEN_PROGRAM_ID.toBase58()&&Buffer.from(i.dataBase64,'base64')[0]===9&&i.keys[0]?.pubkey===q.accounts.quoteAssociatedAccount).length,1);assert.equal(q.temporaryQuoteRentLamports,a.request.quoteRentLamports);}
+});

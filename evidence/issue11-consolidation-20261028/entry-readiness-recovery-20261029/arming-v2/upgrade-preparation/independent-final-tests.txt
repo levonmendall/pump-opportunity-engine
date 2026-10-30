@@ -1,0 +1,7 @@
+Independent final frozen arming-upgrade offline verification
+{"/workspace/poe-original-entry-arming-upgrade/operator/native-paper-ec2/forward-original-upgrade.py": "775ba8c3ddea2ffaefb7b1d92b43b0bdbf04381b784b9f6f3f87fb695c000346", "/workspace/poe-original-entry-arming-upgrade/operator/native-paper-ec2/test-forward-original-upgrade.py": "c32d2029627d5ddc48f7a6ef9954e764a0445c85acc5e8fb2b1d18b1fb2439e0"}
+...................................................
+----------------------------------------------------------------------
+Ran 51 tests in 2.399s
+
+OK

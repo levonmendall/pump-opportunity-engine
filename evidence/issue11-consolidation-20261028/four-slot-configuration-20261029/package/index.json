@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "kind": "poe-original-four-slot-configuration-package-v1",
+  "source": {
+    "commit": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+    "sha256": "fa10982125bd77c1586606283a9fabed4daee5434792dcef90be2bd312cc5315"
+  },
+  "deepSlots": 4,
+  "configurationSha256": "f6ce54d7594e14d87955f211cca21f594b3d3eb52e20a75fa2245290f22a4857",
+  "files": [
+    {
+      "file": "reconfigure-original-deep-slots.py",
+      "bytes": 16222,
+      "sha256": "4c5390a9792bf2ac895fb0a09fc1c80829545c330d01bf04849b402c4b751a45"
+    },
+    {
+      "file": "service.json",
+      "bytes": 1950,
+      "sha256": "a1dbed9db61e259f759701d6aae2bd102ec3dc7cb357ef121312d7ddb3e4354b"
+    },
+    {
+      "file": "forward-original-upgrade.py",
+      "bytes": 38063,
+      "sha256": "7e22683f8b170f0d16a6e2f7867e1e995a1661ff99544df3da8fa34c87f79691"
+    }
+  ]
+}

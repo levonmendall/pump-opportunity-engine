@@ -1,0 +1,15 @@
+{
+  "verifiedAt": "2026-10-29T00:11:44.204104+00:00",
+  "supervisorFixCommit": "952d29086d7ff256b433b20d9eda71c712632d00",
+  "actualTypeScriptSourceCommit": "5e55d8b939de99698ddb311a282461931fcbc957",
+  "actualTypeScriptFile": "src/snapshot-publisher.ts",
+  "sourceSha256Before": "41c42dc0dd2d9a04f3dbd971d5bea0c1a407c192ccaffe680300f757c60a0e6a",
+  "sourceSha256After": "41c42dc0dd2d9a04f3dbd971d5bea0c1a407c192ccaffe680300f757c60a0e6a",
+  "actualPythonChildEnvironmentFixtureSha256": "71f5cd0d62f9b40d6130070b6d58556e7685e76b46b41843672d5841d95fdcea",
+  "outputSha256": "e1488be396bcd5b21539e8c33c7b2cdf4d529bddc54a2dd3b66b62eff2208114",
+  "exitCode": 0,
+  "sourceUnchangedDuringVerification": true,
+  "credentialContentsRead": false,
+  "providerRequests": 0,
+  "ec2Operation": false
+}

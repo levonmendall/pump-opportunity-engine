@@ -1,0 +1,14 @@
+{
+  "kind": "poe-immutable-config-comparison-v1",
+  "beforeSource": "cdba9d483fdcef105e74e3053a8d4bbf28bdff0c",
+  "afterSource": "96e6d3245082e1297e94624dcdceedffac7808f0",
+  "args": {
+    "service": true,
+    "stage": "single",
+    "deepSlots": 4,
+    "ledgerPath": "/var/lib/poe/state/ledger.sqlite"
+  },
+  "before": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+  "after": "e363dad750e601e533670bd8d8881bc82ffd1508718b982cabf09eca79be92f4",
+  "runtimeStarted": false
+}

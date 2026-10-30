@@ -1,0 +1,14 @@
+{
+  "baseCommit": "9c552ff1edc889fd21b0492894859bfa32f937f3",
+  "branch": "poe-technical-reevaluation-20261029",
+  "files": {
+    "src/native-candidate-runner.ts": "2a649d70683b1f1bbfe754f064088e994b46b9faf6505202e300a2ed8f91a6ea",
+    "src/native-paper.ts": "9136f3f2f1b453bb7102df1b881dd6d4ccf4f851491bb3adc220c17b504f1bcc",
+    "src/pilot-watch.ts": "90345f697b7fc646267c38533ee45c654aefe36f5cdaed9a0fcf95248fe50e61",
+    "src/run-native-paper.ts": "a90a17356ee20ea1008d90acd6f026fe8d3347fa10afae3500bcaef978dd71f7",
+    "test/native-paper-hooks.test.ts": "b7e0304df057ad6910dacc64b76e928e57232eddc64b8981543e13afad53c029",
+    "test/native-paper-integration.test.ts": "ea0ae1caf4bd714c46a80655c5b4724823277d68e775f9ed5caf7f5ebfaf95bb",
+    "test/pilot-watch.test.ts": "4eef840765f352a73feab872fa36a0c62b772983c3ed208f788664be56d5c171"
+  },
+  "patchSha256": "9663a01269096b857c06357aa634d27e28ecb5024915932142f32ee06b086c26"
+}

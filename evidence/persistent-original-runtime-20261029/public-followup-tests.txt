@@ -1,0 +1,31 @@
+✔ native PAPER CLI requires explicit resume/contract and optional flags cannot alias args[0] (1.941111ms)
+✔ wrong source contract and invalid resource selection fail before directory, lease, ledger or provider access (2.451259ms)
+✔ unbound public source and mutable/mismatched startup provenance cannot open a financial writer (16.575162ms)
+✔ 750ms holding reads retain reporting service opportunities without moving the two-second reference cadence (0.738255ms)
+✔ financial reporting admission is versioned and only gates new risk, never native capture or owned work (0.428596ms)
+✔ COHERENT report and checkpoint service obey committed candidate latest-start alongside owned financial priority (0.197323ms)
+✔ existing public file moves to the original persistent source without changing account identity or freshening market facts (4.19105ms)
+✔ reporting uses authoritative cost coverage without debiting cash or inventing economic history (49.090252ms)
+✔ safe-stop during startup waits for the initial read and concurrent close callers preserve the owner (18.031513ms)
+✔ immediate close settles socket startup without starting feed, publisher or financial observation (10.731749ms)
+✔ runtime never initializes an absent account and accepts only PAPER identity (3.949842ms)
+✔ scheduled backups preserve the active account and use monotonic cadence through wall-clock jumps (732.746112ms)
+✔ backup failure is visible without blocking observation, reconciliation or publication (286.172475ms)
+✔ one financial owner serves private controls, refuses resume, and preserves inception across restart (20.069007ms)
+✔ failed startup preserves another active server socket and client reset cannot crash owner (13.358958ms)
+✔ bounded free migrations never imply features, supported coverage, fills or capital changes (8.192429ms)
+✔ reporting failure does not stop observation or produce financial actions (7.563827ms)
+✔ restart inserts a genuine unavailable-context gap even when valuation is immediately fresh (15.739141ms)
+✔ safe stop preserves an open position and unknown actual-size mark instead of a free exit (11.357708ms)
+✔ position rows reject future, unevidenced and wrong-sized marks consistently with ledger totals (11.755217ms)
+✔ public health projection is allowlisted, atomic and preserves fact ages through fresh heartbeats (10.02508ms)
+✔ public-file failures and unsafe paths do not halt financial, feed or publisher progress (17.627784ms)
+✔ compiled CLI dispatches run, status and safe-stop through the release symlink without reseeding (9649.405808ms)
+ℹ tests 23
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11397.518469

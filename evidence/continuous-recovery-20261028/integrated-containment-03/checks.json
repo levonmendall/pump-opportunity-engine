@@ -1,0 +1,86 @@
+[
+  {
+    "command": [
+      "npm",
+      "run",
+      "build"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 6.905239382998843,
+    "raw": "build.txt",
+    "bytes": 55,
+    "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+  },
+  {
+    "command": [
+      "npm",
+      "run",
+      "compile"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 8.881002080001053,
+    "raw": "compile.txt",
+    "bytes": 77,
+    "sha256": "c111cbc630b00363e00464dc58c0d48d72870d7a431b9e6ada92ca45f2fe603a"
+  },
+  {
+    "command": [
+      "python3",
+      "-B",
+      "operator/native-candidate-ec2/test-runtime-outcomes.py"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 0.11456836399884196,
+    "raw": "operator-outcomes.txt",
+    "bytes": 109,
+    "sha256": "38eeff1237d74275801617a271eced659e08b1cad8069897d18e659ae40641d8"
+  },
+  {
+    "command": [
+      "python3",
+      "-B",
+      "operator/native-candidate-ec2/test-two-hour-package.py"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 1.7694225489976816,
+    "raw": "operator-package.txt",
+    "bytes": 109,
+    "sha256": "228b75e3a1f0e7825ee090168a4a2f5adc8930ac247a8d3f4cb1f658e0ef690a"
+  },
+  {
+    "command": [
+      "python3",
+      "-B",
+      "operator/native-candidate-ec2/test-readback-public-evidence.py"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 0.4156896280001092,
+    "raw": "operator-readback.txt",
+    "bytes": 114,
+    "sha256": "40fc5897631438765e362ef938a7c0b00f892f19390bd3edbfac70e520d0fd0f"
+  },
+  {
+    "command": [
+      "node",
+      "--test",
+      "operator/native-candidate-ec2/test-stage-package.mjs"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 5.348740425000869,
+    "raw": "operator-stager.txt",
+    "bytes": 1000,
+    "sha256": "be7f4aacaff1fbda94ebeb4f60806e0b72833e24f050adba0f7d76b83d7bf254"
+  },
+  {
+    "command": [
+      "python3",
+      "-B",
+      "operator/native-paper-ec2/test-run-bounded.py"
+    ],
+    "exitCode": 0,
+    "elapsedSeconds": 7.340900633000274,
+    "raw": "paper-supervision.txt",
+    "bytes": 115,
+    "sha256": "9ddc8d8e8f364003639a2068be788e2632ffd2b3731ae5c3e1c000dece0f67d2"
+  }
+]

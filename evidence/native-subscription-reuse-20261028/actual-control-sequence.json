@@ -1,0 +1,229 @@
+{
+  "sourceCommit": "90625f53b686578637accf73ebc457f841743ee2",
+  "administrationRun": 40726448588,
+  "scope": "Actual retained subscription control records; no trade bytes or simulated market outcomes",
+  "records": [
+    {
+      "segment": "events-001.ndjson",
+      "schemaVersion": 1,
+      "sequence": 335,
+      "receivedAt": "2026-10-28T16:29:34.739Z",
+      "monotonicMs": 4957.876273,
+      "kind": "native-flow-subscription-ack",
+      "data": {
+        "mint": "vvJXEVo7EbaAyoMahmrEHRe7zGdwiUbkh6sVT8opump",
+        "pool": "35SedZNDM6VgZAdE5NNVgEExivmZNjrQ5GU7S66tgLXF",
+        "at": 1793204974739,
+        "subscription": 101877376,
+        "connection": 1,
+        "dataContract": "confirmed-program-activity-v3-shadow"
+      }
+    },
+    {
+      "segment": "events-002.ndjson",
+      "schemaVersion": 1,
+      "sequence": 1903,
+      "receivedAt": "2026-10-28T16:30:53.999Z",
+      "monotonicMs": 84217.433678,
+      "kind": "native-flow-subscription-retired",
+      "data": {
+        "connection": 1,
+        "subscription": 101877376,
+        "mint": "vvJXEVo7EbaAyoMahmrEHRe7zGdwiUbkh6sVT8opump",
+        "pool": "35SedZNDM6VgZAdE5NNVgEExivmZNjrQ5GU7S66tgLXF",
+        "retiredAt": 1793205053999,
+        "retentionMs": 180000,
+        "selectedInformationAdmitted": false
+      }
+    },
+    {
+      "segment": "events-003.ndjson",
+      "schemaVersion": 1,
+      "sequence": 1586,
+      "receivedAt": "2026-10-28T16:32:16.465Z",
+      "monotonicMs": 166683.177562,
+      "kind": "native-flow-control-refused",
+      "data": {
+        "at": 1793205136465,
+        "method": "logsSubscribe",
+        "mint": "vvJXEVo7EbaAyoMahmrEHRe7zGdwiUbkh6sVT8opump",
+        "pool": "35SedZNDM6VgZAdE5NNVgEExivmZNjrQ5GU7S66tgLXF",
+        "connection": 1,
+        "operationId": 5800,
+        "reason": "NATIVE_FLOW_SUBSCRIPTION_ID_REUSED",
+        "acknowledgement": {
+          "resultType": "number",
+          "safeNonnegativeInteger": true,
+          "subscriptionId": 101877376,
+          "retiredSubscriptionMatch": true,
+          "activeSubscriptionMatch": false
+        },
+        "rpcErrorCode": null,
+        "supportFresh": true,
+        "candidateStillRegistered": true,
+        "cancelled": false,
+        "transportClosing": false,
+        "physicalSettlementClaimed": false,
+        "meaning": "Bounded local diagnostic before shared budget error normalization; no provider message or untrusted result payload retained"
+      }
+    },
+    {
+      "segment": "events-004.ndjson",
+      "schemaVersion": 1,
+      "sequence": 196,
+      "receivedAt": "2026-10-28T16:35:04.838Z",
+      "monotonicMs": 335056.738504,
+      "kind": "native-flow-subscription-ack",
+      "data": {
+        "mint": "vvJXEVo7EbaAyoMahmrEHRe7zGdwiUbkh6sVT8opump",
+        "pool": "35SedZNDM6VgZAdE5NNVgEExivmZNjrQ5GU7S66tgLXF",
+        "at": 1793205304838,
+        "subscription": 101877376,
+        "connection": 2,
+        "dataContract": "confirmed-program-activity-v3-shadow"
+      }
+    },
+    {
+      "segment": "events-004.ndjson",
+      "schemaVersion": 1,
+      "sequence": 999,
+      "receivedAt": "2026-10-28T16:36:32.274Z",
+      "monotonicMs": 422492.817831,
+      "kind": "native-flow-subscription-retired",
+      "data": {
+        "connection": 2,
+        "subscription": 101877376,
+        "mint": "vvJXEVo7EbaAyoMahmrEHRe7zGdwiUbkh6sVT8opump",
+        "pool": "35SedZNDM6VgZAdE5NNVgEExivmZNjrQ5GU7S66tgLXF",
+        "retiredAt": 1793205392274,
+        "retentionMs": 180000,
+        "selectedInformationAdmitted": false
+      }
+    },
+    {
+      "segment": "events-004.ndjson",
+      "schemaVersion": 1,
+      "sequence": 1211,
+      "receivedAt": "2026-10-28T16:36:35.184Z",
+      "monotonicMs": 425402.654706,
+      "kind": "native-flow-control-refused",
+      "data": {
+        "at": 1793205395184,
+        "method": "logsSubscribe",
+        "mint": "6EKmRQYzAXh5t6t1XNe2chYqmdSHgd32uA7xki9upump",
+        "pool": "3MSeAyD6yj7PaCzurFnbBueKN6YSTKm9gqGAbNZxFV8K",
+        "connection": 2,
+        "operationId": 5941,
+        "reason": "NATIVE_FLOW_SUBSCRIPTION_ID_REUSED",
+        "acknowledgement": {
+          "resultType": "number",
+          "safeNonnegativeInteger": true,
+          "subscriptionId": 101907904,
+          "retiredSubscriptionMatch": true,
+          "activeSubscriptionMatch": false
+        },
+        "rpcErrorCode": null,
+        "supportFresh": true,
+        "candidateStillRegistered": true,
+        "cancelled": false,
+        "transportClosing": false,
+        "physicalSettlementClaimed": false,
+        "meaning": "Bounded local diagnostic before shared budget error normalization; no provider message or untrusted result payload retained"
+      }
+    },
+    {
+      "segment": "events-004.ndjson",
+      "schemaVersion": 1,
+      "sequence": 6511,
+      "receivedAt": "2026-10-28T16:39:13.526Z",
+      "monotonicMs": 583744.083928,
+      "kind": "native-flow-subscription-ack",
+      "data": {
+        "mint": "vvJXEVo7EbaAyoMahmrEHRe7zGdwiUbkh6sVT8opump",
+        "pool": "35SedZNDM6VgZAdE5NNVgEExivmZNjrQ5GU7S66tgLXF",
+        "at": 1793205553526,
+        "subscription": 101877376,
+        "connection": 3,
+        "dataContract": "confirmed-program-activity-v3-shadow"
+      }
+    },
+    {
+      "segment": "events-005.ndjson",
+      "schemaVersion": 1,
+      "sequence": 338,
+      "receivedAt": "2026-10-28T16:39:34.565Z",
+      "monotonicMs": 604783.704179,
+      "kind": "native-flow-control-refused",
+      "data": {
+        "at": 1793205574565,
+        "method": "logsSubscribe",
+        "mint": "5JapmLrNperGCAMD9uLLxmw5EXzEkCyh3gYiC6eypump",
+        "pool": "E4r2uCyTHfzF5ZD7aYBFMhAqaY628b7oqNEdTfmAEbXH",
+        "connection": 3,
+        "operationId": 6047,
+        "reason": "NATIVE_FLOW_SUBSCRIPTION_ID_REUSED",
+        "acknowledgement": {
+          "resultType": "number",
+          "safeNonnegativeInteger": true,
+          "subscriptionId": 101824239,
+          "retiredSubscriptionMatch": true,
+          "activeSubscriptionMatch": false
+        },
+        "rpcErrorCode": null,
+        "supportFresh": true,
+        "candidateStillRegistered": true,
+        "cancelled": false,
+        "transportClosing": false,
+        "physicalSettlementClaimed": false,
+        "meaning": "Bounded local diagnostic before shared budget error normalization; no provider message or untrusted result payload retained"
+      }
+    },
+    {
+      "segment": "events-005.ndjson",
+      "schemaVersion": 1,
+      "sequence": 6648,
+      "receivedAt": "2026-10-28T16:41:21.287Z",
+      "monotonicMs": 711505.673677,
+      "kind": "native-flow-control-refused",
+      "data": {
+        "at": 1793205681287,
+        "method": "logsSubscribe",
+        "mint": "ASX4GtetW337jwG2rLZaU84eY64rRCoWbf63yXQepump",
+        "pool": "HknqzEAg7Q78CqAGfG1LZRVcnNzbFfczEV1hjKF7ELq9",
+        "connection": 4,
+        "operationId": 6119,
+        "reason": "NATIVE_FLOW_SUBSCRIPTION_ID_REUSED",
+        "acknowledgement": {
+          "resultType": "number",
+          "safeNonnegativeInteger": true,
+          "subscriptionId": 101909025,
+          "retiredSubscriptionMatch": true,
+          "activeSubscriptionMatch": false
+        },
+        "rpcErrorCode": null,
+        "supportFresh": true,
+        "candidateStillRegistered": true,
+        "cancelled": false,
+        "transportClosing": false,
+        "physicalSettlementClaimed": false,
+        "meaning": "Bounded local diagnostic before shared budget error normalization; no provider message or untrusted result payload retained"
+      }
+    },
+    {
+      "segment": "events-006.ndjson",
+      "schemaVersion": 1,
+      "sequence": 1411,
+      "receivedAt": "2026-10-28T16:44:12.864Z",
+      "monotonicMs": 883082.221195,
+      "kind": "native-flow-subscription-ack",
+      "data": {
+        "mint": "vvJXEVo7EbaAyoMahmrEHRe7zGdwiUbkh6sVT8opump",
+        "pool": "35SedZNDM6VgZAdE5NNVgEExivmZNjrQ5GU7S66tgLXF",
+        "at": 1793205852864,
+        "subscription": 101877376,
+        "connection": 6,
+        "dataContract": "confirmed-program-activity-v3-shadow"
+      }
+    }
+  ]
+}

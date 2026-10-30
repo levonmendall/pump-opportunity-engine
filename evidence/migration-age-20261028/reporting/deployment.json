@@ -1,0 +1,60 @@
+{
+  "reportingCommit": "9161d3849eae1ffa549a6afa2a1c263b6f3d1185",
+  "reviewedOriginalCommit": "8cb24a4a55aafc3842326ceab1c074565bdae1a4",
+  "preservedConcurrentBase": "02ceec124cad576573cf3bb7b18cdcfdfbbe2ba7",
+  "deploymentId": "dep-dbgl96ugekts73889s40",
+  "deploymentStatus": "live",
+  "liveAt": "2026-10-28T01:49:59.885Z",
+  "serviceId": "srv-daqon53tqb8s73bdceq0",
+  "workspaceId": "tea-daqk6h8jo6nc73eojtp0",
+  "url": "https://meme-machine-dashboard-staging.onrender.com",
+  "plan": "free",
+  "autoDeploy": "off",
+  "changes": "reporting schema/source allowlist/UI age cohorts only",
+  "checks": {
+    "typecheck": "passed",
+    "compile": "passed",
+    "repositoryTests": 215,
+    "repositoryFailures": 0,
+    "reportingMjsTests": 31,
+    "reportingMjsFailures": 0,
+    "unauthorizedPilotPostStatus": 401,
+    "healthStatus": 200,
+    "mobileWidth": 390,
+    "mobileHorizontalOverflow": false,
+    "mobileJavascriptErrors": [],
+    "twoDistinctSourceCyclesExactMatch": true,
+    "mobileActualAgePolicyVisible": true
+  },
+  "authoritativeSource": {
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+    "lastVerifiedSourceTimestamp": "2026-10-28T01:49:43.021Z"
+  },
+  "experimentalCyclesEvidence": "/tmp/poe-age-reporting-live-cycles.json",
+  "financialOrProductionRuntimeChanges": false,
+  "credentialsReadOrChanged": false,
+  "actualAgeSource": {
+    "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+    "inceptionAt": "2026-10-27T17:56:13.252Z",
+    "runId": "pilot-20261028015809342-f9514585",
+    "release": "1657bb407d82ada68e9b6aa82f93c1573119ec24",
+    "strategy": "persistent-buying-pilot-concurrent-stage-3-v1",
+    "sha256": "7c0758a2a9ed96a93d1cdda0056df786dc85a679b8fbdde14634d895b2c9cc37",
+    "twoMatchedSourceTimestamps": [
+      "2026-10-28T01:58:19.897Z",
+      "2026-10-28T01:58:34.996Z"
+    ],
+    "latestBoundaryCheckedSourceTimestamp": "2026-10-28T01:59:50.497Z",
+    "mobileCheckedAt": "2026-10-28T01:59:05.434Z"
+  },
+  "artifacts": {
+    "cycles": "two-reporting-cycles.json",
+    "actualMobile": "mobile-live.json",
+    "actualMobileScreenshot": "mobile-live.png",
+    "stoppedStaleMobile": "mobile-stopped-stale.json",
+    "stoppedStaleScreenshot": "mobile-stopped-stale.png",
+    "boundaries": "live-boundary-checks.json"
+  }
+}

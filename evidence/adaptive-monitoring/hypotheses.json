@@ -1,0 +1,75 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-27T05:01:58.878800+00:00",
+  "classification": "FROZEN_OFFLINE_RESEARCH_HYPOTHESES_NOT_PRODUCTION_SETTINGS",
+  "baseline": "fixed-2s",
+  "policies": [
+    "fixed-2s",
+    "fixed-5s",
+    "fixed-10s",
+    "hybrid-5s",
+    "adaptive",
+    "adaptive-quiet"
+  ],
+  "sharedLimits": {
+    "rpcStartsPerMinute": 60,
+    "minimumStartSpacingMs": 1000,
+    "physicalInFlight": 1,
+    "backgroundStartsPerMinute": 24,
+    "quoteAgeAtUseMs": 2000,
+    "sourceAgeMs": 30000
+  },
+  "policyHypotheses": {
+    "hybrid": "5s periodic; relevantchange triggers fresh fullbatch no fasterthan2s sincepriorstart; knownsubscriptionfailurefallsback2s",
+    "adaptive": "normal5s; freshnet loss>=10% orprofit>=20%, relevantchange, knownsubscriptionfault orholdexpirywithin30s causes2s;30sdwell;3freshsafechecks withloss<8% andprofit<15% toleave",
+    "adaptiveQuiet": "experimental10s onlyafter60sobservedunchanged,freshsafechecksandhealthycontrolchannel; notproofagainstnewshock"
+  },
+  "candidate": {
+    "windowMs": 60000,
+    "closedBucketMs": 10000,
+    "collectAllRequiredTradeEvidence": true,
+    "contextAndQualityInvalidationsImmediate": true
+  },
+  "hypotheticalExecution": {
+    "buyBudgetLamports": "10000000",
+    "entryGasLamports": "7000",
+    "exitGasLamports": "7000",
+    "failedAttemptGasLamports": "7000",
+    "depositAssumption": "test-only alreadyexistingtokenaccounts; nodepositrefundorfeeassumed",
+    "firstAttemptDelayMs": 1000,
+    "orderExpiryMs": 5000,
+    "slippageConstraintBps": 500,
+    "attempts": 1
+  },
+  "caseFamilies": [
+    "quiet",
+    "gradual-fall",
+    "step-drop",
+    "short-rally",
+    "gradual-rally",
+    "rapid-roundtrip",
+    "known-disconnect",
+    "silent-notification-loss",
+    "rpc-delay",
+    "rpc-outage",
+    "high-churn",
+    "maximum-hold"
+  ],
+  "phaseOffsetsMs": [
+    0,
+    400,
+    900,
+    1400,
+    1900
+  ],
+  "comparisonRule": {
+    "materialSavings": "at least25% fewerpricingrequests in quietcase overcommonhorizon",
+    "protection": "noadditionalmissedthresholdsorworseexitproceeds on sameadversarialfallpaths; reportanyviolationratherthanaveragingitaway",
+    "scope": "researchcomparisonrule; notanownerapprovedexitSLAorprofitabilitycriterion"
+  },
+  "noParameterOptimization": true,
+  "networkRequests": 0,
+  "productionChanged": false,
+  "acceptanceClockStarted": false,
+  "preEvaluationAccountingCorrection": "Before any evaluation, align failed gas and gross slippage threshold with existing ledger/trader: same order gas7000; compare gross SDK outputs, net liquidation subtracts gas once. Not a parameter search."
+}

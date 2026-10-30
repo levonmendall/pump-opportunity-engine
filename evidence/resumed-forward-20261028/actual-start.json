@@ -1,0 +1,14 @@
+{
+  "schemaVersion": 1,
+  "runId": "native-candidates-20261028142028669",
+  "startedAt": 1793197228669,
+  "plannedEndAt": 1793204428669,
+  "sourceCommit": "63f4ac439c6b22c7d532c284890cf47e78ad5d62",
+  "sourceSha256": "130b02f614b46b3576e1659cf2f0a18ce8f56e288b76578d05bd23398d920dd0",
+  "firstPublicRunningReceiptAt": 1793197238762,
+  "administrationRun": 40704936322,
+  "administrationJob": 122874390126,
+  "administrationCommit": "4ee813c89b18a93bffea4f20b5eba9d5826c4b18",
+  "configurationSha256": "29d9de0d148c52a10ebad22eb66875636fa06beacbe66004862cd8f0505597bf",
+  "startTimestampMeaning": "Parsed from actual generated runtime runId; verify against final source receipt. No planned time represented as actual duration."
+}

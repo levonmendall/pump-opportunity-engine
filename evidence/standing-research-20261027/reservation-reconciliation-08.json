@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-27T17:58:51.556775+00:00",
+  "kind": "append-only-settled-local-reservation-release",
+  "source": "evidence/standing-research-20261027/08-current-combined",
+  "sourceHashes": {
+    "summary.json": "71f4db77000e70868641de918af5628dbedcb562d8595573793686d196a70238",
+    "capture.json": "caf21509b1bfa602298ebf01f0bc82bec6e95dcae643a7860db45ea02bc3e664",
+    "pumpapi-budget.json": "13502574930aa0611e3a333976e5e0b6a936c2e3848551c58de782a89ee739b3"
+  },
+  "physicalSettled": true,
+  "reservedPumpApiBytes": 146800640,
+  "actualPumpApiBytes": 68047420,
+  "releasedUnusedLocalBytes": 78753220,
+  "actualConsumedBytesReversed": 0,
+  "uncertainRpcReservationsRetained": 4194304,
+  "historicalRecordsModified": false,
+  "timeReservation": "retained; no undocumented refund"
+}

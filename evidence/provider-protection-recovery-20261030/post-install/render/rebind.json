@@ -1,0 +1,26 @@
+{
+  "serviceId": "srv-daqon53tqb8s73bdceq0",
+  "workspaceId": "tea-daqk6h8jo6nc73eojtp0",
+  "replace": false,
+  "changedKeys": [
+    "POE_RUNTIME_RELEASE",
+    "POE_STRATEGY_VERSION"
+  ],
+  "expectedRuntimeRelease": "5675961a0ad05df508eec6928644c9e403be0811",
+  "expectedStrategy": "adaptive-momentum-v2-paper-v1",
+  "deploy": {
+    "commit": {
+      "createdAt": "2026-10-29T23:37:40Z",
+      "id": "bb1e91eb7c9f00d00aa459c6984cdbddfc0a27a1",
+      "message": "Verify protection-recovery dashboard against current owner frontend"
+    },
+    "createdAt": "2026-10-30T01:06:43.996006Z",
+    "id": "dep-dbhur8ou01pc73ag6su0",
+    "startedAt": "2026-10-30T01:06:43.967439Z",
+    "status": "build_in_progress",
+    "trigger": "api",
+    "updatedAt": "2026-10-30T01:06:43.996006Z"
+  },
+  "financialServiceRestarted": false,
+  "unrelatedConfigurationPreserved": true
+}

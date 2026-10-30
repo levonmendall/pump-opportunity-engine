@@ -1,0 +1,231 @@
+{
+  "schemaVersion": 1,
+  "project": "pump-opportunity-engine",
+  "mode": "READ_ONLY_TRANSACTION_FEASIBILITY",
+  "generatedAt": "2026-10-27T00:46:48.821Z",
+  "scope": {
+    "canonicalPool": "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+    "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+    "chainSamples": 2,
+    "newPublicRpcReads": 1,
+    "alchemyRequests": 0,
+    "providerSecretsUsed": false,
+    "financialActions": 0,
+    "naturalPaperTrades": 0
+  },
+  "decoder": {
+    "sdk": "@pump-fun/pump-swap-sdk@2.2.0",
+    "idlPath": "node_modules/@pump-fun/pump-swap-sdk/src/idl/pump_amm.json",
+    "idlSha256": "c2f8ce0bc0a740d9125644b2d95494c97199fce1604802f5ab0497184bdcce61",
+    "anchor": "installed transitive @coral-xyz/anchor BorshCoder + scoped EventParser",
+    "accountKeyOrder": "static, then loaded writable, then loaded readonly",
+    "integerPolicy": "BN.toString(10) / BigInt only; raw token balance amount strings; no uiAmount or Number conversion"
+  },
+  "samples": [
+    {
+      "source": "evidence/rpc-observation-comparison.ndjson bounded-pool-transaction",
+      "signature": "4nk2FyQKKf8j5WdP6TpKtvDhMf1FdvHcx2fcGvAAtXHchG2h9mBoF662aYRpykmowcYG5Gwme5VoRkcXXuSmoqCx",
+      "slot": 461861847,
+      "version": "legacy",
+      "success": true,
+      "targetProgramInstructions": [
+        {
+          "outerInstructionIndex": 1,
+          "name": "sweep_protocol_fee"
+        },
+        {
+          "outerInstructionIndex": 2,
+          "name": "sweep_protocol_fee"
+        },
+        {
+          "outerInstructionIndex": 3,
+          "name": "sweep_protocol_fee"
+        }
+      ],
+      "decodedEventNames": [
+        "SweepPoolFeeEvent",
+        "SweepPoolFeeEvent",
+        "SweepPoolFeeEvent"
+      ],
+      "classification": "protocol-fee sweep touching several pools; no Buy/Sell. Pool touch and SOL delta alone must not become trade flow."
+    },
+    {
+      "source": "evidence/targeted-transaction-sample.json",
+      "sha256": "17f84b9bbf206884570b0f919fa6942c787da8f5a4ad12b2b8ccad60cc837cf6",
+      "signature": "4MCi2CvSp1chEsMYVSBJN9ZTc87Bv1kLC7vFkiqr5kTd9HdqWJArFEFqnNqz87refwVFRYqvDwBpcaQ4LkVwvQZh",
+      "slot": 461858799,
+      "blockTime": 1793059092,
+      "version": 0,
+      "success": true,
+      "canonicalPoolMatches": true,
+      "outerInstructionIndex": 2,
+      "instruction": {
+        "name": "sell",
+        "data": {
+          "base_amount_in": "138353716808147",
+          "min_quote_amount_out": "1"
+        }
+      },
+      "eventIdentity": {
+        "signature": "4MCi2CvSp1chEsMYVSBJN9ZTc87Bv1kLC7vFkiqr5kTd9HdqWJArFEFqnNqz87refwVFRYqvDwBpcaQ4LkVwvQZh",
+        "outerInstructionIndex": 2,
+        "innerInstructionIndex": 5,
+        "eventIndex": 0,
+        "stackHeight": 2,
+        "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA"
+      },
+      "logIndex": 24,
+      "eventCpiPrefixHex": "e445a52e51cb9a1d",
+      "eventCpiMatchesScopedLog": true,
+      "decodedEvent": {
+        "name": "SellEvent",
+        "data": {
+          "timestamp": "1793059092",
+          "base_amount_in": "138353716808147",
+          "min_quote_amount_out": "1",
+          "user_base_token_reserves": "138353716808147",
+          "user_quote_token_reserves": "290124620",
+          "pool_base_token_reserves": "1014036360305940",
+          "pool_quote_token_reserves": "12387808",
+          "quote_amount_out": "1481514",
+          "lp_fee_basis_points": "2",
+          "lp_fee": "297",
+          "protocol_fee_basis_points": "93",
+          "protocol_fee": "13779",
+          "quote_amount_out_without_lp_fee": "1481217",
+          "user_quote_amount_out": "1462993",
+          "pool": "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+          "user": "BwJigd5taT26gAhNcv1DMrC7epkedHBjcgbWVbEMP8Q",
+          "user_base_token_account": "FBRmZiNpssT12iChuVSSMhzGSCh1URpgjjqbh1kYdGT6",
+          "user_quote_token_account": "4Aott8c7oYDuMYJqUEz9SXjSUzNpkEPEXzX5CbndLMHK",
+          "protocol_fee_recipient": "GesfTA3X2arioaHp8bbKdjG9vJtskViWACZoYvxp4twS",
+          "protocol_fee_recipient_token_account": "C93K8DX4YsABYJtHX9awzgZW3LWzBqBVezEbbLJH4yet",
+          "coin_creator": "Cz7TyCy7NBdiQoSgiGxdoB8An9jGMUkudhmn5eW1fhNN",
+          "coin_creator_fee_basis_points": "30",
+          "coin_creator_fee": "4445",
+          "cashback_fee_basis_points": "0",
+          "cashback": "0",
+          "buyback_fee_basis_points": "0",
+          "buyback_fee": "0",
+          "virtual_quote_reserves": "-47822",
+          "can_boost": false,
+          "base_supply": "1000000000000000",
+          "holder_rewards_bps": "0",
+          "holder_rewards": "0",
+          "creator_fee_unclaimed": "23315",
+          "quote_transfer_fee": "0"
+        }
+      },
+      "checkedTransfers": [
+        {
+          "innerInstructionIndex": 1,
+          "program": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "source": "FBRmZiNpssT12iChuVSSMhzGSCh1URpgjjqbh1kYdGT6",
+          "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+          "destination": "6VCbdm3ZFD9oXDubKuKMd56dFPtuc9yE892RoC26GAXA",
+          "authority": "BwJigd5taT26gAhNcv1DMrC7epkedHBjcgbWVbEMP8Q",
+          "amount": "138353716808147",
+          "decimals": 6
+        },
+        {
+          "innerInstructionIndex": 2,
+          "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "source": "BYFJC7DSYinhm1QZ6Cmim3fcYxrU6yX5RZw9WxEwua6a",
+          "mint": "So11111111111111111111111111111111111111112",
+          "destination": "4Aott8c7oYDuMYJqUEz9SXjSUzNpkEPEXzX5CbndLMHK",
+          "authority": "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+          "amount": "1462993",
+          "decimals": 9
+        },
+        {
+          "innerInstructionIndex": 3,
+          "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "source": "BYFJC7DSYinhm1QZ6Cmim3fcYxrU6yX5RZw9WxEwua6a",
+          "mint": "So11111111111111111111111111111111111111112",
+          "destination": "C93K8DX4YsABYJtHX9awzgZW3LWzBqBVezEbbLJH4yet",
+          "authority": "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+          "amount": "13779",
+          "decimals": 9
+        },
+        {
+          "innerInstructionIndex": 4,
+          "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "source": "BYFJC7DSYinhm1QZ6Cmim3fcYxrU6yX5RZw9WxEwua6a",
+          "mint": "So11111111111111111111111111111111111111112",
+          "destination": "6GSXvn5FV4pb33koegoRt6VNYNWHypvEB1PWvgPZzN73",
+          "authority": "DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD",
+          "amount": "4445",
+          "decimals": 9
+        }
+      ],
+      "userQuoteBalanceDeltaLamports": "1462993",
+      "checks": {
+        "instructionConstraintIsNotExecutedOutput": true,
+        "executedBaseMatchesTransfer": true,
+        "executedNetQuoteMatchesTransferAndBalanceDelta": true,
+        "grossLessLpProtocolCreatorFeesMatchesUserProceeds": true,
+        "logAndCpiAreOneEventNotTwoTrades": true
+      },
+      "routeShape": "one direct outer PumpSwap sell; no swap router/multiple swap invocation proven",
+      "networkFeeLamports": "25000",
+      "networkFeeTreatment": "separate from pool event/transfer notional; not subtracted again from decoded user quote amount"
+    }
+  ],
+  "buyIdlFeasibility": {
+    "observedBuy": false,
+    "fields": [
+      {
+        "name": "base_amount_out",
+        "type": "u64"
+      },
+      {
+        "name": "max_quote_amount_in",
+        "type": "u64"
+      },
+      {
+        "name": "quote_amount_in",
+        "type": "u64"
+      },
+      {
+        "name": "user_quote_amount_in",
+        "type": "u64"
+      },
+      {
+        "name": "pool",
+        "type": "pubkey"
+      },
+      {
+        "name": "user",
+        "type": "pubkey"
+      },
+      {
+        "name": "min_base_amount_out",
+        "type": "u64"
+      },
+      {
+        "name": "quote_transfer_fee",
+        "type": "u64"
+      }
+    ],
+    "meaning": "IDL exposes executed fields plus constraints, but no Buy transaction is validated by this bounded2sample check."
+  },
+  "conclusions": {
+    "status": "FEASIBLE_FOR_ONE_OBSERVED_DIRECT_V0_SELL; ADAPTER_UNBUILT",
+    "executedSellAmountsWalletPoolAndEventIdentityVerified": true,
+    "executedBuyVerified": false,
+    "routedOrMultipleSwapsVerified": false,
+    "alchemyPayloadDeliveryVerified": false,
+    "streamCoverageLatencyCostAndDecisionEquivalence": "UNMEASURED",
+    "productionEnabled": false,
+    "acceptanceClockStarted": false
+  },
+  "limits": [
+    "Public Solana getTransaction sample is not an authenticated Alchemy blockSubscribe receipt",
+    "Legacy nontrade + v0 direct sell only; no v1 payload, lookup-table resolution, buy, routed or multi-swap case validated",
+    "Documented Alchemy maxSupportedTransactionVersion0 must be tested against current chain versions; existing migration integration has encountered v1",
+    "Commitment, account filter semantics, logs/innerInstructions presence/truncation, reconnection and quota must be verified on actual authorized stream",
+    "A user key can be a router/PDA or common controller; wallet count is not independent-buyer proof",
+    "Deduplicate scoped log and emit_cpi representations; signature alone cannot identify multiple swaps/events",
+    "On failed transaction, missing/truncated/unknown event layout or ambiguous invocation identity, no executed flow may be invented"
+  ]
+}

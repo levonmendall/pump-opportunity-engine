@@ -1,0 +1,60 @@
+{
+  "classification": "PRESERVED_FORWARD_STARTUP_FAILURE_AND_SEPARATE_OFFLINE_REPAIR",
+  "forward": {
+    "sourceCommit": "60b93929bf3373a84a024b8712da2ca2e69e71e2",
+    "runId": "native-candidates-20261028041609569",
+    "administrationRun": 40631355108,
+    "elapsedMs": 20651,
+    "stopReason": "NATIVE_RESEARCH_RPC_FATAL",
+    "fatal": "COMPONENT_DISPATCH_EXPIRED",
+    "newReservedUnits": 41,
+    "actualPhysicalInvocations": 40,
+    "measuredRelatedResponseBytes": 601261,
+    "newUncertaintyBytes": 2097152,
+    "completedHttpResponses": 36,
+    "httpStatuses": [
+      200
+    ],
+    "nativeSubscriptionStarts": 0,
+    "completedCandidateWindows": 0,
+    "physicalSettlementConfirmed": true,
+    "outcome": "FAILED_DURING_SETUP; not a market evaluation pass"
+  },
+  "demonstratedCauses": [
+    "Immediate native setup readiness was stamped after the earlier loop timestamp; stale comparison skipped required setup service.",
+    "Additional defect reproduced by separate service-outcome tests: deferred/busy/backoff setup could fall through into origin preparation. Its exact contribution to this forward interval was not separately instrumented.",
+    "A durable reservation expired before physical invocation after persistence delay and was misclassified as global/provider failure."
+  ],
+  "separateOfflineReproduction": {
+    "beforeSourceSha256": "64c55bca6e68253c86bade45108d7d096aca700101c4dd3080fc872bd6aa41f4",
+    "beforeSameFixtureFailed": true,
+    "test": "test/native-startup-integration.test.ts",
+    "realModules": [
+      "PilotRpc",
+      "PilotNativeFlow",
+      "ResearchClockPositionPricer",
+      "NativeCandidateRunner"
+    ],
+    "retainedFixtureSha256": "6e0b5d97ca695b62bd6a814cb77e8d65d75f4bcfbb7b9a9e54bb7ce50b75b4ba",
+    "syntheticInputs": [
+      "provider response delays",
+      "wall-clock progression",
+      "WebSocket ACKs",
+      "inherited request timing",
+      "missing-proof identity metadata"
+    ],
+    "correctedSixScopeAcknowledgments": 6,
+    "coldSupportHttpInvocations": 2,
+    "originVerificationBeforeAllAcks": 0,
+    "maxPhysicalInFlight": 1,
+    "minimumStartSpacingMs": 250,
+    "newMarketRequests": 0,
+    "scope": "startup scheduling and safe local-refusal recovery only; no natural market windows, trades, provider throughput or profitability proved"
+  },
+  "preservation": {
+    "originalArtifactUnchanged": true,
+    "oldPendingReservationRetained": true,
+    "noCounterRefund": true,
+    "newRunAuthorizedByThisOfflineRepair": false
+  }
+}

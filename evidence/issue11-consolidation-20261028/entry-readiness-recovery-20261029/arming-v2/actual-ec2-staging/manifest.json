@@ -1,0 +1,25 @@
+{
+  "kind": "original-entry-arming-upgrade-evidence",
+  "files": [
+    {
+      "file": "README.md",
+      "bytes": 932,
+      "sha256": "6c25320230329eea12971ce8b9f96e522bcded74774fcd0c33971317c10d4ed0"
+    },
+    {
+      "file": "stage-40941840470.raw.txt",
+      "bytes": 38280,
+      "sha256": "1cd3f874e03f4887a8e9d5e4c901223600c80fd28973a89ecc6bd7de197507a2"
+    },
+    {
+      "file": "stage-40941840470.run.json",
+      "bytes": 1131,
+      "sha256": "d4c4213b5aeb452c78eaff9b21e66640592a13ec8759643fd17c3d4c846d4192"
+    },
+    {
+      "file": "stage-proof-40941840470.json",
+      "bytes": 3790,
+      "sha256": "8fa8f162127791d892adf9e81f703802dd95e6582314706e8eaaeb2fbe353b2a"
+    }
+  ]
+}

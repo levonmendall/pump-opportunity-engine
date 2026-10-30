@@ -1,0 +1,25 @@
+{
+  "verifiedAt": "2026-10-28T23:26:36.517259+00:00",
+  "sourceCommit": "3755b13728e3443a8f5070f782e32073aef4eee7",
+  "files": {
+    "src/component-budget.ts": "17b3da2b3fa906c2e5e8932b21eaa2fd8bc2289cd9b30403b752317d41a2db98",
+    "src/persistent-data-window.ts": "f7805c755b0a1c70f23ba806b4b82e73b0872cf1b78f698d80f071ebf6b8b15b",
+    "src/pilot-feeds.ts": "fdd5ac73ed30c2f2b6b387a0918ffa9e1aa63475c3dd54cd60e142b3eaf2ad2e",
+    "src/pilot-native-flow.ts": "a7f1ab9cc398fffeeeb5a25e568cd507e611c3f0235a30afecdc224b0eb694cf",
+    "src/pilot-rpc.ts": "83cf05ddf7ef0fa6f927b108ee0baa100a341a810d0711dd779b78b52a6e5407",
+    "src/research-baseline.ts": "f516bf4d940861cac8247a243634b8ee6d646d16e16b5117a6fe77de60f5570b",
+    "test/native-flow-fixture.ts": "88c59c9a067b0aa0dd83df537ab5047d6d54c84a320fdfdd3032fc95095aa6c1",
+    "test/persistent-data-window.test.ts": "d6deab1cea7444e1d1d725ce2bd386d280e72b7984e4b6b991b12f05b7d7e0af",
+    "test/pilot-feeds.test.ts": "5dcb908e7c48fcf1360b103f46b606398a95d1ddeb94f88b31088d8c9e540662",
+    "test/pilot-native-flow.test.ts": "548edb28366d74162812a349803723afd5090ba64781e073e918d22b6969d4e3",
+    "test/pilot-rpc.test.ts": "94bb8fca1a24eafd09b83a7d8f954bbf450235e813ba3eb3b353a480ee6c70a8"
+  },
+  "results": {
+    "focusedExpanded": 212,
+    "finalRpc": 50,
+    "build": "PASS"
+  },
+  "financialOrProviderRequests": 0,
+  "deploymentPerformed": false,
+  "independentReview": "PENDING"
+}

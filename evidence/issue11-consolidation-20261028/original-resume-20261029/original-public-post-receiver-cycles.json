@@ -1,0 +1,113 @@
+{
+  "claim": "Two actual distinct original observer snapshots after compatible receiver deployment; not native runtime cutover or private financial verification",
+  "samples": [
+    {
+      "requestedAt": 1793238190210,
+      "receivedAt": 1793238190375,
+      "httpStatus": 200,
+      "responseBytes": 26929,
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+        "strategy": "UNIMPLEMENTED_FLOW_BLOCKED"
+      },
+      "sequence": "5624",
+      "times": {
+        "generatedAt": "2026-10-29T01:42:28.962Z",
+        "marketAt": "2026-10-29T01:42:28.962Z",
+        "reconciledAt": "2026-10-29T01:42:28.962Z",
+        "usefulProgressAt": "2026-10-29T01:42:28.962Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "disabled",
+        "reconciled": true,
+        "blocker": "FLOW_NOT_VERIFIED_BILLING_NOT_CONFIRMED"
+      },
+      "freshness": {
+        "state": "observing-with-zero-trades",
+        "receivedAt": "2026-10-29T01:42:45.713Z",
+        "generatedAt": "2026-10-29T01:42:28.962Z",
+        "marketAt": "2026-10-29T01:42:28.962Z",
+        "reconciledAt": "2026-10-29T01:42:28.962Z",
+        "usefulProgressAt": "2026-10-29T01:42:28.962Z",
+        "sourceAgeMs": 41377,
+        "marketAgeMs": 41377,
+        "reconciliationAgeMs": 41377
+      },
+      "funnel": {
+        "discovered": 19,
+        "supported": 0,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 0
+      },
+      "positions": 0,
+      "trades": 0,
+      "intelligenceAvailable": false
+    },
+    {
+      "requestedAt": 1793238205384,
+      "receivedAt": 1793238205554,
+      "httpStatus": 200,
+      "responseBytes": 26929,
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+        "strategy": "UNIMPLEMENTED_FLOW_BLOCKED"
+      },
+      "sequence": "5625",
+      "times": {
+        "generatedAt": "2026-10-29T01:42:59.043Z",
+        "marketAt": "2026-10-29T01:42:59.043Z",
+        "reconciledAt": "2026-10-29T01:42:59.043Z",
+        "usefulProgressAt": "2026-10-29T01:42:59.043Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "disabled",
+        "reconciled": true,
+        "blocker": "FLOW_NOT_VERIFIED_BILLING_NOT_CONFIRMED"
+      },
+      "freshness": {
+        "state": "observing-with-zero-trades",
+        "receivedAt": "2026-10-29T01:43:15.799Z",
+        "generatedAt": "2026-10-29T01:42:59.043Z",
+        "marketAt": "2026-10-29T01:42:59.043Z",
+        "reconciledAt": "2026-10-29T01:42:59.043Z",
+        "usefulProgressAt": "2026-10-29T01:42:59.043Z",
+        "sourceAgeMs": 26476,
+        "marketAgeMs": 26476,
+        "reconciliationAgeMs": 26476
+      },
+      "funnel": {
+        "discovered": 19,
+        "supported": 0,
+        "sufficientlyObserved": 0,
+        "evaluated": 0,
+        "qualified": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 0
+      },
+      "positions": 0,
+      "trades": 0,
+      "intelligenceAvailable": false
+    }
+  ]
+}

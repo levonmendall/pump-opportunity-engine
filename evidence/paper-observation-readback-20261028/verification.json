@@ -1,0 +1,38 @@
+{
+  "schemaVersion": 1,
+  "at": "2026-10-28T20:12:19.917337+00:00",
+  "classification": "OFFLINE_POST_SETTLEMENT_DIAGNOSTIC_ALLOWLIST_VALIDATION",
+  "fixtureTestsPassed": 24,
+  "retainedSource9a595Starts595Settlements37Gaps48AssessmentsPreserved": true,
+  "completeMarketEvidenceIncluded": false,
+  "newNetworkRequests": 0,
+  "realFinancialAccountRead": false,
+  "sourceRuntimeChanged": false,
+  "files": [
+    {
+      "path": "operator/native-paper-ec2/readback-results.py",
+      "bytes": 37892,
+      "sha256": "11d9da3c0a3867a9a24837f179893d58887aa4f19847712d6a5861619f8e2564"
+    },
+    {
+      "path": "operator/native-paper-ec2/test-readback-results.py",
+      "bytes": 22549,
+      "sha256": "53f77bfc7f3d1cffd2eb622c8927ed85d79b8bb2708f722f724344ddaf81e028"
+    },
+    {
+      "path": "operator/native-paper-ec2/RESULT_READBACK.md",
+      "bytes": 6233,
+      "sha256": "467baa97b85af1710f442be217f00eb42d5a564c5d49d6cf8d465a63c449dbc5"
+    },
+    {
+      "path": "evidence/paper-observation-readback-20261028/tests.txt",
+      "bytes": 123,
+      "sha256": "08885f351135173594834d7c14a7b8438827e1b07d7c71af1ddf1f4400af9633"
+    },
+    {
+      "path": "evidence/paper-observation-readback-20261028/retained-source9a-projection.json",
+      "bytes": 10893,
+      "sha256": "8350c5c6b6c2a004e91d1e98d5158492a5f9d6bfacd0211c8192a9ad2d268207"
+    }
+  ]
+}

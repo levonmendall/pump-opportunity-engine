@@ -1,0 +1,50 @@
+{
+  "verifiedAt": "2026-10-29T17:40:41.074199+00:00",
+  "baseCommit": "9c552ff1edc889fd21b0492894859bfa32f937f3",
+  "branch": "poe-technical-reevaluation-20261029",
+  "classification": "OFFLINE_VERIFIED_UNDEPLOYED_REPAIR",
+  "sourceFiles": {
+    "src/native-candidate-runner.ts": "2a649d70683b1f1bbfe754f064088e994b46b9faf6505202e300a2ed8f91a6ea",
+    "src/native-paper.ts": "9136f3f2f1b453bb7102df1b881dd6d4ccf4f851491bb3adc220c17b504f1bcc",
+    "src/pilot-watch.ts": "90345f697b7fc646267c38533ee45c654aefe36f5cdaed9a0fcf95248fe50e61",
+    "src/run-native-paper.ts": "a90a17356ee20ea1008d90acd6f026fe8d3347fa10afae3500bcaef978dd71f7",
+    "test/native-paper-hooks.test.ts": "b7e0304df057ad6910dacc64b76e928e57232eddc64b8981543e13afad53c029",
+    "test/native-paper-integration.test.ts": "ea0ae1caf4bd714c46a80655c5b4724823277d68e775f9ed5caf7f5ebfaf95bb",
+    "test/pilot-watch.test.ts": "4eef840765f352a73feab872fa36a0c62b772983c3ed208f788664be56d5c171"
+  },
+  "sourceUnchangedThroughFinalSuite": true,
+  "patchSha256": "9663a01269096b857c06357aa634d27e28ecb5024915932142f32ee06b086c26",
+  "fullSuite": {
+    "command": "npm test",
+    "tests": 1751,
+    "passed": 1751,
+    "failed": 0,
+    "durationMs": 94876.164028,
+    "outputSha256": "e2c41068e3164ed847530e5386698b2337a701b1cd50854902e20a44adff5b6f"
+  },
+  "build": {
+    "command": "npm run build",
+    "passed": true,
+    "outputSha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+  },
+  "focused": {
+    "tests": 77,
+    "passed": 77,
+    "failed": 0,
+    "outputSha256": "7c8a9e1ee1191ef8bf6cd7f3eda38cc64948b8d65a5b75f1a29ea331a1a0b500"
+  },
+  "serviceSingleDeep4ConfigurationSha256": "e363dad750e601e533670bd8d8881bc82ffd1508718b982cabf09eca79be92f4",
+  "financialMaximumPositionsChanged": false,
+  "deepMaximumChanged": false,
+  "strategyThresholdsChanged": false,
+  "providerProfileChanged": false,
+  "financialLedgerChanged": false,
+  "deploymentPerformed": false,
+  "unknownNaturalFailedAttemptCauseInferred": false,
+  "ordinaryWatchAfterPriorityExpiry": "Retained; bounded priority ending is not a permanent token exclusion.",
+  "limitations": [
+    "Synthetic disposable fixtures are not naturally captured trades or profit evidence.",
+    "The running original service has not executed this repair; forward verification remains required.",
+    "This repair does not claim to resolve independent notification/audit/provider-quality failures."
+  ]
+}

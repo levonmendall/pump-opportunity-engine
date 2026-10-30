@@ -1,0 +1,130 @@
+{
+  "frozenAt": "2026-10-30T02:38:10.772060+00:00",
+  "source": {
+    "release": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+    "strategy": "adaptive-momentum-v2-paper-v1"
+  },
+  "account": {
+    "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "initialUsd": 1000
+  },
+  "run": {
+    "id": "native-paper-20261030021230118",
+    "startedAt": "2026-10-30T02:12:30.118Z",
+    "mode": "persistent-paper",
+    "configurationSha256": "ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db",
+    "strategyVersion": "adaptive-momentum-v2-paper-v1"
+  },
+  "rows": 24,
+  "sha256": "8cbfe869fd064000cf4cc0ddda7d126288bb35a84cf216584ea32fcb5e97df10",
+  "lastHeldSourceAt": "2026-10-30T02:33:18.152Z",
+  "lastHeldSequence": "11376",
+  "lastHeldPosition": {
+    "mint": "8r7gzXUXgqy4PaKfQ4bKUadUcVfZuFafMRJyJiEYpump",
+    "label": "8r7gzXUXgqy4PaKfQ4bKUadUcVfZuFafMRJyJiEYpump",
+    "quantity": "4987415586352",
+    "enteredAt": "2026-10-30T02:29:48.157Z",
+    "entryCostUsd": 49.717211,
+    "netLiquidationUsd": 47.251033,
+    "executionCostsUsd": 0.000664,
+    "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+  },
+  "lastHeldBalances": {
+    "cashSol": "8.864991957",
+    "reservedSol": "0",
+    "equitySol": "10.006664434",
+    "equityUsd": 950.583088,
+    "realizedUsd": -3.627492,
+    "unrealizedUsd": 7.903861,
+    "tradingPnlUsd": 4.276368,
+    "economicPnlUsd": null,
+    "positionCostUsd": 99.425224,
+    "markedExposureUsd": 106.173977,
+    "drawdownUsd": null,
+    "executionCostsUsd": null,
+    "operatingCostsUsd": null,
+    "passiveSolEquityUsd": 946.30672,
+    "solPriceUsd": 94.995
+  },
+  "lastHeldDiagnosticNotes": [
+    "ACTIVE Adaptive Momentum v2 preliminary assessments use complete independently audited60s flow; they are not executable financial qualifications. Actual-size liquidity quotes and ledger controls remain required. Frozen persistent-buying counters are a separate benchmark. Overlapping windows are not distinct tokens.",
+    "Beneficial-owner independence, acceleration, executable price trend and reserve stability are unknown unless separately measured. No theoretical upside is realized profit.",
+    "Current $50/$150 sizing/exposure are explicit temporary legacy risk fallbacks. Four deep slots and two protected positions remain; old holdings retain their entry-strategy exit policy.",
+    "Protection totals and maxima retain known prior-run failures as lower bounds; completion freshness and recovery progress belong to the current run.",
+    "Current runtime observed completed protection maxima since 2026-10-30T02:12:30.118Z: gap 2296 ms; quote age at use 91 ms. Open or unmonitored gaps are not bounded by these values; historical failures remain retained.",
+    "Holding RPC current instance since 2026-10-30T02:12:30.188Z: calls 648; logical attempts 648; rapid probes 0; RPC retry successes 0; dispatch refusals 0; holding starts in 10s / 60s 5 / 30. These counts are not completed protection evaluations.",
+    "Candidate quote failures (current market instance) 4: last 2026-10-30T02:24:57.170Z, HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump, rent/PILOT_RPC_COMPONENT_ADMISSION_CLOSED, 376.1365329999244 ms; caller/deadline aborted false/false. This is not a qualification or order.",
+    "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump: Adaptive Momentum v2 historical executable net peak 0.620274162 SOL at 2026-10-30T02:33:17.579Z; measured trail 1500 bps (lagged-width-with-nondecreasing-boundary); dispersion 0 bps/30 prior quotes; boundary 0.527233038 SOL (modeled, fill not guaranteed); evaluated 2026-10-30T02:33:17.631Z. No fixed profit or profitable holding-time exit.",
+    "8r7gzXUXgqy4PaKfQ4bKUadUcVfZuFafMRJyJiEYpump: Adaptive Momentum v2 historical executable net peak 0.537997702 SOL at 2026-10-30T02:30:00.438Z; measured trail 1500 bps (lagged-width-with-nondecreasing-boundary); dispersion 11 bps/30 prior quotes; boundary 0.457298047 SOL (modeled, fill not guaranteed); evaluated 2026-10-30T02:33:17.641Z. No fixed profit or profitable holding-time exit."
+  ],
+  "pendingSellFrames": [],
+  "firstExitedSourceAt": "2026-10-30T02:33:33.181Z",
+  "firstExitedSequence": "11377",
+  "actualReportedSells": [
+    {
+      "id": "paper-fill:97844fecbc7122d16fd5803963f4709b",
+      "mint": "8r7gzXUXgqy4PaKfQ4bKUadUcVfZuFafMRJyJiEYpump",
+      "side": "sell",
+      "quantity": "4987415586352",
+      "at": "2026-10-30T02:33:22.864Z",
+      "valueUsd": 43.327651,
+      "executionCostsUsd": 0.000664,
+      "status": "PAPER filled",
+      "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:69032:1793327601701"
+    }
+  ],
+  "postExitBalances": {
+    "cashSol": "9.3210895",
+    "reservedSol": "0",
+    "equitySol": "9.965346029",
+    "equityUsd": 946.658047,
+    "realizedUsd": -10.017717,
+    "unrealizedUsd": 10.369044,
+    "tradingPnlUsd": 0.351326,
+    "economicPnlUsd": null,
+    "positionCostUsd": 49.708013,
+    "markedExposureUsd": 58.921949,
+    "drawdownUsd": null,
+    "executionCostsUsd": null,
+    "operatingCostsUsd": null,
+    "passiveSolEquityUsd": 946.30672,
+    "solPriceUsd": 94.995
+  },
+  "postExitPositions": [
+    {
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "quantity": "65278155",
+      "enteredAt": "2026-10-29T22:23:36.537Z",
+      "entryCostUsd": 49.708013,
+      "netLiquidationUsd": 58.921949,
+      "executionCostsUsd": 0.00068,
+      "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+    }
+  ],
+  "postExitPending": [],
+  "postExitReconciliationAt": "2026-10-30T02:33:31.686Z",
+  "postExitProtection": {
+    "state": "monitored",
+    "targetCadenceMs": 2000,
+    "completedEvaluationBoundaryMs": 4000,
+    "lastCompletedAt": "2026-10-30T02:33:31.700Z",
+    "maximumCompletedGapMs": 89426,
+    "maximumQuoteAgeAtUseMs": 101,
+    "breaches": 74,
+    "unavailableChecks": 245
+  },
+  "firstExitedFunnel": {
+    "discovered": 52,
+    "supported": 52,
+    "sufficientlyObserved": 5,
+    "evaluated": 5,
+    "qualified": 1,
+    "attempted": 2,
+    "paperFilled": 1,
+    "exited": 1,
+    "reconciled": 637
+  },
+  "meaning": "ActualautonomousPAPERexit fromoriginalaccount, notmanual/synthetic. Pending exit decision may fallbetween15secondpublicsamples; ifabsentitremainsunknown. Exactstrategyexitreason andrawquote/qualificationproofcannotbeinferredfromlossorfillclosure. Originalqi6preserved, failuresretained. No replay/reentry inferred. No controls/ledger/provideraccessbyobserver."
+}

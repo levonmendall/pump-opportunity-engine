@@ -1,0 +1,70 @@
+{
+  "sourceBase": "fdf23ac",
+  "scope": "Only bounded historical-path runway; actual requests/provider/minute/bytes/fees unchanged",
+  "reason": "Completed run now216retained linked books;192initial+64new prior profile wrongly blocks continuedresearch well below32MiB byte ceiling",
+  "old": {
+    "totalPaths": 256,
+    "longInitialPaths": 192,
+    "shortInitialPaths": 224
+  },
+  "new": {
+    "totalPaths": 512,
+    "longInitialPaths": 448,
+    "shortInitialPaths": 480
+  },
+  "unchanged": {
+    "perBookBytes": 524288,
+    "aggregateBytes": 33554432,
+    "defaultReaderPaths": 32,
+    "noCountersReset": true,
+    "noUncertaintyRefunded": true
+  },
+  "testResults": {
+    "focused": {
+      "exit": 0,
+      "passed": 20
+    },
+    "host": {
+      "exit": 0,
+      "passed": 10
+    },
+    "stagerInitial": {
+      "exit": 1,
+      "reason": "Old193-path-overflowfixture nowwithin448cap; duplicatepath checkcorrectlyrejects; preserved"
+    },
+    "stagerCorrected": {
+      "exit": 0,
+      "passed": 8
+    }
+  },
+  "files": {
+    "src/research-baseline.ts": "e899ac2a2c92572981b5172db00f409ebbea4f53febd375d4216cbfbcdb55615",
+    "src/native-research-profile.ts": "d06ae46af807063b73cfbdc45cf7f5f0040488e04fe2f4a41a5a7766da90bd52",
+    "src/run-native-candidates.ts": "106994bc753f71925c5cc43e3a3885fcbf5e9eb4a6444e33d3013dbb01ae1899",
+    "scripts/stage-native-candidate-ec2.mjs": "25df814419dec8a7d033b2a5b39ab013e79da46ffc61a3cbe8dd7ac74e10f733",
+    "operator/native-candidate-ec2/run-bounded.py": "23a6a1573bca181041ea9db55164f05197ad929e5a53ace89613f64011b7dd6b",
+    "evidence/resumed-forward-20261028/prepare-public-input.mjs": "d25d4b8d06437d572e51535f28b7b67997f449416e4d5b3f4e95f00182dd25c0",
+    "test/research-baseline.test.ts": "58a0e72e40110eab6cd4edc9df0bc14614a16b9a2b39f73b442bf85b70768d07",
+    "test/native-research-profile.test.ts": "b3c13fb04157c452064b01434a634e5b8b63dd6619cb100d3aad8fb34863b036",
+    "operator/native-candidate-ec2/test-two-hour-package.py": "6e0d7dd5a22d25fdba19f5860996afcdedb35e06078a80ce26acd65f497e76cb",
+    "operator/native-candidate-ec2/test-stage-package.mjs": "3e15643df186ed3d940c72f5fea07a084ea521224125157d844139bb63ad19e5"
+  },
+  "logs": {
+    "stager.log": {
+      "bytes": 3673,
+      "sha256": "2fba941b44563b5de09b1047fd56c9e90cda8273705f50465d7d51b91a9aba50"
+    },
+    "host.log": {
+      "bytes": 109,
+      "sha256": "a8fb9bb396943330509a8fd23de9c6a56cd3d0a4b00b84c7d17d0415d64df2ab"
+    },
+    "focused.log": {
+      "bytes": 2494,
+      "sha256": "10babc3b648a3ce95d63fe0b26856fcc30d203282bc75db7c5a45a63736cc7b8"
+    },
+    "stager-corrected.log": {
+      "bytes": 999,
+      "sha256": "f948e02d6e79011037bb3d904b86250e1ec69c654e5bf7148f6c4c5653d80f64"
+    }
+  }
+}

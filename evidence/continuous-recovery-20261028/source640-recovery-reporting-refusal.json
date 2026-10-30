@@ -1,0 +1,10 @@
+{
+  "schemaVersion": 1,
+  "kind": "fixed-source640-recovery-failure",
+  "sourceRun": "40714364745",
+  "reason": "FINAL_STOPPED_REPORT_NOT_ACCEPTED",
+  "marketProviderRequests": 0,
+  "financialWriterOpened": false,
+  "credentialsReadByHelper": false,
+  "rawEvidenceDeleted": false
+}

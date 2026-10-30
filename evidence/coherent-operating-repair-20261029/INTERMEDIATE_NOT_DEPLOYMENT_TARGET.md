@@ -1,0 +1,1 @@
+Combined1820-test build passed before the additive two-position directive. This exact intermediate source/executable is preserved. Its single-position configuration is not the authorized final deployment target. Final two-position source/config/protection validation is pending. No installed runtime change was made.

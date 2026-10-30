@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "type": "APPEND_ONLY_SETTLED_PUBLIC_INDEX_RECEIPT",
+  "createdAt": "2026-10-28T02:01:29.051Z",
+  "previous": {
+    "path": "/workspace/poe-overload-repair/evidence/age-reference-20261028/index-usage-correction-001.json",
+    "sha256": "e83a39faf54007de0c8175f2b89d0a5e966d3515f6b78ee1e0fb80b8835fa556",
+    "completedAt": "2026-10-28T01:59:58.778Z",
+    "cumulative": {
+      "requestStarts": 36,
+      "measuredBodyBytes": 895373,
+      "uncertainBodyBytes": 262416
+    }
+  },
+  "receipt": {
+    "path": "receipt.json",
+    "sha256": "4ed13e139e6f00a1c57b3e51965cfe7ac90e2590e10445bc07044f7e9bc5f4f6"
+  },
+  "actual": {
+    "requestStarts": 4,
+    "measuredBodyBytes": 143357,
+    "uncertainBodyBytes": 0,
+    "rawRetainedBytes": 143357,
+    "elapsedMs": 36345.151989
+  },
+  "cumulative": {
+    "requestStarts": 40,
+    "measuredBodyBytes": 1038730,
+    "uncertainBodyBytes": 262416
+  },
+  "uncertainUsagePreserved": true,
+  "solanaResearchBook": "NOT_READ_OR_MODIFIED",
+  "provider": "GeckoTerminal public keyless HTTPS",
+  "additionalApiSubscriptionFeesUsd": 0,
+  "infrastructureCost": "UNVERIFIED"
+}

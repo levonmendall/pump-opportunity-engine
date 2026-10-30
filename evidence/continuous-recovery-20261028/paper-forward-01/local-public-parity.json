@@ -1,0 +1,55 @@
+{
+  "at": 1793221135219,
+  "sourceRun": 40758225777,
+  "sourceIdentity": "6d894c1262b93d22f288e214016bfb314799e0ae",
+  "results": [
+    {
+      "file": "accepted-source-last-1.json",
+      "sourceAt": 1793218468523,
+      "running": false,
+      "publisherAckSourceAt": 1793218468523,
+      "matchingPublicCycles": 254,
+      "fullProjectedPayloadMatched": true,
+      "actualNativeNormalizedEvents": 2530,
+      "displayedNormalizedEvents": 0,
+      "knownFinancialPortfolioUnavailable": true
+    },
+    {
+      "file": "accepted-source-first-1.json",
+      "sourceAt": 1793217169335,
+      "running": true,
+      "publisherAckSourceAt": 1793217169335,
+      "matchingPublicCycles": 1,
+      "fullProjectedPayloadMatched": true,
+      "actualNativeNormalizedEvents": 0,
+      "displayedNormalizedEvents": 0,
+      "knownFinancialPortfolioUnavailable": true
+    },
+    {
+      "file": "accepted-source-last-2.json",
+      "sourceAt": 1793218450305,
+      "running": true,
+      "publisherAckSourceAt": 1793218450305,
+      "matchingPublicCycles": 1,
+      "fullProjectedPayloadMatched": true,
+      "actualNativeNormalizedEvents": 2291,
+      "displayedNormalizedEvents": 0,
+      "knownFinancialPortfolioUnavailable": true
+    },
+    {
+      "file": "accepted-source-first-2.json",
+      "sourceAt": 1793217184355,
+      "running": true,
+      "publisherAckSourceAt": 1793217184355,
+      "matchingPublicCycles": 2,
+      "fullProjectedPayloadMatched": true,
+      "actualNativeNormalizedEvents": 10,
+      "displayedNormalizedEvents": 0,
+      "knownFinancialPortfolioUnavailable": true
+    }
+  ],
+  "runningSourcesMatched": 3,
+  "stoppedSourcesMatched": 1,
+  "knownCountersBugPreserved": true,
+  "financialReportingSuccessClaimed": false
+}

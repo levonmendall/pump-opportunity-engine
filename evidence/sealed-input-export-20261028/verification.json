@@ -1,0 +1,50 @@
+{
+  "schemaVersion": 1,
+  "kind": "first-seal-public-input-export-verification",
+  "baseCommit": "94dcd7cd84e140d33059d3df5111e15abfb6a19e",
+  "at": "2026-10-28T19:18:11.241141+00:00",
+  "focusedChecks": 16,
+  "build": "PASS",
+  "networkCalls": 0,
+  "financialDatabaseRead": false,
+  "actualPilotManifestModified": false,
+  "actualBooksModified": false,
+  "privateFixtureCheckpointCreated": true,
+  "files": [
+    {
+      "file": "evidence/resumed-forward-20261028/prepare-public-input.mjs",
+      "bytes": 30628,
+      "sha256": "8b4e7031578af57b34312ac191c7bd70c57a2fbda2501560122685e021d996f5"
+    },
+    {
+      "file": "test/native-input-checkpoint-handoff.test.ts",
+      "bytes": 6957,
+      "sha256": "1112dad83585cb4e5b2ce79028f75ce0892309adfd6343a31355c358d97e3575"
+    },
+    {
+      "file": "evidence/sealed-input-export-20261028/focused-verified.txt",
+      "bytes": 2097,
+      "sha256": "3064989df26956a58a8cfd69e3fa0cb8228e114b09b2a04e02730e79eee7da9e"
+    },
+    {
+      "file": "evidence/sealed-input-export-20261028/build-verified.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "file": "evidence/sealed-input-export-20261028/actual312-verified-start-history-benchmark.json",
+      "bytes": 110090,
+      "sha256": "f8e2721eba498e297b41680d07e9e446fabaf915e38535c67e4ac7748e1b3b91"
+    },
+    {
+      "file": "evidence/sealed-input-export-20261028/benchmark-actual-books.mjs",
+      "bytes": 4284,
+      "sha256": "77ec49ff41b53b1d72b573d8ab28f66c7f2658e3778f4463827b33e59dc23d31"
+    },
+    {
+      "file": "evidence/sealed-input-export-20261028/independent-review.md",
+      "bytes": 3881,
+      "sha256": "5351fd27ad36490cf6fc8ca65ae07bb90b07de4fefed7cf6520cbee951c76dc6"
+    }
+  ]
+}

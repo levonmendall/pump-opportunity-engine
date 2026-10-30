@@ -1,0 +1,69 @@
+{
+  "schemaVersion": 1,
+  "checkedAt": "2026-10-28T15:21:25.189645+00:00",
+  "source": {
+    "release": "640143a5924a7ff7d98039967c2db17957f71f24",
+    "strategy": "persistent-buying-v0-unfrozen",
+    "sha256": "4c035987338ab4dfa8982b5314c2ce3aebb41b12f23268a6425d8861d3e1909a"
+  },
+  "runId": "native-candidates-20261028151711944",
+  "running": true,
+  "sourceAt": 1793200845723,
+  "receiverState": "reporting",
+  "sourceAgeMs": 34506,
+  "deepActive": 6,
+  "funnel": {
+    "discovered": 1,
+    "supported": null,
+    "sufficientlyObserved": 2,
+    "evaluated": 2,
+    "qualified": 0,
+    "reserved": 0,
+    "attempted": 0,
+    "paperFilled": 0,
+    "exited": 0,
+    "reconciled": 0,
+    "verifiedMigrationOrigins": 122,
+    "admitted": 504,
+    "usableWindows": 2
+  },
+  "metrics": {
+    "rpcRequests": 94,
+    "providerEvents": 144176,
+    "normalizedTrades": 111,
+    "eventLoopLagMs": 25.772031,
+    "maximumCompletedGapMs": null,
+    "maximumQuoteAgeMs": null,
+    "protectionBreaches": null,
+    "unavailableChecks": null,
+    "streamBytes": 227806444
+  },
+  "refusals": [
+    {
+      "reason": "migration-verification-unavailable",
+      "count": 0
+    },
+    {
+      "reason": "verification-queue-full",
+      "count": 0
+    },
+    {
+      "reason": "native-quality-gaps",
+      "count": 24
+    },
+    {
+      "reason": "independent-audit-unavailable",
+      "count": 3
+    },
+    {
+      "reason": "independent-audit-unusable",
+      "count": 0
+    },
+    {
+      "reason": "predictive-window-deadline-missed",
+      "count": 4
+    }
+  ],
+  "financialExecutionAuthorized": false,
+  "classification": "IN_PROGRESS_NOT_FORWARD_ACCEPTANCE"
+}

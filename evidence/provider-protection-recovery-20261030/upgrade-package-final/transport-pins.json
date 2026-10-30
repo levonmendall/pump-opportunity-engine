@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "kind": "poe-original-forward-transport-v1",
+  "source": {
+    "commit": "5675961a0ad05df508eec6928644c9e403be0811",
+    "sha256": "157c34efd86bc0b5ae78aa268afe5afc7d3a4c4db8edcbb181445cad92ccb6ae"
+  },
+  "indexSha256": "694788119a7eed387d9d8ad10481f7cc8e995463105030547c149aa43f4732d0",
+  "driverSha256": "6e4281d08a011aae887407009db34aa917c31d86d599c2d97a9b42503b7c8d43",
+  "files": [
+    {
+      "file": "native-paper.mjs",
+      "bytes": 5267047,
+      "sha256": "157c34efd86bc0b5ae78aa268afe5afc7d3a4c4db8edcbb181445cad92ccb6ae",
+      "packedFile": "native-paper.mjs.gz",
+      "packedBytes": 879584,
+      "packedSha256": "144f3f6ba859d6ecb6aea4b1180b180b8603adcb0bc0ba87de2124234ce3f0af"
+    },
+    {
+      "file": "backup-worker.mjs",
+      "bytes": 76572,
+      "sha256": "aa41d0c26f42bc0e3c2c5655907a5ea71b11f3047ef6bfd23e5858c340066af2",
+      "packedFile": "backup-worker.mjs.gz",
+      "packedBytes": 18454,
+      "packedSha256": "037d934969aae2b51469c5c1763244b98542d0db51ce502c501ef85915306763"
+    },
+    {
+      "file": "better_sqlite3.node",
+      "bytes": 2226168,
+      "sha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d",
+      "packedFile": "better_sqlite3.node.gz",
+      "packedBytes": 1106933,
+      "packedSha256": "1c96bac132087ccbc0720ae061efc2ad8fcc0a87e0fe81f92b34d1e11c4fcbd2"
+    },
+    {
+      "file": "metadata.json",
+      "bytes": 168665,
+      "sha256": "93e00187cfae669fff3a713ffb05329f69033f2692c1171c97e9764a76cc5f85",
+      "packedFile": "metadata.json.gz",
+      "packedBytes": 41845,
+      "packedSha256": "5db4521f26a54107b5511a89aabbef2f800bfa3d99f70c102ee665acc7b2798b"
+    },
+    {
+      "file": "snapshot-publisher.mjs",
+      "bytes": 32314,
+      "sha256": "7da8c7388a5ec3e4f2e0b46a8226ce457d0a68578e5b5225c50b97f1a508ff44",
+      "packedFile": "snapshot-publisher.mjs.gz",
+      "packedBytes": 9603,
+      "packedSha256": "ceb648ecf29a29880aee2223c2142e1a65287ff8c30e211ad12bf6a9be79371f"
+    },
+    {
+      "file": "run-authoritative-service.py",
+      "bytes": 37955,
+      "sha256": "66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e",
+      "packedFile": "run-authoritative-service.py.gz",
+      "packedBytes": 12168,
+      "packedSha256": "af682833ca458397ef7f6034de53dc6158d1c977fc2077b24bc30f9d660a7fd9"
+    },
+    {
+      "file": "forward-original-upgrade.py",
+      "bytes": 52643,
+      "sha256": "6e4281d08a011aae887407009db34aa917c31d86d599c2d97a9b42503b7c8d43",
+      "packedFile": "forward-original-upgrade.py.gz",
+      "packedBytes": 16384,
+      "packedSha256": "2568b94eca5b09e1121aa3124d27cc11910ec06ec29252c8bdf20dd72a934616"
+    },
+    {
+      "file": "export-provider-recovery-forensics-20261030.py",
+      "bytes": 30670,
+      "sha256": "e1c04bc56c27e2341b188d441055eaf5b1eac245ad1d390157a14e3b3d129f7e",
+      "packedFile": "export-provider-recovery-forensics-20261030.py.gz",
+      "packedBytes": 11029,
+      "packedSha256": "77cbfad8707e844c61e8cdc291ff52e6b7889950abc7397c1d152987257019b1"
+    },
+    {
+      "file": "poe-runtime-persistent.conf",
+      "bytes": 925,
+      "sha256": "d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df",
+      "packedFile": "poe-runtime-persistent.conf.gz",
+      "packedBytes": 583,
+      "packedSha256": "9f411b3ed48826b53396657a0ee474e81307cc182a10ff7ee80603f92f9fb968"
+    },
+    {
+      "file": "service.json",
+      "bytes": 1715,
+      "sha256": "3cf20e5a6e8b97e0f5a5e570e5ca96ae4827bf6e62d9ff5529c74cf9c204817c",
+      "packedFile": "service.json.gz",
+      "packedBytes": 880,
+      "packedSha256": "082ffdc4a9497bc7d393478bd8117475f7ccb4ff1a82ace2423797c7a800326e"
+    },
+    {
+      "file": "index.json",
+      "bytes": 2220,
+      "sha256": "694788119a7eed387d9d8ad10481f7cc8e995463105030547c149aa43f4732d0",
+      "packedFile": "index.json.gz",
+      "packedBytes": 1181,
+      "packedSha256": "ab60196cf863aaee8eee769c151f0dbe9f53cc9b60a4bec6a8c902737d81b993"
+    }
+  ]
+}

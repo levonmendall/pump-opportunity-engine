@@ -1,0 +1,45 @@
+{
+  "prepareRun": 40629877292,
+  "installRun": 40629996114,
+  "delivery": {
+    "schemaVersion": 1,
+    "purpose": "POE_PILOT_REPORTING_ONLY",
+    "nonce": "c8f431d7a4c46d8c2ce6fb20bb721063",
+    "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+    "inceptionAt": 1793123773252,
+    "sourceStatusSha256": "9e13e049f6882ad6f8266217cb870e6d62e9a183cdf7bc6b0b6789c5535aa9c3",
+    "installedAt": 1793160122183,
+    "destination": "/home/mm-ec2-runner/.local/share/poe-reporting/pilot-ingest.secret",
+    "installed": true,
+    "existingMatched": false,
+    "oneTimePrivateKeyDeleted": true,
+    "credentialValuePrinted": false,
+    "credentialHashPrinted": false
+  },
+  "originalObserverAfter": {
+    "checkedAt": 1793160122234,
+    "originalObserverUnchanged": true,
+    "originalService": {
+      "MainPID": "2333724",
+      "NRestarts": "0",
+      "User": "poe-runtime",
+      "ActiveState": "active",
+      "SubState": "running"
+    },
+    "originalPublicStatus": {
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+      "generatedAt": "2026-10-28T04:01:58.082Z",
+      "entriesDisabled": true,
+      "liveTrading": false
+    },
+    "observerControlAttempted": false,
+    "financialFilesRead": false,
+    "walletOrProviderSecretsRead": false
+  },
+  "publicContextSha256": "a9ac3528f3a3bdd024e151990dd904d14cdeef3442f9a0f6511e7df44664bfff",
+  "plaintextInRepositoryOrLogs": false,
+  "publisherStarted": false,
+  "providerOrWalletSecretsRead": false
+}

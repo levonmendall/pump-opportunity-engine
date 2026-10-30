@@ -1,0 +1,44 @@
+{
+  "fixture": true,
+  "io": 0,
+  "watchRows": 30,
+  "priorDeepRows": 6,
+  "deadline": {
+    "at": 1793282400000,
+    "targets": [],
+    "readyCount": 0,
+    "nextEligibleAt": null,
+    "earliestDeadlineAt": null,
+    "discretionaryUntil": null,
+    "minimumReadyWorkMs": 0,
+    "unavailableReadyCount": 0,
+    "conservativeReadyEnvelopeFits": true,
+    "requiredNativeAt": null,
+    "requiredNativeAction": null,
+    "meaning": "Bounded commitments/future first windows; actual rate, occupancy, provider and financial admission still apply. Unknown extra pages are not guaranteed."
+  },
+  "admission": {
+    "admitted": true,
+    "latestStartAt": null,
+    "view": {
+      "at": 1793282400000,
+      "targets": [],
+      "readyCount": 0,
+      "nextEligibleAt": null,
+      "earliestDeadlineAt": null,
+      "discretionaryUntil": null,
+      "minimumReadyWorkMs": 0,
+      "unavailableReadyCount": 0,
+      "conservativeReadyEnvelopeFits": true,
+      "requiredNativeAt": null,
+      "requiredNativeAction": null,
+      "meaning": "Bounded commitments/future first windows; actual rate, occupancy, provider and financial admission still apply. Unknown extra pages are not guaranteed."
+    },
+    "reason": "shared-deadline-slack"
+  },
+  "startupIndex": 2,
+  "startupTrace": [
+    "discovery",
+    "watch"
+  ]
+}

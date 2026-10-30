@@ -1,0 +1,2150 @@
+{
+  "schemaVersion": 1,
+  "classification": "FAILED_NATIVE_INTERVAL_ORIGIN_BASED_AGE_AND_INDEPENDENT_CONTROL_ANALYSIS",
+  "generatedAt": "2026-10-28T06:35:49.015Z",
+  "sourceTool": {
+    "path": "scripts/analyze-native-age-interval.mjs",
+    "sha256": "159a39c6f757bf87eb6412faaa09ff04e638c75931e0bd23c6624d4edf1a7ecb",
+    "adaptedFrom": "scripts/score-age-forward.mjs",
+    "unionHelper": "scripts/summarize-pilot.ts:unionPilotIntervals",
+    "strictMigrationDecoderSha256": "ef4ffdc7882f5db92b0a9d7f764f101d2fedd53bcaca91570065278930efee99"
+  },
+  "source": {
+    "commit": "c5ce87b858a6655c4f5dd80e8887554b84717415",
+    "sha256": "c848f60362ad19f290bfcbde64b252bb5309a26fe56a19c37785b76e95274540",
+    "configurationSha256": "8d1fe7e927d3253a5d98aae2bf5a3a2a3bb50e4070407aa16a20470c65aa81c8",
+    "runId": "native-candidates-20261028061222894",
+    "strategyVersion": "persistent-buying-v0-unfrozen",
+    "dataContract": "confirmed-program-activity-v3-shadow",
+    "observationAgePolicy": {
+      "version": "observation-age-selected-24h-study-v1",
+      "minimumObservationAgeMs": 0,
+      "recentMaximumAgeMs": 7200000,
+      "selectedOlderMaximumAgeMs": 86400000,
+      "olderActivityMaximumAgeMs": 60000,
+      "primaryWatchCapacity": 150,
+      "olderWatchCapacity": 24,
+      "totalWatchCapacity": 174,
+      "maximumOlderDeep": 1
+    }
+  },
+  "interval": {
+    "startedAt": 1793167942894,
+    "startedAtIso": "2026-10-28T06:12:22.894Z",
+    "sourceStoppedAt": 1793168144920,
+    "sourceStoppedAtIso": "2026-10-28T06:15:44.920Z",
+    "elapsedMs": 202026,
+    "plannedDurationMs": 7200000,
+    "logicalObservationCutoffAt": 1793175132894,
+    "stopRequestedAt": 1793168144730,
+    "stopReason": "NATIVE_RESEARCH_FLOW_FATAL:NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+    "physicalSettlementConfirmed": true,
+    "mechanicallyCompleted": false,
+    "acceptance": false
+  },
+  "originCount": 111,
+  "originRefusals": [],
+  "ageBandCounting": "Admissions and ACKs use their actual times. Complete endpoints use window-end age; assessments use actual availability age. All allocated/lookback intervals are clipped at actual migration-age boundaries before token and wall unions. Segment sequence resets are preserved: evidence keys use file+line+hash.",
+  "summary": {
+    "eventRows": 18256,
+    "allocationEvents": 11,
+    "uniqueAdmitted": 7,
+    "ackEvents": 10,
+    "uniqueAck": 7,
+    "actualMaximumSimultaneousCandidates": 5,
+    "featureViews": 65,
+    "rawCompleteEndpoints": 9,
+    "uniqueRawComplete": 4,
+    "auditOutcomes": 4,
+    "auditedEndpoints": 2,
+    "uniqueAudited": 2,
+    "assessments": 2,
+    "predictiveCounts": {
+      "failed": 2
+    },
+    "rawLookbackCandidateUnionMs": 290000,
+    "rawLookbackWallUnionMs": 150000,
+    "auditedLookbackCandidateUnionMs": 120000,
+    "auditedLookbackWallUnionMs": 70000,
+    "allocatedCandidateUnionMs": 531492,
+    "allocatedWallUnionMs": 195868,
+    "normalizedEvents": 591,
+    "protocolEffectRecords": 10,
+    "qualityGapEvents": 9,
+    "technicalReasons": {
+      "native-predictive-window-expired:no validated predictive decision before next completed bucket; not a strategy rejection": 5,
+      "pilot-data-control-unavailable:COMPONENT_OPERATION_FAILED": 1,
+      "native-candidate-quality-gap:PILOT_RPC_COMPONENT_OPERATION_FAILED": 4,
+      "pilot-rpc-unavailable:COMPONENT_PHYSICAL_TIMEOUT": 1,
+      "native-candidate-quality-gap:NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT": 5
+    },
+    "physicalStarts": 79,
+    "physicalSettlements": 79,
+    "physicalStartsByMethod": {
+      "upgrade": 4,
+      "subscribeMigration": 1,
+      "getMultipleAccounts": 33,
+      "logsSubscribe": 11,
+      "ping": 19,
+      "getSignaturesForAddress": 3,
+      "logsUnsubscribe": 2,
+      "getTransaction": 6
+    },
+    "resources": {
+      "maximumRssBytes": 325103616,
+      "cpu": {
+        "user": 38070593,
+        "system": 2081560
+      },
+      "eventLoopDelayP95Ms": 61.767679,
+      "eventLoopDelayMaximumMs": 648.019967,
+      "retainedEvidenceBytes": 23843425,
+      "evidenceSegments": 3
+    }
+  },
+  "ageBands": {
+    "A": {
+      "minimumMinutes": 0,
+      "maximumMinutesExclusive": 1,
+      "allocationEvents": 4,
+      "uniqueAdmittedTokens": [
+        "Fm6NC85y13gyP17G1WY5D19EerjETVg7y4Y8WnLNpump",
+        "8JtcwHAk3FhHvyr2tTArT2bYpAhEtSMtny3EUPvzpump",
+        "2F4h6dPZp4wcvSJxat6t1HGXHagpP8qYqoDZsLFPpump"
+      ],
+      "ackEvents": 3,
+      "uniqueAckTokens": [
+        "Fm6NC85y13gyP17G1WY5D19EerjETVg7y4Y8WnLNpump",
+        "8JtcwHAk3FhHvyr2tTArT2bYpAhEtSMtny3EUPvzpump",
+        "2F4h6dPZp4wcvSJxat6t1HGXHagpP8qYqoDZsLFPpump"
+      ],
+      "tokensWithAnyAllocatedFlow": [
+        "Fm6NC85y13gyP17G1WY5D19EerjETVg7y4Y8WnLNpump",
+        "8JtcwHAk3FhHvyr2tTArT2bYpAhEtSMtny3EUPvzpump",
+        "2F4h6dPZp4wcvSJxat6t1HGXHagpP8qYqoDZsLFPpump"
+      ],
+      "allocatedCandidateUnionMs": 108510,
+      "allocatedWallUnionMs": 82894,
+      "rawCompleteEndpoints": 0,
+      "uniqueRawCompleteTokens": [],
+      "rawLookbackCandidateUnionMs": 52000,
+      "rawLookbackWallUnionMs": 52000,
+      "auditVerifiedEndpoints": 0,
+      "uniqueAuditedTokens": [],
+      "auditedLookbackCandidateUnionMs": 0,
+      "auditedLookbackWallUnionMs": 0,
+      "assessments": 0,
+      "predictivePassed": 0,
+      "predictiveFailed": 0,
+      "predictiveUnavailable": 0,
+      "technicalGaps": 2
+    },
+    "B": {
+      "minimumMinutes": 1,
+      "maximumMinutesExclusive": 3,
+      "allocationEvents": 1,
+      "uniqueAdmittedTokens": [
+        "Fm6NC85y13gyP17G1WY5D19EerjETVg7y4Y8WnLNpump"
+      ],
+      "ackEvents": 2,
+      "uniqueAckTokens": [
+        "Fm6NC85y13gyP17G1WY5D19EerjETVg7y4Y8WnLNpump",
+        "8JtcwHAk3FhHvyr2tTArT2bYpAhEtSMtny3EUPvzpump"
+      ],
+      "tokensWithAnyAllocatedFlow": [
+        "2F4h6dPZp4wcvSJxat6t1HGXHagpP8qYqoDZsLFPpump",
+        "Fm6NC85y13gyP17G1WY5D19EerjETVg7y4Y8WnLNpump",
+        "8JtcwHAk3FhHvyr2tTArT2bYpAhEtSMtny3EUPvzpump"
+      ],
+      "allocatedCandidateUnionMs": 91902,
+      "allocatedWallUnionMs": 40369,
+      "rawCompleteEndpoints": 1,
+      "uniqueRawCompleteTokens": [
+        "2F4h6dPZp4wcvSJxat6t1HGXHagpP8qYqoDZsLFPpump"
+      ],
+      "rawLookbackCandidateUnionMs": 8000,
+      "rawLookbackWallUnionMs": 8000,
+      "auditVerifiedEndpoints": 0,
+      "uniqueAuditedTokens": [],
+      "auditedLookbackCandidateUnionMs": 0,
+      "auditedLookbackWallUnionMs": 0,
+      "assessments": 0,
+      "predictivePassed": 0,
+      "predictiveFailed": 0,
+      "predictiveUnavailable": 0,
+      "technicalGaps": 3
+    },
+    "C": {
+      "minimumMinutes": 3,
+      "maximumMinutesExclusive": 5,
+      "allocationEvents": 0,
+      "uniqueAdmittedTokens": [],
+      "ackEvents": 0,
+      "uniqueAckTokens": [],
+      "tokensWithAnyAllocatedFlow": [],
+      "allocatedCandidateUnionMs": 0,
+      "allocatedWallUnionMs": 0,
+      "rawCompleteEndpoints": 0,
+      "uniqueRawCompleteTokens": [],
+      "rawLookbackCandidateUnionMs": 0,
+      "rawLookbackWallUnionMs": 0,
+      "auditVerifiedEndpoints": 0,
+      "uniqueAuditedTokens": [],
+      "auditedLookbackCandidateUnionMs": 0,
+      "auditedLookbackWallUnionMs": 0,
+      "assessments": 0,
+      "predictivePassed": 0,
+      "predictiveFailed": 0,
+      "predictiveUnavailable": 0,
+      "technicalGaps": 0
+    },
+    "D": {
+      "minimumMinutes": 5,
+      "maximumMinutesExclusive": 10,
+      "allocationEvents": 0,
+      "uniqueAdmittedTokens": [],
+      "ackEvents": 0,
+      "uniqueAckTokens": [],
+      "tokensWithAnyAllocatedFlow": [],
+      "allocatedCandidateUnionMs": 0,
+      "allocatedWallUnionMs": 0,
+      "rawCompleteEndpoints": 0,
+      "uniqueRawCompleteTokens": [],
+      "rawLookbackCandidateUnionMs": 0,
+      "rawLookbackWallUnionMs": 0,
+      "auditVerifiedEndpoints": 0,
+      "uniqueAuditedTokens": [],
+      "auditedLookbackCandidateUnionMs": 0,
+      "auditedLookbackWallUnionMs": 0,
+      "assessments": 0,
+      "predictivePassed": 0,
+      "predictiveFailed": 0,
+      "predictiveUnavailable": 0,
+      "technicalGaps": 0
+    },
+    "E": {
+      "minimumMinutes": 10,
+      "maximumMinutesExclusive": 30,
+      "allocationEvents": 0,
+      "uniqueAdmittedTokens": [],
+      "ackEvents": 0,
+      "uniqueAckTokens": [],
+      "tokensWithAnyAllocatedFlow": [],
+      "allocatedCandidateUnionMs": 0,
+      "allocatedWallUnionMs": 0,
+      "rawCompleteEndpoints": 0,
+      "uniqueRawCompleteTokens": [],
+      "rawLookbackCandidateUnionMs": 0,
+      "rawLookbackWallUnionMs": 0,
+      "auditVerifiedEndpoints": 0,
+      "uniqueAuditedTokens": [],
+      "auditedLookbackCandidateUnionMs": 0,
+      "auditedLookbackWallUnionMs": 0,
+      "assessments": 0,
+      "predictivePassed": 0,
+      "predictiveFailed": 0,
+      "predictiveUnavailable": 0,
+      "technicalGaps": 0
+    },
+    "F": {
+      "minimumMinutes": 30,
+      "maximumMinutesExclusive": 60,
+      "allocationEvents": 0,
+      "uniqueAdmittedTokens": [],
+      "ackEvents": 0,
+      "uniqueAckTokens": [],
+      "tokensWithAnyAllocatedFlow": [],
+      "allocatedCandidateUnionMs": 0,
+      "allocatedWallUnionMs": 0,
+      "rawCompleteEndpoints": 0,
+      "uniqueRawCompleteTokens": [],
+      "rawLookbackCandidateUnionMs": 0,
+      "rawLookbackWallUnionMs": 0,
+      "auditVerifiedEndpoints": 0,
+      "uniqueAuditedTokens": [],
+      "auditedLookbackCandidateUnionMs": 0,
+      "auditedLookbackWallUnionMs": 0,
+      "assessments": 0,
+      "predictivePassed": 0,
+      "predictiveFailed": 0,
+      "predictiveUnavailable": 0,
+      "technicalGaps": 0
+    },
+    "G": {
+      "minimumMinutes": 60,
+      "maximumMinutesExclusive": 120,
+      "allocationEvents": 3,
+      "uniqueAdmittedTokens": [
+        "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump"
+      ],
+      "ackEvents": 2,
+      "uniqueAckTokens": [
+        "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump"
+      ],
+      "tokensWithAnyAllocatedFlow": [
+        "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump"
+      ],
+      "allocatedCandidateUnionMs": 136128,
+      "allocatedWallUnionMs": 136128,
+      "rawCompleteEndpoints": 4,
+      "uniqueRawCompleteTokens": [
+        "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump"
+      ],
+      "rawLookbackCandidateUnionMs": 90000,
+      "rawLookbackWallUnionMs": 90000,
+      "auditVerifiedEndpoints": 1,
+      "uniqueAuditedTokens": [
+        "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump"
+      ],
+      "auditedLookbackCandidateUnionMs": 60000,
+      "auditedLookbackWallUnionMs": 60000,
+      "assessments": 1,
+      "predictivePassed": 0,
+      "predictiveFailed": 1,
+      "predictiveUnavailable": 0,
+      "technicalGaps": 5
+    },
+    "H": {
+      "minimumMinutes": 120,
+      "maximumMinutesExclusive": 360,
+      "allocationEvents": 1,
+      "uniqueAdmittedTokens": [
+        "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump"
+      ],
+      "ackEvents": 1,
+      "uniqueAckTokens": [
+        "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump"
+      ],
+      "tokensWithAnyAllocatedFlow": [
+        "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump"
+      ],
+      "allocatedCandidateUnionMs": 86847,
+      "allocatedWallUnionMs": 86847,
+      "rawCompleteEndpoints": 3,
+      "uniqueRawCompleteTokens": [
+        "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump"
+      ],
+      "rawLookbackCandidateUnionMs": 80000,
+      "rawLookbackWallUnionMs": 80000,
+      "auditVerifiedEndpoints": 1,
+      "uniqueAuditedTokens": [
+        "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump"
+      ],
+      "auditedLookbackCandidateUnionMs": 60000,
+      "auditedLookbackWallUnionMs": 60000,
+      "assessments": 1,
+      "predictivePassed": 0,
+      "predictiveFailed": 1,
+      "predictiveUnavailable": 0,
+      "technicalGaps": 2
+    },
+    "I": {
+      "minimumMinutes": 360,
+      "maximumMinutesExclusive": 1440,
+      "allocationEvents": 2,
+      "uniqueAdmittedTokens": [
+        "FfR4XdDPVrRmq7SFhkaH4srv54uFnNW2wfi83eNPpump",
+        "FgsSTazXwy4pxjrNMuzsQbEPbYPjAW17pAN8dfRHpump"
+      ],
+      "ackEvents": 2,
+      "uniqueAckTokens": [
+        "FfR4XdDPVrRmq7SFhkaH4srv54uFnNW2wfi83eNPpump",
+        "FgsSTazXwy4pxjrNMuzsQbEPbYPjAW17pAN8dfRHpump"
+      ],
+      "tokensWithAnyAllocatedFlow": [
+        "FfR4XdDPVrRmq7SFhkaH4srv54uFnNW2wfi83eNPpump",
+        "FgsSTazXwy4pxjrNMuzsQbEPbYPjAW17pAN8dfRHpump"
+      ],
+      "allocatedCandidateUnionMs": 108105,
+      "allocatedWallUnionMs": 108105,
+      "rawCompleteEndpoints": 1,
+      "uniqueRawCompleteTokens": [
+        "FgsSTazXwy4pxjrNMuzsQbEPbYPjAW17pAN8dfRHpump"
+      ],
+      "rawLookbackCandidateUnionMs": 60000,
+      "rawLookbackWallUnionMs": 60000,
+      "auditVerifiedEndpoints": 0,
+      "uniqueAuditedTokens": [],
+      "auditedLookbackCandidateUnionMs": 0,
+      "auditedLookbackWallUnionMs": 0,
+      "assessments": 0,
+      "predictivePassed": 0,
+      "predictiveFailed": 0,
+      "predictiveUnavailable": 0,
+      "technicalGaps": 2
+    }
+  },
+  "scopes": [
+    {
+      "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+      "pool": "BTmHL8CAkLKovYVhE2E96PiK1iLwyxbsai3vi6GycCN",
+      "allocatedAt": 1793167944754,
+      "openedAt": 1793167945653,
+      "endedAt": 1793168032500,
+      "endReason": "audited predictive observation completed; fair watch revisit",
+      "repromotion": true,
+      "originAvailableByAdmission": true,
+      "origin": {
+        "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+        "pool": "BTmHL8CAkLKovYVhE2E96PiK1iLwyxbsai3vi6GycCN",
+        "signature": "Vf6gCegDsYZafUb7ypNgy4PTK6D1LepmFLjdNKukTq1gczEV88ZLRwWUutuN7bWRzgNVLCiCE3kFYjJRFcDacuD",
+        "migrationAt": 1793146776000,
+        "migrationAtIso": "2026-10-28T00:19:36.000Z",
+        "availableAt": 1793146811433,
+        "source": {
+          "file": "input.json",
+          "originIndex": 20
+        },
+        "proof": "Original confirmed/finalized migration transactions strictly redecoded and identities equal; current pool support is separate."
+      },
+      "promotion": {
+        "file": "run/events/events-001.ndjson",
+        "line": 209,
+        "sha256": "9ad8dc94eaf018ece6084daefc26e15b271e4eee97bd029ff0e203d3fc44d0fe"
+      },
+      "openRef": {
+        "file": "run/events/events-001.ndjson",
+        "line": 234,
+        "sha256": "003448095ab9d3c1f590538d396e4d7a03aaab3d2ed50067d3394bfab4cc7e1d"
+      },
+      "endRef": {
+        "file": "run/events/events-002.ndjson",
+        "line": 6,
+        "sha256": "9eebfd2af1c347d062dd8eb09cb274489402a68021587c553c12181e8f7d20be"
+      }
+    },
+    {
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "pool": "5ALPjDC4WUfReszwbmZLpwwbvfyqbjWgJw4t4K6LvE2k",
+      "allocatedAt": 1793167944754,
+      "openedAt": 1793167945999,
+      "endedAt": 1793168042500,
+      "endReason": "audited predictive observation completed; fair watch revisit",
+      "repromotion": true,
+      "originAvailableByAdmission": true,
+      "origin": {
+        "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+        "pool": "5ALPjDC4WUfReszwbmZLpwwbvfyqbjWgJw4t4K6LvE2k",
+        "signature": "5cuskFJ72u5TxgDLhrXvdeW48bpBxxLXWyDCJhKDPaPFME69NtY5pMfFD3zKdzpMrrBHqgevnk5ZPFpSiDaFQbxz",
+        "migrationAt": 1793162715000,
+        "migrationAtIso": "2026-10-28T04:45:15.000Z",
+        "availableAt": 1793162716476,
+        "source": {
+          "file": "input.json",
+          "originIndex": 0
+        },
+        "proof": "Original confirmed/finalized migration transactions strictly redecoded and identities equal; current pool support is separate."
+      },
+      "promotion": {
+        "file": "run/events/events-001.ndjson",
+        "line": 211,
+        "sha256": "2e002acbd248a5311598a2f4d8a916eb94e54c70bf925f94ded7e4dc1acaf1f7"
+      },
+      "openRef": {
+        "file": "run/events/events-001.ndjson",
+        "line": 244,
+        "sha256": "6e1bffff81efda6587d1bc45e282763a9c8cbc5abbad2b9fd7b83d4e66ded11b"
+      },
+      "endRef": {
+        "file": "run/events/events-002.ndjson",
+        "line": 73,
+        "sha256": "ee360bebade4374ee87894d15bb9104ebc4db2b6b0e42b312202b1287670f807"
+      }
+    },
+    {
+      "mint": "FfR4XdDPVrRmq7SFhkaH4srv54uFnNW2wfi83eNPpump",
+      "pool": "6AbnoC7dqqoZ5v3EvoRHHsRYVmBVS3NZjNLdLcSv8CgG",
+      "allocatedAt": 1793168032552,
+      "openedAt": 1793168033416,
+      "endedAt": 1793168073297,
+      "endReason": "PILOT_RPC_COMPONENT_OPERATION_FAILED",
+      "repromotion": true,
+      "originAvailableByAdmission": true,
+      "origin": {
+        "mint": "FfR4XdDPVrRmq7SFhkaH4srv54uFnNW2wfi83eNPpump",
+        "pool": "6AbnoC7dqqoZ5v3EvoRHHsRYVmBVS3NZjNLdLcSv8CgG",
+        "signature": "25HBwVRUjqQz1VQAZfUMnwVYMsrqtUTNUGvCyDWtKzuUfBfrzcDciGW41cZMzMeZNXbACkNM9tMeDWhbmzWEynkC",
+        "migrationAt": 1793142756000,
+        "migrationAtIso": "2026-10-27T23:12:36.000Z",
+        "availableAt": 1793142792455,
+        "source": {
+          "file": "input.json",
+          "originIndex": 31
+        },
+        "proof": "Original confirmed/finalized migration transactions strictly redecoded and identities equal; current pool support is separate."
+      },
+      "promotion": {
+        "file": "run/events/events-002.ndjson",
+        "line": 7,
+        "sha256": "ed344e1fc4f41091b6969686f7bddeb43fd7f0f4ff8c0475d6111a2d866d842d"
+      },
+      "openRef": {
+        "file": "run/events/events-002.ndjson",
+        "line": 30,
+        "sha256": "ad6f41ef0d423266f6ed9594b574ec6ff3269a62398a4b6df8ff08fb8396efdf"
+      },
+      "endRef": {
+        "file": "run/events/events-002.ndjson",
+        "line": 5185,
+        "sha256": "d9ff5a2445e1061d7a02e0ec7248d2964f59baa792fc3b8145d4242fcc785cf1"
+      }
+    },
+    {
+      "mint": "Fm6NC85y13gyP17G1WY5D19EerjETVg7y4Y8WnLNpump",
+      "pool": "8KUpPgbFeuuYe3biWWFmmDytFuTqfZVdbpp3JZ1RG6QB",
+      "allocatedAt": 1793168043861,
+      "openedAt": 1793168044600,
+      "endedAt": 1793168073297,
+      "endReason": "PILOT_RPC_COMPONENT_OPERATION_FAILED",
+      "repromotion": false,
+      "originAvailableByAdmission": true,
+      "origin": {
+        "mint": "Fm6NC85y13gyP17G1WY5D19EerjETVg7y4Y8WnLNpump",
+        "pool": "8KUpPgbFeuuYe3biWWFmmDytFuTqfZVdbpp3JZ1RG6QB",
+        "signature": "2UBJkEMA52m43kLBaFSTecF5zzSjDpqkSdSWPzHdFvgkWTXU6RNZXDh7vLn9DJ8jH1b6dMyG74acMvFEKVyCNyUM",
+        "migrationAt": 1793168039000,
+        "migrationAtIso": "2026-10-28T06:13:59.000Z",
+        "availableAt": 1793168043807,
+        "source": {
+          "file": "run/events/events-002.ndjson",
+          "line": 105,
+          "sha256": "af2d19328f7f6c25a41d3c9124b491e2f05c183086fa0176d92eaf7b3282643a"
+        },
+        "proof": "Original confirmed/finalized migration transactions strictly redecoded and identities equal; current pool support is separate."
+      },
+      "promotion": {
+        "file": "run/events/events-002.ndjson",
+        "line": 107,
+        "sha256": "db3c85fd37d4f9902362c2cf0ce342905f7ac417c72a1a164e1e851b659d147e"
+      },
+      "openRef": {
+        "file": "run/events/events-002.ndjson",
+        "line": 126,
+        "sha256": "bd71d4b474d11d39e0349781b016850945c905c9b2dba6d61951052bcd319f07"
+      },
+      "endRef": {
+        "file": "run/events/events-002.ndjson",
+        "line": 5188,
+        "sha256": "6050d96265711703649e45e3b2c540940ad8df082530c8f70a8b1855494e5e8f"
+      }
+    },
+    {
+      "mint": "8JtcwHAk3FhHvyr2tTArT2bYpAhEtSMtny3EUPvzpump",
+      "pool": "DgnZz8ck3p8FZBZiYuTTaeprgdbrAU3VEPXq3iPEkvxK",
+      "allocatedAt": 1793168046966,
+      "openedAt": 1793168047681,
+      "endedAt": 1793168073297,
+      "endReason": "PILOT_RPC_COMPONENT_OPERATION_FAILED",
+      "repromotion": false,
+      "originAvailableByAdmission": true,
+      "origin": {
+        "mint": "8JtcwHAk3FhHvyr2tTArT2bYpAhEtSMtny3EUPvzpump",
+        "pool": "DgnZz8ck3p8FZBZiYuTTaeprgdbrAU3VEPXq3iPEkvxK",
+        "signature": "qRtKxqttvrg2YmLeMvh18dCsAamCrg4JHb7Ku8umiW6Ev76VvdAaxzAEnXKE85bme7D1A8nm6YWBhN9hHvD7KWQ",
+        "migrationAt": 1793168045000,
+        "migrationAtIso": "2026-10-28T06:14:05.000Z",
+        "availableAt": 1793168046912,
+        "source": {
+          "file": "run/events/events-002.ndjson",
+          "line": 237,
+          "sha256": "e239bf0c44035d41580d98e7c431690da6b1f194eee3b137bf293d9dff4062b1"
+        },
+        "proof": "Original confirmed/finalized migration transactions strictly redecoded and identities equal; current pool support is separate."
+      },
+      "promotion": {
+        "file": "run/events/events-002.ndjson",
+        "line": 239,
+        "sha256": "7dfef3b96cf3c09ff26d6710404fca85dd810f4ed3a161c0929e365c21712606"
+      },
+      "openRef": {
+        "file": "run/events/events-002.ndjson",
+        "line": 287,
+        "sha256": "d3f5b41bf7a91ac2691c367bddb8243b4ece492cb423cf9b52e322cd8be65620"
+      },
+      "endRef": {
+        "file": "run/events/events-002.ndjson",
+        "line": 5191,
+        "sha256": "9c0fd2dcdb3b543c508b4bd1e55e100ca3be6b7b9500be618e29974b1920e898"
+      }
+    },
+    {
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "pool": "5ALPjDC4WUfReszwbmZLpwwbvfyqbjWgJw4t4K6LvE2k",
+      "allocatedAt": 1793168072521,
+      "openedAt": null,
+      "endedAt": 1793168073297,
+      "endReason": "PILOT_RPC_COMPONENT_OPERATION_FAILED",
+      "repromotion": true,
+      "originAvailableByAdmission": true,
+      "origin": {
+        "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+        "pool": "5ALPjDC4WUfReszwbmZLpwwbvfyqbjWgJw4t4K6LvE2k",
+        "signature": "5cuskFJ72u5TxgDLhrXvdeW48bpBxxLXWyDCJhKDPaPFME69NtY5pMfFD3zKdzpMrrBHqgevnk5ZPFpSiDaFQbxz",
+        "migrationAt": 1793162715000,
+        "migrationAtIso": "2026-10-28T04:45:15.000Z",
+        "availableAt": 1793162716476,
+        "source": {
+          "file": "input.json",
+          "originIndex": 0
+        },
+        "proof": "Original confirmed/finalized migration transactions strictly redecoded and identities equal; current pool support is separate."
+      },
+      "promotion": {
+        "file": "run/events/events-002.ndjson",
+        "line": 5136,
+        "sha256": "d0fb34d04a0ea18f8af431d4521121977cea2a7f1c45c556e864b5aff93c58f5"
+      },
+      "endRef": {
+        "file": "run/events/events-002.ndjson",
+        "line": 5194,
+        "sha256": "43e0603cd262f9285e0a0d003c2dc60e1b42b8eb49b37982f33b73cf8f914657"
+      }
+    },
+    {
+      "mint": "FgsSTazXwy4pxjrNMuzsQbEPbYPjAW17pAN8dfRHpump",
+      "pool": "FDpRWfSV5TJeJ1Ni5NYg54UxgrVN1fpAVNnXE2GLRYKu",
+      "allocatedAt": 1793168073348,
+      "openedAt": 1793168076473,
+      "endedAt": 1793168144697,
+      "endReason": "NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+      "repromotion": true,
+      "originAvailableByAdmission": true,
+      "origin": {
+        "mint": "FgsSTazXwy4pxjrNMuzsQbEPbYPjAW17pAN8dfRHpump",
+        "pool": "FDpRWfSV5TJeJ1Ni5NYg54UxgrVN1fpAVNnXE2GLRYKu",
+        "signature": "u85rHqjq1tCBvbwwFesQVv246jWgVu6xXfA9nsbZGKh9yuQQqpaBeyec89H1Wked1ytCwM11VNrDsKZbFC23SD7",
+        "migrationAt": 1793142373000,
+        "migrationAtIso": "2026-10-27T23:06:13.000Z",
+        "availableAt": 1793142408464,
+        "source": {
+          "file": "input.json",
+          "originIndex": 39
+        },
+        "proof": "Original confirmed/finalized migration transactions strictly redecoded and identities equal; current pool support is separate."
+      },
+      "promotion": {
+        "file": "run/events/events-002.ndjson",
+        "line": 5196,
+        "sha256": "b346ac9c8c5f54a3637cdc2fa8bf7757600d50d4f469249b418d82bc4c45bf93"
+      },
+      "openRef": {
+        "file": "run/events/events-002.ndjson",
+        "line": 5220,
+        "sha256": "07ceda73ddf7861dc416ed152e00c1be34f891b909b4cff5b128f73cf2f5e754"
+      },
+      "endRef": {
+        "file": "run/events/events-003.ndjson",
+        "line": 8275,
+        "sha256": "63cc5d7700e54ac114c71a92313b9f2fa20baa6ee502f509ba0d7fd497cc6d88"
+      }
+    },
+    {
+      "mint": "2F4h6dPZp4wcvSJxat6t1HGXHagpP8qYqoDZsLFPpump",
+      "pool": "7VBYqqMz3tKLKUUfsvGQ1hHBpfWWieDbw2DNW7GuKvaH",
+      "allocatedAt": 1793168077020,
+      "openedAt": 1793168077803,
+      "endedAt": 1793168144696,
+      "endReason": "NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+      "repromotion": false,
+      "originAvailableByAdmission": true,
+      "origin": {
+        "mint": "2F4h6dPZp4wcvSJxat6t1HGXHagpP8qYqoDZsLFPpump",
+        "pool": "7VBYqqMz3tKLKUUfsvGQ1hHBpfWWieDbw2DNW7GuKvaH",
+        "signature": "abtxihzfqizhRShAcrJQmT8LW3HTtjnbyAPfmun4uCVL9SAWUsnHs7sk53PWLJE6R4M8JQMcuuwWJfuABgqrHpU",
+        "migrationAt": 1793168072000,
+        "migrationAtIso": "2026-10-28T06:14:32.000Z",
+        "availableAt": 1793168076964,
+        "source": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5235,
+          "sha256": "7d85f50e331f5eb27a636eb647939a1e1ff0b8c1c34850572fee3a7f0493292b"
+        },
+        "proof": "Original confirmed/finalized migration transactions strictly redecoded and identities equal; current pool support is separate."
+      },
+      "promotion": {
+        "file": "run/events/events-002.ndjson",
+        "line": 5237,
+        "sha256": "7ded3f19868f17bff923a10fcc49f07137ddf06e1014e89bcacb870fc29a3398"
+      },
+      "openRef": {
+        "file": "run/events/events-002.ndjson",
+        "line": 5258,
+        "sha256": "43e027005c5345633b649699556644d9473b1e8f10c81b5959b3ef9790ecf0f9"
+      },
+      "endRef": {
+        "file": "run/events/events-003.ndjson",
+        "line": 8272,
+        "sha256": "2be2a1b44a8cea303216ff46729fbfe823ea3f70a0c5d9920208ce7a107c08ce"
+      }
+    },
+    {
+      "mint": "Fm6NC85y13gyP17G1WY5D19EerjETVg7y4Y8WnLNpump",
+      "pool": "8KUpPgbFeuuYe3biWWFmmDytFuTqfZVdbpp3JZ1RG6QB",
+      "allocatedAt": 1793168103477,
+      "openedAt": 1793168104328,
+      "endedAt": 1793168144697,
+      "endReason": "NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+      "repromotion": true,
+      "originAvailableByAdmission": true,
+      "origin": {
+        "mint": "Fm6NC85y13gyP17G1WY5D19EerjETVg7y4Y8WnLNpump",
+        "pool": "8KUpPgbFeuuYe3biWWFmmDytFuTqfZVdbpp3JZ1RG6QB",
+        "signature": "2UBJkEMA52m43kLBaFSTecF5zzSjDpqkSdSWPzHdFvgkWTXU6RNZXDh7vLn9DJ8jH1b6dMyG74acMvFEKVyCNyUM",
+        "migrationAt": 1793168039000,
+        "migrationAtIso": "2026-10-28T06:13:59.000Z",
+        "availableAt": 1793168043807,
+        "source": {
+          "file": "run/events/events-002.ndjson",
+          "line": 105,
+          "sha256": "af2d19328f7f6c25a41d3c9124b491e2f05c183086fa0176d92eaf7b3282643a"
+        },
+        "proof": "Original confirmed/finalized migration transactions strictly redecoded and identities equal; current pool support is separate."
+      },
+      "promotion": {
+        "file": "run/events/events-003.ndjson",
+        "line": 949,
+        "sha256": "e0971d682e866d927386789890d5a9585778f0dfd855b11fcbad55d6b81d4614"
+      },
+      "openRef": {
+        "file": "run/events/events-003.ndjson",
+        "line": 1107,
+        "sha256": "0b02ac22bb4d5f7b16af33d179452d0708fbd5c01333fe32d3cab988eca2efd1"
+      },
+      "endRef": {
+        "file": "run/events/events-003.ndjson",
+        "line": 8278,
+        "sha256": "aa6d4de91e47d343b98d484571f57994778a822b811495900391b0699bb1c850"
+      }
+    },
+    {
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "pool": "5ALPjDC4WUfReszwbmZLpwwbvfyqbjWgJw4t4K6LvE2k",
+      "allocatedAt": 1793168103477,
+      "openedAt": 1793168105070,
+      "endedAt": 1793168144697,
+      "endReason": "NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+      "repromotion": true,
+      "originAvailableByAdmission": true,
+      "origin": {
+        "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+        "pool": "5ALPjDC4WUfReszwbmZLpwwbvfyqbjWgJw4t4K6LvE2k",
+        "signature": "5cuskFJ72u5TxgDLhrXvdeW48bpBxxLXWyDCJhKDPaPFME69NtY5pMfFD3zKdzpMrrBHqgevnk5ZPFpSiDaFQbxz",
+        "migrationAt": 1793162715000,
+        "migrationAtIso": "2026-10-28T04:45:15.000Z",
+        "availableAt": 1793162716476,
+        "source": {
+          "file": "input.json",
+          "originIndex": 0
+        },
+        "proof": "Original confirmed/finalized migration transactions strictly redecoded and identities equal; current pool support is separate."
+      },
+      "promotion": {
+        "file": "run/events/events-003.ndjson",
+        "line": 951,
+        "sha256": "8337f473e63e818444a973fd681b6d87105b961c57598f0d3f28216e5b5cb864"
+      },
+      "openRef": {
+        "file": "run/events/events-003.ndjson",
+        "line": 1148,
+        "sha256": "b21bf2eced71274accbb0ed26275d0d934969175fb6c1f188050479b859cd9af"
+      },
+      "endRef": {
+        "file": "run/events/events-003.ndjson",
+        "line": 8281,
+        "sha256": "4d81bb4c34626058b32b253fc6a88f6d5328d1809919d97ef98d2c6a0ec8d805"
+      }
+    },
+    {
+      "mint": "8JtcwHAk3FhHvyr2tTArT2bYpAhEtSMtny3EUPvzpump",
+      "pool": "DgnZz8ck3p8FZBZiYuTTaeprgdbrAU3VEPXq3iPEkvxK",
+      "allocatedAt": 1793168103477,
+      "openedAt": 1793168105860,
+      "endedAt": 1793168144697,
+      "endReason": "NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+      "repromotion": true,
+      "originAvailableByAdmission": true,
+      "origin": {
+        "mint": "8JtcwHAk3FhHvyr2tTArT2bYpAhEtSMtny3EUPvzpump",
+        "pool": "DgnZz8ck3p8FZBZiYuTTaeprgdbrAU3VEPXq3iPEkvxK",
+        "signature": "qRtKxqttvrg2YmLeMvh18dCsAamCrg4JHb7Ku8umiW6Ev76VvdAaxzAEnXKE85bme7D1A8nm6YWBhN9hHvD7KWQ",
+        "migrationAt": 1793168045000,
+        "migrationAtIso": "2026-10-28T06:14:05.000Z",
+        "availableAt": 1793168046912,
+        "source": {
+          "file": "run/events/events-002.ndjson",
+          "line": 237,
+          "sha256": "e239bf0c44035d41580d98e7c431690da6b1f194eee3b137bf293d9dff4062b1"
+        },
+        "proof": "Original confirmed/finalized migration transactions strictly redecoded and identities equal; current pool support is separate."
+      },
+      "promotion": {
+        "file": "run/events/events-003.ndjson",
+        "line": 953,
+        "sha256": "655fb03227b9e4d6dc3be398a8d3db4f8c0a3a3f29057cfa3aaa3755e65ca9b4"
+      },
+      "openRef": {
+        "file": "run/events/events-003.ndjson",
+        "line": 1226,
+        "sha256": "756c52c7a3524c47d2f55ca73023a152e807ff2d74f9539a9baa2e6273c7c8e3"
+      },
+      "endRef": {
+        "file": "run/events/events-003.ndjson",
+        "line": 8284,
+        "sha256": "fbc451e9f793a3749284a83bd99d59f833ca28e904a5b4cfb62ddd6749a0dccf"
+      }
+    }
+  ],
+  "rawWindows": [
+    {
+      "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+      "pool": "BTmHL8CAkLKovYVhE2E96PiK1iLwyxbsai3vi6GycCN",
+      "startAt": 1793167950000,
+      "endAt": 1793168010000,
+      "firstFeatureAvailableAt": 1793168010047,
+      "endpointAgeMinutes": 353.9,
+      "endpointAgeBand": "H",
+      "availableAgeBand": "H",
+      "features": {
+        "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+        "asOf": 1793168010047,
+        "windowStartAt": 1793167950000,
+        "windowEndAt": 1793168010000,
+        "sufficientlyObserved": true,
+        "qualityReason": null,
+        "buyLamports": "0",
+        "sellLamports": "0",
+        "netBuyLamports": "0",
+        "tradeCount": 0,
+        "provisionalTradeCount": 0,
+        "distinctBuyerWallets": 0,
+        "largestBuyerBps": 0,
+        "positiveNetBuckets": 0,
+        "priceReturnBps": null,
+        "firstPrice": null,
+        "lastPrice": null
+      },
+      "scopeAllocatedAt": 1793167944754,
+      "evidence": {
+        "file": "run/events/events-001.ndjson",
+        "line": 351,
+        "sha256": "09af606f436bda54ec56243ff24c053d374ac0640598dfa7649110b661e2b8b9"
+      },
+      "audit": null,
+      "assessment": null
+    },
+    {
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "pool": "5ALPjDC4WUfReszwbmZLpwwbvfyqbjWgJw4t4K6LvE2k",
+      "startAt": 1793167950000,
+      "endAt": 1793168010000,
+      "firstFeatureAvailableAt": 1793168010047,
+      "endpointAgeMinutes": 88.25,
+      "endpointAgeBand": "G",
+      "availableAgeBand": "G",
+      "features": {
+        "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+        "asOf": 1793168010047,
+        "windowStartAt": 1793167950000,
+        "windowEndAt": 1793168010000,
+        "sufficientlyObserved": true,
+        "qualityReason": null,
+        "buyLamports": "0",
+        "sellLamports": "80883388",
+        "netBuyLamports": "-80883388",
+        "tradeCount": 4,
+        "provisionalTradeCount": 0,
+        "distinctBuyerWallets": 0,
+        "largestBuyerBps": 0,
+        "positiveNetBuckets": 0,
+        "priceReturnBps": -35,
+        "firstPrice": {
+          "quoteLamports": "95819",
+          "tokenUnits": "3172408570"
+        },
+        "lastPrice": {
+          "quoteLamports": "80595935",
+          "tokenUnits": "2677558985785"
+        }
+      },
+      "scopeAllocatedAt": 1793167944754,
+      "evidence": {
+        "file": "run/events/events-001.ndjson",
+        "line": 352,
+        "sha256": "320d4bce945cc761c868cbbae20fe7a418308c6c59720d6c3504f600e8185ba2"
+      },
+      "audit": null,
+      "assessment": null
+    },
+    {
+      "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+      "pool": "BTmHL8CAkLKovYVhE2E96PiK1iLwyxbsai3vi6GycCN",
+      "startAt": 1793167960000,
+      "endAt": 1793168020000,
+      "firstFeatureAvailableAt": 1793168020003,
+      "endpointAgeMinutes": 354.06666666666666,
+      "endpointAgeBand": "H",
+      "availableAgeBand": "H",
+      "features": {
+        "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+        "asOf": 1793168020003,
+        "windowStartAt": 1793167960000,
+        "windowEndAt": 1793168020000,
+        "sufficientlyObserved": true,
+        "qualityReason": null,
+        "buyLamports": "0",
+        "sellLamports": "0",
+        "netBuyLamports": "0",
+        "tradeCount": 0,
+        "provisionalTradeCount": 0,
+        "distinctBuyerWallets": 0,
+        "largestBuyerBps": 0,
+        "positiveNetBuckets": 0,
+        "priceReturnBps": null,
+        "firstPrice": null,
+        "lastPrice": null
+      },
+      "scopeAllocatedAt": 1793167944754,
+      "evidence": {
+        "file": "run/events/events-001.ndjson",
+        "line": 381,
+        "sha256": "c93594a8ed6493c27a697fd3ab2b39ef63c1fd0e867575f9c58474d161e99c23"
+      },
+      "audit": null,
+      "assessment": null
+    },
+    {
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "pool": "5ALPjDC4WUfReszwbmZLpwwbvfyqbjWgJw4t4K6LvE2k",
+      "startAt": 1793167960000,
+      "endAt": 1793168020000,
+      "firstFeatureAvailableAt": 1793168020003,
+      "endpointAgeMinutes": 88.41666666666667,
+      "endpointAgeBand": "G",
+      "availableAgeBand": "G",
+      "features": {
+        "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+        "asOf": 1793168020003,
+        "windowStartAt": 1793167960000,
+        "windowEndAt": 1793168020000,
+        "sufficientlyObserved": true,
+        "qualityReason": null,
+        "buyLamports": "0",
+        "sellLamports": "80883388",
+        "netBuyLamports": "-80883388",
+        "tradeCount": 4,
+        "provisionalTradeCount": 0,
+        "distinctBuyerWallets": 0,
+        "largestBuyerBps": 0,
+        "positiveNetBuckets": 0,
+        "priceReturnBps": -35,
+        "firstPrice": {
+          "quoteLamports": "95819",
+          "tokenUnits": "3172408570"
+        },
+        "lastPrice": {
+          "quoteLamports": "80595935",
+          "tokenUnits": "2677558985785"
+        }
+      },
+      "scopeAllocatedAt": 1793167944754,
+      "evidence": {
+        "file": "run/events/events-001.ndjson",
+        "line": 383,
+        "sha256": "74bc72ff3b5e076c93e3368d5cc28d978f09c2aa7bab424e4794308ae857a6b0"
+      },
+      "audit": null,
+      "assessment": null
+    },
+    {
+      "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+      "pool": "BTmHL8CAkLKovYVhE2E96PiK1iLwyxbsai3vi6GycCN",
+      "startAt": 1793167970000,
+      "endAt": 1793168030000,
+      "firstFeatureAvailableAt": 1793168030001,
+      "endpointAgeMinutes": 354.23333333333335,
+      "endpointAgeBand": "H",
+      "availableAgeBand": "H",
+      "features": {
+        "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+        "asOf": 1793168030001,
+        "windowStartAt": 1793167970000,
+        "windowEndAt": 1793168030000,
+        "sufficientlyObserved": true,
+        "qualityReason": null,
+        "buyLamports": "0",
+        "sellLamports": "0",
+        "netBuyLamports": "0",
+        "tradeCount": 0,
+        "provisionalTradeCount": 0,
+        "distinctBuyerWallets": 0,
+        "largestBuyerBps": 0,
+        "positiveNetBuckets": 0,
+        "priceReturnBps": null,
+        "firstPrice": null,
+        "lastPrice": null
+      },
+      "scopeAllocatedAt": 1793167944754,
+      "evidence": {
+        "file": "run/events/events-001.ndjson",
+        "line": 413,
+        "sha256": "51bd65b38e1f94590723d4479cd53d24241bda8bb34821cc9ea218175c3846e1"
+      },
+      "audit": {
+        "status": "verified",
+        "availableAt": 1793168032500,
+        "sourceAvailableAt": 1793168032500,
+        "reason": "NATIVE_AUDIT_STRICT_INTERIOR_SIGNATURES_VERIFIED",
+        "evidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 2,
+          "sha256": "cefa1c57d6b92cf4c08fdebd6e7674731f5396834e3d46d2da44d3d883050054"
+        }
+      },
+      "assessment": {
+        "at": 1793168032500,
+        "status": "failed",
+        "evidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 4,
+          "sha256": "9cf0842f81221a4a8abd93de4aac3c98e7ea82c761a1e80f06ab5b2fcc9b04b6"
+        }
+      }
+    },
+    {
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "pool": "5ALPjDC4WUfReszwbmZLpwwbvfyqbjWgJw4t4K6LvE2k",
+      "startAt": 1793167970000,
+      "endAt": 1793168030000,
+      "firstFeatureAvailableAt": 1793168030001,
+      "endpointAgeMinutes": 88.58333333333333,
+      "endpointAgeBand": "G",
+      "availableAgeBand": "G",
+      "features": {
+        "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+        "asOf": 1793168030001,
+        "windowStartAt": 1793167970000,
+        "windowEndAt": 1793168030000,
+        "sufficientlyObserved": true,
+        "qualityReason": null,
+        "buyLamports": "0",
+        "sellLamports": "80883388",
+        "netBuyLamports": "-80883388",
+        "tradeCount": 4,
+        "provisionalTradeCount": 0,
+        "distinctBuyerWallets": 0,
+        "largestBuyerBps": 0,
+        "positiveNetBuckets": 0,
+        "priceReturnBps": -35,
+        "firstPrice": {
+          "quoteLamports": "95819",
+          "tokenUnits": "3172408570"
+        },
+        "lastPrice": {
+          "quoteLamports": "80595935",
+          "tokenUnits": "2677558985785"
+        }
+      },
+      "scopeAllocatedAt": 1793167944754,
+      "evidence": {
+        "file": "run/events/events-001.ndjson",
+        "line": 415,
+        "sha256": "6542ccc88b78d248ce8edbc935134984cec779d2eabe88caa4f6cdc8de0e19c0"
+      },
+      "audit": null,
+      "assessment": null
+    },
+    {
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "pool": "5ALPjDC4WUfReszwbmZLpwwbvfyqbjWgJw4t4K6LvE2k",
+      "startAt": 1793167980000,
+      "endAt": 1793168040000,
+      "firstFeatureAvailableAt": 1793168040025,
+      "endpointAgeMinutes": 88.75,
+      "endpointAgeBand": "G",
+      "availableAgeBand": "G",
+      "features": {
+        "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+        "asOf": 1793168040025,
+        "windowStartAt": 1793167980000,
+        "windowEndAt": 1793168040000,
+        "sufficientlyObserved": true,
+        "qualityReason": null,
+        "buyLamports": "0",
+        "sellLamports": "80595935",
+        "netBuyLamports": "-80595935",
+        "tradeCount": 1,
+        "provisionalTradeCount": 0,
+        "distinctBuyerWallets": 0,
+        "largestBuyerBps": 0,
+        "positiveNetBuckets": 0,
+        "priceReturnBps": 0,
+        "firstPrice": {
+          "quoteLamports": "80595935",
+          "tokenUnits": "2677558985785"
+        },
+        "lastPrice": {
+          "quoteLamports": "80595935",
+          "tokenUnits": "2677558985785"
+        }
+      },
+      "scopeAllocatedAt": 1793167944754,
+      "evidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 40,
+        "sha256": "609879767eb4960da9b830bd28cac7f6e52bbcbb04a1749fb4f9495ef762e69e"
+      },
+      "audit": {
+        "status": "verified",
+        "availableAt": 1793168042500,
+        "sourceAvailableAt": 1793168042500,
+        "reason": "NATIVE_AUDIT_STRICT_INTERIOR_SIGNATURES_VERIFIED",
+        "evidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 69,
+          "sha256": "01ec3523e004a67350c0c970a57d8878e286ffef1614309b1ebc4d9ef480a735"
+        }
+      },
+      "assessment": {
+        "at": 1793168042500,
+        "status": "failed",
+        "evidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 71,
+          "sha256": "a47fc6168f5693d887e0be785afda8d522386cc140322a052b84fd2bc1ce8e7a"
+        }
+      }
+    },
+    {
+      "mint": "FgsSTazXwy4pxjrNMuzsQbEPbYPjAW17pAN8dfRHpump",
+      "pool": "FDpRWfSV5TJeJ1Ni5NYg54UxgrVN1fpAVNnXE2GLRYKu",
+      "startAt": 1793168080000,
+      "endAt": 1793168140000,
+      "firstFeatureAvailableAt": 1793168140092,
+      "endpointAgeMinutes": 429.45,
+      "endpointAgeBand": "I",
+      "availableAgeBand": "I",
+      "features": {
+        "mint": "FgsSTazXwy4pxjrNMuzsQbEPbYPjAW17pAN8dfRHpump",
+        "asOf": 1793168140092,
+        "windowStartAt": 1793168080000,
+        "windowEndAt": 1793168140000,
+        "sufficientlyObserved": true,
+        "qualityReason": null,
+        "buyLamports": "0",
+        "sellLamports": "0",
+        "netBuyLamports": "0",
+        "tradeCount": 0,
+        "provisionalTradeCount": 0,
+        "distinctBuyerWallets": 0,
+        "largestBuyerBps": 0,
+        "positiveNetBuckets": 0,
+        "priceReturnBps": null,
+        "firstPrice": null,
+        "lastPrice": null
+      },
+      "scopeAllocatedAt": 1793168073348,
+      "evidence": {
+        "file": "run/events/events-003.ndjson",
+        "line": 7187,
+        "sha256": "39aad99dac98c774b713b021516a2c0e77b1f709ba9550c166ed0bb2acfd17d7"
+      },
+      "audit": null,
+      "assessment": null
+    },
+    {
+      "mint": "2F4h6dPZp4wcvSJxat6t1HGXHagpP8qYqoDZsLFPpump",
+      "pool": "7VBYqqMz3tKLKUUfsvGQ1hHBpfWWieDbw2DNW7GuKvaH",
+      "startAt": 1793168080000,
+      "endAt": 1793168140000,
+      "firstFeatureAvailableAt": 1793168140092,
+      "endpointAgeMinutes": 1.1333333333333333,
+      "endpointAgeBand": "B",
+      "availableAgeBand": "B",
+      "features": {
+        "mint": "2F4h6dPZp4wcvSJxat6t1HGXHagpP8qYqoDZsLFPpump",
+        "asOf": 1793168140092,
+        "windowStartAt": 1793168080000,
+        "windowEndAt": 1793168140000,
+        "sufficientlyObserved": true,
+        "qualityReason": null,
+        "buyLamports": "68984221290",
+        "sellLamports": "70429389198",
+        "netBuyLamports": "-1445167908",
+        "tradeCount": 376,
+        "provisionalTradeCount": 0,
+        "distinctBuyerWallets": 188,
+        "largestBuyerBps": 1418,
+        "positiveNetBuckets": 3,
+        "priceReturnBps": 373,
+        "firstPrice": {
+          "quoteLamports": "615743034",
+          "tokenUnits": "1770218451077"
+        },
+        "lastPrice": {
+          "quoteLamports": "82910664",
+          "tokenUnits": "229785668513"
+        }
+      },
+      "scopeAllocatedAt": 1793168077020,
+      "evidence": {
+        "file": "run/events/events-003.ndjson",
+        "line": 7188,
+        "sha256": "fc392761ac82914d953620d318e4c42e315c261b75990169d92cae9dd967ef5e"
+      },
+      "audit": null,
+      "assessment": null
+    }
+  ],
+  "audits": [
+    {
+      "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+      "pool": "BTmHL8CAkLKovYVhE2E96PiK1iLwyxbsai3vi6GycCN",
+      "status": "verified",
+      "reason": "NATIVE_AUDIT_STRICT_INTERIOR_SIGNATURES_VERIFIED",
+      "target": {
+        "startAt": 1793167970000,
+        "endAt": 1793168030000
+      },
+      "availableAt": 1793168032500,
+      "requestAttempts": 1,
+      "requiredSignatures": 0,
+      "interiorRows": 0,
+      "pages": [
+        {
+          "page": 1,
+          "rows": 1000,
+          "newestSlot": 462370100,
+          "oldestSlot": 462272343,
+          "receivedAt": 1793168032480,
+          "validatedAt": 1793168032500
+        }
+      ],
+      "evidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 2,
+        "sha256": "cefa1c57d6b92cf4c08fdebd6e7674731f5396834e3d46d2da44d3d883050054"
+      },
+      "contextFloor": "Source-pinned native history pages request minContextSlot=upper fence; result is not an atomic bank-context response."
+    },
+    {
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "pool": "5ALPjDC4WUfReszwbmZLpwwbvfyqbjWgJw4t4K6LvE2k",
+      "status": "unavailable",
+      "reason": "NATIVE_AUDIT_TARGET_SLOT_BOUNDARY_AMBIGUOUS",
+      "target": {
+        "startAt": 1793167970000,
+        "endAt": 1793168030000
+      },
+      "availableAt": 1793168033654,
+      "requestAttempts": 0,
+      "requiredSignatures": 4,
+      "interiorRows": 0,
+      "pages": [],
+      "evidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 33,
+        "sha256": "402780c99759cf5421d15fe6623f5a9d0ceaa99734b2f76bceb1d0bbd963f939"
+      },
+      "contextFloor": "Source-pinned native history pages request minContextSlot=upper fence; result is not an atomic bank-context response."
+    },
+    {
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "pool": "5ALPjDC4WUfReszwbmZLpwwbvfyqbjWgJw4t4K6LvE2k",
+      "status": "verified",
+      "reason": "NATIVE_AUDIT_STRICT_INTERIOR_SIGNATURES_VERIFIED",
+      "target": {
+        "startAt": 1793167980000,
+        "endAt": 1793168040000
+      },
+      "availableAt": 1793168042500,
+      "requestAttempts": 1,
+      "requiredSignatures": 1,
+      "interiorRows": 1,
+      "pages": [
+        {
+          "page": 1,
+          "rows": 1000,
+          "newestSlot": 462370575,
+          "oldestSlot": 462351117,
+          "receivedAt": 1793168042488,
+          "validatedAt": 1793168042500
+        }
+      ],
+      "evidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 69,
+        "sha256": "01ec3523e004a67350c0c970a57d8878e286ffef1614309b1ebc4d9ef480a735"
+      },
+      "contextFloor": "Source-pinned native history pages request minContextSlot=upper fence; result is not an atomic bank-context response."
+    },
+    {
+      "mint": "FgsSTazXwy4pxjrNMuzsQbEPbYPjAW17pAN8dfRHpump",
+      "pool": "FDpRWfSV5TJeJ1Ni5NYg54UxgrVN1fpAVNnXE2GLRYKu",
+      "status": "unavailable",
+      "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+      "target": {
+        "startAt": 1793168080000,
+        "endAt": 1793168140000
+      },
+      "availableAt": 1793168143672,
+      "requestAttempts": 1,
+      "requiredSignatures": 0,
+      "interiorRows": 0,
+      "pages": [],
+      "evidence": {
+        "file": "run/events/events-003.ndjson",
+        "line": 8035,
+        "sha256": "fbbbaa6f3bed1f169e0bace6a7e01774e567eaf3a263a6bb49adc6583c36d02b"
+      },
+      "contextFloor": "Source-pinned native history pages request minContextSlot=upper fence; result is not an atomic bank-context response."
+    }
+  ],
+  "assessments": [
+    {
+      "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+      "pool": "BTmHL8CAkLKovYVhE2E96PiK1iLwyxbsai3vi6GycCN",
+      "at": 1793168032500,
+      "atIso": "2026-10-28T06:13:52.500Z",
+      "ageMinutes": 354.275,
+      "ageBand": "H",
+      "timeFromMigrationMs": 21256500,
+      "timeFromScopeAckMs": 86847,
+      "actualWindowEndToAssessmentMs": 2500,
+      "completeFeatureToAuditAvailabilityMs": 2499,
+      "status": "failed",
+      "reason": "persistent-broad-buying-rule-not-met",
+      "features": {
+        "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+        "asOf": 1793168032500,
+        "windowStartAt": 1793167970000,
+        "windowEndAt": 1793168030000,
+        "sufficientlyObserved": true,
+        "qualityReason": null,
+        "buyLamports": "0",
+        "sellLamports": "0",
+        "netBuyLamports": "0",
+        "tradeCount": 0,
+        "provisionalTradeCount": 0,
+        "distinctBuyerWallets": 0,
+        "largestBuyerBps": 0,
+        "positiveNetBuckets": 0,
+        "priceReturnBps": null,
+        "firstPrice": null,
+        "lastPrice": null
+      },
+      "auditAvailableAt": 1793168032500,
+      "assessmentScope": "protocol-aware-shadow-ordinary-flow-only; not baseline qualification",
+      "baselineFeatureSemantics": "V2_WITHOUT_PROTOCOL_FRAMES",
+      "strictV2BaselineUnavailable": false,
+      "dataContract": "confirmed-program-activity-v3-shadow",
+      "entryAgeEligible": false,
+      "financialQualification": false,
+      "ageVariantFlags": {
+        "A": false,
+        "B": false,
+        "C": true,
+        "D": null
+      },
+      "economicOutcome": null,
+      "evidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 4,
+        "sha256": "9cf0842f81221a4a8abd93de4aac3c98e7ea82c761a1e80f06ab5b2fcc9b04b6"
+      }
+    },
+    {
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "pool": "5ALPjDC4WUfReszwbmZLpwwbvfyqbjWgJw4t4K6LvE2k",
+      "at": 1793168042500,
+      "atIso": "2026-10-28T06:14:02.500Z",
+      "ageMinutes": 88.79166666666667,
+      "ageBand": "G",
+      "timeFromMigrationMs": 5327500,
+      "timeFromScopeAckMs": 96501,
+      "actualWindowEndToAssessmentMs": 2500,
+      "completeFeatureToAuditAvailabilityMs": 2475,
+      "status": "failed",
+      "reason": "persistent-broad-buying-rule-not-met",
+      "features": {
+        "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+        "asOf": 1793168042500,
+        "windowStartAt": 1793167980000,
+        "windowEndAt": 1793168040000,
+        "sufficientlyObserved": true,
+        "qualityReason": null,
+        "buyLamports": "0",
+        "sellLamports": "80595935",
+        "netBuyLamports": "-80595935",
+        "tradeCount": 1,
+        "provisionalTradeCount": 0,
+        "distinctBuyerWallets": 0,
+        "largestBuyerBps": 0,
+        "positiveNetBuckets": 0,
+        "priceReturnBps": 0,
+        "firstPrice": {
+          "quoteLamports": "80595935",
+          "tokenUnits": "2677558985785"
+        },
+        "lastPrice": {
+          "quoteLamports": "80595935",
+          "tokenUnits": "2677558985785"
+        }
+      },
+      "auditAvailableAt": 1793168042500,
+      "assessmentScope": "protocol-aware-shadow-ordinary-flow-only; not baseline qualification",
+      "baselineFeatureSemantics": "V2_WITHOUT_PROTOCOL_FRAMES",
+      "strictV2BaselineUnavailable": false,
+      "dataContract": "confirmed-program-activity-v3-shadow",
+      "entryAgeEligible": true,
+      "financialQualification": false,
+      "ageVariantFlags": {
+        "A": true,
+        "B": true,
+        "C": true,
+        "D": null
+      },
+      "economicOutcome": null,
+      "evidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 71,
+        "sha256": "a47fc6168f5693d887e0be785afda8d522386cc140322a052b84fd2bc1ce8e7a"
+      }
+    }
+  ],
+  "technicalGaps": [
+    {
+      "kind": "native-predictive-window-expired",
+      "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+      "at": 1793168020003,
+      "ageBand": "H",
+      "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+      "windowEndAt": 1793168010000,
+      "evidence": {
+        "file": "run/events/events-001.ndjson",
+        "line": 380,
+        "sha256": "4f95db5b0aeac274de1a95d2b3faa22527e0c62e3b812e539e1d21c747323878"
+      },
+      "causeScope": "Recorded technical failure or deadline loss; not a predictive rejection or proved missed profitable trade."
+    },
+    {
+      "kind": "native-predictive-window-expired",
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "at": 1793168020003,
+      "ageBand": "G",
+      "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+      "windowEndAt": 1793168010000,
+      "evidence": {
+        "file": "run/events/events-001.ndjson",
+        "line": 382,
+        "sha256": "8d77fd0113de9c04f740c2452169b62ef83e6bbb0abaac2611e44f806c41668d"
+      },
+      "causeScope": "Recorded technical failure or deadline loss; not a predictive rejection or proved missed profitable trade."
+    },
+    {
+      "kind": "native-predictive-window-expired",
+      "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+      "at": 1793168030001,
+      "ageBand": "H",
+      "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+      "windowEndAt": 1793168020000,
+      "evidence": {
+        "file": "run/events/events-001.ndjson",
+        "line": 412,
+        "sha256": "d487555aee9a4a8ab33378ed0f004854955df4b29434521acdd066e5495f01aa"
+      },
+      "causeScope": "Recorded technical failure or deadline loss; not a predictive rejection or proved missed profitable trade."
+    },
+    {
+      "kind": "native-predictive-window-expired",
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "at": 1793168030001,
+      "ageBand": "G",
+      "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+      "windowEndAt": 1793168020000,
+      "evidence": {
+        "file": "run/events/events-001.ndjson",
+        "line": 414,
+        "sha256": "e21808da10d1c7305e8fb546ce687ff05574ef0299d28121588f833fa3caf68a"
+      },
+      "causeScope": "Recorded technical failure or deadline loss; not a predictive rejection or proved missed profitable trade."
+    },
+    {
+      "kind": "native-predictive-window-expired",
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "at": 1793168040025,
+      "ageBand": "G",
+      "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+      "windowEndAt": 1793168030000,
+      "evidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 39,
+        "sha256": "90ec28885f67a40b4def478bb91f0420cbf74141e53056884214b014b92699a8"
+      },
+      "causeScope": "Recorded technical failure or deadline loss; not a predictive rejection or proved missed profitable trade."
+    },
+    {
+      "kind": "pilot-data-control-unavailable",
+      "mint": null,
+      "at": 1793168073289,
+      "ageBand": null,
+      "reason": "COMPONENT_OPERATION_FAILED",
+      "windowEndAt": null,
+      "evidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 5182,
+        "sha256": "246e91dc5bacdc3605ea32ffd3618225663fe4bcf1627d0189de2e39f1e76054"
+      },
+      "causeScope": "Recorded technical failure or deadline loss; not a predictive rejection or proved missed profitable trade."
+    },
+    {
+      "kind": "native-candidate-quality-gap",
+      "mint": "FfR4XdDPVrRmq7SFhkaH4srv54uFnNW2wfi83eNPpump",
+      "at": 1793168073297,
+      "ageBand": "I",
+      "reason": "PILOT_RPC_COMPONENT_OPERATION_FAILED",
+      "windowEndAt": null,
+      "evidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 5183,
+        "sha256": "fe5dca02c23dc45e7caba3e5f278adda3c400573a279eca2dbb44d776a044109"
+      },
+      "causeScope": "Recorded technical failure or deadline loss; not a predictive rejection or proved missed profitable trade."
+    },
+    {
+      "kind": "native-candidate-quality-gap",
+      "mint": "Fm6NC85y13gyP17G1WY5D19EerjETVg7y4Y8WnLNpump",
+      "at": 1793168073297,
+      "ageBand": "A",
+      "reason": "PILOT_RPC_COMPONENT_OPERATION_FAILED",
+      "windowEndAt": null,
+      "evidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 5186,
+        "sha256": "2bc039b76897e21f98c6b213a9525677ce9f8335bee9195bf0b45f5d95df8e3e"
+      },
+      "causeScope": "Recorded technical failure or deadline loss; not a predictive rejection or proved missed profitable trade."
+    },
+    {
+      "kind": "native-candidate-quality-gap",
+      "mint": "8JtcwHAk3FhHvyr2tTArT2bYpAhEtSMtny3EUPvzpump",
+      "at": 1793168073297,
+      "ageBand": "A",
+      "reason": "PILOT_RPC_COMPONENT_OPERATION_FAILED",
+      "windowEndAt": null,
+      "evidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 5189,
+        "sha256": "c02e9abc07ff9eafa88dd1d2b9790a84f95d310674712384661b9a23d4c6b7b0"
+      },
+      "causeScope": "Recorded technical failure or deadline loss; not a predictive rejection or proved missed profitable trade."
+    },
+    {
+      "kind": "native-candidate-quality-gap",
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "at": 1793168073297,
+      "ageBand": "G",
+      "reason": "PILOT_RPC_COMPONENT_OPERATION_FAILED",
+      "windowEndAt": null,
+      "evidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 5192,
+        "sha256": "6b0a4ee0ea36f87200f1fa3074f9e3fd231af4677fe9bc5e57a1b896b3427d07"
+      },
+      "causeScope": "Recorded technical failure or deadline loss; not a predictive rejection or proved missed profitable trade."
+    },
+    {
+      "kind": "pilot-rpc-unavailable",
+      "mint": null,
+      "at": 1793168143659,
+      "ageBand": null,
+      "reason": "COMPONENT_PHYSICAL_TIMEOUT",
+      "windowEndAt": null,
+      "evidence": {
+        "file": "run/events/events-003.ndjson",
+        "line": 8034,
+        "sha256": "97acb4245196d56893e17e0b22fc33fed5ffb7042c5d9de3f74078d21eb9992a"
+      },
+      "causeScope": "Recorded technical failure or deadline loss; not a predictive rejection or proved missed profitable trade."
+    },
+    {
+      "kind": "native-candidate-quality-gap",
+      "mint": "2F4h6dPZp4wcvSJxat6t1HGXHagpP8qYqoDZsLFPpump",
+      "at": 1793168144696,
+      "ageBand": "B",
+      "reason": "NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+      "windowEndAt": null,
+      "evidence": {
+        "file": "run/events/events-003.ndjson",
+        "line": 8270,
+        "sha256": "8c91e462c4ae7d3b12965090026b368e862560b3890a74597438ffe0e451d064"
+      },
+      "causeScope": "Recorded technical failure or deadline loss; not a predictive rejection or proved missed profitable trade."
+    },
+    {
+      "kind": "native-candidate-quality-gap",
+      "mint": "FgsSTazXwy4pxjrNMuzsQbEPbYPjAW17pAN8dfRHpump",
+      "at": 1793168144697,
+      "ageBand": "I",
+      "reason": "NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+      "windowEndAt": null,
+      "evidence": {
+        "file": "run/events/events-003.ndjson",
+        "line": 8273,
+        "sha256": "72d35a7b06bff0b0b9c27d0250818699be77b68d7ef1690f896f7228b0ab94cf"
+      },
+      "causeScope": "Recorded technical failure or deadline loss; not a predictive rejection or proved missed profitable trade."
+    },
+    {
+      "kind": "native-candidate-quality-gap",
+      "mint": "Fm6NC85y13gyP17G1WY5D19EerjETVg7y4Y8WnLNpump",
+      "at": 1793168144697,
+      "ageBand": "B",
+      "reason": "NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+      "windowEndAt": null,
+      "evidence": {
+        "file": "run/events/events-003.ndjson",
+        "line": 8276,
+        "sha256": "3b41e1bacd8b2ee139b158c8b2fd2b02b6f6ced54925bce6e4e7b0810aea32b3"
+      },
+      "causeScope": "Recorded technical failure or deadline loss; not a predictive rejection or proved missed profitable trade."
+    },
+    {
+      "kind": "native-candidate-quality-gap",
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "at": 1793168144697,
+      "ageBand": "G",
+      "reason": "NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+      "windowEndAt": null,
+      "evidence": {
+        "file": "run/events/events-003.ndjson",
+        "line": 8279,
+        "sha256": "7418b5919484bc24c7caa7e6885176bea1008e5382e356fd38e75a4ecbcd930d"
+      },
+      "causeScope": "Recorded technical failure or deadline loss; not a predictive rejection or proved missed profitable trade."
+    },
+    {
+      "kind": "native-candidate-quality-gap",
+      "mint": "8JtcwHAk3FhHvyr2tTArT2bYpAhEtSMtny3EUPvzpump",
+      "at": 1793168144697,
+      "ageBand": "B",
+      "reason": "NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+      "windowEndAt": null,
+      "evidence": {
+        "file": "run/events/events-003.ndjson",
+        "line": 8282,
+        "sha256": "23c67db1908678d47c4b7864bee63c2cd26bfe49b87c343b016485eb1f733d08"
+      },
+      "causeScope": "Recorded technical failure or deadline loss; not a predictive rejection or proved missed profitable trade."
+    }
+  ],
+  "independentReference": {
+    "sourcePath": "/workspace/pump-opportunity-engine/evidence/age-reference-20261028/native-two-hour-40642437328",
+    "samplerStartedAt": 1793168009357,
+    "samplerCompletedAt": 1793168425644,
+    "samplerStopReason": "GRACEFUL_STOP_REQUESTED",
+    "usage": {
+      "requestStarts": 6,
+      "plannedRequests": 6,
+      "uncertainInvocationReservations": 0,
+      "measuredBodyBytes": 217470,
+      "uncertainBodyBytes": 0,
+      "rawRetainedBytes": 217470,
+      "auxiliaryEvidenceBytes": 11667,
+      "retainedBytesExcludingReceipt": 229137,
+      "elapsedMs": 416287.454941,
+      "maximumInFlight": 1
+    },
+    "cumulative": {
+      "requestStarts": 46,
+      "measuredBodyBytes": 1256200,
+      "uncertainBodyBytes": 262416
+    },
+    "cohortFrozenAt": 1793168069508,
+    "cohortFrozenAtIso": "2026-10-28T06:14:29.508Z",
+    "sourceEndAttestation": {
+      "schemaVersion": 1,
+      "runId": "native-candidates-20261028061222894",
+      "startedAt": 1793167942894,
+      "endedAt": 1793168144920,
+      "sourceCommit": "c5ce87b858a6655c4f5dd80e8887554b84717415",
+      "provenance": "Actual stopped source/runtimeOutcome in completed authenticated administration run40642437328/job122663430863;202026ms elapsed, stopRequestedAt1793168144730, fatal notification ledger limit; not normal completion or acceptance."
+    },
+    "frozenControls": 8,
+    "joins": [
+      {
+        "mint": "AZdhikmyj6ibsejv7EjML9SfNmuiMvwDrKXTEU2zpump",
+        "pool": "FAHXgxDGMw5sfFW77SCHBcT9qiQ2ArrPzo98xJxMf9kk",
+        "arm": "indexed-active",
+        "frozenAt": 1793168069508,
+        "frozenAtIso": "2026-10-28T06:14:29.508Z",
+        "indexedCreatedAt": "2026-10-27T21:23:36Z",
+        "indexedCreatedTimeVerification": "UNVERIFIED_NOT_USED_FOR_AGE",
+        "strictOrigin": null,
+        "ageAtFreezeMinutes": null,
+        "ageAtFreezeBand": null,
+        "originAvailableBeforeFreeze": false,
+        "firstSourceAwarenessAt": null,
+        "sourceAwareBeforeFreeze": false,
+        "selectedOlderAt": null,
+        "coalescedWatchActivityEvents": 0,
+        "firstWatchActivityAt": null,
+        "lastWatchActivityAt": null,
+        "olderSelectionToFirstDeepOrStopMs": null,
+        "exactWatchAtStart": null,
+        "exactWatchAtEnd": null,
+        "admissions": [],
+        "rawCompleteEndpoints": 0,
+        "auditedEndpoints": 0,
+        "assessments": [],
+        "actualFrozenToSourceEndMs": 75412,
+        "ohlcvOutcomes": 0,
+        "economicOutcome": null,
+        "classification": "STRICT_MIGRATION_ORIGIN_UNAVAILABLE",
+        "qualificationRecall": null
+      },
+      {
+        "mint": "3yM6w93HMUZSHrMSGVPR2cW4Wvubvkscht1541i6pump",
+        "pool": "3KgVPft91E1E3YedModfn1gwcLDSMErFDFhLGHa65LCj",
+        "arm": "indexed-active",
+        "frozenAt": 1793168069508,
+        "frozenAtIso": "2026-10-28T06:14:29.508Z",
+        "indexedCreatedAt": "2026-10-27T16:48:24Z",
+        "indexedCreatedTimeVerification": "UNVERIFIED_NOT_USED_FOR_AGE",
+        "strictOrigin": null,
+        "ageAtFreezeMinutes": null,
+        "ageAtFreezeBand": null,
+        "originAvailableBeforeFreeze": false,
+        "firstSourceAwarenessAt": null,
+        "sourceAwareBeforeFreeze": false,
+        "selectedOlderAt": null,
+        "coalescedWatchActivityEvents": 0,
+        "firstWatchActivityAt": null,
+        "lastWatchActivityAt": null,
+        "olderSelectionToFirstDeepOrStopMs": null,
+        "exactWatchAtStart": null,
+        "exactWatchAtEnd": null,
+        "admissions": [],
+        "rawCompleteEndpoints": 0,
+        "auditedEndpoints": 0,
+        "assessments": [],
+        "actualFrozenToSourceEndMs": 75412,
+        "ohlcvOutcomes": 0,
+        "economicOutcome": null,
+        "classification": "STRICT_MIGRATION_ORIGIN_UNAVAILABLE",
+        "qualificationRecall": null
+      },
+      {
+        "mint": "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump",
+        "pool": "Deb7ybe2LHf242BxqWD4hBQXKgfAoLSWFWXpgeHeNseq",
+        "arm": "indexed-active",
+        "frozenAt": 1793168069508,
+        "frozenAtIso": "2026-10-28T06:14:29.508Z",
+        "indexedCreatedAt": "2026-10-27T18:34:39Z",
+        "indexedCreatedTimeVerification": "UNVERIFIED_NOT_USED_FOR_AGE",
+        "strictOrigin": {
+          "mint": "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump",
+          "pool": "Deb7ybe2LHf242BxqWD4hBQXKgfAoLSWFWXpgeHeNseq",
+          "signature": "4C4JBsdiHeJjKZXz8WBKmjfCyBRue4AGTNzfhmQU1BGRtvzkyp4bVX6rXk38xMaFMWPMLpCWpgX9kZN9eZmwnzjX",
+          "migrationAt": 1793126079000,
+          "migrationAtIso": "2026-10-27T18:34:39.000Z",
+          "availableAt": 1793126153825,
+          "source": {
+            "file": "input.json",
+            "originIndex": 98
+          },
+          "proof": "Original confirmed/finalized migration transactions strictly redecoded and identities equal; current pool support is separate."
+        },
+        "ageAtFreezeMinutes": 699.8418,
+        "ageAtFreezeBand": "I",
+        "originAvailableBeforeFreeze": true,
+        "firstSourceAwarenessAt": 1793167943538,
+        "sourceAwareBeforeFreeze": true,
+        "selectedOlderAt": 1793167957698,
+        "coalescedWatchActivityEvents": 13,
+        "firstWatchActivityAt": 1793167957697,
+        "lastWatchActivityAt": 1793168142935,
+        "olderSelectionToFirstDeepOrStopMs": 187222,
+        "exactWatchAtStart": null,
+        "exactWatchAtEnd": {
+          "state": "WATCH",
+          "verifiedAt": 1793167943538,
+          "reason": "selected older observation research; baseline entry age remains excluded"
+        },
+        "admissions": [],
+        "rawCompleteEndpoints": 0,
+        "auditedEndpoints": 0,
+        "assessments": [],
+        "actualFrozenToSourceEndMs": 75412,
+        "ohlcvOutcomes": 0,
+        "economicOutcome": null,
+        "classification": "KNOWN_ACTIVITY_SELECTED_OLDER_NOT_DEEP_ALLOCATED_BEFORE_FAILURE",
+        "qualificationRecall": null
+      },
+      {
+        "mint": "ait5y3tFCVxk9yFjpNv6rUQ2fciBHT4JScGsggopump",
+        "pool": "GzLL3vHnPVSQbHVUZAKT5noRc1AUU6iFB8nreAiWzXEz",
+        "arm": "indexed-active",
+        "frozenAt": 1793168069508,
+        "frozenAtIso": "2026-10-28T06:14:29.508Z",
+        "indexedCreatedAt": "2026-10-28T01:17:03Z",
+        "indexedCreatedTimeVerification": "UNVERIFIED_NOT_USED_FOR_AGE",
+        "strictOrigin": null,
+        "ageAtFreezeMinutes": null,
+        "ageAtFreezeBand": null,
+        "originAvailableBeforeFreeze": false,
+        "firstSourceAwarenessAt": null,
+        "sourceAwareBeforeFreeze": false,
+        "selectedOlderAt": null,
+        "coalescedWatchActivityEvents": 0,
+        "firstWatchActivityAt": null,
+        "lastWatchActivityAt": null,
+        "olderSelectionToFirstDeepOrStopMs": null,
+        "exactWatchAtStart": null,
+        "exactWatchAtEnd": null,
+        "admissions": [],
+        "rawCompleteEndpoints": 0,
+        "auditedEndpoints": 0,
+        "assessments": [],
+        "actualFrozenToSourceEndMs": 75412,
+        "ohlcvOutcomes": 0,
+        "economicOutcome": null,
+        "classification": "STRICT_MIGRATION_ORIGIN_UNAVAILABLE",
+        "qualificationRecall": null
+      },
+      {
+        "mint": "BLsH91QKAz7DGVtuiif461f3YwNPkjMLvxP5s7Gopump",
+        "pool": "7KXRYw2H1JcuXDtXE9i1K1G8KkDpeciJDJgUgNbtANtJ",
+        "arm": "low-activity-control",
+        "frozenAt": 1793168069508,
+        "frozenAtIso": "2026-10-28T06:14:29.508Z",
+        "indexedCreatedAt": "2026-10-27T17:05:19Z",
+        "indexedCreatedTimeVerification": "UNVERIFIED_NOT_USED_FOR_AGE",
+        "strictOrigin": null,
+        "ageAtFreezeMinutes": null,
+        "ageAtFreezeBand": null,
+        "originAvailableBeforeFreeze": false,
+        "firstSourceAwarenessAt": null,
+        "sourceAwareBeforeFreeze": false,
+        "selectedOlderAt": null,
+        "coalescedWatchActivityEvents": 0,
+        "firstWatchActivityAt": null,
+        "lastWatchActivityAt": null,
+        "olderSelectionToFirstDeepOrStopMs": null,
+        "exactWatchAtStart": null,
+        "exactWatchAtEnd": null,
+        "admissions": [],
+        "rawCompleteEndpoints": 0,
+        "auditedEndpoints": 0,
+        "assessments": [],
+        "actualFrozenToSourceEndMs": 75412,
+        "ohlcvOutcomes": 0,
+        "economicOutcome": null,
+        "classification": "STRICT_MIGRATION_ORIGIN_UNAVAILABLE",
+        "qualificationRecall": null
+      },
+      {
+        "mint": "4ED2eJ9nLAdPonaWvTXpbLQLZsJf7TUBKCPA3Vzxpump",
+        "pool": "8QqN4BhtMuhDmPfTw6fCREJYanxMbkTU1T6ae4jKn7kb",
+        "arm": "low-activity-control",
+        "frozenAt": 1793168069508,
+        "frozenAtIso": "2026-10-28T06:14:29.508Z",
+        "indexedCreatedAt": "2026-10-27T07:25:05Z",
+        "indexedCreatedTimeVerification": "UNVERIFIED_NOT_USED_FOR_AGE",
+        "strictOrigin": null,
+        "ageAtFreezeMinutes": null,
+        "ageAtFreezeBand": null,
+        "originAvailableBeforeFreeze": false,
+        "firstSourceAwarenessAt": null,
+        "sourceAwareBeforeFreeze": false,
+        "selectedOlderAt": null,
+        "coalescedWatchActivityEvents": 0,
+        "firstWatchActivityAt": null,
+        "lastWatchActivityAt": null,
+        "olderSelectionToFirstDeepOrStopMs": null,
+        "exactWatchAtStart": null,
+        "exactWatchAtEnd": null,
+        "admissions": [],
+        "rawCompleteEndpoints": 0,
+        "auditedEndpoints": 0,
+        "assessments": [],
+        "actualFrozenToSourceEndMs": 75412,
+        "ohlcvOutcomes": 0,
+        "economicOutcome": null,
+        "classification": "STRICT_MIGRATION_ORIGIN_UNAVAILABLE",
+        "qualificationRecall": null
+      },
+      {
+        "mint": "iNMC5tCArwXv7KRxzpLoWUHcJCjjgNVz1uqtxp8pump",
+        "pool": "Bk41Ng5NMtaEbpBFDyJ1kMt6sT4eWzJtPCmBvd9SYa5T",
+        "arm": "low-activity-control",
+        "frozenAt": 1793168069508,
+        "frozenAtIso": "2026-10-28T06:14:29.508Z",
+        "indexedCreatedAt": "2026-10-27T16:49:27Z",
+        "indexedCreatedTimeVerification": "UNVERIFIED_NOT_USED_FOR_AGE",
+        "strictOrigin": null,
+        "ageAtFreezeMinutes": null,
+        "ageAtFreezeBand": null,
+        "originAvailableBeforeFreeze": false,
+        "firstSourceAwarenessAt": null,
+        "sourceAwareBeforeFreeze": false,
+        "selectedOlderAt": null,
+        "coalescedWatchActivityEvents": 0,
+        "firstWatchActivityAt": null,
+        "lastWatchActivityAt": null,
+        "olderSelectionToFirstDeepOrStopMs": null,
+        "exactWatchAtStart": null,
+        "exactWatchAtEnd": null,
+        "admissions": [],
+        "rawCompleteEndpoints": 0,
+        "auditedEndpoints": 0,
+        "assessments": [],
+        "actualFrozenToSourceEndMs": 75412,
+        "ohlcvOutcomes": 0,
+        "economicOutcome": null,
+        "classification": "STRICT_MIGRATION_ORIGIN_UNAVAILABLE",
+        "qualificationRecall": null
+      },
+      {
+        "mint": "9qpiyF4XeQjPkYTzBQjcJ5HFua5udCn4tbT6m58pump",
+        "pool": "C61k1x1HF1YNaProneMFcy5eMSyLP5kJzLce2h6X2B7v",
+        "arm": "low-activity-control",
+        "frozenAt": 1793168069508,
+        "frozenAtIso": "2026-10-28T06:14:29.508Z",
+        "indexedCreatedAt": "2026-10-27T12:07:22Z",
+        "indexedCreatedTimeVerification": "UNVERIFIED_NOT_USED_FOR_AGE",
+        "strictOrigin": null,
+        "ageAtFreezeMinutes": null,
+        "ageAtFreezeBand": null,
+        "originAvailableBeforeFreeze": false,
+        "firstSourceAwarenessAt": null,
+        "sourceAwareBeforeFreeze": false,
+        "selectedOlderAt": null,
+        "coalescedWatchActivityEvents": 0,
+        "firstWatchActivityAt": null,
+        "lastWatchActivityAt": null,
+        "olderSelectionToFirstDeepOrStopMs": null,
+        "exactWatchAtStart": null,
+        "exactWatchAtEnd": null,
+        "admissions": [],
+        "rawCompleteEndpoints": 0,
+        "auditedEndpoints": 0,
+        "assessments": [],
+        "actualFrozenToSourceEndMs": 75412,
+        "ohlcvOutcomes": 0,
+        "economicOutcome": null,
+        "classification": "STRICT_MIGRATION_ORIGIN_UNAVAILABLE",
+        "qualificationRecall": null
+      }
+    ],
+    "exactStrictOriginMatches": 1,
+    "exactWatchMatchesAtStart": 0,
+    "exactWatchMatchesAtEnd": 1,
+    "sourceAwareBeforeFreeze": 1,
+    "deepSelected": 0,
+    "outcomes": 0,
+    "winningOpportunityDenominator": null,
+    "recall": null
+  },
+  "financial": {
+    "writerOpened": false,
+    "entriesEnabled": false,
+    "ordersCreated": 0,
+    "entryExitEconomicPaths": 0,
+    "meaning": "Candidate-only source; no financial database was opened by this analysis or run. No balances, fills or P&L are inferred."
+  },
+  "limitations": [
+    "Raw sufficientlyObserved flags are not independently audited/current coverage; late audits are never backdated.",
+    "The v3 protocol-aware source is a shadow data contract; its actual assessmentScope is preserved, not relabeled baseline executable qualification.",
+    "Confirmed signature history is a bounded pool-address census between strict fences, not a market or trader census or transfer-equivalence proof.",
+    "Independent active/quiet controls were prospectively frozen but form a biased indexed sample. Names are not join keys; indexed createdAt never establishes migration age.",
+    "The short failed run plus no retrieved OHLC supplies no economic outcomes, opportunity recall, age optimum or missed profitable-trade count.",
+    "All previous runs, source failures, consumed usage and uncertain reservations remain unchanged. This analysis performs no refunds, network requests, source modification or financial action."
+  ],
+  "inputResources": {
+    "maximumFileBytes": 12582912,
+    "maximumTotalBytes": 67108864,
+    "inputBytes": 37453507,
+    "maximumEventRows": 30000
+  },
+  "artifactIndexVerifiedFiles": 24,
+  "inputs": [
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/index.json",
+      "bytes": 3646,
+      "sha256": "bb2bfdd9a1cbb033873e65866582e51168305f06cf3d05b88196f80769b2aee7"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/after.json",
+      "bytes": 643,
+      "sha256": "c18e5dfdcd7dd569674512dddd07d199a974acc6a77ff23de95a203270957ff8"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/before.json",
+      "bytes": 979,
+      "sha256": "993cb94039c43f69b3c976af777ae9c449800aef7e8c6c209c5634bdeffd82c1"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/input.json",
+      "bytes": 5389371,
+      "sha256": "6b6bad58c0daee74506b162467df0648ffd02a0ed3354a0fecd9885ec796f239"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/package.json",
+      "bytes": 47724,
+      "sha256": "106ab993199957f06947eee8fe9dc9f90e54d1ba36c50f0a2c641a2431819fcb"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/publisher-final.log",
+      "bytes": 205,
+      "sha256": "8666ffc5b75d92dd25bbdae7ae4c5512a12908f0d0490284b559ecac9c62d2f7"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/publisher.log",
+      "bytes": 2862,
+      "sha256": "4610ef8ae8cd3af0118459d3968540f4f659266395131bfbe99e404b42578b18"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/reporting-evidence/accepted-source-001-ack.json",
+      "bytes": 710,
+      "sha256": "6c3ce0342c7d13514db65c068c689ee3e15e76123da8fbd9d8aeff17e499eecd"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/reporting-evidence/accepted-source-001.json",
+      "bytes": 678435,
+      "sha256": "bbf619542b7cf87b4f82d31b0891997ee6264c8897c93a151518de17767eff41"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/reporting-evidence/accepted-source-002-ack.json",
+      "bytes": 710,
+      "sha256": "19e560207c00de2bb29bac9cb90e0e4f3c40f6716d1c2145d547f13d36845f06"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/reporting-evidence/accepted-source-002.json",
+      "bytes": 682024,
+      "sha256": "fc3076f39fa7180c4617b0f94a19a12a30b197e8f8f0c650703e3a5bb0538da0"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/run/receipt.json",
+      "bytes": 567914,
+      "sha256": "9aa2a03e33e4cbf02cf0d5d091850530e93a989f7f66d178bd5db1be21504803"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/run/rpc/authorization.json",
+      "bytes": 102251,
+      "sha256": "62e376ee24c8c349e1772a0d30bc6c3e2f5d4232faf4e96adfbcdba4aed4959c"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/run/rpc/chapter-001-summary.json",
+      "bytes": 72260,
+      "sha256": "73ce98cfc72898513ba78fdcee097bacea95fd6e26e70fb0a494f0112ee3f2ff"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/run/rpc/chapter-001.json",
+      "bytes": 70869,
+      "sha256": "863955aa05ab21418955e2f1c192d49c3ff33178d19605a84b09f8700e99fd38"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/run/rpc/chapter-002-summary.json",
+      "bytes": 70739,
+      "sha256": "d781415a9c7bc9ddb1f5dae4283155b65e7fb7c75ce0293d4737dafdb619adb0"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/run/rpc/chapter-002.json",
+      "bytes": 69749,
+      "sha256": "892f6ff421151ef4257d9c79dccda5dbd3c87e735a22772986fdd1940be1da4e"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/run/rpc/status.json",
+      "bytes": 15454,
+      "sha256": "d54c157e67a0b862e1235fc21bbbc1d3404c69484181c08d13fe79f3e438eaba"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/run/status.json",
+      "bytes": 567914,
+      "sha256": "9aa2a03e33e4cbf02cf0d5d091850530e93a989f7f66d178bd5db1be21504803"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/run/watch-checkpoint.json",
+      "bytes": 5541177,
+      "sha256": "a1c58e0b7e4ef3372eecb020b8f59831bed7baf60e735f6ca4844940a45c10cf"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/runner.log",
+      "bytes": 466,
+      "sha256": "fc735fac838f916da92c10d61ad7c6223d41291a55c6621e834e43d5e27f50c7"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/supervisor.json",
+      "bytes": 5540,
+      "sha256": "bb8b3a28bf2f1111c9582c4201b4196d1815176d774ff3ac730b7a70a3444645"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/run/events/events-001.ndjson",
+      "bytes": 8333128,
+      "sha256": "92b67a0df9eccd89a5efd5d4adbcadb958daa937693230884461c09d56922ec4"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/run/events/events-002.ndjson",
+      "bytes": 7462081,
+      "sha256": "3d85aeebd7d9ef154721ab8582cc42d7ee52fc617235e4445bc9ce45d51a4a74"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/run/events/events-003.ndjson",
+      "bytes": 7408011,
+      "sha256": "a15ebd64303ee9800dbda258f01a4d6c667477c05d9d16115e63c06fa067792f"
+    },
+    {
+      "path": "/workspace/pump-opportunity-engine/evidence/age-reference-20261028/native-two-hour-40642437328/receipt.json",
+      "bytes": 129080,
+      "sha256": "dc7b520ab0c9b02dfc7546aba71919e018edc9edbceac2ba69f8757368197df0"
+    },
+    {
+      "path": "/workspace/pump-opportunity-engine/evidence/age-reference-20261028/native-two-hour-40642437328/cohort-freeze-1.json",
+      "bytes": 9564,
+      "sha256": "81b21354fd302a8ee1d1311abddf863cc3d0f8962068dbc6529f4be83213f495"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-age-20261028061211/source-end.json",
+      "bytes": 428,
+      "sha256": "2b102ad5fbf4d5a51b16e7d28145dcde76960bfb4270228758ba9b560441fbc7"
+    },
+    {
+      "path": "/workspace/pump-opportunity-engine/evidence/age-reference-20261028/native-two-hour-40642437328/plan.json",
+      "bytes": 2103,
+      "sha256": "33e889fd48480a83289b885a0b95f0b135b2adc73a1d0206b2f07468ca56a605"
+    },
+    {
+      "path": "/workspace/pump-opportunity-engine/evidence/age-reference-20261028/native-two-hour-40642437328/raw/01.json",
+      "bytes": 35459,
+      "sha256": "ad05f2a9a0241e15f90d0eb01040307fe9b7aae2bd192e03d5ad07c682af2f30"
+    },
+    {
+      "path": "/workspace/pump-opportunity-engine/evidence/age-reference-20261028/native-two-hour-40642437328/raw/02.json",
+      "bytes": 35760,
+      "sha256": "fd9286e169d5bdd64120405f40f8825ed58b0cb0d16afa261fcd2113e3e4a227"
+    },
+    {
+      "path": "/workspace/pump-opportunity-engine/evidence/age-reference-20261028/native-two-hour-40642437328/raw/03.json",
+      "bytes": 37006,
+      "sha256": "60009569d6b382c5bff6b7fbbae16271f40f9c3097b4594d5cc6b5ce8bae7c2e"
+    },
+    {
+      "path": "/workspace/pump-opportunity-engine/evidence/age-reference-20261028/native-two-hour-40642437328/raw/04.json",
+      "bytes": 36108,
+      "sha256": "5ef0eb89e978355539ffb9c59bf60bbabcd837cde14819b4a708b3d05869e1cd"
+    },
+    {
+      "path": "/workspace/pump-opportunity-engine/evidence/age-reference-20261028/native-two-hour-40642437328/raw/05.json",
+      "bytes": 35339,
+      "sha256": "e3c53f9f67a5e3297c471f33faef160c27e9839e6e2a9f28deb0a0a8f2a4ae0c"
+    },
+    {
+      "path": "/workspace/pump-opportunity-engine/evidence/age-reference-20261028/native-two-hour-40642437328/raw/06.json",
+      "bytes": 37798,
+      "sha256": "854b325c009febf84299768e6c37627701fe663c6d824145c524764d28d1dd15"
+    }
+  ],
+  "networkRequests": 0,
+  "financialDatabaseOpened": false,
+  "productionChanged": false
+}

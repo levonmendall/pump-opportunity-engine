@@ -1,0 +1,45 @@
+{
+  "kind": "independent-held-audit-recovery-safety-review-v1",
+  "reviewedAt": "2026-10-29T20:13:47.277191+00:00",
+  "base": "8bd509f",
+  "state": "APPROVED_FOR_OFFLINE_SOURCE_FREEZE_NOT_RUNTIME_ACCEPTANCE",
+  "sourceManifestSha256": "9b29a76d0e7b3fe80473de23f8b02fb3d8b6b74b9168c908525614ce7c3cf056",
+  "files": {
+    "src/native-candidate-runner.ts": "96f2cd8814a26d1f42760f63225d073444656cf516e84b1892c9cb9c8ed3857c",
+    "src/pilot-rpc.ts": "acd18fb2f41124d23e2abb4dbd79d3bbd26a6a56f929b1d254f806f2ff1cec73",
+    "src/run-native-paper.ts": "4619d9e412cf2c24434ffcae824a88ee3722d91cdb16b03facd4ba4748818f9d",
+    "test/native-candidate-runner.test.ts": "5f0d218740eefbb8bf063674d35259c0b608a5af5f047e939994d7a5d5592599",
+    "test/native-paper-launcher.test.ts": "2f09356ba72a0c65c810a9b9ca92a92ba01bc6a962dac61d0a3a8b4bcacd46c1",
+    "test/pilot-rpc.test.ts": "6d482475d0599e9cedd4978bbfe49640db19ae6ce03cd582bdcad8de42a48712"
+  },
+  "sourceUnchangedDuringReviewTests": true,
+  "focusedTests": {
+    "command": "node --import tsx --test test/native-candidate-runner.test.ts test/native-paper-launcher.test.ts test/pilot-rpc.test.ts",
+    "exitCode": 0,
+    "tests": 134,
+    "passed": 134,
+    "failed": 0,
+    "rawFile": "focused-tests.txt",
+    "sha256": "ed63c98637bc99b91d7836275b2ce838755782cf94ac1972cb9b1793bbff3626"
+  },
+  "findings": [
+    "Only a client-owned WeakMap observation from exact per-operation budget/invocation state can retain a failed history page. Generic constructed errors and real invoked provider faults cannot manufacture the observation.",
+    "Durable reservations and response uncertainty remain charged. Physical settlement, chapter rollover, provider cooldowns and shared concurrency remain independently enforced.",
+    "Outer source planning is distinct from per-operation admission; actual source calls reserve their operation/validation bound and physical wrapper cannot accept an understated transport bound.",
+    "Uninvoked logical pages retain original source generation, target, page and absolute decision deadline, use a250ms retry floor, and keep peer ordering by page opportunity. Required pending actions and held protection keep priority.",
+    "Expired, changed-generation and incomplete flow cannot qualify; a pending page is canceled before a stale retry. Already completed helper diagnostics are preserved rather than spuriously canceled.",
+    "Financially guarded callers cannot enter the optional batch path. Existing operating batch-disabled policy remains unchanged; independent research batch behavior is not broadened.",
+    "New retry-floor waiting is reported separately from actual provider/query cooldown, preserving concrete reason and bounded retry timing."
+  ],
+  "resolvedReviewFindings": [
+    "Optional batch path initially lacked the new financial operation callback. It is now explicitly disabled when that callback is supplied;134th regression covers individual completion with original shared pacing.",
+    "Initial134-suite failure expected two individual requests without advancing synthetic time. Corrected fixture advances the actual modeled50ms loop so unchanged250ms pacing can admit the second request. Original133/134 output and manifest remain retained."
+  ],
+  "blockingFindings": [],
+  "limitations": [
+    "Full-suite/build results are owned by implementing parent, not asserted by this focused review.",
+    "The four-candidate held-protection workload uses explicit synthetic ownership/completion clocks and injected provider responses; it proves scheduling/accounting mechanics, not actual EC2/provider capacity or live deadline compliance.",
+    "Target-specific attribution of the historical19:22\u201319:27 live failures still requires original dispatch evidence. This repair addresses a deterministically demonstrated software defect without inventing that attribution.",
+    "No installation, original account access, provider requests, service control, risk/position/readiness threshold change or profitability acceptance was performed by the reviewer."
+  ]
+}

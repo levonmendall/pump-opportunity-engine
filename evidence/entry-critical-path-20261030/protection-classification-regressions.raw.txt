@@ -1,0 +1,30 @@
+{"elapsedFakeMs":600015,"physicalStarts":839,"maximumMinute":85,"maximumShort":15,"maximumActive":1,"heldCompletions":298,"maximumCompletedGapMs":3095,"discretionaryJobs":[135,135,135,135],"successesAfterRetry":1,"measuredUncertaintyBytes":2097152,"scope":"actual RPC/gate and actual launcher admission under four synthetic runnable discretionary queues; not real market or audit coverage","providerRequests":0}
+✔ shared actual provider budget preserves timely held recovery and fair discretionary progress under sustained demand across accounting chapters (5176.031836ms)
+✔ retained baseline reproduces6000ms gap from one settled timeout plus the old two-second attempt cadence (1070.071194ms)
+✔ owned pricing retries one settled unthrottled timeout with a fresh read inside the unchanged4s completion boundary (1014.788111ms)
+✔ a candidate primary timeout does not forbid a separately owned complete holding read after real settlement (1013.372375ms)
+✔ actual HTTP429 and Retry-After restrict owned reads, without any automatic extra request (7.464869ms)
+✔ actual HTTP502 and Retry-After restrict owned reads, without any automatic extra request (6.553307ms)
+✔ actual HTTP503 and Retry-After restrict owned reads, without any automatic extra request (5.771177ms)
+✔ actual HTTP504 and Retry-After restrict owned reads, without any automatic extra request (5.103229ms)
+✔ late HTTP200 Retry-After after logical timeout remains binding after physical settlement (14.624773ms)
+✔ late HTTP429 Retry-After after logical timeout remains binding after physical settlement (13.279394ms)
+✔ late HTTP503 Retry-After after logical timeout remains binding after physical settlement (11.650413ms)
+✔ sustained unthrottled outage has bounded probes, retained uncertainty and no early physical overlap (68.794597ms)
+✔ monotonic read budget and caller cancellation cannot create a third attempt or forget unsettled physical work (12.126572ms)
+✔ owned adapter cannot promote arbitrary methods, invalid deadlines or cash permission through timeout backoff (1.536768ms)
+✔ owned rolling reservation subtracts genuinely used financial starts without permanently wasting provider capacity (0.609247ms)
+✔ ready required audit pages can use idle short-window headroom beyond optional setup allowance (0.186778ms)
+✔ sustained four-scope request pressure retains owned cadence, bounded recovery and fair audit service under actual rolling gates (1365.886546ms)
+ℹ {"classification":"LOCAL_INJECTED_REQUEST_PRESSURE_NOT_LIVE_PROVIDER_CAPACITY","durationMs":120000,"physicalCalls":169,"maximumCompletedGapMs":3075,"maximumAuditWaitMs":4050,"auditsByScope":[11,11,11,11],"missedAuditDeadlines":0,"backgroundLookups":64,"maximumRolling10SecondStarts":16,"maximumRollingMinuteStarts":85,"rapidProbes":1}
+✔ twelve ready audit pages are not capped at nine when both real provider windows and held reserves permit the burst (13.397799ms)
+✔ three physical timeouts produce two unavailable contexts and five logical dispatch refusals without another physical start or quota pressure (2885.697075ms)
+ℹ {"scope":"OFFLINE actual PilotRpc/ComponentBudget, exact timeout/deadline/probe policy; not actual incident attribution","rows":[{"label":"two-physical-timeouts","began":202000,"ended":203875,"newPhysical":2,"code":"PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT","heldCode":"HELD_PRICING_PROVIDER_TIMEOUT","probeAt":205875,"readyAt":205875,"headroom10s":17,"headroomMinute":87,"lastFailure":{"at":203875,"stage":"physical-timeout","physicalInFlight":true}},{"label":"third-physical-timeout-second-context","began":205876,"ended":206876,"newPhysical":1,"code":"PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT","heldCode":"HELD_PRICING_PROVIDER_TIMEOUT","probeAt":208876,"readyAt":208876,"headroom10s":16,"headroomMinute":86,"lastFailure":{"at":206876,"stage":"physical-settlement-wait","physicalInFlight":true}},{"label":"logical-followup-0","began":206886,"ended":206886,"newPhysical":0,"code":"PILOT_RPC_COMPONENT_DISPATCH_EXPIRED","heldCode":"HELD_PRICING_DISPATCH_UNAVAILABLE","probeAt":208876,"readyAt":208876,"headroom10s":16,"headroomMinute":86,"lastFailure":{"at":206886,"stage":"protection-retry-paced","physicalInFlight":false}},{"label":"logical-followup-1","began":206896,"ended":206896,"newPhysical":0,"code":"PILOT_RPC_COMPONENT_DISPATCH_EXPIRED","heldCode":"HELD_PRICING_DISPATCH_UNAVAILABLE","probeAt":208876,"readyAt":208876,"headroom10s":16,"headroomMinute":86,"lastFailure":{"at":206896,"stage":"protection-retry-paced","physicalInFlight":false}},{"label":"logical-followup-2","began":206906,"ended":206906,"newPhysical":0,"code":"PILOT_RPC_COMPONENT_DISPATCH_EXPIRED","heldCode":"HELD_PRICING_DISPATCH_UNAVAILABLE","probeAt":208876,"readyAt":208876,"headroom10s":16,"headroomMinute":86,"lastFailure":{"at":206906,"stage":"protection-retry-paced","physicalInFlight":false}},{"label":"logical-followup-3","began":206916,"ended":206916,"newPhysical":0,"code":"PILOT_RPC_COMPONENT_DISPATCH_EXPIRED","heldCode":"HELD_PRICING_DISPATCH_UNAVAILABLE","probeAt":208876,"readyAt":208876,"headroom10s":16,"headroomMinute":86,"lastFailure":{"at":206916,"stage":"protection-retry-paced","physicalInFlight":false}},{"label":"logical-followup-4","began":206926,"ended":206926,"newPhysical":0,"code":"PILOT_RPC_COMPONENT_DISPATCH_EXPIRED","heldCode":"HELD_PRICING_DISPATCH_UNAVAILABLE","probeAt":208876,"readyAt":208876,"headroom10s":16,"headroomMinute":86,"lastFailure":{"at":206926,"stage":"protection-retry-paced","physicalInFlight":false}},{"label":"provider-healthy-after-probe","began":208877,"ended":208927,"newPhysical":1,"code":null,"heldCode":null,"probeAt":0,"readyAt":209127,"headroom10s":15,"headroomMinute":85,"lastFailure":{"at":206926,"stage":"protection-retry-paced","physicalInFlight":false}}],"physicalTimeouts":[1000,1000,800,1000,1000],"physicalStarts":5,"completedGapAfterRecoveryMs":8877,"providerRequests":0}
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 6347.441691

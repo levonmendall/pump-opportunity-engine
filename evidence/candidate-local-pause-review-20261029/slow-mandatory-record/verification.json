@@ -1,0 +1,35 @@
+{
+  "verifiedAt": "2026-10-29T23:17:33.157682+00:00",
+  "results": {
+    "focused": {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "test/native-paper-integration.test.ts",
+        "test/native-paper-readiness.test.ts",
+        "test/operating-financial-readiness.test.ts",
+        "test/internal-shutdown-provenance.test.ts"
+      ],
+      "exitCode": 0,
+      "sha256": "64b3ed0b1a2e0409f90ec000b8acd4aa44252594152f7837c61a5235aeaaf69d"
+    },
+    "build": {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    }
+  },
+  "ownedSourceSha256": {
+    "src/native-paper.ts": "89c3c6e9f9cfebaade3bd4ebd1340a7114ae16bb884aa14268688050a2d9ff6b"
+  },
+  "producerOverlaySource": "6735e9f5fee2f1aa4d6567780f13ec597731e3aa",
+  "operatingServiceActions": 0,
+  "operatingFinancialActions": 0,
+  "newProviderRequests": 0
+}

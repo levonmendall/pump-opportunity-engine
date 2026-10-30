@@ -1,0 +1,14 @@
+{
+  "repository": "levonmendall/meme-machine-admin",
+  "mainCommitAtReview": "798b52b07ca9cc64095914153949447f8f48ff0a",
+  "files": {
+    "workflow.yml": {
+      "bytes": 1953,
+      "sha256": "8da35ffeeef3e7c8ae8fdd42b919404cd3910fe4ffb7f70d3f89a0bf7485be95"
+    },
+    "inspector.py": {
+      "bytes": 29211,
+      "sha256": "ff37c016fa552dc2103abdfbb006cee57b1e9f861eae16782add8909bb26406f"
+    }
+  }
+}

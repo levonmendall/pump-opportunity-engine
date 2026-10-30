@@ -1,0 +1,107 @@
+{
+  "kind": "POE_ORIGINAL_ENTRYPOINT_REPAIR_STAGED_NOT_EXECUTED",
+  "at": 1793239811862,
+  "file": "/var/tmp/poe-issue11-entrypoint-order-80af3224/repair-original-entrypoint-order.py",
+  "bytes": 16245,
+  "sha256": "80af32246e4a639d4b0923365fd7d329517bfc73825137e093b78b5aa401bc49",
+  "unchangedOriginalPackageIndex": "fa616981e2a86aec0f9c2711d0b3c961eb5ab922791f49e2a4e7e372497a84dd",
+  "serviceBefore": {
+    "MainPID": "0",
+    "NRestarts": "118",
+    "User": "poe-runtime",
+    "LoadState": "loaded",
+    "ActiveState": "activating",
+    "SubState": "auto-restart"
+  },
+  "serviceAfter": {
+    "MainPID": "0",
+    "NRestarts": "118",
+    "User": "poe-runtime",
+    "LoadState": "loaded",
+    "ActiveState": "activating",
+    "SubState": "auto-restart"
+  },
+  "verifiedExistingConfig": [
+    {
+      "file": "entrypoint.conf",
+      "bytes": 250,
+      "sha256": "309bba18b7f3f17b403f6ef950df707587044b5e049f47ff3495c87d8de7d4df",
+      "ownerUid": 0,
+      "mode": 420
+    },
+    {
+      "file": "90-native-engine.conf",
+      "bytes": 926,
+      "sha256": "02086524f05593a85034bf13626f0c2c0a4caac2379cc4ae76cfa92d93d4b682",
+      "ownerUid": 0,
+      "mode": 420
+    }
+  ],
+  "sameServiceIdentity": true,
+  "restartCountChangedDuringRead": false,
+  "originalPreparationModified": false,
+  "upgradeVerification": {
+    "available": true,
+    "sha256": "e9b1c651abcc376d0ac4c81aea5ef54a2020c92f9de2ec4a74f02fb5b2ca22de",
+    "value": {
+      "schemaVersion": 1,
+      "kind": "poe-original-upgrade-verification-v1",
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "source": {
+        "commit": "5e55d8b939de99698ddb311a282461931fcbc957",
+        "sha256": "531012e82b6cb86149350ec4478c1f7a7b87b6f35f08f3b1f32447f05cd31eaa"
+      },
+      "configurationSha256": "5e99ebe042521b3917a11b86ef4b46264205b11d38c407cba264a01046a79344",
+      "installedInputSha256": "fa880202d449cffc0a8dfc2dd8d30a0d5faa048a60e1c6854523426bb9161ec7",
+      "verifiedAt": 1793238627319,
+      "complete": false,
+      "newPublicSource": {
+        "available": false,
+        "reason": "NEW_ORIGINAL_PUBLIC_STATUS_NOT_VERIFIED_WITHIN_30_SECONDS"
+      },
+      "financialVerification": {
+        "identityAndInceptionPreserved": true,
+        "initialFundingAndRoundingPreserved": true,
+        "journalAndActionPrefixPreserved": true,
+        "priorRevision": 36834,
+        "currentRevision": 36834,
+        "currentStateBodySha256": "858e372c5a170d694956404b3f8b032514870e83c836b46b4f782be1c1f304b0",
+        "prefix": {
+          "actions": {
+            "priorRows": 36834,
+            "exactPriorRowsRetained": true,
+            "currentRows": 36834
+          },
+          "journal": {
+            "priorRows": 36835,
+            "exactPriorRowsRetained": true,
+            "currentRows": 36835
+          }
+        },
+        "comparison": "whole-column-ordered-exact-prefix",
+        "originalSqliteOwnerUid": 988,
+        "financialDatabaseWrites": 0,
+        "backupRestored": false
+      },
+      "errors": [
+        "NEW_ORIGINAL_PUBLIC_STATUS_NOT_VERIFIED_WITHIN_30_SECONDS"
+      ],
+      "elapsedMs": 30261,
+      "newAdmissionsSuspended": false,
+      "admissionPolicy": "existing-supervisor-fresh-reporting-and-financial-validity-gates",
+      "financialManagementStopped": false,
+      "financialDatabaseWrites": 0,
+      "backupRestored": false,
+      "operationalAcceptance": false,
+      "meaning": "One bounded read-only post-start identity and historical-prefix check. Not trading, protection, Render parity, profitability or sustained-operation acceptance."
+    }
+  },
+  "acceptedSource": {
+    "available": false
+  },
+  "financialDatabaseOpened": false,
+  "serviceChanges": 0,
+  "providerRequests": 0,
+  "executed": false
+}

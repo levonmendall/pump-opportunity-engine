@@ -1,0 +1,162 @@
+[
+  {
+    "at": "2026-10-30T13:44:57+00:00",
+    "slot": 463306707,
+    "transaction": "3Jv6LUmN2jHVwbGAQn2TKZkpVbJxzYgBjdfj6TNB4Fvz83JnFrW9hAkTPTSwsZybpUVTetjXt4FpxHSaqsfWeMe3",
+    "eventIndex": 0,
+    "side": "BuyEvent",
+    "baseReserveRaw": "1266538851968",
+    "quoteReserveLamports": "13907923240206",
+    "virtualQuoteReserveLamports": "17583575453",
+    "holdingRawUnits": "65278155",
+    "holdingTokens": 65.278155,
+    "reserveImpliedGrossLamports": "717691795",
+    "eventFeeBps": [
+      20,
+      5,
+      5
+    ],
+    "reserveImpliedNetLamports": "715538719",
+    "meaning": "Indicative quote from transaction pre-state reserves and actual event fee rates; not full historical dependency batch or executable counterfactual fill"
+  },
+  {
+    "at": "2026-10-30T14:00:42+00:00",
+    "slot": 463311116,
+    "transaction": "3LoyAWC4GoBi92iMLdbvZzMgygDwLfWk95QrRMhrpP82AAahtdqkPfi1AqpDKSxRnxwcJJakZdh1F4Zt31dYVugN",
+    "eventIndex": 0,
+    "side": "SellEvent",
+    "baseReserveRaw": "90090118555426",
+    "quoteReserveLamports": "179948771992",
+    "virtualQuoteReserveLamports": "17583575453",
+    "holdingRawUnits": "65278155",
+    "holdingTokens": 65.278155,
+    "reserveImpliedGrossLamports": "143129",
+    "eventFeeBps": [
+      20,
+      5,
+      90
+    ],
+    "reserveImpliedNetLamports": "141481",
+    "meaning": "Indicative quote from transaction pre-state reserves and actual event fee rates; not full historical dependency batch or executable counterfactual fill"
+  },
+  {
+    "at": "2026-10-30T14:00:42+00:00",
+    "slot": 463311116,
+    "transaction": "3LoyAWC4GoBi92iMLdbvZzMgygDwLfWk95QrRMhrpP82AAahtdqkPfi1AqpDKSxRnxwcJJakZdh1F4Zt31dYVugN",
+    "eventIndex": 1,
+    "side": "SellEvent",
+    "baseReserveRaw": "90589134960976",
+    "quoteReserveLamports": "178862827875",
+    "virtualQuoteReserveLamports": "17583575453",
+    "holdingRawUnits": "65278155",
+    "holdingTokens": 65.278155,
+    "reserveImpliedGrossLamports": "141558",
+    "eventFeeBps": [
+      20,
+      5,
+      90
+    ],
+    "reserveImpliedNetLamports": "139928",
+    "meaning": "Indicative quote from transaction pre-state reserves and actual event fee rates; not full historical dependency batch or executable counterfactual fill"
+  },
+  {
+    "at": "2026-10-30T14:11:13+00:00",
+    "slot": 463314068,
+    "transaction": "3eWshzqa3LJ5FPqK5GPeh42BbjvNxKSfdWHGCyrpvWkbKi14TAXpLZTNUsfkZQWNTge48U1E13VCaNzApiEJDkAi",
+    "eventIndex": 0,
+    "side": "SellEvent",
+    "baseReserveRaw": "895748995167811",
+    "quoteReserveLamports": "2444887729",
+    "virtualQuoteReserveLamports": "17584505288",
+    "holdingRawUnits": "65278155",
+    "holdingTokens": 65.278155,
+    "reserveImpliedGrossLamports": "1459",
+    "eventFeeBps": [
+      2,
+      93,
+      30
+    ],
+    "reserveImpliedNetLamports": "1439",
+    "meaning": "Indicative quote from transaction pre-state reserves and actual event fee rates; not full historical dependency batch or executable counterfactual fill"
+  },
+  {
+    "at": "2026-10-30T14:00:40+00:00",
+    "slot": 463311106,
+    "transaction": "43YNLpMp8JBUhBMnvZC1e1chtbfTEgxbVAu1avXDqBpWrEhcAHVbKeFciYtgEWWCQct7c6yXrYNz9huLXoSMoNa4",
+    "eventIndex": 0,
+    "side": "BuyEvent",
+    "baseReserveRaw": "1265191775520",
+    "quoteReserveLamports": "13922789995798",
+    "virtualQuoteReserveLamports": "17583575453",
+    "holdingRawUnits": "65278155",
+    "holdingTokens": 65.278155,
+    "reserveImpliedGrossLamports": "719222915",
+    "eventFeeBps": [
+      20,
+      5,
+      5
+    ],
+    "reserveImpliedNetLamports": "717065245",
+    "meaning": "Indicative quote from transaction pre-state reserves and actual event fee rates; not full historical dependency batch or executable counterfactual fill"
+  },
+  {
+    "at": "2026-10-30T14:00:42+00:00",
+    "slot": 463311116,
+    "transaction": "4rSF1TmE99bgFEK8TyKXkaXNqELsqxDUGVhcNbH3Ea4b9k2tDpN1gcYBMLQb8zQywWEvVESjVM6uk6bYrz62k7oN",
+    "eventIndex": 0,
+    "side": "SellEvent",
+    "baseReserveRaw": "1265191649494",
+    "quoteReserveLamports": "13922791387180",
+    "virtualQuoteReserveLamports": "17583575453",
+    "holdingRawUnits": "65278155",
+    "holdingTokens": 65.278155,
+    "reserveImpliedGrossLamports": "719223058",
+    "eventFeeBps": [
+      20,
+      5,
+      5
+    ],
+    "reserveImpliedNetLamports": "717065387",
+    "meaning": "Indicative quote from transaction pre-state reserves and actual event fee rates; not full historical dependency batch or executable counterfactual fill"
+  },
+  {
+    "at": "2026-10-30T14:00:42+00:00",
+    "slot": 463311116,
+    "transaction": "4rSF1TmE99bgFEK8TyKXkaXNqELsqxDUGVhcNbH3Ea4b9k2tDpN1gcYBMLQb8zQywWEvVESjVM6uk6bYrz62k7oN",
+    "eventIndex": 1,
+    "side": "SellEvent",
+    "baseReserveRaw": "1764208557357",
+    "quoteReserveLamports": "9987559459110",
+    "virtualQuoteReserveLamports": "17583575453",
+    "holdingRawUnits": "65278155",
+    "holdingTokens": 65.278155,
+    "reserveImpliedGrossLamports": "370190423",
+    "eventFeeBps": [
+      20,
+      5,
+      5
+    ],
+    "reserveImpliedNetLamports": "369079850",
+    "meaning": "Indicative quote from transaction pre-state reserves and actual event fee rates; not full historical dependency batch or executable counterfactual fill"
+  },
+  {
+    "at": "2026-10-30T14:00:45+00:00",
+    "slot": 463311127,
+    "transaction": "P7p3wxPuFseoXx8BUEyQnJDAiaBZzTcXg3ryQDFT8Gw21whRLBmrtDkzsFfvJXfWcoKyjzgfLJwRapPUs9YwwY5",
+    "eventIndex": 0,
+    "side": "BuyEvent",
+    "baseReserveRaw": "101068468743767",
+    "quoteReserveLamports": "158532839530",
+    "virtualQuoteReserveLamports": "17583575270",
+    "holdingRawUnits": "65278155",
+    "holdingTokens": 65.278155,
+    "reserveImpliedGrossLamports": "113750",
+    "eventFeeBps": [
+      20,
+      5,
+      90
+    ],
+    "reserveImpliedNetLamports": "112441",
+    "meaning": "Indicative quote from transaction pre-state reserves and actual event fee rates; not full historical dependency batch or executable counterfactual fill"
+  }
+]

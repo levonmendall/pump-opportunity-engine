@@ -1,0 +1,29 @@
+✔ pilot contract is frozen, isolated by account/mode/hash and leaves other PAPER entry paths closed (47.094778ms)
+✔ only explicit confirmed curve flow may warm a pilot window; violations close risk (23.038408ms)
+✔ pilot refuses incompatible flow-verification configuration before any adapter or financial action (6.255462ms)
+✔ frozen pilot admits one delayed position with exact prepared rent and manages its exit while entries are paused (18.434193ms)
+✔ unprepared/mismatched decision rent and stale or lower-slot execution never become pilot fills (43.853095ms)
+✔ pilot quote age and pending ownership are rechecked after execution evidence recording (31.587875ms)
+✔ explicit staged contracts preserve v1 and bind stage, version and hash without changing entry or financial rules (5.996274ms)
+✔ staged two/three-position admission stops at its explicit cap and records the stage on every decision (54.808015ms)
+✔ candidate pending information and a gap during decision recording cannot reserve an obsolete entry or stop another candidate (19.065064ms)
+✔ scoped candidate gap cancels only its unattempted buy, preserving other entries, exits and held management (13.825712ms)
+✔ candidate-specific loss preserves an uncertain financial entry instead of erasing its reservation (12.147897ms)
+✔ concurrent entry sizing binds each mint rent and preserves a pending order while another mint is prepared (15.820187ms)
+✔ protection-only and one-mint ticks keep due actions first without chaining other candidate quotes (17.086282ms)
+✔ explicit fresh context reuse keeps original timestamps and refreshes stale or incomplete facts (67.232591ms)
+✔ a maximum due-action budget applies to the whole tick across repeated financial and holding loops (29.020252ms)
+✔ held context reuse honors inclusive source expiry and rechecks it after recorder delay (17.14916ms)
+✔ candidate readiness rechecks the actual current bucket after a cold quote or decision recorder crosses its audit boundary (33.711427ms)
+✔ late same-bucket audited evidence receives one evaluation without pre-audit quotes or duplicate reservations (24.28736ms)
+✔ evidence readiness does not reopen an already completed financial risk rejection in the same bucket (7.364621ms)
+✔ bounded financial ticks yield new candidate quotes after reserving a future held exit while the default remains unchanged (17.033424ms)
+✔ protection timing records actual exit evaluation after processing and retains pending exit observation (12.54193ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 785.306451

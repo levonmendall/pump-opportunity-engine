@@ -1,0 +1,16 @@
+{
+  "deployId": "dep-dbhbvi8m7kps73eg0b6g",
+  "status": "live",
+  "finishedAt": "2026-10-29T03:39:50.135914Z",
+  "serviceId": "srv-daqon53tqb8s73bdceq0",
+  "workspaceId": "tea-daqk6h8jo6nc73eojtp0",
+  "dashboardCommit": "d415184d541db5f1af0d234be631447fe213255f",
+  "runtimeFinancialCommit": "5e55d8b939de99698ddb311a282461931fcbc957",
+  "reporterCommit": "5735db2ca8abc6af6f99bb0ad855c19cdebaf864",
+  "plan": "free",
+  "autoDeploy": "off",
+  "sameOriginalAccountAndChannel": true,
+  "authenticatedPublisherRecoveredAfterReceiverRestart": true,
+  "financialRuntimeRestartedForDashboard": false,
+  "financialHistoryReset": false
+}

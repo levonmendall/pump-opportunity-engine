@@ -1,0 +1,25 @@
+✖ full actual native candidate uses a decreasing committed quote budget without compromising owned protection (389.890042ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1474.722922
+
+✖ failing tests:
+
+test at test/native-paper-integration.test.ts:1:14271
+✖ full actual native candidate uses a decreasing committed quote budget without compromising owned protection (389.890042ms)
+  AssertionError [ERR_ASSERTION]: actual completed whole-inventory gap 4500: [{"at":1793058322000,"gap":1000,"held":1,"owner":"protection"},{"at":1793058323250,"gap":1250,"held":1,"owner":"candidate"},{"at":1793058324250,"gap":1000,"held":1,"owner":"candidate"},{"at":1793058326500,"gap":2250,"held":2,"owner":"pending"},{"at":1793058326500,"gap":0,"held":2,"owner":"protection"},{"at":1793058331000,"gap":4500,"held":2,"owner":"protection"},{"at":1793058331000,"gap":0,"held":2,"owner":"protection"},{"at":1793058333000,"gap":2000,"held":2,"owner":"protection"},{"at":1793058333000,"gap":0,"held":2,"owner":"protection"},{"at":1793058335000,"gap":2000,"held":2,"owner":"protection"},{"at":1793058335000,"gap":0,"held":2,"owner":"protection"},{"at":1793058337000,"gap":2000,"held":2,"owner":"protection"}]
+      at TestContext.<anonymous> (/workspace/poe-entry-decision-cooperation/test/native-paper-integration.test.ts:64:576)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

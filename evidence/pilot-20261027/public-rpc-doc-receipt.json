@@ -1,0 +1,22 @@
+{
+  "url": "https://solana.com/docs/references/clusters",
+  "retrievedAt": "2026-10-27T18:21:35.743770+00:00",
+  "responseBytes": 955322,
+  "sha256": "ecbdd7e3e8fe930252e22ddbc2ca0d41d1f06e422aebcade274af41831969770",
+  "mainnetExcerpt": "Mainnet rate limits        \n \n Maximum number of requests per 10 seconds per IP: 100 \n Maximum number of requests per 10 seconds per IP for a single RPC: 40 \n Maximum concurrent connections per IP: 40 \n Maximum connection rate per 10 seconds per IP: 40 \n Maximum amount of data per 30 seconds: 100 MB \n \n \n The public RPC endpoints are not intended for production applications. Please\nuse dedicated/private RPC servers when you launch your application, drop NFTs,\netc. The public services are subject to abuse and rate limits may change\nwithout prior notice. Likewise, high-traffic websites may be blocked without\nprior notice. \n \n  Common HTTP Error",
+  "documentedLimits": {
+    "allRequestsPer10SecondsPerIP": 100,
+    "singleMethodPer10SecondsPerIP": 40,
+    "concurrentConnectionsPerIP": 40,
+    "newConnectionsPer10SecondsPerIP": 40,
+    "responseMBPer30Seconds": 100
+  },
+  "limitation": "Official page says limits may change and may not be current; public services are not intended for production. No entitlement or observed capacity established by this document.",
+  "proposedResearchLocalLimits": {
+    "allPhysicalStartsPer10Seconds": 20,
+    "allPhysicalStartsPerMinute": 60,
+    "minimumSpacingMs": 250,
+    "physicalInFlight": 1
+  },
+  "endpointOrIdentityRotation": false
+}

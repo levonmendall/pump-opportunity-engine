@@ -1,0 +1,37 @@
+{
+  "recordedAt": "2026-10-28T16:13:41.270062+00:00",
+  "reviewer": "/root/live_completeness_contract_review/cooldown_domain_review",
+  "result": "GO",
+  "sourceSha256": {
+    "src/pilot-native-flow.ts": "d5304e5d415f6c3120150087857b1669de42fe1e1b10533a26b99597512236be",
+    "src/pilot-rpc.ts": "136e8d2ce34c237e322c4d9a37de5085dc0103ad0b82adec7a6dbb4a1382a6b6",
+    "test/pilot-native-flow.test.ts": "8c425a77e8f8d6e991469f062f5b8c8b6e0d9eafa2ee5d27bffa8ca49c810d6d",
+    "test/pilot-rpc.test.ts": "c7a2266fb6af0d599e3bc078afd000cb762b06992786925da8feb697806beb3c"
+  },
+  "focusedTests": {
+    "passed": 87,
+    "failed": 0,
+    "receipt": "focused-tests-final-receipt.json"
+  },
+  "build": {
+    "exitCode": 0,
+    "receipt": "build-final-receipt.json"
+  },
+  "reviewScope": [
+    "domain-aware cooldown admission and planning",
+    "one physical gate and settlement/rate/byte invariants",
+    "first-turn external HTTP cooldown and due control",
+    "cooldown-expiry race",
+    "support freshness and owed-pong liveness",
+    "bounded unscoped diagnostics and recoverable well-formed transport gap",
+    "hard malformed/accounting/resource/recording failures"
+  ],
+  "remainingLimits": [
+    "full integrated repository regression owned by lead",
+    "forward-market recovery not yet measured",
+    "historical unknown subscription cause not established"
+  ],
+  "networkRequests": 0,
+  "committed": false,
+  "deployed": false
+}

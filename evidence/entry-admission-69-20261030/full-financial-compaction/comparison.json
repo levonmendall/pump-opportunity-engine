@@ -1,0 +1,44 @@
+{
+  "applicationComposition": {
+    "pendingExecutionPriority": "3b2a8932b7c7f48407ca546f5d99832de4081c3a",
+    "knownNeverInvokedPacing": "f96e1ccede6c27e8d4b70ffa14a113c1cef2bf63"
+  },
+  "applicationFilesMatchThoseReviewedSources": true,
+  "scope": "Actual NativePaper, Trader, SDK, sole disposable ledger with two holdings, verified independent seed windows, physical RPC accounting, source financial reserve and shared gate through120s of synthetic demand. Seedflow/Clock/liquidity/USD and provider responses explicitly synthetic. No live acceptance or profitability claim.",
+  "before": {
+    "maximumCompletedWholeInventoryGapMs": 12000,
+    "unavailableHeldEvaluations": 10,
+    "compactionRolling10SecondStarts": 36,
+    "httpTimeouts": 0
+  },
+  "after": {
+    "maximumCompletedWholeInventoryGapMs": 2250,
+    "unavailableHeldEvaluations": 0,
+    "compactionRolling10SecondStarts": 6,
+    "deliberatelyUninvokedRequests": 60,
+    "actualPhysicalHoldingReads": 60,
+    "cumulativeAllocatedUnitsRetained": 120,
+    "uncertainReservedBytesRetained": 125829120,
+    "entriesEnabled": true,
+    "httpTimeouts": 0
+  },
+  "invariants": [
+    "Same account/inception/initial funding",
+    "Same two positions and units",
+    "Same cash, execution costs, no pending orders",
+    "No unit or byte refund",
+    "Original entry/risk/strategy/provider/deadline/protection gates retained",
+    "INERT decreasing-entry-read-budget excluded"
+  ],
+  "providerRequests": 0,
+  "originalFinancialAccountRead": false,
+  "serviceChanges": 0,
+  "artifacts": {
+    "baseline.raw.txt": "c688293a030c8e1e625a8db68e298e0f7f6605c51bc0f851a888dc6daaa2a67a",
+    "baseline-source-before.json": "37db90ee9af3c510d59af53d6504e9ac27a2d9ed9cd495d148c1c818cb26ee6a",
+    "baseline-verification.json": "e59b5afb0ce48790592a0fa705523d34b225003ec7ae9f00757dcc0d4e503040",
+    "baseline-fixture.ts.txt": "9d949adc33b14c1006cd55e8837e13b396065be097ab04f760d306833b0fc8fa",
+    "baseline-source-after.json": "37db90ee9af3c510d59af53d6504e9ac27a2d9ed9cd495d148c1c818cb26ee6a",
+    "corrected.raw.txt": "7008f753a72b25c564910e76f9d40ae2371f46fbc221fc07b44164502f6a70db"
+  }
+}

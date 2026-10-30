@@ -1,3 +1,4 @@
+import bs58 from 'bs58';
 /** Offline rule/feature core. No provider, network, financial writer or entry-enable path. */
 export const PROVISIONAL_RULE = Object.freeze({
   version: 'persistent-buying-v0-unfrozen', windowMs: 60_000, bucketMs: 10_000,
@@ -8,7 +9,10 @@ export const PROVISIONAL_RULE = Object.freeze({
   modeledDelayMs: 1000, orderExpiryMs: 5000, maximumQuoteAgeMs: 2000,
 } as const);
 
-export type EventIdentity = { signature: string; instructionIndex: number; eventIndex: number };
+export type CompiledEventIdentity = { signature: string; instructionIndex: number; eventIndex: number };
+/** A real program-log position is an independent identity, never a fabricated CPI index. */
+export type ProgramLogEventIdentity = { kind:'program-log'; signature:string; program:string; logIndex:number; frameOrdinal:number };
+export type EventIdentity = CompiledEventIdentity | ProgramLogEventIdentity;
 export type NormalizedTrade = {
   identity: EventIdentity; mint: string; wallet: string; side: 'buy'|'sell';
   quoteLamports: string; tokenUnits: string; receivedAt: number;
@@ -38,9 +42,23 @@ function priceReturn(first:PriceRatio|null,last:PriceRatio|null):number|null {
   const bps=numerator<0n?-((-numerator+denominator-1n)/denominator):numerator/denominator;
   return bps<=BigInt(Number.MAX_SAFE_INTEGER)?Number(bps):null;
 }
+export function copyEventIdentity(identity:EventIdentity):EventIdentity {
+  if(!identity||typeof identity!=='object'||!text(identity.signature,100))throw new Error('complete instruction/event identity required');
+  const input=identity as EventIdentity&Record<string,unknown>;
+  if(input.kind==='program-log'){
+    const index=(v:unknown)=>Number.isSafeInteger(v)&&Number(v)>=0&&Number(v)<=4095;
+    let validKeys=false;try{validKeys=text(input.program,44)&&bs58.decode(input.program).length===32&&bs58.decode(input.signature).length===64;}catch{}
+    if(!validKeys||!index(input.logIndex)||!index(input.frameOrdinal)||Object.hasOwn(input,'instructionIndex')||Object.hasOwn(input,'eventIndex'))throw new Error('complete actual program-log identity required');
+    return {kind:'program-log',signature:input.signature,program:input.program as string,logIndex:input.logIndex as number,frameOrdinal:input.frameOrdinal as number};
+  }
+  if(Object.hasOwn(input,'kind')||Object.hasOwn(input,'program')||Object.hasOwn(input,'logIndex')||Object.hasOwn(input,'frameOrdinal')||!Number.isSafeInteger(input.instructionIndex)||Number(input.instructionIndex)<0||!Number.isSafeInteger(input.eventIndex)||Number(input.eventIndex)<0)throw new Error('complete instruction/event identity required');
+  return {signature:input.signature,instructionIndex:input.instructionIndex as number,eventIndex:input.eventIndex as number};
+}
 export function eventIdentity(identity:EventIdentity):string {
-  if(!text(identity?.signature,100)||!Number.isSafeInteger(identity.instructionIndex)||identity.instructionIndex<0||!Number.isSafeInteger(identity.eventIndex)||identity.eventIndex<0)throw new Error('complete instruction/event identity required');
-  return `${identity.signature}:${identity.instructionIndex}:${identity.eventIndex}`;
+  const actual=copyEventIdentity(identity);
+  // The JSON tuple ends with ']', while a legacy key ends in numeric indices.
+  // Even permissive historical fixture signatures cannot collide across types.
+  return 'kind' in actual?'program-log-v1:'+JSON.stringify([actual.signature,actual.program,actual.logIndex,actual.frameOrdinal]):`${actual.signature}:${actual.instructionIndex}:${actual.eventIndex}`;
 }
 
 /** Six closed 10s receive-time bins. Each observation enters/leaves aggregates once. */
@@ -108,7 +126,7 @@ export class FlowWindow {
       this.invalidate(input.receivedAt,'capacity-gap');this.seen.clear();
       this.seen.set(key,{fingerprint,commitment:input.commitment,lastAt:input.receivedAt,revoked:true});return 'invalidated';
     }
-    const trade:StoredTrade={identity:{signature:input.identity.signature,instructionIndex:input.identity.instructionIndex,eventIndex:input.identity.eventIndex},mint:input.mint,wallet:input.wallet,side:input.side,quoteLamports:input.quoteLamports,tokenUnits:input.tokenUnits,receivedAt:input.receivedAt,commitment:input.commitment,...(input.slot===undefined?{}:{slot:input.slot}),quote,units,active:false,key};
+    const trade:StoredTrade={identity:copyEventIdentity(input.identity),mint:input.mint,wallet:input.wallet,side:input.side,quoteLamports:input.quoteLamports,tokenUnits:input.tokenUnits,receivedAt:input.receivedAt,commitment:input.commitment,...(input.slot===undefined?{}:{slot:input.slot}),quote,units,active:false,key};
     this.pending.push(trade);this.seen.set(key,{fingerprint,commitment:input.commitment,lastAt:input.receivedAt,trade});return 'accepted';
   }
   reverse(identity:EventIdentity,receivedAt:number) {
@@ -166,6 +184,18 @@ function featureSnapshot(f:FlowFeatures,now:number):FlowFeatures|null {
     return {mint:f.mint,asOf:f.asOf,windowStartAt:f.windowStartAt,windowEndAt:f.windowEndAt,sufficientlyObserved:f.sufficientlyObserved,qualityReason:f.qualityReason,buyLamports:f.buyLamports,sellLamports:f.sellLamports,netBuyLamports:f.netBuyLamports,tradeCount:f.tradeCount,provisionalTradeCount:f.provisionalTradeCount,distinctBuyerWallets:f.distinctBuyerWallets,largestBuyerBps:f.largestBuyerBps,positiveNetBuckets:f.positiveNetBuckets,priceReturnBps:f.priceReturnBps,firstPrice:ratio(f.firstPrice),lastPrice:ratio(f.lastPrice)};
   }catch{return null;}
 }
+export type PredictiveBuyingAssessment={status:'failed'|'not-rejected'|'unavailable';reason:string;features:FlowFeatures|null;qualified:false};
+/** The existing predictive predicates only. This does not assess eligibility,
+ * execution, liquidity or financial permission and can never qualify an entry. */
+export function assessPredictiveBuying(features:FlowFeatures,now:number):PredictiveBuyingAssessment{
+  at(now);const snapshot=featureSnapshot(features,now),result=(status:PredictiveBuyingAssessment['status'],reason:string):PredictiveBuyingAssessment=>({status,reason,features:snapshot,qualified:false});
+  if(!snapshot)return result('unavailable','malformed-or-unavailable-features');
+  if(snapshot.sufficientlyObserved!==true)return result('unavailable',snapshot.qualityReason??'feature-availability-mismatch');
+  if(BigInt(snapshot.netBuyLamports)<BigInt(PROVISIONAL_RULE.minimumNetBuyLamports)||snapshot.positiveNetBuckets<PROVISIONAL_RULE.minimumPositiveBuckets||snapshot.distinctBuyerWallets<PROVISIONAL_RULE.minimumBuyers||snapshot.largestBuyerBps>PROVISIONAL_RULE.maximumLargestBuyerBps)return result('failed','persistent-broad-buying-rule-not-met');
+  if(snapshot.priceReturnBps===null)return result('unavailable','price-structure-unavailable');
+  if(snapshot.priceReturnBps<0)return result('failed','persistent-broad-buying-rule-not-met');
+  return result('not-rejected','persistent-broad-buying-predicates-not-rejected; risk-and-execution-not-assessed');
+}
 export function evaluatePrimary(features:FlowFeatures,context:RuleContext):RuleDecision {
   at(context.now);
   const snapshot=featureSnapshot(features,context.now);
@@ -184,9 +214,9 @@ export function evaluatePrimary(features:FlowFeatures,context:RuleContext):RuleD
   if(q.mint!==context.mint)return no('missing-data','candidate-quote-identity-mismatch');
   if(typeof q.allInInitialCostMicroUsd!=='string'||!/^[1-9][0-9]{0,38}$/.test(q.allInInitialCostMicroUsd)||BigInt(q.allInInitialCostMicroUsd)>BigInt(PROVISIONAL_RULE.maximumInitialCostMicroUsd))return no('risk-rejection','initial-cost-including-execution-exceeds-limit');
   if(typeof q.expectedBaseUnits!=='string'||!/^[1-9][0-9]{0,38}$/.test(q.expectedBaseUnits)||!Number.isSafeInteger(q.sizeToEffectiveLiquidityBps)||q.sizeToEffectiveLiquidityBps<0||q.sizeToEffectiveLiquidityBps>PROVISIONAL_RULE.maximumSizeToLiquidityBps)return no('market-exclusion','order-size-exceeds-execution-liquidity-bound');
-  if(BigInt(snapshot.netBuyLamports)<BigInt(PROVISIONAL_RULE.minimumNetBuyLamports)||snapshot.positiveNetBuckets<PROVISIONAL_RULE.minimumPositiveBuckets||snapshot.distinctBuyerWallets<PROVISIONAL_RULE.minimumBuyers||snapshot.largestBuyerBps>PROVISIONAL_RULE.maximumLargestBuyerBps)return no('strategy-rejection','persistent-broad-buying-rule-not-met');
-  if(snapshot.priceReturnBps===null)return no('missing-data','price-structure-unavailable');
-  if(snapshot.priceReturnBps<0)return no('strategy-rejection','persistent-broad-buying-rule-not-met');
+  const predictive=assessPredictiveBuying(snapshot,context.now);
+  if(predictive.status==='failed')return no('strategy-rejection',predictive.reason);
+  if(predictive.status==='unavailable')return no('missing-data',predictive.reason);
   return no('qualified','provisional-rule-passed; execution-and-accounting-still-required');
 }
 

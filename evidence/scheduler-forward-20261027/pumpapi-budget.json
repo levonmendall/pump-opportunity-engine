@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "authority": "Explicit owner approval of pinned de102ee diagnostic",
+  "proposalSha256": "871c0980614b33ca1824811dd87c770c6bb8a8ce59680b48b8067100f04ed7e2",
+  "baseline": {
+    "path": "evidence/overnight-20261027/pumpapi-budget.json",
+    "sha256": "7e1fffb72cb7c55f13655859a678863b2ffacb75ee2b4fb1583c7a57a3ee7d29",
+    "reservedBytes": 268435456,
+    "reservedMs": 230000
+  },
+  "reservedAt": 1793114345741,
+  "newReservedBytes": 146800640,
+  "newReservedMs": 90000,
+  "reservedBytes": 415236096,
+  "reservedMs": 320000,
+  "refunded": false,
+  "preflightAndFreshPrewarmPassed": true,
+  "maximumConnections": 1
+}

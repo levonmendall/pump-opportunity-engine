@@ -1,0 +1,15 @@
+[
+  {
+    "name": "full",
+    "command": [
+      "bash",
+      "-c",
+      "exec node --import tsx --test --test-concurrency=1 test/*.test.ts"
+    ],
+    "exitCode": 1,
+    "startedAt": "2026-10-28T17:11:28.407049+00:00",
+    "elapsedSeconds": 177.47775101661682,
+    "bytes": 158119,
+    "sha256": "50773ea8a14ffe72110902c1141aa48ff93110d7e92219d806480dd33f10ae4b"
+  }
+]

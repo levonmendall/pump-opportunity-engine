@@ -1,0 +1,62 @@
+{
+  "recordedAt": "2026-10-29T18:08:34.117404+00:00",
+  "classification": "OFFLINE_VERIFIED_READ_ONLY_EXPORTER_NOT_EXECUTED",
+  "originalAccount": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+  "fixedWindowsUtc": [
+    [
+      "2026-10-29T15:14:00Z",
+      "2026-10-29T15:26:00Z"
+    ],
+    [
+      "2026-10-29T16:52:00Z",
+      "2026-10-29T16:55:00Z"
+    ],
+    [
+      "2026-10-29T17:46:00Z",
+      "2026-10-29T17:49:00Z"
+    ]
+  ],
+  "referenceSnapshots": [
+    {
+      "sequence": "9307",
+      "sourceGeneratedAt": "2026-10-29T17:46:40.848Z",
+      "expectedReconciliationAgeMs": 54
+    },
+    {
+      "sequence": "9310",
+      "sourceGeneratedAt": "2026-10-29T17:47:26.469Z",
+      "expectedReconciliationAgeMs": 5050
+    }
+  ],
+  "tests": {
+    "exporter": 24,
+    "admin": 10,
+    "independentReview": "PASS"
+  },
+  "sourceFiles": {
+    "operator/native-paper-ec2/export-reporting-forensics-20261029.py": {
+      "bytes": 24379,
+      "sha256": "0c1fb02a080568945de79aa9569177a2e56ab2b4a5f659de13f95abbc13f4aec"
+    },
+    "operator/native-paper-ec2/test-export-reporting-forensics-20261029.py": {
+      "bytes": 16804,
+      "sha256": "a751fc743b2cb1eb231ef104a0b2f71f0c98cd4f3c51492b1d2537e41283c2a8"
+    }
+  },
+  "newTemporaryStage": "/var/tmp/poe-original-entry-control-forensics-20261029",
+  "oldTemporaryStagePreserved": "/var/tmp/poe-original-reporting-forensics-20261029",
+  "ownerExecuted": false,
+  "privateProductionLedgerRead": false,
+  "runtimeChanged": false,
+  "financialWrites": 0,
+  "limitations": [
+    "The public sequence is not a financial journal revision. Anchors expose committed journal event-time controls and explicitly retain this binding limitation.",
+    "Current financial controls are not substituted for historical state. Malformed, missing, bounded or tied control history stays unknown.",
+    "Reconciliation facts and raw entry controls are independent; unavailable reconciliation does not erase established controls.",
+    "Private EC2 results remain unknown until owner execution and validated artifact retrieval."
+  ],
+  "stageVerifiedAt": "2026-10-29T18:09:16.440000+00:00",
+  "adminCommit": "c41af6981de27e9cfd7d5306d025399daba187a6",
+  "stageWorkflowRun": 40928082335,
+  "stageVerified": true
+}

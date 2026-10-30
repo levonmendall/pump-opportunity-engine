@@ -1,0 +1,35 @@
+{
+  "kind": "poe-inert-original-v2-protection-upgrade-preparation-v1",
+  "at": "2026-10-29T22:48:23.790784+00:00",
+  "previousSource": {
+    "commit": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+    "sha256": "870ac98a2377fefde564b9a3a252a7cc7cb3a561582abd48bda22ee18a14bee7"
+  },
+  "previousConfigurationSha256": "797f8c1f0a1e23a9771b05356ff51d71f081b520e994f4cf6b2ed1c7c44c6511",
+  "targetSource": null,
+  "targetConfigurationSha256": null,
+  "allFutureRuntimePinsUnfrozen": true,
+  "strategyBeforeAfter": "adaptive-momentum-v2-paper-v1",
+  "positionLimitBeforeAfter": 2,
+  "deepSlotsBeforeAfter": 4,
+  "ownerDailyLossResetInvoked": false,
+  "hardFinancialControlsCleared": false,
+  "exporterSha256": "1c684b1c88c95c75488f056ad00a8ea756c906e45dcb0f4f8725f5e75b193c59",
+  "exporterRun": "native-paper-20261029221651345",
+  "tests": {
+    "operator": {
+      "passed": 59,
+      "rawSha256": "6e85f7baba50a3cf9bce1f74fa315dad410bbca69a396b5fd1d4b8e8c727010e"
+    },
+    "exporter": {
+      "passed": 20,
+      "rawSha256": "62a2ffe5c80036f5db9fa14fbcac2047012347d932552529a35b9e1dd43ff86e"
+    }
+  },
+  "staged": false,
+  "deployed": false,
+  "financialDatabaseOpened": false,
+  "financialWrites": 0,
+  "providerRequests": 0,
+  "operationalAcceptance": false
+}

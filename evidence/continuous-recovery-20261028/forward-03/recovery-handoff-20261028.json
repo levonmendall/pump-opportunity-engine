@@ -1,0 +1,226 @@
+{
+  "schemaVersion": 1,
+  "classification": "READ_ONLY_RECOVERY_HANDOFF_NOT_ACCEPTANCE",
+  "recordedAt": "2026-10-28T19:44:01.916180+00:00",
+  "currentLead": {
+    "branch": "poe-free-data-evaluation-20261027",
+    "commit": "19cdd8c5a6bb23874bd8179cdc698ee7e355e442",
+    "runtimeStatus": "No market or PAPER runtime seen in bounded local process listing; serial offline verification running. This is not a remote host liveness check.",
+    "testStatus": "Prior source19c full-suite output interrupted without final summary; resumed serial suite PID119468 running when checked. No current full-suite pass claimed.",
+    "coordinationLease": {
+      "pid": 103332,
+      "status": "defunct; cannot be reused as a live lease",
+      "requiredAction": "Establish a new bounded coordination-only lock before guarded export/network activity."
+    }
+  },
+  "lastActualMarketRuntime": {
+    "source": {
+      "commit": "9a520267f8e446a634b3e7ca773dd7471e14e7bc",
+      "sha256": "395d7c9effb4a16004f511ed5647fc02c8666c5af18e5c81995884160f116812"
+    },
+    "configurationSha256": "1362f6ccf3d31cc0693f4f77040486e380e23251f685817908ce4267ee7c5b5c",
+    "runId": "native-candidates-20261028183837830",
+    "observation": {
+      "startedAt": 1793212717830,
+      "generatedAt": 1793213608562,
+      "lastSourceAt": 1793213607201,
+      "logicalObservationCutoffAt": 1793213607830,
+      "stopRequestedAt": 1793213607946,
+      "transportSettledAt": 1793213608562,
+      "physicalSettlementConfirmed": true,
+      "elapsedMs": 890732
+    },
+    "classification": "CANDIDATE_ONLY_FORWARD; NOT_PAPER_ACCEPTANCE",
+    "sixAckedScopesMs": 690989,
+    "metrics": {
+      "migrationHints": 11,
+      "verificationQueueRefusals": 0,
+      "verificationAttempts": 36,
+      "verifiedOrigins": 132,
+      "verificationRefusals": 28,
+      "normalizedEvents": 5616,
+      "qualityGaps": 37,
+      "featureViews": 578,
+      "auditedWindows": 48,
+      "predictiveAssessments": 48,
+      "predictiveFailed": 44,
+      "predictiveNotRejected": 4,
+      "predictiveUnavailable": 0,
+      "auditUnavailable": 19,
+      "auditUnusable": 0,
+      "decisionDeadlineMisses": 14,
+      "auditFenceWarmingWindows": 23,
+      "uniqueEvaluated": 17,
+      "strictV2BaselineUnavailableViews": 2,
+      "protocolAwareShadowViews": 48
+    },
+    "provider": {
+      "physicalStarts": 595,
+      "physicalSettlements": 595,
+      "startsByKind": {
+        "ws-upgrade:upgrade": 5,
+        "ws:subscribeMigration": 1,
+        "http:getMultipleAccounts": 195,
+        "ws:logsSubscribe": 88,
+        "ws:ping": 99,
+        "http:getTransaction": 44,
+        "http:getSignaturesForAddress": 91,
+        "ws:logsUnsubscribe": 72
+      },
+      "peakStarts": {
+        "10000": 20,
+        "60000": 65
+      },
+      "timeoutsByKind": {
+        "http:getSignaturesForAddress": 38,
+        "http:getMultipleAccounts": 8,
+        "ws:logsUnsubscribe": 1,
+        "http:getTransaction": 1,
+        "ws:ping": 1
+      },
+      "httpStatuses": {
+        "200": 304,
+        "None": 26
+      },
+      "newUnits": 595,
+      "newAccountedResponseBytes": 170187537,
+      "cumulativeUnits": 7464,
+      "cumulativeAccountedResponseBytes": 811609562,
+      "cumulativeUncertainResponseBytes": 389808128,
+      "fatal": null,
+      "closed": true
+    },
+    "financial": {
+      "financialWriterOpened": false,
+      "entriesEnabled": false,
+      "portfolio": null,
+      "fills": 0,
+      "positions": 0,
+      "pnl": "not measured"
+    }
+  },
+  "demonstratedGains": [
+    "Eight recoverable HTTP support-refresh failures preserved healthy notification capture without extending source freshness. Six recovered before original expiry; two consecutive failures left five genuine source-expiry gaps.",
+    "Global correction cache peak12392 fingerprints/8200 full rows,27519 compactions; zero fingerprint-capacity refusal and no global cache-poisoning teardown in this run.",
+    "Forty-eight independently audited ordinary-flow assessments over seventeen unique tokens; four predictive passes were overlapping windows of the same EV5 token, not four unique opportunities or executable qualifications."
+  ],
+  "remainingObservedFailures": {
+    "candidateQualityGapCallbacks": 37,
+    "auditUnavailable": 19,
+    "auditUnavailableCauses": {
+      "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT": 16,
+      "NATIVE_AUDIT_TARGET_SLOT_BOUNDARY_AMBIGUOUS": 1,
+      "PILOT_RPC_COMPONENT_DISPATCH_EXPIRED": 2
+    },
+    "decisionDeadlineMisses": 14,
+    "deadlineCauseSummary": "10 audit HTTP timeouts;2 locally expired before physical dispatch;1 boundary ambiguity;1 never dispatched in time.",
+    "sharedWsFailures": "One unsubscribe timeout affected5 scopes and one ping timeout affected6 scopes; these are actual WS control failures, not HTTP cooldown teardown.",
+    "localLedgerPressure": "BLAyt hit8192-row metadata bound after6874 failed and1318 successful rows; candidate-local refusal did not poison peers.",
+    "unsupportedShapes": "Ten unsupported-swap-label callbacks and one protocol-child-shape callback remain explicit coverage failures in source9a."
+  },
+  "actualAccountingSeal": {
+    "rawBooks": 314,
+    "checkpoint": {
+      "path": "/workspace/poe-pilot/research-checkpoints/settled-forward9a-20261028.json",
+      "sha256": "bc67d2353eb49413dbb9a071840ea2584d7fc707e165efc9e8fb388e3f4e0be2",
+      "bytes": 88029,
+      "accounted": {
+        "calls": 7466,
+        "bytes": 811632414,
+        "observedBytes": 421824286,
+        "uncertainResponseBytes": 389808128,
+        "pendingOperations": 213
+      },
+      "retainedStarts": 32,
+      "unknownPhysicalStartsConservativelyAtSeal": 32,
+      "omittedStarts": 7434,
+      "rawSourcesRetained": true
+    },
+    "verifiedRawHandoff": {
+      "checkpointPath": "/workspace/poe-pilot/research-checkpoints/settled-forward9a-20261028.json",
+      "checkpointSha256": "bc67d2353eb49413dbb9a071840ea2584d7fc707e165efc9e8fb388e3f4e0be2",
+      "sourceCount": 314,
+      "accountedUnits": 7466,
+      "accountedResponseBytes": 811632414,
+      "observedResponseBytes": 421824286,
+      "uncertainResponseBytes": 389808128,
+      "rawSourcesHashVerified": true,
+      "financialOrProviderAuthority": false
+    },
+    "allRawEvidenceRetained": true,
+    "consumedOrUncertainUsageRefunded": false,
+    "financialLedgerOpened": false,
+    "note": "312-book source9a linked receipt is historically correct; two subsequent historical field checks added two books/two actual request units/22852 response bytes before the314-book first seal."
+  },
+  "reporting": {
+    "localPublisher": {
+      "runningAcknowledgements": 59,
+      "distinctRunningSourceTimestamps": 58,
+      "firstAcceptedSourceAt": 1793212720414,
+      "lastAcceptedSourceAt": 1793213591280,
+      "maximumObservedAcknowledgementGapMs": 15387,
+      "maximumAcknowledgedSourceAgeMs": 16138,
+      "targetCadenceMs": 15000,
+      "staleBoundaryMs": 90000,
+      "continuityVerifiedForInterval": true,
+      "timingMeaning": "Publisher local acknowledgement times reconstructed from sourceAt+sourceAgeMs; not independent Render receipt timestamps."
+    },
+    "finalStoppedAck": {
+      "published": true,
+      "result": "accepted",
+      "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+      "runId": "native-candidates-20261028183837830",
+      "sourceAt": 1793213608562,
+      "running": false,
+      "sourceAgeMs": 885
+    },
+    "exactDistinctRunningPrivatePublicMatches": 0,
+    "exactDistinctStoppedPrivatePublicMatches": 1,
+    "limitation": "Corrected public Cloud-proxy sampler starts after retained first four running snapshots; only exact stopped source can be compared. InitialCloudproxyfailures are not Render outages.",
+    "nextRequirement": "Start proxy-enabled public sampler before next runtime; retain exact first2/latest2 accepted local source snapshots and ACKs for cycle parity."
+  },
+  "implementedAfterLiveSource9aNotYetForwardVerified": [
+    "Valid managed subscription/unsubscription ACKs renew unchanged round-trip liveness; ordinary notifications do not.",
+    "Domain-aware upcoming service runway avoids misclassifying support/pong/unsubscribe as early heartbeat.",
+    "Quiet first-page audit batching through existing shared gate; busy continuation page cap6; no completeness relaxation.",
+    "Strict sealed314-book accounting baseline avoids repeated historical reparse while retaining actual/uncertain usage and conservative starts.",
+    "Failed-packet diagnostic compaction inV3 while successful/unusable/unsupported executed-flow obligations remain mandatory.",
+    "Settled candidate batch-specific faults do not impose holding-pricing global cooldown; true provider throttling and physical hard faults retain normal controls."
+  ],
+  "nextReleaseRequirements": [
+    "Complete and verify resumed full suite, build/compile, focused operator checks against unchanged exact source.",
+    "Freeze/push exact reviewed source; rebuild candidate/PAPER packages; run strict sealed-input exporter with valid new coordination lease.",
+    "Complete same-account encrypted import and verification, then establish single-writer fence before host PAPER activation.",
+    "Stage exact bounded supervisor/configuration/publisher identities, start proxy-enabled Render sampler before dispatch, and run isolated PAPER interval without forced qualification.",
+    "Read back settled financial projections and reconcile actual ledger/source/public Render cycles; continue management/recovery for retained exposure."
+  ],
+  "boundaries": {
+    "realTrading": false,
+    "originalObserverChanged": false,
+    "newSpending": false,
+    "noTwentyFourHourAcceptanceClaim": true,
+    "financialFilesReadByThisHandoffTask": false
+  },
+  "sourceEvidence": {
+    "evidence/continuous-recovery-20261028/forward-03/analysis-forward9a.json": {
+      "bytes": 352836,
+      "sha256": "e3e2ecb402912daa1156ef38d2e4214da4d1015aee111615579c132f87c08639"
+    },
+    "evidence/continuous-recovery-20261028/forward-03/administration-outcome.json": {
+      "bytes": 10224,
+      "sha256": "167c6b66ed25648d6caf1a8fbd663516325d7fe29d8434f4a187c281120c0aab"
+    },
+    "evidence/continuous-recovery-20261028/forward-03/linked-accounting.json": {
+      "bytes": 647,
+      "sha256": "03863babb6075bb4c405d85b10b8c9de8cb4429e8d4425104894c1190f902cd1"
+    },
+    "evidence/continuous-recovery-20261028/forward-03/analysis-evidence-manifest.json": {
+      "bytes": 909,
+      "sha256": "589f4eb0303145486f4536d07196ecc5aaf08d091dc8d7b5fdebc02d05c0f26c"
+    },
+    "evidence/continuous-recovery-20261028/first-accounting-seal.json": {
+      "bytes": 1293,
+      "sha256": "b13200eb762b3773930cd59dbe853f0ee957dd6398f11102b858e405cb1e8566"
+    }
+  }
+}

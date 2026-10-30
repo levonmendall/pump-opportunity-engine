@@ -1,0 +1,577 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-27T03:16:50.915Z",
+  "mode": "OFFLINE_ANALYSIS_OF_RETAINED_ACTUAL_PUBLIC_RPC_PREFLIGHT_EVIDENCE",
+  "additionalNetworkRequests": 0,
+  "record": {
+    "path": "evidence/free-data-20261027/active-continuation-record.ndjson",
+    "bytes": 198024,
+    "sha256": "543acfe252cf225f44f8f35cfe9bb7b0606004a0b3e899635ebd9ff96bc652e3"
+  },
+  "outcome": "PREFLIGHT_REFUSED_NO_STREAM",
+  "reason": "RESEARCH_RPC_HTTP_429",
+  "streamOpened": false,
+  "requestAccounting": {
+    "thisPass": {
+      "attempted": 14,
+      "successfulResponses": 13,
+      "http429Responses": 1,
+      "bytes": 190905,
+      "elapsedSelectionMs": 1342,
+      "byMethod": {
+        "getSignaturesForAddress": 3,
+        "getTransaction": 11
+      }
+    },
+    "cumulative": {
+      "budgetId": "active-approved-20261027",
+      "endpoint": "https://api.mainnet.solana.com",
+      "calls": 20,
+      "bytes": 272634,
+      "uncertainResponseBytes": 0,
+      "remainingCalls": 220,
+      "remainingResponseBytes": 66836230,
+      "byMethod": {
+        "getSignaturesForAddress": 5,
+        "getTransaction": 15
+      },
+      "inFlight": 0,
+      "rolling10SecondStarts": 14,
+      "rollingMinuteStarts": 14,
+      "nextStartAfterMs": 0,
+      "durationsMs": [
+        304.78645199999994,
+        79.82907999999998,
+        63.27412699999991,
+        108.85056099999997,
+        101.71139500000004,
+        91.33581299999992,
+        312.095456,
+        118.5212610000001,
+        58.35844700000007,
+        154.76789000000008,
+        72.92956400000003,
+        45.14329399999997,
+        76.17753599999992,
+        86.15227400000003,
+        45.328052999999954,
+        83.11506200000008,
+        74.53427499999998,
+        49.379267000000254,
+        55.069586999999956,
+        48.74537800000007
+      ],
+      "blockedReason": "RPC_HTTP_429",
+      "storageFailed": false,
+      "closed": false
+    }
+  },
+  "actual": [
+    {
+      "identity": {
+        "signature": "2Au1LsoNwXJVAVDoPpoKdjocF5iwtm5MpFi637cBZ68jYnHoNEge3w2WuEdGDg7yjomtxX74zfHS7yVWQajZdNx6",
+        "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "outerInstructionIndex": 4,
+        "swapInnerInstructionIndex": null,
+        "eventInnerInstructionIndex": 6,
+        "eventIndex": 0
+      },
+      "pool": "4dgUjYxeCnq7ZSqrNu14FWXmDiJrWmmw7wigL7VRHFsW",
+      "mint": "91RBVuoCLvikHs4qeUGczABotGLd1Tjo84DMfpFUpump",
+      "trader": "9S65CigtYTuCAgX1KeLHmtC2yPWbdjhDccwUa5vq98HA",
+      "side": "sell",
+      "tokenUnits": "45355765675",
+      "curveQuoteLamports": "75552859",
+      "userQuoteLamports": "74684000",
+      "fees": {
+        "lp_fee": "151106",
+        "protocol_fee": "37777",
+        "coin_creator_fee": "679976",
+        "cashback": "0",
+        "buyback_fee": "18888",
+        "holder_rewards": "0",
+        "quote_transfer_fee": "0"
+      },
+      "slot": 461914206,
+      "identityKey": "2Au1LsoNwXJVAVDoPpoKdjocF5iwtm5MpFi637cBZ68jYnHoNEge3w2WuEdGDg7yjomtxX74zfHS7yVWQajZdNx6:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:4:outer:6:0",
+      "chainBlockTime": 1793070867,
+      "commitment": "confirmed",
+      "providerReceivedAt": null,
+      "availableAt": 1793070868777,
+      "transferChecks": {
+        "baseTransfer": true,
+        "userQuoteTransfer": true
+      },
+      "fingerprint": "8fbb485d5e28324ea17a1557ead17c56bd78d8d6b79360f5925fd0e23670fcf1",
+      "normalizedForStrategy": false,
+      "limitations": [
+        "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+        "The strategy quoteLamports economic convention is not frozen by this mapper.",
+        "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+      ],
+      "instructionName": "sell",
+      "route": "direct",
+      "feePayer": "9S65CigtYTuCAgX1KeLHmtC2yPWbdjhDccwUa5vq98HA",
+      "payerEqualsTrader": true,
+      "baseTokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "quoteTokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "feeArithmetic": {
+        "lpPlusProtocolPlusCreatorLamports": "868859",
+        "curveMinusThoseFeesLamports": "74684000",
+        "matchesUserNet": true,
+        "buybackIsNotAnAdditionalDeductionInThisObservedArithmetic": true
+      },
+      "fullCurrentPoolSupportVerified": false,
+      "actualPumpApiMatch": false
+    },
+    {
+      "identity": {
+        "signature": "5FebwqmEe5d4TuxieJKzdctYAiuo8Py2VZeNa39nASCHGh7WAfPGS41uZMgaUvnxvZydxfnScCCZLxUBrg1ui4jr",
+        "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "outerInstructionIndex": 3,
+        "swapInnerInstructionIndex": null,
+        "eventInnerInstructionIndex": 6,
+        "eventIndex": 0
+      },
+      "pool": "4qGqJXSAdT3da5KumRQZZF4JJ1zz2DUfoDbJZzakL2Wd",
+      "mint": "322nR3uijcJBNFKAzNBY4PqwrJ3qNg33vLnfhkvrpump",
+      "trader": "BdLjeuFvM59pHgTNhR1wUK7Wyxx6P3vZjCUgnTEqJMwh",
+      "side": "sell",
+      "tokenUnits": "17862432",
+      "curveQuoteLamports": "315762",
+      "userQuoteLamports": "312919",
+      "fees": {
+        "lp_fee": "632",
+        "protocol_fee": "158",
+        "coin_creator_fee": "2053",
+        "cashback": "0",
+        "buyback_fee": "79",
+        "holder_rewards": "0",
+        "quote_transfer_fee": "0"
+      },
+      "slot": 461914206,
+      "identityKey": "5FebwqmEe5d4TuxieJKzdctYAiuo8Py2VZeNa39nASCHGh7WAfPGS41uZMgaUvnxvZydxfnScCCZLxUBrg1ui4jr:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:3:outer:6:0",
+      "chainBlockTime": 1793070867,
+      "commitment": "confirmed",
+      "providerReceivedAt": null,
+      "availableAt": 1793070869123,
+      "transferChecks": {
+        "baseTransfer": true,
+        "userQuoteTransfer": true
+      },
+      "fingerprint": "b03a9c2233b78425dca88f2180f86a9be8ba0b62e6fd7037599089fb831e95c8",
+      "normalizedForStrategy": false,
+      "limitations": [
+        "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+        "The strategy quoteLamports economic convention is not frozen by this mapper.",
+        "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+      ],
+      "instructionName": "sell",
+      "route": "direct",
+      "feePayer": "BdLjeuFvM59pHgTNhR1wUK7Wyxx6P3vZjCUgnTEqJMwh",
+      "payerEqualsTrader": true,
+      "baseTokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "quoteTokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "feeArithmetic": {
+        "lpPlusProtocolPlusCreatorLamports": "2843",
+        "curveMinusThoseFeesLamports": "312919",
+        "matchesUserNet": true,
+        "buybackIsNotAnAdditionalDeductionInThisObservedArithmetic": true
+      },
+      "fullCurrentPoolSupportVerified": false,
+      "actualPumpApiMatch": false
+    }
+  ],
+  "samples": [
+    {
+      "signature": "39dmQ3SpdRTzUYNbkQZRn28PRF6cuFphdP7tSpZutbpkW47fmzfDy8zSEhQJbdwrno6gbU9RDnuUVNbJo6udvjDe",
+      "requestedAt": 1793070868438,
+      "availableAt": 1793070868559,
+      "responseLatencyMs": 121,
+      "slot": 461914206,
+      "chainBlockTime": 1793070867,
+      "version": 0,
+      "loadedAddresses": {
+        "writable": 0,
+        "readonly": 0
+      },
+      "feePayer": "HN8E8u7MhoQSbEZjd2mLEd1tr39pRwBNdw6GFRpAdsuh",
+      "compiledCanonicalSolSwapInvocations": 0,
+      "scopes": [],
+      "events": [],
+      "transactionSha256": "588eea3a3b9d8b6567b459320538eef7cee0999d5ff391133f4d900c0628f675"
+    },
+    {
+      "signature": "j9VbFYdz7wAuEQSdGEWw54LFfjpwcWTto6dDku1xiBjDavgJUuw7D8yXTsQbGWGVyQkoM4pZEaPT6mA8kCNqPgk",
+      "requestedAt": 1793070868560,
+      "availableAt": 1793070868620,
+      "responseLatencyMs": 60,
+      "slot": 461914206,
+      "chainBlockTime": 1793070867,
+      "version": "legacy",
+      "loadedAddresses": {
+        "writable": 0,
+        "readonly": 0
+      },
+      "feePayer": "7y5aRdzh5ZBYDhM4qKBwXzUUjKBSBperbrgWiE7AoAHG",
+      "compiledCanonicalSolSwapInvocations": 0,
+      "scopes": [],
+      "events": [],
+      "transactionSha256": "d4688541056deda0ac2507c8a8e0d5e21df489f4740ae9de61e0e41010cac476"
+    },
+    {
+      "signature": "2Au1LsoNwXJVAVDoPpoKdjocF5iwtm5MpFi637cBZ68jYnHoNEge3w2WuEdGDg7yjomtxX74zfHS7yVWQajZdNx6",
+      "requestedAt": 1793070868620,
+      "availableAt": 1793070868777,
+      "responseLatencyMs": 157,
+      "slot": 461914206,
+      "chainBlockTime": 1793070867,
+      "version": "legacy",
+      "loadedAddresses": {
+        "writable": 0,
+        "readonly": 0
+      },
+      "feePayer": "9S65CigtYTuCAgX1KeLHmtC2yPWbdjhDccwUa5vq98HA",
+      "compiledCanonicalSolSwapInvocations": 1,
+      "scopes": [
+        {
+          "mint": "91RBVuoCLvikHs4qeUGczABotGLd1Tjo84DMfpFUpump",
+          "pool": "4dgUjYxeCnq7ZSqrNu14FWXmDiJrWmmw7wigL7VRHFsW"
+        }
+      ],
+      "events": [
+        {
+          "identity": {
+            "signature": "2Au1LsoNwXJVAVDoPpoKdjocF5iwtm5MpFi637cBZ68jYnHoNEge3w2WuEdGDg7yjomtxX74zfHS7yVWQajZdNx6",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 4,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "pool": "4dgUjYxeCnq7ZSqrNu14FWXmDiJrWmmw7wigL7VRHFsW",
+          "mint": "91RBVuoCLvikHs4qeUGczABotGLd1Tjo84DMfpFUpump",
+          "trader": "9S65CigtYTuCAgX1KeLHmtC2yPWbdjhDccwUa5vq98HA",
+          "side": "sell",
+          "tokenUnits": "45355765675",
+          "curveQuoteLamports": "75552859",
+          "userQuoteLamports": "74684000",
+          "fees": {
+            "lp_fee": "151106",
+            "protocol_fee": "37777",
+            "coin_creator_fee": "679976",
+            "cashback": "0",
+            "buyback_fee": "18888",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "slot": 461914206,
+          "identityKey": "2Au1LsoNwXJVAVDoPpoKdjocF5iwtm5MpFi637cBZ68jYnHoNEge3w2WuEdGDg7yjomtxX74zfHS7yVWQajZdNx6:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:4:outer:6:0",
+          "chainBlockTime": 1793070867,
+          "commitment": "confirmed",
+          "providerReceivedAt": null,
+          "availableAt": 1793070868777,
+          "transferChecks": {
+            "baseTransfer": true,
+            "userQuoteTransfer": true
+          },
+          "fingerprint": "8fbb485d5e28324ea17a1557ead17c56bd78d8d6b79360f5925fd0e23670fcf1",
+          "normalizedForStrategy": false,
+          "limitations": [
+            "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+            "The strategy quoteLamports economic convention is not frozen by this mapper.",
+            "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+          ],
+          "instructionName": "sell",
+          "route": "direct",
+          "feePayer": "9S65CigtYTuCAgX1KeLHmtC2yPWbdjhDccwUa5vq98HA",
+          "payerEqualsTrader": true,
+          "baseTokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "quoteTokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "feeArithmetic": {
+            "lpPlusProtocolPlusCreatorLamports": "868859",
+            "curveMinusThoseFeesLamports": "74684000",
+            "matchesUserNet": true,
+            "buybackIsNotAnAdditionalDeductionInThisObservedArithmetic": true
+          },
+          "fullCurrentPoolSupportVerified": false,
+          "actualPumpApiMatch": false
+        }
+      ],
+      "transactionSha256": "712c02405a9ce5e4296a67eec917fe79ca956cb00384b626c2cf24dbde560bac"
+    },
+    {
+      "signature": "2PZPniK4tFBCFCJMGZPH8WSgRHL2JhiZN7Bo8KSVE9DHkgNBsuYWqZ8UPzKQmsD7bKGKEcX6tQAZxqi3Neinv78a",
+      "requestedAt": 1793070868860,
+      "availableAt": 1793070868907,
+      "responseLatencyMs": 47,
+      "slot": 461914206,
+      "chainBlockTime": 1793070867,
+      "version": 1,
+      "loadedAddresses": {
+        "writable": 0,
+        "readonly": 0
+      },
+      "feePayer": "GezEJrtMqZw8Pa6GUheA1vcw4PTauxPBoYLkRFaL8nq5",
+      "compiledCanonicalSolSwapInvocations": 0,
+      "scopes": [],
+      "events": [],
+      "transactionSha256": "9888ccfc7bed9487adb5d7cb0d3e66cb904331d38b6731ed5c1e825c35c8b8df"
+    },
+    {
+      "signature": "2dRuW5e2dY4M8MJSYnURyjL6gf6Lpd5TRPiSuADNVtSASWFCbdxj63e9iu2BE6SLxu13UJGsjgqtXVhmQTZ3itnc",
+      "requestedAt": 1793070868907,
+      "availableAt": 1793070868986,
+      "responseLatencyMs": 79,
+      "slot": 461914206,
+      "chainBlockTime": 1793070867,
+      "version": 0,
+      "loadedAddresses": {
+        "writable": 3,
+        "readonly": 7
+      },
+      "feePayer": "GaGET95mzbEBQ86FG2EoSm2DBPHtXjjzZFAR8zPPvqSo",
+      "compiledCanonicalSolSwapInvocations": 0,
+      "scopes": [],
+      "events": [],
+      "transactionSha256": "43fe34c8bb35a3e09d7aaf42bf50949adaed947552e7ac53cffe571349a662e5"
+    },
+    {
+      "signature": "4gzCgyvfon28FNkWqKZwjHNDhY8qcy4X3iFLphjypANByJ32BYzVftkbLiE2dBBdiwwpJimH2hArCRcYp8Zhpqn3",
+      "requestedAt": 1793070868987,
+      "availableAt": 1793070869075,
+      "responseLatencyMs": 88,
+      "slot": 461914206,
+      "chainBlockTime": 1793070867,
+      "version": 0,
+      "loadedAddresses": {
+        "writable": 0,
+        "readonly": 0
+      },
+      "feePayer": "nFiqhG9fsU7vmEmy75ggToZ9kUwQbkG8un6oaFiiXNs",
+      "compiledCanonicalSolSwapInvocations": 0,
+      "scopes": [],
+      "events": [],
+      "transactionSha256": "ace78dfa662d3ff12fa2dfdc0d21066b0867fe8c68f177bd2ea1e624824f2376"
+    },
+    {
+      "signature": "5FebwqmEe5d4TuxieJKzdctYAiuo8Py2VZeNa39nASCHGh7WAfPGS41uZMgaUvnxvZydxfnScCCZLxUBrg1ui4jr",
+      "requestedAt": 1793070869076,
+      "availableAt": 1793070869123,
+      "responseLatencyMs": 47,
+      "slot": 461914206,
+      "chainBlockTime": 1793070867,
+      "version": 0,
+      "loadedAddresses": {
+        "writable": 0,
+        "readonly": 0
+      },
+      "feePayer": "BdLjeuFvM59pHgTNhR1wUK7Wyxx6P3vZjCUgnTEqJMwh",
+      "compiledCanonicalSolSwapInvocations": 1,
+      "scopes": [
+        {
+          "mint": "322nR3uijcJBNFKAzNBY4PqwrJ3qNg33vLnfhkvrpump",
+          "pool": "4qGqJXSAdT3da5KumRQZZF4JJ1zz2DUfoDbJZzakL2Wd"
+        }
+      ],
+      "events": [
+        {
+          "identity": {
+            "signature": "5FebwqmEe5d4TuxieJKzdctYAiuo8Py2VZeNa39nASCHGh7WAfPGS41uZMgaUvnxvZydxfnScCCZLxUBrg1ui4jr",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 3,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "pool": "4qGqJXSAdT3da5KumRQZZF4JJ1zz2DUfoDbJZzakL2Wd",
+          "mint": "322nR3uijcJBNFKAzNBY4PqwrJ3qNg33vLnfhkvrpump",
+          "trader": "BdLjeuFvM59pHgTNhR1wUK7Wyxx6P3vZjCUgnTEqJMwh",
+          "side": "sell",
+          "tokenUnits": "17862432",
+          "curveQuoteLamports": "315762",
+          "userQuoteLamports": "312919",
+          "fees": {
+            "lp_fee": "632",
+            "protocol_fee": "158",
+            "coin_creator_fee": "2053",
+            "cashback": "0",
+            "buyback_fee": "79",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "slot": 461914206,
+          "identityKey": "5FebwqmEe5d4TuxieJKzdctYAiuo8Py2VZeNa39nASCHGh7WAfPGS41uZMgaUvnxvZydxfnScCCZLxUBrg1ui4jr:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:3:outer:6:0",
+          "chainBlockTime": 1793070867,
+          "commitment": "confirmed",
+          "providerReceivedAt": null,
+          "availableAt": 1793070869123,
+          "transferChecks": {
+            "baseTransfer": true,
+            "userQuoteTransfer": true
+          },
+          "fingerprint": "b03a9c2233b78425dca88f2180f86a9be8ba0b62e6fd7037599089fb831e95c8",
+          "normalizedForStrategy": false,
+          "limitations": [
+            "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+            "The strategy quoteLamports economic convention is not frozen by this mapper.",
+            "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+          ],
+          "instructionName": "sell",
+          "route": "direct",
+          "feePayer": "BdLjeuFvM59pHgTNhR1wUK7Wyxx6P3vZjCUgnTEqJMwh",
+          "payerEqualsTrader": true,
+          "baseTokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "quoteTokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+          "feeArithmetic": {
+            "lpPlusProtocolPlusCreatorLamports": "2843",
+            "curveMinusThoseFeesLamports": "312919",
+            "matchesUserNet": true,
+            "buybackIsNotAnAdditionalDeductionInThisObservedArithmetic": true
+          },
+          "fullCurrentPoolSupportVerified": false,
+          "actualPumpApiMatch": false
+        }
+      ],
+      "transactionSha256": "ec0b27873bbb4500c760eed908e7942ad92b8dbccf18549b483a677f59ec8837"
+    },
+    {
+      "signature": "2nCZ358HvWHzWyD8VWM5PdFxuXNNTBNnSWNSqZJLWhmX26mcJtYvrwPQuWpunRJi5hVGr72C6ysNiH3kP9ozmBZv",
+      "requestedAt": 1793070869215,
+      "availableAt": 1793070869294,
+      "responseLatencyMs": 79,
+      "slot": 461914206,
+      "chainBlockTime": 1793070867,
+      "version": 1,
+      "loadedAddresses": {
+        "writable": 0,
+        "readonly": 0
+      },
+      "feePayer": "GZnrnkZkdxWFmvEyBFWAobmcHUsNreXWAYVCKdyb3fFi",
+      "compiledCanonicalSolSwapInvocations": 0,
+      "scopes": [],
+      "events": [],
+      "transactionSha256": "56fa8a71f5307c33b3e7f361664b7cc77766a031b841c93742e95592a652e63a"
+    },
+    {
+      "signature": "2kPrDT5ZBGUQ4VHHiV5dn5zKb5o4izirBotFeu8zgm65x38BitTG6mMwDvRqL1DavqdH5p6QwBNhShjjcbXHfhaw",
+      "requestedAt": 1793070869294,
+      "availableAt": 1793070869346,
+      "responseLatencyMs": 52,
+      "slot": 461914206,
+      "chainBlockTime": 1793070867,
+      "version": 0,
+      "loadedAddresses": {
+        "writable": 0,
+        "readonly": 0
+      },
+      "feePayer": "ArkxhyfiM2iADep5iMNxctv7ToiQYi2uL72rBGq2Zz7y",
+      "compiledCanonicalSolSwapInvocations": 0,
+      "scopes": [],
+      "events": [],
+      "transactionSha256": "396d3da54db88962aceec64480f8a33547c30266cbf6d6757de6990951ff76f8"
+    },
+    {
+      "signature": "SuzjajTyUATKNox2p8pbSMSmVcm4VG7Nv3DNWYCbEfFYHVwLLUWixKdrt1KRCb7UxgqALFo1oTyycQvPivvkTgf",
+      "requestedAt": 1793070869347,
+      "availableAt": 1793070869404,
+      "responseLatencyMs": 57,
+      "slot": 461914206,
+      "chainBlockTime": 1793070867,
+      "version": "legacy",
+      "loadedAddresses": {
+        "writable": 0,
+        "readonly": 0
+      },
+      "feePayer": "7y5aRdzh5ZBYDhM4qKBwXzUUjKBSBperbrgWiE7AoAHG",
+      "compiledCanonicalSolSwapInvocations": 0,
+      "scopes": [],
+      "events": [],
+      "transactionSha256": "0a64afff444031da81c6b7dd769f231580f069bf86e0e4c6f78fe93cd89839c5"
+    }
+  ],
+  "histories": [
+    {
+      "scope": {
+        "mint": "91RBVuoCLvikHs4qeUGczABotGLd1Tjo84DMfpFUpump",
+        "pool": "4dgUjYxeCnq7ZSqrNu14FWXmDiJrWmmw7wigL7VRHFsW"
+      },
+      "queriedAt": 1793070868784,
+      "availableAt": 1793070868859,
+      "rows": 20,
+      "successfulAddressTransactions": 19,
+      "failedAddressTransactions": 1,
+      "oldestChainBlockTime": 1793070865,
+      "latestChainBlockTime": 1793070868,
+      "chainTimeSpanSeconds": 3,
+      "slots": {
+        "min": 461914192,
+        "max": 461914209
+      },
+      "covered60SecondObservationInterval": false,
+      "capacity": "UNKNOWN: bounded latest20-row history truncated",
+      "independentlyDecodedSwapTransactions": 1,
+      "repeatedFromPriorRejectedPass": true,
+      "touchesAreNotVerifiedSwaps": true
+    },
+    {
+      "scope": {
+        "mint": "322nR3uijcJBNFKAzNBY4PqwrJ3qNg33vLnfhkvrpump",
+        "pool": "4qGqJXSAdT3da5KumRQZZF4JJ1zz2DUfoDbJZzakL2Wd"
+      },
+      "queriedAt": 1793070869128,
+      "availableAt": 1793070869215,
+      "rows": 20,
+      "successfulAddressTransactions": 20,
+      "failedAddressTransactions": 0,
+      "oldestChainBlockTime": 1793070866,
+      "latestChainBlockTime": 1793070868,
+      "chainTimeSpanSeconds": 2,
+      "slots": {
+        "min": 461914197,
+        "max": 461914207
+      },
+      "covered60SecondObservationInterval": false,
+      "capacity": "UNKNOWN: bounded latest20-row history truncated",
+      "independentlyDecodedSwapTransactions": 1,
+      "repeatedFromPriorRejectedPass": false,
+      "touchesAreNotVerifiedSwaps": true
+    }
+  ],
+  "observedVariants": {
+    "independentlyDecodedCanonicalSolSwaps": 2,
+    "directSells": 2,
+    "directBuys": 0,
+    "routedSwaps": 0,
+    "multipleSwapTransactions": 0,
+    "eligibleSwapsWithLoadedAddresses": 0,
+    "nonEligibleSamplesWithLoadedAddresses": 1,
+    "transactionVersions": [
+      "legacy",
+      0
+    ],
+    "instructionNames": [
+      "sell"
+    ]
+  },
+  "crossPassSelection": {
+    "priorRejectedPoolEncounteredAgain": [
+      "4dgUjYxeCnq7ZSqrNu14FWXmDiJrWmmw7wigL7VRHFsW"
+    ],
+    "currentDeduplication": "within this selection pass only; not persistent across prior passes",
+    "limitation": "The prior rejected4dg pool received another history read in this continuation. It was not revisited within the continuation pass; this is disclosed rather than described as global rejection deduplication."
+  },
+  "limitations": [
+    "This is RPC preflight evidence only: no PumpApi payload or live candidate-flow window was observed in this continuation.",
+    "Both pool histories are saturated; sustained swap rate, complete60s activity and full-window enrichment capacity remain unknown.",
+    "Support quote was never reached: current mint/extensions/vaults/fee configuration and full current supported-pool eligibility remain unverified.",
+    "No new Buy, routed, multiple-swap or eligible loaded-address trade variant was genuinely observed here. Prior separately recorded routed Sell_v2 evidence remains distinct.",
+    "HTTP429 occurred below the test-only local request-start ceilings. Shared-IP traffic, actual provider threshold and Retry-After were not measured; this does not identify a reliable sustainable endpoint rate.",
+    "No hypothetical holdings were priced, no live changing-price exit condition was evaluated, no production-capacity or coverage claim follows.",
+    "The one live capture remains unopened; counters were retained and no retry was performed."
+  ],
+  "productionChanged": false,
+  "entriesEnabled": false,
+  "liveTrading": false,
+  "acceptanceClockStarted": false
+}

@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "kind": "offline-native-paper-resume-repair",
+  "baseCommit": "71896104f07faa2b193b90d3d3133a8e29236f35",
+  "at": "2026-10-28T18:19:40.738009+00:00",
+  "providerRequests": 0,
+  "financialAccountsOpened": 0,
+  "files": [
+    {
+      "path": "src/run-native-paper.ts",
+      "bytes": 44517,
+      "sha256": "244eefa74165936ac5d2770030380ad90a9bd90963d1cca12061574df726bbdb"
+    },
+    {
+      "path": "test/native-paper-startup.test.ts",
+      "bytes": 6503,
+      "sha256": "32f78837ec9385b514781dc1b61c2c8ef586ec9f3530005823118cec60058219"
+    },
+    {
+      "path": "test/native-paper-management-reserve.test.ts",
+      "bytes": 6135,
+      "sha256": "3f0de13d2704d27b6e4e4a4c44e6469e28fa4ef80f7e9272197292edfd4b9fad"
+    },
+    {
+      "path": "test/native-paper-launcher.test.ts",
+      "bytes": 4579,
+      "sha256": "5f797263007656fa11d48b2d340365884f6cea48c1168aa23c4b7f52a99530dc"
+    },
+    {
+      "path": "evidence/native-paper-supervision-20261028/resumed-focused-final.log",
+      "bytes": 1547,
+      "sha256": "e9a55082463cd70f9960a654ce33d736ace6645c7f88fbfe5b18ace6474f2a05"
+    },
+    {
+      "path": "evidence/native-paper-supervision-20261028/resumed-integration.log",
+      "bytes": 3485,
+      "sha256": "cfb2048d1c2b76e40d1c529217495a7821cbe4a51c8dcba246c23683ba11124e"
+    },
+    {
+      "path": "evidence/native-paper-supervision-20261028/resumed-build.log",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "path": "evidence/native-paper-supervision-20261028/resumed-compile.log",
+      "bytes": 77,
+      "sha256": "c111cbc630b00363e00464dc58c0d48d72870d7a431b9e6ada92ca45f2fe603a"
+    }
+  ],
+  "focusedChecks": 12,
+  "integratedChecks": 27,
+  "build": "PASS",
+  "compile": "PASS",
+  "naturalPaperTrades": 0,
+  "liveProtectionVerified": false
+}

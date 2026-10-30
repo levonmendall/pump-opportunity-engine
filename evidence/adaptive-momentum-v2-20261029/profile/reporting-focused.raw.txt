@@ -1,0 +1,27 @@
+✔ original reporting carries two verified historical peaks without another schema or private strategy data (5.591463ms)
+✔ unavailable or future peaks remain unavailable and legacy holding semantics stay explicit (0.50545ms)
+✔ strategy reporting remains bounded and does not relabel baseline source (0.458099ms)
+✔ one authoritative projection preserves unavailable facts and separates predictive from financial evaluation (5.226622ms)
+✔ experimental account, wrong inception and incoherent strategy cannot enter original intelligence (0.848879ms)
+✔ pending orders retain exact ledger reservation integers and future modeled execution without marking a fill (6.783912ms)
+✔ source timestamps cannot be freshened by telemetry and snapshot heartbeats do not conceal stale market state (8.167213ms)
+✔ unknown diagnostic fields, secret-shaped extras, oversized arrays, counters and invalid protection ownership fail closed (1.396331ms)
+✔ single channel duplicate/reordered semantics include intelligence immutably without refreshing receipt (4.660342ms)
+✔ current held protection uses actual completion age and primary availability, not a stale or cumulative risk classification (0.331912ms)
+✔ flat portfolio retains measured protection history after a completed holding without inventing never-held measurements (0.589645ms)
+✔ missing ownership is not projected as a flat account or an empty pending-action set (0.206416ms)
+✔ optional admission diagnostics preserve legacy intelligence without fabricating readiness (0.804684ms)
+✔ normal CPU and memory do not conceal a separate evidence admission refusal or source recovery (0.873115ms)
+✔ missing or invalid admission values remain unavailable while valid zero counters and false gates are retained (0.205715ms)
+✔ admission reasons export only known static codes and never provider text, credentials or local paths (0.362778ms)
+✔ receiver rejects malformed admission groups, secret-shaped extras and unsupported reason or proof codes (0.740749ms)
+✔ proof preparation states distinguish not-started from pending, completed and failed without implying financial readiness (1.262683ms)
+✔ internal checkpoint proof verdict uses the existing bounded public refusal list without financial IDs or a schema change (0.652828ms)
+ℹ tests 19
+ℹ suites 0
+ℹ pass 19
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 320.056511

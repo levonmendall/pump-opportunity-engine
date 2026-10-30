@@ -1,0 +1,51 @@
+{
+  "sameSupervisor": "2479299",
+  "sampleSeconds": 216.952,
+  "actualServiceCpuDelta": {
+    "usage_usec": 38660953,
+    "user_usec": 36789121,
+    "system_usec": 1871833,
+    "nr_throttled": 0,
+    "throttled_usec": 0
+  },
+  "averageServiceCpuCores": 0.17820049135292598,
+  "actualServiceIoDelta": {
+    "rbytes": 0,
+    "wbytes": 220815360,
+    "rios": 0,
+    "wios": 3008
+  },
+  "averageServiceWriteBytesPerSecond": 1017807.4412773332,
+  "actualServiceMemory": {
+    "current": {
+      "available": true,
+      "bytes": 503218176,
+      "unlimited": false
+    },
+    "max": {
+      "available": true,
+      "bytes": 3221225472,
+      "unlimited": false
+    },
+    "peak": {
+      "available": true,
+      "bytes": 511852544,
+      "unlimited": false
+    }
+  },
+  "hostAggregateNetworkDeltaNotPoeAttributable": [
+    {
+      "interface": "lo",
+      "receivedBytes": 40356,
+      "transmittedBytes": 40356
+    },
+    {
+      "interface": "ens5",
+      "receivedBytes": 277272874,
+      "transmittedBytes": 5941127
+    }
+  ],
+  "hostAvailableMemory": 6813990912,
+  "hostAvailableDisk": 286780993536,
+  "meaning": "Actual matched EC2 kernel counters for same source567 service and host. Host network is not POE-only traffic. Short interval is not sustained acceptance."
+}

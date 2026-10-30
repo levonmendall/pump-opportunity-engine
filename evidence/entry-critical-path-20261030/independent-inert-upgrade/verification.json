@@ -1,0 +1,71 @@
+{
+  "at": "2026-10-30T01:44:48.555038+00:00",
+  "sourceBefore": {
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/forward-original-upgrade.py": "783c92f2d4635d69da50ea01f7a01e42da247a08b165cd87c73ba226f2f0eb64",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-forward-original-upgrade.py": "9eb949d6f85ab882e8126c857ca28905f9625c67fdb9e83b842e7eac3c444dbf",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/export-adaptive-followthrough-forensics-20261030.py": "d31e59fe85b2935455c27798199287e072bae4e951d629dd6729322294bd7b75",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-export-adaptive-followthrough-forensics-20261030.py": "629459fec722632b2223bef3fe212e5e8b8e686be4e57707e3cc14e3b2b91457",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/read-adaptive-followthrough-forensics-20261030.py": "f0333711472ad107e7ff7c32d27470ec865bfbf0476dd35773ed5497327a540e",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-read-adaptive-followthrough-forensics-20261030.py": "aa0f3e70024b05862eff3ce4be899a969485fffcce304bd8abe7507ff96b063d",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/prepare-adaptive-followthrough-package-20261030.py": "4c4078aba4ef0d9e0e0430a4faac06ddcac9388d5945a41362565e5233f9b767",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-prepare-adaptive-followthrough-package-20261030.py": "17f411226ac0eb0b90d0affccd186aada5c4b3493ba4ae5d478348db8b457432"
+  },
+  "sourceAfter": {
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/forward-original-upgrade.py": "783c92f2d4635d69da50ea01f7a01e42da247a08b165cd87c73ba226f2f0eb64",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-forward-original-upgrade.py": "9eb949d6f85ab882e8126c857ca28905f9625c67fdb9e83b842e7eac3c444dbf",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/export-adaptive-followthrough-forensics-20261030.py": "d31e59fe85b2935455c27798199287e072bae4e951d629dd6729322294bd7b75",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-export-adaptive-followthrough-forensics-20261030.py": "629459fec722632b2223bef3fe212e5e8b8e686be4e57707e3cc14e3b2b91457",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/read-adaptive-followthrough-forensics-20261030.py": "f0333711472ad107e7ff7c32d27470ec865bfbf0476dd35773ed5497327a540e",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-read-adaptive-followthrough-forensics-20261030.py": "aa0f3e70024b05862eff3ce4be899a969485fffcce304bd8abe7507ff96b063d",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/prepare-adaptive-followthrough-package-20261030.py": "4c4078aba4ef0d9e0e0430a4faac06ddcac9388d5945a41362565e5233f9b767",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-prepare-adaptive-followthrough-package-20261030.py": "17f411226ac0eb0b90d0affccd186aada5c4b3493ba4ae5d478348db8b457432"
+  },
+  "sourceUnchanged": true,
+  "results": [
+    {
+      "file": "test-forward-original-upgrade.py",
+      "exitCode": 0,
+      "tests": 61,
+      "raw": "test-forward-original-upgrade.raw.txt",
+      "sha256": "a3da351b28c0977c5f1d8d2e6b7e490b0ec729d5af2e5cff7b158b053a34aee3"
+    },
+    {
+      "file": "test-export-adaptive-followthrough-forensics-20261030.py",
+      "exitCode": 0,
+      "tests": 37,
+      "raw": "test-export-adaptive-followthrough-forensics-20261030.raw.txt",
+      "sha256": "7cacc724b8f67eaf313cf3a1e031e917d4e26080b7f79aa7bb953e24ac1a141e"
+    },
+    {
+      "file": "test-read-adaptive-followthrough-forensics-20261030.py",
+      "exitCode": 0,
+      "tests": 15,
+      "raw": "test-read-adaptive-followthrough-forensics-20261030.raw.txt",
+      "sha256": "ecd7ba5b75a44f1c6152f17499e61460ce25d58c558dcfaeb286981eaddf0335"
+    },
+    {
+      "file": "test-prepare-adaptive-followthrough-package-20261030.py",
+      "exitCode": 0,
+      "tests": 3,
+      "raw": "test-prepare-adaptive-followthrough-package-20261030.raw.txt",
+      "sha256": "921b60a7fd52e978fbb551cacd29df2d6708879400278e1fcc70fceeb0c6f8e0"
+    }
+  ],
+  "totalTests": 116,
+  "reviewedScope": "Inert567-to-next driver, fixed567 current RPC diagnostic snapshot and bounded essential manifest time-index selection, strict public reader and inactive assembler. Final application/artifact pins not yet set.",
+  "manifestMetadataAuthority": "Selection only; event time/source/run filters and unknown/bounds reporting retained; no proof completeness inferred from manifests.",
+  "unchangedResourceBounds": {
+    "scanBytes": 67108864,
+    "segmentFiles": 16,
+    "seconds": 2,
+    "outputBytes": 131072,
+    "maxManifestFiles": 128,
+    "maxManifestBytesEach": 8192
+  },
+  "actualStagePerformed": false,
+  "actualHostReads": false,
+  "providerRequests": 0,
+  "originalFinancialAccountRead": false,
+  "serviceControlOperations": 0,
+  "passed": true
+}

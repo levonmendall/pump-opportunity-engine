@@ -1,0 +1,2858 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_RETAINED_TRACE_AUDIT_NOT_A_NEW_MEASUREMENT",
+  "generatedAt": "2026-10-27T13:59:08.694Z",
+  "sourcesBefore": [
+    {
+      "path": "evidence/overnight-20261027/11-combined/observations.ndjson",
+      "sha256": "835c7e7d5bf867556c50ca90a30f089a0d62a2f62fa8efb8a4a7813cb8e49ef2",
+      "bytes": 1249357
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/capture.json",
+      "sha256": "55d65c74da6edfa5b4e80f76b682449299290991cc175d20932108b120e82467",
+      "bytes": 329724
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/rpc-budget.json",
+      "sha256": "09eb13ef7d6199bc913bd83caf10a87c2bdbd5f98e59aa98ae9d3b517a7dd29c",
+      "bytes": 4814
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/grant.json",
+      "sha256": "e7fe86b762b626e8d3f051f14a548610ea6668a101a3247703daf54f778dccfb",
+      "bytes": 22940
+    }
+  ],
+  "sourcesAfter": [
+    {
+      "path": "evidence/overnight-20261027/11-combined/observations.ndjson",
+      "sha256": "835c7e7d5bf867556c50ca90a30f089a0d62a2f62fa8efb8a4a7813cb8e49ef2",
+      "bytes": 1249357
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/capture.json",
+      "sha256": "55d65c74da6edfa5b4e80f76b682449299290991cc175d20932108b120e82467",
+      "bytes": 329724
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/rpc-budget.json",
+      "sha256": "09eb13ef7d6199bc913bd83caf10a87c2bdbd5f98e59aa98ae9d3b517a7dd29c",
+      "bytes": 4814
+    },
+    {
+      "path": "evidence/overnight-20261027/11-combined/grant.json",
+      "sha256": "e7fe86b762b626e8d3f051f14a548610ea6668a101a3247703daf54f778dccfb",
+      "bytes": 22940
+    }
+  ],
+  "originalInputsUnchanged": true,
+  "capturedCodeSha256": {
+    "scripts/overnight-combined.ts": "983719dab501f0be6b2d47c726b85b704095f0d6be42f976d375a3afe46f6047",
+    "scripts/component-launcher.ts": "884858480ecb29e7c6db02b12ccf20dd53ffcb5062086a80f0426cb88a16c0b1",
+    "src/component-budget.ts": "5d0bbd6b02eff82d3f22c83f972e45f51fb784c622d2c3b048965876b34bf250",
+    "src/component-selection.ts": "ca5a63cb2dd462f4a33e9a3736696cdf098f280f9a7b985b344375792102bfb9",
+    "src/component-transport.ts": "8109a6f72aea7a5ed1493bcffa1ec680f875933e90f6803a3f6be8da34c864a2",
+    "src/component-parity.ts": "15bd52ea79c7dfda9a999cc462921a0d7bad199a38cac7d5b6c1b143046a3eb0",
+    "src/research-clock-pricing.ts": "94666b0881f67c23675f8e173a33116275440772da0aaf0360e6c671216db697",
+    "src/pool.ts": "353f9e6f67460a9ec84d12be03752a9fe9fc158a1ab94fdff553e4afe75f8870",
+    "src/sdk.ts": "4f76ca99088c62f767771fef1da2a5ef64399d39b9dc7343a998a3892a592ed6",
+    "src/pumpapi-mapping.ts": "eb0c3edf3769c5c20791ed8c62bd167b4aa5b0aaea7934d50478c13829044ef5",
+    "src/active-selection.ts": "6eaf7ea9dc09f4ec02094d284407a864f40e7dc0ad374558c138be1b532adeef",
+    "src/strategy.ts": "b076dfd34410ae5ef6d3a626d6b7852f4dc21eaacca8d6cba0e4de228c105084",
+    "src/network.ts": "db385176ffe1f89eb7f5a3811a5b81c39b98a0d755e825b05af0d73d06294505",
+    "package.json": "b83c2a7f4eb5a73b719c17293e95333d24b4b1c014991042198362a87da1640a",
+    "package-lock.json": "552d1fc533ec47be8913f220d5d1c08286432fc0e3d3ce54457c488de73ddd4a",
+    "src/research-baseline.ts": "260b23d52037c4934dffd229e65764fe05f409b3a8b547860c7c6211b86b8281",
+    "src/overnight-field.ts": "4f91ed05a64e35cd884d4fd0cd2ff52992b57bce5cbd0b204e3d481ba67d565f",
+    "src/active-pipeline.ts": "e7f7c005f1107c89ba6feafe24c368a0b994c030890fbaeeb1a0967f2ed320f3",
+    "src/pumpapi-probe.ts": "e4c50b237efb9595cf0d95c41a7843a1c7ddc03ee082b2f26bb99b003b1c4257"
+  },
+  "scope": {
+    "oneCandidate": true,
+    "hypotheticalHeldPositions": 3,
+    "quoteEveryMs": 2000,
+    "localRpcStartsPerMinute": 60,
+    "localRpcStartsPer10Seconds": 30,
+    "minimumPhysicalStartSpacingMs": 1000,
+    "readOnlyProviderExperiment": true
+  },
+  "observation": {
+    "openedAt": 1793087304903,
+    "openedAtUtc": "2026-10-27T07:48:24.903Z",
+    "endedAt": 1793087374433,
+    "endedAtUtc": "2026-10-27T07:49:34.433Z",
+    "openMs": 69530,
+    "stopReason": "COMPONENT_FIELD_APPLICATION_STOP",
+    "completedPricingEvaluations": 35,
+    "openingCompletionGapMs": 572,
+    "rightCensoredTailAtActualStopMs": 1425,
+    "tailBeyondStop": "UNKNOWN; not projected through the unobserved remainder of the intended75s capture",
+    "interCompletionGapsMs": [
+      1575,
+      1975,
+      3224,
+      994,
+      1840,
+      1945,
+      2036,
+      2060,
+      1956,
+      1987,
+      1912,
+      2062,
+      1987,
+      2044,
+      1976,
+      2029,
+      1924,
+      1998,
+      1998,
+      2054,
+      2073,
+      1912,
+      2012,
+      2007,
+      1919,
+      2046,
+      1980,
+      2031,
+      2002,
+      1999,
+      2017,
+      2019,
+      1921,
+      2019
+    ],
+    "maximumInterCompletionGapMs": 3224,
+    "p95InterCompletionGapMs": 2073,
+    "quoteAgeAtUseMs": {
+      "p50": 19,
+      "p95": 29,
+      "maximum": 41
+    },
+    "freshCacheMs": 66842,
+    "staleCacheMs": 2688,
+    "serviceQualityInterpretation": "All35 completed quotes were usable and within their declared scheduledAt+2s completion deadlines. This does not mean completed evaluations were never more than2s apart, nor that a fresh cached mark existed continuously."
+  },
+  "longestGap": {
+    "ms": 3224,
+    "from": 1793087309025,
+    "fromUtc": "2026-10-27T07:48:29.025Z",
+    "to": 1793087312249,
+    "toUtc": "2026-10-27T07:48:32.249Z",
+    "nextPricingEligibleAt": 1793087310903,
+    "declaredCompletionDeadlineAt": 1793087312903,
+    "wasDeclaredDeadlineMissed": false,
+    "exactPartitionMs": [
+      {
+        "name": "previous completed evaluation to next absolute pricing eligibility",
+        "from": 1793087309025,
+        "to": 1793087310903,
+        "interpretation": "Reference cadence interval remaining after the previous evaluation; not processing delay.",
+        "fromUtc": "2026-10-27T07:48:29.025Z",
+        "toUtc": "2026-10-27T07:48:30.903Z",
+        "ms": 1878
+      },
+      {
+        "name": "pricing eligible to reported pricing job selection",
+        "from": 1793087310903,
+        "to": 1793087311276,
+        "interpretation": "Includes the admitted second enrichment waiting/operating plus the unseparated completion-to-dispatch interval.",
+        "fromUtc": "2026-10-27T07:48:30.903Z",
+        "toUtc": "2026-10-27T07:48:31.276Z",
+        "ms": 373
+      },
+      {
+        "name": "reported pricing job selection to physical HTTP invocation",
+        "from": 1793087311276,
+        "to": 1793087312174,
+        "interpretation": "Dominated by the mandatory1s spacing after the preceding enrichment; remaining local preparation/persistence is not separately instrumented.",
+        "fromUtc": "2026-10-27T07:48:31.276Z",
+        "toUtc": "2026-10-27T07:48:32.174Z",
+        "ms": 898
+      },
+      {
+        "name": "physical HTTP invocation to completed response body",
+        "from": 1793087312174,
+        "to": 1793087312221,
+        "interpretation": "Measured request/response wall interval; proxy, network and provider portions are not separable.",
+        "fromUtc": "2026-10-27T07:48:32.174Z",
+        "toUtc": "2026-10-27T07:48:32.221Z",
+        "ms": 47
+      },
+      {
+        "name": "response body available to account snapshot receipt",
+        "from": 1793087312221,
+        "to": 1793087312226,
+        "interpretation": "Includes JSON/result delivery, budget bookkeeping and caller snapshot capture; substeps are uninstrumented.",
+        "fromUtc": "2026-10-27T07:48:32.221Z",
+        "toUtc": "2026-10-27T07:48:32.226Z",
+        "ms": 5
+      },
+      {
+        "name": "account snapshot receipt to completed three-holding evaluation",
+        "from": 1793087312226,
+        "to": 1793087312249,
+        "interpretation": "SDK decoding/quotes, same-byte independent parity, recording and use checks combined; this is NOT an isolated parity-duration measurement.",
+        "fromUtc": "2026-10-27T07:48:32.226Z",
+        "toUtc": "2026-10-27T07:48:32.249Z",
+        "ms": 23
+      }
+    ],
+    "partitionSumMs": 3224,
+    "jobsWithinGap": [
+      {
+        "kind": "enrichment",
+        "signature": "ErDSWHsSMG5xuDLxtrJd6hhSoVDNBCVmzm2cSyDzoVkVsXYws8Ln7dEL5r6bh9qVD25myAzzTCxS9vy6XjiFNET",
+        "eligibleAt": 1793087310128,
+        "eligibleAtUtc": "2026-10-27T07:48:30.128Z",
+        "providerReceivedAt": 1793087309128,
+        "reportedJobSelectedAt": 1793087310167,
+        "reportedJobSelectedAtUtc": "2026-10-27T07:48:30.167Z",
+        "eligibilityToJobSelectionMs": 39,
+        "wallDerivedEarliestPermittedPhysicalStartAt": 1793087310167,
+        "budgetReservedAt": 1793087310167,
+        "budgetActualInvocationAt": 1793087310169,
+        "transportPhysicalRequestStartedAt": 1793087310170,
+        "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:48:30.170Z",
+        "logicalJobToPhysicalRequestMs": 3,
+        "budgetReservationToActuationMs": 2,
+        "physicalResponseBodyAvailableAt": 1793087310214,
+        "httpBodyElapsedMs": 44,
+        "confirmedOrPricingResultAvailableAt": 1793087310216,
+        "resultAvailableAtUtc": "2026-10-27T07:48:30.216Z",
+        "httpCompletionToJobCompletionMs": 2,
+        "sourceLogicalRequestAt": null,
+        "sourceAccountReceiptAt": null,
+        "nextPricingDueAtAtJobSelection": 1793087310903,
+        "earliestPhysicalAlreadyAfterNextPricingDue": false,
+        "nextLegalStartAfterCandidateWouldMissPricingDue": true,
+        "physicalIds": [
+          119
+        ],
+        "countsAtSelection": {
+          "rolling60SecondStarts": 7,
+          "rolling10SecondStarts": 7
+        },
+        "outcome": null
+      },
+      {
+        "kind": "enrichment",
+        "signature": "4DQE3C6hQqQh2CxZktbdj3jNPGsJB2HhomKAdnqpEDRnJcnUabsksiqBGEfAmeUbtSgAE9xbin8X36zzsKHxWwXk",
+        "eligibleAt": 1793087310128,
+        "eligibleAtUtc": "2026-10-27T07:48:30.128Z",
+        "providerReceivedAt": 1793087309128,
+        "reportedJobSelectedAt": 1793087310270,
+        "reportedJobSelectedAtUtc": "2026-10-27T07:48:30.270Z",
+        "eligibilityToJobSelectionMs": 142,
+        "wallDerivedEarliestPermittedPhysicalStartAt": 1793087311169,
+        "budgetReservedAt": 1793087311170,
+        "budgetActualInvocationAt": 1793087311172,
+        "transportPhysicalRequestStartedAt": 1793087311172,
+        "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:48:31.172Z",
+        "logicalJobToPhysicalRequestMs": 902,
+        "budgetReservationToActuationMs": 2,
+        "physicalResponseBodyAvailableAt": 1793087311239,
+        "httpBodyElapsedMs": 67,
+        "confirmedOrPricingResultAvailableAt": 1793087311240,
+        "resultAvailableAtUtc": "2026-10-27T07:48:31.240Z",
+        "httpCompletionToJobCompletionMs": 1,
+        "sourceLogicalRequestAt": null,
+        "sourceAccountReceiptAt": null,
+        "nextPricingDueAtAtJobSelection": 1793087310903,
+        "earliestPhysicalAlreadyAfterNextPricingDue": true,
+        "nextLegalStartAfterCandidateWouldMissPricingDue": true,
+        "physicalIds": [
+          120
+        ],
+        "countsAtSelection": {
+          "rolling60SecondStarts": 8,
+          "rolling10SecondStarts": 8
+        },
+        "outcome": null
+      },
+      {
+        "kind": "pricing",
+        "signature": null,
+        "eligibleAt": 1793087310903,
+        "eligibleAtUtc": "2026-10-27T07:48:30.903Z",
+        "providerReceivedAt": null,
+        "reportedJobSelectedAt": 1793087311276,
+        "reportedJobSelectedAtUtc": "2026-10-27T07:48:31.276Z",
+        "eligibilityToJobSelectionMs": 373,
+        "wallDerivedEarliestPermittedPhysicalStartAt": 1793087312172,
+        "budgetReservedAt": 1793087312172,
+        "budgetActualInvocationAt": 1793087312174,
+        "transportPhysicalRequestStartedAt": 1793087312174,
+        "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:48:32.174Z",
+        "logicalJobToPhysicalRequestMs": 898,
+        "budgetReservationToActuationMs": 2,
+        "physicalResponseBodyAvailableAt": 1793087312221,
+        "httpBodyElapsedMs": 47,
+        "confirmedOrPricingResultAvailableAt": 1793087312249,
+        "resultAvailableAtUtc": "2026-10-27T07:48:32.249Z",
+        "httpCompletionToJobCompletionMs": 28,
+        "sourceLogicalRequestAt": 1793087311278,
+        "sourceAccountReceiptAt": 1793087312226,
+        "nextPricingDueAtAtJobSelection": 1793087312903,
+        "earliestPhysicalAlreadyAfterNextPricingDue": null,
+        "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+        "physicalIds": [
+          121
+        ],
+        "countsAtSelection": {
+          "rolling60SecondStarts": 9,
+          "rolling10SecondStarts": 9
+        },
+        "outcome": {
+          "usable": true,
+          "late": false,
+          "declaredDeadlineAt": 1793087312903,
+          "quoteAgeAtUseMs": 23
+        }
+      }
+    ],
+    "blockingAlreadyAdmittedEnrichment": {
+      "kind": "enrichment",
+      "signature": "4DQE3C6hQqQh2CxZktbdj3jNPGsJB2HhomKAdnqpEDRnJcnUabsksiqBGEfAmeUbtSgAE9xbin8X36zzsKHxWwXk",
+      "eligibleAt": 1793087310128,
+      "eligibleAtUtc": "2026-10-27T07:48:30.128Z",
+      "providerReceivedAt": 1793087309128,
+      "reportedJobSelectedAt": 1793087310270,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:48:30.270Z",
+      "eligibilityToJobSelectionMs": 142,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087311169,
+      "budgetReservedAt": 1793087311170,
+      "budgetActualInvocationAt": 1793087311172,
+      "transportPhysicalRequestStartedAt": 1793087311172,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:48:31.172Z",
+      "logicalJobToPhysicalRequestMs": 902,
+      "budgetReservationToActuationMs": 2,
+      "physicalResponseBodyAvailableAt": 1793087311239,
+      "httpBodyElapsedMs": 67,
+      "confirmedOrPricingResultAvailableAt": 1793087311240,
+      "resultAvailableAtUtc": "2026-10-27T07:48:31.240Z",
+      "httpCompletionToJobCompletionMs": 1,
+      "sourceLogicalRequestAt": null,
+      "sourceAccountReceiptAt": null,
+      "nextPricingDueAtAtJobSelection": 1793087310903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": true,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": true,
+      "physicalIds": [
+        120
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 8,
+        "rolling10SecondStarts": 8
+      },
+      "outcome": null
+    },
+    "priorPhysicalStartBeforePricing": 1793087311172,
+    "earliestFollowingStartFromMinimumSpacing": 1793087312172,
+    "pricingPhysicalStartMinusMinimumLegalStartMs": 2,
+    "recordTimeline": [
+      {
+        "kind": "http-headers",
+        "recordedAt": 1793087309002,
+        "recordedAtUtc": "2026-10-27T07:48:29.002Z",
+        "id": 118,
+        "method": "getMultipleAccounts",
+        "signature": null,
+        "logicalAt": 1793087309002,
+        "receivedAt": null,
+        "requestedAt": null,
+        "availableAt": null,
+        "slot": null
+      },
+      {
+        "kind": "http-response-timing",
+        "recordedAt": 1793087309005,
+        "recordedAtUtc": "2026-10-27T07:48:29.005Z",
+        "id": 118,
+        "method": "getMultipleAccounts",
+        "signature": null,
+        "logicalAt": null,
+        "receivedAt": null,
+        "requestedAt": 1793087308962,
+        "availableAt": 1793087309005,
+        "slot": null
+      },
+      {
+        "kind": "research-clock-pool-state",
+        "recordedAt": 1793087309006,
+        "recordedAtUtc": "2026-10-27T07:48:29.006Z",
+        "id": null,
+        "method": null,
+        "signature": null,
+        "logicalAt": null,
+        "receivedAt": "2026-10-27T07:48:29.006Z",
+        "requestedAt": "2026-10-27T07:48:28.960Z",
+        "availableAt": null,
+        "slot": 461991547
+      },
+      {
+        "kind": "research-clock-position-sell-quote",
+        "recordedAt": 1793087309009,
+        "recordedAtUtc": "2026-10-27T07:48:29.009Z",
+        "id": null,
+        "method": null,
+        "signature": null,
+        "logicalAt": null,
+        "receivedAt": "2026-10-27T07:48:29.006Z",
+        "requestedAt": "2026-10-27T07:48:28.960Z",
+        "availableAt": null,
+        "slot": 461991547
+      },
+      {
+        "kind": "research-clock-position-sell-quote",
+        "recordedAt": 1793087309012,
+        "recordedAtUtc": "2026-10-27T07:48:29.012Z",
+        "id": null,
+        "method": null,
+        "signature": null,
+        "logicalAt": null,
+        "receivedAt": "2026-10-27T07:48:29.006Z",
+        "requestedAt": "2026-10-27T07:48:28.960Z",
+        "availableAt": null,
+        "slot": 461991547
+      },
+      {
+        "kind": "research-clock-position-sell-quote",
+        "recordedAt": 1793087309014,
+        "recordedAtUtc": "2026-10-27T07:48:29.014Z",
+        "id": null,
+        "method": null,
+        "signature": null,
+        "logicalAt": null,
+        "receivedAt": "2026-10-27T07:48:29.006Z",
+        "requestedAt": "2026-10-27T07:48:28.960Z",
+        "availableAt": null,
+        "slot": 461991547
+      },
+      {
+        "kind": "combined-three-holding-evaluation",
+        "recordedAt": 1793087309025,
+        "recordedAtUtc": "2026-10-27T07:48:29.025Z",
+        "id": null,
+        "method": null,
+        "signature": null,
+        "logicalAt": 1793087309025,
+        "receivedAt": null,
+        "requestedAt": null,
+        "availableAt": null,
+        "slot": 461991547
+      },
+      {
+        "kind": "field-protection-evaluation",
+        "recordedAt": 1793087309025,
+        "recordedAtUtc": "2026-10-27T07:48:29.025Z",
+        "id": null,
+        "method": null,
+        "signature": null,
+        "logicalAt": null,
+        "receivedAt": null,
+        "requestedAt": 1793087308958,
+        "availableAt": 1793087309025,
+        "slot": null
+      },
+      {
+        "kind": "research-selected-hint",
+        "recordedAt": 1793087309128,
+        "recordedAtUtc": "2026-10-27T07:48:29.128Z",
+        "id": null,
+        "method": null,
+        "signature": "ErDSWHsSMG5xuDLxtrJd6hhSoVDNBCVmzm2cSyDzoVkVsXYws8Ln7dEL5r6bh9qVD25myAzzTCxS9vy6XjiFNET",
+        "logicalAt": null,
+        "receivedAt": 1793087309128,
+        "requestedAt": null,
+        "availableAt": null,
+        "slot": null
+      },
+      {
+        "kind": "research-selected-hint",
+        "recordedAt": 1793087309128,
+        "recordedAtUtc": "2026-10-27T07:48:29.128Z",
+        "id": null,
+        "method": null,
+        "signature": "4DQE3C6hQqQh2CxZktbdj3jNPGsJB2HhomKAdnqpEDRnJcnUabsksiqBGEfAmeUbtSgAE9xbin8X36zzsKHxWwXk",
+        "logicalAt": null,
+        "receivedAt": 1793087309128,
+        "requestedAt": null,
+        "availableAt": null,
+        "slot": null
+      },
+      {
+        "kind": "http-headers",
+        "recordedAt": 1793087310211,
+        "recordedAtUtc": "2026-10-27T07:48:30.211Z",
+        "id": 119,
+        "method": "getTransaction",
+        "signature": null,
+        "logicalAt": 1793087310211,
+        "receivedAt": null,
+        "requestedAt": null,
+        "availableAt": null,
+        "slot": null
+      },
+      {
+        "kind": "http-response-timing",
+        "recordedAt": 1793087310214,
+        "recordedAtUtc": "2026-10-27T07:48:30.214Z",
+        "id": 119,
+        "method": "getTransaction",
+        "signature": null,
+        "logicalAt": null,
+        "receivedAt": null,
+        "requestedAt": 1793087310170,
+        "availableAt": 1793087310214,
+        "slot": null
+      },
+      {
+        "kind": "confirmed-enrichment",
+        "recordedAt": 1793087310216,
+        "recordedAtUtc": "2026-10-27T07:48:30.216Z",
+        "id": null,
+        "method": null,
+        "signature": "ErDSWHsSMG5xuDLxtrJd6hhSoVDNBCVmzm2cSyDzoVkVsXYws8Ln7dEL5r6bh9qVD25myAzzTCxS9vy6XjiFNET",
+        "logicalAt": null,
+        "receivedAt": null,
+        "requestedAt": 1793087310167,
+        "availableAt": 1793087310216,
+        "slot": null
+      },
+      {
+        "kind": "research-normalized-trade",
+        "recordedAt": 1793087310221,
+        "recordedAtUtc": "2026-10-27T07:48:30.221Z",
+        "id": null,
+        "method": null,
+        "signature": "ErDSWHsSMG5xuDLxtrJd6hhSoVDNBCVmzm2cSyDzoVkVsXYws8Ln7dEL5r6bh9qVD25myAzzTCxS9vy6XjiFNET",
+        "logicalAt": 1793087310216,
+        "receivedAt": null,
+        "requestedAt": null,
+        "availableAt": null,
+        "slot": null
+      },
+      {
+        "kind": "http-headers",
+        "recordedAt": 1793087311235,
+        "recordedAtUtc": "2026-10-27T07:48:31.235Z",
+        "id": 120,
+        "method": "getTransaction",
+        "signature": null,
+        "logicalAt": 1793087311235,
+        "receivedAt": null,
+        "requestedAt": null,
+        "availableAt": null,
+        "slot": null
+      },
+      {
+        "kind": "http-response-timing",
+        "recordedAt": 1793087311239,
+        "recordedAtUtc": "2026-10-27T07:48:31.239Z",
+        "id": 120,
+        "method": "getTransaction",
+        "signature": null,
+        "logicalAt": null,
+        "receivedAt": null,
+        "requestedAt": 1793087311172,
+        "availableAt": 1793087311239,
+        "slot": null
+      },
+      {
+        "kind": "confirmed-enrichment",
+        "recordedAt": 1793087311240,
+        "recordedAtUtc": "2026-10-27T07:48:31.240Z",
+        "id": null,
+        "method": null,
+        "signature": "4DQE3C6hQqQh2CxZktbdj3jNPGsJB2HhomKAdnqpEDRnJcnUabsksiqBGEfAmeUbtSgAE9xbin8X36zzsKHxWwXk",
+        "logicalAt": null,
+        "receivedAt": null,
+        "requestedAt": 1793087310270,
+        "availableAt": 1793087311240,
+        "slot": null
+      },
+      {
+        "kind": "research-normalized-trade",
+        "recordedAt": 1793087311242,
+        "recordedAtUtc": "2026-10-27T07:48:31.242Z",
+        "id": null,
+        "method": null,
+        "signature": "4DQE3C6hQqQh2CxZktbdj3jNPGsJB2HhomKAdnqpEDRnJcnUabsksiqBGEfAmeUbtSgAE9xbin8X36zzsKHxWwXk",
+        "logicalAt": 1793087311240,
+        "receivedAt": null,
+        "requestedAt": null,
+        "availableAt": null,
+        "slot": null
+      },
+      {
+        "kind": "http-headers",
+        "recordedAt": 1793087312218,
+        "recordedAtUtc": "2026-10-27T07:48:32.218Z",
+        "id": 121,
+        "method": "getMultipleAccounts",
+        "signature": null,
+        "logicalAt": 1793087312218,
+        "receivedAt": null,
+        "requestedAt": null,
+        "availableAt": null,
+        "slot": null
+      },
+      {
+        "kind": "http-response-timing",
+        "recordedAt": 1793087312221,
+        "recordedAtUtc": "2026-10-27T07:48:32.221Z",
+        "id": 121,
+        "method": "getMultipleAccounts",
+        "signature": null,
+        "logicalAt": null,
+        "receivedAt": null,
+        "requestedAt": 1793087312174,
+        "availableAt": 1793087312221,
+        "slot": null
+      },
+      {
+        "kind": "research-clock-pool-state",
+        "recordedAt": 1793087312226,
+        "recordedAtUtc": "2026-10-27T07:48:32.226Z",
+        "id": null,
+        "method": null,
+        "signature": null,
+        "logicalAt": null,
+        "receivedAt": "2026-10-27T07:48:32.226Z",
+        "requestedAt": "2026-10-27T07:48:31.278Z",
+        "availableAt": null,
+        "slot": 461991562
+      },
+      {
+        "kind": "research-clock-position-sell-quote",
+        "recordedAt": 1793087312230,
+        "recordedAtUtc": "2026-10-27T07:48:32.230Z",
+        "id": null,
+        "method": null,
+        "signature": null,
+        "logicalAt": null,
+        "receivedAt": "2026-10-27T07:48:32.226Z",
+        "requestedAt": "2026-10-27T07:48:31.278Z",
+        "availableAt": null,
+        "slot": 461991562
+      },
+      {
+        "kind": "research-clock-position-sell-quote",
+        "recordedAt": 1793087312235,
+        "recordedAtUtc": "2026-10-27T07:48:32.235Z",
+        "id": null,
+        "method": null,
+        "signature": null,
+        "logicalAt": null,
+        "receivedAt": "2026-10-27T07:48:32.226Z",
+        "requestedAt": "2026-10-27T07:48:31.278Z",
+        "availableAt": null,
+        "slot": 461991562
+      },
+      {
+        "kind": "research-clock-position-sell-quote",
+        "recordedAt": 1793087312238,
+        "recordedAtUtc": "2026-10-27T07:48:32.238Z",
+        "id": null,
+        "method": null,
+        "signature": null,
+        "logicalAt": null,
+        "receivedAt": "2026-10-27T07:48:32.226Z",
+        "requestedAt": "2026-10-27T07:48:31.278Z",
+        "availableAt": null,
+        "slot": 461991562
+      },
+      {
+        "kind": "combined-three-holding-evaluation",
+        "recordedAt": 1793087312249,
+        "recordedAtUtc": "2026-10-27T07:48:32.249Z",
+        "id": null,
+        "method": null,
+        "signature": null,
+        "logicalAt": 1793087312249,
+        "receivedAt": null,
+        "requestedAt": null,
+        "availableAt": null,
+        "slot": 461991562
+      },
+      {
+        "kind": "field-protection-evaluation",
+        "recordedAt": 1793087312249,
+        "recordedAtUtc": "2026-10-27T07:48:32.249Z",
+        "id": null,
+        "method": null,
+        "signature": null,
+        "logicalAt": null,
+        "receivedAt": null,
+        "requestedAt": 1793087311276,
+        "availableAt": 1793087312249,
+        "slot": null
+      }
+    ]
+  },
+  "longestCompletedGaps": [
+    {
+      "ms": 3224,
+      "previousAvailableAt": 1793087309025,
+      "availableAt": 1793087312249,
+      "scheduledAt": 1793087310903,
+      "jobSelectedAt": 1793087311276,
+      "jobSelectionDelayMs": 373,
+      "declaredLate": false
+    },
+    {
+      "ms": 2073,
+      "previousAvailableAt": 1793087345051,
+      "availableAt": 1793087347124,
+      "scheduledAt": 1793087346903,
+      "jobSelectedAt": 1793087346963,
+      "jobSelectionDelayMs": 60,
+      "declaredLate": false
+    },
+    {
+      "ms": 2062,
+      "previousAvailableAt": 1793087326979,
+      "availableAt": 1793087329041,
+      "scheduledAt": 1793087328903,
+      "jobSelectedAt": 1793087328926,
+      "jobSelectionDelayMs": 23,
+      "declaredLate": false
+    },
+    {
+      "ms": 2060,
+      "previousAvailableAt": 1793087319064,
+      "availableAt": 1793087321124,
+      "scheduledAt": 1793087320903,
+      "jobSelectedAt": 1793087320971,
+      "jobSelectionDelayMs": 68,
+      "declaredLate": false
+    },
+    {
+      "ms": 2054,
+      "previousAvailableAt": 1793087342997,
+      "availableAt": 1793087345051,
+      "scheduledAt": 1793087344903,
+      "jobSelectedAt": 1793087344944,
+      "jobSelectionDelayMs": 41,
+      "declaredLate": false
+    },
+    {
+      "ms": 2046,
+      "previousAvailableAt": 1793087354974,
+      "availableAt": 1793087357020,
+      "scheduledAt": 1793087356903,
+      "jobSelectedAt": 1793087356923,
+      "jobSelectionDelayMs": 20,
+      "declaredLate": false
+    },
+    {
+      "ms": 2044,
+      "previousAvailableAt": 1793087331028,
+      "availableAt": 1793087333072,
+      "scheduledAt": 1793087332903,
+      "jobSelectedAt": 1793087332963,
+      "jobSelectionDelayMs": 60,
+      "declaredLate": false
+    },
+    {
+      "ms": 2036,
+      "previousAvailableAt": 1793087317028,
+      "availableAt": 1793087319064,
+      "scheduledAt": 1793087318903,
+      "jobSelectedAt": 1793087318941,
+      "jobSelectionDelayMs": 38,
+      "declaredLate": false
+    }
+  ],
+  "requestAccounting": {
+    "newRequestUnits": 44,
+    "declaredNewRequestUnits": 44,
+    "byOperation": {
+      "http:getMultipleAccounts": 37,
+      "ws-upgrade:upgrade": 1,
+      "http:getTransaction": 6
+    },
+    "responseHttpBytes": 600921,
+    "observedWsBytes": 213,
+    "pending": [],
+    "haltedReason": null,
+    "maximumRolling60SecondStarts": 37,
+    "maximumRolling10SecondStarts": 10,
+    "minimumNewPhysicalStartGapMs": 1002,
+    "rollingCapsBoundLongestGap": false
+  },
+  "demonstratedFindings": [
+    {
+      "finding": "The3,224ms completion gap is exactly reconstructible without assigning it to provider latency.",
+      "evidence": "1878+373+898+47+5+23=3224ms."
+    },
+    {
+      "finding": "A lower-priority enrichment was selected before pricing was due, but entered the shared pacer when its earliest legal physical start was already after that pricing eligibility.",
+      "evidence": [
+        {
+          "signature": "ErDSWHsSMG5xuDLxtrJd6hhSoVDNBCVmzm2cSyDzoVkVsXYws8Ln7dEL5r6bh9qVD25myAzzTCxS9vy6XjiFNET",
+          "selectedAt": 1793087310167,
+          "earliestPhysicalAt": 1793087310167,
+          "nextPricingDueAt": 1793087310903,
+          "nextLegalStartAfterCandidateWouldMissPricingDue": true,
+          "physicalAlreadyAfterPricingDue": false
+        },
+        {
+          "signature": "4DQE3C6hQqQh2CxZktbdj3jNPGsJB2HhomKAdnqpEDRnJcnUabsksiqBGEfAmeUbtSgAE9xbin8X36zzsKHxWwXk",
+          "selectedAt": 1793087310270,
+          "earliestPhysicalAt": 1793087311169,
+          "nextPricingDueAt": 1793087310903,
+          "nextLegalStartAfterCandidateWouldMissPricingDue": true,
+          "physicalAlreadyAfterPricingDue": true
+        }
+      ]
+    },
+    {
+      "finding": "The first enrichment also consumes the next legal start slot: starting before a pricing due time is insufficient if another1s start-spacing interval would push pricing beyond that due time.",
+      "evidence": "Admission must account for the protected next start and preparation/completion margin, not just current physical concurrency."
+    },
+    {
+      "finding": "The subsequent pricing request waits almost another1s after the second enrichment starts.",
+      "evidence": {
+        "pricingJobSelectedAt": 1793087311276,
+        "priorActual": 1793087311172,
+        "minimumNextStartAt": 1793087312172,
+        "actualPricingStartAt": 1793087312174
+      }
+    },
+    {
+      "finding": "Point-of-use quote freshness and completed evaluation cadence are separate measurements.",
+      "evidence": "The delayed evaluation still used a23ms-old validated quote; its preceding completed evaluation was3224ms earlier."
+    }
+  ],
+  "inferredButNotIsolated": [
+    {
+      "finding": "The end-to-end logical-to-physical interval is consistent with local minimum-start pacing as the dominant delay.",
+      "reason": "The exact lower bound from the preceding recorded physical invocation leaves only2ms beyond the mandatory next start for the delayed pricing call."
+    },
+    {
+      "finding": "A36ms completion-to-pricing-dispatch residual is consistent with the100ms sampling loop and normalization work.",
+      "reason": "There are no enqueue, timer-fired or dispatcher-eligible stamps, so timer wake delay, loop phase, normalization and durability costs cannot be separated."
+    }
+  ],
+  "limitations": [
+    "No new network call, scheduler run or corrected forward-capacity test was performed.",
+    "Eligibility uses recorded scheduledAt and recorded enrichmentDelayMs; hinted trades are not assumed available before their confirmed-enrichment response.",
+    "Job selection/request intent, budget reservation, physical invocation and response/body completion are distinct clocks. A trace requestedAt field must not be called a physical network start without checking its record type.",
+    "Physical invocation means the local transport/fetch call. Actual socket send, proxy queue, provider queue and server execution timestamps were not recorded.",
+    "SDK decoding, recorder work and parity have no isolated timers. The23ms source-to-use interval bounds their combined cost only.",
+    "The trace does not log rejected dispatcher admissions, every queue eligibility transition or every timer wake; no invented enqueue/dequeue timestamps are supplied.",
+    "No counterfactual exact exit price, profitability, complete flow coverage, opportunity recovery or universal endpoint capacity follows from this audit.",
+    "Original forward result remains4normalized Sells,2mapping gaps plus the byte-stop gap and0complete usable flow windows; later offline corrections do not erase it."
+  ],
+  "allJobs": [
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087304903,
+      "eligibleAtUtc": "2026-10-27T07:48:24.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087304906,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:48:24.906Z",
+      "eligibilityToJobSelectionMs": 3,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087305352,
+      "budgetReservedAt": 1793087305354,
+      "budgetActualInvocationAt": 1793087305356,
+      "transportPhysicalRequestStartedAt": 1793087305356,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:48:25.356Z",
+      "logicalJobToPhysicalRequestMs": 450,
+      "budgetReservationToActuationMs": 2,
+      "physicalResponseBodyAvailableAt": 1793087305451,
+      "httpBodyElapsedMs": 95,
+      "confirmedOrPricingResultAvailableAt": 1793087305475,
+      "resultAvailableAtUtc": "2026-10-27T07:48:25.475Z",
+      "httpCompletionToJobCompletionMs": 24,
+      "sourceLogicalRequestAt": 1793087304909,
+      "sourceAccountReceiptAt": 1793087305453,
+      "nextPricingDueAtAtJobSelection": 1793087306903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        115
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 3,
+        "rolling10SecondStarts": 3
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087306903,
+        "quoteAgeAtUseMs": 22
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087306903,
+      "eligibleAtUtc": "2026-10-27T07:48:26.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087306921,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:48:26.921Z",
+      "eligibilityToJobSelectionMs": 18,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087306921,
+      "budgetReservedAt": 1793087306923,
+      "budgetActualInvocationAt": 1793087306926,
+      "transportPhysicalRequestStartedAt": 1793087306926,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:48:26.926Z",
+      "logicalJobToPhysicalRequestMs": 5,
+      "budgetReservationToActuationMs": 3,
+      "physicalResponseBodyAvailableAt": 1793087307020,
+      "httpBodyElapsedMs": 94,
+      "confirmedOrPricingResultAvailableAt": 1793087307050,
+      "resultAvailableAtUtc": "2026-10-27T07:48:27.050Z",
+      "httpCompletionToJobCompletionMs": 30,
+      "sourceLogicalRequestAt": 1793087306923,
+      "sourceAccountReceiptAt": 1793087307021,
+      "nextPricingDueAtAtJobSelection": 1793087308903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        116
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 4,
+        "rolling10SecondStarts": 4
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087308903,
+        "quoteAgeAtUseMs": 29
+      }
+    },
+    {
+      "kind": "enrichment",
+      "signature": "64k4ieo7dLUx2MGemohy8Jc766kCHtpNdguUcv7NA9azJ1M3Kg5zUxQ9PGdv9NH7aTLYKJJLoqcxYUpzyJqBuNvR",
+      "eligibleAt": 1793087306947,
+      "eligibleAtUtc": "2026-10-27T07:48:26.947Z",
+      "providerReceivedAt": 1793087305947,
+      "reportedJobSelectedAt": 1793087307050,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:48:27.050Z",
+      "eligibilityToJobSelectionMs": 103,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087307926,
+      "budgetReservedAt": 1793087307927,
+      "budgetActualInvocationAt": 1793087307929,
+      "transportPhysicalRequestStartedAt": 1793087307929,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:48:27.929Z",
+      "logicalJobToPhysicalRequestMs": 879,
+      "budgetReservationToActuationMs": 2,
+      "physicalResponseBodyAvailableAt": 1793087308005,
+      "httpBodyElapsedMs": 76,
+      "confirmedOrPricingResultAvailableAt": 1793087308006,
+      "resultAvailableAtUtc": "2026-10-27T07:48:28.006Z",
+      "httpCompletionToJobCompletionMs": 1,
+      "sourceLogicalRequestAt": null,
+      "sourceAccountReceiptAt": null,
+      "nextPricingDueAtAtJobSelection": 1793087308903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": false,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": true,
+      "physicalIds": [
+        117
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 5,
+        "rolling10SecondStarts": 5
+      },
+      "outcome": null
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087308903,
+      "eligibleAtUtc": "2026-10-27T07:48:28.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087308958,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:48:28.958Z",
+      "eligibilityToJobSelectionMs": 55,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087308958,
+      "budgetReservedAt": 1793087308960,
+      "budgetActualInvocationAt": 1793087308962,
+      "transportPhysicalRequestStartedAt": 1793087308962,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:48:28.962Z",
+      "logicalJobToPhysicalRequestMs": 4,
+      "budgetReservationToActuationMs": 2,
+      "physicalResponseBodyAvailableAt": 1793087309005,
+      "httpBodyElapsedMs": 43,
+      "confirmedOrPricingResultAvailableAt": 1793087309025,
+      "resultAvailableAtUtc": "2026-10-27T07:48:29.025Z",
+      "httpCompletionToJobCompletionMs": 20,
+      "sourceLogicalRequestAt": 1793087308960,
+      "sourceAccountReceiptAt": 1793087309006,
+      "nextPricingDueAtAtJobSelection": 1793087310903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        118
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 6,
+        "rolling10SecondStarts": 6
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087310903,
+        "quoteAgeAtUseMs": 19
+      }
+    },
+    {
+      "kind": "enrichment",
+      "signature": "ErDSWHsSMG5xuDLxtrJd6hhSoVDNBCVmzm2cSyDzoVkVsXYws8Ln7dEL5r6bh9qVD25myAzzTCxS9vy6XjiFNET",
+      "eligibleAt": 1793087310128,
+      "eligibleAtUtc": "2026-10-27T07:48:30.128Z",
+      "providerReceivedAt": 1793087309128,
+      "reportedJobSelectedAt": 1793087310167,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:48:30.167Z",
+      "eligibilityToJobSelectionMs": 39,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087310167,
+      "budgetReservedAt": 1793087310167,
+      "budgetActualInvocationAt": 1793087310169,
+      "transportPhysicalRequestStartedAt": 1793087310170,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:48:30.170Z",
+      "logicalJobToPhysicalRequestMs": 3,
+      "budgetReservationToActuationMs": 2,
+      "physicalResponseBodyAvailableAt": 1793087310214,
+      "httpBodyElapsedMs": 44,
+      "confirmedOrPricingResultAvailableAt": 1793087310216,
+      "resultAvailableAtUtc": "2026-10-27T07:48:30.216Z",
+      "httpCompletionToJobCompletionMs": 2,
+      "sourceLogicalRequestAt": null,
+      "sourceAccountReceiptAt": null,
+      "nextPricingDueAtAtJobSelection": 1793087310903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": false,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": true,
+      "physicalIds": [
+        119
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 7,
+        "rolling10SecondStarts": 7
+      },
+      "outcome": null
+    },
+    {
+      "kind": "enrichment",
+      "signature": "4DQE3C6hQqQh2CxZktbdj3jNPGsJB2HhomKAdnqpEDRnJcnUabsksiqBGEfAmeUbtSgAE9xbin8X36zzsKHxWwXk",
+      "eligibleAt": 1793087310128,
+      "eligibleAtUtc": "2026-10-27T07:48:30.128Z",
+      "providerReceivedAt": 1793087309128,
+      "reportedJobSelectedAt": 1793087310270,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:48:30.270Z",
+      "eligibilityToJobSelectionMs": 142,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087311169,
+      "budgetReservedAt": 1793087311170,
+      "budgetActualInvocationAt": 1793087311172,
+      "transportPhysicalRequestStartedAt": 1793087311172,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:48:31.172Z",
+      "logicalJobToPhysicalRequestMs": 902,
+      "budgetReservationToActuationMs": 2,
+      "physicalResponseBodyAvailableAt": 1793087311239,
+      "httpBodyElapsedMs": 67,
+      "confirmedOrPricingResultAvailableAt": 1793087311240,
+      "resultAvailableAtUtc": "2026-10-27T07:48:31.240Z",
+      "httpCompletionToJobCompletionMs": 1,
+      "sourceLogicalRequestAt": null,
+      "sourceAccountReceiptAt": null,
+      "nextPricingDueAtAtJobSelection": 1793087310903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": true,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": true,
+      "physicalIds": [
+        120
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 8,
+        "rolling10SecondStarts": 8
+      },
+      "outcome": null
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087310903,
+      "eligibleAtUtc": "2026-10-27T07:48:30.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087311276,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:48:31.276Z",
+      "eligibilityToJobSelectionMs": 373,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087312172,
+      "budgetReservedAt": 1793087312172,
+      "budgetActualInvocationAt": 1793087312174,
+      "transportPhysicalRequestStartedAt": 1793087312174,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:48:32.174Z",
+      "logicalJobToPhysicalRequestMs": 898,
+      "budgetReservationToActuationMs": 2,
+      "physicalResponseBodyAvailableAt": 1793087312221,
+      "httpBodyElapsedMs": 47,
+      "confirmedOrPricingResultAvailableAt": 1793087312249,
+      "resultAvailableAtUtc": "2026-10-27T07:48:32.249Z",
+      "httpCompletionToJobCompletionMs": 28,
+      "sourceLogicalRequestAt": 1793087311278,
+      "sourceAccountReceiptAt": 1793087312226,
+      "nextPricingDueAtAtJobSelection": 1793087312903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        121
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 9,
+        "rolling10SecondStarts": 9
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087312903,
+        "quoteAgeAtUseMs": 23
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087312903,
+      "eligibleAtUtc": "2026-10-27T07:48:32.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087312985,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:48:32.985Z",
+      "eligibilityToJobSelectionMs": 82,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087313174,
+      "budgetReservedAt": 1793087313175,
+      "budgetActualInvocationAt": 1793087313177,
+      "transportPhysicalRequestStartedAt": 1793087313177,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:48:33.177Z",
+      "logicalJobToPhysicalRequestMs": 192,
+      "budgetReservationToActuationMs": 2,
+      "physicalResponseBodyAvailableAt": 1793087313224,
+      "httpBodyElapsedMs": 47,
+      "confirmedOrPricingResultAvailableAt": 1793087313243,
+      "resultAvailableAtUtc": "2026-10-27T07:48:33.243Z",
+      "httpCompletionToJobCompletionMs": 19,
+      "sourceLogicalRequestAt": 1793087312987,
+      "sourceAccountReceiptAt": 1793087313225,
+      "nextPricingDueAtAtJobSelection": 1793087314903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        122
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 10,
+        "rolling10SecondStarts": 9
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087314903,
+        "quoteAgeAtUseMs": 18
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087314903,
+      "eligibleAtUtc": "2026-10-27T07:48:34.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087314999,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:48:34.999Z",
+      "eligibilityToJobSelectionMs": 96,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087314999,
+      "budgetReservedAt": 1793087315003,
+      "budgetActualInvocationAt": 1793087315004,
+      "transportPhysicalRequestStartedAt": 1793087315004,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:48:35.004Z",
+      "logicalJobToPhysicalRequestMs": 5,
+      "budgetReservationToActuationMs": 1,
+      "physicalResponseBodyAvailableAt": 1793087315061,
+      "httpBodyElapsedMs": 57,
+      "confirmedOrPricingResultAvailableAt": 1793087315083,
+      "resultAvailableAtUtc": "2026-10-27T07:48:35.083Z",
+      "httpCompletionToJobCompletionMs": 22,
+      "sourceLogicalRequestAt": 1793087315002,
+      "sourceAccountReceiptAt": 1793087315062,
+      "nextPricingDueAtAtJobSelection": 1793087316903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        123
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 11,
+        "rolling10SecondStarts": 8
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087316903,
+        "quoteAgeAtUseMs": 21
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087316903,
+      "eligibleAtUtc": "2026-10-27T07:48:36.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087316910,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:48:36.910Z",
+      "eligibilityToJobSelectionMs": 7,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087316910,
+      "budgetReservedAt": 1793087316915,
+      "budgetActualInvocationAt": 1793087316916,
+      "transportPhysicalRequestStartedAt": 1793087316916,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:48:36.916Z",
+      "logicalJobToPhysicalRequestMs": 6,
+      "budgetReservationToActuationMs": 1,
+      "physicalResponseBodyAvailableAt": 1793087316986,
+      "httpBodyElapsedMs": 70,
+      "confirmedOrPricingResultAvailableAt": 1793087317028,
+      "resultAvailableAtUtc": "2026-10-27T07:48:37.028Z",
+      "httpCompletionToJobCompletionMs": 42,
+      "sourceLogicalRequestAt": 1793087316915,
+      "sourceAccountReceiptAt": 1793087316987,
+      "nextPricingDueAtAtJobSelection": 1793087318903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        124
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 12,
+        "rolling10SecondStarts": 8
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087318903,
+        "quoteAgeAtUseMs": 41
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087318903,
+      "eligibleAtUtc": "2026-10-27T07:48:38.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087318941,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:48:38.941Z",
+      "eligibilityToJobSelectionMs": 38,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087318941,
+      "budgetReservedAt": 1793087318943,
+      "budgetActualInvocationAt": 1793087318949,
+      "transportPhysicalRequestStartedAt": 1793087318949,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:48:38.949Z",
+      "logicalJobToPhysicalRequestMs": 8,
+      "budgetReservationToActuationMs": 6,
+      "physicalResponseBodyAvailableAt": 1793087319043,
+      "httpBodyElapsedMs": 94,
+      "confirmedOrPricingResultAvailableAt": 1793087319064,
+      "resultAvailableAtUtc": "2026-10-27T07:48:39.064Z",
+      "httpCompletionToJobCompletionMs": 21,
+      "sourceLogicalRequestAt": 1793087318943,
+      "sourceAccountReceiptAt": 1793087319044,
+      "nextPricingDueAtAtJobSelection": 1793087320903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        125
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 13,
+        "rolling10SecondStarts": 7
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087320903,
+        "quoteAgeAtUseMs": 20
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087320903,
+      "eligibleAtUtc": "2026-10-27T07:48:40.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087320971,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:48:40.971Z",
+      "eligibilityToJobSelectionMs": 68,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087320971,
+      "budgetReservedAt": 1793087320973,
+      "budgetActualInvocationAt": 1793087320975,
+      "transportPhysicalRequestStartedAt": 1793087320975,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:48:40.975Z",
+      "logicalJobToPhysicalRequestMs": 4,
+      "budgetReservationToActuationMs": 2,
+      "physicalResponseBodyAvailableAt": 1793087321105,
+      "httpBodyElapsedMs": 130,
+      "confirmedOrPricingResultAvailableAt": 1793087321124,
+      "resultAvailableAtUtc": "2026-10-27T07:48:41.124Z",
+      "httpCompletionToJobCompletionMs": 19,
+      "sourceLogicalRequestAt": 1793087320973,
+      "sourceAccountReceiptAt": 1793087321106,
+      "nextPricingDueAtAtJobSelection": 1793087322903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        126
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 14,
+        "rolling10SecondStarts": 6
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087322903,
+        "quoteAgeAtUseMs": 18
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087322903,
+      "eligibleAtUtc": "2026-10-27T07:48:42.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087322982,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:48:42.982Z",
+      "eligibilityToJobSelectionMs": 79,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087322982,
+      "budgetReservedAt": 1793087322985,
+      "budgetActualInvocationAt": 1793087322989,
+      "transportPhysicalRequestStartedAt": 1793087322989,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:48:42.989Z",
+      "logicalJobToPhysicalRequestMs": 7,
+      "budgetReservationToActuationMs": 4,
+      "physicalResponseBodyAvailableAt": 1793087323060,
+      "httpBodyElapsedMs": 71,
+      "confirmedOrPricingResultAvailableAt": 1793087323080,
+      "resultAvailableAtUtc": "2026-10-27T07:48:43.080Z",
+      "httpCompletionToJobCompletionMs": 20,
+      "sourceLogicalRequestAt": 1793087322985,
+      "sourceAccountReceiptAt": 1793087323061,
+      "nextPricingDueAtAtJobSelection": 1793087324903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        127
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 15,
+        "rolling10SecondStarts": 5
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087324903,
+        "quoteAgeAtUseMs": 19
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087324903,
+      "eligibleAtUtc": "2026-10-27T07:48:44.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087324995,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:48:44.995Z",
+      "eligibilityToJobSelectionMs": 92,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087324995,
+      "budgetReservedAt": 1793087324998,
+      "budgetActualInvocationAt": 1793087325000,
+      "transportPhysicalRequestStartedAt": 1793087325000,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:48:45.000Z",
+      "logicalJobToPhysicalRequestMs": 5,
+      "budgetReservationToActuationMs": 2,
+      "physicalResponseBodyAvailableAt": 1793087325042,
+      "httpBodyElapsedMs": 42,
+      "confirmedOrPricingResultAvailableAt": 1793087325067,
+      "resultAvailableAtUtc": "2026-10-27T07:48:45.067Z",
+      "httpCompletionToJobCompletionMs": 25,
+      "sourceLogicalRequestAt": 1793087324998,
+      "sourceAccountReceiptAt": 1793087325043,
+      "nextPricingDueAtAtJobSelection": 1793087326903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        128
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 16,
+        "rolling10SecondStarts": 5
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087326903,
+        "quoteAgeAtUseMs": 24
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087326903,
+      "eligibleAtUtc": "2026-10-27T07:48:46.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087326908,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:48:46.908Z",
+      "eligibilityToJobSelectionMs": 5,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087326908,
+      "budgetReservedAt": 1793087326910,
+      "budgetActualInvocationAt": 1793087326912,
+      "transportPhysicalRequestStartedAt": 1793087326912,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:48:46.912Z",
+      "logicalJobToPhysicalRequestMs": 4,
+      "budgetReservationToActuationMs": 2,
+      "physicalResponseBodyAvailableAt": 1793087326957,
+      "httpBodyElapsedMs": 45,
+      "confirmedOrPricingResultAvailableAt": 1793087326979,
+      "resultAvailableAtUtc": "2026-10-27T07:48:46.979Z",
+      "httpCompletionToJobCompletionMs": 22,
+      "sourceLogicalRequestAt": 1793087326910,
+      "sourceAccountReceiptAt": 1793087326958,
+      "nextPricingDueAtAtJobSelection": 1793087328903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        129
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 17,
+        "rolling10SecondStarts": 5
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087328903,
+        "quoteAgeAtUseMs": 21
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087328903,
+      "eligibleAtUtc": "2026-10-27T07:48:48.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087328926,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:48:48.926Z",
+      "eligibilityToJobSelectionMs": 23,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087328926,
+      "budgetReservedAt": 1793087328931,
+      "budgetActualInvocationAt": 1793087328936,
+      "transportPhysicalRequestStartedAt": 1793087328936,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:48:48.936Z",
+      "logicalJobToPhysicalRequestMs": 10,
+      "budgetReservationToActuationMs": 5,
+      "physicalResponseBodyAvailableAt": 1793087329005,
+      "httpBodyElapsedMs": 69,
+      "confirmedOrPricingResultAvailableAt": 1793087329041,
+      "resultAvailableAtUtc": "2026-10-27T07:48:49.041Z",
+      "httpCompletionToJobCompletionMs": 36,
+      "sourceLogicalRequestAt": 1793087328930,
+      "sourceAccountReceiptAt": 1793087329021,
+      "nextPricingDueAtAtJobSelection": 1793087330903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        130
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 18,
+        "rolling10SecondStarts": 5
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087330903,
+        "quoteAgeAtUseMs": 20
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087330903,
+      "eligibleAtUtc": "2026-10-27T07:48:50.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087330952,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:48:50.952Z",
+      "eligibilityToJobSelectionMs": 49,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087330952,
+      "budgetReservedAt": 1793087330954,
+      "budgetActualInvocationAt": 1793087330958,
+      "transportPhysicalRequestStartedAt": 1793087330958,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:48:50.958Z",
+      "logicalJobToPhysicalRequestMs": 6,
+      "budgetReservationToActuationMs": 4,
+      "physicalResponseBodyAvailableAt": 1793087331005,
+      "httpBodyElapsedMs": 47,
+      "confirmedOrPricingResultAvailableAt": 1793087331028,
+      "resultAvailableAtUtc": "2026-10-27T07:48:51.028Z",
+      "httpCompletionToJobCompletionMs": 23,
+      "sourceLogicalRequestAt": 1793087330954,
+      "sourceAccountReceiptAt": 1793087331007,
+      "nextPricingDueAtAtJobSelection": 1793087332903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        131
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 19,
+        "rolling10SecondStarts": 5
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087332903,
+        "quoteAgeAtUseMs": 21
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087332903,
+      "eligibleAtUtc": "2026-10-27T07:48:52.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087332963,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:48:52.963Z",
+      "eligibilityToJobSelectionMs": 60,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087332963,
+      "budgetReservedAt": 1793087332964,
+      "budgetActualInvocationAt": 1793087332967,
+      "transportPhysicalRequestStartedAt": 1793087332967,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:48:52.967Z",
+      "logicalJobToPhysicalRequestMs": 4,
+      "budgetReservationToActuationMs": 3,
+      "physicalResponseBodyAvailableAt": 1793087333055,
+      "httpBodyElapsedMs": 88,
+      "confirmedOrPricingResultAvailableAt": 1793087333072,
+      "resultAvailableAtUtc": "2026-10-27T07:48:53.072Z",
+      "httpCompletionToJobCompletionMs": 17,
+      "sourceLogicalRequestAt": 1793087332964,
+      "sourceAccountReceiptAt": 1793087333055,
+      "nextPricingDueAtAtJobSelection": 1793087334903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        132
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 20,
+        "rolling10SecondStarts": 5
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087334903,
+        "quoteAgeAtUseMs": 17
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087334903,
+      "eligibleAtUtc": "2026-10-27T07:48:54.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087334980,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:48:54.980Z",
+      "eligibilityToJobSelectionMs": 77,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087334980,
+      "budgetReservedAt": 1793087334981,
+      "budgetActualInvocationAt": 1793087334988,
+      "transportPhysicalRequestStartedAt": 1793087334988,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:48:54.988Z",
+      "logicalJobToPhysicalRequestMs": 8,
+      "budgetReservationToActuationMs": 7,
+      "physicalResponseBodyAvailableAt": 1793087335030,
+      "httpBodyElapsedMs": 42,
+      "confirmedOrPricingResultAvailableAt": 1793087335048,
+      "resultAvailableAtUtc": "2026-10-27T07:48:55.048Z",
+      "httpCompletionToJobCompletionMs": 18,
+      "sourceLogicalRequestAt": 1793087334981,
+      "sourceAccountReceiptAt": 1793087335031,
+      "nextPricingDueAtAtJobSelection": 1793087336903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        133
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 21,
+        "rolling10SecondStarts": 5
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087336903,
+        "quoteAgeAtUseMs": 17
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087336903,
+      "eligibleAtUtc": "2026-10-27T07:48:56.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087336997,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:48:56.997Z",
+      "eligibilityToJobSelectionMs": 94,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087336997,
+      "budgetReservedAt": 1793087336999,
+      "budgetActualInvocationAt": 1793087337000,
+      "transportPhysicalRequestStartedAt": 1793087337000,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:48:57.000Z",
+      "logicalJobToPhysicalRequestMs": 3,
+      "budgetReservationToActuationMs": 1,
+      "physicalResponseBodyAvailableAt": 1793087337056,
+      "httpBodyElapsedMs": 56,
+      "confirmedOrPricingResultAvailableAt": 1793087337077,
+      "resultAvailableAtUtc": "2026-10-27T07:48:57.077Z",
+      "httpCompletionToJobCompletionMs": 21,
+      "sourceLogicalRequestAt": 1793087336999,
+      "sourceAccountReceiptAt": 1793087337058,
+      "nextPricingDueAtAtJobSelection": 1793087338903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        134
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 22,
+        "rolling10SecondStarts": 4
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087338903,
+        "quoteAgeAtUseMs": 19
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087338903,
+      "eligibleAtUtc": "2026-10-27T07:48:58.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087338911,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:48:58.911Z",
+      "eligibilityToJobSelectionMs": 8,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087338911,
+      "budgetReservedAt": 1793087338913,
+      "budgetActualInvocationAt": 1793087338915,
+      "transportPhysicalRequestStartedAt": 1793087338915,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:48:58.915Z",
+      "logicalJobToPhysicalRequestMs": 4,
+      "budgetReservationToActuationMs": 2,
+      "physicalResponseBodyAvailableAt": 1793087338982,
+      "httpBodyElapsedMs": 67,
+      "confirmedOrPricingResultAvailableAt": 1793087339001,
+      "resultAvailableAtUtc": "2026-10-27T07:48:59.001Z",
+      "httpCompletionToJobCompletionMs": 19,
+      "sourceLogicalRequestAt": 1793087338913,
+      "sourceAccountReceiptAt": 1793087338983,
+      "nextPricingDueAtAtJobSelection": 1793087340903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        135
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 23,
+        "rolling10SecondStarts": 5
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087340903,
+        "quoteAgeAtUseMs": 18
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087340903,
+      "eligibleAtUtc": "2026-10-27T07:49:00.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087340919,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:49:00.919Z",
+      "eligibilityToJobSelectionMs": 16,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087340919,
+      "budgetReservedAt": 1793087340921,
+      "budgetActualInvocationAt": 1793087340922,
+      "transportPhysicalRequestStartedAt": 1793087340922,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:49:00.922Z",
+      "logicalJobToPhysicalRequestMs": 3,
+      "budgetReservationToActuationMs": 1,
+      "physicalResponseBodyAvailableAt": 1793087340979,
+      "httpBodyElapsedMs": 57,
+      "confirmedOrPricingResultAvailableAt": 1793087340999,
+      "resultAvailableAtUtc": "2026-10-27T07:49:00.999Z",
+      "httpCompletionToJobCompletionMs": 20,
+      "sourceLogicalRequestAt": 1793087340921,
+      "sourceAccountReceiptAt": 1793087340980,
+      "nextPricingDueAtAtJobSelection": 1793087342903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        136
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 24,
+        "rolling10SecondStarts": 5
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087342903,
+        "quoteAgeAtUseMs": 19
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087342903,
+      "eligibleAtUtc": "2026-10-27T07:49:02.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087342931,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:49:02.931Z",
+      "eligibilityToJobSelectionMs": 28,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087342931,
+      "budgetReservedAt": 1793087342933,
+      "budgetActualInvocationAt": 1793087342934,
+      "transportPhysicalRequestStartedAt": 1793087342935,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:49:02.935Z",
+      "logicalJobToPhysicalRequestMs": 4,
+      "budgetReservationToActuationMs": 1,
+      "physicalResponseBodyAvailableAt": 1793087342978,
+      "httpBodyElapsedMs": 43,
+      "confirmedOrPricingResultAvailableAt": 1793087342997,
+      "resultAvailableAtUtc": "2026-10-27T07:49:02.997Z",
+      "httpCompletionToJobCompletionMs": 19,
+      "sourceLogicalRequestAt": 1793087342933,
+      "sourceAccountReceiptAt": 1793087342979,
+      "nextPricingDueAtAtJobSelection": 1793087344903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        137
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 25,
+        "rolling10SecondStarts": 5
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087344903,
+        "quoteAgeAtUseMs": 18
+      }
+    },
+    {
+      "kind": "enrichment",
+      "signature": "QxYy6Ch4LUkEuiFUPNF9yVkZNjWa17reHzKtcFwHfaTGLY7ukHKNym4sUdw2sFMFzMDR2LenptMAXTaV68Ke1oJ",
+      "eligibleAt": 1793087343216,
+      "eligibleAtUtc": "2026-10-27T07:49:03.216Z",
+      "providerReceivedAt": 1793087342216,
+      "reportedJobSelectedAt": 1793087343236,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:49:03.236Z",
+      "eligibilityToJobSelectionMs": 20,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087343934,
+      "budgetReservedAt": 1793087343935,
+      "budgetActualInvocationAt": 1793087343937,
+      "transportPhysicalRequestStartedAt": 1793087343937,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:49:03.937Z",
+      "logicalJobToPhysicalRequestMs": 701,
+      "budgetReservationToActuationMs": 2,
+      "physicalResponseBodyAvailableAt": 1793087343990,
+      "httpBodyElapsedMs": 53,
+      "confirmedOrPricingResultAvailableAt": 1793087343991,
+      "resultAvailableAtUtc": "2026-10-27T07:49:03.991Z",
+      "httpCompletionToJobCompletionMs": 1,
+      "sourceLogicalRequestAt": null,
+      "sourceAccountReceiptAt": null,
+      "nextPricingDueAtAtJobSelection": 1793087344903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": false,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": true,
+      "physicalIds": [
+        138
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 26,
+        "rolling10SecondStarts": 5
+      },
+      "outcome": null
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087344903,
+      "eligibleAtUtc": "2026-10-27T07:49:04.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087344944,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:49:04.944Z",
+      "eligibilityToJobSelectionMs": 41,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087344944,
+      "budgetReservedAt": 1793087344946,
+      "budgetActualInvocationAt": 1793087344949,
+      "transportPhysicalRequestStartedAt": 1793087344949,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:49:04.949Z",
+      "logicalJobToPhysicalRequestMs": 5,
+      "budgetReservationToActuationMs": 3,
+      "physicalResponseBodyAvailableAt": 1793087345027,
+      "httpBodyElapsedMs": 78,
+      "confirmedOrPricingResultAvailableAt": 1793087345051,
+      "resultAvailableAtUtc": "2026-10-27T07:49:05.051Z",
+      "httpCompletionToJobCompletionMs": 24,
+      "sourceLogicalRequestAt": 1793087344946,
+      "sourceAccountReceiptAt": 1793087345029,
+      "nextPricingDueAtAtJobSelection": 1793087346903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        139
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 27,
+        "rolling10SecondStarts": 6
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087346903,
+        "quoteAgeAtUseMs": 22
+      }
+    },
+    {
+      "kind": "enrichment",
+      "signature": "2tMrUCX3bYewNitHQPkWW2z42effkvM8z6CTEHWY4uEzJgktpVCecfjqM1XWfZKXaXEGaTRnKLpNhMifHi5KvAtL",
+      "eligibleAt": 1793087346007,
+      "eligibleAtUtc": "2026-10-27T07:49:06.007Z",
+      "providerReceivedAt": 1793087345007,
+      "reportedJobSelectedAt": 1793087346057,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:49:06.057Z",
+      "eligibilityToJobSelectionMs": 50,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087346057,
+      "budgetReservedAt": 1793087346057,
+      "budgetActualInvocationAt": 1793087346059,
+      "transportPhysicalRequestStartedAt": 1793087346059,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:49:06.059Z",
+      "logicalJobToPhysicalRequestMs": 2,
+      "budgetReservationToActuationMs": 2,
+      "physicalResponseBodyAvailableAt": 1793087346103,
+      "httpBodyElapsedMs": 44,
+      "confirmedOrPricingResultAvailableAt": 1793087346104,
+      "resultAvailableAtUtc": "2026-10-27T07:49:06.104Z",
+      "httpCompletionToJobCompletionMs": 1,
+      "sourceLogicalRequestAt": null,
+      "sourceAccountReceiptAt": null,
+      "nextPricingDueAtAtJobSelection": 1793087346903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": false,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": true,
+      "physicalIds": [
+        140
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 28,
+        "rolling10SecondStarts": 6
+      },
+      "outcome": null
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087346903,
+      "eligibleAtUtc": "2026-10-27T07:49:06.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087346963,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:49:06.963Z",
+      "eligibilityToJobSelectionMs": 60,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087347059,
+      "budgetReservedAt": 1793087347061,
+      "budgetActualInvocationAt": 1793087347062,
+      "transportPhysicalRequestStartedAt": 1793087347062,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:49:07.062Z",
+      "logicalJobToPhysicalRequestMs": 99,
+      "budgetReservationToActuationMs": 1,
+      "physicalResponseBodyAvailableAt": 1793087347104,
+      "httpBodyElapsedMs": 42,
+      "confirmedOrPricingResultAvailableAt": 1793087347124,
+      "resultAvailableAtUtc": "2026-10-27T07:49:07.124Z",
+      "httpCompletionToJobCompletionMs": 20,
+      "sourceLogicalRequestAt": 1793087346965,
+      "sourceAccountReceiptAt": 1793087347105,
+      "nextPricingDueAtAtJobSelection": 1793087348903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        141
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 29,
+        "rolling10SecondStarts": 7
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087348903,
+        "quoteAgeAtUseMs": 19
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087348903,
+      "eligibleAtUtc": "2026-10-27T07:49:08.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087348975,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:49:08.975Z",
+      "eligibilityToJobSelectionMs": 72,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087348975,
+      "budgetReservedAt": 1793087348977,
+      "budgetActualInvocationAt": 1793087348979,
+      "transportPhysicalRequestStartedAt": 1793087348979,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:49:08.979Z",
+      "logicalJobToPhysicalRequestMs": 4,
+      "budgetReservationToActuationMs": 2,
+      "physicalResponseBodyAvailableAt": 1793087349020,
+      "httpBodyElapsedMs": 41,
+      "confirmedOrPricingResultAvailableAt": 1793087349036,
+      "resultAvailableAtUtc": "2026-10-27T07:49:09.036Z",
+      "httpCompletionToJobCompletionMs": 16,
+      "sourceLogicalRequestAt": 1793087348977,
+      "sourceAccountReceiptAt": 1793087349021,
+      "nextPricingDueAtAtJobSelection": 1793087350903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        142
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 30,
+        "rolling10SecondStarts": 6
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087350903,
+        "quoteAgeAtUseMs": 15
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087350903,
+      "eligibleAtUtc": "2026-10-27T07:49:10.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087350990,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:49:10.990Z",
+      "eligibilityToJobSelectionMs": 87,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087350990,
+      "budgetReservedAt": 1793087350991,
+      "budgetActualInvocationAt": 1793087350993,
+      "transportPhysicalRequestStartedAt": 1793087350993,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:49:10.993Z",
+      "logicalJobToPhysicalRequestMs": 3,
+      "budgetReservationToActuationMs": 2,
+      "physicalResponseBodyAvailableAt": 1793087351031,
+      "httpBodyElapsedMs": 38,
+      "confirmedOrPricingResultAvailableAt": 1793087351048,
+      "resultAvailableAtUtc": "2026-10-27T07:49:11.048Z",
+      "httpCompletionToJobCompletionMs": 17,
+      "sourceLogicalRequestAt": 1793087350991,
+      "sourceAccountReceiptAt": 1793087351032,
+      "nextPricingDueAtAtJobSelection": 1793087352903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        143
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 31,
+        "rolling10SecondStarts": 6
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087352903,
+        "quoteAgeAtUseMs": 16
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087352903,
+      "eligibleAtUtc": "2026-10-27T07:49:12.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087352996,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:49:12.996Z",
+      "eligibilityToJobSelectionMs": 93,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087352996,
+      "budgetReservedAt": 1793087352998,
+      "budgetActualInvocationAt": 1793087353000,
+      "transportPhysicalRequestStartedAt": 1793087353000,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:49:13.000Z",
+      "logicalJobToPhysicalRequestMs": 4,
+      "budgetReservationToActuationMs": 2,
+      "physicalResponseBodyAvailableAt": 1793087353039,
+      "httpBodyElapsedMs": 39,
+      "confirmedOrPricingResultAvailableAt": 1793087353055,
+      "resultAvailableAtUtc": "2026-10-27T07:49:13.055Z",
+      "httpCompletionToJobCompletionMs": 16,
+      "sourceLogicalRequestAt": 1793087352998,
+      "sourceAccountReceiptAt": 1793087353040,
+      "nextPricingDueAtAtJobSelection": 1793087354903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        144
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 32,
+        "rolling10SecondStarts": 6
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087354903,
+        "quoteAgeAtUseMs": 15
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087354903,
+      "eligibleAtUtc": "2026-10-27T07:49:14.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087354910,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:49:14.910Z",
+      "eligibilityToJobSelectionMs": 7,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087354910,
+      "budgetReservedAt": 1793087354912,
+      "budgetActualInvocationAt": 1793087354914,
+      "transportPhysicalRequestStartedAt": 1793087354914,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:49:14.914Z",
+      "logicalJobToPhysicalRequestMs": 4,
+      "budgetReservationToActuationMs": 2,
+      "physicalResponseBodyAvailableAt": 1793087354953,
+      "httpBodyElapsedMs": 39,
+      "confirmedOrPricingResultAvailableAt": 1793087354974,
+      "resultAvailableAtUtc": "2026-10-27T07:49:14.974Z",
+      "httpCompletionToJobCompletionMs": 21,
+      "sourceLogicalRequestAt": 1793087354912,
+      "sourceAccountReceiptAt": 1793087354954,
+      "nextPricingDueAtAtJobSelection": 1793087356903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        145
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 33,
+        "rolling10SecondStarts": 6
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087356903,
+        "quoteAgeAtUseMs": 20
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087356903,
+      "eligibleAtUtc": "2026-10-27T07:49:16.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087356923,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:49:16.923Z",
+      "eligibilityToJobSelectionMs": 20,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087356923,
+      "budgetReservedAt": 1793087356925,
+      "budgetActualInvocationAt": 1793087356926,
+      "transportPhysicalRequestStartedAt": 1793087356926,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:49:16.926Z",
+      "logicalJobToPhysicalRequestMs": 3,
+      "budgetReservationToActuationMs": 1,
+      "physicalResponseBodyAvailableAt": 1793087357004,
+      "httpBodyElapsedMs": 78,
+      "confirmedOrPricingResultAvailableAt": 1793087357020,
+      "resultAvailableAtUtc": "2026-10-27T07:49:17.020Z",
+      "httpCompletionToJobCompletionMs": 16,
+      "sourceLogicalRequestAt": 1793087356925,
+      "sourceAccountReceiptAt": 1793087357005,
+      "nextPricingDueAtAtJobSelection": 1793087358903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        146
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 34,
+        "rolling10SecondStarts": 5
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087358903,
+        "quoteAgeAtUseMs": 15
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087358903,
+      "eligibleAtUtc": "2026-10-27T07:49:18.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087358935,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:49:18.935Z",
+      "eligibilityToJobSelectionMs": 32,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087358935,
+      "budgetReservedAt": 1793087358938,
+      "budgetActualInvocationAt": 1793087358940,
+      "transportPhysicalRequestStartedAt": 1793087358940,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:49:18.940Z",
+      "logicalJobToPhysicalRequestMs": 5,
+      "budgetReservationToActuationMs": 2,
+      "physicalResponseBodyAvailableAt": 1793087358983,
+      "httpBodyElapsedMs": 43,
+      "confirmedOrPricingResultAvailableAt": 1793087359000,
+      "resultAvailableAtUtc": "2026-10-27T07:49:19.000Z",
+      "httpCompletionToJobCompletionMs": 17,
+      "sourceLogicalRequestAt": 1793087358938,
+      "sourceAccountReceiptAt": 1793087358983,
+      "nextPricingDueAtAtJobSelection": 1793087360903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        147
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 35,
+        "rolling10SecondStarts": 5
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087360903,
+        "quoteAgeAtUseMs": 17
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087360903,
+      "eligibleAtUtc": "2026-10-27T07:49:20.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087360951,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:49:20.951Z",
+      "eligibilityToJobSelectionMs": 48,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087360951,
+      "budgetReservedAt": 1793087360953,
+      "budgetActualInvocationAt": 1793087360954,
+      "transportPhysicalRequestStartedAt": 1793087360954,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:49:20.954Z",
+      "logicalJobToPhysicalRequestMs": 3,
+      "budgetReservationToActuationMs": 1,
+      "physicalResponseBodyAvailableAt": 1793087361013,
+      "httpBodyElapsedMs": 59,
+      "confirmedOrPricingResultAvailableAt": 1793087361031,
+      "resultAvailableAtUtc": "2026-10-27T07:49:21.031Z",
+      "httpCompletionToJobCompletionMs": 18,
+      "sourceLogicalRequestAt": 1793087360953,
+      "sourceAccountReceiptAt": 1793087361014,
+      "nextPricingDueAtAtJobSelection": 1793087362903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        148
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 36,
+        "rolling10SecondStarts": 5
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087362903,
+        "quoteAgeAtUseMs": 17
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087362903,
+      "eligibleAtUtc": "2026-10-27T07:49:22.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087362963,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:49:22.963Z",
+      "eligibilityToJobSelectionMs": 60,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087362963,
+      "budgetReservedAt": 1793087362964,
+      "budgetActualInvocationAt": 1793087362966,
+      "transportPhysicalRequestStartedAt": 1793087362966,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:49:22.966Z",
+      "logicalJobToPhysicalRequestMs": 3,
+      "budgetReservationToActuationMs": 2,
+      "physicalResponseBodyAvailableAt": 1793087363017,
+      "httpBodyElapsedMs": 51,
+      "confirmedOrPricingResultAvailableAt": 1793087363033,
+      "resultAvailableAtUtc": "2026-10-27T07:49:23.033Z",
+      "httpCompletionToJobCompletionMs": 16,
+      "sourceLogicalRequestAt": 1793087362964,
+      "sourceAccountReceiptAt": 1793087363018,
+      "nextPricingDueAtAtJobSelection": 1793087364903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        149
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 36,
+        "rolling10SecondStarts": 5
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087364903,
+        "quoteAgeAtUseMs": 15
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087364903,
+      "eligibleAtUtc": "2026-10-27T07:49:24.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087364974,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:49:24.974Z",
+      "eligibilityToJobSelectionMs": 71,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087364974,
+      "budgetReservedAt": 1793087364975,
+      "budgetActualInvocationAt": 1793087364977,
+      "transportPhysicalRequestStartedAt": 1793087364977,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:49:24.977Z",
+      "logicalJobToPhysicalRequestMs": 3,
+      "budgetReservationToActuationMs": 2,
+      "physicalResponseBodyAvailableAt": 1793087365016,
+      "httpBodyElapsedMs": 39,
+      "confirmedOrPricingResultAvailableAt": 1793087365032,
+      "resultAvailableAtUtc": "2026-10-27T07:49:25.032Z",
+      "httpCompletionToJobCompletionMs": 16,
+      "sourceLogicalRequestAt": 1793087364975,
+      "sourceAccountReceiptAt": 1793087365017,
+      "nextPricingDueAtAtJobSelection": 1793087366903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        150
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 35,
+        "rolling10SecondStarts": 4
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087366903,
+        "quoteAgeAtUseMs": 15
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087366903,
+      "eligibleAtUtc": "2026-10-27T07:49:26.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087366987,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:49:26.987Z",
+      "eligibilityToJobSelectionMs": 84,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087366987,
+      "budgetReservedAt": 1793087366989,
+      "budgetActualInvocationAt": 1793087366991,
+      "transportPhysicalRequestStartedAt": 1793087366991,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:49:26.991Z",
+      "logicalJobToPhysicalRequestMs": 4,
+      "budgetReservationToActuationMs": 2,
+      "physicalResponseBodyAvailableAt": 1793087367033,
+      "httpBodyElapsedMs": 42,
+      "confirmedOrPricingResultAvailableAt": 1793087367049,
+      "resultAvailableAtUtc": "2026-10-27T07:49:27.049Z",
+      "httpCompletionToJobCompletionMs": 16,
+      "sourceLogicalRequestAt": 1793087366989,
+      "sourceAccountReceiptAt": 1793087367034,
+      "nextPricingDueAtAtJobSelection": 1793087368903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        151
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 34,
+        "rolling10SecondStarts": 4
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087368903,
+        "quoteAgeAtUseMs": 15
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087368903,
+      "eligibleAtUtc": "2026-10-27T07:49:28.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087368995,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:49:28.995Z",
+      "eligibilityToJobSelectionMs": 92,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087368995,
+      "budgetReservedAt": 1793087368997,
+      "budgetActualInvocationAt": 1793087368998,
+      "transportPhysicalRequestStartedAt": 1793087368998,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:49:28.998Z",
+      "logicalJobToPhysicalRequestMs": 3,
+      "budgetReservationToActuationMs": 1,
+      "physicalResponseBodyAvailableAt": 1793087369051,
+      "httpBodyElapsedMs": 53,
+      "confirmedOrPricingResultAvailableAt": 1793087369068,
+      "resultAvailableAtUtc": "2026-10-27T07:49:29.068Z",
+      "httpCompletionToJobCompletionMs": 17,
+      "sourceLogicalRequestAt": 1793087368997,
+      "sourceAccountReceiptAt": 1793087369053,
+      "nextPricingDueAtAtJobSelection": 1793087370903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        152
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 33,
+        "rolling10SecondStarts": 4
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087370903,
+        "quoteAgeAtUseMs": 15
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087370903,
+      "eligibleAtUtc": "2026-10-27T07:49:30.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087370906,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:49:30.906Z",
+      "eligibilityToJobSelectionMs": 3,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087370906,
+      "budgetReservedAt": 1793087370907,
+      "budgetActualInvocationAt": 1793087370909,
+      "transportPhysicalRequestStartedAt": 1793087370909,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:49:30.909Z",
+      "logicalJobToPhysicalRequestMs": 3,
+      "budgetReservationToActuationMs": 2,
+      "physicalResponseBodyAvailableAt": 1793087370964,
+      "httpBodyElapsedMs": 55,
+      "confirmedOrPricingResultAvailableAt": 1793087370989,
+      "resultAvailableAtUtc": "2026-10-27T07:49:30.989Z",
+      "httpCompletionToJobCompletionMs": 25,
+      "sourceLogicalRequestAt": 1793087370907,
+      "sourceAccountReceiptAt": 1793087370966,
+      "nextPricingDueAtAtJobSelection": 1793087372903,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        153
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 33,
+        "rolling10SecondStarts": 5
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087372903,
+        "quoteAgeAtUseMs": 23
+      }
+    },
+    {
+      "kind": "pricing",
+      "signature": null,
+      "eligibleAt": 1793087372903,
+      "eligibleAtUtc": "2026-10-27T07:49:32.903Z",
+      "providerReceivedAt": null,
+      "reportedJobSelectedAt": 1793087372920,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:49:32.920Z",
+      "eligibilityToJobSelectionMs": 17,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087372920,
+      "budgetReservedAt": 1793087372921,
+      "budgetActualInvocationAt": 1793087372923,
+      "transportPhysicalRequestStartedAt": 1793087372923,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:49:32.923Z",
+      "logicalJobToPhysicalRequestMs": 3,
+      "budgetReservationToActuationMs": 2,
+      "physicalResponseBodyAvailableAt": 1793087372989,
+      "httpBodyElapsedMs": 66,
+      "confirmedOrPricingResultAvailableAt": 1793087373008,
+      "resultAvailableAtUtc": "2026-10-27T07:49:33.008Z",
+      "httpCompletionToJobCompletionMs": 19,
+      "sourceLogicalRequestAt": 1793087372921,
+      "sourceAccountReceiptAt": 1793087372990,
+      "nextPricingDueAtAtJobSelection": null,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        154
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 32,
+        "rolling10SecondStarts": 5
+      },
+      "outcome": {
+        "usable": true,
+        "late": false,
+        "declaredDeadlineAt": 1793087374903,
+        "quoteAgeAtUseMs": 18
+      }
+    },
+    {
+      "kind": "enrichment",
+      "signature": "3wc5gpKEpTgpTZscLAfUXS9rZUXcqHU8ir6p3sL3dPDmadsGNKTaXM1QMTAxnGGEwvLD2es6iDj6E9eYaSmiq9Rm",
+      "eligibleAt": 1793087373925,
+      "eligibleAtUtc": "2026-10-27T07:49:33.925Z",
+      "providerReceivedAt": 1793087372925,
+      "reportedJobSelectedAt": 1793087373930,
+      "reportedJobSelectedAtUtc": "2026-10-27T07:49:33.930Z",
+      "eligibilityToJobSelectionMs": 5,
+      "wallDerivedEarliestPermittedPhysicalStartAt": 1793087373930,
+      "budgetReservedAt": 1793087373930,
+      "budgetActualInvocationAt": 1793087373932,
+      "transportPhysicalRequestStartedAt": 1793087373932,
+      "transportPhysicalRequestStartedAtUtc": "2026-10-27T07:49:33.932Z",
+      "logicalJobToPhysicalRequestMs": 2,
+      "budgetReservationToActuationMs": 2,
+      "physicalResponseBodyAvailableAt": 1793087374028,
+      "httpBodyElapsedMs": 96,
+      "confirmedOrPricingResultAvailableAt": 1793087374029,
+      "resultAvailableAtUtc": "2026-10-27T07:49:34.029Z",
+      "httpCompletionToJobCompletionMs": 1,
+      "sourceLogicalRequestAt": null,
+      "sourceAccountReceiptAt": null,
+      "nextPricingDueAtAtJobSelection": null,
+      "earliestPhysicalAlreadyAfterNextPricingDue": null,
+      "nextLegalStartAfterCandidateWouldMissPricingDue": null,
+      "physicalIds": [
+        155
+      ],
+      "countsAtSelection": {
+        "rolling60SecondStarts": 32,
+        "rolling10SecondStarts": 5
+      },
+      "outcome": null
+    }
+  ],
+  "physicalHttpOperations": [
+    {
+      "id": 112,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087302344,
+      "budgetActualInvocationAt": 1793087302346,
+      "transportPhysicalRequestStartedAt": 1793087302346,
+      "responseBodyAvailableAt": 1793087302556,
+      "bodyBytes": 1790
+    },
+    {
+      "id": 113,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087303346,
+      "budgetActualInvocationAt": 1793087303348,
+      "transportPhysicalRequestStartedAt": 1793087303348,
+      "responseBodyAvailableAt": 1793087303418,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 115,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087305354,
+      "budgetActualInvocationAt": 1793087305356,
+      "transportPhysicalRequestStartedAt": 1793087305356,
+      "responseBodyAvailableAt": 1793087305451,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 116,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087306923,
+      "budgetActualInvocationAt": 1793087306926,
+      "transportPhysicalRequestStartedAt": 1793087306926,
+      "responseBodyAvailableAt": 1793087307020,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 117,
+      "method": "getTransaction",
+      "budgetReservedAt": 1793087307927,
+      "budgetActualInvocationAt": 1793087307929,
+      "transportPhysicalRequestStartedAt": 1793087307929,
+      "responseBodyAvailableAt": 1793087308005,
+      "bodyBytes": 13828
+    },
+    {
+      "id": 118,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087308960,
+      "budgetActualInvocationAt": 1793087308962,
+      "transportPhysicalRequestStartedAt": 1793087308962,
+      "responseBodyAvailableAt": 1793087309005,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 119,
+      "method": "getTransaction",
+      "budgetReservedAt": 1793087310167,
+      "budgetActualInvocationAt": 1793087310169,
+      "transportPhysicalRequestStartedAt": 1793087310170,
+      "responseBodyAvailableAt": 1793087310214,
+      "bodyBytes": 10740
+    },
+    {
+      "id": 120,
+      "method": "getTransaction",
+      "budgetReservedAt": 1793087311170,
+      "budgetActualInvocationAt": 1793087311172,
+      "transportPhysicalRequestStartedAt": 1793087311172,
+      "responseBodyAvailableAt": 1793087311239,
+      "bodyBytes": 10743
+    },
+    {
+      "id": 121,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087312172,
+      "budgetActualInvocationAt": 1793087312174,
+      "transportPhysicalRequestStartedAt": 1793087312174,
+      "responseBodyAvailableAt": 1793087312221,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 122,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087313175,
+      "budgetActualInvocationAt": 1793087313177,
+      "transportPhysicalRequestStartedAt": 1793087313177,
+      "responseBodyAvailableAt": 1793087313224,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 123,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087315003,
+      "budgetActualInvocationAt": 1793087315004,
+      "transportPhysicalRequestStartedAt": 1793087315004,
+      "responseBodyAvailableAt": 1793087315061,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 124,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087316915,
+      "budgetActualInvocationAt": 1793087316916,
+      "transportPhysicalRequestStartedAt": 1793087316916,
+      "responseBodyAvailableAt": 1793087316986,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 125,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087318943,
+      "budgetActualInvocationAt": 1793087318949,
+      "transportPhysicalRequestStartedAt": 1793087318949,
+      "responseBodyAvailableAt": 1793087319043,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 126,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087320973,
+      "budgetActualInvocationAt": 1793087320975,
+      "transportPhysicalRequestStartedAt": 1793087320975,
+      "responseBodyAvailableAt": 1793087321105,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 127,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087322985,
+      "budgetActualInvocationAt": 1793087322989,
+      "transportPhysicalRequestStartedAt": 1793087322989,
+      "responseBodyAvailableAt": 1793087323060,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 128,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087324998,
+      "budgetActualInvocationAt": 1793087325000,
+      "transportPhysicalRequestStartedAt": 1793087325000,
+      "responseBodyAvailableAt": 1793087325042,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 129,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087326910,
+      "budgetActualInvocationAt": 1793087326912,
+      "transportPhysicalRequestStartedAt": 1793087326912,
+      "responseBodyAvailableAt": 1793087326957,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 130,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087328931,
+      "budgetActualInvocationAt": 1793087328936,
+      "transportPhysicalRequestStartedAt": 1793087328936,
+      "responseBodyAvailableAt": 1793087329005,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 131,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087330954,
+      "budgetActualInvocationAt": 1793087330958,
+      "transportPhysicalRequestStartedAt": 1793087330958,
+      "responseBodyAvailableAt": 1793087331005,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 132,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087332964,
+      "budgetActualInvocationAt": 1793087332967,
+      "transportPhysicalRequestStartedAt": 1793087332967,
+      "responseBodyAvailableAt": 1793087333055,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 133,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087334981,
+      "budgetActualInvocationAt": 1793087334988,
+      "transportPhysicalRequestStartedAt": 1793087334988,
+      "responseBodyAvailableAt": 1793087335030,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 134,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087336999,
+      "budgetActualInvocationAt": 1793087337000,
+      "transportPhysicalRequestStartedAt": 1793087337000,
+      "responseBodyAvailableAt": 1793087337056,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 135,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087338913,
+      "budgetActualInvocationAt": 1793087338915,
+      "transportPhysicalRequestStartedAt": 1793087338915,
+      "responseBodyAvailableAt": 1793087338982,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 136,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087340921,
+      "budgetActualInvocationAt": 1793087340922,
+      "transportPhysicalRequestStartedAt": 1793087340922,
+      "responseBodyAvailableAt": 1793087340979,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 137,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087342933,
+      "budgetActualInvocationAt": 1793087342934,
+      "transportPhysicalRequestStartedAt": 1793087342935,
+      "responseBodyAvailableAt": 1793087342978,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 138,
+      "method": "getTransaction",
+      "budgetReservedAt": 1793087343935,
+      "budgetActualInvocationAt": 1793087343937,
+      "transportPhysicalRequestStartedAt": 1793087343937,
+      "responseBodyAvailableAt": 1793087343990,
+      "bodyBytes": 22880
+    },
+    {
+      "id": 139,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087344946,
+      "budgetActualInvocationAt": 1793087344949,
+      "transportPhysicalRequestStartedAt": 1793087344949,
+      "responseBodyAvailableAt": 1793087345027,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 140,
+      "method": "getTransaction",
+      "budgetReservedAt": 1793087346057,
+      "budgetActualInvocationAt": 1793087346059,
+      "transportPhysicalRequestStartedAt": 1793087346059,
+      "responseBodyAvailableAt": 1793087346103,
+      "bodyBytes": 17085
+    },
+    {
+      "id": 141,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087347061,
+      "budgetActualInvocationAt": 1793087347062,
+      "transportPhysicalRequestStartedAt": 1793087347062,
+      "responseBodyAvailableAt": 1793087347104,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 142,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087348977,
+      "budgetActualInvocationAt": 1793087348979,
+      "transportPhysicalRequestStartedAt": 1793087348979,
+      "responseBodyAvailableAt": 1793087349020,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 143,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087350991,
+      "budgetActualInvocationAt": 1793087350993,
+      "transportPhysicalRequestStartedAt": 1793087350993,
+      "responseBodyAvailableAt": 1793087351031,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 144,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087352998,
+      "budgetActualInvocationAt": 1793087353000,
+      "transportPhysicalRequestStartedAt": 1793087353000,
+      "responseBodyAvailableAt": 1793087353039,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 145,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087354912,
+      "budgetActualInvocationAt": 1793087354914,
+      "transportPhysicalRequestStartedAt": 1793087354914,
+      "responseBodyAvailableAt": 1793087354953,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 146,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087356925,
+      "budgetActualInvocationAt": 1793087356926,
+      "transportPhysicalRequestStartedAt": 1793087356926,
+      "responseBodyAvailableAt": 1793087357004,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 147,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087358938,
+      "budgetActualInvocationAt": 1793087358940,
+      "transportPhysicalRequestStartedAt": 1793087358940,
+      "responseBodyAvailableAt": 1793087358983,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 148,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087360953,
+      "budgetActualInvocationAt": 1793087360954,
+      "transportPhysicalRequestStartedAt": 1793087360954,
+      "responseBodyAvailableAt": 1793087361013,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 149,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087362964,
+      "budgetActualInvocationAt": 1793087362966,
+      "transportPhysicalRequestStartedAt": 1793087362966,
+      "responseBodyAvailableAt": 1793087363017,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 150,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087364975,
+      "budgetActualInvocationAt": 1793087364977,
+      "transportPhysicalRequestStartedAt": 1793087364977,
+      "responseBodyAvailableAt": 1793087365016,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 151,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087366989,
+      "budgetActualInvocationAt": 1793087366991,
+      "transportPhysicalRequestStartedAt": 1793087366991,
+      "responseBodyAvailableAt": 1793087367033,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 152,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087368997,
+      "budgetActualInvocationAt": 1793087368998,
+      "transportPhysicalRequestStartedAt": 1793087368998,
+      "responseBodyAvailableAt": 1793087369051,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 153,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087370907,
+      "budgetActualInvocationAt": 1793087370909,
+      "transportPhysicalRequestStartedAt": 1793087370909,
+      "responseBodyAvailableAt": 1793087370964,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 154,
+      "method": "getMultipleAccounts",
+      "budgetReservedAt": 1793087372921,
+      "budgetActualInvocationAt": 1793087372923,
+      "transportPhysicalRequestStartedAt": 1793087372923,
+      "responseBodyAvailableAt": 1793087372989,
+      "bodyBytes": 13770
+    },
+    {
+      "id": 155,
+      "method": "getTransaction",
+      "budgetReservedAt": 1793087373930,
+      "budgetActualInvocationAt": 1793087373932,
+      "transportPhysicalRequestStartedAt": 1793087373932,
+      "responseBodyAvailableAt": 1793087374028,
+      "bodyBytes": 28135
+    }
+  ],
+  "networkRequests": 0,
+  "countersReset": false,
+  "productionChanged": false,
+  "authoritativeAccountChanged": false,
+  "paperEntriesEnabled": false,
+  "liveTrading": false,
+  "acceptanceClockStarted": false
+}

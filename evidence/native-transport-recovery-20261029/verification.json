@@ -1,0 +1,64 @@
+{
+  "kind": "native-selected-transport-recovery-repair-verification",
+  "at": "2026-10-29T21:02:00.082285+00:00",
+  "baseSource": "e8209e404c210865ff3be64d436b2f8c0bba3f9d",
+  "operatingSource": "5648606bf78f6687c47632be5c789af5e7f19772",
+  "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+  "forwardInput": {
+    "path": "/workspace/pump-opportunity-engine/evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/arming-v2/forward-02/post-close-source-interval.snapshots.ndjson",
+    "bytes": 2905097,
+    "sha256": "8416846cb6629203584ef67f2fba5d227b95f3b941f79d3f20136e1935c64ea1"
+  },
+  "syntheticTests": {
+    "new": 4,
+    "regression": 106,
+    "build": "PASS",
+    "networkRequests": 0,
+    "financialAccountRead": false
+  },
+  "liveInstallationPerformed": false,
+  "liveRepairVerified": false,
+  "classification": "Implemented/offline verified; actual outage trigger and installed repair effectiveness remain UNKNOWN",
+  "files": [
+    {
+      "path": "src/pilot-native-flow.ts",
+      "bytes": 84124,
+      "sha256": "19e57eeda5e76c37e8b61e71cd4bb8caf3ef8c7863840e980cc8187b74efd83b"
+    },
+    {
+      "path": "test/native-flow-transport-recovery.test.ts",
+      "bytes": 3002,
+      "sha256": "7679ae4dfcd4ea48aee90f408bc3461956711908d695bb942ef27adc912d92ac"
+    },
+    {
+      "path": "test/native-flow-fixture.ts",
+      "bytes": 11040,
+      "sha256": "689269d8038471e45d48a6b7c222a0ae3d0168dd19729a773a6fe4251784780b"
+    },
+    {
+      "path": "evidence/native-transport-recovery-20261029/before.raw.txt",
+      "bytes": 1963,
+      "sha256": "c69b6f50f1f042f9cef6438db6acccacc16ad5420cc4488a3120e0afba5a1525"
+    },
+    {
+      "path": "evidence/native-transport-recovery-20261029/after.raw.txt",
+      "bytes": 551,
+      "sha256": "39c1c8a536ac498968a067396b76f430a8dfc3278def303d25c86516fc8ace3a"
+    },
+    {
+      "path": "evidence/native-transport-recovery-20261029/regression.raw.txt",
+      "bytes": 12811,
+      "sha256": "df5646e994841afd97a3a2dcc4d452adf24a865d7b7b44f1966671c7dc08bfaf"
+    },
+    {
+      "path": "evidence/native-transport-recovery-20261029/build.raw.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "path": "evidence/native-transport-recovery-20261029/observed-public-outage-slices.ndjson",
+      "bytes": 82597,
+      "sha256": "44fd14bffcfe7f1a73163113583fe990b2beb4223e73c32a323f9ba69284f1b2"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+{
+  "files": {
+    "analysis.json": {
+      "bytes": 10763,
+      "sha256": "305ce3b0d934f8aa74bdc9ba734ca8aa7632f17700ab5b6c2efa53c4cd4103da"
+    },
+    "source-observations.ndjson": {
+      "bytes": 98348,
+      "sha256": "36f733c4d090c9783fd60f8677007f311c8d89bb68464aa84cc0bcd72ad40e9f"
+    }
+  }
+}

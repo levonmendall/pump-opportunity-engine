@@ -1,0 +1,53 @@
+{
+  "baseCommit": "71896104f07faa2b193b90d3d3133a8e29236f35",
+  "classification": "OFFLINE_SUPPORT_FAILURE_CONTAINMENT_NOT_FORWARD_ACCEPTANCE",
+  "sourceFiles": [
+    {
+      "path": "src/pilot-native-flow.ts",
+      "sha256": "52f2b2f413395b892c6f8f80b513c5068d076ce3553be13047e986d1a066a949"
+    },
+    {
+      "path": "test/pilot-native-flow.test.ts",
+      "sha256": "942fc01810c4e812a3c0f98b35e18c00ba329322805b2a8d6eebd4a60d1d6719"
+    },
+    {
+      "path": "test/native-settled-recovery.test.ts",
+      "sha256": "74251133f586d6fc63a32a3cab48823f936463bf6355d44efd6147122456335c"
+    }
+  ],
+  "checks": [
+    {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "--test-concurrency=2",
+        "test/pilot-native-flow.test.ts",
+        "test/native-settled-recovery.test.ts"
+      ],
+      "startedAt": "2026-10-28T18:06:29.897094+00:00",
+      "finishedAt": "2026-10-28T18:06:34.231045+00:00",
+      "exitCode": 0,
+      "rawOutput": "evidence/native-support-containment-20261028/focused-final.log",
+      "bytes": 9832,
+      "sha256": "fb32e98fe8350832f83357b6e41c887af6fc0a141394d1ff3eb3d23936ba0f42"
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "startedAt": "2026-10-28T18:06:34.231190+00:00",
+      "finishedAt": "2026-10-28T18:06:41.186562+00:00",
+      "exitCode": 0,
+      "rawOutput": "evidence/native-support-containment-20261028/build-final.log",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    }
+  ],
+  "networkCalls": 0,
+  "originalLedgerOpened": false,
+  "evidenceMeaning": "Initial failed assertions retained separately; final results apply only to exact source hashes."
+}

@@ -1,0 +1,29 @@
+✔ finite research Recorder still has its original capacity and append shape (1.972027ms)
+✔ young diagnostic pressure is explicit while durable financial proof continues (7.847217ms)
+✔ old closed diagnostics rotate with hash-linked receipts; new and historical files survive (15.912358ms)
+✔ wall-clock jumps cannot expire five-minute monotonic retention (3.63843ms)
+✔ full raw qualification and quote proof survives diagnostic eviction with no hardlinks (8.166691ms)
+✔ pending async pin owns its source files before maintenance can retire them (12.391172ms)
+✔ an absent historical range and identity-conflicting proof never become complete (5.524499ms)
+✔ restart recovers both diagnostic and essential append state and conservatively retains old files (193.584548ms)
+✔ foreign directories and symlink proof targets are refused without touching external files (3.142224ms)
+✔ tampered segment bytes cannot be promoted into a qualification proof (6.510583ms)
+✔ a torn diagnostic tail is retained opaque and cannot certify an old window (177.951915ms)
+✔ torn essential proof closes new-risk admission while financial recording and verified recovery continue (169.749076ms)
+✔ durably receipted deletion interrupted before checkpoint resumes without losing financial proof (7.003545ms)
+✔ missing diagnostics without a valid eviction receipt fail closed (6.193388ms)
+✔ the actual filesystem reserve blocks records honestly rather than consuming financial recovery space (2.68128ms)
+✔ a completed protected proof remains idempotently verifiable after its diagnostic source is retired (7.928708ms)
+✔ overlapping pins retain shared source files until both copies have settled (12.342139ms)
+✔ a foreign hardlinked legacy pending file is never opened for truncation (3.302682ms)
+✔ only one recorder writer can own a namespace and a settled writer permits restart (6.878169ms)
+✔ a pin arriving during asynchronous retirement verification prevents source deletion (9.228507ms)
+✔ every refused timestamp invalidates a requested proof range despite coalesced receipts (4.187045ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 874.371535

@@ -1,0 +1,36 @@
+{
+  "scope": "OFFLINE DISPOSABLE fixtures only; no actual systemd/financial original access",
+  "passed": 6,
+  "results": [
+    {
+      "phase": null,
+      "refused": "KNOWN_PRE_START_REFUSAL_REQUIRED",
+      "serviceCalls": 0
+    },
+    {
+      "phase": "preflight-verified",
+      "refused": "KNOWN_PRE_START_REFUSAL_REQUIRED",
+      "serviceCalls": 0
+    },
+    {
+      "phase": "new-source-installed-not-started",
+      "refused": "KNOWN_PRE_START_REFUSAL_REQUIRED",
+      "serviceCalls": 0
+    },
+    {
+      "phase": "post-start-verification-incomplete-new-financial-source-retained",
+      "refused": "KNOWN_PRE_START_REFUSAL_REQUIRED",
+      "serviceCalls": 0
+    },
+    {
+      "case": "modified prepared supervisor",
+      "refused": "UNCHANGED_PREPARED_SUPERVISOR_REQUIRED",
+      "serviceCalls": 0
+    },
+    {
+      "case": "modified prior backup",
+      "refused": "VERIFIED_STOPPED_BACKUP_CHANGED",
+      "serviceCalls": 0
+    }
+  ]
+}

@@ -1,0 +1,6370 @@
+{
+  "schemaVersion": 1,
+  "classification": "INDEPENDENT_CURRENT_INDEXED_PRE_OUTCOME_REFERENCE_NOT_MARKET_CENSUS",
+  "startedAt": "2026-10-28T02:00:52.706Z",
+  "completedAt": "2026-10-28T02:01:29.051Z",
+  "limits": {
+    "maximumRequests": 4,
+    "pages": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "aggregateOriginalAndContinuationMaximumStarts": 5,
+    "minimumPhysicalStartSpacingMs": 12000,
+    "maximumElapsedMs": 100000,
+    "shutdownReserveMs": 5000,
+    "requestTimeoutMs": 8000,
+    "perResponseBytes": 262144,
+    "totalResponseBytes": 2097152,
+    "applicationStopBytes": 1835008,
+    "retainedBytes": 1048576,
+    "maximumRssBytes": 268435456,
+    "oneInFlight": true,
+    "noAutomaticRetries": true
+  },
+  "selection": {
+    "universe": "All rows on independent current PumpSwap DEX pages 1–4, sorted by documented h24_volume_usd_desc. Not a historical or exhaustive census.",
+    "leadRule": "Valid public addresses; canonical PumpSwap SOL-quoted PDA address consistency; index-created age >=0 and <=6h at that page receipt. Index time remains UNVERIFIED, not an on-chain migration proof or current support validation.",
+    "activityFilter": "NONE: retain every qualifying lead, including zero-activity and weak controls.",
+    "outcomeSelection": "NONE: population frozen at completion, before any later outcome retrieval.",
+    "marketRecallDenominator": false
+  },
+  "source": {
+    "tool": "scripts/capture-age-reference.ts",
+    "sha256": "fe70c6fe21d9075fa81d93523efb06948018ed5a2563c8624ecbdf3b321e4ca0",
+    "basedOn": "scripts/capture-forward-reference.ts",
+    "basedOnSha256": "6713a511f2d994f3454d0c86d8c829c51af7b2aaafbb278326cdde2fe0e6b021"
+  },
+  "prior": {
+    "path": "/workspace/poe-overload-repair/evidence/age-reference-20261028/index-usage-correction-001.json",
+    "sha256": "e83a39faf54007de0c8175f2b89d0a5e966d3515f6b78ee1e0fb80b8835fa556",
+    "completedAt": "2026-10-28T01:59:58.778Z",
+    "cumulative": {
+      "requestStarts": 36,
+      "measuredBodyBytes": 895373,
+      "uncertainBodyBytes": 262416
+    }
+  },
+  "requests": [
+    {
+      "ordinal": 1,
+      "page": 1,
+      "url": "https://api.geckoterminal.com/api/v2/networks/solana/dexes/pumpswap/pools?page=1&sort=h24_volume_usd_desc&include=base_token%2Cquote_token",
+      "startedAt": "2026-10-28T02:00:52.707Z",
+      "startedUnixMs": 1793152852707,
+      "startedMonotonicMs": 480.665656,
+      "bodyBytes": 35478,
+      "status": 200,
+      "responseHeaders": {
+        "date": "Wed, 28 Oct 2026 02:00:52 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": null,
+        "retry-after": null
+      },
+      "retainedFile": "page-1.json",
+      "sha256": "abc88653634d58ac7829ddfe9440876db0857e5d42b195d2063cebd31a908bfb",
+      "finishedAt": "2026-10-28T02:00:52.903Z",
+      "elapsedMs": 196.50352399999997
+    },
+    {
+      "ordinal": 2,
+      "page": 2,
+      "url": "https://api.geckoterminal.com/api/v2/networks/solana/dexes/pumpswap/pools?page=2&sort=h24_volume_usd_desc&include=base_token%2Cquote_token",
+      "startedAt": "2026-10-28T02:01:04.710Z",
+      "startedUnixMs": 1793152864710,
+      "startedMonotonicMs": 12484.020613,
+      "bodyBytes": 35829,
+      "status": 200,
+      "responseHeaders": {
+        "date": "Wed, 28 Oct 2026 02:01:04 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": null,
+        "retry-after": null
+      },
+      "retainedFile": "page-2.json",
+      "sha256": "bb3e4ed7b7744ac120cabf81bbd793cb712924ae9f6144096829b2e25d6632a4",
+      "finishedAt": "2026-10-28T02:01:04.870Z",
+      "elapsedMs": 160.00759899999866
+    },
+    {
+      "ordinal": 3,
+      "page": 3,
+      "url": "https://api.geckoterminal.com/api/v2/networks/solana/dexes/pumpswap/pools?page=3&sort=h24_volume_usd_desc&include=base_token%2Cquote_token",
+      "startedAt": "2026-10-28T02:01:16.716Z",
+      "startedUnixMs": 1793152876716,
+      "startedMonotonicMs": 24490.314671,
+      "bodyBytes": 36126,
+      "status": 200,
+      "responseHeaders": {
+        "date": "Wed, 28 Oct 2026 02:01:17 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": null,
+        "retry-after": null
+      },
+      "retainedFile": "page-3.json",
+      "sha256": "0d70f185b5d2c81ebb6984f33327197316c10a697976b8ee592818e447ed4296",
+      "finishedAt": "2026-10-28T02:01:17.206Z",
+      "elapsedMs": 489.76865800000087
+    },
+    {
+      "ordinal": 4,
+      "page": 4,
+      "url": "https://api.geckoterminal.com/api/v2/networks/solana/dexes/pumpswap/pools?page=4&sort=h24_volume_usd_desc&include=base_token%2Cquote_token",
+      "startedAt": "2026-10-28T02:01:28.717Z",
+      "startedUnixMs": 1793152888717,
+      "startedMonotonicMs": 36490.616875,
+      "bodyBytes": 35924,
+      "status": 200,
+      "responseHeaders": {
+        "date": "Wed, 28 Oct 2026 02:01:29 GMT",
+        "content-type": "application/json; charset=utf-8",
+        "content-length": null,
+        "retry-after": null
+      },
+      "retainedFile": "page-4.json",
+      "sha256": "1ea9dad9617d288fc4f497642877251cae09c8ed310313ea62186dbf71b72459",
+      "finishedAt": "2026-10-28T02:01:29.050Z",
+      "elapsedMs": 333.05496100000164
+    }
+  ],
+  "rows": [
+    {
+      "page": 1,
+      "position": 1,
+      "indexedPoolId": "solana_EkB1x8E82UWejiLSJ9A5QrJPveW7WqjNb3s2Sh9bALwQ",
+      "name": "ELON2028 / SOL",
+      "pool": "EkB1x8E82UWejiLSJ9A5QrJPveW7WqjNb3s2Sh9bALwQ",
+      "mint": "4KGcytpj8nDdaUZwYtwhY6j6WscwtXxKNMvDTfkEdhex",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T00:46:17Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:00:52.882Z",
+      "indexedAgeAtReceiptMs": 90875882,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "9Gi1DW6Hf4gnENQLeC6z5ucLpWzaE5oATX5cLEHjei63",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "26499612.6861558"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 28563,
+          "sells": 17554,
+          "buyers": 2007,
+          "sellers": 27
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "-96.207"
+      },
+      "reportedReserveUsd": "0.004547141825"
+    },
+    {
+      "page": 1,
+      "position": 2,
+      "indexedPoolId": "solana_DnemywR73XSHamrkqQkAXaq56iCrmf3PsSiKbBQvx52s",
+      "name": "LAUNCH / SOL",
+      "pool": "DnemywR73XSHamrkqQkAXaq56iCrmf3PsSiKbBQvx52s",
+      "mint": "3Jy5EWSnMYkYyJPHv7YgyR4eB5M9zQ2LZhxkZBC5acSc",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T14:42:13Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:00:52.882Z",
+      "indexedAgeAtReceiptMs": 40719882,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "2xDQ4yAgWQAk4HxxrS6fNtXB1H3btcMcjAgTw4Mc9S3z",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "15773410.6961815"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 15510,
+          "sells": 10329,
+          "buyers": 1988,
+          "sellers": 37
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "4.047"
+      },
+      "reportedReserveUsd": "0.002137420713"
+    },
+    {
+      "page": 1,
+      "position": 3,
+      "indexedPoolId": "solana_BxeVnGqB9qGujQQFyTBAvjzt5PHntfRepTHf63gU6TnZ",
+      "name": "NAMI / SOL",
+      "pool": "BxeVnGqB9qGujQQFyTBAvjzt5PHntfRepTHf63gU6TnZ",
+      "mint": "AJASWxezEdh5ggPP5cA4yVx58iqjhyZb2zxdrSass73K",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T21:22:20Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:00:52.882Z",
+      "indexedAgeAtReceiptMs": 16712882,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "7YV5w2PeGcn9atiLxPxzvEbMpz1P7at8W5CeU9fxMQ47",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "77478.3026283717",
+        "m15": "306717.449887525",
+        "m30": "579858.174457131",
+        "h1": "1419995.92307732",
+        "h6": "15201351.4781079",
+        "h24": "15201351.4781079"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 141,
+          "sells": 54,
+          "buyers": 81,
+          "sellers": 6
+        },
+        "m15": {
+          "buys": 625,
+          "sells": 227,
+          "buyers": 351,
+          "sellers": 6
+        },
+        "m30": {
+          "buys": 1283,
+          "sells": 450,
+          "buyers": 734,
+          "sellers": 8
+        },
+        "h1": {
+          "buys": 2836,
+          "sells": 1067,
+          "buyers": 1301,
+          "sellers": 11
+        },
+        "h6": {
+          "buys": 18325,
+          "sells": 10175,
+          "buyers": 2024,
+          "sellers": 36
+        },
+        "h24": {
+          "buys": 18325,
+          "sells": 10175,
+          "buyers": 2024,
+          "sellers": 36
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0.978",
+        "m15": "3.431",
+        "m30": "6.658",
+        "h1": "16.23",
+        "h6": "425.401",
+        "h24": "425.401"
+      },
+      "reportedReserveUsd": "0.002015168074"
+    },
+    {
+      "page": 1,
+      "position": 4,
+      "indexedPoolId": "solana_4qM69aHNLjDSuyuBYQj2s55fRfpnzSWPV1RdKNPmBngU",
+      "name": "Frongus / SOL",
+      "pool": "4qM69aHNLjDSuyuBYQj2s55fRfpnzSWPV1RdKNPmBngU",
+      "mint": "9jejA6nJdJ2XCW9iEtGB5bunsWAb4uzsNdPGDGzTkcv",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T20:47:56Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:00:52.882Z",
+      "indexedAgeAtReceiptMs": 18776882,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "2REqAB1iG5rpcKbBBSnkCEZ9bZfNthj95DFumbpxRHHc",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "15137852.5180973",
+        "h24": "15137852.5180973"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 14752,
+          "sells": 11925,
+          "buyers": 2014,
+          "sellers": 32
+        },
+        "h24": {
+          "buys": 14752,
+          "sells": 11925,
+          "buyers": 2014,
+          "sellers": 32
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "161.888",
+        "h24": "161.888"
+      },
+      "reportedReserveUsd": "0.000000957730283951077"
+    },
+    {
+      "page": 1,
+      "position": 5,
+      "indexedPoolId": "solana_6pj4Q6feBPM3yyKxUiVAXrV3PKLiifgnir86yVEWsfAJ",
+      "name": "Frongus / SOL",
+      "pool": "6pj4Q6feBPM3yyKxUiVAXrV3PKLiifgnir86yVEWsfAJ",
+      "mint": "5UMrSyEzoUgCDD2buBMkC8LpZiJDi9rfSsbHRDm8uaoA",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T19:31:56Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:00:52.882Z",
+      "indexedAgeAtReceiptMs": 23336882,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "DE3yjMeEx5hZpGSUnexja8HeAJi5q9Mfdb8aMDjUQGvW",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "13873021.8432446",
+        "h24": "14125461.4235044"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 16833,
+          "sells": 12267,
+          "buyers": 4585,
+          "sellers": 32
+        },
+        "h24": {
+          "buys": 17235,
+          "sells": 12582,
+          "buyers": 4673,
+          "sellers": 35
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "122.846",
+        "h24": "147.338"
+      },
+      "reportedReserveUsd": "0.000000969541361111178"
+    },
+    {
+      "page": 1,
+      "position": 6,
+      "indexedPoolId": "solana_6NYBPMMfSRK6QAmXqh6QDqkVcuD9QWAFtrEMqQ9US6sr",
+      "name": "Nothing / SOL",
+      "pool": "6NYBPMMfSRK6QAmXqh6QDqkVcuD9QWAFtrEMqQ9US6sr",
+      "mint": "Dac5yaTJ7MtNHyeAhNYkzcTdBFWC1Vj9YbRhgpYc69dJ",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T11:34:41Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:00:52.882Z",
+      "indexedAgeAtReceiptMs": 51971882,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "8oQ7bDBuicBGbZfqUS1KyqVv4gTKK3aa9r3UgbVwoTtM",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.02858452224",
+        "h24": "14013619.101992"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 3,
+          "sells": 3,
+          "buyers": 3,
+          "sellers": 2
+        },
+        "h24": {
+          "buys": 19761,
+          "sells": 13749,
+          "buyers": 6056,
+          "sellers": 50
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "1337.517",
+        "h24": "-96.945"
+      },
+      "reportedReserveUsd": "0.0101"
+    },
+    {
+      "page": 1,
+      "position": 7,
+      "indexedPoolId": "solana_ApSXPrCqeq9sXJ1x6MjSHxn1AsTWjTqb4ZTAqtmyrJDc",
+      "name": "NAMI / SOL",
+      "pool": "ApSXPrCqeq9sXJ1x6MjSHxn1AsTWjTqb4ZTAqtmyrJDc",
+      "mint": "8Z2qaHniQaHXE16iz9xyh3msX9rTAK6gYk1YmtASeXXy",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T09:40:08Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:00:52.882Z",
+      "indexedAgeAtReceiptMs": 58844882,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "C8oTuKy3t4pJLYmhVAYgDWuXdryqs5wpo5n38BASChuz",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "13780852.6910365"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 14625,
+          "sells": 9100,
+          "buyers": 2008,
+          "sellers": 38
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "329.236"
+      },
+      "reportedReserveUsd": "0.0000787515429088623"
+    },
+    {
+      "page": 1,
+      "position": 8,
+      "indexedPoolId": "solana_8TvKVvaMjqHHksnZEFKt5gJv82fA4p19G97UcUN1hBFz",
+      "name": "Frongus / SOL",
+      "pool": "8TvKVvaMjqHHksnZEFKt5gJv82fA4p19G97UcUN1hBFz",
+      "mint": "CE62jpKFHpcPkFtoMCFTEFkdedUZDbm5qTZkeaBU2qE",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T18:57:47Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:00:52.882Z",
+      "indexedAgeAtReceiptMs": 25385882,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "4EYzHmvKkdcS4jydHsdYHcW4FjHdJ1RpTgP9hggjaUbD",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "8707165.70228333",
+        "h24": "12962682.1471484"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 6992,
+          "sells": 6777,
+          "buyers": 145,
+          "sellers": 21
+        },
+        "h24": {
+          "buys": 12383,
+          "sells": 10121,
+          "buyers": 2017,
+          "sellers": 29
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "12.393",
+        "h24": "169.654"
+      },
+      "reportedReserveUsd": "0.000131173113588914"
+    },
+    {
+      "page": 1,
+      "position": 9,
+      "indexedPoolId": "solana_89b8UPejgGtQdzMEAYsn1TNLYPymqUxfNsNW2E8vWokb",
+      "name": "Rebate / SOL",
+      "pool": "89b8UPejgGtQdzMEAYsn1TNLYPymqUxfNsNW2E8vWokb",
+      "mint": "AvLs7DanPgXuPaGNQySU72JsaQzMnHsUsmiCMxg65cDU",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T17:21:02Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:00:52.882Z",
+      "indexedAgeAtReceiptMs": 31190882,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "FmpQikxFLJuZzyJ2XfnLRPDjwnPCsMSD4fwAteftFQBD",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "12462126.461734"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 12611,
+          "sells": 8077,
+          "buyers": 1954,
+          "sellers": 34
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "637.761"
+      },
+      "reportedReserveUsd": "0.5574"
+    },
+    {
+      "page": 1,
+      "position": 10,
+      "indexedPoolId": "solana_eVcKPPyp5vks7KSfdS54EHEHVPxMoN7rC6oZGTxke4w",
+      "name": "ELON2028 / SOL",
+      "pool": "eVcKPPyp5vks7KSfdS54EHEHVPxMoN7rC6oZGTxke4w",
+      "mint": "5EH7J8wE3sC1YBkWVQnZwEWHZVVo7m7kF4JAocYJztt",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T04:46:19Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:00:52.882Z",
+      "indexedAgeAtReceiptMs": 76473882,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "Btg7koMe4udwHADSi4ejYr5UqTbisT2ww7BHDuXMqbs8",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "12301866.2162545"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 12070,
+          "sells": 9730,
+          "buyers": 2030,
+          "sellers": 32
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "241899.768"
+      },
+      "reportedReserveUsd": "0.3953"
+    },
+    {
+      "page": 1,
+      "position": 11,
+      "indexedPoolId": "solana_2fZ35LLvjzzwbz65jydUdx22KwyEBZwrDTxuepPGzpmV",
+      "name": "GANG / SOL",
+      "pool": "2fZ35LLvjzzwbz65jydUdx22KwyEBZwrDTxuepPGzpmV",
+      "mint": "D9UEHvJpLrFKdXH8Moakv9455ZKyeumKZhAjdjjYTb9C",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T07:02:09Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:00:52.882Z",
+      "indexedAgeAtReceiptMs": 68323882,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "H1q4V8dCW9AbJgryqf75pEMhHthMtS1evx46YmRmBHhc",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "11111122.3644062"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 10841,
+          "sells": 7382,
+          "buyers": 1858,
+          "sellers": 35
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "-99.975"
+      },
+      "reportedReserveUsd": "0.0203"
+    },
+    {
+      "page": 1,
+      "position": 12,
+      "indexedPoolId": "solana_J3WyF5yqndta3XWTzTxXCyBoemmXKPYxAW7Bg9ecJ7Cv",
+      "name": "LAUNCH / SOL",
+      "pool": "J3WyF5yqndta3XWTzTxXCyBoemmXKPYxAW7Bg9ecJ7Cv",
+      "mint": "AVcW1kCSmzppvVNPhceFgMkpP51ehRmWksco2pmBHjL",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T11:02:59Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:00:52.882Z",
+      "indexedAgeAtReceiptMs": 53873882,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "64ePbiKFNoA9rZGd4cqVtKctNbZ7yF7NwDJie8Dx1C3e",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "11060297.7072775"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 11203,
+          "sells": 8743,
+          "buyers": 2028,
+          "sellers": 41
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "119.158"
+      },
+      "reportedReserveUsd": "0.000000141902013"
+    },
+    {
+      "page": 1,
+      "position": 13,
+      "indexedPoolId": "solana_DciCFFDsfz5PuBCqGxik5A29gZWQrBp8WisN1jJwFos9",
+      "name": "LAUNCH / SOL",
+      "pool": "DciCFFDsfz5PuBCqGxik5A29gZWQrBp8WisN1jJwFos9",
+      "mint": "7ZWTRgQgngffwptrbmfKw7JY3aNMKYqoc1dhhbcMNqy",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T12:28:08Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:00:52.882Z",
+      "indexedAgeAtReceiptMs": 48764882,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "87FrKX4jQxA4S8xSVapQKYC3uNysprFj2UF7YqkfA9k3",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "10607236.3179011"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 11619,
+          "sells": 7074,
+          "buyers": 1972,
+          "sellers": 36
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "755.394"
+      },
+      "reportedReserveUsd": "0.0507"
+    },
+    {
+      "page": 1,
+      "position": 14,
+      "indexedPoolId": "solana_86Z6bsXAdTHnaTajNeCi4sxMVUFhcXn8aFJFjKHc36nU",
+      "name": "GENI / SOL",
+      "pool": "86Z6bsXAdTHnaTajNeCi4sxMVUFhcXn8aFJFjKHc36nU",
+      "mint": "NPPwHYYxoyeSfYSSS7bCMZUEvKgbmiUZ2HdpqjV4djW",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T14:25:27Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:00:52.882Z",
+      "indexedAgeAtReceiptMs": 41725882,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "5eiFVKqb1S3Nw6rLZWKbnSxH3JNPKGXTCmrxT3qkQp9n",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "10179458.8365764"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 10614,
+          "sells": 8059,
+          "buyers": 2020,
+          "sellers": 35
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "116.996"
+      },
+      "reportedReserveUsd": "199918.2977"
+    },
+    {
+      "page": 1,
+      "position": 15,
+      "indexedPoolId": "solana_6tUVYH4N1wnark3pRwW5mR6PKrWntTJmdGr1DXTzbNVt",
+      "name": "Nothing / SOL",
+      "pool": "6tUVYH4N1wnark3pRwW5mR6PKrWntTJmdGr1DXTzbNVt",
+      "mint": "GxgRMP8YacAm4zwkN7vpMQww8CDxkfHMm2BbYnLiufm",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T03:14:59Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:00:52.882Z",
+      "indexedAgeAtReceiptMs": 81953882,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "426PLL4bR75zTo9qCZt2wHVrQAV1yCh2FdWCMjrHHdC2",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "9811438.42880201"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 9991,
+          "sells": 7764,
+          "buyers": 2017,
+          "sellers": 32
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "148.064"
+      },
+      "reportedReserveUsd": "0.000000904035678028116"
+    },
+    {
+      "page": 1,
+      "position": 16,
+      "indexedPoolId": "solana_EP4DFospYsVCdjgDR65MidskQizTdM7EmoMa8F1zx5bM",
+      "name": "NamiAgent / SOL",
+      "pool": "EP4DFospYsVCdjgDR65MidskQizTdM7EmoMa8F1zx5bM",
+      "mint": "6svyEEz9TpaAhBLFX2kmkX1FATbNc4ZGftNay5TuGoY9",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T19:29:28Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:00:52.882Z",
+      "indexedAgeAtReceiptMs": 23484882,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "57a6skLA6ifvDLWzLHiCs8gh3YVofXEEaiL3rKixrYkJ",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "9440149.25815989",
+        "h24": "9762196.80523111"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 8959,
+          "sells": 6147,
+          "buyers": 1622,
+          "sellers": 29
+        },
+        "h24": {
+          "buys": 9399,
+          "sells": 6373,
+          "buyers": 1741,
+          "sellers": 32
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "195.494",
+        "h24": "260.11"
+      },
+      "reportedReserveUsd": "0.0002521593744"
+    },
+    {
+      "page": 1,
+      "position": 17,
+      "indexedPoolId": "solana_FeWjSwKK6CKp6arYFAV358jDxdHDnPzaZMPfqimDKrse",
+      "name": "Frongus / SOL",
+      "pool": "FeWjSwKK6CKp6arYFAV358jDxdHDnPzaZMPfqimDKrse",
+      "mint": "9nqKVegFGpMgirY6v9QBYJmdtc37GFpJtCGCe3Gdxso",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T20:43:08Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:00:52.882Z",
+      "indexedAgeAtReceiptMs": 19064882,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "Aawpew4wJEFpSBbJ7suCfCCoyXY8RUYD1HGvvgQ3v1Px",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "9655688.79903345",
+        "h24": "9655688.79903345"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 9952,
+          "sells": 7561,
+          "buyers": 2011,
+          "sellers": 32
+        },
+        "h24": {
+          "buys": 9952,
+          "sells": 7561,
+          "buyers": 2011,
+          "sellers": 32
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "125.581",
+        "h24": "125.581"
+      },
+      "reportedReserveUsd": "0.000000143354149679452"
+    },
+    {
+      "page": 1,
+      "position": 18,
+      "indexedPoolId": "solana_5cPo4hY4UowzgpBmrRdijAMKnMRP3JuJgJgAtq1kSQqx",
+      "name": "INVERSE / SOL",
+      "pool": "5cPo4hY4UowzgpBmrRdijAMKnMRP3JuJgJgAtq1kSQqx",
+      "mint": "QQ8mQtNzR7VtawnJC9PswPS89zDMDoQU9yc3tbabGUm",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T23:27:43Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:00:52.882Z",
+      "indexedAgeAtReceiptMs": 9189882,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "GeuDiDwiTCLBLzUnZKrDzvpjg743Sc6hkr9NpHTvea1M",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "3043305.64672035",
+        "h6": "9318434.45790754",
+        "h24": "9318434.45790754"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 2553,
+          "sells": 2366,
+          "buyers": 20,
+          "sellers": 20
+        },
+        "h6": {
+          "buys": 9717,
+          "sells": 7282,
+          "buyers": 2013,
+          "sellers": 27
+        },
+        "h24": {
+          "buys": 9717,
+          "sells": 7282,
+          "buyers": 2013,
+          "sellers": 27
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "4.538",
+        "h6": "163.69",
+        "h24": "163.69"
+      },
+      "reportedReserveUsd": "0.000000914102946776795"
+    },
+    {
+      "page": 1,
+      "position": 19,
+      "indexedPoolId": "solana_FQLJJFQDvNVzeMnx7hUwUHzykn2xrbFrhmDB4XFgHVzY",
+      "name": "HACHI / SOL",
+      "pool": "FQLJJFQDvNVzeMnx7hUwUHzykn2xrbFrhmDB4XFgHVzY",
+      "mint": "13y1qA9nsrs8GdmL9VRE2bTFMdVxKVZeACs5xiQ2XCpF",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T01:24:05Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:00:52.882Z",
+      "indexedAgeAtReceiptMs": 88607882,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "FkmdJWhSeWuA5GM51tr4NLJAk8rv1Tnr1yhXZdxCrz62",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "8991580.03571389"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 8996,
+          "sells": 7087,
+          "buyers": 1503,
+          "sellers": 24
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "42.997"
+      },
+      "reportedReserveUsd": "0.000000141930238687815"
+    },
+    {
+      "page": 1,
+      "position": 20,
+      "indexedPoolId": "solana_5BKWCE5kv43WKEdSvDeLpxZ7vw21c6RJJ9u18kaG1b2V",
+      "name": "LAUNCH / SOL",
+      "pool": "5BKWCE5kv43WKEdSvDeLpxZ7vw21c6RJJ9u18kaG1b2V",
+      "mint": "9MYw1mhTTQ2VkWLiorofQh3caRvuaZSjM1BcWLRcMnS",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T08:17:59Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:00:52.882Z",
+      "indexedAgeAtReceiptMs": 63773882,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "DwxE5XkKhD6nuQ8Q1aopAxBGeyR6VFk5dGuMXnFQLyfH",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "8905710.37691769"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 9773,
+          "sells": 7297,
+          "buyers": 2024,
+          "sellers": 38
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "122.738"
+      },
+      "reportedReserveUsd": "0.000000140594441906833"
+    },
+    {
+      "page": 2,
+      "position": 1,
+      "indexedPoolId": "solana_AQB29JgVsj6C2foqZSkRSci9StLrC6LHzancBzFckRqT",
+      "name": "GENI / SOL",
+      "pool": "AQB29JgVsj6C2foqZSkRSci9StLrC6LHzancBzFckRqT",
+      "mint": "13qisTizcYnrsrUndPDsLM8sEgR5g3vkwdfyuTHYak7A",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T16:55:24Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:04.856Z",
+      "indexedAgeAtReceiptMs": 32740856,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "9GAQyFH6p8pxFXnJJrjCwj1D6CpzzTBaGvqu19Yy82Yp",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "8755146.70798492"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 9548,
+          "sells": 6931,
+          "buyers": 2024,
+          "sellers": 37
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "117.574"
+      },
+      "reportedReserveUsd": "0.0004921782489"
+    },
+    {
+      "page": 2,
+      "position": 2,
+      "indexedPoolId": "solana_pCKusx9zFxyY1ZhaNjXPRtLVyL9KjnEvZBv4FefMDxb",
+      "name": "HACHI / SOL",
+      "pool": "pCKusx9zFxyY1ZhaNjXPRtLVyL9KjnEvZBv4FefMDxb",
+      "mint": "BZQGbEx8fy88M6EdCbkRrgmvJk4u59WSCENbb4o1EDw",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T01:58:06Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:04.856Z",
+      "indexedAgeAtReceiptMs": 86578856,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "6H71kgvqGjc8mkTbPhSj1TGw6dwr8zimqWzwY9zyoMni",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "8565794.62183981"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 9241,
+          "sells": 6804,
+          "buyers": 2022,
+          "sellers": 36
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "-65.782"
+      },
+      "reportedReserveUsd": "0.0101"
+    },
+    {
+      "page": 2,
+      "position": 3,
+      "indexedPoolId": "solana_Deb7ybe2LHf242BxqWD4hBQXKgfAoLSWFWXpgeHeNseq",
+      "name": "Frongus / SOL",
+      "pool": "Deb7ybe2LHf242BxqWD4hBQXKgfAoLSWFWXpgeHeNseq",
+      "mint": "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T18:34:39Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:04.856Z",
+      "indexedAgeAtReceiptMs": 26785856,
+      "canonicalAddressMatch": true,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "Deb7ybe2LHf242BxqWD4hBQXKgfAoLSWFWXpgeHeNseq",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "OUTSIDE_INDEXED_ZERO_TO_SIX_HOUR_RANGE",
+      "reportedVolumeUsd": {
+        "m5": "1916.7142500103",
+        "m15": "5129.7056289109",
+        "m30": "23426.2312322851",
+        "h1": "87699.0572261602",
+        "h6": "4359170.83590823",
+        "h24": "8450559.30863806"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 20,
+          "sells": 36,
+          "buyers": 20,
+          "sellers": 33
+        },
+        "m15": {
+          "buys": 90,
+          "sells": 88,
+          "buyers": 76,
+          "sellers": 79
+        },
+        "m30": {
+          "buys": 376,
+          "sells": 297,
+          "buyers": 241,
+          "sellers": 238
+        },
+        "h1": {
+          "buys": 1200,
+          "sells": 894,
+          "buyers": 614,
+          "sellers": 634
+        },
+        "h6": {
+          "buys": 56412,
+          "sells": 34423,
+          "buyers": 13042,
+          "sellers": 11642
+        },
+        "h24": {
+          "buys": 104242,
+          "sells": 70199,
+          "buyers": 20077,
+          "sellers": 16590
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "6.868",
+        "m15": "13.932",
+        "m30": "7.431",
+        "h1": "-6.331",
+        "h6": "-82.45",
+        "h24": "385.062"
+      },
+      "reportedReserveUsd": "42465.8121"
+    },
+    {
+      "page": 2,
+      "position": 4,
+      "indexedPoolId": "solana_DYensR9jLBeX9BjBVQU1Y6fbACQGChSB9bsk4vGrL3HX",
+      "name": "Nothing / SOL",
+      "pool": "DYensR9jLBeX9BjBVQU1Y6fbACQGChSB9bsk4vGrL3HX",
+      "mint": "6SA7Ze77Xh97yDCVGxw3C5XTxgghSUqaCfopPvnkqwp",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T09:45:43Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:04.856Z",
+      "indexedAgeAtReceiptMs": 58521856,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "E3azJRmz4Szsybb9RNb1obFKisu5qemhRmK2ufu5XWFb",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "8047693.94922708"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 8816,
+          "sells": 6412,
+          "buyers": 2026,
+          "sellers": 38
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "127.251"
+      },
+      "reportedReserveUsd": "0.000000140838236404081"
+    },
+    {
+      "page": 2,
+      "position": 5,
+      "indexedPoolId": "solana_GtCea2PDBKaMxKQjLivRNhcFegnxmhueVQhN61Aj3grW",
+      "name": "Frongus / SOL",
+      "pool": "GtCea2PDBKaMxKQjLivRNhcFegnxmhueVQhN61Aj3grW",
+      "mint": "Pq17rLm414711cVpb4RxVc2Ac81wCZ3KEuX6Rxp7rRz",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T18:47:18Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:04.856Z",
+      "indexedAgeAtReceiptMs": 26026856,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "FJtPhkdxQc7tw5vCeSMGbDjaHhum18ocSttPphH1Hyoj",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "1757627.74476588",
+        "h24": "7504813.48020741"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 1503,
+          "sells": 1383,
+          "buyers": 21,
+          "sellers": 20
+        },
+        "h24": {
+          "buys": 8247,
+          "sells": 5914,
+          "buyers": 2028,
+          "sellers": 39
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "2.427",
+        "h24": "118.262"
+      },
+      "reportedReserveUsd": "0.000000141445260334874"
+    },
+    {
+      "page": 2,
+      "position": 6,
+      "indexedPoolId": "solana_ZR8LKaAkZDcPSBuC6VbnRhXD1SRnDx2iTmGVT1k7bgE",
+      "name": "INVERSE / SOL",
+      "pool": "ZR8LKaAkZDcPSBuC6VbnRhXD1SRnDx2iTmGVT1k7bgE",
+      "mint": "QHEnmdMzjdU75GxHC8yXLZcacu3fJMcNZZsw5nytHWA",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-28T00:51:00Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:04.856Z",
+      "indexedAgeAtReceiptMs": 4204856,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "EbvwGHL435tbxSZtMw2FhcC28Gsf2ipqnqxyBJB114GQ",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "385483.385851461",
+        "m15": "1849210.37875846",
+        "m30": "4037937.1772627",
+        "h1": "7278914.38429057",
+        "h6": "7278914.38429057",
+        "h24": "7278914.38429057"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 333,
+          "sells": 304,
+          "buyers": 20,
+          "sellers": 20
+        },
+        "m15": {
+          "buys": 1554,
+          "sells": 1445,
+          "buyers": 21,
+          "sellers": 20
+        },
+        "m30": {
+          "buys": 4040,
+          "sells": 3134,
+          "buyers": 816,
+          "sellers": 21
+        },
+        "h1": {
+          "buys": 7770,
+          "sells": 5628,
+          "buyers": 2018,
+          "sellers": 27
+        },
+        "h6": {
+          "buys": 7770,
+          "sells": 5628,
+          "buyers": 2018,
+          "sellers": 27
+        },
+        "h24": {
+          "buys": 7770,
+          "sells": 5628,
+          "buyers": 2018,
+          "sellers": 27
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "-2.282",
+        "m15": "-4.269",
+        "m30": "-2.711",
+        "h1": "158.365",
+        "h6": "158.365",
+        "h24": "158.365"
+      },
+      "reportedReserveUsd": "162090.9493"
+    },
+    {
+      "page": 2,
+      "position": 7,
+      "indexedPoolId": "solana_CqPBPmV6RHNbNhiUGSmG4LnsqErWWW9eZ5kePUTSrn2S",
+      "name": "INGUS / SOL",
+      "pool": "CqPBPmV6RHNbNhiUGSmG4LnsqErWWW9eZ5kePUTSrn2S",
+      "mint": "3zYyjQzGoQbjgQYncpGrGLEhQAmWDm5mBCm2bMEM4bpJ",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T23:11:36Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:04.856Z",
+      "indexedAgeAtReceiptMs": 10168856,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "DKZpb9WjQQzQgQc9syHB6oFL9hBBdMkAtQ6SuEtTiXRC",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "94246.45705406",
+        "m15": "334604.523644896",
+        "m30": "712633.538794025",
+        "h1": "1489400.35930968",
+        "h6": "6408376.1075662",
+        "h24": "6408376.1075662"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 174,
+          "sells": 83,
+          "buyers": 116,
+          "sellers": 25
+        },
+        "m15": {
+          "buys": 630,
+          "sells": 295,
+          "buyers": 362,
+          "sellers": 27
+        },
+        "m30": {
+          "buys": 1324,
+          "sells": 617,
+          "buyers": 734,
+          "sellers": 27
+        },
+        "h1": {
+          "buys": 2714,
+          "sells": 1274,
+          "buyers": 1467,
+          "sellers": 27
+        },
+        "h6": {
+          "buys": 10335,
+          "sells": 6861,
+          "buyers": 3504,
+          "sellers": 34
+        },
+        "h24": {
+          "buys": 10335,
+          "sells": 6861,
+          "buyers": 3504,
+          "sellers": 34
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "-1.665",
+        "m15": "-1.137",
+        "m30": "-3.421",
+        "h1": "5.018",
+        "h6": "84.356",
+        "h24": "84.356"
+      },
+      "reportedReserveUsd": "164666.0133"
+    },
+    {
+      "page": 2,
+      "position": 8,
+      "indexedPoolId": "solana_3f4XaiKunZHgTrfSb886QW4mZBoH4NNPmb6meeBBEzhK",
+      "name": "CAT / SOL",
+      "pool": "3f4XaiKunZHgTrfSb886QW4mZBoH4NNPmb6meeBBEzhK",
+      "mint": "AUsvfC38jBn9mbtbkeHuc5L6vSMJfNMorgyPJTShcTPB",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T04:56:39Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:04.856Z",
+      "indexedAgeAtReceiptMs": 75865856,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "FtjZquQQ3jU4kuTuSb5PkNvFqJdZQ4Br43h81W5BiBWu",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "6313345.01024237"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 10681,
+          "sells": 7078,
+          "buyers": 3643,
+          "sellers": 41
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "82.51"
+      },
+      "reportedReserveUsd": "0.000000753860838197448"
+    },
+    {
+      "page": 2,
+      "position": 9,
+      "indexedPoolId": "solana_Ddmani5rqFKMM28eea2K51BkGjMq4NaH6hscyUV5rwp6",
+      "name": "Nothing / SOL",
+      "pool": "Ddmani5rqFKMM28eea2K51BkGjMq4NaH6hscyUV5rwp6",
+      "mint": "ANEQ2R3ZGX6dPNjaUeq11stG8ru1FYQC3k41XrNhZHE",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T03:24:25Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:04.856Z",
+      "indexedAgeAtReceiptMs": 81399856,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "DrbiDNMtXCcgBGzp7Yck4L7rTXrHQWqm9eCg5NgkXQMd",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "6228352.0145957"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 7286,
+          "sells": 4960,
+          "buyers": 2021,
+          "sellers": 35
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "127.017"
+      },
+      "reportedReserveUsd": "177250.5807"
+    },
+    {
+      "page": 2,
+      "position": 10,
+      "indexedPoolId": "solana_7DQG9DqxA3oADc8VqYnwMtKQo9pAbWemkG28bmHCsnTL",
+      "name": "wiener / SOL",
+      "pool": "7DQG9DqxA3oADc8VqYnwMtKQo9pAbWemkG28bmHCsnTL",
+      "mint": "E6SzbX4nK5rY4VUzFZEapNv7rZSocgW3ngh1urcGpbq",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T04:21:07Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:04.856Z",
+      "indexedAgeAtReceiptMs": 77997856,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "B9aExJd5YAZPsMbnCEEMhkQUS7Ln7RN96WS9nQ8pTWKv",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "6221023.57774128"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 7210,
+          "sells": 4942,
+          "buyers": 2016,
+          "sellers": 34
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "120.131"
+      },
+      "reportedReserveUsd": "0.0000001391061823"
+    },
+    {
+      "page": 2,
+      "position": 11,
+      "indexedPoolId": "solana_GatHsPWDaKQNLKaiCN4Myjj1A5BSAmAZ6SiyCf2zZkDk",
+      "name": "INVERSE / SOL",
+      "pool": "GatHsPWDaKQNLKaiCN4Myjj1A5BSAmAZ6SiyCf2zZkDk",
+      "mint": "FFWaXxogtZAi8Fe8W9ZPJMhZ4Z2t1pvK7kriCjUPYkL",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T22:02:49Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:04.856Z",
+      "indexedAgeAtReceiptMs": 14295856,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "22h6ocX7eEFWDF3Z92eiadqqcqtEgFVrhypMeeP8a17o",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "6220206.32995533",
+        "h24": "6220206.32995533"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 7235,
+          "sells": 4911,
+          "buyers": 2014,
+          "sellers": 29
+        },
+        "h24": {
+          "buys": 7235,
+          "sells": 4911,
+          "buyers": 2014,
+          "sellers": 29
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "122.015",
+        "h24": "122.015"
+      },
+      "reportedReserveUsd": "186920.5734"
+    },
+    {
+      "page": 2,
+      "position": 12,
+      "indexedPoolId": "solana_GvNHVtEYtNWEbj9GgersyQUYbxvozx6tnXem5mjvyA9z",
+      "name": "LAUNCH / SOL",
+      "pool": "GvNHVtEYtNWEbj9GgersyQUYbxvozx6tnXem5mjvyA9z",
+      "mint": "13VVCN1vXASETrahcrgEzSYuDpypbMC8BUVQKgwrNp49",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T16:23:23Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:04.856Z",
+      "indexedAgeAtReceiptMs": 34661856,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "BjVcPDP7vxRo1Myr2sipeG1zzXADB2bDLxoE5U4ePQM",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "5681475.12464345"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 6662,
+          "sells": 4478,
+          "buyers": 2019,
+          "sellers": 29
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "138.811"
+      },
+      "reportedReserveUsd": "0.000000782941161405057"
+    },
+    {
+      "page": 2,
+      "position": 13,
+      "indexedPoolId": "solana_7sqGLUfMJsxNLGzKZna2AzFSemq9KC7oWYJ9PXyHrcfa",
+      "name": "ELON2028 / SOL",
+      "pool": "7sqGLUfMJsxNLGzKZna2AzFSemq9KC7oWYJ9PXyHrcfa",
+      "mint": "GpASmFQ3mfVaMpHbDXfyqgDZQWCsh9vo9m4uoho1CxoX",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T09:03:02Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:04.856Z",
+      "indexedAgeAtReceiptMs": 61082856,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "2JN7RNzY7uxizW8B85zFH7GsSnBh39CzqJiAMuYAGudv",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "5579821.40694525"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 9933,
+          "sells": 6462,
+          "buyers": 3508,
+          "sellers": 43
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "15092.694"
+      },
+      "reportedReserveUsd": "0.0006590527178"
+    },
+    {
+      "page": 2,
+      "position": 14,
+      "indexedPoolId": "solana_RmBfKA59ZZBGGznWWN8GtxghXw7U9hD4967dbHmAwS1",
+      "name": "UNITE / SOL",
+      "pool": "RmBfKA59ZZBGGznWWN8GtxghXw7U9hD4967dbHmAwS1",
+      "mint": "6MtC2HWV7ApgbodRZxrLC83ShoLrpPfefSpuXVhMgs4",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T06:51:49Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:04.856Z",
+      "indexedAgeAtReceiptMs": 68955856,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "CdDwWrnrefpPgvHRFzYZTHc7sZYAQmMyzhsWFZ5RorLJ",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "5577077.74024705"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 6518,
+          "sells": 4398,
+          "buyers": 2011,
+          "sellers": 29
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "152.592"
+      },
+      "reportedReserveUsd": "0.000000783296040366806"
+    },
+    {
+      "page": 2,
+      "position": 15,
+      "indexedPoolId": "solana_2CrvkdCdMcJ9nPFzHotzfsFqqQXFQpYtGwssApv9jLiC",
+      "name": "HACHI / SOL",
+      "pool": "2CrvkdCdMcJ9nPFzHotzfsFqqQXFQpYtGwssApv9jLiC",
+      "mint": "CBjzJW12th33Ht7ScrDNDMVf2X5dUyBMrhUFr66RZ9SP",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T01:57:32Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:04.856Z",
+      "indexedAgeAtReceiptMs": 86612856,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "J3WZcBk7qwdSC87D41fqGasFcV2jCo5cCngJqYsRwCLn",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "5543550.67190709"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 15070,
+          "sells": 10667,
+          "buyers": 2064,
+          "sellers": 175
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "-94.431"
+      },
+      "reportedReserveUsd": "0.0507"
+    },
+    {
+      "page": 2,
+      "position": 16,
+      "indexedPoolId": "solana_Un197XKeooNAsjevKXvjX2TqqF74mVJU2okTAP3EwUi",
+      "name": "MOGZ / SOL",
+      "pool": "Un197XKeooNAsjevKXvjX2TqqF74mVJU2okTAP3EwUi",
+      "mint": "Rng2GUeNTJ2v9dE6bxkzr2fyX8eviGzYtEdVyp6T2c1",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T18:08:28Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:04.856Z",
+      "indexedAgeAtReceiptMs": 28356856,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "AjPuhA4qYwhHDwvJA7URFJbZGe7KqyQy49AiNTEbkMfk",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "5297999.48589852"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 6319,
+          "sells": 4178,
+          "buyers": 2012,
+          "sellers": 25
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "154.497"
+      },
+      "reportedReserveUsd": "0.0000007752820813"
+    },
+    {
+      "page": 2,
+      "position": 17,
+      "indexedPoolId": "solana_GfgxhqZmKF1V2MfS94LdmK8Ckgf7rhzPJdZztTJjZKHQ",
+      "name": "Nothing / SOL",
+      "pool": "GfgxhqZmKF1V2MfS94LdmK8Ckgf7rhzPJdZztTJjZKHQ",
+      "mint": "51SfaAyrYaR8FpibXT4TXtxEpnZSNoDwYVRojtKupump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-26T21:11:53Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:04.856Z",
+      "indexedAgeAtReceiptMs": 103751856,
+      "canonicalAddressMatch": true,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "GfgxhqZmKF1V2MfS94LdmK8Ckgf7rhzPJdZztTJjZKHQ",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "OUTSIDE_INDEXED_ZERO_TO_SIX_HOUR_RANGE",
+      "reportedVolumeUsd": {
+        "m5": "7265.1822936652",
+        "m15": "32678.8307716817",
+        "m30": "82496.076269999",
+        "h1": "136116.774508044",
+        "h6": "1121938.33725815",
+        "h24": "5255788.54430595"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 60,
+          "sells": 63,
+          "buyers": 45,
+          "sellers": 42
+        },
+        "m15": {
+          "buys": 240,
+          "sells": 175,
+          "buyers": 153,
+          "sellers": 118
+        },
+        "m30": {
+          "buys": 618,
+          "sells": 471,
+          "buyers": 337,
+          "sellers": 310
+        },
+        "h1": {
+          "buys": 1035,
+          "sells": 923,
+          "buyers": 509,
+          "sellers": 566
+        },
+        "h6": {
+          "buys": 8435,
+          "sells": 7623,
+          "buyers": 3075,
+          "sellers": 3370
+        },
+        "h24": {
+          "buys": 53585,
+          "sells": 41126,
+          "buyers": 14601,
+          "sellers": 13832
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "-1.771",
+        "m15": "-4.437",
+        "m30": "-12.188",
+        "h1": "-24.797",
+        "h6": "29.605",
+        "h24": "104.515"
+      },
+      "reportedReserveUsd": "114818.3319"
+    },
+    {
+      "page": 2,
+      "position": 18,
+      "indexedPoolId": "solana_GbRwMFqRTTfSqZ5yyYG83Y3okcAq9sjtyy4WrVkEyvWt",
+      "name": "INGUS / SOL",
+      "pool": "GbRwMFqRTTfSqZ5yyYG83Y3okcAq9sjtyy4WrVkEyvWt",
+      "mint": "2mPwr92SEnFKdMPGJYbCkuicCmXHtVFPse2AvFXTpump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T22:05:09Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:04.856Z",
+      "indexedAgeAtReceiptMs": 14155856,
+      "canonicalAddressMatch": true,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "GbRwMFqRTTfSqZ5yyYG83Y3okcAq9sjtyy4WrVkEyvWt",
+      "provisionalZeroToSixHourLead": true,
+      "classification": "LEAD_REQUIRES_ONCHAIN_ORIGIN_AND_SUPPORT_PROOF",
+      "reportedVolumeUsd": {
+        "m5": "0.776777926",
+        "m15": "0.8542665839",
+        "m30": "28.014845776",
+        "h1": "198.8702845452",
+        "h6": "5223776.50024695",
+        "h24": "5223776.50024695"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 1,
+          "buyers": 0,
+          "sellers": 1
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 2,
+          "buyers": 0,
+          "sellers": 2
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 5,
+          "buyers": 0,
+          "sellers": 5
+        },
+        "h1": {
+          "buys": 6,
+          "sells": 10,
+          "buyers": 4,
+          "sellers": 9
+        },
+        "h6": {
+          "buys": 15382,
+          "sells": 14459,
+          "buyers": 2876,
+          "sellers": 2898
+        },
+        "h24": {
+          "buys": 15382,
+          "sells": 14459,
+          "buyers": 2876,
+          "sellers": 2898
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0.03",
+        "m30": "-1.657",
+        "h1": "-1.35",
+        "h6": "-93.329",
+        "h24": "-93.329"
+      },
+      "reportedReserveUsd": "3978.1704"
+    },
+    {
+      "page": 2,
+      "position": 19,
+      "indexedPoolId": "solana_6tM4Dn8rjdqLJNjG9bnFayhVdShujVJsEPiQnz1KFdWx",
+      "name": "MMGA / SOL",
+      "pool": "6tM4Dn8rjdqLJNjG9bnFayhVdShujVJsEPiQnz1KFdWx",
+      "mint": "LQF5aKb44BdvPboRcCoZHFW8XhhHmJro5k8U6VvY3eo",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T10:58:06Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:04.856Z",
+      "indexedAgeAtReceiptMs": 54178856,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "HdDQG2w4tXfJNAw6h2oXo3e4uJvsb2Xi4s3y4PdPmgy9",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "17.6300480991",
+        "h24": "5095771.88986368"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 3,
+          "sells": 1,
+          "buyers": 3,
+          "sellers": 1
+        },
+        "h24": {
+          "buys": 6255,
+          "sells": 4063,
+          "buyers": 2017,
+          "sellers": 30
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "27013442.394"
+      },
+      "reportedReserveUsd": "0.0304"
+    },
+    {
+      "page": 2,
+      "position": 20,
+      "indexedPoolId": "solana_8jrAVTdy87PQTh5DERGjqXEQn6aJXEiravrRS88H8T46",
+      "name": "MOGZ / SOL",
+      "pool": "8jrAVTdy87PQTh5DERGjqXEQn6aJXEiravrRS88H8T46",
+      "mint": "6mmEhhwkfyRnVvHevVaa4xmvvtQpGAKA6zcPpxjuCcZ",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T16:05:41Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:04.856Z",
+      "indexedAgeAtReceiptMs": 35723856,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "8Y26DFMA85spwY6YPNnFt1FJSZduZ1M5xyxst4TtsNmT",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "4992863.38856781"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 6096,
+          "sells": 3928,
+          "buyers": 2022,
+          "sellers": 35
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "112.177"
+      },
+      "reportedReserveUsd": "0.000000139810934"
+    },
+    {
+      "page": 3,
+      "position": 1,
+      "indexedPoolId": "solana_J74HVzC43oUoyTfjVhaPqHZvRo9j8VadhZuEMj4UB5Vw",
+      "name": "OC / SOL",
+      "pool": "J74HVzC43oUoyTfjVhaPqHZvRo9j8VadhZuEMj4UB5Vw",
+      "mint": "QffnMezDgSvUACg1LLkBF5caULB5e4Z3qFq2MHHfgFm",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T08:09:25Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:17.194Z",
+      "indexedAgeAtReceiptMs": 64312194,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "3hnEienPC4E7uPjqfUKaCmsfCp96mR6kmpat8dCjvLou",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "4943998.88640354"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 6045,
+          "sells": 3912,
+          "buyers": 2022,
+          "sellers": 32
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "-99.803"
+      },
+      "reportedReserveUsd": "0.001998978957"
+    },
+    {
+      "page": 3,
+      "position": 2,
+      "indexedPoolId": "solana_ArrAPH5TygG8aQcStpALhN2crdZR7JP3sPNZV52eSXjy",
+      "name": "NAMI / SOL",
+      "pool": "ArrAPH5TygG8aQcStpALhN2crdZR7JP3sPNZV52eSXjy",
+      "mint": "F4ipoNXW4mLHUptHFhBwDMF5K2CDawH5DqEqaVeU9Trn",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T08:54:17Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:17.194Z",
+      "indexedAgeAtReceiptMs": 61620194,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "7iPdbiiZBaEU3bGeERxD3gLddUdxzTPpaDqbZUZbqxrG",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "4784753.12001192"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 4932,
+          "sells": 3257,
+          "buyers": 1150,
+          "sellers": 37
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "-99.997"
+      },
+      "reportedReserveUsd": "0.002490363657"
+    },
+    {
+      "page": 3,
+      "position": 3,
+      "indexedPoolId": "solana_XDjJ1x78atecEv7VnXWsFkjqrZU7uvTK7MdcKeVcmiB",
+      "name": "MOGZ / SOL",
+      "pool": "XDjJ1x78atecEv7VnXWsFkjqrZU7uvTK7MdcKeVcmiB",
+      "mint": "1pP4XQ5yeQARaj3UBfPRa3nQtRPh9Fbw5e7hbwfsQdY",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T18:07:43Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:17.194Z",
+      "indexedAgeAtReceiptMs": 28414194,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "42iYSnusUCHBSEGy41QCeLM4rRe7v8v2aBYVpfd6mP8a",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "4514750.34955312"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 6104,
+          "sells": 3621,
+          "buyers": 2028,
+          "sellers": 42
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "107.147"
+      },
+      "reportedReserveUsd": "0.0000001392723204"
+    },
+    {
+      "page": 3,
+      "position": 4,
+      "indexedPoolId": "solana_CZKe5qyirHMdHj9sRwzEMJdgh9DdMTgVjBbs2Tw9Gzky",
+      "name": "LAUNCH / SOL",
+      "pool": "CZKe5qyirHMdHj9sRwzEMJdgh9DdMTgVjBbs2Tw9Gzky",
+      "mint": "NhXgGR3bQogJJdTbG4oprcpeFTZjemcZAw3TJ6FDQeZ",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T17:20:16Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:17.194Z",
+      "indexedAgeAtReceiptMs": 31261194,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "C7FeMdL47LHdXPm51U3SwEuSDdxf245vwjyqzAMzF16A",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "4491895.851072"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 5732,
+          "sells": 3536,
+          "buyers": 2014,
+          "sellers": 26
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "-99.93"
+      },
+      "reportedReserveUsd": "0.0101"
+    },
+    {
+      "page": 3,
+      "position": 5,
+      "indexedPoolId": "solana_EZtwXZFmNS9sJjGVyCH35i6e3oywSDJDEQL9cBzGFDap",
+      "name": "CHICO / SOL",
+      "pool": "EZtwXZFmNS9sJjGVyCH35i6e3oywSDJDEQL9cBzGFDap",
+      "mint": "9v4airX4Vt45ADFg3QQG9pXX68LkX9Big4GiYEuJpump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-26T23:51:55Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:17.194Z",
+      "indexedAgeAtReceiptMs": 94162194,
+      "canonicalAddressMatch": true,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "EZtwXZFmNS9sJjGVyCH35i6e3oywSDJDEQL9cBzGFDap",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "OUTSIDE_INDEXED_ZERO_TO_SIX_HOUR_RANGE",
+      "reportedVolumeUsd": {
+        "m5": "605.4753970323",
+        "m15": "8708.0508065374",
+        "m30": "22228.119055625",
+        "h1": "48056.0048624203",
+        "h6": "2198234.37021133",
+        "h24": "4251496.67766154"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 7,
+          "sells": 3,
+          "buyers": 4,
+          "sellers": 3
+        },
+        "m15": {
+          "buys": 67,
+          "sells": 51,
+          "buyers": 40,
+          "sellers": 41
+        },
+        "m30": {
+          "buys": 156,
+          "sells": 121,
+          "buyers": 85,
+          "sellers": 95
+        },
+        "h1": {
+          "buys": 355,
+          "sells": 247,
+          "buyers": 150,
+          "sellers": 162
+        },
+        "h6": {
+          "buys": 9694,
+          "sells": 4011,
+          "buyers": 2916,
+          "sellers": 1252
+        },
+        "h24": {
+          "buys": 24426,
+          "sells": 14298,
+          "buyers": 9007,
+          "sellers": 3903
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0.128",
+        "m15": "-2.298",
+        "m30": "-3.957",
+        "h1": "1.435",
+        "h6": "-15.051",
+        "h24": "2.761"
+      },
+      "reportedReserveUsd": "210825.7692"
+    },
+    {
+      "page": 3,
+      "position": 6,
+      "indexedPoolId": "solana_7LR7keQT3HS8vxcRmdyWGJbqKH3iHj8hRYMtNQvaxEu9",
+      "name": "Nothing / SOL",
+      "pool": "7LR7keQT3HS8vxcRmdyWGJbqKH3iHj8hRYMtNQvaxEu9",
+      "mint": "46hh5VFCwTFxmDJodgHo5QepPgakuoLKCgmv7RYGhW5W",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T03:30:16Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:17.194Z",
+      "indexedAgeAtReceiptMs": 81061194,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "HNeFN6T4RMB7rE3uYwRrdGwLu4tMT827KfPZwJCa4cap",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "4059418.58260371"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 11654,
+          "sells": 8117,
+          "buyers": 2213,
+          "sellers": 202
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "-97.591"
+      },
+      "reportedReserveUsd": "0.0811"
+    },
+    {
+      "page": 3,
+      "position": 7,
+      "indexedPoolId": "solana_FNHuzaKcEFMKEgkJpzFjwp4Qfk7iPfQ8FRHfb3Kn35oQ",
+      "name": "TSLA / SOL",
+      "pool": "FNHuzaKcEFMKEgkJpzFjwp4Qfk7iPfQ8FRHfb3Kn35oQ",
+      "mint": "G2jcCK2LW5zq3TXxy8ViSqWVk9BCyHX7AEiTe2TX5Xq",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T13:44:57Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:17.194Z",
+      "indexedAgeAtReceiptMs": 44180194,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "A9Eerw7inLPtxokdLjdBzbZosWGhCuGpcxfpUFmtV6QT",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "4026415.48215909"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 5245,
+          "sells": 3191,
+          "buyers": 1891,
+          "sellers": 26
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "1520.133"
+      },
+      "reportedReserveUsd": "0.004672278702"
+    },
+    {
+      "page": 3,
+      "position": 8,
+      "indexedPoolId": "solana_2v4SRUyN2bj7nJoToz2LsSh9otKbRM33btZpQC1QKDEB",
+      "name": "Stonkz / SOL",
+      "pool": "2v4SRUyN2bj7nJoToz2LsSh9otKbRM33btZpQC1QKDEB",
+      "mint": "BMw93Fjkviunt1aJd6TEjQHULQVbpo5VgvtawbKbzYw",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-28T00:05:26Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:17.194Z",
+      "indexedAgeAtReceiptMs": 6951194,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "ED3A5cAY4UXQyw5xhAMcrmp5NGGT6ZjqTEreBc43mNmr",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "2668989.40763724",
+        "h6": "3932629.41797878",
+        "h24": "3932629.41797878"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 3281,
+          "sells": 2093,
+          "buyers": 1155,
+          "sellers": 23
+        },
+        "h6": {
+          "buys": 5137,
+          "sells": 3104,
+          "buyers": 1884,
+          "sellers": 34
+        },
+        "h24": {
+          "buys": 5137,
+          "sells": 3104,
+          "buyers": 1884,
+          "sellers": 34
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "23.403",
+        "h6": "104.825",
+        "h24": "104.825"
+      },
+      "reportedReserveUsd": "0.0101"
+    },
+    {
+      "page": 3,
+      "position": 9,
+      "indexedPoolId": "solana_8KbvgaYFKyMjbLrKovE3FNKmNbpoGGHrKENLKuseoAaX",
+      "name": "LAUNCH / SOL",
+      "pool": "8KbvgaYFKyMjbLrKovE3FNKmNbpoGGHrKENLKuseoAaX",
+      "mint": "CL6viuQyiKuLo3MH42qr2iitFvCFsR5boFRe6ERk2LV",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T13:21:54Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:17.194Z",
+      "indexedAgeAtReceiptMs": 45563194,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "FtL9HAA8FDiwcmUBUnwtSbWBjpDE7SkxyE7jjcSrJ5Mi",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "3870255.8310061"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 6270,
+          "sells": 3946,
+          "buyers": 2025,
+          "sellers": 37
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "98.067"
+      },
+      "reportedReserveUsd": "0.000157120049040818"
+    },
+    {
+      "page": 3,
+      "position": 10,
+      "indexedPoolId": "solana_7yvfSJJzHeGgZ3c4QqutXn8ZBCH3DaZfkc6nTxCPUYVd",
+      "name": "TRUMP2028 / SOL",
+      "pool": "7yvfSJJzHeGgZ3c4QqutXn8ZBCH3DaZfkc6nTxCPUYVd",
+      "mint": "6zMfMXjovo7ivtrypSP7YspHm5TcbV4Sh5TwSDgapump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T00:47:17Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:17.194Z",
+      "indexedAgeAtReceiptMs": 90840194,
+      "canonicalAddressMatch": true,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "7yvfSJJzHeGgZ3c4QqutXn8ZBCH3DaZfkc6nTxCPUYVd",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "OUTSIDE_INDEXED_ZERO_TO_SIX_HOUR_RANGE",
+      "reportedVolumeUsd": {
+        "m5": "7.3397431313",
+        "m15": "7.3397431313",
+        "m30": "34.3810502282",
+        "h1": "34.8190850933",
+        "h6": "659.2923558985",
+        "h24": "3700294.58033515"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 1,
+          "buyers": 0,
+          "sellers": 1
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 1,
+          "buyers": 0,
+          "sellers": 1
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 2,
+          "buyers": 0,
+          "sellers": 2
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 6,
+          "buyers": 0,
+          "sellers": 6
+        },
+        "h6": {
+          "buys": 9,
+          "sells": 23,
+          "buyers": 8,
+          "sellers": 22
+        },
+        "h24": {
+          "buys": 71510,
+          "sells": 36372,
+          "buyers": 3667,
+          "sellers": 3679
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "-0.979",
+        "h1": "-1.922",
+        "h6": "-12.068",
+        "h24": "-99.601"
+      },
+      "reportedReserveUsd": "3585.3561"
+    },
+    {
+      "page": 3,
+      "position": 11,
+      "indexedPoolId": "solana_GgK3345ub8miEMebDVdgPbr42vgFoQPHAd4y5m8izQKN",
+      "name": "HUNKIT / SOL",
+      "pool": "GgK3345ub8miEMebDVdgPbr42vgFoQPHAd4y5m8izQKN",
+      "mint": "4DmaPZMoeyTDKyCpUhZ5JMvs3JEEerRkKJue14jZpump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T12:40:23Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:17.194Z",
+      "indexedAgeAtReceiptMs": 48054194,
+      "canonicalAddressMatch": true,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "GgK3345ub8miEMebDVdgPbr42vgFoQPHAd4y5m8izQKN",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "OUTSIDE_INDEXED_ZERO_TO_SIX_HOUR_RANGE",
+      "reportedVolumeUsd": {
+        "m5": "0.04231602364",
+        "m15": "0.04231602364",
+        "m30": "0.04231602364",
+        "h1": "0.04231602364",
+        "h6": "138.1348791307",
+        "h24": "3697048.45226884"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 1,
+          "buyers": 0,
+          "sellers": 1
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 1,
+          "buyers": 0,
+          "sellers": 1
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 1,
+          "buyers": 0,
+          "sellers": 1
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 1,
+          "buyers": 0,
+          "sellers": 1
+        },
+        "h6": {
+          "buys": 3,
+          "sells": 16,
+          "buyers": 2,
+          "sellers": 14
+        },
+        "h24": {
+          "buys": 12277,
+          "sells": 10965,
+          "buyers": 3682,
+          "sellers": 3555
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "-6.055",
+        "h24": "-94.666"
+      },
+      "reportedReserveUsd": "2961.5919"
+    },
+    {
+      "page": 3,
+      "position": 12,
+      "indexedPoolId": "solana_BZy4qshB2Ct2HB9MDJLyEzWTcfJNPBjSUNnZd7Xibyxu",
+      "name": "Frongus / SOL",
+      "pool": "BZy4qshB2Ct2HB9MDJLyEzWTcfJNPBjSUNnZd7Xibyxu",
+      "mint": "BqVWKwqgwaAKhqE7U2PtDw939j7oXgcRzuuku5T8YYc",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T20:10:04Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:17.194Z",
+      "indexedAgeAtReceiptMs": 21073194,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "GmQkQRHdyRuf46L6KN4o2m5uecE8BdX4a9BuFgCjKWWj",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "3520174.36145009",
+        "h24": "3520174.36145009"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 4569,
+          "sells": 2786,
+          "buyers": 1663,
+          "sellers": 34
+        },
+        "h24": {
+          "buys": 4569,
+          "sells": 2786,
+          "buyers": 1663,
+          "sellers": 34
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "99.921",
+        "h24": "99.921"
+      },
+      "reportedReserveUsd": "0.0101"
+    },
+    {
+      "page": 3,
+      "position": 13,
+      "indexedPoolId": "solana_53xzsGsPQ7AEKVybRREas9wWLkAWDU6CWbXYVs3ZmzAx",
+      "name": "Maxxing / SOL",
+      "pool": "53xzsGsPQ7AEKVybRREas9wWLkAWDU6CWbXYVs3ZmzAx",
+      "mint": "PYCCL71c4J2YCRtb9HjdxaobGazCthNrLTit69GWszH",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T15:12:08Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:17.194Z",
+      "indexedAgeAtReceiptMs": 38949194,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "8GNc3pAZVbRgcySEkkuCGsx9mSGy8dqUVVdVbhnT1jUn",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "3439330.74864851"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 4429,
+          "sells": 2717,
+          "buyers": 1563,
+          "sellers": 26
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "135.663"
+      },
+      "reportedReserveUsd": "0.004417647582"
+    },
+    {
+      "page": 3,
+      "position": 14,
+      "indexedPoolId": "solana_3bXpGGRhUyZ1sKnJmJr8J6u7Yg6YsvnMx6MeTQ4NnZmC",
+      "name": "INVISIBLE / SOL",
+      "pool": "3bXpGGRhUyZ1sKnJmJr8J6u7Yg6YsvnMx6MeTQ4NnZmC",
+      "mint": "4R6qGExrfDGErUbAcMKsZoYN7wjz1s3Jsj2JWKCmq1xW",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-28T01:30:17Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:17.194Z",
+      "indexedAgeAtReceiptMs": 1860194,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "HgG5bBL1v1LPEaG7posuVBThWFZj6jvfuocU9jqWdfhD",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "124519.957006468",
+        "m15": "1426708.04998855",
+        "m30": "3063164.82141862",
+        "h1": "3432224.19771381",
+        "h6": "3432224.19771381",
+        "h24": "3432224.19771381"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 117,
+          "sells": 80,
+          "buyers": 46,
+          "sellers": 21
+        },
+        "m15": {
+          "buys": 1345,
+          "sells": 909,
+          "buyers": 312,
+          "sellers": 21
+        },
+        "m30": {
+          "buys": 2995,
+          "sells": 1969,
+          "buyers": 705,
+          "sellers": 24
+        },
+        "h1": {
+          "buys": 3463,
+          "sells": 2241,
+          "buyers": 843,
+          "sellers": 28
+        },
+        "h6": {
+          "buys": 3463,
+          "sells": 2241,
+          "buyers": 843,
+          "sellers": 28
+        },
+        "h24": {
+          "buys": 3463,
+          "sells": 2241,
+          "buyers": 843,
+          "sellers": 28
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "1.731",
+        "m15": "22.113",
+        "m30": "84.536",
+        "h1": "111.949",
+        "h6": "111.949",
+        "h24": "111.949"
+      },
+      "reportedReserveUsd": "50496.0663"
+    },
+    {
+      "page": 3,
+      "position": 15,
+      "indexedPoolId": "solana_2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
+      "name": "PUMP / USDC",
+      "pool": "2uF4Xh61rDwxnG9woyxsVQP7zuA6kLFpb3NvnRQeoiSd",
+      "mint": "pumpCmXqMfrsAkQ5r49WcJnRayYRqmXz6ae8H7H9Dfn",
+      "quoteMint": "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v",
+      "indexedCreatedAt": "2025-07-14T16:55:54Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:17.194Z",
+      "indexedAgeAtReceiptMs": 40640723194,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": false,
+      "derivedCanonicalPool": "5gUAeizj5pFyohujUajCwvkvD8wfYyWvCQo6QBku87nR",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "OUTSIDE_SOL_QUOTE",
+      "reportedVolumeUsd": {
+        "m5": "487.1997171628",
+        "m15": "14182.2273659825",
+        "m30": "28909.4201562755",
+        "h1": "66608.01825691",
+        "h6": "730405.993652617",
+        "h24": "3085102.49176222"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 5,
+          "sells": 2,
+          "buyers": 1,
+          "sellers": 2
+        },
+        "m15": {
+          "buys": 50,
+          "sells": 26,
+          "buyers": 15,
+          "sellers": 18
+        },
+        "m30": {
+          "buys": 131,
+          "sells": 62,
+          "buyers": 29,
+          "sellers": 54
+        },
+        "h1": {
+          "buys": 373,
+          "sells": 202,
+          "buyers": 109,
+          "sellers": 141
+        },
+        "h6": {
+          "buys": 2990,
+          "sells": 2429,
+          "buyers": 862,
+          "sellers": 1135
+        },
+        "h24": {
+          "buys": 8614,
+          "sells": 7123,
+          "buyers": 1674,
+          "sellers": 2826
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "-0.012",
+        "m15": "0.129",
+        "m30": "0.913",
+        "h1": "0.716",
+        "h6": "1.434",
+        "h24": "3.853"
+      },
+      "reportedReserveUsd": "23436093.2565"
+    },
+    {
+      "page": 3,
+      "position": 16,
+      "indexedPoolId": "solana_CH3t8k5tTqoePspDmFkikhWGpMDPAQPuaetCHez2MC9Y",
+      "name": "Nothing / SOL",
+      "pool": "CH3t8k5tTqoePspDmFkikhWGpMDPAQPuaetCHez2MC9Y",
+      "mint": "4MtErPfdRBxHVecToHX5vMu9WzWd8Bgv5ad1TZK7bsEG",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-26T21:52:08Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:17.194Z",
+      "indexedAgeAtReceiptMs": 101349194,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "1NKjVWpNyZvN7DmJYUMmiFHuB6yZxDrEYJo7iRkPof3",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "2996421.30513646"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 3910,
+          "sells": 3309,
+          "buyers": 628,
+          "sellers": 28
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "13.386"
+      },
+      "reportedReserveUsd": "0.000000921960512767489"
+    },
+    {
+      "page": 3,
+      "position": 17,
+      "indexedPoolId": "solana_GSCRbPNuVxLYVnc9EhJSe12oeqyCCV1uMwSeGeqhwiVt",
+      "name": "Gangstar / SOL",
+      "pool": "GSCRbPNuVxLYVnc9EhJSe12oeqyCCV1uMwSeGeqhwiVt",
+      "mint": "M2dEc9TGW4zuFoNnSZuj8dhRFQeDxTAqAuKSdgg77Eh",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T05:25:53Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:17.194Z",
+      "indexedAgeAtReceiptMs": 74124194,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "DDk9LAZ6A4WnAHXQJFgAqZiEa8mK3WcfwZz6iLsX4Z1g",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "2852220.53707091"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 3861,
+          "sells": 2283,
+          "buyers": 1447,
+          "sellers": 35
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "106.452"
+      },
+      "reportedReserveUsd": "0.000000135911354101381"
+    },
+    {
+      "page": 3,
+      "position": 18,
+      "indexedPoolId": "solana_HMp35RbgJSQdPUKXhMcpWHCmRSWbT1wJ7nCbXiJQGTit",
+      "name": "NAMI / SOL",
+      "pool": "HMp35RbgJSQdPUKXhMcpWHCmRSWbT1wJ7nCbXiJQGTit",
+      "mint": "DW5CbfSTep4cpd7JzqnBvueKYdYxQJzNBZPn9p61G3EQ",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T20:54:41Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:17.194Z",
+      "indexedAgeAtReceiptMs": 18396194,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "HnbUfEvF9GCCfGgjU1jDRC7CdxHAbtPfAGcdT5cc7tZj",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "2824853.77844734",
+        "h24": "2824853.77844734"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 2900,
+          "sells": 1880,
+          "buyers": 703,
+          "sellers": 29
+        },
+        "h24": {
+          "buys": 2900,
+          "sells": 1880,
+          "buyers": 703,
+          "sellers": 29
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "-71.331",
+        "h24": "-71.331"
+      },
+      "reportedReserveUsd": "0.002020896162"
+    },
+    {
+      "page": 3,
+      "position": 19,
+      "indexedPoolId": "solana_3KgVPft91E1E3YedModfn1gwcLDSMErFDFhLGHa65LCj",
+      "name": "SI / SOL",
+      "pool": "3KgVPft91E1E3YedModfn1gwcLDSMErFDFhLGHa65LCj",
+      "mint": "3yM6w93HMUZSHrMSGVPR2cW4Wvubvkscht1541i6pump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T16:48:24Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:17.194Z",
+      "indexedAgeAtReceiptMs": 33173194,
+      "canonicalAddressMatch": true,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "3KgVPft91E1E3YedModfn1gwcLDSMErFDFhLGHa65LCj",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "OUTSIDE_INDEXED_ZERO_TO_SIX_HOUR_RANGE",
+      "reportedVolumeUsd": {
+        "m5": "1024.4534286686",
+        "m15": "10137.8313775166",
+        "m30": "18107.2148547423",
+        "h1": "68456.6062909371",
+        "h6": "688602.875413531",
+        "h24": "2725170.89797638"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 55,
+          "sells": 32,
+          "buyers": 16,
+          "sellers": 15
+        },
+        "m15": {
+          "buys": 584,
+          "sells": 323,
+          "buyers": 139,
+          "sellers": 111
+        },
+        "m30": {
+          "buys": 1360,
+          "sells": 786,
+          "buyers": 215,
+          "sellers": 176
+        },
+        "h1": {
+          "buys": 2970,
+          "sells": 1762,
+          "buyers": 662,
+          "sellers": 604
+        },
+        "h6": {
+          "buys": 22485,
+          "sells": 14904,
+          "buyers": 2058,
+          "sellers": 1628
+        },
+        "h24": {
+          "buys": 80153,
+          "sells": 32585,
+          "buyers": 11449,
+          "sellers": 4102
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "4.279",
+        "m15": "2.586",
+        "m30": "0.628",
+        "h1": "-10.295",
+        "h6": "-37.484",
+        "h24": "195.535"
+      },
+      "reportedReserveUsd": "71592.4552"
+    },
+    {
+      "page": 3,
+      "position": 20,
+      "indexedPoolId": "solana_B7mKPemG2gmuv1pigxb8LW5EaYBXvKcKQN6tQKyENE1h",
+      "name": "HACHI / SOL",
+      "pool": "B7mKPemG2gmuv1pigxb8LW5EaYBXvKcKQN6tQKyENE1h",
+      "mint": "CgZ8XRzc5MnwKvDSLev6vLs4wToybsgMB8KckqyhhL96",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T01:12:24Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:17.194Z",
+      "indexedAgeAtReceiptMs": 89333194,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "EC4JziRJuXj3Dw6cwwzMs4VxW4wcVj73DsSsXL59y5xH",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "2691064.11792836"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 7041,
+          "sells": 7233,
+          "buyers": 143,
+          "sellers": 145
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "113.636"
+      },
+      "reportedReserveUsd": "0.00181188851097616"
+    },
+    {
+      "page": 4,
+      "position": 1,
+      "indexedPoolId": "solana_4PPWLVQvea7cyJuTxvU1xWFVBhkyMGV6bmoKeBaoLTFm",
+      "name": "SLOPINU / SOL",
+      "pool": "4PPWLVQvea7cyJuTxvU1xWFVBhkyMGV6bmoKeBaoLTFm",
+      "mint": "7iUDzDvFuQFXq8djG1AVBWE6Ah7zRZTmpgGm6QkMKth",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T09:57:07Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 57862037,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "BinZbVhTUV4ZKJ57SWSHE2TgyM2w8oCTxNHxkkrL26fw",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "2639512.3742885"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 3572,
+          "sells": 2119,
+          "buyers": 1314,
+          "sellers": 27
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "119.491"
+      },
+      "reportedReserveUsd": "139521.6159"
+    },
+    {
+      "page": 4,
+      "position": 2,
+      "indexedPoolId": "solana_7KXRYw2H1JcuXDtXE9i1K1G8KkDpeciJDJgUgNbtANtJ",
+      "name": "BOGGO / SOL",
+      "pool": "7KXRYw2H1JcuXDtXE9i1K1G8KkDpeciJDJgUgNbtANtJ",
+      "mint": "BLsH91QKAz7DGVtuiif461f3YwNPkjMLvxP5s7Gopump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T17:05:19Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 32170037,
+      "canonicalAddressMatch": true,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "7KXRYw2H1JcuXDtXE9i1K1G8KkDpeciJDJgUgNbtANtJ",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "OUTSIDE_INDEXED_ZERO_TO_SIX_HOUR_RANGE",
+      "reportedVolumeUsd": {
+        "m5": "0.7799902994",
+        "m15": "0.7799902994",
+        "m30": "1.361208112",
+        "h1": "1.361208112",
+        "h6": "42.6753325859",
+        "h24": "2585064.63443531"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 1,
+          "buyers": 0,
+          "sellers": 1
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 1,
+          "buyers": 0,
+          "sellers": 1
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 4,
+          "buyers": 0,
+          "sellers": 4
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 4,
+          "buyers": 0,
+          "sellers": 4
+        },
+        "h6": {
+          "buys": 2,
+          "sells": 21,
+          "buyers": 1,
+          "sellers": 21
+        },
+        "h24": {
+          "buys": 9250,
+          "sells": 8255,
+          "buyers": 2069,
+          "sellers": 1903
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "1.042",
+        "h1": "1.042",
+        "h6": "-2.033",
+        "h24": "-93.813"
+      },
+      "reportedReserveUsd": "3005.7927"
+    },
+    {
+      "page": 4,
+      "position": 3,
+      "indexedPoolId": "solana_B2K3ftZnJWz5SHoJpNn5ksUZtSpKJYwm7CxFjedHBkKk",
+      "name": "UNITE / SOL",
+      "pool": "B2K3ftZnJWz5SHoJpNn5ksUZtSpKJYwm7CxFjedHBkKk",
+      "mint": "5jmb1BXEGKWS3NBkb259dwg3yYLRMbfPXxStupZ7s2w",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T06:00:55Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 72034037,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "FqEwUd6Mmu7QuZqbUN6qC2siK8RQDfTcmyfTFYwUukeE",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "2544603.00646995"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 3449,
+          "sells": 2047,
+          "buyers": 1280,
+          "sellers": 34
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "98.136"
+      },
+      "reportedReserveUsd": "0.0203"
+    },
+    {
+      "page": 4,
+      "position": 4,
+      "indexedPoolId": "solana_HVtF5FyrY8snaT2QX9q7TtFjzxJxDFMKRYgD2sGBgkCE",
+      "name": "ELON2028 / SOL",
+      "pool": "HVtF5FyrY8snaT2QX9q7TtFjzxJxDFMKRYgD2sGBgkCE",
+      "mint": "9YvYR17fg72mwpLMffn7MTkAiof4aY7EynuV2npbs6AM",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T01:02:05Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 89964037,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "ANiDFMHz1eC3Vj9CPuA6x4bL9buqWHku7ZiFVbY9HCrV",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "2530135.16245095"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 5800,
+          "sells": 4233,
+          "buyers": 171,
+          "sellers": 123
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "-6.189"
+      },
+      "reportedReserveUsd": "0.001051841019"
+    },
+    {
+      "page": 4,
+      "position": 5,
+      "indexedPoolId": "solana_C61k1x1HF1YNaProneMFcy5eMSyLP5kJzLce2h6X2B7v",
+      "name": "USDP / SOL",
+      "pool": "C61k1x1HF1YNaProneMFcy5eMSyLP5kJzLce2h6X2B7v",
+      "mint": "9qpiyF4XeQjPkYTzBQjcJ5HFua5udCn4tbT6m58pump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T12:07:22Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 50047037,
+      "canonicalAddressMatch": true,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "C61k1x1HF1YNaProneMFcy5eMSyLP5kJzLce2h6X2B7v",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "OUTSIDE_INDEXED_ZERO_TO_SIX_HOUR_RANGE",
+      "reportedVolumeUsd": {
+        "m5": "71.8946301799",
+        "m15": "864.1192735015",
+        "m30": "2118.3715314923",
+        "h1": "4487.159766759",
+        "h6": "1256369.56117588",
+        "h24": "2501323.10188901"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 1,
+          "sells": 1,
+          "buyers": 1,
+          "sellers": 1
+        },
+        "m15": {
+          "buys": 18,
+          "sells": 9,
+          "buyers": 4,
+          "sellers": 4
+        },
+        "m30": {
+          "buys": 47,
+          "sells": 24,
+          "buyers": 8,
+          "sellers": 4
+        },
+        "h1": {
+          "buys": 103,
+          "sells": 47,
+          "buyers": 9,
+          "sellers": 5
+        },
+        "h6": {
+          "buys": 16361,
+          "sells": 514,
+          "buyers": 2917,
+          "sellers": 111
+        },
+        "h24": {
+          "buys": 41713,
+          "sells": 970,
+          "buyers": 2965,
+          "sellers": 147
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "-1.42",
+        "m15": "1.35",
+        "m30": "3.451",
+        "h1": "14.903",
+        "h6": "-99.975",
+        "h24": "389.535"
+      },
+      "reportedReserveUsd": "36756.2147"
+    },
+    {
+      "page": 4,
+      "position": 6,
+      "indexedPoolId": "solana_J7AxyBnaVB9sxbdyzG6iPANedzQ82BbMijGG6pN5ujD",
+      "name": "HACHI / SOL",
+      "pool": "J7AxyBnaVB9sxbdyzG6iPANedzQ82BbMijGG6pN5ujD",
+      "mint": "EnADwyyQAXsiVu5DVKnfH2Dup1jUGx8SioZcjPpiTRnd",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T02:26:42Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 84887037,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "4iwDHscg9tfd9aCm6fjrkgJ3LN1Z8asFUvKaff84kRNn",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "2494633.67885919"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 9382,
+          "sells": 7503,
+          "buyers": 2136,
+          "sellers": 127
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "122.012"
+      },
+      "reportedReserveUsd": "0.000107560805012288"
+    },
+    {
+      "page": 4,
+      "position": 7,
+      "indexedPoolId": "solana_Bk41Ng5NMtaEbpBFDyJ1kMt6sT4eWzJtPCmBvd9SYa5T",
+      "name": "USOE / SOL",
+      "pool": "Bk41Ng5NMtaEbpBFDyJ1kMt6sT4eWzJtPCmBvd9SYa5T",
+      "mint": "iNMC5tCArwXv7KRxzpLoWUHcJCjjgNVz1uqtxp8pump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T16:49:27Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 33122037,
+      "canonicalAddressMatch": true,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "Bk41Ng5NMtaEbpBFDyJ1kMt6sT4eWzJtPCmBvd9SYa5T",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "OUTSIDE_INDEXED_ZERO_TO_SIX_HOUR_RANGE",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.9721144111",
+        "h6": "239.450610593",
+        "h24": "2489012.75380354"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 1,
+          "buyers": 0,
+          "sellers": 1
+        },
+        "h6": {
+          "buys": 6,
+          "sells": 5,
+          "buyers": 6,
+          "sellers": 5
+        },
+        "h24": {
+          "buys": 1707,
+          "sells": 484,
+          "buyers": 1578,
+          "sellers": 244
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "23.232",
+        "h24": "-93.141"
+      },
+      "reportedReserveUsd": "2800.2342"
+    },
+    {
+      "page": 4,
+      "position": 8,
+      "indexedPoolId": "solana_6jEdE2E3c6J7snnq9vTbLLuz2WsYi7rX5oVvWy8HyPDg",
+      "name": "ELON2028 / SOL",
+      "pool": "6jEdE2E3c6J7snnq9vTbLLuz2WsYi7rX5oVvWy8HyPDg",
+      "mint": "27Qg7EcnGfmbthfQeQXTs4qjfnvU6gXf8W1ahJiJpump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T00:06:56Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 93273037,
+      "canonicalAddressMatch": true,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "6jEdE2E3c6J7snnq9vTbLLuz2WsYi7rX5oVvWy8HyPDg",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "OUTSIDE_INDEXED_ZERO_TO_SIX_HOUR_RANGE",
+      "reportedVolumeUsd": {
+        "m5": "4.5842277259",
+        "m15": "4.7066030742",
+        "m30": "7.7104716913",
+        "h1": "81.9094780523",
+        "h6": "60624.9845871329",
+        "h24": "2459381.47272971"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 1,
+          "sells": 1,
+          "buyers": 1,
+          "sellers": 1
+        },
+        "m15": {
+          "buys": 1,
+          "sells": 3,
+          "buyers": 1,
+          "sellers": 3
+        },
+        "m30": {
+          "buys": 1,
+          "sells": 5,
+          "buyers": 1,
+          "sellers": 5
+        },
+        "h1": {
+          "buys": 4,
+          "sells": 16,
+          "buyers": 3,
+          "sellers": 14
+        },
+        "h6": {
+          "buys": 2276,
+          "sells": 3256,
+          "buyers": 605,
+          "sellers": 2620
+        },
+        "h24": {
+          "buys": 93295,
+          "sells": 43423,
+          "buyers": 13303,
+          "sellers": 12299
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "-1.139",
+        "m15": "0.315",
+        "m30": "0.312",
+        "h1": "-2.431",
+        "h6": "-94.409",
+        "h24": "-99.713"
+      },
+      "reportedReserveUsd": "4912.7627"
+    },
+    {
+      "page": 4,
+      "position": 9,
+      "indexedPoolId": "solana_2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT",
+      "name": "FRONGUS / SOL",
+      "pool": "2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT",
+      "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T21:13:41Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 17268037,
+      "canonicalAddressMatch": true,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT",
+      "provisionalZeroToSixHourLead": true,
+      "classification": "LEAD_REQUIRES_ONCHAIN_ORIGIN_AND_SUPPORT_PROOF",
+      "reportedVolumeUsd": {
+        "m5": "2492.7217375035",
+        "m15": "41335.8514160966",
+        "m30": "93749.1562207562",
+        "h1": "179339.765153602",
+        "h6": "2426472.35447293",
+        "h24": "2426472.35447293"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 114,
+          "sells": 49,
+          "buyers": 42,
+          "sellers": 24
+        },
+        "m15": {
+          "buys": 1160,
+          "sells": 507,
+          "buyers": 296,
+          "sellers": 220
+        },
+        "m30": {
+          "buys": 2557,
+          "sells": 1286,
+          "buyers": 668,
+          "sellers": 604
+        },
+        "h1": {
+          "buys": 5577,
+          "sells": 2679,
+          "buyers": 1552,
+          "sellers": 1291
+        },
+        "h6": {
+          "buys": 42940,
+          "sells": 13696,
+          "buyers": 9823,
+          "sellers": 5267
+        },
+        "h24": {
+          "buys": 42940,
+          "sells": 13696,
+          "buyers": 9823,
+          "sellers": 5267
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0.982",
+        "m15": "-8.437",
+        "m30": "-18.94",
+        "h1": "6.887",
+        "h6": "-29.585",
+        "h24": "-29.585"
+      },
+      "reportedReserveUsd": "42427.5575"
+    },
+    {
+      "page": 4,
+      "position": 10,
+      "indexedPoolId": "solana_C4VBaKYgaDgdtYbjVemekHej3LEwxXqW1b1BJKZYBB4o",
+      "name": "ELON2028 / SOL",
+      "pool": "C4VBaKYgaDgdtYbjVemekHej3LEwxXqW1b1BJKZYBB4o",
+      "mint": "1mgEHAR78Ht8PpvAvdXQuaisz4GXuv5skwTT52EGxN5",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T00:53:40Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 90469037,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "AbfPdG6u9tvjN5XvM2tPQ8TujGPACvqgQxJzaszc9CnJ",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "2413666.00087141"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 2016,
+          "sells": 1896,
+          "buyers": 20,
+          "sellers": 20
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "5.486"
+      },
+      "reportedReserveUsd": "0.0000007900055903"
+    },
+    {
+      "page": 4,
+      "position": 11,
+      "indexedPoolId": "solana_FAHXgxDGMw5sfFW77SCHBcT9qiQ2ArrPzo98xJxMf9kk",
+      "name": "Something / SOL",
+      "pool": "FAHXgxDGMw5sfFW77SCHBcT9qiQ2ArrPzo98xJxMf9kk",
+      "mint": "AZdhikmyj6ibsejv7EjML9SfNmuiMvwDrKXTEU2zpump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T21:23:36Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 16673037,
+      "canonicalAddressMatch": true,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "FAHXgxDGMw5sfFW77SCHBcT9qiQ2ArrPzo98xJxMf9kk",
+      "provisionalZeroToSixHourLead": true,
+      "classification": "LEAD_REQUIRES_ONCHAIN_ORIGIN_AND_SUPPORT_PROOF",
+      "reportedVolumeUsd": {
+        "m5": "17247.2640089246",
+        "m15": "227042.436762866",
+        "m30": "546823.000038998",
+        "h1": "866439.675861891",
+        "h6": "2309620.99040171",
+        "h24": "2309620.99040171"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 272,
+          "sells": 47,
+          "buyers": 91,
+          "sellers": 22
+        },
+        "m15": {
+          "buys": 2260,
+          "sells": 446,
+          "buyers": 721,
+          "sellers": 203
+        },
+        "m30": {
+          "buys": 5334,
+          "sells": 1014,
+          "buyers": 1716,
+          "sellers": 413
+        },
+        "h1": {
+          "buys": 7870,
+          "sells": 1830,
+          "buyers": 2527,
+          "sellers": 649
+        },
+        "h6": {
+          "buys": 12140,
+          "sells": 6684,
+          "buyers": 3108,
+          "sellers": 1327
+        },
+        "h24": {
+          "buys": 12140,
+          "sells": 6684,
+          "buyers": 3108,
+          "sellers": 1327
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "-3.524",
+        "m15": "7.425",
+        "m30": "-0.973",
+        "h1": "62.945",
+        "h6": "410.188",
+        "h24": "410.188"
+      },
+      "reportedReserveUsd": "112829.2792"
+    },
+    {
+      "page": 4,
+      "position": 12,
+      "indexedPoolId": "solana_Ax2GJbEZREU4oTuPadUK8g2xX96xR1KX73xYeqaCYaA",
+      "name": "AI / SOL",
+      "pool": "Ax2GJbEZREU4oTuPadUK8g2xX96xR1KX73xYeqaCYaA",
+      "mint": "E2D4oTmMdwLfABNFbZvcvAeBLn6PutbsWnvNwpzcp1HX",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T16:32:10Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 34159037,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "89jYRm5jLSA7HbE3DCmDgAxEynFshnR1LKfCr5rNrAbW",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "2299918.88654872"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 8128,
+          "sells": 5253,
+          "buyers": 2247,
+          "sellers": 242
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "153.912"
+      },
+      "reportedReserveUsd": "58827.8632"
+    },
+    {
+      "page": 4,
+      "position": 13,
+      "indexedPoolId": "solana_GzLL3vHnPVSQbHVUZAKT5noRc1AUU6iFB8nreAiWzXEz",
+      "name": "USOE / SOL",
+      "pool": "GzLL3vHnPVSQbHVUZAKT5noRc1AUU6iFB8nreAiWzXEz",
+      "mint": "ait5y3tFCVxk9yFjpNv6rUQ2fciBHT4JScGsggopump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-28T01:17:03Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 2666037,
+      "canonicalAddressMatch": true,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "GzLL3vHnPVSQbHVUZAKT5noRc1AUU6iFB8nreAiWzXEz",
+      "provisionalZeroToSixHourLead": true,
+      "classification": "LEAD_REQUIRES_ONCHAIN_ORIGIN_AND_SUPPORT_PROOF",
+      "reportedVolumeUsd": {
+        "m5": "836.9281568717",
+        "m15": "6549.3461971251",
+        "m30": "59643.903153557",
+        "h1": "2221502.06615265",
+        "h6": "2221502.06615265",
+        "h24": "2221502.06615265"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 71,
+          "sells": 2,
+          "buyers": 71,
+          "sellers": 2
+        },
+        "m15": {
+          "buys": 620,
+          "sells": 10,
+          "buyers": 596,
+          "sellers": 4
+        },
+        "m30": {
+          "buys": 1586,
+          "sells": 35,
+          "buyers": 1372,
+          "sellers": 6
+        },
+        "h1": {
+          "buys": 2902,
+          "sells": 81,
+          "buyers": 2323,
+          "sellers": 25
+        },
+        "h6": {
+          "buys": 2902,
+          "sells": 81,
+          "buyers": 2323,
+          "sellers": 25
+        },
+        "h24": {
+          "buys": 2902,
+          "sells": 81,
+          "buyers": 2323,
+          "sellers": 25
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0.102",
+        "m15": "0.415",
+        "m30": "5.341",
+        "h1": "6640558.984",
+        "h6": "6640558.984",
+        "h24": "6640558.984"
+      },
+      "reportedReserveUsd": "4468637.1621"
+    },
+    {
+      "page": 4,
+      "position": 14,
+      "indexedPoolId": "solana_BMgKx9wYqWrb7EtjpYxTkCjxw2VKmEGdGtqs4sF6ubUh",
+      "name": "Frongus / SOL",
+      "pool": "BMgKx9wYqWrb7EtjpYxTkCjxw2VKmEGdGtqs4sF6ubUh",
+      "mint": "7SFuB4ZQbSVJT9A1mvb39sXrbfULhV1H5fbzTo8s81dV",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T18:55:57Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 25532037,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "67WuT5sAMMiWEfHki8M8m4Bf5yo55NPZjJLFWi1RSSFR",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "1421180.35385985",
+        "h24": "2211092.09004025"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 5160,
+          "sells": 5128,
+          "buyers": 95,
+          "sellers": 96
+        },
+        "h24": {
+          "buys": 9637,
+          "sells": 7588,
+          "buyers": 2116,
+          "sellers": 107
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "94.361",
+        "h24": "267.481"
+      },
+      "reportedReserveUsd": "0.0000005216555399"
+    },
+    {
+      "page": 4,
+      "position": 15,
+      "indexedPoolId": "solana_3fmLQZNQTBWLsXrBwEYmj7oC9BZuWRotf8kocvTDpiGp",
+      "name": "Stonkz / SOL",
+      "pool": "3fmLQZNQTBWLsXrBwEYmj7oC9BZuWRotf8kocvTDpiGp",
+      "mint": "Bx11Wc4KS14g71SzpD2QSBL6T3XQkgFFai5eRUYVehR",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T22:58:32Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 10977037,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "5dMzQPqooP1v2HqjHcn1ibF6aBua98MJGYCWZ8L2VQPd",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "2205140.24688463",
+        "h24": "2205140.24688463"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 3036,
+          "sells": 1746,
+          "buyers": 1180,
+          "sellers": 33
+        },
+        "h24": {
+          "buys": 3036,
+          "sells": 1746,
+          "buyers": 1180,
+          "sellers": 33
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "98.613",
+        "h24": "98.613"
+      },
+      "reportedReserveUsd": "0.0304"
+    },
+    {
+      "page": 4,
+      "position": 16,
+      "indexedPoolId": "solana_CJxubY3jtQzPUuETiZt9yWmuskWTpUcTojB8cqY77a8N",
+      "name": "BEZOGE / SOL",
+      "pool": "CJxubY3jtQzPUuETiZt9yWmuskWTpUcTojB8cqY77a8N",
+      "mint": "DWW3g69L4EfNMYbjZGuUggRwBFSht8nUM6bES3o1MFfD",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T15:54:07Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 36442037,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "877RpbzWnDxrGzCcHMGZyv22wfKP141bUUn5G8SK1jVA",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "2144922.70345724"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 6245,
+          "sells": 6428,
+          "buyers": 2138,
+          "sellers": 132
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "214.408"
+      },
+      "reportedReserveUsd": "0.0000009632359757"
+    },
+    {
+      "page": 4,
+      "position": 17,
+      "indexedPoolId": "solana_7yuhUK4zNynheUiRsQW7amkvv7T7PAcD88udqWVrTxYi",
+      "name": "DOCK / SOL",
+      "pool": "7yuhUK4zNynheUiRsQW7amkvv7T7PAcD88udqWVrTxYi",
+      "mint": "FYUyPWNLQtF4nNQ8nSHwpmwQ4j41UqAUz8gWEeWWpump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T20:37:44Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 19425037,
+      "canonicalAddressMatch": true,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "7yuhUK4zNynheUiRsQW7amkvv7T7PAcD88udqWVrTxYi",
+      "provisionalZeroToSixHourLead": true,
+      "classification": "LEAD_REQUIRES_ONCHAIN_ORIGIN_AND_SUPPORT_PROOF",
+      "reportedVolumeUsd": {
+        "m5": "1051.9276006013",
+        "m15": "1815.3554460311",
+        "m30": "2998.2806909829",
+        "h1": "9699.9645936413",
+        "h6": "2117743.56406034",
+        "h24": "2117743.56406034"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 11,
+          "sells": 4,
+          "buyers": 11,
+          "sellers": 4
+        },
+        "m15": {
+          "buys": 17,
+          "sells": 17,
+          "buyers": 17,
+          "sellers": 14
+        },
+        "m30": {
+          "buys": 34,
+          "sells": 37,
+          "buyers": 30,
+          "sellers": 26
+        },
+        "h1": {
+          "buys": 102,
+          "sells": 98,
+          "buyers": 57,
+          "sellers": 72
+        },
+        "h6": {
+          "buys": 18970,
+          "sells": 16868,
+          "buyers": 5549,
+          "sellers": 4999
+        },
+        "h24": {
+          "buys": 18970,
+          "sells": 16868,
+          "buyers": 5549,
+          "sellers": 4999
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "6.891",
+        "m15": "5.657",
+        "m30": "10.229",
+        "h1": "-19.112",
+        "h6": "-41.268",
+        "h24": "-41.268"
+      },
+      "reportedReserveUsd": "12769.7125"
+    },
+    {
+      "page": 4,
+      "position": 18,
+      "indexedPoolId": "solana_3B3nQooRBY9qSPWiXrhArqzTDw9jxWGUPyqCSSH9s2em",
+      "name": "Stonkz / SOL",
+      "pool": "3B3nQooRBY9qSPWiXrhArqzTDw9jxWGUPyqCSSH9s2em",
+      "mint": "E87721KsNSUJvPEYUqykiu5JxhBBNNX11H6t27S9Ng3",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T23:23:40Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 9469037,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "eFFfDVv1mJtQWQu2TMxMAFFSCRVtRYxYXLDYAWBdnSW",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "2096899.03689718",
+        "h24": "2096899.03689718"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 2942,
+          "sells": 1666,
+          "buyers": 1169,
+          "sellers": 32
+        },
+        "h24": {
+          "buys": 2942,
+          "sells": 1666,
+          "buyers": 1169,
+          "sellers": 32
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "87.206",
+        "h24": "87.206"
+      },
+      "reportedReserveUsd": "160822.8992"
+    },
+    {
+      "page": 4,
+      "position": 19,
+      "indexedPoolId": "solana_3GpesRvaiu3ZAPxq7DfNYoe9nnPt313VPLnWGopHXhER",
+      "name": "user / SOL",
+      "pool": "3GpesRvaiu3ZAPxq7DfNYoe9nnPt313VPLnWGopHXhER",
+      "mint": "HkWx2E7CVd9JTAn8jtxV5QDZa7x4u7WxstYuPkhYqg5",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T11:58:40Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 50569037,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "66yNN41NC9aStDphkdTLaecxnUJ4aKhnvsFzrjrQwD9z",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "0.0",
+        "h24": "2084961.41620265"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h24": {
+          "buys": 2918,
+          "sells": 1681,
+          "buyers": 1114,
+          "sellers": 31
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "0",
+        "h24": "127.139"
+      },
+      "reportedReserveUsd": "0.0101"
+    },
+    {
+      "page": 4,
+      "position": 20,
+      "indexedPoolId": "solana_AVzJMMvUH5LtM3GP7dYNu1UokuWqprcv2ofjxuKfmkHh",
+      "name": "Stonkz / SOL",
+      "pool": "AVzJMMvUH5LtM3GP7dYNu1UokuWqprcv2ofjxuKfmkHh",
+      "mint": "BsifshSSgUnJyFjsEY9PeBYyy5ByC7MjSnD2M6VzYWt",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T22:59:31Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 10918037,
+      "canonicalAddressMatch": false,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "71T7Ymyr7HPGME16H3c9UPm6LCSMy6KnhmcvA7ooVPrU",
+      "provisionalZeroToSixHourLead": false,
+      "classification": "NONCANONICAL_ADDRESS",
+      "reportedVolumeUsd": {
+        "m5": "0.0",
+        "m15": "0.0",
+        "m30": "0.0",
+        "h1": "0.0",
+        "h6": "2063059.5774984",
+        "h24": "2063059.5774984"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h1": {
+          "buys": 0,
+          "sells": 0,
+          "buyers": 0,
+          "sellers": 0
+        },
+        "h6": {
+          "buys": 2830,
+          "sells": 1635,
+          "buyers": 1071,
+          "sellers": 27
+        },
+        "h24": {
+          "buys": 2830,
+          "sells": 1635,
+          "buyers": 1071,
+          "sellers": 27
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0",
+        "m30": "0",
+        "h1": "0",
+        "h6": "-99.758",
+        "h24": "-99.758"
+      },
+      "reportedReserveUsd": "0.0304"
+    }
+  ],
+  "duplicates": [],
+  "leads": [
+    {
+      "page": 2,
+      "position": 18,
+      "indexedPoolId": "solana_GbRwMFqRTTfSqZ5yyYG83Y3okcAq9sjtyy4WrVkEyvWt",
+      "name": "INGUS / SOL",
+      "pool": "GbRwMFqRTTfSqZ5yyYG83Y3okcAq9sjtyy4WrVkEyvWt",
+      "mint": "2mPwr92SEnFKdMPGJYbCkuicCmXHtVFPse2AvFXTpump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T22:05:09Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:04.856Z",
+      "indexedAgeAtReceiptMs": 14155856,
+      "canonicalAddressMatch": true,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "GbRwMFqRTTfSqZ5yyYG83Y3okcAq9sjtyy4WrVkEyvWt",
+      "provisionalZeroToSixHourLead": true,
+      "classification": "LEAD_REQUIRES_ONCHAIN_ORIGIN_AND_SUPPORT_PROOF",
+      "reportedVolumeUsd": {
+        "m5": "0.776777926",
+        "m15": "0.8542665839",
+        "m30": "28.014845776",
+        "h1": "198.8702845452",
+        "h6": "5223776.50024695",
+        "h24": "5223776.50024695"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 0,
+          "sells": 1,
+          "buyers": 0,
+          "sellers": 1
+        },
+        "m15": {
+          "buys": 0,
+          "sells": 2,
+          "buyers": 0,
+          "sellers": 2
+        },
+        "m30": {
+          "buys": 0,
+          "sells": 5,
+          "buyers": 0,
+          "sellers": 5
+        },
+        "h1": {
+          "buys": 6,
+          "sells": 10,
+          "buyers": 4,
+          "sellers": 9
+        },
+        "h6": {
+          "buys": 15382,
+          "sells": 14459,
+          "buyers": 2876,
+          "sellers": 2898
+        },
+        "h24": {
+          "buys": 15382,
+          "sells": 14459,
+          "buyers": 2876,
+          "sellers": 2898
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0",
+        "m15": "0.03",
+        "m30": "-1.657",
+        "h1": "-1.35",
+        "h6": "-93.329",
+        "h24": "-93.329"
+      },
+      "reportedReserveUsd": "3978.1704"
+    },
+    {
+      "page": 4,
+      "position": 9,
+      "indexedPoolId": "solana_2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT",
+      "name": "FRONGUS / SOL",
+      "pool": "2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT",
+      "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T21:13:41Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 17268037,
+      "canonicalAddressMatch": true,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT",
+      "provisionalZeroToSixHourLead": true,
+      "classification": "LEAD_REQUIRES_ONCHAIN_ORIGIN_AND_SUPPORT_PROOF",
+      "reportedVolumeUsd": {
+        "m5": "2492.7217375035",
+        "m15": "41335.8514160966",
+        "m30": "93749.1562207562",
+        "h1": "179339.765153602",
+        "h6": "2426472.35447293",
+        "h24": "2426472.35447293"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 114,
+          "sells": 49,
+          "buyers": 42,
+          "sellers": 24
+        },
+        "m15": {
+          "buys": 1160,
+          "sells": 507,
+          "buyers": 296,
+          "sellers": 220
+        },
+        "m30": {
+          "buys": 2557,
+          "sells": 1286,
+          "buyers": 668,
+          "sellers": 604
+        },
+        "h1": {
+          "buys": 5577,
+          "sells": 2679,
+          "buyers": 1552,
+          "sellers": 1291
+        },
+        "h6": {
+          "buys": 42940,
+          "sells": 13696,
+          "buyers": 9823,
+          "sellers": 5267
+        },
+        "h24": {
+          "buys": 42940,
+          "sells": 13696,
+          "buyers": 9823,
+          "sellers": 5267
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0.982",
+        "m15": "-8.437",
+        "m30": "-18.94",
+        "h1": "6.887",
+        "h6": "-29.585",
+        "h24": "-29.585"
+      },
+      "reportedReserveUsd": "42427.5575"
+    },
+    {
+      "page": 4,
+      "position": 11,
+      "indexedPoolId": "solana_FAHXgxDGMw5sfFW77SCHBcT9qiQ2ArrPzo98xJxMf9kk",
+      "name": "Something / SOL",
+      "pool": "FAHXgxDGMw5sfFW77SCHBcT9qiQ2ArrPzo98xJxMf9kk",
+      "mint": "AZdhikmyj6ibsejv7EjML9SfNmuiMvwDrKXTEU2zpump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T21:23:36Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 16673037,
+      "canonicalAddressMatch": true,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "FAHXgxDGMw5sfFW77SCHBcT9qiQ2ArrPzo98xJxMf9kk",
+      "provisionalZeroToSixHourLead": true,
+      "classification": "LEAD_REQUIRES_ONCHAIN_ORIGIN_AND_SUPPORT_PROOF",
+      "reportedVolumeUsd": {
+        "m5": "17247.2640089246",
+        "m15": "227042.436762866",
+        "m30": "546823.000038998",
+        "h1": "866439.675861891",
+        "h6": "2309620.99040171",
+        "h24": "2309620.99040171"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 272,
+          "sells": 47,
+          "buyers": 91,
+          "sellers": 22
+        },
+        "m15": {
+          "buys": 2260,
+          "sells": 446,
+          "buyers": 721,
+          "sellers": 203
+        },
+        "m30": {
+          "buys": 5334,
+          "sells": 1014,
+          "buyers": 1716,
+          "sellers": 413
+        },
+        "h1": {
+          "buys": 7870,
+          "sells": 1830,
+          "buyers": 2527,
+          "sellers": 649
+        },
+        "h6": {
+          "buys": 12140,
+          "sells": 6684,
+          "buyers": 3108,
+          "sellers": 1327
+        },
+        "h24": {
+          "buys": 12140,
+          "sells": 6684,
+          "buyers": 3108,
+          "sellers": 1327
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "-3.524",
+        "m15": "7.425",
+        "m30": "-0.973",
+        "h1": "62.945",
+        "h6": "410.188",
+        "h24": "410.188"
+      },
+      "reportedReserveUsd": "112829.2792"
+    },
+    {
+      "page": 4,
+      "position": 13,
+      "indexedPoolId": "solana_GzLL3vHnPVSQbHVUZAKT5noRc1AUU6iFB8nreAiWzXEz",
+      "name": "USOE / SOL",
+      "pool": "GzLL3vHnPVSQbHVUZAKT5noRc1AUU6iFB8nreAiWzXEz",
+      "mint": "ait5y3tFCVxk9yFjpNv6rUQ2fciBHT4JScGsggopump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-28T01:17:03Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 2666037,
+      "canonicalAddressMatch": true,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "GzLL3vHnPVSQbHVUZAKT5noRc1AUU6iFB8nreAiWzXEz",
+      "provisionalZeroToSixHourLead": true,
+      "classification": "LEAD_REQUIRES_ONCHAIN_ORIGIN_AND_SUPPORT_PROOF",
+      "reportedVolumeUsd": {
+        "m5": "836.9281568717",
+        "m15": "6549.3461971251",
+        "m30": "59643.903153557",
+        "h1": "2221502.06615265",
+        "h6": "2221502.06615265",
+        "h24": "2221502.06615265"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 71,
+          "sells": 2,
+          "buyers": 71,
+          "sellers": 2
+        },
+        "m15": {
+          "buys": 620,
+          "sells": 10,
+          "buyers": 596,
+          "sellers": 4
+        },
+        "m30": {
+          "buys": 1586,
+          "sells": 35,
+          "buyers": 1372,
+          "sellers": 6
+        },
+        "h1": {
+          "buys": 2902,
+          "sells": 81,
+          "buyers": 2323,
+          "sellers": 25
+        },
+        "h6": {
+          "buys": 2902,
+          "sells": 81,
+          "buyers": 2323,
+          "sellers": 25
+        },
+        "h24": {
+          "buys": 2902,
+          "sells": 81,
+          "buyers": 2323,
+          "sellers": 25
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "0.102",
+        "m15": "0.415",
+        "m30": "5.341",
+        "h1": "6640558.984",
+        "h6": "6640558.984",
+        "h24": "6640558.984"
+      },
+      "reportedReserveUsd": "4468637.1621"
+    },
+    {
+      "page": 4,
+      "position": 17,
+      "indexedPoolId": "solana_7yuhUK4zNynheUiRsQW7amkvv7T7PAcD88udqWVrTxYi",
+      "name": "DOCK / SOL",
+      "pool": "7yuhUK4zNynheUiRsQW7amkvv7T7PAcD88udqWVrTxYi",
+      "mint": "FYUyPWNLQtF4nNQ8nSHwpmwQ4j41UqAUz8gWEeWWpump",
+      "quoteMint": "So11111111111111111111111111111111111111112",
+      "indexedCreatedAt": "2026-10-27T20:37:44Z",
+      "indexedCreatedTimeVerification": "UNVERIFIED",
+      "observedAt": "2026-10-28T02:01:29.037Z",
+      "indexedAgeAtReceiptMs": 19425037,
+      "canonicalAddressMatch": true,
+      "SOLQuoted": true,
+      "derivedCanonicalPool": "7yuhUK4zNynheUiRsQW7amkvv7T7PAcD88udqWVrTxYi",
+      "provisionalZeroToSixHourLead": true,
+      "classification": "LEAD_REQUIRES_ONCHAIN_ORIGIN_AND_SUPPORT_PROOF",
+      "reportedVolumeUsd": {
+        "m5": "1051.9276006013",
+        "m15": "1815.3554460311",
+        "m30": "2998.2806909829",
+        "h1": "9699.9645936413",
+        "h6": "2117743.56406034",
+        "h24": "2117743.56406034"
+      },
+      "reportedTransactions": {
+        "m5": {
+          "buys": 11,
+          "sells": 4,
+          "buyers": 11,
+          "sellers": 4
+        },
+        "m15": {
+          "buys": 17,
+          "sells": 17,
+          "buyers": 17,
+          "sellers": 14
+        },
+        "m30": {
+          "buys": 34,
+          "sells": 37,
+          "buyers": 30,
+          "sellers": 26
+        },
+        "h1": {
+          "buys": 102,
+          "sells": 98,
+          "buyers": 57,
+          "sellers": 72
+        },
+        "h6": {
+          "buys": 18970,
+          "sells": 16868,
+          "buyers": 5549,
+          "sellers": 4999
+        },
+        "h24": {
+          "buys": 18970,
+          "sells": 16868,
+          "buyers": 5549,
+          "sellers": 4999
+        }
+      },
+      "reportedPriceChanges": {
+        "m5": "6.891",
+        "m15": "5.657",
+        "m30": "10.229",
+        "h1": "-19.112",
+        "h6": "-41.268",
+        "h24": "-41.268"
+      },
+      "reportedReserveUsd": "12769.7125"
+    }
+  ],
+  "cohortFrozenAt": "2026-10-28T02:01:29.051Z",
+  "newUsage": {
+    "requestStarts": 4,
+    "measuredBodyBytes": 143357,
+    "uncertainBodyBytes": 0,
+    "rawRetainedBytes": 143357,
+    "elapsedMs": 36345.151989
+  },
+  "cumulative": {
+    "requestStarts": 40,
+    "measuredBodyBytes": 1038730,
+    "uncertainBodyBytes": 262416
+  },
+  "limitations": [
+    "Population is current-indexed and bounded by five h24-volume-ranked pages; it is biased and nonexhaustive.",
+    "Index-created timestamps do not establish genuine migration times. Future matching must use actual on-chain origin proof.",
+    "Canonical address consistency does not prove current mint, pool, fee or vault support.",
+    "Reported transactions, volume, price changes and liquidity are provider claims, not confirmed trade flow or actual-size executable prices.",
+    "No top-winner or opportunity-recall percentage is supported. Weak controls remain in the frozen lead population.",
+    "Only HTTP response body bytes are measured. Packet/TLS overhead, request bytes and infrastructure transfer allocations remain unverified.",
+    "Zero additional public API subscription/key cost does not mean zero infrastructure cost."
+  ],
+  "stopReason": "all planned requests completed",
+  "physicalStartGapsMs": [
+    12003.354957000001,
+    12006.294058,
+    12000.302204
+  ]
+}

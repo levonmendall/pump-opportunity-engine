@@ -1,0 +1,27 @@
+{
+  "kind": "poe-corrected-paper-forward-intent-v1",
+  "recordedAt": "2026-10-28T21:07:44.922595+00:00",
+  "source": {
+    "commit": "c189a54b7978692ef2f7d098d6b3374aea8deb72",
+    "sha256": "02d455d81e672bddb08958fc822520aefaaa6241e78b8b9b32ee57146895556c"
+  },
+  "adminCommit": "44ff2c0a78c6e70a16ef3212a2b74dde63b3fc27",
+  "configurationSha256": "241ca5d8efabede16349490fe0f7751f10609ee17b0a1fc8f392d339de1fa7fa",
+  "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+  "inceptionAt": 1793123773252,
+  "priorVerifiedRevision": 9451,
+  "priorVerifiedFlat": true,
+  "deepSlots": 3,
+  "maximumPositions": 1,
+  "normalSeconds": 1800,
+  "singleHistoryPages": true,
+  "noStrategyChange": true,
+  "originalObserverUnchanged": true,
+  "purpose": [
+    "same-account source transition",
+    "live single-history audit completion",
+    "historical support fence retention",
+    "correct financial and predictive reporting",
+    "natural autonomous PAPER lifecycle only if real qualification"
+  ]
+}

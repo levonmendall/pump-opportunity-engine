@@ -1,0 +1,7 @@
+
+> pump-opportunity-engine@0.1.0 build
+> tsc --noEmit
+
+src/native-candidate-runner.ts(194,76): error TS2322: Type 'number | null' is not assignable to type 'number | undefined'.
+  Type 'null' is not assignable to type 'number | undefined'.
+src/native-candidate-runner.ts(196,9): error TS18048: 'c.auditSession' is possibly 'undefined'.

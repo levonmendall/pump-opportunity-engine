@@ -1,0 +1,78 @@
+{
+  "at": "2026-10-30T01:43:30.709542+00:00",
+  "sourceBefore": {
+    ".github/workflows/poe-original-cutover-refusal.yml": "3386b140a8ecaa460711a5e3e510dd0149fe2a7478487b839e696d4a6840c2b4",
+    "operator/native-paper-ec2/test-inspect-original-service-io.py": "aceb4fd56040083a3b318893c3cf4a2fe51058064f5cca9fb0860611664723e1",
+    "operator/native-paper-ec2/read-provider-recovery-forensics-20261030.py": "675ddd56d5c0674d4de39a197cc9b44474f7d5a85dd285a5116bee0a4a18857f",
+    "operator/native-paper-ec2/test-inspect-original-source-forensics.py": "1aa6258ba7ee85fad7b2766b0b508b18e87263e9c96c24e4755710ad94cd2b89",
+    "operator/native-paper-ec2/test-read-current-run-forensics.py": "f9b42baaef38606510f0859a963fb51819f188eba6b58b1245b35c74124d1c5e",
+    "operator/native-paper-ec2/test-inspect-provider-recovery-reader.py": "d749b49b696230d5d6f9db9542843d8367bd0142bc7fc7315513eef8bdac0b77",
+    "operator/native-paper-ec2/test-read-provider-recovery-forensics-20261030.py": "fe357a7cdf24dc0b17c3f22f1f48cb0224ce69bdffb1a39324d5a64cfcd5a2aa",
+    "operator/native-paper-ec2/test-inspect-original-entrypoint.py": "5c1af218f81ec50a0563799645898e476a0698faae8ac51455d65517e2119c82",
+    "operator/native-paper-ec2/test-inspect-original-memory.py": "1cf8932c9cd6c76e9fb2f8e36fcbdb39105201b2fa6600935a4da1d2c19faf63",
+    "operator/native-paper-ec2/read-current-run-forensics.py": "e2d80bfe28108cab7c61ae99dffa4b1fb81429cdbeefbbffd0b324a760296e4f",
+    "operator/native-paper-ec2/inspect-original-cutover-refusal.py": "4a06229adf45018d11aab99730a43bac1d647f8cc0662670a8ff98cacd3b67a7"
+  },
+  "sourceAfter": {
+    ".github/workflows/poe-original-cutover-refusal.yml": "3386b140a8ecaa460711a5e3e510dd0149fe2a7478487b839e696d4a6840c2b4",
+    "operator/native-paper-ec2/test-inspect-original-service-io.py": "aceb4fd56040083a3b318893c3cf4a2fe51058064f5cca9fb0860611664723e1",
+    "operator/native-paper-ec2/read-provider-recovery-forensics-20261030.py": "675ddd56d5c0674d4de39a197cc9b44474f7d5a85dd285a5116bee0a4a18857f",
+    "operator/native-paper-ec2/test-inspect-original-source-forensics.py": "1aa6258ba7ee85fad7b2766b0b508b18e87263e9c96c24e4755710ad94cd2b89",
+    "operator/native-paper-ec2/test-read-current-run-forensics.py": "f9b42baaef38606510f0859a963fb51819f188eba6b58b1245b35c74124d1c5e",
+    "operator/native-paper-ec2/test-inspect-provider-recovery-reader.py": "d749b49b696230d5d6f9db9542843d8367bd0142bc7fc7315513eef8bdac0b77",
+    "operator/native-paper-ec2/test-read-provider-recovery-forensics-20261030.py": "fe357a7cdf24dc0b17c3f22f1f48cb0224ce69bdffb1a39324d5a64cfcd5a2aa",
+    "operator/native-paper-ec2/test-inspect-original-entrypoint.py": "5c1af218f81ec50a0563799645898e476a0698faae8ac51455d65517e2119c82",
+    "operator/native-paper-ec2/test-inspect-original-memory.py": "1cf8932c9cd6c76e9fb2f8e36fcbdb39105201b2fa6600935a4da1d2c19faf63",
+    "operator/native-paper-ec2/read-current-run-forensics.py": "e2d80bfe28108cab7c61ae99dffa4b1fb81429cdbeefbbffd0b324a760296e4f",
+    "operator/native-paper-ec2/inspect-original-cutover-refusal.py": "4a06229adf45018d11aab99730a43bac1d647f8cc0662670a8ff98cacd3b67a7"
+  },
+  "sourceUnchanged": true,
+  "results": [
+    {
+      "file": "operator/native-paper-ec2/test-inspect-original-service-io.py",
+      "exitCode": 0,
+      "raw": "test-inspect-original-service-io.raw.txt",
+      "sha256": "698d16d7b93c4bd9707d3cfacda6fb1e0fea99ed0cda6e69bedc42772940540a"
+    },
+    {
+      "file": "operator/native-paper-ec2/test-inspect-original-source-forensics.py",
+      "exitCode": 0,
+      "raw": "test-inspect-original-source-forensics.raw.txt",
+      "sha256": "f1d3cbb20f163ae5e2fff4defbe5e5555b64befbe115d13f5522afb4216ccf1a"
+    },
+    {
+      "file": "operator/native-paper-ec2/test-read-current-run-forensics.py",
+      "exitCode": 0,
+      "raw": "test-read-current-run-forensics.raw.txt",
+      "sha256": "6e2c2e2d0c5d4f2445feb5005937a4d47635379f8adf4113de6f692d171b2766"
+    },
+    {
+      "file": "operator/native-paper-ec2/test-inspect-provider-recovery-reader.py",
+      "exitCode": 0,
+      "raw": "test-inspect-provider-recovery-reader.raw.txt",
+      "sha256": "2c37d50a88147ca2ebd5197d74ee37d462dab650d793512e849814c28d5a38f0"
+    },
+    {
+      "file": "operator/native-paper-ec2/test-read-provider-recovery-forensics-20261030.py",
+      "exitCode": 0,
+      "raw": "test-read-provider-recovery-forensics-20261030.raw.txt",
+      "sha256": "cfef1f5b80e1a9d170c891dfa640d34de72aef8260a01aa35e5372c31253b436"
+    },
+    {
+      "file": "operator/native-paper-ec2/test-inspect-original-entrypoint.py",
+      "exitCode": 0,
+      "raw": "test-inspect-original-entrypoint.raw.txt",
+      "sha256": "e31f3e41311d72413b992a5800b780157f60b95540dcb55efa41c0f24fd2c625"
+    },
+    {
+      "file": "operator/native-paper-ec2/test-inspect-original-memory.py",
+      "exitCode": 0,
+      "raw": "test-inspect-original-memory.raw.txt",
+      "sha256": "62cfbeb2911bb226088bfb0918eb4b05008ea70b20bce854ee2ca8a564bd37a5"
+    }
+  ],
+  "passed": true,
+  "actualHostReads": false,
+  "providerRequests": 0,
+  "serviceControlOperations": 0
+}

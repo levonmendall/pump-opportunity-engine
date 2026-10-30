@@ -1,0 +1,56 @@
+{
+  "schemaVersion": 1,
+  "kind": "poe-native-paper-bounded-supervision-v1",
+  "source": {
+    "commit": "6d894c1262b93d22f288e214016bfb314799e0ae",
+    "sha256": "9baf5500b40eb26bc1ae898c8dbdb8801b9798e8c03de0280bb3896556cb6553"
+  },
+  "configurationSha256": "8d3bfa5d58dfae316250b290113badaf9969c785c9f1d76c566b272d41a321f9",
+  "managementConfigurationSha256": "793b7df2d91c2cf91058a4853b46f583589776e74214304c1bb0579f22fb4344",
+  "nodeSelectorSha256": "23a6a1573bca181041ea9db55164f05197ad929e5a53ace89613f64011b7dd6b",
+  "publisher": [
+    {
+      "bytes": 4416,
+      "sha256": "19780dba1d69c0a54f5c5466f99bbaa840acc54469cefca71905043a11ea53d9",
+      "path": "run-publisher.sh"
+    },
+    {
+      "bytes": 30148,
+      "sha256": "649f4cc27f74f3aa53fcc831a3437b7e3d9eb8eef63896782b5b451aba1427eb",
+      "path": "dist/publisher.mjs"
+    },
+    {
+      "bytes": 1325,
+      "sha256": "14c6c96dccb3ca994b78b19f6671f8b0e46b4beaae5f0a25ec3dd634e8fefc78",
+      "path": "dist/manifest.json"
+    }
+  ],
+  "limits": {
+    "segmentSeconds": 1800,
+    "maximumSegments": 2,
+    "outerSeconds": 3840,
+    "sourceHeapMiB": 192,
+    "sourceRssMiB": 512,
+    "sourceFileMiB": 40,
+    "sourceLogMiB": 8,
+    "sourceCpuSoftSeconds": 240,
+    "sourceCpuHardSeconds": 245,
+    "sourceEarlyStopCpuSeconds": 220,
+    "publisherRssMiB": 128,
+    "publisherCpuSeconds": 30,
+    "publisherMaximumRestarts": 2,
+    "initialStatusSeconds": 30,
+    "initialReportingSeconds": 55,
+    "statusStaleSeconds": 90,
+    "gracefulStopSeconds": 30,
+    "finalPublishSeconds": 12,
+    "minimumAvailableRamMiB": 1024,
+    "minimumDiskMiB": 1024,
+    "minimumRecoveryRamMiB": 512,
+    "minimumRecoveryDiskMiB": 256,
+    "ongoingDiskMiB": 128,
+    "ongoingAvailableRamMiB": 256,
+    "parentRssMiB": 128,
+    "supervisorEvidenceMiB": 32
+  }
+}

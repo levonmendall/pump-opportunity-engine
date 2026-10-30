@@ -1,0 +1,506 @@
+{
+  "classification": "RETAINED_HISTORICAL_SAMPLE_CROSSCHECK_NOT_WINNER_RECALL_OR_LIVE_ACCEPTANCE",
+  "networkRequests": 0,
+  "sources": [
+    {
+      "path": "evidence/opportunity-coverage-20261027/indexed-cohort-poe-crosscheck.json",
+      "sha256": "9ea5d3fe7e9e97b4a8553141657f09d9726caeae8503096e86def99adb30de8a"
+    },
+    {
+      "path": "evidence/opportunity-coverage-20261027/si-final-window-assessment.json",
+      "sha256": "85dbb2e15203a9ff9e17c0b633efa3547432864a270208eeab7a06684b0b5b46"
+    },
+    {
+      "path": "evidence/opportunity-coverage-20261027/frongus-quote-feasibility.json",
+      "sha256": "e7d29d0be689fbde6aad8cf972114cdbf43d481a5e1649adac6f9e8706c47feb"
+    }
+  ],
+  "sampleSummary": {
+    "mainLeadCount": 9,
+    "mainRawMigrationHintMentions": 3,
+    "mainRetainedCanonicalOriginProof": 2,
+    "mainDeepObserved": 2,
+    "mainWithAuditedPredictiveAssessment": 1,
+    "mainWithExplicitPredictiveOnlyPass": 0,
+    "mainNoIdentityRecord": 6,
+    "mainNoIdentityRecordAndIndexedCreationInInterruption": 6,
+    "percentagesNotReported": "These are trace-incidence counts in9current indexed leads, not recall of independent historically supported/tradable winning opportunities. Index age/support and time-specific economic ranking remain provisional."
+  },
+  "cases": [
+    {
+      "cohortRole": "MAIN_NINE_PROVISIONAL_AGE_OVERLAP_LEAD",
+      "identity": {
+        "mint": "2mPwr92SEnFKdMPGJYbCkuicCmXHtVFPse2AvFXTpump",
+        "pool": "GbRwMFqRTTfSqZ5yyYG83Y3okcAq9sjtyy4WrVkEyvWt",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "derivedCanonicalPool": "GbRwMFqRTTfSqZ5yyYG83Y3okcAq9sjtyy4WrVkEyvWt",
+        "canonicalAddressMatch": true,
+        "SOLQuoted": true,
+        "indexedCreatedAt": "2026-10-27T22:05:09Z"
+      },
+      "untrustedDisplayName": "INGUS / SOL",
+      "classification": "NO_RETAINED_POE_IDENTITY_EVIDENCE",
+      "interpretation": "No matching migration hint, canonical proof, watch/deep record, audit or assessment exists in the completed run journals. Indexed creation occurred during a research interruption; this is an observation/restart-universe limitation conditional on index metadata, not established live-feed failure.",
+      "timing": {
+        "indexedCreationAt": 1793138709000,
+        "indexedCreationIso": "2026-10-27T22:05:09.000Z",
+        "indexAgeEligibilityStartAt": 1793139009000,
+        "indexAgeEligibilityEndAt": 1793145909000,
+        "creationDuringActualCompletedRunIds": [],
+        "creationDuringResearchInterruption": {
+          "startAt": 1793138288797,
+          "endAt": 1793138880928,
+          "startIso": "2026-10-27T21:58:08.797Z",
+          "endIso": "2026-10-27T22:08:00.928Z",
+          "elapsedMs": 592131,
+          "previousRun": "pilot-20261027215124336-ed67d639",
+          "nextRun": "pilot-20261027220800928-089eac29"
+        },
+        "actualOnChainMigrationAtFromRetainedProof": null,
+        "actualOnChainMigrationIso": null,
+        "firstMigrationHintReceivedAt": null,
+        "firstFinalizedOriginProofAvailableAt": null,
+        "firstDeepAt": null,
+        "firstDeepIso": null,
+        "firstUsefulAuditedPredictiveAt": null,
+        "firstUsefulAuditedPredictiveIso": null,
+        "chainOccurrenceToFirstDeepMs": null,
+        "chainOccurrenceToFirstUsefulPredictiveMs": null,
+        "indexedAgeEligibleToFirstDeepMs": null,
+        "indexedAgeEligibleToFirstUsefulPredictiveMs": null,
+        "timingMeaning": "Actual application receipt/validation timestamps remain separate from chain/index occurrence. Missing timestamps are unknown, never rejections. Negative age-eligibility-to-deep values represent permitted early warming, not authorized entries."
+      },
+      "counts": {
+        "rawProcessedMigrationHints": 0,
+        "retainedFinalizedOriginProofRows": 0,
+        "explicitWatchDiscoveredRows": 0,
+        "explicitWatchVerifiedRows": 0,
+        "cachedIdentityImports": 0,
+        "deepAllocations": 0,
+        "runsWithDeepAllocation": 0,
+        "acceptedBoundedAuditRows": 0,
+        "runtimeCompleteWindowRows": 0,
+        "distinctAuditedWindowEndpoints": 0,
+        "predictiveAssessments": 0,
+        "predictiveStatusCounts": {},
+        "primaryDecisionCounts": {},
+        "selectedPayloadRows": 0,
+        "distinctSelectedSignatures": 0,
+        "normalizationRows": 0,
+        "distinctNormalizedEventIdentities": 0,
+        "normalizationSideCounts": {},
+        "dataGapRows": 0,
+        "dataGapReasons": {},
+        "preparationDeferrals": 0,
+        "preparationDeferralReasons": {}
+      },
+      "historicalStrongTradableOpportunityEstablished": false
+    },
+    {
+      "cohortRole": "MAIN_NINE_PROVISIONAL_AGE_OVERLAP_LEAD",
+      "identity": {
+        "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+        "pool": "2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "derivedCanonicalPool": "2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT",
+        "canonicalAddressMatch": true,
+        "SOLQuoted": true,
+        "indexedCreatedAt": "2026-10-27T21:13:41Z"
+      },
+      "untrustedDisplayName": "FRONGUS / SOL",
+      "classification": "SELECTED_BUT_NO_COMPLETE_AUDITED_PREDICTIVE_WINDOW",
+      "interpretation": "Actual deep scopes and selected/normalized trades exist, but method/deadline, aggregate capacity, mapper or confirmation failures prevented a complete audited decision. No absence of predictive pass may be inferred as predictive failure.",
+      "timing": {
+        "indexedCreationAt": 1793135621000,
+        "indexedCreationIso": "2026-10-27T21:13:41.000Z",
+        "indexAgeEligibilityStartAt": 1793135921000,
+        "indexAgeEligibilityEndAt": 1793142821000,
+        "creationDuringActualCompletedRunIds": [
+          "pilot-20261027211320693-9bb70ba1"
+        ],
+        "creationDuringResearchInterruption": null,
+        "actualOnChainMigrationAtFromRetainedProof": 1793135621000,
+        "actualOnChainMigrationIso": "2026-10-27T21:13:41.000Z",
+        "firstMigrationHintReceivedAt": 1793135621809,
+        "firstFinalizedOriginProofAvailableAt": 1793135657832,
+        "firstDeepAt": 1793136501303,
+        "firstDeepIso": "2026-10-27T21:28:21.303Z",
+        "firstUsefulAuditedPredictiveAt": null,
+        "firstUsefulAuditedPredictiveIso": null,
+        "chainOccurrenceToFirstDeepMs": 880303,
+        "chainOccurrenceToFirstUsefulPredictiveMs": null,
+        "indexedAgeEligibleToFirstDeepMs": 580303,
+        "indexedAgeEligibleToFirstUsefulPredictiveMs": null,
+        "timingMeaning": "Actual application receipt/validation timestamps remain separate from chain/index occurrence. Missing timestamps are unknown, never rejections. Negative age-eligibility-to-deep values represent permitted early warming, not authorized entries."
+      },
+      "counts": {
+        "rawProcessedMigrationHints": 1,
+        "retainedFinalizedOriginProofRows": 1,
+        "explicitWatchDiscoveredRows": 130,
+        "explicitWatchVerifiedRows": 1,
+        "cachedIdentityImports": 7,
+        "deepAllocations": 9,
+        "runsWithDeepAllocation": 6,
+        "acceptedBoundedAuditRows": 0,
+        "runtimeCompleteWindowRows": 0,
+        "distinctAuditedWindowEndpoints": 0,
+        "predictiveAssessments": 0,
+        "predictiveStatusCounts": {},
+        "primaryDecisionCounts": {
+          "missing-data:warming": 15
+        },
+        "selectedPayloadRows": 125,
+        "distinctSelectedSignatures": 125,
+        "normalizationRows": 52,
+        "distinctNormalizedEventIdentities": 52,
+        "normalizationSideCounts": {
+          "buy": 41,
+          "sell": 11
+        },
+        "dataGapRows": 12,
+        "dataGapReasons": {
+          "PILOT_PILOT_CONFIRMED_ENRICHMENT_UNAVAILABLE": 1,
+          "candidate information lost; fresh candidate required: PILOT_PILOT_CONFIRMED_ENRICHMENT_UNAVAILABLE": 1,
+          "required enrichment cannot fit method rate limit and usefulness deadline": 4,
+          "PILOT_CONFIRMED_TRANSACTION_MAPPING_UNAVAILABLE": 1,
+          "candidate information lost; fresh candidate required: PILOT_CONFIRMED_TRANSACTION_MAPPING_UNAVAILABLE": 1,
+          "PILOT_AGGREGATE_ENRICHMENT_CAPACITY": 2,
+          "candidate information lost; fresh candidate required: PILOT_AGGREGATE_ENRICHMENT_CAPACITY": 2
+        },
+        "preparationDeferrals": 113,
+        "preparationDeferralReasons": {
+          "support phase plus opening capacity reserved before any support reads": 113
+        }
+      },
+      "historicalStrongTradableOpportunityEstablished": false
+    },
+    {
+      "cohortRole": "MAIN_NINE_PROVISIONAL_AGE_OVERLAP_LEAD",
+      "identity": {
+        "mint": "8Tgbaw4G7pvnneMoNY5t7597uKEKkFQcnobJzynjpump",
+        "pool": "EJcUpjtnwoB79RsQa9yoUw8vkXHkcwjcEcpcSHGbPzcC",
+        "quoteMint": "So11111111111111111111111111111111111111112",
+        "derivedCanonicalPool": "EJcUpjtnwoB79RsQa9yoUw8vkXHkcwjcEcpcSHGbPzcC",
+        "canonicalAddressMatch": true,
+        "SOLQuoted": true,
+        "indexedCreatedAt": "2026-10-27T21:43:47Z"
+      },
+      "untrustedDisplayName": "WANSULEK / SOL",
+      "classification": "MIXED_EARLY_INCOMPLETE_AND_LATER_VALID_PREDICTIVE_REJECTIONS",
+      "interpretation": "Some deep scopes lost required data; later separately audited windows received explicit frozen predictive assessments. Those later outcomes do not resolve earlier unobserved activity or prove an entire token/opportunity was correctly rejected.",
+      "timing": {
+        "indexedCreationAt": 1793137427000,
+        "indexedCreationIso": "2026-10-27T21:43:47.000Z",
+        "indexAgeEligibilityStartAt": 1793137727000,
+        "indexAgeEligibilityEndAt": 1793144627000,
+        "creationDuringActualCompletedRunIds": [
+          "pilot-20261027214222149-d39aee9a"
+        ],
+        "creationDuringResearchInterruption": null,
+        "actualOnChainMigrationAtFromRetainedProof": 1793137427000,
+        "actualOnChainMigrationIso": "2026-10-27T21:43:47.000Z",
+        "firstMigrationHintReceivedAt": 1793137427290,
+        "firstFinalizedOriginProofAvailableAt": 1793137462674,
+        "firstDeepAt": 1793137768168,
+        "firstDeepIso": "2026-10-27T21:49:28.168Z",
+        "firstUsefulAuditedPredictiveAt": 1793138245108,
+        "firstUsefulAuditedPredictiveIso": "2026-10-27T21:57:25.108Z",
+        "chainOccurrenceToFirstDeepMs": 341168,
+        "chainOccurrenceToFirstUsefulPredictiveMs": 818108,
+        "indexedAgeEligibleToFirstDeepMs": 41168,
+        "indexedAgeEligibleToFirstUsefulPredictiveMs": 518108,
+        "timingMeaning": "Actual application receipt/validation timestamps remain separate from chain/index occurrence. Missing timestamps are unknown, never rejections. Negative age-eligibility-to-deep values represent permitted early warming, not authorized entries."
+      },
+      "counts": {
+        "rawProcessedMigrationHints": 1,
+        "retainedFinalizedOriginProofRows": 1,
+        "explicitWatchDiscoveredRows": 1,
+        "explicitWatchVerifiedRows": 1,
+        "cachedIdentityImports": 5,
+        "deepAllocations": 6,
+        "runsWithDeepAllocation": 5,
+        "acceptedBoundedAuditRows": 3,
+        "runtimeCompleteWindowRows": 3,
+        "distinctAuditedWindowEndpoints": 3,
+        "predictiveAssessments": 3,
+        "predictiveStatusCounts": {
+          "failed": 3
+        },
+        "primaryDecisionCounts": {
+          "missing-data:warming": 25,
+          "risk-rejection:entries-not-authorized-by-ledger": 2,
+          "candidate-observation:financial-execution-intentionally-disabled": 1
+        },
+        "selectedPayloadRows": 29,
+        "distinctSelectedSignatures": 29,
+        "normalizationRows": 13,
+        "distinctNormalizedEventIdentities": 13,
+        "normalizationSideCounts": {
+          "buy": 7,
+          "sell": 6
+        },
+        "dataGapRows": 8,
+        "dataGapReasons": {
+          "PILOT_CONFIRMED_TRANSACTION_MAPPING_UNAVAILABLE": 2,
+          "candidate information lost; fresh candidate required: PILOT_CONFIRMED_TRANSACTION_MAPPING_UNAVAILABLE": 2,
+          "required enrichment cannot fit method rate limit and usefulness deadline": 1,
+          "valid-window-predictive-assessment-failed": 3
+        },
+        "preparationDeferrals": 98,
+        "preparationDeferralReasons": {
+          "support phase plus opening capacity reserved before any support reads": 97,
+          "PILOT_RPC_COMPONENT_ADMISSION_CLOSED": 1
+        }
+      },
+      "historicalStrongTradableOpportunityEstablished": false
+    }
+  ],
+  "SI": {
+    "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+    "pool": "3guuqmtbVjQvY3mTQqMc2M7k33gZG8cyVrHrpYMzixL2",
+    "conclusion": "The two retained pre-rally chain-time windows contain net ordinary selling, not qualifying ordinary persistent buying. Five protocol Buy-and-burn instructions occur in each window. Frozen v1 cannot evaluate their mixed activity as a complete window; this is not proof of a valid rejection or a missed executable profitable trade.",
+    "limitations": [
+      "Two predeclared overlapping SI windows are not independent opportunities or a complete pre-rally strategy search.",
+      "Historical blockTime/slot/transactionIndex ordering does not recreate original confirmation availability or feed receipt.",
+      "Ordinary subset features are diagnostic only; required protocol amount/actor/price semantics remain unadopted.",
+      "A changed actor convention cannot be silently adopted to count protocol authority as an ordinary buyer.",
+      "Earlier-age thresholds cannot be economically assessed from these two already-age-eligible endpoints.",
+      "Price return from observed executed curve ratios is indicative structure, not actual-size liquidation pricing.",
+      "No executable P&L, drawdown, fee-complete fill or winner-recall denominator is inferred."
+    ],
+    "windows": [
+      {
+        "windowStartIso": "2026-10-27T20:25:20.000Z",
+        "windowEndExclusiveIso": "2026-10-27T20:26:20.000Z",
+        "historicalDenominator": {
+          "scope": "pool-address transaction history from one independently bounded page, filtered by chain blockTime; not all-market census",
+          "addressTransactions": 38,
+          "successfulTransactions": 37,
+          "failedTransactionsExcluded": 1,
+          "allSuccessfulTransactionResponsesRetained": true,
+          "ordinarySwapTransactions": 23,
+          "protocolBuyAndBurnTransactions": 5,
+          "successfulTransactionsWithoutScopedSupportedSwapOrBoost": 9,
+          "nonSwapCompleteness": "No scoped supported-swap/Boost detected by existing inspector; not general transaction semantic proof"
+        },
+        "ordinarySubset": {
+          "amountConvention": "curve",
+          "tradeCount": 23,
+          "buys": 3,
+          "sells": 20,
+          "buyLamports": "564240679",
+          "sellLamports": "1388853590",
+          "netBuyLamports": "-824612911",
+          "distinctBuyerWallets": 3,
+          "largestBuyerBps": 6150,
+          "positiveNetBuckets": 1,
+          "netByChainTenSecondBucketLamports": [
+            "92857038",
+            "-337273210",
+            "-4189634",
+            "-56342428",
+            "-231107747",
+            "-288556930"
+          ],
+          "priceReturnBps": 664,
+          "firstIdentity": {
+            "signature": "31ibAGuEc9r7u3krsjspNMc9yGb3ovE82zwTSDtGFWjMQGmg5fRq6teEKH7zgZEfCri3roTYzUEXy3D27V63c8nW",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 1,
+            "swapInnerInstructionIndex": 1,
+            "eventInnerInstructionIndex": 8,
+            "eventIndex": 0
+          },
+          "lastIdentity": {
+            "signature": "38p9ThU5CDATryEh6wPntguv5vuY15piB1gxHwQNr9geano3ww6oMTbqmrifH2DGqSkrTx89gZ3rk3SGjU4heh7f",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 1,
+            "swapInnerInstructionIndex": 0,
+            "eventInnerInstructionIndex": 4,
+            "eventIndex": 0
+          },
+          "buyerAddressAmounts": {
+            "8o5H5gA4ALouvsJ7vBXvnwGxvxVp81FeHwQ2wLDQCHPh": "346956731",
+            "9N5Y8pvQhfkB8UKeEfDrAXFd6ZeGp4JvARauaBPX3AHz": "9876542",
+            "J6YEG5cmN3jbDy2BhMmvE59h9Ar8t84A9uYa5R5icKix": "207407406"
+          }
+        },
+        "baseline": {
+          "status": "UNAVAILABLE",
+          "reason": "Mixed protocol Buy-and-burn activity is refused by frozen baseline; baseline flow/window completeness cannot be claimed",
+          "ordinarySubsetOnlyPredicateDiagnostics": {
+            "entryAgeEligible": true,
+            "netBuying": false,
+            "persistence": false,
+            "buyerAddresses": false,
+            "concentration": false,
+            "priceStructure": true
+          },
+          "failedOrdinarySubsetPredicates": [
+            "netBuying",
+            "persistence",
+            "buyerAddresses",
+            "concentration"
+          ],
+          "notAnActualPredictiveDecision": true
+        },
+        "executionFeasibility": "UNPROVEN; no retained fresh pre-rally pool/mint/vault/fee state and actual-size entry/exit quote pair at these timestamps"
+      },
+      {
+        "windowStartIso": "2026-10-27T20:26:00.000Z",
+        "windowEndExclusiveIso": "2026-10-27T20:27:00.000Z",
+        "historicalDenominator": {
+          "scope": "pool-address transaction history from one independently bounded page, filtered by chain blockTime; not all-market census",
+          "addressTransactions": 43,
+          "successfulTransactions": 43,
+          "failedTransactionsExcluded": 0,
+          "allSuccessfulTransactionResponsesRetained": true,
+          "ordinarySwapTransactions": 29,
+          "protocolBuyAndBurnTransactions": 5,
+          "successfulTransactionsWithoutScopedSupportedSwapOrBoost": 9,
+          "nonSwapCompleteness": "No scoped supported-swap/Boost detected by existing inspector; not general transaction semantic proof"
+        },
+        "ordinarySubset": {
+          "amountConvention": "curve",
+          "tradeCount": 29,
+          "buys": 7,
+          "sells": 22,
+          "buyLamports": "799911072",
+          "sellLamports": "2207782097",
+          "netBuyLamports": "-1407871025",
+          "distinctBuyerWallets": 7,
+          "largestBuyerBps": 3705,
+          "positiveNetBuckets": 2,
+          "netByChainTenSecondBucketLamports": [
+            "-231107747",
+            "-288556930",
+            "-360171187",
+            "118653781",
+            "-704795026",
+            "58106084"
+          ],
+          "priceReturnBps": 535,
+          "firstIdentity": {
+            "signature": "4aFmqGiL257GbhTJ6tByJAJiehawacCcjiSxdL3w17Mn3pK3W4sPhtWuF3RAJEMK9c1nHfEPdUABW74HpzYSwcuz",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 2,
+            "swapInnerInstructionIndex": 0,
+            "eventInnerInstructionIndex": 7,
+            "eventIndex": 0
+          },
+          "lastIdentity": {
+            "signature": "geAYhepE4Q5CLECAJpEzh2Hk8BCUVw8vwYiGoC7NAUUnvouVAXLnG13s1iNWqmFcDJ9vnC5evqiXSEh2hkJoPdm",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 3,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "buyerAddressAmounts": {
+            "J6YEG5cmN3jbDy2BhMmvE59h9Ar8t84A9uYa5R5icKix": "207407406",
+            "BZoJp596zygHhZ1Hi1hiKGmFxB1KaHn8Yy39fmDAoBCL": "97777776",
+            "2FC2k5JRM4wY7w2kdWoK9EXiGZfBKNisbr8EaayLAErq": "20876005",
+            "GTMsZ15oKmA6jheem8wbCkynviWtqH4rZFcd9DJuPE5n": "296296296",
+            "3r7B3FCqAG7d9DzxoH7mFuTD8PybokvGPD1zaggXXdWT": "60973013",
+            "GYm4rZpX8cEePeYFqGBqy4ek2gsqYcjkXgeWmgCuT8N": "56360318",
+            "4opeQ1PbEbeJeejupBDi4cHzuDnYsHnyWJiw7JErfXGd": "60220258"
+          }
+        },
+        "baseline": {
+          "status": "UNAVAILABLE",
+          "reason": "Mixed protocol Buy-and-burn activity is refused by frozen baseline; baseline flow/window completeness cannot be claimed",
+          "ordinarySubsetOnlyPredicateDiagnostics": {
+            "entryAgeEligible": true,
+            "netBuying": false,
+            "persistence": false,
+            "buyerAddresses": true,
+            "concentration": false,
+            "priceStructure": true
+          },
+          "failedOrdinarySubsetPredicates": [
+            "netBuying",
+            "persistence",
+            "concentration"
+          ],
+          "notAnActualPredictiveDecision": true
+        },
+        "executionFeasibility": "UNPROVEN; no retained fresh pre-rally pool/mint/vault/fee state and actual-size entry/exit quote pair at these timestamps"
+      }
+    ]
+  },
+  "FRONGUS_size_capacity_only": {
+    "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+    "pool": "2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT",
+    "migrationAtIso": "2026-10-27T21:13:41.000Z",
+    "earliestPair": {
+      "entryAt": "2026-10-27T21:28:20.516Z",
+      "exitSnapshotAt": "2026-10-27T21:43:18.890Z",
+      "entryRun": "pilot-20261027212808269-733416a8",
+      "exitRun": "pilot-20261027214222149-d39aee9a",
+      "elapsedMs": 898374,
+      "entryStateSlot": 462222657,
+      "exitStateSlot": 462226879,
+      "tokenUnits": "332171950221",
+      "entryCurveInputLamports": "492825706",
+      "entryGasLamports": "7000",
+      "exitGasLamports": "7000",
+      "lockedDepositStillAssetLamports": "3002280",
+      "sell": {
+        "inputBaseUnits": "332171950221",
+        "outputLamports": "1339328077",
+        "grossCurveOutputLamports": "1353540252",
+        "embeddedPoolFeeLamports": "14212175"
+      },
+      "netLiquidationLamports": "1339321077",
+      "quoteDifferenceLamportsAfterBothGas": "846488371",
+      "quoteDifferencePctOfEntryCurveAndGas": 171.75977987954394,
+      "usdAtExit": {
+        "microUsdPerSol": "101455000",
+        "sourceAt": 1793137393445,
+        "firstRetainedContextAt": 1793137394202,
+        "contextLine": 909
+      },
+      "allocatedLotMarkChangeMicroUsd": "86185416",
+      "quoteTradingDifferenceAtExitMicroUsd": "85880477",
+      "passiveSolPriceEffectMicroUsd": "304938",
+      "usdDecompositionRoundingRemainderMicroUsd": "1",
+      "classification": "EX_POST_TWO_SNAPSHOT_QUOTE_COMPARISON_NOT_FILL_PROFIT_OR_STRATEGY_OUTCOME",
+      "limitations": [
+        "No observed post-delay execution states or5s expiry eligibility at either endpoint.",
+        "Intermediate stops/targets/price path are unobserved; holding to this later snapshot is not a predeclared exit rule.",
+        "Later on-chain pool state excludes the hypothetical purchase; this is size capacity, not a simulated counterfactual market trajectory.",
+        "Entry and exit SDK pool fees are embedded once; gas subtracted once each; retained rent remains locked SOL asset."
+      ]
+    },
+    "mainRallyQuestion": {
+      "targetRun": "pilot-20261027220800928-089eac29",
+      "retainedCompleteStatesDuringTargetRun": 1,
+      "targetStateAt": "2026-10-27T22:15:39.657Z",
+      "target50DollarQuoteAvailable": true,
+      "earliestLaterFullStateAt": "2026-10-27T22:43:05.559Z",
+      "gapToLaterFullStateMs": 1645902,
+      "laterStateFits15MinuteHold": false,
+      "answer": "A$50all-in supported size quote can be tested on retained entry state. No second complete coherent account state during the indexed22:13\u219222:28 rise or within15m after the22:15:39snapshot exists here; therefore later actual-size exit/profitability/strategy capture cannot be established."
+    },
+    "limitations": [
+      "Pool state is historical captured evidence, never relabeled current.",
+      "Independent minute closes are not executable prices or intraminute paths and are not used as quote reserves.",
+      "No fully verified predictive window or qualified decision is reconstructed for the rally.",
+      "Historical support quotes can establish size/liquidity feasibility, not financial authorization, landing, modeled fill, protective response or missed profit.",
+      "No account or wallet secret was opened; all inputs are local retained market records."
+    ]
+  },
+  "wholeMarketRecall": null,
+  "executableWinnerRecall": null,
+  "limitations": [
+    "Names are untrusted display metadata; comparisons use exact mint+pool and canonicalSOL derivation.",
+    "For6mainleads no on-chain origin/support proof exists in local evidence; a current index listing alone does not prove historical eligibility.",
+    "Actual confirmed information availability is not backdated to chain/index timestamps.",
+    "Runtime accepted bounded100-signature audits do not contain retained full response rows; no exhaustive history/market census is established.",
+    "Overlapping or repeated60-second windows are not independent tokens, minutes, opportunities or financial returns.",
+    "No $50 actual-size historical execution/cost/outcome series is available for these leads; no opportunity is labelled profitable solely from a price/volume listing.",
+    "Discovered but unaudited/unsupported/overloaded means unavailable, not a failed predictive rule. Intentional financial nonauthorization is not performance failure.",
+    "The current registry fixes may postdate historical losses; no repaired forward run retroactively becomes a historical pass.",
+    "No network requests, credential access, financial/production writes or source modifications were performed by this analysis."
+  ]
+}

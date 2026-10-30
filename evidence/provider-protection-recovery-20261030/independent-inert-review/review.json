@@ -1,0 +1,31 @@
+{
+  "kind": "INDEPENDENT_INERT_PROVIDER_UPGRADE_REVIEW",
+  "at": "2026-10-30T00:20:27.686929+00:00",
+  "reviewer": "review_inert_provider_upgrade",
+  "reviewedCommit": "b09558269d5ce7f4f341e11f08d6b1e03d04e993",
+  "status": "PASS",
+  "installed93Anchors": "Exact native/configuration/manifest/root-driver/root-index/worker/publisher/supervisor bytes matched retained installed package",
+  "bootstrapAnchors": "Original fa6/d90/2b1/auditor pins unchanged",
+  "inertGuards": "All future configuration/helper/exporter pins None; apply/main reject before host metadata/helpers/lock; builder rejects before input bundle resolution/output creation",
+  "profile": "Original account, PAPER-only, active V2, two holdings/four deep slots, unchanged resource policy",
+  "retention": "Old ba33 exporter bytes and output namespace preserved; distinct future staging and public forensic namespace",
+  "financialSafeguards": "Unchanged single-writer settlement, backup/full prefix verification, owner/manual stops, no daily reset or hard clear, no financial/provider-book restore, compatible new manager retained after possible start",
+  "tests": {
+    "operator": 61,
+    "builder": 2,
+    "passed": true
+  },
+  "files": {
+    "operator/native-paper-ec2/forward-original-upgrade.py": "bfeda883d6f51160264ffcf8ae87ad107b11d2fdc24a28e8beeaafa97c2b853f",
+    "operator/native-paper-ec2/prepare-provider-recovery-package-20261030.py": "443b70f8a1d099336dcbc4f50c2047aad6ad0af78936b9d71d48d6270a57e4ab",
+    "operator/native-paper-ec2/test-forward-original-upgrade.py": "86ff0d66c0480b2be422114112557739b42653c221a156edb76bb37000573389",
+    "operator/native-paper-ec2/test-prepare-provider-recovery-package-20261030.py": "1f74602e1206e52d35bc296ffd768521d4f441e6abf8f6b2492943559a31fddb"
+  },
+  "futureExporterReviewed": false,
+  "futureTargetSourceFrozen": false,
+  "actualStaging": false,
+  "rootCommandExecuted": false,
+  "serviceChanges": 0,
+  "financialDatabaseOpened": false,
+  "providerRequests": 0
+}

@@ -1,0 +1,98 @@
+{
+  "baseline": {
+    "calls": 36,
+    "bytes": 427005,
+    "starts": [
+      1793069031002,
+      1793069031314,
+      1793069031396,
+      1793069031462,
+      1793069031573,
+      1793069031683,
+      1793070868114,
+      1793070868438,
+      1793070868560,
+      1793070868620,
+      1793070868784,
+      1793070868860,
+      1793070868907,
+      1793070868987,
+      1793070869076,
+      1793070869128,
+      1793070869216,
+      1793070869294,
+      1793070869347,
+      1793070869405,
+      1793081386306,
+      1793081387309,
+      1793081388313,
+      1793081389315,
+      1793083252240,
+      1793083253245,
+      1793083254248,
+      1793083255251,
+      1793083256255,
+      1793083419722,
+      1793083420725,
+      1793083421729,
+      1793083422732,
+      1793083423735,
+      1793083780796,
+      1793083781799
+    ],
+    "refusal": "RPC_HTTP_429",
+    "refusalAt": 1793070869405,
+    "sha256": "f2f139d3a707baa4c371f0b3b486ec58d539a770696b2d6b14a567f6ba4857ee"
+  },
+  "sources": [
+    {
+      "path": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/active-approved-rpc-budget.json",
+      "sha256": "6fb4891e22baaecfc6725bebd4016ee1b3464e6b2392bdd7dbd54f10b8b2fa04",
+      "incrementUnits": 20,
+      "incrementObservedBytes": 272634,
+      "pendingReservedBytes": 0
+    },
+    {
+      "path": "/workspace/pump-opportunity-engine/evidence/public-component-20261027/rpc-budget.json",
+      "sha256": "7466fe7f7a96234eed3773198772924fa67fa3eef44a6022813b85cef8680bfb",
+      "incrementUnits": 4,
+      "incrementObservedBytes": 104424,
+      "pendingReservedBytes": 0
+    },
+    {
+      "path": "/workspace/pump-opportunity-engine/evidence/overnight-20261027/01-basic/rpc-budget.json",
+      "sha256": "19c73f655035af5a93c385f5e951de3b8f01488a4b711873496a1514097c8fcc",
+      "incrementUnits": 5,
+      "incrementObservedBytes": 20097,
+      "pendingReservedBytes": 0
+    },
+    {
+      "path": "/workspace/pump-opportunity-engine/evidence/overnight-20261027/02-multi/rpc-budget.json",
+      "sha256": "f6c4d9843cdf26165f229c97d241167f3e0633bcbbd56298133ab4ab1a78c2a7",
+      "incrementUnits": 5,
+      "incrementObservedBytes": 29383,
+      "pendingReservedBytes": 0
+    },
+    {
+      "path": "/workspace/pump-opportunity-engine/evidence/overnight-20261027/03-discovery/rpc-budget.json",
+      "sha256": "f2f139d3a707baa4c371f0b3b486ec58d539a770696b2d6b14a567f6ba4857ee",
+      "incrementUnits": 2,
+      "incrementObservedBytes": 467,
+      "pendingReservedBytes": 0
+    }
+  ],
+  "observedBytes": 427005,
+  "uncertainResponseBytes": 0,
+  "pendingOperations": 0,
+  "physicalSettlementConfirmed": true,
+  "providerNotBefore": 0,
+  "priorNew429Count": 0,
+  "baselinePaths": [
+    "evidence/free-data-20261027/active-approved-rpc-budget.json",
+    "evidence/public-component-20261027/rpc-budget.json",
+    "evidence/overnight-20261027/01-basic/rpc-budget.json",
+    "evidence/overnight-20261027/02-multi/rpc-budget.json",
+    "evidence/overnight-20261027/03-discovery/rpc-budget.json"
+  ],
+  "maximumTotalMs": 90000
+}

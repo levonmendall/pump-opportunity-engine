@@ -1,0 +1,163 @@
+check-code-package	Set up job	﻿2026-10-28T21:07:35.8002833Z Current runner version: '2.338.0'
+check-code-package	Set up job	2026-10-28T21:07:35.8009444Z Runner name: 'meme-machine-ec2-admin'
+check-code-package	Set up job	2026-10-28T21:07:35.8010274Z Runner group name: 'Default'
+check-code-package	Set up job	2026-10-28T21:07:35.8011131Z Machine name: 'ip-172-31-15-198'
+check-code-package	Set up job	2026-10-28T21:07:35.8013512Z ##[group]GITHUB_TOKEN Permissions
+check-code-package	Set up job	2026-10-28T21:07:35.8015697Z Contents: read
+check-code-package	Set up job	2026-10-28T21:07:35.8016520Z Metadata: read
+check-code-package	Set up job	2026-10-28T21:07:35.8017032Z ##[endgroup]
+check-code-package	Set up job	2026-10-28T21:07:35.8018984Z Secret source: Actions
+check-code-package	Set up job	2026-10-28T21:07:35.8019899Z Cache mode: write
+check-code-package	Set up job	2026-10-28T21:07:35.8020536Z Prepare workflow directory
+check-code-package	Set up job	2026-10-28T21:07:35.8365159Z Prepare all required actions
+check-code-package	Set up job	2026-10-28T21:07:35.8430112Z Getting action download info
+check-code-package	Set up job	2026-10-28T21:07:36.2404567Z Download action repository 'actions/checkout@11d5960a326750d5838078e36cf38b85af677262' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+check-code-package	Set up job	2026-10-28T21:07:36.6148266Z Complete job name: check-code-package
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	﻿2026-10-28T21:07:36.6901787Z ##[group]Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.6903089Z with:
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.6903615Z   ref: 44ff2c0a78c6e70a16ef3212a2b74dde63b3fc27
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.6904548Z   persist-credentials: false
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.6905118Z   sparse-checkout-cone-mode: false
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.6906527Z   sparse-checkout: operator/native-paper-ec2/stage-package.py
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	operator/native-paper-ec2/package/
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	scripts/poe/native-candidate-run-bounded.py
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.6907786Z   repository: levonmendall/meme-machine-admin
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.6911582Z   token: ***
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.6912127Z   ssh-strict: true
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.6912616Z   ssh-user: git
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.6913201Z   clean: true
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.6913701Z   fetch-depth: 1
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.6914188Z   fetch-tags: false
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.6914710Z   show-progress: true
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.6915206Z   lfs: false
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.6915664Z   submodules: false
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.6916408Z   set-safe-directory: true
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.6917053Z   allow-unsafe-pr-checkout: false
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.6918021Z ##[endgroup]
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.7875546Z Syncing repository: levonmendall/meme-machine-admin
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.7877847Z ##[group]Getting Git version info
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.7878790Z Working directory is '/opt/mm-ec2-admin-runner/_work/meme-machine-admin/meme-machine-admin'
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.7880137Z [command]/usr/bin/git version
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.7880703Z git version 2.43.0
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.7882870Z ##[endgroup]
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.7888342Z Temporarily overriding HOME='/opt/mm-ec2-admin-runner/_work/_temp/d0784198-a602-43bc-8f82-9c360a27a3af' before making global git config changes
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.7889789Z Adding repository directory to the temporary git global config as a safe directory
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.7899546Z [command]/usr/bin/git config --global --add safe.directory /opt/mm-ec2-admin-runner/_work/meme-machine-admin/meme-machine-admin
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.7933831Z [command]/usr/bin/git config --local --get remote.origin.url
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.7953855Z https://github.com/levonmendall/meme-machine-admin
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.7967737Z ##[group]Removing previously created refs, to avoid conflicts
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.7973462Z [command]/usr/bin/git rev-parse --symbolic-full-name --verify --quiet HEAD
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.7995232Z HEAD
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.8029167Z ##[endgroup]
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.8031650Z [command]/usr/bin/git submodule status
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.8212872Z ##[group]Cleaning the repository
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.8215001Z [command]/usr/bin/git clean -ffdx
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.8247161Z [command]/usr/bin/git reset --hard HEAD
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.8370102Z HEAD is now at 482f14a Retain exact future manifest bytes and recover hash-bound historical PAPER projection evidence
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.8376785Z ##[endgroup]
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.8378289Z ##[group]Disabling automatic garbage collection
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.8380028Z [command]/usr/bin/git config --local gc.auto 0
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.8405681Z ##[endgroup]
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.8407040Z ##[group]Setting up auth
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.8410711Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.8438104Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.8612021Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.8637022Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.8818661Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.8850150Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.9041706Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.9076675Z ##[endgroup]
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.9077718Z ##[group]Fetching the repository
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:36.9087425Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --filter=blob:none --depth=1 origin 44ff2c0a78c6e70a16ef3212a2b74dde63b3fc27
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.2793191Z From https://github.com/levonmendall/meme-machine-admin
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.2794710Z  * branch            44ff2c0a78c6e70a16ef3212a2b74dde63b3fc27 -> FETCH_HEAD
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.2812984Z ##[endgroup]
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.2814311Z ##[group]Determining the checkout info
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.2815371Z ##[endgroup]
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.2816361Z ##[group]Setting up sparse checkout
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.2819342Z [command]/usr/bin/git config core.sparseCheckout true
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.2846455Z [command]/usr/bin/git rev-parse --git-path info/sparse-checkout
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.2863685Z .git/info/sparse-checkout
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.2869742Z ##[endgroup]
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.2870591Z ##[group]Checking out the ref
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.2873225Z [command]/usr/bin/git checkout --progress --force 44ff2c0a78c6e70a16ef3212a2b74dde63b3fc27
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.6585511Z Warning: you are leaving 1 commit behind, not connected to
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.6587567Z any of your branches:
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.6596684Z 
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.6597677Z   482f14a Retain exact future manifest bytes and recover hash-bound historical PAPER projection evidence
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.6598946Z 
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.6599812Z If you want to keep it by creating a new branch, this may be a good time
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.6600631Z to do so with:
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.6600904Z 
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.6601251Z  git branch <new-branch-name> 482f14a
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.6602010Z 
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.6602968Z HEAD is now at 44ff2c0 Pin1501-tested c189 PAPER release with single-page audits and corrected reporting
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.6605362Z ##[endgroup]
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.6635033Z [command]/usr/bin/git log -1 --format=%H
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.6660864Z 44ff2c0a78c6e70a16ef3212a2b74dde63b3fc27
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.6670170Z ##[group]Removing auth
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.6674007Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.6699819Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.6873515Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.6892143Z http.https://github.com/.extraheader
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.6900687Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.6926945Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.7097974Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.7121430Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+check-code-package	Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:37.7288005Z ##[endgroup]
+check-code-package	Verify code-only manifest and run isolated disposable package proof	﻿2026-10-28T21:07:37.7482568Z ##[group]Run set -euo pipefail
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7483439Z [36;1mset -euo pipefail[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7484178Z [36;1mtest "$ACTUAL_RUNNER" = meme-machine-ec2-admin[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7485009Z [36;1mtest "$(id -u)" = 994[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7486395Z [36;1mpython3 -B -I - "$STAGE_HELPER_SHA256" "$EXPECTED_PACKAGE_SHA256" "$EXPECTED_NODE_SELECTOR_SHA256" <<'PYHASH'[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7487725Z [36;1mimport hashlib,os,pathlib,stat,sys[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7488446Z [36;1mrecords=[[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7489248Z [36;1m    ('operator/native-paper-ec2/stage-package.py',sys.argv[1],32768),[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7490496Z [36;1m    ('operator/native-paper-ec2/package/package.json',sys.argv[2],1048576),[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7491749Z [36;1m    ('scripts/poe/native-candidate-run-bounded.py',sys.argv[3],65536),[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7492679Z [36;1m][0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7493232Z [36;1mfor name,expected,maximum in records:[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7494236Z [36;1m    assert len(expected)==64 and all(c in '0123456789abcdef' for c in expected)[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7495437Z [36;1m    fd=os.open(name,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7496417Z [36;1m    try:[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7496950Z [36;1m        s=os.fstat(fd)[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7498088Z [36;1m        assert stat.S_ISREG(s.st_mode) and s.st_uid==994 and s.st_nlink==1 and 0<s.st_size<=maximum and not s.st_mode&0o022[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7499352Z [36;1m        data=os.read(fd,s.st_size+1)[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7500328Z [36;1m        assert len(data)==s.st_size and hashlib.sha256(data).hexdigest()==expected[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7501287Z [36;1m    finally: os.close(fd)[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7501922Z [36;1mPYHASH[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7502700Z [36;1m# Resident memory is watched across the Python parent and sole Node[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7503896Z [36;1m# process; a tiny virtual-address-space cap would prevent Node startup.[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7505203Z [36;1m# No provider, publisher, wallet, account, observer or service is opened.[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7506698Z [36;1m/usr/bin/env -i PATH=/usr/bin:/bin ACTUAL_RUNNER="$ACTUAL_RUNNER" \[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7507833Z [36;1m  RUNNER_TEMP="$RUNNER_TEMP" GITHUB_RUN_ID="$GITHUB_RUN_ID" \[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7508815Z [36;1m  GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" \[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7509709Z [36;1m  EXPECTED_PACKAGE_SHA256="$EXPECTED_PACKAGE_SHA256" \[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7510799Z [36;1m  EXPECTED_NODE_SELECTOR_SHA256="$EXPECTED_NODE_SELECTOR_SHA256" \[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7511850Z [36;1m  /usr/bin/timeout --signal=TERM --kill-after=3s 90s \[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7512759Z [36;1m  /usr/bin/nice -n 19 /usr/bin/prlimit \[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7513826Z [36;1m  --cpu=30:30 --nofile=64:64 --fsize=16777216:16777216 --core=0:0 -- \[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7514959Z [36;1m  /usr/bin/python3 -B -I operator/native-paper-ec2/stage-package.py[0m
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7641812Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7642628Z env:
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7643049Z   ACTUAL_RUNNER: meme-machine-ec2-admin
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7643997Z   STAGE_HELPER_SHA256: 765ab8c4193bbd8018fa9beab5389aa1fb10e2577c368e4ec0daf05a27ffca47
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7645361Z   EXPECTED_PACKAGE_SHA256: 00c7bc88a51adb1b58b77f7c1c1b95b408024c57c3c99deae91ba670818bb01c
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7647088Z   EXPECTED_NODE_SELECTOR_SHA256: 23a6a1573bca181041ea9db55164f05197ad929e5a53ace89613f64011b7dd6b
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:37.7648128Z ##[endgroup]
+check-code-package	Verify code-only manifest and run isolated disposable package proof	2026-10-28T21:07:38.3444718Z {"schemaVersion":1,"kind":"POE_NATIVE_PAPER_CODE_ONLY_PACKAGE_CHECK","source":{"commit":"c189a54b7978692ef2f7d098d6b3374aea8deb72","sha256":"02d455d81e672bddb08958fc822520aefaaa6241e78b8b9b32ee57146895556c"},"packageManifestSha256":"00c7bc88a51adb1b58b77f7c1c1b95b408024c57c3c99deae91ba670818bb01c","nodeSelectorSha256":"23a6a1573bca181041ea9db55164f05197ad929e5a53ace89613f64011b7dd6b","immutableReleaseCreated":true,"immutableExistingReleaseVerified":false,"files":[{"file":"native-paper.mjs","bytes":4895977,"sha256":"02d455d81e672bddb08958fc822520aefaaa6241e78b8b9b32ee57146895556c"},{"file":"backup-worker.mjs","bytes":67889,"sha256":"41ca5f1d72ea620f8079150a8508c22696ba08876c96cf7a6531f8dbd5c149f5"},{"file":"better_sqlite3.node","bytes":2226168,"sha256":"6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d"},{"file":"verify-native-paper-package.mjs","bytes":122820,"sha256":"e344dd7bae727894bd80e14c24fda7c04b0ab1fedf1d529b7e223d01406cd7cd"},{"file":"metadata.json","bytes":152300,"sha256":"eff3158aff0f77bf538e08ffc570774ee0baa245b081208bc7e98988cff41519"}],"runtime":{"node":"v24.21.0","nodeAbi":"137","platform":"linux","architecture":"x64","sqlite":{"version":"3.53.4","source":"2026-07-24 19:02:57 bf7c7f30031888f4e796e429ab3978879485813aaca6f641c7b33e4e09459bcc"}},"disposable":{"idempotency":true,"backupWorker":true,"reopen":true,"closureVerified":true},"resources":{"elapsedMs":391,"maximumCombinedRssBytes":156921856,"stdoutBytes":861,"stderrBytes":0,"physicalProcessSettled":true},"elapsedMs":507,"existingFinancialAccountRead":false,"accountImported":false,"liveMarketPaperTrading":false,"providerRequests":0,"observerChanged":false,"serviceChanges":false,"newSoftwareInstalled":false}
+check-code-package	Post Checkout exact reviewed public-code package and existing Node selector	﻿2026-10-28T21:07:38.3789535Z Post job cleanup.
+check-code-package	Post Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:38.4610526Z [command]/usr/bin/git version
+check-code-package	Post Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:38.4645005Z git version 2.43.0
+check-code-package	Post Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:38.4680410Z Temporarily overriding HOME='/opt/mm-ec2-admin-runner/_work/_temp/9b2e8399-e261-4f76-8e6a-ad02ff13fcbf' before making global git config changes
+check-code-package	Post Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:38.4683624Z Adding repository directory to the temporary git global config as a safe directory
+check-code-package	Post Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:38.4686582Z [command]/usr/bin/git config --global --add safe.directory /opt/mm-ec2-admin-runner/_work/meme-machine-admin/meme-machine-admin
+check-code-package	Post Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:38.4716698Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+check-code-package	Post Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:38.4744817Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+check-code-package	Post Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:38.4924321Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+check-code-package	Post Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:38.4949185Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+check-code-package	Post Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:38.5126574Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+check-code-package	Post Checkout exact reviewed public-code package and existing Node selector	2026-10-28T21:07:38.5151943Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+check-code-package	Complete job	﻿2026-10-28T21:07:38.5485017Z Cleaning up orphan processes
+check-code-package	Complete job	2026-10-28T21:07:38.5917676Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11d5960a326750d5838078e36cf38b85af677262. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

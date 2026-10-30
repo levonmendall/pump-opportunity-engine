@@ -1,0 +1,30 @@
+✔ adaptive high-water persists per roundtrip in original reconciliation; invalid evidence cannot raise it (40.676313ms)
+✔ closed adaptive roundtrip requires fresh post-close window and new identity; old attempts cannot duplicate reentry (12.022366ms)
+✔ legacy full-sale history without new metadata permits V2 only after receipt-verified closure and new complete window (11.579438ms)
+✔ V2 metadata never overrides owner stop, daily/risk controls or pending obligations (5.970938ms)
+✔ fixture-only identity, fixed loaded SQLite, integer conversion and one-time inception (31.229819ms)
+✔ delayed full lifecycle counts gas once, locks/refunds deposits, preserves idempotency (9.270062ms)
+✔ failed single attempt charges gas and cannot cherry-pick a retry; expiry cannot fill (6.985243ms)
+✔ missing state never fills and pre-delay or stale quotes never become execution evidence (5.098348ms)
+✔ unknown liquidation blocks new risk, never converts an open position to zero (4.83294ms)
+✔ sticky day loss survives recovery, price recovery and restart; fresh next day can resume (9.151641ms)
+✔ entry pause cancels pending buys without abandoning position exit management (5.107017ms)
+✔ entry size includes gas/deposit, prevents adds and keeps reserved capital exclusive (5.739104ms)
+✔ wrong-sized exit cannot remove held tokens or refund its deposit (5.021309ms)
+✔ restart recovers unresolved reservations; SQLite backup restores coherent financial state (27.372977ms)
+✔ separate advisory flock rejects a second writer while external SQLite readers remain available (255.635848ms)
+✔ owner lease rejects symlinks, shared permissions, hardlinks and nonregular files without touching their targets (1.357043ms)
+✔ database open errors release the separate lease and disposable memory accounts need no file lease (6.664196ms)
+✔ database and directory aliases cannot establish a second financial writer (8.83723ms)
+✔ backward wall time cannot clear a persisted day pause (3.486052ms)
+✔ SOL exits work during USD outage and deposits stay locked until explicit refund (5.375875ms)
+✔ SIGKILL after durable order commit retains reservation and inception (228.202059ms)
+✔ SIGKILL during uncommitted write rolls back without reseeding account (207.495546ms)
+ℹ tests 22
+ℹ suites 0
+ℹ pass 22
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1094.309453

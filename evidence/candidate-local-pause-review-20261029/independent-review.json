@@ -1,0 +1,23 @@
+{
+  "reviewer": "/root/final_owner_reset_upgrade",
+  "ownedSourceCommit": "afed587ce0cc377f929b0e2168113307cd17644b",
+  "approved": true,
+  "independentTestsPassed": 137,
+  "ownedSourceSha256": {
+    "src/ledger.ts": "99e81fa26cda5fe89124fb231c72ad5aa2b89bf785d7663a32fd546295ceaa7b",
+    "src/native-paper.ts": "219c1c67047acbfa0a49e6de1225557b2a59da69fd05840a2eda5c92fb78ca88"
+  },
+  "checks": [
+    "copied owner soft wording survives execution recovery startup without automatic waiver",
+    "strict whole control history and exact old/new resume schemas",
+    "original Clock/actual-size inventory/reconciliation/quote freshness",
+    "actual NativePaper held and cash sustained technical proof with no invented candidate window",
+    "required readiness retention and postrecord health before private technical commit"
+  ],
+  "sourceEditedByReviewer": false,
+  "runtimeActions": 0,
+  "files": {
+    "independent-final.raw.txt": "785c084e71e4d6ce3cc7c25a993b78c1cc0d4663ac1e704c8f8a7f0612296e4f",
+    "independent-final-source.txt": "b8e53031e5cb7fd4dd6e0490e385f4035a691605906e963fa643f6a5f6192001"
+  }
+}

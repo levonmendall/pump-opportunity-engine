@@ -1,0 +1,48 @@
+{
+  "kind": "independent-original-launcher-integration-review-v1",
+  "reviewedAt": "2026-10-29T23:18:39.816206+00:00",
+  "verdict": "APPROVED",
+  "sourceHashes": {
+    "src/run-native-paper.ts": "d72d67fdc80907f105f20aaf0de18f35417342a2204c22be8a8cda8f13f021b1",
+    "src/operating-intelligence.ts": "0fc9f752ce95c8abd21be8afde347625c624922fe0662d75a09c0b1ec9fc3502",
+    "src/native-paper-work.ts": "19f11d5e19fee40296fe71ed153110822a9822713426ead632068fa504cfa5fb",
+    "src/native-protection-history.ts": "1a9b9f72619634dd99240459ee2405ce8044e48f1b1a13266fae6649a28685db",
+    "src/native-held-audit-scheduling.ts": "95c4816261a0606f5834bc1ffddb17c300b2c2422df750de768240ae167c50b8"
+  },
+  "testedMechanismLauncherSha256": "ea879fbc3daa07b38d461508e653bc4cf761db4324cd76324425ced48196e697",
+  "postTestMetadataOnlyReview": {
+    "launcherSha256": "d72d67fdc80907f105f20aaf0de18f35417342a2204c22be8a8cda8f13f021b1",
+    "verified": [
+      "accurate financial-permission-only policy includes sixty-second technical recovery and four-MiB passive uncertainty",
+      "service configuration hash binds operating-readiness and early-held-audit scheduling policies",
+      "service status reports the active operating policy; bounded baseline status retains its existing policy"
+    ],
+    "operationalMechanismChanged": false
+  },
+  "tests": {
+    "launcherWorkHistoryReportingAndEarlyScheduling": {
+      "passed": 64,
+      "failed": 0,
+      "rawSha256": "43f1c07edb50a7533b69b006f0233ae2d9de5b7f6f5202e872f993a1a0c00d72"
+    },
+    "independentEarlySchedulerAndRunner": {
+      "passed": 97,
+      "failed": 0,
+      "rawSha256": "7797773d515f67c2923a64aaadc2911d729bd365a3d4f1e2044966f56edfa38b"
+    }
+  },
+  "blockingDefectFoundAndFixed": "Releasing a canceled outer work lease while a nested held operation remained active could later restore the canceled phase. Fixed using retired frame ancestry; held work continues and late release skips retired ancestors. Exact reproduction and six work-state regressions passed.",
+  "reviewedInvariants": [
+    "between-read entry preparation yields real whole-inventory protection without sharing its cancellation signal",
+    "entry preparation bound uses oldest actual matching completion and preserves four-second protection boundary plus physical/cleanup reserves",
+    "normal pending actions and due protection remain ahead of early audit planning",
+    "early protection requires complete warm held inventory, actual physical readiness and both rolling management reserves",
+    "early scheduling grants neither entry permission nor a protection completion claim",
+    "known historical failure counters merge by MAX without restoring fresh completion, quotes or recovery streaks",
+    "source-accurate bounded Render limitations contain only allowlisted holding-pricing failure codes"
+  ],
+  "runtimeAcceptance": false,
+  "providerRequests": 0,
+  "financialAccountRead": false,
+  "sourceEditedByReviewer": false
+}

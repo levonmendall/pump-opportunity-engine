@@ -1,0 +1,216 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-27T06:09:49.472Z",
+  "startedAt": 1793081385482,
+  "deadlineAt": 1793081475482,
+  "supervisor": {
+    "wallMs": 3991.6772229999997,
+    "peakRssBytes": 144257024,
+    "peakCpuMs": 1270,
+    "peakParentLoopLagMs": 1.000291000000061,
+    "stdoutBytes": 0,
+    "stderrBytes": 0,
+    "stopReason": null,
+    "exit": {
+      "code": 2,
+      "signal": null
+    }
+  },
+  "outcome": "STOPPED_NO_VERIFIED_UNBLOCKED_ACTIVE_POOL_WITHIN_FOUR_READS",
+  "summary": {
+    "schemaVersion": 1,
+    "classification": "STOPPED_COMPONENT_TEST",
+    "outcome": "STOPPED_NO_VERIFIED_UNBLOCKED_ACTIVE_POOL_WITHIN_FOUR_READS",
+    "startedAt": "2026-10-27T06:09:45.482Z",
+    "finishedAt": "2026-10-27T06:09:49.447Z",
+    "elapsedMs": 3965,
+    "stopReason": "NO_VERIFIED_UNBLOCKED_ACTIVE_POOL_WITHIN_FOUR_READS",
+    "setupMs": null,
+    "commonObservationMs": 0,
+    "selectedPool": null,
+    "hypothetical": null,
+    "usage": {
+      "grantId": "public-component-20261027",
+      "baseline": {
+        "calls": 20,
+        "bytes": 272634,
+        "starts": [
+          1793069031002,
+          1793069031314,
+          1793069031396,
+          1793069031462,
+          1793069031573,
+          1793069031683,
+          1793070868114,
+          1793070868438,
+          1793070868560,
+          1793070868620,
+          1793070868784,
+          1793070868860,
+          1793070868907,
+          1793070868987,
+          1793070869076,
+          1793070869128,
+          1793070869216,
+          1793070869294,
+          1793070869347,
+          1793070869405
+        ],
+        "refusal": "RPC_HTTP_429",
+        "refusalAt": 1793070869405,
+        "sha256": "6fb4891e22baaecfc6725bebd4016ee1b3464e6b2392bdd7dbd54f10b8b2fa04"
+      },
+      "cumulativeUnits": 24,
+      "newUnits": 4,
+      "actualInvokedUnits": 4,
+      "cumulativeResponseBytes": 377058,
+      "httpBytes": 104424,
+      "wsBytes": 0,
+      "newResponseBytes": 104424,
+      "remainingGrantUnits": 66,
+      "remainingCumulativeUnits": 216,
+      "remainingGrantResponseBytes": 33450008,
+      "remainingCumulativeResponseBytes": 66731806,
+      "pending": [],
+      "uncertainResponseBytes": 0,
+      "rolling60SecondStarts": 4,
+      "rolling10SecondStarts": 4,
+      "starts": [
+        1793081386306,
+        1793081387309,
+        1793081388313,
+        1793081389315
+      ],
+      "actualInvocations": [
+        {
+          "id": 21,
+          "at": 1793081386306
+        },
+        {
+          "id": 22,
+          "at": 1793081387309
+        },
+        {
+          "id": 23,
+          "at": 1793081388313
+        },
+        {
+          "id": 24,
+          "at": 1793081389315
+        }
+      ],
+      "reservationStarts": [
+        1793081386305,
+        1793081387307,
+        1793081388311,
+        1793081389313
+      ],
+      "byOperation": {
+        "http:getSignaturesForAddress": 2,
+        "http:getTransaction": 2
+      },
+      "durationsMs": [
+        565.0445330000001,
+        120.71533699999986,
+        53.23532100000011,
+        127.85398699999996
+      ],
+      "inFlight": 0,
+      "waitingOrOperating": false,
+      "haltedReason": "COMPONENT_VALIDATION_FAILURE",
+      "startedAt": 1793081385482,
+      "deadlineAt": 1793081475482,
+      "closed": false,
+      "storageFailed": false
+    },
+    "httpResponseTimesMs": {
+      "count": 4,
+      "min": 52,
+      "p50": 121,
+      "p95": 564,
+      "max": 564
+    },
+    "pricing": {
+      "completedPeriodic": 0,
+      "completedTriggered": 0,
+      "sameBytesSdkParityChecks": 0,
+      "clockEvidence": null,
+      "quoteAgeAtUseMs": {
+        "count": 0,
+        "min": null,
+        "p50": null,
+        "p95": null,
+        "max": null
+      },
+      "sourceAgeAtUseMs": {
+        "count": 0,
+        "min": null,
+        "p50": null,
+        "p95": null,
+        "max": null
+      },
+      "completedEvaluationGapsMs": {
+        "count": 0,
+        "min": null,
+        "p50": null,
+        "p95": null,
+        "max": null
+      },
+      "referenceLatenessMs": {
+        "count": 0,
+        "min": null,
+        "p50": null,
+        "p95": null,
+        "max": null
+      },
+      "realLiquidationOutputChanges": 0,
+      "notionalExitConditions": [],
+      "evaluations": []
+    },
+    "webSocket": {
+      "connections": 0,
+      "notifications": 0,
+      "changedNotifications": 0,
+      "socketBytes": 0,
+      "applicationBytes": 0,
+      "reconnect": {
+        "requested": false,
+        "closedAt": null,
+        "upgradedAt": null,
+        "allAcknowledgedAt": null,
+        "firstCoherentQuoteAt": null
+      }
+    },
+    "independentBlockTimestampReferences": [],
+    "resources": {
+      "location": "Cloud-only; EC2 compatibility untested",
+      "maxRssBytes": 143482880,
+      "maxEventLoopLagMs": 0.7996409999999514,
+      "cpuMs": 235.382
+    },
+    "newEvidenceBytesBeforeSummary": 193245,
+    "oldBaselineUnchanged": true,
+    "limitations": [
+      "No PumpApi capture or complete trade-flow measurement.",
+      "Clock bank time is distinct from independently retrieved block timestamps.",
+      "Same-byte decoder/SDK parity is not independent on-chain or live execution proof.",
+      "No real holdings, financial fill, account write, production deployment, natural-trading performance or acceptance clock.",
+      "HTTP bytes count response bodies; WebSocket bytes count Node socket receipt, not exact TLS/proxy wire transfer. Unknown transfer costs remain separate.",
+      "No live three-pool batching or combined candidate/protection workload acceptance."
+    ],
+    "paperEntries": false,
+    "liveTrading": false,
+    "productionTouched": false
+  },
+  "uncertainAttempt": false,
+  "priorEvidenceUnchanged": true,
+  "priorMismatches": [],
+  "sourceUnchanged": true,
+  "sourceMismatches": [],
+  "newEvidenceBytesBeforeReceipt": 198036,
+  "noRetry": true,
+  "productionChanged": false,
+  "entriesEnabled": false,
+  "liveTrading": false,
+  "acceptanceClockStarted": false
+}

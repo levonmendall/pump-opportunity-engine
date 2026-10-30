@@ -1,0 +1,59 @@
+{
+  "recordedAt": "2026-10-29T18:04:23.276712+00:00",
+  "archive": "cloud-recovery-1756.tar.gz",
+  "archiveBytes": 283551,
+  "sha256": "fedd6364572aa8fb07bf9e0baea7b436570c1696478203f4cddd41af48672b0b",
+  "rawBytes": 7746538,
+  "originalManifest": {
+    "recordedAt": "2026-10-29T17:56:47.170680+00:00",
+    "lastOldObserverReceivedAt": "2026-10-29T17:54:10.221Z",
+    "oldObserverPid": 23232,
+    "oldObserverDefunct": true,
+    "manualSupervisionContinuityClaimed": false,
+    "serviceRestartPerformed": false,
+    "files": [
+      {
+        "file": "material-transitions.ndjson",
+        "bytes": 2079286,
+        "sha256": "e38ac4ff5c23e877dfa839bc51abcb9d5ab2ab3cf1da1a729366f25faaa971bc"
+      },
+      {
+        "file": "routine-0.ndjson",
+        "bytes": 1043903,
+        "sha256": "1b0122a0405ad4cd939326f6af3e0b21ece9771b0ba52923f5a44b4c7147c559"
+      },
+      {
+        "file": "routine-1.ndjson",
+        "bytes": 1044980,
+        "sha256": "9584ab50c1a04c5bfd8c3ad6fcd836817f9e55057870ce3472a14cb5160f988e"
+      },
+      {
+        "file": "routine-2.ndjson",
+        "bytes": 1041064,
+        "sha256": "69f8e737af1c212069d6ae0e5c4fe6088a7e02c7e5268cd1af88afa278128669"
+      },
+      {
+        "file": "routine-3.ndjson",
+        "bytes": 1035830,
+        "sha256": "6d386e44ff663f7149a2bf4054812d101500fb13254d10f557fff41ff186a810"
+      },
+      {
+        "file": "routine-4.ndjson",
+        "bytes": 1033964,
+        "sha256": "0234f8dea72eabb6f1c7609a91fc023823b23ce0bc0b3ed7ae89796fb3f1c730"
+      },
+      {
+        "file": "routine-5.ndjson",
+        "bytes": 451270,
+        "sha256": "0d810d92725e60ab0406e187ce64a08b978f35851634a4a461f3b41fc850a32d"
+      },
+      {
+        "file": "latest.json",
+        "bytes": 16241,
+        "sha256": "38072495fd78db3f4bf73d5613089af5c6647690824886801809ede24e418cba"
+      }
+    ]
+  },
+  "allExtractedBytesMatchOriginalHashes": true,
+  "originalFilesDeleted": false
+}

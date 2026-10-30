@@ -1,0 +1,12 @@
+{
+  "name": "npm-test",
+  "command": [
+    "npm",
+    "test"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 73.78763184799982,
+  "endedAt": "2026-10-28T14:47:56.057381+00:00",
+  "logSha256": "fed788227762d85a7b4d64f10d249ffab7d397859219ddf3f60828ba4e301048",
+  "logBytes": 143839
+}

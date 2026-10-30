@@ -1,0 +1,275 @@
+{
+  "kind": "POE_HASH_VERIFIED_PRE_UPGRADE_FAILURE_ANALYSIS",
+  "analyzedAt": "2026-10-29T23:58:34.678214+00:00",
+  "oldRun": "native-paper-20261029221651345",
+  "oldSource": {
+    "commit": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+    "sha256": "870ac98a2377fefde564b9a3a252a7cc7cb3a561582abd48bda22ee18a14bee7"
+  },
+  "forensicRootReceipt": {
+    "bytes": 98070,
+    "sha256": "60652a66ec45e6834c85663cc20f1ff8746d86771b2a81d28af236b78ad90b73",
+    "readerUid": 988,
+    "financialDatabaseOpened": false,
+    "financialWrites": 0,
+    "serviceChanges": 0
+  },
+  "verifiedOldControl": {
+    "reason": "PAPER protection currently overdue; candidate admissions closed",
+    "reasonSha256": "3ce9504dcc7f388d6715ed51d5cf00af968cc04825ed537a390e39a545c98218",
+    "method": "Exact SHA256 equality to known static source literal; no guessing unknown diagnostic text",
+    "entriesEnabled": false,
+    "stopRequested": false,
+    "uncertainActions": 0,
+    "automaticRecoveryAllowed": false
+  },
+  "historicalGapReconstruction": {
+    "holds": 109,
+    "usable": 105,
+    "unusable": 4,
+    "gaps": [
+      {
+        "fromAt": 1793313036501,
+        "untilAt": 1793313048831,
+        "gapMs": 12330,
+        "unusableEvaluationsBetween": 3
+      },
+      {
+        "fromAt": 1793313144984,
+        "untilAt": 1793313149312,
+        "gapMs": 4328,
+        "unusableEvaluationsBetween": 1
+      }
+    ],
+    "limitations": [
+      "Bounded export contains essential held evidence and partial context records, not matching diagnostic RPC/phase records; absence does not establish that none occurred.",
+      "89.426 second historical max lies outside this fixed failure window; its exact origin remains unknown."
+    ]
+  },
+  "capturedOldStatus": {
+    "generatedAt": 1793317720346,
+    "timing": {
+      "targetMs": 2000,
+      "experimentalCompletedEvaluationLimitMs": 4000,
+      "maximumQuoteAgeAtUseMs": 67,
+      "firstCompletedProtectionAt": 1793312616840,
+      "lastCompletedProtectionAt": 1793317719553,
+      "maximumCompletedGapMs": 89426,
+      "protectionBreaches": 34,
+      "unavailableChecks": 128,
+      "openProtectionGaps": [
+        {
+          "mint": {
+            "code": "UNKNOWN_HASHED",
+            "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+          },
+          "at": 1793317720346
+        }
+      ]
+    },
+    "localPhases": {
+      "service-startup-report": {
+        "count": 1,
+        "elapsedMs": 141.96540099999993,
+        "maximumMs": 141.96540099999993,
+        "cpuMicros": 116325,
+        "overruns": 0
+      },
+      "backup-start": {
+        "count": 19,
+        "elapsedMs": 151.38308500100106,
+        "maximumMs": 8.993894000072032,
+        "cpuMicros": 90158,
+        "overruns": 0
+      },
+      "ownership-and-maintenance": {
+        "count": 73467,
+        "elapsedMs": 15362.971291975397,
+        "maximumMs": 1.650182000012137,
+        "cpuMicros": 15772296,
+        "overruns": 0
+      },
+      "backup-prepare-after-lease": {
+        "count": 19,
+        "elapsedMs": 9.732112998565754,
+        "maximumMs": 0.778733000000102,
+        "cpuMicros": 10101,
+        "overruns": 0
+      },
+      "candidate-shared-step": {
+        "count": 67440,
+        "elapsedMs": 864510.6452530865,
+        "maximumMs": 1693.2581329999957,
+        "cpuMicros": 426316572,
+        "overruns": 0
+      },
+      "report-checkpoint": {
+        "count": 350,
+        "elapsedMs": 46866.81345500553,
+        "maximumMs": 146.43922699987888,
+        "cpuMicros": 34268111,
+        "overruns": 0
+      },
+      "entry-checkpoint": {
+        "count": 75,
+        "elapsedMs": 6826.777284997283,
+        "maximumMs": 111.79315199982375,
+        "cpuMicros": 5759394,
+        "overruns": 0
+      },
+      "candidate-entry-preparation": {
+        "count": 75,
+        "elapsedMs": 13524.318460999115,
+        "maximumMs": 1721.6493190000183,
+        "cpuMicros": 1725066,
+        "overruns": 0
+      }
+    },
+    "eventLoopDelayP95Ms": 36.700159,
+    "rpcPersistence": {
+      "attempts": 7952,
+      "totalMs": 42830.39938296629,
+      "maximumMs": 10.901063000317663
+    },
+    "currentChapterPersistence": {
+      "attempts": 47,
+      "totalMs": 246.17822599969804,
+      "maximumMs": 5.719273000024259
+    },
+    "reporting": {
+      "targetMs": 15000,
+      "financialProjectionReady": true,
+      "localProjectionBudgetMs": 250,
+      "maximumProjectionMs": 146.80266200006008,
+      "projectionOverruns": 0,
+      "deferrals": 2586,
+      "lastDeferral": {
+        "code": "UNKNOWN_HASHED",
+        "sha256": "7c9539f1f348f2f3789ac06ce91be91c89e0e536dcd40253edf4d87733a2775a"
+      },
+      "networkPublisherIndependent": true,
+      "localPublicStatusAvailable": true
+    },
+    "evidenceRetention": {
+      "version": {
+        "code": "UNKNOWN_HASHED",
+        "sha256": "7e7edc2c6615ce8d92625e0e457d3097a9eda6ffb3f88013f289e3462d13c41d"
+      },
+      "candidateAdmissionAllowed": true,
+      "requiresCriticalRecovery": false,
+      "diagnosticBytes": 7612462,
+      "diagnosticLimitBytes": 134217728,
+      "continuousRotation": true,
+      "retiredBytes": 3596122231,
+      "totalRecordedBytes": 3668809690,
+      "protectedBytes": 1241237560,
+      "refusedRecords": 0,
+      "refusedBytes": 0,
+      "optionalOmittedRecords": 267,
+      "optionalOmittedBytes": 236502,
+      "availableDiskBytes": 287554891776,
+      "minimumDiskReserveBytes": 134217728
+    },
+    "resources": {
+      "sampleAt": 1793317719724,
+      "cpuFraction": 0.1406876928753522,
+      "rssBytes": 401395712,
+      "availableDiskBytes": 287554891776,
+      "availableMemoryBytes": 6779887616,
+      "state": {
+        "code": "normal",
+        "sha256": "317b32c143692b9939c197f6a5df54f9698df9a4882fe8bf19608968662be4fa"
+      }
+    }
+  },
+  "coverageLimits": {
+    "selectedFacts": 162,
+    "matchingKindCounts": {
+      "trader-context": 109,
+      "trader-held-evaluation": 109
+    },
+    "bytesRead": 62869144,
+    "scanBudgetReached": true,
+    "factCapacityReached": true,
+    "retainedFactsKinds": [
+      "trader-held-evaluation",
+      "trader-context"
+    ],
+    "physicalRequestPhaseEvidenceAvailable": false,
+    "rootCauseOfMissingHeldQuotes": "UNKNOWN: fixedwindow export contains essential holding evidence but diagnostic request/SDK/phase records were not reached",
+    "originOf89426msHistoricalMaximum": "UNKNOWN: maximum occurred outside fixed first-failure window",
+    "currentRunCumulativeMetricsAreNotHistoricalFirstFailureTimingProof": true
+  },
+  "postInstallHostProof": {
+    "workflowRun": 40976447236,
+    "workflowHead": "f1ec699f1f10748948e9c5704fb3c4f8fbf9ddba",
+    "rawBytes": 753943,
+    "rawSha256": "9aec39d8a40de2dbcfaa99e84123ef4242956148363f6316475ea9ef6dda8f20",
+    "newSource": {
+      "commit": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
+      "sha256": "8a0f001a3ae0c6acedaae6fb8a0370e02293a8b0c35142d74daf19086a41203c"
+    },
+    "configurationSha256": "44b82455003f04f75eb1ad7a3dc21555406c1d4d0c7626386d3d21661fdb47c9",
+    "installationVerified": true,
+    "financialVerification": {
+      "identityAndInceptionPreserved": true,
+      "initialFundingAndRoundingPreserved": true,
+      "journalAndActionPrefixPreserved": true,
+      "priorRevision": 63975,
+      "currentRevision": 63977,
+      "currentStateBodySha256": "a75263cff1d24455ecc02ef5078a85adae412fee0d815644cc7139d90433b353",
+      "prefix": {
+        "actions": {
+          "priorRows": 63975,
+          "exactPriorRowsRetained": true,
+          "currentRows": 63977
+        },
+        "journal": {
+          "priorRows": 63976,
+          "exactPriorRowsRetained": true,
+          "currentRows": 63978
+        }
+      },
+      "comparison": "whole-column-ordered-exact-prefix",
+      "originalSqliteOwnerUid": 988,
+      "financialDatabaseWrites": 0,
+      "backupRestored": false
+    },
+    "currentPublicSource": {
+      "sha256": "c0b70e3167b9a0b99f87adaaed61c5db0ef1f0b57b70186d62bbdf05f0a30d4d",
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "release": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
+      "strategy": "adaptive-momentum-v2-paper-v1",
+      "generatedAt": "2026-10-29T23:56:14.329Z",
+      "entriesDisabled": true,
+      "flowVerified": true,
+      "mode": "PAPER",
+      "liveTrading": false,
+      "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE",
+      "shortlistCount": 1,
+      "feedConnected": true,
+      "lastUsefulProgressAt": "2026-10-29T23:56:13.579Z",
+      "lastReconciledAt": "2026-10-29T23:56:13.210Z",
+      "lastMigrationReceivedAt": "2026-10-29T23:54:15.355Z",
+      "reportingConfigured": true
+    },
+    "rootControlCleared": false,
+    "renderDeliveryVerified": false,
+    "strictProtectionRecoveryVerified": false
+  },
+  "readOnlyMonitoringRepair": {
+    "oldWorkflow": 40975768876,
+    "oldRawSha256": "3ccb9a696a4d18069b3e948d06091bb2de7a0ff5b5feb3dcd19de2c40249651a",
+    "oldRawHadJSON": false,
+    "correctedWorkflow": 40976447236,
+    "correctedRawHadCompleteJSON": true,
+    "correctedJSONDocBytes": 189388,
+    "maximumJSONLineBytes": 259,
+    "change": "Pretty one bounded JSON document, bounded4KiBline/512KiBdocument; explicit nonempty single-object validation before workflow output",
+    "adminSourceCommit": "f1ec699f1f10748948e9c5704fb3c4f8fbf9ddba",
+    "adminRegressionEvidenceCommit": "7a6da2c",
+    "testsPassed": 35,
+    "scope": "Read-only administration output; no trading/runtime/financial control changes"
+  }
+}

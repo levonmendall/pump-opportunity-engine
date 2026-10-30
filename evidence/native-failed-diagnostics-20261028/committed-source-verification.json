@@ -1,0 +1,68 @@
+{
+  "schemaVersion": 1,
+  "classification": "EXACT_COMMITTED_SOURCE_OFFLINE_VERIFICATION_NOT_FORWARD_ACCEPTANCE",
+  "sourceCommit": "6e6388c155bd9119cf6ed56327d952c728c29dda",
+  "at": "2026-10-28T19:24:11.774769+00:00",
+  "command": [
+    "node --import tsx --test test/native-failed-high-volume.test.ts test/native-failed-packet-diagnostics.test.ts test/native-transaction-retention.test.ts test/pilot-native-flow.test.ts test/native-flow-audit.test.ts test/native-paper-contract.test.ts test/native-paper-integration.test.ts test/native-settled-recovery.test.ts",
+    "npm run build"
+  ],
+  "tests": {
+    "pass": 151,
+    "fail": 0
+  },
+  "build": "PASS",
+  "networkRequests": 0,
+  "files": [
+    {
+      "path": "src/native-failed-packet-diagnostics.ts",
+      "bytes": 3209,
+      "sha256": "e38d008ba46cd1180c51c5b809c1485e1dc5f4d931ee3edab40c7dfdb66f1795"
+    },
+    {
+      "path": "src/native-transaction-retention.ts",
+      "bytes": 8245,
+      "sha256": "0eaea49a9796134ce2aa942154e27bd9ccf22f5dd53583f847a4355cadf4157d"
+    },
+    {
+      "path": "src/pilot-native-flow.ts",
+      "bytes": 76130,
+      "sha256": "2fe87b2c217a2325f77ded20a9060116fbd90ee6efede79be268869121de3b51"
+    },
+    {
+      "path": "test/native-failed-high-volume.test.ts",
+      "bytes": 5941,
+      "sha256": "293dfc69dad5347fba442d58e32381be74857aa4dcdb50a731e6b2b5f720874c"
+    },
+    {
+      "path": "test/native-failed-packet-diagnostics.test.ts",
+      "bytes": 4103,
+      "sha256": "77a34199b045ace93785513671ceb31f66da151fdec245914e26a067c52fb2aa"
+    },
+    {
+      "path": "test/native-flow-fixture.ts",
+      "bytes": 10642,
+      "sha256": "55a67e1e7c949941a9d4e38814405e4b311847eb53c3a23c1768545ecdc89a40"
+    },
+    {
+      "path": "test/native-transaction-retention.test.ts",
+      "bytes": 7843,
+      "sha256": "36658aec82015bc4db6881ae2ab93e07c4fafc21e8c42f3ecb88ac460afdfff5"
+    },
+    {
+      "path": "test/pilot-native-flow.test.ts",
+      "bytes": 103244,
+      "sha256": "37efb2c570dcb98eb6f2fdc12e24fa5319dbb60f8d1c883b84167772280ae202"
+    },
+    {
+      "path": "evidence/native-failed-diagnostics-20261028/committed-source-tests.txt",
+      "bytes": 19404,
+      "sha256": "be74869ca0b38ea33c53f41d7f6809651390fbfad35dd33efe33cb3da6b36dae"
+    },
+    {
+      "path": "evidence/native-failed-diagnostics-20261028/committed-source-build.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    }
+  ]
+}

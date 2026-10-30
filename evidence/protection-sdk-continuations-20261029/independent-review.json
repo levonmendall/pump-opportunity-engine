@@ -1,0 +1,32 @@
+{
+  "reviewedAt": "2026-10-29T22:52:26.763684+00:00",
+  "reviewer": "held_candidate_deadline_review",
+  "status": "PASS_NO_BLOCKING_DEFECT_FOUND",
+  "sourceCommit": "45096d5787cc88f17bb9c2bf1ef04fe9dedeeaa2",
+  "testsIndependentlyPassed": 28,
+  "testsFailed": 0,
+  "sourceModifiedByReviewer": false,
+  "providerRequests": 0,
+  "financialOriginalOpened": false,
+  "reviewed": [
+    "separate pricer failure domains share unchanged physical RPC gate",
+    "per-holding known slot floors remain enforced",
+    "preparation-only hook cannot reenter active buy decision quote",
+    "timeout/cancellation retains physical ownership and rejects late plan",
+    "explicit retirement-ready caller obligation",
+    "whole-inventory same-context fresh Clock and exact-size validation retained",
+    "bounded static diagnostics preserve unavailable history"
+  ],
+  "integrationRequirements": [
+    "NativePaper maintain must defer while retirementReady false",
+    "launcher must use preparation hook only outside active trader tick and check current financial/provider ownership",
+    "whole preparation bound must use genuine current certificate/financial runway",
+    "combined runtime forward proof and original hard-pause recovery remain separate"
+  ],
+  "files": {
+    "src/pilot-market.ts": "f578b2821f0823bddc3d68a778fd21d7d36bad128dfcdeb44953080d48ab8984",
+    "src/research-held-market.ts": "72710b1cf1a991ac7ec5f32115761c6b99cbd4e67689a7290770ba744cb39889",
+    "test/pilot-market.test.ts": "f8087eee09a29a0076eaf5facbeaacc9bbe8e61279123870be58d79510d2f026",
+    "test/research-held-market.test.ts": "8e6b596c240d044ef1aba946fc5951fab5d3c31c4b37e8ed0b4725ff5f8f726d"
+  }
+}

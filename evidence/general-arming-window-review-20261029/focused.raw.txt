@@ -1,0 +1,39 @@
+✔ flat five-second reconciliation creates a derived pause without changing controls; local maintenance preserves two-second guard (33.266316ms)
+✔ expired USD closes entries, new original-timestamp USD and fresh complete window recover without predictive pass or RPC (11.493349ms)
+✔ fresh audit-completion timestamp cannot substitute for an old executed-flow cutoff (6.230478ms)
+▶ owner pause, safe stop, daily loss, admission failure, disconnected source and absent certificate do not auto-resume
+  ✔ owner (5.463789ms)
+  ✔ stop (6.033586ms)
+  ✔ loss (5.26825ms)
+  ✔ admission (4.83052ms)
+  ✔ connection (5.403039ms)
+  ✔ certificate (5.644373ms)
+✔ owner pause, safe stop, daily loss, admission failure, disconnected source and absent certificate do not auto-resume (33.68336ms)
+✔ pending action and actual held inventory block cash-only maintenance without changing obligations (9.708349ms)
+✔ unknown post-commit financial failure latches closed; later maintenance and restart cannot reinterpret success (7.256381ms)
+✔ recorder failure after permission recovery closes controls and preserves the evidence latch (6.848965ms)
+✔ nonthrowing recovery recorder that revokes current admission cannot report a successful recovery (6.484375ms)
+✔ a terminal failed entry cannot release cash maintenance while its actual execution adapter remains unsettled (109.815495ms)
+✔ slow reconciliation never backdates the resume after the actual two-second deadline (6.54871ms)
+✔ hard failure after a soft pause is durable across restart instead of hiding behind the old soft reason (8.115296ms)
+✔ a recorded hard restriction cannot be laundered by complete candidate preparation (7.542374ms)
+✔ cash maintenance continues during source waits, defers financial ownership, and measures true synchronous lateness (12.441336ms)
+✔ actual maintenance timer contains unexpected callback failure and keeps retry bounded (0.95023ms)
+✔ old startup reconciliation and known FX-unavailable intervals are not maintenance deadline misses (8.467348ms)
+✔ backup failure retries at the bounded next attempt rather than waiting five minutes; success restores the normal cadence (0.305864ms)
+✔ verified backup recovery unlocks temporary readiness only after success and a current audited cutoff (7.389348ms)
+✔ actual interval runs local maintenance while an awaited source operation is unsettled (13.86558ms)
+✔ current derived source/provider/monitoring restrictions remain distinct from unchanged durable permission (6.438045ms)
+✔ explicit owner daily-loss reset recovers through ordinary fresh audited readiness without fabricating a qualification (9.995526ms)
+▶ controlled arming boundary distinguishes valid audited decision windows from two-second general-permission cutoff
+  ✔ 1500ms original audited cutoff (6.143198ms)
+  ✔ 3000ms original audited cutoff (4.782819ms)
+✔ controlled arming boundary distinguishes valid audited decision windows from two-second general-permission cutoff (11.266582ms)
+ℹ tests 29
+ℹ suites 0
+ℹ pass 29
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1494.885961

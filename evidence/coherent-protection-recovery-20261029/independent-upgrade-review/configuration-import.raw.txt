@@ -1,0 +1,3 @@
+{"configurationSha256":"44b82455003f04f75eb1ad7a3dc21555406c1d4d0c7626386d3d21661fdb47c9","financialDatabaseOpened":false,"providerRequests":0}
+(node:192328) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+(Use `node --trace-deprecation ...` to show where the warning was created)

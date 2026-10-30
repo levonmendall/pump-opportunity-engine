@@ -1,0 +1,1443 @@
+{
+  "schemaVersion": 1,
+  "classification": "ACTUAL_C189_NATIVE_PAPER_FORWARD_NOT_ACCEPTANCE",
+  "source": {
+    "commit": "c189a54b7978692ef2f7d098d6b3374aea8deb72",
+    "sha256": "02d455d81e672bddb08958fc822520aefaaa6241e78b8b9b32ee57146895556c",
+    "kind": "immutable-startup-native-paper-bundle-closure",
+    "metadataSha256": "eff3158aff0f77bf538e08ffc570774ee0baa245b081208bc7e98988cff41519",
+    "sqliteVersion": "13.0.3",
+    "addonSha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d",
+    "backupWorkerSha256": "41ca5f1d72ea620f8079150a8508c22696ba08876c96cf7a6531f8dbd5c149f5",
+    "packageLockSha256": "552d1fc533ec47be8913f220d5d1c08286432fc0e3d3ce54457c488de73ddd4a"
+  },
+  "configurationSha256": "241ca5d8efabede16349490fe0f7751f10609ee17b0a1fc8f392d339de1fa7fa",
+  "runId": "native-paper-20261028210805129",
+  "observation": {
+    "startedAt": 1793221685129,
+    "startedUtc": "2026-10-28T21:08:05.129+00:00",
+    "stoppedAt": 1793223099379,
+    "stoppedUtc": "2026-10-28T21:31:39.379+00:00",
+    "elapsedMs": 1414250,
+    "plannedMs": 1800000,
+    "targetReached": false,
+    "stopReason": "resource pressure; financial checkpoint required",
+    "allPhysicalOperationsSettled": true,
+    "flatAtEnd": true
+  },
+  "candidateEvidence": {
+    "auditedWindows": 38,
+    "uniqueEvaluatedTokens": 20,
+    "predictiveStatusCounts": {
+      "failed": 38
+    },
+    "entryAgeEligibleAssessments": 28,
+    "ageCohortCounts": {
+      "entry-eligible": 28,
+      "older-selected": 6,
+      "pre-entry": 4
+    },
+    "normalizedTrades": 771,
+    "auditResultStatusCounts": {
+      "unavailable": 20,
+      "verified": 38,
+      "unusable": 2
+    },
+    "auditReasonCounts": {
+      "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT": 20,
+      "NATIVE_AUDIT_STRICT_INTERIOR_SIGNATURES_VERIFIED": 31,
+      "NATIVE_AUDIT_EXECUTED_FLOW_VERIFIED_WITH_MISSING_FAILED_PACKETS": 7,
+      "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED": 2
+    },
+    "allVerifiedAuditPageCounts": {
+      "1": 38
+    },
+    "completeMultipageAuditsObserved": 0,
+    "uniquePromotedTokens": 30,
+    "promotions": 53,
+    "repromotions": 47,
+    "maximumAckedScopes": 3,
+    "ackedScopeDwellMs": {
+      "0": 7269,
+      "1": 10063,
+      "2": 43163,
+      "3": 1353755
+    },
+    "normalFenceWarmingViews": 63,
+    "unionedValidTokenWindowMilliseconds": 2280000,
+    "validWindowsByToken": {
+      "AH6j7gnAWdjiDnFgotwnGDbE3fLX94LDEieCP5QMpump": {
+        "intervals": [
+          [
+            1793221700000,
+            1793221760000
+          ],
+          [
+            1793222340000,
+            1793222400000
+          ]
+        ],
+        "milliseconds": 120000
+      },
+      "3K6Vy3iEYByuoyKTZyjeSVJjomLkAeVgiMq1Ag6npump": {
+        "intervals": [
+          [
+            1793221700000,
+            1793221760000
+          ],
+          [
+            1793221960000,
+            1793222020000
+          ],
+          [
+            1793222660000,
+            1793222720000
+          ]
+        ],
+        "milliseconds": 180000
+      },
+      "8erwThQZLVqt7KeHpPXpXVXzYvSBDLwRs3GsGrs2pump": {
+        "intervals": [
+          [
+            1793221780000,
+            1793221840000
+          ],
+          [
+            1793222160000,
+            1793222220000
+          ],
+          [
+            1793222940000,
+            1793223000000
+          ]
+        ],
+        "milliseconds": 180000
+      },
+      "nyHJiwvXBQj9rLjAfx3kuhmHczrfw33dwXCK79spump": {
+        "intervals": [
+          [
+            1793221800000,
+            1793221860000
+          ],
+          [
+            1793222400000,
+            1793222460000
+          ]
+        ],
+        "milliseconds": 120000
+      },
+      "S9C5ofwopX9YYJwmTjbZ4pvr95UoA2CxmFFBV4upump": {
+        "intervals": [
+          [
+            1793221870000,
+            1793221930000
+          ],
+          [
+            1793222690000,
+            1793222750000
+          ]
+        ],
+        "milliseconds": 120000
+      },
+      "CPsFaNZTViV79owSM5rRSmyaBEM3Bvj7M7YFXUcNpump": {
+        "intervals": [
+          [
+            1793221870000,
+            1793221930000
+          ],
+          [
+            1793222340000,
+            1793222400000
+          ],
+          [
+            1793222520000,
+            1793222580000
+          ]
+        ],
+        "milliseconds": 180000
+      },
+      "25XYntzwGpubUjgJPTJgv5qKd3Kfp9n5tKKRZAVipump": {
+        "intervals": [
+          [
+            1793221870000,
+            1793221930000
+          ],
+          [
+            1793222430000,
+            1793222490000
+          ],
+          [
+            1793222590000,
+            1793222650000
+          ]
+        ],
+        "milliseconds": 180000
+      },
+      "ASX4GtetW337jwG2rLZaU84eY64rRCoWbf63yXQepump": {
+        "intervals": [
+          [
+            1793221940000,
+            1793222000000
+          ],
+          [
+            1793222470000,
+            1793222530000
+          ]
+        ],
+        "milliseconds": 120000
+      },
+      "2HWkv1SpE7uB6sdXGhmgWrdpGe58Su8P3Ra3ffxGpump": {
+        "intervals": [
+          [
+            1793221960000,
+            1793222020000
+          ],
+          [
+            1793222740000,
+            1793222800000
+          ]
+        ],
+        "milliseconds": 120000
+      },
+      "BJzNVd4mPXFbxmtSaKnyBwWS9kAM4y9Ur3dSDYsbpump": {
+        "intervals": [
+          [
+            1793222030000,
+            1793222090000
+          ],
+          [
+            1793222780000,
+            1793222840000
+          ]
+        ],
+        "milliseconds": 120000
+      },
+      "4Ytm5FuiPrqPGZcn7BkWTQLDTWH9gLtftdzkxpEcdar5": {
+        "intervals": [
+          [
+            1793222050000,
+            1793222110000
+          ]
+        ],
+        "milliseconds": 60000
+      },
+      "4fqaN9PChpETGBMoa6FSupMWJhgT7JzxCZkAZeZKpump": {
+        "intervals": [
+          [
+            1793222050000,
+            1793222110000
+          ],
+          [
+            1793222860000,
+            1793222920000
+          ]
+        ],
+        "milliseconds": 120000
+      },
+      "6N3bbXrEQ5crQZ5RwfcRbEhNUkabWVVHHftwkpYMpump": {
+        "intervals": [
+          [
+            1793222170000,
+            1793222230000
+          ],
+          [
+            1793222520000,
+            1793222580000
+          ]
+        ],
+        "milliseconds": 120000
+      },
+      "5dWiBSNPoXDEwGSYTLfZUAHVph7UarbmF7GqJPrRpump": {
+        "intervals": [
+          [
+            1793222240000,
+            1793222300000
+          ],
+          [
+            1793222970000,
+            1793223030000
+          ]
+        ],
+        "milliseconds": 120000
+      },
+      "DgxHupiXCbjkqXAwijJDURbDnbvpf5UMPaLFcmMpump": {
+        "intervals": [
+          [
+            1793222250000,
+            1793222310000
+          ],
+          [
+            1793223020000,
+            1793223080000
+          ]
+        ],
+        "milliseconds": 120000
+      },
+      "GViFBnCVRTPqoWQzYwZ9rkgkss4gNPB9EVgZDLsCpump": {
+        "intervals": [
+          [
+            1793222270000,
+            1793222330000
+          ]
+        ],
+        "milliseconds": 60000
+      },
+      "FgsSTazXwy4pxjrNMuzsQbEPbYPjAW17pAN8dfRHpump": {
+        "intervals": [
+          [
+            1793222320000,
+            1793222380000
+          ]
+        ],
+        "milliseconds": 60000
+      },
+      "As8GLb7FaopsfPFyJz2dFACxxCMfVu8LmuiPN7bqpump": {
+        "intervals": [
+          [
+            1793222430000,
+            1793222490000
+          ]
+        ],
+        "milliseconds": 60000
+      },
+      "Fy9czFKSJg68mD8dJ3kePwNgFCKfKtKu6srdRja4pump": {
+        "intervals": [
+          [
+            1793222600000,
+            1793222660000
+          ]
+        ],
+        "milliseconds": 60000
+      },
+      "F9qsJG7LBQg3TT1QAVZFZP9QCd5BozojNdYxwyxpump": {
+        "intervals": [
+          [
+            1793222840000,
+            1793222900000
+          ]
+        ],
+        "milliseconds": 60000
+      }
+    },
+    "mostActiveVerifiedAssessment": {
+      "data": {
+        "mint": "25XYntzwGpubUjgJPTJgv5qKd3Kfp9n5tKKRZAVipump",
+        "pool": "89tVwjY74Mk52e9q3SFsjPZNarbLc8UJHUaGZZjwy6FF",
+        "at": 1793222652722,
+        "baselineFeatureSemantics": "V2_WITHOUT_PROTOCOL_FRAMES",
+        "strictV2BaselineUnavailable": false,
+        "assessmentScope": "protocol-aware-shadow-ordinary-flow-only; not baseline qualification",
+        "auditAvailableAt": 1793222652721,
+        "auditCompletenessScope": "executed-transactions",
+        "notificationCompletenessVerified": false,
+        "executedFlowCompletenessVerified": true,
+        "windowEndAt": 1793222650000,
+        "dataContract": "confirmed-program-activity-v3-shadow",
+        "strategyVersion": "persistent-buying-v0-unfrozen",
+        "entryAgeEligible": true,
+        "ageCohort": "entry-eligible",
+        "observationAgePolicy": "observation-age-selected-24h-study-v1",
+        "financialQualification": false,
+        "executionFeasibility": "not assessed; candidate-only mode",
+        "transferCrossCheck": "UNAVAILABLE",
+        "assessment": {
+          "status": "failed",
+          "reason": "persistent-broad-buying-rule-not-met",
+          "qualified": false,
+          "features": {
+            "mint": "25XYntzwGpubUjgJPTJgv5qKd3Kfp9n5tKKRZAVipump",
+            "asOf": 1793222652722,
+            "windowStartAt": 1793222590000,
+            "windowEndAt": 1793222650000,
+            "sufficientlyObserved": true,
+            "qualityReason": null,
+            "buyLamports": "5202666023",
+            "sellLamports": "6277464635",
+            "netBuyLamports": "-1074798612",
+            "tradeCount": 303,
+            "provisionalTradeCount": 0,
+            "distinctBuyerWallets": 110,
+            "largestBuyerBps": 1023,
+            "positiveNetBuckets": 1,
+            "priceReturnBps": -205,
+            "firstPrice": {
+              "quoteLamports": "41499086",
+              "tokenUnits": "71469858810"
+            },
+            "lastPrice": {
+              "quoteLamports": "67622908",
+              "tokenUnits": "118896321763"
+            }
+          }
+        }
+      },
+      "evidence": {
+        "file": "events-003.ndjson",
+        "line": 5341,
+        "sha256": "900fd1c2b91cf302832668f8f110ace82cbb3c8c2077b67457eb1d21bf58ad12"
+      }
+    },
+    "independentMarketOpportunityDenominator": null
+  },
+  "evidenceLoss": {
+    "auditUnavailableTargets": 20,
+    "expiredTargetsSubsetOfUnavailable": 14,
+    "additionalExpiredLosses": 0,
+    "thirdFailureRetirementTargetsWithoutLaterExpired": 6,
+    "selectedWithoutSessionMisses": 0,
+    "noDispatchStarvationDemonstratedForTheseTargets": true,
+    "all20AuditFailuresWereHeaderlessPhysicalTimeouts": true,
+    "unusableAudits": [
+      {
+        "mint": "Fy9czFKSJg68mD8dJ3kePwNgFCKfKtKu6srdRja4pump",
+        "pool": "BnfH2sf9E6JEqsnCLfGqbWVnGBvsRGrWxmLWkw2eewnC",
+        "target": {
+          "startAt": 1793221780000,
+          "endAt": 1793221840000
+        },
+        "reason": "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED",
+        "historyRangeCovered": true,
+        "pages": [
+          {
+            "page": 1,
+            "requestedLimit": 100,
+            "rows": 100,
+            "newestSlot": 462623316,
+            "oldestSlot": 462606900,
+            "receivedAt": 1793221842526,
+            "validatedAt": 1793221842527
+          }
+        ],
+        "requiredRows": 0,
+        "missingSuccessful": 1,
+        "unknownSuccessfulSamples": [
+          {
+            "signature": "4Fd2XpfRKAd81nnYpeDw5MnKf9tERyqpYv31QHykesfk7j6wqaRZorm7hjmudtK3Eub694CP9TXsR5hptFrdkdBP",
+            "slot": 462623316,
+            "success": true,
+            "blockTime": 1793221840,
+            "confirmationStatus": "finalized"
+          }
+        ],
+        "missingFailed": 0,
+        "evidence": {
+          "file": "events-001.ndjson",
+          "line": 1326,
+          "sha256": "09dbe27fece0c43d860842dd08db7ebed34091d791640111fc9948ae94ca4384"
+        }
+      },
+      {
+        "mint": "DZYkvNnuL3GanzVw6h1ZhN9NMs2DQFAaXjHrYtUDpump",
+        "pool": "NwcrCZgQk8P5JceYjTFoL8KM28FmQ9xzwPUZdyKfp4P",
+        "target": {
+          "startAt": 1793222880000,
+          "endAt": 1793222940000
+        },
+        "reason": "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED",
+        "historyRangeCovered": true,
+        "pages": [
+          {
+            "page": 1,
+            "requestedLimit": 100,
+            "rows": 100,
+            "newestSlot": 462628448,
+            "oldestSlot": 462628119,
+            "receivedAt": 1793222942184,
+            "validatedAt": 1793222942185
+          }
+        ],
+        "requiredRows": 28,
+        "missingSuccessful": 1,
+        "unknownSuccessfulSamples": [
+          {
+            "signature": "5TkLTz26VispaahRRYHUGknG5LQ7HDebrtbH7P1xjQn1v6zKxKGuh6J7vho586uvJixvKRMB4L6bLzXTqEacj9nU",
+            "slot": 462628210,
+            "success": true,
+            "blockTime": 1793222888,
+            "confirmationStatus": "finalized"
+          }
+        ],
+        "missingFailed": 0,
+        "evidence": {
+          "file": "events-004.ndjson",
+          "line": 946,
+          "sha256": "824764051c32638d59058e0575fb3ee188900c112769b1bc15cded5bfa193042"
+        }
+      }
+    ],
+    "unknownSuccessfulSignaturesAreNotProvenTrades": true,
+    "verifiedAuditsToleratingIndependentlyFailedMissingPackets": 7,
+    "independentlyFailedMissingPacketsInVerifiedAudits": 162,
+    "engineQualityCallbacks": 7,
+    "adverseBeforeShutdownCutoff": 6,
+    "qualityReasonCounts": {
+      "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED": 2,
+      "NATIVE_FLOW_DISCONNECTED_1006": 3,
+      "LOG_NATIVE_PROTOCOL_CHILD_SHAPE": 1,
+      "NATIVE_FLOW_INFORMATION_CUTOFF": 1
+    },
+    "qualityCases": [
+      {
+        "data": {
+          "mint": "Fy9czFKSJg68mD8dJ3kePwNgFCKfKtKu6srdRja4pump",
+          "at": 1793221842528,
+          "reason": "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED",
+          "freshWindowRequired": true,
+          "financialExecutionAuthorized": false
+        },
+        "evidence": {
+          "file": "events-001.ndjson",
+          "line": 1327,
+          "sha256": "df47e51c2d143a00c78c42c64609318918898ec52d74ff3318d906b17bada488"
+        }
+      },
+      {
+        "data": {
+          "mint": "CPsFaNZTViV79owSM5rRSmyaBEM3Bvj7M7YFXUcNpump",
+          "at": 1793222128947,
+          "reason": "NATIVE_FLOW_DISCONNECTED_1006",
+          "freshWindowRequired": true,
+          "financialExecutionAuthorized": false
+        },
+        "evidence": {
+          "file": "events-002.ndjson",
+          "line": 8630,
+          "sha256": "0208c7ae542b446cbf33e0ef4b07c65d9c32b45b076c4e17c1772044970f59f9"
+        }
+      },
+      {
+        "data": {
+          "mint": "6N3bbXrEQ5crQZ5RwfcRbEhNUkabWVVHHftwkpYMpump",
+          "at": 1793222128948,
+          "reason": "NATIVE_FLOW_DISCONNECTED_1006",
+          "freshWindowRequired": true,
+          "financialExecutionAuthorized": false
+        },
+        "evidence": {
+          "file": "events-002.ndjson",
+          "line": 8635,
+          "sha256": "19fefc72b06d53cf37c9f0ecd15cf990e9b9845d352aecfb3e86ec155c08795d"
+        }
+      },
+      {
+        "data": {
+          "mint": "FfR4XdDPVrRmq7SFhkaH4srv54uFnNW2wfi83eNPpump",
+          "at": 1793222128949,
+          "reason": "NATIVE_FLOW_DISCONNECTED_1006",
+          "freshWindowRequired": true,
+          "financialExecutionAuthorized": false
+        },
+        "evidence": {
+          "file": "events-002.ndjson",
+          "line": 8640,
+          "sha256": "03a29e98f0cf908bd1cc723f1effeaf8685a8011ce24c999716777c1dbd95ec6"
+        }
+      },
+      {
+        "data": {
+          "mint": "25XYntzwGpubUjgJPTJgv5qKd3Kfp9n5tKKRZAVipump",
+          "at": 1793222166361,
+          "reason": "LOG_NATIVE_PROTOCOL_CHILD_SHAPE",
+          "freshWindowRequired": true,
+          "financialExecutionAuthorized": false
+        },
+        "evidence": {
+          "file": "events-003.ndjson",
+          "line": 192,
+          "sha256": "db22628cbf295106c61fb0842f55a4dc5eec94d6d55452ed63571982572b9844"
+        }
+      },
+      {
+        "data": {
+          "mint": "DZYkvNnuL3GanzVw6h1ZhN9NMs2DQFAaXjHrYtUDpump",
+          "at": 1793222942186,
+          "reason": "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED",
+          "freshWindowRequired": true,
+          "financialExecutionAuthorized": false
+        },
+        "evidence": {
+          "file": "events-004.ndjson",
+          "line": 947,
+          "sha256": "2992c89e2402bbd6ae60c4b22b2f1be8d5974c0c513e51be8ed3840eddeaa523"
+        }
+      },
+      {
+        "data": {
+          "mint": "AfPhjrZx3oyh38G28ZVViP4p7h53N5kTxEeg5tzhpump",
+          "at": 1793223099049,
+          "reason": "NATIVE_FLOW_INFORMATION_CUTOFF",
+          "freshWindowRequired": true,
+          "financialExecutionAuthorized": false
+        },
+        "evidence": {
+          "file": "events-004.ndjson",
+          "line": 1993,
+          "sha256": "5e12b419521bba3bd7e2faea048fc9f7c651ec1708767d55c0b92c5b7fda1d4e"
+        }
+      }
+    ],
+    "nativeAggregateGaps": 53,
+    "retirementReasonCounts": {
+      "audited predictive observation completed; fair watch revisit": 38,
+      "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT": 6,
+      "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED": 2,
+      "NATIVE_FLOW_DISCONNECTED_1006": 3,
+      "LOG_NATIVE_PROTOCOL_CHILD_SHAPE": 1,
+      "NATIVE_FLOW_INFORMATION_CUTOFF": 1,
+      "native PAPER measurement segment ended": 2
+    },
+    "nativeAggregateMeaning": "53 retired scopes include valid weak-candidate rotation, repeated audit failures,3 disconnect scopes,2history mismatches,1unsupported protocol shape and shutdown; not53independent adverse failures.",
+    "candidatePressureRefusals": 0,
+    "activeFingerprintRefusals": 0,
+    "totalFingerprintRefusals": 0
+  },
+  "provider": {
+    "physicalStarts": 560,
+    "physicalSettlements": 560,
+    "peakStartsPerMinute": 40,
+    "peakStartsPer10s": 20,
+    "methodCounts": {
+      "ws-upgrade:upgrade": 4,
+      "ws:subscribeMigration": 1,
+      "http:getMultipleAccounts": 213,
+      "ws:logsSubscribe": 53,
+      "http:getTransaction": 31,
+      "http:getSignaturesForAddress": 77,
+      "ws:ping": 134,
+      "ws:logsUnsubscribe": 47
+    },
+    "physicalTimeouts": 23,
+    "timeoutMethods": {
+      "http:getSignaturesForAddress": 22,
+      "http:getTransaction": 1
+    },
+    "httpHeaderStatusCounts": {
+      "200": 298,
+      "None": 23
+    },
+    "httpSuccessfulElapsedMs": {
+      "count": 298,
+      "minimum": 41.802528999978676,
+      "p50": 102.1346720000729,
+      "p95": 577.7090509999543,
+      "maximum": 743.4913020000095
+    },
+    "httpJsonDecodeMs": {
+      "count": 298,
+      "minimum": 0.019463000004179776,
+      "p50": 0.06279999995604157,
+      "p95": 0.7239990000016405,
+      "maximum": 1.2908870000392199
+    },
+    "timeoutCallbackLatenessMs": {
+      "count": 23,
+      "minimum": 0,
+      "p50": 0.16172000009100884,
+      "p95": 0.8814799999963725,
+      "maximum": 1.2309510000050068
+    },
+    "timeoutSettlementTailMs": {
+      "count": 23,
+      "minimum": 23,
+      "p50": 23,
+      "p95": 25,
+      "maximum": 25
+    },
+    "allTimeoutsNoHeadersOrBody": true,
+    "previousHttpBeforeTimeoutOutcomeCounts": {
+      "json-decoded": 23
+    },
+    "previousHttpCompletionIdleMs": {
+      "count": 23,
+      "minimum": 127,
+      "p50": 197,
+      "p95": 638,
+      "maximum": 10674
+    },
+    "timeoutPreviousOperationCases": [
+      {
+        "id": 8017,
+        "at": 1793221761824,
+        "method": "getSignaturesForAddress",
+        "headersAt": null,
+        "responseBytes": 0,
+        "previousPhysicalId": 8016,
+        "previousPhysicalKind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        },
+        "previousPhysicalSettledIdleMs": 191,
+        "previousHttpId": 8016,
+        "previousHttpMethod": "getMultipleAccounts",
+        "previousHttpOutcome": "json-decoded",
+        "previousHttpCompletionIdleMs": 191,
+        "timeoutCallbackLatenessMs": 0.8814799999963725,
+        "settlementAfterTimeoutMs": 25,
+        "evidence": {
+          "file": "events-001.ndjson",
+          "line": 761,
+          "sha256": "c4a2f68ec2a456bfb2e431ddd34e15c64671713b2c18cca1c9893b32838ebe4c"
+        }
+      },
+      {
+        "id": 8029,
+        "at": 1793221771848,
+        "method": "getSignaturesForAddress",
+        "headersAt": null,
+        "responseBytes": 0,
+        "previousPhysicalId": 8028,
+        "previousPhysicalKind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        },
+        "previousPhysicalSettledIdleMs": 187,
+        "previousHttpId": 8028,
+        "previousHttpMethod": "getMultipleAccounts",
+        "previousHttpOutcome": "json-decoded",
+        "previousHttpCompletionIdleMs": 187,
+        "timeoutCallbackLatenessMs": 0.3256880000117235,
+        "settlementAfterTimeoutMs": 23,
+        "evidence": {
+          "file": "events-001.ndjson",
+          "line": 926,
+          "sha256": "ebf5597b70215030f0dfe7349e29575565793c86a39f1d447feb002aa00f1245"
+        }
+      },
+      {
+        "id": 8033,
+        "at": 1793221781860,
+        "method": "getSignaturesForAddress",
+        "headersAt": null,
+        "responseBytes": 0,
+        "previousPhysicalId": 8032,
+        "previousPhysicalKind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        },
+        "previousPhysicalSettledIdleMs": 187,
+        "previousHttpId": 8032,
+        "previousHttpMethod": "getMultipleAccounts",
+        "previousHttpOutcome": "json-decoded",
+        "previousHttpCompletionIdleMs": 187,
+        "timeoutCallbackLatenessMs": 0.407881000006455,
+        "settlementAfterTimeoutMs": 23,
+        "evidence": {
+          "file": "events-001.ndjson",
+          "line": 989,
+          "sha256": "49fd502b3229ca476894b4b0d692bc71c9aab4cf52eaceaa327122c830a3ccd3"
+        }
+      },
+      {
+        "id": 8100,
+        "at": 1793221973480,
+        "method": "getSignaturesForAddress",
+        "headersAt": null,
+        "responseBytes": 0,
+        "previousPhysicalId": 8099,
+        "previousPhysicalKind": {
+          "transport": "http",
+          "method": "getTransaction"
+        },
+        "previousPhysicalSettledIdleMs": 165,
+        "previousHttpId": 8099,
+        "previousHttpMethod": "getTransaction",
+        "previousHttpOutcome": "json-decoded",
+        "previousHttpCompletionIdleMs": 165,
+        "timeoutCallbackLatenessMs": 0.15713100001448765,
+        "settlementAfterTimeoutMs": 24,
+        "evidence": {
+          "file": "events-002.ndjson",
+          "line": 895,
+          "sha256": "e57b67b14af74c0f0680ed9b0033353e07c628cfe8f003f4e02daded7ec90e5d"
+        }
+      },
+      {
+        "id": 8116,
+        "at": 1793222013860,
+        "method": "getTransaction",
+        "headersAt": null,
+        "responseBytes": 0,
+        "previousPhysicalId": 8115,
+        "previousPhysicalKind": {
+          "transport": "ws",
+          "method": "ping"
+        },
+        "previousPhysicalSettledIdleMs": 234,
+        "previousHttpId": 8113,
+        "previousHttpMethod": "getMultipleAccounts",
+        "previousHttpOutcome": "json-decoded",
+        "previousHttpCompletionIdleMs": 10674,
+        "timeoutCallbackLatenessMs": 0,
+        "settlementAfterTimeoutMs": 23,
+        "evidence": {
+          "file": "events-002.ndjson",
+          "line": 1267,
+          "sha256": "d9e4ffa7e983404306498ea48bfaf23df6a28b8934bdf9d9782c1d0c87fe6ed3"
+        }
+      },
+      {
+        "id": 8183,
+        "at": 1793222221828,
+        "method": "getSignaturesForAddress",
+        "headersAt": null,
+        "responseBytes": 0,
+        "previousPhysicalId": 8182,
+        "previousPhysicalKind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        },
+        "previousPhysicalSettledIdleMs": 193,
+        "previousHttpId": 8182,
+        "previousHttpMethod": "getMultipleAccounts",
+        "previousHttpOutcome": "json-decoded",
+        "previousHttpCompletionIdleMs": 193,
+        "timeoutCallbackLatenessMs": 0,
+        "settlementAfterTimeoutMs": 23,
+        "evidence": {
+          "file": "events-003.ndjson",
+          "line": 612,
+          "sha256": "4af1b66d51010b8c415c94f0b522aa86eaea1e8db91fc5b1bdad829f300d868f"
+        }
+      },
+      {
+        "id": 8193,
+        "at": 1793222232426,
+        "method": "getSignaturesForAddress",
+        "headersAt": null,
+        "responseBytes": 0,
+        "previousPhysicalId": 8192,
+        "previousPhysicalKind": {
+          "transport": "ws",
+          "method": "logsUnsubscribe"
+        },
+        "previousPhysicalSettledIdleMs": 179,
+        "previousHttpId": 8191,
+        "previousHttpMethod": "getSignaturesForAddress",
+        "previousHttpOutcome": "json-decoded",
+        "previousHttpCompletionIdleMs": 469,
+        "timeoutCallbackLatenessMs": 0,
+        "settlementAfterTimeoutMs": 24,
+        "evidence": {
+          "file": "events-003.ndjson",
+          "line": 765,
+          "sha256": "87da4d4182ad71cd5ca9facc157102901a11faeaa235f1ff55b6b2597dec800d"
+        }
+      },
+      {
+        "id": 8199,
+        "at": 1793222241860,
+        "method": "getSignaturesForAddress",
+        "headersAt": null,
+        "responseBytes": 0,
+        "previousPhysicalId": 8198,
+        "previousPhysicalKind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        },
+        "previousPhysicalSettledIdleMs": 187,
+        "previousHttpId": 8198,
+        "previousHttpMethod": "getMultipleAccounts",
+        "previousHttpOutcome": "json-decoded",
+        "previousHttpCompletionIdleMs": 187,
+        "timeoutCallbackLatenessMs": 0.32463299995288253,
+        "settlementAfterTimeoutMs": 24,
+        "evidence": {
+          "file": "events-003.ndjson",
+          "line": 851,
+          "sha256": "c16b88263dc3557191072440bb955b0b074d315bdaa18e7d01ce3e7d92e2b913"
+        }
+      },
+      {
+        "id": 8333,
+        "at": 1793222602652,
+        "method": "getSignaturesForAddress",
+        "headersAt": null,
+        "responseBytes": 0,
+        "previousPhysicalId": 8332,
+        "previousPhysicalKind": {
+          "transport": "http",
+          "method": "getTransaction"
+        },
+        "previousPhysicalSettledIdleMs": 162,
+        "previousHttpId": 8332,
+        "previousHttpMethod": "getTransaction",
+        "previousHttpOutcome": "json-decoded",
+        "previousHttpCompletionIdleMs": 162,
+        "timeoutCallbackLatenessMs": 0.19608400005381554,
+        "settlementAfterTimeoutMs": 25,
+        "evidence": {
+          "file": "events-003.ndjson",
+          "line": 3930,
+          "sha256": "b28646cae8bdd8670784144aa7348c6c5b73521b4054123b4e0dc96d01f63cf3"
+        }
+      },
+      {
+        "id": 8338,
+        "at": 1793222622315,
+        "method": "getSignaturesForAddress",
+        "headersAt": null,
+        "responseBytes": 0,
+        "previousPhysicalId": 8337,
+        "previousPhysicalKind": {
+          "transport": "ws",
+          "method": "ping"
+        },
+        "previousPhysicalSettledIdleMs": 182,
+        "previousHttpId": 8336,
+        "previousHttpMethod": "getMultipleAccounts",
+        "previousHttpOutcome": "json-decoded",
+        "previousHttpCompletionIdleMs": 638,
+        "timeoutCallbackLatenessMs": 0.594941999996081,
+        "settlementAfterTimeoutMs": 23,
+        "evidence": {
+          "file": "events-003.ndjson",
+          "line": 4495,
+          "sha256": "311bcb5a3f370e9493a35d07505a8aa0d4caae1048da6bb4ee3cae65e821b2f2"
+        }
+      },
+      {
+        "id": 8342,
+        "at": 1793222632206,
+        "method": "getSignaturesForAddress",
+        "headersAt": null,
+        "responseBytes": 0,
+        "previousPhysicalId": 8341,
+        "previousPhysicalKind": {
+          "transport": "ws",
+          "method": "ping"
+        },
+        "previousPhysicalSettledIdleMs": 275,
+        "previousHttpId": 8340,
+        "previousHttpMethod": "getMultipleAccounts",
+        "previousHttpOutcome": "json-decoded",
+        "previousHttpCompletionIdleMs": 527,
+        "timeoutCallbackLatenessMs": 0.2565239999676123,
+        "settlementAfterTimeoutMs": 23,
+        "evidence": {
+          "file": "events-003.ndjson",
+          "line": 4756,
+          "sha256": "4a68a4335dbdc9e2ed96e240a7fe6567283962a443a0ab116a158cfa2dbf6efc"
+        }
+      },
+      {
+        "id": 8346,
+        "at": 1793222642150,
+        "method": "getSignaturesForAddress",
+        "headersAt": null,
+        "responseBytes": 0,
+        "previousPhysicalId": 8345,
+        "previousPhysicalKind": {
+          "transport": "ws",
+          "method": "ping"
+        },
+        "previousPhysicalSettledIdleMs": 244,
+        "previousHttpId": 8344,
+        "previousHttpMethod": "getMultipleAccounts",
+        "previousHttpOutcome": "json-decoded",
+        "previousHttpCompletionIdleMs": 488,
+        "timeoutCallbackLatenessMs": 0,
+        "settlementAfterTimeoutMs": 23,
+        "evidence": {
+          "file": "events-003.ndjson",
+          "line": 5032,
+          "sha256": "4eb805f3b25d5272c6bb5d3da1ac8c67457baddad558ed693b37eec4abbcb0bc"
+        }
+      },
+      {
+        "id": 8386,
+        "at": 1793222732115,
+        "method": "getSignaturesForAddress",
+        "headersAt": null,
+        "responseBytes": 0,
+        "previousPhysicalId": 8385,
+        "previousPhysicalKind": {
+          "transport": "ws",
+          "method": "ping"
+        },
+        "previousPhysicalSettledIdleMs": 181,
+        "previousHttpId": 8384,
+        "previousHttpMethod": "getMultipleAccounts",
+        "previousHttpOutcome": "json-decoded",
+        "previousHttpCompletionIdleMs": 455,
+        "timeoutCallbackLatenessMs": 0.16172000009100884,
+        "settlementAfterTimeoutMs": 24,
+        "evidence": {
+          "file": "events-003.ndjson",
+          "line": 5737,
+          "sha256": "ce0d8acbd8d4bb79ba9306de98827a83b0ac825ea7f07a1feb6f11863b73b097"
+        }
+      },
+      {
+        "id": 8392,
+        "at": 1793222741859,
+        "method": "getSignaturesForAddress",
+        "headersAt": null,
+        "responseBytes": 0,
+        "previousPhysicalId": 8391,
+        "previousPhysicalKind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        },
+        "previousPhysicalSettledIdleMs": 242,
+        "previousHttpId": 8391,
+        "previousHttpMethod": "getMultipleAccounts",
+        "previousHttpOutcome": "json-decoded",
+        "previousHttpCompletionIdleMs": 242,
+        "timeoutCallbackLatenessMs": 0,
+        "settlementAfterTimeoutMs": 24,
+        "evidence": {
+          "file": "events-003.ndjson",
+          "line": 5819,
+          "sha256": "f384bd40a0e850c592fd6097e58cadb4ad0e68f59c9112e494f82bd864bda114"
+        }
+      },
+      {
+        "id": 8398,
+        "at": 1793222752464,
+        "method": "getSignaturesForAddress",
+        "headersAt": null,
+        "responseBytes": 0,
+        "previousPhysicalId": 8397,
+        "previousPhysicalKind": {
+          "transport": "ws",
+          "method": "logsUnsubscribe"
+        },
+        "previousPhysicalSettledIdleMs": 180,
+        "previousHttpId": 8396,
+        "previousHttpMethod": "getSignaturesForAddress",
+        "previousHttpOutcome": "json-decoded",
+        "previousHttpCompletionIdleMs": 463,
+        "timeoutCallbackLatenessMs": 0,
+        "settlementAfterTimeoutMs": 23,
+        "evidence": {
+          "file": "events-003.ndjson",
+          "line": 5912,
+          "sha256": "d737441185326cd003ea561b91437b8ecabc0e7565fd6f3d2ce621a9faad4133"
+        }
+      },
+      {
+        "id": 8427,
+        "at": 1793222842079,
+        "method": "getSignaturesForAddress",
+        "headersAt": null,
+        "responseBytes": 0,
+        "previousPhysicalId": 8426,
+        "previousPhysicalKind": {
+          "transport": "ws",
+          "method": "ping"
+        },
+        "previousPhysicalSettledIdleMs": 233,
+        "previousHttpId": 8425,
+        "previousHttpMethod": "getMultipleAccounts",
+        "previousHttpOutcome": "json-decoded",
+        "previousHttpCompletionIdleMs": 415,
+        "timeoutCallbackLatenessMs": 0,
+        "settlementAfterTimeoutMs": 25,
+        "evidence": {
+          "file": "events-003.ndjson",
+          "line": 6479,
+          "sha256": "b8ad281e6f30873c32e3884c568a05b7a8c59c61f4b64c3d23299cd9377d7607"
+        }
+      },
+      {
+        "id": 8437,
+        "at": 1793222851879,
+        "method": "getSignaturesForAddress",
+        "headersAt": null,
+        "responseBytes": 0,
+        "previousPhysicalId": 8436,
+        "previousPhysicalKind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        },
+        "previousPhysicalSettledIdleMs": 244,
+        "previousHttpId": 8436,
+        "previousHttpMethod": "getMultipleAccounts",
+        "previousHttpOutcome": "json-decoded",
+        "previousHttpCompletionIdleMs": 244,
+        "timeoutCallbackLatenessMs": 1.2309510000050068,
+        "settlementAfterTimeoutMs": 23,
+        "evidence": {
+          "file": "events-003.ndjson",
+          "line": 6603,
+          "sha256": "8d49c55195834ced9533efbd994a22d136e3e922d1d2a054e6556e62d0f8cc0c"
+        }
+      },
+      {
+        "id": 8441,
+        "at": 1793222861868,
+        "method": "getSignaturesForAddress",
+        "headersAt": null,
+        "responseBytes": 0,
+        "previousPhysicalId": 8440,
+        "previousPhysicalKind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        },
+        "previousPhysicalSettledIdleMs": 191,
+        "previousHttpId": 8440,
+        "previousHttpMethod": "getMultipleAccounts",
+        "previousHttpOutcome": "json-decoded",
+        "previousHttpCompletionIdleMs": 191,
+        "timeoutCallbackLatenessMs": 0.0838089999742806,
+        "settlementAfterTimeoutMs": 24,
+        "evidence": {
+          "file": "events-003.ndjson",
+          "line": 6658,
+          "sha256": "9d031be834ea74b6ac8c6a85010eb9d80bd6c6efed316997ddfb5af35584a9d8"
+        }
+      },
+      {
+        "id": 8452,
+        "at": 1793222892146,
+        "method": "getSignaturesForAddress",
+        "headersAt": null,
+        "responseBytes": 0,
+        "previousPhysicalId": 8451,
+        "previousPhysicalKind": {
+          "transport": "http",
+          "method": "getSignaturesForAddress"
+        },
+        "previousPhysicalSettledIdleMs": 127,
+        "previousHttpId": 8451,
+        "previousHttpMethod": "getSignaturesForAddress",
+        "previousHttpOutcome": "json-decoded",
+        "previousHttpCompletionIdleMs": 127,
+        "timeoutCallbackLatenessMs": 0.4185530000831932,
+        "settlementAfterTimeoutMs": 24,
+        "evidence": {
+          "file": "events-004.ndjson",
+          "line": 491,
+          "sha256": "4fa9587ebc96e081bacfb83dfbf160d232e86e8aece5317e94bcf20e91d8985d"
+        }
+      },
+      {
+        "id": 8478,
+        "at": 1793222932432,
+        "method": "getSignaturesForAddress",
+        "headersAt": null,
+        "responseBytes": 0,
+        "previousPhysicalId": 8477,
+        "previousPhysicalKind": {
+          "transport": "http",
+          "method": "getSignaturesForAddress"
+        },
+        "previousPhysicalSettledIdleMs": 184,
+        "previousHttpId": 8477,
+        "previousHttpMethod": "getSignaturesForAddress",
+        "previousHttpOutcome": "json-decoded",
+        "previousHttpCompletionIdleMs": 184,
+        "timeoutCallbackLatenessMs": 0.19302599993534386,
+        "settlementAfterTimeoutMs": 23,
+        "evidence": {
+          "file": "events-004.ndjson",
+          "line": 876,
+          "sha256": "4d47e93d8f4e0fe4acf900a3d32ed71e130a7c130c0c27beb186ea7a981053e5"
+        }
+      },
+      {
+        "id": 8498,
+        "at": 1793222991818,
+        "method": "getSignaturesForAddress",
+        "headersAt": null,
+        "responseBytes": 0,
+        "previousPhysicalId": 8497,
+        "previousPhysicalKind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        },
+        "previousPhysicalSettledIdleMs": 191,
+        "previousHttpId": 8497,
+        "previousHttpMethod": "getMultipleAccounts",
+        "previousHttpOutcome": "json-decoded",
+        "previousHttpCompletionIdleMs": 191,
+        "timeoutCallbackLatenessMs": 0,
+        "settlementAfterTimeoutMs": 23,
+        "evidence": {
+          "file": "events-004.ndjson",
+          "line": 1139,
+          "sha256": "8251559f530cb5dfb3048c760c5234bc36dc0333da847fefcc4042a7fa04780e"
+        }
+      },
+      {
+        "id": 8504,
+        "at": 1793223002469,
+        "method": "getSignaturesForAddress",
+        "headersAt": null,
+        "responseBytes": 0,
+        "previousPhysicalId": 8503,
+        "previousPhysicalKind": {
+          "transport": "ws",
+          "method": "logsUnsubscribe"
+        },
+        "previousPhysicalSettledIdleMs": 236,
+        "previousHttpId": 8502,
+        "previousHttpMethod": "getSignaturesForAddress",
+        "previousHttpOutcome": "json-decoded",
+        "previousHttpCompletionIdleMs": 484,
+        "timeoutCallbackLatenessMs": 0.5071179999504238,
+        "settlementAfterTimeoutMs": 23,
+        "evidence": {
+          "file": "events-004.ndjson",
+          "line": 1232,
+          "sha256": "ef94c9ce9cc6e5f47deb4decd48a93c829972de0fdb57838f304bf0e44cc9fdf"
+        }
+      },
+      {
+        "id": 8510,
+        "at": 1793223011858,
+        "method": "getSignaturesForAddress",
+        "headersAt": null,
+        "responseBytes": 0,
+        "previousPhysicalId": 8509,
+        "previousPhysicalKind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        },
+        "previousPhysicalSettledIdleMs": 197,
+        "previousHttpId": 8509,
+        "previousHttpMethod": "getMultipleAccounts",
+        "previousHttpOutcome": "json-decoded",
+        "previousHttpCompletionIdleMs": 197,
+        "timeoutCallbackLatenessMs": 0,
+        "settlementAfterTimeoutMs": 23,
+        "evidence": {
+          "file": "events-004.ndjson",
+          "line": 1311,
+          "sha256": "8efea84dc14803ef711f3b988e18c6a39e8f40978e906d3533f5e009f5ebe8f9"
+        }
+      }
+    ],
+    "new429or503Observed": false,
+    "connectionReuse": "NOT_INSTRUMENTED",
+    "providerSaturationProven": false,
+    "batchPhysicalStarts": 0,
+    "perTransactionNativeEnrichmentRequests": 0,
+    "newUnits": 560,
+    "cumulativeUnits": 8542,
+    "newAccountedResponseBytes": 62844999,
+    "cumulativeAccountedResponseBytes": 979334227,
+    "cumulativeUncertainResponseBytes": 507248640,
+    "newUncertainBytesConservativelyRetained": 48234496,
+    "usdRequestsSeparate": {
+      "requests": 280,
+      "failures": 0,
+      "responseMaximumPerRequest": 2048
+    },
+    "automaticRetries": 0
+  },
+  "resources": {
+    "cpuMicros": 180271528,
+    "cpuParts": {
+      "user": 170467976,
+      "system": 9803552
+    },
+    "sourceRssBytes": 374575104,
+    "sourceGroupRssBytes": 374710272,
+    "evidenceAccountingBytes": 27661844,
+    "rawSourceEvidenceFileBytes": 25750922,
+    "eventLoopP95Ms": 24.887295,
+    "nativeLast256ProcessingMs": {
+      "count": 256,
+      "p95": 4.37588099995628,
+      "maximum": 7.658973000012338
+    },
+    "nativeQueueAgeSampleMs": {
+      "p95": 299,
+      "maximum": 382
+    },
+    "rpcDerivedPersistence": {
+      "attempts": 1092,
+      "totalMs": 5985.8710449972805,
+      "maximumMs": 9.212788000004366
+    },
+    "sourceLocalReporting": {
+      "targetMs": 15000,
+      "historyTransportPolicy": {
+        "version": "public-rpc-single-history-pages-v1",
+        "batchEnabled": false
+      },
+      "financialProjectionReady": true,
+      "financialReportingPolicy": "validated-financial-projection-before-new-risk-v1",
+      "localProjectionBudgetMs": 250,
+      "maximumProjectionMs": 115.47036899998784,
+      "projectionOverruns": 0,
+      "deferrals": 0,
+      "lastDeferral": null,
+      "networkPublisherIndependent": true
+    },
+    "broadPumpApiBytes": 1071653034,
+    "nativeWsBytes": 7084002,
+    "broadWatchHints": 517,
+    "watchProcessingMs": 1226.2436979580116,
+    "watchFirstFailure": "PILOT_PUMPAPI_BYTE_LIMIT",
+    "watchCoverageContinuous": false,
+    "sourceWholeCpuAttribution": "UNKNOWN; bounded main-thread CPU profile needed, callback summaries do not cover TLS/GC/all persistence/OS work"
+  },
+  "financial": {
+    "readOnlyLedgerAudit": {
+      "schemaVersion": 1,
+      "kind": "read-only-paper-ledger-projection-audit",
+      "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+      "inceptionAt": 1793123773252,
+      "initialMicroUsd": "1000000000",
+      "databaseSha256": "4071cd3066aab6c73b1eac2c5a170380dfc3005079bc197e8bc59942353469b5",
+      "databaseBytes": 5410816,
+      "financialStateBodySha256": "31b315163f60e12b1fc07e0fe73fa4308d13a131cd1ea35597b9843f9230bc25",
+      "financialStateBodyBytes": 841,
+      "tableCounts": {
+        "actions": 10014,
+        "financial_state": 1,
+        "journal": 10015,
+        "metadata": 2
+      },
+      "journalRangeContiguous": true,
+      "actionJournalLinksValid": true,
+      "quickCheck": "ok",
+      "fields": {
+        "revision": 10014,
+        "cashLamports": "9920142850",
+        "reservedLamports": "0",
+        "lockedDepositLamports": "0",
+        "realizedLamports": "0",
+        "executionCostsLamports": "0",
+        "openPositions": 0,
+        "pendingActions": 0,
+        "equityLamports": "9920142850",
+        "totalPnlLamports": "0"
+      },
+      "financialPermission": {
+        "entriesEnabled": false,
+        "stopRequested": true,
+        "controlsChangedAt": 1793223099375,
+        "dailyPaused": true,
+        "dailyLossPaused": false,
+        "reconciledAt": 1793223097158
+      },
+      "sourceFieldComparisons": {
+        "revision": true,
+        "cashLamports": true,
+        "reservedLamports": true,
+        "lockedDepositLamports": true,
+        "realizedLamports": true,
+        "executionCostsLamports": true,
+        "openPositions": true,
+        "pendingActions": true,
+        "equityLamports": true,
+        "totalPnlLamports": true,
+        "controls.entriesEnabled": true,
+        "controls.stopRequested": true,
+        "controls.changedAt": true,
+        "daily.paused": true,
+        "daily.lossPaused": true,
+        "daily.reconciledAt": true
+      },
+      "allComparableSourceFieldsMatch": true,
+      "sourceOwnershipMatchesLedger": true,
+      "attemptStatuses": {},
+      "reconciledAt": 1793223097158,
+      "lastFinancialAt": 1793223099375,
+      "heldValuationIndependentlyRepriced": false,
+      "usdPnlIndependentlyVerified": false,
+      "limitation": "Current held mark/source/USD freshness is not reconstructed from a stopped ledger; only exact stored cash/reservation/ownership/cost and flat SOL arithmetic are independently checked. Raw financial state, journal payloads, metadata and database bytes are not exported.",
+      "databaseUnchangedDuringRead": true,
+      "ledgerAuditedAt": 1793223225665
+    },
+    "executionQuoteEvents": 0,
+    "qualified": 0,
+    "reserved": 0,
+    "attempted": 0,
+    "fills": 0,
+    "exits": 0,
+    "openPositions": 0,
+    "pending": 0,
+    "tradingPnlLamports": "0",
+    "usdSolValuationEffectMicroUsd": "13689798",
+    "usdChangeIsTradingProfit": false,
+    "heldProtectionTested": false,
+    "ledgerReseeded": false
+  },
+  "reporting": {
+    "portfolioAvailable": true,
+    "accountingAvailable": true,
+    "projectionFailure": null,
+    "independentPredictiveCounters": {
+      "assessments": 38,
+      "failed": 38,
+      "notRejected": 0,
+      "unavailable": 0,
+      "uniqueEvaluated": 20
+    },
+    "nativeCounts": 771,
+    "acceptedDistinctSources": 94,
+    "unmatchedAcknowledgements": 0,
+    "finalStoppedAccepted": true,
+    "publicLocalParity": "Parent verifies exact accepted sourcewitnesses against publicsampler separately."
+  },
+  "comparison": {
+    "first6d": {
+      "elapsedMs": 1301225,
+      "auditedWindows": 17,
+      "uniqueTokens": 14,
+      "nativeTrades": 2530,
+      "auditUnavailable": 41,
+      "selectedWithoutSession": 3,
+      "httpTimeouts": 33,
+      "batchLogicalQueriesLostToPhysicalTimeouts": 27
+    },
+    "c189": {
+      "elapsedMs": 1414250,
+      "auditedWindows": 38,
+      "uniqueTokens": 20,
+      "nativeTrades": 771,
+      "auditUnavailable": 20,
+      "selectedWithoutSession": 0,
+      "httpTimeouts": 23,
+      "batchLogicalQueriesLostToPhysicalTimeouts": 0
+    },
+    "matchedWorkload": false,
+    "inference": "Reporting/nativecounts are forwardverified; the previously observed selected-without-session failure did not recur in thissample. More windows with fewer selected trades does not prove superior busy-market capacity."
+  },
+  "nextDecision": {
+    "doNotClaimAuditReliabilityFixed": true,
+    "doNotAdvanceToSixOr24HourAcceptanceYet": true,
+    "wholeDeadlinePathMapRequired": true,
+    "coherentLocalContentionRepairStillNeedsCombinedStressAndSustainedForwardValidation": true,
+    "specificTransportMeasurement": "Same-host same-endpoint bounded3s diagnostic for repeatedly failing first-page queries plus successfulcontrol, preserving original1.5s tradingtimeout until evidence supportsanyrevision.",
+    "unknownSuccessfulEvidence": "Adjudicate2successfulsignature mismatches before relaxingcompleteness; metadataalonecannotproveoptionalnontrades."
+  },
+  "limitations": [
+    "Allowlistedmetadata only; nofullrawproviderpayloadreplay.",
+    "No independentwhole-market opportunitydenominator or executable $50 benchmark.",
+    "All38predictivefailed; no naturalqualification, entryquote, fill, heldquote, exit or profit.",
+    "No successfulmultipageauditcompletion;2secondpagesfailed.",
+    "WATCHstream reachedfinitebyteguard before sourceend; nativecapturecontinued.",
+    "14expired are20HTTP-unavailabletargetsubset; qualitycallbacks,retirementsandauditunavailabilityare not additiveindependentopportunitylosses."
+  ],
+  "inputs": {
+    "index.json": {
+      "bytes": 2349,
+      "sha256": "07b7ff747adb47f3e6362af282606b5c3a008c8d92fa09a928024fbc72029666"
+    },
+    "event-summary.json": {
+      "bytes": 5863,
+      "sha256": "0071d36bbc60066e285e08a64ee56c643ba7cb57081dc0561a9e92ce2b40d336"
+    },
+    "final-status.json": {
+      "bytes": 394623,
+      "sha256": "b1514ab1d2532fdb6b42dffcbf1ee5c09b9f4e09bfa5987657d29f44c3a8e9ae"
+    },
+    "ledger-projection-audit.json": {
+      "bytes": 2006,
+      "sha256": "8cc12fa393a4def64bd192cd8e7d23c0ec9b5bb3473b910d8ca09c890887536c"
+    },
+    "supervisor.json": {
+      "bytes": 3866,
+      "sha256": "4ba6a6e35beb53a94901a6106326c247001fcd7303545e4531c558da11db6108"
+    },
+    "segments/0/selected-events.ndjson": {
+      "bytes": 2772513,
+      "sha256": "f3132c145ef06b63d5463923aaa1cc1b8ba6f757579d600a319617e65bf2c9de"
+    }
+  }
+}

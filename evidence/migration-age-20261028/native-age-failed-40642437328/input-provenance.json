@@ -1,0 +1,1316 @@
+{
+  "schemaVersion": 1,
+  "createdAt": 1793167699424,
+  "source": {
+    "commit": "c5ce87b858a6655c4f5dd80e8887554b84717415",
+    "sha256": "c848f60362ad19f290bfcbde64b252bb5309a26fe56a19c37785b76e95274540"
+  },
+  "dataContract": "confirmed-program-activity-v3-shadow",
+  "observationAgePolicy": "observation-age-selected-24h-study-v1",
+  "baselineEntryAge": "5–120min unchanged; no financial execution",
+  "inputSha256": "903befe453c2364fd58e1a089d5df66b6b21875002eb9375055b0ab842b1a4d7",
+  "inputBytes": 5386290,
+  "baseline": {
+    "calls": 4744,
+    "accountedResponseBytes": 168420469,
+    "uncertainResponseBytes": 48889856,
+    "sourceCount": 128,
+    "sha256": "4b23c6c609c0d6b19d3331a2e4795b95071b7064c85dfffbd83465e62a63dcd4"
+  },
+  "originCount": 108,
+  "origins": [
+    {
+      "mint": "Ex7Czx3en6ESwi1EANrNjnTm7KQDW1qN3hhXhNtypump",
+      "pool": "K7ao5Ysd7EhjXcuVP956NkvHUd5rGtxcFzDbuoHpas6",
+      "migrationAt": 1793156158000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 0,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "mWTK7nLFCjcAWXH4tyCUSvLvdwjZ9sQ6NWbK72cpump",
+      "pool": "D1NnF4Soo8TybadG9t51dMie4MiTLwUVC8oHZHq9bcZE",
+      "migrationAt": 1793156083000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 1,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "3B2KzDNM4R731ChMmsQPDHpc1gKNa9ycuoim8LJQpump",
+      "pool": "GjQSPyxVU9kJGFNRaBPRVqcwmqw9oc38C3uyEh2L63bn",
+      "migrationAt": 1793155808000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 2,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "4t1ujzXipQWEnsRHhTaQbM5dvhvr9uRyoqCcFX1ypump",
+      "pool": "9zn7naCtTLTqFZg5bzMP4WX7bKLVnsHmy2qu6XjWucBR",
+      "migrationAt": 1793155538000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 3,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "GtETXWKL8iEJzC3S38CBzrzyaqfVh7Jf2qWYE2J1pump",
+      "pool": "5PbF4C4fyesSULT5CnncP8Nzt8dfTKgbomr1cLArJ3UH",
+      "migrationAt": 1793155474000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 4,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "7sD23H7mwbd8AJ3MWEG3ZBe6r8XKoqCkkiu7GGzYpump",
+      "pool": "3snfGb4KpjVJ7WXiTfThnwuhZSWmYTvqBjZQzTByFyp5",
+      "migrationAt": 1793154254000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 5,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "HKBjxvnEeDBXKPAEEZUgkbWGMRGMNhkx2MTYiJogpump",
+      "pool": "EWh1cupB8s6XUKDzgErVpJaj3m4YsAe9ZuZpXNPab3Np",
+      "migrationAt": 1793154183000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 6,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "Fssj2wrrsEQ59oibUcTJihfFiC8ui1G1oQ3HxYR8pump",
+      "pool": "DS83fGxDTfGRKeZp4mW7tMVrzxgKGC8CLZJgNzyRqznB",
+      "migrationAt": 1793154127000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 7,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "4Cg4LpnnfHH1uPrzWuErptbfBjpjAyFAtS6r4hs3pump",
+      "pool": "3SwrqX7MSKr634onBrN5L4BChWSqw1QTUQCXeRvsmmsS",
+      "migrationAt": 1793154111000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 8,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "E2QtMc39ifrmadLzadECyEQr1fn7LVKH3bsQiiRupump",
+      "pool": "2n9dhFqrRbJNGBmGLgNbDJ2QMd6uccWETJLtTojEYKpm",
+      "migrationAt": 1793154088000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 9,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "DSG6o8SR6MLgnrvA7FPHGKnjeALYNfV65Md7fT5opump",
+      "pool": "DttrJVctQsDP3hycsD1prpMCbHmKKE1UGnTX23pNHhaR",
+      "migrationAt": 1793152845000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 10,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "FB5ghaoUHBXBb8e2KbZa14pTxEdjYbfd1QkHNQ1mpump",
+      "pool": "QMdYK2rSZ3KeNpmCBXxUXESaz6cHtyRGHnuc2HMP11a",
+      "migrationAt": 1793152798000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 11,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "5jVzdN5zkzKPcE58AUH2PfzGHozwZ13jTov4C36epump",
+      "pool": "2f1yTu2mqFCeAmNwC8Qz8kC6CvubPZortU9a9n1nXMyK",
+      "migrationAt": 1793152697000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 12,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "FGbCAVqF7D4WTAVDyoT1L4KXwWScytWKbXBbj4kMpump",
+      "pool": "BrTExqGsYFMwRd8pwKjztPonExDZ1SCf1dws5shN5dnm",
+      "migrationAt": 1793147425000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 13,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "79hzurToSKurKZ39WL2MGk88wmPBuQLn719rtpAepump",
+      "pool": "EYiJjTZ9SbYtEPwJyjez5NBBgSVkkgGuhyGrzKct8SVp",
+      "migrationAt": 1793147307000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 14,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
+      "pool": "46ZfGg4F6r93ZNGBrQywzA9dQfgbyJu2ye7vb58UhXnR",
+      "migrationAt": 1793147241000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 15,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "7B5F2CmoQaRee6mdy4sSWt1XSz4aUrKQx4cAmVMpump",
+      "pool": "Es7yDdPnroiHX7fac7T9W5TLhEVBgyPUjdtbkZd1a9Nb",
+      "migrationAt": 1793147214000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 16,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "9tVNgpiLGvGoZWyGCu4fQDD93XCw8pmdLRmPxTWapump",
+      "pool": "CztHycQsHC2BuYLFDDuveVAJGgJAjN74E2hUSQGFGcYY",
+      "migrationAt": 1793147127000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 17,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+      "pool": "BTmHL8CAkLKovYVhE2E96PiK1iLwyxbsai3vi6GycCN",
+      "migrationAt": 1793146776000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 18,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "7v2Z7oLSTWDsRwEXs5NK72rXYRwWktHUGzmgtMT1pump",
+      "pool": "6dQdzjxAvhA4mQnwpxxpKcDG9Sdx5Hd3Q16C3paptSX1",
+      "migrationAt": 1793146668000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 19,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "32kHap7E2KHLMkxX2e1bYvp1U2f1agf1L7rCrG6ipump",
+      "pool": "9kkuuqkt9o7swxGa8ccX6Rp8LNbQ39TJJVq66b2NR2HT",
+      "migrationAt": 1793146609000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 20,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "Ra2cNmSnk9NLGdWwdLaCcLfdzZSrFTh8gEvQUwGpump",
+      "pool": "89uo6YCUZjJNU1NeEmfWnUXBBGMvqf8oZMDBxebGLYio",
+      "migrationAt": 1793146600000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 21,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "77jPexT8QfBzyMZn19QVoY51emMgEaKpu3EskKPbpump",
+      "pool": "B1zaeuauG2PKfXDC81CBqMV5mh7CR4yGMBbSeAjrfLss",
+      "migrationAt": 1793145411000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 22,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "DjB8KGFtYFdQfq6RFVQg1vTepwwAXTvRX57hcq7xpump",
+      "pool": "EQG1EuoQjVSJjDBrQUBoWuHcnKkjUsSCBB5JuV3AZHWc",
+      "migrationAt": 1793145349000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 23,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "zjZx5qpHSeTYShWWZrp6PZ3gemgRMuPbqvrWA65pump",
+      "pool": "DB3hL8Ze3GaE6xMjZG4p7szYVy1qtHUNSzsB7NZC5p9V",
+      "migrationAt": 1793145327000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 24,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "DFPbbGFF8G4HXNqyMGSyvyW7o5ATRP2r7Aqw7yp4pump",
+      "pool": "3CkmnT3roNPejvgGQeEfM94Tsr9e9DytkL3V9FLDygMP",
+      "migrationAt": 1793145279000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 25,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "BPQxuEe5JgosnmyEKfVysjXirshZJJaAvNJHEiznpump",
+      "pool": "7fC9dqv1GrNQSS3hAeeYqKMmRAu7iRW82zaG6KFKWKJR",
+      "migrationAt": 1793145242000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 26,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "qqG6D1jm6upQ2oVxWVpzEP1ALikcW2hiRd4qtjhpump",
+      "pool": "7puSyBtNfuhtC9NimThxEDPfJVVL2xcmPzcbi3QFXfG1",
+      "migrationAt": 1793145194000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 27,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "9UJfCYDbYdKt19emZkFqGHo9pvGn6hVAHmYkALEkpump",
+      "pool": "ErnCHbVY6Wxn8tiEKsn3Ku6sP9TjacJqjfdwg3bvN6QU",
+      "migrationAt": 1793142993000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 28,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "FfR4XdDPVrRmq7SFhkaH4srv54uFnNW2wfi83eNPpump",
+      "pool": "6AbnoC7dqqoZ5v3EvoRHHsRYVmBVS3NZjNLdLcSv8CgG",
+      "migrationAt": 1793142756000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 29,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "jGCH5EP5o1ac1XsZUTkpc3FRUvvhdpJTuVkxkHwpump",
+      "pool": "4oLRYro3QRZyyq1pDTmXBHtw4g9fBuv8sCigcDfhZRjE",
+      "migrationAt": 1793142721000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 30,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "8Yxh8VkeE6kFMW7M41ViW35YYTvh5kP2Me7paAtrpump",
+      "pool": "8VitvnSfPCYzS2xFsCJMYcnUXYdpawNfEtFcMY5apN7j",
+      "migrationAt": 1793142718000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 31,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "8ToPTJcW57WqXPGpuDcQXwQZGbBUJqyAVrdUqvjpump",
+      "pool": "FuBh4MMeHxFVzrJvhxqRPyrhExTdFW6jA3EGaM6qqjDZ",
+      "migrationAt": 1793142544000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 32,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "BtM6yvMeqZ9ZHdeEJRcep9EnaZm6qGWCEwz9t8hapump",
+      "pool": "27v9YuHL5YLF6bCpQhsBmZGMBAyahhLoPkCFZH2oS9xR",
+      "migrationAt": 1793142508000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 33,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "yfkGEuzcaxp5mKs5PjzivBV43vxUW4BjWeC3rWxpump",
+      "pool": "AUhxf5d5y8U11BsAKXSsVCMbUeGceEyT4Dn7CnfANqr2",
+      "migrationAt": 1793142478000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 34,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "Qur3Q8N2BbU2eD299hdmPRcPquozuAidMiWPke4pump",
+      "pool": "C8L4vwP3ytSvNYnsvJwbBQothiU2bacKKknSvfJTpUZ1",
+      "migrationAt": 1793142408000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 35,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "4Feq6iXFqJtAQFruf3Je65pFXrr2bp3E8McUoa9Epump",
+      "pool": "2yzeqZnTLirPQhVzUYt8iuvCvD3aPGYNVZ6dPvep45rS",
+      "migrationAt": 1793142379000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 36,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "FgsSTazXwy4pxjrNMuzsQbEPbYPjAW17pAN8dfRHpump",
+      "pool": "FDpRWfSV5TJeJ1Ni5NYg54UxgrVN1fpAVNnXE2GLRYKu",
+      "migrationAt": 1793142373000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 37,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "C6xGUfFBsqzp85JoWGXto4fH3wmfWjxxHqkNyxtzpump",
+      "pool": "Hz3zHRcwAVxdXthXrrvfVhj6CsheNKmb4X92mcAjQcFp",
+      "migrationAt": 1793142327000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 38,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "5GKPTBe1k6EpFqX4ZVkcyWTSHAtVMTLE7roJbXmZpump",
+      "pool": "9GcXsz1TwciiSjBouRfyAdbUza3y2pz1DPkBr66GuxgT",
+      "migrationAt": 1793142190000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 39,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "aasGutcLvXoioKDNLeTskURz6STm7SeoGAthrXopump",
+      "pool": "AYuZ3GuueqJ5HrFj2v2hGnoGNKe39QphDRWizaC5eGRy",
+      "migrationAt": 1793141344000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 40,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "27GAcdyRnNaQ3ufHcynWu5UmN1PvTEJ2xBWhFHLBpump",
+      "pool": "5hdqGPrKDdV8LaiVcj253XP57MAPFjMn8aFtovbjhNVJ",
+      "migrationAt": 1793141293000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 41,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "H6oKevxFTnpNwsNJTKJVpDkZZ7McY1vNAKxZDGtgpump",
+      "pool": "6csVfXKAaXFdBHHNVmyrdeLB7VEQRCPSHW7Ej1S7wFjT",
+      "migrationAt": 1793141235000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 42,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "7GSsGcF5ARJ1p2zwzidHidVGjSQe4sEkyxYG9WNmpump",
+      "pool": "G5NdsJ5KkEDKGHTP9QSW93MF7vyRRSaaRNQSWnoAQDXz",
+      "migrationAt": 1793141203000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 43,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "nyHJiwvXBQj9rLjAfx3kuhmHczrfw33dwXCK79spump",
+      "pool": "GP4ttjH3CitMZCBWfgTjPqtf8WCrxCTmMswrPWYqYYuc",
+      "migrationAt": 1793141199000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 44,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "EAzbqoy9NRCjtHe8Ebrcovq8tQstH93mUrHk9oPwpump",
+      "pool": "AAG5L24of8jypNU4pkV669wV1tvTo9Z2eQyanY7aNxcb",
+      "migrationAt": 1793141180000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 45,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "Cpf3KpLjpcvaLetYahVDRSiU8NnJS3NLApbW3UANpump",
+      "pool": "J7bEQbs7RnhTJaFzvTCXRrkjmd5D1EbZr5AZKbfrgesi",
+      "migrationAt": 1793141139000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 46,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "3fajJhhDirSDMg9ddqVA69K96rjQKA6iqffD1y5Lpump",
+      "pool": "CLUXe7pKLMydHwpPUZqZzUDXdNKd1aLXrtW7JS4nBa2A",
+      "migrationAt": 1793141103000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 47,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "5SE1hA8a819e8wiEJaRqHch5tajuy9ERdCotDwyxpump",
+      "pool": "8gjUcVGFnyX7ui1xaT6EHjTcJQd6NQiRqvYHDRd5N86d",
+      "migrationAt": 1793141065000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 48,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "F8wvZ5HLxfsvTCz7z6um2T5kyaLkBDUFqXGrqQzupump",
+      "pool": "7uVHaZ76yoM2sFPxy7DsMCuFs1CxcYaDQnYiHEYK9YvR",
+      "migrationAt": 1793141001000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 49,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "BE3Pibd3N3MitNZPzgYDfdFQw6QA2qAxfo4rLiSkpump",
+      "pool": "rSoXwoh1Q8grCm7rSEf8Kmik8jF3raS6NawHH4asiGT",
+      "migrationAt": 1793156242000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 50,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "pool": "5ALPjDC4WUfReszwbmZLpwwbvfyqbjWgJw4t4K6LvE2k",
+      "migrationAt": 1793162715000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+        "originIndex": 51,
+        "kind": "latest-native-strict-proof"
+      }
+    },
+    {
+      "mint": "7B8zjchogtQ217hieyQaMM6HeTp2iyhRwf6xPDnxpump",
+      "pool": "2k8w9NyiKim3znftecYTV8xCuzDHkM9F3X1p3KUhqTfw",
+      "migrationAt": 1793123860000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027175710755-f4320bd5/events.ndjson",
+        "line": 113,
+        "rowSha256": "cfe41f22580ce4f969dde09c299b63014386d48124d70632c13d9399158405ea",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "wHqbDAuCqgM5h8ekvbV3TJ2KfkdEBk6vCgqU1Zupump",
+      "pool": "tNAKuUwxg96JegvVWn7iFuij6gKtKQpZ8NU8MUWpcvR",
+      "migrationAt": 1793123865000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027175710755-f4320bd5/events.ndjson",
+        "line": 126,
+        "rowSha256": "aba9ae06594aafa7097c0b55617978c0fa238423011f08fb040e7c8c8fefefb1",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "Ch7vWP6x2pW5yqPasXyVMGa1FnsWNgqJBvbW5fZCpump",
+      "pool": "2BbB9YdN9DvZo48fZ85DstZFYZDFQBdGL5tfBt85gLzH",
+      "migrationAt": 1793123893000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027175710755-f4320bd5/events.ndjson",
+        "line": 139,
+        "rowSha256": "cedb70beaa01d281914c31459f8c663d4f41e4fb4736a9d480194646b8ae70b1",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "4EX3c6fhguYcgdoH7whSZRpmeHHAp78521NF9zdzpump",
+      "pool": "GDy6g5UsC4nEdx1S1p23X3mWw9jk44ZkT3UgV1tdrkjZ",
+      "migrationAt": 1793124374000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/events.ndjson",
+        "line": 4362,
+        "rowSha256": "0f340d6e1328cdb25f2bcf9748aa4f4d2fd0fd4537767e434b4b81017a1f9b51",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "FWQx8Q8Nxtc6S4YkcuUcT7eFPHYdAox8V1UZQ4YWpump",
+      "pool": "9QB3AtP71GKd837nXxQxPsEpyZzGu4sch89DTvMxfPAx",
+      "migrationAt": 1793124479000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/events.ndjson",
+        "line": 4424,
+        "rowSha256": "4dacd1d2f205ee50406285c1bea95747f12e0f0634ed50cb4f7d1e6cb01ff32b",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "DYtHDCcEKgkyxQmxL2zVy1yiDhxygkpcjvyPjfbMpump",
+      "pool": "2GsFEH2Ak28UuvqnuFBJukVFmhtDse1sPujPpdSwV84K",
+      "migrationAt": 1793125783000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/events.ndjson",
+        "line": 3852,
+        "rowSha256": "88bedcdbb7fc803bde9167ab996f598a4a84ef8a87491f07d71984256f0f0474",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "BYnVXhAC1LczDoCjqAmx3UNYeVHauoXDxboK9Z9pump",
+      "pool": "BYdiqTn55wfx5VRqM66tpTguGjHSyjB9WssXcNEFbBMT",
+      "migrationAt": 1793125823000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/events.ndjson",
+        "line": 3946,
+        "rowSha256": "95f9f94b395c03aae297c874380ebc47719e73eaa7ae2fdb2e2b5176d217aa38",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "2VzZYM4UYkMjvPYPooBFm4zstqco8eeKn2DojNUrpump",
+      "pool": "6FrZE5dEqiLmsoa4tcAqxwem8fWdgwe4Qumda2ExviDF",
+      "migrationAt": 1793125846000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/events.ndjson",
+        "line": 4154,
+        "rowSha256": "7722f00c30aeed93992ac1d843b46afe2dc2ad3564fceac5c54d30efb9e4ee5d",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "92zZ43MQcq44ofBZkxDirLG38wiyMEpszkLwXpjj2wy2",
+      "pool": "CPUKr6jQdq4cNPWsi1MT4RZKHVfnRCSrGCpK6yG6M2HC",
+      "migrationAt": 1793126057000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/events.ndjson",
+        "line": 4365,
+        "rowSha256": "fab452a4f806500280bcb344eb3903e539370d6a06b5065c07c0d03d0625b416",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump",
+      "pool": "Deb7ybe2LHf242BxqWD4hBQXKgfAoLSWFWXpgeHeNseq",
+      "migrationAt": 1793126079000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/events.ndjson",
+        "line": 4379,
+        "rowSha256": "bbbfcfdd08f21b92b0c8b94fa90554ac5c0a1b25a959e08af0430f5793fe79fa",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "9QLj1Xobr8rccPVokr68pLWafkuZkErcJsrRTEhNpump",
+      "pool": "G1q2sG65p8H9vNdEGWaGb85SP6KtK5cHssgvwxS6YRuW",
+      "migrationAt": 1793126286000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/events.ndjson",
+        "line": 5168,
+        "rowSha256": "d4154b1cab6db69dec3fd195945f1a9b76d06669f2bc56aecca051ccd8207aec",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "92VpDepQXqV7Tk4BWwksrjKYBFeLCBccekgmPf2Lpump",
+      "pool": "AWaExVqaKWS2XQ8jysrDdrKrmiG7N44n7YtLWNf9p2Lg",
+      "migrationAt": 1793126417000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/events.ndjson",
+        "line": 5377,
+        "rowSha256": "e9ba28b0caae689760c57e3ee29689439e7c1a8fc103c8293c12b9527cac3ab2",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "BFXYBD5v7W6Tkaa6SwqTDXsbZgekVDPESVQFovhkpump",
+      "pool": "3nSSm27hjBhAB8s3VjJahNeoyt8B6VhMQhKqNCeESfyo",
+      "migrationAt": 1793126522000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/events.ndjson",
+        "line": 5844,
+        "rowSha256": "57edd49f2413c12ef3c14e443897a19c76c9e5fd2a4e6623de5dcc794d1eacc6",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "E3VHSpA9UwzcWicppFVjJ43dnuGKbHUfjF5uhWmbpump",
+      "pool": "Hs4r9Sw2FReth7JnRzNXb6k9vHBDrPWoLz6VPtjHxRVD",
+      "migrationAt": 1793132442000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027201954438-c75c4513/events.ndjson",
+        "line": 1521,
+        "rowSha256": "4bd4e3f0d6f82930d941d06a53dcc174b85589d23fb00f2c92ae769f8fa93505",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "D9Nfyy7woyPFcHHsrXwbRARjtqn8epx8QVB7vNbKpump",
+      "pool": "Bu8wg4Ag3DvazVkFZiNckro7rwRJu6rXgdpxhZk3Yk7g",
+      "migrationAt": 1793132470000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027201954438-c75c4513/events.ndjson",
+        "line": 1612,
+        "rowSha256": "830e2eb2e089f9771b39e4fdcbe988dfbaae368cecb6374a8363e78d25d6f7b7",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "5fYBASRkQ7GHypQMShaYRWUyXQ74tbwZ51hBfzPXpump",
+      "pool": "3guuqmtbVjQvY3mTQqMc2M7k33gZG8cyVrHrpYMzixL2",
+      "migrationAt": 1793132471000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027201954438-c75c4513/events.ndjson",
+        "line": 1680,
+        "rowSha256": "79277b23861557b409ae37e9a6964ed7ab0b719457772a09d250e7c8d27b90a4",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "4z2rdJF8ELTtPu7cgdkbEEsCUnT7CSU1agTBXvvXpump",
+      "pool": "HYYE3KW1d2S67wADcXjqvLAeUPa8jBjFV6dq23yeUe6A",
+      "migrationAt": 1793132526000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027201954438-c75c4513/events.ndjson",
+        "line": 1787,
+        "rowSha256": "01788072a346d356cc875be4d05f6a1d0a029db8cd1569e803dd0a1606d405c3",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "6gyPA4CdGTUPZ3foh1KJG6XneWQoQFvAwby7aoRqpump",
+      "pool": "GnVSZUe5HYGvNHw8BrcTiYqM5KwipbBnf8umUdKc9hRj",
+      "migrationAt": 1793132531000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027201954438-c75c4513/events.ndjson",
+        "line": 3266,
+        "rowSha256": "deee89fec2ddaac4a57b603db6215b48d14834db9c32d2bdd4ea4bc23d341b6a",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "2VTC8SDSxNZ9taHXsnXgK52fk7afKTNQo9HmzCGTpump",
+      "pool": "FUKUVc3MffnDK7dq877GT3wa8M5pmF5NNvrWUuXANhbt",
+      "migrationAt": 1793132559000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027201954438-c75c4513/events.ndjson",
+        "line": 3438,
+        "rowSha256": "1c5e9a206757ebd64427d02454adf00fac464667ca20d46df2b01315a38ebc31",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "Cq16miAMkk4STYeqgt5SphTz5HJHZ9MfQ1MHD5vHpump",
+      "pool": "2F1N2R6BpjQdn6UbMgLeY7rbhxBRxhivSGGnKxsiy6H6",
+      "migrationAt": 1793135342000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/events.ndjson",
+        "line": 3612,
+        "rowSha256": "62feafd419ccb9da8c4338545d6d52de4ea5fd0644ca51bcdc8d759a1e298840",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "8aiejCVNDWWVbDoygX6fYeH3PoBRiAH4raHWPrJ3pump",
+      "pool": "CQjgnQoBrBaragUfaRcazC9e4c2S8mrPfCHZS3V2k6PD",
+      "migrationAt": 1793135396000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/events.ndjson",
+        "line": 4091,
+        "rowSha256": "9da62ba306c992de1fdbf091b2c91c74d6259751c8d499477c5c0a498049c500",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "2nPPKzFCYDZLqHxJJdFJA1iV2V4ZqV9K6z8qSiYTpump",
+      "pool": "2MQY9wfM2vttdKvRKV9k9Ma7z988AdxqmUAYKCeHgAcT",
+      "migrationAt": 1793135621000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027211320693-9bb70ba1/events.ndjson",
+        "line": 780,
+        "rowSha256": "6477f398149816b4c84205ff520a46dac61ee0a09caf531403e8b514e3993e05",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "CyHZktF8QKQ6rRsa4q7zBFYEryjEsb4snv3YfaQDpump",
+      "pool": "G1NTeHYyz58EfnYhK2yHa3ZcoihMSWcawGfAW7F2bCZz",
+      "migrationAt": 1793135825000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027211320693-9bb70ba1/events.ndjson",
+        "line": 3750,
+        "rowSha256": "f9fbb7655237c600ca7f1f169dcfe8330d8c082e1054f02714c93e17b2f3b814",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "75Z5Q2kDYdZXfh4JMQMXGxmpNzbqMXfLmLiTcFh5pump",
+      "pool": "FVEnfwDZSbE4ajtkSJBdzXHqBMnmG3i6bzFWSBGHSmmK",
+      "migrationAt": 1793135895000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027211320693-9bb70ba1/events.ndjson",
+        "line": 4781,
+        "rowSha256": "02e40e31eb8a48777ff491ec585e649964f5284756e00df889d3b17e7e44512b",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "4tooZXbQN77pzsZkNfYiKdjEKVSQQiK188wCxWRNCnQS",
+      "pool": "FbkKvSzXPFkotf9nTxBN6mQ4XCu6DCo63E1tFmjjvBwE",
+      "migrationAt": 1793136622000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/events.ndjson",
+        "line": 2719,
+        "rowSha256": "92cc926a02f50b1432f3132c7c957edf296118536ec0b0d0a349ba16a3a3fff3",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "235s6hetMnDB8GNQd742hVhBo47KyuA6LSNm2dk1DN1d",
+      "pool": "5q3dS5dds1Uu1HMwq32pkm4GNzFYW6PjsZT5Ai7MrWci",
+      "migrationAt": 1793136778000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/events.ndjson",
+        "line": 77,
+        "rowSha256": "83a1aa60d171acccf1680e131a8bfe4a8a7a3930ea3ab9c7583d822fa63b73bb",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "8Tgbaw4G7pvnneMoNY5t7597uKEKkFQcnobJzynjpump",
+      "pool": "EJcUpjtnwoB79RsQa9yoUw8vkXHkcwjcEcpcSHGbPzcC",
+      "migrationAt": 1793137427000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/events.ndjson",
+        "line": 2183,
+        "rowSha256": "3bf98f2ccf04006fc1ed00356031b2132752822d0694825aa4cb07364c4e3fe8",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "3DwY8yKqbnDUkddahH3VnbLVt7nAqrFVfcVLENsxpump",
+      "pool": "GCsovoqbA5WFtRsYYb5hd2xq8rEhjBm4TE4ZWjoZ2gNw",
+      "migrationAt": 1793137620000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/events.ndjson",
+        "line": 5165,
+        "rowSha256": "19e589e25da2364eb5d05b64c4f2816de8c831321d2c449cd73670bfa3e45707",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "HEyHzCFAoQxojT5K4YtwYdz51yjyU2Kn11HjYvi3pump",
+      "pool": "GucURXRcBXKiijZoBTH3N7QBH5zoZbzBt1KtwTTCsY9B",
+      "migrationAt": 1793137644000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/events.ndjson",
+        "line": 5515,
+        "rowSha256": "4dfd989d3fa846386105840cdbe9efd7207a4c40df1fb75949ca210be3f4dc3a",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "BqMG67yBmwcc9qshsneUPzSMZneus4F38ynVUpUgNsty",
+      "pool": "Fv6pt6TnXEP8gM4j445itMaE2wPv4gch8CFG5rcB8S5B",
+      "migrationAt": 1793137645000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/events.ndjson",
+        "line": 5551,
+        "rowSha256": "751eb8c031429c39917eea540ff01ac24c66dd1d3d26709c1b946f368cd42d32",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "2k9ThvFBBAtSfubUG3oVhjfS8TY3Js27xq7Gghb8pump",
+      "pool": "9S6UxYagQ7cJgxiXczXeqqxhsqvntfr1n2CdyzoUuyEU",
+      "migrationAt": 1793137661000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/events.ndjson",
+        "line": 5771,
+        "rowSha256": "f8157ffd97b659f044f22e323140ccc20ca0d50b86a6b5552eab79aff4ece9d9",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "CQTssrASotA6ZLqPJM11pFmf2ahz9NPPaV697ZMhpump",
+      "pool": "CJkKiYPfvudXwPnDfddMcW2ZhJBEwSu4AHckRdJt85kj",
+      "migrationAt": 1793137953000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/events.ndjson",
+        "line": 2155,
+        "rowSha256": "42d5b5594da5256b5052519399713cd63ea55cafcfd289223a82dc4816e45146",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "7ZeTBCZMioW5H1hbB5vr6peYYiBTxQr5bCXkwb19pump",
+      "pool": "AiYzfvqHmxhE4kj2kwTt8woeKdbkKLp7JDsGfh9KAh7J",
+      "migrationAt": 1793137908000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/events.ndjson",
+        "line": 2530,
+        "rowSha256": "08cafbce24ae0ace0860ea31e0b9ac37d322c88db0bdba66671b81d61f1012ba",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "FvYmX88TgdPv3rpVzFiKgGjhQzkBubwfz8cqeFnpump",
+      "pool": "CsGYTAGM87pco3eeFvbnZ8xCd67JBGTCnCjcPxRYKhUz",
+      "migrationAt": 1793138147000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/events.ndjson",
+        "line": 5812,
+        "rowSha256": "3180a5b6bc220c1088c331bbd559b028d2833130c0378d3059adc00bfce33fdb",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "4SUbJv15ASxQ2s74iSS4HHoMEtu57H7ajcNWncuBpump",
+      "pool": "FErrGyuHrfqx9rqTEEBDS5DDsH8QWgz1Q57PGq3KShug",
+      "migrationAt": 1793138160000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/events.ndjson",
+        "line": 6168,
+        "rowSha256": "05a8a69bcd399a7b4d47707596547b3d138b820f3c1b95b920706db549ba860c",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "5pLMhLiSjAM8roK77SGB9iZGjbdWwESnH6nnvwPipump",
+      "pool": "41eSkuAeAsMKEEGUcwMTuP6N9vf3ukchRRkRH4DkM1LC",
+      "migrationAt": 1793138220000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/events.ndjson",
+        "line": 7413,
+        "rowSha256": "b89602ef4379b3ae7b1ec8807c8a8f7f550f56fe50a40db9dd6303897354b4e1",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "HKvyE87bzpTTDpSQPNvm79nLgJ6jT1Sa1XFRZccHpump",
+      "pool": "GAZmLL5v2omUcBmfVQyPwZWyrENt4uaonmCodfRUkjLp",
+      "migrationAt": 1793138286000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/events.ndjson",
+        "line": 109,
+        "rowSha256": "1cc88bcd601f01cb84e7deca73371c79ccfcd303a6d56b77146056087650b3ec",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "DsiZovKknp2UibQNmCKHh3TRWmg5sM5R81oiSdPrpump",
+      "pool": "5YHEskCPvTpm52k5trQtKQSmgseSL8tis49WoN5LUogN",
+      "migrationAt": 1793138958000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/events.ndjson",
+        "line": 2697,
+        "rowSha256": "8625b1e24b31f4cc0178408518432f110b8425756c192c2d19ab930543aa8039",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "C8kyPKLDzxCTJbZG1E1vDDVRr6414xKuSciFon7Dpump",
+      "pool": "APSNUqrPsF4wVE1QfJz2TYpyz6qFFn9GRqrmk4eHYUNs",
+      "migrationAt": 1793139056000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/events.ndjson",
+        "line": 4977,
+        "rowSha256": "864e870bd2cb353664cf7bfee0eef0a98cc7da441642d500ab949c5adee37284",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "5gbB8wPNgTLXEwNx6sjAcBqFLAzP6PpaiXtrQMpZpump",
+      "pool": "4qdRP1mZanjd3Nufcknbgh9KNVur4rVqYk3DfSNm5zWT",
+      "migrationAt": 1793139057000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/events.ndjson",
+        "line": 5001,
+        "rowSha256": "3b0929f8fcf245741c81e30d3779a501523a112691e9a744a6870172ccab9c33",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "AEFQiYobCmuA3ygx53mydi6CQaatEbViCUMcHbo6pump",
+      "pool": "5Fqp2XXEPGE8Hi4JvNGYnmNguLPMRSpiCowh6c9QVh1Z",
+      "migrationAt": 1793139110000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/events.ndjson",
+        "line": 6089,
+        "rowSha256": "5129508cbb19289e9b3f51b959de56c1ebd3d04e9bd2c5c535784ecd50b4497a",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "az55LNrwPxbrx7qDJicQpbL5wQaF4YCT4fG7Qdjpump",
+      "pool": "BL12FRAyNik2gu3n4iNCQzwLKHMn622BQbYtMjmT4mpS",
+      "migrationAt": 1793139111000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/events.ndjson",
+        "line": 6112,
+        "rowSha256": "7780a6edc3ace505bd66840eb6bb163c7c032f3c7064e04da2bef072eb38bde9",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "QyjXN4CcmnDZpkXw1ZyJoQTVFygDeYXKggLBFL2pump",
+      "pool": "Htu5Cmpiq1WP4J9PB7EsQ41dR6hc9UABHm964EXy1MLd",
+      "migrationAt": 1793139177000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/events.ndjson",
+        "line": 7661,
+        "rowSha256": "b4c5807e8db33bd27e9dfad12cac2f10dd52d679f86434271988ae27d10fc659",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "2VkqUSdBGYkf6ZDU2PZfxbSHFDARwCFjktWrN4UFpump",
+      "pool": "D7Z2ZMpUr2jWDwK1enEGfSHba8FsLMNpm5KsYZarZDA5",
+      "migrationAt": 1793139324000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/events.ndjson",
+        "line": 11503,
+        "rowSha256": "76c5f5a4eb2ba2d4330ef7f245a39d82c789aff9220dc59664b0e3d7d33b5046",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "HQanwijpgjALtn4QdAD76wYV6hV76QhVgB1SmVnMpump",
+      "pool": "BYdDDJUjYmxYUbMuXwf8oC9zLX76H6Tf9oEuvvnaoYfo",
+      "migrationAt": 1793139503000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/events.ndjson",
+        "line": 16170,
+        "rowSha256": "8f87a2cb84482d0c5caf2b340c0ce2e207134722ad70257f2fd66399ac25b260",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "5Hd55oHSBtHw2mzpNCKXtQ7NkBtWD6pvrj1J8ZL6pump",
+      "pool": "6cSk6mVRZSpPwhEvcUHYvkrewpWvCo3rihgJ371ErU9",
+      "migrationAt": 1793139506000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/events.ndjson",
+        "line": 16214,
+        "rowSha256": "5702f1aba8ff94d2bce5b9aab2a3bef62ac7ba61dbfd64f6c749b0868a046063",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "7xk3sWTGyiXKLNVFD7AUFqEgSFyxLtRosGUG2ajSpump",
+      "pool": "7zYgdF5RVu6NEUEkKtxViT3AAG61tz7Yr2Ykdz6YU6bJ",
+      "migrationAt": 1793139510000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027223455745-ec07c3bc/events.ndjson",
+        "line": 90,
+        "rowSha256": "659829932e85cfe99302faf5167863050a0756da16960b99f9d81ea2a9d647e5",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "AAv894Fijo5GrunpuBfvykWZu12VZVoFLphiT91gpump",
+      "pool": "6RxX8pkDhkpqd3KjcCMdz17EqWK1Gb17H4AaQ6Q98c5f",
+      "migrationAt": 1793139561000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027223455745-ec07c3bc/events.ndjson",
+        "line": 107,
+        "rowSha256": "bd4b94297ad3297a3940580d9ab22356708b26d0229b08685f00e22a929aeb31",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "7MkFjz9wFT9yvZsUTot7miJN89qUgqeEc5yx6Xo2pump",
+      "pool": "7FyZwmxokdt6Q99GMRJB9QDSbE9esWxY8813wW54TUY8",
+      "migrationAt": 1793139733000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027223455745-ec07c3bc/events.ndjson",
+        "line": 124,
+        "rowSha256": "03a1c3b08f9966992e4ed8c92af277112de2328898188a208171bcefcd9252ec",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "3n79gGz3MQSYoWuaCjXn9N1vkGt6gtfpH1pungHPpump",
+      "pool": "93CeFpfFT8ZRwNkjrNKnxxiGCgMyWCbkxp5aNzyVJefT",
+      "migrationAt": 1793139822000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027223455745-ec07c3bc/events.ndjson",
+        "line": 972,
+        "rowSha256": "08d063bdce59a73010825e0a27599bd76d8d859a3ad211694f627e9c574d4177",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "Hzdiu6GPFFrh9695fBWUXb4G662B2WXVK9cWyk7Xpump",
+      "pool": "ABY4FBXXZagepjkyWpSNuQqEJH1zcKcYsvS3GLtCTB7i",
+      "migrationAt": 1793140044000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027223455745-ec07c3bc/events.ndjson",
+        "line": 993,
+        "rowSha256": "65b52d195ee8ac9cbd61387e2924356a05b99d5a06b2bcb2a7217ca14bd00b69",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "GFrEnNVcq8hRJSfovDZzJHKiSMwf6zMqc1g5DZ8pump",
+      "pool": "7enDDw9N6nnZA3tS2J7owsjPEwyQ3teY6GMxtiZw1F7k",
+      "migrationAt": 1793140147000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027223455745-ec07c3bc/events.ndjson",
+        "line": 1045,
+        "rowSha256": "39cf0c0946bf7beccf77ee70194f1d4b2a4ed83cfc562daff6689ddc1a67b9ae",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "KaL4Dty996oZc5aHETc2XHqdwAp1ASrnwtRfjTopump",
+      "pool": "4pHCVfCHm18wnM2Cfk8GEU5ueG6P9edGrBkCTnGK7aJj",
+      "migrationAt": 1793140165000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/events.ndjson",
+        "line": 94,
+        "rowSha256": "80b4576335c2ef98b705038ca352127295c3689097e01b3632a50ea721c78551",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "EBd37wFkN8FFZYbrMae2aDW4KZ55a3Ftwhit3A61pump",
+      "pool": "7cDCmTb7hVTeqFi8nuJ1bfVR7gJr7UxCwBVHv6b45zMQ",
+      "migrationAt": 1793140773000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/events.ndjson",
+        "line": 1090,
+        "rowSha256": "95b8183e6de5d27b407c9a38c57e6d999823b12dba99436f8fe2b234e57108b5",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "71uyNgZn5KdutEHrnnX1Eo6bBgZXKB9rDsfwzVGbpump",
+      "pool": "95VVCHV1WWQuGmACj7yo8zXugh4r24vusSCnKrN81Z8y",
+      "migrationAt": 1793140860000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/events.ndjson",
+        "line": 2089,
+        "rowSha256": "e26cd8148ce4153003ff1067ffab8c0a7ebfe73e911532ddbbd0fd38478a1f01",
+        "kind": "immutable-historical-strict-proof"
+      }
+    },
+    {
+      "mint": "Qy3SbSUeVETiMeAJQQzweNVfEwJ2cguYWX6bNvhpump",
+      "pool": "C9PHUyd5Cqgr98KNtDagrekRRutjj8zivjqwCpHMGLSL",
+      "migrationAt": 1793140891000,
+      "source": {
+        "path": "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/events.ndjson",
+        "line": 2396,
+        "rowSha256": "4e55100cf172e2b88bd295a2de793d13babcb27e38bf9388f4941b78c47c158b",
+        "kind": "immutable-historical-strict-proof"
+      }
+    }
+  ],
+  "inputs": [
+    {
+      "path": "/workspace/poe-pilot/pilot.json",
+      "bytes": 117577,
+      "sha256": "890be9fa468aa139e88c516a81cfe5893ecdb6b4d28521f30ec5d26d7db51bd7"
+    },
+    {
+      "path": "/workspace/poe-pilot/status.json",
+      "bytes": 108564,
+      "sha256": "9e13e049f6882ad6f8266217cb870e6d62e9a183cdf7bc6b0b6789c5535aa9c3"
+    },
+    {
+      "path": "/workspace/poe-ec2-ws-diagnostic-admin/scripts/poe/reporting-source-context.json",
+      "bytes": 179,
+      "sha256": "a9ac3528f3a3bdd024e151990dd904d14cdeef3442f9a0f6511e7df44664bfff"
+    },
+    {
+      "path": "/tmp/poe-native-candidate-output-age-shadow-recovery/metadata.json",
+      "bytes": 140820,
+      "sha256": "e17e30eb05752d71a9d63bc01ea3f681472e74e677a6a8119b05fbf95272ce2d"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/watch-checkpoint.json",
+      "bytes": 2715283,
+      "sha256": "5ab4dea5c1bc8a5a5d6ca0c1b3b2d4e6223d952edf7ade21b7818c303982f8cf"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/pilot-20261027175613061-393704a5/events.ndjson",
+      "bytes": 43680,
+      "sha256": "958c1c52aa93d904f303e8c1d9b970b1e99af655fa2f7451d2ce850c9f2296fc"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/pilot-20261027175710755-f4320bd5/events.ndjson",
+      "bytes": 301312,
+      "sha256": "f604ba26187bd0b1fcfc417f555d3008a4579a5e7810491791c5994650a1c7db"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/pilot-20261027180216582-fc8d1a1d/events.ndjson",
+      "bytes": 615545,
+      "sha256": "740006db602afef11d2dacb4d472989e469707d4cb2b7e8423d49f1bca6d8bae"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/events.ndjson",
+      "bytes": 3924864,
+      "sha256": "533d3442ff085dad0f547ac2d14c3326ad0593687921f37614655ac7001140ff"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/events.ndjson",
+      "bytes": 5345367,
+      "sha256": "9c6b70ae0d6785a962a9f67a87db9cfbf2160126e30d4bc14ca85fb26c846189"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/pilot-20261027195343952-418513ae/events.ndjson",
+      "bytes": 6986984,
+      "sha256": "6a287887c800d3df31461ae134f94a137af41ffd9f54454fd4ff5c2f25e37794"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/pilot-20261027200603791-46c145af/events.ndjson",
+      "bytes": 1166724,
+      "sha256": "8c789b86b82c8024cc6779c8109e86bf3b37c27ffd407dbad0984307e2078098"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/pilot-20261027201954438-c75c4513/events.ndjson",
+      "bytes": 2345154,
+      "sha256": "9ea6459504247bc817f2f600a84e828328b2cd53dd579db2feada4a89ab12b62"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/pilot-20261027205459767-1840d6f4/events.ndjson",
+      "bytes": 525800,
+      "sha256": "5a94d4e4ed7af3d4485ba9676f2d11670ca3328ed1b6d358036fb565acb36079"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/events.ndjson",
+      "bytes": 2444243,
+      "sha256": "883a4a011bc885a597b41cd8c5aeda4ab38d797cecdfb501a1856841a4719ada"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/pilot-20261027211320693-9bb70ba1/events.ndjson",
+      "bytes": 2968584,
+      "sha256": "5b662313e87e4bf2b5968b8e7e9a4ad368d999dcef79046bb37b8dbf742e4589"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/events.ndjson",
+      "bytes": 2506033,
+      "sha256": "cbc94474fafa3c6fcd506a1cf355f1dd3a848d01a3144f9082f367dc558adc76"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/events.ndjson",
+      "bytes": 4843926,
+      "sha256": "6434d2c4556efc9d1024e43de0bfb3da94304a61b321be91d8d18a82bcfafa31"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/events.ndjson",
+      "bytes": 4313565,
+      "sha256": "56711128ea7bc20cfd9dbe4e71b8b4350b897124c64374e2986ee868bf1d51d3"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/events.ndjson",
+      "bytes": 9156783,
+      "sha256": "5e258b5984e3c65e09f7446b15c63febde85b2cd3a6a6124fa0e159941b10919"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/pilot-20261027223455745-ec07c3bc/events.ndjson",
+      "bytes": 1176890,
+      "sha256": "596ee624dff18a98c53cccfe473aec0ddd6f83c26fe1b8046ba27556fd3674d7"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/events.ndjson",
+      "bytes": 6248883,
+      "sha256": "b6f6395628a00cf6503f89191801e289bf5b612666e0e23e9d64b033e5420d51"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/pilot-20261027230222347-7a5dc2cf/events.ndjson",
+      "bytes": 8213654,
+      "sha256": "b9769a8c51a0019cc2f63ee6e0cae577a8c9e9bc0e286531700f39169088dc4f"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/pilot-20261027235124302-99e43f99/events.ndjson",
+      "bytes": 7718377,
+      "sha256": "24f641104b8b1f0fc61801190dd40e20b3e849fa0d5296dcb956a2d0e746f4de"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/pilot-20261028001353575-91ed5596/events.ndjson",
+      "bytes": 12899380,
+      "sha256": "a7f9467636b2ef9ecbd4ed224805a2f4c77e7ea43973d47d0630c4ad112aa3db"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/pilot-20261028015120070-082c1037/events.ndjson",
+      "bytes": 195669,
+      "sha256": "523d07fddf0aa841aa82248b5273372fc11c6c0a0f22f60bf9e2e2fd5462b2d1"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/pilot-20261028015514634-7a47cee0/events.ndjson",
+      "bytes": 199066,
+      "sha256": "818d0daa89d9669a8aa4414a7b09af94fd9f7978dac68e3d4cc11bfe75fe13dd"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/pilot-20261028015809342-f9514585/events.ndjson",
+      "bytes": 995619,
+      "sha256": "cc151267bbd30a02df8d65a4afd00a929f5b54add6c2446c2be4af5de9b7d036"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/pilot-20261028022044929-0a67e810/events.ndjson",
+      "bytes": 7458201,
+      "sha256": "c22cedc086e4e18edf46185b364258a7dc9337fb2626f51f8258d76b54d51c00"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/pilot-20261028024343351-654738bd/events.ndjson",
+      "bytes": 9592215,
+      "sha256": "0e003fa93a3515a47d6db445486df08f5d0f68ffb2305005a3d84db93935aa14"
+    }
+  ],
+  "sourceInputBytes": 105268941,
+  "financialDatabaseOpened": false,
+  "credentialsRead": false,
+  "networkCalls": 0,
+  "externalLeaseHolder": 204489
+}

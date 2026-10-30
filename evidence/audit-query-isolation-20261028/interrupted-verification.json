@@ -1,0 +1,10 @@
+{
+  "at": "2026-10-28T17:04:08.427600+00:00",
+  "reason": "A second verification launched before the first full suite had settled. Both isolated test process groups were stopped. Overlapping logs retained as interrupted, no pass claim; serial final verification follows.",
+  "marketRequests": 0,
+  "financialLedgerOpened": false,
+  "processGroups": [
+    71835,
+    74157
+  ]
+}

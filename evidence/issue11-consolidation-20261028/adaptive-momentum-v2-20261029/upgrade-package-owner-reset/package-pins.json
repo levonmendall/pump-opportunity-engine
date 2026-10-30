@@ -1,0 +1,102 @@
+{
+  "kind": "poe-original-active-adaptive-v2-owner-reset-upgrade-pins-v1",
+  "source": {
+    "commit": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+    "sha256": "870ac98a2377fefde564b9a3a252a7cc7cb3a561582abd48bda22ee18a14bee7"
+  },
+  "previousSource": {
+    "commit": "5648606bf78f6687c47632be5c789af5e7f19772",
+    "sha256": "cf2089281edcdf03e7ee40492ebe06fc0e715de9c1b31f94b732905dea8318eb"
+  },
+  "configurationSha256": "797f8c1f0a1e23a9771b05356ff51d71f081b520e994f4cf6b2ed1c7c44c6511",
+  "previousConfigurationSha256": "96ec314c0b0256365286659f64680a81e7225386848f3c12567854ced76cd69c",
+  "driverSha256": "f65a95224c23244ec19ad1984d85e484e51161c53396a887483a74952bf9f816",
+  "indexSha256": "196b38ef950804ab93da1b5f86c027a83c85e18097df2eca0975986684d1cc49",
+  "manifestSha256": "e37b9ec56a9aa0f3e24f42619214ef64f7779c2b7b3ae715a7553ff3654aab42",
+  "transportSha256": "dfb5a8d56ae4000851eefb4cb008038443699ac23827bffa474b6e6d96739a3a",
+  "ownerCommandSha256": "66b9f86db618182a7d8040acea823c441e48eb547aef3195380d2c5725bbd6a7",
+  "stage": "/var/tmp/poe-original-adaptive-v2-upgrade",
+  "strategyVersion": "adaptive-momentum-v2-paper-v1",
+  "previousStrategyVersion": "persistent-buying-pilot-v1",
+  "deepSlots": 4,
+  "financialPositionLimit": 2,
+  "activeStrategyContractSha256": "8e404a11d1868e3a2c3a4a708133f9831a555a590201c8e70e62c35a44c4d0bb",
+  "pureAdaptivePolicySha256": "b4fa586df1b6d89c04b250a1ff3ea4e394a4cbf9b7900c7a3ebd0317c7c56a07",
+  "riskFallbacks": {
+    "initialCommitmentUsd": 50,
+    "aggregatePositionCostUsd": 150,
+    "status": "temporary-technical-legacy-fallback"
+  },
+  "strategyChanged": true,
+  "baselineEntryExitThresholdsPreserved": false,
+  "completeRelevantTradingEvidencePreserved": true,
+  "supervisorTransition": {
+    "oldSha256": "025abb6631f94cbc97ec30d855ab7d5d11cb257025317e4cee186c5ee00695ed",
+    "newSha256": "66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e",
+    "oldNativeReceivesStrategyFlag": false
+  },
+  "ownerAuthorizedDailyLossReset": {
+    "requestId": "owner-daily-loss-reset-20261029",
+    "authorizationDay": "2026-10-29",
+    "command": "reset-daily-loss",
+    "socket": "/run/poe/control.sock",
+    "soleNativeFinancialWriter": true,
+    "durableNoopConsumptionRequired": true,
+    "newLossNeverWaivedOnReplay": true,
+    "entryPermissionGranted": false,
+    "financialDatabaseWritesByDriver": 0
+  },
+  "historicalForensicReuse": {
+    "artifactSha256": "4d036b6a2717fe830605caa21d4aa98166c4ef27860c123a35b988ff39d97c5e",
+    "artifactBytes": 10694,
+    "previousRootProofRequired": true,
+    "newExporterExecuted": false
+  },
+  "files": [
+    {
+      "file": "native-paper.mjs",
+      "bytes": 5167136,
+      "sha256": "870ac98a2377fefde564b9a3a252a7cc7cb3a561582abd48bda22ee18a14bee7"
+    },
+    {
+      "file": "backup-worker.mjs",
+      "bytes": 75375,
+      "sha256": "7ff2e950011cf10fb2d3b820f31099e3acac46fcf64abcf8d5bf800abba43062"
+    },
+    {
+      "file": "better_sqlite3.node",
+      "bytes": 2226168,
+      "sha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d"
+    },
+    {
+      "file": "metadata.json",
+      "bytes": 154711,
+      "sha256": "9980fb53f5e4700703af140a44ddaaa147fca7321499b9a60ff901948e036580"
+    },
+    {
+      "file": "snapshot-publisher.mjs",
+      "bytes": 32314,
+      "sha256": "7da8c7388a5ec3e4f2e0b46a8226ce457d0a68578e5b5225c50b97f1a508ff44"
+    },
+    {
+      "file": "run-authoritative-service.py",
+      "bytes": 37955,
+      "sha256": "66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e"
+    },
+    {
+      "file": "poe-runtime-persistent.conf",
+      "bytes": 925,
+      "sha256": "d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df"
+    },
+    {
+      "file": "forward-original-upgrade.py",
+      "bytes": 63594,
+      "sha256": "f65a95224c23244ec19ad1984d85e484e51161c53396a887483a74952bf9f816"
+    },
+    {
+      "file": "service.json",
+      "bytes": 1715,
+      "sha256": "e37b9ec56a9aa0f3e24f42619214ef64f7779c2b7b3ae715a7553ff3654aab42"
+    }
+  ]
+}

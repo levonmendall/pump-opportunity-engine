@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-28T18:03:26.032423+00:00",
+  "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+  "inceptionAt": 1793123773252,
+  "revision": 8934,
+  "initialMicroUsd": "1000000000",
+  "sourceLedgerSha256": "9f6b1a02d4af23d82d5b3c12ba5eb2090c6da608ca972171f14c288958238db8",
+  "backupLedgerSha256": "1804fd517b1ff7e56ebe31ea5bca169a83c2447a32641c7ef0aeeb6913877e04",
+  "backupBytes": 4788224,
+  "sourceBodySha256": "70fd996bf0cf5a4bbf1a6c8ecf041f1faa15e8b8e0bf8856aa5e5277fae49430",
+  "tables": {
+    "financial_state": {
+      "rows": 1,
+      "sha256": "50f217697041088f07a54d2c043c418c88f7b49075cfe81f88990c8f1819ed5c"
+    },
+    "actions": {
+      "rows": 8934,
+      "sha256": "3214b992032bf92ad46dd17b281e46b4939ed84c4f8b53c32f1e8f023b69da13"
+    },
+    "journal": {
+      "rows": 8935,
+      "sha256": "79b76227b530aed1153446be555540fc438c025395f77c600888c150d3a28f3d"
+    },
+    "metadata": {
+      "rows": 2,
+      "sha256": "13aacd57d6aa44e7ac5e895c63e3dec617cfed2f6d11964376c5dda64f85d814"
+    }
+  },
+  "sourceFinancialStateUnchanged": true,
+  "sameAccountAndAllTableRowsPreserved": true,
+  "positions": 0,
+  "pending": 0,
+  "entriesEnabled": false,
+  "capitalInitialized": false,
+  "originalAuthoritativeAccountOpened": false
+}

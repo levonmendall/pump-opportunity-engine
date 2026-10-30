@@ -1,0 +1,192 @@
+{
+  "kind": "offline-components-not-deployed",
+  "files": [
+    {
+      "file": "poe-continuous-retention-historical-idempotence-failure-20261029.txt",
+      "bytes": 5227,
+      "sha256": "bbb89086427e3a6f4c6719db69fd4e875bdeb37e12baf7a72f771908b02dbd95"
+    },
+    {
+      "file": "poe-continuous-retention-pin-race-build-20261029.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "file": "poe-continuous-retention-pin-race-tests-20261029.txt",
+      "bytes": 4457,
+      "sha256": "6746ee378183d1e9ba6f4318613029689a724423c09a00d9e4a5b018db94b390"
+    },
+    {
+      "file": "poe-continuous-retention-tests-20261029.txt",
+      "bytes": 4166,
+      "sha256": "7d87a5d8fdda3ffd657a960b33babbd203300160f4d5dce634b14a630f232e45"
+    },
+    {
+      "file": "poe-continuous-retention-build-20261029.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "file": "poe-continuous-retention-existing-tests-20261029.txt",
+      "bytes": 3005,
+      "sha256": "d77e0be6a348ce9e1d8b606d8e10b44a62f912a1e8c469fa5d3cd3dc09c72faa"
+    },
+    {
+      "file": "poe-independent-recorder-pin-fatal-race-20261029.json",
+      "bytes": 780,
+      "sha256": "75a78db2cec33baeae5e34f77d0ac28a89a10156269542ef46fee2b4b0d20040"
+    },
+    {
+      "file": "poe-independent-recorder-pin-refusal-race-20261029.json",
+      "bytes": 703,
+      "sha256": "21e3d9043f4b1158f48399c224211dc14477add368c20dc48c15c1e289fc1290"
+    },
+    {
+      "file": "poe-independent-recorder-final-race-accepted-tests-20261029.txt",
+      "bytes": 4458,
+      "sha256": "ed70c75d53a66ad9b9fb36aeda32b3481c25e05372555f05832b9baca34cd1a1"
+    },
+    {
+      "file": "poe-independent-recorder-final-race-review-tests-20261029.txt",
+      "bytes": 5223,
+      "sha256": "810686ba3f6a0868f3557b404ff1126e7fffe8580ca54ef9711de8bf898ebd6b"
+    },
+    {
+      "file": "poe-component-boundary-build-20261029.log",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "file": "poe-component-boundary-after-20261029.log",
+      "bytes": 9968,
+      "sha256": "a04d0e2b1c3dae6adcca08958ee4cf9940142f4357ff875755a3a00ea5c95f61"
+    },
+    {
+      "file": "poe-component-boundary-before-20261029.log",
+      "bytes": 3541,
+      "sha256": "ae72e0aa0f82c237ddcf3743f14b26d277ca96b8e0e3cb664bae0dd9468dddbf"
+    },
+    {
+      "file": "poe-resource-v2-app-build-20261029.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "file": "poe-resource-v2-app-focused-tests-20261029.txt",
+      "bytes": 16589,
+      "sha256": "de644f0a25335fc3920ca18c6a6d73f8d11afd07d2a94802b255839f764ca2d0"
+    },
+    {
+      "file": "poe-operating-protection-history-build-20261029.log",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "file": "poe-operating-protection-history-after-20261029.log",
+      "bytes": 1963,
+      "sha256": "37e05c17c67ad41d2189cb5d528cc2dd17951760d7002b6d4b0df4f8d9e2ec72"
+    },
+    {
+      "file": "poe-operating-protection-history-before-20261029.log",
+      "bytes": 1070,
+      "sha256": "65bb503092152b969b82887866b82dd822c0423635fdc4815829059c642d5a18"
+    },
+    {
+      "file": "poe-held-protection-readiness-20261029.json",
+      "bytes": 6298,
+      "sha256": "c597a8c80edb14c27d8eedd5837000988a6e618f475b6b620bc9f7cdf0e9d861"
+    },
+    {
+      "file": "poe-held-protection-transitions-20261029.json",
+      "bytes": 24451,
+      "sha256": "3c0cd27ea28980bcee46126234e13f03d78674979c9837c628b246acacf5bf1c"
+    },
+    {
+      "file": "poe-held-protection-readiness-tests-20261029.log",
+      "bytes": 6099,
+      "sha256": "f3e11e6a4b34a9379095b608a6224d9d77cc5c3cee9d90b31d6a25d1a19891c3"
+    },
+    {
+      "file": "poe-local-60-90-capacity-20261029-result.json",
+      "bytes": 24935,
+      "sha256": "166c9dca407b15a736affb9523c3b09f141a5451b09abf41675426571872becd"
+    },
+    {
+      "file": "poe-local-60-90-capacity-20261029-6-90-adverse1200_1400ms-raw.json",
+      "bytes": 598419,
+      "sha256": "c19ef966c8097260e12854191fd8c855f1b79a11916a9694cb4e7b14f7f0e4ec"
+    },
+    {
+      "file": "poe-local-60-90-capacity-20261029-6-90-fast120ms-raw.json",
+      "bytes": 840685,
+      "sha256": "e65a4ae7e3b2a86917075efce1de9e2b0af9cbdba9bd4036755b898f83815cfe"
+    },
+    {
+      "file": "poe-local-60-90-capacity-20261029-6-60-adverse1200_1400ms-raw.json",
+      "bytes": 598402,
+      "sha256": "3e464e1add83a220475c0479f8793aad3601dbae9f544731f44ec1bdf87c777e"
+    },
+    {
+      "file": "poe-local-60-90-capacity-20261029-6-60-fast120ms-raw.json",
+      "bytes": 739417,
+      "sha256": "7532d64eb522d37b39e4080739326e32110d218075a9bb76c1df70b5f1a38fbb"
+    },
+    {
+      "file": "poe-local-60-90-capacity-20261029-4-90-adverse1200_1400ms-raw.json",
+      "bytes": 561475,
+      "sha256": "68f23eef7403c96448ba538908ce4b83dbd3d0cbca486cc6082f871b9d15132e"
+    },
+    {
+      "file": "poe-local-60-90-capacity-20261029-4-90-fast120ms-raw.json",
+      "bytes": 721538,
+      "sha256": "1e146fd4e2fb6e74217d316d339b3568ce875b6c7ba35d00dc4d4dfa670469e1"
+    },
+    {
+      "file": "poe-local-60-90-capacity-20261029-4-60-adverse1200_1400ms-raw.json",
+      "bytes": 561459,
+      "sha256": "cf4beb39debd11c34a9b6300fbfe2ac3fa2e2aa8aebce960a1c92a9d252d9c90"
+    },
+    {
+      "file": "poe-local-60-90-capacity-20261029-4-60-fast120ms-raw.json",
+      "bytes": 699431,
+      "sha256": "407c8cba2d2232e8e66c0472a5d6a3b63d76a51f09d832f3c4aa3e1393e5c08f"
+    },
+    {
+      "file": "poe-local-60-90-capacity-20261029-output.json",
+      "bytes": 23119,
+      "sha256": "2330f56a048dbd06c4efaaddd91196608b2930695d09943300acf88cb3ee589b"
+    },
+    {
+      "file": "poe-local-60-90-capacity-20261029.mts",
+      "bytes": 11588,
+      "sha256": "e48257bb3746f0a7a295a03d2b2ac916881b291db1aefc88dd93524ca7e10006"
+    },
+    {
+      "file": "poe-local-60-90-capacity-20261029-stderr.txt",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "file": "poe-coordinated-resource-v2-20261029.json",
+      "bytes": 3752,
+      "sha256": "849b10dc4b9c8aef4f70d157d88ee4322e883dbf616ee0a2752f5a40b9f9803c"
+    },
+    {
+      "file": "poe-evidence-pressure-causal-map-239a-20261029.md",
+      "bytes": 11338,
+      "sha256": "c31a28485deb746fd6a7e4f9dbe487acefc7d833ace2bc6f5c98465e58e32059"
+    },
+    {
+      "file": "poe-optional-versus-required-evidence-review-20261029.md",
+      "bytes": 6204,
+      "sha256": "e0b1b562180bde91e51cac7f02ea15865726292391b7e915501e6a58b9f37807"
+    },
+    {
+      "file": "poe-recorder-pressure-observed-239a-20261029.json",
+      "bytes": 10312,
+      "sha256": "e08758931feb5c34622539520952467afd6cca490ca6e98cae26427f343eba78"
+    }
+  ],
+  "sourceFrozen": false,
+  "forwardClaims": false
+}

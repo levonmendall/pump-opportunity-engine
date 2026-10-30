@@ -1,0 +1,116 @@
+[
+  {
+    "source": {
+      "release": "5648606bf78f6687c47632be5c789af5e7f19772",
+      "strategy": "persistent-buying-pilot-v1"
+    },
+    "account": {
+      "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "initialUsd": 1000
+    },
+    "sequence": "9792",
+    "times": {
+      "generatedAt": "2026-10-29T19:48:12.484Z",
+      "marketAt": "2026-10-29T19:48:11.366Z",
+      "reconciledAt": "2026-10-29T19:48:12.428Z",
+      "usefulProgressAt": "2026-10-29T19:48:12.428Z"
+    },
+    "freshness": {
+      "state": "observing-with-zero-trades",
+      "receivedAt": "2026-10-29T19:48:39.984Z",
+      "generatedAt": "2026-10-29T19:48:12.484Z",
+      "marketAt": "2026-10-29T19:48:11.366Z",
+      "reconciledAt": "2026-10-29T19:48:12.428Z",
+      "usefulProgressAt": "2026-10-29T19:48:12.428Z",
+      "sourceAgeMs": 31613,
+      "marketAgeMs": 32731,
+      "reconciliationAgeMs": 31669,
+      "operating": {
+        "kind": "operating-source-v1",
+        "state": "observing-with-zero-trades",
+        "market": "observing",
+        "reporting": "current",
+        "sourceAgeMs": 31613,
+        "receivedAgeMs": 4113,
+        "selectedCapture": true,
+        "discovery": true,
+        "watch": true,
+        "entryRestriction": null,
+        "financial": {
+          "usdValuation": "available",
+          "reconciled": true,
+          "valuationAgeMs": 32731,
+          "reconciliationAgeMs": 31669
+        },
+        "protection": {
+          "state": "flat",
+          "completedAt": null,
+          "completedAgeAtSourceMs": null,
+          "boundaryMs": 4000
+        },
+        "reasonCodes": []
+      }
+    },
+    "requestedAt": 1793303323963,
+    "receivedAt": 1793303324135,
+    "responseSha256": "ab29a6ea6590d7167c9429c96026f4f1e21367ff0b3b30a06c56fbf5c29a9557"
+  },
+  {
+    "source": {
+      "release": "5648606bf78f6687c47632be5c789af5e7f19772",
+      "strategy": "persistent-buying-pilot-v1"
+    },
+    "account": {
+      "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "initialUsd": 1000
+    },
+    "sequence": "9800",
+    "times": {
+      "generatedAt": "2026-10-29T19:50:14.149Z",
+      "marketAt": "2026-10-29T19:50:12.214Z",
+      "reconciledAt": "2026-10-29T19:50:13.743Z",
+      "usefulProgressAt": "2026-10-29T19:50:13.743Z"
+    },
+    "freshness": {
+      "state": "observing-with-zero-trades",
+      "receivedAt": "2026-10-29T19:50:41.408Z",
+      "generatedAt": "2026-10-29T19:50:14.149Z",
+      "marketAt": "2026-10-29T19:50:12.214Z",
+      "reconciledAt": "2026-10-29T19:50:13.743Z",
+      "usefulProgressAt": "2026-10-29T19:50:13.743Z",
+      "sourceAgeMs": 31643,
+      "marketAgeMs": 33578,
+      "reconciliationAgeMs": 32049,
+      "operating": {
+        "kind": "operating-source-v1",
+        "state": "observing-with-zero-trades",
+        "market": "observing",
+        "reporting": "current",
+        "sourceAgeMs": 31643,
+        "receivedAgeMs": 4384,
+        "selectedCapture": true,
+        "discovery": true,
+        "watch": true,
+        "entryRestriction": null,
+        "financial": {
+          "usdValuation": "available",
+          "reconciled": true,
+          "valuationAgeMs": 33578,
+          "reconciliationAgeMs": 32049
+        },
+        "protection": {
+          "state": "flat",
+          "completedAt": null,
+          "completedAgeAtSourceMs": null,
+          "boundaryMs": 4000
+        },
+        "reasonCodes": []
+      }
+    },
+    "requestedAt": 1793303445543,
+    "receivedAt": 1793303445909,
+    "responseSha256": "cb30d13a24c108806e725f0cbbd6b161154fe46a202c798461f7b4564f7c3089"
+  }
+]

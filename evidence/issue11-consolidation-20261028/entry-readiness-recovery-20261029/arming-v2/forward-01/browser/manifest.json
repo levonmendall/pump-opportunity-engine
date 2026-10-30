@@ -1,0 +1,42 @@
+{
+  "kind": "browser-evidence-manifest-v1",
+  "at": "2026-10-29T19:49:23.794028+00:00",
+  "files": {
+    "README.md": {
+      "bytes": 1974,
+      "sha256": "2768bae14ae3d7c7645567b6c3c30cc9e0ae1eb6e6302711847cf08198a084aa"
+    },
+    "browser-corrected-raw.txt": {
+      "bytes": 9628,
+      "sha256": "645ac30b437509ca64d3602426b4ad591e3c36f79d9658e6b20fd8538b84c668"
+    },
+    "browser-raw.txt": {
+      "bytes": 553,
+      "sha256": "2ff35468c2ebe808e43790b24a604139b6be4349624157261bc9725140c52ec2"
+    },
+    "live-1280.png": {
+      "bytes": 2907501,
+      "sha256": "4359bd7588b79756201af751b1a67c5bde2759823d7964d78aaeb090267052d1"
+    },
+    "live-390.png": {
+      "bytes": 1699027,
+      "sha256": "e73c1b39c11b17a779dc2f18b71ca9241e0c8e686c872c4c4cd317c47ea56b20"
+    },
+    "live-browser.json": {
+      "bytes": 14461,
+      "sha256": "d9a02b945430585ffdf05011c6d23cec6b850cc58bafe9e380d2921c83766c89"
+    },
+    "verification.json": {
+      "bytes": 2438,
+      "sha256": "d0fd6074c648a4565ac744c52e105588bf169de02048dfab4c608b659df85294"
+    },
+    "verify-browser-before-visible-time-correction.mjs": {
+      "bytes": 7445,
+      "sha256": "d433ab38cad18f30e7fd34d92407a03914e46a38c84ea0ffb68ef6192ef1aa81"
+    },
+    "verify-browser.mjs": {
+      "bytes": 7677,
+      "sha256": "d709c63addbb3d2fda38225f4985dc4207ac7e5ca88694a4d7f0ad501d8f55b3"
+    }
+  }
+}

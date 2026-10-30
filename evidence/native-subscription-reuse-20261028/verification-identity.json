@@ -1,0 +1,11 @@
+{
+  "baseCommit": "fdf23ac65a23ed0793a0afadbc60bea2c7e272f8",
+  "verifiedAt": 1793207043716,
+  "source": {
+    "src/pilot-native-flow.ts": "03b47a20fa3fb8ae7df9a8f4023ce1192e0b46fc389e2e9520e24cbc077cc31b",
+    "test/pilot-native-flow.test.ts": "00f408401921c5e27d6a4e8fc59ab653a59ff40eb3e1c847900334926361e74b"
+  },
+  "independentReview": "GO after correcting per-pool fence bypass; bank context is not exact packet generation; live same-slot losses remain to measure",
+  "providerRequests": 0,
+  "financialLedgerOpened": false
+}

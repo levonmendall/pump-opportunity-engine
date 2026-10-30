@@ -1,0 +1,16 @@
+{
+  "sourceSha256": "e1c04bc56c27e2341b188d441055eaf5b1eac245ad1d390157a14e3b3d129f7e",
+  "retained": 128,
+  "heldFailureRetained": true,
+  "physicalStartRetained": true,
+  "physicalSettlementRetained": true,
+  "admissionRetained": true,
+  "cancellationRetained": true,
+  "kindCounts": {
+    "trader-held-evaluation": 124,
+    "native-candidate-audit-cancelled-diagnostic": 1,
+    "pilot-job-admission-refused": 1,
+    "component-physical-start": 1,
+    "component-physical-settled": 1
+  }
+}

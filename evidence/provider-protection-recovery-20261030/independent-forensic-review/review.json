@@ -1,0 +1,66 @@
+{
+  "kind": "INDEPENDENT_PROVIDER_FORENSIC_EXPORT_READER_REVIEW",
+  "reviewer": "review_inert_provider_upgrade",
+  "at": "2026-10-30T00:26:46.307396+00:00",
+  "status": "PASS",
+  "files": {
+    "export-provider-recovery-forensics-20261030.py": {
+      "sha256": "ebcc11a2d73230d82c018eb3f57d2534b378cc41dd438dff085773b3e7c3658c",
+      "bytes": 29227
+    },
+    "test-export-provider-recovery-forensics-20261030.py": {
+      "sha256": "381703380f5d58972b0ee731703c6b70620577f25c76c6290714c85e964e2330",
+      "bytes": 20166
+    },
+    "read-provider-recovery-forensics-20261030.py": {
+      "sha256": "b06bf4cc5d91a25b44a627e7771ef371c9a8fb2f1a93ffffec793f12123e93cd",
+      "bytes": 24177
+    },
+    "test-read-provider-recovery-forensics-20261030.py": {
+      "sha256": "81287a5694a11aafacecdc4164940f0d8c263ccd1a3a4c9947da4777fb2fb852",
+      "bytes": 11839
+    }
+  },
+  "sourceBytesUnchanged": true,
+  "tests": [
+    {
+      "tests": 61,
+      "passed": true,
+      "file": "operator-tests.raw.txt",
+      "sha256": "2c020050f5b8798b4bfb717ad096d7e96b650398d58f04c263283f2ce6b731cb"
+    },
+    {
+      "tests": 2,
+      "passed": true,
+      "file": "package-tests.raw.txt",
+      "sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+    },
+    {
+      "tests": 29,
+      "passed": true,
+      "file": "exporter-tests.raw.txt",
+      "sha256": "e517cd087d3c19371b90b789ed461d374004e50acc95946d757669041f5a254b"
+    },
+    {
+      "tests": 13,
+      "passed": true,
+      "file": "reader-tests.raw.txt",
+      "sha256": "26f599755db571bd9b1e025f21092acc4379cafd3617fe7b8b69ba0155bf7fdf"
+    }
+  ],
+  "totalTests": 105,
+  "sourceBinding": "Exact installed93 native/config/account/inception/run/start identity",
+  "windowBinding": "Only23:59:25\u201300:01:35 and00:11:15\u201300:12:30 UTC sampled; quiet middle excluded and explicit",
+  "privacy": "Allowlisted numeric/boolean diagnostic fields and statically known codes; arbitrary strings hashed; quantities/prices/balances/addresses/endpoints/payloads excluded",
+  "readerBinding": "Exact root-owned upgrade/preflight receipt, script/source/run/path/length/hash/root-copy and public file owner/group/mode/stable-inode; inert SCRIPT_SHA=None prevents IO",
+  "resourceBounds": "4MiB status,1MiB state,8MiB segment,64MiB scan,16files,2s scan,192facts/85KB,131072B output; permanent original-UID/GID drop; reviewed parent child applies Nice+10/3CPU/128MiB/8s wall",
+  "retention": "Old ba33 exporter hash/output unchanged; new public path distinct; per-window serialized-array quotas64facts/28KB and128facts/57KB independently checked",
+  "interoperability": "Actual new exporter output validates through new reader with current held refusals and no private canary leak",
+  "coverageLimitation": "State-listed matching diagnostic segments precede sealed essentials; exhausted file/scan budgets can omit retained essential facts. Explicit bound/UNKNOWN flags prevent completeness claims; quotas prioritize only facts actually read. This is a bounded diagnostic limitation, not a trading evidence deletion or readiness bypass.",
+  "futurePinsUnset": true,
+  "newExporterExecutedOnEC2": false,
+  "adminFilesModified": false,
+  "financialDatabaseOpened": false,
+  "providerRequests": 0,
+  "serviceChanges": 0
+}

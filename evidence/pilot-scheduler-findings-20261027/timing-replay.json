@@ -1,0 +1,492 @@
+{
+  "classification": "OFFLINE_TIMING_PREDICTION_ONLY_NOT_PROVIDER_OR_MARKET_EVIDENCE",
+  "input": {
+    "prefixSha256": "cd8014c9464586e015580c7d6cbe428483ad3493573f31c762f05b6fbbc882ca",
+    "actualScope": {
+      "firstHintAt": 1793124722177,
+      "lastHintAt": 1793124723457,
+      "distinctSignatureHints": 14
+    },
+    "arrivals": [
+      {
+        "signature": "5mhAKCJLJjZPbtG7xhj96nxEyFabRNwh7MQz84aG4U7ZF52K95g8R9jGwfdmzYJ16jzNaUXaeWBiLyPubh6dnbXF",
+        "offsetFromActualOpenMs": 421
+      },
+      {
+        "signature": "3ShAnXzYwrDJm73euRZ5DvCQqu6wDyYP681myHoNPgBGbxD32eKn68QuVJsF18MzLrRRZyH7qqRNVjjjGeJ3pHJS",
+        "offsetFromActualOpenMs": 422
+      },
+      {
+        "signature": "4bzoBU2HyY77aPcoq4urw84Nd8RStWMbuRx1UTBsStvs1qpM3vWgMEpENdqeLwoMFTkq8DHQr23szuc7XrYSJ4HX",
+        "offsetFromActualOpenMs": 560
+      },
+      {
+        "signature": "Nqn7uSSMYfekvbsUzV4dipH6unFCDXoaZHSBL6fbjrcBKmPZ8rtiwJe7qSdNHV5oJbFert2fZx38SvL5ntPFNwb",
+        "offsetFromActualOpenMs": 563
+      },
+      {
+        "signature": "3H6oaLhC8jJzMnSya4XEjzmUJ8WN7Ci6c3d6TYj3MkGfeJySN3tV44WZ2WsFDiCWgno4oxD53S7zibwyXXj71eHS",
+        "offsetFromActualOpenMs": 596
+      },
+      {
+        "signature": "3xYe7MByqxqA6yjqEXAMVPbpDgG78hbLP8R5jvqbxVPTu6YLFt4gz2VthbunfrrSU4oqTMGK15c5r9qELEqJsuvP",
+        "offsetFromActualOpenMs": 704
+      },
+      {
+        "signature": "63M691Ci5gETHqJDaiBdS2RLp8ex5PugKuPMB19jgQSyjMsj7KaLd2cAByLL4cEFn25xAqSX1s1od6YJhxmxckDW",
+        "offsetFromActualOpenMs": 840
+      },
+      {
+        "signature": "TtG5MA2eaUtvaHazndthbHSq3qjSpEerXf9xAJDMNdR9WcEtVf19Cd9SLZTGhKxbCWF3CforVaLFH8G7kBGeiCD",
+        "offsetFromActualOpenMs": 1232
+      },
+      {
+        "signature": "2hDTa3DCHXv2cDVR2rQfmdkt9gSB84Fs1UZf5wCT8b9LNcFyLmrNb8xAD1Vevh9m7DnoS3Jp8v1tjTBoDkDTevDr",
+        "offsetFromActualOpenMs": 1234
+      },
+      {
+        "signature": "rP6ScqiNSgs5CmaxCAFdRcFpWMMyk6vYdNJhi9vCidFYWUxYcoRFvFmRL92KEymX6PQ2Tg5WyBvB9qz5EqUWbfg",
+        "offsetFromActualOpenMs": 1332
+      },
+      {
+        "signature": "mKzjPwcTgSZZUyG8tyhxiFFV3TEEEFC2nNBQbbQ4QehsZvMBqGGLWv2Q2fiqLDfNmV2bUP5itpkfnGCpppQgLYo",
+        "offsetFromActualOpenMs": 1454
+      },
+      {
+        "signature": "dSXCLmHZGXjEamjAJ1EPGMD6dmg2BT85J5Bpn7TxjRaN5e5F7atfVJ6WrrmbnYjvoR8H9iy7n4wEbqyXpEJVH7V",
+        "offsetFromActualOpenMs": 1545
+      },
+      {
+        "signature": "5LXoaxd9rsbwByuPM53Nuv2SfkretfbjmU2WHUivdy2WdcErpebVgU6JpuPAA8uUsAmcs3Eqn1YTuKtf2fhdipyJ",
+        "offsetFromActualOpenMs": 1679
+      },
+      {
+        "signature": "9rqh4WPPP3CcJTkysXiKgXdQfuoaKeASTxRB2L677CcyAgLgmbtwEJsBEAuyajh6bh1w5fSasVBD6uGrydChKev",
+        "offsetFromActualOpenMs": 1701
+      }
+    ],
+    "actualFirstTwoRpcBodyDelaysMs": [
+      52,
+      56
+    ],
+    "actualFirstTwoBodyToValidationMs": [
+      2,
+      2
+    ]
+  },
+  "model": {
+    "dispatcher": "Actual ComponentBudget implementation in temporary disposable state, same250ms spacing/60starts perminute/one physicalrequest.",
+    "initialGate": "All actual historical starts through the original upgrade; alternate headroom case replaces only that upgrade in a separate timing model after waiting for15available units.",
+    "requestLatestStart": "Hint receipt+3800ms, preserving pilot1200ms response/validation reserve; final usable validation<=hint+5000ms.",
+    "arrivalDelay": "Same recorded hint offsets replayed after each modeled socket open; this does not assert that a delayed real socket would receive the same trades.",
+    "upgradeDurationMs": 885,
+    "firstDispatchAfterOpenMs": 1459,
+    "responses": "Uniform60/250/500/1000ms hypothetical RPC response;20ms modeled validation each. Only the first two original body responses and validation delays were observed.",
+    "omittedUncertainty": [
+      "Future service distributions",
+      "Record/fsync/GC/event-loop jitter",
+      "Held-position/action jobs",
+      "Independent audit/recovery work",
+      "Unobserved later pool activity",
+      "Mapping failures or different transaction layouts"
+    ]
+  },
+  "scenarios": [
+    {
+      "localStartsPer10s": 10,
+      "preopeningPolicy": "recorded-prep8",
+      "responseMs": 60,
+      "validationMs": 20,
+      "upgradeAt": 1793124720871,
+      "openedAt": 1793124721756,
+      "openingDelayFromActualMs": 0,
+      "reserveWaitMs": 0,
+      "completedHints": 2,
+      "totalHints": 14,
+      "maximumCompletedDelayMs": 1367,
+      "firstRefusal": {
+        "ordinal": 3,
+        "at": 1793124723545,
+        "reason": "COMPONENT_DISPATCH_EXPIRED",
+        "latestPermittedStartAt": 1793124726116,
+        "validationDeadlineAt": 1793124727316,
+        "gate": {
+          "readyAt": 1793124729100,
+          "waitMs": 5555,
+          "physicalBusy": false,
+          "haltedReason": null
+        }
+      },
+      "actualStartsInTimingSimulation": [
+        1793124723215,
+        1793124723465
+      ]
+    },
+    {
+      "localStartsPer10s": 10,
+      "preopeningPolicy": "recorded-prep8",
+      "responseMs": 250,
+      "validationMs": 20,
+      "upgradeAt": 1793124720871,
+      "openedAt": 1793124721756,
+      "openingDelayFromActualMs": 0,
+      "reserveWaitMs": 0,
+      "completedHints": 2,
+      "totalHints": 14,
+      "maximumCompletedDelayMs": 1577,
+      "firstRefusal": {
+        "ordinal": 3,
+        "at": 1793124723755,
+        "reason": "COMPONENT_DISPATCH_EXPIRED",
+        "latestPermittedStartAt": 1793124726116,
+        "validationDeadlineAt": 1793124727316,
+        "gate": {
+          "readyAt": 1793124729100,
+          "waitMs": 5345,
+          "physicalBusy": false,
+          "haltedReason": null
+        }
+      },
+      "actualStartsInTimingSimulation": [
+        1793124723215,
+        1793124723485
+      ]
+    },
+    {
+      "localStartsPer10s": 10,
+      "preopeningPolicy": "recorded-prep8",
+      "responseMs": 500,
+      "validationMs": 20,
+      "upgradeAt": 1793124720871,
+      "openedAt": 1793124721756,
+      "openingDelayFromActualMs": 0,
+      "reserveWaitMs": 0,
+      "completedHints": 2,
+      "totalHints": 14,
+      "maximumCompletedDelayMs": 2077,
+      "firstRefusal": {
+        "ordinal": 3,
+        "at": 1793124724255,
+        "reason": "COMPONENT_DISPATCH_EXPIRED",
+        "latestPermittedStartAt": 1793124726116,
+        "validationDeadlineAt": 1793124727316,
+        "gate": {
+          "readyAt": 1793124729100,
+          "waitMs": 4845,
+          "physicalBusy": false,
+          "haltedReason": null
+        }
+      },
+      "actualStartsInTimingSimulation": [
+        1793124723215,
+        1793124723735
+      ]
+    },
+    {
+      "localStartsPer10s": 10,
+      "preopeningPolicy": "recorded-prep8",
+      "responseMs": 1000,
+      "validationMs": 20,
+      "upgradeAt": 1793124720871,
+      "openedAt": 1793124721756,
+      "openingDelayFromActualMs": 0,
+      "reserveWaitMs": 0,
+      "completedHints": 2,
+      "totalHints": 14,
+      "maximumCompletedDelayMs": 3077,
+      "firstRefusal": {
+        "ordinal": 3,
+        "at": 1793124725255,
+        "reason": "COMPONENT_DISPATCH_EXPIRED",
+        "latestPermittedStartAt": 1793124726116,
+        "validationDeadlineAt": 1793124727316,
+        "gate": {
+          "readyAt": 1793124729100,
+          "waitMs": 3845,
+          "physicalBusy": false,
+          "haltedReason": null
+        }
+      },
+      "actualStartsInTimingSimulation": [
+        1793124723215,
+        1793124724235
+      ]
+    },
+    {
+      "localStartsPer10s": 20,
+      "preopeningPolicy": "recorded-prep8",
+      "responseMs": 60,
+      "validationMs": 20,
+      "upgradeAt": 1793124720871,
+      "openedAt": 1793124721756,
+      "openingDelayFromActualMs": 0,
+      "reserveWaitMs": 0,
+      "completedHints": 12,
+      "totalHints": 14,
+      "maximumCompletedDelayMs": 2744,
+      "firstRefusal": {
+        "ordinal": 13,
+        "at": 1793124726045,
+        "reason": "COMPONENT_DISPATCH_EXPIRED",
+        "latestPermittedStartAt": 1793124727235,
+        "validationDeadlineAt": 1793124728435,
+        "gate": {
+          "readyAt": 1793124729100,
+          "waitMs": 3055,
+          "physicalBusy": false,
+          "haltedReason": null
+        }
+      },
+      "actualStartsInTimingSimulation": [
+        1793124723215,
+        1793124723465,
+        1793124723715,
+        1793124723965,
+        1793124724215,
+        1793124724465,
+        1793124724715,
+        1793124724965,
+        1793124725215,
+        1793124725465,
+        1793124725715,
+        1793124725965
+      ]
+    },
+    {
+      "localStartsPer10s": 20,
+      "preopeningPolicy": "recorded-prep8",
+      "responseMs": 250,
+      "validationMs": 20,
+      "upgradeAt": 1793124720871,
+      "openedAt": 1793124721756,
+      "openingDelayFromActualMs": 0,
+      "reserveWaitMs": 0,
+      "completedHints": 12,
+      "totalHints": 14,
+      "maximumCompletedDelayMs": 3154,
+      "firstRefusal": {
+        "ordinal": 13,
+        "at": 1793124726455,
+        "reason": "COMPONENT_DISPATCH_EXPIRED",
+        "latestPermittedStartAt": 1793124727235,
+        "validationDeadlineAt": 1793124728435,
+        "gate": {
+          "readyAt": 1793124729100,
+          "waitMs": 2645,
+          "physicalBusy": false,
+          "haltedReason": null
+        }
+      },
+      "actualStartsInTimingSimulation": [
+        1793124723215,
+        1793124723485,
+        1793124723755,
+        1793124724025,
+        1793124724295,
+        1793124724565,
+        1793124724835,
+        1793124725105,
+        1793124725375,
+        1793124725645,
+        1793124725915,
+        1793124726185
+      ]
+    },
+    {
+      "localStartsPer10s": 20,
+      "preopeningPolicy": "recorded-prep8",
+      "responseMs": 500,
+      "validationMs": 20,
+      "upgradeAt": 1793124720871,
+      "openedAt": 1793124721756,
+      "openingDelayFromActualMs": 0,
+      "reserveWaitMs": 0,
+      "completedHints": 7,
+      "totalHints": 14,
+      "maximumCompletedDelayMs": 4259,
+      "firstRefusal": {
+        "ordinal": 8,
+        "at": 1793124726855,
+        "reason": "COMPONENT_DISPATCH_EXPIRED",
+        "latestPermittedStartAt": 1793124726788,
+        "validationDeadlineAt": 1793124727988,
+        "gate": {
+          "readyAt": 1793124726855,
+          "waitMs": 0,
+          "physicalBusy": false,
+          "haltedReason": null
+        }
+      },
+      "actualStartsInTimingSimulation": [
+        1793124723215,
+        1793124723735,
+        1793124724255,
+        1793124724775,
+        1793124725295,
+        1793124725815,
+        1793124726335
+      ]
+    },
+    {
+      "localStartsPer10s": 20,
+      "preopeningPolicy": "recorded-prep8",
+      "responseMs": 1000,
+      "validationMs": 20,
+      "upgradeAt": 1793124720871,
+      "openedAt": 1793124721756,
+      "openingDelayFromActualMs": 0,
+      "reserveWaitMs": 0,
+      "completedHints": 3,
+      "totalHints": 14,
+      "maximumCompletedDelayMs": 3959,
+      "firstRefusal": {
+        "ordinal": 4,
+        "at": 1793124726275,
+        "reason": "COMPONENT_DISPATCH_EXPIRED",
+        "latestPermittedStartAt": 1793124726119,
+        "validationDeadlineAt": 1793124727319,
+        "gate": {
+          "readyAt": 1793124726275,
+          "waitMs": 0,
+          "physicalBusy": false,
+          "haltedReason": null
+        }
+      },
+      "actualStartsInTimingSimulation": [
+        1793124723215,
+        1793124724235,
+        1793124725255
+      ]
+    },
+    {
+      "localStartsPer10s": 20,
+      "preopeningPolicy": "reserve15-before-upgrade",
+      "responseMs": 60,
+      "validationMs": 20,
+      "upgradeAt": 1793124729353,
+      "openedAt": 1793124730238,
+      "openingDelayFromActualMs": 8482,
+      "reserveWaitMs": 8690,
+      "completedHints": 14,
+      "totalHints": 14,
+      "maximumCompletedDelayMs": 3088,
+      "firstRefusal": null,
+      "actualStartsInTimingSimulation": [
+        1793124731697,
+        1793124731947,
+        1793124732197,
+        1793124732447,
+        1793124732697,
+        1793124732947,
+        1793124733197,
+        1793124733447,
+        1793124733697,
+        1793124733947,
+        1793124734197,
+        1793124734447,
+        1793124734697,
+        1793124734947
+      ]
+    },
+    {
+      "localStartsPer10s": 20,
+      "preopeningPolicy": "reserve15-before-upgrade",
+      "responseMs": 250,
+      "validationMs": 20,
+      "upgradeAt": 1793124729353,
+      "openedAt": 1793124730238,
+      "openingDelayFromActualMs": 8482,
+      "reserveWaitMs": 8690,
+      "completedHints": 14,
+      "totalHints": 14,
+      "maximumCompletedDelayMs": 3538,
+      "firstRefusal": null,
+      "actualStartsInTimingSimulation": [
+        1793124731697,
+        1793124731967,
+        1793124732237,
+        1793124732507,
+        1793124732777,
+        1793124733047,
+        1793124733317,
+        1793124733587,
+        1793124733857,
+        1793124734127,
+        1793124734397,
+        1793124734667,
+        1793124734937,
+        1793124735207
+      ]
+    },
+    {
+      "localStartsPer10s": 20,
+      "preopeningPolicy": "reserve15-before-upgrade",
+      "responseMs": 500,
+      "validationMs": 20,
+      "upgradeAt": 1793124729353,
+      "openedAt": 1793124730238,
+      "openingDelayFromActualMs": 8482,
+      "reserveWaitMs": 8690,
+      "completedHints": 7,
+      "totalHints": 14,
+      "maximumCompletedDelayMs": 4259,
+      "firstRefusal": {
+        "ordinal": 8,
+        "at": 1793124735337,
+        "reason": "COMPONENT_DISPATCH_EXPIRED",
+        "latestPermittedStartAt": 1793124735270,
+        "validationDeadlineAt": 1793124736470,
+        "gate": {
+          "readyAt": 1793124735337,
+          "waitMs": 0,
+          "physicalBusy": false,
+          "haltedReason": null
+        }
+      },
+      "actualStartsInTimingSimulation": [
+        1793124731697,
+        1793124732217,
+        1793124732737,
+        1793124733257,
+        1793124733777,
+        1793124734297,
+        1793124734817
+      ]
+    },
+    {
+      "localStartsPer10s": 20,
+      "preopeningPolicy": "reserve15-before-upgrade",
+      "responseMs": 1000,
+      "validationMs": 20,
+      "upgradeAt": 1793124729353,
+      "openedAt": 1793124730238,
+      "openingDelayFromActualMs": 8482,
+      "reserveWaitMs": 8690,
+      "completedHints": 3,
+      "totalHints": 14,
+      "maximumCompletedDelayMs": 3959,
+      "firstRefusal": {
+        "ordinal": 4,
+        "at": 1793124734757,
+        "reason": "COMPONENT_DISPATCH_EXPIRED",
+        "latestPermittedStartAt": 1793124734601,
+        "validationDeadlineAt": 1793124735801,
+        "gate": {
+          "readyAt": 1793124734757,
+          "waitMs": 0,
+          "physicalBusy": false,
+          "haltedReason": null
+        }
+      },
+      "actualStartsInTimingSimulation": [
+        1793124731697,
+        1793124732717,
+        1793124733737
+      ]
+    }
+  ],
+  "conclusion": "Default10 cannot fit the14-hint burst. Explicit20 still fails with prep8. A15-unit preopening reserve makes all14 fit only in the60ms/250ms modeled service cases;500ms/1000ms cases remain infeasible. This is a conditional timing path for a bounded experiment, not tested provider capacity or complete protection.",
+  "networkRequests": 0,
+  "originalCounterbooksChanged": false,
+  "financialResultsComputed": false
+}

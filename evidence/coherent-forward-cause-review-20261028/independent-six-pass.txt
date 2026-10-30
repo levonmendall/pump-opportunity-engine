@@ -1,0 +1,14 @@
+✔ PLANNING CLOCK actual readiness helper serves three peers with 1ms computation jitter (29.012073ms)
+✔ PLANNING CLOCK actual readiness helper serves three peers with 5ms computation jitter (10.922812ms)
+✔ PLANNING CLOCK actual readiness helper serves three peers with 50ms computation jitter (9.608803ms)
+✔ PLANNING CLOCK real future query cooling still yields to healthy peers under advancing time (7.245788ms)
+✔ frozen query planning retains actual monotonic timeout cooling after a wall-clock jump (62.206671ms)
+✔ history readiness freezes only the planning floor across advancing clocks, never provider admission (38.784579ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1194.121748

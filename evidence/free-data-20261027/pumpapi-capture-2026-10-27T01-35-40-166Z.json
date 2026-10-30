@@ -1,0 +1,458 @@
+{
+  "schemaVersion": 1,
+  "project": "pump-opportunity-engine",
+  "mode": "FREE_DATA_RESEARCH",
+  "id": "capture-2026-10-27T01-35-40-166Z",
+  "stage": "capture",
+  "record": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/pumpapi-capture-2026-10-27T01-35-40-166Z.ndjson",
+  "limits": {
+    "durationMs": 80000,
+    "applicationBytes": 108003328,
+    "transportBytes": 109051904,
+    "evidenceBytes": 7340032,
+    "cpuMs": 20000
+  },
+  "sourceVersion": {
+    "commit": "6a831a2cdf0e8649b740ef4b0c7229696e085618",
+    "dirty": true
+  },
+  "sourceHashes": {
+    "/workspace/pump-opportunity-engine/scripts/pumpapi-probe.ts": "b0c8eb2c2cc76e23bdd8ee675dde7265a8ae4067f0a4f4056df9050cadd59166",
+    "/workspace/pump-opportunity-engine/src/pumpapi-probe.ts": "e4c50b237efb9595cf0d95c41a7843a1c7ddc03ee082b2f26bb99b003b1c4257",
+    "/workspace/pump-opportunity-engine/src/strategy.ts": "b076dfd34410ae5ef6d3a626d6b7852f4dc21eaacca8d6cba0e4de228c105084",
+    "/workspace/pump-opportunity-engine/package-lock.json": "552d1fc533ec47be8913f220d5d1c08286432fc0e3d3ce54457c488de73ddd4a"
+  },
+  "trackedMints": [
+    "CRpqtPYyBckKTwgrixiPBYQsi6YESBxA8LMJ5p3fpump",
+    "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump"
+  ],
+  "cloudUid": 1000,
+  "supervisor": {
+    "wallMs": 80237.613432,
+    "wallLimitMs": 85000,
+    "peakRssBytes": 109260800,
+    "rssLimitBytes": 268435456,
+    "heapMiB": 128,
+    "cpuSoftSeconds": 20,
+    "cpuHardSeconds": 21,
+    "maximumFileBytes": 8388608,
+    "maximumDescriptors": 64,
+    "stdoutBytes": 0,
+    "stderrBytes": 0,
+    "stopReason": null,
+    "exit": {
+      "code": 0,
+      "signal": null
+    }
+  },
+  "observation": {
+    "mode": "OBSERVATION_ONLY",
+    "endpoint": "wss://stream.pumpapi.io/",
+    "startedAt": 1793064940387,
+    "at": 1793065020394,
+    "durationMs": 80006.441487,
+    "stopReason": "duration-limit",
+    "connections": 1,
+    "connected": false,
+    "frames": 61948,
+    "applicationBytes": 99405838,
+    "observedSocketBytes": 99653847,
+    "transportCounterMeaning": "Node socket bytesRead, including received websocket framing/handshake as exposed by transport; not a packet-capture measurement of TLS/proxy/TCP overhead",
+    "afterStopFrames": 0,
+    "parsedFrames": 61948,
+    "malformedFrames": 0,
+    "unsupportedArrayFrames": 0,
+    "oversizeFrames": 0,
+    "selectedFrames": 0,
+    "selectedPersisted": 0,
+    "identicalSelectedPayloads": 0,
+    "repeatedSignatures": 11505,
+    "signatureDedupApplied": false,
+    "missingSelectedFields": 0,
+    "evidenceBytes": 985,
+    "pendingSelected": 0,
+    "queueHighWater": 0,
+    "maximumSelectedQueueAgeMs": 0,
+    "selectedQueueAgeP50Ms": null,
+    "selectedQueueAgeP95Ms": null,
+    "selectedQueueAgeSampleLimit": 256,
+    "selectedPerMint": {},
+    "actionCounts": {
+      "transfer": 28973,
+      "sell": 14263,
+      "buy": 17833,
+      "leaders": 374,
+      "add": 111,
+      "create": 70,
+      "distributeFees": 169,
+      "remove": 137,
+      "createPool": 9,
+      "migrate": 6,
+      "createConfig": 3
+    },
+    "venueCounts": {
+      "pump-amm": 17018,
+      "orca-whirlpool": 1857,
+      "pump": 3862,
+      "meteora-dlmm": 1544,
+      "raydium-clmm": 1929,
+      "meteora-damm-v2": 4210,
+      "meteora-launchpad": 1476,
+      "raydium-cpmm": 480,
+      "raydium-launchpad": 63,
+      "raydium-v4": 130,
+      "meteora-damm-v1": 32
+    },
+    "inventoryOverflow": 21,
+    "inventory": {
+      "signature": {
+        "string": 61574,
+        "null": 374
+      },
+      "action": {
+        "string": 61948
+      },
+      "txSigner": {
+        "string": 61574,
+        "null": 374
+      },
+      "transfers": {
+        "array": 28973
+      },
+      "preBalances": {
+        "object": 61948
+      },
+      "postBalances": {
+        "object": 61948
+      },
+      "addressLookupTables": {
+        "array": 61948
+      },
+      "priorityFee": {
+        "number": 61948
+      },
+      "block": {
+        "number": 61948
+      },
+      "timestamp": {
+        "number": 61948
+      },
+      "poolId": {
+        "string": 32429
+      },
+      "mint": {
+        "string": 32563,
+        "null": 35
+      },
+      "quoteMint": {
+        "string": 32432
+      },
+      "tokenAmount": {
+        "number": 32344
+      },
+      "quoteAmount": {
+        "number": 32429
+      },
+      "tokensInPool": {
+        "number": 32429
+      },
+      "quoteInPool": {
+        "number": 32429
+      },
+      "price": {
+        "number": 32429
+      },
+      "marketCapQuote": {
+        "number": 32429
+      },
+      "name": {
+        "string": 32428,
+        "null": 1
+      },
+      "symbol": {
+        "string": 32428,
+        "null": 1
+      },
+      "uri": {
+        "string": 32428,
+        "null": 1
+      },
+      "supply": {
+        "number": 32432
+      },
+      "poolFeeRate": {
+        "number": 32432
+      },
+      "pool": {
+        "string": 32601
+      },
+      "poolCreatedBy": {
+        "string": 21866
+      },
+      "burnedLiquidity": {
+        "string": 21866
+      },
+      "creatorFeeAddress": {
+        "string": 15780,
+        "null": 4931
+      },
+      "mayhemMode": {
+        "boolean": 20711
+      },
+      "cashbackEnabled": {
+        "boolean": 20711
+      },
+      "holderRewardsRate": {
+        "number": 20711
+      },
+      "virtualQuoteInPool": {
+        "number": 12188
+      },
+      "breakdown": {
+        "array": 32397
+      },
+      "decimals": {
+        "number": 32432
+      },
+      "mintAuthority": {
+        "null": 28067,
+        "string": 4362
+      },
+      "freezeAuthority": {
+        "null": 28729,
+        "string": 3700
+      },
+      "tokenProgram": {
+        "string": 32432
+      },
+      "tokenExtensions": {
+        "object": 32429
+      },
+      "tradersInvolved": {
+        "object": 32429
+      },
+      "programsUsed": {
+        "array": 32601
+      },
+      "breakdown.action": {
+        "string": 33225
+      },
+      "breakdown.trader": {
+        "string": 33225
+      },
+      "breakdown.tokenAmount": {
+        "number": 33225
+      },
+      "breakdown.quoteAmount": {
+        "number": 33225
+      },
+      "tickSpacing": {
+        "number": 3786
+      },
+      "vTokensInBondingCurve": {
+        "number": 3760
+      },
+      "vQuoteInBondingCurve": {
+        "number": 3760
+      },
+      "virtualTokensInPool": {
+        "number": 4826
+      },
+      "binStep": {
+        "number": 1544
+      },
+      "minPrice": {
+        "number": 4210
+      },
+      "maxPrice": {
+        "number": 4210
+      },
+      "lockedLiquidityAfterMigration": {
+        "string": 1476
+      },
+      "poolFeeRateAfterMigration": {
+        "number": 1476
+      },
+      "migrationThresholds": {
+        "object": 1539
+      },
+      "launchpadConfig": {
+        "string": 1539
+      },
+      "leader": {
+        "string": 374
+      },
+      "leaderIp": {
+        "string": 374
+      },
+      "leaderLatency": {
+        "number": 374
+      },
+      "nextLeader": {
+        "string": 374
+      },
+      "nextLeaderIp": {
+        "string": 374
+      },
+      "nextLeaderLatency": {
+        "number": 374
+      },
+      "nextLeaderSlot": {
+        "number": 374
+      },
+      "platform": {
+        "string": 63
+      },
+      "initialBuy": {
+        "number": 85
+      },
+      "quoteSupply": {
+        "number": 85
+      },
+      "curveType": {
+        "string": 32
+      },
+      "type": {
+        "string": 169
+      },
+      "feeMint": {
+        "string": 169
+      },
+      "recipients": {
+        "object": 169
+      },
+      "platformFeeAddress": {
+        "string": 3
+      },
+      "leftoverReceiver": {
+        "string": 3
+      },
+      "minPoolFeeRate": {
+        "number": 3
+      },
+      "feeScheduleDuration": {
+        "number": 3
+      },
+      "baseFeeMode": {
+        "string": 3
+      },
+      "feeScheduleUnit": {
+        "string": 3
+      },
+      "firstSwapWithMinFee": {
+        "boolean": 3
+      },
+      "dynamicFeeEnabled": {
+        "boolean": 3
+      },
+      "feeCollectedIn": {
+        "string": 3
+      },
+      "creatorFeeShare": {
+        "string": 3
+      },
+      "poolCreationFee": {
+        "number": 3
+      },
+      "metadataAuthority": {
+        "null": 3
+      },
+      "fixedSupply": {
+        "boolean": 3
+      },
+      "supplyAfterMigration": {
+        "number": 3
+      },
+      "tokensSoldBeforeMigration": {
+        "number": 3
+      },
+      "tokensInPoolAfterMigration": {
+        "number": 3
+      },
+      "creatorVestingTokens": {
+        "number": 3
+      },
+      "leftoverTokens": {
+        "number": 3
+      },
+      "creatorVestingDuration": {
+        "number": 3
+      },
+      "initialPrice": {
+        "number": 3
+      },
+      "migrationPrice": {
+        "number": 3
+      },
+      "initialMarketCap": {
+        "number": 3
+      },
+      "migrationMarketCap": {
+        "number": 3
+      },
+      "migrationFee": {
+        "string": 3
+      },
+      "creatorMigrationFeeShare": {
+        "string": 3
+      },
+      "migratesTo": {
+        "string": 3
+      },
+      "platformLockedLiquidityAfterMigration": {
+        "string": 3
+      }
+    },
+    "lastReceiveAt": 1793065020386,
+    "lastSelectedAt": null,
+    "lastUsefulAt": null,
+    "sourceAgeMs": 8,
+    "sourceGaps": 1,
+    "transportWindowReady": false,
+    "closedWindowEverObserved": true,
+    "featureWindowMs": 60000,
+    "closedBucketMs": 10000,
+    "requiredWorstCaseWarmMs": 70000,
+    "fieldContract": "UNVERIFIED",
+    "normalizedTradesProduced": 0,
+    "qualificationEnabled": false,
+    "entriesEnabled": false,
+    "peakRssBytes": 108929024,
+    "peakEventLoopLagMs": 9.228587999999974,
+    "cpuMs": 4304.958,
+    "failedWrites": 0
+  },
+  "resourceUsage": {
+    "userCPUTime": 3932085,
+    "systemCPUTime": 675201,
+    "maxRSS": 106376,
+    "sharedMemorySize": 0,
+    "unsharedDataSize": 0,
+    "unsharedStackSize": 0,
+    "minorPageFault": 34465,
+    "majorPageFault": 0,
+    "swappedOut": 0,
+    "fsRead": 0,
+    "fsWrite": 8,
+    "ipcSent": 0,
+    "ipcReceived": 0,
+    "signalsCount": 0,
+    "voluntaryContextSwitches": 17022,
+    "involuntaryContextSwitches": 205
+  },
+  "transportRejectedOversize": 0,
+  "aggregate": {
+    "reservedBytes": 117440512,
+    "reservedMs": 100000,
+    "maximumBytes": 134217728,
+    "maximumMs": 1800000,
+    "reservationsAreConservativeAndNeverAutomaticallyReleased": true
+  },
+  "fieldContract": "UNVERIFIED",
+  "normalizedTrades": 0,
+  "entriesEnabled": false,
+  "ec2Compatibility": "UNVERIFIED; Cloud child containment only",
+  "paidProviderRequests": 0,
+  "walletUse": false,
+  "networkEndpoint": "wss://stream.pumpapi.io/"
+}

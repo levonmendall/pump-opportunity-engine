@@ -1,0 +1,50 @@
+{
+  "results": [
+    {
+      "file": "render-1793244474544.json",
+      "sourceAt": "2026-10-29T03:27:20.355Z",
+      "receivedAt": "2026-10-29T03:27:39.540Z",
+      "sequence": "5886",
+      "fingerprint": "3b5429e0ad8bad7304b952c8f120554fecdc51e9c8a8beed91139a44e6240a67",
+      "canonicalFingerprintMatches": true,
+      "deterministicallyReencodedSourceSha256": "1319033be5449227de078b2bce63222813410dbf1e0141821b3fcbbd9360255f"
+    },
+    {
+      "file": "render-1793244499183.json",
+      "sourceAt": "2026-10-29T03:27:50.478Z",
+      "receivedAt": "2026-10-29T03:28:09.711Z",
+      "sequence": "5888",
+      "fingerprint": "5cd58e8cf6cca3ed1e6e36b453a868ca82e2186d60e4988771e2c27e39880238",
+      "canonicalFingerprintMatches": true,
+      "deterministicallyReencodedSourceSha256": "d8c533b7049753ea2e97522ad58932a92bea18e3b38d5e82f7f5ee38fa709aad"
+    },
+    {
+      "file": "render-1793244765991.json",
+      "sourceAt": "2026-10-29T03:32:25.363Z",
+      "receivedAt": "2026-10-29T03:32:41.404Z",
+      "sequence": "5906",
+      "fingerprint": "51addb0e08558b71288935a224bf723e4a700ebe274ec48d66e94b1c299800fb",
+      "canonicalFingerprintMatches": true,
+      "deterministicallyReencodedSourceSha256": "460f0d4c02151525027770a8348bc9acd5776f936147ffe6b1a34b30d41b4ea6"
+    },
+    {
+      "file": "render-1793244785486.json",
+      "sourceAt": "2026-10-29T03:32:40.405Z",
+      "receivedAt": "2026-10-29T03:32:56.523Z",
+      "sequence": "5907",
+      "fingerprint": "92d0a76243df4556123d212a1af48f1c52c49329722c5df175d2553956884bd8",
+      "canonicalFingerprintMatches": true,
+      "deterministicallyReencodedSourceSha256": "c30d208f7068b82ae4ed6164e0790083ccd6a316bcd435b908bf5fc80d4ecb96"
+    },
+    {
+      "file": "render-1793244843405.json",
+      "sourceAt": "2026-10-29T03:33:40.571Z",
+      "receivedAt": "2026-10-29T03:33:56.879Z",
+      "sequence": "5911",
+      "fingerprint": "7ad2d8a1a4cdc1960c5d25dcf50a0214e3da7e229824f2b1ad624c0c4da4743f",
+      "canonicalFingerprintMatches": true,
+      "deterministicallyReencodedSourceSha256": "49a4345fa5b6a58afea43f31f7704caa17c4a9f5e878ed4252c1d737a2e186eb"
+    }
+  ],
+  "sourceRawHashMeaning": "Deterministic source encoding reconstructed from accepted JSON; actual local raw-file hash and supervisor ACK still need comparison. This is not a direct local-file read."
+}

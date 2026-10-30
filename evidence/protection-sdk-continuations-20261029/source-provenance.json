@@ -1,0 +1,21 @@
+{
+  "baseCommit": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+  "at": "2026-10-29T22:47:44.920202+00:00",
+  "files": {
+    "src/pilot-market.ts": "f578b2821f0823bddc3d68a778fd21d7d36bad128dfcdeb44953080d48ab8984",
+    "src/research-held-market.ts": "72710b1cf1a991ac7ec5f32115761c6b99cbd4e67689a7290770ba744cb39889",
+    "test/pilot-market.test.ts": "f8087eee09a29a0076eaf5facbeaacc9bbe8e61279123870be58d79510d2f026",
+    "test/research-held-market.test.ts": "8e6b596c240d044ef1aba946fc5951fab5d3c31c4b37e8ed0b4725ff5f8f726d"
+  },
+  "liveFinancialAccountRead": false,
+  "providerRequests": 0,
+  "installed": false,
+  "actualLiveFailureAttribution": "UNKNOWN",
+  "verifiedSourceCommit": "f879aeaf738bf74b0c4243e32c5c29b54d56123b",
+  "testsPassed": 55,
+  "buildPassed": true,
+  "rawVerification": {
+    "evidence/protection-sdk-continuations-20261029/build.raw.txt": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+    "evidence/protection-sdk-continuations-20261029/targeted.raw.txt": "c726d3569c35517c48d5afde5ebb70217dd6bb12794ae8627432ce0b136e89d0"
+  }
+}

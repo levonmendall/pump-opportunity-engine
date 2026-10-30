@@ -1,0 +1,52 @@
+{
+  "sourceBytesUnchanged": true,
+  "baseCommit": "e551212807c5f5fe55d23cbaae7fc7cc47b34125",
+  "results": {
+    "focused-final": {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "test/operating-financial-readiness.test.ts",
+        "test/native-paper-integration.test.ts",
+        "test/native-paper-readiness.test.ts",
+        "test/internal-shutdown-provenance.test.ts",
+        "test/native-paper.test.ts",
+        "test/native-account-control.test.ts",
+        "test/owner-daily-loss-reset.test.ts"
+      ],
+      "startedAt": "2026-10-29T23:02:59.343178+00:00",
+      "finishedAt": "2026-10-29T23:03:03.442377+00:00",
+      "exitCode": 0,
+      "sha256": "7d9a100f4523cc8753f3241ef8af5d7b37c7d60813082b487dac85b6c6117ffc"
+    },
+    "build-final": {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "startedAt": "2026-10-29T23:03:03.442520+00:00",
+      "finishedAt": "2026-10-29T23:03:13.904018+00:00",
+      "exitCode": 0,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    }
+  },
+  "sourceSha256": {
+    "src/ledger.ts": "99e81fa26cda5fe89124fb231c72ad5aa2b89bf785d7663a32fd546295ceaa7b",
+    "src/native-paper.ts": "219c1c67047acbfa0a49e6de1225557b2a59da69fd05840a2eda5c92fb78ca88",
+    "test/native-paper-integration.test.ts": "4a0f23c184415fe0a8830e0817994ec945749645d32d99623f1e2f25379fcaeb",
+    "test/native-paper-readiness.test.ts": "f3ef44bdaee85a517004b910cd3a11b911ae715564d7793493d2a3066175b0dc",
+    "test/operating-financial-readiness.test.ts": "afd144e4cf4798f4f6cdf1331aa8de8ec60b3125b8a5fb4c87fc383fa987acb3",
+    "src/pilot-market.ts": "f578b2821f0823bddc3d68a778fd21d7d36bad128dfcdeb44953080d48ab8984",
+    "src/research-held-market.ts": "72710b1cf1a991ac7ec5f32115761c6b99cbd4e67689a7290770ba744cb39889",
+    "src/trader.ts": "e6133e4bd270b9ebd6b045bda90234d9b5abc85fcaf4b430e488f86f85e5b735",
+    "src/technical-protection-recovery.ts": "759e7431ba0ba70c6673095b546bdae8b0e30f14796190ab6d56b2935dfd99f1"
+  },
+  "operatingFinancialReadOrWrite": false,
+  "providerRequests": 0,
+  "runtimeActions": 0,
+  "deployed": false,
+  "forwardImprovementClaimed": false
+}

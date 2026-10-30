@@ -1,0 +1,10 @@
+{
+  "meaning": "Evidence-only controlled reproduction, no application changes",
+  "frozenInstalledSource": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+  "workingAppCommit": "a317a8321aa35d3b6d2cd8fb8d7f60177a0e05bd",
+  "wrapperSourceFile": "src/run-native-paper.ts",
+  "wrapperLine": 251,
+  "wrapperLiteralSha256": "7783bdc0834950922828c56b0e6d90dc9bf9efda56005caba933f94e8026b41a",
+  "fixtureSource": "test/native-candidate-runner.test.ts",
+  "fixturePrefixSha256": "a99a95dd32cf5932c8cdad57658fbb9f734dfb3cf106c288769407cd4992ef79"
+}

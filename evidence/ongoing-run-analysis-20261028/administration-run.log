@@ -1,0 +1,169 @@
+native-candidates	Set up job	﻿2026-10-28T15:17:08.7272537Z Current runner version: '2.338.0'
+native-candidates	Set up job	2026-10-28T15:17:08.7279133Z Runner name: 'meme-machine-ec2-admin'
+native-candidates	Set up job	2026-10-28T15:17:08.7279939Z Runner group name: 'Default'
+native-candidates	Set up job	2026-10-28T15:17:08.7280789Z Machine name: 'ip-172-31-15-198'
+native-candidates	Set up job	2026-10-28T15:17:08.7283161Z ##[group]GITHUB_TOKEN Permissions
+native-candidates	Set up job	2026-10-28T15:17:08.7285328Z Contents: read
+native-candidates	Set up job	2026-10-28T15:17:08.7286127Z Metadata: read
+native-candidates	Set up job	2026-10-28T15:17:08.7286631Z ##[endgroup]
+native-candidates	Set up job	2026-10-28T15:17:08.7288594Z Secret source: Actions
+native-candidates	Set up job	2026-10-28T15:17:08.7289562Z Cache mode: write
+native-candidates	Set up job	2026-10-28T15:17:08.7290191Z Prepare workflow directory
+native-candidates	Set up job	2026-10-28T15:17:08.7740139Z Prepare all required actions
+native-candidates	Set up job	2026-10-28T15:17:08.7788149Z Getting action download info
+native-candidates	Set up job	2026-10-28T15:17:09.1305207Z Download action repository 'actions/checkout@11d5960a326750d5838078e36cf38b85af677262' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+native-candidates	Set up job	2026-10-28T15:17:09.3773295Z Download action repository 'actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+native-candidates	Set up job	2026-10-28T15:17:09.8790188Z Complete job name: native-candidates
+native-candidates	Read exact reviewed candidate package only	﻿2026-10-28T15:17:09.9816996Z ##[group]Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:09.9819110Z with:
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:09.9820136Z   ref: 2c239a53de8332e76fb3cf9b87b43272da1f9f11
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:09.9821394Z   persist-credentials: false
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:09.9822463Z   sparse-checkout-cone-mode: false
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:09.9824174Z   sparse-checkout: scripts/poe/native-candidates/
+native-candidates	Read exact reviewed candidate package only	scripts/poe/native-candidate-run-bounded.py
+native-candidates	Read exact reviewed candidate package only	
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:09.9826386Z   repository: levonmendall/meme-machine-admin
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:09.9834426Z   token: ***
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:09.9835322Z   ssh-strict: true
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:09.9836400Z   ssh-user: git
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:09.9837228Z   clean: true
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:09.9838130Z   fetch-depth: 1
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:09.9839011Z   fetch-tags: false
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:09.9840038Z   show-progress: true
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:09.9840980Z   lfs: false
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:09.9841820Z   submodules: false
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:09.9843036Z   set-safe-directory: true
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:09.9844105Z   allow-unsafe-pr-checkout: false
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:09.9845670Z ##[endgroup]
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.0858193Z Syncing repository: levonmendall/meme-machine-admin
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.0862144Z ##[group]Getting Git version info
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.0864539Z Working directory is '/opt/mm-ec2-admin-runner/_work/meme-machine-admin/meme-machine-admin'
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.0867279Z [command]/usr/bin/git version
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.0868316Z git version 2.43.0
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.0871579Z ##[endgroup]
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.0879540Z Temporarily overriding HOME='/opt/mm-ec2-admin-runner/_work/_temp/af044440-c9be-4c53-af34-cc5c94e1e786' before making global git config changes
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.0882994Z Adding repository directory to the temporary git global config as a safe directory
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.0885567Z [command]/usr/bin/git config --global --add safe.directory /opt/mm-ec2-admin-runner/_work/meme-machine-admin/meme-machine-admin
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.0939604Z [command]/usr/bin/git config --local --get remote.origin.url
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.0942844Z https://github.com/levonmendall/meme-machine-admin
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.0951156Z ##[group]Removing previously created refs, to avoid conflicts
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.0954692Z [command]/usr/bin/git rev-parse --symbolic-full-name --verify --quiet HEAD
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.0966073Z HEAD
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.1003252Z ##[endgroup]
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.1005113Z [command]/usr/bin/git submodule status
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.1187245Z ##[group]Cleaning the repository
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.1189279Z [command]/usr/bin/git clean -ffdx
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.1279081Z [command]/usr/bin/git reset --hard HEAD
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.1395017Z HEAD is now at 4ee813c Measure repaired native retention and fair multipage audits with explicit90 research profile
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.1401658Z ##[endgroup]
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.1404247Z ##[group]Disabling automatic garbage collection
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.1406900Z [command]/usr/bin/git config --local gc.auto 0
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.1431238Z ##[endgroup]
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.1433897Z ##[group]Setting up auth
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.1437822Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.1467232Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.1660728Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.1689167Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.1879311Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.1909704Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.2096660Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.2157560Z ##[endgroup]
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.2160293Z ##[group]Fetching the repository
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.2277009Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --filter=blob:none --depth=1 origin 2c239a53de8332e76fb3cf9b87b43272da1f9f11
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.6123102Z From https://github.com/levonmendall/meme-machine-admin
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.6124914Z  * branch            2c239a53de8332e76fb3cf9b87b43272da1f9f11 -> FETCH_HEAD
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.6143459Z ##[endgroup]
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.6144463Z ##[group]Determining the checkout info
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.6145533Z ##[endgroup]
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.6146785Z ##[group]Setting up sparse checkout
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.6151062Z [command]/usr/bin/git config core.sparseCheckout true
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.6186110Z [command]/usr/bin/git rev-parse --git-path info/sparse-checkout
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.6204671Z .git/info/sparse-checkout
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.6214356Z ##[endgroup]
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.6215266Z ##[group]Checking out the ref
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:10.6220992Z [command]/usr/bin/git checkout --progress --force 2c239a53de8332e76fb3cf9b87b43272da1f9f11
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:11.2261227Z Warning: you are leaving 1 commit behind, not connected to
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:11.2262045Z any of your branches:
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:11.2262475Z 
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:11.2263187Z   4ee813c Measure repaired native retention and fair multipage audits with explicit90 research profile
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:11.2263690Z 
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:11.2264034Z If you want to keep it by creating a new branch, this may be a good time
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:11.2264629Z to do so with:
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:11.2264871Z 
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:11.2265153Z  git branch <new-branch-name> 4ee813c
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:11.2265459Z 
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:11.2289599Z HEAD is now at 2c239a5 Run verified640143a native recovery with retained accounting and reporting
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:11.2297052Z ##[endgroup]
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:11.2343850Z [command]/usr/bin/git log -1 --format=%H
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:11.2378110Z 2c239a53de8332e76fb3cf9b87b43272da1f9f11
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:11.2389275Z ##[group]Removing auth
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:11.2393524Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:11.2426564Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:11.2629279Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:11.2652471Z http.https://github.com/.extraheader
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:11.2661354Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:11.2690842Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:11.2874474Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:11.2904458Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+native-candidates	Read exact reviewed candidate package only	2026-10-28T15:17:11.3084042Z ##[endgroup]
+native-candidates	Verify exact supervisor and run bounded isolated observation	﻿2026-10-28T15:17:11.3283143Z ##[group]Run set -euo pipefail
+native-candidates	Verify exact supervisor and run bounded isolated observation	2026-10-28T15:17:11.3283772Z [36;1mset -euo pipefail[0m
+native-candidates	Verify exact supervisor and run bounded isolated observation	2026-10-28T15:17:11.3284328Z [36;1mtest "$ACTUAL_RUNNER" = meme-machine-ec2-admin[0m
+native-candidates	Verify exact supervisor and run bounded isolated observation	2026-10-28T15:17:11.3284867Z [36;1mtest "$(id -u)" = 994[0m
+native-candidates	Verify exact supervisor and run bounded isolated observation	2026-10-28T15:17:11.3285365Z [36;1mpython3 -I - "$POE_SUPERVISOR_SHA256" <<'PY'[0m
+native-candidates	Verify exact supervisor and run bounded isolated observation	2026-10-28T15:17:11.3286128Z [36;1mimport hashlib,pathlib,sys[0m
+native-candidates	Verify exact supervisor and run bounded isolated observation	2026-10-28T15:17:11.3286718Z [36;1mp=pathlib.Path('scripts/poe/native-candidate-run-bounded.py')[0m
+native-candidates	Verify exact supervisor and run bounded isolated observation	2026-10-28T15:17:11.3287291Z [36;1massert p.is_file() and not p.is_symlink()[0m
+native-candidates	Verify exact supervisor and run bounded isolated observation	2026-10-28T15:17:11.3287770Z [36;1mdata=p.read_bytes()[0m
+native-candidates	Verify exact supervisor and run bounded isolated observation	2026-10-28T15:17:11.3288456Z [36;1massert len(data)<=65536 and len(sys.argv[1])==64 and hashlib.sha256(data).hexdigest()==sys.argv[1], 'REVIEWED_SUPERVISOR_HASH_MISMATCH'[0m
+native-candidates	Verify exact supervisor and run bounded isolated observation	2026-10-28T15:17:11.3289151Z [36;1mPY[0m
+native-candidates	Verify exact supervisor and run bounded isolated observation	2026-10-28T15:17:11.3289609Z [36;1m/usr/bin/env -i PATH=/usr/bin:/bin ACTUAL_RUNNER="$ACTUAL_RUNNER" \[0m
+native-candidates	Verify exact supervisor and run bounded isolated observation	2026-10-28T15:17:11.3290205Z [36;1m  RUNNER_TEMP="$RUNNER_TEMP" GITHUB_ENV="$GITHUB_ENV" \[0m
+native-candidates	Verify exact supervisor and run bounded isolated observation	2026-10-28T15:17:11.3290836Z [36;1m  GITHUB_RUN_ID="$GITHUB_RUN_ID" GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" \[0m
+native-candidates	Verify exact supervisor and run bounded isolated observation	2026-10-28T15:17:11.3291444Z [36;1m  /usr/bin/timeout --signal=TERM --kill-after=5s 7320s \[0m
+native-candidates	Verify exact supervisor and run bounded isolated observation	2026-10-28T15:17:11.3292044Z [36;1m  /usr/bin/python3 -I scripts/poe/native-candidate-run-bounded.py \[0m
+native-candidates	Verify exact supervisor and run bounded isolated observation	2026-10-28T15:17:11.3292664Z [36;1m  --package "$GITHUB_WORKSPACE/scripts/poe/native-candidates" \[0m
+native-candidates	Verify exact supervisor and run bounded isolated observation	2026-10-28T15:17:11.3293214Z [36;1m  --manifest-sha256 "$POE_PACKAGE_SHA256"[0m
+native-candidates	Verify exact supervisor and run bounded isolated observation	2026-10-28T15:17:11.3313014Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+native-candidates	Verify exact supervisor and run bounded isolated observation	2026-10-28T15:17:11.3313678Z env:
+native-candidates	Verify exact supervisor and run bounded isolated observation	2026-10-28T15:17:11.3314053Z   ACTUAL_RUNNER: meme-machine-ec2-admin
+native-candidates	Verify exact supervisor and run bounded isolated observation	2026-10-28T15:17:11.3314641Z   POE_PACKAGE_SHA256: 33f555a3cec5d78dbd43afe4cd894f7f18b1e740085b6c552839ddb6716a63f8
+native-candidates	Verify exact supervisor and run bounded isolated observation	2026-10-28T15:17:11.3315358Z   POE_SUPERVISOR_SHA256: 5294407d8ca5043ef11fb2d4834b9ecb5ae6c7b698404cc21e62b017f2d14b83
+native-candidates	Verify exact supervisor and run bounded isolated observation	2026-10-28T15:17:11.3316104Z ##[endgroup]
+native-candidates	Verify exact supervisor and run bounded isolated observation	2026-10-28T15:32:21.4850029Z ##[error]The operation was canceled.
+native-candidates	Record bounded durable archive receipt without uploading an artifact	﻿2026-10-28T15:32:21.4942565Z ##[group]Run set -euo pipefail
+native-candidates	Record bounded durable archive receipt without uploading an artifact	2026-10-28T15:32:21.4943131Z [36;1mset -euo pipefail[0m
+native-candidates	Record bounded durable archive receipt without uploading an artifact	2026-10-28T15:32:21.4943379Z [36;1mpython3 -I - <<'PY'[0m
+native-candidates	Record bounded durable archive receipt without uploading an artifact	2026-10-28T15:32:21.4943637Z [36;1mimport json,os,pathlib,stat[0m
+native-candidates	Record bounded durable archive receipt without uploading an artifact	2026-10-28T15:32:21.4944000Z [36;1mroot=pathlib.Path(os.environ['POE_NATIVE_RESEARCH_DIRECTORY'])[0m
+native-candidates	Record bounded durable archive receipt without uploading an artifact	2026-10-28T15:32:21.4944508Z [36;1mexpected=pathlib.Path('/home/mm-ec2-runner/.local/share/poe-native-research')[0m
+native-candidates	Record bounded durable archive receipt without uploading an artifact	2026-10-28T15:32:21.4945121Z [36;1massert root.parent==expected and root.resolve()==root and os.getuid()==994[0m
+native-candidates	Record bounded durable archive receipt without uploading an artifact	2026-10-28T15:32:21.4945548Z [36;1mpath=root/'export/archive.json'[0m
+native-candidates	Record bounded durable archive receipt without uploading an artifact	2026-10-28T15:32:21.4946011Z [36;1mif not path.exists():[0m
+native-candidates	Record bounded durable archive receipt without uploading an artifact	2026-10-28T15:32:21.4946694Z [36;1m    print(json.dumps({'archiveComplete':False,'rawEvidenceRetained':True,'evidenceDirectory':str(root),'meaning':'No completed archive receipt; do not infer export success.'}))[0m
+native-candidates	Record bounded durable archive receipt without uploading an artifact	2026-10-28T15:32:21.4947378Z [36;1melse:[0m
+native-candidates	Record bounded durable archive receipt without uploading an artifact	2026-10-28T15:32:21.4947804Z [36;1m    s=path.lstat();assert stat.S_ISREG(s.st_mode) and not path.is_symlink() and s.st_uid==994 and s.st_size<=131072[0m
+native-candidates	Record bounded durable archive receipt without uploading an artifact	2026-10-28T15:32:21.4948354Z [36;1m    value=json.loads(path.read_text())[0m
+native-candidates	Record bounded durable archive receipt without uploading an artifact	2026-10-28T15:32:21.4949906Z [36;1m    print(json.dumps({'archiveComplete':value.get('complete') is True,'archive':value.get('archive'),'uncompressedSelectedBytes':value.get('uncompressedSelectedBytes'),'selectedEvidenceBytes':value.get('selectedEvidenceBytes'),'rawEvidenceRetained':True,'evidenceDirectory':str(root),'failure':value.get('failure'),'apiPurchase':False,'infrastructureTransferCost':'Existing allowance/cost remains unverified; no artifact storage upload.'},sort_keys=True))[0m
+native-candidates	Record bounded durable archive receipt without uploading an artifact	2026-10-28T15:32:21.4951636Z [36;1mPY[0m
+native-candidates	Record bounded durable archive receipt without uploading an artifact	2026-10-28T15:32:21.4964500Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+native-candidates	Record bounded durable archive receipt without uploading an artifact	2026-10-28T15:32:21.4964841Z env:
+native-candidates	Record bounded durable archive receipt without uploading an artifact	2026-10-28T15:32:21.4965308Z   POE_NATIVE_RESEARCH_DIRECTORY: /home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40714364745-1
+native-candidates	Record bounded durable archive receipt without uploading an artifact	2026-10-28T15:32:21.4966014Z   POE_NATIVE_EVIDENCE_EXPORT_READY: false
+native-candidates	Record bounded durable archive receipt without uploading an artifact	2026-10-28T15:32:21.4966411Z   POE_NATIVE_RESEARCH_PROFILE: candidate-native-two-hour-90-research-v1
+native-candidates	Record bounded durable archive receipt without uploading an artifact	2026-10-28T15:32:21.4966803Z ##[endgroup]
+native-candidates	Record bounded durable archive receipt without uploading an artifact	2026-10-28T15:32:21.5224494Z {"archiveComplete": false, "rawEvidenceRetained": true, "evidenceDirectory": "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40714364745-1", "meaning": "No completed archive receipt; do not infer export success."}
+native-candidates	Post Read exact reviewed candidate package only	﻿2026-10-28T15:32:21.5369294Z Post job cleanup.
+native-candidates	Post Read exact reviewed candidate package only	2026-10-28T15:32:21.6189337Z [command]/usr/bin/git version
+native-candidates	Post Read exact reviewed candidate package only	2026-10-28T15:32:21.6224413Z git version 2.43.0
+native-candidates	Post Read exact reviewed candidate package only	2026-10-28T15:32:21.6259773Z Temporarily overriding HOME='/opt/mm-ec2-admin-runner/_work/_temp/64160421-454f-465c-bcce-7b8488e51b4e' before making global git config changes
+native-candidates	Post Read exact reviewed candidate package only	2026-10-28T15:32:21.6261672Z Adding repository directory to the temporary git global config as a safe directory
+native-candidates	Post Read exact reviewed candidate package only	2026-10-28T15:32:21.6265530Z [command]/usr/bin/git config --global --add safe.directory /opt/mm-ec2-admin-runner/_work/meme-machine-admin/meme-machine-admin
+native-candidates	Post Read exact reviewed candidate package only	2026-10-28T15:32:21.6296630Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+native-candidates	Post Read exact reviewed candidate package only	2026-10-28T15:32:21.6339854Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+native-candidates	Post Read exact reviewed candidate package only	2026-10-28T15:32:21.6525724Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+native-candidates	Post Read exact reviewed candidate package only	2026-10-28T15:32:21.6552089Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+native-candidates	Post Read exact reviewed candidate package only	2026-10-28T15:32:21.6728843Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+native-candidates	Post Read exact reviewed candidate package only	2026-10-28T15:32:21.6752413Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+native-candidates	Complete job	﻿2026-10-28T15:32:21.7054982Z Cleaning up orphan processes
+native-candidates	Complete job	2026-10-28T15:32:21.7295311Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11d5960a326750d5838078e36cf38b85af677262. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

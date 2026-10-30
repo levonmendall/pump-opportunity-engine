@@ -1,0 +1,160 @@
+{
+  "frozenSupervisorSha256": "d90ea175e17ef165afc8a4dcc24ab302204d500aad738bd4554cdc5f32e3d6fb",
+  "manifestRead": "retained nonsecret service manifest",
+  "rawSourceMeaning": "JSON.stringify(snapshot)+newline reconstructed from retained Render accepted JSON; actual host bytes not read",
+  "normalReplays": [
+    {
+      "file": "render-1793244474544.json",
+      "sourceAtMs": 1793244440355,
+      "sequence": "5886",
+      "rawBytes": 28067,
+      "rawSha256": "1319033be5449227de078b2bce63222813410dbf1e0141821b3fcbbd9360255f",
+      "ackParsedThroughDrain": true,
+      "cachedKey": [
+        1793244440355,
+        "5886",
+        "1319033be5449227de078b2bce63222813410dbf1e0141821b3fcbbd9360255f"
+      ],
+      "matched": true,
+      "acceptedCount": 1,
+      "errors": 0,
+      "publicReceipt": true,
+      "pendingAfter": 0,
+      "admissionSuspended": false,
+      "reason": "fresh current-run reporting and rolling resource headroom verified"
+    },
+    {
+      "file": "render-1793244499183.json",
+      "sourceAtMs": 1793244470478,
+      "sequence": "5888",
+      "rawBytes": 28660,
+      "rawSha256": "d8c533b7049753ea2e97522ad58932a92bea18e3b38d5e82f7f5ee38fa709aad",
+      "ackParsedThroughDrain": true,
+      "cachedKey": [
+        1793244470478,
+        "5888",
+        "d8c533b7049753ea2e97522ad58932a92bea18e3b38d5e82f7f5ee38fa709aad"
+      ],
+      "matched": true,
+      "acceptedCount": 1,
+      "errors": 0,
+      "publicReceipt": true,
+      "pendingAfter": 0,
+      "admissionSuspended": false,
+      "reason": "fresh current-run reporting and rolling resource headroom verified"
+    },
+    {
+      "file": "render-1793244765991.json",
+      "sourceAtMs": 1793244745363,
+      "sequence": "5906",
+      "rawBytes": 29767,
+      "rawSha256": "460f0d4c02151525027770a8348bc9acd5776f936147ffe6b1a34b30d41b4ea6",
+      "ackParsedThroughDrain": true,
+      "cachedKey": [
+        1793244745363,
+        "5906",
+        "460f0d4c02151525027770a8348bc9acd5776f936147ffe6b1a34b30d41b4ea6"
+      ],
+      "matched": true,
+      "acceptedCount": 1,
+      "errors": 0,
+      "publicReceipt": true,
+      "pendingAfter": 0,
+      "admissionSuspended": false,
+      "reason": "fresh current-run reporting and rolling resource headroom verified"
+    },
+    {
+      "file": "render-1793244785486.json",
+      "sourceAtMs": 1793244760405,
+      "sequence": "5907",
+      "rawBytes": 29838,
+      "rawSha256": "c30d208f7068b82ae4ed6164e0790083ccd6a316bcd435b908bf5fc80d4ecb96",
+      "ackParsedThroughDrain": true,
+      "cachedKey": [
+        1793244760405,
+        "5907",
+        "c30d208f7068b82ae4ed6164e0790083ccd6a316bcd435b908bf5fc80d4ecb96"
+      ],
+      "matched": true,
+      "acceptedCount": 1,
+      "errors": 0,
+      "publicReceipt": true,
+      "pendingAfter": 0,
+      "admissionSuspended": false,
+      "reason": "fresh current-run reporting and rolling resource headroom verified"
+    },
+    {
+      "file": "render-1793244843405.json",
+      "sourceAtMs": 1793244820571,
+      "sequence": "5911",
+      "rawBytes": 28923,
+      "rawSha256": "49a4345fa5b6a58afea43f31f7704caa17c4a9f5e878ed4252c1d737a2e186eb",
+      "ackParsedThroughDrain": true,
+      "cachedKey": [
+        1793244820571,
+        "5911",
+        "49a4345fa5b6a58afea43f31f7704caa17c4a9f5e878ed4252c1d737a2e186eb"
+      ],
+      "matched": true,
+      "acceptedCount": 1,
+      "errors": 0,
+      "publicReceipt": true,
+      "pendingAfter": 0,
+      "admissionSuspended": false,
+      "reason": "fresh current-run reporting and rolling resource headroom verified"
+    }
+  ],
+  "cadence19SecondAcknowledgements": [
+    {
+      "ordinal": 0,
+      "cacheEntries": 1,
+      "acceptedCount": 1,
+      "latestMatched": true,
+      "pending": 0,
+      "errors": 0
+    },
+    {
+      "ordinal": 1,
+      "cacheEntries": 2,
+      "acceptedCount": 2,
+      "latestMatched": true,
+      "pending": 0,
+      "errors": 0
+    },
+    {
+      "ordinal": 2,
+      "cacheEntries": 3,
+      "acceptedCount": 3,
+      "latestMatched": true,
+      "pending": 0,
+      "errors": 0
+    },
+    {
+      "ordinal": 3,
+      "cacheEntries": 4,
+      "acceptedCount": 4,
+      "latestMatched": true,
+      "pending": 0,
+      "errors": 0
+    },
+    {
+      "ordinal": 4,
+      "cacheEntries": 4,
+      "acceptedCount": 5,
+      "latestMatched": true,
+      "pending": 0,
+      "errors": 0
+    },
+    {
+      "ordinal": 5,
+      "cacheEntries": 4,
+      "acceptedCount": 6,
+      "latestMatched": true,
+      "pending": 0,
+      "errors": 0
+    }
+  ],
+  "noNetwork": true,
+  "noCredentialReads": true,
+  "noFinancialDatabaseRead": true
+}

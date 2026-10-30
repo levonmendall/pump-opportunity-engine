@@ -1,0 +1,82 @@
+{
+  "completedAt": "2026-10-30T01:32:15.044619+00:00",
+  "coreSource": "7a25d172183b46f5399c5bb12691e9dff62d5dfe",
+  "coreFullSuite": {
+    "tests": 2136,
+    "pass": 2136,
+    "failed": 0,
+    "sourceGuard": "PASS",
+    "typeScriptBuild": "PASS"
+  },
+  "coreStandalone": {
+    "outputDirectory": "/tmp/poe-native-paper-output-active-held-series-7a25d17",
+    "metadataSha256": "4775eb1606be0a23ce9bcf5eb64b6bd878cccf4c244d8a06e9cc0278a163f1e2",
+    "source": "7a25d172183b46f5399c5bb12691e9dff62d5dfe",
+    "bundle": {
+      "file": "native-paper.mjs",
+      "bytes": 5276649,
+      "sha256": "7284d10627595162d9cea00838c8f7f19943d03c55b13968fafd05f846f5c844"
+    },
+    "smoke": {
+      "importOnly": true,
+      "networkDisabled": true,
+      "nodeModulesPresent": false,
+      "disposableFinancialFixture": true,
+      "idempotency": true,
+      "backupWorker": true,
+      "reopen": true,
+      "sqlite": {
+        "version": "3.53.4",
+        "source": "2026-07-24 19:02:57 bf7c7f30031888f4e796e429ab3978879485813aaca6f641c7b33e4e09459bcc"
+      },
+      "closure": {
+        "commit": "7a25d172183b46f5399c5bb12691e9dff62d5dfe",
+        "sha256": "7284d10627595162d9cea00838c8f7f19943d03c55b13968fafd05f846f5c844",
+        "kind": "immutable-startup-native-paper-bundle-closure",
+        "sqliteVersion": "13.0.3",
+        "addonSha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d",
+        "backupWorkerSha256": "aa41d0c26f42bc0e3c2c5655907a5ea71b11f3047ef6bfd23e5858c340066af2",
+        "packageLockSha256": "552d1fc533ec47be8913f220d5d1c08286432fc0e3d3ce54457c488de73ddd4a",
+        "provisionalMetadataSha256": "dab17f17e0b834b6e4d6858660673ea270c051cf7a0d28e7c7ae013361a78782"
+      },
+      "node": "v24.19.0",
+      "directCliGuards": [
+        {
+          "args": "empty",
+          "expectedRefusal": "NATIVE_PAPER_EXPLICIT_RESUME_REQUIRED",
+          "exitStatus": 1
+        },
+        {
+          "args": "explicit-resume-nonexistent-fixture-input",
+          "expectedRefusal": "ENOENT",
+          "exitStatus": 1
+        }
+      ],
+      "stderr": "(node:226708) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n",
+      "exitStatus": 0,
+      "soleNativeAddon": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d",
+      "temporaryFixtureRemoved": true,
+      "networkIsolation": "Common networking APIs stubbed; not an OS network sandbox. No real account paths or provider credentials are supplied."
+    }
+  },
+  "getterSource": "d2b7b6ad224d8df637f33deedfcc0807a9859eba",
+  "getterVerification": {
+    "focusedTests": 21,
+    "pass": 21,
+    "typeScriptBuild": "PASS",
+    "independentReview": "PASS",
+    "sourceGuard": "PASS",
+    "currentSha256": {
+      "src/adaptive-held-series.ts": "7e46330fd1ce704754e8934339e579bdde732b6d2f2abd3fdd006d8e5f63fec2",
+      "src/trader.ts": "9c0ddab5318dcea0e8fbda574073c41042e5071e9cae07edb990f128b3bc0b14",
+      "test/adaptive-held-series.test.ts": "bae59eca256af66a0a68c326bc36aca8172038639feae85ee8db87abcc884293",
+      "test/adaptive-paper-trader.test.ts": "223e57db333feb1b00aec5e5ff5b3597c444aa0fd39419a0ccfaa061f46750e8"
+    },
+    "combinedFinalSuite": "REQUIRED AT PARENT AFTER NATIVE/RENDER PROJECTION INTEGRATION"
+  },
+  "providerRequests": 0,
+  "originalAccountOpened": false,
+  "financialServiceChanged": false,
+  "installed": false,
+  "liveReliabilityOrProfitabilityAcceptance": false
+}

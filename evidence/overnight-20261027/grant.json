@@ -1,0 +1,19 @@
+{
+  "schemaVersion": 1,
+  "authority": "Explicit owner overnight multi-stage research directive,2026-10-27; no production change or spending",
+  "startedAt": 1793083251494,
+  "deadlineAt": 1793112051494,
+  "startingUsage": {
+    "units": 24,
+    "measuredBytes": 377058,
+    "uncertainReservedBytes": 0
+  },
+  "ceilings": {
+    "units": 240,
+    "rpcRelatedResponseBytes": 67108864,
+    "pumpApiReservedBytes": 268435456,
+    "pumpApiReservedMs": 300000,
+    "retainedEvidenceBytes": 33554432
+  },
+  "rpcThrottlePolicy": "Stop affected measurement; at most one deliberate paced reattempt after Retry-After or conservative5min cooldown; second new429 ends RPC research"
+}

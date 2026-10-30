@@ -1,0 +1,153 @@
+{
+  "frozenAt": "2026-10-30T01:01:53.620853+00:00",
+  "sourceAt": "2026-10-30T01:01:30.292Z",
+  "sequence": "11013",
+  "status": {
+    "runtime": "running",
+    "market": "observing",
+    "entries": "paused",
+    "reconciled": true,
+    "blocker": "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED"
+  },
+  "source": {
+    "release": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
+    "strategy": "adaptive-momentum-v2-paper-v1"
+  },
+  "snapshotPath": "pre-install-provider-handoff-0100/after-third-provider-incident-0101.json",
+  "snapshotBytes": 20927,
+  "snapshotSha256": "392390d1bb95bd1acec16cf0115e49862dc6b1a01bf69485a45e4f52a191dd29",
+  "protection": {
+    "state": "monitored",
+    "targetCadenceMs": 2000,
+    "completedEvaluationBoundaryMs": 4000,
+    "lastCompletedAt": "2026-10-30T01:01:29.362Z",
+    "maximumCompletedGapMs": 89426,
+    "maximumQuoteAgeAtUseMs": 70,
+    "breaches": 69,
+    "unavailableChecks": 223
+  },
+  "heldRefusals": [
+    "Recorded holding-pricing refusals in this run: HELD_PRICING_ABORTED:23, HELD_PRICING_PROVIDER_TIMEOUT:11, HELD_PRICING_PROVIDER_COOLDOWN:61."
+  ],
+  "provider": {
+    "rpcRequests": 4134,
+    "rpcResponseBytes": 466867690,
+    "nativeStreamBytes": 1386670178,
+    "broadWatchBytes": 72286705724,
+    "discoveryConnected": true,
+    "watchConnected": true,
+    "httpTimeouts": 629,
+    "httpErrors": 0,
+    "throttles": 0,
+    "rollingStartsPerMinute": 50,
+    "maximumStartsPerMinute": 90,
+    "minimumSpacingMs": 250,
+    "primaryCooldownUntil": "2026-10-30T01:00:40.041Z",
+    "historyCooldownUntil": "2026-10-30T00:29:47.824Z",
+    "controlCooldownUntil": null
+  },
+  "candidates": {
+    "migrationsReceived": 565,
+    "verifiedOrigins": 169,
+    "known": 174,
+    "watch": 64,
+    "eligible": 39,
+    "deepActive": 4,
+    "deepMaximum": 4,
+    "queued": 36,
+    "promoted": 4841,
+    "repromoted": 4376,
+    "demoted": 4828,
+    "completeWindows": 2497,
+    "auditedWindows": 2519,
+    "uniqueEvaluated": 75,
+    "uniqueAudited": null,
+    "predictiveAssessments": 400,
+    "predictivePasses": 183,
+    "predictiveFailures": 217,
+    "predictiveUnavailable": 0,
+    "waitMeanMs": null,
+    "waitMaximumMs": 2027235,
+    "olderSelected": 24
+  },
+  "quality": {
+    "captureConnected": true,
+    "qualityGaps": 1425,
+    "auditUnavailable": 131,
+    "auditUnusable": 199,
+    "decisionDeadlineMisses": 350,
+    "enrichmentDeadlineFailures": 0,
+    "incompleteExclusions": 1425,
+    "capacityExclusions": 0,
+    "structuralExclusions": 56
+  },
+  "funnel": {
+    "discovered": 144,
+    "supported": 144,
+    "sufficientlyObserved": 7,
+    "evaluated": 7,
+    "qualified": 0,
+    "attempted": 0,
+    "paperFilled": 0,
+    "exited": 0,
+    "reconciled": 2100
+  },
+  "balances": {
+    "cashSol": "9.391335448",
+    "reservedSol": "0",
+    "equitySol": "10.022763552",
+    "equityUsd": 947.451839,
+    "realizedUsd": -3.609736,
+    "unrealizedUsd": 9.387021,
+    "tradingPnlUsd": 5.777285,
+    "economicPnlUsd": null,
+    "positionCostUsd": 49.708013,
+    "markedExposureUsd": 57.702259,
+    "drawdownUsd": null,
+    "executionCostsUsd": null,
+    "operatingCostsUsd": null,
+    "passiveSolEquityUsd": 941.674553,
+    "solPriceUsd": 94.53
+  },
+  "resources": {
+    "sampleAt": "2026-10-30T01:01:30.059Z",
+    "cpuOneCoreFraction": 0.17998570029713667,
+    "rssBytes": 387768320,
+    "availableMemoryBytes": 6815834112,
+    "availableDiskBytes": 286952751104,
+    "eventLoopLagMs": 27.131903,
+    "state": "normal"
+  },
+  "admission": {
+    "financialProjectionReady": true,
+    "supervisedNewRiskAllowed": true,
+    "candidateResourceAdmissionAllowed": true,
+    "evidenceAdmissionAllowed": true,
+    "evidencePressureReasonCode": null,
+    "evidenceDiagnosticBytes": 7026278,
+    "evidenceDiagnosticLimitBytes": 134217728,
+    "evidenceRequiresCriticalRecovery": false,
+    "evidenceRefusedRecords": 0,
+    "sourceRecoveryGeneration": 0,
+    "sourceRecoveryFailures": 0,
+    "sourceRecoveryReasonCode": null,
+    "sourceRecoveryRetryAt": null,
+    "sourceRecoveryClosingSettled": false,
+    "sourceRestartRequired": false,
+    "proofPreparationState": "complete"
+  },
+  "positions": [
+    {
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "quantity": "65278155",
+      "enteredAt": "2026-10-29T22:23:36.537Z",
+      "entryCostUsd": 49.708013,
+      "netLiquidationUsd": 57.702259,
+      "executionCostsUsd": 0.00068,
+      "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+    }
+  ],
+  "pendingOrders": [],
+  "meaning": "Additional actual93 provider failure before installing567: third shared-cooldown event; recovery not yet complete. No controls, reset, restart or providerRPC. Existingdetachedcollector195904 remainsrunning."
+}

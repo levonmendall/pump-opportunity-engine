@@ -1,0 +1,1652 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Finite existing-EC2 nonroot native candidate-evaluation research; no financial writer or execution.",
+  "source": {
+    "commit": "640143a5924a7ff7d98039967c2db17957f71f24",
+    "sha256": "4c035987338ab4dfa8982b5314c2ce3aebb41b12f23268a6425d8861d3e1909a"
+  },
+  "researchProfile": "candidate-native-two-hour-90-research-v1",
+  "observationAgePolicy": "observation-age-selected-24h-study-v1",
+  "dataContract": "confirmed-program-activity-v3-shadow",
+  "configurationSha256": "29d9de0d148c52a10ebad22eb66875636fa06beacbe66004862cd8f0505597bf",
+  "reportingBinding": {
+    "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+    "inceptionAt": 1793123773252,
+    "sourceStatusSha256": "9e13e049f6882ad6f8266217cb870e6d62e9a183cdf7bc6b0b6789c5535aa9c3"
+  },
+  "publicInputSha256": "2de69d23390902cc28e99e0ee672ccd2e24ea1f9a7f79cc777217435296d7c46",
+  "bundle": {
+    "file": "native-candidates.mjs",
+    "bytes": 4480351,
+    "sha256": "4c035987338ab4dfa8982b5314c2ce3aebb41b12f23268a6425d8861d3e1909a"
+  },
+  "metadataSha256": "19fbdf2ec2fb9e6233084a7515dbf8153b8f6db25622740344d3968929263b95",
+  "supervisorSha256": "5294407d8ca5043ef11fb2d4834b9ecb5ae6c7b698404cc21e62b017f2d14b83",
+  "files": [
+    {
+      "path": "native-candidates.mjs.gz",
+      "bytes": 702777,
+      "sha256": "6f05398729faaf14f283678a6ef7825d5379f3278680bd3ce370bf81a3be957e"
+    },
+    {
+      "path": "metadata.json",
+      "bytes": 141014,
+      "sha256": "19fbdf2ec2fb9e6233084a7515dbf8153b8f6db25622740344d3968929263b95"
+    },
+    {
+      "path": "input-template.json",
+      "bytes": 5970725,
+      "sha256": "2de69d23390902cc28e99e0ee672ccd2e24ea1f9a7f79cc777217435296d7c46"
+    },
+    {
+      "path": "reporting/run-publisher.sh",
+      "bytes": 4416,
+      "sha256": "19780dba1d69c0a54f5c5466f99bbaa840acc54469cefca71905043a11ea53d9"
+    },
+    {
+      "path": "reporting/dist/publisher.mjs",
+      "bytes": 30148,
+      "sha256": "649f4cc27f74f3aa53fcc831a3437b7e3d9eb8eef63896782b5b451aba1427eb"
+    },
+    {
+      "path": "reporting/dist/manifest.json",
+      "bytes": 1325,
+      "sha256": "14c6c96dccb3ca994b78b19f6671f8b0e46b4beaae5f0a25ec3dd634e8fefc78"
+    },
+    {
+      "path": "baselines/000.json",
+      "bytes": 887,
+      "sha256": "6fb4891e22baaecfc6725bebd4016ee1b3464e6b2392bdd7dbd54f10b8b2fa04"
+    },
+    {
+      "path": "baselines/001.json",
+      "bytes": 1057,
+      "sha256": "7466fe7f7a96234eed3773198772924fa67fa3eef44a6022813b85cef8680bfb"
+    },
+    {
+      "path": "baselines/002.json",
+      "bytes": 1126,
+      "sha256": "19c73f655035af5a93c385f5e951de3b8f01488a4b711873496a1514097c8fcc"
+    },
+    {
+      "path": "baselines/003.json",
+      "bytes": 1202,
+      "sha256": "f6c4d9843cdf26165f229c97d241167f3e0633bcbbd56298133ab4ab1a78c2a7"
+    },
+    {
+      "path": "baselines/004.json",
+      "bytes": 1127,
+      "sha256": "f2f139d3a707baa4c371f0b3b486ec58d539a770696b2d6b14a567f6ba4857ee"
+    },
+    {
+      "path": "baselines/005.json",
+      "bytes": 1141,
+      "sha256": "e1f30e81dd7c4e66bbdac71bde5c1de4caa97d491e0be1aef278d3fd895779ce"
+    },
+    {
+      "path": "baselines/006.json",
+      "bytes": 1072,
+      "sha256": "92898abd75cfeb36e2eecf89f98148c59e91aaaedb6c0bd353397bc8ca31c723"
+    },
+    {
+      "path": "baselines/007.json",
+      "bytes": 1336,
+      "sha256": "4ed23fec3a412747ae7156a1904f8f7c2d0ffa820c02afad38ecd48434ef996a"
+    },
+    {
+      "path": "baselines/008.json",
+      "bytes": 1351,
+      "sha256": "9ead237456a3cfd0673d01043165a0b3c1d8768c9281d31623e953a619e48a23"
+    },
+    {
+      "path": "baselines/009.json",
+      "bytes": 1417,
+      "sha256": "fc5d622929c20e44fd6024f2273e51f3cb8f213670cbe57dbf092c1e409aa28f"
+    },
+    {
+      "path": "baselines/010.json",
+      "bytes": 2451,
+      "sha256": "181c6b5725efd14a24ac349b77ff4661092c846c69a0891a34706a4205a02046"
+    },
+    {
+      "path": "baselines/011.json",
+      "bytes": 4152,
+      "sha256": "88c119fb0a9066d978a56181168de49ba145b5f337afc3fc1ec7e1a39f59cd42"
+    },
+    {
+      "path": "baselines/012.json",
+      "bytes": 4814,
+      "sha256": "09eb13ef7d6199bc913bd83caf10a87c2bdbd5f98e59aa98ae9d3b517a7dd29c"
+    },
+    {
+      "path": "baselines/013.json",
+      "bytes": 2998,
+      "sha256": "11b708d8a101c991cd4d2e6bd975aef2e275f2f33f10b1142f27ccf7f6579915"
+    },
+    {
+      "path": "baselines/014.json",
+      "bytes": 2855,
+      "sha256": "7db41dc703af1d3bb26af90e733d8c03685faf62ab4918234ee828508d3990b5"
+    },
+    {
+      "path": "baselines/015.json",
+      "bytes": 2820,
+      "sha256": "e59d25d6ae1fafac4bfcfcbaf69de7c2c4c4792ed8c9282fd6b538d1ab681067"
+    },
+    {
+      "path": "baselines/016.json",
+      "bytes": 2934,
+      "sha256": "d5e605be37b1bbc0f6d1497b5675a550aea3e97085b2be0b202319acb1728edb"
+    },
+    {
+      "path": "baselines/017.json",
+      "bytes": 5839,
+      "sha256": "7b1eb9d4b5528664aa916c4d65b3d99b7e1b2ac3650ed95c3dd37a472d1cdef2"
+    },
+    {
+      "path": "baselines/018.json",
+      "bytes": 4002,
+      "sha256": "3ae60bd77b57009a114df195145f6d8196ca6921898bcc667b550089c86443f2"
+    },
+    {
+      "path": "baselines/019.json",
+      "bytes": 6806,
+      "sha256": "4d70b28ad24a4ba4d3fd9b23b2493838a0137608236619bcac9b42170101f4cc"
+    },
+    {
+      "path": "baselines/020.json",
+      "bytes": 4579,
+      "sha256": "1911e9058a081058c141ba705c02ddd9d5073c3a6923f0d383fb3d50da8bafc8"
+    },
+    {
+      "path": "baselines/021.json",
+      "bytes": 4565,
+      "sha256": "d7bd2c9012fd18f7d50a7fcb37225f08b93afe9059c37e7a298292160046d07f"
+    },
+    {
+      "path": "baselines/022.json",
+      "bytes": 5024,
+      "sha256": "82b9f82f96a79e391889dbff01bfeb4dd5af6067d39da2958f3dc3a7bcd9b082"
+    },
+    {
+      "path": "baselines/023.json",
+      "bytes": 4726,
+      "sha256": "a4b5a3c31f5ba3cbce5d3e824220c12c10f7801eaab0ba09c58d7453d8c0a5d3"
+    },
+    {
+      "path": "baselines/024.json",
+      "bytes": 9011,
+      "sha256": "83298127cd73652d9b824a8071178cc7774065bf8af7a7ba43bcf27ebe152f2a"
+    },
+    {
+      "path": "baselines/025.json",
+      "bytes": 5734,
+      "sha256": "52959d39d67f491a152b82d5f78ce081f196241c51cf0550ae2fa00b5ce7652a"
+    },
+    {
+      "path": "baselines/026.json",
+      "bytes": 6335,
+      "sha256": "44bd02becfdfc0b3273fde10bd038b837a77a60bdfac87968379789fe9ca0caa"
+    },
+    {
+      "path": "baselines/027.json",
+      "bytes": 7866,
+      "sha256": "b3b31895969955bc2fd986f73c8ff60344c22f9024811f839eb1f4eebfc0e3ae"
+    },
+    {
+      "path": "baselines/028.json",
+      "bytes": 6895,
+      "sha256": "dc00f492378cefb892bb71f3b27015e677837d76a51d94359df3820e587d0a29"
+    },
+    {
+      "path": "baselines/029.json",
+      "bytes": 8127,
+      "sha256": "97744d8a0ef928092f75cca12f41dcf156604d7d63ce50e731d24269a0873121"
+    },
+    {
+      "path": "baselines/030.json",
+      "bytes": 10317,
+      "sha256": "477e2190b1574c3bd028a9b34bc79a4fe9e4ff38e50d67a4db3a07eeaf56989c"
+    },
+    {
+      "path": "baselines/031.json",
+      "bytes": 7777,
+      "sha256": "cadd58b1c07a7cabfd92ef3543b83b98daadb40caf979c905fd57968ac4bf235"
+    },
+    {
+      "path": "baselines/032.json",
+      "bytes": 8577,
+      "sha256": "459bfd3f988d50acfd4b023cf00abf20521b15c2b755113e6b2b54c9671c2f34"
+    },
+    {
+      "path": "baselines/033.json",
+      "bytes": 8989,
+      "sha256": "28c9dd9f5022eefdcd557389b96be6ea3643aa962335cc9e748279917cdd5214"
+    },
+    {
+      "path": "baselines/034.json",
+      "bytes": 10891,
+      "sha256": "93fede7e6e1bfe93af942b29bc107f4750e8d3c932527ee4dff16a0229cc9d35"
+    },
+    {
+      "path": "baselines/035.json",
+      "bytes": 10294,
+      "sha256": "d8ebf53b2645432c8f165fce8efa81f9a420333b522ce2374eeb408e8125eef7"
+    },
+    {
+      "path": "baselines/036.json",
+      "bytes": 10674,
+      "sha256": "a98b1b20399971bbc4fbe083a4bcd5498faed1463077a59a3d0c90b3f831bec2"
+    },
+    {
+      "path": "baselines/037.json",
+      "bytes": 9387,
+      "sha256": "f9db7c198823695338b1a3de3b681a691ab480149d9f494ed585ab9a4799bc22"
+    },
+    {
+      "path": "baselines/038.json",
+      "bytes": 11725,
+      "sha256": "2fca044ffe0f6e0bdcc813937e628c24c38825636e0ee8d5fe0f2ef7e98c941d"
+    },
+    {
+      "path": "baselines/039.json",
+      "bytes": 11325,
+      "sha256": "dc6e7572ee7609b7da1f84b798732c679b413624d391e745fe530904ed985964"
+    },
+    {
+      "path": "baselines/040.json",
+      "bytes": 10201,
+      "sha256": "65d0271aa93f3245380529331794f68d46ebfb3ea71da1b9146d8af4718eb4ed"
+    },
+    {
+      "path": "baselines/041.json",
+      "bytes": 12750,
+      "sha256": "4d9dc5ce252f9b5bc04988e081e8b79fe7db2bad4f78779b4de770264ead21a4"
+    },
+    {
+      "path": "baselines/042.json",
+      "bytes": 15883,
+      "sha256": "ca5be1452673ed641ddd49c5d9b66b3f58e0ff128fd7e648785aaa229f85777d"
+    },
+    {
+      "path": "baselines/043.json",
+      "bytes": 17643,
+      "sha256": "2f832dcb5ff3b50024dcac85bfbe30f9b4fea7702288dbb57e680b487b853216"
+    },
+    {
+      "path": "baselines/044.json",
+      "bytes": 16462,
+      "sha256": "bea25145d516cd8364329a5f5a24679ece8296c2ee82d3eebc88bbca9d118668"
+    },
+    {
+      "path": "baselines/045.json",
+      "bytes": 18236,
+      "sha256": "857a319825b08cc8efb81f04e975742ef752ef6b2c21d9ab3dfac3255a943011"
+    },
+    {
+      "path": "baselines/046.json",
+      "bytes": 15796,
+      "sha256": "6c5b7708be570288edaf59016cf15e2f5bdc708527d8be7dbcfd88c8c08431e8"
+    },
+    {
+      "path": "baselines/047.json",
+      "bytes": 19614,
+      "sha256": "62b52b5c32a9d98d657b9c3367fbd43bbbcee6c75b6e4b4ea9eb14f038b19cc9"
+    },
+    {
+      "path": "baselines/048.json",
+      "bytes": 16429,
+      "sha256": "904d6d8649596f487c445d755af36297d2cc4b6da868a69ed3da4ec6f211ac94"
+    },
+    {
+      "path": "baselines/049.json",
+      "bytes": 17397,
+      "sha256": "45dd041cd360fac78202eaffacbc57d1ae2bc95ec87afa2d33580e6369b84341"
+    },
+    {
+      "path": "baselines/050.json",
+      "bytes": 17470,
+      "sha256": "af86f9ecbf46a6b3e74ecfd2b5ae90319d6afa9f96ba481556807a42ba19c9b3"
+    },
+    {
+      "path": "baselines/051.json",
+      "bytes": 23915,
+      "sha256": "788cf3b61305799b5fbc84104e458f933f32c5d9c185fe2e7a69312a495e33b7"
+    },
+    {
+      "path": "baselines/052.json",
+      "bytes": 19775,
+      "sha256": "9d35253f7e7384cf49398605847cd7af9cbe1073289c43dace0e890ace9a67fb"
+    },
+    {
+      "path": "baselines/053.json",
+      "bytes": 19718,
+      "sha256": "3f61f8aa7f50dfa460d2bad796ff6450ac57f697f8c75b99897d3868e8be796c"
+    },
+    {
+      "path": "baselines/054.json",
+      "bytes": 20763,
+      "sha256": "7ec37ae8d59443b7cdb37f0c9c11294dd1b5e98d4a00268500eba871cf707983"
+    },
+    {
+      "path": "baselines/055.json",
+      "bytes": 21890,
+      "sha256": "417a5d65a976f5498fc18628d13863395795e5cef97bb59a161bb75359b6c3d4"
+    },
+    {
+      "path": "baselines/056.json",
+      "bytes": 21738,
+      "sha256": "6613801620004066154d5daabc18e7ea14852f9bc24d15531522afe0293653a1"
+    },
+    {
+      "path": "baselines/057.json",
+      "bytes": 25776,
+      "sha256": "88092b0a83d8ad69b708326e785793a3f28700ec77483b6ee6be7333c407a861"
+    },
+    {
+      "path": "baselines/058.json",
+      "bytes": 23509,
+      "sha256": "222cdc6dff5ac98217021d730d2cccdf8cbd8031a2442e1e49c7bd3505c1cbd6"
+    },
+    {
+      "path": "baselines/059.json",
+      "bytes": 22439,
+      "sha256": "e572d8b9490c8d39d3a7db9ebfe6f7f1297f0f8ee111ab73d42dec95daccbf3a"
+    },
+    {
+      "path": "baselines/060.json",
+      "bytes": 23057,
+      "sha256": "1756d605352c132af74de9b699b0a00fc5e1e43593aacded60ffe8cea60eb00b"
+    },
+    {
+      "path": "baselines/061.json",
+      "bytes": 22454,
+      "sha256": "21f97968da43da0f2ecdbbe9ad409a1e830a660a792149603488926c345f71d1"
+    },
+    {
+      "path": "baselines/062.json",
+      "bytes": 24540,
+      "sha256": "0dc4a97ce06c4ede23fef5bdb6c61350df35a44839cb4b34984b949ea51502ea"
+    },
+    {
+      "path": "baselines/063.json",
+      "bytes": 23511,
+      "sha256": "c2b19ac87f07928de3e8ace7b34f6948fbe6cdc55800bcc6f1fb5a637d6b2316"
+    },
+    {
+      "path": "baselines/064.json",
+      "bytes": 23770,
+      "sha256": "f321ce0298522aeee88760f25991d5004aff5a62846aa22e0d4db0cae5b8f632"
+    },
+    {
+      "path": "baselines/065.json",
+      "bytes": 24595,
+      "sha256": "b1ce77545e6c06d6a3e4e21bf607aa1c30bd043e34f29b473d2038035e044441"
+    },
+    {
+      "path": "baselines/066.json",
+      "bytes": 24461,
+      "sha256": "ac53204181a12be94536b0634dd55f74e6acccf4c3310db90cdb18b587884d07"
+    },
+    {
+      "path": "baselines/067.json",
+      "bytes": 25949,
+      "sha256": "7e9b05dbb56d6910dbb4f21bb997e506d9615f3af501421f82621c90f2327418"
+    },
+    {
+      "path": "baselines/068.json",
+      "bytes": 25624,
+      "sha256": "f46d0fc8aa5825442ad0ec095c0eedc143a823637901e430a03a04e2b8cd12e1"
+    },
+    {
+      "path": "baselines/069.json",
+      "bytes": 29245,
+      "sha256": "aaf99723466b6836394b3246a47aa5dd38b4e6474b201f4d85ca687baf8f49d5"
+    },
+    {
+      "path": "baselines/070.json",
+      "bytes": 25450,
+      "sha256": "fa25899cd15d04e449aa974680f32fd33a916765a70288d7e01f6824824fb080"
+    },
+    {
+      "path": "baselines/071.json",
+      "bytes": 28578,
+      "sha256": "a1ed68c1294ab47692bf8ab611bbda4dbd4dbb7cbe946f62376e293619c24dfc"
+    },
+    {
+      "path": "baselines/072.json",
+      "bytes": 33803,
+      "sha256": "ade6c27b229385dbd28f7d804e277a1a99c86b67aaa88c56f633271db62dac22"
+    },
+    {
+      "path": "baselines/073.json",
+      "bytes": 33180,
+      "sha256": "6da60e66898d4462d5506f040c1c487ca47f5dfd44feb52c3b1da570b7e5277a"
+    },
+    {
+      "path": "baselines/074.json",
+      "bytes": 30638,
+      "sha256": "1e5c28cd8ac508942668bcf8a61e4264ca56a0eadde805be65f2a63dc0c82688"
+    },
+    {
+      "path": "baselines/075.json",
+      "bytes": 32685,
+      "sha256": "5f3b50431f756c59da4ce89b9e750a6f3ee8e5cba0a55eceb7435e4931dcebe6"
+    },
+    {
+      "path": "baselines/076.json",
+      "bytes": 30170,
+      "sha256": "d21163e11c97b8f4fce3d2e386a69ea5b644f467bbb1f258aa819f1e2fa2abbe"
+    },
+    {
+      "path": "baselines/077.json",
+      "bytes": 38165,
+      "sha256": "1a8fe604f82b3e017affee08a1a639b82a23a8f7fa85671be715e4bfca2427e2"
+    },
+    {
+      "path": "baselines/078.json",
+      "bytes": 34965,
+      "sha256": "297a02bfca708b70e7f48071aaf5c86709af53d911a54c35804c5548ce4d01ff"
+    },
+    {
+      "path": "baselines/079.json",
+      "bytes": 35942,
+      "sha256": "e90bb60d3cb3a3d51ec2815ef59efad62f22a5f18936dcff3c76e2b3217d352e"
+    },
+    {
+      "path": "baselines/080.json",
+      "bytes": 38049,
+      "sha256": "3edebf1b29f57be42481e1990e75e4790ad994acb355feca35bdad64199db1e6"
+    },
+    {
+      "path": "baselines/081.json",
+      "bytes": 41402,
+      "sha256": "352d76d748fb5383aba097fbd1fad28e5c291b56927abe58b341954343fef053"
+    },
+    {
+      "path": "baselines/082.json",
+      "bytes": 44588,
+      "sha256": "77e137cfeda8ec89c32486b0addfd5e79f4c09201f049d38c0e44bee03f59d98"
+    },
+    {
+      "path": "baselines/083.json",
+      "bytes": 45341,
+      "sha256": "b953d76f03d4ad7d54a39461062ed7e4c4710ee52a46478bb9eeafc1f8559861"
+    },
+    {
+      "path": "baselines/084.json",
+      "bytes": 39578,
+      "sha256": "c5fae4f5d68abaab89511ffc53c764317f1ef7be0ec7b79baccec42f461d1b10"
+    },
+    {
+      "path": "baselines/085.json",
+      "bytes": 39565,
+      "sha256": "f96cfb054a73d254d948a910537b8968853bdac60899f0de962a2aa0490c94e1"
+    },
+    {
+      "path": "baselines/086.json",
+      "bytes": 40260,
+      "sha256": "97e92b18cf343b457df01b8728034990d1705041d0b71339723c3a5811b3f730"
+    },
+    {
+      "path": "baselines/087.json",
+      "bytes": 41241,
+      "sha256": "b92449370e1e7e8e73d417de1a6927adb41c2de90a7aa10269969b023f99f061"
+    },
+    {
+      "path": "baselines/088.json",
+      "bytes": 41043,
+      "sha256": "3c0e12529be2c3feeb4af1a8732c7235c2549b0f55ebf3ad048e73d56f36d431"
+    },
+    {
+      "path": "baselines/089.json",
+      "bytes": 40395,
+      "sha256": "b226f793b976ea7f05ec1baacddca02130123196a14fa0ef07480cdd227a8488"
+    },
+    {
+      "path": "baselines/090.json",
+      "bytes": 50126,
+      "sha256": "2cb21913d4411c93fb4106c51bb0e557b5ad5f0b64b0872292ed595acd75f1e6"
+    },
+    {
+      "path": "baselines/091.json",
+      "bytes": 49444,
+      "sha256": "2f15aa8442274cd63011904e582f10f2a3e7f1baa2254a63d505b6fc2174af08"
+    },
+    {
+      "path": "baselines/092.json",
+      "bytes": 55877,
+      "sha256": "c246b05fb8f8b397cbd770e3c926f20ba27bc7930a9af8d43cd690254404a9cc"
+    },
+    {
+      "path": "baselines/093.json",
+      "bytes": 58392,
+      "sha256": "a9767b6d085e32c7cf04d1d9e5894c233d9e6f41a6dce4b20b45ba856563fc35"
+    },
+    {
+      "path": "baselines/094.json",
+      "bytes": 59863,
+      "sha256": "3ef5091cf4bf47f982bc199fc62821ed198f97d6e83d27a4c08f8c1a65b188c8"
+    },
+    {
+      "path": "baselines/095.json",
+      "bytes": 52049,
+      "sha256": "dfc4cae90963b8a24a018b70299b88cbf192e234da5bce3acf6ad0567cbeab0a"
+    },
+    {
+      "path": "baselines/096.json",
+      "bytes": 52041,
+      "sha256": "21dbb93ce7ac42f7c507c2d5d3d5c985c789c7e2aa9c53a5dd3039bd8e5be7e1"
+    },
+    {
+      "path": "baselines/097.json",
+      "bytes": 51887,
+      "sha256": "1e592dedd844f9ea5451125cdd1c75237eb368c6056e4b97a21132811ae87642"
+    },
+    {
+      "path": "baselines/098.json",
+      "bytes": 52118,
+      "sha256": "ccb70c493e28f5a7f698fa864d8c881282aafcaa093e29560542494fc704a5d6"
+    },
+    {
+      "path": "baselines/099.json",
+      "bytes": 52251,
+      "sha256": "f18f3049392b79a92b28dd9fdb7b5bb1fd031e0142e816a46d62cb6248a6fe5b"
+    },
+    {
+      "path": "baselines/100.json",
+      "bytes": 52641,
+      "sha256": "386a797d9df722e078c34e7990d4d56f23fb52258e5bd4450e52dd8257979ef7"
+    },
+    {
+      "path": "baselines/101.json",
+      "bytes": 52091,
+      "sha256": "a7e3d33ffb2e71475a4c0753984ef1198ce737a0c56e69692f3c720d476cdbd1"
+    },
+    {
+      "path": "baselines/102.json",
+      "bytes": 53133,
+      "sha256": "153902223029cb1de3412c5ccb49028177694a45933a069d88185fb468cd9302"
+    },
+    {
+      "path": "baselines/103.json",
+      "bytes": 53757,
+      "sha256": "5609a106c60fc616a64f0751cf9b04f860708522ad87a0b7e5d6ff68ccb2707f"
+    },
+    {
+      "path": "baselines/104.json",
+      "bytes": 54751,
+      "sha256": "65d2c889a37c4955d6fff594a4bd2a43e69873d99f7ef30f2c17dfd4878c4ccd"
+    },
+    {
+      "path": "baselines/105.json",
+      "bytes": 55044,
+      "sha256": "598c5353e883c6da288ba9b8d2b12ecf026cc95b54e6d10e8be431333018b854"
+    },
+    {
+      "path": "baselines/106.json",
+      "bytes": 57482,
+      "sha256": "4f798b1399ef72c551f8e755631718ebccf58535178fd6a3f530e5ad444607c0"
+    },
+    {
+      "path": "baselines/107.json",
+      "bytes": 57321,
+      "sha256": "bdd3367d8a2cdcd67f375f1682b964d9b2ebd01e9401ac8e6c16d6835f6e4057"
+    },
+    {
+      "path": "baselines/108.json",
+      "bytes": 63123,
+      "sha256": "04e0237f85fcdd30dac26c5dfaa2fc81061464c3718d621843a23b1e15d68991"
+    },
+    {
+      "path": "baselines/109.json",
+      "bytes": 66049,
+      "sha256": "414321b32c786a1736a955f843370010dcb37eb1348c1f65bb7ce88f6c032e52"
+    },
+    {
+      "path": "baselines/110.json",
+      "bytes": 69693,
+      "sha256": "b6bec65e2fd92d6d753a0fbe7d43a85d82b4134789716960f0cb61b5daa4e402"
+    },
+    {
+      "path": "baselines/111.json",
+      "bytes": 72057,
+      "sha256": "5f986ab95d72c0d44aae7c9800eb6a3760c935a32821c3b18aec4efbea9f9b38"
+    },
+    {
+      "path": "baselines/112.json",
+      "bytes": 72872,
+      "sha256": "5ba2a4ff9adc8b835c7b7ebf5c1363f482907bc9f9d5ff46f324daf9da0e537f"
+    },
+    {
+      "path": "baselines/113.json",
+      "bytes": 66397,
+      "sha256": "d1658c16b8f5ea47a930044b3e694f5f76a55f21c0339a7939dff47a477ca5f2"
+    },
+    {
+      "path": "baselines/114.json",
+      "bytes": 68420,
+      "sha256": "12e1f926628f932d5bf44ae4d6a63e37372576610fccad6929b727bff1f10a42"
+    },
+    {
+      "path": "baselines/115.json",
+      "bytes": 69527,
+      "sha256": "7fef8c7ccf9fcddb4671dc921408dbc175ee503317bee5c86e53de779d1735f6"
+    },
+    {
+      "path": "baselines/116.json",
+      "bytes": 67113,
+      "sha256": "889cbe0285935cd4c6b222f1181d3ab2f80abcd581eceed5f1fad0f917e13f03"
+    },
+    {
+      "path": "baselines/117.json",
+      "bytes": 67127,
+      "sha256": "3240f82abfa8e24f8819ba88793c34f2680ed00db56c2f5c5001669be4f3e6f3"
+    },
+    {
+      "path": "baselines/118.json",
+      "bytes": 67141,
+      "sha256": "944fe14bd95d3310f8460393b4bd3255ad4469736f1838b69ff032741e180d76"
+    },
+    {
+      "path": "baselines/119.json",
+      "bytes": 67155,
+      "sha256": "73d6d8094c77a72061f252573c732c629ebe9ee03db7bd0dbd9fc42d24443784"
+    },
+    {
+      "path": "baselines/120.json",
+      "bytes": 67168,
+      "sha256": "83019931c8209a925d3654d19ad165234cb1ac12c12d49b13f82ce36084a8604"
+    },
+    {
+      "path": "baselines/121.json",
+      "bytes": 67183,
+      "sha256": "ef510cd6849c30c32507da03b5736ceea7c2b15d989c48e8c4b2d710f6e38b91"
+    },
+    {
+      "path": "baselines/122.json",
+      "bytes": 67197,
+      "sha256": "9cf5ebe51eb286515e7ab2964dec37a1e55bce3cb45e0a22e79d70f898346e89"
+    },
+    {
+      "path": "baselines/123.json",
+      "bytes": 67211,
+      "sha256": "f5289ab039dcf964f9e8b8e760216bf5510d3054e9f063a3473ba7baefc39082"
+    },
+    {
+      "path": "baselines/124.json",
+      "bytes": 67226,
+      "sha256": "166ae8c5cd37e211d56b28efc404d3a2f43eb5caa831e3d51609b58a4d4aa34a"
+    },
+    {
+      "path": "baselines/125.json",
+      "bytes": 67240,
+      "sha256": "83f7014a2beca1293cd9f461d74e139cf3755cfdfd184fefb5919db332783fb1"
+    },
+    {
+      "path": "baselines/126.json",
+      "bytes": 67145,
+      "sha256": "f6e5dcf886f36ac65922e027b9d0315de6b7185a571d4c55c67a8d6c7884628e"
+    },
+    {
+      "path": "baselines/127.json",
+      "bytes": 67241,
+      "sha256": "4b23c6c609c0d6b19d3331a2e4795b95071b7064c85dfffbd83465e62a63dcd4"
+    },
+    {
+      "path": "baselines/128.json",
+      "bytes": 70869,
+      "sha256": "863955aa05ab21418955e2f1c192d49c3ff33178d19605a84b09f8700e99fd38"
+    },
+    {
+      "path": "baselines/129.json",
+      "bytes": 69749,
+      "sha256": "892f6ff421151ef4257d9c79dccda5dbd3c87e735a22772986fdd1940be1da4e"
+    },
+    {
+      "path": "baselines/130.json",
+      "bytes": 68395,
+      "sha256": "de5d5344bab0da01d34b7a1244f11cf5d52ecd9172bcecdb4da0aa6f9739dbf5"
+    },
+    {
+      "path": "baselines/131.json",
+      "bytes": 73266,
+      "sha256": "74647e8d1b6947b692a33d94bd2f02551a37b113aec19e7c4ca9e32797d52074"
+    },
+    {
+      "path": "baselines/132.json",
+      "bytes": 70680,
+      "sha256": "804da74fa885d2c6cdf72aec03759df3ea52d9b4a994b9da260985f0a29c01b6"
+    },
+    {
+      "path": "baselines/133.json",
+      "bytes": 72070,
+      "sha256": "7570a075c5c8840bb458ce67e519b968d9f766926e4b662e77f0047fd12483b7"
+    },
+    {
+      "path": "baselines/134.json",
+      "bytes": 72623,
+      "sha256": "6e59b275c85fa954b57a82c9c62fffbeddd7d3e5ec9e0eac618992cae0525d9b"
+    },
+    {
+      "path": "baselines/135.json",
+      "bytes": 71873,
+      "sha256": "7d13ce697923e33f3bd6b9b2f1119a02581ec68d80a7dfcb1ecf8caebb0d6c5d"
+    },
+    {
+      "path": "baselines/136.json",
+      "bytes": 72717,
+      "sha256": "09e6505718121895d129f7628f5ba400f9d079edde81d91b68c054309f3c3a84"
+    },
+    {
+      "path": "baselines/137.json",
+      "bytes": 71874,
+      "sha256": "b48c5df418f65860f3409c2198e7e2b39d108459620ce938aeec172489c458e3"
+    }
+  ],
+  "baselineBooks": [
+    {
+      "path": "baselines/000.json",
+      "bytes": 887,
+      "sha256": "6fb4891e22baaecfc6725bebd4016ee1b3464e6b2392bdd7dbd54f10b8b2fa04",
+      "originalPath": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/active-approved-rpc-budget.json"
+    },
+    {
+      "path": "baselines/001.json",
+      "bytes": 1057,
+      "sha256": "7466fe7f7a96234eed3773198772924fa67fa3eef44a6022813b85cef8680bfb",
+      "originalPath": "/workspace/pump-opportunity-engine/evidence/public-component-20261027/rpc-budget.json"
+    },
+    {
+      "path": "baselines/002.json",
+      "bytes": 1126,
+      "sha256": "19c73f655035af5a93c385f5e951de3b8f01488a4b711873496a1514097c8fcc",
+      "originalPath": "/workspace/pump-opportunity-engine/evidence/overnight-20261027/01-basic/rpc-budget.json"
+    },
+    {
+      "path": "baselines/003.json",
+      "bytes": 1202,
+      "sha256": "f6c4d9843cdf26165f229c97d241167f3e0633bcbbd56298133ab4ab1a78c2a7",
+      "originalPath": "/workspace/pump-opportunity-engine/evidence/overnight-20261027/02-multi/rpc-budget.json"
+    },
+    {
+      "path": "baselines/004.json",
+      "bytes": 1127,
+      "sha256": "f2f139d3a707baa4c371f0b3b486ec58d539a770696b2d6b14a567f6ba4857ee",
+      "originalPath": "/workspace/pump-opportunity-engine/evidence/overnight-20261027/03-discovery/rpc-budget.json"
+    },
+    {
+      "path": "baselines/005.json",
+      "bytes": 1141,
+      "sha256": "e1f30e81dd7c4e66bbdac71bde5c1de4caa97d491e0be1aef278d3fd895779ce",
+      "originalPath": "/workspace/pump-opportunity-engine/evidence/overnight-20261027/04-active/rpc-budget.json"
+    },
+    {
+      "path": "baselines/006.json",
+      "bytes": 1072,
+      "sha256": "92898abd75cfeb36e2eecf89f98148c59e91aaaedb6c0bd353397bc8ca31c723",
+      "originalPath": "/workspace/pump-opportunity-engine/evidence/overnight-20261027/05-sampler/rpc-budget.json"
+    },
+    {
+      "path": "baselines/007.json",
+      "bytes": 1336,
+      "sha256": "4ed23fec3a412747ae7156a1904f8f7c2d0ffa820c02afad38ecd48434ef996a",
+      "originalPath": "/workspace/pump-opportunity-engine/evidence/overnight-20261027/06-targeted/rpc-budget.json"
+    },
+    {
+      "path": "baselines/008.json",
+      "bytes": 1351,
+      "sha256": "9ead237456a3cfd0673d01043165a0b3c1d8768c9281d31623e953a619e48a23",
+      "originalPath": "/workspace/pump-opportunity-engine/evidence/overnight-20261027/07-field/rpc-budget.json"
+    },
+    {
+      "path": "baselines/009.json",
+      "bytes": 1417,
+      "sha256": "fc5d622929c20e44fd6024f2273e51f3cb8f213670cbe57dbf092c1e409aa28f",
+      "originalPath": "/workspace/pump-opportunity-engine/evidence/overnight-20261027/08-audit/rpc-budget.json"
+    },
+    {
+      "path": "baselines/010.json",
+      "bytes": 2451,
+      "sha256": "181c6b5725efd14a24ac349b77ff4661092c846c69a0891a34706a4205a02046",
+      "originalPath": "/workspace/pump-opportunity-engine/evidence/overnight-20261027/09-notifications/rpc-budget.json"
+    },
+    {
+      "path": "baselines/011.json",
+      "bytes": 4152,
+      "sha256": "88c119fb0a9066d978a56181168de49ba145b5f337afc3fc1ec7e1a39f59cd42",
+      "originalPath": "/workspace/pump-opportunity-engine/evidence/overnight-20261027/10-notifications/rpc-budget.json"
+    },
+    {
+      "path": "baselines/012.json",
+      "bytes": 4814,
+      "sha256": "09eb13ef7d6199bc913bd83caf10a87c2bdbd5f98e59aa98ae9d3b517a7dd29c",
+      "originalPath": "/workspace/pump-opportunity-engine/evidence/overnight-20261027/11-combined/rpc-budget.json"
+    },
+    {
+      "path": "baselines/013.json",
+      "bytes": 2998,
+      "sha256": "11b708d8a101c991cd4d2e6bd975aef2e275f2f33f10b1142f27ccf7f6579915",
+      "originalPath": "/workspace/pump-opportunity-engine/evidence/overnight-20261027/12-combined-audit/rpc-budget.json"
+    },
+    {
+      "path": "baselines/014.json",
+      "bytes": 2855,
+      "sha256": "7db41dc703af1d3bb26af90e733d8c03685faf62ab4918234ee828508d3990b5",
+      "originalPath": "/workspace/pump-opportunity-engine/evidence/overnight-20261027/13-buy-finality/rpc-budget.json"
+    },
+    {
+      "path": "baselines/015.json",
+      "bytes": 2820,
+      "sha256": "e59d25d6ae1fafac4bfcfcbaf69de7c2c4c4792ed8c9282fd6b538d1ab681067",
+      "originalPath": "/workspace/pump-opportunity-engine/evidence/overnight-20261027/14-retained-buy/rpc-budget.json"
+    },
+    {
+      "path": "baselines/016.json",
+      "bytes": 2934,
+      "sha256": "d5e605be37b1bbc0f6d1497b5675a550aea3e97085b2be0b202319acb1728edb",
+      "originalPath": "/workspace/pump-opportunity-engine/evidence/scheduler-forward-20261027/01-preflight/rpc-budget.json"
+    },
+    {
+      "path": "baselines/017.json",
+      "bytes": 5839,
+      "sha256": "7b1eb9d4b5528664aa916c4d65b3d99b7e1b2ac3650ed95c3dd37a472d1cdef2",
+      "originalPath": "/workspace/pump-opportunity-engine/evidence/scheduler-forward-20261027/02-combined/rpc-budget.json"
+    },
+    {
+      "path": "baselines/018.json",
+      "bytes": 4002,
+      "sha256": "3ae60bd77b57009a114df195145f6d8196ca6921898bcc667b550089c86443f2",
+      "originalPath": "/workspace/pump-opportunity-engine/evidence/scheduler-forward-20261027/03-audit/rpc-budget.json"
+    },
+    {
+      "path": "baselines/019.json",
+      "bytes": 6806,
+      "sha256": "4d70b28ad24a4ba4d3fd9b23b2493838a0137608236619bcac9b42170101f4cc",
+      "originalPath": "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/01-paced-combined/rpc-budget.json"
+    },
+    {
+      "path": "baselines/020.json",
+      "bytes": 4579,
+      "sha256": "1911e9058a081058c141ba705c02ddd9d5073c3a6923f0d383fb3d50da8bafc8",
+      "originalPath": "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/02-failed-buy-audit/rpc-budget.json"
+    },
+    {
+      "path": "baselines/021.json",
+      "bytes": 4565,
+      "sha256": "d7bd2c9012fd18f7d50a7fcb37225f08b93afe9059c37e7a298292160046d07f",
+      "originalPath": "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/03-corrected-combined/rpc-budget.json"
+    },
+    {
+      "path": "baselines/022.json",
+      "bytes": 5024,
+      "sha256": "82b9f82f96a79e391889dbff01bfeb4dd5af6067d39da2958f3dc3a7bcd9b082",
+      "originalPath": "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/04-current-subject/rpc-budget.json"
+    },
+    {
+      "path": "baselines/023.json",
+      "bytes": 4726,
+      "sha256": "a4b5a3c31f5ba3cbce5d3e824220c12c10f7801eaab0ba09c58d7453d8c0a5d3",
+      "originalPath": "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/06-targeted-retry-subject/rpc-budget.json"
+    },
+    {
+      "path": "baselines/024.json",
+      "bytes": 9011,
+      "sha256": "83298127cd73652d9b824a8071178cc7774065bf8af7a7ba43bcf27ebe152f2a",
+      "originalPath": "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/08-current-combined/rpc-budget.json"
+    },
+    {
+      "path": "baselines/025.json",
+      "bytes": 5734,
+      "sha256": "52959d39d67f491a152b82d5f78ce081f196241c51cf0550ae2fa00b5ce7652a",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027175613061-393704a5/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/026.json",
+      "bytes": 6335,
+      "sha256": "44bd02becfdfc0b3273fde10bd038b837a77a60bdfac87968379789fe9ca0caa",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027175710755-f4320bd5/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/027.json",
+      "bytes": 7866,
+      "sha256": "b3b31895969955bc2fd986f73c8ff60344c22f9024811f839eb1f4eebfc0e3ae",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027180216582-fc8d1a1d/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/028.json",
+      "bytes": 6895,
+      "sha256": "dc00f492378cefb892bb71f3b27015e677837d76a51d94359df3820e587d0a29",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027180216582-fc8d1a1d/rpc/chapter-002.json"
+    },
+    {
+      "path": "baselines/029.json",
+      "bytes": 8127,
+      "sha256": "97744d8a0ef928092f75cca12f41dcf156604d7d63ce50e731d24269a0873121",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/030.json",
+      "bytes": 10317,
+      "sha256": "477e2190b1574c3bd028a9b34bc79a4fe9e4ff38e50d67a4db3a07eeaf56989c",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/rpc/chapter-002.json"
+    },
+    {
+      "path": "baselines/031.json",
+      "bytes": 7777,
+      "sha256": "cadd58b1c07a7cabfd92ef3543b83b98daadb40caf979c905fd57968ac4bf235",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/rpc/chapter-003.json"
+    },
+    {
+      "path": "baselines/032.json",
+      "bytes": 8577,
+      "sha256": "459bfd3f988d50acfd4b023cf00abf20521b15c2b755113e6b2b54c9671c2f34",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/033.json",
+      "bytes": 8989,
+      "sha256": "28c9dd9f5022eefdcd557389b96be6ea3643aa962335cc9e748279917cdd5214",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-002.json"
+    },
+    {
+      "path": "baselines/034.json",
+      "bytes": 10891,
+      "sha256": "93fede7e6e1bfe93af942b29bc107f4750e8d3c932527ee4dff16a0229cc9d35",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-003.json"
+    },
+    {
+      "path": "baselines/035.json",
+      "bytes": 10294,
+      "sha256": "d8ebf53b2645432c8f165fce8efa81f9a420333b522ce2374eeb408e8125eef7",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-004.json"
+    },
+    {
+      "path": "baselines/036.json",
+      "bytes": 10674,
+      "sha256": "a98b1b20399971bbc4fbe083a4bcd5498faed1463077a59a3d0c90b3f831bec2",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-005.json"
+    },
+    {
+      "path": "baselines/037.json",
+      "bytes": 9387,
+      "sha256": "f9db7c198823695338b1a3de3b681a691ab480149d9f494ed585ab9a4799bc22",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-006.json"
+    },
+    {
+      "path": "baselines/038.json",
+      "bytes": 11725,
+      "sha256": "2fca044ffe0f6e0bdcc813937e628c24c38825636e0ee8d5fe0f2ef7e98c941d",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-007.json"
+    },
+    {
+      "path": "baselines/039.json",
+      "bytes": 11325,
+      "sha256": "dc6e7572ee7609b7da1f84b798732c679b413624d391e745fe530904ed985964",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-008.json"
+    },
+    {
+      "path": "baselines/040.json",
+      "bytes": 10201,
+      "sha256": "65d0271aa93f3245380529331794f68d46ebfb3ea71da1b9146d8af4718eb4ed",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-009.json"
+    },
+    {
+      "path": "baselines/041.json",
+      "bytes": 12750,
+      "sha256": "4d9dc5ce252f9b5bc04988e081e8b79fe7db2bad4f78779b4de770264ead21a4",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027195343952-418513ae/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/042.json",
+      "bytes": 15883,
+      "sha256": "ca5be1452673ed641ddd49c5d9b66b3f58e0ff128fd7e648785aaa229f85777d",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027200603791-46c145af/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/043.json",
+      "bytes": 17643,
+      "sha256": "2f832dcb5ff3b50024dcac85bfbe30f9b4fea7702288dbb57e680b487b853216",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027201954438-c75c4513/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/044.json",
+      "bytes": 16462,
+      "sha256": "bea25145d516cd8364329a5f5a24679ece8296c2ee82d3eebc88bbca9d118668",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027201954438-c75c4513/rpc/chapter-002.json"
+    },
+    {
+      "path": "baselines/045.json",
+      "bytes": 18236,
+      "sha256": "857a319825b08cc8efb81f04e975742ef752ef6b2c21d9ab3dfac3255a943011",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027205459767-1840d6f4/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/046.json",
+      "bytes": 15796,
+      "sha256": "6c5b7708be570288edaf59016cf15e2f5bdc708527d8be7dbcfd88c8c08431e8",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/047.json",
+      "bytes": 19614,
+      "sha256": "62b52b5c32a9d98d657b9c3367fbd43bbbcee6c75b6e4b4ea9eb14f038b19cc9",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-002.json"
+    },
+    {
+      "path": "baselines/048.json",
+      "bytes": 16429,
+      "sha256": "904d6d8649596f487c445d755af36297d2cc4b6da868a69ed3da4ec6f211ac94",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-003.json"
+    },
+    {
+      "path": "baselines/049.json",
+      "bytes": 17397,
+      "sha256": "45dd041cd360fac78202eaffacbc57d1ae2bc95ec87afa2d33580e6369b84341",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-004.json"
+    },
+    {
+      "path": "baselines/050.json",
+      "bytes": 17470,
+      "sha256": "af86f9ecbf46a6b3e74ecfd2b5ae90319d6afa9f96ba481556807a42ba19c9b3",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-005.json"
+    },
+    {
+      "path": "baselines/051.json",
+      "bytes": 23915,
+      "sha256": "788cf3b61305799b5fbc84104e458f933f32c5d9c185fe2e7a69312a495e33b7",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027211320693-9bb70ba1/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/052.json",
+      "bytes": 19775,
+      "sha256": "9d35253f7e7384cf49398605847cd7af9cbe1073289c43dace0e890ace9a67fb",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027211320693-9bb70ba1/rpc/chapter-002.json"
+    },
+    {
+      "path": "baselines/053.json",
+      "bytes": 19718,
+      "sha256": "3f61f8aa7f50dfa460d2bad796ff6450ac57f697f8c75b99897d3868e8be796c",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/054.json",
+      "bytes": 20763,
+      "sha256": "7ec37ae8d59443b7cdb37f0c9c11294dd1b5e98d4a00268500eba871cf707983",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/rpc/chapter-002.json"
+    },
+    {
+      "path": "baselines/055.json",
+      "bytes": 21890,
+      "sha256": "417a5d65a976f5498fc18628d13863395795e5cef97bb59a161bb75359b6c3d4",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/rpc/chapter-003.json"
+    },
+    {
+      "path": "baselines/056.json",
+      "bytes": 21738,
+      "sha256": "6613801620004066154d5daabc18e7ea14852f9bc24d15531522afe0293653a1",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/rpc/chapter-004.json"
+    },
+    {
+      "path": "baselines/057.json",
+      "bytes": 25776,
+      "sha256": "88092b0a83d8ad69b708326e785793a3f28700ec77483b6ee6be7333c407a861",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/058.json",
+      "bytes": 23509,
+      "sha256": "222cdc6dff5ac98217021d730d2cccdf8cbd8031a2442e1e49c7bd3505c1cbd6",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-002.json"
+    },
+    {
+      "path": "baselines/059.json",
+      "bytes": 22439,
+      "sha256": "e572d8b9490c8d39d3a7db9ebfe6f7f1297f0f8ee111ab73d42dec95daccbf3a",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-003.json"
+    },
+    {
+      "path": "baselines/060.json",
+      "bytes": 23057,
+      "sha256": "1756d605352c132af74de9b699b0a00fc5e1e43593aacded60ffe8cea60eb00b",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-004.json"
+    },
+    {
+      "path": "baselines/061.json",
+      "bytes": 22454,
+      "sha256": "21f97968da43da0f2ecdbbe9ad409a1e830a660a792149603488926c345f71d1",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-005.json"
+    },
+    {
+      "path": "baselines/062.json",
+      "bytes": 24540,
+      "sha256": "0dc4a97ce06c4ede23fef5bdb6c61350df35a44839cb4b34984b949ea51502ea",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-006.json"
+    },
+    {
+      "path": "baselines/063.json",
+      "bytes": 23511,
+      "sha256": "c2b19ac87f07928de3e8ace7b34f6948fbe6cdc55800bcc6f1fb5a637d6b2316",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-007.json"
+    },
+    {
+      "path": "baselines/064.json",
+      "bytes": 23770,
+      "sha256": "f321ce0298522aeee88760f25991d5004aff5a62846aa22e0d4db0cae5b8f632",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-008.json"
+    },
+    {
+      "path": "baselines/065.json",
+      "bytes": 24595,
+      "sha256": "b1ce77545e6c06d6a3e4e21bf607aa1c30bd043e34f29b473d2038035e044441",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/066.json",
+      "bytes": 24461,
+      "sha256": "ac53204181a12be94536b0634dd55f74e6acccf4c3310db90cdb18b587884d07",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-002.json"
+    },
+    {
+      "path": "baselines/067.json",
+      "bytes": 25949,
+      "sha256": "7e9b05dbb56d6910dbb4f21bb997e506d9615f3af501421f82621c90f2327418",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-003.json"
+    },
+    {
+      "path": "baselines/068.json",
+      "bytes": 25624,
+      "sha256": "f46d0fc8aa5825442ad0ec095c0eedc143a823637901e430a03a04e2b8cd12e1",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-004.json"
+    },
+    {
+      "path": "baselines/069.json",
+      "bytes": 29245,
+      "sha256": "aaf99723466b6836394b3246a47aa5dd38b4e6474b201f4d85ca687baf8f49d5",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-005.json"
+    },
+    {
+      "path": "baselines/070.json",
+      "bytes": 25450,
+      "sha256": "fa25899cd15d04e449aa974680f32fd33a916765a70288d7e01f6824824fb080",
+      "originalPath": "/workspace/poe-pilot/research/pilot-migration-diagnostic-1793138401524/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/071.json",
+      "bytes": 28578,
+      "sha256": "a1ed68c1294ab47692bf8ab611bbda4dbd4dbb7cbe946f62376e293619c24dfc",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/072.json",
+      "bytes": 33803,
+      "sha256": "ade6c27b229385dbd28f7d804e277a1a99c86b67aaa88c56f633271db62dac22",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/rpc/chapter-002.json"
+    },
+    {
+      "path": "baselines/073.json",
+      "bytes": 33180,
+      "sha256": "6da60e66898d4462d5506f040c1c487ca47f5dfd44feb52c3b1da570b7e5277a",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/rpc/chapter-003.json"
+    },
+    {
+      "path": "baselines/074.json",
+      "bytes": 30638,
+      "sha256": "1e5c28cd8ac508942668bcf8a61e4264ca56a0eadde805be65f2a63dc0c82688",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/rpc/chapter-004.json"
+    },
+    {
+      "path": "baselines/075.json",
+      "bytes": 32685,
+      "sha256": "5f3b50431f756c59da4ce89b9e750a6f3ee8e5cba0a55eceb7435e4931dcebe6",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027223455745-ec07c3bc/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/076.json",
+      "bytes": 30170,
+      "sha256": "d21163e11c97b8f4fce3d2e386a69ea5b644f467bbb1f258aa819f1e2fa2abbe",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027223455745-ec07c3bc/rpc/chapter-002.json"
+    },
+    {
+      "path": "baselines/077.json",
+      "bytes": 38165,
+      "sha256": "1a8fe604f82b3e017affee08a1a639b82a23a8f7fa85671be715e4bfca2427e2",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/078.json",
+      "bytes": 34965,
+      "sha256": "297a02bfca708b70e7f48071aaf5c86709af53d911a54c35804c5548ce4d01ff",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/rpc/chapter-002.json"
+    },
+    {
+      "path": "baselines/079.json",
+      "bytes": 35942,
+      "sha256": "e90bb60d3cb3a3d51ec2815ef59efad62f22a5f18936dcff3c76e2b3217d352e",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/rpc/chapter-003.json"
+    },
+    {
+      "path": "baselines/080.json",
+      "bytes": 38049,
+      "sha256": "3edebf1b29f57be42481e1990e75e4790ad994acb355feca35bdad64199db1e6",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/rpc/chapter-004.json"
+    },
+    {
+      "path": "baselines/081.json",
+      "bytes": 41402,
+      "sha256": "352d76d748fb5383aba097fbd1fad28e5c291b56927abe58b341954343fef053",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027230222347-7a5dc2cf/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/082.json",
+      "bytes": 44588,
+      "sha256": "77e137cfeda8ec89c32486b0addfd5e79f4c09201f049d38c0e44bee03f59d98",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027230222347-7a5dc2cf/rpc/chapter-002.json"
+    },
+    {
+      "path": "baselines/083.json",
+      "bytes": 45341,
+      "sha256": "b953d76f03d4ad7d54a39461062ed7e4c4710ee52a46478bb9eeafc1f8559861",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027230222347-7a5dc2cf/rpc/chapter-003.json"
+    },
+    {
+      "path": "baselines/084.json",
+      "bytes": 39578,
+      "sha256": "c5fae4f5d68abaab89511ffc53c764317f1ef7be0ec7b79baccec42f461d1b10",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-si-history-20261027232426805/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/085.json",
+      "bytes": 39565,
+      "sha256": "f96cfb054a73d254d948a910537b8968853bdac60899f0de962a2aa0490c94e1",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-si-history-20261027232707767/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/086.json",
+      "bytes": 40260,
+      "sha256": "97e92b18cf343b457df01b8728034990d1705041d0b71339723c3a5811b3f730",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-si-history-20261027232852598/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/087.json",
+      "bytes": 41241,
+      "sha256": "b92449370e1e7e8e73d417de1a6927adb41c2de90a7aa10269969b023f99f061",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-si-history-20261027233451534/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/088.json",
+      "bytes": 41043,
+      "sha256": "3c0e12529be2c3feeb4af1a8732c7235c2549b0f55ebf3ad048e73d56f36d431",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-si-history-20261027234046662/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/089.json",
+      "bytes": 40395,
+      "sha256": "b226f793b976ea7f05ec1baacddca02130123196a14fa0ef07480cdd227a8488",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-si-history-20261027234449066/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/090.json",
+      "bytes": 50126,
+      "sha256": "2cb21913d4411c93fb4106c51bb0e557b5ad5f0b64b0872292ed595acd75f1e6",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027235124302-99e43f99/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/091.json",
+      "bytes": 49444,
+      "sha256": "2f15aa8442274cd63011904e582f10f2a3e7f1baa2254a63d505b6fc2174af08",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261027235124302-99e43f99/rpc/chapter-002.json"
+    },
+    {
+      "path": "baselines/092.json",
+      "bytes": 55877,
+      "sha256": "c246b05fb8f8b397cbd770e3c926f20ba27bc7930a9af8d43cd690254404a9cc",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261028001353575-91ed5596/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/093.json",
+      "bytes": 58392,
+      "sha256": "a9767b6d085e32c7cf04d1d9e5894c233d9e6f41a6dce4b20b45ba856563fc35",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261028001353575-91ed5596/rpc/chapter-002.json"
+    },
+    {
+      "path": "baselines/094.json",
+      "bytes": 59863,
+      "sha256": "3ef5091cf4bf47f982bc199fc62821ed198f97d6e83d27a4c08f8c1a65b188c8",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261028001353575-91ed5596/rpc/chapter-003.json"
+    },
+    {
+      "path": "baselines/095.json",
+      "bytes": 52049,
+      "sha256": "dfc4cae90963b8a24a018b70299b88cbf192e234da5bce3acf6ad0567cbeab0a",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-native-flow-20261028004053347/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/096.json",
+      "bytes": 52041,
+      "sha256": "21dbb93ce7ac42f7c507c2d5d3d5c985c789c7e2aa9c53a5dd3039bd8e5be7e1",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-native-audit-20261028004404407/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/097.json",
+      "bytes": 51887,
+      "sha256": "1e592dedd844f9ea5451125cdd1c75237eb368c6056e4b97a21132811ae87642",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-native-anchor-20261028004722611/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/098.json",
+      "bytes": 52118,
+      "sha256": "ccb70c493e28f5a7f698fa864d8c881282aafcaa093e29560542494fc704a5d6",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-native-flow-20261028011013865/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/099.json",
+      "bytes": 52251,
+      "sha256": "f18f3049392b79a92b28dd9fdb7b5bb1fd031e0142e816a46d62cb6248a6fe5b",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-native-prepare-20261028011313592/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/100.json",
+      "bytes": 52641,
+      "sha256": "386a797d9df722e078c34e7990d4d56f23fb52258e5bd4450e52dd8257979ef7",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-native-flow-20261028011331673/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/101.json",
+      "bytes": 52091,
+      "sha256": "a7e3d33ffb2e71475a4c0753984ef1198ce737a0c56e69692f3c720d476cdbd1",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-xgo-prepare-20261028012145775/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/102.json",
+      "bytes": 53133,
+      "sha256": "153902223029cb1de3412c5ccb49028177694a45933a069d88185fb468cd9302",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-native-flow-20261028012322144/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/103.json",
+      "bytes": 53757,
+      "sha256": "5609a106c60fc616a64f0751cf9b04f860708522ad87a0b7e5d6ff68ccb2707f",
+      "originalPath": "/workspace/poe-pilot/runs/ec2-ws-40616536285/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/104.json",
+      "bytes": 54751,
+      "sha256": "65d2c889a37c4955d6fff594a4bd2a43e69873d99f7ef30f2c17dfd4878c4ccd",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261028015809342-f9514585/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/105.json",
+      "bytes": 55044,
+      "sha256": "598c5353e883c6da288ba9b8d2b12ecf026cc95b54e6d10e8be431333018b854",
+      "originalPath": "/workspace/poe-pilot/runs/ec2-native-40619930479/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/106.json",
+      "bytes": 57482,
+      "sha256": "4f798b1399ef72c551f8e755631718ebccf58535178fd6a3f530e5ad444607c0",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261028022044929-0a67e810/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/107.json",
+      "bytes": 57321,
+      "sha256": "bdd3367d8a2cdcd67f375f1682b964d9b2ebd01e9401ac8e6c16d6835f6e4057",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261028022044929-0a67e810/rpc/chapter-002.json"
+    },
+    {
+      "path": "baselines/108.json",
+      "bytes": 63123,
+      "sha256": "04e0237f85fcdd30dac26c5dfaa2fc81061464c3718d621843a23b1e15d68991",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261028022044929-0a67e810/rpc/chapter-003.json"
+    },
+    {
+      "path": "baselines/109.json",
+      "bytes": 66049,
+      "sha256": "414321b32c786a1736a955f843370010dcb37eb1348c1f65bb7ce88f6c032e52",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261028022044929-0a67e810/rpc/chapter-004.json"
+    },
+    {
+      "path": "baselines/110.json",
+      "bytes": 69693,
+      "sha256": "b6bec65e2fd92d6d753a0fbe7d43a85d82b4134789716960f0cb61b5daa4e402",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261028024343351-654738bd/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/111.json",
+      "bytes": 72057,
+      "sha256": "5f986ab95d72c0d44aae7c9800eb6a3760c935a32821c3b18aec4efbea9f9b38",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261028024343351-654738bd/rpc/chapter-002.json"
+    },
+    {
+      "path": "baselines/112.json",
+      "bytes": 72872,
+      "sha256": "5ba2a4ff9adc8b835c7b7ebf5c1363f482907bc9f9d5ff46f324daf9da0e537f",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-20261028024343351-654738bd/rpc/chapter-003.json"
+    },
+    {
+      "path": "baselines/113.json",
+      "bytes": 66397,
+      "sha256": "d1658c16b8f5ea47a930044b3e694f5f76a55f21c0339a7939dff47a477ca5f2",
+      "originalPath": "/workspace/poe-pilot/runs/pilot-ingus-origin-20261028033629189/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/114.json",
+      "bytes": 68420,
+      "sha256": "12e1f926628f932d5bf44ae4d6a63e37372576610fccad6929b727bff1f10a42",
+      "originalPath": "/workspace/poe-pilot/runs/native-ec2-20261028041601/artifact/run/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/115.json",
+      "bytes": 69527,
+      "sha256": "7fef8c7ccf9fcddb4671dc921408dbc175ee503317bee5c86e53de779d1735f6",
+      "originalPath": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/116.json",
+      "bytes": 67113,
+      "sha256": "889cbe0285935cd4c6b222f1181d3ab2f80abcd581eceed5f1fad0f917e13f03",
+      "originalPath": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/rpc/chapter-002.json"
+    },
+    {
+      "path": "baselines/117.json",
+      "bytes": 67127,
+      "sha256": "3240f82abfa8e24f8819ba88793c34f2680ed00db56c2f5c5001669be4f3e6f3",
+      "originalPath": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/rpc/chapter-003.json"
+    },
+    {
+      "path": "baselines/118.json",
+      "bytes": 67141,
+      "sha256": "944fe14bd95d3310f8460393b4bd3255ad4469736f1838b69ff032741e180d76",
+      "originalPath": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/rpc/chapter-004.json"
+    },
+    {
+      "path": "baselines/119.json",
+      "bytes": 67155,
+      "sha256": "73d6d8094c77a72061f252573c732c629ebe9ee03db7bd0dbd9fc42d24443784",
+      "originalPath": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/rpc/chapter-005.json"
+    },
+    {
+      "path": "baselines/120.json",
+      "bytes": 67168,
+      "sha256": "83019931c8209a925d3654d19ad165234cb1ac12c12d49b13f82ce36084a8604",
+      "originalPath": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/rpc/chapter-006.json"
+    },
+    {
+      "path": "baselines/121.json",
+      "bytes": 67183,
+      "sha256": "ef510cd6849c30c32507da03b5736ceea7c2b15d989c48e8c4b2d710f6e38b91",
+      "originalPath": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/rpc/chapter-007.json"
+    },
+    {
+      "path": "baselines/122.json",
+      "bytes": 67197,
+      "sha256": "9cf5ebe51eb286515e7ab2964dec37a1e55bce3cb45e0a22e79d70f898346e89",
+      "originalPath": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/rpc/chapter-008.json"
+    },
+    {
+      "path": "baselines/123.json",
+      "bytes": 67211,
+      "sha256": "f5289ab039dcf964f9e8b8e760216bf5510d3054e9f063a3473ba7baefc39082",
+      "originalPath": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/rpc/chapter-009.json"
+    },
+    {
+      "path": "baselines/124.json",
+      "bytes": 67226,
+      "sha256": "166ae8c5cd37e211d56b28efc404d3a2f43eb5caa831e3d51609b58a4d4aa34a",
+      "originalPath": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/rpc/chapter-010.json"
+    },
+    {
+      "path": "baselines/125.json",
+      "bytes": 67240,
+      "sha256": "83f7014a2beca1293cd9f461d74e139cf3755cfdfd184fefb5919db332783fb1",
+      "originalPath": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/rpc/chapter-011.json"
+    },
+    {
+      "path": "baselines/126.json",
+      "bytes": 67145,
+      "sha256": "f6e5dcf886f36ac65922e027b9d0315de6b7185a571d4c55c67a8d6c7884628e",
+      "originalPath": "/workspace/poe-pilot/runs/refusal-tx-20261028051439999/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/127.json",
+      "bytes": 67241,
+      "sha256": "4b23c6c609c0d6b19d3331a2e4795b95071b7064c85dfffbd83465e62a63dcd4",
+      "originalPath": "/workspace/poe-pilot/runs/history-batch-20261028054938691/rpc-budget.json"
+    },
+    {
+      "path": "baselines/128.json",
+      "bytes": 70869,
+      "sha256": "863955aa05ab21418955e2f1c192d49c3ff33178d19605a84b09f8700e99fd38",
+      "originalPath": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/run/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/129.json",
+      "bytes": 69749,
+      "sha256": "892f6ff421151ef4257d9c79dccda5dbd3c87e735a22772986fdd1940be1da4e",
+      "originalPath": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/run/rpc/chapter-002.json"
+    },
+    {
+      "path": "baselines/130.json",
+      "bytes": 68395,
+      "sha256": "de5d5344bab0da01d34b7a1244f11cf5d52ecd9172bcecdb4da0aa6f9739dbf5",
+      "originalPath": "/workspace/poe-pilot/runs/discovery-cache-20261028070929965/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/131.json",
+      "bytes": 73266,
+      "sha256": "74647e8d1b6947b692a33d94bd2f02551a37b113aec19e7c4ca9e32797d52074",
+      "originalPath": "/workspace/poe-pilot/runs/native-retention-20261028142017/artifact/run/rpc/chapter-001.json"
+    },
+    {
+      "path": "baselines/132.json",
+      "bytes": 70680,
+      "sha256": "804da74fa885d2c6cdf72aec03759df3ea52d9b4a994b9da260985f0a29c01b6",
+      "originalPath": "/workspace/poe-pilot/runs/native-retention-20261028142017/artifact/run/rpc/chapter-002.json"
+    },
+    {
+      "path": "baselines/133.json",
+      "bytes": 72070,
+      "sha256": "7570a075c5c8840bb458ce67e519b968d9f766926e4b662e77f0047fd12483b7",
+      "originalPath": "/workspace/poe-pilot/runs/native-retention-20261028142017/artifact/run/rpc/chapter-003.json"
+    },
+    {
+      "path": "baselines/134.json",
+      "bytes": 72623,
+      "sha256": "6e59b275c85fa954b57a82c9c62fffbeddd7d3e5ec9e0eac618992cae0525d9b",
+      "originalPath": "/workspace/poe-pilot/runs/native-retention-20261028142017/artifact/run/rpc/chapter-004.json"
+    },
+    {
+      "path": "baselines/135.json",
+      "bytes": 71873,
+      "sha256": "7d13ce697923e33f3bd6b9b2f1119a02581ec68d80a7dfcb1ecf8caebb0d6c5d",
+      "originalPath": "/workspace/poe-pilot/runs/native-retention-20261028142017/artifact/run/rpc/chapter-005.json"
+    },
+    {
+      "path": "baselines/136.json",
+      "bytes": 72717,
+      "sha256": "09e6505718121895d129f7628f5ba400f9d079edde81d91b68c054309f3c3a84",
+      "originalPath": "/workspace/poe-pilot/runs/native-retention-20261028142017/artifact/run/rpc/chapter-006.json"
+    },
+    {
+      "path": "baselines/137.json",
+      "bytes": 71874,
+      "sha256": "b48c5df418f65860f3409c2198e7e2b39d108459620ce938aeec172489c458e3",
+      "originalPath": "/workspace/poe-pilot/runs/native-retention-20261028142017/observed-unmanaged-control.json"
+    }
+  ],
+  "baselineByteRunway": {
+    "initialInputBytes": 4612522,
+    "maximumChainBytes": 33554432,
+    "remainingBytes": 28941910,
+    "fullSizeChapterHeadroom": 55,
+    "maximumPossibleNewChapters": 64,
+    "fullWorstCaseRunwayGuaranteed": false,
+    "limitation": "Path-count runway does not guarantee byte runway. A future aggregate-chain cap remains a disclosed resource stop; no counters are reset or refunded."
+  },
+  "priorUsage": {
+    "calls": 5033,
+    "observedBytes": 155808391,
+    "uncertainResponseBytes": 53477376,
+    "pendingOperations": 41,
+    "physicalSettlementConfirmed": true,
+    "lastCounterSha256": "b48c5df418f65860f3409c2198e7e2b39d108459620ce938aeec172489c458e3"
+  },
+  "limits": {
+    "durationSeconds": 7200,
+    "outerSeconds": 7320,
+    "finalPublisherDrainSeconds": 45,
+    "runnerTimeoutSeconds": 7215,
+    "workflowTimeoutMinutes": 125,
+    "candidateSlots": 6,
+    "heapMiB": 256,
+    "runnerRssMiB": 384,
+    "runnerCpuSeconds": 1920,
+    "publisherCpuSeconds": 120,
+    "archiveCpuSeconds": 120,
+    "archiveRssMiB": 256,
+    "temporaryMiB": 1536,
+    "artifactMiB": 1280,
+    "compressedArchiveMiB": 256,
+    "evidenceMiB": 1024,
+    "evidenceSegmentMiB": 8,
+    "minimumAvailableRamMiB": 1024,
+    "minimumAvailableDiskMiB": 2048,
+    "minimumOngoingDiskMiB": 256,
+    "maximumBaselinePaths": 192,
+    "maximumComponentBookBytes": 524288,
+    "maximumBaselineBytes": 33554432,
+    "maximumRpcMetadataBytes": 2097152,
+    "maximumChapters": 64,
+    "maximumPackageMiB": 48,
+    "maximumUnits": 11500
+  },
+  "reporting": {
+    "sourceRelease": "a40c75e7256ffdf4aff720cf79e53a0960252246",
+    "bundleSha256": "649f4cc27f74f3aa53fcc831a3437b7e3d9eb8eef63896782b5b451aba1427eb",
+    "launcherSha256": "19780dba1d69c0a54f5c5466f99bbaa840acc54469cefca71905043a11ea53d9",
+    "secretFile": "/home/mm-ec2-runner/.local/share/poe-reporting/pilot-ingest.secret",
+    "secretValueIncluded": false,
+    "financialPortfolio": null
+  },
+  "publicEvidenceReadback": {
+    "helperSha256": "81f017b3a2fa789ec6f3f75f1718c9036067bf9690a0d1f7cf05852c9484501a",
+    "maximumChunkBytes": 4194304,
+    "archiveWholeHashMustBeVerifiedAfterReassembly": true,
+    "rawRetainedUntilVerifiedBackup": true
+  },
+  "costs": {
+    "newServicePurchase": false,
+    "existingComputeAndTransferAllocation": "unverified; report actual use separately",
+    "fullExportUncompressedMiB": 1280,
+    "compressedArchiveMiB": 256,
+    "githubArtifactUpload": false,
+    "artifactRetentionDays": null
+  },
+  "staging": {
+    "networkRequests": 0,
+    "credentialsRead": false,
+    "financialFilesRead": false,
+    "sourceChanged": false,
+    "dispatchPerformed": false
+  }
+}

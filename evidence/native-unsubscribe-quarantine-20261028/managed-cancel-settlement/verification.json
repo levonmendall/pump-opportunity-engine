@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_REPRODUCTION_NOT_FORWARD_REPAIR",
+  "baselineCommit": "5df48a4f7341dd90d14e48a189dd364599e5c45c",
+  "baselineTestFailedAsExpected": true,
+  "repairedTestPassed": true,
+  "sourceSha256": "2584676fb44af3c24c47e5b2815126d6cc7d3dddbf4330cfc43e8d32628d880b",
+  "files": [
+    {
+      "path": "evidence/native-unsubscribe-quarantine-20261028/managed-cancel-settlement/before.txt",
+      "bytes": 976,
+      "sha256": "71304394cda1a65f1c947308c91028e2bc756538750012d385c2dcae56118a1d"
+    },
+    {
+      "path": "evidence/native-unsubscribe-quarantine-20261028/managed-cancel-settlement/after.txt",
+      "bytes": 240,
+      "sha256": "ee4ca16f9a9bc9c35382a52beb7580763b3656984419490133f16776a9fbd32f"
+    },
+    {
+      "path": "test/native-managed-cancel-settlement.test.ts",
+      "bytes": 2618,
+      "sha256": "4ef0b035a1e40fe503ddd321bf7bf0f614aa05fb016ac054967b7a4747f2992c"
+    },
+    {
+      "path": "evidence/native-unsubscribe-quarantine-20261028/managed-cancel-settlement/pure-default-regressions.txt",
+      "bytes": 1158,
+      "sha256": "af18c95bae385c3c867825ea6477f40eb83d812013f5416d8a7953082137533f"
+    },
+    {
+      "path": "evidence/native-unsubscribe-quarantine-20261028/managed-cancel-settlement/pure-build.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "path": "evidence/native-unsubscribe-quarantine-20261028/managed-cancel-settlement/independent-review-tests.txt",
+      "bytes": 711,
+      "sha256": "06129f175437f5e57e1e87344020fbf9ac9b865e37b64b33a83c67f2d1fa864c"
+    }
+  ],
+  "networkRequests": 0,
+  "financialFilesRead": false,
+  "defaultTimingLimitsChanged": false,
+  "physicalSettlementRule": "An ACK queued after cancellation cannot settle the cancelled managed request until actual transport close; original error and uncertain reservation remain.",
+  "pureDefaultRegressionTestsPassed": 9,
+  "pureDefaultBuildPassed": true,
+  "independentReview": "GO; new test plus existing PING suite5/5 passed"
+}

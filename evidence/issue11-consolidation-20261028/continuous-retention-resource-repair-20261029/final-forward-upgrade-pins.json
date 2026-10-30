@@ -1,0 +1,21 @@
+{
+  "draftOnly": true,
+  "deployed": false,
+  "candidateMaximum": 4,
+  "positionStage": "single",
+  "oldManifestSha256": "a1dbed9db61e259f759701d6aae2bd102ec3dc7cb357ef121312d7ddb3e4354b",
+  "oldConfigurationSha256": "f6ce54d7594e14d87955f211cca21f594b3d3eb52e20a75fa2245290f22a4857",
+  "newConfigurationSha256": "44e06adbddd6bab5e9aa5f70e9c24061f47998ccc9a1ebd2864d9b5aa8e2c8ae",
+  "files": [
+    {
+      "file": "forward-original-upgrade.py",
+      "bytes": 43139,
+      "sha256": "d2da791da20014bc0dbda54dfb8a1859bd2356586fc189d8b3b374c2cc190b60"
+    },
+    {
+      "file": "test-forward-original-upgrade.py",
+      "bytes": 46983,
+      "sha256": "7237986b9c0b142a961623c1d4449b0fbd395655f5f184f5747e9dcbbe1b32d4"
+    }
+  ]
+}

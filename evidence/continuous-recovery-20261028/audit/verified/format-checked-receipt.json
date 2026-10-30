@@ -1,0 +1,34 @@
+{
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "--test",
+    "test/native-flow-audit.test.ts",
+    "test/native-audit-session.test.ts",
+    "test/native-flow-audit-batch.test.ts"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 0.8617327769998155,
+  "at": "2026-10-28T16:10:09.550447+00:00",
+  "logSha256": "14efd8606a0d412306e9f9e48c22006832327bdee182cc1b1cb807448f7d62e7",
+  "changesSincePriorVerification": "Only trailing whitespace removed from native-audit-session.ts. Build/compile prior to whitespace cleanup passed; root will run full integrated source verification.",
+  "currentFiles": [
+    {
+      "path": "src/native-flow-audit.ts",
+      "sha256": "7c6c7bdece44ed3f006f53dbafca562f97124533bedb8a25518620f13e47bbaa"
+    },
+    {
+      "path": "src/native-audit-session.ts",
+      "sha256": "c008bd34b4f99a1f7e03b9954e208cd3bc1b4d33efc50a1cb28ac71ad900a326"
+    },
+    {
+      "path": "test/native-flow-audit.test.ts",
+      "sha256": "4556665f08634133f6c4df70650e55089a1eabf9993517b558967dea728814b0"
+    },
+    {
+      "path": "test/native-audit-session.test.ts",
+      "sha256": "ab51c06567f79c6d754df34541665729957915491c3409dc86f88b6c275bbb6b"
+    }
+  ]
+}

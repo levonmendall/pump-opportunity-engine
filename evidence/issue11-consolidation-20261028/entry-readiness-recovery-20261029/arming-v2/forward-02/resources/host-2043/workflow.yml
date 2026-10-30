@@ -1,0 +1,43 @@
+name: POE original cutover refusal read-only verification
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: meme-machine-ec2-administration
+  cancel-in-progress: false
+jobs:
+  read-original-lifecycle:
+    if: github.repository == 'levonmendall/meme-machine-admin' && github.ref == 'refs/heads/main'
+    runs-on: meme-machine-ec2-admin
+    timeout-minutes: 2
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: operator/native-paper-ec2/inspect-original-cutover-refusal.py
+      - name: Read metadata without changing or starting a service
+        env:
+          ACTUAL_RUNNER: ${{ runner.name }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$ACTUAL_RUNNER" = meme-machine-ec2-admin
+          test "$(id -u)" = 994
+          python3 -B -I - <<'PYHASH'
+          import hashlib,os,stat
+          f=os.open('operator/native-paper-ec2/inspect-original-cutover-refusal.py',os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
+          try:
+              s=os.fstat(f)
+              assert stat.S_ISREG(s.st_mode) and s.st_uid==994 and s.st_nlink==1 and not s.st_mode&0o022 and 0<s.st_size<=32768
+              b=os.read(f,s.st_size+1)
+              assert len(b)==s.st_size and hashlib.sha256(b).hexdigest()=='ff37c016fa552dc2103abdfbb006cee57b1e9f861eae16782add8909bb26406f'
+          finally:os.close(f)
+          PYHASH
+          /usr/bin/env -i PATH=/usr/bin:/bin LANG=C ACTUAL_RUNNER="$ACTUAL_RUNNER" \
+            /usr/bin/timeout --signal=TERM --kill-after=3s 30s \
+            /usr/bin/nice -n 19 /usr/bin/prlimit \
+            --cpu=5:5 --as=134217728:134217728 --nofile=64:64 --fsize=1048576:1048576 --core=0:0 -- \
+            /usr/bin/python3 -B -I operator/native-paper-ec2/inspect-original-cutover-refusal.py

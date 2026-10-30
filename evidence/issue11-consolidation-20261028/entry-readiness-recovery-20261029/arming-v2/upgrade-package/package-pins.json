@@ -1,0 +1,81 @@
+{
+  "kind": "poe-original-entry-arming-upgrade-pins-v1",
+  "source": {
+    "commit": "5648606bf78f6687c47632be5c789af5e7f19772",
+    "sha256": "cf2089281edcdf03e7ee40492ebe06fc0e715de9c1b31f94b732905dea8318eb"
+  },
+  "previousSource": {
+    "commit": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+    "sha256": "b3ec5aa43b877a4c5ff44f6217be32a4539766c351deb143d557894ccb118ec9"
+  },
+  "configurationSha256": "96ec314c0b0256365286659f64680a81e7225386848f3c12567854ced76cd69c",
+  "previousConfigurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+  "driverSha256": "775ba8c3ddea2ffaefb7b1d92b43b0bdbf04381b784b9f6f3f87fb695c000346",
+  "indexSha256": "35ea9f83861eec05c3cb3ec4746f11d949016aac84317cb8e980faa5f06dffd2",
+  "manifestSha256": "18363e1e925239d7b5fcd9d2e032b68be9fdc8bbb8a48a079ba46d5e9d92a417",
+  "transportSha256": "313f8bcbcddd5abe5df04c3c5d02f049a0c156e74d14f9337d03f048a1880df7",
+  "ownerCommandSha256": "61a79c230ab9b0b38471eb9a0b628dfa091177307ba78f7dfde84b89ae61618c",
+  "stage": "/var/tmp/poe-original-entry-arming-upgrade",
+  "forensicFile": "export-source-recovery-forensics-20261029.py",
+  "forensicSha256": "4fab80d8ce4a1a39d33a37a3a3d9570ae841614abe1cfe4dd3a006db538c3986",
+  "forensicChild": {
+    "uid": 988,
+    "gid": 982,
+    "supplementaryGroups": [],
+    "timeoutSeconds": 8,
+    "phase": "before service stop/financial mutation",
+    "installedAsRuntimeFile": false
+  },
+  "files": [
+    {
+      "file": "native-paper.mjs",
+      "bytes": 5108246,
+      "sha256": "cf2089281edcdf03e7ee40492ebe06fc0e715de9c1b31f94b732905dea8318eb"
+    },
+    {
+      "file": "backup-worker.mjs",
+      "bytes": 74060,
+      "sha256": "815f2a215111d09a9216f3fa2235481865e6f22f76773636e2f10022957ac656"
+    },
+    {
+      "file": "better_sqlite3.node",
+      "bytes": 2226168,
+      "sha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d"
+    },
+    {
+      "file": "metadata.json",
+      "bytes": 154493,
+      "sha256": "c6499e358f8a47ad0d0e6168e281236adfab09cd3477301b3f2cc7bf98360554"
+    },
+    {
+      "file": "snapshot-publisher.mjs",
+      "bytes": 31949,
+      "sha256": "29831f3b18a806f767a578b8ead424441d6d8421c43936abe1a9ad9f16f0c27f"
+    },
+    {
+      "file": "run-authoritative-service.py",
+      "bytes": 37498,
+      "sha256": "025abb6631f94cbc97ec30d855ab7d5d11cb257025317e4cee186c5ee00695ed"
+    },
+    {
+      "file": "poe-runtime-persistent.conf",
+      "bytes": 925,
+      "sha256": "d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df"
+    },
+    {
+      "file": "forward-original-upgrade.py",
+      "bytes": 48816,
+      "sha256": "775ba8c3ddea2ffaefb7b1d92b43b0bdbf04381b784b9f6f3f87fb695c000346"
+    },
+    {
+      "file": "export-source-recovery-forensics-20261029.py",
+      "bytes": 30782,
+      "sha256": "4fab80d8ce4a1a39d33a37a3a3d9570ae841614abe1cfe4dd3a006db538c3986"
+    },
+    {
+      "file": "service.json",
+      "bytes": 1715,
+      "sha256": "18363e1e925239d7b5fcd9d2e032b68be9fdc8bbb8a48a079ba46d5e9d92a417"
+    }
+  ]
+}

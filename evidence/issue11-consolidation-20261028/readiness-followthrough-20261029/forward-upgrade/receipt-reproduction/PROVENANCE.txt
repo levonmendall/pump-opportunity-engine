@@ -1,0 +1,19 @@
+Captured by independent review agent /root/review_receipt_output_errors.
+The script originally ran once from stdin using python3 -B -I - in
+/workspace/pump-opportunity-engine, with exit code 0. Its disposable temporary
+fixture directories were removed normally. The exact executed Python source and
+the exact captured stdout have been retained here afterward; no test rerun was
+performed to create these retained artifacts.
+
+Replay baseline: HEAD:operator/native-paper-ec2/run-authoritative-service.py at
+the time of execution, SHA256
+d90ea175e17ef165afc8a4dcc24ab302204d500aad738bd4554cdc5f32e3d6fb.
+Replay patched bytes: dirty working file at execution, SHA256
+1c993f89ec08c2ec6b8dfa05c5657bd2d572636361c8f32bff3febbeae729a79.
+
+The replay imports fixture constructors from test-authoritative-service.py and
+constructs the actual enriched native bundle provenance shape documented by
+src/native-paper-bundle.ts. All account/snapshot/receipt data are synthetic
+temporary fixtures. No host account, credential, network or service operation
+was used. The script's HEAD reference is historical context: executing it after
+the fix is committed will require pinning the old supervisor revision explicitly.

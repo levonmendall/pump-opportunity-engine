@@ -1,0 +1,119 @@
+✔ settled timeout uncertainty does not deadlock native service behind the coordinator planning guard (90.592786ms)
+✔ settled chapter recovery preserves cooldown readiness, raw history, and held/pending priority (217.133984ms)
+✔ control cooldown is enforced at native admission without blocking unrelated HTTP or losing monotonic wait (10.958977ms)
+✔ native planner defers a settled context-floor cooldown without disconnecting healthy scopes (17.720297ms)
+✔ real shared gate: failed support refresh retains fresh capture through lateHTTP200 physical settlement (1022.490013ms)
+✔ real shared gate: failed support refresh retains fresh capture through lateHTTP503 physical settlement (1026.704901ms)
+✔ real shared gate: support can actually expire while its failed HTTP request remains physically unsettled (1015.696203ms)
+✔ native registration is local; fresh support, shared upgrade and actual confirmed ACK precede flow opening (15.701731ms)
+✔ retained actual program events preserve economics, true log identities and availability without claiming SPL checks (12.508131ms)
+✔ confirmed failed and non-swap notifications remain auditable without inventing trades or a data gap (6.424183ms)
+✔ duplicate actual event identity is not re-admitted; synthetic changed amounts invalidate the candidate as a correction (8.536217ms)
+✔ unsupported whole AMM frame suspends only its candidate and requires an explicit fresh rearm (35.107499ms)
+✔ disconnect invalidates market context; bounded service-driven reconnect requires fresh ACK and warming (6.743617ms)
+✔ stale support and delayed recording cannot turn old program information into valid fresh evidence (16.980018ms)
+✔ HTTP cooldown defers support without the observed six-candidate teardown or losing fresh capture (25.585889ms)
+✔ a retained HTTP cooldown never extends support validity or admits trades after actual source expiry (17.684753ms)
+✔ control cooldown retains an owed pong while independent support work can proceed (4.051627ms)
+✔ first-turn external HTTP cooldown cannot hide a simultaneously due native heartbeat behind support work (10.877482ms)
+✔ a cooldown refusal at its expiry remains a non-destructive admission refusal with no same-turn retry (2.018806ms)
+✔ forbidden control recovery does not postpone the existing owed-pong deadline or send an unadmitted frame (3.223403ms)
+✔ six distinct candidates share one socket and filtered subscriptions; capacity refusal starts no seventh work (14.228244ms)
+✔ closed financial-priority admission starts no native control, and stop waits for actual transport settlement (2.413722ms)
+✔ transport receipt beyond its finite allowance is counted and invalidates admission before trade decoding (1.534467ms)
+✔ synthetic same transaction delivered after a second pool ACK admits its unseen pool event without duplicating the first pool (9.728907ms)
+✔ peer pongs and liveness pings require explicit service and use the same physical control gate (6.443502ms)
+✔ a late old-connection protocol attempt cannot consume a new connection managed operation (6.192289ms)
+✔ stop during an unfinished upgrade settles its physical operation before another service can run (2.848387ms)
+✔ ordinary pre-ACK warming is separate from an initial supported-state refusal with an auditable cause (4.233062ms)
+✔ SYNTHETIC17/18 selected-transaction bursts admit every event once without enrichment, support or control requests (44.743929ms)
+✔ already received socket bytes remain fully visible when shared charging fails partway through a large delta (2.7224ms)
+✔ synthetic program-clock source expiry during otherwise allowed recording is rejected at actual information admission (3.139099ms)
+✔ shared information cutoff rejects already delivered bytes at final admission without a fake accepted trade (2.519259ms)
+✔ fresh union support exposes original ACK floor and later independent confirmed Clock ceiling (4.663841ms)
+✔ early heartbeat is explicit, uses the same physical gate and preserves fresh-source deadlines (1.876615ms)
+✔ retiring the last scope closes promptly and a closed empty source leaves no stale heartbeat reservation (3.694222ms)
+✔ known retired late notification stays outside selected evidence and does not fault another active scope (4.179922ms)
+✔ unknown or expired subscription IDs remain fail-closed and their received bytes are still counted (59.82293ms)
+✔ an unknown early-notification burst records the actual ACK and queue boundary without accepting unscoped flow (3.709755ms)
+✔ well-formed unknown subscription recovers only after actual close, bounded backoff and a new ACK window (5.098937ms)
+✔ malformed unknown subscription remains a hard safety refusal without logging its raw payload (1.585463ms)
+✔ a retired packet cannot hide a confirmed correction of a signature already used by an active scope (5.806497ms)
+✔ retired tombstones are connection-scoped and cannot turn an arbitrary new-connection ID into known traffic (6.083147ms)
+✔ a retired subscription ID cannot be reassigned to a different canonical pool (6.160402ms)
+✔ malformed subscription results retain bounded refusal diagnostics without accepting the ID or raw payload (2.821748ms)
+✔ subscription RPC errors retain only the numeric error code before generic budget normalization (3.335399ms)
+✔ malformed known-retired payloads still fail closed instead of receiving an arbitrary-ID exemption (3.141241ms)
+✔ retirement metadata is capped per connection and capacity exhaustion causes explicit fresh-window recovery (380.3492ms)
+✔ eight successful raw shapes cannot consume the independent first-refusal evidence reserve (34.107574ms)
+✔ actual five-to-zero freshness timeline is classified as expired support before parsing, even before a delayed watchdog runs (26.732149ms)
+✔ actual retained Boost is a separate shadow pool effect and never invents an ordinary buyer or net buying (28.651398ms)
+✔ strict source stays the default and the identical retained Boost remains refused (4.605685ms)
+✔ ordinary retained trade and feature values are identical in strict and explicit shadow sources (6.641665ms)
+✔ SYNTHETIC mixed-pool delivery propagates first-availability baseline markers without duplicate-time inflation (60.119941ms)
+✔ SYNTHETIC 4097 unique notices over the measured overload duration retain the full closed window and partial bucket (754.968002ms)
+✔ bounded per-candidate ledger overflow preserves the actual refusal without a second throw or loss of another scope (9.375627ms)
+✔ SYNTHETIC two-scope signature demand beyond8192 keeps the correction horizon and does not hide a later correction (1047.301501ms)
+✔ native support forwards its validated base mint owner into classic protocol effect decoding (10.305316ms)
+✔ recorded same-filter ID reuse after acknowledged retirement opens only a new current-context window (34.581914ms)
+✔ an unseen old or same-bank-slot packet after ID reuse is an explicit candidate-local ambiguity, not invented current flow (14.259882ms)
+✔ known old copies do not reenter a rebound window and an actual correction still invalidates it (7.190465ms)
+✔ an active ID collision cannot be accepted as a retired-filter rebind (2.942394ms)
+✔ an unsubscribe still in flight cannot create a tombstone or admit a replacement on the same physical gate (4.868131ms)
+✔ rearming the same candidate after a gap refreshes support after its unsubscribe ACK (5.593216ms)
+✔ SYNTHETIC cross-pool decoding applies a rebound fence to its actual affected pool without losing the other scope (5.958709ms)
+✔ SYNTHETIC protocol effects arriving through another subscription cannot bypass a rebound context fence (9.878672ms)
+✔ SYNTHETIC an old cross-pool duplicate cannot enter a rebound window when a third scope requires transaction reparsing (13.517951ms)
+✔ a confirmed failed transaction at a reused ID context fence remains diagnostic without invented executed flow (11.487909ms)
+✔ RETAINED718 timing-shaped failed refresh preserves five fresh scopes and recovers before original expiry (40.699758ms)
+✔ recoverable supportCOMPONENT_HTTP_TRANSPORT retains healthy capture, real retry floor and independent controls (4.146781ms)
+✔ recoverable supportCOMPONENT_HTTP_429 retains healthy capture, real retry floor and independent controls (3.557256ms)
+✔ recoverable supportCOMPONENT_HTTP_STATUS_502 retains healthy capture, real retry floor and independent controls (3.706989ms)
+✔ recoverable supportCOMPONENT_HTTP_STATUS_503 retains healthy capture, real retry floor and independent controls (3.602973ms)
+✔ recoverable supportCOMPONENT_HTTP_STATUS_504 retains healthy capture, real retry floor and independent controls (4.432405ms)
+✔ recoverable supportCOMPONENT_RPC_OVERLOAD retains healthy capture, real retry floor and independent controls (3.788329ms)
+✔ recoverable supportCOMPONENT_RPC_ERROR_-32016 retains healthy capture, real retry floor and independent controls (3.576666ms)
+✔ a failed HTTP refresh settling after its cancelled job preserves independently live capture and original freshness (4.029647ms)
+✔ recoverable HTTP failure after the owner information cutoff does not schedule support recovery (1.83399ms)
+✔ owner stop during a failed HTTP refresh settles without scheduling recovery or reopening capture (1.482419ms)
+✔ actual support expiry during provider backoff invalidates the scope without invented refresh or whole-socket loss (11.12372ms)
+✔ support transport backoff is bounded and grows only on explicit service failures, then resets on success (6.359703ms)
+✔ support failureRESEARCH_CLOCK_MINT_PROGRAM is not excused by valid older state (1.451693ms)
+✔ support failurePILOT_RPC_STORAGE_UNAVAILABLE is not excused by valid older state (1.21335ms)
+✔ support failurePILOT_RPC_COMPONENT_RESPONSE_BYTES_LIMIT is not excused by valid older state (1.172089ms)
+✔ a structurally invalid refreshed pool immediately invalidates its own scope despite still-fresh prior state (1.425455ms)
+✔ failed packet retirement preserves peer correction obligations on both retired and active delivery IDs (13.666351ms)
+✔ compacted identical packet must be revalidated for a peer, never treated as a parsed duplicate certificate (14.810587ms)
+✔ one locally overfull scope leaves five peers capacity after retirement, without shortening correction retention (22.70636ms)
+✔ a current validated subscribe ACK renews the existing ten-second round-trip deadline without an extra PING (7.243364ms)
+✔ a current unsubscribe ACK also proves a round trip without refreshing surviving pool state (6.749721ms)
+✔ continuous valid notifications and answering a peer PING do not postpone the outbound round-trip deadline (12.575203ms)
+✔ ACK liveness uses conservative transport receipt rather than later handler or information-availability time (7.452564ms)
+✖ native service action exposes the actual upcoming HTTP refresh independently from heartbeat scheduling (35.545594ms)
+ℹ tests 92
+ℹ suites 0
+ℹ pass 91
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4609.549963
+
+✖ failing tests:
+
+test at test/pilot-native-flow.test.ts:1:104453
+✖ native service action exposes the actual upcoming HTTP refresh independently from heartbeat scheduling (35.545594ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  'control' !== 'rpc'
+  
+      at TestContext.<anonymous> (/workspace/poe-native-liveness-coalescing/test/pilot-native-flow.test.ts:490:351)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 'control',
+    expected: 'rpc',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

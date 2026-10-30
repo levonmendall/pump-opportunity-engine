@@ -1,0 +1,74 @@
+{
+  "kind": "actual-original-paper-held-cycle-resource-interval",
+  "source": {
+    "commit": "5648606bf78f6687c47632be5c789af5e7f19772",
+    "sha256": "cf2089281edcdf03e7ee40492ebe06fc0e715de9c1b31f94b732905dea8318eb"
+  },
+  "configurationSha256": "96ec314c0b0256365286659f64680a81e7225386848f3c12567854ced76cd69c",
+  "generation": [
+    "2469893",
+    2469896,
+    "native-paper-20261029194223241",
+    "5648606bf78f6687c47632be5c789af5e7f19772",
+    "96ec314c0b0256365286659f64680a81e7225386848f3c12567854ced76cd69c"
+  ],
+  "earlierAnalysisPreserved": true,
+  "intervalSeconds": 1085.781,
+  "scope": "19:50 host sample to post-close20:08 sample; parent-held-cycle evidence supplies trade timestamps, this inspector does not read positions/ledger",
+  "serviceCpuOneCoreFraction": 0.23997995544221165,
+  "throttledUsecDelta": 0,
+  "physicalIoCounterDeltas": {
+    "rbytes": 0,
+    "wbytes": 1780027392,
+    "rios": 0,
+    "wios": 47041,
+    "dbytes": 0,
+    "dios": 0
+  },
+  "serviceIoBytesPerSecond": {
+    "rbytes": 0.0,
+    "wbytes": 1639398.176980441
+  },
+  "nativeRssBytes": {
+    "start": 381431808,
+    "end": 412839936
+  },
+  "cgroupMemoryBytes": {
+    "start": 504647680,
+    "end": 600989696,
+    "peakAtEnd": 706658304
+  },
+  "hostAvailableMemoryBytes": {
+    "start": 6821105664,
+    "end": 6735106048
+  },
+  "hostAvailableDiskBytes": {
+    "start": 288435388416,
+    "end": 288415498240
+  },
+  "hostAvailableDiskDeltaBytes": -19890176,
+  "hostNetworkCounterDeltas": {
+    "lo": {
+      "receivedBytes": 177996,
+      "transmittedBytes": 177996,
+      "receivedPackets": 1536,
+      "transmittedPackets": 1536
+    },
+    "ens5": {
+      "receivedBytes": 1992544429,
+      "transmittedBytes": 28272122,
+      "receivedPackets": 1516773,
+      "transmittedPackets": 327544
+    }
+  },
+  "latestSourceReconciliationAgeMs": 175,
+  "latestEntriesEnabled": true,
+  "latestMigrationFeedConnected": true,
+  "actualAcceptance": false,
+  "limitations": [
+    "Host disk, free RAM and network include unrelated applications and administration traffic; no POE-only attribution.",
+    "Cgroup I/O includes mandatory/optional evidence, ledger, backup and filesystem amplification without source separation.",
+    "These counters/point states do not independently establish uninterrupted protection, complete market evidence, provider reliability, exact position flatness or trade P&L.",
+    "Provider request/latency/failure measurements require the contemporaneous actual native snapshot; this resource inspector makes no provider requests."
+  ]
+}

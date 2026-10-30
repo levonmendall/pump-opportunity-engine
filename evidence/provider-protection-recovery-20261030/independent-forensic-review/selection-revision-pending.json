@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-30T00:27:38.163325+00:00",
+  "status": "FINAL_REVIEW_PENDING_SELECTION_REVISION",
+  "priorReview": "review.json",
+  "priorReviewedExporterSha256": "ebcc11a2d73230d82c018eb3f57d2534b378cc41dd438dff085773b3e7c3658c",
+  "required": "Review bounded essential/diagnostic file interleaving and reproduce held-evidence regression before final PASS",
+  "actualStaging": false,
+  "serviceChanges": 0
+}

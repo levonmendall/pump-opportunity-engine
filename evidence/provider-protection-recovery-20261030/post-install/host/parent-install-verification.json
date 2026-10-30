@@ -1,0 +1,64 @@
+{
+  "checkedAt": "2026-10-30T01:06:44.188893+00:00",
+  "hostWorkflow": 40983714483,
+  "rawSha256": "7b31780736d6a635ab2eecdd2d1e3dc0ab721f99b5ab4b174f2ce9bdf1f1cff7",
+  "installedSource": {
+    "commit": "5675961a0ad05df508eec6928644c9e403be0811",
+    "sha256": "157c34efd86bc0b5ae78aa268afe5afc7d3a4c4db8edcbb181445cad92ccb6ae"
+  },
+  "configurationSha256": "ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db",
+  "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+  "inceptionAt": "2026-10-26T22:07:36.212Z",
+  "financialVerification": {
+    "identityAndInceptionPreserved": true,
+    "initialFundingAndRoundingPreserved": true,
+    "journalAndActionPrefixPreserved": true,
+    "priorRevision": 66216,
+    "currentRevision": 66217,
+    "currentStateBodySha256": "3376fedc4992d7d9dc60cb9edd64ebcf77944ef990c1056aaf7ffa01b4019494",
+    "prefix": {
+      "actions": {
+        "priorRows": 66216,
+        "exactPriorRowsRetained": true,
+        "currentRows": 66217
+      },
+      "journal": {
+        "priorRows": 66217,
+        "exactPriorRowsRetained": true,
+        "currentRows": 66218
+      }
+    },
+    "comparison": "whole-column-ordered-exact-prefix",
+    "originalSqliteOwnerUid": 988,
+    "financialDatabaseWrites": 0,
+    "backupRestored": false
+  },
+  "service": {
+    "MainPID": "2479299",
+    "NRestarts": "0",
+    "ActiveState": "active",
+    "SubState": "running",
+    "ExecMainStartTimestamp": "Fri 2026-10-30 01:04:46 UTC"
+  },
+  "interruption": {
+    "stopRequestedAt": 1793322283230,
+    "physicalStopVerifiedAt": 1793322286023,
+    "startRequestedAt": 1793322286225,
+    "localVerificationAt": 1793322288218,
+    "stopToStartMs": 202,
+    "observedNewSource": {
+      "available": true,
+      "sourceTimestamp": "2026-10-30T01:04:47.492Z",
+      "statusSha256": "66c0941a836ccaaf48b3383b99a5aa1f616f5d20948647dc875260e0f1391a72",
+      "observedAt": 1793322287741,
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "release": "5675961a0ad05df508eec6928644c9e403be0811"
+    },
+    "continuousCoverageClaimed": false
+  },
+  "financialReset": false,
+  "ownerDailyLossResetInvoked": false,
+  "hardFinancialControlsCleared": false,
+  "operationalAcceptance": false
+}

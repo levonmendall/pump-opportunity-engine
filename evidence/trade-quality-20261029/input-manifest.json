@@ -1,0 +1,122 @@
+{
+  "schemaVersion": 1,
+  "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+  "classification": "OFFLINE_RETAINED_PUBLIC_REPORTING_PROJECTION_NOT_PRIVATE_LEDGER_AUDIT",
+  "networkRequests": 0,
+  "financialDatabaseOpened": false,
+  "auditImplementationBase": "84bd3f09995fcbd347710cae5c1ddb8c5f517157",
+  "rowCount": 135,
+  "file": "public-facts.ndjson",
+  "sha256": "40bf38d9d22d3470f34dde48a68cd96343821286bce80dbfdb2e4c5fedb77a1f",
+  "projectionFields": [
+    "account",
+    "sequence",
+    "source",
+    "times",
+    "status",
+    "balances",
+    "positions",
+    "trades",
+    "intelligence"
+  ],
+  "sources": [
+    {
+      "path": "evidence/issue11-consolidation-20261028/post-upgrade-forward-20261029/render-before-rebind.json",
+      "sha256": "a9343cabc6d8aa89f9cc1ee8f39e6610d5dd867fa98c3b3243c3362e245098c2",
+      "bytes": 92788
+    },
+    {
+      "path": "evidence/issue11-consolidation-20261028/coherent-entry-forward-20261029/forward-snapshots.ndjson",
+      "sha256": "57f1eb041946f8d1b6080cc3feb2ce00e898c45785ed4b9c4ad82718cf9aa410",
+      "bytes": 513132
+    },
+    {
+      "path": "evidence/issue11-consolidation-20261028/coherent-entry-forward-20261029/current-financial-1793288269357.json",
+      "sha256": "d364f94e6b5c290efa659644d9c73b088b0292e9eb63b5113ddc5cbedc381692",
+      "bytes": 95174
+    },
+    {
+      "path": "evidence/issue11-consolidation-20261028/four-slot-configuration-20261029/holding-before-configuration.json",
+      "sha256": "47d07d63ef8c61b0626f96dde9239b8098653efbec3fc3d1bcd9cf30a91e7188",
+      "bytes": 10622
+    },
+    {
+      "path": "evidence/issue11-consolidation-20261028/four-slot-configuration-20261029/four-slot-first-15-minute-snapshots.ndjson",
+      "sha256": "52c0bef479445a9512f02d39b80ef5641b1bb6dd677e456037cbaf4ad528d7f6",
+      "bytes": 413690
+    },
+    {
+      "path": "evidence/issue11-consolidation-20261028/four-slot-configuration-20261029/restart-preserved-autonomous-exit.json",
+      "sha256": "faab2c25014f6f4aa20924850bce9d2bc74874db62d7b5125cf79e0b33689480",
+      "bytes": 7278
+    },
+    {
+      "path": "evidence/issue11-consolidation-20261028/continuous-retention-resource-repair-20261029/forward-02/snapshots.ndjson",
+      "sha256": "4a777f85c946f519241a0ef89eed7ffed8fcc649e85eaa50e0e7cb0b9c6efcc3",
+      "bytes": 1684921
+    },
+    {
+      "path": "evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/cloud-recovery-1756.tar.gz",
+      "sha256": "fedd6364572aa8fb07bf9e0baea7b436570c1696478203f4cddd41af48672b0b",
+      "bytes": 283551,
+      "member": "material-transitions.ndjson",
+      "memberSha256": "e38ac4ff5c23e877dfa839bc51abcb9d5ab2ab3cf1da1a729366f25faaa971bc",
+      "memberBytes": 2079286
+    },
+    {
+      "path": "evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/cloud-recovery-1756.tar.gz",
+      "sha256": "fedd6364572aa8fb07bf9e0baea7b436570c1696478203f4cddd41af48672b0b",
+      "bytes": 283551,
+      "member": "routine-0.ndjson",
+      "memberSha256": "1b0122a0405ad4cd939326f6af3e0b21ece9771b0ba52923f5a44b4c7147c559",
+      "memberBytes": 1043903
+    },
+    {
+      "path": "evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/cloud-recovery-1756.tar.gz",
+      "sha256": "fedd6364572aa8fb07bf9e0baea7b436570c1696478203f4cddd41af48672b0b",
+      "bytes": 283551,
+      "member": "routine-1.ndjson",
+      "memberSha256": "9584ab50c1a04c5bfd8c3ad6fcd836817f9e55057870ce3472a14cb5160f988e",
+      "memberBytes": 1044980
+    },
+    {
+      "path": "evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/cloud-recovery-1756.tar.gz",
+      "sha256": "fedd6364572aa8fb07bf9e0baea7b436570c1696478203f4cddd41af48672b0b",
+      "bytes": 283551,
+      "member": "routine-2.ndjson",
+      "memberSha256": "69f8e737af1c212069d6ae0e5c4fe6088a7e02c7e5268cd1af88afa278128669",
+      "memberBytes": 1041064
+    },
+    {
+      "path": "evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/cloud-recovery-1756.tar.gz",
+      "sha256": "fedd6364572aa8fb07bf9e0baea7b436570c1696478203f4cddd41af48672b0b",
+      "bytes": 283551,
+      "member": "routine-3.ndjson",
+      "memberSha256": "6d386e44ff663f7149a2bf4054812d101500fb13254d10f557fff41ff186a810",
+      "memberBytes": 1035830
+    },
+    {
+      "path": "evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/cloud-recovery-1756.tar.gz",
+      "sha256": "fedd6364572aa8fb07bf9e0baea7b436570c1696478203f4cddd41af48672b0b",
+      "bytes": 283551,
+      "member": "routine-4.ndjson",
+      "memberSha256": "0234f8dea72eabb6f1c7609a91fc023823b23ce0bc0b3ed7ae89796fb3f1c730",
+      "memberBytes": 1033964
+    },
+    {
+      "path": "evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/cloud-recovery-1756.tar.gz",
+      "sha256": "fedd6364572aa8fb07bf9e0baea7b436570c1696478203f4cddd41af48672b0b",
+      "bytes": 283551,
+      "member": "routine-5.ndjson",
+      "memberSha256": "0d810d92725e60ab0406e187ce64a08b978f35851634a4a461f3b41fc850a32d",
+      "memberBytes": 451270
+    }
+  ],
+  "limitations": [
+    "Raw source hashes bind original retained public files; projection does not authenticate private ledger state.",
+    "Public fills omit native SOL consideration, exact per-action costs and actual-size quote proofs.",
+    "Protection counters are run-scoped and sampled; they are not per-trade counters or every completed check.",
+    "Snapshot release identifies publishing source, not necessarily the source that originally executed an older historical fill.",
+    "No missing quotes, migration proofs, normalized flow or independent audits are reconstructed from later prices."
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "schemaVersion": 1,
+  "verifiedAt": "2026-10-28T20:52:33.342163+00:00",
+  "baseCommit": "2b3405b42d278347e26948521375c5a3825ae85f",
+  "scope": "OFFLINE deterministic reproduction with real adapter and in-memory sockets/RPC; not forward provider behavior",
+  "sourceFiles": [
+    {
+      "path": "src/native-support-contexts.ts",
+      "bytes": 2289,
+      "sha256": "f16b9d6a772638abd1f10bab00a075d2892ef0b21374e8924b5cdd04b233464c"
+    },
+    {
+      "path": "src/pilot-native-flow.ts",
+      "bytes": 77033,
+      "sha256": "8c2d388efbf128444ff5a124498b4b27af3bb5180feb481a51bc3c7c3e3a3ef9"
+    },
+    {
+      "path": "test/native-flow-fixture.ts",
+      "bytes": 10824,
+      "sha256": "c07573159c7285d653ba4de9387d597c5f86b87026657ea8fc6c0deaff2bc513"
+    },
+    {
+      "path": "test/native-support-context-retention.test.ts",
+      "bytes": 12294,
+      "sha256": "c65428c0282317b61e41e4ea54fcfff161b4505b8f5e19d3da46c39a5968e4c7"
+    }
+  ],
+  "policy": {
+    "old": "180s time filter then latest16 raw reads",
+    "new": "same180s horizon; exact earliest/latest availability per10s bucket; maximum38 contexts",
+    "currentSourceExpiryMs": 30000,
+    "quoteValidityUnchanged": true,
+    "strategyWindowMs": 60000,
+    "decisionDeadlineMs": 10000,
+    "newRPCMethods": 0
+  },
+  "tests": {
+    "newFocusedPassed": 8,
+    "broaderRegressionPassed": 206,
+    "build": "PASS",
+    "independentReview": "GO; independent148 broad checks then independent8 final checks",
+    "baselineCounterfactual": "Temporarily restore original16-read expression in fixed flow, run exact ready-target ceiling-refresh regression; zero history dispatch reproduces failure; restore fixed bytes afterward"
+  },
+  "rawOutputs": [
+    {
+      "path": "evidence/audit-support-context-retention-20261028/before.txt",
+      "bytes": 996,
+      "sha256": "82fbaa8f7f56cf239ee6b265323d0ba9052f12500d1f0015d9137f7ff7e2004e"
+    },
+    {
+      "path": "evidence/audit-support-context-retention-20261028/before-selected-ceiling.txt",
+      "bytes": 998,
+      "sha256": "662e0fbd7865e72ccdf55828f5639757254c9b66ee4be8d15f9673c87b3ffd96"
+    },
+    {
+      "path": "evidence/audit-support-context-retention-20261028/focused.txt",
+      "bytes": 1123,
+      "sha256": "e1bbb3d708ba0e9d966e640f2a9bd0c34b9dcde0c4090144695181d7582a962c"
+    },
+    {
+      "path": "evidence/audit-support-context-retention-20261028/regressions.txt",
+      "bytes": 24898,
+      "sha256": "302a8678423739f2eb6e66e64043b7be297837bc488e25c3e3670423e676622f"
+    },
+    {
+      "path": "evidence/audit-support-context-retention-20261028/build.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    }
+  ],
+  "realFinancialFilesOpened": false,
+  "networkCalls": 0,
+  "liveRepairVerified": false
+}

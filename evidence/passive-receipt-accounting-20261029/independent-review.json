@@ -1,0 +1,72 @@
+{
+  "reviewedAt": "2026-10-29T23:01:34.856210+00:00",
+  "reviewer": "held_candidate_deadline_review",
+  "status": "PASS_NO_BLOCKING_DEFECT_FOUND_FINAL_PREFUNDED_REVISION",
+  "tests": {
+    "independentlyRerunComponentReceiptAndPilotRpc": 66,
+    "passed": 66,
+    "failed": 0,
+    "additionalResolvedBlockerPositiveReplays": 2
+  },
+  "sourceModifiedByReviewer": false,
+  "providerRequests": 0,
+  "originalFinancialFilesOpened": false,
+  "durabilityModel": {
+    "passivePrefundedBytes": 4194304,
+    "maximumAcceptedReceiptBytes": 2097152,
+    "normalRefillThresholdBytes": 2097152,
+    "maximumScheduledFlushMs": 1000,
+    "gracefulUnusedTailRelease": true,
+    "observedAndUncertainRemainSeparate": true,
+    "partialFailedTailRestoredConservatively": true
+  },
+  "resolvedBlockingFindings": [
+    {
+      "case": "transient passive refill failure plus concurrent HTTP settlement wrote honest partial tail rejected by overly strict reader",
+      "before": {
+        "savedTailBytes": 2097151,
+        "readerError": "COMPONENT_INVALID_BYTE_ACCOUNTING"
+      },
+      "after": {
+        "observedBytes": 2097163,
+        "uncertainBytes": 2097151,
+        "sameConservativeTotalAfterReopen": true,
+        "physicalStarts": 1
+      },
+      "resolution": "reader accepts conservative0..4MiB tails; constructor prefunds4MiB before receipt; storage-failed state admits no new receipts"
+    },
+    {
+      "case": "persistent epoch rollover before charging current already received receipt lost that receipt if next book creation failed",
+      "before": {
+        "unaccountedCurrentReceiptBytes": 100,
+        "fatalAfterFailure": null
+      },
+      "after": {
+        "currentReceiptRetainedBytes": 100,
+        "oldDurableWsBytes": 2097253,
+        "oldDurableUnusedTailBytes": 0,
+        "fatalAfterFailure": "COMPONENT_STORAGE_UNAVAILABLE"
+      },
+      "resolution": "charge existing funded old book first; subsequent rollover runs inside classified fatal handling"
+    }
+  ],
+  "reviewedSemantics": [
+    "initial passive reserve is durable before first receipt",
+    "whole maximum-size receipt is covered by prior tail even if refill fails",
+    "HTTP chunks retain original durable physical2MiB obligation",
+    "graceful close flushes exact observed prefix and releases only unused future capacity",
+    "crash tail remains uncertainty rather than fabricated measured bytes",
+    "reopen converts old tail once before fresh pre-funding",
+    "timer/storage failures fail closed and retain crash coverage",
+    "legacy schema and checkpoint compaction preserve historical obligations",
+    "physical invocation/rate reservations remain durable and single owned"
+  ],
+  "rollbackRequirement": "An older binary that cannot read schema2 cannot be substituted after new books exist by discarding the accounting chain. Retain new manager/current reader; financial history never restored after possible new effects.",
+  "files": {
+    "src/component-budget.ts": "1ffe9627926bfc286f6a6040f58d5117dd37618077e3cd54c5be3c6007d65d67",
+    "src/research-baseline.ts": "f334972642db61ab80702e7df1b93742700ba6f71092634ec986642b1b1c790c",
+    "src/pilot-rpc.ts": "9d9c0d931eafc83bac14b82c5d35718cba92662a27567d2fde79b16a90c231ef",
+    "test/component-receipt-accounting.test.ts": "81a408c36ad2748b0a6442fbdd22340f159264a51521f1746bd7a1690ffc56db",
+    "test/pilot-rpc.test.ts": "45a507429d0b1f41a68de7c69e9aa4d3e0a9e5a33b677f131d9929d2732dc7b7"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "10c462c7fa80d65af65dc4872001646c0e234a35",
+  "verifiedAt": "2026-10-28T23:53:10.136546+00:00",
+  "scope": "OFFLINE DISPOSABLE FIXTURES ONLY; no original ledger access, market requests, host mutations, or deployment",
+  "files": [
+    {
+      "path": "src/ledger.ts",
+      "sha256": "002fd214389a748d5c8e08127ac61be749dccd5c7daf6d66f6bc48cef99c93bb"
+    },
+    {
+      "path": "src/operating-pnl-reporting.ts",
+      "sha256": "f99186671d0c6d5e0d24a6315cdbe7cd265dd94b6b85c16299987e0633c9f028"
+    },
+    {
+      "path": "test/operating-pnl-reporting.test.ts",
+      "sha256": "eb9be85ed0892baa83af13d6643a6b0c008bdb0a913f52e6de9a8f43fec21a3d"
+    }
+  ],
+  "commands": [
+    {
+      "command": "node --import tsx --test test/operating-pnl-reporting.test.ts",
+      "exitCode": 0,
+      "testsPassed": 7,
+      "rawOutput": "new-tests.txt"
+    },
+    {
+      "command": "node --import tsx --test test/operating-pnl-reporting.test.ts test/ledger.test.ts test/costs.test.ts test/reporting.test.ts",
+      "exitCode": 0,
+      "testsPassed": 51,
+      "rawOutput": "regressions.txt"
+    },
+    {
+      "command": "npm run build",
+      "exitCode": 0,
+      "rawOutput": "build.txt"
+    }
+  ],
+  "limitations": [
+    "Not a financial migration or live-market trading result.",
+    "The actual original account remains unread/unmodified in this verification.",
+    "Core source integration and optional backup validation are owned by the integration lead."
+  ]
+}

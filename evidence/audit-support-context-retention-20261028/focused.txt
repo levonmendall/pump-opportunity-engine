@@ -1,0 +1,16 @@
+✔ exact aligned-boundary and equal-availability proofs survive later reads without mutation or invented timestamps (1.832365ms)
+✔ dense support refreshes preserve lower-fence existence over the unchanged180s horizon with at most38 actual contexts (61.049435ms)
+✔ frequent coherent refreshes retain an actual post-ACK lower fence for three quiet sixty-second windows (152.348413ms)
+✔ historical fences never extend current source expiry or turn an HTTP failure into fresh pricing (59.718568ms)
+✔ disconnect and retirement require new ACK generations and clear prior historical fences (54.368131ms)
+✔ structurally invalid current support cannot qualify using retained historical bank fences (65.742108ms)
+✔ a quiet real-adapter window receives its independent audit after many early refreshes instead of returning to fence warming (90.056123ms)
+✔ a ready quiet target survives the dispatch ceiling refresh instead of losing its lower fence between selection and session creation (33.993126ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1471.500645

@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "classification": "TESTED_PURE_ACTIVE_PAPER_STRATEGY_KERNEL_NOT_INSTALLED_OR_ECONOMIC_ACCEPTANCE",
+  "verifiedAt": "2026-10-29T21:18:09.100741+00:00",
+  "implementationBase": "4b347f72bd465d7592b64a4560121bf698dc9a82",
+  "strategyVersion": "adaptive-momentum-v2-paper-v1",
+  "policySha256": "b4fa586df1b6d89c04b250a1ff3ea4e394a4cbf9b7900c7a3ebd0317c7c56a07",
+  "focusedTests": {
+    "passed": 19,
+    "failed": 0
+  },
+  "buildPassed": true,
+  "independentReviewPassed": true,
+  "networkRequests": 0,
+  "financialDatabaseOpened": false,
+  "serviceOrReportingMutations": 0,
+  "liveTradingEnabled": false,
+  "files": [
+    {
+      "path": "src/adaptive-momentum-v2.ts",
+      "bytes": 16125,
+      "sha256": "0f5c3d92740d0182e5b44f507430b1508e463213b7f4ff285ebfe28e4b090a30"
+    },
+    {
+      "path": "test/adaptive-momentum-v2.test.ts",
+      "bytes": 12603,
+      "sha256": "41a0a8be1fb219ee6d2019af9c70029195457eebe5a056ca16924a82d79a6ed4"
+    },
+    {
+      "path": "evidence/adaptive-momentum-v2-20261029/focused.raw.txt",
+      "bytes": 2305,
+      "sha256": "b6fc13dd80a523adde4e6a78e0fed6f129e5fa5c6a3b490b2a872f65732ecd61"
+    },
+    {
+      "path": "evidence/adaptive-momentum-v2-20261029/build.raw.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "path": "evidence/adaptive-momentum-v2-20261029/retained-capability-assessment.json",
+      "bytes": 11377,
+      "sha256": "629ea3523224b828cdefeb3297ec4c7c4fcca64098a9889be9dec0e800227cdd"
+    },
+    {
+      "path": "evidence/adaptive-momentum-v2-20261029/independent-review.json",
+      "bytes": 2509,
+      "sha256": "6a7b955e72636d9ea7ad4334b33ca057c29815bc59c8a9529f324dbb43d91ee4"
+    }
+  ],
+  "limitations": [
+    "Kernel is ready for explicit ACTIVE V2 integration; this commit does not itself deploy it.",
+    "Parameters are transparent experimental choices, not profit-optimal estimates; economic outperformance is not an activation gate under latest owner directive.",
+    "Native audit/support/SDK actual-size quotes/financial risk and identity checks remain mandatory in adapters.",
+    "No active dynamic dollar-cap increase or partial exits is implemented here; existing50USD/150USD fallback remains explicit.",
+    "Acceleration, beneficial-owner independence, executable trend and reserve stability remain unknown without additional decision-time inputs.",
+    "No live two-position, adaptive profitability or uninterrupted24h acceptance claim."
+  ]
+}

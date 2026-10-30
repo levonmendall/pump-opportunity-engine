@@ -1,0 +1,54 @@
+{
+  "kind": "actual-original-entry-arming-post-apply-host-and-forensic-evidence",
+  "source": {
+    "commit": "5648606bf78f6687c47632be5c789af5e7f19772",
+    "sha256": "cf2089281edcdf03e7ee40492ebe06fc0e715de9c1b31f94b732905dea8318eb"
+  },
+  "files": [
+    {
+      "file": "README.md",
+      "bytes": 2972,
+      "sha256": "c505cbba8387350bb19b6bdca7663c2b9a789a0090992a7928667467837d679c"
+    },
+    {
+      "file": "artifact-restoration-provenance.json",
+      "bytes": 509,
+      "sha256": "04c695bcaba799d3cb51e68af8fcb33b0fff8402b2ae0c309448328fb1e1f9be"
+    },
+    {
+      "file": "host-40942583200.json",
+      "bytes": 43330,
+      "sha256": "ddfd31ecafa3bc6a568ab44a8c066f9eed7323ddf62aa5fc4d33313820275d24"
+    },
+    {
+      "file": "host-40942583200.raw.txt",
+      "bytes": 51208,
+      "sha256": "0126cd590ea86fd1c8bb6e0c6cadbc3bb480d07ed861052f176ec77315640635"
+    },
+    {
+      "file": "host-40942583200.run.json",
+      "bytes": 253,
+      "sha256": "420ff72e320db30ed580d1eff1fd5b03689017ddd58ed2c123d3e2bbbe545b3c"
+    },
+    {
+      "file": "known-runtime-warning-hash-matches.json",
+      "bytes": 522,
+      "sha256": "4ef2bf6c6bc7effe3aff888302fb5a0a67cf8393b75a141f155f9dec236e3694"
+    },
+    {
+      "file": "source-recovery-forensics.receipt-matched-original.json",
+      "bytes": 10694,
+      "sha256": "4d036b6a2717fe830605caa21d4aa98166c4ef27860c123a35b988ff39d97c5e"
+    },
+    {
+      "file": "verified-installation.json",
+      "bytes": 5774,
+      "sha256": "16cb9fac470e5d6436e379567d685d09b81faefcbfcb3184ea6ecb00adea64ac"
+    },
+    {
+      "file": "verified-source-recovery-forensics.json",
+      "bytes": 17140,
+      "sha256": "fa65d87eee542b8f16ffde97be99063e9bc4e0fcb260e3b3590f8887c5929bce"
+    }
+  ]
+}

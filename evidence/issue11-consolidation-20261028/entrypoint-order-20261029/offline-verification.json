@@ -1,0 +1,76 @@
+{
+  "checkedAt": "2026-10-29T02:09:06.185151+00:00",
+  "repairDriverSha256": "80af32246e4a639d4b0923365fd7d329517bfc73825137e093b78b5aa401bc49",
+  "repairDriverBytes": 16245,
+  "purpose": "Exact legacy drop-in rename before90native override, same original service/release/account/ledger. No financial migration.",
+  "newFocusedTests": 18,
+  "existingOpsRegressionTests": 63,
+  "totalTestsPassed": 81,
+  "knownIndependentReview": {
+    "reviewer": "/root/review_entrypoint_order",
+    "result": "GO for pinned80af32246e4a639d4b0923365fd7d329517bfc73825137e093b78b5aa401bc49",
+    "independentlyRerunFocusedTests": 18,
+    "findingsAddressed": [
+      "Cross-repair ledger inode guard",
+      "Constrained missing legacy-path cached-reload recovery"
+    ],
+    "scope": "Code review and offline tests, not host repair or acceptance"
+  },
+  "actualHostCauseRun": 40803189057,
+  "ownerFinancialHistoryEvidence": "Owner screenshot states full prioractions36834/journal36835prefix retained. Exact protected receipt readback pending knownpublicfile export.",
+  "testedInvariants": [
+    "Exact old250B config309bba18 hash androotmode/owner checks before rename",
+    "Canonical drop-in paths, no alternate or symlink overrides",
+    "Exact newPythonargv andemptyExecStop before start",
+    "Current ledger inode across pre-stop/stopped/post verification",
+    "Same financial owner lease during physicalstop/audit/rename/reload",
+    "All old package/runtime/index/manifest/reporting bytes preserved",
+    "Rename preserves original inode/mode/uid/gid/body and allowsoldguardedobserverrollback removing90",
+    "Failed settlement or unexpected launch never startswrongsource",
+    "Interrupted rename/cache reload recovers through same stop/lease/reload path",
+    "Poststartfailure preserves current financialsource/history andpublishesboundednonsecretclues"
+  ],
+  "actualRootRepairExecuted": false,
+  "newNativeRuntimeVerifiedAlive": false,
+  "files": {
+    "repair-tests.txt": {
+      "bytes": 1823,
+      "sha256": "eb858b7096134d720d4dc24cd6df878bd329603edc1bff545206b3f94dd11973"
+    },
+    "test-cutover-original-service.py.txt": {
+      "bytes": 127,
+      "sha256": "60de68aa053e014d4592983f0ae8789bd0df5bcab37d4a0bb4428249864e5b79"
+    },
+    "test-audit-original-account.py.txt": {
+      "bytes": 106,
+      "sha256": "322e9bec5d6bbde47d6476008f309469c1e42048ed96320a3bae52af8811e27a"
+    },
+    "test-authoritative-service.py.txt": {
+      "bytes": 125,
+      "sha256": "ba018521b3bda5abbce27eae899a1db42acdfa227bab251c19917019c92db739"
+    },
+    "test-prepare-original-service-package.py.txt": {
+      "bytes": 98,
+      "sha256": "05ad26e36631de8131f12873f769dbb00171493c677c523443005184597b477b"
+    }
+  },
+  "adminStagingCommit": "878cd0bf618bd29b15db6309d96720edf7d915f4",
+  "adminStagingRun": 40804738053,
+  "actualStageHashAndProtectedConfigReadbackVerified": true,
+  "actualOriginalPrefixReceiptReadbackVerified": true,
+  "commandSyntaxParsed": true,
+  "additionalFiles": {
+    "actual-staging.json": {
+      "bytes": 3795,
+      "sha256": "f9f7271951ac59daaa0efbed43c72b2df69a626e234384ff3399c4858676cd7f"
+    },
+    "actual-staging-raw.txt": {
+      "bytes": 40190,
+      "sha256": "941d563faed41dabebc6a51c6e810be4e58236821b16ebd438b8f67cdefcc460"
+    },
+    "REPAIR_OWNER_COMMAND.txt": {
+      "bytes": 641,
+      "sha256": "69292093afa55b7d0c775005199e24e982349bc7514c142f8f7fee52508e86c5"
+    }
+  }
+}

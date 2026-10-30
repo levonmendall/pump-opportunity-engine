@@ -1,0 +1,19 @@
+{
+  "recordedAt": "2026-10-29T18:24:49.472426+00:00",
+  "classification": "DRAFT_NOT_DEPLOYABLE_PENDING_FINAL_SOURCE",
+  "baseCommit": "024fce73f0be74eb227b1a2cce22658af015d681",
+  "targetConfiguration": null,
+  "proposedUnverifiedConfiguration": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+  "targetStage": "/var/tmp/poe-original-entry-readiness-upgrade",
+  "tests": 44,
+  "pass": 44,
+  "fail": 0,
+  "ownerCommandGenerated": false,
+  "packageGenerated": false,
+  "serviceControls": 0,
+  "privateFinancialReads": 0,
+  "sourceFiles": {
+    "operator/native-paper-ec2/forward-original-upgrade.py": "d455f6da340c05554fccc187fcb0035c815967ef0bba1dec7bc81290d901fedc",
+    "operator/native-paper-ec2/test-forward-original-upgrade.py": "f787d6f7a77a67dbe243066727b35ac3667818ba7e40e36cbe30602f59fb1b11"
+  }
+}

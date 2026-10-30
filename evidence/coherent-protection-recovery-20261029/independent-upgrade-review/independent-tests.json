@@ -1,0 +1,35 @@
+{
+  "reviewer": "upgrade_independent_review",
+  "at": "2026-10-29T23:38:38.325398+00:00",
+  "testedFileHashes": {
+    "operator/native-paper-ec2/forward-original-upgrade.py": "dc386c823e85b5c607a8643d7034a5e7c02d031e5de9051b083b48821020750c",
+    "operator/native-paper-ec2/export-current-run-forensics-20261029.py": "1c684b1c88c95c75488f056ad00a8ea756c906e45dcb0f4f8725f5e75b193c59",
+    "operator/native-paper-ec2/test-forward-original-upgrade.py": "d340062422e53c2354ecc5e53176a1e7a33f496338aca28c8d635abcf73af4f5",
+    "operator/native-paper-ec2/test-export-current-run-forensics-20261029.py": "a09e585f91800c0feb605cd2c260d578df828be60e29b7debdf736f95f27d2e3"
+  },
+  "sourceUnchanged": true,
+  "results": [
+    {
+      "command": [
+        "python3",
+        "-B",
+        "operator/native-paper-ec2/test-forward-original-upgrade.py"
+      ],
+      "exitCode": 0,
+      "raw": "installer.raw.txt"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "operator/native-paper-ec2/test-export-current-run-forensics-20261029.py"
+      ],
+      "exitCode": 0,
+      "raw": "forensic-exporter.raw.txt"
+    }
+  ],
+  "passed": true,
+  "rootCommandExecuted": false,
+  "serviceControlOperations": 0,
+  "financialDatabaseOpened": false
+}

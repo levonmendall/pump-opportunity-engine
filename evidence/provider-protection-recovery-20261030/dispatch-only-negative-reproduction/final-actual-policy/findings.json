@@ -1,0 +1,49 @@
+{
+  "source": "5675961a0ad05df508eec6928644c9e403be0811",
+  "scope": "OFFLINE actual PilotRpc/ComponentBudget/ComponentTransport, nativeHeldAuditScheduling, nativePaperSourceWorkAdmission/nativePaperManagementReserve and pilotLowerPriorityAdmission; synthetic request roles and clocks",
+  "representedDemand": {
+    "scenarios": 10,
+    "durationEachSyntheticMs": 180000,
+    "readyPagesPer10Seconds": 4,
+    "auditReleaseOffsetMs": [
+      0,
+      3500
+    ],
+    "pageResponseLatencyMs": [
+      50,
+      300,
+      600,
+      800,
+      1000
+    ],
+    "heldResponseLatencyMs": 50,
+    "unlimitedRunnableLookupDemand": true,
+    "sharedLimits": {
+      "startsPerMinute": 90,
+      "startsPer10Seconds": 20,
+      "minimumSpacingMs": 250
+    }
+  },
+  "observedOffline": {
+    "maximumMinuteStarts": 89,
+    "maximumShortStarts": 18,
+    "maximumCompletedHoldingReadGapMs": 2000,
+    "earlyProtectionTurnsAcrossScenarios": 251,
+    "logicalFailures": 0,
+    "physicalTimeouts": 0
+  },
+  "actualIncident": "One additional protection breach and five unavailable checks, no additional HTTP timeouts, were retained by the original collector. This probe does not establish their cause. The old01:25 retry backoff cannot by itself explain01:47.",
+  "negativeFinding": "Within these represented demand scenarios, near89RPM and the existing early-protection/reserve policy did not produce a dispatch failure. This does not prove all quota or scheduling configurations safe.",
+  "omittedMechanisms": [
+    "Full NativeCandidateRunner/audit decoder and qualification",
+    "Actual candidate proof retention, cost preparation, decision quote, SDK or financial tick",
+    "Real provider latency/late physical settlement",
+    "EC2 event-loop stalls, database/persistence timing and network conditions",
+    "Actual physical starts/protected-start counts/private failure stage at01:47"
+  ],
+  "operatingDecision": "No quota/timing/application change from this investigation. Preserve the live failure and deploy already verified quote ordering and bounded stage diagnostics through the original service. Use actual new facts to determine whether a further repair is warranted.",
+  "providerRequests": 0,
+  "financialAccountRead": false,
+  "financialActions": 0,
+  "serviceChanges": 0
+}

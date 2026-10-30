@@ -1,0 +1,22 @@
+{
+  "classification": "OFFLINE_FIXTURE_VERIFICATION_NOT_PRODUCTION_ATTRIBUTION",
+  "build": {
+    "command": "npm run build",
+    "exitCode": 0
+  },
+  "focusedTests": {
+    "command": "node --import tsx --test test/native-paper*.test.ts test/trader.test.ts test/pilot-trader.test.ts test/execution.test.ts",
+    "tests": 119,
+    "pass": 119,
+    "fail": 0,
+    "exitCode": 0
+  },
+  "diffCheck": {
+    "command": "git diff --check -- src/trader.ts src/native-paper.ts test/native-paper.test.ts",
+    "exitCode": 0
+  },
+  "baselineCommit": "5e55d8b939de99698ddb311a282461931fcbc957",
+  "frozenReplay": "native-multi-event-frozen-repro.mts",
+  "frozenSource": "frozen-financial-5e55/src",
+  "productionCauseEstablished": false
+}

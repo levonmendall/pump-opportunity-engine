@@ -1,0 +1,55 @@
+name: POE bounded isolated native PAPER lifecycle
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: meme-machine-ec2-administration
+  cancel-in-progress: false
+jobs:
+  native-paper:
+    if: github.repository == 'levonmendall/meme-machine-admin' && github.ref == 'refs/heads/main'
+    runs-on: meme-machine-ec2-admin
+    timeout-minutes: 66
+    steps:
+      - name: Read exact reviewed PAPER supervisor and independent publisher only
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            operator/native-paper-ec2/run-bounded.py
+            operator/native-paper-ec2/run-package.json
+            scripts/poe/native-candidate-run-bounded.py
+            scripts/poe/native-candidates/reporting/
+      - name: Verify fixed-account supervisor and run finite PAPER segment
+        env:
+          ACTUAL_RUNNER: ${{ runner.name }}
+          EXPECTED_SUPERVISOR_SHA256: __REVIEWED_NATIVE_PAPER_SUPERVISOR_SHA256__
+          EXPECTED_RUN_PACKAGE_SHA256: __REVIEWED_NATIVE_PAPER_RUN_PACKAGE_SHA256__
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$ACTUAL_RUNNER" = meme-machine-ec2-admin
+          test "$(id -u)" = 994
+          python3 -B -I - "$EXPECTED_SUPERVISOR_SHA256" <<'PYHASH'
+          import hashlib,os,stat,sys
+          fd=os.open('operator/native-paper-ec2/run-bounded.py',os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
+          try:
+              s=os.fstat(fd)
+              assert stat.S_ISREG(s.st_mode) and s.st_uid==994 and s.st_nlink==1 and 0<s.st_size<=49152 and not s.st_mode&0o022
+              body=os.read(fd,s.st_size+1)
+              assert len(body)==s.st_size and len(sys.argv[1])==64 and hashlib.sha256(body).hexdigest()==sys.argv[1]
+          finally: os.close(fd)
+          PYHASH
+          # Existing private account/imported code are prerequisites. No account
+          # initialization, service/root installation or artifact upload occurs.
+          /usr/bin/env -i PATH=/usr/bin:/bin ACTUAL_RUNNER="$ACTUAL_RUNNER" \
+            RUNNER_TEMP="$RUNNER_TEMP" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
+            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" \
+            EXPECTED_RUN_PACKAGE_SHA256="$EXPECTED_RUN_PACKAGE_SHA256" \
+            /usr/bin/timeout --signal=TERM --kill-after=5s 3840s \
+            /usr/bin/nice -n 19 /usr/bin/prlimit \
+            --cpu=60:600 --nofile=64:256 --fsize=67108864:67108864 --core=0:0 -- \
+            /usr/bin/python3 -B -I operator/native-paper-ec2/run-bounded.py

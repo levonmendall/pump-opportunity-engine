@@ -1,0 +1,34 @@
+✔ flat five-second reconciliation creates a derived pause without changing controls; local maintenance preserves two-second guard (40.260653ms)
+✔ expired USD closes entries, new original-timestamp USD and fresh complete window recover without predictive pass or RPC (12.157259ms)
+✔ fresh audit-completion timestamp cannot substitute for an old executed-flow cutoff (6.60806ms)
+▶ owner pause, safe stop, daily loss, admission failure, disconnected source and absent certificate do not auto-resume
+  ✔ owner (5.237616ms)
+  ✔ stop (6.955706ms)
+  ✔ loss (5.228412ms)
+  ✔ admission (4.991821ms)
+  ✔ connection (5.126932ms)
+  ✔ certificate (6.208597ms)
+✔ owner pause, safe stop, daily loss, admission failure, disconnected source and absent certificate do not auto-resume (34.981614ms)
+✔ pending action and actual held inventory block cash-only maintenance without changing obligations (8.534731ms)
+✔ unknown post-commit financial failure latches closed; later maintenance and restart cannot reinterpret success (6.430256ms)
+✔ recorder failure after permission recovery closes controls and preserves the evidence latch (5.250916ms)
+✔ nonthrowing recovery recorder that revokes current admission cannot report a successful recovery (6.064995ms)
+✔ a terminal failed entry cannot release cash maintenance while its actual execution adapter remains unsettled (110.079229ms)
+✔ slow reconciliation never backdates the resume after the actual two-second deadline (6.58017ms)
+✔ hard failure after a soft pause is durable across restart instead of hiding behind the old soft reason (10.39304ms)
+✔ historical restriction latch clears only after the real complete candidate-preparation path succeeds (19.535002ms)
+✔ cash maintenance continues during source waits, defers financial ownership, and measures true synchronous lateness (12.598555ms)
+✔ actual maintenance timer contains unexpected callback failure and keeps retry bounded (1.036619ms)
+✔ old startup reconciliation and known FX-unavailable intervals are not maintenance deadline misses (7.626953ms)
+✔ backup failure retries at the bounded next attempt rather than waiting five minutes; success restores the normal cadence (0.230873ms)
+✔ verified backup recovery unlocks temporary readiness only after success and a current audited cutoff (8.199413ms)
+✔ actual interval runs local maintenance while an awaited source operation is unsettled (15.818866ms)
+✔ current derived source/provider/monitoring restrictions remain distinct from unchanged durable permission (9.393316ms)
+ℹ tests 25
+ℹ suites 0
+ℹ pass 25
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1244.433055

@@ -1,0 +1,121 @@
+{
+  "baselineSource": "5675961a0ad05df508eec6928644c9e403be0811",
+  "purpose": "entire deadline-critical entry-path map before repairing a demonstrated contention mechanism",
+  "liveFacts": {
+    "sourceSequence": "11088",
+    "times": {
+      "generatedAt": "2026-10-30T01:20:06.435Z",
+      "marketAt": "2026-10-30T01:20:05.000Z",
+      "reconciledAt": "2026-10-30T01:20:05.697Z",
+      "usefulProgressAt": "2026-10-30T01:20:05.697Z"
+    },
+    "funnel": {
+      "discovered": 32,
+      "supported": 32,
+      "sufficientlyObserved": 7,
+      "evaluated": 7,
+      "qualified": 0,
+      "attempted": 0,
+      "paperFilled": 0,
+      "exited": 0,
+      "reconciled": 489
+    },
+    "proofPreparationState": "complete",
+    "sourceArtifact": "/workspace/pump-opportunity-engine/evidence/provider-protection-recovery-20261030/post-install/forward/milestone-source-0120.json",
+    "sourceArtifactSha256": "eb9527156036d72ce542a79d7dc8d1cff4c6a90f143ba8792e8ea5ce38a5e38f",
+    "conclusion": "Global entry deadlock disproved. Preliminary audited momentum is not executable qualification. Exact live quote-failure phase remains unknown until measured."
+  },
+  "path": [
+    {
+      "stage": "source certificate",
+      "requirements": [
+        "current exact subscription generation",
+        "original closed independently audited complete executed-flow window",
+        "features hash and original deadline",
+        "migration/reentry eligibility"
+      ]
+    },
+    {
+      "stage": "risk capacity",
+      "requirements": [
+        "available holding capacity",
+        "no conflicting pending action",
+        "current provider/source/evidence/resource/reporting/backup/supervision",
+        "no overdue existing holding",
+        "original management and financial risk controls"
+      ]
+    },
+    {
+      "stage": "qualification proof",
+      "requirements": [
+        "exact current certificate",
+        "asynchronous complete raw-evidence pin",
+        "same proof identity and original deadline",
+        "one bounded pending retention task"
+      ]
+    },
+    {
+      "stage": "scheduling",
+      "requirements": [
+        "candidate before next source step",
+        "optionalAdmission1500 financial latest start (~last completed +1025ms)",
+        "committed audit/native service deadlines",
+        "newer-window technical reevaluation claim",
+        "durable pool/ownership checkpoint"
+      ]
+    },
+    {
+      "stage": "cost preparation",
+      "requirements": [
+        "fresh supported state/account lengths",
+        "current rent per distinct missing account length",
+        "between-read held protection yield",
+        "bounded preparation and original audited window",
+        "authority and current proof rechecked after awaits"
+      ]
+    },
+    {
+      "stage": "financial context",
+      "requirements": [
+        "fresh whole-held-inventory liquidation context",
+        "2-second financial reconciliation",
+        "current USD",
+        "owner and hard-control authority retained"
+      ]
+    },
+    {
+      "stage": "actual-size quote",
+      "requirements": [
+        "current fresh rent authority",
+        "final current SDK/pool/Clock/owners/mint/fees/units/liquidity",
+        "known native minimum slot",
+        "original actual-size freshness and generation",
+        "unchanged qualification and risk checks"
+      ]
+    },
+    {
+      "stage": "reservation/execution",
+      "requirements": [
+        "idempotent original-account order",
+        "no duplicate or uncertain replay",
+        "modeled delay and separate fresh execution context/quote",
+        "holding protection and pending-action priority"
+      ]
+    }
+  ],
+  "demonstratedOfflineDefect": {
+    "baseline": "Final SDK market state was acquired before two paced ancillary rent reads. Synthetic native executed activity advanced the mandatory minimum slot during those reads, so the quote failed freshness despite healthy provider responses.",
+    "reproduction": "Actual PilotRpc250ms pacing, PilotMarket, SDK/retained supported account bytes; synthetic400ms native slot floors; no provider/network calls.",
+    "repair": "Read current rent using validated preparation lengths before final actual-size SDK market acquisition; refresh minimum slot immediately before that read and require final decoded lengths/deposit/Clock/generation/slot checks unchanged.",
+    "notClaimed": [
+      "specific live Rkpu cause",
+      "natural qualified opportunity",
+      "executable missed profit",
+      "improved forward profitability"
+    ]
+  },
+  "remainingContention": [
+    "Current ready-audit/native obligations can legitimately defer optional entry reads. No admission bypass introduced.",
+    "Provider timeout and physical-settlement behavior remain independently measured; pricing failure does not authorize entries."
+  ]
+}

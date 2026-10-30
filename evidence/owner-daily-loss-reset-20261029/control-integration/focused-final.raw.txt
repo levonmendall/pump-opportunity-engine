@@ -1,0 +1,78 @@
+✔ existing runtime control client reaches one owner and safe-stop does not abandon exposure (18.810695ms)
+✔ malformed, expanded, oversized or unsupported requests never dispatch financial callbacks (4.893181ms)
+✔ private canonical parent and existing live/foreign paths remain protected (2.57461ms)
+✔ stale owned socket recovery preserves the pathname safety check and supports a restart (28.890131ms)
+✔ owner callback failures disclose neither secrets nor a successful operation (1.446621ms)
+✔ native socket close retains a file that replaced its pathname (1.253595ms)
+✔ private reset command accepts only dated request identity and temporary refusals do not fail the control listener (2.341305ms)
+✔ flat five-second reconciliation creates a derived pause without changing controls; local maintenance preserves two-second guard (39.912431ms)
+✔ expired USD closes entries, new original-timestamp USD and fresh complete window recover without predictive pass or RPC (13.243297ms)
+✔ fresh audit-completion timestamp cannot substitute for an old executed-flow cutoff (7.15707ms)
+▶ owner pause, safe stop, daily loss, admission failure, disconnected source and absent certificate do not auto-resume
+  ✔ owner (8.081759ms)
+  ✔ stop (10.666449ms)
+  ✔ loss (10.035459ms)
+  ✔ admission (7.836987ms)
+  ✔ connection (7.909754ms)
+  ✔ certificate (9.555471ms)
+✔ owner pause, safe stop, daily loss, admission failure, disconnected source and absent certificate do not auto-resume (56.393063ms)
+✔ pending action and actual held inventory block cash-only maintenance without changing obligations (10.401401ms)
+✔ unknown post-commit financial failure latches closed; later maintenance and restart cannot reinterpret success (9.984656ms)
+✔ recorder failure after permission recovery closes controls and preserves the evidence latch (12.636909ms)
+✔ nonthrowing recovery recorder that revokes current admission cannot report a successful recovery (11.201857ms)
+✔ a terminal failed entry cannot release cash maintenance while its actual execution adapter remains unsettled (118.395031ms)
+✔ slow reconciliation never backdates the resume after the actual two-second deadline (10.718529ms)
+✔ hard failure after a soft pause is durable across restart instead of hiding behind the old soft reason (9.897318ms)
+✔ a recorded hard restriction cannot be laundered by complete candidate preparation (9.449181ms)
+✔ cash maintenance continues during source waits, defers financial ownership, and measures true synchronous lateness (15.505532ms)
+✔ actual maintenance timer contains unexpected callback failure and keeps retry bounded (1.118254ms)
+✔ old startup reconciliation and known FX-unavailable intervals are not maintenance deadline misses (12.527206ms)
+✔ backup failure retries at the bounded next attempt rather than waiting five minutes; success restores the normal cadence (1.150842ms)
+✔ verified backup recovery unlocks temporary readiness only after success and a current audited cutoff (8.682808ms)
+✔ actual interval runs local maintenance while an awaited source operation is unsettled (15.829051ms)
+✔ current derived source/provider/monitoring restrictions remain distinct from unchanged durable permission (8.073195ms)
+✔ explicit owner daily-loss reset recovers through ordinary fresh audited readiness without fabricating a qualification (11.633213ms)
+✔ owner reset rebases only current daily risk from fresh actual equity, audits prior state, preserves history and does not arm entries (35.131055ms)
+✔ a new actual loss relatches; same stable authorization returns its old receipt without waiving the later loss (11.150781ms)
+✔ daily reset retains a genuine owner stop and cannot resume it (7.52185ms)
+✔ owner reset refuses stale-reconciliation with no financial mutation (6.785401ms)
+✔ owner reset refuses stale-price with no financial mutation (5.847723ms)
+✔ owner reset refuses future-price with no financial mutation (9.308604ms)
+✔ owner reset refuses wrong-day with no financial mutation (9.942943ms)
+✔ owner reset refuses extra-marks with no financial mutation (17.20574ms)
+✔ owner reset refuses unlatched with no financial mutation (7.880321ms)
+✔ owner reset refuses bad-reason with no financial mutation (6.511445ms)
+✔ owner reset refuses regressed-time with no financial mutation (5.866161ms)
+✔ owner reset refuses existing pending reservation without dropping its obligation (7.705612ms)
+✔ owner reset refuses existing holding without dropping its obligation (7.710169ms)
+✖ private owner action prepares normal readiness once and retrieves the exact receipt before later-loss and owner-stop guards (8.756337ms)
+✔ unready or unauthorized reset control cannot mutate financial state: {"requestId":"unauthorized"} (6.233804ms)
+✔ unready or unauthorized reset control cannot mutate financial state: {"authorizedDay":"2026-10-30"} (5.78448ms)
+✔ unready or unauthorized reset control cannot mutate financial state: {"work":"candidate"} (4.928493ms)
+✔ unready or unauthorized reset control cannot mutate financial state: {"price":null} (3.971362ms)
+✔ unready or unauthorized reset control cannot mutate financial state: {"now":1793275204001} (4.695969ms)
+✔ unready or unauthorized reset control cannot mutate financial state: {"safety":{"idle":false,"recoveryComplete":true,"evidenceAvailable":true,"financialAvailable":true,"uncertainActions":1,"automaticRecoveryAllowed":true,"newHardPauseObserved":false}} (4.286392ms)
+✔ unready or unauthorized reset control cannot mutate financial state: {"safety":{"idle":true,"recoveryComplete":true,"evidenceAvailable":true,"financialAvailable":true,"uncertainActions":0,"automaticRecoveryAllowed":false,"newHardPauseObserved":true}} (4.433801ms)
+✔ an already clear day is a true no-op without changing its reference or arming entries (4.301315ms)
+ℹ tests 55
+ℹ suites 0
+ℹ pass 54
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1516.555097
+
+✖ failing tests:
+
+test at test/owner-daily-loss-reset.test.ts:1:7847
+✖ private owner action prepares normal readiness once and retrieves the exact receipt before later-loss and owner-stop guards (8.756337ms)
+  ReferenceError: record is not defined
+      at PaperLedger.dailyLossResetReceipt (/workspace/pump-opportunity-engine/src/ledger.ts:362:5)
+      at TestContext.<anonymous> (/workspace/pump-opportunity-engine/test/owner-daily-loss-reset.test.ts:27:25)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)

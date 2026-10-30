@@ -1,0 +1,13 @@
+{
+  "administrationRun": 40735836963,
+  "administrationCommit": "0e4528930fdbca29af368274fadbea9263f3f7c3",
+  "dispatchedAt": "2026-10-28T17:27:05Z",
+  "preparedInitialSha256": "6d5553f969c9b42f2f961276dd27c64820498a9a5177848873ae8485bd223749",
+  "source": {
+    "commit": "71896104f07faa2b193b90d3d3133a8e29236f35",
+    "sha256": "80071522cc6943b5ff743f3106904641bf4e21cac5ffdd6c96b8ee7566dd91e3"
+  },
+  "configurationSha256": "1362f6ccf3d31cc0693f4f77040486e380e23251f685817908ce4267ee7c5b5c",
+  "maximumObservationSeconds": 900,
+  "noFinancialWriter": true
+}

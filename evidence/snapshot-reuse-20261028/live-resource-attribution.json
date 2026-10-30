@@ -1,0 +1,79 @@
+{
+  "verifiedAt": "2026-10-28T23:03:21.677973+00:00",
+  "source": {
+    "commit": "d7eab54491c361d7c2d5a31e0543e36bf88fd847",
+    "sha256": "f7b1f1a36451587d624345c57770cfdd386b9ff27a411b4998c37d39935f04a9",
+    "kind": "immutable-startup-native-paper-bundle-closure",
+    "metadataSha256": "a9c4bdfc737dfa328f7e5912ba941d9b325b5c00d30ce4f5cfade92d9b73e588",
+    "sqliteVersion": "13.0.3",
+    "addonSha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d",
+    "backupWorkerSha256": "773157f208a3f5505efa308d7f37de7ce8e580138510dc0662d12aee9f56481c",
+    "packageLockSha256": "552d1fc533ec47be8913f220d5d1c08286432fc0e3d3ce54457c488de73ddd4a"
+  },
+  "runId": "native-paper-20261028223428977",
+  "finalStatusSha256": "437df26cac8cf5d455085f51ab344a396894ebe00281dd0a18bdb075a4f24d07",
+  "indexSha256": "e9d96cfa7d0dc89637f11b104820bfaf597ce504d725a060ea95cc397a6aa624",
+  "elapsedMs": 1088218,
+  "finalCpuMicros": {
+    "user": 171042735,
+    "system": 9200985
+  },
+  "totalCpuMicros": 180243720,
+  "meanOneCoreFraction": 0.16563199653010702,
+  "maximumRssBytes": 382197760,
+  "eventBytes": 38352431,
+  "processingReserve": {
+    "version": "paper-local-processing-reserve-v1",
+    "candidateCpuMicros": 180000000,
+    "entryCpuMicros": 160000000,
+    "supervisorRecoveryCpuMicros": 220000000,
+    "processSoftCpuMicros": 240000000,
+    "candidateRssBytes": 402653184,
+    "candidateEvidenceBytes": 99614720,
+    "entryEvidenceBytes": 83886080,
+    "maximumEvidenceBytes": 133169152
+  },
+  "status": "resource pressure; financial checkpoint required",
+  "exactStopCause": "Cumulative source CPU reached180,000,000micros; source maximum RSS and event evidence were still below their candidate limits.",
+  "hostSaturationEstablished": false,
+  "localPhases": {
+    "backup-start": {
+      "count": 4,
+      "elapsedMs": 20.38808099998846,
+      "maximumMs": 5.951548999990337,
+      "cpuMicros": 13351,
+      "overruns": 0
+    },
+    "backup-prepare-after-lease": {
+      "count": 5,
+      "elapsedMs": 7.419670000004999,
+      "maximumMs": 1.6329729999415576,
+      "cpuMicros": 8192,
+      "overruns": 0
+    },
+    "report-checkpoint": {
+      "count": 73,
+      "elapsedMs": 7267.949250999882,
+      "maximumMs": 114.89592399999992,
+      "cpuMicros": 5026931,
+      "overruns": 0
+    },
+    "ownership-and-maintenance": {
+      "count": 17132,
+      "elapsedMs": 713.3995460000101,
+      "maximumMs": 0.51681900001131,
+      "cpuMicros": 686003,
+      "overruns": 0
+    },
+    "candidate-shared-step": {
+      "count": 17131,
+      "elapsedMs": 144182.43027200157,
+      "maximumMs": 1243.0509109999985,
+      "cpuMicros": 78033040,
+      "overruns": 0
+    }
+  },
+  "attributionLimit": "Phase CPU samples whole-process usage during each span. Async spans include concurrent callbacks and may overlap other phases; do not sum them as exclusive function attribution. No whole-process profile is available.",
+  "smallRepair": "Same explicit-at FlowWindow.features projection reused inside one snapshot; no cross-call cache or provider/strategy/data/financial change.",
+  "remainingEvidence": "Next versioned forward interval needed for whole-process savings and sustainable resource envelope. Microbenchmark only times repeated feature projection, not whole snapshots or runtime."
+}

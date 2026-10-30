@@ -1,0 +1,19 @@
+{
+  "title": "POE // Opportunity Command Center",
+  "href": "https://meme-machine-dashboard-staging.onrender.com/",
+  "viewport": 390,
+  "documentWidth": 390,
+  "bodyWidth": 390,
+  "agePolicy": "Observation 0–120 min; selected older research 120–360 min · observation-age-v1. Baseline entry comparison remains 5–120 minutes. Cohort counts describe observation allocation, not predictive quality or returns.",
+  "watchText": "Recent identities known112Baseline entry-age verified identities (5–120 min)10Watch candidates30Deep slots active / maximum0 / 6Ready deep-analysis queue10Current queue wait: average / maximum (s)2,348.24 / 4,814.99Completed admission wait: average / maximum (s)1,072.82 / 6,515.3Promotions / re-promotions418 / 325Demotions418Complete 60-second windows415Feature-only assessments0Feature-only failures0Primary strategy rejections0Capacity exclusions0Incomplete-data exclusions0Enrichment deadline failures0Structural exclusions13Expired identities91Observation-eligible identities29Observation-ready queue29Pre-entry observation cohort (<5 min)0Baseline entry-age cohort (5–120 min)10Selected older research cohort19Selected older watch capacity24",
+  "sourceTimesText": "Last market notificationUnavailableLast validated pool support2026-10-28T04:16:28.425Z · 558.99s old · STALEBANK_CLOCK source time2026-10-28T04:16:27.000Z · 560.42s old · STALELast independent auditUnavailableLast predictive assessmentUnavailableFinancial reconciliationUnavailable",
+  "portfolioCardCount": 0,
+  "portfolioPositionText": "No experimental position projection reported.",
+  "scriptTagCount": 0,
+  "pilotState": "PUBLISHER DISCONNECTED · STOPPED · SOURCE STALE",
+  "sourceText": "Account poe-pilot-8468add6-f916-48cf-a585-6cd008a81360 · inception 2026-10-27T17:56:13.252Z\nRun native-candidates-20261028041609569\nRuntime 60b93929bf3373a84a024b8712da2ca2e69e71e2 · strategy persistent-buying-v0-unfrozen · mode candidate-evaluation\nLocal source 2026-10-28T04:16:30.220Z (557.17s old) · first accepted 2026-10-28T04:16:31.056Z\nLast authenticated publisher contact 2026-10-28T04:16:31.056Z (556.33s ago). Receiver contact does not refresh source facts.",
+  "checkedAt": "2026-10-28T04:25:48.055Z",
+  "errors": [],
+  "horizontalOverflow": false,
+  "tlsVerificationEnabled": true
+}

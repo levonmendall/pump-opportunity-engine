@@ -1,0 +1,28 @@
+✖ executed-flow diagnostics handle7193 or17000 failed packets plus1318 successful events without artificial ledger overflow (4369.432452ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 5448.490768
+
+✖ failing tests:
+
+test at test/pilot-native-flow.test.ts:1:105189
+✖ executed-flow diagnostics handle7193 or17000 failed packets plus1318 successful events without artificial ledger overflow (4369.432452ms)
+  AssertionError [ERR_ASSERTION]: {"failed":17000,"gaps":[{"mint":"2VTC8SDSxNZ9taHXsnXgK52fk7afKTNQo9HmzCGTpump","at":1793132876400,"reason":"NATIVE_FLOW_RESOURCE_LIMIT","requiresFreshWindow":true}],"usage":{"dataContract":"confirmed-program-activity-v3-shadow","receiptTimeMeaning":"Conservative earliest application-transport chunk of an undrained receiver batch; message availability remains separate. Not an exact wire timestamp.","maximumCandidates":1,"candidates":1,"retiring":0,"connected":false,"physicalTransportsSettled":true,"sharedOperationActive":false,"nativePhysicalOperations":0,"sharedGateSettlement":"Caller must additionally check authoritative PilotRpc HTTP inFlight/waitingOrOperating; native settlement covers module-owned WebSockets","stopped":false,"fatal":"NATIVE_FLOW_RESOURCE_LIMIT","retryAt":1793132878400,"supportRetryAt":0,"supportRecovery":{"consecutiveRefreshFailures":0,"deferredRefreshFailures":0,"policy":"Existing source expiry is unchanged; HTTP refresh recovery does not close healthy notification capture."},"controlRetryAt":0,"roundTripLiveness":{"version":"managed-ack-round-trip-v1","intervalMs":10000,"connection":1,"lastVerifiedAt":1793132830000,"proofKind":"logsSubscribe","nextHeartbeatAt":1793132840000,"notificationsExtendDeadline":false,"sourceFreshnessExtended":false},"nextServiceAt":null,"nextServiceDomain":null,"nextServiceAction":null,"lastNotificationAt":1793132876398,"lastFreshSupportAt":1793132870004,"lastBankClockAt":1793132870000,"socketBytes":10133180,"applicationBytes":10084408,"recordedBytes":22141021,"notifications":12142,"transactionRetention":{"version":"native-active-ownership-compact-corrections-v2","records":12142,"activeRecords":0,"compactRecords":12142,"maximumActiveRecords":16384,"maximumFingerprints":32768,"compactPayloadBytes":631384,"allocatedCompactArenaBytes":1703936,"maximumCompactPayloadBytes":1703936,"compactPayloadMeaning":"One fixedarena52B/slot: exacthash32B+slot8B+firstAvailability8B+liveCorrectionScopeMask4B; map/key/free-index overhead is additional and measured separately","correctionScopeIdentities":0,"maximumCorrectionScopeIdentities":6,"peakCorrectionScopeIdentities":1,"peakRecords":12142,"peakActiveRecords":873,"compactionOperations":873,"expiredRecords":0,"activeCapacityRefusals":0,"fingerprintCapacityRefusals":0,"correctionRetentionMs":180000,"firstAvailabilityPreserved":true,"reparseRequiredAfterCompaction":true},"failedPacketDiagnostics":{"policy":{"version":"executed-flow-failed-diagnostics-v1","bucketMs":10000,"maximumBuckets":8,"maximumBoundaryRows":2,"meaning":"Source-reported failed interiors do not occupy required successful-flow metadata. Up to eight real ten-second bucket fences and first/last packet diagnostics are retained; all packets remain in append-only evidence and exact180s correction fingerprints."},"sourceReportedPackets":11269,"duplicatePackets":0,"independentlyFailedStatusVerified":false,"fullPacketCensusRetained":false,"allSuccessfulInformationStillMandatory":true},"notificationRetentionAggregate":{"compactedScopeRows":187,"compactionOperations":1,"peakRetainedRowsPerScope":873,"peakRetainedRowsAcrossScopes":873,"candidatePressureRefusals":0,"units":"Scoped notification metadata rows, including one refusal reserve per scope; the same transaction in two scopes counts twice","meaning":"Run totals survive subscription ACK reset and candidate retirement; compaction operations count only removals. These are not unique trades, audit completeness or market coverage."},"ignoredAfterGap":0,"receivedBoundNotifications":12142,"subscriptionRebindings":0,"retiredNotifications":0,"retiredCorrectionNotifications":0,"retiredSubscriptions":0,"retiredSubscriptionPolicy":{"maximum":256,"retentionMs":180000},"rawEvidence":{"successfulShapes":2,"successfulBytes":7669,"refusalShapes":0,"refusalBytes":0,"refusalPayloadsOmitted":0,"limits":{"maximumSuccessShapes":8,"maximumRefusalShapes":8,"maximumSuccessBytes":524288,"maximumRefusalBytes":524288}},"protocolFrames":0,"unmanagedControlUnits":0,"suppressedLibraryControlFrames":0,"controlByteChargeFailures":0,"transportIntegrityGaps":0,"lastTransportIntegrityGap":null,"managementAccounting":"Shared gate counts actual managed operations; unadmitted automatic library controls are suppressed before send and force transport recovery. Historical actual unmatched controls still require append-only accounting.","duplicates":0,"duplicateNotificationsSuppressed":0,"duplicateEvents":0,"corrections":0,"normalizedEvents":873,"protocolEffects":0,"duplicateProtocolEffects":0,"strictV2UnavailableNotifications":0,"gaps":1,"processingMs":{"count":256,"p95":0,"maximum":0},"queueAgeMs":{"p95":0,"maximum":0},"perTransactionEnrichmentRequests":0,"auditVerified":false,"liveTradingEnabled":false,"financialWriterOpened":false}}
+  
+  1 !== 0
+  
+      at TestContext.<anonymous> (/workspace/poe-native-failed-metadata/test/pilot-native-flow.test.ts:499:116)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 1,
+    expected: 0,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

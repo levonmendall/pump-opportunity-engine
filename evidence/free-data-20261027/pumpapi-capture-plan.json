@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-27T01:35:39.718176+00:00",
+  "stage": "capture",
+  "reason": "First schema probe measured about1.374MiB/s broad traffic, insufficient for70s worst-case closed strategy window within prior64MiB stage. Revise stage before further network; assignment128MiB ceiling unchanged.",
+  "durationMs": 80000,
+  "transportReservationBytes": 109051904,
+  "applicationCapBytes": 108003328,
+  "transportStopHeadroomBytes": 1048576,
+  "aggregateReservationIncludingFirstSchemaBytes": 117440512,
+  "assignmentAggregateBytes": 134217728,
+  "remainingUnmeteredTransportHeadroomBytes": 16777216,
+  "evidenceCapBytes": 7340032,
+  "cpuMs": 20000,
+  "heapMiB": 128,
+  "rssMiB": 256,
+  "trackedMints": [
+    "CRpqtPYyBckKTwgrixiPBYQsi6YESBxA8LMJ5p3fpump",
+    "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump"
+  ],
+  "selection": "CRp next observed migration verified fromfreePumpPortal+publicRPC; ageeligiblecandidate.2su previoussamepoolverificationcohort, olderthan120min atcapture so held-pricinghypotheticalonly. Selection not based onlaterperformance.",
+  "noAutomaticThirdAttempt": true,
+  "walletSecretsLoaded": false,
+  "providerAuthenticationUsed": false,
+  "subscriptionOrTradingPayloads": false,
+  "productionTouched": false,
+  "entriesEnabled": false,
+  "fieldContract": "UNVERIFIED"
+}

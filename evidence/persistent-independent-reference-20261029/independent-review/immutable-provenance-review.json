@@ -1,0 +1,26 @@
+{
+  "kind": "independent-immutable-reference-provenance-review-v1",
+  "state": "APPROVED_OFFLINE",
+  "baselineSha256": "21376bf54389fee95734c9dafc35aa2a02cb30f964bb3db48d1fc573ee1b3c5f",
+  "manifestSha256": "aa942bd668b7b42160f38c92c7c67b70380a46796bf7ddfdb195de64273dd4e2",
+  "reproducerSha256": "bf4d63032a2a804366d166a8b0c05add9894f83758127135e53c2e40373a268b",
+  "historicalToolCount": 7,
+  "archivedBytesMatchHistoricalCommit": "14d3d89ec433aa8690855e07f24cdc2b7a4b2ec1",
+  "priorReproducerRetainedExact": true,
+  "checks": [
+    "Byte-identical with all mutable current tools and Git checkout absent",
+    "Byte-identical with deliberately changed current tool bytes",
+    "Archived historical source tampering fails closed",
+    "Pinned historical manifest tampering fails closed"
+  ],
+  "transparentDocumentation": {
+    "readmeSha256": "6809149bd571c933e586ff7aacb5ec345d08293a219a74470cc81bd09fdbb2cf",
+    "meaning": "Historical source blobs are archive-only, never executed; current persistent sampler provenance remains separate."
+  },
+  "currentSamplerSha256": "b27840c0895ff285f308ffadace4ebdd3ae0e245bbf23f18cf3ff357aa1fc668",
+  "currentSamplerTestSha256": "7cccdcc79de62e2981cc001333f4c7151fabb5ca155b3c9c37f1b9c0b04759f9",
+  "blockingFindings": [],
+  "networkRequests": 0,
+  "financialDatabaseOpened": false,
+  "productionActions": 0
+}

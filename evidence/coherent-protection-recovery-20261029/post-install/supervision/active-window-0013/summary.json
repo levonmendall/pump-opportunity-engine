@@ -1,0 +1,214 @@
+{
+  "kind": "BOUNDED_LOCAL_ANALYSIS_COMPLETED_EXISTING_COLLECTOR_CONTINUES",
+  "startedAt": "2026-10-30T00:13:42.795981+00:00",
+  "completedAt": "2026-10-30T00:23:42.837766+00:00",
+  "observationCount": 40,
+  "materialTransitionCount": 29,
+  "first": {
+    "receivedAt": "2026-10-30T00:13:29.946000+00:00",
+    "sourceAt": "2026-10-30T00:13:14.910Z",
+    "sequence": "10827",
+    "source": {
+      "release": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
+      "strategy": "adaptive-momentum-v2-paper-v1"
+    },
+    "status": {
+      "runtime": "running",
+      "market": "observing",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED"
+    },
+    "protection": {
+      "state": "monitored",
+      "targetCadenceMs": 2000,
+      "completedEvaluationBoundaryMs": 4000,
+      "lastCompletedAt": "2026-10-30T00:13:14.908Z",
+      "maximumCompletedGapMs": 89426,
+      "maximumQuoteAgeAtUseMs": 68,
+      "breaches": 48,
+      "unavailableChecks": 184
+    },
+    "provider": {
+      "rpcRequests": 1327,
+      "httpTimeouts": 608,
+      "httpErrors": 0,
+      "throttles": 0,
+      "rollingStartsPerMinute": 49,
+      "primaryCooldownUntil": "2026-10-30T00:12:33.581Z"
+    },
+    "holdingRefusals": [
+      "Recorded holding-pricing refusals in this run: HELD_PRICING_ABORTED:6, HELD_PRICING_PROVIDER_TIMEOUT:9, HELD_PRICING_PROVIDER_COOLDOWN:41."
+    ],
+    "quality": {
+      "captureConnected": true,
+      "qualityGaps": 1403,
+      "auditUnavailable": 128,
+      "auditUnusable": 190,
+      "decisionDeadlineMisses": 285
+    },
+    "evidence": {
+      "evidenceAdmissionAllowed": true,
+      "evidencePressureReasonCode": null,
+      "evidenceRefusedRecords": 0,
+      "sourceRecoveryGeneration": 0,
+      "sourceRecoveryFailures": 0
+    },
+    "resources": {
+      "sampleAt": "2026-10-30T00:13:14.346Z",
+      "cpuOneCoreFraction": 0.16162078831330573,
+      "rssBytes": 394051584,
+      "availableMemoryBytes": 6862753792,
+      "availableDiskBytes": 287382011904,
+      "eventLoopLagMs": 26.836991,
+      "state": "normal"
+    },
+    "positions": [
+      {
+        "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+        "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+        "quantity": "65278155",
+        "enteredAt": "2026-10-29T22:23:36.537Z",
+        "entryCostUsd": 49.708013,
+        "netLiquidationUsd": 57.81713,
+        "executionCostsUsd": 0.00068,
+        "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+      }
+    ],
+    "pendingOrders": [],
+    "funnel": {
+      "discovered": 54,
+      "supported": 54,
+      "sufficientlyObserved": 2,
+      "evaluated": 2,
+      "qualified": 0,
+      "attempted": 0,
+      "paperFilled": 0,
+      "exited": 0,
+      "reconciled": 654
+    },
+    "balances": {
+      "cashSol": "9.391335448",
+      "reservedSol": "0",
+      "equitySol": "10.018146992",
+      "equityUsd": 956.131949,
+      "realizedUsd": -3.644485,
+      "unrealizedUsd": 9.036782,
+      "tradingPnlUsd": 5.392296,
+      "economicPnlUsd": null,
+      "positionCostUsd": 49.708013,
+      "markedExposureUsd": 57.81713,
+      "drawdownUsd": null,
+      "executionCostsUsd": null,
+      "operatingCostsUsd": null,
+      "passiveSolEquityUsd": 950.739653,
+      "solPriceUsd": 95.44
+    }
+  },
+  "last": {
+    "receivedAt": "2026-10-30T00:23:24.891000+00:00",
+    "sourceAt": "2026-10-30T00:23:12.870Z",
+    "sequence": "10865",
+    "source": {
+      "release": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
+      "strategy": "adaptive-momentum-v2-paper-v1"
+    },
+    "status": {
+      "runtime": "running",
+      "market": "observing",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED"
+    },
+    "protection": {
+      "state": "monitored",
+      "targetCadenceMs": 2000,
+      "completedEvaluationBoundaryMs": 4000,
+      "lastCompletedAt": "2026-10-30T00:23:11.496Z",
+      "maximumCompletedGapMs": 89426,
+      "maximumQuoteAgeAtUseMs": 68,
+      "breaches": 57,
+      "unavailableChecks": 201
+    },
+    "provider": {
+      "rpcRequests": 1931,
+      "httpTimeouts": 618,
+      "httpErrors": 0,
+      "throttles": 0,
+      "rollingStartsPerMinute": 58,
+      "primaryCooldownUntil": "2026-10-30T00:22:59.067Z"
+    },
+    "holdingRefusals": [
+      "Recorded holding-pricing refusals in this run: HELD_PRICING_ABORTED:12, HELD_PRICING_PROVIDER_TIMEOUT:10, HELD_PRICING_PROVIDER_COOLDOWN:51."
+    ],
+    "quality": {
+      "captureConnected": true,
+      "qualityGaps": 1410,
+      "auditUnavailable": 129,
+      "auditUnusable": 190,
+      "decisionDeadlineMisses": 308
+    },
+    "evidence": {
+      "evidenceAdmissionAllowed": true,
+      "evidencePressureReasonCode": null,
+      "evidenceRefusedRecords": 0,
+      "sourceRecoveryGeneration": 0,
+      "sourceRecoveryFailures": 0
+    },
+    "resources": {
+      "sampleAt": "2026-10-30T00:23:12.818Z",
+      "cpuOneCoreFraction": 0.15295710919355113,
+      "rssBytes": 432046080,
+      "availableMemoryBytes": 6809882624,
+      "availableDiskBytes": 287094964224,
+      "eventLoopLagMs": 27.181055,
+      "state": "normal"
+    },
+    "positions": [
+      {
+        "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+        "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+        "quantity": "65278155",
+        "enteredAt": "2026-10-29T22:23:36.537Z",
+        "entryCostUsd": 49.708013,
+        "netLiquidationUsd": 57.524004,
+        "executionCostsUsd": 0.00068,
+        "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+      }
+    ],
+    "pendingOrders": [],
+    "funnel": {
+      "discovered": 73,
+      "supported": 73,
+      "sufficientlyObserved": 2,
+      "evaluated": 2,
+      "qualified": 0,
+      "attempted": 0,
+      "paperFilled": 0,
+      "exited": 0,
+      "reconciled": 939
+    },
+    "balances": {
+      "cashSol": "9.391335448",
+      "reservedSol": "0",
+      "equitySol": "10.019048703",
+      "equityUsd": 949.956103,
+      "realizedUsd": -3.620619,
+      "unrealizedUsd": 9.063099,
+      "tradingPnlUsd": 5.44248,
+      "economicPnlUsd": null,
+      "positionCostUsd": 49.708013,
+      "markedExposureUsd": 57.524004,
+      "drawdownUsd": null,
+      "executionCostsUsd": null,
+      "operatingCostsUsd": null,
+      "passiveSolEquityUsd": 944.513623,
+      "solPriceUsd": 94.815
+    }
+  },
+  "serviceStopped": false,
+  "collectorStopped": false,
+  "financialControlsChanged": false,
+  "additionalNetworkRequests": 0,
+  "scope": "Only these sampled records; no inference of supervision across unobserved gaps."
+}

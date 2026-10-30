@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "verifiedAt": "2026-10-28T22:30:30.715865+00:00",
+  "sourceCommit": "93cae3454a2871f87eed127afc7d046c75c9c29f",
+  "offlineOnly": true,
+  "networkCalls": 0,
+  "financialWrites": 0,
+  "finalFocused": {
+    "tests": 135,
+    "pass": 135,
+    "fail": 0
+  },
+  "independentFocused": {
+    "tests": 129,
+    "pass": 129,
+    "fail": 0
+  },
+  "lastPostTestEdit": "PilotRpcCallOptions comment only: actual throttling/overload is provider-wide in its fixed route domain; no executable code edited after passing focused tests.",
+  "files": [
+    {
+      "path": "build.log",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "path": "focused-135.log",
+      "bytes": 16289,
+      "sha256": "13f4f4fda5678d89e8b9225c3ce57a91f2d9d33b493c0f0f77faf5d58d49d7ed"
+    },
+    {
+      "path": "independent-focused-129.log",
+      "bytes": 15554,
+      "sha256": "8e3405a526df955133ccca497f0e67c98f8103403e7d0fa83ac7b6e628c8fbaa"
+    },
+    {
+      "path": "initial-transport-shape-failure.log",
+      "bytes": 8293,
+      "sha256": "131664a3f71a90a170b9d4d9aef8606b84e8a73caa53d7b65b649326652c2068"
+    },
+    {
+      "path": "intermediate-regression-failures.log",
+      "bytes": 20399,
+      "sha256": "e075e0e3cde148b553d01015ae01408c4ecd5e4abf632dbca805b848a4092dd9"
+    }
+  ]
+}

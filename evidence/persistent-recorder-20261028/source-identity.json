@@ -1,0 +1,20 @@
+{
+  "kind": "offline-persistent-recorder-review-v1",
+  "baseCommit": "d25414d",
+  "sourceFiles": [
+    {
+      "path": "src/recorder.ts",
+      "sha256": "d311de8a9372b4dacfe41a736a711ab6e254cb3c9496647ddb095e685d9398eb"
+    },
+    {
+      "path": "src/retained-recorder.ts",
+      "sha256": "f0ae30d880a198ea55a21a4c9c78281677bcbe3d07336a11448a8a2fc63aa4c9"
+    },
+    {
+      "path": "test/retained-recorder.test.ts",
+      "sha256": "70fc2a047cceb451a5c9eb585f0ad2925fbcf0899b9a32c56d7d6d9dde75450e"
+    }
+  ],
+  "verification": "21 recorder tests passed, TypeScript build passed, exact four independent review regressions rerun",
+  "liveState": "No provider, financial ledger, EC2 service or Render mutation performed"
+}

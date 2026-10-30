@@ -1,0 +1,41 @@
+{
+  "kind": "publisher-latest-queue-offline-verification-v1",
+  "at": "2026-10-29T20:00:58.354078+00:00",
+  "state": "IMPLEMENTED_VERIFIED_OFFLINE_NOT_DEPLOYED",
+  "base": "8bd509fd683781ba69bd69bea4600de0f85fd99f",
+  "sourceFiles": {
+    "src/snapshot-publisher.ts": "5999a8eeb9ce5490b7f5738c44ab419af1311da4782517100fcb4db04ce5a10a",
+    "test/snapshot-file-publisher.test.ts": "3bc78ec4f248105fb144632c3739f65075a680db2cde384432765a7b76dd85f8"
+  },
+  "focused": {
+    "command": "node --import tsx --test test/snapshot-file-publisher.test.ts test/reporting.test.ts",
+    "passed": 29,
+    "failed": 0,
+    "exitCode": 0
+  },
+  "build": {
+    "command": "npm run build",
+    "exitCode": 0
+  },
+  "independentReviewSha256": "f66e88e4bf829b99d7a5cbfb0767c19e9c3ef2edf93ead2e03fbe1469d88fcc1",
+  "artifacts": {
+    "README.md": "206358a0e97676719ef6b8f7b315da0662d3da3e3f6f55fb114fb13f1b81c26e",
+    "before-repair-tests.txt": "a6b5d5f373dc9bd53a3ba7e0bf74714b13c3ea48b7356633a87ca28a2c20976f",
+    "build.txt": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+    "focused-tests.txt": "fd542407ed33ea8c4e6919354be1d342f68561a0db21c10e5406177a81f4543f",
+    "independent-review/build.raw.txt": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+    "independent-review/focused.raw.txt": "69e6185e6315d8c928a662fdbc449f9d8ee8cb3d8edee4f3974ea45a75ec39bd",
+    "independent-review/review.json": "f66e88e4bf829b99d7a5cbfb0767c19e9c3ef2edf93ead2e03fbe1469d88fcc1",
+    "repair.patch": "fb6338f482858e9fb5864d001ae0748218c6070985e9ad2cd90aecd87435d61e",
+    "source-manifest.json": "9e4e59d9b713d561dbd1190061874dd334630330356dfa30de68e4c3370cc9ed"
+  },
+  "boundaries": {
+    "networkPhysicalPacingChanged": false,
+    "providerRequests": 0,
+    "productionActions": 0,
+    "credentialsRead": false,
+    "financialAccountRead": false,
+    "financialStateChanged": false,
+    "forwardLatencyProved": false
+  }
+}

@@ -1,0 +1,288 @@
+{
+  "schemaVersion": 1,
+  "frames": [
+    {
+      "requestedAt": 1793197238321,
+      "receivedAt": 1793197238762,
+      "httpStatus": 200,
+      "responseBytes": 2708,
+      "receiver": {
+        "state": "reporting",
+        "snapshot": {
+          "schemaVersion": 1,
+          "kind": "experimental-pilot",
+          "authoritative": false,
+          "liveTrading": false,
+          "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+          "inceptionAt": 1793123773252,
+          "runId": "native-candidates-20261028142028669",
+          "generatedAt": 1793197230913,
+          "source": {
+            "release": "63f4ac439c6b22c7d532c284890cf47e78ad5d62",
+            "strategy": "persistent-buying-v0-unfrozen",
+            "sha256": "130b02f614b46b3576e1659cf2f0a18ce8f56e288b76578d05bd23398d920dd0"
+          },
+          "running": true,
+          "entriesEnabled": false,
+          "status": "SHADOWv3 protocol-aware ordinary flow; strictv2 unavailable views 0, protocol effects 0. native flow disconnected or starting; validated candidate observation unavailable",
+          "mode": "candidate-evaluation",
+          "financialExecutionAuthorized": false,
+          "observationAgePolicy": {
+            "version": "observation-age-selected-24h-study-v1",
+            "minimumObservationAgeMs": 0,
+            "recentMaximumAgeMs": 7200000,
+            "selectedOlderMaximumAgeMs": 86400000
+          },
+          "sourceTimes": {
+            "lastMarketNotificationAt": null,
+            "lastFreshSupportAt": 1793197230909,
+            "lastBankClockAt": 1793197230000,
+            "lastAuditAt": null,
+            "lastPredictiveAt": null,
+            "financialReconciliationAt": null
+          },
+          "portfolio": null,
+          "accounting": null,
+          "funnel": {
+            "discovered": 0,
+            "supported": null,
+            "sufficientlyObserved": 0,
+            "evaluated": 0,
+            "qualified": 0,
+            "reserved": 0,
+            "attempted": 0,
+            "paperFilled": 0,
+            "exited": 0,
+            "reconciled": 0,
+            "verifiedMigrationOrigins": 111,
+            "admitted": 438,
+            "usableWindows": 0
+          },
+          "metrics": {
+            "rpcRequests": 5,
+            "providerEvents": 64,
+            "normalizedTrades": 0,
+            "eventLoopLagMs": 35.586047,
+            "maximumCompletedGapMs": null,
+            "maximumQuoteAgeMs": null,
+            "protectionBreaches": null,
+            "unavailableChecks": null,
+            "streamBytes": 98037
+          },
+          "decisions": [],
+          "refusals": [
+            {
+              "reason": "migration-verification-unavailable",
+              "count": 0
+            },
+            {
+              "reason": "verification-queue-full",
+              "count": 0
+            },
+            {
+              "reason": "native-quality-gaps",
+              "count": 0
+            },
+            {
+              "reason": "independent-audit-unavailable",
+              "count": 0
+            },
+            {
+              "reason": "independent-audit-unusable",
+              "count": 0
+            },
+            {
+              "reason": "predictive-window-deadline-missed",
+              "count": 0
+            }
+          ],
+          "watch": {
+            "known": 132,
+            "watch": 21,
+            "eligibleKnown": 0,
+            "deepActive": 1,
+            "maximumDeep": 6,
+            "queued": 0,
+            "promoted": 438,
+            "repromoted": 339,
+            "demoted": 436,
+            "expired": 129,
+            "capacityExclusions": 0,
+            "structuralExclusions": 13,
+            "completeWindows": 419,
+            "strategyRejections": 0,
+            "incompleteDataExclusions": 0,
+            "enrichmentDeadlineFailures": 0,
+            "predictiveAssessments": 0,
+            "predictiveFailures": 0,
+            "observationEligibleKnown": 22,
+            "observationQueued": 0,
+            "maximumOlderResearchIdentities": 24,
+            "ageCohorts": {
+              "preEntry": 0,
+              "entryEligible": 0,
+              "olderSelected": 22
+            },
+            "waitMs": {
+              "mean": 0,
+              "maximum": 0
+            },
+            "promotionWaitMs": {
+              "mean": 1104945.6597402596,
+              "maximum": 6515299
+            }
+          }
+        },
+        "receivedAt": 1793197231330,
+        "lastContactAt": 1793197231330,
+        "sourceAgeMs": 7787,
+        "receiverAgeMs": 7370,
+        "lastContactAgeMs": 7370,
+        "sourceStale": false,
+        "publisherConnected": true
+      }
+    },
+    {
+      "requestedAt": 1793197248769,
+      "receivedAt": 1793197248955,
+      "httpStatus": 200,
+      "responseBytes": 2727,
+      "receiver": {
+        "state": "reporting",
+        "snapshot": {
+          "schemaVersion": 1,
+          "kind": "experimental-pilot",
+          "authoritative": false,
+          "liveTrading": false,
+          "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+          "inceptionAt": 1793123773252,
+          "runId": "native-candidates-20261028142028669",
+          "generatedAt": 1793197245935,
+          "source": {
+            "release": "63f4ac439c6b22c7d532c284890cf47e78ad5d62",
+            "strategy": "persistent-buying-v0-unfrozen",
+            "sha256": "130b02f614b46b3576e1659cf2f0a18ce8f56e288b76578d05bd23398d920dd0"
+          },
+          "running": true,
+          "entriesEnabled": false,
+          "status": "SHADOWv3 protocol-aware ordinary flow; strictv2 unavailable views 0, protocol effects 0. candidate-only native observation; warming six closed buckets; no financial execution",
+          "mode": "candidate-evaluation",
+          "financialExecutionAuthorized": false,
+          "observationAgePolicy": {
+            "version": "observation-age-selected-24h-study-v1",
+            "minimumObservationAgeMs": 0,
+            "recentMaximumAgeMs": 7200000,
+            "selectedOlderMaximumAgeMs": 86400000
+          },
+          "sourceTimes": {
+            "lastMarketNotificationAt": 1793197245899,
+            "lastFreshSupportAt": 1793197230909,
+            "lastBankClockAt": 1793197230000,
+            "lastAuditAt": null,
+            "lastPredictiveAt": null,
+            "financialReconciliationAt": null
+          },
+          "portfolio": null,
+          "accounting": null,
+          "funnel": {
+            "discovered": 0,
+            "supported": null,
+            "sufficientlyObserved": 0,
+            "evaluated": 0,
+            "qualified": 0,
+            "reserved": 0,
+            "attempted": 0,
+            "paperFilled": 0,
+            "exited": 0,
+            "reconciled": 0,
+            "verifiedMigrationOrigins": 111,
+            "admitted": 438,
+            "usableWindows": 0
+          },
+          "metrics": {
+            "rpcRequests": 8,
+            "providerEvents": 12599,
+            "normalizedTrades": 2,
+            "eventLoopLagMs": 41.025535,
+            "maximumCompletedGapMs": null,
+            "maximumQuoteAgeMs": null,
+            "protectionBreaches": null,
+            "unavailableChecks": null,
+            "streamBytes": 19370944
+          },
+          "decisions": [],
+          "refusals": [
+            {
+              "reason": "migration-verification-unavailable",
+              "count": 0
+            },
+            {
+              "reason": "verification-queue-full",
+              "count": 0
+            },
+            {
+              "reason": "native-quality-gaps",
+              "count": 0
+            },
+            {
+              "reason": "independent-audit-unavailable",
+              "count": 0
+            },
+            {
+              "reason": "independent-audit-unusable",
+              "count": 0
+            },
+            {
+              "reason": "predictive-window-deadline-missed",
+              "count": 0
+            }
+          ],
+          "watch": {
+            "known": 132,
+            "watch": 22,
+            "eligibleKnown": 0,
+            "deepActive": 1,
+            "maximumDeep": 6,
+            "queued": 0,
+            "promoted": 438,
+            "repromoted": 339,
+            "demoted": 436,
+            "expired": 129,
+            "capacityExclusions": 0,
+            "structuralExclusions": 13,
+            "completeWindows": 419,
+            "strategyRejections": 0,
+            "incompleteDataExclusions": 0,
+            "enrichmentDeadlineFailures": 0,
+            "predictiveAssessments": 0,
+            "predictiveFailures": 0,
+            "observationEligibleKnown": 23,
+            "observationQueued": 0,
+            "maximumOlderResearchIdentities": 24,
+            "ageCohorts": {
+              "preEntry": 0,
+              "entryEligible": 0,
+              "olderSelected": 23
+            },
+            "waitMs": {
+              "mean": 0,
+              "maximum": 0
+            },
+            "promotionWaitMs": {
+              "mean": 1104945.6597402596,
+              "maximum": 6515299
+            }
+          }
+        },
+        "receivedAt": 1793197246457,
+        "lastContactAt": 1793197246457,
+        "sourceAgeMs": 2984,
+        "receiverAgeMs": 2462,
+        "lastContactAgeMs": 2462,
+        "sourceStale": false,
+        "publisherConnected": true
+      }
+    }
+  ],
+  "sourceFileEquality": "PENDING final retained source/ACK evidence; publicidentity/freshness alone not complete pipeline proof"
+}

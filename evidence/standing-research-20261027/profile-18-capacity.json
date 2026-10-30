@@ -1,0 +1,6116 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_PROFILE18_CAPACITY_HYPOTHESIS_NOT_LIVE_VALIDATION",
+  "generatedAt": "2026-10-27T17:08:31.008Z",
+  "sources": [
+    {
+      "path": "scripts/evaluate-shared-scheduler.ts",
+      "sha256": "90a4aba9ee74208314de2e242d171371714eb56bc0f988a2f51dc569a21639a9"
+    },
+    {
+      "path": "src/research-dispatch.ts",
+      "sha256": "8e52021743cee388390519273e22d7dc544ebe52c6dfbb3f439422f2da68cfc5"
+    },
+    {
+      "path": "test/shared-scheduler-trace.test.ts",
+      "sha256": "9a6a86f389dc945af27cd61487567846b0a0755d67cab5332cc27da677b615c0"
+    },
+    {
+      "path": "evidence/standing-research-20261027/01-paced-combined/observations.ndjson",
+      "sha256": "a5ba87088a6c0496558d34644fb91293580b92f0f42852d748c678e81f6ee110"
+    },
+    {
+      "path": "evidence/standing-research-20261027/01-paced-combined/capture.json",
+      "sha256": "3428ec209b4a6b25043ca9caf3bb0cb7bde9cc2ce4e330e9bd939022a31af7ef"
+    },
+    {
+      "path": "evidence/standing-research-20261027/06-targeted-retry-subject/observations.ndjson",
+      "sha256": "8152906917e425ae91c85a64d669ec99c90db1e2f5a58098701e4728fcd2ecb5"
+    }
+  ],
+  "measuredPriorCosts": {
+    "classification": "CONSTRUCTED_COUNTERFACTUAL_COSTS_FROM_PRIOR_MEASURED_TIMINGS_NOT_A_JOINT_LATENCY_GUARANTEE",
+    "pricing": {
+      "samples": 38,
+      "httpP95Ms": 143,
+      "httpMaximumMs": 272,
+      "postBodyOrSourceToAtUseMaximumMs": 87
+    },
+    "enrichment": {
+      "samples": 4,
+      "httpP95Ms": 97,
+      "httpMaximumMs": 97,
+      "validationMaximumMs": 5
+    },
+    "priorMappingFailurePreserved": true
+  },
+  "selectionEvidence": {
+    "pool": "DJQn3LTe85fYUBGXiQ9XzNJ3HGxYDmgBQPpVUzhrKwAw",
+    "historyAvailableAt": 1793120202874,
+    "historyWindowMs": 75000,
+    "pageRows": 50,
+    "successfulPoolAddressRows": 13,
+    "expectedEnrichmentUpperBound": 13,
+    "actualSupportedSwapsNotInferred": true,
+    "projectionOnly": true
+  },
+  "simulationInputs": {
+    "common": {
+      "policy": "proposed-protected-v2",
+      "durationMs": 75000,
+      "minimumStartSpacingMs": 250,
+      "maximumStartsPer10Seconds": 10,
+      "maximumAdvances": 5,
+      "maximumProtectionStarts": 43
+    },
+    "profiles": [
+      {
+        "name": "13-spaced",
+        "arrivals": [
+          1000,
+          6833,
+          12666,
+          18500,
+          24333,
+          30166,
+          36000,
+          41833,
+          47666,
+          53500,
+          59333,
+          65166,
+          71000
+        ]
+      },
+      {
+        "name": "13-in-three-event-bursts",
+        "arrivals": [
+          1000,
+          1000,
+          1000,
+          18500,
+          18500,
+          18500,
+          36000,
+          36000,
+          36000,
+          53500,
+          53500,
+          53500,
+          71000
+        ]
+      },
+      {
+        "name": "18-spaced-ceiling",
+        "arrivals": [
+          1000,
+          5117,
+          9235,
+          13352,
+          17470,
+          21588,
+          25705,
+          29823,
+          33941,
+          38058,
+          42176,
+          46294,
+          50411,
+          54529,
+          58647,
+          62764,
+          66882,
+          71000
+        ]
+      }
+    ],
+    "jobConstruction": "id=profile.name+index; kind=enrichment; enqueuedAt=arrival; eligibleAt=arrival+1000; deadlineAt=arrival+5000; operationBoundMs=1200; actuationMs=2; parseMs=5.",
+    "pricingCostConstruction": "one coherent3-hypothetical-holding request:143ms HTTP+87ms modeled post-body work; sourceReceiptMs=0; actuationMs=2.",
+    "enrichmentCostConstruction": "97ms HTTP+5ms validation; actuationMs=2.",
+    "slowConstruction": "Replace BOTH HTTP durations with950ms; other declared costs unchanged; timer jitter100ms only.",
+    "scenarioChoice": "Three fixed traffic shapes; fast costs with timer jitter0/50/100ms, then one separately declared950ms stress case per shape. No threshold/parameter search."
+  },
+  "limits": {
+    "startsPerMinute": 60,
+    "startsPer10Seconds": 10,
+    "physicalInFlight": 1,
+    "minimumStartSpacingMs": 250,
+    "protectionTargetMs": 2000,
+    "protectionCallCeiling": 43,
+    "earlyRefreshCeiling": 5,
+    "enrichmentCeiling": 18,
+    "quoteAgeAtUseMs": 2000,
+    "sourceAgeMs": 30000,
+    "enrichmentDeadlineMs": 5000,
+    "proposedCompletedGapStandard": {
+      "version": "proposed-research-timing-v1",
+      "status": "PROPOSED_NOT_APPROVED",
+      "targetMs": 2000,
+      "maximumCompletedGapMs": 4000,
+      "maximumQuoteAgeAtUseMs": 2000,
+      "maximumSourceAgeMs": 30000,
+      "enrichmentDeadlineMs": 5000
+    }
+  },
+  "priorFailureAndCorrection": {
+    "classification": "PRIOR_OFFLINE_FAILURE_RETAINED_AS_COMPARISON_NOT_A_LIVE_RUN",
+    "priorHelperGitCommit": "fa29b3f394f5889071dfa94018cb196eb9053094",
+    "priorHelperSha256": "1a6f6f4b021781e20ebe369e3cdf34cf6388830b9491594e04cad49b6f378eda",
+    "prior13SpacedFastResults": [
+      {
+        "jitterMs": 0,
+        "completed": 6,
+        "required": 13,
+        "refused": 7,
+        "firstInvalidationAtMs": 37000
+      },
+      {
+        "jitterMs": 50,
+        "completed": 6,
+        "required": 13,
+        "refused": 7,
+        "firstInvalidationAtMs": 37018
+      },
+      {
+        "jitterMs": 100,
+        "completed": 6,
+        "required": 13,
+        "refused": 7,
+        "firstInvalidationAtMs": 37072
+      }
+    ],
+    "cause": "The previous guard refused a feasible job after exhausting5early refreshes instead of considering its opportunity after the next normal protection check.",
+    "correction": "WAIT only if the next normal price operation AND full candidate envelope can finish by its unchanged deadline; each wake rechecks shared readiness. Same5early cap,43pricing cap,2s target,quote/source ages and request limits.",
+    "correctedHelperSha256": "8e52021743cee388390519273e22d7dc544ebe52c6dfbb3f439422f2da68cfc5",
+    "focusedRegression": "test/shared-scheduler-trace.test.ts: exhausted early-refresh cap preserves a feasible job after the next normal protection check"
+  },
+  "unchangedRobustnessRegressions": {
+    "originalComparisons": 24,
+    "uniqueWorkloads": 16,
+    "rows": [
+      {
+        "minimumStartSpacingMs": 1000,
+        "protectionTimingWithinProposal": 15,
+        "completeFlow": 9,
+        "combined": 9
+      },
+      {
+        "minimumStartSpacingMs": 250,
+        "protectionTimingWithinProposal": 15,
+        "completeFlow": 12,
+        "combined": 12
+      }
+    ],
+    "priorArtifactPreserved": {
+      "path": "evidence/timing-standard-20261027/scheduler-evaluation.json",
+      "sha256": "e1328be5a3ec8edef37bbd541486ecd61cdc36fd77982fff23419cdbece694a4"
+    },
+    "focusedTestsPassed": 20,
+    "strictScopedTypecheckPassed": true
+  },
+  "requestArithmetic": {
+    "preflight": 2,
+    "prewarm": 2,
+    "upgrade": 1,
+    "maximumPricing": 43,
+    "maximumEnrichment": 18,
+    "auditReserve": 24,
+    "total": 90,
+    "experimentUnitCeiling": 100,
+    "unitHeadroom": 10,
+    "plannedGlobalMs": 150000,
+    "plannedSoftStopMs": 145000,
+    "globalAndPhaseDeadlineFeasibilityProven": false,
+    "audit24StartSpanLowerBoundMs": 20750,
+    "auditLowerBoundAssumptions": "Empty10starts/rolling10s history,250ms spacing,zero service. A20s phase cannot start all24. Carried starts and actual completion/decode time can only increase this lower bound."
+  },
+  "summary": {
+    "caseCount": 12,
+    "modeledProtectionTimingWithinProposal": 12,
+    "completeModeledRequiredFlow": 11,
+    "allTestedSharedSoftwareLimitsRespected": true,
+    "fastProfiles": "All9 fast scenarios complete13/13 or18/18 with38pricing reads.13requires bounded waiting after the five early refreshes; cap is unchanged.",
+    "slow950Spaced": "13/13 and18/18 at100ms timer jitter.",
+    "slow950Burst": "Only1/13 before5s completion-envelope refusal; original window stays unusable.",
+    "maximumCompletedGapObservedMs": 3033,
+    "decision": "Corrected bounded fast-cost diagnostic path is supported offline. Slow bursts remain a measured synthetic deficiency; this is NOT a general or production complete-flow capacity pass."
+  },
+  "cases": [
+    {
+      "name": "13-spaced-constructed-fast-jitter0",
+      "profile": "13-spaced",
+      "costProfile": "CONSTRUCTED_MEASURED_FAST_COSTS",
+      "timerJitterMs": 0,
+      "requests": 51,
+      "requestsByKind": {
+        "protection": 38,
+        "enrichment": 13,
+        "pending": 0,
+        "reconnect": 0
+      },
+      "earlyProtectionStarts": 5,
+      "normalProtectionWaitChecks": 6,
+      "maximumCompletedEvaluationGapMs": 2002,
+      "maximumModeledQuoteAgeAtUseMs": 87,
+      "maximumRolling60SecondStarts": 42,
+      "maximumRolling10SecondStarts": 8,
+      "minimumStartGapMs": 252,
+      "physicalOperationOverlapMaximum": 1,
+      "enrichments": {
+        "knownInputArrivals": 13,
+        "submitted": 13,
+        "completedWithinFiveSeconds": 13,
+        "refused": 0,
+        "timedOut": 0,
+        "completedLate": 0,
+        "pendingAtEnd": 0,
+        "inFlightAtEnd": 0,
+        "deadlineCensoredPendingAtEnd": 0,
+        "maximumArrivalToParseMs": 1691
+      },
+      "candidateInvalidations": [],
+      "haltReason": null,
+      "assessment": {
+        "standard": {
+          "version": "proposed-research-timing-v1",
+          "status": "PROPOSED_NOT_APPROVED",
+          "targetMs": 2000,
+          "maximumCompletedGapMs": 4000,
+          "maximumQuoteAgeAtUseMs": 2000,
+          "maximumSourceAgeMs": 30000,
+          "enrichmentDeadlineMs": 5000
+        },
+        "classification": "PROPOSED_SCHEDULING_TIMING_ASSESSMENT_NOT_PRODUCTION_PROTECTION",
+        "protection": {
+          "verdict": "MODELED_TIMING_WITHIN_PROPOSAL",
+          "completedEvaluations": 38,
+          "wholeRequestedHorizonObserved": true,
+          "maximumGapIncludingOpeningAndObservedTailMs": 2002,
+          "openingGapMs": 232,
+          "rightCensoredTailAtServiceEndMs": 1600,
+          "hardCompletedGapMs": 4000,
+          "deadlineMisses": 0,
+          "physicalOrCallerTimeout": false,
+          "protectionTimeout": false,
+          "quoteAgeAtUsePass": true,
+          "declaredProtectionEnvelopeRespected": true,
+          "normalInFlightAtRightBoundary": false,
+          "sourceStateValidity": "NOT_SIMULATED; original30s source, coherent state, fees and actual-size requirements remain mandatory"
+        },
+        "flow": {
+          "verdict": "ALL_MODELED_REQUIRED_EVENTS_COMPLETED",
+          "allRequiredEventsCompleted": true,
+          "completedWithinFiveSeconds": 13,
+          "knownRequiredEvents": 13,
+          "invalidations": [],
+          "windowMayEnter": false,
+          "normalizationOrFeatureEvidence": "No trade fields or complete feature window are invented by the scheduler model."
+        },
+        "financial": {
+          "unresolvedActions": 0,
+          "retainedActions": [],
+          "financialAccountAccessed": false
+        },
+        "combined": {
+          "modeledTimingAndEventsPass": true,
+          "operationalAcceptance": false,
+          "marketPerformanceAssessed": false
+        },
+        "limitsUnchanged": {
+          "quoteAgeAtUseMs": 2000,
+          "sourceAgeMs": 30000,
+          "enrichmentDeadlineMs": 5000
+        },
+        "networkRequests": 0
+      },
+      "enrichmentOutcomes": [
+        {
+          "id": "13-spaced-0",
+          "enqueuedAt": 1000,
+          "eligibleAt": 2000,
+          "deadlineAt": 6000,
+          "physicalStartedAt": 2254,
+          "parsedAt": 2356,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-1",
+          "enqueuedAt": 6833,
+          "eligibleAt": 7833,
+          "deadlineAt": 11833,
+          "physicalStartedAt": 8087,
+          "parsedAt": 8189,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-2",
+          "enqueuedAt": 12666,
+          "eligibleAt": 13666,
+          "deadlineAt": 17666,
+          "physicalStartedAt": 13920,
+          "parsedAt": 14022,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-3",
+          "enqueuedAt": 18500,
+          "eligibleAt": 19500,
+          "deadlineAt": 23500,
+          "physicalStartedAt": 19754,
+          "parsedAt": 19856,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-4",
+          "enqueuedAt": 24333,
+          "eligibleAt": 25333,
+          "deadlineAt": 29333,
+          "physicalStartedAt": 25587,
+          "parsedAt": 25689,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-5",
+          "enqueuedAt": 30166,
+          "eligibleAt": 31166,
+          "deadlineAt": 35166,
+          "physicalStartedAt": 31420,
+          "parsedAt": 31522,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-6",
+          "enqueuedAt": 36000,
+          "eligibleAt": 37000,
+          "deadlineAt": 41000,
+          "physicalStartedAt": 37422,
+          "parsedAt": 37524,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-7",
+          "enqueuedAt": 41833,
+          "eligibleAt": 42833,
+          "deadlineAt": 46833,
+          "physicalStartedAt": 43422,
+          "parsedAt": 43524,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-8",
+          "enqueuedAt": 47666,
+          "eligibleAt": 48666,
+          "deadlineAt": 52666,
+          "physicalStartedAt": 48668,
+          "parsedAt": 48770,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-9",
+          "enqueuedAt": 53500,
+          "eligibleAt": 54500,
+          "deadlineAt": 58500,
+          "physicalStartedAt": 54502,
+          "parsedAt": 54604,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-10",
+          "enqueuedAt": 59333,
+          "eligibleAt": 60333,
+          "deadlineAt": 64333,
+          "physicalStartedAt": 60335,
+          "parsedAt": 60437,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-11",
+          "enqueuedAt": 65166,
+          "eligibleAt": 66166,
+          "deadlineAt": 70166,
+          "physicalStartedAt": 66168,
+          "parsedAt": 66270,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-12",
+          "enqueuedAt": 71000,
+          "eligibleAt": 72000,
+          "deadlineAt": 76000,
+          "physicalStartedAt": 72002,
+          "parsedAt": 72104,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        }
+      ],
+      "protectionTimelineColumns": [
+        "scheduledAt",
+        "physicalStartedAt",
+        "parsedAt",
+        "deadlineAt"
+      ],
+      "protectionTimeline": [
+        [
+          0,
+          2,
+          232,
+          4000
+        ],
+        [
+          2000,
+          2002,
+          2232,
+          4232
+        ],
+        [
+          4000,
+          4002,
+          4232,
+          6232
+        ],
+        [
+          6000,
+          6002,
+          6232,
+          8232
+        ],
+        [
+          8000,
+          7835,
+          8065,
+          10232
+        ],
+        [
+          9835,
+          9837,
+          10067,
+          12065
+        ],
+        [
+          11835,
+          11837,
+          12067,
+          14067
+        ],
+        [
+          13835,
+          13668,
+          13898,
+          16067
+        ],
+        [
+          15668,
+          15670,
+          15900,
+          17898
+        ],
+        [
+          17668,
+          17670,
+          17900,
+          19900
+        ],
+        [
+          19668,
+          19502,
+          19732,
+          21900
+        ],
+        [
+          21502,
+          21504,
+          21734,
+          23732
+        ],
+        [
+          23502,
+          23504,
+          23734,
+          25734
+        ],
+        [
+          25502,
+          25335,
+          25565,
+          27734
+        ],
+        [
+          27335,
+          27337,
+          27567,
+          29565
+        ],
+        [
+          29335,
+          29337,
+          29567,
+          31567
+        ],
+        [
+          31335,
+          31168,
+          31398,
+          33567
+        ],
+        [
+          33168,
+          33170,
+          33400,
+          35398
+        ],
+        [
+          35168,
+          35170,
+          35400,
+          37400
+        ],
+        [
+          37168,
+          37170,
+          37400,
+          39400
+        ],
+        [
+          39168,
+          39170,
+          39400,
+          41400
+        ],
+        [
+          41168,
+          41170,
+          41400,
+          43400
+        ],
+        [
+          43168,
+          43170,
+          43400,
+          45400
+        ],
+        [
+          45168,
+          45170,
+          45400,
+          47400
+        ],
+        [
+          47168,
+          47170,
+          47400,
+          49400
+        ],
+        [
+          49168,
+          49170,
+          49400,
+          51400
+        ],
+        [
+          51168,
+          51170,
+          51400,
+          53400
+        ],
+        [
+          53168,
+          53170,
+          53400,
+          55400
+        ],
+        [
+          55168,
+          55170,
+          55400,
+          57400
+        ],
+        [
+          57168,
+          57170,
+          57400,
+          59400
+        ],
+        [
+          59168,
+          59170,
+          59400,
+          61400
+        ],
+        [
+          61168,
+          61170,
+          61400,
+          63400
+        ],
+        [
+          63168,
+          63170,
+          63400,
+          65400
+        ],
+        [
+          65168,
+          65170,
+          65400,
+          67400
+        ],
+        [
+          67168,
+          67170,
+          67400,
+          69400
+        ],
+        [
+          69168,
+          69170,
+          69400,
+          71400
+        ],
+        [
+          71168,
+          71170,
+          71400,
+          73400
+        ],
+        [
+          73168,
+          73170,
+          73400,
+          75400
+        ]
+      ]
+    },
+    {
+      "name": "13-spaced-constructed-fast-jitter50",
+      "profile": "13-spaced",
+      "costProfile": "CONSTRUCTED_MEASURED_FAST_COSTS",
+      "timerJitterMs": 50,
+      "requests": 51,
+      "requestsByKind": {
+        "protection": 38,
+        "enrichment": 13,
+        "pending": 0,
+        "reconnect": 0
+      },
+      "earlyProtectionStarts": 5,
+      "normalProtectionWaitChecks": 5,
+      "maximumCompletedEvaluationGapMs": 2052,
+      "maximumModeledQuoteAgeAtUseMs": 87,
+      "maximumRolling60SecondStarts": 42,
+      "maximumRolling10SecondStarts": 8,
+      "minimumStartGapMs": 300,
+      "physicalOperationOverlapMaximum": 1,
+      "enrichments": {
+        "knownInputArrivals": 13,
+        "submitted": 13,
+        "completedWithinFiveSeconds": 13,
+        "refused": 0,
+        "timedOut": 0,
+        "completedLate": 0,
+        "pendingAtEnd": 0,
+        "inFlightAtEnd": 0,
+        "deadlineCensoredPendingAtEnd": 0,
+        "maximumArrivalToParseMs": 1839
+      },
+      "candidateInvalidations": [],
+      "haltReason": null,
+      "assessment": {
+        "standard": {
+          "version": "proposed-research-timing-v1",
+          "status": "PROPOSED_NOT_APPROVED",
+          "targetMs": 2000,
+          "maximumCompletedGapMs": 4000,
+          "maximumQuoteAgeAtUseMs": 2000,
+          "maximumSourceAgeMs": 30000,
+          "enrichmentDeadlineMs": 5000
+        },
+        "classification": "PROPOSED_SCHEDULING_TIMING_ASSESSMENT_NOT_PRODUCTION_PROTECTION",
+        "protection": {
+          "verdict": "MODELED_TIMING_WITHIN_PROPOSAL",
+          "completedEvaluations": 38,
+          "wholeRequestedHorizonObserved": true,
+          "maximumGapIncludingOpeningAndObservedTailMs": 2052,
+          "openingGapMs": 282,
+          "rightCensoredTailAtServiceEndMs": 1518,
+          "hardCompletedGapMs": 4000,
+          "deadlineMisses": 0,
+          "physicalOrCallerTimeout": false,
+          "protectionTimeout": false,
+          "quoteAgeAtUsePass": true,
+          "declaredProtectionEnvelopeRespected": true,
+          "normalInFlightAtRightBoundary": false,
+          "sourceStateValidity": "NOT_SIMULATED; original30s source, coherent state, fees and actual-size requirements remain mandatory"
+        },
+        "flow": {
+          "verdict": "ALL_MODELED_REQUIRED_EVENTS_COMPLETED",
+          "allRequiredEventsCompleted": true,
+          "completedWithinFiveSeconds": 13,
+          "knownRequiredEvents": 13,
+          "invalidations": [],
+          "windowMayEnter": false,
+          "normalizationOrFeatureEvidence": "No trade fields or complete feature window are invented by the scheduler model."
+        },
+        "financial": {
+          "unresolvedActions": 0,
+          "retainedActions": [],
+          "financialAccountAccessed": false
+        },
+        "combined": {
+          "modeledTimingAndEventsPass": true,
+          "operationalAcceptance": false,
+          "marketPerformanceAssessed": false
+        },
+        "limitsUnchanged": {
+          "quoteAgeAtUseMs": 2000,
+          "sourceAgeMs": 30000,
+          "enrichmentDeadlineMs": 5000
+        },
+        "networkRequests": 0
+      },
+      "enrichmentOutcomes": [
+        {
+          "id": "13-spaced-0",
+          "enqueuedAt": 1000,
+          "eligibleAt": 2000,
+          "deadlineAt": 6000,
+          "physicalStartedAt": 2302,
+          "parsedAt": 2404,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-1",
+          "enqueuedAt": 6833,
+          "eligibleAt": 7833,
+          "deadlineAt": 11833,
+          "physicalStartedAt": 8185,
+          "parsedAt": 8287,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-2",
+          "enqueuedAt": 12666,
+          "eligibleAt": 13666,
+          "deadlineAt": 17666,
+          "physicalStartedAt": 13987,
+          "parsedAt": 14089,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-3",
+          "enqueuedAt": 18500,
+          "eligibleAt": 19500,
+          "deadlineAt": 23500,
+          "physicalStartedAt": 19852,
+          "parsedAt": 19954,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-4",
+          "enqueuedAt": 24333,
+          "eligibleAt": 25333,
+          "deadlineAt": 29333,
+          "physicalStartedAt": 25654,
+          "parsedAt": 25756,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-5",
+          "enqueuedAt": 30166,
+          "eligibleAt": 31166,
+          "deadlineAt": 35166,
+          "physicalStartedAt": 31518,
+          "parsedAt": 31620,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-6",
+          "enqueuedAt": 36000,
+          "eligibleAt": 37000,
+          "deadlineAt": 41000,
+          "physicalStartedAt": 37570,
+          "parsedAt": 37672,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-7",
+          "enqueuedAt": 41833,
+          "eligibleAt": 42833,
+          "deadlineAt": 46833,
+          "physicalStartedAt": 43570,
+          "parsedAt": 43672,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-8",
+          "enqueuedAt": 47666,
+          "eligibleAt": 48666,
+          "deadlineAt": 52666,
+          "physicalStartedAt": 48718,
+          "parsedAt": 48820,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-9",
+          "enqueuedAt": 53500,
+          "eligibleAt": 54500,
+          "deadlineAt": 58500,
+          "physicalStartedAt": 54552,
+          "parsedAt": 54654,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-10",
+          "enqueuedAt": 59333,
+          "eligibleAt": 60333,
+          "deadlineAt": 64333,
+          "physicalStartedAt": 60385,
+          "parsedAt": 60487,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-11",
+          "enqueuedAt": 65166,
+          "eligibleAt": 66166,
+          "deadlineAt": 70166,
+          "physicalStartedAt": 66170,
+          "parsedAt": 66272,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-12",
+          "enqueuedAt": 71000,
+          "eligibleAt": 72000,
+          "deadlineAt": 76000,
+          "physicalStartedAt": 72052,
+          "parsedAt": 72154,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        }
+      ],
+      "protectionTimelineColumns": [
+        "scheduledAt",
+        "physicalStartedAt",
+        "parsedAt",
+        "deadlineAt"
+      ],
+      "protectionTimeline": [
+        [
+          0,
+          52,
+          282,
+          4000
+        ],
+        [
+          2000,
+          2002,
+          2232,
+          4282
+        ],
+        [
+          4000,
+          4052,
+          4282,
+          6232
+        ],
+        [
+          6000,
+          6002,
+          6232,
+          8282
+        ],
+        [
+          8000,
+          7885,
+          8115,
+          10232
+        ],
+        [
+          9885,
+          9937,
+          10167,
+          12115
+        ],
+        [
+          11885,
+          11887,
+          12117,
+          14167
+        ],
+        [
+          13885,
+          13687,
+          13917,
+          16117
+        ],
+        [
+          15687,
+          15739,
+          15969,
+          17917
+        ],
+        [
+          17687,
+          17689,
+          17919,
+          19969
+        ],
+        [
+          19687,
+          19552,
+          19782,
+          21919
+        ],
+        [
+          21552,
+          21604,
+          21834,
+          23782
+        ],
+        [
+          23552,
+          23554,
+          23784,
+          25834
+        ],
+        [
+          25552,
+          25354,
+          25584,
+          27784
+        ],
+        [
+          27354,
+          27406,
+          27636,
+          29584
+        ],
+        [
+          29354,
+          29356,
+          29586,
+          31636
+        ],
+        [
+          31354,
+          31218,
+          31448,
+          33586
+        ],
+        [
+          33218,
+          33270,
+          33500,
+          35448
+        ],
+        [
+          35218,
+          35220,
+          35450,
+          37500
+        ],
+        [
+          37218,
+          37270,
+          37500,
+          39450
+        ],
+        [
+          39218,
+          39220,
+          39450,
+          41500
+        ],
+        [
+          41218,
+          41270,
+          41500,
+          43450
+        ],
+        [
+          43218,
+          43270,
+          43500,
+          45500
+        ],
+        [
+          45218,
+          45220,
+          45450,
+          47500
+        ],
+        [
+          47218,
+          47270,
+          47500,
+          49450
+        ],
+        [
+          49218,
+          49270,
+          49500,
+          51500
+        ],
+        [
+          51218,
+          51220,
+          51450,
+          53500
+        ],
+        [
+          53218,
+          53270,
+          53500,
+          55450
+        ],
+        [
+          55218,
+          55270,
+          55500,
+          57500
+        ],
+        [
+          57218,
+          57220,
+          57450,
+          59500
+        ],
+        [
+          59218,
+          59270,
+          59500,
+          61450
+        ],
+        [
+          61218,
+          61270,
+          61500,
+          63500
+        ],
+        [
+          63218,
+          63220,
+          63450,
+          65500
+        ],
+        [
+          65218,
+          65270,
+          65500,
+          67450
+        ],
+        [
+          67218,
+          67220,
+          67450,
+          69500
+        ],
+        [
+          69218,
+          69270,
+          69500,
+          71450
+        ],
+        [
+          71218,
+          71220,
+          71450,
+          73500
+        ],
+        [
+          73218,
+          73252,
+          73482,
+          75450
+        ]
+      ]
+    },
+    {
+      "name": "13-spaced-constructed-fast-jitter100",
+      "profile": "13-spaced",
+      "costProfile": "CONSTRUCTED_MEASURED_FAST_COSTS",
+      "timerJitterMs": 100,
+      "requests": 51,
+      "requestsByKind": {
+        "protection": 38,
+        "enrichment": 13,
+        "pending": 0,
+        "reconnect": 0
+      },
+      "earlyProtectionStarts": 5,
+      "normalProtectionWaitChecks": 1,
+      "maximumCompletedEvaluationGapMs": 2102,
+      "maximumModeledQuoteAgeAtUseMs": 87,
+      "maximumRolling60SecondStarts": 42,
+      "maximumRolling10SecondStarts": 8,
+      "minimumStartGapMs": 352,
+      "physicalOperationOverlapMaximum": 1,
+      "enrichments": {
+        "knownInputArrivals": 13,
+        "submitted": 13,
+        "completedWithinFiveSeconds": 13,
+        "refused": 0,
+        "timedOut": 0,
+        "completedLate": 0,
+        "pendingAtEnd": 0,
+        "inFlightAtEnd": 0,
+        "deadlineCensoredPendingAtEnd": 0,
+        "maximumArrivalToParseMs": 1728
+      },
+      "candidateInvalidations": [],
+      "haltReason": null,
+      "assessment": {
+        "standard": {
+          "version": "proposed-research-timing-v1",
+          "status": "PROPOSED_NOT_APPROVED",
+          "targetMs": 2000,
+          "maximumCompletedGapMs": 4000,
+          "maximumQuoteAgeAtUseMs": 2000,
+          "maximumSourceAgeMs": 30000,
+          "enrichmentDeadlineMs": 5000
+        },
+        "classification": "PROPOSED_SCHEDULING_TIMING_ASSESSMENT_NOT_PRODUCTION_PROTECTION",
+        "protection": {
+          "verdict": "MODELED_TIMING_WITHIN_PROPOSAL",
+          "completedEvaluations": 38,
+          "wholeRequestedHorizonObserved": true,
+          "maximumGapIncludingOpeningAndObservedTailMs": 2102,
+          "openingGapMs": 332,
+          "rightCensoredTailAtServiceEndMs": 1400,
+          "hardCompletedGapMs": 4000,
+          "deadlineMisses": 0,
+          "physicalOrCallerTimeout": false,
+          "protectionTimeout": false,
+          "quoteAgeAtUsePass": true,
+          "declaredProtectionEnvelopeRespected": true,
+          "normalInFlightAtRightBoundary": false,
+          "sourceStateValidity": "NOT_SIMULATED; original30s source, coherent state, fees and actual-size requirements remain mandatory"
+        },
+        "flow": {
+          "verdict": "ALL_MODELED_REQUIRED_EVENTS_COMPLETED",
+          "allRequiredEventsCompleted": true,
+          "completedWithinFiveSeconds": 13,
+          "knownRequiredEvents": 13,
+          "invalidations": [],
+          "windowMayEnter": false,
+          "normalizationOrFeatureEvidence": "No trade fields or complete feature window are invented by the scheduler model."
+        },
+        "financial": {
+          "unresolvedActions": 0,
+          "retainedActions": [],
+          "financialAccountAccessed": false
+        },
+        "combined": {
+          "modeledTimingAndEventsPass": true,
+          "operationalAcceptance": false,
+          "marketPerformanceAssessed": false
+        },
+        "limitsUnchanged": {
+          "quoteAgeAtUseMs": 2000,
+          "sourceAgeMs": 30000,
+          "enrichmentDeadlineMs": 5000
+        },
+        "networkRequests": 0
+      },
+      "enrichmentOutcomes": [
+        {
+          "id": "13-spaced-0",
+          "enqueuedAt": 1000,
+          "eligibleAt": 2000,
+          "deadlineAt": 6000,
+          "physicalStartedAt": 2406,
+          "parsedAt": 2508,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-1",
+          "enqueuedAt": 6833,
+          "eligibleAt": 7833,
+          "deadlineAt": 11833,
+          "physicalStartedAt": 8287,
+          "parsedAt": 8389,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-2",
+          "enqueuedAt": 12666,
+          "eligibleAt": 13666,
+          "deadlineAt": 17666,
+          "physicalStartedAt": 14093,
+          "parsedAt": 14195,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-3",
+          "enqueuedAt": 18500,
+          "eligibleAt": 19500,
+          "deadlineAt": 23500,
+          "physicalStartedAt": 19899,
+          "parsedAt": 20001,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-4",
+          "enqueuedAt": 24333,
+          "eligibleAt": 25333,
+          "deadlineAt": 29333,
+          "physicalStartedAt": 25705,
+          "parsedAt": 25807,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-5",
+          "enqueuedAt": 30166,
+          "eligibleAt": 31166,
+          "deadlineAt": 35166,
+          "physicalStartedAt": 31620,
+          "parsedAt": 31722,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-6",
+          "enqueuedAt": 36000,
+          "eligibleAt": 37000,
+          "deadlineAt": 41000,
+          "physicalStartedAt": 37626,
+          "parsedAt": 37728,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-7",
+          "enqueuedAt": 41833,
+          "eligibleAt": 42833,
+          "deadlineAt": 46833,
+          "physicalStartedAt": 42874,
+          "parsedAt": 42976,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-8",
+          "enqueuedAt": 47666,
+          "eligibleAt": 48666,
+          "deadlineAt": 52666,
+          "physicalStartedAt": 48768,
+          "parsedAt": 48870,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-9",
+          "enqueuedAt": 53500,
+          "eligibleAt": 54500,
+          "deadlineAt": 58500,
+          "physicalStartedAt": 54522,
+          "parsedAt": 54624,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-10",
+          "enqueuedAt": 59333,
+          "eligibleAt": 60333,
+          "deadlineAt": 64333,
+          "physicalStartedAt": 60435,
+          "parsedAt": 60537,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-11",
+          "enqueuedAt": 65166,
+          "eligibleAt": 66166,
+          "deadlineAt": 70166,
+          "physicalStartedAt": 66226,
+          "parsedAt": 66328,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-12",
+          "enqueuedAt": 71000,
+          "eligibleAt": 72000,
+          "deadlineAt": 76000,
+          "physicalStartedAt": 72026,
+          "parsedAt": 72128,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        }
+      ],
+      "protectionTimelineColumns": [
+        "scheduledAt",
+        "physicalStartedAt",
+        "parsedAt",
+        "deadlineAt"
+      ],
+      "protectionTimeline": [
+        [
+          0,
+          102,
+          332,
+          4000
+        ],
+        [
+          2000,
+          2054,
+          2284,
+          4332
+        ],
+        [
+          4000,
+          4102,
+          4332,
+          6284
+        ],
+        [
+          6000,
+          6054,
+          6284,
+          8332
+        ],
+        [
+          8000,
+          7935,
+          8165,
+          10284
+        ],
+        [
+          9935,
+          10037,
+          10267,
+          12165
+        ],
+        [
+          11935,
+          11989,
+          12219,
+          14267
+        ],
+        [
+          13935,
+          13741,
+          13971,
+          16219
+        ],
+        [
+          15741,
+          15843,
+          16073,
+          17971
+        ],
+        [
+          17741,
+          17795,
+          18025,
+          20073
+        ],
+        [
+          19741,
+          19547,
+          19777,
+          22025
+        ],
+        [
+          21547,
+          21649,
+          21879,
+          23777
+        ],
+        [
+          23547,
+          23601,
+          23831,
+          25879
+        ],
+        [
+          25547,
+          25353,
+          25583,
+          27831
+        ],
+        [
+          27353,
+          27455,
+          27685,
+          29583
+        ],
+        [
+          29353,
+          29407,
+          29637,
+          31685
+        ],
+        [
+          31353,
+          31268,
+          31498,
+          33637
+        ],
+        [
+          33268,
+          33370,
+          33600,
+          35498
+        ],
+        [
+          35268,
+          35322,
+          35552,
+          37600
+        ],
+        [
+          37268,
+          37274,
+          37504,
+          39552
+        ],
+        [
+          39268,
+          39370,
+          39600,
+          41504
+        ],
+        [
+          41268,
+          41322,
+          41552,
+          43600
+        ],
+        [
+          43268,
+          43370,
+          43600,
+          45552
+        ],
+        [
+          45268,
+          45322,
+          45552,
+          47600
+        ],
+        [
+          47268,
+          47274,
+          47504,
+          49552
+        ],
+        [
+          49268,
+          49320,
+          49550,
+          51504
+        ],
+        [
+          51268,
+          51272,
+          51502,
+          53550
+        ],
+        [
+          53268,
+          53370,
+          53600,
+          55502
+        ],
+        [
+          55268,
+          55274,
+          55504,
+          57600
+        ],
+        [
+          57268,
+          57370,
+          57600,
+          59504
+        ],
+        [
+          59268,
+          59322,
+          59552,
+          61600
+        ],
+        [
+          61268,
+          61370,
+          61600,
+          63552
+        ],
+        [
+          63268,
+          63322,
+          63552,
+          65600
+        ],
+        [
+          65268,
+          65274,
+          65504,
+          67552
+        ],
+        [
+          67268,
+          67370,
+          67600,
+          69504
+        ],
+        [
+          69268,
+          69322,
+          69552,
+          71600
+        ],
+        [
+          71268,
+          71274,
+          71504,
+          73552
+        ],
+        [
+          73268,
+          73370,
+          73600,
+          75504
+        ]
+      ]
+    },
+    {
+      "name": "13-in-three-event-bursts-constructed-fast-jitter0",
+      "profile": "13-in-three-event-bursts",
+      "costProfile": "CONSTRUCTED_MEASURED_FAST_COSTS",
+      "timerJitterMs": 0,
+      "requests": 51,
+      "requestsByKind": {
+        "protection": 38,
+        "enrichment": 13,
+        "pending": 0,
+        "reconnect": 0
+      },
+      "earlyProtectionStarts": 2,
+      "normalProtectionWaitChecks": 0,
+      "maximumCompletedEvaluationGapMs": 2002,
+      "maximumModeledQuoteAgeAtUseMs": 87,
+      "maximumRolling60SecondStarts": 43,
+      "maximumRolling10SecondStarts": 9,
+      "minimumStartGapMs": 252,
+      "physicalOperationOverlapMaximum": 1,
+      "enrichments": {
+        "knownInputArrivals": 13,
+        "submitted": 13,
+        "completedWithinFiveSeconds": 13,
+        "refused": 0,
+        "timedOut": 0,
+        "completedLate": 0,
+        "pendingAtEnd": 0,
+        "inFlightAtEnd": 0,
+        "deadlineCensoredPendingAtEnd": 0,
+        "maximumArrivalToParseMs": 1860
+      },
+      "candidateInvalidations": [],
+      "haltReason": null,
+      "assessment": {
+        "standard": {
+          "version": "proposed-research-timing-v1",
+          "status": "PROPOSED_NOT_APPROVED",
+          "targetMs": 2000,
+          "maximumCompletedGapMs": 4000,
+          "maximumQuoteAgeAtUseMs": 2000,
+          "maximumSourceAgeMs": 30000,
+          "enrichmentDeadlineMs": 5000
+        },
+        "classification": "PROPOSED_SCHEDULING_TIMING_ASSESSMENT_NOT_PRODUCTION_PROTECTION",
+        "protection": {
+          "verdict": "MODELED_TIMING_WITHIN_PROPOSAL",
+          "completedEvaluations": 38,
+          "wholeRequestedHorizonObserved": true,
+          "maximumGapIncludingOpeningAndObservedTailMs": 2002,
+          "openingGapMs": 232,
+          "rightCensoredTailAtServiceEndMs": 1262,
+          "hardCompletedGapMs": 4000,
+          "deadlineMisses": 0,
+          "physicalOrCallerTimeout": false,
+          "protectionTimeout": false,
+          "quoteAgeAtUsePass": true,
+          "declaredProtectionEnvelopeRespected": true,
+          "normalInFlightAtRightBoundary": false,
+          "sourceStateValidity": "NOT_SIMULATED; original30s source, coherent state, fees and actual-size requirements remain mandatory"
+        },
+        "flow": {
+          "verdict": "ALL_MODELED_REQUIRED_EVENTS_COMPLETED",
+          "allRequiredEventsCompleted": true,
+          "completedWithinFiveSeconds": 13,
+          "knownRequiredEvents": 13,
+          "invalidations": [],
+          "windowMayEnter": false,
+          "normalizationOrFeatureEvidence": "No trade fields or complete feature window are invented by the scheduler model."
+        },
+        "financial": {
+          "unresolvedActions": 0,
+          "retainedActions": [],
+          "financialAccountAccessed": false
+        },
+        "combined": {
+          "modeledTimingAndEventsPass": true,
+          "operationalAcceptance": false,
+          "marketPerformanceAssessed": false
+        },
+        "limitsUnchanged": {
+          "quoteAgeAtUseMs": 2000,
+          "sourceAgeMs": 30000,
+          "enrichmentDeadlineMs": 5000
+        },
+        "networkRequests": 0
+      },
+      "enrichmentOutcomes": [
+        {
+          "id": "13-in-three-event-bursts-0",
+          "enqueuedAt": 1000,
+          "eligibleAt": 2000,
+          "deadlineAt": 6000,
+          "physicalStartedAt": 2254,
+          "parsedAt": 2356,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-1",
+          "enqueuedAt": 1000,
+          "eligibleAt": 2000,
+          "deadlineAt": 6000,
+          "physicalStartedAt": 2506,
+          "parsedAt": 2608,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-2",
+          "enqueuedAt": 1000,
+          "eligibleAt": 2000,
+          "deadlineAt": 6000,
+          "physicalStartedAt": 2758,
+          "parsedAt": 2860,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-3",
+          "enqueuedAt": 18500,
+          "eligibleAt": 19500,
+          "deadlineAt": 23500,
+          "physicalStartedAt": 19502,
+          "parsedAt": 19604,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-4",
+          "enqueuedAt": 18500,
+          "eligibleAt": 19500,
+          "deadlineAt": 23500,
+          "physicalStartedAt": 20006,
+          "parsedAt": 20108,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-5",
+          "enqueuedAt": 18500,
+          "eligibleAt": 19500,
+          "deadlineAt": 23500,
+          "physicalStartedAt": 20258,
+          "parsedAt": 20360,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-6",
+          "enqueuedAt": 36000,
+          "eligibleAt": 37000,
+          "deadlineAt": 41000,
+          "physicalStartedAt": 37002,
+          "parsedAt": 37104,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-7",
+          "enqueuedAt": 36000,
+          "eligibleAt": 37000,
+          "deadlineAt": 41000,
+          "physicalStartedAt": 37254,
+          "parsedAt": 37356,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-8",
+          "enqueuedAt": 36000,
+          "eligibleAt": 37000,
+          "deadlineAt": 41000,
+          "physicalStartedAt": 37758,
+          "parsedAt": 37860,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-9",
+          "enqueuedAt": 53500,
+          "eligibleAt": 54500,
+          "deadlineAt": 58500,
+          "physicalStartedAt": 54502,
+          "parsedAt": 54604,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-10",
+          "enqueuedAt": 53500,
+          "eligibleAt": 54500,
+          "deadlineAt": 58500,
+          "physicalStartedAt": 54754,
+          "parsedAt": 54856,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-11",
+          "enqueuedAt": 53500,
+          "eligibleAt": 54500,
+          "deadlineAt": 58500,
+          "physicalStartedAt": 55006,
+          "parsedAt": 55108,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-12",
+          "enqueuedAt": 71000,
+          "eligibleAt": 72000,
+          "deadlineAt": 76000,
+          "physicalStartedAt": 72002,
+          "parsedAt": 72104,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        }
+      ],
+      "protectionTimelineColumns": [
+        "scheduledAt",
+        "physicalStartedAt",
+        "parsedAt",
+        "deadlineAt"
+      ],
+      "protectionTimeline": [
+        [
+          0,
+          2,
+          232,
+          4000
+        ],
+        [
+          2000,
+          2002,
+          2232,
+          4232
+        ],
+        [
+          4000,
+          4002,
+          4232,
+          6232
+        ],
+        [
+          6000,
+          6002,
+          6232,
+          8232
+        ],
+        [
+          8000,
+          8002,
+          8232,
+          10232
+        ],
+        [
+          10000,
+          10002,
+          10232,
+          12232
+        ],
+        [
+          12000,
+          12002,
+          12232,
+          14232
+        ],
+        [
+          14000,
+          14002,
+          14232,
+          16232
+        ],
+        [
+          16000,
+          16002,
+          16232,
+          18232
+        ],
+        [
+          18000,
+          18002,
+          18232,
+          20232
+        ],
+        [
+          20000,
+          19754,
+          19984,
+          22232
+        ],
+        [
+          21754,
+          21756,
+          21986,
+          23984
+        ],
+        [
+          23754,
+          23756,
+          23986,
+          25986
+        ],
+        [
+          25754,
+          25756,
+          25986,
+          27986
+        ],
+        [
+          27754,
+          27756,
+          27986,
+          29986
+        ],
+        [
+          29754,
+          29756,
+          29986,
+          31986
+        ],
+        [
+          31754,
+          31756,
+          31986,
+          33986
+        ],
+        [
+          33754,
+          33756,
+          33986,
+          35986
+        ],
+        [
+          35754,
+          35756,
+          35986,
+          37986
+        ],
+        [
+          37754,
+          37506,
+          37736,
+          39986
+        ],
+        [
+          39506,
+          39508,
+          39738,
+          41736
+        ],
+        [
+          41506,
+          41508,
+          41738,
+          43738
+        ],
+        [
+          43506,
+          43508,
+          43738,
+          45738
+        ],
+        [
+          45506,
+          45508,
+          45738,
+          47738
+        ],
+        [
+          47506,
+          47508,
+          47738,
+          49738
+        ],
+        [
+          49506,
+          49508,
+          49738,
+          51738
+        ],
+        [
+          51506,
+          51508,
+          51738,
+          53738
+        ],
+        [
+          53506,
+          53508,
+          53738,
+          55738
+        ],
+        [
+          55506,
+          55508,
+          55738,
+          57738
+        ],
+        [
+          57506,
+          57508,
+          57738,
+          59738
+        ],
+        [
+          59506,
+          59508,
+          59738,
+          61738
+        ],
+        [
+          61506,
+          61508,
+          61738,
+          63738
+        ],
+        [
+          63506,
+          63508,
+          63738,
+          65738
+        ],
+        [
+          65506,
+          65508,
+          65738,
+          67738
+        ],
+        [
+          67506,
+          67508,
+          67738,
+          69738
+        ],
+        [
+          69506,
+          69508,
+          69738,
+          71738
+        ],
+        [
+          71506,
+          71508,
+          71738,
+          73738
+        ],
+        [
+          73506,
+          73508,
+          73738,
+          75738
+        ]
+      ]
+    },
+    {
+      "name": "13-in-three-event-bursts-constructed-fast-jitter50",
+      "profile": "13-in-three-event-bursts",
+      "costProfile": "CONSTRUCTED_MEASURED_FAST_COSTS",
+      "timerJitterMs": 50,
+      "requests": 51,
+      "requestsByKind": {
+        "protection": 38,
+        "enrichment": 13,
+        "pending": 0,
+        "reconnect": 0
+      },
+      "earlyProtectionStarts": 2,
+      "normalProtectionWaitChecks": 0,
+      "maximumCompletedEvaluationGapMs": 2052,
+      "maximumModeledQuoteAgeAtUseMs": 87,
+      "maximumRolling60SecondStarts": 43,
+      "maximumRolling10SecondStarts": 9,
+      "minimumStartGapMs": 300,
+      "physicalOperationOverlapMaximum": 1,
+      "enrichments": {
+        "knownInputArrivals": 13,
+        "submitted": 13,
+        "completedWithinFiveSeconds": 13,
+        "refused": 0,
+        "timedOut": 0,
+        "completedLate": 0,
+        "pendingAtEnd": 0,
+        "inFlightAtEnd": 0,
+        "deadlineCensoredPendingAtEnd": 0,
+        "maximumArrivalToParseMs": 2006
+      },
+      "candidateInvalidations": [],
+      "haltReason": null,
+      "assessment": {
+        "standard": {
+          "version": "proposed-research-timing-v1",
+          "status": "PROPOSED_NOT_APPROVED",
+          "targetMs": 2000,
+          "maximumCompletedGapMs": 4000,
+          "maximumQuoteAgeAtUseMs": 2000,
+          "maximumSourceAgeMs": 30000,
+          "enrichmentDeadlineMs": 5000
+        },
+        "classification": "PROPOSED_SCHEDULING_TIMING_ASSESSMENT_NOT_PRODUCTION_PROTECTION",
+        "protection": {
+          "verdict": "MODELED_TIMING_WITHIN_PROPOSAL",
+          "completedEvaluations": 38,
+          "wholeRequestedHorizonObserved": true,
+          "maximumGapIncludingOpeningAndObservedTailMs": 2052,
+          "openingGapMs": 282,
+          "rightCensoredTailAtServiceEndMs": 1114,
+          "hardCompletedGapMs": 4000,
+          "deadlineMisses": 0,
+          "physicalOrCallerTimeout": false,
+          "protectionTimeout": false,
+          "quoteAgeAtUsePass": true,
+          "declaredProtectionEnvelopeRespected": true,
+          "normalInFlightAtRightBoundary": false,
+          "sourceStateValidity": "NOT_SIMULATED; original30s source, coherent state, fees and actual-size requirements remain mandatory"
+        },
+        "flow": {
+          "verdict": "ALL_MODELED_REQUIRED_EVENTS_COMPLETED",
+          "allRequiredEventsCompleted": true,
+          "completedWithinFiveSeconds": 13,
+          "knownRequiredEvents": 13,
+          "invalidations": [],
+          "windowMayEnter": false,
+          "normalizationOrFeatureEvidence": "No trade fields or complete feature window are invented by the scheduler model."
+        },
+        "financial": {
+          "unresolvedActions": 0,
+          "retainedActions": [],
+          "financialAccountAccessed": false
+        },
+        "combined": {
+          "modeledTimingAndEventsPass": true,
+          "operationalAcceptance": false,
+          "marketPerformanceAssessed": false
+        },
+        "limitsUnchanged": {
+          "quoteAgeAtUseMs": 2000,
+          "sourceAgeMs": 30000,
+          "enrichmentDeadlineMs": 5000
+        },
+        "networkRequests": 0
+      },
+      "enrichmentOutcomes": [
+        {
+          "id": "13-in-three-event-bursts-0",
+          "enqueuedAt": 1000,
+          "eligibleAt": 2000,
+          "deadlineAt": 6000,
+          "physicalStartedAt": 2302,
+          "parsedAt": 2404,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-1",
+          "enqueuedAt": 1000,
+          "eligibleAt": 2000,
+          "deadlineAt": 6000,
+          "physicalStartedAt": 2602,
+          "parsedAt": 2704,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-2",
+          "enqueuedAt": 1000,
+          "eligibleAt": 2000,
+          "deadlineAt": 6000,
+          "physicalStartedAt": 2902,
+          "parsedAt": 3004,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-3",
+          "enqueuedAt": 18500,
+          "eligibleAt": 19500,
+          "deadlineAt": 23500,
+          "physicalStartedAt": 19502,
+          "parsedAt": 19604,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-4",
+          "enqueuedAt": 18500,
+          "eligibleAt": 19500,
+          "deadlineAt": 23500,
+          "physicalStartedAt": 20102,
+          "parsedAt": 20204,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-5",
+          "enqueuedAt": 18500,
+          "eligibleAt": 19500,
+          "deadlineAt": 23500,
+          "physicalStartedAt": 20402,
+          "parsedAt": 20504,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-6",
+          "enqueuedAt": 36000,
+          "eligibleAt": 37000,
+          "deadlineAt": 41000,
+          "physicalStartedAt": 37004,
+          "parsedAt": 37106,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-7",
+          "enqueuedAt": 36000,
+          "eligibleAt": 37000,
+          "deadlineAt": 41000,
+          "physicalStartedAt": 37304,
+          "parsedAt": 37406,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-8",
+          "enqueuedAt": 36000,
+          "eligibleAt": 37000,
+          "deadlineAt": 41000,
+          "physicalStartedAt": 37904,
+          "parsedAt": 38006,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-9",
+          "enqueuedAt": 53500,
+          "eligibleAt": 54500,
+          "deadlineAt": 58500,
+          "physicalStartedAt": 54506,
+          "parsedAt": 54608,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-10",
+          "enqueuedAt": 53500,
+          "eligibleAt": 54500,
+          "deadlineAt": 58500,
+          "physicalStartedAt": 54806,
+          "parsedAt": 54908,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-11",
+          "enqueuedAt": 53500,
+          "eligibleAt": 54500,
+          "deadlineAt": 58500,
+          "physicalStartedAt": 55106,
+          "parsedAt": 55208,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-12",
+          "enqueuedAt": 71000,
+          "eligibleAt": 72000,
+          "deadlineAt": 76000,
+          "physicalStartedAt": 72052,
+          "parsedAt": 72154,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        }
+      ],
+      "protectionTimelineColumns": [
+        "scheduledAt",
+        "physicalStartedAt",
+        "parsedAt",
+        "deadlineAt"
+      ],
+      "protectionTimeline": [
+        [
+          0,
+          52,
+          282,
+          4000
+        ],
+        [
+          2000,
+          2002,
+          2232,
+          4282
+        ],
+        [
+          4000,
+          4052,
+          4282,
+          6232
+        ],
+        [
+          6000,
+          6002,
+          6232,
+          8282
+        ],
+        [
+          8000,
+          8052,
+          8282,
+          10232
+        ],
+        [
+          10000,
+          10002,
+          10232,
+          12282
+        ],
+        [
+          12000,
+          12052,
+          12282,
+          14232
+        ],
+        [
+          14000,
+          14002,
+          14232,
+          16282
+        ],
+        [
+          16000,
+          16052,
+          16282,
+          18232
+        ],
+        [
+          18000,
+          18002,
+          18232,
+          20282
+        ],
+        [
+          20000,
+          19802,
+          20032,
+          22232
+        ],
+        [
+          21802,
+          21854,
+          22084,
+          24032
+        ],
+        [
+          23802,
+          23804,
+          24034,
+          26084
+        ],
+        [
+          25802,
+          25854,
+          26084,
+          28034
+        ],
+        [
+          27802,
+          27804,
+          28034,
+          30084
+        ],
+        [
+          29802,
+          29854,
+          30084,
+          32034
+        ],
+        [
+          31802,
+          31804,
+          32034,
+          34084
+        ],
+        [
+          33802,
+          33854,
+          34084,
+          36034
+        ],
+        [
+          35802,
+          35804,
+          36034,
+          38084
+        ],
+        [
+          37802,
+          37604,
+          37834,
+          40034
+        ],
+        [
+          39604,
+          39656,
+          39886,
+          41834
+        ],
+        [
+          41604,
+          41606,
+          41836,
+          43886
+        ],
+        [
+          43604,
+          43656,
+          43886,
+          45836
+        ],
+        [
+          45604,
+          45606,
+          45836,
+          47886
+        ],
+        [
+          47604,
+          47656,
+          47886,
+          49836
+        ],
+        [
+          49604,
+          49606,
+          49836,
+          51886
+        ],
+        [
+          51604,
+          51656,
+          51886,
+          53836
+        ],
+        [
+          53604,
+          53606,
+          53836,
+          55886
+        ],
+        [
+          55604,
+          55656,
+          55886,
+          57836
+        ],
+        [
+          57604,
+          57606,
+          57836,
+          59886
+        ],
+        [
+          59604,
+          59656,
+          59886,
+          61836
+        ],
+        [
+          61604,
+          61606,
+          61836,
+          63886
+        ],
+        [
+          63604,
+          63656,
+          63886,
+          65836
+        ],
+        [
+          65604,
+          65606,
+          65836,
+          67886
+        ],
+        [
+          67604,
+          67656,
+          67886,
+          69836
+        ],
+        [
+          69604,
+          69606,
+          69836,
+          71886
+        ],
+        [
+          71604,
+          71656,
+          71886,
+          73836
+        ],
+        [
+          73604,
+          73656,
+          73886,
+          75886
+        ]
+      ]
+    },
+    {
+      "name": "13-in-three-event-bursts-constructed-fast-jitter100",
+      "profile": "13-in-three-event-bursts",
+      "costProfile": "CONSTRUCTED_MEASURED_FAST_COSTS",
+      "timerJitterMs": 100,
+      "requests": 51,
+      "requestsByKind": {
+        "protection": 38,
+        "enrichment": 13,
+        "pending": 0,
+        "reconnect": 0
+      },
+      "earlyProtectionStarts": 2,
+      "normalProtectionWaitChecks": 0,
+      "maximumCompletedEvaluationGapMs": 2102,
+      "maximumModeledQuoteAgeAtUseMs": 87,
+      "maximumRolling60SecondStarts": 43,
+      "maximumRolling10SecondStarts": 9,
+      "minimumStartGapMs": 352,
+      "physicalOperationOverlapMaximum": 1,
+      "enrichments": {
+        "knownInputArrivals": 13,
+        "submitted": 13,
+        "completedWithinFiveSeconds": 13,
+        "refused": 0,
+        "timedOut": 0,
+        "completedLate": 0,
+        "pendingAtEnd": 0,
+        "inFlightAtEnd": 0,
+        "deadlineCensoredPendingAtEnd": 0,
+        "maximumArrivalToParseMs": 2226
+      },
+      "candidateInvalidations": [],
+      "haltReason": null,
+      "assessment": {
+        "standard": {
+          "version": "proposed-research-timing-v1",
+          "status": "PROPOSED_NOT_APPROVED",
+          "targetMs": 2000,
+          "maximumCompletedGapMs": 4000,
+          "maximumQuoteAgeAtUseMs": 2000,
+          "maximumSourceAgeMs": 30000,
+          "enrichmentDeadlineMs": 5000
+        },
+        "classification": "PROPOSED_SCHEDULING_TIMING_ASSESSMENT_NOT_PRODUCTION_PROTECTION",
+        "protection": {
+          "verdict": "MODELED_TIMING_WITHIN_PROPOSAL",
+          "completedEvaluations": 38,
+          "wholeRequestedHorizonObserved": true,
+          "maximumGapIncludingOpeningAndObservedTailMs": 2102,
+          "openingGapMs": 332,
+          "rightCensoredTailAtServiceEndMs": 992,
+          "hardCompletedGapMs": 4000,
+          "deadlineMisses": 0,
+          "physicalOrCallerTimeout": false,
+          "protectionTimeout": false,
+          "quoteAgeAtUsePass": true,
+          "declaredProtectionEnvelopeRespected": true,
+          "normalInFlightAtRightBoundary": false,
+          "sourceStateValidity": "NOT_SIMULATED; original30s source, coherent state, fees and actual-size requirements remain mandatory"
+        },
+        "flow": {
+          "verdict": "ALL_MODELED_REQUIRED_EVENTS_COMPLETED",
+          "allRequiredEventsCompleted": true,
+          "completedWithinFiveSeconds": 13,
+          "knownRequiredEvents": 13,
+          "invalidations": [],
+          "windowMayEnter": false,
+          "normalizationOrFeatureEvidence": "No trade fields or complete feature window are invented by the scheduler model."
+        },
+        "financial": {
+          "unresolvedActions": 0,
+          "retainedActions": [],
+          "financialAccountAccessed": false
+        },
+        "combined": {
+          "modeledTimingAndEventsPass": true,
+          "operationalAcceptance": false,
+          "marketPerformanceAssessed": false
+        },
+        "limitsUnchanged": {
+          "quoteAgeAtUseMs": 2000,
+          "sourceAgeMs": 30000,
+          "enrichmentDeadlineMs": 5000
+        },
+        "networkRequests": 0
+      },
+      "enrichmentOutcomes": [
+        {
+          "id": "13-in-three-event-bursts-0",
+          "enqueuedAt": 1000,
+          "eligibleAt": 2000,
+          "deadlineAt": 6000,
+          "physicalStartedAt": 2406,
+          "parsedAt": 2508,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-1",
+          "enqueuedAt": 1000,
+          "eligibleAt": 2000,
+          "deadlineAt": 6000,
+          "physicalStartedAt": 2758,
+          "parsedAt": 2860,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-2",
+          "enqueuedAt": 1000,
+          "eligibleAt": 2000,
+          "deadlineAt": 6000,
+          "physicalStartedAt": 3110,
+          "parsedAt": 3212,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-3",
+          "enqueuedAt": 18500,
+          "eligibleAt": 19500,
+          "deadlineAt": 23500,
+          "physicalStartedAt": 19558,
+          "parsedAt": 19660,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-4",
+          "enqueuedAt": 18500,
+          "eligibleAt": 19500,
+          "deadlineAt": 23500,
+          "physicalStartedAt": 20262,
+          "parsedAt": 20364,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-5",
+          "enqueuedAt": 18500,
+          "eligibleAt": 19500,
+          "deadlineAt": 23500,
+          "physicalStartedAt": 20614,
+          "parsedAt": 20716,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-6",
+          "enqueuedAt": 36000,
+          "eligibleAt": 37000,
+          "deadlineAt": 41000,
+          "physicalStartedAt": 37068,
+          "parsedAt": 37170,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-7",
+          "enqueuedAt": 36000,
+          "eligibleAt": 37000,
+          "deadlineAt": 41000,
+          "physicalStartedAt": 37420,
+          "parsedAt": 37522,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-8",
+          "enqueuedAt": 36000,
+          "eligibleAt": 37000,
+          "deadlineAt": 41000,
+          "physicalStartedAt": 38124,
+          "parsedAt": 38226,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-9",
+          "enqueuedAt": 53500,
+          "eligibleAt": 54500,
+          "deadlineAt": 58500,
+          "physicalStartedAt": 54578,
+          "parsedAt": 54680,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-10",
+          "enqueuedAt": 53500,
+          "eligibleAt": 54500,
+          "deadlineAt": 58500,
+          "physicalStartedAt": 54930,
+          "parsedAt": 55032,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-11",
+          "enqueuedAt": 53500,
+          "eligibleAt": 54500,
+          "deadlineAt": 58500,
+          "physicalStartedAt": 55282,
+          "parsedAt": 55384,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-12",
+          "enqueuedAt": 71000,
+          "eligibleAt": 72000,
+          "deadlineAt": 76000,
+          "physicalStartedAt": 72226,
+          "parsedAt": 72328,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        }
+      ],
+      "protectionTimelineColumns": [
+        "scheduledAt",
+        "physicalStartedAt",
+        "parsedAt",
+        "deadlineAt"
+      ],
+      "protectionTimeline": [
+        [
+          0,
+          102,
+          332,
+          4000
+        ],
+        [
+          2000,
+          2054,
+          2284,
+          4332
+        ],
+        [
+          4000,
+          4062,
+          4292,
+          6284
+        ],
+        [
+          6000,
+          6014,
+          6244,
+          8292
+        ],
+        [
+          8000,
+          8102,
+          8332,
+          10244
+        ],
+        [
+          10000,
+          10054,
+          10284,
+          12332
+        ],
+        [
+          12000,
+          12006,
+          12236,
+          14284
+        ],
+        [
+          14000,
+          14102,
+          14332,
+          16236
+        ],
+        [
+          16000,
+          16054,
+          16284,
+          18332
+        ],
+        [
+          18000,
+          18006,
+          18236,
+          20284
+        ],
+        [
+          20000,
+          19910,
+          20140,
+          22236
+        ],
+        [
+          21910,
+          21966,
+          22196,
+          24140
+        ],
+        [
+          23910,
+          23918,
+          24148,
+          26196
+        ],
+        [
+          25910,
+          26012,
+          26242,
+          28148
+        ],
+        [
+          27910,
+          27964,
+          28194,
+          30242
+        ],
+        [
+          29910,
+          29916,
+          30146,
+          32194
+        ],
+        [
+          31910,
+          32012,
+          32242,
+          34146
+        ],
+        [
+          33910,
+          33964,
+          34194,
+          36242
+        ],
+        [
+          35910,
+          35916,
+          36146,
+          38194
+        ],
+        [
+          37910,
+          37772,
+          38002,
+          40146
+        ],
+        [
+          39772,
+          39874,
+          40104,
+          42002
+        ],
+        [
+          41772,
+          41826,
+          42056,
+          44104
+        ],
+        [
+          43772,
+          43778,
+          44008,
+          46056
+        ],
+        [
+          45772,
+          45874,
+          46104,
+          48008
+        ],
+        [
+          47772,
+          47826,
+          48056,
+          50104
+        ],
+        [
+          49772,
+          49778,
+          50008,
+          52056
+        ],
+        [
+          51772,
+          51874,
+          52104,
+          54008
+        ],
+        [
+          53772,
+          53826,
+          54056,
+          56104
+        ],
+        [
+          55772,
+          55834,
+          56064,
+          58056
+        ],
+        [
+          57772,
+          57786,
+          58016,
+          60064
+        ],
+        [
+          59772,
+          59874,
+          60104,
+          62016
+        ],
+        [
+          61772,
+          61826,
+          62056,
+          64104
+        ],
+        [
+          63772,
+          63778,
+          64008,
+          66056
+        ],
+        [
+          65772,
+          65874,
+          66104,
+          68008
+        ],
+        [
+          67772,
+          67826,
+          68056,
+          70104
+        ],
+        [
+          69772,
+          69778,
+          70008,
+          72056
+        ],
+        [
+          71772,
+          71874,
+          72104,
+          74008
+        ],
+        [
+          73772,
+          73778,
+          74008,
+          76104
+        ]
+      ]
+    },
+    {
+      "name": "18-spaced-ceiling-constructed-fast-jitter0",
+      "profile": "18-spaced-ceiling",
+      "costProfile": "CONSTRUCTED_MEASURED_FAST_COSTS",
+      "timerJitterMs": 0,
+      "requests": 56,
+      "requestsByKind": {
+        "protection": 38,
+        "enrichment": 18,
+        "pending": 0,
+        "reconnect": 0
+      },
+      "earlyProtectionStarts": 1,
+      "normalProtectionWaitChecks": 0,
+      "maximumCompletedEvaluationGapMs": 2002,
+      "maximumModeledQuoteAgeAtUseMs": 87,
+      "maximumRolling60SecondStarts": 46,
+      "maximumRolling10SecondStarts": 9,
+      "minimumStartGapMs": 252,
+      "physicalOperationOverlapMaximum": 1,
+      "enrichments": {
+        "knownInputArrivals": 18,
+        "submitted": 18,
+        "completedWithinFiveSeconds": 18,
+        "refused": 0,
+        "timedOut": 0,
+        "completedLate": 0,
+        "pendingAtEnd": 0,
+        "inFlightAtEnd": 0,
+        "deadlineCensoredPendingAtEnd": 0,
+        "maximumArrivalToParseMs": 1356
+      },
+      "candidateInvalidations": [],
+      "haltReason": null,
+      "assessment": {
+        "standard": {
+          "version": "proposed-research-timing-v1",
+          "status": "PROPOSED_NOT_APPROVED",
+          "targetMs": 2000,
+          "maximumCompletedGapMs": 4000,
+          "maximumQuoteAgeAtUseMs": 2000,
+          "maximumSourceAgeMs": 30000,
+          "enrichmentDeadlineMs": 5000
+        },
+        "classification": "PROPOSED_SCHEDULING_TIMING_ASSESSMENT_NOT_PRODUCTION_PROTECTION",
+        "protection": {
+          "verdict": "MODELED_TIMING_WITHIN_PROPOSAL",
+          "completedEvaluations": 38,
+          "wholeRequestedHorizonObserved": true,
+          "maximumGapIncludingOpeningAndObservedTailMs": 2002,
+          "openingGapMs": 232,
+          "rightCensoredTailAtServiceEndMs": 1119,
+          "hardCompletedGapMs": 4000,
+          "deadlineMisses": 0,
+          "physicalOrCallerTimeout": false,
+          "protectionTimeout": false,
+          "quoteAgeAtUsePass": true,
+          "declaredProtectionEnvelopeRespected": true,
+          "normalInFlightAtRightBoundary": false,
+          "sourceStateValidity": "NOT_SIMULATED; original30s source, coherent state, fees and actual-size requirements remain mandatory"
+        },
+        "flow": {
+          "verdict": "ALL_MODELED_REQUIRED_EVENTS_COMPLETED",
+          "allRequiredEventsCompleted": true,
+          "completedWithinFiveSeconds": 18,
+          "knownRequiredEvents": 18,
+          "invalidations": [],
+          "windowMayEnter": false,
+          "normalizationOrFeatureEvidence": "No trade fields or complete feature window are invented by the scheduler model."
+        },
+        "financial": {
+          "unresolvedActions": 0,
+          "retainedActions": [],
+          "financialAccountAccessed": false
+        },
+        "combined": {
+          "modeledTimingAndEventsPass": true,
+          "operationalAcceptance": false,
+          "marketPerformanceAssessed": false
+        },
+        "limitsUnchanged": {
+          "quoteAgeAtUseMs": 2000,
+          "sourceAgeMs": 30000,
+          "enrichmentDeadlineMs": 5000
+        },
+        "networkRequests": 0
+      },
+      "enrichmentOutcomes": [
+        {
+          "id": "18-spaced-ceiling-0",
+          "enqueuedAt": 1000,
+          "eligibleAt": 2000,
+          "deadlineAt": 6000,
+          "physicalStartedAt": 2254,
+          "parsedAt": 2356,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-1",
+          "enqueuedAt": 5117,
+          "eligibleAt": 6117,
+          "deadlineAt": 10117,
+          "physicalStartedAt": 6254,
+          "parsedAt": 6356,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-2",
+          "enqueuedAt": 9235,
+          "eligibleAt": 10235,
+          "deadlineAt": 14235,
+          "physicalStartedAt": 10254,
+          "parsedAt": 10356,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-3",
+          "enqueuedAt": 13352,
+          "eligibleAt": 14352,
+          "deadlineAt": 18352,
+          "physicalStartedAt": 14354,
+          "parsedAt": 14456,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-4",
+          "enqueuedAt": 17470,
+          "eligibleAt": 18470,
+          "deadlineAt": 22470,
+          "physicalStartedAt": 18472,
+          "parsedAt": 18574,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-5",
+          "enqueuedAt": 21588,
+          "eligibleAt": 22588,
+          "deadlineAt": 26588,
+          "physicalStartedAt": 22590,
+          "parsedAt": 22692,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-6",
+          "enqueuedAt": 25705,
+          "eligibleAt": 26705,
+          "deadlineAt": 30705,
+          "physicalStartedAt": 26707,
+          "parsedAt": 26809,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-7",
+          "enqueuedAt": 29823,
+          "eligibleAt": 30823,
+          "deadlineAt": 34823,
+          "physicalStartedAt": 30825,
+          "parsedAt": 30927,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-8",
+          "enqueuedAt": 33941,
+          "eligibleAt": 34941,
+          "deadlineAt": 38941,
+          "physicalStartedAt": 34943,
+          "parsedAt": 35045,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-9",
+          "enqueuedAt": 38058,
+          "eligibleAt": 39058,
+          "deadlineAt": 43058,
+          "physicalStartedAt": 39060,
+          "parsedAt": 39162,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-10",
+          "enqueuedAt": 42176,
+          "eligibleAt": 43176,
+          "deadlineAt": 47176,
+          "physicalStartedAt": 43178,
+          "parsedAt": 43280,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-11",
+          "enqueuedAt": 46294,
+          "eligibleAt": 47294,
+          "deadlineAt": 51294,
+          "physicalStartedAt": 47296,
+          "parsedAt": 47398,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-12",
+          "enqueuedAt": 50411,
+          "eligibleAt": 51411,
+          "deadlineAt": 55411,
+          "physicalStartedAt": 51413,
+          "parsedAt": 51515,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-13",
+          "enqueuedAt": 54529,
+          "eligibleAt": 55529,
+          "deadlineAt": 59529,
+          "physicalStartedAt": 55531,
+          "parsedAt": 55633,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-14",
+          "enqueuedAt": 58647,
+          "eligibleAt": 59647,
+          "deadlineAt": 63647,
+          "physicalStartedAt": 59901,
+          "parsedAt": 60003,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-15",
+          "enqueuedAt": 62764,
+          "eligibleAt": 63764,
+          "deadlineAt": 67764,
+          "physicalStartedAt": 63903,
+          "parsedAt": 64005,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-16",
+          "enqueuedAt": 66882,
+          "eligibleAt": 67882,
+          "deadlineAt": 71882,
+          "physicalStartedAt": 67903,
+          "parsedAt": 68005,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-17",
+          "enqueuedAt": 71000,
+          "eligibleAt": 72000,
+          "deadlineAt": 76000,
+          "physicalStartedAt": 72002,
+          "parsedAt": 72104,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        }
+      ],
+      "protectionTimelineColumns": [
+        "scheduledAt",
+        "physicalStartedAt",
+        "parsedAt",
+        "deadlineAt"
+      ],
+      "protectionTimeline": [
+        [
+          0,
+          2,
+          232,
+          4000
+        ],
+        [
+          2000,
+          2002,
+          2232,
+          4232
+        ],
+        [
+          4000,
+          4002,
+          4232,
+          6232
+        ],
+        [
+          6000,
+          6002,
+          6232,
+          8232
+        ],
+        [
+          8000,
+          8002,
+          8232,
+          10232
+        ],
+        [
+          10000,
+          10002,
+          10232,
+          12232
+        ],
+        [
+          12000,
+          12002,
+          12232,
+          14232
+        ],
+        [
+          14000,
+          14002,
+          14232,
+          16232
+        ],
+        [
+          16000,
+          16002,
+          16232,
+          18232
+        ],
+        [
+          18000,
+          18002,
+          18232,
+          20232
+        ],
+        [
+          20000,
+          20002,
+          20232,
+          22232
+        ],
+        [
+          22000,
+          22002,
+          22232,
+          24232
+        ],
+        [
+          24000,
+          24002,
+          24232,
+          26232
+        ],
+        [
+          26000,
+          26002,
+          26232,
+          28232
+        ],
+        [
+          28000,
+          28002,
+          28232,
+          30232
+        ],
+        [
+          30000,
+          30002,
+          30232,
+          32232
+        ],
+        [
+          32000,
+          32002,
+          32232,
+          34232
+        ],
+        [
+          34000,
+          34002,
+          34232,
+          36232
+        ],
+        [
+          36000,
+          36002,
+          36232,
+          38232
+        ],
+        [
+          38000,
+          38002,
+          38232,
+          40232
+        ],
+        [
+          40000,
+          40002,
+          40232,
+          42232
+        ],
+        [
+          42000,
+          42002,
+          42232,
+          44232
+        ],
+        [
+          44000,
+          44002,
+          44232,
+          46232
+        ],
+        [
+          46000,
+          46002,
+          46232,
+          48232
+        ],
+        [
+          48000,
+          48002,
+          48232,
+          50232
+        ],
+        [
+          50000,
+          50002,
+          50232,
+          52232
+        ],
+        [
+          52000,
+          52002,
+          52232,
+          54232
+        ],
+        [
+          54000,
+          54002,
+          54232,
+          56232
+        ],
+        [
+          56000,
+          56002,
+          56232,
+          58232
+        ],
+        [
+          58000,
+          58002,
+          58232,
+          60232
+        ],
+        [
+          60000,
+          59649,
+          59879,
+          62232
+        ],
+        [
+          61649,
+          61651,
+          61881,
+          63879
+        ],
+        [
+          63649,
+          63651,
+          63881,
+          65881
+        ],
+        [
+          65649,
+          65651,
+          65881,
+          67881
+        ],
+        [
+          67649,
+          67651,
+          67881,
+          69881
+        ],
+        [
+          69649,
+          69651,
+          69881,
+          71881
+        ],
+        [
+          71649,
+          71651,
+          71881,
+          73881
+        ],
+        [
+          73649,
+          73651,
+          73881,
+          75881
+        ]
+      ]
+    },
+    {
+      "name": "18-spaced-ceiling-constructed-fast-jitter50",
+      "profile": "18-spaced-ceiling",
+      "costProfile": "CONSTRUCTED_MEASURED_FAST_COSTS",
+      "timerJitterMs": 50,
+      "requests": 56,
+      "requestsByKind": {
+        "protection": 38,
+        "enrichment": 18,
+        "pending": 0,
+        "reconnect": 0
+      },
+      "earlyProtectionStarts": 1,
+      "normalProtectionWaitChecks": 0,
+      "maximumCompletedEvaluationGapMs": 2052,
+      "maximumModeledQuoteAgeAtUseMs": 87,
+      "maximumRolling60SecondStarts": 46,
+      "maximumRolling10SecondStarts": 9,
+      "minimumStartGapMs": 266,
+      "physicalOperationOverlapMaximum": 1,
+      "enrichments": {
+        "knownInputArrivals": 18,
+        "submitted": 18,
+        "completedWithinFiveSeconds": 18,
+        "refused": 0,
+        "timedOut": 0,
+        "completedLate": 0,
+        "pendingAtEnd": 0,
+        "inFlightAtEnd": 0,
+        "deadlineCensoredPendingAtEnd": 0,
+        "maximumArrivalToParseMs": 1454
+      },
+      "candidateInvalidations": [],
+      "haltReason": null,
+      "assessment": {
+        "standard": {
+          "version": "proposed-research-timing-v1",
+          "status": "PROPOSED_NOT_APPROVED",
+          "targetMs": 2000,
+          "maximumCompletedGapMs": 4000,
+          "maximumQuoteAgeAtUseMs": 2000,
+          "maximumSourceAgeMs": 30000,
+          "enrichmentDeadlineMs": 5000
+        },
+        "classification": "PROPOSED_SCHEDULING_TIMING_ASSESSMENT_NOT_PRODUCTION_PROTECTION",
+        "protection": {
+          "verdict": "MODELED_TIMING_WITHIN_PROPOSAL",
+          "completedEvaluations": 38,
+          "wholeRequestedHorizonObserved": true,
+          "maximumGapIncludingOpeningAndObservedTailMs": 2052,
+          "openingGapMs": 282,
+          "rightCensoredTailAtServiceEndMs": 1137,
+          "hardCompletedGapMs": 4000,
+          "deadlineMisses": 0,
+          "physicalOrCallerTimeout": false,
+          "protectionTimeout": false,
+          "quoteAgeAtUsePass": true,
+          "declaredProtectionEnvelopeRespected": true,
+          "normalInFlightAtRightBoundary": false,
+          "sourceStateValidity": "NOT_SIMULATED; original30s source, coherent state, fees and actual-size requirements remain mandatory"
+        },
+        "flow": {
+          "verdict": "ALL_MODELED_REQUIRED_EVENTS_COMPLETED",
+          "allRequiredEventsCompleted": true,
+          "completedWithinFiveSeconds": 18,
+          "knownRequiredEvents": 18,
+          "invalidations": [],
+          "windowMayEnter": false,
+          "normalizationOrFeatureEvidence": "No trade fields or complete feature window are invented by the scheduler model."
+        },
+        "financial": {
+          "unresolvedActions": 0,
+          "retainedActions": [],
+          "financialAccountAccessed": false
+        },
+        "combined": {
+          "modeledTimingAndEventsPass": true,
+          "operationalAcceptance": false,
+          "marketPerformanceAssessed": false
+        },
+        "limitsUnchanged": {
+          "quoteAgeAtUseMs": 2000,
+          "sourceAgeMs": 30000,
+          "enrichmentDeadlineMs": 5000
+        },
+        "networkRequests": 0
+      },
+      "enrichmentOutcomes": [
+        {
+          "id": "18-spaced-ceiling-0",
+          "enqueuedAt": 1000,
+          "eligibleAt": 2000,
+          "deadlineAt": 6000,
+          "physicalStartedAt": 2302,
+          "parsedAt": 2404,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-1",
+          "enqueuedAt": 5117,
+          "eligibleAt": 6117,
+          "deadlineAt": 10117,
+          "physicalStartedAt": 6302,
+          "parsedAt": 6404,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-2",
+          "enqueuedAt": 9235,
+          "eligibleAt": 10235,
+          "deadlineAt": 14235,
+          "physicalStartedAt": 10287,
+          "parsedAt": 10389,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-3",
+          "enqueuedAt": 13352,
+          "eligibleAt": 14352,
+          "deadlineAt": 18352,
+          "physicalStartedAt": 14404,
+          "parsedAt": 14506,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-4",
+          "enqueuedAt": 17470,
+          "eligibleAt": 18470,
+          "deadlineAt": 22470,
+          "physicalStartedAt": 18522,
+          "parsedAt": 18624,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-5",
+          "enqueuedAt": 21588,
+          "eligibleAt": 22588,
+          "deadlineAt": 26588,
+          "physicalStartedAt": 22640,
+          "parsedAt": 22742,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-6",
+          "enqueuedAt": 25705,
+          "eligibleAt": 26705,
+          "deadlineAt": 30705,
+          "physicalStartedAt": 26752,
+          "parsedAt": 26854,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-7",
+          "enqueuedAt": 29823,
+          "eligibleAt": 30823,
+          "deadlineAt": 34823,
+          "physicalStartedAt": 30875,
+          "parsedAt": 30977,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-8",
+          "enqueuedAt": 33941,
+          "eligibleAt": 34941,
+          "deadlineAt": 38941,
+          "physicalStartedAt": 34993,
+          "parsedAt": 35095,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-9",
+          "enqueuedAt": 38058,
+          "eligibleAt": 39058,
+          "deadlineAt": 43058,
+          "physicalStartedAt": 39102,
+          "parsedAt": 39204,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-10",
+          "enqueuedAt": 42176,
+          "eligibleAt": 43176,
+          "deadlineAt": 47176,
+          "physicalStartedAt": 43228,
+          "parsedAt": 43330,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-11",
+          "enqueuedAt": 46294,
+          "eligibleAt": 47294,
+          "deadlineAt": 51294,
+          "physicalStartedAt": 47346,
+          "parsedAt": 47448,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-12",
+          "enqueuedAt": 50411,
+          "eligibleAt": 51411,
+          "deadlineAt": 55411,
+          "physicalStartedAt": 51463,
+          "parsedAt": 51565,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-13",
+          "enqueuedAt": 54529,
+          "eligibleAt": 55529,
+          "deadlineAt": 59529,
+          "physicalStartedAt": 55881,
+          "parsedAt": 55983,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-14",
+          "enqueuedAt": 58647,
+          "eligibleAt": 59647,
+          "deadlineAt": 63647,
+          "physicalStartedAt": 59849,
+          "parsedAt": 59951,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-15",
+          "enqueuedAt": 62764,
+          "eligibleAt": 63764,
+          "deadlineAt": 67764,
+          "physicalStartedAt": 63885,
+          "parsedAt": 63987,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-16",
+          "enqueuedAt": 66882,
+          "eligibleAt": 67882,
+          "deadlineAt": 71882,
+          "physicalStartedAt": 67934,
+          "parsedAt": 68036,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-17",
+          "enqueuedAt": 71000,
+          "eligibleAt": 72000,
+          "deadlineAt": 76000,
+          "physicalStartedAt": 72052,
+          "parsedAt": 72154,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        }
+      ],
+      "protectionTimelineColumns": [
+        "scheduledAt",
+        "physicalStartedAt",
+        "parsedAt",
+        "deadlineAt"
+      ],
+      "protectionTimeline": [
+        [
+          0,
+          52,
+          282,
+          4000
+        ],
+        [
+          2000,
+          2002,
+          2232,
+          4282
+        ],
+        [
+          4000,
+          4052,
+          4282,
+          6232
+        ],
+        [
+          6000,
+          6002,
+          6232,
+          8282
+        ],
+        [
+          8000,
+          8052,
+          8282,
+          10232
+        ],
+        [
+          10000,
+          10002,
+          10232,
+          12282
+        ],
+        [
+          12000,
+          12052,
+          12282,
+          14232
+        ],
+        [
+          14000,
+          14002,
+          14232,
+          16282
+        ],
+        [
+          16000,
+          16052,
+          16282,
+          18232
+        ],
+        [
+          18000,
+          18002,
+          18232,
+          20282
+        ],
+        [
+          20000,
+          20022,
+          20252,
+          22232
+        ],
+        [
+          22000,
+          22052,
+          22282,
+          24252
+        ],
+        [
+          24000,
+          24052,
+          24282,
+          26282
+        ],
+        [
+          26000,
+          26002,
+          26232,
+          28282
+        ],
+        [
+          28000,
+          28052,
+          28282,
+          30232
+        ],
+        [
+          30000,
+          30002,
+          30232,
+          32282
+        ],
+        [
+          32000,
+          32052,
+          32282,
+          34232
+        ],
+        [
+          34000,
+          34002,
+          34232,
+          36282
+        ],
+        [
+          36000,
+          36043,
+          36273,
+          38232
+        ],
+        [
+          38000,
+          38052,
+          38282,
+          40273
+        ],
+        [
+          40000,
+          40002,
+          40232,
+          42282
+        ],
+        [
+          42000,
+          42052,
+          42282,
+          44232
+        ],
+        [
+          44000,
+          44052,
+          44282,
+          46282
+        ],
+        [
+          46000,
+          46002,
+          46232,
+          48282
+        ],
+        [
+          48000,
+          48052,
+          48282,
+          50232
+        ],
+        [
+          50000,
+          50002,
+          50232,
+          52282
+        ],
+        [
+          52000,
+          52052,
+          52282,
+          54232
+        ],
+        [
+          54000,
+          54002,
+          54232,
+          56282
+        ],
+        [
+          56000,
+          55581,
+          55811,
+          58232
+        ],
+        [
+          57581,
+          57633,
+          57863,
+          59811
+        ],
+        [
+          59581,
+          59583,
+          59813,
+          61863
+        ],
+        [
+          61581,
+          61633,
+          61863,
+          63813
+        ],
+        [
+          63581,
+          63583,
+          63813,
+          65863
+        ],
+        [
+          65581,
+          65633,
+          65863,
+          67813
+        ],
+        [
+          67581,
+          67583,
+          67813,
+          69863
+        ],
+        [
+          69581,
+          69584,
+          69814,
+          71813
+        ],
+        [
+          71581,
+          71633,
+          71863,
+          73814
+        ],
+        [
+          73581,
+          73633,
+          73863,
+          75863
+        ]
+      ]
+    },
+    {
+      "name": "18-spaced-ceiling-constructed-fast-jitter100",
+      "profile": "18-spaced-ceiling",
+      "costProfile": "CONSTRUCTED_MEASURED_FAST_COSTS",
+      "timerJitterMs": 100,
+      "requests": 56,
+      "requestsByKind": {
+        "protection": 38,
+        "enrichment": 18,
+        "pending": 0,
+        "reconnect": 0
+      },
+      "earlyProtectionStarts": 1,
+      "normalProtectionWaitChecks": 0,
+      "maximumCompletedEvaluationGapMs": 2102,
+      "maximumModeledQuoteAgeAtUseMs": 87,
+      "maximumRolling60SecondStarts": 46,
+      "maximumRolling10SecondStarts": 8,
+      "minimumStartGapMs": 352,
+      "physicalOperationOverlapMaximum": 1,
+      "enrichments": {
+        "knownInputArrivals": 18,
+        "submitted": 18,
+        "completedWithinFiveSeconds": 18,
+        "refused": 0,
+        "timedOut": 0,
+        "completedLate": 0,
+        "pendingAtEnd": 0,
+        "inFlightAtEnd": 0,
+        "deadlineCensoredPendingAtEnd": 0,
+        "maximumArrivalToParseMs": 1556
+      },
+      "candidateInvalidations": [],
+      "haltReason": null,
+      "assessment": {
+        "standard": {
+          "version": "proposed-research-timing-v1",
+          "status": "PROPOSED_NOT_APPROVED",
+          "targetMs": 2000,
+          "maximumCompletedGapMs": 4000,
+          "maximumQuoteAgeAtUseMs": 2000,
+          "maximumSourceAgeMs": 30000,
+          "enrichmentDeadlineMs": 5000
+        },
+        "classification": "PROPOSED_SCHEDULING_TIMING_ASSESSMENT_NOT_PRODUCTION_PROTECTION",
+        "protection": {
+          "verdict": "MODELED_TIMING_WITHIN_PROPOSAL",
+          "completedEvaluations": 38,
+          "wholeRequestedHorizonObserved": true,
+          "maximumGapIncludingOpeningAndObservedTailMs": 2102,
+          "openingGapMs": 332,
+          "rightCensoredTailAtServiceEndMs": 919,
+          "hardCompletedGapMs": 4000,
+          "deadlineMisses": 0,
+          "physicalOrCallerTimeout": false,
+          "protectionTimeout": false,
+          "quoteAgeAtUsePass": true,
+          "declaredProtectionEnvelopeRespected": true,
+          "normalInFlightAtRightBoundary": false,
+          "sourceStateValidity": "NOT_SIMULATED; original30s source, coherent state, fees and actual-size requirements remain mandatory"
+        },
+        "flow": {
+          "verdict": "ALL_MODELED_REQUIRED_EVENTS_COMPLETED",
+          "allRequiredEventsCompleted": true,
+          "completedWithinFiveSeconds": 18,
+          "knownRequiredEvents": 18,
+          "invalidations": [],
+          "windowMayEnter": false,
+          "normalizationOrFeatureEvidence": "No trade fields or complete feature window are invented by the scheduler model."
+        },
+        "financial": {
+          "unresolvedActions": 0,
+          "retainedActions": [],
+          "financialAccountAccessed": false
+        },
+        "combined": {
+          "modeledTimingAndEventsPass": true,
+          "operationalAcceptance": false,
+          "marketPerformanceAssessed": false
+        },
+        "limitsUnchanged": {
+          "quoteAgeAtUseMs": 2000,
+          "sourceAgeMs": 30000,
+          "enrichmentDeadlineMs": 5000
+        },
+        "networkRequests": 0
+      },
+      "enrichmentOutcomes": [
+        {
+          "id": "18-spaced-ceiling-0",
+          "enqueuedAt": 1000,
+          "eligibleAt": 2000,
+          "deadlineAt": 6000,
+          "physicalStartedAt": 2406,
+          "parsedAt": 2508,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-1",
+          "enqueuedAt": 5117,
+          "eligibleAt": 6117,
+          "deadlineAt": 10117,
+          "physicalStartedAt": 6406,
+          "parsedAt": 6508,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-2",
+          "enqueuedAt": 9235,
+          "eligibleAt": 10235,
+          "deadlineAt": 14235,
+          "physicalStartedAt": 10406,
+          "parsedAt": 10508,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-3",
+          "enqueuedAt": 13352,
+          "eligibleAt": 14352,
+          "deadlineAt": 18352,
+          "physicalStartedAt": 14406,
+          "parsedAt": 14508,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-4",
+          "enqueuedAt": 17470,
+          "eligibleAt": 18470,
+          "deadlineAt": 22470,
+          "physicalStartedAt": 18572,
+          "parsedAt": 18674,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-5",
+          "enqueuedAt": 21588,
+          "eligibleAt": 22588,
+          "deadlineAt": 26588,
+          "physicalStartedAt": 22606,
+          "parsedAt": 22708,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-6",
+          "enqueuedAt": 25705,
+          "eligibleAt": 26705,
+          "deadlineAt": 30705,
+          "physicalStartedAt": 26806,
+          "parsedAt": 26908,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-7",
+          "enqueuedAt": 29823,
+          "eligibleAt": 30823,
+          "deadlineAt": 34823,
+          "physicalStartedAt": 30925,
+          "parsedAt": 31027,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-8",
+          "enqueuedAt": 33941,
+          "eligibleAt": 34941,
+          "deadlineAt": 38941,
+          "physicalStartedAt": 34981,
+          "parsedAt": 35083,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-9",
+          "enqueuedAt": 38058,
+          "eligibleAt": 39058,
+          "deadlineAt": 43058,
+          "physicalStartedAt": 39160,
+          "parsedAt": 39262,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-10",
+          "enqueuedAt": 42176,
+          "eligibleAt": 43176,
+          "deadlineAt": 47176,
+          "physicalStartedAt": 43206,
+          "parsedAt": 43308,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-11",
+          "enqueuedAt": 46294,
+          "eligibleAt": 47294,
+          "deadlineAt": 51294,
+          "physicalStartedAt": 47396,
+          "parsedAt": 47498,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-12",
+          "enqueuedAt": 50411,
+          "eligibleAt": 51411,
+          "deadlineAt": 55411,
+          "physicalStartedAt": 51513,
+          "parsedAt": 51615,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-13",
+          "enqueuedAt": 54529,
+          "eligibleAt": 55529,
+          "deadlineAt": 59529,
+          "physicalStartedAt": 55569,
+          "parsedAt": 55671,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-14",
+          "enqueuedAt": 58647,
+          "eligibleAt": 59647,
+          "deadlineAt": 63647,
+          "physicalStartedAt": 60101,
+          "parsedAt": 60203,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-15",
+          "enqueuedAt": 62764,
+          "eligibleAt": 63764,
+          "deadlineAt": 67764,
+          "physicalStartedAt": 64155,
+          "parsedAt": 64257,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-16",
+          "enqueuedAt": 66882,
+          "eligibleAt": 67882,
+          "deadlineAt": 71882,
+          "physicalStartedAt": 68155,
+          "parsedAt": 68257,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-17",
+          "enqueuedAt": 71000,
+          "eligibleAt": 72000,
+          "deadlineAt": 76000,
+          "physicalStartedAt": 72155,
+          "parsedAt": 72257,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        }
+      ],
+      "protectionTimelineColumns": [
+        "scheduledAt",
+        "physicalStartedAt",
+        "parsedAt",
+        "deadlineAt"
+      ],
+      "protectionTimeline": [
+        [
+          0,
+          102,
+          332,
+          4000
+        ],
+        [
+          2000,
+          2054,
+          2284,
+          4332
+        ],
+        [
+          4000,
+          4102,
+          4332,
+          6284
+        ],
+        [
+          6000,
+          6054,
+          6284,
+          8332
+        ],
+        [
+          8000,
+          8102,
+          8332,
+          10284
+        ],
+        [
+          10000,
+          10054,
+          10284,
+          12332
+        ],
+        [
+          12000,
+          12102,
+          12332,
+          14284
+        ],
+        [
+          14000,
+          14054,
+          14284,
+          16332
+        ],
+        [
+          16000,
+          16102,
+          16332,
+          18284
+        ],
+        [
+          18000,
+          18054,
+          18284,
+          20332
+        ],
+        [
+          20000,
+          20102,
+          20332,
+          22284
+        ],
+        [
+          22000,
+          22054,
+          22284,
+          24332
+        ],
+        [
+          24000,
+          24102,
+          24332,
+          26284
+        ],
+        [
+          26000,
+          26054,
+          26284,
+          28332
+        ],
+        [
+          28000,
+          28102,
+          28332,
+          30284
+        ],
+        [
+          30000,
+          30054,
+          30284,
+          32332
+        ],
+        [
+          32000,
+          32077,
+          32307,
+          34284
+        ],
+        [
+          34000,
+          34029,
+          34259,
+          36307
+        ],
+        [
+          36000,
+          36102,
+          36332,
+          38259
+        ],
+        [
+          38000,
+          38054,
+          38284,
+          40332
+        ],
+        [
+          40000,
+          40102,
+          40332,
+          42284
+        ],
+        [
+          42000,
+          42054,
+          42284,
+          44332
+        ],
+        [
+          44000,
+          44102,
+          44332,
+          46284
+        ],
+        [
+          46000,
+          46054,
+          46284,
+          48332
+        ],
+        [
+          48000,
+          48102,
+          48332,
+          50284
+        ],
+        [
+          50000,
+          50054,
+          50284,
+          52332
+        ],
+        [
+          52000,
+          52065,
+          52295,
+          54284
+        ],
+        [
+          54000,
+          54017,
+          54247,
+          56295
+        ],
+        [
+          56000,
+          56102,
+          56332,
+          58247
+        ],
+        [
+          58000,
+          58054,
+          58284,
+          60332
+        ],
+        [
+          60000,
+          59749,
+          59979,
+          62284
+        ],
+        [
+          61749,
+          61851,
+          62081,
+          63979
+        ],
+        [
+          63749,
+          63803,
+          64033,
+          66081
+        ],
+        [
+          65749,
+          65851,
+          66081,
+          68033
+        ],
+        [
+          67749,
+          67803,
+          68033,
+          70081
+        ],
+        [
+          69749,
+          69851,
+          70081,
+          72033
+        ],
+        [
+          71749,
+          71803,
+          72033,
+          74081
+        ],
+        [
+          73749,
+          73851,
+          74081,
+          76033
+        ]
+      ]
+    },
+    {
+      "name": "13-spaced-slow950-jitter100",
+      "profile": "13-spaced",
+      "costProfile": "SYNTHETIC950MS_HTTP_BOTH_METHODS",
+      "timerJitterMs": 100,
+      "requests": 51,
+      "requestsByKind": {
+        "protection": 38,
+        "enrichment": 13,
+        "pending": 0,
+        "reconnect": 0
+      },
+      "earlyProtectionStarts": 0,
+      "normalProtectionWaitChecks": 0,
+      "maximumCompletedEvaluationGapMs": 3033,
+      "maximumModeledQuoteAgeAtUseMs": 87,
+      "maximumRolling60SecondStarts": 41,
+      "maximumRolling10SecondStarts": 8,
+      "minimumStartGapMs": 1066,
+      "physicalOperationOverlapMaximum": 1,
+      "enrichments": {
+        "knownInputArrivals": 13,
+        "submitted": 13,
+        "completedWithinFiveSeconds": 13,
+        "refused": 0,
+        "timedOut": 0,
+        "completedLate": 0,
+        "pendingAtEnd": 0,
+        "inFlightAtEnd": 0,
+        "deadlineCensoredPendingAtEnd": 0,
+        "maximumArrivalToParseMs": 3161
+      },
+      "candidateInvalidations": [],
+      "haltReason": null,
+      "assessment": {
+        "standard": {
+          "version": "proposed-research-timing-v1",
+          "status": "PROPOSED_NOT_APPROVED",
+          "targetMs": 2000,
+          "maximumCompletedGapMs": 4000,
+          "maximumQuoteAgeAtUseMs": 2000,
+          "maximumSourceAgeMs": 30000,
+          "enrichmentDeadlineMs": 5000
+        },
+        "classification": "PROPOSED_SCHEDULING_TIMING_ASSESSMENT_NOT_PRODUCTION_PROTECTION",
+        "protection": {
+          "verdict": "MODELED_TIMING_WITHIN_PROPOSAL",
+          "completedEvaluations": 37,
+          "wholeRequestedHorizonObserved": true,
+          "maximumGapIncludingOpeningAndObservedTailMs": 3033,
+          "openingGapMs": 1139,
+          "rightCensoredTailAtServiceEndMs": 1957,
+          "hardCompletedGapMs": 4000,
+          "deadlineMisses": 0,
+          "physicalOrCallerTimeout": false,
+          "protectionTimeout": false,
+          "quoteAgeAtUsePass": true,
+          "declaredProtectionEnvelopeRespected": true,
+          "normalInFlightAtRightBoundary": true,
+          "sourceStateValidity": "NOT_SIMULATED; original30s source, coherent state, fees and actual-size requirements remain mandatory"
+        },
+        "flow": {
+          "verdict": "ALL_MODELED_REQUIRED_EVENTS_COMPLETED",
+          "allRequiredEventsCompleted": true,
+          "completedWithinFiveSeconds": 13,
+          "knownRequiredEvents": 13,
+          "invalidations": [],
+          "windowMayEnter": false,
+          "normalizationOrFeatureEvidence": "No trade fields or complete feature window are invented by the scheduler model."
+        },
+        "financial": {
+          "unresolvedActions": 0,
+          "retainedActions": [],
+          "financialAccountAccessed": false
+        },
+        "combined": {
+          "modeledTimingAndEventsPass": true,
+          "operationalAcceptance": false,
+          "marketPerformanceAssessed": false
+        },
+        "limitsUnchanged": {
+          "quoteAgeAtUseMs": 2000,
+          "sourceAgeMs": 30000,
+          "enrichmentDeadlineMs": 5000
+        },
+        "networkRequests": 0
+      },
+      "enrichmentOutcomes": [
+        {
+          "id": "13-spaced-0",
+          "enqueuedAt": 1000,
+          "eligibleAt": 2000,
+          "deadlineAt": 6000,
+          "physicalStartedAt": 3206,
+          "parsedAt": 4161,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-1",
+          "enqueuedAt": 6833,
+          "eligibleAt": 7833,
+          "deadlineAt": 11833,
+          "physicalStartedAt": 7935,
+          "parsedAt": 8890,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-2",
+          "enqueuedAt": 12666,
+          "eligibleAt": 13666,
+          "deadlineAt": 17666,
+          "physicalStartedAt": 13768,
+          "parsedAt": 14723,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-3",
+          "enqueuedAt": 18500,
+          "eligibleAt": 19500,
+          "deadlineAt": 23500,
+          "physicalStartedAt": 19558,
+          "parsedAt": 20513,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-4",
+          "enqueuedAt": 24333,
+          "eligibleAt": 25333,
+          "deadlineAt": 29333,
+          "physicalStartedAt": 25358,
+          "parsedAt": 26313,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-5",
+          "enqueuedAt": 30166,
+          "eligibleAt": 31166,
+          "deadlineAt": 35166,
+          "physicalStartedAt": 31268,
+          "parsedAt": 32223,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-6",
+          "enqueuedAt": 36000,
+          "eligibleAt": 37000,
+          "deadlineAt": 41000,
+          "physicalStartedAt": 37206,
+          "parsedAt": 38161,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-7",
+          "enqueuedAt": 41833,
+          "eligibleAt": 42833,
+          "deadlineAt": 46833,
+          "physicalStartedAt": 43135,
+          "parsedAt": 44090,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-8",
+          "enqueuedAt": 47666,
+          "eligibleAt": 48666,
+          "deadlineAt": 52666,
+          "physicalStartedAt": 49168,
+          "parsedAt": 50123,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-9",
+          "enqueuedAt": 53500,
+          "eligibleAt": 54500,
+          "deadlineAt": 58500,
+          "physicalStartedAt": 55158,
+          "parsedAt": 56113,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-10",
+          "enqueuedAt": 59333,
+          "eligibleAt": 60333,
+          "deadlineAt": 64333,
+          "physicalStartedAt": 61158,
+          "parsedAt": 62113,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-11",
+          "enqueuedAt": 65166,
+          "eligibleAt": 66166,
+          "deadlineAt": 70166,
+          "physicalStartedAt": 67158,
+          "parsedAt": 68113,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-spaced-12",
+          "enqueuedAt": 71000,
+          "eligibleAt": 72000,
+          "deadlineAt": 76000,
+          "physicalStartedAt": 73158,
+          "parsedAt": 74113,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        }
+      ],
+      "protectionTimelineColumns": [
+        "scheduledAt",
+        "physicalStartedAt",
+        "parsedAt",
+        "deadlineAt"
+      ],
+      "protectionTimeline": [
+        [
+          0,
+          102,
+          1139,
+          4000
+        ],
+        [
+          2000,
+          2054,
+          3091,
+          5139
+        ],
+        [
+          4000,
+          4302,
+          5339,
+          7091
+        ],
+        [
+          6000,
+          6054,
+          7091,
+          9339
+        ],
+        [
+          8000,
+          9087,
+          10124,
+          11091
+        ],
+        [
+          10000,
+          10239,
+          11276,
+          14124
+        ],
+        [
+          12000,
+          12102,
+          13139,
+          15276
+        ],
+        [
+          14000,
+          14902,
+          15939,
+          17139
+        ],
+        [
+          16000,
+          16054,
+          17091,
+          19939
+        ],
+        [
+          18000,
+          18006,
+          19043,
+          21091
+        ],
+        [
+          20000,
+          20702,
+          21739,
+          23043
+        ],
+        [
+          22000,
+          22054,
+          23091,
+          25739
+        ],
+        [
+          24000,
+          24006,
+          25043,
+          27091
+        ],
+        [
+          26000,
+          26502,
+          27539,
+          29043
+        ],
+        [
+          28000,
+          28054,
+          29091,
+          31539
+        ],
+        [
+          30000,
+          30006,
+          31043,
+          33091
+        ],
+        [
+          32000,
+          32420,
+          33457,
+          35043
+        ],
+        [
+          34000,
+          34102,
+          35139,
+          37457
+        ],
+        [
+          36000,
+          36054,
+          37091,
+          39139
+        ],
+        [
+          38000,
+          38302,
+          39339,
+          41091
+        ],
+        [
+          40000,
+          40054,
+          41091,
+          43339
+        ],
+        [
+          42000,
+          42006,
+          43043,
+          45091
+        ],
+        [
+          44000,
+          44287,
+          45324,
+          47043
+        ],
+        [
+          46000,
+          46039,
+          47076,
+          49324
+        ],
+        [
+          48000,
+          48102,
+          49139,
+          51076
+        ],
+        [
+          50000,
+          50302,
+          51339,
+          53139
+        ],
+        [
+          52000,
+          52054,
+          53091,
+          55339
+        ],
+        [
+          54000,
+          54006,
+          55043,
+          57091
+        ],
+        [
+          56000,
+          56302,
+          57339,
+          59043
+        ],
+        [
+          58000,
+          58054,
+          59091,
+          61339
+        ],
+        [
+          60000,
+          60006,
+          61043,
+          63091
+        ],
+        [
+          62000,
+          62302,
+          63339,
+          65043
+        ],
+        [
+          64000,
+          64054,
+          65091,
+          67339
+        ],
+        [
+          66000,
+          66006,
+          67043,
+          69091
+        ],
+        [
+          68000,
+          68302,
+          69339,
+          71043
+        ],
+        [
+          70000,
+          70054,
+          71091,
+          73339
+        ],
+        [
+          72000,
+          72006,
+          73043,
+          75091
+        ],
+        [
+          74000,
+          74302,
+          null,
+          77043
+        ]
+      ]
+    },
+    {
+      "name": "13-in-three-event-bursts-slow950-jitter100",
+      "profile": "13-in-three-event-bursts",
+      "costProfile": "SYNTHETIC950MS_HTTP_BOTH_METHODS",
+      "timerJitterMs": 100,
+      "requests": 39,
+      "requestsByKind": {
+        "protection": 38,
+        "enrichment": 1,
+        "pending": 0,
+        "reconnect": 0
+      },
+      "earlyProtectionStarts": 0,
+      "normalProtectionWaitChecks": 0,
+      "maximumCompletedEvaluationGapMs": 2248,
+      "maximumModeledQuoteAgeAtUseMs": 87,
+      "maximumRolling60SecondStarts": 32,
+      "maximumRolling10SecondStarts": 6,
+      "minimumStartGapMs": 1096,
+      "physicalOperationOverlapMaximum": 1,
+      "enrichments": {
+        "knownInputArrivals": 13,
+        "submitted": 13,
+        "completedWithinFiveSeconds": 1,
+        "refused": 12,
+        "timedOut": 0,
+        "completedLate": 0,
+        "pendingAtEnd": 0,
+        "inFlightAtEnd": 0,
+        "deadlineCensoredPendingAtEnd": 0,
+        "maximumArrivalToParseMs": 3161
+      },
+      "candidateInvalidations": [
+        {
+          "at": 5452,
+          "reason": "required-enrichment-completion-envelope-exceeds-deadline"
+        }
+      ],
+      "haltReason": null,
+      "assessment": {
+        "standard": {
+          "version": "proposed-research-timing-v1",
+          "status": "PROPOSED_NOT_APPROVED",
+          "targetMs": 2000,
+          "maximumCompletedGapMs": 4000,
+          "maximumQuoteAgeAtUseMs": 2000,
+          "maximumSourceAgeMs": 30000,
+          "enrichmentDeadlineMs": 5000
+        },
+        "classification": "PROPOSED_SCHEDULING_TIMING_ASSESSMENT_NOT_PRODUCTION_PROTECTION",
+        "protection": {
+          "verdict": "MODELED_TIMING_WITHIN_PROPOSAL",
+          "completedEvaluations": 37,
+          "wholeRequestedHorizonObserved": true,
+          "maximumGapIncludingOpeningAndObservedTailMs": 2248,
+          "openingGapMs": 1139,
+          "rightCensoredTailAtServiceEndMs": 1909,
+          "hardCompletedGapMs": 4000,
+          "deadlineMisses": 0,
+          "physicalOrCallerTimeout": false,
+          "protectionTimeout": false,
+          "quoteAgeAtUsePass": true,
+          "declaredProtectionEnvelopeRespected": true,
+          "normalInFlightAtRightBoundary": true,
+          "sourceStateValidity": "NOT_SIMULATED; original30s source, coherent state, fees and actual-size requirements remain mandatory"
+        },
+        "flow": {
+          "verdict": "CANDIDATE_WINDOW_UNUSABLE_OR_CENSORED",
+          "allRequiredEventsCompleted": false,
+          "completedWithinFiveSeconds": 1,
+          "knownRequiredEvents": 13,
+          "invalidations": [
+            {
+              "at": 5452,
+              "reason": "required-enrichment-completion-envelope-exceeds-deadline"
+            }
+          ],
+          "windowMayEnter": false,
+          "normalizationOrFeatureEvidence": "No trade fields or complete feature window are invented by the scheduler model."
+        },
+        "financial": {
+          "unresolvedActions": 0,
+          "retainedActions": [],
+          "financialAccountAccessed": false
+        },
+        "combined": {
+          "modeledTimingAndEventsPass": false,
+          "operationalAcceptance": false,
+          "marketPerformanceAssessed": false
+        },
+        "limitsUnchanged": {
+          "quoteAgeAtUseMs": 2000,
+          "sourceAgeMs": 30000,
+          "enrichmentDeadlineMs": 5000
+        },
+        "networkRequests": 0
+      },
+      "enrichmentOutcomes": [
+        {
+          "id": "13-in-three-event-bursts-0",
+          "enqueuedAt": 1000,
+          "eligibleAt": 2000,
+          "deadlineAt": 6000,
+          "physicalStartedAt": 3206,
+          "parsedAt": 4161,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "13-in-three-event-bursts-1",
+          "enqueuedAt": 1000,
+          "eligibleAt": 2000,
+          "deadlineAt": 6000,
+          "physicalStartedAt": null,
+          "parsedAt": null,
+          "status": "refused",
+          "reason": "Original candidate window suspended/invalidated: required-enrichment-completion-envelope-exceeds-deadline",
+          "windowUnusable": true
+        },
+        {
+          "id": "13-in-three-event-bursts-2",
+          "enqueuedAt": 1000,
+          "eligibleAt": 2000,
+          "deadlineAt": 6000,
+          "physicalStartedAt": null,
+          "parsedAt": null,
+          "status": "refused",
+          "reason": "Original candidate window suspended/invalidated: required-enrichment-completion-envelope-exceeds-deadline",
+          "windowUnusable": true
+        },
+        {
+          "id": "13-in-three-event-bursts-3",
+          "enqueuedAt": 18500,
+          "eligibleAt": 19500,
+          "deadlineAt": 23500,
+          "physicalStartedAt": null,
+          "parsedAt": null,
+          "status": "refused",
+          "reason": "Original candidate window suspended/invalidated; no partial entry or silent evidence drop",
+          "windowUnusable": true
+        },
+        {
+          "id": "13-in-three-event-bursts-4",
+          "enqueuedAt": 18500,
+          "eligibleAt": 19500,
+          "deadlineAt": 23500,
+          "physicalStartedAt": null,
+          "parsedAt": null,
+          "status": "refused",
+          "reason": "Original candidate window suspended/invalidated; no partial entry or silent evidence drop",
+          "windowUnusable": true
+        },
+        {
+          "id": "13-in-three-event-bursts-5",
+          "enqueuedAt": 18500,
+          "eligibleAt": 19500,
+          "deadlineAt": 23500,
+          "physicalStartedAt": null,
+          "parsedAt": null,
+          "status": "refused",
+          "reason": "Original candidate window suspended/invalidated; no partial entry or silent evidence drop",
+          "windowUnusable": true
+        },
+        {
+          "id": "13-in-three-event-bursts-6",
+          "enqueuedAt": 36000,
+          "eligibleAt": 37000,
+          "deadlineAt": 41000,
+          "physicalStartedAt": null,
+          "parsedAt": null,
+          "status": "refused",
+          "reason": "Original candidate window suspended/invalidated; no partial entry or silent evidence drop",
+          "windowUnusable": true
+        },
+        {
+          "id": "13-in-three-event-bursts-7",
+          "enqueuedAt": 36000,
+          "eligibleAt": 37000,
+          "deadlineAt": 41000,
+          "physicalStartedAt": null,
+          "parsedAt": null,
+          "status": "refused",
+          "reason": "Original candidate window suspended/invalidated; no partial entry or silent evidence drop",
+          "windowUnusable": true
+        },
+        {
+          "id": "13-in-three-event-bursts-8",
+          "enqueuedAt": 36000,
+          "eligibleAt": 37000,
+          "deadlineAt": 41000,
+          "physicalStartedAt": null,
+          "parsedAt": null,
+          "status": "refused",
+          "reason": "Original candidate window suspended/invalidated; no partial entry or silent evidence drop",
+          "windowUnusable": true
+        },
+        {
+          "id": "13-in-three-event-bursts-9",
+          "enqueuedAt": 53500,
+          "eligibleAt": 54500,
+          "deadlineAt": 58500,
+          "physicalStartedAt": null,
+          "parsedAt": null,
+          "status": "refused",
+          "reason": "Original candidate window suspended/invalidated; no partial entry or silent evidence drop",
+          "windowUnusable": true
+        },
+        {
+          "id": "13-in-three-event-bursts-10",
+          "enqueuedAt": 53500,
+          "eligibleAt": 54500,
+          "deadlineAt": 58500,
+          "physicalStartedAt": null,
+          "parsedAt": null,
+          "status": "refused",
+          "reason": "Original candidate window suspended/invalidated; no partial entry or silent evidence drop",
+          "windowUnusable": true
+        },
+        {
+          "id": "13-in-three-event-bursts-11",
+          "enqueuedAt": 53500,
+          "eligibleAt": 54500,
+          "deadlineAt": 58500,
+          "physicalStartedAt": null,
+          "parsedAt": null,
+          "status": "refused",
+          "reason": "Original candidate window suspended/invalidated; no partial entry or silent evidence drop",
+          "windowUnusable": true
+        },
+        {
+          "id": "13-in-three-event-bursts-12",
+          "enqueuedAt": 71000,
+          "eligibleAt": 72000,
+          "deadlineAt": 76000,
+          "physicalStartedAt": null,
+          "parsedAt": null,
+          "status": "refused",
+          "reason": "Original candidate window suspended/invalidated; no partial entry or silent evidence drop",
+          "windowUnusable": true
+        }
+      ],
+      "protectionTimelineColumns": [
+        "scheduledAt",
+        "physicalStartedAt",
+        "parsedAt",
+        "deadlineAt"
+      ],
+      "protectionTimeline": [
+        [
+          0,
+          102,
+          1139,
+          4000
+        ],
+        [
+          2000,
+          2054,
+          3091,
+          5139
+        ],
+        [
+          4000,
+          4302,
+          5339,
+          7091
+        ],
+        [
+          6000,
+          6054,
+          7091,
+          9339
+        ],
+        [
+          8000,
+          8006,
+          9043,
+          11091
+        ],
+        [
+          10000,
+          10102,
+          11139,
+          13043
+        ],
+        [
+          12000,
+          12054,
+          13091,
+          15139
+        ],
+        [
+          14000,
+          14006,
+          15043,
+          17091
+        ],
+        [
+          16000,
+          16102,
+          17139,
+          19043
+        ],
+        [
+          18000,
+          18054,
+          19091,
+          21139
+        ],
+        [
+          20000,
+          20006,
+          21043,
+          23091
+        ],
+        [
+          22000,
+          22102,
+          23139,
+          25043
+        ],
+        [
+          24000,
+          24054,
+          25091,
+          27139
+        ],
+        [
+          26000,
+          26006,
+          27043,
+          29091
+        ],
+        [
+          28000,
+          28102,
+          29139,
+          31043
+        ],
+        [
+          30000,
+          30054,
+          31091,
+          33139
+        ],
+        [
+          32000,
+          32006,
+          33043,
+          35091
+        ],
+        [
+          34000,
+          34102,
+          35139,
+          37043
+        ],
+        [
+          36000,
+          36054,
+          37091,
+          39139
+        ],
+        [
+          38000,
+          38006,
+          39043,
+          41091
+        ],
+        [
+          40000,
+          40102,
+          41139,
+          43043
+        ],
+        [
+          42000,
+          42054,
+          43091,
+          45139
+        ],
+        [
+          44000,
+          44006,
+          45043,
+          47091
+        ],
+        [
+          46000,
+          46102,
+          47139,
+          49043
+        ],
+        [
+          48000,
+          48054,
+          49091,
+          51139
+        ],
+        [
+          50000,
+          50006,
+          51043,
+          53091
+        ],
+        [
+          52000,
+          52102,
+          53139,
+          55043
+        ],
+        [
+          54000,
+          54054,
+          55091,
+          57139
+        ],
+        [
+          56000,
+          56006,
+          57043,
+          59091
+        ],
+        [
+          58000,
+          58102,
+          59139,
+          61043
+        ],
+        [
+          60000,
+          60054,
+          61091,
+          63139
+        ],
+        [
+          62000,
+          62006,
+          63043,
+          65091
+        ],
+        [
+          64000,
+          64102,
+          65139,
+          67043
+        ],
+        [
+          66000,
+          66054,
+          67091,
+          69139
+        ],
+        [
+          68000,
+          68006,
+          69043,
+          71091
+        ],
+        [
+          70000,
+          70102,
+          71139,
+          73043
+        ],
+        [
+          72000,
+          72054,
+          73091,
+          75139
+        ],
+        [
+          74000,
+          74006,
+          null,
+          77091
+        ]
+      ]
+    },
+    {
+      "name": "18-spaced-ceiling-slow950-jitter100",
+      "profile": "18-spaced-ceiling",
+      "costProfile": "SYNTHETIC950MS_HTTP_BOTH_METHODS",
+      "timerJitterMs": 100,
+      "requests": 56,
+      "requestsByKind": {
+        "protection": 38,
+        "enrichment": 18,
+        "pending": 0,
+        "reconnect": 0
+      },
+      "earlyProtectionStarts": 0,
+      "normalProtectionWaitChecks": 0,
+      "maximumCompletedEvaluationGapMs": 3000,
+      "maximumModeledQuoteAgeAtUseMs": 87,
+      "maximumRolling60SecondStarts": 46,
+      "maximumRolling10SecondStarts": 8,
+      "minimumStartGapMs": 1071,
+      "physicalOperationOverlapMaximum": 1,
+      "enrichments": {
+        "knownInputArrivals": 18,
+        "submitted": 18,
+        "completedWithinFiveSeconds": 18,
+        "refused": 0,
+        "timedOut": 0,
+        "completedLate": 0,
+        "pendingAtEnd": 0,
+        "inFlightAtEnd": 0,
+        "deadlineCensoredPendingAtEnd": 0,
+        "maximumArrivalToParseMs": 3161
+      },
+      "candidateInvalidations": [],
+      "haltReason": null,
+      "assessment": {
+        "standard": {
+          "version": "proposed-research-timing-v1",
+          "status": "PROPOSED_NOT_APPROVED",
+          "targetMs": 2000,
+          "maximumCompletedGapMs": 4000,
+          "maximumQuoteAgeAtUseMs": 2000,
+          "maximumSourceAgeMs": 30000,
+          "enrichmentDeadlineMs": 5000
+        },
+        "classification": "PROPOSED_SCHEDULING_TIMING_ASSESSMENT_NOT_PRODUCTION_PROTECTION",
+        "protection": {
+          "verdict": "MODELED_TIMING_WITHIN_PROPOSAL",
+          "completedEvaluations": 37,
+          "wholeRequestedHorizonObserved": true,
+          "maximumGapIncludingOpeningAndObservedTailMs": 3000,
+          "openingGapMs": 1139,
+          "rightCensoredTailAtServiceEndMs": 1957,
+          "hardCompletedGapMs": 4000,
+          "deadlineMisses": 0,
+          "physicalOrCallerTimeout": false,
+          "protectionTimeout": false,
+          "quoteAgeAtUsePass": true,
+          "declaredProtectionEnvelopeRespected": true,
+          "normalInFlightAtRightBoundary": true,
+          "sourceStateValidity": "NOT_SIMULATED; original30s source, coherent state, fees and actual-size requirements remain mandatory"
+        },
+        "flow": {
+          "verdict": "ALL_MODELED_REQUIRED_EVENTS_COMPLETED",
+          "allRequiredEventsCompleted": true,
+          "completedWithinFiveSeconds": 18,
+          "knownRequiredEvents": 18,
+          "invalidations": [],
+          "windowMayEnter": false,
+          "normalizationOrFeatureEvidence": "No trade fields or complete feature window are invented by the scheduler model."
+        },
+        "financial": {
+          "unresolvedActions": 0,
+          "retainedActions": [],
+          "financialAccountAccessed": false
+        },
+        "combined": {
+          "modeledTimingAndEventsPass": true,
+          "operationalAcceptance": false,
+          "marketPerformanceAssessed": false
+        },
+        "limitsUnchanged": {
+          "quoteAgeAtUseMs": 2000,
+          "sourceAgeMs": 30000,
+          "enrichmentDeadlineMs": 5000
+        },
+        "networkRequests": 0
+      },
+      "enrichmentOutcomes": [
+        {
+          "id": "18-spaced-ceiling-0",
+          "enqueuedAt": 1000,
+          "eligibleAt": 2000,
+          "deadlineAt": 6000,
+          "physicalStartedAt": 3206,
+          "parsedAt": 4161,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-1",
+          "enqueuedAt": 5117,
+          "eligibleAt": 6117,
+          "deadlineAt": 10117,
+          "physicalStartedAt": 7206,
+          "parsedAt": 8161,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-2",
+          "enqueuedAt": 9235,
+          "eligibleAt": 10235,
+          "deadlineAt": 14235,
+          "physicalStartedAt": 11206,
+          "parsedAt": 12161,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-3",
+          "enqueuedAt": 13352,
+          "eligibleAt": 14352,
+          "deadlineAt": 18352,
+          "physicalStartedAt": 15206,
+          "parsedAt": 16161,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-4",
+          "enqueuedAt": 17470,
+          "eligibleAt": 18470,
+          "deadlineAt": 22470,
+          "physicalStartedAt": 19172,
+          "parsedAt": 20127,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-5",
+          "enqueuedAt": 21588,
+          "eligibleAt": 22588,
+          "deadlineAt": 26588,
+          "physicalStartedAt": 23206,
+          "parsedAt": 24161,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-6",
+          "enqueuedAt": 25705,
+          "eligibleAt": 26705,
+          "deadlineAt": 30705,
+          "physicalStartedAt": 27206,
+          "parsedAt": 28161,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-7",
+          "enqueuedAt": 29823,
+          "eligibleAt": 30823,
+          "deadlineAt": 34823,
+          "physicalStartedAt": 31125,
+          "parsedAt": 32080,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-8",
+          "enqueuedAt": 33941,
+          "eligibleAt": 34941,
+          "deadlineAt": 38941,
+          "physicalStartedAt": 35181,
+          "parsedAt": 36136,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-9",
+          "enqueuedAt": 38058,
+          "eligibleAt": 39058,
+          "deadlineAt": 43058,
+          "physicalStartedAt": 39160,
+          "parsedAt": 40115,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-10",
+          "enqueuedAt": 42176,
+          "eligibleAt": 43176,
+          "deadlineAt": 47176,
+          "physicalStartedAt": 43206,
+          "parsedAt": 44161,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-11",
+          "enqueuedAt": 46294,
+          "eligibleAt": 47294,
+          "deadlineAt": 51294,
+          "physicalStartedAt": 47396,
+          "parsedAt": 48351,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-12",
+          "enqueuedAt": 50411,
+          "eligibleAt": 51411,
+          "deadlineAt": 55411,
+          "physicalStartedAt": 51513,
+          "parsedAt": 52468,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-13",
+          "enqueuedAt": 54529,
+          "eligibleAt": 55529,
+          "deadlineAt": 59529,
+          "physicalStartedAt": 55569,
+          "parsedAt": 56524,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-14",
+          "enqueuedAt": 58647,
+          "eligibleAt": 59647,
+          "deadlineAt": 63647,
+          "physicalStartedAt": 59749,
+          "parsedAt": 60704,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-15",
+          "enqueuedAt": 62764,
+          "eligibleAt": 63764,
+          "deadlineAt": 67764,
+          "physicalStartedAt": 63805,
+          "parsedAt": 64760,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-16",
+          "enqueuedAt": 66882,
+          "eligibleAt": 67882,
+          "deadlineAt": 71882,
+          "physicalStartedAt": 67984,
+          "parsedAt": 68939,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        },
+        {
+          "id": "18-spaced-ceiling-17",
+          "enqueuedAt": 71000,
+          "eligibleAt": 72000,
+          "deadlineAt": 76000,
+          "physicalStartedAt": 73158,
+          "parsedAt": 74113,
+          "status": "completed",
+          "reason": null,
+          "windowUnusable": false
+        }
+      ],
+      "protectionTimelineColumns": [
+        "scheduledAt",
+        "physicalStartedAt",
+        "parsedAt",
+        "deadlineAt"
+      ],
+      "protectionTimeline": [
+        [
+          0,
+          102,
+          1139,
+          4000
+        ],
+        [
+          2000,
+          2054,
+          3091,
+          5139
+        ],
+        [
+          4000,
+          4302,
+          5339,
+          7091
+        ],
+        [
+          6000,
+          6054,
+          7091,
+          9339
+        ],
+        [
+          8000,
+          8302,
+          9339,
+          11091
+        ],
+        [
+          10000,
+          10054,
+          11091,
+          13339
+        ],
+        [
+          12000,
+          12302,
+          13339,
+          15091
+        ],
+        [
+          14000,
+          14054,
+          15091,
+          17339
+        ],
+        [
+          16000,
+          16302,
+          17339,
+          19091
+        ],
+        [
+          18000,
+          18054,
+          19091,
+          21339
+        ],
+        [
+          20000,
+          20302,
+          21339,
+          23091
+        ],
+        [
+          22000,
+          22054,
+          23091,
+          25339
+        ],
+        [
+          24000,
+          24302,
+          25339,
+          27091
+        ],
+        [
+          26000,
+          26054,
+          27091,
+          29339
+        ],
+        [
+          28000,
+          28302,
+          29339,
+          31091
+        ],
+        [
+          30000,
+          30054,
+          31091,
+          33339
+        ],
+        [
+          32000,
+          32277,
+          33314,
+          35091
+        ],
+        [
+          34000,
+          34029,
+          35066,
+          37314
+        ],
+        [
+          36000,
+          36302,
+          37339,
+          39066
+        ],
+        [
+          38000,
+          38054,
+          39091,
+          41339
+        ],
+        [
+          40000,
+          40302,
+          41339,
+          43091
+        ],
+        [
+          42000,
+          42054,
+          43091,
+          45339
+        ],
+        [
+          44000,
+          44302,
+          45339,
+          47091
+        ],
+        [
+          46000,
+          46054,
+          47091,
+          49339
+        ],
+        [
+          48000,
+          48502,
+          49539,
+          51091
+        ],
+        [
+          50000,
+          50054,
+          51091,
+          53539
+        ],
+        [
+          52000,
+          52665,
+          53702,
+          55091
+        ],
+        [
+          54000,
+          54017,
+          55054,
+          57702
+        ],
+        [
+          56000,
+          56702,
+          57739,
+          59054
+        ],
+        [
+          58000,
+          58054,
+          59091,
+          61739
+        ],
+        [
+          60000,
+          60901,
+          61938,
+          63091
+        ],
+        [
+          62000,
+          62053,
+          63090,
+          65938
+        ],
+        [
+          64000,
+          64957,
+          65994,
+          67090
+        ],
+        [
+          66000,
+          66102,
+          67139,
+          69994
+        ],
+        [
+          68000,
+          69102,
+          70139,
+          71139
+        ],
+        [
+          70000,
+          70254,
+          71291,
+          74139
+        ],
+        [
+          72000,
+          72006,
+          73043,
+          75291
+        ],
+        [
+          74000,
+          74302,
+          null,
+          77043
+        ]
+      ]
+    }
+  ],
+  "limitations": [
+    "No current price path, Clock/account/fee validation, trade mapping, complete feature window or strategy/P&L outcome is modeled; prior01 mapping failure remains unchanged.",
+    "Three hypothetical holdings sharing one coherent request is an input assumption consistent with existing component evidence, not new live multi-pool or EC2 evidence.",
+    "Only75s observation scheduling is simulated. Setup/prewarm/upgrade and audit are counted in90units but shared rate-window carryover, response bytes,150s global deadline/145s soft stop and shutdown feasibility are unproved by this component model.",
+    "24auditunits cannot all start in20s under10starts/10s; extending a hypothesis does not verify its full independent audit/denominator.",
+    "The4s gap is an UNAPPROVED research proposal.2s at-use quote freshness and30s source validity remain mandatory; timing pass cannot establish stop protection during actual sudden moves.",
+    "13preceding pool-address transactions are a projection, not13verified swaps or guaranteed future traffic. No selected trade may be silently discarded at18cap.",
+    "Prior costs and explicit arrivals are rescheduled synthetically. Actual market availability, original failures, live samples, financial/account state and counters are unchanged.",
+    "No production/provider/network/wallet action, account access, PAPER-entry enablement or acceptance clock follows from this artifact."
+  ],
+  "networkRequests": 0,
+  "sourceFilesModifiedByEvaluation": false,
+  "oldEvidenceModified": false,
+  "productionChanged": false,
+  "financialAccountAccessed": false,
+  "paperEntriesEnabled": false,
+  "liveTrading": false,
+  "acceptanceClockStarted": false
+}

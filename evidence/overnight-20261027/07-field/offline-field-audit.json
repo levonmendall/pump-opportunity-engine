@@ -1,0 +1,397 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_ACTUAL_MATCHED_SELL_FIELD_AUDIT_NOT_FLOW_ACCEPTANCE",
+  "generatedAt": "2026-10-27T07:14:23.045Z",
+  "networkRequests": 0,
+  "newRequestUnits": 0,
+  "sourceFiles": [
+    {
+      "path": "evidence/overnight-20261027/07-field/observations.ndjson",
+      "sha256": "a0882224e205e662a680c2e38c79d57a2cd20857266ded37cf37f166e53b069a"
+    },
+    {
+      "path": "evidence/overnight-20261027/07-field/capture.json",
+      "sha256": "15d42d745b83f84dd2549a7f6c259565f036a3b83fda8a6818cfcf63b99272e1"
+    }
+  ],
+  "sdk": "@pump-fun/pump-swap-sdk@2.2.0",
+  "idlSha256": "c2f8ce0bc0a740d9125644b2d95494c97199fce1604802f5ab0497184bdcce61",
+  "scope": {
+    "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+    "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+    "baseUnits": "436723517",
+    "minSlot": 461979360,
+    "supportedPoolEvidence": "90616a0cd41cf585c00b12890205685b6a8b1f9144013a70969c863e47f8a3cf"
+  },
+  "denominator": {
+    "selectedPumpApiMessages": 3,
+    "selectedSignatures": 3,
+    "confirmedTransactions": 3,
+    "verifiedTargetPoolSwapInstructions": 3,
+    "verifiedTargetPoolEventCpis": 3,
+    "buyEvents": 0,
+    "sellV2Events": 3,
+    "topLevelSwaps": 1,
+    "jupiterCpiSwaps": 2,
+    "multipleTargetSwapTransactions": 0,
+    "meaning": "Denominator is the three selected messages captured in this29.289s interval; it is not every on-chain transaction in the pool/window. Independent bounded history audit is separate."
+  },
+  "audits": [
+    {
+      "signature": "3cuSKandC1XbpD1BTxN6SkvQ6wvrC4UxGY96YgxGa1rfAd5kVfGL3xurVFHaExB5838G3ihbYyfFP95QV9xoP7aB",
+      "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+      "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+      "successful": true,
+      "slot": 461980320,
+      "transactionVersion": 0,
+      "swapInstruction": "sell_v2",
+      "executionShape": "TOP_LEVEL_PUMPSWAP",
+      "identity": {
+        "signature": "3cuSKandC1XbpD1BTxN6SkvQ6wvrC4UxGY96YgxGa1rfAd5kVfGL3xurVFHaExB5838G3ihbYyfFP95QV9xoP7aB",
+        "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "outerInstructionIndex": 3,
+        "swapInnerInstructionIndex": null,
+        "eventInnerInstructionIndex": 3,
+        "eventIndex": 0
+      },
+      "identityKey": "3cuSKandC1XbpD1BTxN6SkvQ6wvrC4UxGY96YgxGa1rfAd5kVfGL3xurVFHaExB5838G3ihbYyfFP95QV9xoP7aB:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:3:outer:3:0",
+      "token": {
+        "decimals": 6,
+        "rawDecimalLexemes": [
+          "11576.896997",
+          "11576.896997"
+        ],
+        "exactIntegerValues": [
+          "11576896997",
+          "11576896997"
+        ],
+        "executedBaseUnits": "11576896997",
+        "match": true,
+        "precisionConclusion": "Exact decimal lexical conversion matches for these observed values. Payload supplies JSON UI numbers, not an integer-unit contract; general uint64 precision remains unverified."
+      },
+      "quote": {
+        "mint": "So11111111111111111111111111111111111111112",
+        "decimals": 9,
+        "rawDecimalLexemes": [
+          "0.275130721",
+          "0.275130721"
+        ],
+        "exactIntegerValues": [
+          "275130721",
+          "275130721"
+        ],
+        "executedCurveGrossLamports": "275130721",
+        "executedUserNetLamports": "272792108",
+        "matchedConvention": "GROSS_CURVE_QUOTE_BEFORE_POOL_FEE_DEDUCTIONS",
+        "differenceLamports": "2338613",
+        "fees": {
+          "lp_fee": "550262",
+          "protocol_fee": "137566",
+          "coin_creator_fee": "1650785",
+          "cashback": "0",
+          "buyback_fee": "68783",
+          "holder_rewards": "0",
+          "quote_transfer_fee": "0"
+        },
+        "lpPlusProtocolPlusCreatorLamports": "2338613",
+        "buybackTreatment": "Reported buyback is included in protocol fee for these three Sells; adding it to LP+protocol+creator again would double-count it.",
+        "transactionFeeLamports": "10518",
+        "providerPriorityFeeDecimalLexeme": "0.000010518",
+        "providerPriorityFeeScaledLamports": "10518",
+        "priorityFieldEqualsTotalTransactionMetaFee": true
+      },
+      "attribution": {
+        "eventUser": "Bf5i5AaLejNRSJ5L6KAnq47uiWT1VSKDxaYdJYP6DRK",
+        "instructionUser": "Bf5i5AaLejNRSJ5L6KAnq47uiWT1VSKDxaYdJYP6DRK",
+        "breakdownTrader": "Bf5i5AaLejNRSJ5L6KAnq47uiWT1VSKDxaYdJYP6DRK",
+        "txSigner": "Bf5i5AaLejNRSJ5L6KAnq47uiWT1VSKDxaYdJYP6DRK",
+        "feePayer": "Bf5i5AaLejNRSJ5L6KAnq47uiWT1VSKDxaYdJYP6DRK",
+        "transactionSigners": [
+          "Bf5i5AaLejNRSJ5L6KAnq47uiWT1VSKDxaYdJYP6DRK"
+        ],
+        "allEqualInThisObservedTransaction": true,
+        "distinctFeePayerCaseObserved": false,
+        "meaning": "Matching addresses verify these examples only. Neither fee payer nor txSigner is assumed to be the swap user generally; different wallets are not proof of independent people."
+      },
+      "integrity": {
+        "providerBlock": 461980320,
+        "matchesRpcSlot": true,
+        "providerCommitmentFieldPresent": false,
+        "providerInstructionIdentityFieldsPresent": false,
+        "providerTimestamp": 1793084920716,
+        "providerReceivedAt": 1793084920774,
+        "providerTimestampToReceiptMs": 58,
+        "providerTimeMeaning": "Provider timestamp meaning/synchronization not established; this difference is not verified chain-origin latency.",
+        "rpcRequestedAt": 1793084921819,
+        "confirmedAvailableAt": 1793084922035,
+        "normalizedRecordedAt": 1793084922047,
+        "enrichedAfterHintMs": 1261,
+        "normalizedAvailabilityUsed": 1793084922035,
+        "commitment": "confirmed supplied by explicit RPC getTransaction request, not inferred from feed block/timestamp",
+        "noBackdating": true,
+        "eventExactPackagedLayout": true,
+        "transferChecks": {
+          "baseTransfer": true,
+          "userQuoteTransfer": true
+        },
+        "transactionFeePayerNativeBalanceDeltaLamports": "-15518"
+      },
+      "enrichmentRequests": 1
+    },
+    {
+      "signature": "gWJYoRVLmEuAMrJbuhWHK7NhAU1Kv3GTZs3fWuVEWrbb5zCsG3feDZioiq81NQjjnouH2nkpbT1o9Niss7mJJNu",
+      "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+      "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+      "successful": true,
+      "slot": 461980321,
+      "transactionVersion": 0,
+      "swapInstruction": "sell_v2",
+      "executionShape": "PUMPSWAP_CPI_VIA_JUPITER",
+      "identity": {
+        "signature": "gWJYoRVLmEuAMrJbuhWHK7NhAU1Kv3GTZs3fWuVEWrbb5zCsG3feDZioiq81NQjjnouH2nkpbT1o9Niss7mJJNu",
+        "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "outerInstructionIndex": 9,
+        "swapInnerInstructionIndex": 0,
+        "eventInnerInstructionIndex": 4,
+        "eventIndex": 0
+      },
+      "identityKey": "gWJYoRVLmEuAMrJbuhWHK7NhAU1Kv3GTZs3fWuVEWrbb5zCsG3feDZioiq81NQjjnouH2nkpbT1o9Niss7mJJNu:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:9:0:4:0",
+      "token": {
+        "decimals": 6,
+        "rawDecimalLexemes": [
+          "13658.091481",
+          "13658.091481"
+        ],
+        "exactIntegerValues": [
+          "13658091481",
+          "13658091481"
+        ],
+        "executedBaseUnits": "13658091481",
+        "match": true,
+        "precisionConclusion": "Exact decimal lexical conversion matches for these observed values. Payload supplies JSON UI numbers, not an integer-unit contract; general uint64 precision remains unverified."
+      },
+      "quote": {
+        "mint": "So11111111111111111111111111111111111111112",
+        "decimals": 9,
+        "rawDecimalLexemes": [
+          "0.324382629",
+          "0.324382629"
+        ],
+        "exactIntegerValues": [
+          "324382629",
+          "324382629"
+        ],
+        "executedCurveGrossLamports": "324382629",
+        "executedUserNetLamports": "321625375",
+        "matchedConvention": "GROSS_CURVE_QUOTE_BEFORE_POOL_FEE_DEDUCTIONS",
+        "differenceLamports": "2757254",
+        "fees": {
+          "lp_fee": "648766",
+          "protocol_fee": "162192",
+          "coin_creator_fee": "1946296",
+          "cashback": "0",
+          "buyback_fee": "81096",
+          "holder_rewards": "0",
+          "quote_transfer_fee": "0"
+        },
+        "lpPlusProtocolPlusCreatorLamports": "2757254",
+        "buybackTreatment": "Reported buyback is included in protocol fee for these three Sells; adding it to LP+protocol+creator again would double-count it.",
+        "transactionFeeLamports": "64710",
+        "providerPriorityFeeDecimalLexeme": "0.00006471",
+        "providerPriorityFeeScaledLamports": "64710",
+        "priorityFieldEqualsTotalTransactionMetaFee": true
+      },
+      "attribution": {
+        "eventUser": "DaEVnhsnoYZ3fX3xfTjr7RCiSHfyLZY4Y12MSKmDjB9F",
+        "instructionUser": "DaEVnhsnoYZ3fX3xfTjr7RCiSHfyLZY4Y12MSKmDjB9F",
+        "breakdownTrader": "DaEVnhsnoYZ3fX3xfTjr7RCiSHfyLZY4Y12MSKmDjB9F",
+        "txSigner": "DaEVnhsnoYZ3fX3xfTjr7RCiSHfyLZY4Y12MSKmDjB9F",
+        "feePayer": "DaEVnhsnoYZ3fX3xfTjr7RCiSHfyLZY4Y12MSKmDjB9F",
+        "transactionSigners": [
+          "DaEVnhsnoYZ3fX3xfTjr7RCiSHfyLZY4Y12MSKmDjB9F"
+        ],
+        "allEqualInThisObservedTransaction": true,
+        "distinctFeePayerCaseObserved": false,
+        "meaning": "Matching addresses verify these examples only. Neither fee payer nor txSigner is assumed to be the swap user generally; different wallets are not proof of independent people."
+      },
+      "integrity": {
+        "providerBlock": 461980321,
+        "matchesRpcSlot": true,
+        "providerCommitmentFieldPresent": false,
+        "providerInstructionIdentityFieldsPresent": false,
+        "providerTimestamp": 1793084920987,
+        "providerReceivedAt": 1793084921045,
+        "providerTimestampToReceiptMs": 58,
+        "providerTimeMeaning": "Provider timestamp meaning/synchronization not established; this difference is not verified chain-origin latency.",
+        "rpcRequestedAt": 1793084922124,
+        "confirmedAvailableAt": 1793084922892,
+        "normalizedRecordedAt": 1793084922894,
+        "enrichedAfterHintMs": 1847,
+        "normalizedAvailabilityUsed": 1793084922892,
+        "commitment": "confirmed supplied by explicit RPC getTransaction request, not inferred from feed block/timestamp",
+        "noBackdating": true,
+        "eventExactPackagedLayout": true,
+        "transferChecks": {
+          "baseTransfer": true,
+          "userQuoteTransfer": true
+        },
+        "transactionFeePayerNativeBalanceDeltaLamports": "4090948290"
+      },
+      "enrichmentRequests": 1
+    },
+    {
+      "signature": "63vmwMXYLwg3uGjDoTh29xtydFTRr9nLgJ43dJEERQHzWGac9YW7ssit1Eyuy4wQdBh8UuonpmbkBkimYCYfJ4kr",
+      "pool": "GLL3CzybpSCLZdoACf8QUM5YrKVwyA65kQ2RcTsJxxzV",
+      "mint": "8nnaeWCw8mUypcGAgbmSuzAT85uWx4UN12adDrMhXrGF",
+      "successful": true,
+      "slot": 461980392,
+      "transactionVersion": 0,
+      "swapInstruction": "sell_v2",
+      "executionShape": "PUMPSWAP_CPI_VIA_JUPITER",
+      "identity": {
+        "signature": "63vmwMXYLwg3uGjDoTh29xtydFTRr9nLgJ43dJEERQHzWGac9YW7ssit1Eyuy4wQdBh8UuonpmbkBkimYCYfJ4kr",
+        "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+        "outerInstructionIndex": 3,
+        "swapInnerInstructionIndex": 0,
+        "eventInnerInstructionIndex": 4,
+        "eventIndex": 0
+      },
+      "identityKey": "63vmwMXYLwg3uGjDoTh29xtydFTRr9nLgJ43dJEERQHzWGac9YW7ssit1Eyuy4wQdBh8UuonpmbkBkimYCYfJ4kr:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:3:0:4:0",
+      "token": {
+        "decimals": 6,
+        "rawDecimalLexemes": [
+          "668.143682",
+          "668.143682"
+        ],
+        "exactIntegerValues": [
+          "668143682",
+          "668143682"
+        ],
+        "executedBaseUnits": "668143682",
+        "match": true,
+        "precisionConclusion": "Exact decimal lexical conversion matches for these observed values. Payload supplies JSON UI numbers, not an integer-unit contract; general uint64 precision remains unverified."
+      },
+      "quote": {
+        "mint": "So11111111111111111111111111111111111111112",
+        "decimals": 9,
+        "rawDecimalLexemes": [
+          "0.01586277",
+          "0.01586277"
+        ],
+        "exactIntegerValues": [
+          "15862770",
+          "15862770"
+        ],
+        "executedCurveGrossLamports": "15862770",
+        "executedUserNetLamports": "15727935",
+        "matchedConvention": "GROSS_CURVE_QUOTE_BEFORE_POOL_FEE_DEDUCTIONS",
+        "differenceLamports": "134835",
+        "fees": {
+          "lp_fee": "31726",
+          "protocol_fee": "7932",
+          "coin_creator_fee": "95177",
+          "cashback": "0",
+          "buyback_fee": "3966",
+          "holder_rewards": "0",
+          "quote_transfer_fee": "0"
+        },
+        "lpPlusProtocolPlusCreatorLamports": "134835",
+        "buybackTreatment": "Reported buyback is included in protocol fee for these three Sells; adding it to LP+protocol+creator again would double-count it.",
+        "transactionFeeLamports": "16833",
+        "providerPriorityFeeDecimalLexeme": "0.000016833",
+        "providerPriorityFeeScaledLamports": "16833",
+        "priorityFieldEqualsTotalTransactionMetaFee": true
+      },
+      "attribution": {
+        "eventUser": "DPo1ZvRQMbzwquCU9QqnZeGA85zYLh8XAmxQrxzHF6zr",
+        "instructionUser": "DPo1ZvRQMbzwquCU9QqnZeGA85zYLh8XAmxQrxzHF6zr",
+        "breakdownTrader": "DPo1ZvRQMbzwquCU9QqnZeGA85zYLh8XAmxQrxzHF6zr",
+        "txSigner": "DPo1ZvRQMbzwquCU9QqnZeGA85zYLh8XAmxQrxzHF6zr",
+        "feePayer": "DPo1ZvRQMbzwquCU9QqnZeGA85zYLh8XAmxQrxzHF6zr",
+        "transactionSigners": [
+          "DPo1ZvRQMbzwquCU9QqnZeGA85zYLh8XAmxQrxzHF6zr"
+        ],
+        "allEqualInThisObservedTransaction": true,
+        "distinctFeePayerCaseObserved": false,
+        "meaning": "Matching addresses verify these examples only. Neither fee payer nor txSigner is assumed to be the swap user generally; different wallets are not proof of independent people."
+      },
+      "integrity": {
+        "providerBlock": 461980392,
+        "matchesRpcSlot": true,
+        "providerCommitmentFieldPresent": false,
+        "providerInstructionIdentityFieldsPresent": false,
+        "providerTimestamp": 1793084936030,
+        "providerReceivedAt": 1793084936089,
+        "providerTimestampToReceiptMs": 59,
+        "providerTimeMeaning": "Provider timestamp meaning/synchronization not established; this difference is not verified chain-origin latency.",
+        "rpcRequestedAt": 1793084937181,
+        "confirmedAvailableAt": 1793084937359,
+        "normalizedRecordedAt": 1793084937362,
+        "enrichedAfterHintMs": 1270,
+        "normalizedAvailabilityUsed": 1793084937359,
+        "commitment": "confirmed supplied by explicit RPC getTransaction request, not inferred from feed block/timestamp",
+        "noBackdating": true,
+        "eventExactPackagedLayout": true,
+        "transferChecks": {
+          "baseTransfer": true,
+          "userQuoteTransfer": true
+        },
+        "transactionFeePayerNativeBalanceDeltaLamports": "15711102"
+      },
+      "enrichmentRequests": 1
+    }
+  ],
+  "fieldContract": {
+    "matchedForObservedSells": [
+      "signature",
+      "poolId and base mint/WSOL quote mint",
+      "sell direction",
+      "tokenAmount/breakdown tokenAmount lexical decimals equal actual base units at six decimals",
+      "quoteAmount/breakdown quoteAmount lexical decimals equal gross curve quote lamports at nine decimals",
+      "breakdown.trader equals event user and actual invoked instruction user",
+      "block equals confirmed RPC slot"
+    ],
+    "notSuppliedOrNotEstablished": [
+      "Full top-level/inner-instruction/event identity",
+      "Explicit provider commitment/success/confirmation or fork correction contract",
+      "General UI-number uint64 precision guarantee",
+      "Buy, multiple-target-swap, alternate-payer/user and other swap-variant field semantics",
+      "Independent trade completeness/reconnect/gap/reversal behavior",
+      "price field freshness/meaning as an executable actual-size quote"
+    ],
+    "providerCommitment": "UNKNOWN_FROM_PAYLOAD; any processed-source documentation claim remains a separate unverified claim. Confirmation here comes from explicit read-only confirmed RPC.",
+    "normalOperationRpcDependency": "Current strategy integrity requirements still require one successful confirmed getTransaction per unique selected transaction, not a sampled verification request. Needed for actual full event identity, instruction/event trader roles, transaction success, confirmation, exact integer event/transfer values, fees and multi-event denominator. A transaction may supply multiple events; do not budget one request per raw message blindly.",
+    "validationOnlyWork": "These offline raw-payload comparisons, SDK parity and independent bounded coverage audits validate the adapter. They do not by themselves create missing per-event identities or confirmation during future operation.",
+    "signatureOnlyDedup": "Signature can coalesce one transaction enrichment but cannot uniquely identify or deduplicate its potentially multiple swap events.",
+    "amountConvention": "Provider observed Sells use curve/gross quoteAmount. The existing research adapter preserves both curve and user/net views; this audit does not silently freeze a primary strategy convention.",
+    "feePayerWarning": "All three selected examples have feePayer==txSigner==event user. Second routed transaction native fee-payer balance change4.090948290SOL is not the0.321625375SOL net selected-pool event. Do not derive selected notional from whole-transaction balance deltas."
+  },
+  "windowEvidence": {
+    "observationMs": 29289,
+    "complete60SecondFeatureWindows": 0,
+    "qualityGaps": [],
+    "duplicateSignatureHints": 0,
+    "duplicateExecutedEvents": 0,
+    "corrections": 0,
+    "noDuplicateCorrectionProof": "Zero observed duplicates/corrections is not a tested recovery/correction guarantee.",
+    "queueAgeMs": {
+      "samples": 3,
+      "p50": 1079,
+      "p95": 1092,
+      "maximum": 1092
+    },
+    "enrichmentAvailableAfterHintMs": {
+      "samples": 3,
+      "p50": 1270,
+      "p95": 1847,
+      "maximum": 1847
+    },
+    "delayMeaning": "Includes the predeclared1s enrichment delay and shared request pacing, not just provider latency.",
+    "qualificationEnabled": false,
+    "naturalPaperTrades": 0
+  },
+  "conclusion": "VERIFIED_FOR_THESE_THREE_ACTUAL_SELL_V2_EVENTS_ONLY. Gross-vs-net quote semantics and two genuine Jupiter CPI sells are now matched on retained raw bytes, exact event layouts and executed token transfers. Complete flow windows, buys, multiple swaps per transaction, independent completeness and reliable raw-feed-only operation remain unverified. Per-transaction RPC enrichment remains necessary for the current auditable flow contract.",
+  "productionChanged": false,
+  "paperEntriesEnabled": false,
+  "acceptanceClockStarted": false
+}

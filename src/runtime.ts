@@ -1,3 +1,4 @@
+import {writePoePublicStatus} from './public-status.js';
 import {createServer,createConnection,type Server as SocketServer} from 'node:net';
 import {chmodSync,closeSync,existsSync,lstatSync,mkdirSync,openSync,readFileSync,realpathSync,renameSync,unlinkSync,writeFileSync} from 'node:fs';
 import {basename,dirname,isAbsolute,resolve} from 'node:path';
@@ -272,20 +273,8 @@ export class PaperObservationRuntime {
   }
   private writePublicStatus(now:number){
     const path=this.options.publicStatusPath;if(!path)return;
-    let temp:string|undefined;
-    try{
-      if(!isAbsolute(path)||basename(path)!=='status.json'||resolve(path)!==path)throw new Error();
-      const parent=dirname(path),dir=lstatSync(parent),owner=process.getuid?.();
-      const privateRoot=realpathSync(this.options.directory);
-      if(!dir.isDirectory()||dir.isSymbolicLink()||dir.uid!==owner||(dir.mode&0o777)!==0o755||realpathSync(parent)!==parent||parent===privateRoot||parent.startsWith(privateRoot+'/'))throw new Error();
-      try{
-        const current=lstatSync(path);
-        if(!current.isFile()||current.isSymbolicLink()||current.uid!==owner||(current.mode&0o777)!==0o644||current.size>4096)throw new Error();
-        const prior=JSON.parse(readFileSync(path,'utf8'));
-        if(prior.schemaVersion!==1||prior.project!=='pump-opportunity-engine'||prior.mode!=='PAPER'||prior.accountId!==this.identity.accountId)throw new Error();
-      }catch(error){if((error as NodeJS.ErrnoException).code!=='ENOENT')throw error;}
-      const state=this.options.ledger.state();
-      const body=JSON.stringify({
+    const state=this.options.ledger.state();
+    this.publicStatusUnavailable=!writePoePublicStatus({path,privateDirectory:this.options.directory,status:{
         schemaVersion:1,project:'pump-opportunity-engine',mode:'PAPER',liveTrading:false,
         accountId:this.identity.accountId,inceptionAt:this.identity.inceptionAt,release:this.identity.release,strategy:this.identity.strategy,
         generatedAt:iso(now),lastUsefulProgressAt:this.lastUsefulAt===null?null:iso(this.lastUsefulAt),
@@ -293,16 +282,9 @@ export class PaperObservationRuntime {
         lastReconciledAt:state.daily.reconciledAt?iso(state.daily.reconciledAt):null,
         feedConnected:this.connected,lastMigrationReceivedAt:this.lastMigrationReceivedAt===null?null:iso(this.lastMigrationReceivedAt),shortlistCount:this.candidates.size,
         entriesDisabled:true,flowVerified:false,blocker:this.blocker(),reportingConfigured:!!this.options.publisher,
-      })+'\n';
-      if(Buffer.byteLength(body)>4096)throw new Error();
-      temp=resolve(parent,`.poe-status-${randomUUID()}.tmp`);
-      const fd=openSync(temp,'wx',0o600);
-      try{writeFileSync(fd,body);}finally{closeSync(fd);}
-      chmodSync(temp,0o644);renameSync(temp,path);temp=undefined;
-      this.publicStatusUnavailable=false;
-    }catch{this.publicStatusUnavailable=true;}
-    finally{if(temp){try{unlinkSync(temp);}catch{ /* No arbitrary error is logged. */ }}}
+      }});
   }
+
   snapshot(now=this.now()):Snapshot{
     const state=this.options.ledger.state(),p=this.options.ledger.projection(now,this.price??undefined,this.marks);
     const price=p.usdValuationAvailable&&this.price?Number(BigInt(this.price.microUsdPerSol))/1e6:null;

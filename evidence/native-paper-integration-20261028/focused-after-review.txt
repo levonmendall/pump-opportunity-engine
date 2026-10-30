@@ -1,0 +1,47 @@
+✔ actual ACK time crossing a bucket preserves identical six-bucket warming in native and trader windows (28.951493ms)
+✔ protocol slot received during decision recording invalidates its earlier quote before financial reservation (16.494468ms)
+✔ audit certificate is an immutable exact-window generation fact and is unavailable after expiry, reconnect or retirement (21.827298ms)
+✔ financial ownership survives source retirement and age expiry without deleting HELD identity or origin proof (11.47056ms)
+✔ native PAPER CLI requires explicit resume/contract and optional flags cannot alias args[0] (4.219137ms)
+✔ wrong source contract and invalid resource selection fail before directory, lease, ledger or provider access (5.695131ms)
+✔ unbound public source and mutable/mismatched startup provenance cannot open a financial writer (39.852412ms)
+✔ normalized flow completes one disposable delayed lifecycle, and feed loss does not disable supported RPC exits (54.625934ms)
+✔ unverified field contract defaults closed and current unfrozen rule cannot enter a production PAPER account (19.866319ms)
+✔ budget-loss retirement durably cancels an unexpired entry before flow stops, without an invented gas charge (14.940656ms)
+✔ intentional held-flow retirement keeps RPC exits working and never retires an unexpired entry (21.460434ms)
+✔ candidate evidence is bounded; a gap requires fresh activation and a complete fresh window (21.290942ms)
+✔ first subscription warms inclusively from its actual ACK, never from earlier candidate admission (11.737446ms)
+✔ first activation cannot move availability backward before candidate admission (6.584243ms)
+✔ a real gap before the first ACK still excludes its exact lost-event boundary (12.25944ms)
+✔ missing size-specific exit quote preserves exposure; no stop price or free exit is invented (18.514064ms)
+✔ traded-mint no-reentry index survives exit, restart and consistent restore (37.465848ms)
+✔ one recorder replays normalized receive-time observations into the same deterministic reservation and fill (26.493547ms)
+✔ selected evidence failure closes new risk without abandoning an already-held position (16.775296ms)
+✔ held-position exit proposals and due execution precede new candidate quotes (19.493446ms)
+✔ three $50 reservations cap aggregate commitment without canceling valid earlier decisions (32.37567ms)
+✔ unknown liquidation closes new risk, but max-holding exit still requires and uses an actual-size quote (19.459617ms)
+✔ UTC marked-equity loss gate stays paused after price recovery and produces no entry quote (11.010176ms)
+✔ a supported full-size SOL exit remains available during an honest unknown-USD valuation (15.998475ms)
+✔ financial commit uncertainty pauses new risk without treating an unresolved reservation as obsolete flow (13.289598ms)
+✔ a quote crossing a closed-bin boundary does not cause duplicate evaluation of that completed bin (12.198649ms)
+✔ recorder inputs are allowlisted rather than copying unrelated configuration or adapter payload fields (13.865642ms)
+✔ mutable adapter requests cannot substitute another mint in decision or delayed execution quotes (21.89655ms)
+✔ reserving an entry yields before slower lower-priority candidate quotes can consume its execution window (15.119191ms)
+✔ a pending action becoming due during a candidate estimate is serviced before another candidate (15.161572ms)
+✔ low-priority quote timeout is capped by the upcoming execution deadline rather than its10s adapter limit (1013.661984ms)
+✔ another held-position estimate cannot starve an already-reserved exit (1017.244648ms)
+✔ research lazy quotes preserve existing predictive qualification at10s cadence while skipping already-rejected reads (136.170636ms)
+✔ research candidates require a returned quote slot at or after every known selected-flow slot (31.360314ms)
+✔ flow arriving during a quote raises the knowledge floor before that quote can qualify (10.15584ms)
+✔ deferred quotes neither invent newer slots nor forget a previously accepted slot floor (13.016211ms)
+✔ opt-in deferral retains quote freshness, liquidity, production closure and delayed execution checks (54.173655ms)
+✔ a quote refused for malformed optional fields cannot raise the accepted quote-slot floor (11.567523ms)
+✔ an exit quote that ages while a due action is handled cannot reserve an exit or erase the held exposure (15.578681ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 39
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3264.602342

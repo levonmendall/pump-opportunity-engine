@@ -1,0 +1,28 @@
+✖ OFFLINE guarded two-position lifecycle at synthetic 120ms per physical response (2154.804468ms)
+✔ OFFLINE guarded two-position lifecycle at synthetic 350ms per physical response (6954.661127ms)
+ℹ {"latency":350,"positionsOpened":2,"positionsClosed":2,"maximumCompletedGapMs":3550,"completedChecks":1169,"physicalStarts":1071,"maximumRollingStartsPerMinute":90,"networkRequests":0}
+ℹ tests 2
+ℹ suites 0
+ℹ pass 1
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 10116.69032
+
+✖ failing tests:
+
+test at evidence/two-position-operating-20261029/guarded-two-position.mts:1:19966
+✖ OFFLINE guarded two-position lifecycle at synthetic 120ms per physical response (2154.804468ms)
+  AssertionError [ERR_ASSERTION]: {"decisions":[{"mint":"7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump","at":1793058322120,"stage":"qualified","reason":"provisional-rule-passed; execution-and-accounting-still-required","ruleVersion":"persistent-buying-pilot-concurrent-stage-2-v1","features":{"mint":"7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump","asOf":1793058322120,"windowStartAt":1793058260000,"windowEndAt":1793058320000,"sufficientlyObserved":true,"qualityReason":null,"buyLamports":"1800000000","sellLamports":"0","netBuyLamports":"1800000000","tradeCount":6,"provisionalTradeCount":0,"distinctBuyerWallets":6,"largestBuyerBps":1667,"positiveNetBuckets":6,"priceReturnBps":5000,"firstPrice":{"quoteLamports":"300000000","tokenUnits":"300000"},"lastPrice":{"quoteLamports":"300000000","tokenUnits":"200000"}},"quote":{"mint":"7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump","side":"buy","inputUnits":"47992665","outputUnits":"22273040838","at":1793058321620,"evidence":"rpc-market:24d0e303e9f4faab308980db12f23441a3ce99b3c28b04379451b26f1de35857","slot":461852057,"effectiveQuoteLiquidityLamports":"117583801706","requiredDepositLamports":"2000335","depositEvidence":"pilot-entry-validated-costs:f2c282a8b85e794484aaea567a4d74dd788bea4d44a1013ac17ab4adbd6b361a"}},{"mint":"2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump","at":1793058325740,"stage":"missing-data","reason":"fresh-size-specific-quote-unavailable","ruleVersion":"persistent-buying-pilot-concurrent-stage-2-v1","features":{"mint":"2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump","asOf":1793058325740,"windowStartAt":1793058260000,"windowEndAt":1793058320000,"sufficientlyObserved":true,"qualityReason":null,"buyLamports":"1800000000","sellLamports":"0","netBuyLamports":"1800000000","tradeCount":6,"provisionalTradeCount":0,"distinctBuyerWallets":6,"largestBuyerBps":1667,"positiveNetBuckets":6,"priceReturnBps":5000,"firstPrice":{"quoteLamports":"300000000","tokenUnits":"300000"},"lastPrice":{"quoteLamports":"300000000","tokenUnits":"200000"}},"quote":null}],"lastRecords":[{"kind":"http-lifecycle-timing"},{"kind":"component-physical-settled"},{"kind":"research-clock-pool-state"},{"kind":"research-clock-position-sell-quote"},{"kind":"research-held-market-context"},{"kind":"trader-context"},{"kind":"trader-input"},{"kind":"trader-held-evaluation","reason":"no-provisional-exit-trigger"}],"engine":{"migrationHints":0,"verificationQueueRefusals":0,"verificationAttempts":0,"verifiedOrigins":2,"verificationRefusals":0,"normalizedEvents":39,"qualityGaps":0,"featureViews":29,"auditedWindows":2,"predictiveAssessments":2,"predictiveFailed":0,"predictiveNotRejected":2,"predictiveUnavailable":0,"auditUnavailable":0,"auditUnusable":0,"decisionDeadlineMisses":23,"auditFenceWarmingWindows":0,"uniqueEvaluated":2,"strictV2BaselineUnavailableViews":0,"protocolAwareShadowViews":2},"watch":{"signature":"26Usi4UHnwyVqwUxqyRpkKAMquZ7fie2Y1dHJXxZQoBS5TmJVj1gdq1yn5d9FfAfpnD2BMd78RgM8BNw6NANZnPD","feedMint":"2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump","mint":"2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump","pool":"DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD","migrationAt":1793057660000,"verifiedAt":1793058260000,"firstSeenAt":1793058260000,"state":"DEEP_OBSERVATION","reason":"fresh native confirmed pool observation allocated; no financial permission","lastActivityAt":null,"lastActivityEvidence":null,"lastDemotedAt":null,"deepSince":1793058260000,"deferUntil":0,"waitingSince":1793058260000,"promotions":1,"repromotions":0,"demotions":0,"completeWindows":1,"everHadWindow":true,"lastWindowAt":1793058320120,"history":[{"at":1793058260000,"state":"DISCOVERED","reason":"processed migration hint; base/quote/pool identity and time unverified"},{"at":1793058260000,"state":"WATCH","reason":"canonical migration identity verified; current support and fresh observation still required"},{"at":1793058260000,"state":"DEEP_OBSERVATION","reason":"fresh native confirmed pool observation allocated; no financial permission"}],"technicalReevaluation":{"reason":"entry-quote-unavailable","requestedAt":1793058330370,"failedWindowEndAt":1793058330000,"notBefore":1793058335370,"expiresAt":1793058630370,"attempts":0,"lastClaimedWindowEndAt":null,"state":"WAITING"}}}
+      at openTwo (/workspace/poe-two-position-operating/evidence/two-position-operating-20261029/guarded-two-position.mts:74:428)
+      at async TestContext.<anonymous> (/workspace/poe-two-position-operating/evidence/two-position-operating-20261029/guarded-two-position.mts:84:26)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

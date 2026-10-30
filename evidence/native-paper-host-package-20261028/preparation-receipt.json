@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "kind": "OFFLINE_CODE_ONLY_HOST_PACKAGE_PREPARATION",
+  "preparedAt": 1793208315977,
+  "testCommand": "python3 -B operator/native-paper-ec2/test-stage-package.py",
+  "tests": 12,
+  "passed": 12,
+  "failed": 0,
+  "providerRequests": 0,
+  "existingFinancialAccountRead": false,
+  "accountImported": false,
+  "ec2DispatchPerformed": false,
+  "adminCommitOrPushPerformed": false,
+  "sourceArtifacts": "Already-built immutable Cloud package /tmp/poe-native-paper-output-release-review, source580337c; no market/financial account fixture data reused",
+  "measuredDisposableProbe": {
+    "elapsedMs": 394,
+    "maximumCombinedRssBytes": 128647168,
+    "stdoutBytes": 861,
+    "stderrBytes": 0,
+    "physicalProcessSettled": true,
+    "sqliteVersion": "3.53.4"
+  },
+  "files": {
+    "operator/native-paper-ec2/stage-package.py": {
+      "bytes": 19496,
+      "sha256": "765ab8c4193bbd8018fa9beab5389aa1fb10e2577c368e4ec0daf05a27ffca47"
+    },
+    "operator/native-paper-ec2/test-stage-package.py": {
+      "bytes": 12570,
+      "sha256": "858769ac7f968052dc2cab6ff83c4b2ac353f52b0a8883139a327dc00964253b"
+    },
+    "operator/native-paper-ec2/PACKAGE_CHECK.md": {
+      "bytes": 4338,
+      "sha256": "ac031939d6f99102fcd00b7a85eb5a71b469f8f55dfc473024054cbb7fcecb59"
+    },
+    ".github/workflows/poe-native-paper-package-check.yml": {
+      "bytes": 3311,
+      "sha256": "c161f6c50df5a01aa251a62164b52ce67b5ce5fbf838b6ed2799c1ba40d87592"
+    }
+  },
+  "rawTestOutputSha256": "6b288c2763c2c4c646f36363318fa9389afb5d8218d77b950d8feebb5ad376a5",
+  "remainingBeforeHostUse": [
+    "Lead rebuilds/pins final source artifact closure",
+    "Lead stages only five fixed gzip artifacts and manifest",
+    "Lead binds exact current Node-selector hash and final manifest hash in prepared workflow",
+    "Reviewed lead commit/push and later deliberate dispatch after existing administration run settles"
+  ]
+}

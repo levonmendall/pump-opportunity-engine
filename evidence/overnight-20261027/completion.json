@@ -1,0 +1,48 @@
+{
+  "scope": "FINAL_OFFLINE_COMPLETION_NOT_PRODUCTION_ACCEPTANCE",
+  "completedAt": "2026-10-27T08:53:42.718788+00:00",
+  "grantStartedAt": 1793083251494,
+  "actualGrantElapsedMs": 7971224,
+  "environment": "nonroot Cloud workspace; no EC2 load experiment",
+  "validation": {
+    "typescriptNoEmit": "PASS",
+    "compile": "PASS",
+    "regressionTests": 481,
+    "passed": 481,
+    "failed": 0,
+    "testOutputSha256": "1396a7755acdf9d9654ce203af8552106d31f9bea5ef9fa7448710e7adf587b8",
+    "correctedReplayReadOnlyVerification": "PASS; original artifact unchanged; current mapper semantic equality",
+    "focusedIndependentReview": "No blocking findings; pricing/held adapter, both Buy variants, migration identity and scheduler limits reviewed"
+  },
+  "research": {
+    "requestUnits": 163,
+    "accountedRelatedBytes": 3587908,
+    "new429Count": 0,
+    "pumpApiActualCumulativeBytes": 195936099,
+    "pumpApiReservedBytes": 268435456,
+    "pumpApiReservedMs": 230000,
+    "allCapturesClosed": true,
+    "noResearchChildRemaining": true,
+    "oldRefusalsAndCountersPreserved": true
+  },
+  "sourceBranches": {
+    "review": "poe-free-data-evaluation-20261027",
+    "mainLastVerified": "6a831a2cdf0e8649b740ef4b0c7229696e085618",
+    "installedRelease": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+    "finalReviewCommit": "the containing git commit; no merge/deployment"
+  },
+  "production": {
+    "changed": false,
+    "hostCheckedThisRun": false,
+    "readOnlyReportingReceipt": "reporting-readonly-check.json",
+    "authoritativeAccountPreserved": true,
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "paperEntriesEnabled": false,
+    "liveTradingEnabled": false,
+    "naturalPaperTradesReported": 0,
+    "acceptanceClockStarted": false
+  },
+  "releaseReadiness": "REUSABLE_COMPONENTS; not a deployable autonomous PAPER trader",
+  "nextEngineeringWork": "Resolve shared-scheduler protection gaps without starving required enrichment; corrected forward window/audit need later bounded stream allocation. No infrastructure, wallet or paid-provider action."
+}

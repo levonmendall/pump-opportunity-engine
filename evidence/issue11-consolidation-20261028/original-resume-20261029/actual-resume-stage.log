@@ -1,0 +1,173 @@
+stage-verified-continuation	Set up job	﻿2026-10-29T01:41:23.3941382Z Current runner version: '2.338.0'
+stage-verified-continuation	Set up job	2026-10-29T01:41:23.3947895Z Runner name: 'meme-machine-ec2-admin'
+stage-verified-continuation	Set up job	2026-10-29T01:41:23.3948718Z Runner group name: 'Default'
+stage-verified-continuation	Set up job	2026-10-29T01:41:23.3949593Z Machine name: 'ip-172-31-15-198'
+stage-verified-continuation	Set up job	2026-10-29T01:41:23.3951945Z ##[group]GITHUB_TOKEN Permissions
+stage-verified-continuation	Set up job	2026-10-29T01:41:23.3954260Z Contents: read
+stage-verified-continuation	Set up job	2026-10-29T01:41:23.3954863Z Metadata: read
+stage-verified-continuation	Set up job	2026-10-29T01:41:23.3955361Z ##[endgroup]
+stage-verified-continuation	Set up job	2026-10-29T01:41:23.3957563Z Secret source: Actions
+stage-verified-continuation	Set up job	2026-10-29T01:41:23.3958528Z Cache mode: write
+stage-verified-continuation	Set up job	2026-10-29T01:41:23.3959140Z Prepare workflow directory
+stage-verified-continuation	Set up job	2026-10-29T01:41:23.4304860Z Prepare all required actions
+stage-verified-continuation	Set up job	2026-10-29T01:41:23.4370267Z Getting action download info
+stage-verified-continuation	Set up job	2026-10-29T01:41:23.7985514Z Download action repository 'actions/checkout@11d5960a326750d5838078e36cf38b85af677262' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+stage-verified-continuation	Set up job	2026-10-29T01:41:24.1504337Z Complete job name: stage-verified-continuation
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	﻿2026-10-29T01:41:24.2250874Z ##[group]Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.2252144Z with:
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.2252661Z   ref: 662d6d11864330a785f94cd8341ffc2359f3a967
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.2253254Z   persist-credentials: false
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.2254110Z   sparse-checkout-cone-mode: false
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.2254924Z   sparse-checkout: operator/native-paper-ec2/cutover-resume/resume-original-service.py
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.2255800Z   repository: levonmendall/meme-machine-admin
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.2259920Z   token: ***
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.2260369Z   ssh-strict: true
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.2260885Z   ssh-user: git
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.2261345Z   clean: true
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.2261831Z   fetch-depth: 1
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.2262307Z   fetch-tags: false
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.2262788Z   show-progress: true
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.2263285Z   lfs: false
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.2263737Z   submodules: false
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.2264279Z   set-safe-directory: true
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.2264832Z   allow-unsafe-pr-checkout: false
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.2266042Z ##[endgroup]
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3305500Z Syncing repository: levonmendall/meme-machine-admin
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3309321Z ##[group]Getting Git version info
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3311176Z Working directory is '/opt/mm-ec2-admin-runner/_work/meme-machine-admin/meme-machine-admin'
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3313258Z [command]/usr/bin/git version
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3314238Z git version 2.43.0
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3317296Z ##[endgroup]
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3322253Z Temporarily overriding HOME='/opt/mm-ec2-admin-runner/_work/_temp/0f724464-5035-4ca2-badc-5fad68119434' before making global git config changes
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3324902Z Adding repository directory to the temporary git global config as a safe directory
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3327736Z [command]/usr/bin/git config --global --add safe.directory /opt/mm-ec2-admin-runner/_work/meme-machine-admin/meme-machine-admin
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3349051Z [command]/usr/bin/git config --local --get remote.origin.url
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3370592Z https://github.com/levonmendall/meme-machine-admin
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3381848Z ##[group]Removing previously created refs, to avoid conflicts
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3385217Z [command]/usr/bin/git rev-parse --symbolic-full-name --verify --quiet HEAD
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3405589Z HEAD
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3441483Z ##[endgroup]
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3442411Z [command]/usr/bin/git submodule status
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3651682Z ##[group]Cleaning the repository
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3652446Z [command]/usr/bin/git clean -ffdx
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3688907Z [command]/usr/bin/git reset --hard HEAD
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3842422Z HEAD is now at d635cd6 Read exact original POE shutdown status and manager lifecycle after owner cutover refusal
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3847223Z ##[endgroup]
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3849103Z ##[group]Disabling automatic garbage collection
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3853509Z [command]/usr/bin/git config --local gc.auto 0
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3879035Z ##[endgroup]
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3880339Z ##[group]Setting up auth
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3883026Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.3907967Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.4087629Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.4111461Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.4289479Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.4314335Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.4518000Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.4563578Z ##[endgroup]
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.4564604Z ##[group]Fetching the repository
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.4575135Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --filter=blob:none --depth=1 origin 662d6d11864330a785f94cd8341ffc2359f3a967
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.8307280Z From https://github.com/levonmendall/meme-machine-admin
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.8308798Z  * branch            662d6d11864330a785f94cd8341ffc2359f3a967 -> FETCH_HEAD
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.8328122Z ##[endgroup]
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.8329952Z ##[group]Determining the checkout info
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.8332294Z ##[endgroup]
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.8333770Z ##[group]Setting up sparse checkout
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.8335374Z [command]/usr/bin/git config core.sparseCheckout true
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.8361754Z [command]/usr/bin/git rev-parse --git-path info/sparse-checkout
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.8379357Z .git/info/sparse-checkout
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.8386327Z ##[endgroup]
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.8388239Z ##[group]Checking out the ref
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:24.8390107Z [command]/usr/bin/git checkout --progress --force 662d6d11864330a785f94cd8341ffc2359f3a967
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.1054892Z Warning: you are leaving 1 commit behind, not connected to
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.1056789Z any of your branches:
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.1057406Z 
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.1058663Z   d635cd6 Read exact original POE shutdown status and manager lifecycle after owner cutover refusal
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.1060390Z 
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.1061186Z If you want to keep it by creating a new branch, this may be a good time
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.1062688Z to do so with:
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.1063245Z 
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.1063709Z  git branch <new-branch-name> d635cd6
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.1064516Z 
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.1066058Z HEAD is now at 662d6d1 Stage pinned continuation for the retained original POE upgrade without restarting it
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.1072004Z ##[endgroup]
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.1105732Z [command]/usr/bin/git log -1 --format=%H
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.1129182Z 662d6d11864330a785f94cd8341ffc2359f3a967
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.1138926Z ##[group]Removing auth
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.1141611Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.1165763Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.1337960Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.1354256Z http.https://github.com/.extraheader
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.1361206Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.1387226Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.1553321Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.1576866Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+stage-verified-continuation	Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.1742721Z ##[endgroup]
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	﻿2026-10-29T01:41:25.1977963Z ##[group]Run set -euo pipefail
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.1979724Z [36;1mset -euo pipefail[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.1981240Z [36;1mtest "$ACTUAL_RUNNER" = meme-machine-ec2-admin[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.1982825Z [36;1mtest "$(id -u)" = 994[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.1984578Z [36;1m/usr/bin/env -i PATH=/usr/bin:/bin LANG=C ACTUAL_RUNNER="$ACTUAL_RUNNER" \[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.1987018Z [36;1m  /usr/bin/timeout --signal=TERM --kill-after=3s 30s \[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.1988849Z [36;1m  /usr/bin/nice -n 19 /usr/bin/prlimit \[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.1990963Z [36;1m  --cpu=5:5 --as=134217728:134217728 --nofile=64:64 --fsize=1048576:1048576 --core=0:0 -- \[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.1993206Z [36;1m  /usr/bin/python3 -B -I - <<'PYSTAGE'[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.1995118Z [36;1mimport hashlib,json,os,pathlib,pwd,stat,subprocess,time[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.1998292Z [36;1massert os.getuid()==994 and pwd.getpwuid(994).pw_name=='mm-ec2-runner' and os.environ['ACTUAL_RUNNER']=='meme-machine-ec2-admin'[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2001659Z [36;1mexpected='93f23cb18b67f72749b34f11c28e8af777195da2832a25b68867d80ea89d8b3e'[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2003660Z [36;1mdef view():[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2007530Z [36;1m    r=subprocess.run(['/usr/bin/systemctl','show','poe-runtime.service','--property=MainPID,NRestarts,User,ActiveState,SubState'],capture_output=True,text=True,timeout=5,check=True,env={'PATH':'/usr/bin:/bin','LANG':'C'})[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2011536Z [36;1m    assert len(r.stdout)<=4096[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2013264Z [36;1m    v=dict(l.split('=',1) for l in r.stdout.splitlines() if '='in l)[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2016408Z [36;1m    assert v.get('User')=='poe-runtime' and v.get('ActiveState')=='active' and v.get('SubState')=='running' and int(v.get('MainPID','0'))>0[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2019034Z [36;1m    return v[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2020234Z [36;1mdef read(p,private=False):[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2021824Z [36;1m    f=os.open(p,os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2023396Z [36;1m    try:[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2024457Z [36;1m        s=os.fstat(f)[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2027117Z [36;1m        assert stat.S_ISREG(s.st_mode) and s.st_uid==994 and s.st_nlink==1 and not s.st_mode&(0o077 if private else 0o022) and 0<s.st_size<=131072[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2029776Z [36;1m        b=os.read(f,s.st_size+1)[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2031527Z [36;1m        assert len(b)==s.st_size and hashlib.sha256(b).hexdigest()==expected[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2033368Z [36;1m        return b[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2034609Z [36;1m    finally:os.close(f)[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2037120Z [36;1mbefore=view();body=read(pathlib.Path('operator/native-paper-ec2/cutover-resume/resume-original-service.py'))[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2039903Z [36;1mparent=pathlib.Path('/var/tmp');space=os.statvfs(parent)[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2041911Z [36;1massert space.f_bavail*space.f_frsize>=512*1024*1024+len(body)[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2043739Z [36;1mfolder=parent/'poe-issue11-resume-93f23cb1'[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2151633Z [36;1mif not folder.exists():folder.mkdir(mode=0o700)[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2153222Z [36;1ms=folder.lstat()[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2155760Z [36;1massert stat.S_ISDIR(s.st_mode) and not stat.S_ISLNK(s.st_mode) and s.st_uid==994 and stat.S_IMODE(s.st_mode)==0o700 and folder.resolve(strict=True)==folder[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2159188Z [36;1massert set(p.name for p in folder.iterdir())<={'resume-original-service.py'}[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2161168Z [36;1mtarget=folder/'resume-original-service.py'[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2163058Z [36;1mif target.exists()or target.is_symlink():assert read(target,True)==body[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2164756Z [36;1melse:[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2166245Z [36;1m    f=os.open(target,os.O_WRONLY|os.O_CREAT|os.O_EXCL|os.O_NOFOLLOW,0o600)[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2168192Z [36;1m    try:[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2169104Z [36;1m        pos=0[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2170334Z [36;1m        while pos<len(body):pos+=os.write(f,body[pos:])[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2171764Z [36;1m        os.fsync(f)[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2173039Z [36;1m    finally:os.close(f)[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2174209Z [36;1massert read(target,True)==body[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2176321Z [36;1md=os.open(folder,os.O_RDONLY|os.O_DIRECTORY|os.O_NOFOLLOW);os.fsync(d);os.close(d)[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2178233Z [36;1mafter=view();assert before==after[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2185724Z [36;1mprint(json.dumps({'kind':'POE_ORIGINAL_CONTINUATION_STAGED_NOT_EXECUTED','at':int(time.time()*1000),'file':str(target),'bytes':len(body),'sha256':expected,'unchangedOriginalPackageIndex':'fa616981e2a86aec0f9c2711d0b3c961eb5ab922791f49e2a4e7e372497a84dd','serviceBefore':before,'serviceAfter':after,'serviceUnchanged':True,'originalPreparationModified':False,'financialDatabaseOpened':False,'serviceChanges':0,'providerRequests':0,'executed':False},separators=(',',':')),flush=True)[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2193393Z [36;1mPYSTAGE[0m
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2213215Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2214703Z env:
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2215617Z   ACTUAL_RUNNER: meme-machine-ec2-admin
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2217085Z ##[endgroup]
+stage-verified-continuation	Copy one pinned repair without touching original preparation or service	2026-10-29T01:41:25.2733023Z {"kind":"POE_ORIGINAL_CONTINUATION_STAGED_NOT_EXECUTED","at":1793238085272,"file":"/var/tmp/poe-issue11-resume-93f23cb1/resume-original-service.py","bytes":42341,"sha256":"93f23cb18b67f72749b34f11c28e8af777195da2832a25b68867d80ea89d8b3e","unchangedOriginalPackageIndex":"fa616981e2a86aec0f9c2711d0b3c961eb5ab922791f49e2a4e7e372497a84dd","serviceBefore":{"MainPID":"2431222","NRestarts":"0","User":"poe-runtime","ActiveState":"active","SubState":"running"},"serviceAfter":{"MainPID":"2431222","NRestarts":"0","User":"poe-runtime","ActiveState":"active","SubState":"running"},"serviceUnchanged":true,"originalPreparationModified":false,"financialDatabaseOpened":false,"serviceChanges":0,"providerRequests":0,"executed":false}
+stage-verified-continuation	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	﻿2026-10-29T01:41:25.3008222Z Post job cleanup.
+stage-verified-continuation	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.3841041Z [command]/usr/bin/git version
+stage-verified-continuation	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.3875156Z git version 2.43.0
+stage-verified-continuation	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.3910149Z Temporarily overriding HOME='/opt/mm-ec2-admin-runner/_work/_temp/080e8021-198a-483e-a165-ef796d64ec8c' before making global git config changes
+stage-verified-continuation	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.3913700Z Adding repository directory to the temporary git global config as a safe directory
+stage-verified-continuation	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.3916854Z [command]/usr/bin/git config --global --add safe.directory /opt/mm-ec2-admin-runner/_work/meme-machine-admin/meme-machine-admin
+stage-verified-continuation	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.3949357Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+stage-verified-continuation	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.3978549Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+stage-verified-continuation	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.4167071Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+stage-verified-continuation	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.4193924Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+stage-verified-continuation	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.4371737Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+stage-verified-continuation	Post Run actions/checkout@11d5960a326750d5838078e36cf38b85af677262	2026-10-29T01:41:25.4398087Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+stage-verified-continuation	Complete job	﻿2026-10-29T01:41:25.4714682Z Cleaning up orphan processes
+stage-verified-continuation	Complete job	2026-10-29T01:41:25.5120552Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@11d5960a326750d5838078e36cf38b85af677262. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

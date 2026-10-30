@@ -1,0 +1,10 @@
+✔ a baseline-failed independently audited window survives for active V2 exact-size evaluation (25.290488ms)
+✔ baseline rollback keeps its unchanged weak-window retirement and does not claim adaptive decisions (9.390751ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 834.441558

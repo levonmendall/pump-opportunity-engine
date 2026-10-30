@@ -1,0 +1,33 @@
+{
+  "eventType": "APPEND_ONLY_COMPLETED_RESERVATION_RECONCILIATION",
+  "recordedAt": "2026-10-27T16:21:54.716Z",
+  "sourceReservation": {
+    "path": "evidence/standing-research-20261027/01-paced-combined/pumpapi-budget.json",
+    "sha256": "281b1149b6f1317aa89414d0d96dc391f1d66c21298b48869f23e1cbf9d26f74"
+  },
+  "terminalReceipt": {
+    "path": "evidence/standing-research-20261027/01-paced-combined/summary.json",
+    "sha256": "87a07501b1d62147c7fbf360b4afb0ffa3a2445ce07ec25d646b70a8cadd3733"
+  },
+  "proof": {
+    "physicalSettled": true,
+    "inFlight": 0,
+    "pendingReservations": 0,
+    "transportSettledAt": 1793117961719,
+    "finalCounter": 97702483,
+    "sourceUnchanged": true,
+    "oldEvidenceUnchanged": true
+  },
+  "reservedBytes": 146800640,
+  "actualConsumedSocketBytes": 97702483,
+  "unusedLocalBytesReleased": 49098157,
+  "priorActualSocketBytes": 271949619,
+  "cumulativeActualSocketBytes": 369652102,
+  "historicalReservationEdited": false,
+  "actualBytesRefunded": false,
+  "providerChargesRefunded": false,
+  "timeReleaseMs": 0,
+  "timeReleaseReason": "Retain time pending separate normalization of connection/helper elapsed fields; no time ceiling blocks new bounded research.",
+  "oldUnknownRpcBytesRetained": 2097152,
+  "candidateWindowRemainsInvalid": true
+}

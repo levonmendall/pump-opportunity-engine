@@ -1,0 +1,22 @@
+{
+  "startedAt": "2026-10-28T16:10:17.778875+00:00",
+  "head": "e7ffe502161a3d4f965cc30c4d6a75f3776744fa",
+  "sourceSha256": {
+    "src/pilot-native-flow.ts": "b57b1da59e271a75f5a3422c13fd9d0e18c6d49ba8f3e1721f5c8d8f0dbf9664",
+    "src/pilot-rpc.ts": "136e8d2ce34c237e322c4d9a37de5085dc0103ad0b82adec7a6dbb4a1382a6b6",
+    "test/pilot-native-flow.test.ts": "06acde1055a40a31fa6cef7e9d2e608ee7bebf7f08fe4ef508a4cb81e1b0f75f",
+    "test/pilot-rpc.test.ts": "c7a2266fb6af0d599e3bc078afd000cb762b06992786925da8feb697806beb3c"
+  },
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "--test",
+    "test/pilot-rpc.test.ts",
+    "test/pilot-native-flow.test.ts"
+  ],
+  "networkRequests": 0,
+  "exitCode": 0,
+  "completedAt": "2026-10-28T16:10:21.585932+00:00",
+  "rawOutputSha256": "07e0826a6b9e5f20b1e14075f2c344f4e219ea98bb08edf63539314c8779e787"
+}

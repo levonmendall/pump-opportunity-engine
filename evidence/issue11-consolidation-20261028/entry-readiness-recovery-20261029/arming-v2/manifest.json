@@ -1,0 +1,255 @@
+{
+  "kind": "original-entry-arming-upgrade-ready-not-installed",
+  "source": {
+    "commit": "5648606bf78f6687c47632be5c789af5e7f19772",
+    "sha256": "cf2089281edcdf03e7ee40492ebe06fc0e715de9c1b31f94b732905dea8318eb"
+  },
+  "configurationSha256": "96ec314c0b0256365286659f64680a81e7225386848f3c12567854ced76cd69c",
+  "files": [
+    {
+      "file": "READY_NOT_INSTALLED.md",
+      "bytes": 3786,
+      "sha256": "c8814b227ebb8d527d425599d706527c7876e02b412a00202c7acdbe6d1b34a8"
+    },
+    {
+      "file": "actual-ec2-staging/README.md",
+      "bytes": 932,
+      "sha256": "6c25320230329eea12971ce8b9f96e522bcded74774fcd0c33971317c10d4ed0"
+    },
+    {
+      "file": "actual-ec2-staging/manifest.json",
+      "bytes": 700,
+      "sha256": "d786cc67e1d85816614de9409941cddc54236ae5dae30cc823fe7942b7a01d39"
+    },
+    {
+      "file": "actual-ec2-staging/stage-40941840470.raw.txt",
+      "bytes": 38280,
+      "sha256": "1cd3f874e03f4887a8e9d5e4c901223600c80fd28973a89ecc6bd7de197507a2"
+    },
+    {
+      "file": "actual-ec2-staging/stage-40941840470.run.json",
+      "bytes": 1131,
+      "sha256": "d4c4213b5aeb452c78eaff9b21e66640592a13ec8759643fd17c3d4c846d4192"
+    },
+    {
+      "file": "actual-ec2-staging/stage-proof-40941840470.json",
+      "bytes": 3790,
+      "sha256": "8fa8f162127791d892adf9e81f703802dd95e6582314706e8eaaeb2fbe353b2a"
+    },
+    {
+      "file": "upgrade-package/OWNER_APPLY.txt",
+      "bytes": 841,
+      "sha256": "61a79c230ab9b0b38471eb9a0b628dfa091177307ba78f7dfde84b89ae61618c"
+    },
+    {
+      "file": "upgrade-package/README.md",
+      "bytes": 4226,
+      "sha256": "eb142c5b83d64b66ef96cb4fd83a597f9d83fa05946edc04674f2847592f636e"
+    },
+    {
+      "file": "upgrade-package/backup-worker.mjs",
+      "bytes": 74060,
+      "sha256": "815f2a215111d09a9216f3fa2235481865e6f22f76773636e2f10022957ac656"
+    },
+    {
+      "file": "upgrade-package/better_sqlite3.node",
+      "bytes": 2226168,
+      "sha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d"
+    },
+    {
+      "file": "upgrade-package/export-source-recovery-forensics-20261029.py",
+      "bytes": 30782,
+      "sha256": "4fab80d8ce4a1a39d33a37a3a3d9570ae841614abe1cfe4dd3a006db538c3986"
+    },
+    {
+      "file": "upgrade-package/forward-original-upgrade.py",
+      "bytes": 48816,
+      "sha256": "775ba8c3ddea2ffaefb7b1d92b43b0bdbf04381b784b9f6f3f87fb695c000346"
+    },
+    {
+      "file": "upgrade-package/frozen-configuration-import.json",
+      "bytes": 200,
+      "sha256": "ccc345b5ddc26b9759f29ff3b81fc82c231dda9c8de6e7dbeaae23d555a413be"
+    },
+    {
+      "file": "upgrade-package/frozen-configuration-import.stderr.txt",
+      "bytes": 199,
+      "sha256": "faa1627c5291e59ed02e33b223c58a041ff7d7c8b63aa67bb4846f95d195e5a6"
+    },
+    {
+      "file": "upgrade-package/index.json",
+      "bytes": 1699,
+      "sha256": "35ea9f83861eec05c3cb3ec4746f11d949016aac84317cb8e980faa5f06dffd2"
+    },
+    {
+      "file": "upgrade-package/metadata.json",
+      "bytes": 154493,
+      "sha256": "c6499e358f8a47ad0d0e6168e281236adfab09cd3477301b3f2cc7bf98360554"
+    },
+    {
+      "file": "upgrade-package/native-paper.mjs",
+      "bytes": 5108246,
+      "sha256": "cf2089281edcdf03e7ee40492ebe06fc0e715de9c1b31f94b732905dea8318eb"
+    },
+    {
+      "file": "upgrade-package/package-pins.json",
+      "bytes": 3036,
+      "sha256": "98e3d94e2bd0d6bb77bd8b41628a9a2157255c59534603dc7aa3e6defbafb2a4"
+    },
+    {
+      "file": "upgrade-package/poe-runtime-persistent.conf",
+      "bytes": 925,
+      "sha256": "d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df"
+    },
+    {
+      "file": "upgrade-package/run-authoritative-service.py",
+      "bytes": 37498,
+      "sha256": "025abb6631f94cbc97ec30d855ab7d5d11cb257025317e4cee186c5ee00695ed"
+    },
+    {
+      "file": "upgrade-package/service.json",
+      "bytes": 1715,
+      "sha256": "18363e1e925239d7b5fcd9d2e032b68be9fdc8bbb8a48a079ba46d5e9d92a417"
+    },
+    {
+      "file": "upgrade-package/snapshot-publisher.mjs",
+      "bytes": 31949,
+      "sha256": "29831f3b18a806f767a578b8ead424441d6d8421c43936abe1a9ad9f16f0c27f"
+    },
+    {
+      "file": "upgrade-package/transport/backup-worker.mjs.gz",
+      "bytes": 17944,
+      "sha256": "71d9bbbaccad7c61778c77bc810f2a723d9328d7ff2d8a41c25ce722b69670e6"
+    },
+    {
+      "file": "upgrade-package/transport/better_sqlite3.node.gz",
+      "bytes": 1106933,
+      "sha256": "1c96bac132087ccbc0720ae061efc2ad8fcc0a87e0fe81f92b34d1e11c4fcbd2"
+    },
+    {
+      "file": "upgrade-package/transport/export-source-recovery-forensics-20261029.py.gz",
+      "bytes": 9391,
+      "sha256": "2f7d24e89163e6206ca03a1a094b40eb654243b8468766b11b46745a4853a940"
+    },
+    {
+      "file": "upgrade-package/transport/forward-original-upgrade.py.gz",
+      "bytes": 15386,
+      "sha256": "6a6e6aa0275957ed5fdcf6d0f5bbc1b260e622586bc729bea8c633688ed9a796"
+    },
+    {
+      "file": "upgrade-package/transport/index.json.gz",
+      "bytes": 943,
+      "sha256": "3209cc0555cffbd1b904bc0a52313e792bdf23cc151a8897fe72b82c7309fc3f"
+    },
+    {
+      "file": "upgrade-package/transport/metadata.json.gz",
+      "bytes": 41277,
+      "sha256": "28c4316d16fa3d51771439e4c2236776f76b49f3d6ef3086f7b22199bdfc8a8c"
+    },
+    {
+      "file": "upgrade-package/transport/native-paper.mjs.gz",
+      "bytes": 845280,
+      "sha256": "0931d8e9aace2b77566cfb4f3c6702ada69256de9d7b1ec0a8f5bd95e07a92c1"
+    },
+    {
+      "file": "upgrade-package/transport/poe-runtime-persistent.conf.gz",
+      "bytes": 583,
+      "sha256": "9f411b3ed48826b53396657a0ee474e81307cc182a10ff7ee80603f92f9fb968"
+    },
+    {
+      "file": "upgrade-package/transport/run-authoritative-service.py.gz",
+      "bytes": 11981,
+      "sha256": "c55a5dd401218a3b0210c3339ad530088d27896addc38e5a2e2b676f2e7252fb"
+    },
+    {
+      "file": "upgrade-package/transport/service.json.gz",
+      "bytes": 874,
+      "sha256": "dff1237fc81f9b507265278b2f238248384bca8bf1597b605071cca8c869e7ca"
+    },
+    {
+      "file": "upgrade-package/transport/snapshot-publisher.mjs.gz",
+      "bytes": 9459,
+      "sha256": "3b13457e55a1cb653b4dc5e0768dc1eb6dc34c71c803c9a670a99733e731670a"
+    },
+    {
+      "file": "upgrade-package/transport/transport.json",
+      "bytes": 3294,
+      "sha256": "313f8bcbcddd5abe5df04c3c5d02f049a0c156e74d14f9337d03f048a1880df7"
+    },
+    {
+      "file": "upgrade-package/transport-pins.json",
+      "bytes": 3975,
+      "sha256": "60badd7b058ad649f14c8b805e1ac8f7853f33e855cf22051ed9fd68f9502dc1"
+    },
+    {
+      "file": "upgrade-package/validation.json",
+      "bytes": 1247,
+      "sha256": "2a00266115cc5435697f90014d54a3741a365c5a9dac4dc83ae5bf4a430d3512"
+    },
+    {
+      "file": "upgrade-preparation/DRAFT_NOT_DEPLOYABLE.md",
+      "bytes": 2159,
+      "sha256": "63d48176826b511d3936a61fc8c644956e334b3690f8b0ce56657cc3ddc21d5e"
+    },
+    {
+      "file": "upgrade-preparation/draft-forensic-helper-tests.txt",
+      "bytes": 149,
+      "sha256": "67f97afdbb2a47da00c63ea8363899bdfac1a129c8dd91e6482a7476ec048ad4"
+    },
+    {
+      "file": "upgrade-preparation/draft-manifest.json",
+      "bytes": 924,
+      "sha256": "b4bb70f1ae77aa89096c730e20ab858cf56bb94ce3d997eea1eaa88bdb4df76b"
+    },
+    {
+      "file": "upgrade-preparation/final-helper-tests.txt",
+      "bytes": 150,
+      "sha256": "24531310c303a0bb364a8700691c691ebdec7e7d6c8e912beccfe3800e4e473d"
+    },
+    {
+      "file": "upgrade-preparation/independent-draft-forensic-review.json",
+      "bytes": 1998,
+      "sha256": "5adeac4f4ad3f9351ac721d0d8016754420548c988210242fb40459f4ba1647b"
+    },
+    {
+      "file": "upgrade-preparation/independent-draft-forensic-tests.txt",
+      "bytes": 759,
+      "sha256": "543d9aae25e5aa4eb898d161d104fd84ed90a1f0f35f2bfbd7cfd7a633249c5f"
+    },
+    {
+      "file": "upgrade-preparation/independent-final-review.json",
+      "bytes": 2899,
+      "sha256": "3a6c478a826d3c6c6fdad3e8acc6886c69e67cab9d13257062eae237a464a817"
+    },
+    {
+      "file": "upgrade-preparation/independent-final-tests.txt",
+      "bytes": 557,
+      "sha256": "8af5fb9a0ce081e95cfdf77db0ec511b1212ba954f8e2eda5e42c88dae60867f"
+    },
+    {
+      "file": "upgrade-preparation/independent-stager-review.json",
+      "bytes": 1140,
+      "sha256": "2b378dd3b07d9e83c894814ab60843ac2fbf455e3f96458980a0159b2cc54530"
+    },
+    {
+      "file": "upgrade-preparation/manifest.json",
+      "bytes": 2016,
+      "sha256": "b9b85c30b238600a565490d39a78e0b28c54397fb1cef6afcc421f6a99540d15"
+    },
+    {
+      "file": "upgrade-preparation/prepare-existing-admin-stager.py",
+      "bytes": 2067,
+      "sha256": "5cd6d240db22e35a9b0230f2d184bfee17b6930361bcb1027f91f32a1fc29042"
+    },
+    {
+      "file": "upgrade-preparation/prepare-final-package.py",
+      "bytes": 7975,
+      "sha256": "22091467d63858d33140436932c6e8bbee4a9d01792206184d494ed712a1ddf3"
+    },
+    {
+      "file": "upgrade-preparation/prepare-package.py",
+      "bytes": 7649,
+      "sha256": "feabdb01e47774d2accb407ce00ad06e3e337f1ddd4d0d6c7da281bc0caccd8c"
+    }
+  ]
+}

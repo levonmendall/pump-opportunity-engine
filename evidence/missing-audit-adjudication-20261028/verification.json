@@ -1,0 +1,44 @@
+{
+  "verifiedAt": "2026-10-28T23:09:14.262688+00:00",
+  "baseCommit": "61325e6",
+  "sourceFiles": {
+    "operator/native-paper-ec2/missing-audit-probe.mjs": {
+      "bytes": 12009,
+      "sha256": "642166a6e0f364dadd79167f23c7987d3595b1e738d3a7f713d7f61ab2d2f09a"
+    },
+    "operator/native-paper-ec2/run-missing-audit-probe.py": {
+      "bytes": 5586,
+      "sha256": "1b34d76b99d063ad710d83bb2e9eca402044eaaf5ccf1900116cf4d56d7b8c52"
+    },
+    "scripts/adjudicate-missing-audit.ts": {
+      "bytes": 5280,
+      "sha256": "1d60ae52f69c0912f943d371ad6a09ae35d30648a4058cf5d3e2a76c39c91153"
+    },
+    "test/missing-audit-adjudication.test.ts": {
+      "bytes": 10471,
+      "sha256": "7ea55a150db1a8426022a16a1747eb695c29a3966781060a3ff6769f738b13d4"
+    },
+    "evidence/missing-audit-adjudication-20261028/plan.json": {
+      "bytes": 5438,
+      "sha256": "534d7ba63efda8599d7cabf97f435141666c4bd5c4e7aa52b344e32ea08059e5"
+    }
+  },
+  "focusedTestsPassed": 24,
+  "buildPassed": true,
+  "independentFocusedTestsPassed": 24,
+  "independentBuildPassed": true,
+  "independentWrapperReview": "GO: happy/wall/RSS/leader-exited descendant cleanup; remaining zombie is honestly UNSETTLED",
+  "repairsBeforeAnyNetwork": [
+    "endpoint on actual row attaches Undici hooks",
+    "any Retry-After stops nextcase; invalid hints retained unresolved",
+    "receipt partial writes completed or fail closed",
+    "parent PID guard bound beforefork; nonblocking drain; ownedgroup cleanup after leader exit"
+  ],
+  "providerRequestsPerformed": 0,
+  "financialAccountReads": 0,
+  "financialWrites": 0,
+  "runtimeChanges": 0,
+  "historicalWindowsModified": 0,
+  "readyForLeadExecutionAfterSettlement": true,
+  "measurementMeaning": "Prepared bounded diagnostic only; no successful live data adjudication is claimed."
+}

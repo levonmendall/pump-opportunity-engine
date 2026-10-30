@@ -1,0 +1,79 @@
+{
+  "preparedAt": "2026-10-28T22:25:00Z",
+  "kind": "coherent-deadline-history-resource-forward-v1",
+  "purpose": [
+    "Joint validation of full critical-path repair",
+    "History-only provider failure isolation, unchanged audit validation/timeouts",
+    "Sustained resource timeline and independent dashboard verification"
+  ],
+  "source": {
+    "commit": "d7eab54491c361d7c2d5a31e0543e36bf88fd847",
+    "sha256": "f7b1f1a36451587d624345c57770cfdd386b9ff27a411b4998c37d39935f04a9"
+  },
+  "baseline": {
+    "source": "c189a54b7978692ef2f7d098d6b3374aea8deb72",
+    "run": "native-paper-20261028210805129",
+    "auditsVerified": 38,
+    "auditsUnavailable": 20,
+    "auditsUnusable": 2,
+    "uniqueTokensAudited": 20,
+    "normalizedTrades": 771,
+    "deadlineMissesSubsetOfUnavailable": 14,
+    "physicalTimeouts": 23,
+    "sourceCpuSeconds": 180.271528,
+    "maximumRssBytes": 374575104,
+    "elapsedMs": 1414250
+  },
+  "operatingEnvelope": {
+    "deepSlots": 3,
+    "financialStage": "single: temporary measured exposure limit; not an architecture ceiling",
+    "initialSeconds": 1800,
+    "existingObligationsRecoverySegmentMaximumSeconds": 1800,
+    "rpcMaximumNewUnits": 1500,
+    "rpcMaximumNewAccountedBytes": 268435456,
+    "rollingStartsPerMinute": 60,
+    "rollingStartsPer10Seconds": 20,
+    "minimumSpacingMs": 250,
+    "physicalOperationsInFlight": 1,
+    "historyTimeoutMs": 1500,
+    "candidateDecisionDeadlineMs": 9999,
+    "holdingQuoteAgeAtUseMaximumMs": 2000,
+    "sourceStateAgeMaximumMs": 30000,
+    "retainedEvidenceAndCpuRssStops": "unchanged existing finite supervisor and source limits",
+    "existingResearchCompletedEvaluationBoundaryMs": 4000,
+    "researchCompletedEvaluationMeaning": "Existing source policy, not a production protection tolerance; target remains2000ms. No actual holding in this interval yet."
+  },
+  "measurements": [
+    "per-target eligibility, physical dispatch/response/settlement, validation and predictive admission",
+    "shared calendar native controls, migration progress, report/checkpoint/backup/entry work and refusals",
+    "audit history pages, completeness, unknown successful and independently failed signatures",
+    "HTTP genuine dispatcher hooks/socket object reuse; hook is not wire transmission",
+    "15-second source/publisher/supervisor CPU and RSS, stable-membership CPU deltas, memory/disk headroom, source-stamped traffic/requests",
+    "public dashboard source/account/config/timestamps and at least two exact retained source-witness cycles"
+  ],
+  "honestyRules": [
+    "A quiet sample cannot establish busy or six-slot capacity",
+    "Source CPU/evidence limit stop remains actual incomplete planned duration",
+    "No natural qualification means no natural PAPER trade or position protection proof",
+    "Known simulation jitter/burst failures remain separately labeled",
+    "No 24-hour acceptance; no original observer/account modification; no real transactions"
+  ],
+  "independentPublicSampler": {
+    "secondsMaximum": 3960,
+    "receivedBytesMaximum": 33554432,
+    "requestsMaximum": 420,
+    "intervalMs": 10000,
+    "responseBytesMaximum": 524288,
+    "timeoutMs": 5000,
+    "beginsBeforeDispatch": true
+  },
+  "configurationSha256": "68f64a68bfa756ef799a330b9b980f1d81195c93973a455ff0d524d3c762d74a",
+  "resourceAnalysisPolicy": {
+    "chosenBeforeArtifactAvailable": true,
+    "startupPhaseMs": 300000,
+    "steadyPhaseStartsAtMs": 300000,
+    "minimumPhaseSamples": 3,
+    "minimumPhaseSpanMs": 30000,
+    "cpuMembershipChanges": "UNKNOWN rather than invented utilization"
+  }
+}

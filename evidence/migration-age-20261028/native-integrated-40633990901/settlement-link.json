@@ -1,0 +1,76 @@
+{
+  "schemaVersion": 1,
+  "administrationRun": 40633990901,
+  "administrationCommit": "0ca23761bb15449a88d84b1d00cf3923614b6085",
+  "segment": "native-ec2-20261028044416",
+  "source": {
+    "commit": "bb6fd9fa899c6a4d07c19643e0cff86b42deb408",
+    "sha256": "ccb42f1d629aeaaa6760872064e98936692584608b1dd01b60da590ebf2b916a"
+  },
+  "classification": "FAILED_INTEGRATED_INTERVAL_WITH_TWO_RETAINED_AUDITED_WINDOWS",
+  "lastRuntimeGeneratedAt": 1793163078151,
+  "supervisorFinishedAt": 1793163083663,
+  "runtimeGracefulStopProven": false,
+  "externalProcessGroupTerminationProven": true,
+  "physicalStartsAndSettlementEvents": 57,
+  "priorUnits": 4684,
+  "accountedNewUnits": 57,
+  "cumulativeAccountedUnits": 4741,
+  "measuredNewResponseBytes": 36799000,
+  "uncertainNewResponseBytes": 2752512,
+  "cumulativeUncertainResponseBytes": 48889856,
+  "accountedCumulativeResponseBytes": 168276573,
+  "counterPaths": [
+    {
+      "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/rpc/chapter-001.json",
+      "sha256": "7fef8c7ccf9fcddb4671dc921408dbc175ee503317bee5c86e53de779d1735f6"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/rpc/chapter-002.json",
+      "sha256": "889cbe0285935cd4c6b222f1181d3ab2f80abcd581eceed5f1fad0f917e13f03"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/rpc/chapter-003.json",
+      "sha256": "3240f82abfa8e24f8819ba88793c34f2680ed00db56c2f5c5001669be4f3e6f3"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/rpc/chapter-004.json",
+      "sha256": "944fe14bd95d3310f8460393b4bd3255ad4469736f1838b69ff032741e180d76"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/rpc/chapter-005.json",
+      "sha256": "73d6d8094c77a72061f252573c732c629ebe9ee03db7bd0dbd9fc42d24443784"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/rpc/chapter-006.json",
+      "sha256": "83019931c8209a925d3654d19ad165234cb1ac12c12d49b13f82ce36084a8604"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/rpc/chapter-007.json",
+      "sha256": "ef510cd6849c30c32507da03b5736ceea7c2b15d989c48e8c4b2d710f6e38b91"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/rpc/chapter-008.json",
+      "sha256": "9cf5ebe51eb286515e7ab2964dec37a1e55bce3cb45e0a22e79d70f898346e89"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/rpc/chapter-009.json",
+      "sha256": "f5289ab039dcf964f9e8b8e760216bf5510d3054e9f063a3473ba7baefc39082"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/rpc/chapter-010.json",
+      "sha256": "166ae8c5cd37e211d56b28efc404d3a2f43eb5caa831e3d51609b58a4d4aa34a"
+    },
+    {
+      "path": "/workspace/poe-pilot/runs/native-ec2-20261028044416/artifact/run/rpc/chapter-011.json",
+      "sha256": "83f7014a2beca1293cd9f461d74e139cf3755cfdfd184fefb5919db332783fb1"
+    }
+  ],
+  "passiveTailLimitation": "No graceful final source meter exists; forced-termination passive-tail completeness is not independently proven. Durable measured bytes are a retained lower bound; historical and failed-operation uncertainty is not refunded.",
+  "lastDurableBookObservedAt": 1793163083528,
+  "originalObserverUnchanged": true,
+  "financialDatabaseOpened": false,
+  "historicalBooksChanged": false,
+  "reservationsRefunded": false,
+  "at": 1793164124950
+}

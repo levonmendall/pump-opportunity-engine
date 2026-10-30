@@ -1,0 +1,28 @@
+{
+  "kind": "OFFLINE_PASSIVE_ACCOUNTING_SYNCHRONOUS_BLOCK_REPRODUCTION",
+  "modulePath": "/workspace/poe-protection-critical-path/src/component-budget.ts",
+  "sourceSha256": "3279b408867b4c84e05331e2f043ea620cbe09aaf2a6959ca6385d3a3971bc52",
+  "receipts": 1200,
+  "bytes": 4915200,
+  "injectedBeforeEachDurablePersistMs": 10,
+  "elapsedMs": 12386.731111000001,
+  "maximum50msTimerGapMs": 12407.396228,
+  "timerTicks": 3,
+  "actualCalls": 0,
+  "httpBytes": 0,
+  "wsBytes": 4915200,
+  "durableObservedBeforeClose": 4915200,
+  "durableCrashTailBeforeClose": 0,
+  "durableWsBytesAfterClose": 4915200,
+  "persistence": {
+    "attempts": 1201,
+    "totalMs": 12370.818993999994,
+    "maximumMs": 14.302126000000044
+  },
+  "receiptAccounting": null,
+  "providerRequests": 0,
+  "financialDatabaseOpened": false,
+  "productionTouched": false,
+  "liveFailureAttribution": false,
+  "meaning": "Actual ComponentBudget passive-receipt path with explicit offline durability-latency injection; compares same-thread timer starvation and durable crash coverage. This does not attribute the live protection breach."
+}

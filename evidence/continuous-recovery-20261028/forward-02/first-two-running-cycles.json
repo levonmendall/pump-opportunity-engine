@@ -1,0 +1,264 @@
+{
+  "observations": [
+    {
+      "observedAt": 1793208481796,
+      "receiverState": "reporting",
+      "snapshot": {
+        "schemaVersion": 1,
+        "kind": "experimental-pilot",
+        "authoritative": false,
+        "liveTrading": false,
+        "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+        "inceptionAt": 1793123773252,
+        "runId": "native-candidates-20261028172713245",
+        "generatedAt": 1793208481262,
+        "source": {
+          "release": "71896104f07faa2b193b90d3d3133a8e29236f35",
+          "strategy": "persistent-buying-v0-unfrozen",
+          "sha256": "80071522cc6943b5ff743f3106904641bf4e21cac5ffdd6c96b8ee7566dd91e3"
+        },
+        "running": true,
+        "entriesEnabled": false,
+        "status": "SHADOWv3 protocol-aware ordinary flow; strictv2 unavailable views 0, protocol effects 0. candidate-only native observation; warming six closed buckets; no financial execution",
+        "mode": "candidate-evaluation",
+        "financialExecutionAuthorized": false,
+        "observationAgePolicy": {
+          "version": "observation-age-selected-24h-study-v1",
+          "minimumObservationAgeMs": 0,
+          "recentMaximumAgeMs": 7200000,
+          "selectedOlderMaximumAgeMs": 86400000
+        },
+        "sourceTimes": {
+          "lastMarketNotificationAt": null,
+          "lastFreshSupportAt": 1793208458056,
+          "lastBankClockAt": 1793208457000,
+          "lastAuditAt": null,
+          "lastPredictiveAt": null,
+          "financialReconciliationAt": null
+        },
+        "portfolio": null,
+        "accounting": null,
+        "funnel": {
+          "discovered": 0,
+          "supported": null,
+          "sufficientlyObserved": 0,
+          "evaluated": 0,
+          "qualified": 0,
+          "reserved": 0,
+          "attempted": 0,
+          "paperFilled": 0,
+          "exited": 0,
+          "reconciled": 0,
+          "verifiedMigrationOrigins": 138,
+          "admitted": 703,
+          "usableWindows": 0
+        },
+        "metrics": {
+          "rpcRequests": 54,
+          "providerEvents": 28742,
+          "normalizedTrades": 0,
+          "eventLoopLagMs": 27.262975,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeMs": null,
+          "protectionBreaches": null,
+          "unavailableChecks": null,
+          "streamBytes": 45311391
+        },
+        "decisions": [],
+        "refusals": [
+          {
+            "reason": "migration-verification-unavailable",
+            "count": 10
+          },
+          {
+            "reason": "verification-queue-full",
+            "count": 0
+          },
+          {
+            "reason": "native-quality-gaps",
+            "count": 0
+          },
+          {
+            "reason": "independent-audit-unavailable",
+            "count": 0
+          },
+          {
+            "reason": "independent-audit-unusable",
+            "count": 0
+          },
+          {
+            "reason": "predictive-window-deadline-missed",
+            "count": 0
+          }
+        ],
+        "watch": {
+          "known": 173,
+          "watch": 44,
+          "eligibleKnown": 16,
+          "deepActive": 6,
+          "maximumDeep": 6,
+          "queued": 11,
+          "promoted": 703,
+          "repromoted": 574,
+          "demoted": 696,
+          "expired": 143,
+          "capacityExclusions": 0,
+          "structuralExclusions": 18,
+          "completeWindows": 478,
+          "strategyRejections": 0,
+          "incompleteDataExclusions": 0,
+          "enrichmentDeadlineFailures": 0,
+          "predictiveAssessments": 0,
+          "predictiveFailures": 0,
+          "observationEligibleKnown": 40,
+          "observationQueued": 11,
+          "maximumOlderResearchIdentities": 24,
+          "ageCohorts": {
+            "preEntry": 0,
+            "entryEligible": 16,
+            "olderSelected": 24
+          },
+          "waitMs": {
+            "mean": 2652669.5454545454,
+            "maximum": 2693381
+          },
+          "promotionWaitMs": {
+            "mean": 940397.464028777,
+            "maximum": 6515299
+          }
+        }
+      }
+    },
+    {
+      "observedAt": 1793208502110,
+      "receiverState": "reporting",
+      "snapshot": {
+        "schemaVersion": 1,
+        "kind": "experimental-pilot",
+        "authoritative": false,
+        "liveTrading": false,
+        "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+        "inceptionAt": 1793123773252,
+        "runId": "native-candidates-20261028172713245",
+        "generatedAt": 1793208496266,
+        "source": {
+          "release": "71896104f07faa2b193b90d3d3133a8e29236f35",
+          "strategy": "persistent-buying-v0-unfrozen",
+          "sha256": "80071522cc6943b5ff743f3106904641bf4e21cac5ffdd6c96b8ee7566dd91e3"
+        },
+        "running": true,
+        "entriesEnabled": false,
+        "status": "SHADOWv3 protocol-aware ordinary flow; strictv2 unavailable views 0, protocol effects 0. candidate-only native observation; warming six closed buckets; no financial execution",
+        "mode": "candidate-evaluation",
+        "financialExecutionAuthorized": false,
+        "observationAgePolicy": {
+          "version": "observation-age-selected-24h-study-v1",
+          "minimumObservationAgeMs": 0,
+          "recentMaximumAgeMs": 7200000,
+          "selectedOlderMaximumAgeMs": 86400000
+        },
+        "sourceTimes": {
+          "lastMarketNotificationAt": 1793208495027,
+          "lastFreshSupportAt": 1793208482255,
+          "lastBankClockAt": 1793208481000,
+          "lastAuditAt": null,
+          "lastPredictiveAt": null,
+          "financialReconciliationAt": null
+        },
+        "portfolio": null,
+        "accounting": null,
+        "funnel": {
+          "discovered": 0,
+          "supported": null,
+          "sufficientlyObserved": 0,
+          "evaluated": 0,
+          "qualified": 0,
+          "reserved": 0,
+          "attempted": 0,
+          "paperFilled": 0,
+          "exited": 0,
+          "reconciled": 0,
+          "verifiedMigrationOrigins": 138,
+          "admitted": 703,
+          "usableWindows": 0
+        },
+        "metrics": {
+          "rpcRequests": 56,
+          "providerEvents": 38848,
+          "normalizedTrades": 2,
+          "eventLoopLagMs": 26.902527,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeMs": null,
+          "protectionBreaches": null,
+          "unavailableChecks": null,
+          "streamBytes": 60944589
+        },
+        "decisions": [],
+        "refusals": [
+          {
+            "reason": "migration-verification-unavailable",
+            "count": 10
+          },
+          {
+            "reason": "verification-queue-full",
+            "count": 0
+          },
+          {
+            "reason": "native-quality-gaps",
+            "count": 0
+          },
+          {
+            "reason": "independent-audit-unavailable",
+            "count": 0
+          },
+          {
+            "reason": "independent-audit-unusable",
+            "count": 0
+          },
+          {
+            "reason": "predictive-window-deadline-missed",
+            "count": 0
+          }
+        ],
+        "watch": {
+          "known": 173,
+          "watch": 43,
+          "eligibleKnown": 16,
+          "deepActive": 6,
+          "maximumDeep": 6,
+          "queued": 11,
+          "promoted": 703,
+          "repromoted": 574,
+          "demoted": 696,
+          "expired": 144,
+          "capacityExclusions": 0,
+          "structuralExclusions": 18,
+          "completeWindows": 478,
+          "strategyRejections": 0,
+          "incompleteDataExclusions": 0,
+          "enrichmentDeadlineFailures": 0,
+          "predictiveAssessments": 0,
+          "predictiveFailures": 0,
+          "observationEligibleKnown": 40,
+          "observationQueued": 11,
+          "maximumOlderResearchIdentities": 24,
+          "ageCohorts": {
+            "preEntry": 0,
+            "entryEligible": 16,
+            "olderSelected": 24
+          },
+          "waitMs": {
+            "mean": 2667674.5454545454,
+            "maximum": 2708386
+          },
+          "promotionWaitMs": {
+            "mean": 940397.464028777,
+            "maximum": 6515299
+          }
+        }
+      }
+    }
+  ],
+  "publicComparisonOnly": true,
+  "privateRawSourceNotYetRetrieved": true
+}

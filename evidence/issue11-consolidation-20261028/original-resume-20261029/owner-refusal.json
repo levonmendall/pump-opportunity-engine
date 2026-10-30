@@ -1,0 +1,12 @@
+{
+  "provenance": "Owner-provided screenshot, transcribed; not a machine-readable protected receipt",
+  "observedResult": {
+    "kind": "POE_ORIGINAL_CUTOVER_REFUSED",
+    "reason": "ORIGINAL_WRITER_MUST_BE_SETTLED",
+    "financialHistoryReset": false,
+    "backupRestored": false,
+    "ownerActionMayBeRequired": true
+  },
+  "controlPathInference": "The indexed old driver passed systemctl stop and acquired the original owner lease, then refused its inactive/MainPID predicate inside stopped_install. Its recovery released the lease and restarted the original source before a new-source start. This is not evidence of failed lease acquisition.",
+  "unknown": "Exact stop metadata at the first predicate was not recorded. A failed terminal state or omitted zero-default property are possible, not established causes."
+}

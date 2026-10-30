@@ -1,0 +1,11 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-28T15:31:44.451280+00:00",
+  "administrationRun": 40714364745,
+  "reason": "Settle already-failing frozen candidate-only segment to retrieve exact per-event trace through existing administration route; classify user target36/9/12 rather than infer from dashboard counters",
+  "targetSourceAt": 1793201088374,
+  "latestSourceAt": 1793201497721,
+  "noFinancialWriter": true,
+  "strategyOrSourceChanged": false,
+  "plannedAction": "existing GitHub run cancellation; actual outcome and transport settlement must be verified"
+}

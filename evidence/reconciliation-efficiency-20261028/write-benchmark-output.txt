@@ -1,0 +1,10 @@
+/workspace/pump-opportunity-engine/src/trader.ts:81
+    if(this.pilot){const state=options.ledger.state();assertPilotBaseline();if(!this.pilotConfig||state.mode!=='PAPER'||!/^poe-pilot-[a-z0-9-]+$/.test(state.accountId)||options.costs.gasLamports!=='7000'||options.costs.slippageBps!==100||(options.timeoutMs??3000)>3000||typeof options.pilotExecution?.context!=='function'||typeof options.pilotExecution?.quote!=='function')throw Error('isolated pilot identity, frozen contract and fresh execution adapters required');}
+                                                                                                                                                                                                                                                                                                                                                                                           ^
+
+Error: isolated pilot identity, frozen contract and fresh execution adapters required
+    at new PaperTrader (/workspace/pump-opportunity-engine/src/trader.ts:81:380)
+    at new NativePaper (/workspace/pump-opportunity-engine/src/native-paper.ts:27:15)
+    at <anonymous> (/workspace/poe-reconcile-efficiency/scripts/reconciliation-write-benchmark.ts:16:15)
+
+Node.js v24.19.0

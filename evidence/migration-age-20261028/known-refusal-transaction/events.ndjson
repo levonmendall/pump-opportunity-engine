@@ -1,0 +1,5 @@
+{"kind":"component-job-enqueued","at":1793164480095,"data":{"at":1793164480095,"kind":{"transport":"http","method":"getTransaction"},"latestStartAt":1793164488001}}
+{"kind":"component-physical-start","at":1793164480112,"data":{"id":4742,"at":1793164480097,"enqueuedAt":1793164480095,"reservedAt":1793164480095,"kind":{"transport":"http","method":"getTransaction"}}}
+{"kind":"http-headers","at":1793164480351,"data":{"id":4742,"method":"getTransaction","status":200,"retryAfter":null,"at":1793164480351,"byteAccounting":"measured-body; response-header-and-wire-overhead-unmeasured"}}
+{"kind":"http-response-timing","at":1793164480374,"data":{"id":4742,"method":"getTransaction","requestedAt":1793164480098,"availableAt":1793164480374,"responseBytes":7738,"status":200}}
+{"kind":"component-physical-settled","at":1793164480385,"data":{"id":4742,"at":1793164480385,"responseComplete":true,"kind":{"transport":"http","method":"getTransaction"},"uncertainReservedBytes":0}}

@@ -28,10 +28,11 @@ test('existing sidecar can reopen, but added foreign tables prevent subsequent w
 test('sidecar rejects a symlink parent and never creates a database through it',t=>{
  const dir=directory(t),alias=dir+'-alias';symlinkSync(dir,alias);t.after(()=>rmSync(alias,{force:true}));assert.throws(()=>new LifetimeEquityStore(join(alias,'equity.sqlite')),/PRIVATE_DIRECTORY_REQUIRED/);assert.deepEqual(readdirSync(dir),[]);
 });
-test('systemd credential0440 exception is restricted to this exact companion credential',()=>{
+test('systemd credential0440 exception is restricted to the original runtime and companion ingestion credentials',()=>{
  const directory='/run/credentials/poe-lifetime-equity.service',path=directory+'/poe-ingest-secret',file={uid:0,gid:0,mode:0o100440};
  assert.equal(equityCredentialOwnerModeAccepted(path,file,988,directory),true);
- for(const [p,d,f]of [[path,undefined,file],[path,directory,{...file,uid:988}],[path,directory,{...file,gid:982}],[path,directory,{...file,mode:0o100444}],['/tmp/poe-ingest-secret',directory,file],['/run/credentials/poe-runtime.service/poe-ingest-secret','/run/credentials/poe-runtime.service',file]]as const)assert.equal(equityCredentialOwnerModeAccepted(p,f,988,d),false);
+ assert.equal(equityCredentialOwnerModeAccepted('/run/credentials/poe-runtime.service/poe-ingest-secret',file,988,'/run/credentials/poe-runtime.service'),true);
+ for(const [p,d,f]of [[path,undefined,file],[path,directory,{...file,uid:988}],[path,directory,{...file,gid:982}],[path,directory,{...file,mode:0o100444}],['/tmp/poe-ingest-secret',directory,file],['/run/credentials/poe-runtime.service/poe-ingest-secret',directory,file],['/run/credentials/other.service/poe-ingest-secret','/run/credentials/other.service',file]]as const)assert.equal(equityCredentialOwnerModeAccepted(p,f,988,d),false);
  assert.equal(equityCredentialOwnerModeAccepted('/tmp/test-private',{uid:988,gid:982,mode:0o100600},988),true);
 });
 

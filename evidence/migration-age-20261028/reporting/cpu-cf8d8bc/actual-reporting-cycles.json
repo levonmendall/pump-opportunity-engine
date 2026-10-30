@@ -1,0 +1,653 @@
+{
+  "schemaVersion": 1,
+  "startedAt": 1793156302176,
+  "finishedAt": 1793156324030,
+  "sourceCommit": "cf8d8bcd5b674ba6d510e92c1ae181d3cc6e5e4d",
+  "sourceSha256": "97369ba7ea222caa3008c97d189718e75b36f56d19dd3fb40a57d6efdf66c258",
+  "runId": "pilot-20261028024343351-654738bd",
+  "scope": "full allowlisted projected source snapshot matches, including actual mode/financial flags, funnel, metrics, counters and age cohorts",
+  "dashboardRequests": 5,
+  "marketRequests": 0,
+  "financialQueries": 0,
+  "sourceCodeChanges": false,
+  "runningCyclesPassed": false,
+  "runningMatches": [
+    {
+      "checkedAt": 1793156307646,
+      "state": "reporting",
+      "receivedAt": 1793156304598,
+      "sourceAgeMs": 4199,
+      "receiverAgeMs": 3002,
+      "match": true,
+      "displayed": {
+        "schemaVersion": 1,
+        "kind": "experimental-pilot",
+        "authoritative": false,
+        "liveTrading": false,
+        "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+        "inceptionAt": 1793123773252,
+        "runId": "pilot-20261028024343351-654738bd",
+        "generatedAt": 1793156303401,
+        "source": {
+          "release": "cf8d8bcd5b674ba6d510e92c1ae181d3cc6e5e4d",
+          "strategy": "persistent-buying-pilot-concurrent-stage-3-v1",
+          "sha256": "97369ba7ea222caa3008c97d189718e75b36f56d19dd3fb40a57d6efdf66c258"
+        },
+        "running": true,
+        "entriesEnabled": false,
+        "status": "candidate evaluation; financial execution intentionally disabled",
+        "mode": "candidate-evaluation",
+        "financialExecutionAuthorized": false,
+        "observationAgePolicy": {
+          "version": "observation-age-v1",
+          "minimumObservationAgeMs": 0,
+          "recentMaximumAgeMs": 7200000,
+          "selectedOlderMaximumAgeMs": 21600000
+        },
+        "portfolio": null,
+        "accounting": null,
+        "funnel": {
+          "discovered": 8,
+          "supported": 65,
+          "sufficientlyObserved": 50,
+          "evaluated": 471,
+          "qualified": 0,
+          "reserved": 0,
+          "attempted": 0,
+          "paperFilled": 0,
+          "exited": 0,
+          "reconciled": 0,
+          "verifiedMigrationOrigins": 25,
+          "admitted": 65,
+          "usableWindows": 51
+        },
+        "metrics": {
+          "rpcRequests": 491,
+          "providerEvents": 542782,
+          "normalizedTrades": 122,
+          "eventLoopLagMs": 25.673727,
+          "maximumCompletedGapMs": null,
+          "maximumQuoteAgeMs": null,
+          "protectionBreaches": 0,
+          "unavailableChecks": 0,
+          "streamBytes": 870661748
+        },
+        "decisions": [
+          {
+            "at": 1793156220037,
+            "mint": "FB5ghaoUHBXBb8e2KbZa14pTxEdjYbfd1QkHNQ1mpump",
+            "stage": "missing-data",
+            "reason": "warming"
+          },
+          {
+            "at": 1793156220045,
+            "mint": "7sD23H7mwbd8AJ3MWEG3ZBe6r8XKoqCkkiu7GGzYpump",
+            "stage": "missing-data",
+            "reason": "warming"
+          },
+          {
+            "at": 1793156227188,
+            "mint": "AAv894Fijo5GrunpuBfvykWZu12VZVoFLphiT91gpump",
+            "stage": "market-exclusion",
+            "reason": "outside-provisional-migration-age"
+          },
+          {
+            "at": 1793156228016,
+            "mint": "4Cg4LpnnfHH1uPrzWuErptbfBjpjAyFAtS6r4hs3pump",
+            "stage": "missing-data",
+            "reason": "warming"
+          },
+          {
+            "at": 1793156230039,
+            "mint": "3B2KzDNM4R731ChMmsQPDHpc1gKNa9ycuoim8LJQpump",
+            "stage": "missing-data",
+            "reason": "warming"
+          },
+          {
+            "at": 1793156230043,
+            "mint": "FB5ghaoUHBXBb8e2KbZa14pTxEdjYbfd1QkHNQ1mpump",
+            "stage": "missing-data",
+            "reason": "warming"
+          },
+          {
+            "at": 1793156230047,
+            "mint": "7sD23H7mwbd8AJ3MWEG3ZBe6r8XKoqCkkiu7GGzYpump",
+            "stage": "missing-data",
+            "reason": "warming"
+          },
+          {
+            "at": 1793156230051,
+            "mint": "AAv894Fijo5GrunpuBfvykWZu12VZVoFLphiT91gpump",
+            "stage": "market-exclusion",
+            "reason": "outside-provisional-migration-age"
+          },
+          {
+            "at": 1793156230056,
+            "mint": "4Cg4LpnnfHH1uPrzWuErptbfBjpjAyFAtS6r4hs3pump",
+            "stage": "missing-data",
+            "reason": "warming"
+          },
+          {
+            "at": 1793156240034,
+            "mint": "3B2KzDNM4R731ChMmsQPDHpc1gKNa9ycuoim8LJQpump",
+            "stage": "missing-data",
+            "reason": "warming"
+          },
+          {
+            "at": 1793156240039,
+            "mint": "FB5ghaoUHBXBb8e2KbZa14pTxEdjYbfd1QkHNQ1mpump",
+            "stage": "missing-data",
+            "reason": "warming"
+          },
+          {
+            "at": 1793156240043,
+            "mint": "7sD23H7mwbd8AJ3MWEG3ZBe6r8XKoqCkkiu7GGzYpump",
+            "stage": "missing-data",
+            "reason": "warming"
+          },
+          {
+            "at": 1793156240047,
+            "mint": "AAv894Fijo5GrunpuBfvykWZu12VZVoFLphiT91gpump",
+            "stage": "market-exclusion",
+            "reason": "outside-provisional-migration-age"
+          },
+          {
+            "at": 1793156240051,
+            "mint": "4Cg4LpnnfHH1uPrzWuErptbfBjpjAyFAtS6r4hs3pump",
+            "stage": "missing-data",
+            "reason": "warming"
+          },
+          {
+            "at": 1793156250053,
+            "mint": "3B2KzDNM4R731ChMmsQPDHpc1gKNa9ycuoim8LJQpump",
+            "stage": "missing-data",
+            "reason": "warming"
+          },
+          {
+            "at": 1793156250057,
+            "mint": "FB5ghaoUHBXBb8e2KbZa14pTxEdjYbfd1QkHNQ1mpump",
+            "stage": "missing-data",
+            "reason": "warming"
+          },
+          {
+            "at": 1793156250062,
+            "mint": "7sD23H7mwbd8AJ3MWEG3ZBe6r8XKoqCkkiu7GGzYpump",
+            "stage": "missing-data",
+            "reason": "warming"
+          },
+          {
+            "at": 1793156250066,
+            "mint": "AAv894Fijo5GrunpuBfvykWZu12VZVoFLphiT91gpump",
+            "stage": "market-exclusion",
+            "reason": "outside-provisional-migration-age"
+          },
+          {
+            "at": 1793156250070,
+            "mint": "4Cg4LpnnfHH1uPrzWuErptbfBjpjAyFAtS6r4hs3pump",
+            "stage": "missing-data",
+            "reason": "warming"
+          },
+          {
+            "at": 1793156260048,
+            "mint": "7sD23H7mwbd8AJ3MWEG3ZBe6r8XKoqCkkiu7GGzYpump",
+            "stage": "missing-data",
+            "reason": "warming"
+          },
+          {
+            "at": 1793156260053,
+            "mint": "AAv894Fijo5GrunpuBfvykWZu12VZVoFLphiT91gpump",
+            "stage": "market-exclusion",
+            "reason": "outside-provisional-migration-age"
+          },
+          {
+            "at": 1793156260059,
+            "mint": "4Cg4LpnnfHH1uPrzWuErptbfBjpjAyFAtS6r4hs3pump",
+            "stage": "missing-data",
+            "reason": "warming"
+          },
+          {
+            "at": 1793156265383,
+            "mint": "FB5ghaoUHBXBb8e2KbZa14pTxEdjYbfd1QkHNQ1mpump",
+            "stage": "candidate-observation",
+            "reason": "financial-execution-intentionally-disabled"
+          },
+          {
+            "at": 1793156270039,
+            "mint": "AAv894Fijo5GrunpuBfvykWZu12VZVoFLphiT91gpump",
+            "stage": "market-exclusion",
+            "reason": "outside-provisional-migration-age"
+          },
+          {
+            "at": 1793156270046,
+            "mint": "4Cg4LpnnfHH1uPrzWuErptbfBjpjAyFAtS6r4hs3pump",
+            "stage": "missing-data",
+            "reason": "warming"
+          },
+          {
+            "at": 1793156275255,
+            "mint": "7sD23H7mwbd8AJ3MWEG3ZBe6r8XKoqCkkiu7GGzYpump",
+            "stage": "candidate-observation",
+            "reason": "financial-execution-intentionally-disabled"
+          },
+          {
+            "at": 1793156280017,
+            "mint": "AAv894Fijo5GrunpuBfvykWZu12VZVoFLphiT91gpump",
+            "stage": "market-exclusion",
+            "reason": "outside-provisional-migration-age"
+          },
+          {
+            "at": 1793156280022,
+            "mint": "4Cg4LpnnfHH1uPrzWuErptbfBjpjAyFAtS6r4hs3pump",
+            "stage": "missing-data",
+            "reason": "warming"
+          },
+          {
+            "at": 1793156295400,
+            "mint": "AAv894Fijo5GrunpuBfvykWZu12VZVoFLphiT91gpump",
+            "stage": "market-exclusion",
+            "reason": "outside-provisional-migration-age"
+          },
+          {
+            "at": 1793156295405,
+            "mint": "4Cg4LpnnfHH1uPrzWuErptbfBjpjAyFAtS6r4hs3pump",
+            "stage": "candidate-observation",
+            "reason": "financial-execution-intentionally-disabled"
+          }
+        ],
+        "refusals": [
+          {
+            "reason": "PILOT_MIGRATION_HISTORY_SATURATED_ORIGIN_UNKNOWN",
+            "count": 16
+          },
+          {
+            "reason": "candidate-preparation-unavailable",
+            "count": 1
+          },
+          {
+            "reason": "candidate-method-capacity-unavailable",
+            "count": 8
+          },
+          {
+            "reason": "independent-audit-capacity",
+            "count": 4
+          },
+          {
+            "reason": "independent-audit-unavailable",
+            "count": 2
+          },
+          {
+            "reason": "MIGRATION_IDENTITY_OUTSIDE_PUMP_PROGRAM_FAMILY",
+            "count": 1
+          },
+          {
+            "reason": "capacity-feasibility-unavailable",
+            "count": 1
+          },
+          {
+            "reason": "PILOT_RPC_COMPONENT_ADMISSION_CLOSED",
+            "count": 1
+          }
+        ],
+        "watch": {
+          "known": 112,
+          "watch": 37,
+          "eligibleKnown": 11,
+          "deepActive": 0,
+          "maximumDeep": 6,
+          "queued": 5,
+          "promoted": 412,
+          "repromoted": 319,
+          "demoted": 412,
+          "expired": 84,
+          "capacityExclusions": 0,
+          "structuralExclusions": 13,
+          "completeWindows": 415,
+          "strategyRejections": 0,
+          "incompleteDataExclusions": 15,
+          "enrichmentDeadlineFailures": 8,
+          "predictiveAssessments": 50,
+          "predictiveFailures": 50,
+          "observationEligibleKnown": 36,
+          "observationQueued": 26,
+          "maximumOlderResearchIdentities": 24,
+          "ageCohorts": {
+            "preEntry": 2,
+            "entryEligible": 11,
+            "olderSelected": 23
+          },
+          "waitMs": {
+            "mean": 162217.8,
+            "maximum": 218241
+          },
+          "promotionWaitMs": {
+            "mean": 1023028.3790322581,
+            "maximum": 6515299
+          }
+        }
+      }
+    }
+  ],
+  "actualStoppedMatched": true,
+  "stoppedMatch": {
+    "checkedAt": 1793156323028,
+    "state": "stopped",
+    "receivedAt": 1793156319756,
+    "sourceAgeMs": 4325,
+    "receiverAgeMs": 3240,
+    "match": true,
+    "displayed": {
+      "schemaVersion": 1,
+      "kind": "experimental-pilot",
+      "authoritative": false,
+      "liveTrading": false,
+      "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+      "inceptionAt": 1793123773252,
+      "runId": "pilot-20261028024343351-654738bd",
+      "generatedAt": 1793156318671,
+      "source": {
+        "release": "cf8d8bcd5b674ba6d510e92c1ae181d3cc6e5e4d",
+        "strategy": "persistent-buying-pilot-concurrent-stage-3-v1",
+        "sha256": "97369ba7ea222caa3008c97d189718e75b36f56d19dd3fb40a57d6efdf66c258"
+      },
+      "running": false,
+      "entriesEnabled": false,
+      "status": "finite research interval ended",
+      "mode": "candidate-evaluation",
+      "financialExecutionAuthorized": false,
+      "observationAgePolicy": {
+        "version": "observation-age-v1",
+        "minimumObservationAgeMs": 0,
+        "recentMaximumAgeMs": 7200000,
+        "selectedOlderMaximumAgeMs": 21600000
+      },
+      "portfolio": null,
+      "accounting": null,
+      "funnel": {
+        "discovered": 8,
+        "supported": 65,
+        "sufficientlyObserved": 50,
+        "evaluated": 471,
+        "qualified": 0,
+        "reserved": 0,
+        "attempted": 0,
+        "paperFilled": 0,
+        "exited": 0,
+        "reconciled": 0,
+        "verifiedMigrationOrigins": 25,
+        "admitted": 65,
+        "usableWindows": 51
+      },
+      "metrics": {
+        "rpcRequests": 491,
+        "providerEvents": 542782,
+        "normalizedTrades": 122,
+        "eventLoopLagMs": 25.624575,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeMs": null,
+        "protectionBreaches": 0,
+        "unavailableChecks": 0,
+        "streamBytes": 870661750
+      },
+      "decisions": [
+        {
+          "at": 1793156220037,
+          "mint": "FB5ghaoUHBXBb8e2KbZa14pTxEdjYbfd1QkHNQ1mpump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793156220045,
+          "mint": "7sD23H7mwbd8AJ3MWEG3ZBe6r8XKoqCkkiu7GGzYpump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793156227188,
+          "mint": "AAv894Fijo5GrunpuBfvykWZu12VZVoFLphiT91gpump",
+          "stage": "market-exclusion",
+          "reason": "outside-provisional-migration-age"
+        },
+        {
+          "at": 1793156228016,
+          "mint": "4Cg4LpnnfHH1uPrzWuErptbfBjpjAyFAtS6r4hs3pump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793156230039,
+          "mint": "3B2KzDNM4R731ChMmsQPDHpc1gKNa9ycuoim8LJQpump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793156230043,
+          "mint": "FB5ghaoUHBXBb8e2KbZa14pTxEdjYbfd1QkHNQ1mpump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793156230047,
+          "mint": "7sD23H7mwbd8AJ3MWEG3ZBe6r8XKoqCkkiu7GGzYpump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793156230051,
+          "mint": "AAv894Fijo5GrunpuBfvykWZu12VZVoFLphiT91gpump",
+          "stage": "market-exclusion",
+          "reason": "outside-provisional-migration-age"
+        },
+        {
+          "at": 1793156230056,
+          "mint": "4Cg4LpnnfHH1uPrzWuErptbfBjpjAyFAtS6r4hs3pump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793156240034,
+          "mint": "3B2KzDNM4R731ChMmsQPDHpc1gKNa9ycuoim8LJQpump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793156240039,
+          "mint": "FB5ghaoUHBXBb8e2KbZa14pTxEdjYbfd1QkHNQ1mpump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793156240043,
+          "mint": "7sD23H7mwbd8AJ3MWEG3ZBe6r8XKoqCkkiu7GGzYpump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793156240047,
+          "mint": "AAv894Fijo5GrunpuBfvykWZu12VZVoFLphiT91gpump",
+          "stage": "market-exclusion",
+          "reason": "outside-provisional-migration-age"
+        },
+        {
+          "at": 1793156240051,
+          "mint": "4Cg4LpnnfHH1uPrzWuErptbfBjpjAyFAtS6r4hs3pump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793156250053,
+          "mint": "3B2KzDNM4R731ChMmsQPDHpc1gKNa9ycuoim8LJQpump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793156250057,
+          "mint": "FB5ghaoUHBXBb8e2KbZa14pTxEdjYbfd1QkHNQ1mpump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793156250062,
+          "mint": "7sD23H7mwbd8AJ3MWEG3ZBe6r8XKoqCkkiu7GGzYpump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793156250066,
+          "mint": "AAv894Fijo5GrunpuBfvykWZu12VZVoFLphiT91gpump",
+          "stage": "market-exclusion",
+          "reason": "outside-provisional-migration-age"
+        },
+        {
+          "at": 1793156250070,
+          "mint": "4Cg4LpnnfHH1uPrzWuErptbfBjpjAyFAtS6r4hs3pump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793156260048,
+          "mint": "7sD23H7mwbd8AJ3MWEG3ZBe6r8XKoqCkkiu7GGzYpump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793156260053,
+          "mint": "AAv894Fijo5GrunpuBfvykWZu12VZVoFLphiT91gpump",
+          "stage": "market-exclusion",
+          "reason": "outside-provisional-migration-age"
+        },
+        {
+          "at": 1793156260059,
+          "mint": "4Cg4LpnnfHH1uPrzWuErptbfBjpjAyFAtS6r4hs3pump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793156265383,
+          "mint": "FB5ghaoUHBXBb8e2KbZa14pTxEdjYbfd1QkHNQ1mpump",
+          "stage": "candidate-observation",
+          "reason": "financial-execution-intentionally-disabled"
+        },
+        {
+          "at": 1793156270039,
+          "mint": "AAv894Fijo5GrunpuBfvykWZu12VZVoFLphiT91gpump",
+          "stage": "market-exclusion",
+          "reason": "outside-provisional-migration-age"
+        },
+        {
+          "at": 1793156270046,
+          "mint": "4Cg4LpnnfHH1uPrzWuErptbfBjpjAyFAtS6r4hs3pump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793156275255,
+          "mint": "7sD23H7mwbd8AJ3MWEG3ZBe6r8XKoqCkkiu7GGzYpump",
+          "stage": "candidate-observation",
+          "reason": "financial-execution-intentionally-disabled"
+        },
+        {
+          "at": 1793156280017,
+          "mint": "AAv894Fijo5GrunpuBfvykWZu12VZVoFLphiT91gpump",
+          "stage": "market-exclusion",
+          "reason": "outside-provisional-migration-age"
+        },
+        {
+          "at": 1793156280022,
+          "mint": "4Cg4LpnnfHH1uPrzWuErptbfBjpjAyFAtS6r4hs3pump",
+          "stage": "missing-data",
+          "reason": "warming"
+        },
+        {
+          "at": 1793156295400,
+          "mint": "AAv894Fijo5GrunpuBfvykWZu12VZVoFLphiT91gpump",
+          "stage": "market-exclusion",
+          "reason": "outside-provisional-migration-age"
+        },
+        {
+          "at": 1793156295405,
+          "mint": "4Cg4LpnnfHH1uPrzWuErptbfBjpjAyFAtS6r4hs3pump",
+          "stage": "candidate-observation",
+          "reason": "financial-execution-intentionally-disabled"
+        }
+      ],
+      "refusals": [
+        {
+          "reason": "PILOT_MIGRATION_HISTORY_SATURATED_ORIGIN_UNKNOWN",
+          "count": 16
+        },
+        {
+          "reason": "candidate-preparation-unavailable",
+          "count": 1
+        },
+        {
+          "reason": "candidate-method-capacity-unavailable",
+          "count": 8
+        },
+        {
+          "reason": "independent-audit-capacity",
+          "count": 4
+        },
+        {
+          "reason": "independent-audit-unavailable",
+          "count": 2
+        },
+        {
+          "reason": "MIGRATION_IDENTITY_OUTSIDE_PUMP_PROGRAM_FAMILY",
+          "count": 1
+        },
+        {
+          "reason": "capacity-feasibility-unavailable",
+          "count": 1
+        },
+        {
+          "reason": "PILOT_RPC_COMPONENT_ADMISSION_CLOSED",
+          "count": 1
+        }
+      ],
+      "watch": {
+        "known": 112,
+        "watch": 37,
+        "eligibleKnown": 11,
+        "deepActive": 0,
+        "maximumDeep": 6,
+        "queued": 5,
+        "promoted": 412,
+        "repromoted": 319,
+        "demoted": 412,
+        "expired": 84,
+        "capacityExclusions": 0,
+        "structuralExclusions": 13,
+        "completeWindows": 415,
+        "strategyRejections": 0,
+        "incompleteDataExclusions": 15,
+        "enrichmentDeadlineFailures": 8,
+        "predictiveAssessments": 50,
+        "predictiveFailures": 50,
+        "observationEligibleKnown": 36,
+        "observationQueued": 26,
+        "maximumOlderResearchIdentities": 24,
+        "ageCohorts": {
+          "preEntry": 2,
+          "entryEligible": 11,
+          "olderSelected": 23
+        },
+        "waitMs": {
+          "mean": 177487.8,
+          "maximum": 233511
+        },
+        "promotionWaitMs": {
+          "mean": 1023028.3790322581,
+          "maximum": 6515299
+        }
+      }
+    }
+  },
+  "lastLocal": {
+    "generatedAt": 1793156318671,
+    "running": false,
+    "mode": "candidate-evaluation",
+    "entriesEnabled": false,
+    "financialExecutionAuthorized": false
+  },
+  "errors": []
+}

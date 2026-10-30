@@ -1,0 +1,67 @@
+{
+  "verifiedAt": "2026-10-30T00:41:04.709504+00:00",
+  "sourceUnchanged": true,
+  "files": {
+    "operator/native-paper-ec2/forward-original-upgrade.py": "bfeda883d6f51160264ffcf8ae87ad107b11d2fdc24a28e8beeaafa97c2b853f",
+    "operator/native-paper-ec2/test-forward-original-upgrade.py": "86ff0d66c0480b2be422114112557739b42653c221a156edb76bb37000573389",
+    "operator/native-paper-ec2/prepare-provider-recovery-package-20261030.py": "443b70f8a1d099336dcbc4f50c2047aad6ad0af78936b9d71d48d6270a57e4ab",
+    "operator/native-paper-ec2/test-prepare-provider-recovery-package-20261030.py": "1f74602e1206e52d35bc296ffd768521d4f441e6abf8f6b2492943559a31fddb",
+    "operator/native-paper-ec2/export-provider-recovery-forensics-20261030.py": "e1c04bc56c27e2341b188d441055eaf5b1eac245ad1d390157a14e3b3d129f7e",
+    "operator/native-paper-ec2/test-export-provider-recovery-forensics-20261030.py": "4526c2569f582f0da26038c130ec798f48d4b85ed6e88c8abfccb4f544cfb83e",
+    "operator/native-paper-ec2/read-provider-recovery-forensics-20261030.py": "c3719d93d0570cd08b77d52a6b520a302f8fdf4b793dc2a9c39a7d95e6c35c90",
+    "operator/native-paper-ec2/test-read-provider-recovery-forensics-20261030.py": "81287a5694a11aafacecdc4164940f0d8c263ccd1a3a4c9947da4777fb2fb852"
+  },
+  "results": [
+    {
+      "command": [
+        "python3",
+        "-B",
+        "operator/native-paper-ec2/test-forward-original-upgrade.py"
+      ],
+      "exitCode": 0,
+      "tests": 61,
+      "raw": "forward-original-upgrade.raw.txt",
+      "sha256": "669c767ca3218e6d3ce21a6fa406d7b6fa68c56ec4bf977ef5cffeefa9714126"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "operator/native-paper-ec2/test-prepare-provider-recovery-package-20261030.py"
+      ],
+      "exitCode": 0,
+      "tests": 2,
+      "raw": "prepare-provider-recovery-package-20261030.raw.txt",
+      "sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "operator/native-paper-ec2/test-export-provider-recovery-forensics-20261030.py"
+      ],
+      "exitCode": 0,
+      "tests": 32,
+      "raw": "export-provider-recovery-forensics-20261030.raw.txt",
+      "sha256": "d80499724acd394c689b5afe93a479d47e976f838ffce590feb6358068739fc3"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "operator/native-paper-ec2/test-read-provider-recovery-forensics-20261030.py"
+      ],
+      "exitCode": 0,
+      "tests": 13,
+      "raw": "read-provider-recovery-forensics-20261030.raw.txt",
+      "sha256": "2f238a0257e6d46a70c81386904bf122354367dd5b963197cee3e97e6df95a8b"
+    }
+  ],
+  "totalTests": 108,
+  "passed": true,
+  "allFutureTargetPinsUnset": true,
+  "actualStagePerformed": false,
+  "financialDatabaseOpenedOutsideDisposableTests": false,
+  "providerRequests": 0,
+  "serviceChanges": 0
+}

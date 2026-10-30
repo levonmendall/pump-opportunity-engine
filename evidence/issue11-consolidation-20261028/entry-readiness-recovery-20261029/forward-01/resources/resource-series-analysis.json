@@ -1,0 +1,775 @@
+{
+  "classification": "ACTUAL_READ_ONLY_POST_UPGRADE_RESOURCE_SAMPLES_NOT_OPERATIONAL_ACCEPTANCE",
+  "source": {
+    "commit": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+    "sha256": "b3ec5aa43b877a4c5ff44f6217be32a4539766c351deb143d557894ccb118ec9"
+  },
+  "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf",
+  "samples": [
+    {
+      "file": "host-40932856836.json",
+      "checkedAt": 1793299170896,
+      "utc": "2026-10-29T18:39:30.896000+00:00",
+      "generation": [
+        "2465804",
+        2465812,
+        null,
+        "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+        "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf"
+      ],
+      "newRunAcknowledged": false,
+      "activeGeneration": true,
+      "ackSourceAt": null,
+      "ackAcceptedAt": null,
+      "ackDistinct": null,
+      "restartCount": "0",
+      "sourceAt": "2026-10-29T18:39:25.808Z",
+      "reconciliationAgeAtSourceMs": 729,
+      "blocker": "POE_ENTRY_SAFE_STOP",
+      "entriesDisabled": true,
+      "feedConnected": true,
+      "observedShortlist": 4,
+      "resources": {
+        "sampleAt": 1793299170898,
+        "hostScope": "HOST-AGGREGATE; includes unrelated applications and administration runner, not POE-attributable",
+        "serviceScope": "poe-runtime.service cgroup, including owned children",
+        "hostMemory": {
+          "available": true,
+          "totalBytes": 8153255936,
+          "availableBytes": 6870102016
+        },
+        "rootFilesystem": {
+          "available": true,
+          "capacityBytes": 331712798720,
+          "availableBytes": 288548794368
+        },
+        "serviceIo": {
+          "available": true,
+          "scope": "poe-runtime.service cgroup only; not host I/O",
+          "deviceCount": 1,
+          "devices": [
+            {
+              "device": "259:0",
+              "rbytes": 57344,
+              "wbytes": 97157120,
+              "rios": 14,
+              "wios": 1760,
+              "dbytes": 0,
+              "dios": 0
+            }
+          ],
+          "totals": {
+            "rbytes": 57344,
+            "wbytes": 97157120,
+            "rios": 14,
+            "wios": 1760,
+            "dbytes": 0,
+            "dios": 0
+          },
+          "meaning": "Kernel-accounted cumulative I/O; missing fields are not invented and an empty device set does not independently prove no writes."
+        },
+        "serviceCpu": {
+          "available": true,
+          "usage_usec": 15256540,
+          "user_usec": 14131641,
+          "system_usec": 1124899,
+          "nr_periods": 0,
+          "nr_throttled": 0,
+          "throttled_usec": 0
+        },
+        "serviceMemory": {
+          "current": {
+            "available": true,
+            "bytes": 431869952,
+            "unlimited": false
+          },
+          "max": {
+            "available": true,
+            "bytes": 3221225472,
+            "unlimited": false
+          },
+          "peak": {
+            "available": true,
+            "bytes": 454471680,
+            "unlimited": false
+          }
+        },
+        "hostNetwork": {
+          "available": true,
+          "scope": "HOST-AGGREGATE; not POE-attributable",
+          "interfaceCount": 2,
+          "truncated": false,
+          "interfaces": [
+            {
+              "interface": "lo",
+              "receivedBytes": 564192612,
+              "receivedPackets": 3803812,
+              "transmittedBytes": 564192612,
+              "transmittedPackets": 3803812
+            },
+            {
+              "interface": "ens5",
+              "receivedBytes": 96763098733,
+              "receivedPackets": 79593736,
+              "transmittedBytes": 10849226597,
+              "transmittedPackets": 28835506
+            }
+          ]
+        }
+      },
+      "roles": {
+        "original-supervisor": {
+          "pid": 2465804,
+          "role": "original-supervisor",
+          "ownerUid": 988,
+          "cpuSeconds": 0.72,
+          "rssBytes": 31272960,
+          "nice": 0,
+          "explicitMaxOldSpaceSizeMiB": [],
+          "argvExported": false
+        },
+        "native-source": {
+          "pid": 2465812,
+          "role": "native-source",
+          "ownerUid": 988,
+          "cpuSeconds": 13.94,
+          "rssBytes": 366182400,
+          "nice": 0,
+          "explicitMaxOldSpaceSizeMiB": [
+            1024
+          ],
+          "argvExported": false
+        },
+        "original-publisher": {
+          "pid": 2465813,
+          "role": "original-publisher",
+          "ownerUid": 988,
+          "cpuSeconds": 0.56,
+          "rssBytes": 103653376,
+          "nice": 0,
+          "explicitMaxOldSpaceSizeMiB": [
+            128
+          ],
+          "argvExported": false
+        }
+      },
+      "memoryEvents": {
+        "available": true,
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      }
+    },
+    {
+      "file": "host-40933332233.json",
+      "checkedAt": 1793299353110,
+      "utc": "2026-10-29T18:42:33.110000+00:00",
+      "generation": [
+        "2465804",
+        2465812,
+        "native-paper-20261029183807362",
+        "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+        "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf"
+      ],
+      "newRunAcknowledged": true,
+      "activeGeneration": true,
+      "ackSourceAt": 1793299316082,
+      "ackAcceptedAt": 1793299342983,
+      "ackDistinct": 3,
+      "restartCount": "0",
+      "sourceAt": "2026-10-29T18:42:26.152Z",
+      "reconciliationAgeAtSourceMs": 4,
+      "blocker": "POE_ENTRY_SAFE_STOP",
+      "entriesDisabled": true,
+      "feedConnected": true,
+      "observedShortlist": 4,
+      "resources": {
+        "sampleAt": 1793299353111,
+        "hostScope": "HOST-AGGREGATE; includes unrelated applications and administration runner, not POE-attributable",
+        "serviceScope": "poe-runtime.service cgroup, including owned children",
+        "hostMemory": {
+          "available": true,
+          "totalBytes": 8153255936,
+          "availableBytes": 6851686400
+        },
+        "rootFilesystem": {
+          "available": true,
+          "capacityBytes": 331712798720,
+          "availableBytes": 288542158848
+        },
+        "serviceIo": {
+          "available": true,
+          "scope": "poe-runtime.service cgroup only; not host I/O",
+          "deviceCount": 1,
+          "devices": [
+            {
+              "device": "259:0",
+              "rbytes": 73728,
+              "wbytes": 228724736,
+              "rios": 16,
+              "wios": 7044,
+              "dbytes": 0,
+              "dios": 0
+            }
+          ],
+          "totals": {
+            "rbytes": 73728,
+            "wbytes": 228724736,
+            "rios": 16,
+            "wios": 7044,
+            "dbytes": 0,
+            "dios": 0
+          },
+          "meaning": "Kernel-accounted cumulative I/O; missing fields are not invented and an empty device set does not independently prove no writes."
+        },
+        "serviceCpu": {
+          "available": true,
+          "usage_usec": 45507502,
+          "user_usec": 42615725,
+          "system_usec": 2891777,
+          "nr_periods": 0,
+          "nr_throttled": 0,
+          "throttled_usec": 0
+        },
+        "serviceMemory": {
+          "current": {
+            "available": true,
+            "bytes": 454967296,
+            "unlimited": false
+          },
+          "max": {
+            "available": true,
+            "bytes": 3221225472,
+            "unlimited": false
+          },
+          "peak": {
+            "available": true,
+            "bytes": 485019648,
+            "unlimited": false
+          }
+        },
+        "hostNetwork": {
+          "available": true,
+          "scope": "HOST-AGGREGATE; not POE-attributable",
+          "interfaceCount": 2,
+          "truncated": false,
+          "interfaces": [
+            {
+              "interface": "lo",
+              "receivedBytes": 564227820,
+              "receivedPackets": 3804116,
+              "transmittedBytes": 564227820,
+              "transmittedPackets": 3804116
+            },
+            {
+              "interface": "ens5",
+              "receivedBytes": 97018727559,
+              "receivedPackets": 79790547,
+              "transmittedBytes": 10853732513,
+              "transmittedPackets": 28893971
+            }
+          ]
+        }
+      },
+      "roles": {
+        "original-supervisor": {
+          "pid": 2465804,
+          "role": "original-supervisor",
+          "ownerUid": 988,
+          "cpuSeconds": 2.11,
+          "rssBytes": 31277056,
+          "nice": 0,
+          "explicitMaxOldSpaceSizeMiB": [],
+          "argvExported": false
+        },
+        "native-source": {
+          "pid": 2465812,
+          "role": "native-source",
+          "ownerUid": 988,
+          "cpuSeconds": 41.89,
+          "rssBytes": 389500928,
+          "nice": 0,
+          "explicitMaxOldSpaceSizeMiB": [
+            1024
+          ],
+          "argvExported": false
+        },
+        "original-publisher": {
+          "pid": 2465813,
+          "role": "original-publisher",
+          "ownerUid": 988,
+          "cpuSeconds": 1.44,
+          "rssBytes": 97366016,
+          "nice": 0,
+          "explicitMaxOldSpaceSizeMiB": [
+            128
+          ],
+          "argvExported": false
+        }
+      },
+      "memoryEvents": {
+        "available": true,
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      }
+    },
+    {
+      "file": "host-40933842613.json",
+      "checkedAt": 1793299550246,
+      "utc": "2026-10-29T18:45:50.246000+00:00",
+      "generation": [
+        "2465804",
+        2465812,
+        "native-paper-20261029183807362",
+        "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+        "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf"
+      ],
+      "newRunAcknowledged": true,
+      "activeGeneration": true,
+      "ackSourceAt": 1793299516908,
+      "ackAcceptedAt": 1793299539232,
+      "ackDistinct": 16,
+      "restartCount": "0",
+      "sourceAt": "2026-10-29T18:45:46.996Z",
+      "reconciliationAgeAtSourceMs": 231,
+      "blocker": "POE_ENTRY_SAFE_STOP",
+      "entriesDisabled": true,
+      "feedConnected": true,
+      "observedShortlist": 4,
+      "resources": {
+        "sampleAt": 1793299550246,
+        "hostScope": "HOST-AGGREGATE; includes unrelated applications and administration runner, not POE-attributable",
+        "serviceScope": "poe-runtime.service cgroup, including owned children",
+        "hostMemory": {
+          "available": true,
+          "totalBytes": 8153255936,
+          "availableBytes": 6828019712
+        },
+        "rootFilesystem": {
+          "available": true,
+          "capacityBytes": 331712798720,
+          "availableBytes": 288585633792
+        },
+        "serviceIo": {
+          "available": true,
+          "scope": "poe-runtime.service cgroup only; not host I/O",
+          "deviceCount": 1,
+          "devices": [
+            {
+              "device": "259:0",
+              "rbytes": 38092800,
+              "wbytes": 390721536,
+              "rios": 353,
+              "wios": 10293,
+              "dbytes": 0,
+              "dios": 0
+            }
+          ],
+          "totals": {
+            "rbytes": 38092800,
+            "wbytes": 390721536,
+            "rios": 353,
+            "wios": 10293,
+            "dbytes": 0,
+            "dios": 0
+          },
+          "meaning": "Kernel-accounted cumulative I/O; missing fields are not invented and an empty device set does not independently prove no writes."
+        },
+        "serviceCpu": {
+          "available": true,
+          "usage_usec": 75186877,
+          "user_usec": 70552660,
+          "system_usec": 4634216,
+          "nr_periods": 0,
+          "nr_throttled": 0,
+          "throttled_usec": 0
+        },
+        "serviceMemory": {
+          "current": {
+            "available": true,
+            "bytes": 500654080,
+            "unlimited": false
+          },
+          "max": {
+            "available": true,
+            "bytes": 3221225472,
+            "unlimited": false
+          },
+          "peak": {
+            "available": true,
+            "bytes": 540336128,
+            "unlimited": false
+          }
+        },
+        "hostNetwork": {
+          "available": true,
+          "scope": "HOST-AGGREGATE; not POE-attributable",
+          "interfaceCount": 2,
+          "truncated": false,
+          "interfaces": [
+            {
+              "interface": "lo",
+              "receivedBytes": 564270195,
+              "receivedPackets": 3804472,
+              "transmittedBytes": 564270195,
+              "transmittedPackets": 3804472
+            },
+            {
+              "interface": "ens5",
+              "receivedBytes": 97289056272,
+              "receivedPackets": 79999780,
+              "transmittedBytes": 10859290565,
+              "transmittedPackets": 28960204
+            }
+          ]
+        }
+      },
+      "roles": {
+        "original-supervisor": {
+          "pid": 2465804,
+          "role": "original-supervisor",
+          "ownerUid": 988,
+          "cpuSeconds": 3.67,
+          "rssBytes": 31281152,
+          "nice": 0,
+          "explicitMaxOldSpaceSizeMiB": [],
+          "argvExported": false
+        },
+        "native-source": {
+          "pid": 2465812,
+          "role": "native-source",
+          "ownerUid": 988,
+          "cpuSeconds": 69.09,
+          "rssBytes": 395014144,
+          "nice": 0,
+          "explicitMaxOldSpaceSizeMiB": [
+            1024
+          ],
+          "argvExported": false
+        },
+        "original-publisher": {
+          "pid": 2465813,
+          "role": "original-publisher",
+          "ownerUid": 988,
+          "cpuSeconds": 2.34,
+          "rssBytes": 110174208,
+          "nice": 0,
+          "explicitMaxOldSpaceSizeMiB": [
+            128
+          ],
+          "argvExported": false
+        }
+      },
+      "memoryEvents": {
+        "available": true,
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      }
+    },
+    {
+      "file": "host-40934448586.json",
+      "checkedAt": 1793299786549,
+      "utc": "2026-10-29T18:49:46.549000+00:00",
+      "generation": [
+        "2465804",
+        2465812,
+        "native-paper-20261029183807362",
+        "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+        "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf"
+      ],
+      "newRunAcknowledged": true,
+      "activeGeneration": true,
+      "ackSourceAt": 1793299757283,
+      "ackAcceptedAt": 1793299780919,
+      "ackDistinct": 32,
+      "restartCount": "0",
+      "sourceAt": "2026-10-29T18:49:32.414Z",
+      "reconciliationAgeAtSourceMs": 254,
+      "blocker": "POE_ENTRY_SAFE_STOP",
+      "entriesDisabled": true,
+      "feedConnected": true,
+      "observedShortlist": 4,
+      "resources": {
+        "sampleAt": 1793299786549,
+        "hostScope": "HOST-AGGREGATE; includes unrelated applications and administration runner, not POE-attributable",
+        "serviceScope": "poe-runtime.service cgroup, including owned children",
+        "hostMemory": {
+          "available": true,
+          "totalBytes": 8153255936,
+          "availableBytes": 6786781184
+        },
+        "rootFilesystem": {
+          "available": true,
+          "capacityBytes": 331712798720,
+          "availableBytes": 288590032896
+        },
+        "serviceIo": {
+          "available": true,
+          "scope": "poe-runtime.service cgroup only; not host I/O",
+          "deviceCount": 1,
+          "devices": [
+            {
+              "device": "259:0",
+              "rbytes": 38092800,
+              "wbytes": 569020416,
+              "rios": 353,
+              "wios": 13272,
+              "dbytes": 0,
+              "dios": 0
+            }
+          ],
+          "totals": {
+            "rbytes": 38092800,
+            "wbytes": 569020416,
+            "rios": 353,
+            "wios": 13272,
+            "dbytes": 0,
+            "dios": 0
+          },
+          "meaning": "Kernel-accounted cumulative I/O; missing fields are not invented and an empty device set does not independently prove no writes."
+        },
+        "serviceCpu": {
+          "available": true,
+          "usage_usec": 110606995,
+          "user_usec": 104080850,
+          "system_usec": 6526145,
+          "nr_periods": 0,
+          "nr_throttled": 0,
+          "throttled_usec": 0
+        },
+        "serviceMemory": {
+          "current": {
+            "available": true,
+            "bytes": 514891776,
+            "unlimited": false
+          },
+          "max": {
+            "available": true,
+            "bytes": 3221225472,
+            "unlimited": false
+          },
+          "peak": {
+            "available": true,
+            "bytes": 567697408,
+            "unlimited": false
+          }
+        },
+        "hostNetwork": {
+          "available": true,
+          "scope": "HOST-AGGREGATE; not POE-attributable",
+          "interfaceCount": 2,
+          "truncated": false,
+          "interfaces": [
+            {
+              "interface": "lo",
+              "receivedBytes": 564334630,
+              "receivedPackets": 3805000,
+              "transmittedBytes": 564334630,
+              "transmittedPackets": 3805000
+            },
+            {
+              "interface": "ens5",
+              "receivedBytes": 97603304740,
+              "receivedPackets": 80243305,
+              "transmittedBytes": 10866259523,
+              "transmittedPackets": 29041787
+            }
+          ]
+        }
+      },
+      "roles": {
+        "original-supervisor": {
+          "pid": 2465804,
+          "role": "original-supervisor",
+          "ownerUid": 988,
+          "cpuSeconds": 5.59,
+          "rssBytes": 31281152,
+          "nice": 0,
+          "explicitMaxOldSpaceSizeMiB": [],
+          "argvExported": false
+        },
+        "native-source": {
+          "pid": 2465812,
+          "role": "native-source",
+          "ownerUid": 988,
+          "cpuSeconds": 101.54,
+          "rssBytes": 395472896,
+          "nice": 0,
+          "explicitMaxOldSpaceSizeMiB": [
+            1024
+          ],
+          "argvExported": false
+        },
+        "original-publisher": {
+          "pid": 2465813,
+          "role": "original-publisher",
+          "ownerUid": 988,
+          "cpuSeconds": 3.36,
+          "rssBytes": 128258048,
+          "nice": 0,
+          "explicitMaxOldSpaceSizeMiB": [
+            128
+          ],
+          "argvExported": false
+        }
+      },
+      "memoryEvents": {
+        "available": true,
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      }
+    }
+  ],
+  "pairs": [
+    {
+      "from": "host-40933332233.json",
+      "until": "host-40933842613.json",
+      "generation": [
+        "2465804",
+        2465812,
+        "native-paper-20261029183807362",
+        "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+        "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf"
+      ],
+      "seconds": 197.136,
+      "serviceCpuOneCoreFraction": 0.1505527909666423,
+      "throttledUsecDelta": 0,
+      "serviceIoCounterDeltas": {
+        "rbytes": 38019072,
+        "wbytes": 161996800,
+        "rios": 337,
+        "wios": 3249,
+        "dbytes": 0,
+        "dios": 0
+      },
+      "serviceIoBytesPerSecond": {
+        "rbytes": 192857.07328950573,
+        "wbytes": 821751.4812109406
+      },
+      "nativeCpuOneCoreFraction": 0.13797581365148934,
+      "nativeRssBytes": {
+        "start": 389500928,
+        "end": 395014144
+      },
+      "cgroupMemoryBytes": {
+        "start": 454967296,
+        "end": 500654080,
+        "peakAtEnd": 540336128
+      },
+      "hostAvailableMemoryBytes": {
+        "start": 6851686400,
+        "end": 6828019712
+      },
+      "hostAvailableDiskBytes": {
+        "start": 288542158848,
+        "end": 288585633792
+      },
+      "hostNetworkCounterDeltas": {
+        "lo": {
+          "receivedBytes": 42375,
+          "transmittedBytes": 42375,
+          "receivedPackets": 356,
+          "transmittedPackets": 356
+        },
+        "ens5": {
+          "receivedBytes": 270328713,
+          "transmittedBytes": 5558052,
+          "receivedPackets": 209233,
+          "transmittedPackets": 66233
+        }
+      },
+      "hostMetricAttribution": "Host memory, free disk and network include unrelated applications; no POE-only attribution. Cgroup I/O includes evidence, ledger, backups and filesystem amplification without separation."
+    },
+    {
+      "from": "host-40933842613.json",
+      "until": "host-40934448586.json",
+      "generation": [
+        "2465804",
+        2465812,
+        "native-paper-20261029183807362",
+        "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+        "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf"
+      ],
+      "seconds": 236.303,
+      "serviceCpuOneCoreFraction": 0.1498927986525774,
+      "throttledUsecDelta": 0,
+      "serviceIoCounterDeltas": {
+        "rbytes": 0,
+        "wbytes": 178298880,
+        "rios": 0,
+        "wios": 2979,
+        "dbytes": 0,
+        "dios": 0
+      },
+      "serviceIoBytesPerSecond": {
+        "rbytes": 0.0,
+        "wbytes": 754534.9826282358
+      },
+      "nativeCpuOneCoreFraction": 0.13732369034671588,
+      "nativeRssBytes": {
+        "start": 395014144,
+        "end": 395472896
+      },
+      "cgroupMemoryBytes": {
+        "start": 500654080,
+        "end": 514891776,
+        "peakAtEnd": 567697408
+      },
+      "hostAvailableMemoryBytes": {
+        "start": 6828019712,
+        "end": 6786781184
+      },
+      "hostAvailableDiskBytes": {
+        "start": 288585633792,
+        "end": 288590032896
+      },
+      "hostNetworkCounterDeltas": {
+        "lo": {
+          "receivedBytes": 64435,
+          "transmittedBytes": 64435,
+          "receivedPackets": 528,
+          "transmittedPackets": 528
+        },
+        "ens5": {
+          "receivedBytes": 314248468,
+          "transmittedBytes": 6968958,
+          "receivedPackets": 243525,
+          "transmittedPackets": 81583
+        }
+      },
+      "hostMetricAttribution": "Host memory, free disk and network include unrelated applications; no POE-only attribution. Cgroup I/O includes evidence, ledger, backups and filesystem amplification without separation."
+    }
+  ],
+  "skippedPairs": [
+    {
+      "from": "host-40932856836.json",
+      "until": "host-40933332233.json",
+      "reason": "Missing active generation/new-run acknowledgment or changed source/PID/run; no stopped or cross-generation delta computed."
+    }
+  ],
+  "limitations": [
+    "Only matching source, native PID, supervisor PID, run ACK and restart generation produce deltas.",
+    "No financial database, credential or provider calls are made by this analysis.",
+    "Point resource samples and cumulative interval counters do not prove continuous market or position coverage.",
+    "Source reconciliation age is assessed at original source generation, never refreshed from receiver time."
+  ]
+}

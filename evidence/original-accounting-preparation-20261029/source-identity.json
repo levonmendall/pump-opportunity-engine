@@ -1,0 +1,28 @@
+{
+  "baseCommit": "15a4e8bbe09a3fb04069094e08c47cd4c7bcc398",
+  "kind": "offline-original-accounting-preparation-v1",
+  "files": [
+    {
+      "path": "src/prepare-original-accounting.ts",
+      "sha256": "2b8f86b816e198a155732bdb610dda0b5c636bf4516265db48ef2032f8908701"
+    },
+    {
+      "path": "operator/native-paper-ec2/prepare-original-accounting.py",
+      "sha256": "f68c4b293efa749394981dc9b691adc9d901121063f492afd8660162687f3e03"
+    },
+    {
+      "path": "test/prepare-original-accounting.test.ts",
+      "sha256": "1281e025ad52b29d52aed1e9ace99aaa7ec0de6136aebc44d69e998b8b9e3998"
+    },
+    {
+      "path": "operator/native-paper-ec2/test-prepare-original-accounting.py",
+      "sha256": "7430b926303a174865e14831b1f8506f3b770d10810572136388e0d6437f310c"
+    }
+  ],
+  "verification": {
+    "typescriptFixtures": 15,
+    "pythonLeaseTests": 4,
+    "typecheck": "passed"
+  },
+  "hostPreparationExecuted": false
+}

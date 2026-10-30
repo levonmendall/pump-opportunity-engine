@@ -1,0 +1,36 @@
+{
+  "at": "2026-10-29T21:33:50.839966+00:00",
+  "source": "856cc3b98f5b9089d1953ef9e82bc38d70a96342",
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "--test",
+    "test/adaptive-pilot-binding.test.ts",
+    "test/adaptive-operating-intelligence.test.ts",
+    "test/operating-intelligence.test.ts"
+  ],
+  "exitCode": 0,
+  "before": {
+    "src/pilot-contract.ts": "16f8c38d827eceea2cb74ab2964fc718fa8d36d3a81ec0aa07e797508d87015b",
+    "src/pilot.ts": "e7117f353b885407f30776adcf9948125279846f2639226222d806fc16c97a2d",
+    "src/operating-intelligence.ts": "1cac56d10d115cd715ddf04bac13d0e87085478cbceb7982c3b4ab1b469694f5",
+    "src/adaptive-momentum-v2.ts": "0f5c3d92740d0182e5b44f507430b1508e463213b7f4ff285ebfe28e4b090a30",
+    "test/adaptive-pilot-binding.test.ts": "a279075663d7dc3ea15d7034c223d7d263456aad0a5f731ab67e0900d441bd20",
+    "test/adaptive-operating-intelligence.test.ts": "2da97c269c6cd2415a2b0b029085a93d338cedd118d9970e1b22c132970053e2"
+  },
+  "after": {
+    "src/pilot-contract.ts": "16f8c38d827eceea2cb74ab2964fc718fa8d36d3a81ec0aa07e797508d87015b",
+    "src/pilot.ts": "e7117f353b885407f30776adcf9948125279846f2639226222d806fc16c97a2d",
+    "src/operating-intelligence.ts": "1cac56d10d115cd715ddf04bac13d0e87085478cbceb7982c3b4ab1b469694f5",
+    "src/adaptive-momentum-v2.ts": "0f5c3d92740d0182e5b44f507430b1508e463213b7f4ff285ebfe28e4b090a30",
+    "test/adaptive-pilot-binding.test.ts": "a279075663d7dc3ea15d7034c223d7d263456aad0a5f731ab67e0900d441bd20",
+    "test/adaptive-operating-intelligence.test.ts": "2da97c269c6cd2415a2b0b029085a93d338cedd118d9970e1b22c132970053e2"
+  },
+  "sourceUnchanged": true,
+  "rawOutputPath": "/tmp/poe-final-v2-root-profile-review.raw.txt",
+  "rawOutputSha256": "e6c5b4bfdf6ab5f7ba5d6c309776507f112df07bea76f973b20ee67e22c988c0",
+  "accountOpened": false,
+  "networkCalls": 0,
+  "liveAcceptance": false
+}

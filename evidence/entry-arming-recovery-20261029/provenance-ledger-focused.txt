@@ -1,0 +1,38 @@
+✔ all internal stop/finally intents survive many later one-second reconciliations and do not clear the raw stop (438.395643ms)
+✔ a failed resume cannot hide an owner stop or become the successful recovery boundary (25.765607ms)
+✔ only the last successful resume is an anchor and a later failed resume does not discard internal stops (12.032467ms)
+✔ resume result reasons must match the exact durable success and failure outcomes (20.846968ms)
+✔ absence of a successful resume uses validated inception and every control intention, never a bounded journal tail (163.005778ms)
+✔ owner, unknown-run and malformed-looking stop identities remain blocked even after an internal finally (44.544512ms)
+✔ hard or owner pause intent cannot be masked by later internal stops and restore markers (132.625602ms)
+✔ restore-hard-pause with safe-stop wording requires an earlier already-proven internal stop (12.345551ms)
+✔ only typed temporary readiness and ordinary shutdown pauses are recoverable provenance (14.208356ms)
+✔ unknown or invalid run sets and future/inconsistent source times fail closed (35.169594ms)
+✔ more than128 stops or512 filtered control intentions are unavailable rather than silently truncated (190.622112ms)
+✔ malformed joined actions, payloads and current control state do not yield provenance proof (75.256824ms)
+✔ fixture-only identity, fixed loaded SQLite, integer conversion and one-time inception (43.581592ms)
+✔ delayed full lifecycle counts gas once, locks/refunds deposits, preserves idempotency (13.093882ms)
+✔ failed single attempt charges gas and cannot cherry-pick a retry; expiry cannot fill (20.748421ms)
+✔ missing state never fills and pre-delay or stale quotes never become execution evidence (9.405424ms)
+✔ unknown liquidation blocks new risk, never converts an open position to zero (16.847903ms)
+✔ sticky day loss survives recovery, price recovery and restart; fresh next day can resume (31.652193ms)
+✔ entry pause cancels pending buys without abandoning position exit management (11.936054ms)
+✔ entry size includes gas/deposit, prevents adds and keeps reserved capital exclusive (24.147265ms)
+✔ wrong-sized exit cannot remove held tokens or refund its deposit (9.320001ms)
+✔ restart recovers unresolved reservations; SQLite backup restores coherent financial state (55.064904ms)
+✔ separate advisory flock rejects a second writer while external SQLite readers remain available (749.119225ms)
+✔ owner lease rejects symlinks, shared permissions, hardlinks and nonregular files without touching their targets (1.397824ms)
+✔ database open errors release the separate lease and disposable memory accounts need no file lease (13.59133ms)
+✔ database and directory aliases cannot establish a second financial writer (16.300421ms)
+✔ backward wall time cannot clear a persisted day pause (6.56015ms)
+✔ SOL exits work during USD outage and deposits stay locked until explicit refund (9.942515ms)
+✔ SIGKILL after durable order commit retains reservation and inception (316.687683ms)
+✔ SIGKILL during uncommitted write rolls back without reseeding account (276.776995ms)
+ℹ tests 30
+ℹ suites 0
+ℹ pass 30
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2177.673914

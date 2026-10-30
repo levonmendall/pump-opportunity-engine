@@ -1,12 +1,21 @@
 import {projectFinancialPolicyReporting,validateFinancialPolicyReporting,type FinancialPolicyReporting} from './financial-policy-reporting.js';
 /** Bounded diagnostics projected from the SAME authoritative source snapshot.
  * No financial writer, provider, credential or dashboard-side inference. */
+import {NATIVE_CANDIDATE_FAILURE_CODES,NATIVE_CANDIDATE_FAILURE_KINDS,NATIVE_AUDIT_DISPATCH_REASONS,NATIVE_AUDIT_DISPATCH_ACTIONS,NATIVE_AUDIT_SCHEDULER_REASONS,NATIVE_CANDIDATE_FAILURE_DIAGNOSTICS} from './native-candidate-diagnostics.js';
+const candidateFailureCodes=new Set<string>(NATIVE_CANDIDATE_FAILURE_CODES);
 export const ORIGINAL_POE_ACCOUNT='poe-3123e352-4581-455b-85db-acd7e825e99e';
 export const ORIGINAL_POE_INCEPTION='2026-10-26T22:07:36.212Z';
 export const OPERATING_INTELLIGENCE_VERSION='poe-operating-intelligence-v1';
 type Count=number|null;
 const EVIDENCE_PRESSURE_CODES=['FILESYSTEM_RESERVE','RECORD_BOUND','YOUNG_DIAGNOSTIC_CAPACITY','YOUNG_SEGMENT_CAPACITY','DIAGNOSTIC_HEADROOM','DIAGNOSTIC_SEGMENT_HEADROOM','INTERRUPTED_ESSENTIAL_PROOF','CHECKPOINT_UNAVAILABLE','RECORD_IO_OR_INTEGRITY_FAILURE','FILESYSTEM_UNAVAILABLE','RETENTION_IO_OR_INTEGRITY_FAILURE','RECOVERY_CHECKPOINT_UNAVAILABLE','OTHER_UNEXPORTED_REASON'] as const;
 const RECOVERY_REASON_CODES=['ROLLING_RESOURCE_OR_EVIDENCE_PRESSURE','CANDIDATE_PROVIDER_FAILURE','CANDIDATE_STEP_UNAVAILABLE','OTHER_UNEXPORTED_REASON'] as const;
+const PROTECTION_FAILURE_STAGES=['provider-restriction','protection-retry-paced','uninvoked-quota-or-spacing','physical-settlement-wait','physical-timeout','caller-cancel-before-physical','caller-cancel-during-physical','transport-or-node-response','local-admission'] as const;
+// Static projection contracts only; do not import the financial SDK/trader into
+// this read-only projection or copy arbitrary error text from those components.
+const ENTRY_QUOTE_PHASES=['admission','plan','pool-state','rent','freshness','evidence','post-evidence'] as const;
+const ENTRY_QUOTE_CODES=['ENTRY_QUOTE_BUSY','ENTRY_QUOTE_CALLER_ABORTED','ENTRY_QUOTE_TIMEOUT','ENTRY_QUOTE_UNKNOWN','PILOT_MARKET_ENTRY_COSTS_UNAVAILABLE','PILOT_MARKET_ENTRY_POOL_REQUIRED','PILOT_MARKET_ENTRY_DEPOSIT_MISMATCH','PILOT_MARKET_RENT_UNAVAILABLE','PILOT_MARKET_ACCOUNT_LENGTH','PILOT_MARKET_PREPARATION_CHANGED_OR_STALE','PILOT_MARKET_ENTRY_STATE_CHANGED','PILOT_RPC_ABORTED','PILOT_RPC_COOLDOWN','PILOT_RPC_PHYSICAL_SLOT_OCCUPIED','PILOT_RPC_METHOD_PACING','PILOT_RPC_LOWER_PRIORITY_DEFER','PILOT_RPC_COMPONENT_ADMISSION_CLOSED','PILOT_RPC_COMPONENT_DISPATCH_EXPIRED','PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT','PILOT_RPC_COMPONENT_ABORTED','PILOT_RPC_COMPONENT_HTTP_TRANSPORT','PILOT_RPC_COMPONENT_HTTP_429','PILOT_RPC_COMPONENT_HTTP_STATUS_502','PILOT_RPC_COMPONENT_HTTP_STATUS_503','PILOT_RPC_COMPONENT_HTTP_STATUS_504','RESEARCH_CLOCK_POOL_UNAVAILABLE','RESEARCH_CLOCK_ADMISSION_CLOSED'] as const;
+const ADAPTIVE_HELD_REASONS=['holding-signal-not-evaluated','holding-signal-time-invalid','holding-signal-source-unavailable','holding-signal-stale','holding-identity-unavailable','fresh-current-exact-size-mark-required','authoritative-high-water-not-checkpointed','authoritative-high-water-regressed','observation-time-regressed','quote-time-regressed','same-time-quote-conflict','optional-series-capacity','distinct-prior-quotes-required','zero-relative-price-baseline','dispersion-outside-exit-input-range','round-trip-or-size-changed','completed-protection-gap','same-quote-not-an-additional-sample','awaiting-new-high-water','lagged-executable-return-dispersion','lagged-width-with-nondecreasing-boundary'] as const;
+const ADAPTIVE_AVAILABLE_REASONS=['distinct-prior-quotes-required','zero-relative-price-baseline','dispersion-outside-exit-input-range','round-trip-or-size-changed','completed-protection-gap','same-quote-not-an-additional-sample','awaiting-new-high-water','lagged-executable-return-dispersion','lagged-width-with-nondecreasing-boundary'] as const;
 type EvidencePressureCode=typeof EVIDENCE_PRESSURE_CODES[number];
 type RecoveryReasonCode=typeof RECOVERY_REASON_CODES[number];
 export type OperatingAdmission={
@@ -33,6 +42,9 @@ export type OperatingIntelligence={
 const rec=(v:unknown):Record<string,any>=>v&&typeof v==='object'&&!Array.isArray(v)?v as Record<string,any>:{};
 const count=(v:unknown):Count=>Number.isSafeInteger(v)&&(v as number)>=0?v as number:null;
 const finite=(v:unknown):number|null=>typeof v==='number'&&Number.isFinite(v)&&v>=0?v:null;
+// Wire durations retain the existing integer-millisecond schema. A fractional
+// arithmetic mean is valid; round to the nearest millisecond, never erase it.
+const meanMilliseconds=(v:unknown):Count=>{const value=finite(v);return value!==null&&value<=Number.MAX_SAFE_INTEGER?Math.round(value):null;};
 const boolean=(v:unknown):boolean|null=>typeof v==='boolean'?v:null;
 const bounded=(v:unknown,maximum=256)=>typeof v==='string'&&v.length>0&&v.length<=maximum&&!/[\u0000-\u001f]/.test(v)?v:null;
 const first=(...v:unknown[])=>v.find(x=>x!==undefined);
@@ -49,6 +61,59 @@ function recoveryReasonCode(v:unknown):RecoveryReasonCode|null{
  if(typeof v==='string'&&v.startsWith('candidate step unavailable: '))return 'CANDIDATE_STEP_UNAVAILABLE';
  return 'OTHER_UNEXPORTED_REASON';
 }
+function canonicalMint(v:unknown):string|null{
+ if(typeof v!=='string'||!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(v))return null;
+ const alphabet='123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';let value=0n,bytes=0;
+ for(const c of v)value=value*58n+BigInt(alphabet.indexOf(c));
+ while(value>0n){bytes++;value>>=8n;}
+ return bytes+(v.match(/^1*/)?.[0].length??0)===32?v:null;
+}
+function entryQuoteNote(value:unknown,sourceStart:number,at:number):string|null{
+ const r=rec(value),n=count(r.count),last=rec(r.last),failedAt=count(last.at);
+ if(n===0&&r.last===null)return null;
+ const prefix=`Candidate quote failures (current market instance) ${n??'unavailable'}`;
+ if(n===null||n===0||failedAt===null||failedAt<sourceStart||failedAt>at||!(ENTRY_QUOTE_PHASES as readonly unknown[]).includes(last.phase)||!(ENTRY_QUOTE_CODES as readonly unknown[]).includes(last.reasonCode)||finite(last.elapsedMs)===null||boolean(last.callerAborted)===null||boolean(last.deadlineAborted)===null)return prefix+'; last failure unavailable. This is not a qualification or order.';
+ return `${prefix}: last ${new Date(failedAt).toISOString()}, ${canonicalMint(last.mint)??'mint unavailable'}, ${last.phase}/${last.reasonCode}, ${last.elapsedMs} ms; caller/deadline aborted ${last.callerAborted}/${last.deadlineAborted}. This is not a qualification or order.`;
+}
+function adaptiveHoldingNote(value:unknown,sourceStart:number,enteredAt:number|null,at:number):string{
+ const d=rec(value),reason=(ADAPTIVE_HELD_REASONS as readonly unknown[]).includes(d.reason)?d.reason:'unavailable-source-reason',quoteAt=count(d.quoteAt),evaluatedAt=count(d.evaluatedAt),width=count(d.effectiveTrailingDistanceBps),volatility=count(d.measuredVolatilityBps),prior=count(d.priorQuoteCount),boundary=typeof d.modeledTrailingBoundaryLamports==='string'&&/^(0|[1-9]\d{0,38})$/.test(d.modeledTrailingBoundaryLamports)?BigInt(d.modeledTrailingBoundaryLamports):null;
+ if(!['measured','fallback'].includes(d.state)||!(ADAPTIVE_AVAILABLE_REASONS as readonly unknown[]).includes(reason)||d.meaning!=='MODELED_TRIGGER_NOT_GUARANTEED_FILL'||enteredAt===null||quoteAt===null||evaluatedAt===null||quoteAt<Math.max(sourceStart,enteredAt)||quoteAt>evaluatedAt||evaluatedAt>at||at-quoteAt>2000||at-evaluatedAt>4000||width===null||width<1500||width>9999||d.state==='fallback'&&width!==1500||prior===null||prior>256||boundary===null||d.measuredVolatilityBps!==null&&(volatility===null||volatility>10000)||d.state==='measured'&&volatility===null)return `holding trail unavailable (${reason}); inspect completed protection`;
+ const sol=`${boundary/1000000000n}.${(boundary%1000000000n).toString().padStart(9,'0')}`;
+ return `${d.state} trail ${width} bps (${reason}); dispersion ${volatility??'unknown'} bps/${prior} prior quotes; boundary ${sol} SOL (modeled, fill not guaranteed); evaluated ${new Date(evaluatedAt).toISOString()}`;
+}
+function candidateFailureNote(value:unknown,sourceStart:number,at:number):string|null{
+ const d=rec(value),started=count(d.startedAt),events=count(d.events);
+ if(d.version!==NATIVE_CANDIDATE_FAILURE_DIAGNOSTICS.version||d.scope!==NATIVE_CANDIDATE_FAILURE_DIAGNOSTICS.scope||started===null||started<sourceStart||started>at||events===null)return 'Candidate audit/capture diagnostic detail unavailable; retained failure totals are unchanged.';
+ const byReason=rec(d.byReason),counts=NATIVE_CANDIDATE_FAILURE_CODES.flatMap(code=>{const n=count(byReason[code]);return n!==null&&n>0?[[code,n] as const]:[];}).sort((a,b)=>b[1]-a[1]||a[0].localeCompare(b[0]));
+ const rows=(Array.isArray(d.recent)?d.recent:[]).slice(-NATIVE_CANDIDATE_FAILURE_DIAGNOSTICS.maximumRecentFacts),latest=[...rows].reverse().map(rec).find(row=>{const when=count(row.at);return when!==null&&when>=started&&when<=at&&(NATIVE_CANDIDATE_FAILURE_KINDS as readonly unknown[]).includes(row.kind)&&typeof row.reasonCode==='string'&&row.reasonCode.length<=160&&candidateFailureCodes.has(row.reasonCode);});
+ if(events===0&&counts.length===0&&rows.length===0)return null;
+ let detail='Latest outcome detail unavailable.';
+ if(latest){
+  const when=count(latest.at)!,end=count(latest.windowEndAt),validEnd=end!==null&&end>0&&end<=when?end:null,deadline=count(latest.deadlineAt),validDeadline=validEnd!==null&&deadline!==null&&deadline>=validEnd&&deadline<=validEnd+10000?deadline:null,dispatch=(NATIVE_AUDIT_DISPATCH_REASONS as readonly unknown[]).includes(latest.lastDispatchReason)?latest.lastDispatchReason:'unavailable';
+  const close=count(latest.transportCloseCode),rpc=latest.rpcErrorCode,extra=latest.reasonCode==='NATIVE_FLOW_DISCONNECTED'&&close!==null&&close>=1000&&close<=4999?' close '+close:latest.reasonCode==='RPC_NODE_ERROR'&&Number.isSafeInteger(rpc)&&rpc>=-2147483648&&rpc<=2147483647?' RPC-code '+rpc:'';
+  const status=['verified','unusable','unavailable'].includes(latest.auditResultStatus)?'; audit diagnostic '+latest.auditResultStatus+'; no entry permission':'',action=(NATIVE_AUDIT_DISPATCH_ACTIONS as readonly unknown[]).includes(latest.lastDispatchAction)?'/'+latest.lastDispatchAction:'',scheduler=(NATIVE_AUDIT_SCHEDULER_REASONS as readonly unknown[]).includes(latest.lastSchedulerReason)?'; scheduler '+latest.lastSchedulerReason:'';
+  detail=`Latest ${latest.kind}/${latest.reasonCode}${extra} at ${new Date(when).toISOString()}, mint ${canonicalMint(latest.mint)??'unavailable'}; target end ${validEnd??'unavailable'} deadline ${validDeadline??'unavailable'} UTC-ms; dispatch ${dispatch}${action}${scheduler}${status}.`;
+ }
+ const prefix=`Candidate instance ${new Date(started).toISOString()}: `,format=(n:number)=>prefix+'counts '+(counts.slice(0,n).map(([code,value])=>code+':'+value).join(', ')||'unavailable')+' (occurrences, not unique windows). '+detail;
+ const note=format(2);if(note.length<=512)return note;const smaller=format(1);return smaller.length<=512?smaller:prefix+'outcome detail exceeds the bounded public note; source diagnostic counts and original failure totals remain retained.';
+}
+/** These are diagnostics of financially owned acquisition, not completed held
+ * evaluations. Fixed source-owned fields only: arbitrary RPC errors, policy,
+ * URLs, account data and unknown stage names never cross the public boundary.
+ * The existing bounded notes keep old receivers compatible without a parallel
+ * telemetry schema. Instance scope matters because source recovery can replace
+ * the RPC client inside one persistent operating run. */
+function protectionRpcNotes(rpc:Record<string,any>,sourceStart:number,at:number,entryNote:string|null):string[]{
+ if(!Object.hasOwn(rpc,'protectionRecovery'))return entryNote?[entryNote]:[];
+ const r=rec(rpc.protectionRecovery),start=count(rpc.startedAt),since=start!==null&&start>=sourceStart&&start<=at?new Date(start).toISOString():'unavailable',number=(v:unknown)=>count(v)??'unavailable';
+ const notes=[`Holding RPC current instance since ${since}: calls ${number(r.calls)}; logical attempts ${number(r.logicalAttempts)}; rapid probes ${number(r.rapidProbes)}; RPC retry successes ${number(r.successesAfterRetry)}; dispatch refusals ${number(r.refusals)}; holding starts in 10s / 60s ${number(r.rolling10SecondStarts)} / ${number(r.rolling60SecondStarts)}. These counts are not completed protection evaluations.`];
+ const stages=rec(r.failureStages),counts=PROTECTION_FAILURE_STAGES.flatMap(stage=>{const n=count(stages[stage]);return n!==null&&n>0?[`${stage}:${n}`]:[];});
+ if(counts.length)notes.push('Holding RPC failure stages (current instance, not completed evaluations): '+counts.join(', ')+'.');
+ const failure=rec(r.lastFailure),failedAt=count(failure.at),minimum=start!==null&&start>=sourceStart&&start<=at?start:sourceStart;
+ const last=failedAt!==null&&failedAt>=minimum&&failedAt<=at&&(PROTECTION_FAILURE_STAGES as readonly unknown[]).includes(failure.stage)?`Last holding RPC failure ${new Date(failedAt).toISOString()}: ${failure.stage}; physical-in-flight ${boolean(failure.physicalInFlight)??'unavailable'}.`:null;
+ if(last||entryNote)notes.push([last,entryNote].filter(Boolean).join(' '));
+ return notes;
+}
 /** Null is an unavailable fact, never a manufactured zero. */
 export function projectOperatingIntelligence(value:unknown):OperatingIntelligence{
  const s=rec(value),at=count(s.generatedAt),start=count(s.startedAt);
@@ -61,9 +126,43 @@ export function projectOperatingIntelligence(value:unknown):OperatingIntelligenc
  if(!runId||!configurationSha256||!/^[a-f0-9]{64}$/.test(configurationSha256)||!strategyVersion)throw Error('OPERATING_RUN_PROVENANCE_REQUIRED');
  const decisions=(Array.isArray(s.decisions)?s.decisions:[]).slice(-50).flatMap((raw:unknown,index:number)=>{const d=rec(raw),when=time(d.at),mint=bounded(d.mint,96),stage=bounded(d.stage,80),reason=bounded(d.reason,512);return when&&mint&&stage&&reason?[{id:bounded(d.id,128)??`${runId}:${index}:${d.at}`,mint,at:when,stage,reason}]:[];});
  const pendingOrders=Object.values(rec(s.pending)).slice(0,3).map(raw=>{const o=rec(raw),fields=['id','mint','side','decidedAt','executeAt','expiresAt','reserved','minReceive','decisionEvidence'];if(fields.some(k=>o[k]===undefined)||!bounded(o.id,128)||!bounded(o.mint,96)||!['buy','sell'].includes(o.side)||!/^(0|[1-9]\d{0,38})$/.test(o.reserved)||!/^(0|[1-9]\d{0,38})$/.test(o.minReceive)||!bounded(o.decisionEvidence,512))throw Error('OPERATING_PENDING_ORDER_PROJECTION');const decidedAt=time(o.decidedAt);if(!decidedAt||!Number.isSafeInteger(o.executeAt)||!Number.isSafeInteger(o.expiresAt)||o.executeAt<o.decidedAt+500||o.expiresAt<=o.executeAt||o.expiresAt>o.decidedAt+30000)throw Error('OPERATING_PENDING_ORDER_TIME');const n=BigInt(o.reserved);return {id:o.id,mint:o.mint,side:o.side as 'buy'|'sell',decidedAt,executeAt:new Date(o.executeAt).toISOString(),expiresAt:new Date(o.expiresAt).toISOString(),reservedSol:`${n/1000000000n}.${(n%1000000000n).toString().padStart(9,'0')}`,quantityMinimum:o.minReceive,reason:o.decisionEvidence};});
- const positions=rec(s.positions),held=Object.keys(positions).length,breaches=count(timing.protectionBreaches),unavailable=count(timing.unavailableChecks),lastProtected=count(timing.lastCompletedProtectionAt),protectionBoundary=count(timing.experimentalCompletedEvaluationLimitMs),primaryUnavailable=(count(rpc.cooldownUntil)??0)>at;
- const protectionState:OperatingIntelligence['protection']['state']=held===0?'flat':!time(lastProtected)?'unavailable':primaryUnavailable||protectionBoundary===null||at-lastProtected!>protectionBoundary?'degraded':'monitored';
- const limitations=(Array.isArray(s.observationReportingMeaning)?s.observationReportingMeaning:typeof s.observationReportingMeaning==='string'?[s.observationReportingMeaning]:[]).flatMap(v=>bounded(v,512)?[v as string]:[]).slice(0,10);
+ // New financially owned reads can recover through optional-work backoff.
+ // Actual provider restrictions remain authoritative; absent legacy metadata
+ // uses its original cooldown, while malformed new metadata stays conservative.
+ const ownedRestriction=count(rec(rpc.protectionRecovery).providerRestrictionUntil),primaryUnavailable=Object.hasOwn(rpc,'protectionRecovery')?ownedRestriction===null||ownedRestriction>at:(count(rpc.cooldownUntil)??0)>at;
+ const positions=rec(s.positions),held=Object.keys(positions).length,breaches=count(timing.protectionBreaches),unavailable=count(timing.unavailableChecks),lastProtected=count(timing.lastCompletedProtectionAt),protectionBoundary=count(timing.experimentalCompletedEvaluationLimitMs);
+ const lastProtectedAt=time(lastProtected),protectionState:OperatingIntelligence['protection']['state']=held===0?'flat':!lastProtectedAt?'unavailable':primaryUnavailable||protectionBoundary===null||at-lastProtected!>protectionBoundary?'degraded':'monitored';
+ const strategyRows:string[]=[];
+ if(strategyVersion==='adaptive-momentum-v2-paper-v1'){
+  for(const [mint,raw]of Object.entries(positions).slice(0,3)){
+   if(!bounded(mint,96))continue;const position=rec(raw),strategy=rec(position.strategy);
+   if(strategy.version!=='adaptive-momentum-v2-paper-v1'){strategyRows.push(`${mint}: legacy holding retains its original exit rules; new entries use Adaptive Momentum v2.`);continue;}
+   const peak=typeof strategy.highWaterNetLamports==='string'&&/^(0|[1-9]\d{0,38})$/.test(strategy.highWaterNetLamports)?BigInt(strategy.highWaterNetLamports):null,enteredAt=count(position.enteredAt),peakTime=count(strategy.highWaterAt),peakAt=enteredAt!==null&&enteredAt>=Date.parse(ORIGINAL_POE_INCEPTION)&&enteredAt<=at&&peakTime!==null&&peakTime>=enteredAt?time(peakTime):null;
+   const value=peak!==null&&peak>0n&&peakAt?`${peak/1000000000n}.${(peak%1000000000n).toString().padStart(9,'0')} SOL at ${peakAt}`:'unavailable';
+   const active=Object.hasOwn(s,'adaptiveHoldingDiagnostics')?adaptiveHoldingNote(rec(s.adaptiveHoldingDiagnostics)[mint],start,enteredAt,at):'cost stop and high-water trailing configured; see completed protection status';
+   strategyRows.push(`${mint}: Adaptive Momentum v2 historical executable net peak ${value}; ${active}. No fixed profit or profitable holding-time exit.`);
+  }
+ }
+ const operationalRows:string[]=[],history=rec(rec(s.reporting).protectionHistory);
+ if(history.scope==='known-lower-bound')operationalRows.push(history.historyUnavailable===true?'Prior protection statistics are unavailable; current counters do not certify earlier protection.':'Protection totals and maxima retain known prior-run failures as lower bounds; completion freshness and recovery progress belong to the current run.');
+ if(Object.hasOwn(timing,'currentRunMaximumCompletedGapMs')||Object.hasOwn(timing,'currentRunMaximumQuoteAgeAtUseMs')){
+  const currentCompletion=lastProtectedAt!==null&&lastProtected!>=start,gap=currentCompletion?finite(timing.currentRunMaximumCompletedGapMs):null,quoteAge=currentCompletion?finite(timing.currentRunMaximumQuoteAgeAtUseMs):null;
+  operationalRows.push(`Current runtime observed completed protection maxima since ${new Date(start).toISOString()}: gap ${gap===null?'unavailable':gap+' ms'}; quote age at use ${quoteAge===null?'unavailable':quoteAge+' ms'}. Open or unmonitored gaps are not bounded by these values; historical failures remain retained.`);
+ }
+ const pricing=rec(rec(u.market).holdingDiagnostics),pricingCodes=['HELD_PRICING_BUSY','HELD_PRICING_ABORTED','HELD_PRICING_PROVIDER_TIMEOUT','HELD_PRICING_PROVIDER_COOLDOWN','HELD_PRICING_DISPATCH_UNAVAILABLE','HELD_PRICING_PROVIDER_RESPONSE_UNAVAILABLE','HELD_PRICING_BANK_CLOCK_UNAVAILABLE','HELD_PRICING_SLOT_UNAVAILABLE','HELD_PRICING_STALE_EVIDENCE','HELD_PRICING_INVENTORY_CHANGED','HELD_PRICING_DATA_UNAVAILABLE'],pricingCounts=rec(pricing.contextFailureCounts);
+ const refusalCounts=pricingCodes.flatMap(code=>{const n=count(pricingCounts[code]);return n!==null&&n>0?[code+':'+n]:[];});
+ if(refusalCounts.length)operationalRows.push('Recorded holding-pricing refusals in this run: '+refusalCounts.slice(0,6).join(', ')+(refusalCounts.length>6?'; additional categories retained.':'.'));
+ const lastPricing=rec(pricing.lastContext),pricingAt=time(lastPricing.at);
+ if(lastPricing.state==='unavailable'&&pricingAt&&pricingCodes.includes(lastPricing.reasonCode))operationalRows.push('Holding-pricing refusal at '+pricingAt+': '+lastPricing.reasonCode+'. This is not a completed protection evaluation.');
+ const market=rec(u.market),entryNote=Object.hasOwn(market,'entryQuoteFailures')?entryQuoteNote(market.entryQuoteFailures,start,at):null;
+ const providerNotes=protectionRpcNotes(rpc,start,at,entryNote),optionalRpcCalls=Object.hasOwn(rpc,'protectionRecovery')?providerNotes.shift():null;
+ operationalRows.push(...providerNotes);
+ const candidateNote=Object.hasOwn(w,'auditDiagnostics')?candidateFailureNote(w.auditDiagnostics,start,at):null;if(candidateNote)operationalRows.push(candidateNote);
+ // Financial history, completed protection, held strategy and observed source
+ // failures take precedence when the existing ten-note view is full. Only the
+ // optional acquisition-call summary yields; no source evidence is deleted.
+ if(optionalRpcCalls&&operationalRows.length+strategyRows.length<10)operationalRows.push(optionalRpcCalls);
+ const limitations=[...(Array.isArray(s.observationReportingMeaning)?s.observationReportingMeaning:typeof s.observationReportingMeaning==='string'?[s.observationReportingMeaning]:[]).flatMap(v=>bounded(v,512)?[v as string]:[]).slice(0,Math.max(0,10-strategyRows.length-operationalRows.length)),...operationalRows,...strategyRows];
  const hasAdmission=['reporting','serviceSupervision','resourceControl','evidenceRetention','sourceRecovery','proofPreparation'].some(k=>Object.hasOwn(s,k));
  const report=rec(s.reporting),supervision=rec(s.serviceSupervision),control=rec(s.resourceControl),retention=rec(s.evidenceRetention),recovery=rec(s.sourceRecovery),proof=rec(s.proofPreparation);
  const admission:OperatingAdmission|undefined=hasAdmission?{
@@ -75,11 +174,11 @@ export function projectOperatingIntelligence(value:unknown):OperatingIntelligenc
  const financialPolicy=projectFinancialPolicyReporting(s,at);
  return {version:OPERATING_INTELLIGENCE_VERSION,...(admission?{admission}:{}),...(financialPolicy?{financialPolicy}:{}),
   run:{id:runId,startedAt:new Date(start).toISOString(),mode:s.persistent===true||s.service===true||s.operatingMode==='service'?'persistent-paper':s.running===false?'maintenance':'bounded-verification',configurationSha256,strategyVersion},
-  candidates:{migrationsReceived:count(f.discovered),verifiedOrigins:count(f.verifiedMigrationOrigins),known:count(w.known),watch:count(first(w.watch,w.watchCandidates)),eligible:count(first(w.eligibleKnown,w.eligible)),deepActive:count(first(w.deepActive,w.deep)),deepMaximum:count(first(w.maximumDeep,w.maximumDeepCandidates)),queued:count(w.queued),promoted:count(w.promoted),repromoted:count(w.repromoted),demoted:count(w.demoted),completeWindows:count(w.completeWindows),auditedWindows:count(f.usableWindows),uniqueEvaluated:count(first(p.uniqueTokens,w.uniqueEvaluatedTokens)),uniqueAudited:count(first(p.uniqueAuditedTokens,w.uniqueAuditedTokens)),predictiveAssessments:count(first(p.assessments,w.predictiveAssessments)),predictivePasses:count(first(p.passed,w.predictivePasses)),predictiveFailures:count(first(p.failed,w.predictiveFailures)),predictiveUnavailable:count(first(p.unavailable,w.predictiveUnavailable)),waitMeanMs:count(rec(w.waitMs).mean),waitMaximumMs:count(rec(w.waitMs).maximum),olderSelected:count(rec(w.ageCohorts).olderSelected)},
+  candidates:{migrationsReceived:count(f.discovered),verifiedOrigins:count(f.verifiedMigrationOrigins),known:count(w.known),watch:count(first(w.watch,w.watchCandidates)),eligible:count(first(w.eligibleKnown,w.eligible)),deepActive:count(first(w.deepActive,w.deep)),deepMaximum:count(first(w.maximumDeep,w.maximumDeepCandidates)),queued:count(w.queued),promoted:count(w.promoted),repromoted:count(w.repromoted),demoted:count(w.demoted),completeWindows:count(w.completeWindows),auditedWindows:count(f.usableWindows),uniqueEvaluated:count(first(p.uniqueTokens,w.uniqueEvaluatedTokens)),uniqueAudited:count(first(p.uniqueAuditedTokens,w.uniqueAuditedTokens)),predictiveAssessments:count(first(p.assessments,w.predictiveAssessments)),predictivePasses:count(first(p.passed,w.predictivePasses)),predictiveFailures:count(first(p.failed,w.predictiveFailures)),predictiveUnavailable:count(first(p.unavailable,w.predictiveUnavailable)),waitMeanMs:meanMilliseconds(rec(w.waitMs).mean),waitMaximumMs:count(rec(w.waitMs).maximum),olderSelected:count(rec(w.ageCohorts).olderSelected)},
   quality:{captureConnected:boolean(native.connected),qualityGaps:count(refusals['native-quality-gaps']),auditUnavailable:count(refusals['independent-audit-unavailable']),auditUnusable:count(refusals['independent-audit-unusable']),decisionDeadlineMisses:count(refusals['predictive-window-deadline-missed']),enrichmentDeadlineFailures:count(w.enrichmentDeadlineFailures),incompleteExclusions:count(w.incompleteDataExclusions),capacityExclusions:count(w.capacityExclusions),structuralExclusions:count(w.structuralExclusions),limitations},
   provider:{rpcRequests:count(rpc.newUnits),rpcResponseBytes:count(rpc.newAccountedResponseBytes),nativeStreamBytes:count(native.socketBytes),broadWatchBytes:count(first(feeds.broadWatchSocketBytes,feeds.pumpApiSocketBytes)),discoveryConnected:boolean(feeds.discoveryConnected),watchConnected:boolean(feeds.pumpApiConnected),httpTimeouts:count(rpc.httpTimeouts),httpErrors:count(rpc.httpErrors),throttles:count(rpc.throttles),rollingStartsPerMinute:count(rec(rpc.dispatchWindow).startsLastMinute),maximumStartsPerMinute:count(rec(rpc.requestLimits).maxStartsPerMinute),minimumSpacingMs:count(rec(rpc.requestLimits).minSpacingMs),primaryCooldownUntil:futureTime(rpc.cooldownUntil),historyCooldownUntil:futureTime(rpc.historyCooldownUntil),controlCooldownUntil:futureTime(rpc.controlCooldownUntil)},
   resources:{sampleAt:time(first(resource.sampleAt,resource.at)),cpuOneCoreFraction:finite(first(resource.cpuOneCoreFraction,resource.cpuFraction)),rssBytes:count(first(resource.rssBytes,u.maximumRss)),availableMemoryBytes:count(resource.availableMemoryBytes),availableDiskBytes:count(resource.availableDiskBytes),eventLoopLagMs:finite(u.eventLoopDelayP95Ms),state:['normal','pressure','recovering'].includes(resource.state)?resource.state:'unavailable'},
-  protection:{state:protectionState,targetCadenceMs:count(timing.targetMs),completedEvaluationBoundaryMs:count(timing.experimentalCompletedEvaluationLimitMs),lastCompletedAt:time(timing.lastCompletedProtectionAt),maximumCompletedGapMs:held?finite(timing.maximumCompletedGapMs):null,maximumQuoteAgeAtUseMs:held?finite(timing.maximumQuoteAgeAtUseMs):null,breaches,unavailableChecks:unavailable},
+  protection:{state:protectionState,targetCadenceMs:count(timing.targetMs),completedEvaluationBoundaryMs:count(timing.experimentalCompletedEvaluationLimitMs),lastCompletedAt:lastProtectedAt,maximumCompletedGapMs:lastProtectedAt?finite(timing.maximumCompletedGapMs):null,maximumQuoteAgeAtUseMs:lastProtectedAt?finite(timing.maximumQuoteAgeAtUseMs):null,breaches,unavailableChecks:unavailable},
   times:{marketNotificationAt:time(times.lastMarketNotificationAt),freshSupportAt:time(times.lastFreshSupportAt),bankClockAt:time(times.lastBankClockAt),auditAt:time(times.lastAuditAt),predictiveAt:time(times.lastPredictiveAt),reconciliationAt:time(times.financialReconciliationAt)},decisions,
   refusals:Object.entries(refusals).slice(0,30).flatMap(([reason,n])=>bounded(reason,256)&&count(n)!==null?[{reason,count:n as number}]:[]),pendingOrders};
 }

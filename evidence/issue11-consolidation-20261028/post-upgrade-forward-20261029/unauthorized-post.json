@@ -1,0 +1,8 @@
+{
+  "checkedAt": "2026-10-29T14:05:18.922Z",
+  "endpoint": "/api/snapshot",
+  "httpStatus": 401,
+  "body": "{\"error\":\"unauthorized\"}",
+  "credentialsSent": false,
+  "financialEffect": false
+}

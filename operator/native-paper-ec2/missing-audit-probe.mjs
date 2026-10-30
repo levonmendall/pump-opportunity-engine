@@ -1,0 +1,60 @@
+/** One finite post-settlement diagnostic. No trader/account/secret imports. */
+import {createHash} from 'node:crypto';
+import {performance} from 'node:perf_hooks';
+import {constants,openSync,writeSync,fsyncSync,closeSync,lstatSync,mkdirSync,readFileSync,statfsSync} from 'node:fs';
+import {resolve,join} from 'node:path';
+import {pathToFileURL} from 'node:url';
+import {watchTransport,recoveryHint} from './http-latency-probe.mjs';
+export const ENDPOINT='https://api.mainnet.solana.com';
+export const LIMITS=Object.freeze({requests:6,additionalCases:4,elapsedMs:30000,requestMs:3000,settlementMs:1000,startSpacingMs:750,bodyBytes:512*1024,responseBytes:3*1024*1024-131072,transportHeadroomBytes:131072,evidenceBytes:4*1024*1024-131072,rssBytes:256*1024*1024,cpuMicros:8000000,unobservedResponseReservationBytes:2*1024*1024});
+const sha=b=>createHash('sha256').update(b).digest('hex'),integer=v=>Number.isSafeInteger(v)&&v>=0,key=v=>typeof v==='string'&&/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(v),signature=v=>typeof v==='string'&&/^[1-9A-HJ-NP-Za-km-z]{64,88}$/.test(v),need=(v,m)=>{if(!v)throw Error(m);},sleep=ms=>new Promise(r=>setTimeout(r,ms));
+const FIXED=['4Fd2XpfRKAd81nnYpeDw5MnKf9tERyqpYv31QHykesfk7j6wqaRZorm7hjmudtK3Eub694CP9TXsR5hptFrdkdBP','5TkLTz26VispaahRRYHUGknG5LQ7HDebrtbH7P1xjQn1v6zKxKGuh6J7vho586uvJixvKRMB4L6bLzXTqEacj9nU'];
+export function validatePlan(p){
+ need(p&&p.schemaVersion===1&&p.classification==='missing-successful-pool-history-adjudication-v1'&&p.endpoint===ENDPOINT&&Array.isArray(p.cases)&&p.cases.length>=2&&p.cases.length<=LIMITS.requests,'FIXED_PLAN');
+ need(new Set(p.cases.map(c=>c.signature)).size===p.cases.length&&FIXED.every((s,i)=>p.cases[i].signature===s),'FIXED_UNIQUE_POPULATION');
+ for(const c of p.cases){need(signature(c.signature)&&key(c.mint)&&key(c.pool)&&integer(c.slot)&&(c.blockTime===null||integer(c.blockTime))&&c.historyStatus==='finalized','CASE_IDENTITY');const s=c.source;need(s&&/^[a-f0-9]{40}$/.test(s.commit)&&/^native-paper-[0-9]{17}$/.test(s.runId)&&/^events-[0-9]{3}\.ndjson$/.test(s.sourceFile)&&integer(s.sourceLine)&&s.sourceLine>0&&/^[a-f0-9]{64}$/.test(s.sourceLineSha256)&&integer(s.windowStartAt)&&s.windowEndAt-s.windowStartAt===60000&&s.windowStartAt%10000===0&&s.windowEndAt%10000===0&&integer(s.auditAvailableAt)&&s.auditAvailableAt>=s.windowEndAt,'CASE_SOURCE_PROOF');}
+ return p;
+}
+/** Every explicit retry hint applies to this endpoint, even on a200 response.
+ * Preserve the observed status; this adapter only extends the recovery receipt. */
+export function diagnosticRecovery(rows,at){
+ const base=recoveryHint(rows,at);let until=base.recommendedNextRequestNotBeforeAt,unresolved=base.unresolvedProviderCooldown;
+ for(const row of rows){if(row.retryAfter===undefined)continue;const raw=row.retryAfter,seconds=/^\d+(?:\.\d+)?$/.test(raw)?Number(raw):NaN,parsed=Number.isFinite(seconds)?row.headersAt+Math.ceil(seconds*1000):/^(?:Mon|Tue|Wed|Thu|Fri|Sat|Sun), \d{2} [A-Z][a-z]{2} \d{4} \d{2}:\d{2}:\d{2} GMT$/.test(raw)?Date.parse(raw):NaN;if(!Number.isSafeInteger(parsed)||parsed<0){unresolved=true;until=Math.max(until,row.settledAt+65000);}else until=Math.max(until,row.settledAt+10000,parsed+5000);}
+ return {...base,recommendedNextRequestNotBeforeAt:until,unresolvedProviderCooldown:unresolved,stillActiveAtResult:until>at};
+}
+/** Fetch injection exists only for deterministic offline tests. Fixed endpoint,
+ * method, caps and plan remain mandatory; no retries or automatic rerouting. */
+export async function measure(plan,options={}){
+ validatePlan(plan);const now=options.now??Date.now,mono=options.mono??(()=>performance.now()),pause=options.sleep??sleep,fetcher=options.fetcher??fetch,record=options.record??(()=>{}),arm=options.setTimer??setTimeout,disarm=options.clearTimer??clearTimeout,startedAt=now(),began=mono();let active=null,lastStart=-Infinity,received=0,uncertain=0,stopReason='COMPLETE';const rows=[];
+ let diagnosticFailed=false;const unwatch=options.watch===false?()=>{}:watchTransport(()=>active,(kind,data)=>{try{record(kind,data);}catch{diagnosticFailed=true;stopReason='DIAGNOSTIC_FAILURE';}},now);
+ try{for(const item of plan.cases){
+  if(stopReason!=='COMPLETE')break;const gap=Math.max(0,LIMITS.startSpacingMs-(mono()-lastStart));if(gap)await pause(gap);
+  if(mono()-began>=LIMITS.elapsedMs-LIMITS.requestMs-LIMITS.settlementMs||received+LIMITS.bodyBytes>LIMITS.responseBytes){stopReason='SHUTDOWN_RESERVE';break;}
+  if((options.rss??(()=>process.memoryUsage().rss))()>LIMITS.rssBytes||(options.cpuMicros??(()=>{const u=process.cpuUsage();return u.user+u.system;}))()>LIMITS.cpuMicros){stopReason='RESOURCE_STOP';break;}
+  const row={ordinal:rows.length+1,case:item,endpoint:ENDPOINT,method:'getTransaction',requestedAt:now(),physicalInvokedAt:null,headersAt:null,bodyCompleteAt:null,availableAt:null,settledAt:null,bytes:0,httpStatus:null,outcome:'RESERVED',physicalSettlementConfirmed:false,responseBase64:null};rows.push(row);active=row;record('request-reserved',{...row,uncertainReservationBytes:LIMITS.unobservedResponseReservationBytes});
+  const control=new AbortController();let timer=null,reader=null,complete=false,operationSettled=false,operationError=null;
+  const operation=(async()=>{try{
+   need(mono()-began<LIMITS.elapsedMs-LIMITS.requestMs-LIMITS.settlementMs,'ADMISSION_CUTOFF');record('request-admitted',{ordinal:row.ordinal,at:now(),endpoint:ENDPOINT,method:'getTransaction',signature:item.signature,physicalStartNotYetInvoked:true});need(mono()-began<LIMITS.elapsedMs-LIMITS.requestMs-LIMITS.settlementMs,'ADMISSION_CUTOFF');lastStart=mono();row.physicalInvokedAt=now();
+   const response=await fetcher(ENDPOINT,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({jsonrpc:'2.0',id:'poe-missing-audit-'+row.ordinal,method:'getTransaction',params:[item.signature,{encoding:'json',commitment:'finalized',maxSupportedTransactionVersion:1}]}),signal:control.signal,redirect:'error'});row.headersAt=now();row.httpStatus=response.status;const retry=response.headers.get('retry-after');if(retry!==null){row.retryAfter=retry.slice(0,128);stopReason='PROVIDER_RETRY_AFTER';}reader=response.body?.getReader();
+   if([429,502,503,504].includes(response.status)){row.outcome='PROVIDER_STOP';stopReason='PROVIDER_STOP';throw Error('PROVIDER_STOP');}need(response.ok,'HTTP_STATUS');need(Number(response.headers.get('content-length'))<=LIMITS.bodyBytes,'BODY_LIMIT');need(reader,'BODY_REQUIRED');const chunks=[];
+   for(;;){need(!control.signal.aborted&&!diagnosticFailed,'ABORTED');const v=await reader.read();if(v.done){need(!control.signal.aborted,'ABORTED');complete=true;row.bodyCompleteAt=now();break;}row.bytes+=v.value.byteLength;received+=v.value.byteLength;record('response-body',{ordinal:row.ordinal,bytes:v.value.byteLength,totalReceivedBytes:received});need(row.bytes<=LIMITS.bodyBytes&&received<=LIMITS.responseBytes,'BODY_LIMIT');chunks.push(v.value);}
+   const raw=Buffer.concat(chunks);row.responseSha256=sha(raw);row.responseBase64=raw.toString('base64');const b=JSON.parse(raw.toString('utf8'));need(b?.jsonrpc==='2.0'&&b.id==='poe-missing-audit-'+row.ordinal&&Object.hasOwn(b,'result')!==Object.hasOwn(b,'error'),'RPC_ENVELOPE');row.availableAt=now();
+   if(b.error){row.rpcErrorCode=integer(b.error.code)||Number.isSafeInteger(b.error.code)?b.error.code:null;row.outcome='RPC_ERROR';if(b.error.code===-32005||b.error.code===429){stopReason='RPC_OVERLOAD';row.httpStatus=b.error.code===429?429:row.httpStatus;}}else{row.outcome=b.result===null?'TRANSACTION_UNAVAILABLE':'TRANSACTION_CAPTURED_UNCLASSIFIED';}
+  }catch(e){operationError=e;throw e;}finally{operationSettled=true;}})();operation.catch(()=>{});
+  try{await Promise.race([operation,new Promise((_,reject)=>{timer=arm(()=>{row.abortRequestedAt=now();control.abort();reject(Error('DIAGNOSTIC_TIMEOUT'));},LIMITS.requestMs);})]);}
+  catch(e){if(row.outcome==='RESERVED')row.outcome=row.physicalInvokedAt===null?'NOT_PHYSICALLY_INVOKED':control.signal.aborted?'TIMED_OUT':'RESPONSE_OR_TRANSPORT_UNAVAILABLE';if(e?.message==='BODY_LIMIT')stopReason='BODY_LIMIT';control.abort();}
+  finally{
+   if(timer!==null)disarm(timer);let cancellationSettled=reader===null;const until=mono()+LIMITS.settlementMs;if(reader){void reader.cancel().catch(()=>{}).then(()=>{cancellationSettled=true;});}
+   const settled=()=>operationSettled&&cancellationSettled&&(complete||row.physicalInvokedAt===null||row.transportTerminal==='trailers'||row.transportTerminal==='error'&&row.socketClosed===true);
+   while(mono()<until&&!settled())await pause(10);try{reader?.releaseLock();}catch{}row.physicalSettlementConfirmed=settled();row.readerCancellationSettled=cancellationSettled;row.settledAt=now();if(!complete&&row.physicalInvokedAt!==null)uncertain+=LIMITS.unobservedResponseReservationBytes;
+   if(!row.physicalSettlementConfirmed)stopReason='PHYSICAL_SETTLEMENT_UNVERIFIED';if(received>LIMITS.responseBytes||row.bytes>LIMITS.bodyBytes)stopReason='BODY_LIMIT';record('request-settled',{...row,responseBase64:undefined,completeBody:complete,uncertainReservationBytes:!complete&&row.physicalInvokedAt!==null?LIMITS.unobservedResponseReservationBytes:0});active=null;
+  }
+ }
+ }finally{unwatch();}
+ return {schemaVersion:1,classification:'POST_SETTLEMENT_MISSING_SUCCESSFUL_HISTORY_DIAGNOSTIC',startedAt,endedAt:now(),elapsedMs:mono()-began,limits:LIMITS,requests:rows.filter(r=>r.physicalInvokedAt!==null).length,reservedUnits:rows.length,receivedResponseBytes:received,uncertainResponseBytes:uncertain,stopReason,recovery:diagnosticRecovery(rows,now()),rows,financialFilesRead:false,financialFilesModified:false,originalWindowsRemainUnusable:true,qualificationAuthorized:false,operatingTimeoutChanged:false,receiptMeaning:'Auxiliary usage must be appended to current actual research usage; no prior counter/reservation is reset or refunded. Body bytes measured; wire/transfer cost unverified.'};
+}
+export async function main(args=process.argv.slice(2)){
+ need(process.getuid?.()!==0,'NONROOT_REQUIRED');need(args.length===4&&args[0]==='--plan'&&args[2]==='--output-directory','EXACT_ARGS');const planPath=resolve(args[1]),output=resolve(args[3]),s=lstatSync(planPath);need(s.isFile()&&!s.isSymbolicLink()&&s.size<=32768,'BOUNDED_PLAN');const raw=readFileSync(planPath),plan=validatePlan(JSON.parse(raw.toString('utf8')));need(!output.includes('/account/')&&!output.endsWith('/account')&&!output.includes('/poe-pilot/'),'ISOLATED_DIAGNOSTIC_DIRECTORY');mkdirSync(output,{mode:0o700});const ds=lstatSync(output),space=statfsSync(output);need(ds.uid===process.getuid()&&(ds.mode&0o077)===0&&space.bavail*space.bsize>=64*1024*1024,'PRIVATE_STORAGE_HEADROOM');
+ let used=0;const fd=openSync(join(output,'receipts.ndjson'),constants.O_CREAT|constants.O_EXCL|constants.O_WRONLY|constants.O_NOFOLLOW,0o600);const write=(kind,data)=>{const b=Buffer.from(JSON.stringify({kind,data})+'\n');need(used+b.length<=LIMITS.evidenceBytes,'EVIDENCE_LIMIT');let offset=0;while(offset<b.length){const n=writeSync(fd,b,offset,b.length-offset);need(n>0,'RECEIPT_WRITE_STALLED');offset+=n;}fsyncSync(fd);used+=b.length;};try{write('immutable-startup',{planSha256:sha(raw),probeSha256:sha(readFileSync(new URL(import.meta.url))),httpHookSha256:sha(readFileSync(new URL('./http-latency-probe.mjs',import.meta.url))),pid:process.pid,uid:process.getuid(),node:process.version,at:Date.now(),endpoint:ENDPOINT,limits:LIMITS});const result=await measure(plan,{record:write});write('result',result);console.log(JSON.stringify({kind:'POE_MISSING_AUDIT_DIAGNOSTIC',requests:result.requests,reservedUnits:result.reservedUnits,receivedResponseBytes:result.receivedResponseBytes,uncertainResponseBytes:result.uncertainResponseBytes,stopReason:result.stopReason,recovery:result.recovery,rows:result.rows.map(({responseBase64,...r})=>r),privateEvidence:output}));if(result.stopReason!=='COMPLETE')process.exitCode=1;}finally{closeSync(fd);}
+}
+if(process.argv[1]&&import.meta.url===pathToFileURL(resolve(process.argv[1])).href)await main();

@@ -1,0 +1,101 @@
+{
+  "recordedAt": "2026-10-27T02:45:55.851Z",
+  "classification": "OFFLINE_ANALYSIS_OF_CURRENT_PREFLIGHT_NOT_PUMPAPI_COVERAGE",
+  "scope": {
+    "mint": "91RBVuoCLvikHs4qeUGczABotGLd1Tjo84DMfpFUpump",
+    "pool": "4dgUjYxeCnq7ZSqrNu14FWXmDiJrWmmw7wigL7VRHFsW"
+  },
+  "history": {
+    "rows": 20,
+    "successfulAddressTransactions": 12,
+    "failedAddressTransactions": 8,
+    "newestBlockTime": 1793069031,
+    "oldestBlockTime": 1793069031,
+    "chainSecondSpan": 0,
+    "queriedAt": 1793069031683,
+    "capacityUpperBoundVerified": false
+  },
+  "actual": [
+    {
+      "signature": "2LweUYAawyFV6VEVZcAXuUoM4AThkZ2qRdGs4TW39wR2bwcmGGU4LmCh8PSZvH7CV8H2qjJGpiLVEBSBteJXEDh7",
+      "version": 1,
+      "slot": 461905570,
+      "blockTime": 1793069030,
+      "requestedAt": 1793069031573,
+      "availableAt": 1793069031676,
+      "loadedWritable": 0,
+      "loadedReadonly": 0,
+      "trades": [
+        {
+          "identity": {
+            "signature": "2LweUYAawyFV6VEVZcAXuUoM4AThkZ2qRdGs4TW39wR2bwcmGGU4LmCh8PSZvH7CV8H2qjJGpiLVEBSBteJXEDh7",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 3,
+            "swapInnerInstructionIndex": 1,
+            "eventInnerInstructionIndex": 7,
+            "eventIndex": 0
+          },
+          "pool": "4dgUjYxeCnq7ZSqrNu14FWXmDiJrWmmw7wigL7VRHFsW",
+          "mint": "91RBVuoCLvikHs4qeUGczABotGLd1Tjo84DMfpFUpump",
+          "trader": "4hoZKE6FDu4s1gBMrRCZzCE3WLqYJrjf6XQkuidK8pBx",
+          "side": "sell",
+          "tokenUnits": "178680009681",
+          "curveQuoteLamports": "297140024",
+          "userQuoteLamports": "293722911",
+          "fees": {
+            "lp_fee": "594281",
+            "protocol_fee": "148571",
+            "coin_creator_fee": "2674261",
+            "cashback": "0",
+            "buyback_fee": "74285",
+            "holder_rewards": "0",
+            "quote_transfer_fee": "0"
+          },
+          "slot": 461905570,
+          "identityKey": "2LweUYAawyFV6VEVZcAXuUoM4AThkZ2qRdGs4TW39wR2bwcmGGU4LmCh8PSZvH7CV8H2qjJGpiLVEBSBteJXEDh7:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:3:1:7:0",
+          "chainBlockTime": 1793069030,
+          "commitment": "confirmed",
+          "providerReceivedAt": null,
+          "availableAt": 1793069031676,
+          "transferChecks": {
+            "baseTransfer": true,
+            "userQuoteTransfer": true
+          },
+          "fingerprint": "60b792804d5ed5bf9b0ab40904364cdc862b89ca131c9f48242d9b9f0dfacd19",
+          "normalizedForStrategy": false,
+          "limitations": [
+            "RPC-enriched executed evidence; not proof of PumpApi field semantics or completeness.",
+            "The strategy quoteLamports economic convention is not frozen by this mapper.",
+            "Only separately recorded real transaction shapes establish tested coverage; generic decoding is not a routed/variant proof."
+          ]
+        }
+      ],
+      "instructionVariant": "sell_v2",
+      "instructionDiscriminatorHex": "5df6823ce7e940b2"
+    }
+  ],
+  "streamOpened": false,
+  "extraNetworkRequests": 0,
+  "currentMintExtensionAndPricingSupportVerified": false,
+  "entryEligibilityVerified": false,
+  "usableProviderFeatureWindows": 0,
+  "limitations": [
+    "One current confirmed RPC swap is not a PumpApi receipt or completeness denominator.",
+    "All20 history rows fall in one chain second; neither an upper sustained rate nor60-second coverage is established.",
+    "Current mint/fee/vault support and actual-size pricing were not attempted after the capacity gate refused; canonical identity alone does not prove complete eligibility.",
+    "No full selected-feed workload or real changing-price protection was measured."
+  ],
+  "derivedAt": "2026-10-27T02:52:24.633917+00:00",
+  "actualFeePayerSeparation": {
+    "feePayer": "AgmLJBMDCqWynYnQiPCuj9ewsNNsBJXyzoUhD9LJzN51",
+    "trader": "4hoZKE6FDu4s1gBMrRCZzCE3WLqYJrjf6XQkuidK8pBx",
+    "different": true
+  },
+  "feeReconciliation": {
+    "grossMinusLpProtocolCreatorEqualsUserNet": true,
+    "buybackFieldAdditionalDeduction": false,
+    "meaning": "Specific observed event/transfers: buyback_fee must not be added again to gross minus LP/protocol/creator deductions."
+  },
+  "cpuMetricLimit": "summary.resources.cpuMs is delta after entering child(); module-import CPU excluded. Full combined stream workload not run.",
+  "variantVerifiedAt": "2026-10-27T02:55:17.654Z"
+}

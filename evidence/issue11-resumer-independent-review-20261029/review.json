@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "decision": "GO FOR THE REVIEWED PINNED RESUME OF THE RETAINED PRE-START REFUSAL",
+  "reviewedAt": "2026-10-29T01:37:05.126324+00:00",
+  "sourceCommit": "e6bc8f63ed88a0631798a3120983017a42c770f0",
+  "driverSha256": "93f23cb18b67f72749b34f11c28e8af777195da2832a25b68867d80ea89d8b3e",
+  "driverTestsPassed": 28,
+  "relatedOpsTestsPassed": 35,
+  "combinedRepositoryOpsTestsPassed": 63,
+  "additionalIndependentNegativeCasesPassed": 6,
+  "execution": "Exact Python test files invoked directly; unittest discovery does not collect these hyphenated filenames and its zero-test result was not counted.",
+  "reviewedInvariants": [
+    "Only the same recorded original-account pre-start refusal is resumable; any prior new-source start, missing/wrong phase, partial account/service path or changed source is rejected.",
+    "Original protected package/index/helpers and compiled runtime remain unchanged; fresh repair code is verified and executed in memory.",
+    "The repair execution namespace must contain the SHA computed from the same hash-verified body as __poe_verified_driver_sha256__.",
+    "Old verified before-stop backup, prior phase receipts and all current ledger history survive; retry backup uses a fresh numbered directory.",
+    "Current financial identity and flat unchanged obligations plus exact old whole-column journal/action prefix are verified before another stop.",
+    "Financial owner lease remains held during complete stable stop metadata, MainPID/ControlPID zero, no job and empty or removed fixed service cgroup checks.",
+    "A terminal failed unit is not certified graceful. Fresh same-inode financial audit and a newly verified stopped backup remain mandatory.",
+    "Post-start financial source is retained on verification failure; original ledger is never initialized, imported, reseeded or restored."
+  ],
+  "limitations": [
+    "Actual first-attempt state remains unknown; this change does not retroactively classify that failure.",
+    "No host operation, real service stop, original ledger access, staging or owner-command execution by this review.",
+    "Fresh live stop/cutover, original account/history preservation and reporting acceptance must be verified after owner execution."
+  ]
+}

@@ -1,0 +1,350 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_FINALIZED_PREFIX_FEASIBILITY_NO_RUNTIME_ADOPTION",
+  "source": {
+    "commit": "71896104f07faa2b193b90d3d3133a8e29236f35",
+    "sha256": "80071522cc6943b5ff743f3106904641bf4e21cac5ffdd6c96b8ee7566dd91e3"
+  },
+  "runId": "native-candidates-20261028172713245",
+  "rawArchiveSha256": "d34137bfcdeb0bb33af05ddd6838d6f9d2a3ff2a0d09d559d701ed3983f52a5b",
+  "rawArchiveIndexSha256": "1dab0cc13bdba09b77cb589b50ea810fb55c2a79895907f05536d94094236b37",
+  "rawSourceFiles": [
+    {
+      "file": "events/events-001.ndjson",
+      "bytes": 8155370,
+      "sha256": "43c8ead2288941a55da66662e59d64305f063906f49f82b87dcda3b85438ccb1",
+      "matchesRetainedArchiveIndex": true
+    },
+    {
+      "file": "events/events-002.ndjson",
+      "bytes": 7942150,
+      "sha256": "5d2ec329254b70fc8f0fc9cdf829e22583becb26d3e544ded4ae4c346918b499",
+      "matchesRetainedArchiveIndex": true
+    },
+    {
+      "file": "events/events-003.ndjson",
+      "bytes": 7529160,
+      "sha256": "eb000c07ea7fee805c457a0c4aae01213b0aeb90a63640bea8a8c73b850bccd7",
+      "matchesRetainedArchiveIndex": true
+    },
+    {
+      "file": "events/events-004.ndjson",
+      "bytes": 7659634,
+      "sha256": "d23719e5c10ec38a13e4cc79fd28bb69705734cb503ad62347a1970e55c532f3",
+      "matchesRetainedArchiveIndex": true
+    },
+    {
+      "file": "events/events-005.ndjson",
+      "bytes": 7599346,
+      "sha256": "c627e72c1aba996a0b0572e7adb429481b66985bf865354045eaa92995ea259d",
+      "matchesRetainedArchiveIndex": true
+    },
+    {
+      "file": "events/events-006.ndjson",
+      "bytes": 7575990,
+      "sha256": "33dd696e5f13a8ad9f310a16608dcc87a2f3e92dc899fce26dcc1d9492a498e6",
+      "matchesRetainedArchiveIndex": true
+    },
+    {
+      "file": "events/events-007.ndjson",
+      "bytes": 7715293,
+      "sha256": "c3635cda33ea794972937363222a3087e28595c0b05af0a1934c9dced648526c",
+      "matchesRetainedArchiveIndex": true
+    },
+    {
+      "file": "events/events-008.ndjson",
+      "bytes": 7565156,
+      "sha256": "089f925ab3b7d58990855c20a010e239920230348e6c06f2a616de163e5c7799",
+      "matchesRetainedArchiveIndex": true
+    },
+    {
+      "file": "events/events-009.ndjson",
+      "bytes": 7599340,
+      "sha256": "90cfb7f5983f5e10b3cf23626080a323c636febee08c4c5efa02018cb15cae13",
+      "matchesRetainedArchiveIndex": true
+    },
+    {
+      "file": "events/events-010.ndjson",
+      "bytes": 7604138,
+      "sha256": "da6263cc5e127c6f826476e3bae0e51244e7f43a7d0c5824d0e27d1e86bf300a",
+      "matchesRetainedArchiveIndex": true
+    },
+    {
+      "file": "events/events-011.ndjson",
+      "bytes": 7699339,
+      "sha256": "1e8acb92dec91eea8d28a82230f4863b08b5e0a0156a2fe923305d6ab675ee48",
+      "matchesRetainedArchiveIndex": true
+    },
+    {
+      "file": "events/events-012.ndjson",
+      "bytes": 7552566,
+      "sha256": "22f4dc81846f7327a70602c8622080d911926d900f12b78dfe690f79c058b17c",
+      "matchesRetainedArchiveIndex": true
+    },
+    {
+      "file": "events/events-013.ndjson",
+      "bytes": 7643098,
+      "sha256": "11a1133da9dbda5f2133a80fc07bdd3fd616a4b307207b1796a6093011e38ba0",
+      "matchesRetainedArchiveIndex": true
+    },
+    {
+      "file": "events/events-014.ndjson",
+      "bytes": 7561258,
+      "sha256": "e57b4a433072f17d1cb18b052fb46d7ddb3f2d22b766295844bccb81aafaa706",
+      "matchesRetainedArchiveIndex": true
+    },
+    {
+      "file": "events/events-015.ndjson",
+      "bytes": 7626656,
+      "sha256": "0388836a8319a5eacddcccb467b77907aff053d9aa7d6c0d6e180b606d0beea1",
+      "matchesRetainedArchiveIndex": true
+    },
+    {
+      "file": "events/events-016.ndjson",
+      "bytes": 7572808,
+      "sha256": "c684e02efda609f5559cd426508fc60668c89a12bfb6c95160d2b52dabdc594e",
+      "matchesRetainedArchiveIndex": true
+    },
+    {
+      "file": "events/events-017.ndjson",
+      "bytes": 7517548,
+      "sha256": "40ce5bab3a69de648df1b0a157e85714e256bea78c98d80d754fd1ef65bb0555",
+      "matchesRetainedArchiveIndex": true
+    },
+    {
+      "file": "events/events-018.ndjson",
+      "bytes": 6988113,
+      "sha256": "4e42cf14e0de381f48a6cb3f63511085baf0abe7e5750c628a747e267c9e332d",
+      "matchesRetainedArchiveIndex": true
+    },
+    {
+      "file": "events/events-019.ndjson",
+      "bytes": 1594926,
+      "sha256": "fbc29fdaa05114ac2648e55896e93728691e30dfeecb4a1c4c24ea3cec63fa44",
+      "matchesRetainedArchiveIndex": true
+    }
+  ],
+  "actualHistoryPages": 59,
+  "actualHistoryRows": 15800,
+  "actualRowsReportedFinalized": 15800,
+  "retainedChronologicalPairs": [
+    {
+      "pool": "9W9AEDYzYJQFSC7uoZSCpAnyR3SdngTU7cEacjf36fhn",
+      "oldTargetEndAt": 1793208580000,
+      "freshTargetEndAt": 1793208590000,
+      "oldAvailableAt": 1793208582590,
+      "freshAvailableAt": 1793208594921,
+      "oldAuditStatus": "verified",
+      "freshAuditStatus": "verified",
+      "frontierExcludedSlot": 462561243,
+      "wholeSeamSlot": 462561226,
+      "seamSignatures": 2,
+      "seamSetEqual": true,
+      "exposedContradictions": [],
+      "joinedInteriorRows": 32,
+      "freshFullInteriorRows": 32,
+      "rowSetParity": true,
+      "originalFreshRequests": 1,
+      "minimumSameRecordedPagesThroughSeam": 1,
+      "potentialRequestsAvoidedWithinTheseRecordedPages": 0,
+      "sourcePageRefs": [
+        "events/events-002.ndjson:3273",
+        "events/events-003.ndjson:1409"
+      ],
+      "scope": "Retained chronological page rows only; no newly requested/predicted response timing, no new qualification, and no independent index-completeness guarantee."
+    },
+    {
+      "pool": "9W9AEDYzYJQFSC7uoZSCpAnyR3SdngTU7cEacjf36fhn",
+      "oldTargetEndAt": 1793208590000,
+      "freshTargetEndAt": 1793208600000,
+      "oldAvailableAt": 1793208594921,
+      "freshAvailableAt": 1793208602206,
+      "oldAuditStatus": "verified",
+      "freshAuditStatus": "verified",
+      "frontierExcludedSlot": 462561300,
+      "wholeSeamSlot": 462561297,
+      "seamSignatures": 1,
+      "seamSetEqual": true,
+      "exposedContradictions": [],
+      "joinedInteriorRows": 41,
+      "freshFullInteriorRows": 41,
+      "rowSetParity": true,
+      "originalFreshRequests": 1,
+      "minimumSameRecordedPagesThroughSeam": 1,
+      "potentialRequestsAvoidedWithinTheseRecordedPages": 0,
+      "sourcePageRefs": [
+        "events/events-003.ndjson:1409",
+        "events/events-003.ndjson:3905"
+      ],
+      "scope": "Retained chronological page rows only; no newly requested/predicted response timing, no new qualification, and no independent index-completeness guarantee."
+    },
+    {
+      "pool": "9W9AEDYzYJQFSC7uoZSCpAnyR3SdngTU7cEacjf36fhn",
+      "oldTargetEndAt": 1793208600000,
+      "freshTargetEndAt": 1793208610000,
+      "oldAvailableAt": 1793208602206,
+      "freshAvailableAt": 1793208612014,
+      "oldAuditStatus": "verified",
+      "freshAuditStatus": "unusable",
+      "frontierExcludedSlot": 462561360,
+      "wholeSeamSlot": 462561359,
+      "seamSignatures": 1,
+      "seamSetEqual": true,
+      "exposedContradictions": [],
+      "joinedInteriorRows": 42,
+      "freshFullInteriorRows": 42,
+      "rowSetParity": true,
+      "originalFreshRequests": 1,
+      "minimumSameRecordedPagesThroughSeam": 1,
+      "potentialRequestsAvoidedWithinTheseRecordedPages": 0,
+      "sourcePageRefs": [
+        "events/events-003.ndjson:3905",
+        "events/events-003.ndjson:5245"
+      ],
+      "scope": "Retained chronological page rows only; no newly requested/predicted response timing, no new qualification, and no independent index-completeness guarantee."
+    }
+  ],
+  "busyRollingPrefixPairAvailable": false,
+  "retainedPairLimit": "All qualifying <=15s retained pairs are one-page4Ytm samples; the busy2054-row audit lacks an adjacent retained busy rolling window. No measured live request saving is established.",
+  "syntheticCounterexamples": {
+    "lateIndexBackfill": {
+      "canonicalRowsFinalized": true,
+      "seamSetEqual": true,
+      "freshScanTraversesWholeSeam": true,
+      "missedSuccessfulRowsUnderReuse": [
+        "SYNTHETIC:LATE_INDEXED_EXECUTED_ROW"
+      ],
+      "freshFullScanWouldExpose": true,
+      "conclusion": "Finality and exact seam equality do not prove absence immutable in an address-history index."
+    },
+    "sameSlotCursorOrdering": {
+      "singleMatchingSeamSignature": true,
+      "wholeSlotSetComparisonRejects": true
+    },
+    "unfinalizedEmptyHead": {
+      "example": "A finalized pool row at100 with confirmed upper120 does not certify empty slots101..119. A later canonical row at110 can appear; never extend the cached frontier to the confirmed upper fence."
+    }
+  },
+  "arithmeticLowerBounds": [
+    {
+      "requiredTargetSignatures": 2054,
+      "pageSize": 500,
+      "minimumFullWindowRequests": 5,
+      "oneBusyPlusFiveQuietAuditRequestsPerMinute": 60,
+      "plusMinimalCeilingAndHeartbeatRequestsPerMinute": 72,
+      "conditionalNotProviderMeasured": true
+    },
+    {
+      "requiredTargetSignatures": 2054,
+      "pageSize": 750,
+      "minimumFullWindowRequests": 3,
+      "oneBusyPlusFiveQuietAuditRequestsPerMinute": 48,
+      "plusMinimalCeilingAndHeartbeatRequestsPerMinute": 60,
+      "conditionalNotProviderMeasured": true
+    },
+    {
+      "requiredTargetSignatures": 2054,
+      "pageSize": 1000,
+      "minimumFullWindowRequests": 3,
+      "oneBusyPlusFiveQuietAuditRequestsPerMinute": 48,
+      "plusMinimalCeilingAndHeartbeatRequestsPerMinute": 60,
+      "conditionalNotProviderMeasured": true
+    },
+    {
+      "requiredTargetSignatures": 4538,
+      "pageSize": 500,
+      "minimumFullWindowRequests": 10,
+      "oneBusyPlusFiveQuietAuditRequestsPerMinute": 90,
+      "plusMinimalCeilingAndHeartbeatRequestsPerMinute": 102,
+      "conditionalNotProviderMeasured": true
+    },
+    {
+      "requiredTargetSignatures": 4538,
+      "pageSize": 750,
+      "minimumFullWindowRequests": 7,
+      "oneBusyPlusFiveQuietAuditRequestsPerMinute": 72,
+      "plusMinimalCeilingAndHeartbeatRequestsPerMinute": 84,
+      "conditionalNotProviderMeasured": true
+    },
+    {
+      "requiredTargetSignatures": 4538,
+      "pageSize": 1000,
+      "minimumFullWindowRequests": 5,
+      "oneBusyPlusFiveQuietAuditRequestsPerMinute": 60,
+      "plusMinimalCeilingAndHeartbeatRequestsPerMinute": 72,
+      "conditionalNotProviderMeasured": true
+    },
+    {
+      "requiredTargetSignatures": 5144,
+      "pageSize": 500,
+      "minimumFullWindowRequests": 11,
+      "oneBusyPlusFiveQuietAuditRequestsPerMinute": 96,
+      "plusMinimalCeilingAndHeartbeatRequestsPerMinute": 108,
+      "conditionalNotProviderMeasured": true
+    },
+    {
+      "requiredTargetSignatures": 5144,
+      "pageSize": 750,
+      "minimumFullWindowRequests": 7,
+      "oneBusyPlusFiveQuietAuditRequestsPerMinute": 72,
+      "plusMinimalCeilingAndHeartbeatRequestsPerMinute": 84,
+      "conditionalNotProviderMeasured": true
+    },
+    {
+      "requiredTargetSignatures": 5144,
+      "pageSize": 1000,
+      "minimumFullWindowRequests": 6,
+      "oneBusyPlusFiveQuietAuditRequestsPerMinute": 66,
+      "plusMinimalCeilingAndHeartbeatRequestsPerMinute": 78,
+      "conditionalNotProviderMeasured": true
+    }
+  ],
+  "conditionalRollingProjections": [
+    {
+      "assumedUniformSignaturesPer60Seconds": 5144,
+      "assumedAdditionalUnfinalizedSecondsAtPriorRead": 0,
+      "decisionCadenceSeconds": 10,
+      "minimumFreshSuffixRows": 859,
+      "minimumFresh1000RowRequests": 1,
+      "oneBusyFiveQuietPlusMinimalMaintenancePerMinute": 48,
+      "sixBusyPlusMinimalMaintenancePerMinute": 48,
+      "scope": "Hypothetical stable complete index and uniform activity, enough existing finalized prefix, no bursts/retries/verification/holding work, not measured latency or established entitlement."
+    },
+    {
+      "assumedUniformSignaturesPer60Seconds": 5144,
+      "assumedAdditionalUnfinalizedSecondsAtPriorRead": 13,
+      "decisionCadenceSeconds": 10,
+      "minimumFreshSuffixRows": 1973,
+      "minimumFresh1000RowRequests": 2,
+      "oneBusyFiveQuietPlusMinimalMaintenancePerMinute": 54,
+      "sixBusyPlusMinimalMaintenancePerMinute": 84,
+      "scope": "Hypothetical stable complete index and uniform activity, enough existing finalized prefix, no bursts/retries/verification/holding work, not measured latency or established entitlement."
+    },
+    {
+      "assumedUniformSignaturesPer60Seconds": 5144,
+      "assumedAdditionalUnfinalizedSecondsAtPriorRead": 30,
+      "decisionCadenceSeconds": 10,
+      "minimumFreshSuffixRows": 3431,
+      "minimumFresh1000RowRequests": 4,
+      "oneBusyFiveQuietPlusMinimalMaintenancePerMinute": 66,
+      "sixBusyPlusMinimalMaintenancePerMinute": 156,
+      "scope": "Hypothetical stable complete index and uniform activity, enough existing finalized prefix, no bursts/retries/verification/holding work, not measured latency or established entitlement."
+    }
+  ],
+  "memory": {
+    "proposedMaximumRowsPerPool": 8192,
+    "sixPoolMaximumRows": 49152,
+    "actualAverageSerializedHistoryRowBytes": 192.04417721518988,
+    "sixPoolSerializedBytesAtThisAverage": 9439356,
+    "runtimeHeapRssNotMeasured": "JSON size excludes JavaScript/string/index/array/certificate overhead. No runtime cache was created; EC2 headroom compatibility is unverified."
+  },
+  "decision": "NO_GO_RUNTIME_CACHE_UNDER_CURRENT_FRESH_INDEPENDENT_HISTORY_CONTRACT",
+  "unestablishedProviderInvariants": [
+    "Complete address-index coverage at first read and no subsequent insertion/correction beneath known finalized frontier.",
+    "Stable gap-free before-cursor traversal across same-slot ties and backend replicas.",
+    "Truthful finality metadata linked to the same canonical chain lineage; minContextSlot is not a response bank/root or atomic history snapshot."
+  ],
+  "networkRequests": 0,
+  "financialLedgerOpened": false,
+  "runtimeModified": false
+}

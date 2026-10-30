@@ -1,0 +1,14 @@
+{
+  "sourceCommit": "472f707da84a63c8fbb3d535600f5fc7e6c5cb87",
+  "command": [
+    "npm",
+    "run",
+    "build"
+  ],
+  "startedAt": "2026-10-28T14:58:53.120302+00:00",
+  "endedAt": "2026-10-28T14:59:00.057762+00:00",
+  "elapsedSeconds": 6.937485014000231,
+  "exitCode": 0,
+  "logSha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+  "logBytes": 55
+}

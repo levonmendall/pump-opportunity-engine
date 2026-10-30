@@ -1,0 +1,87 @@
+{
+  "startedAt": 1793152218294,
+  "finishedAt": 1793152720699,
+  "minimumRequiredCycles": 2,
+  "passed": true,
+  "matches": [
+    {
+      "checkedAt": 1793152708541,
+      "state": "reporting",
+      "sourceAgeMs": 8606,
+      "receiverAgeMs": 8338,
+      "receivedAt": 1793152700165,
+      "match": true,
+      "displayed": {
+        "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+        "inceptionAt": 1793123773252,
+        "runId": "pilot-20261028015809342-f9514585",
+        "generatedAt": 1793152699897,
+        "source": {
+          "release": "1657bb407d82ada68e9b6aa82f93c1573119ec24",
+          "strategy": "persistent-buying-pilot-concurrent-stage-3-v1",
+          "sha256": "7c0758a2a9ed96a93d1cdda0056df786dc85a679b8fbdde14634d895b2c9cc37"
+        },
+        "running": true,
+        "observationAgePolicy": {
+          "version": "observation-age-v1",
+          "minimumObservationAgeMs": 0,
+          "recentMaximumAgeMs": 7200000,
+          "selectedOlderMaximumAgeMs": 21600000
+        },
+        "ageCohorts": {
+          "preEntry": 0,
+          "entryEligible": 9,
+          "olderSelected": 3
+        },
+        "observationEligibleKnown": 12,
+        "observationQueued": 11,
+        "maximumOlderResearchIdentities": 24,
+        "eligibleKnown": 9,
+        "deepActive": 1,
+        "maximumDeep": 6,
+        "promoted": 292,
+        "repromoted": 218
+      }
+    },
+    {
+      "checkedAt": 1793152718698,
+      "state": "reporting",
+      "sourceAgeMs": 3672,
+      "receiverAgeMs": 3217,
+      "receivedAt": 1793152715451,
+      "match": true,
+      "displayed": {
+        "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+        "inceptionAt": 1793123773252,
+        "runId": "pilot-20261028015809342-f9514585",
+        "generatedAt": 1793152714996,
+        "source": {
+          "release": "1657bb407d82ada68e9b6aa82f93c1573119ec24",
+          "strategy": "persistent-buying-pilot-concurrent-stage-3-v1",
+          "sha256": "7c0758a2a9ed96a93d1cdda0056df786dc85a679b8fbdde14634d895b2c9cc37"
+        },
+        "running": true,
+        "observationAgePolicy": {
+          "version": "observation-age-v1",
+          "minimumObservationAgeMs": 0,
+          "recentMaximumAgeMs": 7200000,
+          "selectedOlderMaximumAgeMs": 21600000
+        },
+        "ageCohorts": {
+          "preEntry": 0,
+          "entryEligible": 9,
+          "olderSelected": 4
+        },
+        "observationEligibleKnown": 13,
+        "observationQueued": 12,
+        "maximumOlderResearchIdentities": 24,
+        "eligibleKnown": 9,
+        "deepActive": 1,
+        "maximumDeep": 6,
+        "promoted": 292,
+        "repromoted": 218
+      }
+    }
+  ],
+  "errors": []
+}

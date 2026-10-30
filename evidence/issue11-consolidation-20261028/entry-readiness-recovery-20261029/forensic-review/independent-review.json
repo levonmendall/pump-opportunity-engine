@@ -1,0 +1,30 @@
+{
+  "kind": "independent-offline-entry-control-exporter-review",
+  "reviewedAt": "2026-10-29T18:03:55.608540+00:00",
+  "reviewer": "/root/entry_control_forensics/review_entry_control_export",
+  "files": {
+    "operator/native-paper-ec2/export-reporting-forensics-20261029.py": {
+      "bytes": 24316,
+      "sha256": "6d075a7d08b26a9b72cd4bb42805f7a541091eb73c0fe2767a8fa1e5d22143d7"
+    },
+    "operator/native-paper-ec2/test-export-reporting-forensics-20261029.py": {
+      "bytes": 16234,
+      "sha256": "549fc02cbe0d1e12ae29760acd06513a2cfe88196d881d5a1af22c76606d8f7c"
+    }
+  },
+  "sourceHashesUnchangedBeforeAfterTests": true,
+  "offlineTests": {
+    "passed": 23,
+    "failed": 0,
+    "rawOutput": "independent-exporter-tests.raw.txt",
+    "sha256": "72ee30c2faf07c938d88b9979d883195046dd7725294835909bd0eec6ad032df"
+  },
+  "findingCorrected": "Malformed pause/safe-stop/resume/inception evidence now stops reconstruction as unknown; only explicit failed resume may be skipped as no control mutation. Regression covers invalid pause, malformed resume, numeric false, inconsistent safe-stop result.",
+  "safety": "Permanent UID988/GID982 drop before private reads; fixed read-only/query_only/trusted_schema-off bounded SQLite transaction; no current-control backdating, account creation, financial mutations, secrets or service control.",
+  "accuracyLimits": [
+    "Journal-event timestamp reconstruction is not bound to a public snapshot financial revision.",
+    "Timestamp ties, missing/malformed action evidence, history bounds and reconciliation timestamp mismatch remain explicit.",
+    "No original EC2 protected ledger was opened and no owner command was executed."
+  ],
+  "verdict": "PASS_OFFLINE_ONLY"
+}

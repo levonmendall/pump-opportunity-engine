@@ -1,0 +1,31 @@
+{
+  "source": "a1dadd35bb563cf5aaad471b180c6d449109fd25",
+  "verifiedAt": "2026-10-30T03:51:35.652161+00:00",
+  "sourceUnchanged": true,
+  "passed": true,
+  "commands": [
+    {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "test/valuation.test.ts",
+        "test/native-paper-cash-maintenance.test.ts"
+      ],
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "providerRequests": 0,
+  "financialActions": 0,
+  "serviceChanges": 0,
+  "scope": "Source-owned USD acquisition classification only; same public endpoint/4s timeout/2048B response bound/price validation/freshness/5s scheduling. Unknown historical cause is not reconstructed."
+}

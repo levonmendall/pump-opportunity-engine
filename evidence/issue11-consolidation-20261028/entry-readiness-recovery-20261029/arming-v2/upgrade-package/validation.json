@@ -1,0 +1,26 @@
+{
+  "kind": "poe-original-entry-arming-offline-validation-v1",
+  "offlineBundleValidation": "PASS actual inert bundle/current025abb V2 validator",
+  "exactCurrentManifestSha256": "8a5d4bac098bfc4cb09e2e58e5b465510082a0ce7863739718f6ad8abe61292c",
+  "fourSlotSingleStagePreserved": true,
+  "exactPreservedManifestValidation": "PASS",
+  "metadataCommit": "5648606bf78f6687c47632be5c789af5e7f19772",
+  "unchangedSupervisorReporterAddonUnit": true,
+  "compiledBackupWorkerChangedToExactNewClosure": {
+    "previousSha256": "53700fadf7172fd5f85b9f368256b0b6592abfc3a55adce8481812c0c154ea34",
+    "newSha256": "815f2a215111d09a9216f3fa2235481865e6f22f76773636e2f10022957ac656",
+    "backupWorkerTypeScriptUnchanged": true
+  },
+  "unitAndPolicyUnchanged": true,
+  "ownerCommandPythonSyntaxAndShellRoundTrip": "PASS",
+  "forensicIndexPinVerified": true,
+  "forensicExcludedFromRuntimeRelease": true,
+  "packageFileCount": 10,
+  "transportFileCount": 11,
+  "transportSha256": "313f8bcbcddd5abe5df04c3c5d02f049a0c156e74d14f9337d03f048a1880df7",
+  "rootCommandExecuted": false,
+  "serviceControlled": false,
+  "financialDatabaseOpened": false,
+  "deployed": false,
+  "ownerCommandSha256": "61a79c230ab9b0b38471eb9a0b628dfa091177307ba78f7dfde84b89ae61618c"
+}

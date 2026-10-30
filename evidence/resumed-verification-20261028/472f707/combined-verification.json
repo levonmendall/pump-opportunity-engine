@@ -1,0 +1,113 @@
+{
+  "identity": {
+    "schemaVersion": 1,
+    "sourceCommit": "472f707da84a63c8fbb3d535600f5fc7e6c5cb87",
+    "startedAt": "2026-10-28T14:57:41.730679+00:00",
+    "sourceTree": "5d67cd76873172330122d3efdda0bdd2306b48c4",
+    "scriptsTree": "c10fab2b028ea6296b0413cf2ddfa9fce75f6e7e",
+    "testsTree": "f929b48a6c0901ad2201ee7ff38a711807a24f66",
+    "trackedStatus": " M docs/FUNDING.md\n",
+    "scope": "Combined lead after actual forward failures and independent reviewed repairs; offline only"
+  },
+  "checks": [
+    {
+      "sourceCommit": "472f707da84a63c8fbb3d535600f5fc7e6c5cb87",
+      "command": [
+        "npm",
+        "test"
+      ],
+      "startedAt": "2026-10-28T14:57:41.742695+00:00",
+      "endedAt": "2026-10-28T14:58:53.119681+00:00",
+      "elapsedSeconds": 71.37701219400014,
+      "exitCode": 0,
+      "logSha256": "498df0aedc5d1a014146d5097ce01272e7d82f4dffebd8b6cae90c3a3db56b5c",
+      "logBytes": 145238
+    },
+    {
+      "sourceCommit": "472f707da84a63c8fbb3d535600f5fc7e6c5cb87",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "startedAt": "2026-10-28T14:58:53.120302+00:00",
+      "endedAt": "2026-10-28T14:59:00.057762+00:00",
+      "elapsedSeconds": 6.937485014000231,
+      "exitCode": 0,
+      "logSha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+      "logBytes": 55
+    },
+    {
+      "sourceCommit": "472f707da84a63c8fbb3d535600f5fc7e6c5cb87",
+      "command": [
+        "npm",
+        "run",
+        "compile"
+      ],
+      "startedAt": "2026-10-28T14:59:00.058084+00:00",
+      "endedAt": "2026-10-28T14:59:07.856871+00:00",
+      "elapsedSeconds": 7.7988103940001565,
+      "exitCode": 0,
+      "logSha256": "c111cbc630b00363e00464dc58c0d48d72870d7a431b9e6ada92ca45f2fe603a",
+      "logBytes": 77
+    },
+    {
+      "sourceCommit": "472f707da84a63c8fbb3d535600f5fc7e6c5cb87",
+      "command": [
+        "python3",
+        "-B",
+        "operator/native-candidate-ec2/test-runtime-outcomes.py"
+      ],
+      "startedAt": "2026-10-28T14:59:07.857279+00:00",
+      "endedAt": "2026-10-28T14:59:07.961578+00:00",
+      "elapsedSeconds": 0.10432168699981048,
+      "exitCode": 0,
+      "logSha256": "643c7cfc3921e5830e047bed28578bc933677c101c9c5a9f6610b6207052d03c",
+      "logBytes": 109
+    },
+    {
+      "sourceCommit": "472f707da84a63c8fbb3d535600f5fc7e6c5cb87",
+      "command": [
+        "python3",
+        "-B",
+        "operator/native-candidate-ec2/test-two-hour-package.py"
+      ],
+      "startedAt": "2026-10-28T14:59:07.961897+00:00",
+      "endedAt": "2026-10-28T14:59:09.743817+00:00",
+      "elapsedSeconds": 1.7819579489996613,
+      "exitCode": 0,
+      "logSha256": "a79a8fe0df550360af7b67e7e721d954f9fe0d2c3319f4266867e326ab3ab012",
+      "logBytes": 106
+    },
+    {
+      "sourceCommit": "472f707da84a63c8fbb3d535600f5fc7e6c5cb87",
+      "command": [
+        "python3",
+        "-B",
+        "operator/native-candidate-ec2/test-readback-public-evidence.py"
+      ],
+      "startedAt": "2026-10-28T14:59:09.744388+00:00",
+      "endedAt": "2026-10-28T14:59:10.118821+00:00",
+      "elapsedSeconds": 0.37445589900016785,
+      "exitCode": 0,
+      "logSha256": "49d8d67e0e892c1337375f6e07fe9fba8fb417226005a9f8ed2432aa4d8b3470",
+      "logBytes": 114
+    },
+    {
+      "sourceCommit": "472f707da84a63c8fbb3d535600f5fc7e6c5cb87",
+      "command": [
+        "node",
+        "--test",
+        "operator/native-candidate-ec2/test-stage-package.mjs"
+      ],
+      "startedAt": "2026-10-28T14:59:10.119928+00:00",
+      "endedAt": "2026-10-28T14:59:12.955840+00:00",
+      "elapsedSeconds": 2.835935321999841,
+      "exitCode": 0,
+      "logSha256": "94dbb044e1d844f16795a2143ad071719e4ccbbb0a7f0f1a1a17a73124026d03",
+      "logBytes": 767
+    }
+  ],
+  "allPassed": true,
+  "liveReadiness": false
+}

@@ -1,0 +1,29 @@
+{
+  "at": "2026-10-30T00:22:59.376472+00:00",
+  "worktree": "/workspace/poe-provider-permission-review",
+  "sourceBaseline": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
+  "draftApplicationFilesCopiedOnlyToReviewerWorktree": true,
+  "committedChanges": "test/financial-provider-permission.test.ts only",
+  "sourceHashes": {
+    "src/pilot-rpc.ts": "bea50196da1060ddad7a51de3b87640942c9b6799bbba69bf33cc9f79d9e9b16",
+    "src/run-native-paper.ts": "78c7e6917e80a6696b67129f129a466fa2b5657d88a1abe50337eb7fe5888411",
+    "src/research-clock-pricing.ts": "35ed26800ddf69b9c253dcc77c216b33f9150d17d1903cef8ce5c3246011c955",
+    "src/native-paper.ts": "b256fbeb93952286bab1ad3ebca03de1b4bd8dff44282c8af75ed435dc3e91ce",
+    "src/trader.ts": "c93fd6fc2f84d0ad91a52a692df9413e30f68acc667d80e7cdd1ac971d3b802c",
+    "src/ledger.ts": "c251d5a68a57e19c0bad3ee9a0bc137f78646bcb74645d70d3ac61e829344aa4",
+    "test/financial-provider-permission.test.ts": "f0122a9d6dfba60117738b0139ae532cf2a969f3f00c8bbc0b58b5d2d98fa6b1"
+  },
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "--test",
+    "test/financial-provider-permission.test.ts"
+  ],
+  "tests": 8,
+  "passed": 8,
+  "rawSha256": "f56728058a8af869e4375187486b5c9468f71448fae90129c56608a405770ab7",
+  "providerRequests": 0,
+  "operatingFinancialFilesRead": false,
+  "realAccountActions": 0
+}

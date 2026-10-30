@@ -1,0 +1,35 @@
+✔ actual original publisher child environment resolves the existing systemd credential without a second secret (2.467059ms)
+✔ cache starts empty, accepts whole snapshots atomically, retains gaps and clones read model (9.950603ms)
+✔ identical retries ignore JSON key order without refreshing receiver/source time; regression/conflict rejected (2.955568ms)
+✔ wrong account/source, unexpected fields, nonfinite values and inconsistent chronology are rejected (0.938771ms)
+✔ fresh publishing heartbeat cannot disguise stale market/accounting, stopped runtime, or unreconciled data (3.375495ms)
+✔ dashboard separates public liveness, owner viewer and machine-only ingestion (82.903064ms)
+✔ explicit public dashboard needs no viewer credentials but never permits unauthenticated ingestion (33.957928ms)
+✔ public viewer never weakens ingestion secret or permits partial source identity (0.431679ms)
+✔ command center UI is accessible and purely cosmetic, not a trading control (8.894004ms)
+✔ HTTP rejects wrong account, conflict, regressions, malformed and oversized payloads (20.479945ms)
+✔ bounded exports contain no configuration secrets; HTML uses safe DOM and mobile layout (12.199164ms)
+✔ publisher does not send on construction; outages retain only latest snapshot and recover independently (25.41885ms)
+✔ publisher timeout is bounded, retains latest, sanitizes errors and never follows redirects (12.69266ms)
+✔ unconfigured source is a deployable authenticated waiting page and never adopts a sender identity (23.938202ms)
+✔ partial source identity fails configuration and credentials remain mandatory before source setup (0.343188ms)
+✔ single portfolio viewer retires the experimental channel and retains original authenticated snapshots (20.675235ms)
+✔ source funnel distinguishes observer placeholders, predictive assessments, actual financial decisions and unavailable unique counts (16.232123ms)
+✔ compact one-account command view keeps metrics accessible without a duplicate portfolio (13.705024ms)
+✔ first snapshot paint immediately preserves stopped and stale source truth (8.802203ms)
+✔ observed root 0440 systemd credential is accepted only for the bound service path; snapshots and ordinary secrets stay private (1.047952ms)
+✔ CLI is bound to original account, exact source, existing snapshot namespace and original credential names (4.351551ms)
+✔ private verified snapshot reader refuses symlinks, permissive files, wrong identity and source payload extras (3.037739ms)
+✔ accepted file acknowledgement binds exact original raw bytes through concurrent snapshot replacement (103.689148ms)
+✔ actual one-shot CLI publishes a stopped original snapshot once and exits without a retry on failure (474.492575ms)
+✔ persistent file watcher republishes unchanged source after receiver restart and duplicates never refresh source chronology (94.507724ms)
+✔ network and malformed acknowledgements recover with bounded retry; an HTTP200 alone is not an accepted source witness (71.345957ms)
+✔ oversized acknowledgement body is cancelled and does not become a successful report (11.708714ms)
+ℹ tests 27
+ℹ suites 0
+ℹ pass 27
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2546.65221

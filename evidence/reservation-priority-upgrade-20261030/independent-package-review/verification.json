@@ -1,0 +1,98 @@
+{
+  "startedAt": "2026-10-30T03:43:35.504039+00:00",
+  "commands": [
+    {
+      "repository": "poe-original-two-position-upgrade",
+      "test": "test-forward-original-upgrade.py",
+      "exitCode": 0
+    },
+    {
+      "repository": "poe-original-two-position-upgrade",
+      "test": "test-export-reservation-priority-forensics-20261030.py",
+      "exitCode": 0
+    },
+    {
+      "repository": "poe-original-two-position-upgrade",
+      "test": "test-read-reservation-priority-forensics-20261030.py",
+      "exitCode": 0
+    },
+    {
+      "repository": "poe-original-two-position-upgrade",
+      "test": "test-prepare-reservation-priority-package-20261030.py",
+      "exitCode": 0
+    },
+    {
+      "repository": "poe-coherent-readiness-stage-admin",
+      "test": "test-export-adaptive-followthrough-forensics-20261030.py",
+      "exitCode": 0
+    },
+    {
+      "repository": "poe-coherent-readiness-stage-admin",
+      "test": "test-export-reservation-priority-forensics-20261030.py",
+      "exitCode": 0
+    },
+    {
+      "repository": "poe-coherent-readiness-stage-admin",
+      "test": "test-inspect-original-entrypoint.py",
+      "exitCode": 0
+    },
+    {
+      "repository": "poe-coherent-readiness-stage-admin",
+      "test": "test-inspect-original-memory.py",
+      "exitCode": 0
+    },
+    {
+      "repository": "poe-coherent-readiness-stage-admin",
+      "test": "test-inspect-original-service-io.py",
+      "exitCode": 0
+    },
+    {
+      "repository": "poe-coherent-readiness-stage-admin",
+      "test": "test-inspect-original-source-forensics.py",
+      "exitCode": 0
+    },
+    {
+      "repository": "poe-coherent-readiness-stage-admin",
+      "test": "test-inspect-provider-recovery-reader.py",
+      "exitCode": 0
+    },
+    {
+      "repository": "poe-coherent-readiness-stage-admin",
+      "test": "test-inspect-reservation-priority-reader.py",
+      "exitCode": 0
+    },
+    {
+      "repository": "poe-coherent-readiness-stage-admin",
+      "test": "test-provider-recovery-stage-workflow.py",
+      "exitCode": 0
+    },
+    {
+      "repository": "poe-coherent-readiness-stage-admin",
+      "test": "test-read-adaptive-followthrough-forensics-20261030.py",
+      "exitCode": 0
+    },
+    {
+      "repository": "poe-coherent-readiness-stage-admin",
+      "test": "test-read-current-run-forensics.py",
+      "exitCode": 0
+    },
+    {
+      "repository": "poe-coherent-readiness-stage-admin",
+      "test": "test-read-provider-recovery-forensics-20261030.py",
+      "exitCode": 0
+    },
+    {
+      "repository": "poe-coherent-readiness-stage-admin",
+      "test": "test-read-reservation-priority-forensics-20261030.py",
+      "exitCode": 0
+    }
+  ],
+  "providerRequests": 0,
+  "financialDatabaseOpened": false,
+  "serviceChanges": 0,
+  "sourceUnchanged": true,
+  "passed": true,
+  "packetPinsVerified": true,
+  "ownerCommandAstAndShellVerified": true,
+  "completedAt": "2026-10-30T03:43:41.365684+00:00"
+}

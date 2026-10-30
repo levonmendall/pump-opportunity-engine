@@ -1,0 +1,17 @@
+{
+  "classification": "READ_ONLY_OBSERVED_SCOPE_REPAIR",
+  "diagnosticRequests": 1,
+  "diagnosticCumulativeUnits": 1763,
+  "financialDatabaseUntouched": true,
+  "historicalRefusalsPreserved": true,
+  "cause": "Successful migration-labelled notification invoked neither allowed Pump nor PumpSwap program; unrelated seed was repeatedly treated as transient",
+  "correction": "Permanently exclude only the raw unrelated signature after structural validation; keep actual Pump/AMM unknown variants unverified and preserve canonical proof requirements",
+  "typecheck": "PASS",
+  "fullTests": {
+    "passed": 790,
+    "failed": 0,
+    "durationMs": 52390.028946
+  },
+  "migrationFocused": 16,
+  "independentReview": "GO isolated resume"
+}

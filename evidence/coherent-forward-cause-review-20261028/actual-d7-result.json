@@ -1,0 +1,541 @@
+{
+  "classification": "ACTUAL_SETTLED_FORWARD_CAUSE_REVIEW_NOT_ACCEPTANCE",
+  "source": {
+    "commit": "d7eab54491c361d7c2d5a31e0543e36bf88fd847",
+    "sha256": "f7b1f1a36451587d624345c57770cfdd386b9ff27a411b4998c37d39935f04a9",
+    "kind": "immutable-startup-native-paper-bundle-closure",
+    "metadataSha256": "a9c4bdfc737dfa328f7e5912ba941d9b325b5c00d30ce4f5cfade92d9b73e588",
+    "sqliteVersion": "13.0.3",
+    "addonSha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d",
+    "backupWorkerSha256": "773157f208a3f5505efa308d7f37de7ce8e580138510dc0662d12aee9f56481c",
+    "packageLockSha256": "552d1fc533ec47be8913f220d5d1c08286432fc0e3d3ce54457c488de73ddd4a"
+  },
+  "runId": "native-paper-20261028223428977",
+  "verifiedIndexFiles": {
+    "supervisor.json": {
+      "bytes": 4653,
+      "sha256": "dce66fe7a201ed49855c3c88c224afc33a251aaecc510ccb52be20c55b484332"
+    },
+    "package.json": {
+      "bytes": 1810,
+      "sha256": "6c6d1e749da0a43884e2577d308f98ac5d5b90c56400495248add22325a29f92"
+    },
+    "package-identity-verification.json": {
+      "bytes": 597,
+      "sha256": "c5d67ff6ccbedad0bf51fe31263cf4a60f0de53ce7a56fc4b8df2a3c7c99efcd"
+    },
+    "segments/0/result.json": {
+      "bytes": 394455,
+      "sha256": "437df26cac8cf5d455085f51ab344a396894ebe00281dd0a18bdb075a4f24d07"
+    },
+    "segments/0/supervision.json": {
+      "bytes": 2552,
+      "sha256": "c3399fbe8bcff30b26099b16119580864d210a2e612888a51f5e81a18c525689"
+    },
+    "segments/0/resource-samples.ndjson": {
+      "bytes": 110477,
+      "sha256": "5895be65bb883f4d63b4a72411567c484792fe4b962b034fe0b9458717369008"
+    },
+    "segments/0/settlement.json": {
+      "bytes": 115,
+      "sha256": "b6eaef3fdfae8034b1c73b6515ceee7ce6ae2a526a727dd7e84c3bf3d2d768fa"
+    },
+    "segments/0/selected-events.ndjson": {
+      "bytes": 3135482,
+      "sha256": "3b39df49bc6a16b8f8c506581034e89477571ab966a541b1bd28737c27ffadfa"
+    },
+    "final-status.json": {
+      "bytes": 394455,
+      "sha256": "437df26cac8cf5d455085f51ab344a396894ebe00281dd0a18bdb075a4f24d07"
+    },
+    "witness/accepted-source-last-1.json": {
+      "bytes": 394455,
+      "sha256": "437df26cac8cf5d455085f51ab344a396894ebe00281dd0a18bdb075a4f24d07"
+    },
+    "witness/accepted-source-first-1.json": {
+      "bytes": 388215,
+      "sha256": "2562da28b3b99b8365cfd9b55d86d12b10162038cb24fcb3c3f80e029dfa39cb"
+    },
+    "witness/accepted-source-last-2.json": {
+      "bytes": 419948,
+      "sha256": "7679bc877e58ae42d87573cb0713653c6b017a1fa5e90496935b9ffca759fbb5"
+    },
+    "witness/accepted-source-first-2.json": {
+      "bytes": 391805,
+      "sha256": "19a1c2cb3a47c4d03f9e2736423e398d1cc0740060fdc52ac9270fa4383073dc"
+    },
+    "witness/accepted-source-witness.json": {
+      "bytes": 2014,
+      "sha256": "0d436dc5fd51328575bb8cf1bbcf77409021c0b961af54d6123a5bcba6ab65c3"
+    },
+    "ledger-projection-audit.json": {
+      "bytes": 2006,
+      "sha256": "0964cb6824ec34264e93bf0db74456103ea23eb701ee6d3f833d1dd48711e79b"
+    },
+    "event-summary.json": {
+      "bytes": 6132,
+      "sha256": "6f1bec4090db7682979de477adb17982689fc7e7c971e42a9a4547a6bd08c16f"
+    }
+  },
+  "targetCounts": {
+    "total": 40,
+    "uniqueTokens": 25,
+    "outcomes": {
+      "predictive-failed": 32,
+      "audit-unusable": 7,
+      "audit-unavailable": 1
+    },
+    "uniqueValidTokens": 21,
+    "expirations": 1
+  },
+  "providers": {
+    "https://api.mainnet.solana.com": {
+      "requests": 175,
+      "completeJson": 170,
+      "timedOut": 5,
+      "httpStatusCounts": {
+        "200": 170,
+        "None": 5
+      },
+      "responseBytes": 1984731,
+      "timingMs": {
+        "count": 175,
+        "minimum": 46.06074400001671,
+        "p50": 87.8886240000138,
+        "p95": 259.57352500001434,
+        "maximum": 1207.0759439999965
+      }
+    },
+    "https://solana-rpc.publicnode.com": {
+      "requests": 49,
+      "completeJson": 48,
+      "timedOut": 1,
+      "httpStatusCounts": {
+        "200": 49
+      },
+      "responseBytes": 4990497,
+      "timingMs": {
+        "count": 49,
+        "minimum": 157.56036399997538,
+        "p50": 244.77315799996722,
+        "p95": 1000.922361999983,
+        "maximum": 1205.8289399999776
+      }
+    }
+  },
+  "physicalFaults": [
+    {
+      "id": 8563,
+      "purpose": "migration-origin-verification",
+      "originRead": 1,
+      "originSignature": "2yq3rPLSSEEtDcbeuDRYVS47eK7bmBg4AnYZx9ggffstDqPa3pZZDzGRExQ3wBwCpKHDeFuya9Sm3SFAb71jMY2p",
+      "method": "getTransaction",
+      "endpoint": "https://api.mainnet.solana.com",
+      "physicalStartedAt": 1793226917737,
+      "physicalSettledAt": 1793226918962,
+      "headersDelayMs": null,
+      "responseBytes": 0,
+      "httpStatus": null,
+      "bodyCompleteAt": null,
+      "jsonDecodedAt": null,
+      "requestedTimeoutMs": 1200,
+      "callbackLatenessMs": 0.35476399999606656,
+      "settlementAfterTimeoutMs": 26,
+      "undiciSendHeadersHookAt": 1793226917810,
+      "socketPreviouslyObserved": false,
+      "evidence": {
+        "start": {
+          "sourceFile": "events-001.ndjson",
+          "sourceLine": 694,
+          "sourceLineSha256": "d02667b113370938a90dc3d62c713fffb346310403fde2a154ed5b2679c2ac65",
+          "sourceSequence": 694
+        },
+        "originRead": {
+          "sourceFile": "events-001.ndjson",
+          "sourceLine": 692,
+          "sourceLineSha256": "a53235e38a3a134a55019e7ec02d75e4ceabd6030a39bf43b32c4272358b444b",
+          "sourceSequence": 692
+        },
+        "http": {
+          "sourceFile": "events-001.ndjson",
+          "sourceLine": 697,
+          "sourceLineSha256": "9fc07fd4daa4356063cac53a894506cf5a4adcb257371aca6fe36732c3830f68",
+          "sourceSequence": 697
+        },
+        "timeout": {
+          "sourceFile": "events-001.ndjson",
+          "sourceLine": 696,
+          "sourceLineSha256": "ab28c7fcbbe25aaf74908127fb0c289e6e2ac019a152c6d29acc58582cc43076",
+          "sourceSequence": 696
+        },
+        "settled": {
+          "sourceFile": "events-001.ndjson",
+          "sourceLine": 699,
+          "sourceLineSha256": "e240028470cc6de0526eee9f6f15380287d1a52331353d78bd4ada7e00d12da7",
+          "sourceSequence": 699
+        }
+      }
+    },
+    {
+      "id": 8635,
+      "purpose": "migration-origin-verification",
+      "originRead": 1,
+      "originSignature": "3Sh9CqqYGtfKo7YNx1eAsg9DeoWec1e8dLfDjkhwsKJVLpZjDB6ouN4ckqaswpz9ThpBt44QirzUFukpT88mngf2",
+      "method": "getTransaction",
+      "endpoint": "https://api.mainnet.solana.com",
+      "physicalStartedAt": 1793227114400,
+      "physicalSettledAt": 1793227115624,
+      "headersDelayMs": null,
+      "responseBytes": 0,
+      "httpStatus": null,
+      "bodyCompleteAt": null,
+      "jsonDecodedAt": null,
+      "requestedTimeoutMs": 1200,
+      "callbackLatenessMs": 0.25639600001159124,
+      "settlementAfterTimeoutMs": 25,
+      "undiciSendHeadersHookAt": 1793227114477,
+      "socketPreviouslyObserved": false,
+      "evidence": {
+        "start": {
+          "sourceFile": "events-002.ndjson",
+          "sourceLine": 2624,
+          "sourceLineSha256": "d64e7b61387cb4a45710d6b521c771e7c325308364771d0af8810b0e969fb6e7",
+          "sourceSequence": 2624
+        },
+        "originRead": {
+          "sourceFile": "events-002.ndjson",
+          "sourceLine": 2622,
+          "sourceLineSha256": "dc187444b8108e0a9467d5a307c47e49fed20ca66dc70f8b8145b7e6c5f35421",
+          "sourceSequence": 2622
+        },
+        "http": {
+          "sourceFile": "events-002.ndjson",
+          "sourceLine": 2640,
+          "sourceLineSha256": "ac784c1c04316d5eb99745541676a104f871afefcb92173701bfaf97f0321d98",
+          "sourceSequence": 2640
+        },
+        "timeout": {
+          "sourceFile": "events-002.ndjson",
+          "sourceLine": 2639,
+          "sourceLineSha256": "add5a4ef7785dee6c358e35a7b206eb073e856bd73e8b7549f453aa6baa84527",
+          "sourceSequence": 2639
+        },
+        "settled": {
+          "sourceFile": "events-002.ndjson",
+          "sourceLine": 2642,
+          "sourceLineSha256": "0afdd495f6b152ad93fb03a75133d6e93cd6f8f840a8c1ec5be02b2a7c1adb84",
+          "sourceSequence": 2642
+        }
+      }
+    },
+    {
+      "id": 8657,
+      "purpose": "migration-origin-verification",
+      "originRead": 2,
+      "originSignature": "2svoJndsSGD1CqVqB51Wq39MTMDu8YSYityzGTXG28EYoMA9hw3N6uKCdifuPjQVutqHZHH9t8xJ388TLDZXkzbu",
+      "method": "getSignaturesForAddress",
+      "endpoint": "https://solana-rpc.publicnode.com",
+      "physicalStartedAt": 1793227176601,
+      "physicalSettledAt": 1793227177825,
+      "headersDelayMs": 963,
+      "responseBytes": 130676,
+      "httpStatus": 200,
+      "bodyCompleteAt": null,
+      "jsonDecodedAt": null,
+      "requestedTimeoutMs": 1200,
+      "callbackLatenessMs": 0.7305010000127368,
+      "settlementAfterTimeoutMs": 25,
+      "undiciSendHeadersHookAt": 1793227176664,
+      "socketPreviouslyObserved": false,
+      "evidence": {
+        "start": {
+          "sourceFile": "events-002.ndjson",
+          "sourceLine": 4708,
+          "sourceLineSha256": "29b1fe92c01c4f8e277a263f3c29eb5c996acc35a578a06f04a82a6d69b928bd",
+          "sourceSequence": 4708
+        },
+        "originRead": {
+          "sourceFile": "events-002.ndjson",
+          "sourceLine": 4706,
+          "sourceLineSha256": "bac3f0a7d5aefa25719dfc8b99491922084287fbf2c2a7e951e1d638d47f8e9c",
+          "sourceSequence": 4706
+        },
+        "http": {
+          "sourceFile": "events-002.ndjson",
+          "sourceLine": 4756,
+          "sourceLineSha256": "336b589fa4ee5e0260dd97aa70c9456a11a37166ab656b06a86d0d5f55571c27",
+          "sourceSequence": 4756
+        },
+        "timeout": {
+          "sourceFile": "events-002.ndjson",
+          "sourceLine": 4755,
+          "sourceLineSha256": "921bf5acc2aa0911703adeba0b684ee5721bc77e2feb49eff5f324596270e485",
+          "sourceSequence": 4755
+        },
+        "settled": {
+          "sourceFile": "events-002.ndjson",
+          "sourceLine": 4758,
+          "sourceLineSha256": "77db48f1ce3d21f9ad2d25f7a7a78f8465a8dc28aa109da1d54521ff1d863c2b",
+          "sourceSequence": 4758
+        }
+      }
+    },
+    {
+      "id": 8659,
+      "purpose": "migration-origin-verification",
+      "originRead": 1,
+      "originSignature": "4XCaMH5oeeHib6yetLKadjR7keBrgpLebE2spHgA4jBoXxvVofJofysikPSZ1gYNtUjmdPY3mgZ69SogNbhf1KU6",
+      "method": "getTransaction",
+      "endpoint": "https://api.mainnet.solana.com",
+      "physicalStartedAt": 1793227188194,
+      "physicalSettledAt": 1793227189417,
+      "headersDelayMs": null,
+      "responseBytes": 0,
+      "httpStatus": null,
+      "bodyCompleteAt": null,
+      "jsonDecodedAt": null,
+      "requestedTimeoutMs": 1200,
+      "callbackLatenessMs": 0.2855470000067726,
+      "settlementAfterTimeoutMs": 23,
+      "undiciSendHeadersHookAt": 1793227188266,
+      "socketPreviouslyObserved": false,
+      "evidence": {
+        "start": {
+          "sourceFile": "events-002.ndjson",
+          "sourceLine": 5040,
+          "sourceLineSha256": "8c808fc985604dcf9ad9f133a57aa5f54962328239b711144ec99eda8833fe9f",
+          "sourceSequence": 5040
+        },
+        "originRead": {
+          "sourceFile": "events-002.ndjson",
+          "sourceLine": 5038,
+          "sourceLineSha256": "ce8bef6dd49ad7e2ac34fb0491c474ef3003d4ea52abea6acf7d8c9002ef5637",
+          "sourceSequence": 5038
+        },
+        "http": {
+          "sourceFile": "events-002.ndjson",
+          "sourceLine": 5058,
+          "sourceLineSha256": "dc4572d43bcad8c4a735a971cb398fce38a0d0de50c73e4f2a21ade62a4b0ffb",
+          "sourceSequence": 5058
+        },
+        "timeout": {
+          "sourceFile": "events-002.ndjson",
+          "sourceLine": 5057,
+          "sourceLineSha256": "ac6d3cb6befeced352f54c9e5817cb1d89356d260ae3c2cd7d85d22e650bc654",
+          "sourceSequence": 5057
+        },
+        "settled": {
+          "sourceFile": "events-002.ndjson",
+          "sourceLine": 5060,
+          "sourceLineSha256": "16e454f117c85e0f0a04057eefb328d90fd8d30e8f8236411f9bdb6dc0f799b7",
+          "sourceSequence": 5060
+        }
+      }
+    },
+    {
+      "id": 8721,
+      "purpose": "migration-origin-verification",
+      "originRead": 1,
+      "originSignature": "3c4uzBEtJwsCDdd2wZSXsSS8eAT1X9PjFrDWnmRP6f2r7FmwXcgb3QZspwZRUvmc1HvDLBGKmjjbjjsEoC5HWF2J",
+      "method": "getTransaction",
+      "endpoint": "https://api.mainnet.solana.com",
+      "physicalStartedAt": 1793227315305,
+      "physicalSettledAt": 1793227316529,
+      "headersDelayMs": null,
+      "responseBytes": 0,
+      "httpStatus": null,
+      "bodyCompleteAt": null,
+      "jsonDecodedAt": null,
+      "requestedTimeoutMs": 1200,
+      "callbackLatenessMs": 0,
+      "settlementAfterTimeoutMs": 25,
+      "undiciSendHeadersHookAt": 1793227315383,
+      "socketPreviouslyObserved": false,
+      "evidence": {
+        "start": {
+          "sourceFile": "events-003.ndjson",
+          "sourceLine": 2166,
+          "sourceLineSha256": "b3e3c0a29039eef161242394d2e140136b275107d7a857929a6c4fd1a4a462db",
+          "sourceSequence": 2166
+        },
+        "originRead": {
+          "sourceFile": "events-003.ndjson",
+          "sourceLine": 2164,
+          "sourceLineSha256": "daf8ad9a853140f8c6465e6542921de58704ae12553793ec4d08122d675ec2b2",
+          "sourceSequence": 2164
+        },
+        "http": {
+          "sourceFile": "events-003.ndjson",
+          "sourceLine": 2170,
+          "sourceLineSha256": "41833c458817358360ef4c5aa601cef69abf8a45880003f858a568012b165c98",
+          "sourceSequence": 2170
+        },
+        "timeout": {
+          "sourceFile": "events-003.ndjson",
+          "sourceLine": 2169,
+          "sourceLineSha256": "c512add7a2332e2d7e01377868f206acdf47369428b73b95f1593dfd4416a78e",
+          "sourceSequence": 2169
+        },
+        "settled": {
+          "sourceFile": "events-003.ndjson",
+          "sourceLine": 2172,
+          "sourceLineSha256": "469ca1921aae817543e5ad34bdd54cecce4ff1fee66d7d707899bcf154a7e3f9",
+          "sourceSequence": 2172
+        }
+      }
+    },
+    {
+      "id": 8811,
+      "purpose": "migration-origin-verification",
+      "originRead": 1,
+      "originSignature": "2z21gxHRkWTe3xHswxTGv89Lsuchgi6nnWbjigxFTcYDTj3AztsFRjQpWuGmNwEW7i8r5MfvEAfvQE1TyHBmuXfE",
+      "method": "getTransaction",
+      "endpoint": "https://api.mainnet.solana.com",
+      "physicalStartedAt": 1793227544306,
+      "physicalSettledAt": 1793227545530,
+      "headersDelayMs": null,
+      "responseBytes": 0,
+      "httpStatus": null,
+      "bodyCompleteAt": null,
+      "jsonDecodedAt": null,
+      "requestedTimeoutMs": 1200,
+      "callbackLatenessMs": 0,
+      "settlementAfterTimeoutMs": 25,
+      "undiciSendHeadersHookAt": 1793227544382,
+      "socketPreviouslyObserved": false,
+      "evidence": {
+        "start": {
+          "sourceFile": "events-004.ndjson",
+          "sourceLine": 2607,
+          "sourceLineSha256": "20f46ff91751dd518147904139866ff9086d38296cc0c68b1f030001ee8672d8",
+          "sourceSequence": 2607
+        },
+        "originRead": {
+          "sourceFile": "events-004.ndjson",
+          "sourceLine": 2605,
+          "sourceLineSha256": "ffb2f63e1674df8f0dd47a7212449a526bf47ed4dda4acec2441c26b8d9d2d28",
+          "sourceSequence": 2605
+        },
+        "http": {
+          "sourceFile": "events-004.ndjson",
+          "sourceLine": 2609,
+          "sourceLineSha256": "13c91fa347259ec4be2e77af09ba541e71991eeefbb121bdf2b00314b1e0ec1c",
+          "sourceSequence": 2609
+        },
+        "timeout": {
+          "sourceFile": "events-004.ndjson",
+          "sourceLine": 2608,
+          "sourceLineSha256": "f0da676ea60264b4ab8e43a4bf1be50b29e9768e0eb38a467ae8153ecf50bf13",
+          "sourceSequence": 2608
+        },
+        "settled": {
+          "sourceFile": "events-004.ndjson",
+          "sourceLine": 2611,
+          "sourceLineSha256": "5648164e41d2f49efb4a1ae4752032839076bb1090f1b2b6db180e8491dba5f9",
+          "sourceSequence": 2611
+        }
+      }
+    }
+  ],
+  "targetAuditPhysicalPages": {
+    "total": 41,
+    "allCompleteJson": true,
+    "allSettledBeforeOriginalDeadline": true,
+    "maximumFirstReadyToFirstPhysicalMs": 2587,
+    "maximumVerifiedAvailabilityAfterBucketMs": 3176,
+    "minimumVerifiedDeadlineRunwayMs": 6823
+  },
+  "multipageAudits": [
+    {
+      "mint": "5VTin7qaK9auBrvC54dkCuEXVw3SbBNcnb8XD497pump",
+      "outcome": "audit-unusable",
+      "pages": 2,
+      "rows": 1100,
+      "reason": "NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED"
+    }
+  ],
+  "verifiedMultipageWindows": 0,
+  "largestVerifiedWindowTrades": 513,
+  "unusableMissingSuccessfulSignatures": 10,
+  "independentlyFailedMissingDiagnosticOccurrencesInVerifiedWindows": 196,
+  "verifiedWindowsWithMissingFailedDiagnostics": 7,
+  "expiredUnavailable": {
+    "mint": "CurpZpXsvhKKcLjJv215hNkBRKAENoYnVSLMju7rpump",
+    "windowEndAt": 1793227190000,
+    "deadlineAt": 1793227199999,
+    "auditAvailableAt": 1793227193137,
+    "runwayAtUnavailableMs": 6862,
+    "reason": "NATIVE_AUDIT_CAPTURED_TARGET_NOT_IN_HISTORY",
+    "historyRangeCovered": true,
+    "unconfirmedSignatureSamples": [
+      "1111111111111111111111111111111111111111111111111111111111111111"
+    ],
+    "meaning": "Data unavailability, not demonstrated late physical audit; canonical64zero-byte-shaped signature provenance/economic role remains unverified.",
+    "evidence": {
+      "summary": [
+        {
+          "sourceFile": "events-002.ndjson",
+          "sourceLine": 5272,
+          "sourceLineSha256": "e74fbe78d8a1b4dbafd643d82d0f62680d09a3ce11e13d2b247f4ec602b43fd2",
+          "sourceSequence": 5272
+        }
+      ],
+      "audit": [
+        {
+          "sourceFile": "events-002.ndjson",
+          "sourceLine": 5273,
+          "sourceLineSha256": "52f834e82caacf30d1731413820cda43f322790b2fc917714f70b2ba5c4cd35f",
+          "sourceSequence": 5273
+        }
+      ],
+      "assessment": [],
+      "expired": [
+        {
+          "sourceFile": "events-002.ndjson",
+          "sourceLine": 5499,
+          "sourceLineSha256": "4549e16aae2c59405a06a4f044af1330f87ac3747c5440057842c71f98824d1a",
+          "sourceSequence": 5499
+        }
+      ],
+      "session": [
+        {
+          "sourceFile": "events-002.ndjson",
+          "sourceLine": 5249,
+          "sourceLineSha256": "074dfbcbcf53618e1a326ebd32ea36ac46005081b0bf73628ffe0d88708c4729",
+          "sourceSequence": 5249
+        }
+      ]
+    }
+  },
+  "reportedQueryWaits": {
+    "records": 34,
+    "activeHistoryProviderCooldownRecords": 0,
+    "zeroOrExpiredProviderCooldownAndSharedReadyAtEvent": 27,
+    "sharedReadyAtAfterEvent": 7,
+    "queryTimeoutFinalState": {
+      "scope": "opt-in independently scheduled history only",
+      "isolatedTimeouts": 0,
+      "globalEscalations": 0,
+      "maximumQueries": 64,
+      "rows": [],
+      "outagePolicy": "three distinct history query timeouts within10s retain history-provider backoff; primary HTTP/control remain independently gated",
+      "restartMeaning": "Local research backoff only; actual provider cooldown remains separately persisted"
+    },
+    "meaning": "Runtime wait labels alone cannot prove provider cooldown. A separately reproduced stale/fresh planning-clock comparison falsely refused healthy readiness."
+  },
+  "nativeIncidents": {},
+  "financial": {
+    "qualified": 0,
+    "paperFilled": 0,
+    "openPositions": 0,
+    "pendingActions": 0,
+    "actualHoldingProtectionProven": false
+  },
+  "limitations": [
+    "Different chronological market populations prevent causal improvement percentages from window counts.",
+    "41transport-complete audit pages do not establish all40windowscomplete;8targets correctly unavailable/unusable.",
+    "All-zero-shaped signature is canonicalbase58 only; no cryptographic/on-chain validity or harmlessness is inferred.",
+    "No successfullyverified multipage window, six-slot/financial-contention proof, whole-market denominator or profitability is established.",
+    "Actual HTTP hooks are local pre-write/header observations, not proof of remote receipt."
+  ]
+}

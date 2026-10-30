@@ -1,0 +1,43 @@
+{
+  "verifiedAt": "2026-10-30T03:22:10.390251+00:00",
+  "source": "f96e1ccede6c27e8d4b70ffa14a113c1cef2bf63",
+  "scope": "Independent OFFLINE durability, physical-pacing, raw/old69/checkpoint compatibility; no service/provider/financial I/O",
+  "trackedGuardFiles": 449,
+  "trackedGuardUnchanged": true,
+  "sourceHashes": {
+    "src/component-budget.ts": "3b098d282b9ff2b965fb5bd8d4644f8c6969c85dba46a0b09fdabdaf5f9e0476",
+    "src/research-baseline.ts": "2274540bc1c39f8adb9a5c2acf2676b071a4f9b2871ab93b5a4db8abcf12de59",
+    "src/pilot-rpc.ts": "77cbb08f78c187429f3c57143be49c43d76ff89fc4ed9d5a32db9b1c418d274b"
+  },
+  "checks": [
+    {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "test/component-known-uninvoked.test.ts",
+        "test/known-uninvoked-checkpoint.test.ts",
+        "test/uninvoked-compaction-recovery.test.ts",
+        "test/component-budget.test.ts",
+        "test/research-baseline.test.ts",
+        "test/research-checkpoint.test.ts"
+      ],
+      "returncode": 0,
+      "log": "focused-0.log",
+      "sha256": "b7b5a368c36a0181102d26a477c2c30113318b17d17db92f5a728277c8204a12"
+    },
+    {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "/workspace/pump-opportunity-engine/evidence/reservation-pacing-recovery-20261030/independent-review/independent-legacy-compatibility.mjs"
+      ],
+      "returncode": 0,
+      "log": "focused-1.log",
+      "sha256": "5a3c3dd0b8a2be2a7bcbbdc97143e351ffb222d4587ab1ed32b9ec5e6229d19d"
+    }
+  ],
+  "pass": true
+}

@@ -1,0 +1,8 @@
+{
+  "schemaVersion": 1,
+  "pid": 36042,
+  "uid": 1000,
+  "startedAt": "2026-10-28T15:15:01.229673+00:00",
+  "maximumSeconds": 14400,
+  "purpose": "sole lead ownership for source640143a bounded forward measurement"
+}

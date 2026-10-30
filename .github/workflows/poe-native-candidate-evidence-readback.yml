@@ -1,0 +1,70 @@
+name: POE bounded public candidate-evidence readback
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: Existing completed two-hour candidate research run ID (decimal digits only)
+        required: true
+        type: string
+      source_attempt:
+        description: Existing research run attempt (decimal digits only)
+        required: true
+        default: '1'
+        type: string
+      offset:
+        description: Compressed archive byte offset (zero or positive decimal)
+        required: true
+        default: '0'
+        type: string
+      length:
+        description: Maximum compressed bytes to read (1 through4194304)
+        required: true
+        default: '4194304'
+        type: string
+permissions:
+  contents: read
+concurrency:
+  group: meme-machine-ec2-administration
+  cancel-in-progress: false
+jobs:
+  public-evidence-readback:
+    if: github.repository == 'levonmendall/meme-machine-admin' && github.ref == 'refs/heads/main'
+    runs-on: meme-machine-ec2-admin
+    timeout-minutes: 2
+    steps:
+      - name: Read only the reviewed fixed-path evidence helper
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            operator/native-candidate-ec2/readback-public-evidence.py
+      - name: Verify helper and stream one bounded public archive chunk
+        env:
+          ACTUAL_RUNNER: ${{ runner.name }}
+          READBACK_RUN_ID: ${{ inputs.source_run_id }}
+          READBACK_ATTEMPT: ${{ inputs.source_attempt }}
+          READBACK_OFFSET: ${{ inputs.offset }}
+          READBACK_LENGTH: ${{ inputs.length }}
+          READBACK_HELPER_SHA256: __REVIEWED_READBACK_HELPER_SHA256__
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$ACTUAL_RUNNER" = meme-machine-ec2-admin
+          test "$(id -u)" = 994
+          python3 -I - "$READBACK_HELPER_SHA256" <<'PY'
+          import hashlib,pathlib,sys
+          p=pathlib.Path('operator/native-candidate-ec2/readback-public-evidence.py')
+          assert p.is_file() and not p.is_symlink()
+          data=p.read_bytes()
+          assert len(data)<=32768 and len(sys.argv[1])==64 and hashlib.sha256(data).hexdigest()==sys.argv[1], 'REVIEWED_READBACK_HELPER_HASH_MISMATCH'
+          PY
+          #43seconds to request termination plus2seconds kill reserve:≤45seconds.
+          /usr/bin/env -i PATH=/usr/bin:/bin \
+            /usr/bin/timeout --signal=TERM --kill-after=2s 43s \
+            /usr/bin/nice -n 10 /usr/bin/prlimit \
+            --cpu=30:30 --as=134217728:134217728 --nofile=32:32 --core=0:0 -- \
+            /usr/bin/python3 -B -I operator/native-candidate-ec2/readback-public-evidence.py \
+            --run-id "$READBACK_RUN_ID" --attempt "$READBACK_ATTEMPT" \
+            --offset "$READBACK_OFFSET" --length "$READBACK_LENGTH"

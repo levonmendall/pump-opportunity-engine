@@ -1,0 +1,36 @@
+✔ more than fifteen retired pools rotate through the bounded pilot registry without deleting held/pending/deposit history (8.561002ms)
+✔ retiring another pool preserves a usable exact-size held snapshot without a global link-cache flush (3.743865ms)
+✔ retirement cannot race a context or delegated entry read and never edits the caller inventory (4.165701ms)
+✔ fresh supported account lengths and current rent define deposits; every entry repeats rent checks (83.691757ms)
+✔ real decoder quotes complete a disposable delayed buy and full-size exit with rent retained once (61.49309ms)
+✔ changed rent, unknown account plan, cancellation and invalidation refuse entry without changing account (18.369705ms)
+✔ post-delay buy source carries its actual slot and refuses changed rent or delayed evidence (40.490479ms)
+✔ a newer known flow slot arriving during entry pricing prevents an older result from being used (18.848907ms)
+✔ candidate-only support uses unchanged current state validation without rent or an entry plan (13.700618ms)
+✔ candidate-only support retains mint, pool, vault and fee-owner checks (22.563779ms)
+✔ candidate-only support refuses stale records, invalidation, newer slot floors and cancellation (24.423588ms)
+✔ coherent entry preparation and quote leave held dependency links warm and read every rent again (18.05207ms)
+✔ a slow final recorder cannot refresh an earlier Clock buy into a valid decision or change accounting (18.752775ms)
+✔ a timed-out uncooperative buy read retains market ownership until physical work settles (40.727209ms)
+✔ entry preparation can yield between real SDK reads to fresh whole-inventory pricing without reentrant entry work (70.524005ms)
+✔ whole preparation timeout retains uncooperative physical ownership and cannot publish a late plan (34.738744ms)
+✔ cancellation at a preparation yield prevents the next physical request and cannot create a plan (7.81161ms)
+✔ an unrelated candidate bank cannot raise a holding slot floor; the holding own known floor remains mandatory (29.545188ms)
+✔ holding pricing exposes only bounded static interruption categories (1.810296ms)
+✔ two-held union marks and post-delay exit reuse integrate with one disposable writer and exact gas accounting (139.477491ms)
+✔ holding diagnostics retain actual Clock failures after recovery without claiming a protection completion (18.739073ms)
+✔ post-delay, exact-size, slot, stale and gap constraints refuse cached fills without extra requests (33.642728ms)
+✔ same-account restart quarantines unresolved exit without re-quote, preserves inception and restores current marks (28.035618ms)
+✔ a registered different-mint quote cannot be relabeled as a same-size held mark (12.783838ms)
+✔ delegated entry result is refused if a gap or higher slot floor arrives while awaiting it (5.401754ms)
+✔ held context carries original inclusive bank-source expiry and refuses a still-recent quote after that expiry (13.818984ms)
+✔ source expiry covers every required full-size holding, uses the minimum and is absent for an incomplete batch (39.475141ms)
+✔ a Clock boundary crossed after final source validation stays explicitly expired instead of losing metadata (14.259127ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1595.203196

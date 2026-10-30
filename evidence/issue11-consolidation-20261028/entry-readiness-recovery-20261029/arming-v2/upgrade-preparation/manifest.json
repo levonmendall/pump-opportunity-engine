@@ -1,0 +1,65 @@
+{
+  "kind": "original-entry-arming-upgrade-evidence",
+  "files": [
+    {
+      "file": "DRAFT_NOT_DEPLOYABLE.md",
+      "bytes": 2159,
+      "sha256": "63d48176826b511d3936a61fc8c644956e334b3690f8b0ce56657cc3ddc21d5e"
+    },
+    {
+      "file": "draft-forensic-helper-tests.txt",
+      "bytes": 149,
+      "sha256": "67f97afdbb2a47da00c63ea8363899bdfac1a129c8dd91e6482a7476ec048ad4"
+    },
+    {
+      "file": "draft-manifest.json",
+      "bytes": 924,
+      "sha256": "b4bb70f1ae77aa89096c730e20ab858cf56bb94ce3d997eea1eaa88bdb4df76b"
+    },
+    {
+      "file": "final-helper-tests.txt",
+      "bytes": 150,
+      "sha256": "24531310c303a0bb364a8700691c691ebdec7e7d6c8e912beccfe3800e4e473d"
+    },
+    {
+      "file": "independent-draft-forensic-review.json",
+      "bytes": 1998,
+      "sha256": "5adeac4f4ad3f9351ac721d0d8016754420548c988210242fb40459f4ba1647b"
+    },
+    {
+      "file": "independent-draft-forensic-tests.txt",
+      "bytes": 759,
+      "sha256": "543d9aae25e5aa4eb898d161d104fd84ed90a1f0f35f2bfbd7cfd7a633249c5f"
+    },
+    {
+      "file": "independent-final-review.json",
+      "bytes": 2899,
+      "sha256": "3a6c478a826d3c6c6fdad3e8acc6886c69e67cab9d13257062eae237a464a817"
+    },
+    {
+      "file": "independent-final-tests.txt",
+      "bytes": 557,
+      "sha256": "8af5fb9a0ce081e95cfdf77db0ec511b1212ba954f8e2eda5e42c88dae60867f"
+    },
+    {
+      "file": "independent-stager-review.json",
+      "bytes": 1140,
+      "sha256": "2b378dd3b07d9e83c894814ab60843ac2fbf455e3f96458980a0159b2cc54530"
+    },
+    {
+      "file": "prepare-existing-admin-stager.py",
+      "bytes": 2067,
+      "sha256": "5cd6d240db22e35a9b0230f2d184bfee17b6930361bcb1027f91f32a1fc29042"
+    },
+    {
+      "file": "prepare-final-package.py",
+      "bytes": 7975,
+      "sha256": "22091467d63858d33140436932c6e8bbee4a9d01792206184d494ed712a1ddf3"
+    },
+    {
+      "file": "prepare-package.py",
+      "bytes": 7649,
+      "sha256": "feabdb01e47774d2accb407ce00ad06e3e337f1ddd4d0d6c7da281bc0caccd8c"
+    }
+  ]
+}

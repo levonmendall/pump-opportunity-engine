@@ -1,0 +1,41 @@
+{
+  "at": 1793222023022,
+  "checks": {
+    "original": {
+      "httpStatus": 200,
+      "account": {
+        "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "initialUsd": 1000
+      },
+      "source": {
+        "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+        "strategy": "UNIMPLEMENTED_FLOW_BLOCKED"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "disabled",
+        "reconciled": true,
+        "blocker": "FLOW_NOT_VERIFIED_BILLING_NOT_CONFIRMED"
+      },
+      "times": {
+        "generatedAt": "2026-10-28T21:13:19.206Z",
+        "marketAt": "2026-10-28T21:13:19.206Z",
+        "reconciledAt": "2026-10-28T21:13:19.206Z",
+        "usefulProgressAt": "2026-10-28T21:13:19.206Z"
+      },
+      "cashSol": "9.961647656",
+      "reservedSol": "0.000000000"
+    },
+    "unauthorized": {
+      "httpStatus": 401,
+      "response": {
+        "error": "unauthorized"
+      },
+      "rejected": true
+    }
+  },
+  "requests": 2,
+  "responseBytes": 24928
+}

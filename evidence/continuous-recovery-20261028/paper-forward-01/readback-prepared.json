@@ -1,0 +1,37 @@
+{
+  "administrationRun": 40763198930,
+  "rawLogBytes": 27656,
+  "rawLogSha256": "393a7fb27402999f949e5ee0614aba933dbb6c06e25f80ac8fece1418836f820",
+  "kind": "prepared",
+  "manifest": {
+    "schemaVersion": 1,
+    "classification": "paper-public-projection-evidence",
+    "complete": true,
+    "format": "tar+gzip",
+    "githubRunId": "40758225777",
+    "githubRunAttempt": "1",
+    "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+    "inceptionAt": 1793123773252,
+    "source": {
+      "commit": "6d894c1262b93d22f288e214016bfb314799e0ae",
+      "sha256": "9baf5500b40eb26bc1ae898c8dbdb8801b9798e8c03de0280bb3896556cb6553"
+    },
+    "archive": {
+      "file": "selected-evidence.tar.gz",
+      "bytes": 944279,
+      "sha256": "e785aabbf956159a260e37b7b8c726896d48d4eb021b765c7ad817901a044b46",
+      "stat": {
+        "device": 66305,
+        "inode": 12885706,
+        "size": 944279,
+        "mtimeNs": 1793219154823556227,
+        "ctimeNs": 1793219154823556227
+      }
+    },
+    "selectedBytes": 4759695,
+    "indexSha256": "66d381f5c2aa2d2f62a5f2ed9852c9af679a3c63a16a3d158e4416948b0bf514",
+    "credentialsIncluded": false,
+    "rawFinancialFilesIncluded": false,
+    "ledgerReadOnlyProjectionIncluded": true
+  }
+}

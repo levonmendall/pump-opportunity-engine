@@ -1,0 +1,32 @@
+{
+  "recordedAt": "2026-10-29T03:08:00.191850+00:00",
+  "ownerSuppliedCredentialMetadata": {
+    "provenance": "owner terminal screenshot, read-only stat through service namespace",
+    "type": "regular file",
+    "uid": 0,
+    "gid": 0,
+    "modeOctal": "0440",
+    "links": 1,
+    "bytes": 64
+  },
+  "defect": "Original publisher rejects all group permission bits, including observed root:root0440 LoadCredential. The open itself may also fail; corrected runtime must establish actual read access.",
+  "correction": "Only exact original systemd service credential with exact CREDENTIALS_DIRECTORY accepts root:root0440. All ordinary file protections remain. Startup failures add sanitized fixed reason code.",
+  "financialSourceUnchanged": "5e55d8b939de99698ddb311a282461931fcbc957",
+  "actualDeployment": "STAGED ON EC2; ROOT INSTALL NOT YET EXECUTED",
+  "tests": {
+    "focused": 27,
+    "full": 1685,
+    "build": "PASS"
+  },
+  "independentReview": "No blocking issue; actual UID988 kernel/ACL read access remains to verify.",
+  "originalAccount": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+  "liveTrading": false,
+  "reporterSourceCommit": "5735db2ca8abc6af6f99bb0ad855c19cdebaf864",
+  "adminStageCommit": "ef2916e1ef01d9b38ce3be0b8f87916bf98db0cd",
+  "stagingRun": 40810934646,
+  "newPublisherSha256": "2f6e041872681a2dd5c978cfa8addff0fb3619da56e105c94734a8420a6580fa",
+  "repairDriverSha256": "d8dbe104d4200409da0374f4c5e5ec17c5a07d58d5951ae1e2420f57be96baf8",
+  "installerTests": 5,
+  "bundledCliRegression": "Synthetic root0440 metadata stays alive;0644 rejects; no actual key read/network. Host ACL read remains unverified.",
+  "independentInstallerReview": "No remaining safety blocker. Root after-images and archived driver verified before replacement; mixed known states recover by rerun; rollback explicitly disk/future-retry; two-source ACKs and same supervisor gate apply success. Brief two-file crash window documented."
+}

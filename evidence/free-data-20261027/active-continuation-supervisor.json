@@ -1,0 +1,419 @@
+{
+  "recordedAt": "2026-10-27T03:14:29.471Z",
+  "supervisor": {
+    "wallMs": 2204.6315050000003,
+    "peakRssBytes": 143011840,
+    "stopReason": null,
+    "stdoutBytes": 0,
+    "stderrBytes": 0,
+    "exit": {
+      "code": 0,
+      "signal": null
+    }
+  },
+  "summary": {
+    "outcome": "PREFLIGHT_REFUSED_NO_STREAM",
+    "reason": "RESEARCH_RPC_HTTP_429",
+    "selection": {
+      "ok": false,
+      "reason": "RESEARCH_RPC_HTTP_429",
+      "evidence": {
+        "selectionMethod": "Activity-biased transport test: one latest256-signature PumpSwap-program page; up to24 successful recent transactions systematically spread over that page; at most6 distinct canonical SOL pools checked once each. A saturated20-row history is skipped as capacity-unknown, never treated as a measured swap rate. No universe or strategy-performance claim.",
+        "readsAttempted": 14,
+        "maximumReads": 48,
+        "programRows": 256,
+        "programTransactionsInspected": 10,
+        "historyRows": 20,
+        "historyWindowMs": 60000,
+        "historyWindowCovered": false,
+        "successfulAddressTransactions": 0,
+        "activitySpanMs": 0,
+        "addressTransactionsPerMinute": null,
+        "projected90sWithHeadroom": null,
+        "enrichmentCapacity": 48,
+        "decodedRecentTransactions": 0,
+        "decodedSwapEvents": 0,
+        "sides": [],
+        "routes": [],
+        "rejections": [
+          {
+            "signature": "39dmQ3SpdRTzUYNbkQZRn28PRF6cuFphdP7tSpZutbpkW47fmzfDy8zSEhQJbdwrno6gbU9RDnuUVNbJo6udvjDe",
+            "reason": "NO_INVOKED_CANONICAL_SOL_POOL"
+          },
+          {
+            "signature": "j9VbFYdz7wAuEQSdGEWw54LFfjpwcWTto6dDku1xiBjDavgJUuw7D8yXTsQbGWGVyQkoM4pZEaPT6mA8kCNqPgk",
+            "reason": "NO_INVOKED_CANONICAL_SOL_POOL"
+          },
+          {
+            "signature": "2Au1LsoNwXJVAVDoPpoKdjocF5iwtm5MpFi637cBZ68jYnHoNEge3w2WuEdGDg7yjomtxX74zfHS7yVWQajZdNx6",
+            "reason": "POOL_HISTORY_WINDOW_TRUNCATED_CAPACITY_UNKNOWN"
+          },
+          {
+            "signature": "2PZPniK4tFBCFCJMGZPH8WSgRHL2JhiZN7Bo8KSVE9DHkgNBsuYWqZ8UPzKQmsD7bKGKEcX6tQAZxqi3Neinv78a",
+            "reason": "NO_INVOKED_CANONICAL_SOL_POOL"
+          },
+          {
+            "signature": "2dRuW5e2dY4M8MJSYnURyjL6gf6Lpd5TRPiSuADNVtSASWFCbdxj63e9iu2BE6SLxu13UJGsjgqtXVhmQTZ3itnc",
+            "reason": "NO_INVOKED_CANONICAL_SOL_POOL"
+          },
+          {
+            "signature": "4gzCgyvfon28FNkWqKZwjHNDhY8qcy4X3iFLphjypANByJ32BYzVftkbLiE2dBBdiwwpJimH2hArCRcYp8Zhpqn3",
+            "reason": "NO_INVOKED_CANONICAL_SOL_POOL"
+          },
+          {
+            "signature": "5FebwqmEe5d4TuxieJKzdctYAiuo8Py2VZeNa39nASCHGh7WAfPGS41uZMgaUvnxvZydxfnScCCZLxUBrg1ui4jr",
+            "reason": "POOL_HISTORY_WINDOW_TRUNCATED_CAPACITY_UNKNOWN"
+          },
+          {
+            "signature": "2nCZ358HvWHzWyD8VWM5PdFxuXNNTBNnSWNSqZJLWhmX26mcJtYvrwPQuWpunRJi5hVGr72C6ysNiH3kP9ozmBZv",
+            "reason": "NO_INVOKED_CANONICAL_SOL_POOL"
+          },
+          {
+            "signature": "2kPrDT5ZBGUQ4VHHiV5dn5zKb5o4izirBotFeu8zgm65x38BitTG6mMwDvRqL1DavqdH5p6QwBNhShjjcbXHfhaw",
+            "reason": "NO_INVOKED_CANONICAL_SOL_POOL"
+          },
+          {
+            "signature": "SuzjajTyUATKNox2p8pbSMSmVcm4VG7Nv3DNWYCbEfFYHVwLLUWixKdrt1KRCb7UxgqALFo1oTyycQvPivvkTgf",
+            "reason": "NO_INVOKED_CANONICAL_SOL_POOL"
+          }
+        ],
+        "transactions": [
+          {
+            "signature": "39dmQ3SpdRTzUYNbkQZRn28PRF6cuFphdP7tSpZutbpkW47fmzfDy8zSEhQJbdwrno6gbU9RDnuUVNbJo6udvjDe",
+            "requestedAt": 1793070868438,
+            "availableAt": 1793070868559,
+            "slot": 461914206,
+            "version": 0,
+            "transactionSha256": "588eea3a3b9d8b6567b459320538eef7cee0999d5ff391133f4d900c0628f675"
+          },
+          {
+            "signature": "j9VbFYdz7wAuEQSdGEWw54LFfjpwcWTto6dDku1xiBjDavgJUuw7D8yXTsQbGWGVyQkoM4pZEaPT6mA8kCNqPgk",
+            "requestedAt": 1793070868560,
+            "availableAt": 1793070868620,
+            "slot": 461914206,
+            "version": "legacy",
+            "transactionSha256": "d4688541056deda0ac2507c8a8e0d5e21df489f4740ae9de61e0e41010cac476"
+          },
+          {
+            "signature": "2Au1LsoNwXJVAVDoPpoKdjocF5iwtm5MpFi637cBZ68jYnHoNEge3w2WuEdGDg7yjomtxX74zfHS7yVWQajZdNx6",
+            "requestedAt": 1793070868620,
+            "availableAt": 1793070868777,
+            "slot": 461914206,
+            "version": "legacy",
+            "transactionSha256": "712c02405a9ce5e4296a67eec917fe79ca956cb00384b626c2cf24dbde560bac"
+          },
+          {
+            "signature": "2PZPniK4tFBCFCJMGZPH8WSgRHL2JhiZN7Bo8KSVE9DHkgNBsuYWqZ8UPzKQmsD7bKGKEcX6tQAZxqi3Neinv78a",
+            "requestedAt": 1793070868860,
+            "availableAt": 1793070868907,
+            "slot": 461914206,
+            "version": 1,
+            "transactionSha256": "9888ccfc7bed9487adb5d7cb0d3e66cb904331d38b6731ed5c1e825c35c8b8df"
+          },
+          {
+            "signature": "2dRuW5e2dY4M8MJSYnURyjL6gf6Lpd5TRPiSuADNVtSASWFCbdxj63e9iu2BE6SLxu13UJGsjgqtXVhmQTZ3itnc",
+            "requestedAt": 1793070868907,
+            "availableAt": 1793070868986,
+            "slot": 461914206,
+            "version": 0,
+            "transactionSha256": "43fe34c8bb35a3e09d7aaf42bf50949adaed947552e7ac53cffe571349a662e5"
+          },
+          {
+            "signature": "4gzCgyvfon28FNkWqKZwjHNDhY8qcy4X3iFLphjypANByJ32BYzVftkbLiE2dBBdiwwpJimH2hArCRcYp8Zhpqn3",
+            "requestedAt": 1793070868987,
+            "availableAt": 1793070869075,
+            "slot": 461914206,
+            "version": 0,
+            "transactionSha256": "ace78dfa662d3ff12fa2dfdc0d21066b0867fe8c68f177bd2ea1e624824f2376"
+          },
+          {
+            "signature": "5FebwqmEe5d4TuxieJKzdctYAiuo8Py2VZeNa39nASCHGh7WAfPGS41uZMgaUvnxvZydxfnScCCZLxUBrg1ui4jr",
+            "requestedAt": 1793070869076,
+            "availableAt": 1793070869123,
+            "slot": 461914206,
+            "version": 0,
+            "transactionSha256": "ec0b27873bbb4500c760eed908e7942ad92b8dbccf18549b483a677f59ec8837"
+          },
+          {
+            "signature": "2nCZ358HvWHzWyD8VWM5PdFxuXNNTBNnSWNSqZJLWhmX26mcJtYvrwPQuWpunRJi5hVGr72C6ysNiH3kP9ozmBZv",
+            "requestedAt": 1793070869215,
+            "availableAt": 1793070869294,
+            "slot": 461914206,
+            "version": 1,
+            "transactionSha256": "56fa8a71f5307c33b3e7f361664b7cc77766a031b841c93742e95592a652e63a"
+          },
+          {
+            "signature": "2kPrDT5ZBGUQ4VHHiV5dn5zKb5o4izirBotFeu8zgm65x38BitTG6mMwDvRqL1DavqdH5p6QwBNhShjjcbXHfhaw",
+            "requestedAt": 1793070869294,
+            "availableAt": 1793070869346,
+            "slot": 461914206,
+            "version": 0,
+            "transactionSha256": "396d3da54db88962aceec64480f8a33547c30266cbf6d6757de6990951ff76f8"
+          },
+          {
+            "signature": "SuzjajTyUATKNox2p8pbSMSmVcm4VG7Nv3DNWYCbEfFYHVwLLUWixKdrt1KRCb7UxgqALFo1oTyycQvPivvkTgf",
+            "requestedAt": 1793070869347,
+            "availableAt": 1793070869404,
+            "slot": 461914206,
+            "version": "legacy",
+            "transactionSha256": "0a64afff444031da81c6b7dd769f231580f069bf86e0e4c6f78fe93cd89839c5"
+          }
+        ],
+        "history": [
+          {
+            "signature": "2AtGfuCj8RuxdfoG3b9NFEMQwFHDqJXMWWsdpZrmUPiXJkL8agx51weMyfzzvRraS7aW3ssbiTTYxb9XjSVVNuup",
+            "slot": 461914207,
+            "err": null,
+            "blockTime": 1793070868,
+            "confirmationStatus": "finalized"
+          },
+          {
+            "signature": "3AxqnNcMVRRYWjMkt6a6ToBMiAF9nDqZS8UeMUBvvpuiBVQcz3Xz7zfQ8mbLT2ncXS7fEQQmtkLiHeWLntkQhchz",
+            "slot": 461914207,
+            "err": null,
+            "blockTime": 1793070868,
+            "confirmationStatus": "finalized"
+          },
+          {
+            "signature": "5FebwqmEe5d4TuxieJKzdctYAiuo8Py2VZeNa39nASCHGh7WAfPGS41uZMgaUvnxvZydxfnScCCZLxUBrg1ui4jr",
+            "slot": 461914206,
+            "err": null,
+            "blockTime": 1793070867,
+            "confirmationStatus": "finalized"
+          },
+          {
+            "signature": "jYTcsAp7vZXrUCoeHHtze5G2inRXguQ46siTRNXMmLEjmWc7w1KQdNo8seKWwv2HaYswpfdJtKGD65LH4cvC7em",
+            "slot": 461914205,
+            "err": null,
+            "blockTime": 1793070867,
+            "confirmationStatus": "finalized"
+          },
+          {
+            "signature": "aeebXv34anELzZXyu92r4LL5BVnff661h33G11gFh2eL1GR7gg9GgSTPsQoxMhAroUkZ45Tsq626TBVPp4H6qSs",
+            "slot": 461914205,
+            "err": null,
+            "blockTime": 1793070867,
+            "confirmationStatus": "finalized"
+          },
+          {
+            "signature": "62W3dWnpGDQecXLAoAGBQMwV2Gqv2mzmhZiEP98NRUhU735qjBDtcpjsza4DGLDfsFNNM6f33zQWzYTUmXkQCtBQ",
+            "slot": 461914205,
+            "err": null,
+            "blockTime": 1793070867,
+            "confirmationStatus": "finalized"
+          },
+          {
+            "signature": "5M4k9kGt6FUDQedfx4pWBd8JzcX7ao8gPA8EUXh4zQDwiensm8qgAUTdmmNLBGmfdwRv1Jedsgv8Pk8ChqNoFEY4",
+            "slot": 461914204,
+            "err": null,
+            "blockTime": 1793070867,
+            "confirmationStatus": "finalized"
+          },
+          {
+            "signature": "4GjjYePbTawGXkttwFmJ5tqUWWtacsDKP6CqZEoP3doKuxQm1Jo3AWNdQpGQ98iYWqMDnx4e4ARJKFvNgbEvQ7YZ",
+            "slot": 461914203,
+            "err": null,
+            "blockTime": 1793070867,
+            "confirmationStatus": "finalized"
+          },
+          {
+            "signature": "3UCEGhmExnDwSNpHh1AegnPrGkeLpCJDgYTv8Z88L5YSutxYce8T5L6KrS6UgPQTqfgeQ1yCgWXeVaJvyMNuRj9v",
+            "slot": 461914203,
+            "err": null,
+            "blockTime": 1793070867,
+            "confirmationStatus": "finalized"
+          },
+          {
+            "signature": "5nvoFg5RfkWarSvUcwUgZ8XzdNPbp9o6nwb1nKCyh2zn1gwC8wPL4sfdJN1SWaDcTE9uwBuvUUrGpCJmUKrV7Rnk",
+            "slot": 461914202,
+            "err": null,
+            "blockTime": 1793070867,
+            "confirmationStatus": "finalized"
+          },
+          {
+            "signature": "4zY4BARB698ZpqxDoU8RgmxwJ6bu8hBh6V5wGP2YZ8mBHT35bVQ36gsvA1nZLndqEeuGqx6k4i7LqGoZz9sTBLih",
+            "slot": 461914202,
+            "err": null,
+            "blockTime": 1793070867,
+            "confirmationStatus": "finalized"
+          },
+          {
+            "signature": "46A37dAYzaXZkqg9iAH5BaM4QPKvCRksvZPewKSb5VR7G7XY4a9jcMaY28z47DxauQXFmuU5Gf9MNtKBCpMfS6H",
+            "slot": 461914201,
+            "err": null,
+            "blockTime": 1793070866,
+            "confirmationStatus": "finalized"
+          },
+          {
+            "signature": "5igfBGkPUcMTrXtBr93EwmFBxyRv2sUtW2j1Nc7z241r5DfQnBjN8DNmdPrMDSzyWCaEWECNPtsV3C571ujGw1BW",
+            "slot": 461914200,
+            "err": null,
+            "blockTime": 1793070866,
+            "confirmationStatus": "finalized"
+          },
+          {
+            "signature": "2kMNwnnawBnJkhHdzdw356vniN4jrQ6DCgDKdacApe3Z77syM8rsn9hPaoonxRLTj7chPrnsZG5RKroeGQTq3hom",
+            "slot": 461914200,
+            "err": null,
+            "blockTime": 1793070866,
+            "confirmationStatus": "finalized"
+          },
+          {
+            "signature": "mBT3CozQEK4yVjoz6pcA1kc3cZgPKV8uPKfSVR9tR7obUKx3u8WyPYtMpzaaoDbXGLFKCpKdd7bz1gnwhMK6rHb",
+            "slot": 461914200,
+            "err": null,
+            "blockTime": 1793070866,
+            "confirmationStatus": "finalized"
+          },
+          {
+            "signature": "5UzA9mnDGmRHLnJxsZuipthjmPphFoRDLNBHoczB3UKrhPEqX2zT5frvQQiCgiin7Mq5tkRWJFQFSEWJw3ese9ZZ",
+            "slot": 461914200,
+            "err": null,
+            "blockTime": 1793070866,
+            "confirmationStatus": "finalized"
+          },
+          {
+            "signature": "5jppiYi5AEPQU5W9NfRqroi5tn9DeTCcCp1LcVrRgePweXojSZNWDsH4AhKtKtmjRn4A45VEXcp2bPG79VhR7oAG",
+            "slot": 461914200,
+            "err": null,
+            "blockTime": 1793070866,
+            "confirmationStatus": "finalized"
+          },
+          {
+            "signature": "3tRcXLYrbzeLbBC6fqk8mro26JnocrB6tyPUWtYh4jpqxPZSntxukCLmQdTuwRYXX9MGDNa5VFn965Xi4DAKkVzr",
+            "slot": 461914200,
+            "err": null,
+            "blockTime": 1793070866,
+            "confirmationStatus": "finalized"
+          },
+          {
+            "signature": "61NwNH1Z7uK6xUNxr58mqumPMDEHfbrr68CteHmJEbyncHG176RJ8xUJwTrEqkvasFyn5yuXjUe9FgtrSt1SqBdn",
+            "slot": 461914200,
+            "err": null,
+            "blockTime": 1793070866,
+            "confirmationStatus": "finalized"
+          },
+          {
+            "signature": "zewn6RJ9ZbCxEeAJvpmipx82pSQKCeKcBtBHpmHsorn3oRWh9yVx2DwDNWnerk58oYJ8Sxn3XThNHcEzCkkvm8o",
+            "slot": 461914197,
+            "err": null,
+            "blockTime": 1793070866,
+            "confirmationStatus": "finalized"
+          }
+        ],
+        "selectedAt": null,
+        "maximumCandidates": 6,
+        "maximumProgramTransactions": 24,
+        "maximumElapsedMs": 70000,
+        "maximumResponseBytes": 8388608,
+        "responseBytes": 190905,
+        "responseByteAccounting": "transport",
+        "elapsedMs": 1342,
+        "candidateAttempts": [
+          {
+            "scope": {
+              "mint": "91RBVuoCLvikHs4qeUGczABotGLd1Tjo84DMfpFUpump",
+              "pool": "4dgUjYxeCnq7ZSqrNu14FWXmDiJrWmmw7wigL7VRHFsW"
+            },
+            "signature": "2Au1LsoNwXJVAVDoPpoKdjocF5iwtm5MpFi637cBZ68jYnHoNEge3w2WuEdGDg7yjomtxX74zfHS7yVWQajZdNx6",
+            "reason": "POOL_HISTORY_WINDOW_TRUNCATED_CAPACITY_UNKNOWN",
+            "readsAtStart": 4,
+            "readsAtEnd": 5,
+            "historyRows": 20,
+            "historyWindowCovered": false,
+            "successfulAddressTransactions": 0,
+            "projected90sWithHeadroom": null
+          },
+          {
+            "scope": {
+              "mint": "322nR3uijcJBNFKAzNBY4PqwrJ3qNg33vLnfhkvrpump",
+              "pool": "4qGqJXSAdT3da5KumRQZZF4JJ1zz2DUfoDbJZzakL2Wd"
+            },
+            "signature": "5FebwqmEe5d4TuxieJKzdctYAiuo8Py2VZeNa39nASCHGh7WAfPGS41uZMgaUvnxvZydxfnScCCZLxUBrg1ui4jr",
+            "reason": "POOL_HISTORY_WINDOW_TRUNCATED_CAPACITY_UNKNOWN",
+            "readsAtStart": 9,
+            "readsAtEnd": 10,
+            "historyRows": 20,
+            "historyWindowCovered": false,
+            "successfulAddressTransactions": 0,
+            "projected90sWithHeadroom": null
+          }
+        ]
+      }
+    },
+    "streamOpened": false,
+    "rpc": {
+      "budgetId": "active-approved-20261027",
+      "endpoint": "https://api.mainnet.solana.com",
+      "calls": 20,
+      "bytes": 272634,
+      "uncertainResponseBytes": 0,
+      "remainingCalls": 220,
+      "remainingResponseBytes": 66836230,
+      "byMethod": {
+        "getSignaturesForAddress": 5,
+        "getTransaction": 15
+      },
+      "inFlight": 0,
+      "rolling10SecondStarts": 14,
+      "rollingMinuteStarts": 14,
+      "nextStartAfterMs": 0,
+      "durationsMs": [
+        304.78645199999994,
+        79.82907999999998,
+        63.27412699999991,
+        108.85056099999997,
+        101.71139500000004,
+        91.33581299999992,
+        312.095456,
+        118.5212610000001,
+        58.35844700000007,
+        154.76789000000008,
+        72.92956400000003,
+        45.14329399999997,
+        76.17753599999992,
+        86.15227400000003,
+        45.328052999999954,
+        83.11506200000008,
+        74.53427499999998,
+        49.379267000000254,
+        55.069586999999956,
+        48.74537800000007
+      ],
+      "blockedReason": "RPC_HTTP_429",
+      "storageFailed": false,
+      "closed": false
+    },
+    "phases": {
+      "selection": {
+        "phase": "SELECTION",
+        "calls": 14,
+        "responseBytes": 190905,
+        "maxCalls": 48,
+        "maxBytes": 8388608,
+        "operations": {
+          "getSignaturesForAddress": 3,
+          "getTransaction": 11
+        }
+      }
+    },
+    "recordedAt": "2026-10-27T03:14:29.460Z",
+    "actualWallMs": 1373.6911109999996,
+    "resources": {
+      "peakRssBytes": 142712832,
+      "peakEventLoopLagMs": 1.4687750000000506,
+      "cpuMs": 233.012,
+      "kernelMaxRssBytes": 151887872
+    },
+    "retainedRecordBytes": 198024,
+    "record": "/workspace/pump-opportunity-engine/evidence/free-data-20261027/active-continuation-record.ndjson",
+    "apiDataFeesUsd": "0.00 under public/credential-free documentation",
+    "infrastructureTransferAllocationVerified": false,
+    "productionChanged": false,
+    "entriesEnabled": false,
+    "liveTrading": false,
+    "acceptanceClockStarted": false
+  },
+  "uncertainAttempt": false,
+  "noRetry": true
+}

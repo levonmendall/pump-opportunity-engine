@@ -1,0 +1,286 @@
+{
+  "schemaVersion": 1,
+  "classification": "OFFLINE_DISTINCT_LEGACY_EXACT_QUOTE_BUY_BUG_AUDIT_NOT_FORWARD_ACCEPTANCE",
+  "generatedAt": "2026-10-27T08:41:36.881Z",
+  "networkRequests": 0,
+  "newRequestUnits": 0,
+  "sourceFiles": [
+    {
+      "path": "evidence/overnight-20261027/14-retained-buy/baseline.json",
+      "sha256": "71f2f32fe8cadf578add8c13f290771d2232e7b8eee464cb2d6b05ea50a4690c"
+    },
+    {
+      "path": "evidence/overnight-20261027/14-retained-buy/grant.json",
+      "sha256": "db451fb2b87813591f88e864d43ef044db9b5085a9f14d88b3d08b21f537fb13"
+    },
+    {
+      "path": "evidence/overnight-20261027/14-retained-buy/observations.ndjson",
+      "sha256": "09b034ba8be0d710f380159367b1be5ea9d97cd442e897a911377592a8628bd0"
+    },
+    {
+      "path": "evidence/overnight-20261027/14-retained-buy/rpc-budget.json",
+      "sha256": "e59d25d6ae1fafac4bfcfcbaf69de7c2c4c4792ed8c9282fd6b538d1ab681067"
+    },
+    {
+      "path": "evidence/overnight-20261027/14-retained-buy/summary.json",
+      "sha256": "74bf02f53a4e4b4f6a968d32918232d02cfcfcd3a05ed92833d9580c0c3073d7"
+    },
+    {
+      "path": "evidence/overnight-20261027/14-retained-buy/supervisor.json",
+      "sha256": "c9f1cc85400b5f430c2a24539ab0ed117d1aec5ffbfe4fb18ffaf70803914121"
+    }
+  ],
+  "sdk": "@pump-fun/pump-swap-sdk@2.2.0",
+  "idlSha256": "c2f8ce0bc0a740d9125644b2d95494c97199fce1604802f5ab0497184bdcce61",
+  "mapperAfterSha256": "76aa0ae24e0e66fc7ae04c0ca076137a15d81454cf02a954cae014a1a0bf3e96",
+  "decision": "PROVEN_DISTINCT_BUY_EXACT_QUOTE_IN_FIELD_MAPPING_BUG_FIXED_OFFLINE",
+  "signature": "4yB8WCfrP9h5MueVJx57PhzY7HrMX4HTTuCRny83AsHMh8bCAd6EXpXXJQq56bCMRew2NFk8ZZMcZWAiAMyUYxZ8",
+  "successful": true,
+  "slot": 461979126,
+  "chainBlockTime": 1793084667,
+  "transactionVersion": "legacy",
+  "actualInstruction": {
+    "name": "buy_exact_quote_in",
+    "outerInstructionIndex": 6,
+    "exactPackagedLayout": true,
+    "spendableQuoteIn": "288696",
+    "minBaseAmountOut": "1967115",
+    "roles": {
+      "pool": "BeeakDhmtAbxhfXWiZ8ypPnhmHjEq2N4PsomrztpBDrR",
+      "user": "DLZkQRYYem7vgmjPihMVbv78FXPtXaMhmxxizyCXapp9",
+      "global_config": "ADyA8hdefvWN2dbGGWFotbzWxrAvLW83WG6QCVXvJKqw",
+      "base_mint": "7qVvrrJKdmNA5fheofgNDQNQ5D7Qd8komFpbdHwLpump",
+      "quote_mint": "So11111111111111111111111111111111111111112",
+      "user_base_token_account": "2LwbEeSFA57CPzdkTts89pAMu2JmzVxdLBs5tCHpPtS1",
+      "user_quote_token_account": "EcQPzQcsCo3MfA9C2QvHNQMHDLErmpFxyNf17qQN5Xsb",
+      "pool_base_token_account": "AWbhUr92wp2up93BFFZoFRjMGZA2VLxGp4KCdsDcBf9A",
+      "pool_quote_token_account": "81w13XzVd8FNzG9rr1wRSDNET1FkZ8dGHz3hDN7GWdhB",
+      "protocol_fee_recipient": "62qc2CNXwrYqQScmEdiZFFAnJR262PxWEuNQtxfafNgV",
+      "protocol_fee_recipient_token_account": "94qWNrtmfn42h3ZjUZwWvK1MEo9uVmmrBPd2hpNjYDjb",
+      "base_token_program": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "quote_token_program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "system_program": "11111111111111111111111111111111",
+      "associated_token_program": "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL",
+      "event_authority": "GS4CU59F31iL7aR2Q8zVS8DRrcRnXX1yjQ66TqNVQnaR",
+      "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+      "coin_creator_vault_ata": "DKMJxBiSqULgUeVpM6Xyhr1MoHAYw3jfC6AAUhcEE4gf",
+      "coin_creator_vault_authority": "2kRbLxocDUZa6AVnEtcKCswpQVxVxtu6XgmWekNiW4np",
+      "global_volume_accumulator": "C2aFPdENg4A2HQsmrd5rTw5TaYBX5Ku887cWjbFKtZpw",
+      "user_volume_accumulator": "FeNFS4gJ8SYVbUwKWmXcispJfZFGpghkiG5MGsako29r",
+      "fee_config": "5PHirr8joyTMp9JMm6nW7hNDVyEYdkzDqazxPD7RaTjx",
+      "fee_program": "pfeeUxB6jkeY1Hxd7CsFCAjcbHA9rWtchMGdZ6VojVZ"
+    }
+  },
+  "actualEvent": {
+    "name": "BuyEvent",
+    "innerInstructionIndex": 6,
+    "exactPackagedLayout": true,
+    "ixName": "buy_exact_quote_in",
+    "quote_amount_in": "288696",
+    "user_quote_amount_in": "287832",
+    "quote_amount_in_with_lp_fee": "288408",
+    "base_amount_out": "2070648"
+  },
+  "oldMapping": {
+    "curveQuoteLamports": "288696",
+    "userQuoteLamports": "287832",
+    "transferChecks": {
+      "baseTransfer": true,
+      "userQuoteTransfer": false
+    },
+    "failure": "Compared net curve input with the sum of all user quote-account debit transfers. The failure was not an absent trade, cashback rule, unsupported transfer instruction or missing canonical pool identity."
+  },
+  "correctedOfflineMapping": {
+    "side": "buy",
+    "tokenUnits": "2070648",
+    "curveQuoteLamports": "287832",
+    "userQuoteLamports": "288696",
+    "transferChecks": {
+      "baseTransfer": true,
+      "userQuoteTransfer": true
+    },
+    "identity": {
+      "signature": "4yB8WCfrP9h5MueVJx57PhzY7HrMX4HTTuCRny83AsHMh8bCAd6EXpXXJQq56bCMRew2NFk8ZZMcZWAiAMyUYxZ8",
+      "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+      "outerInstructionIndex": 6,
+      "swapInnerInstructionIndex": null,
+      "eventInnerInstructionIndex": 6,
+      "eventIndex": 0
+    },
+    "fees": {
+      "lp_fee": "576",
+      "protocol_fee": "144",
+      "coin_creator_fee": "144",
+      "cashback": "0",
+      "buyback_fee": "72",
+      "holder_rewards": "0",
+      "quote_transfer_fee": "0"
+    },
+    "feeSumLpProtocolCreatorLamports": "864",
+    "feeMath": "287832 net curve input +576 LP +144 protocol +144 creator =288696 user debit. Protocol144 splits into72 recipient plus72 buyback; buyback72 is not added to the fee sum again.",
+    "cashback": "0",
+    "holderRewards": "0",
+    "quoteTransferFee": "0",
+    "fingerprint": "5d4280cfa97b401ed232a83a73d35fb2fbcca53554eb541915d6dc814aa33db8"
+  },
+  "executedTransfers": [
+    {
+      "innerInstructionIndex": 1,
+      "stackHeight": 2,
+      "program": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+      "source": "AWbhUr92wp2up93BFFZoFRjMGZA2VLxGp4KCdsDcBf9A",
+      "mint": "7qVvrrJKdmNA5fheofgNDQNQ5D7Qd8komFpbdHwLpump",
+      "destination": "2LwbEeSFA57CPzdkTts89pAMu2JmzVxdLBs5tCHpPtS1",
+      "authority": "BeeakDhmtAbxhfXWiZ8ypPnhmHjEq2N4PsomrztpBDrR",
+      "amount": "2070648"
+    },
+    {
+      "innerInstructionIndex": 2,
+      "stackHeight": 2,
+      "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "source": "EcQPzQcsCo3MfA9C2QvHNQMHDLErmpFxyNf17qQN5Xsb",
+      "mint": "So11111111111111111111111111111111111111112",
+      "destination": "81w13XzVd8FNzG9rr1wRSDNET1FkZ8dGHz3hDN7GWdhB",
+      "authority": "DLZkQRYYem7vgmjPihMVbv78FXPtXaMhmxxizyCXapp9",
+      "amount": "288408"
+    },
+    {
+      "innerInstructionIndex": 3,
+      "stackHeight": 2,
+      "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "source": "EcQPzQcsCo3MfA9C2QvHNQMHDLErmpFxyNf17qQN5Xsb",
+      "mint": "So11111111111111111111111111111111111111112",
+      "destination": "94qWNrtmfn42h3ZjUZwWvK1MEo9uVmmrBPd2hpNjYDjb",
+      "authority": "DLZkQRYYem7vgmjPihMVbv78FXPtXaMhmxxizyCXapp9",
+      "amount": "72"
+    },
+    {
+      "innerInstructionIndex": 4,
+      "stackHeight": 2,
+      "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "source": "EcQPzQcsCo3MfA9C2QvHNQMHDLErmpFxyNf17qQN5Xsb",
+      "mint": "So11111111111111111111111111111111111111112",
+      "destination": "DKMJxBiSqULgUeVpM6Xyhr1MoHAYw3jfC6AAUhcEE4gf",
+      "authority": "DLZkQRYYem7vgmjPihMVbv78FXPtXaMhmxxizyCXapp9",
+      "amount": "144"
+    },
+    {
+      "innerInstructionIndex": 5,
+      "stackHeight": 2,
+      "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "source": "EcQPzQcsCo3MfA9C2QvHNQMHDLErmpFxyNf17qQN5Xsb",
+      "mint": "So11111111111111111111111111111111111111112",
+      "destination": "HjQjngTDqoHE6aaGhUqfz9aQ7WZcBRjy5xB8PScLSr8i",
+      "authority": "DLZkQRYYem7vgmjPihMVbv78FXPtXaMhmxxizyCXapp9",
+      "amount": "72"
+    }
+  ],
+  "quoteDebitTransfers": [
+    {
+      "innerInstructionIndex": 2,
+      "stackHeight": 2,
+      "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "source": "EcQPzQcsCo3MfA9C2QvHNQMHDLErmpFxyNf17qQN5Xsb",
+      "mint": "So11111111111111111111111111111111111111112",
+      "destination": "81w13XzVd8FNzG9rr1wRSDNET1FkZ8dGHz3hDN7GWdhB",
+      "authority": "DLZkQRYYem7vgmjPihMVbv78FXPtXaMhmxxizyCXapp9",
+      "amount": "288408"
+    },
+    {
+      "innerInstructionIndex": 3,
+      "stackHeight": 2,
+      "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "source": "EcQPzQcsCo3MfA9C2QvHNQMHDLErmpFxyNf17qQN5Xsb",
+      "mint": "So11111111111111111111111111111111111111112",
+      "destination": "94qWNrtmfn42h3ZjUZwWvK1MEo9uVmmrBPd2hpNjYDjb",
+      "authority": "DLZkQRYYem7vgmjPihMVbv78FXPtXaMhmxxizyCXapp9",
+      "amount": "72"
+    },
+    {
+      "innerInstructionIndex": 4,
+      "stackHeight": 2,
+      "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "source": "EcQPzQcsCo3MfA9C2QvHNQMHDLErmpFxyNf17qQN5Xsb",
+      "mint": "So11111111111111111111111111111111111111112",
+      "destination": "DKMJxBiSqULgUeVpM6Xyhr1MoHAYw3jfC6AAUhcEE4gf",
+      "authority": "DLZkQRYYem7vgmjPihMVbv78FXPtXaMhmxxizyCXapp9",
+      "amount": "144"
+    },
+    {
+      "innerInstructionIndex": 5,
+      "stackHeight": 2,
+      "program": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+      "source": "EcQPzQcsCo3MfA9C2QvHNQMHDLErmpFxyNf17qQN5Xsb",
+      "mint": "So11111111111111111111111111111111111111112",
+      "destination": "HjQjngTDqoHE6aaGhUqfz9aQ7WZcBRjy5xB8PScLSr8i",
+      "authority": "DLZkQRYYem7vgmjPihMVbv78FXPtXaMhmxxizyCXapp9",
+      "amount": "72"
+    }
+  ],
+  "totalUserQuoteDebitLamports": "288696",
+  "proofBreakdown": {
+    "baseTokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+    "baseUnitsDelivered": "2070648",
+    "baseSourceEqualsInstructionPoolVault": true,
+    "baseDestinationEqualsInstructionUserAccount": true,
+    "quoteTokenProgram": "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA",
+    "quoteVaultReceives": "288408",
+    "quoteVaultMeaning": "287832 curve input +576 LP",
+    "protocolRecipientReceives": "72",
+    "creatorRecipientReceives": "144",
+    "buybackRecipientReceives": "72",
+    "userRoleMatchesAllQuoteTransferAuthorities": true,
+    "eventAndInstructionUser": "DLZkQRYYem7vgmjPihMVbv78FXPtXaMhmxxizyCXapp9"
+  },
+  "providerHint": {
+    "originalReceivedAt": 1793084667340,
+    "parsedAction": "buy",
+    "parsedTokenAmount": 2.070648,
+    "parsedQuoteAmount": 0.000288696,
+    "parsedQuoteAmountMeaning": "Matches total user debit for this observed buy_exact_quote_in. Raw numeric values remain hints rather than authority.",
+    "txSigner": "DLZkQRYYem7vgmjPihMVbv78FXPtXaMhmxxizyCXapp9",
+    "breakdown": [
+      {
+        "action": "buy",
+        "trader": "DLZkQRYYem7vgmjPihMVbv78FXPtXaMhmxxizyCXapp9",
+        "tokenAmount": 2.070648,
+        "quoteAmount": 0.000288696
+      }
+    ]
+  },
+  "availability": {
+    "originalHintReceivedAt": 1793084667340,
+    "transactionRequestedAt": 1793090239496,
+    "transactionAvailableAt": 1793090239829,
+    "elapsedHintToConfirmedLookupAvailabilityMs": 5572489,
+    "sourceRequestCommitment": "finalized",
+    "mapperCommitment": "confirmed minimum; raw source was obtained by finalized RPC request",
+    "confirmationBackdated": false,
+    "normalizationComputedAt": "2026-10-27T08:41:36.882Z",
+    "meaning": "Transaction was retrieved long after the original hint. This is late finalized field validation only; it cannot warm the original candidate window or become a timely forward observation."
+  },
+  "scopeLimitations": {
+    "canonicalPoolIdentityCheckedByExistingMapper": true,
+    "currentPoolStateReadInLeg14": false,
+    "currentMintVaultFeeSupportReadInLeg14": false,
+    "entryEligibilityVerified": false,
+    "countsAsCurrentSupportedActivePool": false,
+    "normalizationEnabledForPrimaryStrategy": false,
+    "otherBuyVariantsStillUnproven": [
+      "buy",
+      "buy_v2"
+    ],
+    "noOtherVariantInference": true
+  },
+  "originalLeg14": {
+    "outcome": "RETAINED_BUY_FIELD_VALIDATION",
+    "reason": "COMPONENT_RETAINED_BUY_TRANSFERS_UNVERIFIED",
+    "selected": null,
+    "unchanged": true
+  },
+  "conclusion": "Independent actual legacy buy_exact_quote_in evidence justifies extending the exact-quote field-selection correction to this instruction name only. Full exact executed user-debit proof remains required. Original failure, late availability and lack of current pool support are preserved. No new capture, replay-based forward PASS, qualification or trading is claimed.",
+  "productionChanged": false,
+  "paperEntriesEnabled": false,
+  "liveTrading": false,
+  "acceptanceClockStarted": false
+}

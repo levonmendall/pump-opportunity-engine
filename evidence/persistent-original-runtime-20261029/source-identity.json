@@ -1,0 +1,32 @@
+{
+  "sourceCommit": "c57eee1b27716ae9a0dc5eb3427307e5f5523ee5",
+  "trackedWorkingTree": "",
+  "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+  "inceptionAt": "2026-10-26T22:07:36.212Z",
+  "newAccountCreated": false,
+  "originalLedgerRead": false,
+  "deploymentPerformed": false,
+  "networkMeasurements": 0,
+  "files": {
+    "src/backup.ts": "b22ea1bdd80373e2a69f44dbcbf2b7bcf8248ae9abdb5dd5e0bd02d8177c1116",
+    "src/native-paper-bundle.ts": "cdb15ecd6bc67b9de65b7c4dde61d0d5b27cf417dde4bc60a3633c321565624f",
+    "src/native-paper.ts": "1cd7d787e9d58923b8fcb30bb789f9562e5e1f928b14a007134e257951e4a4c6",
+    "src/pilot-reporting.ts": "6be4421b5332154ec4ea14fe5131212ea9d82cc0cc14365a3d5dbc83112bc00e",
+    "src/run-native-paper.ts": "ebc858e29e89b9451cfe936522994dbb120672eb5c4e96b7959c1cbf3165f7a0",
+    "src/trader.ts": "8eddd35fd1140ea3204b694b8534fd9423d34422b2cc9c35977e6f555ae7845a",
+    "src/paper-service-policy.ts": "7b6919225cb90c2b82c4e52752d75f02f712c851614ffd7bf7afb55a456913c4",
+    "src/poe-operating-account.ts": "d4744f8f762ecc3a88ba4abe6abe9958db068027aaafca7ca87ea4429068282d",
+    "src/public-status.ts": "e8105aac6bc7fcba0b4bef24f7ad09b7107986b9d788308863072ec63b59de5f",
+    "src/runtime.ts": "76f8fc17d0e74d26860d7766b0fedf158bf53d5334b3d349c21ec368d92b5b80",
+    "scripts/build-native-paper-ec2.mjs": "fab840422054ef7cd72be5e09f6adacbde01abab183297e1d85cba424b6277a6"
+  },
+  "verification": {
+    "coreF4Focused": 104,
+    "independentF4Focused": 69,
+    "publicFollowupFocused": 23,
+    "crosscomponentLatest": 15,
+    "countsOverlap": true,
+    "productionAcceptance": false
+  },
+  "disposableFixtureAccountsOnly": true
+}

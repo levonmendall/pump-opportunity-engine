@@ -1,0 +1,32 @@
+{
+  "provenance": "owner supplied terminal screenshot, read-only selected privatehealth/status command",
+  "health": {
+    "generatedAt": 1793246030743,
+    "lastSourceAt": 1793246030479,
+    "lastAcceptedSourceAt": 1793246015305,
+    "matchedSourceAcknowledgements": 111,
+    "outputErrors": 111,
+    "sourcePid": 2440527,
+    "publisherPid": 2442604
+  },
+  "readiness": {
+    "entriesEnabled": false,
+    "serviceSupervision": {
+      "newRiskAllowed": true,
+      "reason": "fresh current-run reporting and rolling resource headroom verified",
+      "supervisionAt": 1793246022689,
+      "ownedFinancialManagementContinues": true,
+      "candidateCaptureContinues": true
+    },
+    "proofPreparation": null,
+    "sourceRecovery": {
+      "generation": 9,
+      "retryAt": 1793245873429,
+      "reason": null,
+      "failures": 9,
+      "closingSettled": true,
+      "restartRequired": false
+    }
+  },
+  "transcriptionNote": "Screenshot wraps outputErrors across lines: 11 then 1, meaning111. Initial commentary misread11; correctedbeforeevidencecommit."
+}

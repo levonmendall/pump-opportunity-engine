@@ -1,0 +1,22 @@
+{
+  "kind": "persistent-independent-reference-offline-verification-v1",
+  "baseCommit": "14d3d89",
+  "files": {
+    "scripts/capture-independent-two-hour-reference.ts": "b27840c0895ff285f308ffadace4ebdd3ae0e245bbf23f18cf3ff357aa1fc668",
+    "test/independent-two-hour-reference.test.ts": "028b6b6d67b1541651f2f2b07c57359f847b3d68038a9e23c753147fe365e44d",
+    "test/persistent-independent-reference.test.ts": "7cccdcc79de62e2981cc001333f4c7151fabb5ca155b3c9c37f1b9c0b04759f9"
+  },
+  "focusedTests": {
+    "passed": 25,
+    "failed": 0,
+    "rawSha256": "b8640f2d93b703760b4f7d66b445d9e922f64c4f669dacb228a7a9912585c720"
+  },
+  "build": {
+    "passed": true,
+    "rawSha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+  },
+  "networkRequests": 0,
+  "runtimeOperations": 0,
+  "financialDatabaseOpened": false,
+  "liveCollectionStarted": false
+}

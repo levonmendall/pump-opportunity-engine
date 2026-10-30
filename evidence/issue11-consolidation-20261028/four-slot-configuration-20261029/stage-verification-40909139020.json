@@ -1,0 +1,168 @@
+{
+  "kind": "POE_ORIGINAL_FOUR_SLOT_CONFIGURATION_STAGED_NOT_APPLIED",
+  "at": 1793290307170,
+  "directory": "/var/tmp/poe-original-four-slots-239a00e",
+  "indexSha256": "b8b15a37c639f59892923bf4e0a8051c3a6f9f7974dad641544c7b0d323f9d43",
+  "source": {
+    "commit": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+    "sha256": "fa10982125bd77c1586606283a9fabed4daee5434792dcef90be2bd312cc5315"
+  },
+  "deepSlots": 4,
+  "configurationSha256": "f6ce54d7594e14d87955f211cca21f594b3d3eb52e20a75fa2245290f22a4857",
+  "files": [
+    {
+      "file": "index.json",
+      "bytes": 852,
+      "sha256": "b8b15a37c639f59892923bf4e0a8051c3a6f9f7974dad641544c7b0d323f9d43"
+    },
+    {
+      "file": "reconfigure-original-deep-slots.py",
+      "bytes": 16222,
+      "sha256": "4c5390a9792bf2ac895fb0a09fc1c80829545c330d01bf04849b402c4b751a45"
+    },
+    {
+      "file": "service.json",
+      "bytes": 1950,
+      "sha256": "a1dbed9db61e259f759701d6aae2bd102ec3dc7cb357ef121312d7ddb3e4354b"
+    },
+    {
+      "file": "forward-original-upgrade.py",
+      "bytes": 38063,
+      "sha256": "7e22683f8b170f0d16a6e2f7867e1e995a1661ff99544df3da8fa34c87f79691"
+    }
+  ],
+  "exactActualUnitParserVerified": true,
+  "actualUnit": {
+    "LoadState": "loaded",
+    "User": "poe-runtime",
+    "Group": "poe-runtime",
+    "ActiveState": "active",
+    "SubState": "running",
+    "MainPID": "2454440",
+    "ControlPID": "0",
+    "KillMode": "mixed",
+    "Restart": "always",
+    "NoNewPrivileges": "yes",
+    "PrivateTmp": "yes",
+    "ProtectSystem": "strict",
+    "ProtectHome": "yes",
+    "UMask": "0077",
+    "TimeoutStopUSec": "1min"
+  },
+  "configurationPreflight": {
+    "kind": "POE_ORIGINAL_FOUR_SLOT_STAGE_PREFLIGHT",
+    "source": {
+      "commit": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+      "sha256": "fa10982125bd77c1586606283a9fabed4daee5434792dcef90be2bd312cc5315"
+    },
+    "configurationSha256": "f6ce54d7594e14d87955f211cca21f594b3d3eb52e20a75fa2245290f22a4857",
+    "deepSlots": 4,
+    "manifestSha256": "a1dbed9db61e259f759701d6aae2bd102ec3dc7cb357ef121312d7ddb3e4354b",
+    "baseDriverSha256": "7e22683f8b170f0d16a6e2f7867e1e995a1661ff99544df3da8fa34c87f79691",
+    "actualUnit": {
+      "LoadState": "loaded",
+      "User": "poe-runtime",
+      "Group": "poe-runtime",
+      "ActiveState": "active",
+      "SubState": "running",
+      "MainPID": "2454440",
+      "ControlPID": "0",
+      "KillMode": "mixed",
+      "Restart": "always",
+      "NoNewPrivileges": "yes",
+      "PrivateTmp": "yes",
+      "ProtectSystem": "strict",
+      "ProtectHome": "yes",
+      "UMask": "0077",
+      "TimeoutStopUSec": "1min"
+    },
+    "protectedArtifactVerificationDeferredToRoot": true,
+    "financialDatabaseOpened": false,
+    "credentialReads": 0,
+    "serviceChanges": 0,
+    "providerRequests": 0
+  },
+  "runtimeIdentity": {
+    "uid": 988,
+    "gid": 982
+  },
+  "serviceBefore": {
+    "MainPID": "2454440",
+    "NRestarts": "0",
+    "User": "poe-runtime",
+    "LoadState": "loaded",
+    "ActiveState": "active",
+    "SubState": "running"
+  },
+  "serviceAfter": {
+    "MainPID": "2454440",
+    "NRestarts": "0",
+    "User": "poe-runtime",
+    "LoadState": "loaded",
+    "ActiveState": "active",
+    "SubState": "running"
+  },
+  "sameSupervisor": true,
+  "existingMaintenanceCapability": {
+    "components": [
+      {
+        "path": "/usr/local/sbin/meme-machine-ec2-maintenance",
+        "knownRepositorySha256": "7e1e3c9836d297f2ca60555391cf10546de88c95097df7216034817aaa27cad4",
+        "contentExported": false,
+        "executed": false,
+        "available": true,
+        "bytes": 519,
+        "sha256": "7e1e3c9836d297f2ca60555391cf10546de88c95097df7216034817aaa27cad4",
+        "matchesKnownRepositorySource": true,
+        "mentionsPoeBinding": false,
+        "verifiedScope": "fixed collect/deploy wrapper for isolated nonfunded capacity application"
+      },
+      {
+        "path": "/usr/local/lib/meme-machine-ec2-maintenance/ec2_capacity_reviewed_deploy.py",
+        "knownRepositorySha256": "527f494d97d4e69795a41c0f38c8bad96610360824772179945f3a6ec9ed6602",
+        "contentExported": false,
+        "executed": false,
+        "available": true,
+        "bytes": 34137,
+        "sha256": "527f494d97d4e69795a41c0f38c8bad96610360824772179945f3a6ec9ed6602",
+        "matchesKnownRepositorySource": true,
+        "mentionsPoeBinding": false,
+        "verifiedScope": "fixed The-Meme-Machine repository and /opt/meme-machine-capacity/application; not POE manifest or unit"
+      },
+      {
+        "path": "/usr/local/sbin/meme-machine-ec2-recovery",
+        "knownRepositorySha256": "277e75111d9dca16f76380c1c957d607a587b1d573434895660c108679309c9a",
+        "contentExported": false,
+        "executed": false,
+        "available": true,
+        "bytes": 406,
+        "sha256": "277e75111d9dca16f76380c1c957d607a587b1d573434895660c108679309c9a",
+        "matchesKnownRepositorySource": true,
+        "mentionsPoeBinding": false,
+        "verifiedScope": "fixed native-only recovery execute wrapper"
+      },
+      {
+        "path": "/usr/local/lib/meme-machine-ec2-recovery/ec2_native_recovery_gate.py",
+        "knownRepositorySha256": "adcea1e7ae4a5a02726d936570af9d107d788231cbec7147b8c5afd042532c58",
+        "contentExported": false,
+        "executed": false,
+        "available": true,
+        "bytes": 6823,
+        "sha256": "adcea1e7ae4a5a02726d936570af9d107d788231cbec7147b8c5afd042532c58",
+        "matchesKnownRepositorySource": true,
+        "mentionsPoeBinding": false,
+        "verifiedScope": "fixed native-capability/native-recover actions for original non-POE PAPER broker; no POE manifest or unit control"
+      }
+    ],
+    "allMatchKnownNonPoeRoutes": true,
+    "sudoCommandsInvoked": 0,
+    "policyFilesRead": false,
+    "credentialFilesRead": false,
+    "meaning": "Installed byte identity can establish the fixed non-POE scope. A listed sudo path alone grants no demonstrated POE manifest-change/restart capability. Unknown/unreadable bytes establish no new authority."
+  },
+  "financialDatabaseOpened": false,
+  "credentialsRead": false,
+  "serviceControlOperations": 0,
+  "providerRequests": 0,
+  "applied": false
+}

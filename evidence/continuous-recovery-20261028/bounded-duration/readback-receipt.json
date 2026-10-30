@@ -1,0 +1,19 @@
+{
+  "baseCommit": "be0b1a745a12f3eed126b7cd912699358c2ed19a",
+  "command": [
+    "python3",
+    "-B",
+    "operator/native-candidate-ec2/test-readback-public-evidence.py"
+  ],
+  "sourceHashes": {
+    "scripts/stage-native-candidate-ec2.mjs": "b63788087bc47771287a978833aedbcec43020ecf4f5e997f8f603d6dcdd0438",
+    "operator/native-candidate-ec2/run-bounded.py": "dde1e5ea8af45ecc91b3b6cb44574f9382852ca869a28a3a1a136bf8d4155a67"
+  },
+  "exitCode": 0,
+  "elapsedSeconds": 0.4449850620003417,
+  "endedAt": "2026-10-28T16:26:05.555026+00:00",
+  "logSha256": "577518f468d01215a80c3270df96df910be7e62b29559e6efe0ae2c3a9df028d",
+  "offline": true,
+  "networkRequests": 0,
+  "financialFilesRead": false
+}

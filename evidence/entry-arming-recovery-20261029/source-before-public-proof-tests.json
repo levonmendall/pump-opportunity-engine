@@ -1,0 +1,16 @@
+{
+  "base": "84bd3f09995fcbd347710cae5c1ddb8c5f517157",
+  "installedComparison": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+  "files": {
+    "src/ledger.ts": "071b83b6a937fd18b17f0a142e981f88948ee16507e9f5845f85c1c351c92b8b",
+    "src/native-candidate-runner.ts": "21b3621853bdce2573974e8bf084fe405e1cf9d70de9c92a12775bffce4f87ef",
+    "src/native-paper.ts": "a4b1d28ef77607f33f2ea10cf15e8e68f93067ee21a5838f9d85ab31bbce1669",
+    "src/run-native-paper.ts": "3bf1366a30ec6f73a641ab45938cd4a013ef18b729684453085b15e02ba866c5",
+    "src/trader.ts": "4660376629f38458fc7bd399fb27a60ff9261b38a1501727e26936ccc068aa37",
+    "test/internal-shutdown-provenance.test.ts": "7149007febdf67772bf7fbd5db3525843ab802163bc5592be9c71041b54b3833",
+    "test/native-paper-integration.test.ts": "1ab60d105b6d8b398c2f69646087325f852a01765d1a903be1278cd8d7918230",
+    "test/native-paper-launcher.test.ts": "2023d34428df484569ba1a8024274fb8707028884f93f120c6ab4bc060489c46",
+    "test/native-paper-readiness.test.ts": "bb8cf97eea8c49048a0d2abd184037129a0311cb768afaec3d9a46810cf61553"
+  },
+  "meaning": "Final isolated nine-file arming source frozen before complete offline suite; no deployment."
+}

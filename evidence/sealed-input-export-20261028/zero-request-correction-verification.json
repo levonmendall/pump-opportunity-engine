@@ -1,0 +1,37 @@
+{
+  "schemaVersion": 1,
+  "kind": "zero-request-local-refusal-source-identity-correction-verification",
+  "at": "2026-10-28T19:34:54.580179+00:00",
+  "focusedChecks": 17,
+  "build": "PASS",
+  "actualOriginalReceiptAndProvenanceUnchanged": true,
+  "networkCalls": 0,
+  "financialDatabaseRead": false,
+  "files": [
+    {
+      "file": "evidence/resumed-forward-20261028/prepare-public-input.mjs",
+      "bytes": 35026,
+      "sha256": "02d2344f239349c31243e9f23b9c51f3b2a20e5f3ebb5436a8f6b032cbc9d22a"
+    },
+    {
+      "file": "test/native-input-checkpoint-handoff.test.ts",
+      "bytes": 11568,
+      "sha256": "d5d83559027fdba9b1f43b39d706b88124a16ceefaf55bcb41b3854ef861eeb9"
+    },
+    {
+      "file": "evidence/sealed-input-export-20261028/zero-request-correction-focused.txt",
+      "bytes": 2215,
+      "sha256": "73b3966bae4532a8c58fde7e40c0d0f380bcd7e6bf60e0731af8d547034cc96a"
+    },
+    {
+      "file": "evidence/sealed-input-export-20261028/zero-request-correction-build.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "file": "evidence/sealed-input-export-20261028/actual-zero-request-correction-verification.json",
+      "bytes": 1442,
+      "sha256": "c13830f07bb05e7b410055cb2c53453684610905e88b8a9b8301c16a4385f24b"
+    }
+  ]
+}

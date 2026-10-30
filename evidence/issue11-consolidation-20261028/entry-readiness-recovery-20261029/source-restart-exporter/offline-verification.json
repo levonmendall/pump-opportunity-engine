@@ -1,0 +1,61 @@
+{
+  "generatedAt": "2026-10-29T19:15:17.114655+00:00",
+  "scope": "OFFLINE_DISPOSABLE_FIXTURE_VERIFICATION_ONLY",
+  "baseCommit": "84bd3f09995fcbd347710cae5c1ddb8c5f517157",
+  "artifactFiles": [
+    {
+      "path": "operator/native-paper-ec2/export-source-recovery-forensics-20261029.py",
+      "bytes": 30782,
+      "sha256": "4fab80d8ce4a1a39d33a37a3a3d9570ae841614abe1cfe4dd3a006db538c3986"
+    },
+    {
+      "path": "operator/native-paper-ec2/test-export-source-recovery-forensics-20261029.py",
+      "bytes": 8813,
+      "sha256": "1e44cdcf7e975f840536ea05b396455124d33f7e8112214a903747b77eff311b"
+    }
+  ],
+  "frozenPrivateSource": {
+    "commit": "f96f02eeccd56dda6ce811bdc4405f237224c54f",
+    "sha256": "b3ec5aa43b877a4c5ff44f6217be32a4539766c351deb143d557894ccb118ec9",
+    "configurationSha256": "acbe8e435d4f9f3a61cecc6f511469272890766abf63d8d5b891fc4a5e8085cf"
+  },
+  "commands": [
+    {
+      "argv": [
+        "python3",
+        "-B",
+        "-I",
+        "operator/native-paper-ec2/test-export-source-recovery-forensics-20261029.py",
+        "-v"
+      ],
+      "exitCode": 0,
+      "outputPath": "evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/source-restart-exporter/focused-tests.raw.txt",
+      "outputSha256": "6e3b4dd52b0c35fcd1efc195368fad38675901c72b64ba7a75b15a5d008740b3"
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--check",
+        "--",
+        "operator/native-paper-ec2"
+      ],
+      "exitCode": 0,
+      "outputPath": "evidence/issue11-consolidation-20261028/entry-readiness-recovery-20261029/source-restart-exporter/diff-check.raw.txt",
+      "outputSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "productionReads": 0,
+  "financialDatabaseOpened": false,
+  "financialWrites": 0,
+  "serviceControlOperations": 0,
+  "privilegedExecutionPerformed": false,
+  "independentReview": {
+    "reviewer": "entry_readiness_review",
+    "result": "APPROVED; NO BLOCKING FINDINGS",
+    "reviewPath": "evidence/source-recovery-forensics-20261029/independent-review/review.json",
+    "reviewSha256": "f4a3ddecbec4496b92a0aff1ca94e0451810ee59f305823e04baf69aa44056d0",
+    "testsPassed": 14,
+    "productionExecution": false
+  }
+}

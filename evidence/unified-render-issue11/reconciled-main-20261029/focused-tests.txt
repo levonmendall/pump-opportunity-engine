@@ -1,0 +1,40 @@
+✔ holographic presentation is deterministic and idempotent (4.417224ms)
+✔ all original data targets and original scripts survive unchanged (1.524422ms)
+✔ hero has one ornamental orbital illustration and no false performance data (0.801298ms)
+✔ one authoritative portfolio and existing diagnostic sections remain visible (1.245468ms)
+✔ visual layer adds no new client script, external dependency or request (1.855784ms)
+✔ responsive, reduced-motion, keyboard focus and overflow protections exist (1.083007ms)
+✔ actual public HTTP viewer contains the new UI and keeps machine publishing protected (66.535166ms)
+✔ cache starts empty, accepts whole snapshots atomically, retains gaps and clones read model (14.352586ms)
+✔ identical retries ignore JSON key order without refreshing receiver/source time; regression/conflict rejected (5.343018ms)
+✔ wrong account/source, unexpected fields, nonfinite values and inconsistent chronology are rejected (0.960515ms)
+✔ fresh publishing heartbeat cannot disguise stale market/accounting, stopped runtime, or unreconciled data (1.479846ms)
+✔ dashboard separates public liveness, owner viewer and machine-only ingestion (99.618194ms)
+✔ explicit public dashboard needs no viewer credentials but never permits unauthenticated ingestion (45.670712ms)
+✔ public viewer never weakens ingestion secret or permits partial source identity (0.818524ms)
+✔ command center UI is accessible and purely cosmetic, not a trading control (26.624386ms)
+✔ HTTP rejects wrong account, conflict, regressions, malformed and oversized payloads (26.533812ms)
+✔ bounded exports contain no configuration secrets; HTML uses safe DOM and mobile layout (13.625627ms)
+✔ publisher does not send on construction; outages retain only latest snapshot and recover independently (27.190415ms)
+✔ publisher timeout is bounded, retains latest, sanitizes errors and never follows redirects (11.611601ms)
+✔ unconfigured source is a deployable authenticated waiting page and never adopts a sender identity (29.913275ms)
+✔ partial source identity fails configuration and credentials remain mandatory before source setup (0.369218ms)
+✔ single portfolio viewer retires the experimental channel and retains original authenticated snapshots (17.281492ms)
+✔ source funnel distinguishes observer placeholders, predictive assessments, actual financial decisions and unavailable unique counts (17.628227ms)
+✔ compact one-account command view keeps metrics accessible without a duplicate portfolio (4.916105ms)
+✔ first snapshot paint immediately preserves stopped and stale source truth (5.746566ms)
+✔ CLI is bound to original account, exact source, existing snapshot namespace and original credential names (4.483053ms)
+✔ private verified snapshot reader refuses symlinks, permissive files, wrong identity and source payload extras (1.753242ms)
+✔ accepted file acknowledgement binds exact original raw bytes through concurrent snapshot replacement (122.281814ms)
+✔ actual one-shot CLI publishes a stopped original snapshot once and exits without a retry on failure (612.524049ms)
+✔ persistent file watcher republishes unchanged source after receiver restart and duplicates never refresh source chronology (74.256934ms)
+✔ network and malformed acknowledgements recover with bounded retry; an HTTP200 alone is not an accepted source witness (71.456057ms)
+✔ oversized acknowledgement body is cancelled and does not become a successful report (11.558881ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2789.682701

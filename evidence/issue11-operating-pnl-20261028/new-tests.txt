@@ -1,0 +1,15 @@
+✔ new operating series preserves exact legacy history, financial state, journal, actions and inception through restart (33.9947ms)
+✔ real source observation time admits unknown gap markers but never backdates a known value (5.333287ms)
+✔ operating metadata corruption is rejected without replacing it with legacy USD values (7.860548ms)
+✔ bounded operating history preserves inception and an explicit unknown pre-retention interval (997.158136ms)
+✔ current USD translation never labels passive SOL appreciation as token trading profit (12.871515ms)
+✔ net token result includes modeled execution costs once, with no historical-gas USD repricing (11.123822ms)
+✔ stale rates and unavailable liquidation preserve explicit unknown trading valuation (8.318328ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1457.139235

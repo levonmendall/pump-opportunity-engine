@@ -1,0 +1,690 @@
+{
+  "classification": "ACTUAL_FORWARD_TRACE_RECONSTRUCTION",
+  "source": "7020fc6f9f64e84eb929e797ad92e525ad507aca",
+  "networkRequests": 0,
+  "rows": [
+    {
+      "at": 1793132607726,
+      "kind": "trader-input",
+      "data": {
+        "kind": "flow-start",
+        "at": 1793132607726,
+        "mint": "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump",
+        "evidence": "actual PumpApi socket open 1793132607725"
+      }
+    },
+    {
+      "at": 1793132607730,
+      "kind": "component-physical-settled",
+      "data": {
+        "id": 853,
+        "at": 1793132607730,
+        "responseComplete": true,
+        "kind": {
+          "transport": "ws-upgrade",
+          "method": "upgrade"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "at": 1793132607747,
+      "kind": "pilot-preparation-choice",
+      "data": {
+        "at": 1793132607745,
+        "kind": "fresh-discovery",
+        "signature": "iEcoiH3MNTd6hPcN2z5x3pLNLNnxuSKKpGe1QCt4o14yqhXyxyKAGLnAFGeuXWvRxYgmBRPqbgwgsjgsic267dK",
+        "policy": "recent-cache-fair-discovery-v2",
+        "freshQueueLength": 3
+      }
+    },
+    {
+      "at": 1793132607748,
+      "kind": "component-job-enqueued",
+      "data": {
+        "at": 1793132607748,
+        "kind": {
+          "transport": "http",
+          "method": "getTransaction"
+        },
+        "latestStartAt": 1793134188238
+      }
+    },
+    {
+      "at": 1793132607753,
+      "kind": "component-physical-start",
+      "data": {
+        "id": 854,
+        "at": 1793132607750,
+        "enqueuedAt": 1793132607748,
+        "reservedAt": 1793132607748,
+        "kind": {
+          "transport": "http",
+          "method": "getTransaction"
+        }
+      }
+    },
+    {
+      "at": 1793132607873,
+      "kind": "component-physical-settled",
+      "data": {
+        "id": 854,
+        "at": 1793132607873,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getTransaction"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "at": 1793132607881,
+      "kind": "component-job-enqueued",
+      "data": {
+        "at": 1793132607881,
+        "kind": {
+          "transport": "http",
+          "method": "getTransaction"
+        },
+        "latestStartAt": 1793134188238
+      }
+    },
+    {
+      "at": 1793132607881,
+      "kind": "component-pacing-wait",
+      "data": {
+        "at": 1793132607881,
+        "waitMs": 120,
+        "kind": {
+          "transport": "http",
+          "method": "getTransaction"
+        }
+      }
+    },
+    {
+      "at": 1793132608006,
+      "kind": "component-physical-start",
+      "data": {
+        "id": 855,
+        "at": 1793132608004,
+        "enqueuedAt": 1793132607881,
+        "reservedAt": 1793132608001,
+        "kind": {
+          "transport": "http",
+          "method": "getTransaction"
+        }
+      }
+    },
+    {
+      "at": 1793132608078,
+      "kind": "pilot-selected-pumpapi-payload",
+      "data": {
+        "receivedAt": 1793132608078,
+        "sha256": "64b979695e076a44cb1c8afef13e36f92a858c265f1e68a6adba45c7258067da",
+        "selectedMints": [
+          "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump"
+        ]
+      }
+    },
+    {
+      "at": 1793132608114,
+      "kind": "component-physical-settled",
+      "data": {
+        "id": 855,
+        "at": 1793132608114,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getTransaction"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "at": 1793132608124,
+      "kind": "pilot-preparation-choice",
+      "data": {
+        "at": 1793132608123,
+        "kind": "verified-cache",
+        "signature": "22N9JnMv6JdCdmhsj592oFtVpmhiHsArxR2zALbn7siiCALMGQvxkvLXh9Ymyp3bo3a4PzLKh1qhYvjUEbeqrBbi",
+        "policy": "recent-cache-fair-discovery-v2",
+        "freshQueueLength": 3
+      }
+    },
+    {
+      "at": 1793132608130,
+      "kind": "component-job-enqueued",
+      "data": {
+        "at": 1793132608130,
+        "kind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        },
+        "latestStartAt": 1793134188238
+      }
+    },
+    {
+      "at": 1793132608130,
+      "kind": "component-pacing-wait",
+      "data": {
+        "at": 1793132608130,
+        "waitMs": 124,
+        "kind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        }
+      }
+    },
+    {
+      "at": 1793132608217,
+      "kind": "pilot-selected-pumpapi-payload",
+      "data": {
+        "receivedAt": 1793132608217,
+        "sha256": "798f54f2554396f1530368cb0212d971631686d71917b3256f2b421ed76fb542",
+        "selectedMints": [
+          "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump"
+        ]
+      }
+    },
+    {
+      "at": 1793132608217,
+      "kind": "pilot-selected-pumpapi-payload",
+      "data": {
+        "receivedAt": 1793132608217,
+        "sha256": "390e5855f16068aed689812c646a86f3b0c83909db76717321f8369fb165e736",
+        "selectedMints": [
+          "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump"
+        ]
+      }
+    },
+    {
+      "at": 1793132608263,
+      "kind": "component-physical-start",
+      "data": {
+        "id": 856,
+        "at": 1793132608261,
+        "enqueuedAt": 1793132608130,
+        "reservedAt": 1793132608255,
+        "kind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        }
+      }
+    },
+    {
+      "at": 1793132608307,
+      "kind": "component-physical-settled",
+      "data": {
+        "id": 856,
+        "at": 1793132608307,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "at": 1793132608311,
+      "kind": "component-job-enqueued",
+      "data": {
+        "at": 1793132608311,
+        "kind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        },
+        "latestStartAt": 1793134188238
+      }
+    },
+    {
+      "at": 1793132608311,
+      "kind": "component-pacing-wait",
+      "data": {
+        "at": 1793132608311,
+        "waitMs": 200,
+        "kind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        }
+      }
+    },
+    {
+      "at": 1793132608497,
+      "kind": "pilot-selected-pumpapi-payload",
+      "data": {
+        "receivedAt": 1793132608497,
+        "sha256": "1782c0be7e1175907cccf50fcf8457d83b1e55ee5032f36a859b4efe52b5444d",
+        "selectedMints": [
+          "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump"
+        ]
+      }
+    },
+    {
+      "at": 1793132608497,
+      "kind": "pilot-selected-pumpapi-payload",
+      "data": {
+        "receivedAt": 1793132608497,
+        "sha256": "67ff73875190fe47d7821b7c15aa167b00baf508efbbe114a71ac4de035288ac",
+        "selectedMints": [
+          "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump"
+        ]
+      }
+    },
+    {
+      "at": 1793132608498,
+      "kind": "pilot-selected-pumpapi-payload",
+      "data": {
+        "receivedAt": 1793132608498,
+        "sha256": "80eb4c08476227b14fa4710ae568f34ab123ce19848d1f0e626ec065672b86d1",
+        "selectedMints": [
+          "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump"
+        ]
+      }
+    },
+    {
+      "at": 1793132608522,
+      "kind": "component-physical-start",
+      "data": {
+        "id": 857,
+        "at": 1793132608520,
+        "enqueuedAt": 1793132608311,
+        "reservedAt": 1793132608512,
+        "kind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        }
+      }
+    },
+    {
+      "at": 1793132608534,
+      "kind": "pilot-selected-pumpapi-payload",
+      "data": {
+        "receivedAt": 1793132608534,
+        "sha256": "4120eb21b8fcd874c604c7186b4336629e22b4b995985165ba4518ba8ce69d11",
+        "selectedMints": [
+          "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump"
+        ]
+      }
+    },
+    {
+      "at": 1793132608572,
+      "kind": "component-physical-settled",
+      "data": {
+        "id": 857,
+        "at": 1793132608572,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getMultipleAccounts"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "at": 1793132608576,
+      "kind": "component-job-enqueued",
+      "data": {
+        "at": 1793132608576,
+        "kind": {
+          "transport": "http",
+          "method": "getBlockTime"
+        },
+        "latestStartAt": 1793134188238
+      }
+    },
+    {
+      "at": 1793132608577,
+      "kind": "component-pacing-wait",
+      "data": {
+        "at": 1793132608577,
+        "waitMs": 194,
+        "kind": {
+          "transport": "http",
+          "method": "getBlockTime"
+        }
+      }
+    },
+    {
+      "at": 1793132608620,
+      "kind": "pilot-selected-pumpapi-payload",
+      "data": {
+        "receivedAt": 1793132608620,
+        "sha256": "47b5802fcf930b704f70b32f64ac5fa357196168f37a29d30390181dcdfc27be",
+        "selectedMints": [
+          "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump"
+        ]
+      }
+    },
+    {
+      "at": 1793132608774,
+      "kind": "component-physical-start",
+      "data": {
+        "id": 858,
+        "at": 1793132608773,
+        "enqueuedAt": 1793132608576,
+        "reservedAt": 1793132608771,
+        "kind": {
+          "transport": "http",
+          "method": "getBlockTime"
+        }
+      }
+    },
+    {
+      "at": 1793132608776,
+      "kind": "pilot-selected-pumpapi-payload",
+      "data": {
+        "receivedAt": 1793132608776,
+        "sha256": "0c0b782b7d11dd41bac5db7d389d7e3cf9c06ead4658500365e5d588e51ea861",
+        "selectedMints": [
+          "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump"
+        ]
+      }
+    },
+    {
+      "at": 1793132608829,
+      "kind": "component-physical-settled",
+      "data": {
+        "id": 858,
+        "at": 1793132608829,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getBlockTime"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "at": 1793132608834,
+      "kind": "component-job-enqueued",
+      "data": {
+        "at": 1793132608834,
+        "kind": {
+          "transport": "http",
+          "method": "getMinimumBalanceForRentExemption"
+        },
+        "latestStartAt": 1793134188238
+      }
+    },
+    {
+      "at": 1793132608834,
+      "kind": "component-pacing-wait",
+      "data": {
+        "at": 1793132608834,
+        "waitMs": 189,
+        "kind": {
+          "transport": "http",
+          "method": "getMinimumBalanceForRentExemption"
+        }
+      }
+    },
+    {
+      "at": 1793132608867,
+      "kind": "pilot-selected-pumpapi-payload",
+      "data": {
+        "receivedAt": 1793132608867,
+        "sha256": "587a25286411e19351b400949609f06d69044ba66abfa97544ea75d7cb2afdca",
+        "selectedMints": [
+          "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump"
+        ]
+      }
+    },
+    {
+      "at": 1793132608914,
+      "kind": "pilot-selected-pumpapi-payload",
+      "data": {
+        "receivedAt": 1793132608914,
+        "sha256": "d1a0db5c7bc43503caae174c76c68f334ef248a3ea733266a1e37e420a7b4356",
+        "selectedMints": [
+          "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump"
+        ]
+      }
+    },
+    {
+      "at": 1793132608953,
+      "kind": "pilot-selected-pumpapi-payload",
+      "data": {
+        "receivedAt": 1793132608953,
+        "sha256": "065d2071404d6e61a3730bb7267ced74a0dd627bd452ea8a7d003833fc6ef596",
+        "selectedMints": [
+          "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump"
+        ]
+      }
+    },
+    {
+      "at": 1793132608961,
+      "kind": "pilot-selected-pumpapi-payload",
+      "data": {
+        "receivedAt": 1793132608961,
+        "sha256": "089ce3df408ad1170b3f6865a0fbee93c192859ec87cbf01029b1bd55c2014b7",
+        "selectedMints": [
+          "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump"
+        ]
+      }
+    },
+    {
+      "at": 1793132609027,
+      "kind": "component-physical-start",
+      "data": {
+        "id": 859,
+        "at": 1793132609025,
+        "enqueuedAt": 1793132608834,
+        "reservedAt": 1793132609023,
+        "kind": {
+          "transport": "http",
+          "method": "getMinimumBalanceForRentExemption"
+        }
+      }
+    },
+    {
+      "at": 1793132609074,
+      "kind": "component-physical-settled",
+      "data": {
+        "id": 859,
+        "at": 1793132609074,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getMinimumBalanceForRentExemption"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "at": 1793132609076,
+      "kind": "component-job-enqueued",
+      "data": {
+        "at": 1793132609076,
+        "kind": {
+          "transport": "http",
+          "method": "getMinimumBalanceForRentExemption"
+        },
+        "latestStartAt": 1793134188238
+      }
+    },
+    {
+      "at": 1793132609076,
+      "kind": "component-pacing-wait",
+      "data": {
+        "at": 1793132609076,
+        "waitMs": 200,
+        "kind": {
+          "transport": "http",
+          "method": "getMinimumBalanceForRentExemption"
+        }
+      }
+    },
+    {
+      "at": 1793132609129,
+      "kind": "pilot-selected-pumpapi-payload",
+      "data": {
+        "receivedAt": 1793132609129,
+        "sha256": "5538bf50a81b9d63b3ffb71ec8769c36e9dea47dbb35e6ba038d9f829c3744ac",
+        "selectedMints": [
+          "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump"
+        ]
+      }
+    },
+    {
+      "at": 1793132609281,
+      "kind": "component-physical-start",
+      "data": {
+        "id": 860,
+        "at": 1793132609279,
+        "enqueuedAt": 1793132609076,
+        "reservedAt": 1793132609277,
+        "kind": {
+          "transport": "http",
+          "method": "getMinimumBalanceForRentExemption"
+        }
+      }
+    },
+    {
+      "at": 1793132609333,
+      "kind": "component-physical-settled",
+      "data": {
+        "id": 860,
+        "at": 1793132609333,
+        "responseComplete": true,
+        "kind": {
+          "transport": "http",
+          "method": "getMinimumBalanceForRentExemption"
+        },
+        "uncertainReservedBytes": 0
+      }
+    },
+    {
+      "at": 1793132609501,
+      "kind": "pilot-selected-pumpapi-payload",
+      "data": {
+        "receivedAt": 1793132609501,
+        "sha256": "05f4c385dd44b1cd990aec3ccca845a09c80ae1b7b0fc0a501c5ab044ea38018",
+        "selectedMints": [
+          "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump"
+        ]
+      }
+    },
+    {
+      "at": 1793132609784,
+      "kind": "pilot-selected-pumpapi-payload",
+      "data": {
+        "receivedAt": 1793132609784,
+        "sha256": "d13b2f20aa0432452217f42df8af3eda408019335bd1415eee9a02813a49f1a5",
+        "selectedMints": [
+          "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump"
+        ]
+      }
+    },
+    {
+      "at": 1793132609855,
+      "kind": "pilot-selected-pumpapi-payload",
+      "data": {
+        "receivedAt": 1793132609854,
+        "sha256": "b795e52f1eacfaee591b3461aada1e123de46739a56f06d700445cc02a338bc7",
+        "selectedMints": [
+          "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump"
+        ]
+      }
+    },
+    {
+      "at": 1793132609855,
+      "kind": "pilot-observation-gap",
+      "data": {
+        "mint": "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump",
+        "reason": "PILOT_AGGREGATE_ENRICHMENT_CAPACITY",
+        "at": 1793132609855
+      }
+    },
+    {
+      "at": 1793132609855,
+      "kind": "trader-input",
+      "data": {
+        "kind": "candidate-gap",
+        "at": 1793132609855,
+        "mint": "2BJDwUdMbnJhRRfhacFDjrDNhxUWdzE9H6LEND89pump",
+        "reason": "PILOT_AGGREGATE_ENRICHMENT_CAPACITY",
+        "financialUncertaintyPreserved": false
+      }
+    },
+    {
+      "at": 1793132618004,
+      "kind": "pilot-observation-headroom",
+      "data": {
+        "mint": "9QLj1Xobr8rccPVokr68pLWafkuZkErcJsrRTEhNpump",
+        "waitedMs": 8668,
+        "maximumStartsPer10s": 20,
+        "remainingShortStartsReserved": 15,
+        "remainingMinuteStartsReserved": 20,
+        "supportValidatedAt": 1793132609334,
+        "actualEntryQuoteRequiredLater": true
+      }
+    },
+    {
+      "at": 1793132618005,
+      "kind": "trader-input",
+      "data": {
+        "kind": "candidate",
+        "at": 1793132618005,
+        "candidate": {
+          "mint": "9QLj1Xobr8rccPVokr68pLWafkuZkErcJsrRTEhNpump",
+          "migrationAt": 1793126286000,
+          "migrationVerified": true,
+          "supportedPool": true,
+          "evidence": "pilot-finalized-migration:e916d10ca43b54e3db76e6d1c642f37c25cba53c45167bbd8b5a3703081b5699"
+        }
+      }
+    },
+    {
+      "at": 1793132618008,
+      "kind": "component-job-enqueued",
+      "data": {
+        "at": 1793132618008,
+        "kind": {
+          "transport": "ws-upgrade",
+          "method": "upgrade"
+        },
+        "latestStartAt": 1793132619207
+      }
+    },
+    {
+      "at": 1793132618012,
+      "kind": "component-physical-start",
+      "data": {
+        "id": 861,
+        "at": 1793132618011,
+        "enqueuedAt": 1793132618008,
+        "reservedAt": 1793132618008,
+        "kind": {
+          "transport": "ws-upgrade",
+          "method": "upgrade"
+        }
+      }
+    },
+    {
+      "at": 1793132618642,
+      "kind": "trader-input",
+      "data": {
+        "kind": "flow-start",
+        "at": 1793132618642,
+        "mint": "9QLj1Xobr8rccPVokr68pLWafkuZkErcJsrRTEhNpump",
+        "evidence": "actual PumpApi socket open 1793132618641"
+      }
+    },
+    {
+      "at": 1793132618647,
+      "kind": "component-physical-settled",
+      "data": {
+        "id": 861,
+        "at": 1793132618647,
+        "responseComplete": true,
+        "kind": {
+          "transport": "ws-upgrade",
+          "method": "upgrade"
+        },
+        "uncertainReservedBytes": 0
+      }
+    }
+  ]
+}

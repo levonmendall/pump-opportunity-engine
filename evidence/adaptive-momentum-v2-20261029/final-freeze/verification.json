@@ -1,0 +1,34 @@
+{
+  "sourceCommit": "8410390e31e1248f584406f27030b3e0e2cf4484",
+  "headUnchanged": true,
+  "sourceBytesUnchanged": true,
+  "results": {
+    "npm-test": {
+      "command": [
+        "npm",
+        "test"
+      ],
+      "startedAt": "2026-10-29T21:36:46.410680+00:00",
+      "finishedAt": "2026-10-29T21:38:26.544919+00:00",
+      "exitCode": 0,
+      "sha256": "182b710b42857dedd07ec474a11df0ff3dca7c84a6df252b51890d5365bd40a2"
+    },
+    "build": {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "startedAt": "2026-10-29T21:38:26.545425+00:00",
+      "finishedAt": "2026-10-29T21:38:34.979659+00:00",
+      "exitCode": 0,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    }
+  },
+  "strategy": "adaptive-momentum-v2-paper-v1",
+  "economicPromotionGate": false,
+  "financialAccountRead": false,
+  "providerRequests": 0,
+  "installed": false,
+  "liveOperationalAcceptance": false
+}

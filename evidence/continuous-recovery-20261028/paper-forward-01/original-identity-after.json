@@ -1,0 +1,26 @@
+{
+  "at": 1793221135528,
+  "status": 200,
+  "bytes": 24751,
+  "sha256": "0af6f0377d2d095761ae55a5aba7fb9d85c9b3d1839f0d98f7697f6a8184e3e1",
+  "account": {
+    "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "initialUsd": 1000
+  },
+  "source": {
+    "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+    "strategy": "UNIMPLEMENTED_FLOW_BLOCKED"
+  },
+  "accountIdentityUnchanged": true,
+  "releaseUnchanged": true,
+  "cashSolUnchanged": true,
+  "reservedSolUnchanged": true,
+  "sourceTimes": {
+    "generatedAt": "2026-10-28T20:58:39.159Z",
+    "marketAt": "2026-10-28T20:58:39.159Z",
+    "reconciledAt": "2026-10-28T20:58:39.159Z",
+    "usefulProgressAt": "2026-10-28T20:58:39.159Z"
+  },
+  "experimentalBalancesMerged": false
+}

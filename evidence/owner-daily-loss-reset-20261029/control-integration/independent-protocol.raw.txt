@@ -1,0 +1,15 @@
+✔ existing runtime control client reaches one owner and safe-stop does not abandon exposure (12.263204ms)
+✔ malformed, expanded, oversized or unsupported requests never dispatch financial callbacks (3.54647ms)
+✔ private canonical parent and existing live/foreign paths remain protected (2.276841ms)
+✔ stale owned socket recovery preserves the pathname safety check and supports a restart (23.753611ms)
+✔ owner callback failures disclose neither secrets nor a successful operation (2.48585ms)
+✔ native socket close retains a file that replaced its pathname (1.14843ms)
+✔ private reset command accepts only dated request identity and temporary refusals do not fail the control listener (2.678115ms)
+ℹ tests 7
+ℹ suites 0
+ℹ pass 7
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 455.197836

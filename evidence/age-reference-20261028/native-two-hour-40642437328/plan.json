@@ -1,0 +1,59 @@
+{
+  "schemaVersion": 1,
+  "preparedAt": 1793168009357,
+  "segment": {
+    "runId": "native-candidates-20261028061222894",
+    "sourceCommit": "c5ce87b858a6655c4f5dd80e8887554b84717415",
+    "startedAt": 1793167942894,
+    "plannedEndAt": 1793175142894
+  },
+  "limits": {
+    "maximumRequests": 28,
+    "totalResponseBytes": 16777216,
+    "applicationStopBytes": 15728640,
+    "retainedBytes": 16777216,
+    "listingResponseBytes": 262144,
+    "ohlcvResponseBytes": 524288,
+    "maximumElapsedMs": 7200000,
+    "shutdownReserveMs": 5000,
+    "timeoutMs": 8000,
+    "minimumStartSpacingMs": 12000,
+    "maximumRssBytes": 268435456,
+    "maximumCpuMicros": 30000000,
+    "oneInFlight": true,
+    "noAutomaticRetries": true
+  },
+  "schedule": {
+    "enrollmentOffsetsMs": [
+      0,
+      3600000
+    ],
+    "outcomeOffsetMs": 6600000,
+    "maximumSelectedPerPass": 8,
+    "strongPerPass": 4,
+    "controlsPerPass": 4,
+    "maximumIndexedAgeMs": 86400000
+  },
+  "source": {
+    "tool": "scripts/capture-independent-two-hour-reference.ts",
+    "sha256": "61eafc5af5fe929f6430e77ccf13a80de8096048a2f4afa28c3b98f5dbea8488",
+    "adaptedFrom": [
+      "scripts/capture-forward-reference.ts",
+      "scripts/capture-age-reference.ts",
+      "scripts/capture-independent-cohort-ohlcv.ts"
+    ]
+  },
+  "prior": {
+    "path": "/workspace/pump-opportunity-engine/evidence/age-reference-20261028/continuation-001/receipt.json",
+    "sha256": "4ed13e139e6f00a1c57b3e51965cfe7ac90e2590e10445bc07044f7e9bc5f4f6",
+    "usage": {
+      "requestStarts": 40,
+      "measuredBodyBytes": 1038730,
+      "uncertainBodyBytes": 262416,
+      "completedAt": 1793152889051,
+      "cooldownUntil": 1793152901051
+    }
+  },
+  "selection": "All independent listed rows retained; fixed active/control cohorts before any outcomes; no POE token inputs; indexed0–24h is UNVERIFIED sample selection only.",
+  "termsEvidence": "evidence/opportunity-coverage-20261027/reference-raw/official-public-api.html; historical public-keyless10calls/min claim, >=12s pacing; current eligibility/availability still determined by actual response."
+}

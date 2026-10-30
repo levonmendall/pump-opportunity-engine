@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "decision": "GO FOR REVIEWED PUBLISHER CHILD ENVIRONMENT CONTRACT",
+  "reviewedAt": "2026-10-29T00:14:43.427083+00:00",
+  "supervisorCommit": "70835b9495a1e34446dbbc23311b50a4b8458532",
+  "supervisorSha256": "414b1688aee24f200b4f845b0e6fff537bb5910163125967bf325f1f1f50b9f5",
+  "actualTypeScriptPublisherSha256": "41c42dc0dd2d9a04f3dbd971d5bea0c1a407c192ccaffe680300f757c60a0e6a",
+  "pythonTestsPassed": 22,
+  "actualTypeScriptBoundaryExitCode": 0,
+  "scope": [
+    "Publisher child receives only validated original CREDENTIALS_DIRECTORY and matching POE_PUBLISH_SECRET_FILE.",
+    "Source child continues excluding inherited credentials and untrusted Node options.",
+    "Actual Python-generated environment fixture resolves through actual TypeScript credential boundary.",
+    "Missing or foreign credential directory is refused."
+  ],
+  "limitations": [
+    "No credential contents read.",
+    "No host process deployment or network request.",
+    "Actual systemd LoadCredential and authenticated Render publication still require original-account cutover verification."
+  ]
+}

@@ -1,0 +1,64 @@
+{
+  "schemaVersion": 1,
+  "kind": "poe-authoritative-persistent-service-v1",
+  "source": {
+    "commit": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+    "sha256": "fa10982125bd77c1586606283a9fabed4daee5434792dcef90be2bd312cc5315"
+  },
+  "configurationSha256": "f6ce54d7594e14d87955f211cca21f594b3d3eb52e20a75fa2245290f22a4857",
+  "stage": "single",
+  "deepSlots": 4,
+  "strategy": "persistent-buying-pilot-v1",
+  "files": [
+    {
+      "file": "native-paper.mjs",
+      "bytes": 5052930,
+      "sha256": "fa10982125bd77c1586606283a9fabed4daee5434792dcef90be2bd312cc5315"
+    },
+    {
+      "file": "backup-worker.mjs",
+      "bytes": 73859,
+      "sha256": "53700fadf7172fd5f85b9f368256b0b6592abfc3a55adce8481812c0c154ea34"
+    },
+    {
+      "file": "better_sqlite3.node",
+      "bytes": 2226168,
+      "sha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d"
+    },
+    {
+      "file": "metadata.json",
+      "bytes": 154477,
+      "sha256": "aa8f59dfc9659199a872cea5086250dde9120c2b92379c69cab63cec9b1f92ec"
+    },
+    {
+      "file": "snapshot-publisher.mjs",
+      "bytes": 31949,
+      "sha256": "29831f3b18a806f767a578b8ead424441d6d8421c43936abe1a9ad9f16f0c27f"
+    }
+  ],
+  "policy": {
+    "version": "poe-authoritative-persistent-supervisor-v1",
+    "sampleSeconds": 15,
+    "statusStaleSeconds": 90,
+    "startupStatusSeconds": 30,
+    "minimumStartRamMiB": 768,
+    "minimumStartDiskMiB": 512,
+    "criticalRamMiB": 256,
+    "criticalDiskMiB": 128,
+    "sourceRssMiB": 512,
+    "publisherRssMiB": 128,
+    "parentRssMiB": 128,
+    "rollingCpuSeconds": 60,
+    "sourceCpuCloseCores": 0.5,
+    "sourceCpuResumeCores": 0.35,
+    "publisherCpuRestartCores": 0.2,
+    "resumeHealthySamples": 3,
+    "maximumRecoveryBackoffSeconds": 60,
+    "gracefulSourceStopSeconds": 30,
+    "sourceHeapMiB": 192,
+    "diagnosticFileBytes": 1048576,
+    "diagnosticFiles": 4,
+    "resourceFileBytes": 2097152,
+    "resourceFiles": 4
+  }
+}

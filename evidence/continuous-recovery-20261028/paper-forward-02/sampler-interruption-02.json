@@ -1,0 +1,28 @@
+{
+  "recordedAt": "2026-10-28T21:23:53.284041+00:00",
+  "cause": "Cloud execution environment disconnected/restarted; prior sampler absent at recovery",
+  "supervisedProcess": 147581,
+  "evidence": [
+    {
+      "file": "evidence/continuous-recovery-20261028/paper-forward-02/render-cycles.ndjson",
+      "samples": 3,
+      "bytes": 7449,
+      "sha256": "bf4c2ba88c6e60a03029ec71579514471a246e5d33c311e0d58e5798a13dac0d",
+      "lastReceivedAt": 1793221685673
+    },
+    {
+      "file": "evidence/continuous-recovery-20261028/paper-forward-02/render-cycles-supervised.ndjson",
+      "samples": 82,
+      "bytes": 2715905,
+      "sha256": "336615b0147245621ca44c42ffa2f63d7d8283e4e8dbb7936fc9e0d81bf4c94b",
+      "lastReceivedAt": 1793222571820
+    }
+  ],
+  "priorResponseBytes": 2714177,
+  "retainedUncertainReserveBytes": 1048576,
+  "nextResponseByteCeiling": 29791679,
+  "nextCalls": 335,
+  "nextMaximumMs": 2991711,
+  "hostRunStillInProgress": true,
+  "continuousSupervisionClaimed": false
+}

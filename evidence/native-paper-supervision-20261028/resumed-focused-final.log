@@ -1,0 +1,20 @@
+✔ native PAPER CLI requires explicit resume/contract and optional flags cannot alias args[0] (1.666814ms)
+✔ wrong source contract and invalid resource selection fail before directory, lease, ledger or provider access (1.466527ms)
+✔ unbound public source and mutable/mismatched startup provenance cannot open a financial writer (14.951373ms)
+✔ 750ms holding reads retain reporting service opportunities without moving the two-second reference cadence (0.56562ms)
+✔ known44candidate history timeouts preserve actual SDK holding quotes and close candidate work before the chapter reserve (4272.832456ms)
+✔ reserve decisions include next source request and never consume protected units, response headroom, or future chapters (0.51175ms)
+✔ resumed exposure is evaluated before each discretionary startup connection (1.40175ms)
+✔ unavailable or unusable recovery defers only source startup and can be retried after a fresh financial check (0.297361ms)
+✔ management-only recovery attempts owned obligations while never connecting candidate/discovery feeds (0.265194ms)
+✔ management-only is explicit and frozen into configuration rather than implied by source failure (0.898573ms)
+✔ reported all-position completion uses the final actual callback, not the oldest scheduling watermark (0.828439ms)
+✔ candidate CPU work gives way before management handoff without weakening quote or cadence contracts (0.605939ms)
+ℹ tests 12
+ℹ suites 0
+ℹ pass 12
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7104.468199

@@ -1,0 +1,45 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-10-28T02:16:43.112Z",
+  "repository": "levonmendall/meme-machine-admin",
+  "sourceCommit": "76ce77134edc27b92b72bbca4aabbcc71a90938f",
+  "runId": 40619930479,
+  "jobId": 122591225512,
+  "createdAt": "2026-10-28T02:16:14Z",
+  "jobStartedAt": "2026-10-28T02:16:16Z",
+  "url": "https://github.com/levonmendall/meme-machine-admin/actions/runs/40619930479",
+  "files": [
+    {
+      "path": ".github/workflows/poe-native-flow-component.yml",
+      "bytes": 11814,
+      "sha256": "91e98574863a179ef1c2c2eea3af0e1d2c503d6f293b6dcd758d38ed2956cdb3"
+    },
+    {
+      "path": "scripts/poe/native-component-native-flow.mjs.gz",
+      "bytes": 611129,
+      "sha256": "c34291997b21e37aae0d1b6c0d39c7abb340647df815f876ea69bd75dd6b0f40"
+    },
+    {
+      "path": "scripts/poe/native-component-input.json",
+      "bytes": 72560,
+      "sha256": "e4cf78d0620c6b3f716871e3df601a1f3dc418b45e19dfefd1eb9a132cc9b983"
+    },
+    {
+      "path": "scripts/poe/native-component-metadata.json",
+      "bytes": 149416,
+      "sha256": "3432f633c54d8369f75694d0750be45354f831e193ba3ccf81a8c58a8be17bae"
+    }
+  ],
+  "oneActualDispatchCreatedOneRun": true,
+  "earlierImmediateDispatch404CreatedNoRun": true,
+  "globalResearchLease": {
+    "path": "/tmp/poe-public-component-20261027.lock",
+    "pid": 112399,
+    "heldFromBeforeDispatchThroughReceiptSettlement": true
+  },
+  "baselineRemoteResearchUnits": 3726,
+  "localImdsReadsSeparate": 2,
+  "financialFilesRead": false,
+  "secretsRead": false,
+  "serviceMutation": false
+}

@@ -1,0 +1,38 @@
+{
+  "kind": "POE_INERT93_PROVIDER_RECOVERY_PUBLIC_READER",
+  "at": "2026-10-30T00:24:18.640181+00:00",
+  "files": {
+    "operator/native-paper-ec2/read-provider-recovery-forensics-20261030.py": {
+      "bytes": 24177,
+      "sha256": "c3719d93d0570cd08b77d52a6b520a302f8fdf4b793dc2a9c39a7d95e6c35c90"
+    },
+    "operator/native-paper-ec2/test-read-provider-recovery-forensics-20261030.py": {
+      "bytes": 11839,
+      "sha256": "81287a5694a11aafacecdc4164940f0d8c263ccd1a3a4c9947da4777fb2fb852"
+    }
+  },
+  "expectedExporterSha256": "e1c04bc56c27e2341b188d441055eaf5b1eac245ad1d390157a14e3b3d129f7e",
+  "scriptSha256Pin": null,
+  "adminWorktreeChanged": false,
+  "readerTests": 13,
+  "actualExporterReaderInteroperabilityPassed": true,
+  "fixedPublicOutput": "/var/lib/poe-public/provider-recovery-forensics-20261030.json",
+  "oldPublicOutputPreserved": "/var/lib/poe-public/current-run-forensics-20261029.json",
+  "financialDatabaseOpened": false,
+  "providerRequests": 0,
+  "serviceChanges": 0,
+  "actualExportPerformed": false,
+  "exporterTests": 32,
+  "totalRelevantTests": 108,
+  "priorityWindows": [
+    {
+      "fromAt": 1793319075000,
+      "untilAtExclusive": 1793319150000
+    },
+    {
+      "fromAt": 1793319490000,
+      "untilAtExclusive": 1793319750000
+    }
+  ],
+  "finalIndependentCodeReview": "PASS source-bound; final evidence retained separately"
+}

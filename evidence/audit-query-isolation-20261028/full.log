@@ -1,0 +1,1397 @@
+
+> pump-opportunity-engine@0.1.0 test
+> node --import tsx --test test/*.test.ts
+
+✔ production mode remains closed across reconciliation/restart and never reseeds (271.233049ms)
+✔ fresh runtime readiness resumes an admin pause but never clears a sticky day loss (30.540276ms)
+✔ safe stop preserves open exposure and exit orders, cancels entries, and refuses safe exit (69.56287ms)
+✔ foreign databases and non-durable production paths are refused without adding POE tables (28.573458ms)
+✔ wrong-size liquidation marks stay unknown and cannot support reconciliation (62.642517ms)
+✔ startup entry cancellation leaves uncertainty on exits and does not request full stop (7.501756ms)
+✔ snapshot sequence survives restart and reporting counters never alter financial revision (38.763642ms)
+✔ reporting history is bounded, preserves real gaps/inception, and survives SQLite backup (3798.566074ms)
+✔ too many actual gap boundaries become an explicitly limited window, never invented points (1196.228723ms)
+✔ malformed first-attempt amounts still finalize a failure and count gas exactly once (9.062993ms)
+✔ held-position exits can consume the gas reserve while new entries cannot (15.789393ms)
+✔ semantically corrupt JSON in valid SQLite refuses recovery without reseeding or rewriting (243.787317ms)
+✔ a missing financial singleton with existing history is recovery failure, never new inception (22.841306ms)
+✔ projection distinguishes unknown USD, actual SOL balance, and passive SOL price effect (12.392989ms)
+
+Interrupted while running:
+
+⚠ test/account.test.ts (test/account.test.ts:1:1)
+⚠ test/active-continuation-evidence.test.ts (test/active-continuation-evidence.test.ts:1:1)
+⚠ test/active-current-evidence.test.ts (test/active-current-evidence.test.ts:1:1)
+⚠ test/active-pipeline-availability.test.ts (test/active-pipeline-availability.test.ts:1:1)
+⚠ test/active-pipeline-readiness.test.ts (test/active-pipeline-readiness.test.ts:1:1)
+⚠ test/active-pipeline.test.ts (test/active-pipeline.test.ts:1:1)
+✖ test/account.test.ts (7112.620937ms)
+✔ actual continuation evidence maps two direct Token2022 Sell instructions with exact executed amounts (98.75715ms)
+✔ actual continuation refusal preserves unknown capacity, cross-pass repeated pool and missing live observations (3.00103ms)
+✔ current actual v1 CPI-invoked Sell preserves executed amounts and real inner identity (73.100782ms)
+✔ actual burst-truncated activity refuses the stream before support pricing (46.58534ms)
+✔ blocking validation preparation delays feature availability without changing executed evidence or amounts (88.158325ms)
+✔ RPC receipt before the five-second deadline cannot rescue normalization completed after it (7.874832ms)
+✔ the actual clock controls availability even when the caller supplies an earlier RPC receipt (19.927627ms)
+✔ all synthetic multi-swap rows validate before any row enters feature windows (20.249014ms)
+✔ recorder callbacks cannot observe a half-ingested synthetic multi-swap transaction (32.511059ms)
+✖ test/active-pipeline-readiness.test.ts (1899.344329ms)
+✖ test/active-pipeline.test.ts (1460.811327ms)
+✖ test/active-runner.test.ts
+✖ test/active-selection.test.ts
+✖ test/adaptive-monitoring.test.ts
+✖ test/audit-standing-capture.test.ts
+✖ test/backup.test.ts
+✖ test/batch-market.test.ts
+✖ test/candidate-cadence.test.ts
+✖ test/component-budget.test.ts
+✖ test/component-history-batch.test.ts
+✖ test/component-launcher.test.ts
+✖ test/component-live-evidence.test.ts
+✖ test/component-parity.test.ts
+✖ test/component-results.test.ts
+✖ test/component-selection.test.ts
+✖ test/component-transport.test.ts
+✖ test/costs.test.ts
+✖ test/credential-install.test.ts
+✖ test/dependencies.test.ts
+✖ test/entry-data-comparison.test.ts
+✖ test/execution.test.ts
+✖ test/feed-measurement.test.ts
+✖ test/forward-profile.test.ts
+✖ test/free-data-failures.test.ts
+✖ test/independent-two-hour-reference.test.ts
+✖ test/instruction-layout-callers.test.ts
+✖ test/ledger-costs.test.ts
+✖ test/ledger-scoped-cancel.test.ts
+✖ test/ledger.test.ts
+✖ test/log-native-capacity.test.ts
+✖ test/migration-identity.test.ts
+✖ test/monitoring-ledger-parity.test.ts
+✖ test/native-age-study-integration.test.ts
+✖ test/native-audit-session.test.ts
+✖ test/native-candidate-launcher.test.ts
+✖ test/native-candidate-origin.test.ts
+✖ test/native-candidate-runner.test.ts
+✖ test/native-control-recovery.test.ts
+✖ test/native-flow-audit-batch.test.ts
+✖ test/native-flow-audit-tail.test.ts
+✖ test/native-flow-audit.test.ts
+✖ test/native-flow-heartbeat.test.ts
+✖ test/native-paper-interop.test.ts
+✖ test/native-research-profile-integration.test.ts
+✖ test/native-research-profile.test.ts
+✖ test/native-settled-recovery.test.ts
+✖ test/native-source-fatal-policy.test.ts
+✖ test/native-startup-integration.test.ts
+✖ test/native-transport-yield.test.ts
+✖ test/native-two-hour-accounting.test.ts
+✖ test/network.test.ts
+✖ test/observation-age-study.test.ts
+✖ test/observation-age.test.ts
+✖ test/observation-cutoff.test.ts
+✖ test/observation.test.ts
+✖ test/origin-network-policy.test.ts
+✖ test/overnight-corrected-replay.test.ts
+✖ test/overnight-field.test.ts
+✖ test/overnight-notifications.test.ts
+✖ test/paper-mode-readiness.test.ts
+✖ test/pilot-capacity-recovery.test.ts
+✖ test/pilot-concurrency.test.ts
+✖ test/pilot-cpu-assessment.test.ts
+✖ test/pilot-discovery.test.ts
+✖ test/pilot-feeds.test.ts
+✖ test/pilot-integration.test.ts
+✖ test/pilot-launcher.test.ts
+✖ test/pilot-mapper-forward.test.ts
+✖ test/pilot-market-registry.test.ts
+✖ test/pilot-market.test.ts
+✖ test/pilot-native-flow.test.ts
+✖ test/pilot-origin-recovery.test.ts
+✖ test/pilot-reporting.test.ts
+✖ test/pilot-rpc-derived-status.test.ts
+✖ test/pilot-rpc-minute-research.test.ts
+✖ test/pilot-rpc-query-timeout.test.ts
+✖ test/pilot-rpc.test.ts
+✖ test/pilot-stage.test.ts
+✖ test/pilot-start-configuration.test.ts
+✖ test/pilot-trader.test.ts
+✖ test/pilot-watch-feed.test.ts
+✖ test/pilot-watch-lookup.test.ts
+✖ test/pilot-watch-prepared-selection.test.ts
+✖ test/pilot-watch.test.ts
+✖ test/pool.test.ts
+✖ test/predictive-assessment.test.ts
+✖ test/prepare-standing-subject.test.ts
+✖ test/program-log-identity.test.ts
+✖ test/program-log-mapping.test.ts
+✖ test/progressive-pilot-fixture.test.ts
+✖ test/progressive-scheduler.test.ts
+✖ test/protocol-classic-burn.test.ts
+✖ test/protocol-flow-evidence.test.ts
+✖ test/protocol-pool-effect.test.ts
+✖ test/pumpapi-exact-buy.test.ts
+✖ test/pumpapi-field-capture.test.ts
+✖ test/pumpapi-mapping.test.ts
+✖ test/pumpapi-probe.test.ts
+✖ test/pumpapi-short-exact-buy.test.ts
+✖ test/reporting.test.ts
+✖ test/research-baseline.test.ts
+✖ test/research-clock-pricing.test.ts
+✖ test/research-dispatch.test.ts
+✖ test/research-end-to-end.test.ts
+✖ test/research-held-market.test.ts
+✖ test/research-pacing.test.ts
+✖ test/research-phase.test.ts
+✖ test/research-pricing.test.ts
+✖ test/research-rpc.test.ts
+✖ test/research-scheduler-execution.test.ts
+✖ test/rpc-market.test.ts
+✖ test/rpc-minute-workload.test.ts
+✖ test/runtime.test.ts
+✖ test/scheduler-forward-audit.test.ts
+✖ test/scheduler-forward-evidence.test.ts
+✖ test/scheduler-forward-launcher.test.ts
+✖ test/scheduler-forward-preflight.test.ts
+✖ test/scheduler-forward-runner.test.ts
+✖ test/scheduler-proposal.test.ts
+✖ test/selection-rejections.test.ts
+✖ test/shared-scheduler-trace.test.ts
+✖ test/source-version.test.ts
+✖ test/standing-research.test.ts
+✖ test/strategy.test.ts
+✖ test/summarize-pilot.test.ts
+✖ test/trader.test.ts
+✖ test/valuation.test.ts
+ℹ tests 152
+ℹ suites 0
+ℹ pass 23
+ℹ fail 0
+ℹ cancelled 129
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7198.352028
+
+✖ failing tests:
+
+test at test/account.test.ts:1:1
+✖ test/account.test.ts (7112.620937ms)
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/active-pipeline-readiness.test.ts:1:1
+✖ test/active-pipeline-readiness.test.ts (1899.344329ms)
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/active-pipeline.test.ts:1:1
+✖ test/active-pipeline.test.ts (1460.811327ms)
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/active-runner.test.ts:1:1
+✖ test/active-runner.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/active-selection.test.ts:1:1
+✖ test/active-selection.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/adaptive-monitoring.test.ts:1:1
+✖ test/adaptive-monitoring.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/audit-standing-capture.test.ts:1:1
+✖ test/audit-standing-capture.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/backup.test.ts:1:1
+✖ test/backup.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/batch-market.test.ts:1:1
+✖ test/batch-market.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/candidate-cadence.test.ts:1:1
+✖ test/candidate-cadence.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/component-budget.test.ts:1:1
+✖ test/component-budget.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/component-history-batch.test.ts:1:1
+✖ test/component-history-batch.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/component-launcher.test.ts:1:1
+✖ test/component-launcher.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/component-live-evidence.test.ts:1:1
+✖ test/component-live-evidence.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/component-parity.test.ts:1:1
+✖ test/component-parity.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/component-results.test.ts:1:1
+✖ test/component-results.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/component-selection.test.ts:1:1
+✖ test/component-selection.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/component-transport.test.ts:1:1
+✖ test/component-transport.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/costs.test.ts:1:1
+✖ test/costs.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/credential-install.test.ts:1:1
+✖ test/credential-install.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/dependencies.test.ts:1:1
+✖ test/dependencies.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/entry-data-comparison.test.ts:1:1
+✖ test/entry-data-comparison.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/execution.test.ts:1:1
+✖ test/execution.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/feed-measurement.test.ts:1:1
+✖ test/feed-measurement.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/forward-profile.test.ts:1:1
+✖ test/forward-profile.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/free-data-failures.test.ts:1:1
+✖ test/free-data-failures.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/independent-two-hour-reference.test.ts:1:1
+✖ test/independent-two-hour-reference.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/instruction-layout-callers.test.ts:1:1
+✖ test/instruction-layout-callers.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/ledger-costs.test.ts:1:1
+✖ test/ledger-costs.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/ledger-scoped-cancel.test.ts:1:1
+✖ test/ledger-scoped-cancel.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/ledger.test.ts:1:1
+✖ test/ledger.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/log-native-capacity.test.ts:1:1
+✖ test/log-native-capacity.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/migration-identity.test.ts:1:1
+✖ test/migration-identity.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/monitoring-ledger-parity.test.ts:1:1
+✖ test/monitoring-ledger-parity.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-age-study-integration.test.ts:1:1
+✖ test/native-age-study-integration.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-audit-session.test.ts:1:1
+✖ test/native-audit-session.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-candidate-launcher.test.ts:1:1
+✖ test/native-candidate-launcher.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-candidate-origin.test.ts:1:1
+✖ test/native-candidate-origin.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-candidate-runner.test.ts:1:1
+✖ test/native-candidate-runner.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-control-recovery.test.ts:1:1
+✖ test/native-control-recovery.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-flow-audit-batch.test.ts:1:1
+✖ test/native-flow-audit-batch.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-flow-audit-tail.test.ts:1:1
+✖ test/native-flow-audit-tail.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-flow-audit.test.ts:1:1
+✖ test/native-flow-audit.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-flow-heartbeat.test.ts:1:1
+✖ test/native-flow-heartbeat.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-paper-interop.test.ts:1:1
+✖ test/native-paper-interop.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-research-profile-integration.test.ts:1:1
+✖ test/native-research-profile-integration.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-research-profile.test.ts:1:1
+✖ test/native-research-profile.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-settled-recovery.test.ts:1:1
+✖ test/native-settled-recovery.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-source-fatal-policy.test.ts:1:1
+✖ test/native-source-fatal-policy.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-startup-integration.test.ts:1:1
+✖ test/native-startup-integration.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-transport-yield.test.ts:1:1
+✖ test/native-transport-yield.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-two-hour-accounting.test.ts:1:1
+✖ test/native-two-hour-accounting.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/network.test.ts:1:1
+✖ test/network.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/observation-age-study.test.ts:1:1
+✖ test/observation-age-study.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/observation-age.test.ts:1:1
+✖ test/observation-age.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/observation-cutoff.test.ts:1:1
+✖ test/observation-cutoff.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/observation.test.ts:1:1
+✖ test/observation.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/origin-network-policy.test.ts:1:1
+✖ test/origin-network-policy.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/overnight-corrected-replay.test.ts:1:1
+✖ test/overnight-corrected-replay.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/overnight-field.test.ts:1:1
+✖ test/overnight-field.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/overnight-notifications.test.ts:1:1
+✖ test/overnight-notifications.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/paper-mode-readiness.test.ts:1:1
+✖ test/paper-mode-readiness.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-capacity-recovery.test.ts:1:1
+✖ test/pilot-capacity-recovery.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-concurrency.test.ts:1:1
+✖ test/pilot-concurrency.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-cpu-assessment.test.ts:1:1
+✖ test/pilot-cpu-assessment.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-discovery.test.ts:1:1
+✖ test/pilot-discovery.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-feeds.test.ts:1:1
+✖ test/pilot-feeds.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-integration.test.ts:1:1
+✖ test/pilot-integration.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-launcher.test.ts:1:1
+✖ test/pilot-launcher.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-mapper-forward.test.ts:1:1
+✖ test/pilot-mapper-forward.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-market-registry.test.ts:1:1
+✖ test/pilot-market-registry.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-market.test.ts:1:1
+✖ test/pilot-market.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-native-flow.test.ts:1:1
+✖ test/pilot-native-flow.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-origin-recovery.test.ts:1:1
+✖ test/pilot-origin-recovery.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-reporting.test.ts:1:1
+✖ test/pilot-reporting.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-rpc-derived-status.test.ts:1:1
+✖ test/pilot-rpc-derived-status.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-rpc-minute-research.test.ts:1:1
+✖ test/pilot-rpc-minute-research.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-rpc-query-timeout.test.ts:1:1
+✖ test/pilot-rpc-query-timeout.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-rpc.test.ts:1:1
+✖ test/pilot-rpc.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-stage.test.ts:1:1
+✖ test/pilot-stage.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-start-configuration.test.ts:1:1
+✖ test/pilot-start-configuration.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-trader.test.ts:1:1
+✖ test/pilot-trader.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-watch-feed.test.ts:1:1
+✖ test/pilot-watch-feed.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-watch-lookup.test.ts:1:1
+✖ test/pilot-watch-lookup.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-watch-prepared-selection.test.ts:1:1
+✖ test/pilot-watch-prepared-selection.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-watch.test.ts:1:1
+✖ test/pilot-watch.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pool.test.ts:1:1
+✖ test/pool.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/predictive-assessment.test.ts:1:1
+✖ test/predictive-assessment.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/prepare-standing-subject.test.ts:1:1
+✖ test/prepare-standing-subject.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/program-log-identity.test.ts:1:1
+✖ test/program-log-identity.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/program-log-mapping.test.ts:1:1
+✖ test/program-log-mapping.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/progressive-pilot-fixture.test.ts:1:1
+✖ test/progressive-pilot-fixture.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/progressive-scheduler.test.ts:1:1
+✖ test/progressive-scheduler.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/protocol-classic-burn.test.ts:1:1
+✖ test/protocol-classic-burn.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/protocol-flow-evidence.test.ts:1:1
+✖ test/protocol-flow-evidence.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/protocol-pool-effect.test.ts:1:1
+✖ test/protocol-pool-effect.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pumpapi-exact-buy.test.ts:1:1
+✖ test/pumpapi-exact-buy.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pumpapi-field-capture.test.ts:1:1
+✖ test/pumpapi-field-capture.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pumpapi-mapping.test.ts:1:1
+✖ test/pumpapi-mapping.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pumpapi-probe.test.ts:1:1
+✖ test/pumpapi-probe.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pumpapi-short-exact-buy.test.ts:1:1
+✖ test/pumpapi-short-exact-buy.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/reporting.test.ts:1:1
+✖ test/reporting.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-baseline.test.ts:1:1
+✖ test/research-baseline.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-clock-pricing.test.ts:1:1
+✖ test/research-clock-pricing.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-dispatch.test.ts:1:1
+✖ test/research-dispatch.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-end-to-end.test.ts:1:1
+✖ test/research-end-to-end.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-held-market.test.ts:1:1
+✖ test/research-held-market.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-pacing.test.ts:1:1
+✖ test/research-pacing.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-phase.test.ts:1:1
+✖ test/research-phase.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-pricing.test.ts:1:1
+✖ test/research-pricing.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-rpc.test.ts:1:1
+✖ test/research-rpc.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-scheduler-execution.test.ts:1:1
+✖ test/research-scheduler-execution.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/rpc-market.test.ts:1:1
+✖ test/rpc-market.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/rpc-minute-workload.test.ts:1:1
+✖ test/rpc-minute-workload.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/runtime.test.ts:1:1
+✖ test/runtime.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/scheduler-forward-audit.test.ts:1:1
+✖ test/scheduler-forward-audit.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/scheduler-forward-evidence.test.ts:1:1
+✖ test/scheduler-forward-evidence.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/scheduler-forward-launcher.test.ts:1:1
+✖ test/scheduler-forward-launcher.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/scheduler-forward-preflight.test.ts:1:1
+✖ test/scheduler-forward-preflight.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/scheduler-forward-runner.test.ts:1:1
+✖ test/scheduler-forward-runner.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/scheduler-proposal.test.ts:1:1
+✖ test/scheduler-proposal.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/selection-rejections.test.ts:1:1
+✖ test/selection-rejections.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/shared-scheduler-trace.test.ts:1:1
+✖ test/shared-scheduler-trace.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/source-version.test.ts:1:1
+✖ test/source-version.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/standing-research.test.ts:1:1
+✖ test/standing-research.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/strategy.test.ts:1:1
+✖ test/strategy.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/summarize-pilot.test.ts:1:1
+✖ test/summarize-pilot.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/trader.test.ts:1:1
+✖ test/trader.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/valuation.test.ts:1:1
+✖ test/valuation.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+� screening can cost more than quiet flow; field retention and local discard do not save provider retrieval (177.351179ms)
+✔ integer fixed-size return rejects size mixing and conservatively rounds a negative move (4.34276ms)
+✔ actual retained transaction projection changes serialized storage only, never fetches or incoming broad traffic (68.95393ms)
+✔ equivalent predictive short-circuit changes retrieval/refusal evidence without changing provided-oracle signals (13.401436ms)
+✔ recovery closes entries; delayed first buy and full-size sell complete on the existing writer only (145.050244ms)
+✔ concurrent drains coalesce and no SQLite write transaction crosses an asynchronous quote (44.528981ms)
+✔ future and already-expired decisions cannot reserve cash or move the financial clock (30.030548ms)
+✔ timeout fails once, ignores late favorable state and prevents an uncanceled adapter backlog (75.881184ms)
+✔ missing USD cancels entry before quote/gas while an expired order cannot request or fill state (34.763308ms)
+✔ an uncanceled adapter schedules pending expiry rather than a past due hot loop, then wakes once (90.438068ms)
+✔ a quote arriving after expiry never fills and stale first state cannot be replaced by another quote (68.950991ms)
+✔ SELL actions precede entries and may execute with unknown USD using actual held units (43.426336ms)
+✔ restart cancels obsolete entries but preserves uncertain exits until expiry without a favorable re-quote (77.117873ms)
+✔ stored outcomes remain indexed after later journal windows without another quote, debit or revision (78.284163ms)
+✔ financial commit uncertainty preserves the order and blocks re-quote/new entries until expiry (19.45293ms)
+✔ operator cancellation during quote preparation cannot produce a late fill or gas debit (17.163546ms)
+✔ persistent expiry writes back off without a scheduling loop, another quote or discarded action (14.772068ms)
+✔ an already-due entry blocked by another uncertain action cannot create a past-due scheduler loop (36.995928ms)
+✔ a thrown return path after durable commit resolves through the stored outcome without another fill (14.199459ms)
+✔ an optional bounded drain services one due exit and retains immediate wake and exact ownership for the rest (17.839348ms)
+✔ bounded expiry needs no quote or gas, while a quarantined exit cannot starve a separately owned fresh due exit (32.60721ms)
+✔ source expiry during a fresh entry quote makes held equity unavailable before gas without deleting exposure (51.241667ms)
+✔ potential charges count before duplicate/malformed discard and inventory never returns raw values (50.932217ms)
+✔ event ceiling requests upstream unsubscribe and in-flight headroom remains charged, never filtered free (153.154823ms)
+✔ wallet floor, both SOL and USD caps, stale evidence and per-event USD rounding gate admission (33.048839ms)
+✔ held monitoring reserves precede admission and measurement never unsubscribes a held token (0.641241ms)
+✔ gaps require a fresh uninterrupted 60 seconds and cannot be added together as continuous operation (0.593931ms)
+✔ late admission, UTC boundary and repeated subscription acknowledgement do not fake a full window (0.838343ms)
+✔ unknown USD cost remains unknown after refresh, and a stop request cannot silently resume (0.384671ms)
+✔ batch, oversized and inventory-limited payloads remain bounded and are still potentially charged (5.350385ms)
+✔ observed-rate projections report a ceiling failure without pretending short bursts are full observation (45.193767ms)
+✔ monotonic durations prevent a wall-clock jump from diluting measured costs or fabricating elapsed observation (0.701561ms)
+✔ approved profile is explicit, observes75s from open, preserves the original default and keeps all research gates closed (183.833573ms)
+✔ one selected invalid field or mapping failure stops the profile and retains its original quality evidence (14.28121ms)
+✔ selected enrichment deadlines and scheduler refusals end the only capture rather than silently continuing with incomplete windows (26.054081ms)
+✔ a stale or unavailable actual-size quote stops, while an unfrozen2s evaluation-target miss alone remains diagnostic (97.517599ms)
+✔ an eleventh selected transaction stops without another enrichment and preserves the cap refusal (105.4686ms)
+✔ socket stops include all broad incoming bytes and terminate before the140MiB hard ceiling when headroom is available (2.175567ms)
+✔ standing18 profile requires the proposed dispatcher and explicit75s cutoff without changing old limits (44.717055ms)
+✔ nineteenth selected event remains recorded and invalidates the capped standing candidate while held pricing continues (179.835909ms)
+✔ provider429 and exhausted quota make full-size protection unavailable without zeros or provider-body leakage (191.992403ms)
+✔ missing, partial, malformed and oversized RPC responses preserve hypothetical holdings as unknown (82.985988ms)
+✔ delayed source validation cannot turn stale pool bytes into a fresh mark (96.066992ms)
+✔ rolling RPC quota refuses repeated work without a retry queue or additional provider calls (210.207461ms)
+✔ PaperTrader recognizes an RPC exit without flow/USD, fails its due unavailable attempt once, and preserves holdings on restart (262.829452ms)
+✔ restarting PaperTrader warms a new receive-time window instead of inheriting unavailable outage flow (37.94345ms)
+✔ retained independent OHLC schema stays token-bound, chronological and distinct from executable returns (2.026656ms)
+✔ canonical SOL indexed0–24h leads are selection hints while wrong DEX/quote/address/age rows never enter either control group (87.916472ms)
+✔ prospective selection fixes four active and four low-activity controls without using subsequent price appreciation (195.596489ms)
+✔ unknown index metrics remain unavailable and cannot fabricate active or quiet controls (12.450257ms)
+✔ outcome diagnostics include only fully contained candles and leave missing minutes unavailable (9.102421ms)
+✔ append-only prior usage accepts historical ISO and current numeric receipts while preserving cooldown and uncertainty (0.660821ms)
+✔ two prospective passes and final outcomes stay independent, paced, single-operation and append-only without a source-end credit (1513.640169ms)
+✔ graceful cancellation keeps the settled checkpoint and never fabricates an actual source end (160.396549ms)
+✔ actual source-end attestation stops new admissions and stays separate from reference completion/planned end (203.651537ms)
+✔ provider429 stops once before reading its error body and retains prior plus current uncertainty (6.888437ms)
+✔ declared and delivered listing overflow stop without a retry and resource pressure blocks admission (15.005346ms)
+✔ no prospective indexed cohort is an explicit bounded refusal after both listing passes (99.846197ms)
+✔ frozen bounds and arithmetic overflow are explicit instead of silent nonfinite JSON conversions (0.402647ms)
+✔ in-flight graceful stop preserves the actual invocation checkpoint and waits for physical settlement (49.242399ms)
+✔ post-invocation checkpoint failure aborts but does not release a pending physical fetch or erase its durable uncertainty (5.578674ms)
+✔ actual observed two-u64 exact-quote Buy is one genuine compiled swap in the selector denominator (45.152408ms)
+✔ synthetic audit wiring recognizes the observed layout without claiming the absent volume flag or packaged byte parity (59.476669ms)
+✔ unrecognized truncation or extra-byte layouts cannot become a supported selector swap or a zero-swap audit pass (85.803899ms)
+✔ missing cost metadata is a read-only unknown default, not a seeded zero-expense account (77.133728ms)
+✔ sourced actual-zero coverage is distinct from unknown and does not reseed virtual capital (28.163113ms)
+✔ operating expenses affect economic P&L once without debiting virtual cash or subtracting execution gas twice (72.289913ms)
+✔ durable action identity handles old repeats before mutable chronology checks and rejects conflicting retries (44.448388ms)
+✔ restart and consistent SQLite backup preserve cost totals, identity, inception and coverage (91.717861ms)
+✔ journal-authenticated late SOL valuation rejects a forged evicted original and later duplicate resolution (315.778964ms)
+✔ known SOL fees are valued once at incurrence while unvalued costs keep economic results unknown (61.495603ms)
+✔ principal funding, unsupported costs and wrong-account events cannot alter financial or cost history (15.133556ms)
+✔ corrupt cost metadata is refused unchanged during reads and startup instead of resetting amounts (58.870851ms)
+✔ a missing cost projection with durable cost history is recovery failure, not a new unknown-default book (43.711365ms)
+✔ surviving valuation actions or journal rows also block silently replacing missing cost metadata (69.25343ms)
+✔ mint-scoped entry cancellation is durable, idempotent and cannot remove unrelated entries or exits (128.126614ms)
+✔ fixture-only identity, fixed loaded SQLite, integer conversion and one-time inception (86.859532ms)
+✔ delayed full lifecycle counts gas once, locks/refunds deposits, preserves idempotency (43.425125ms)
+✔ failed single attempt charges gas and cannot cherry-pick a retry; expiry cannot fill (15.033456ms)
+✔ missing state never fills and pre-delay or stale quotes never become execution evidence (13.164875ms)
+✔ unknown liquidation blocks new risk, never converts an open position to zero (11.07092ms)
+✔ sticky day loss survives recovery, price recovery and restart; fresh next day can resume (68.660651ms)
+✔ entry pause cancels pending buys without abandoning position exit management (16.350279ms)
+✔ entry size includes gas/deposit, prevents adds and keeps reserved capital exclusive (19.824372ms)
+✔ wrong-sized exit cannot remove held tokens or refund its deposit (18.681747ms)
+✔ restart recovers unresolved reservations; SQLite backup restores coherent financial state (89.309906ms)
+✔ separate advisory flock rejects a second writer while external SQLite readers remain available (847.486469ms)
+✔ owner lease rejects symlinks, shared permissions, hardlinks and nonregular files without touching their targets (0.937611ms)
+✔ database open errors release the separate lease and disposable memory accounts need no file lease (32.472605ms)
+✔ database and directory aliases cannot establish a second financial writer (31.197804ms)
+✔ backward wall time cannot clear a persisted day pause (33.793659ms)
+✔ SOL exits work during USD outage and deposits stay locked until explicit refund (16.845585ms)
+✔ SIGKILL after durable order commit retains reservation and inception (1094.099229ms)
+✔ SIGKILL during uncommitted write rolls back without reseeding account (878.467052ms)
+✔ retained direct Sell and routed Buy/Sell logs match full-mapper integers, event bytes and trader roles (206.37106ms)
+✔ repeated notification has the same actual log-index identity, never fabricated compiled indices (12.25699ms)
+✔ altered TransferChecked bytes cannot be detected from unchanged event logs or receive sampled transfer proof (11.253952ms)
+✔ malformed stack, failed/truncated/incomplete logs, bad commitment and event suffix cannot create usable evidence (14.410985ms)
+✔ protocol labels cannot be interpreted as an ordinary buyer even when a BuyEvent shape is decodable (9.689882ms)
+✔ payload and canonical scope bounds fail closed before parsing large or unrelated input (0.952823ms)
+✔ retained exact24-byte ordinary Buy compatibility preserves actual amounts, roles, fees and absent-volume truth (61.636392ms)
+✔ legacy24-byte Buy role/event/transfer corruption and unverified26-byte tails retain strict refusals (114.520913ms)
+✔ selected log compression preserves exact recorded bytes and first cutoff precedes settlement (517.738045ms)
+✔ native validated admission respects failure, early logical cutoff and exact boundary (3.331462ms)
+✔ actual custom migration identifies base/quote roles and rejects the custom quote instead of deriving from feed mint (68.941047ms)
+✔ retained real SOL migration returns actual canonical identity but never claims current support or entry eligibility (16.866287ms)
+✔ retry-only migrate, failed status, missing fields and unrelated same-outer creation cannot establish identity (46.584066ms)
+✔ event authority/layout/roles, index, canonical PDA and creator cannot be inferred or bypassed (54.808164ms)
+✔ multiple genuine creations are ambiguous and legacy discriminator support is explicitly synthetic (13.963712ms)
+✔ current successful migration hints with no inner instructions provide no creation bytes or original migration time (25.79437ms)
+✔ retained outside-family migration is a seed exclusion only after successful structural validation (13.805097ms)
+✔ unknown Pump and AMM invocations remain unverified rather than outside-family (1.504181ms)
+✔ monitoring replay filled gross-slip boundary agrees with existing disposable writer/coordinator (166.435556ms)
+✔ monitoring replay failed gross-slip boundary preserves exposure and charges exactly existing failed gas (42.249777ms)
+✔ exact-expiry replay matches existing writer: no fill, no exit gas and retained exposure (72.424844ms)
+✔ after-expiry replay matches existing writer: no late favorable fill or exit gas (38.785358ms)
+✔ one post-delay coherent Clock batch can serve coordinator context and exit quote; invalid reuse fails closed (424.919552ms)
+✔ launcher observation opt-in is separate from finite resource profile and frozen configuration identity (11.115085ms)
+✔ default8-hour identity remains outside observation; explicit study selects it without entry permission (117.299721ms)
+✔ fresh hint reselects already-selected age-only EXPIRED metadata in both default2–6h and study6–24h cohorts (156.235327ms)
+✔ stale and future activity cannot reselect an existing age-expired study identity (112.493453ms)
+✔ strict origin bytes and current-support availability remain independent gates for selected24-hour allocation (48.641051ms)
+✔ study selection preserves structural/manual exclusions, financial obligations and explicit technical defers (124.188939ms)
+✔ study checkpoint retains strict public origin for8-hour recovery and ends new observation exactly at24 hours (37.157099ms)
+✔ 2 deferred pages use existing validation and permit explicit controls between caller dispatches (120.096899ms)
+✔ 3 deferred pages use existing validation and permit explicit controls between caller dispatches (99.580931ms)
+✔ 4 deferred pages use existing validation and permit explicit controls between caller dispatches (128.48488ms)
+✔ late page identity and cancellation never release a caller-owned physical operation or create an audit pass (91.330425ms)
+✔ same-bucket deadline expires deferred work without timers, hidden retries, later information or a false pass (78.534687ms)
+✔ provider refusal is returned by the existing helper with actual availability and no automatic retry (77.735642ms)
+✔ captured source inputs are immutable and existing malformed-history checks remain authoritative (55.683737ms)
+✔ abort before or during a pending page is observable and never starts a physical client (134.306264ms)
+✔ custom audit injection still receives only a deferred caller and the original fixed bucket deadline (55.295882ms)
+✔ complete validation available only after the fixed deadline is never admitted as an earlier pass (45.645198ms)
+✔ oversized retained source input is refused before a cloning or deferred-call session (17.228872ms)
+✔ adaptive deferred pages expose their actual100 then1000 limits and count each physical page separately (8.31373ms)
+✔ adaptive escalation cannot survive cancellation or the original same-bucket deadline (17.002857ms)
+✔ candidate launcher public binding validation creates no account and refuses financial or credential input (1.907228ms)
+✔ candidate launcher remains finite and contains no financial implementation imports or transaction execution call (0.638847ms)
+✔ root execution refusal precedes reading private inputs or opening the network (0.1147ms)
+✔ one failed source stop cannot skip the other stop or report physical settlement (1.49051ms)
+✔ publisher-compatible status discloses lost broad awareness independently of native health and keeps unknown protection null (0.345432ms)
+✔ shadow source contract is explicit in public input and frozen configuration without changing strategy or financial permissions (11.095716ms)
+✔ fresh WATCH hint reselects an age-expired2–6h identity without widening entry eligibility (92.71568ms)
+✔ stale WATCH activity cannot select an older cohort or resurrect an expired identity (27.339142ms)
+✔ older re-selection preserves an outstanding technical capacity cause and defer rather than inventing qualification (27.631762ms)
+✔ older re-selection never clears an existing explicit defer deadline (52.3084ms)
+✔ oldest WATCH metadata without proof cannot block a ready real origin and retries exact known canonical identity (43.005743ms)
+✔ retained strict actual origin imports without RPC; candidate warming begins only at actual source ACK (27.234573ms)
+✔ fresh complete quiet window receives independent audit and same-bucket predictive rejection without financial authorization (29.14142ms)
+✔ late independently verified audit stays recorded but cannot be backdated into an earlier predictive decision bucket (12.251701ms)
+✔ missing independent pool history invalidates candidate data instead of becoming a strategy failure (37.937837ms)
+✔ SYNTHETIC six-slot saturation preserves seventh watch identity and releases actual unsubscribe ownership before replacement (20.885115ms)
+✔ SYNTHETIC six ready rejection audits finish before replacement support/setup with 50 ms jitter (30.055636ms)
+✔ SYNTHETIC six ready rejection audits finish before replacement support/setup with 100 ms jitter (51.76846ms)
+✔ verification refusal retains its exact seed and respects the watch retry time instead of disappearing (4.289322ms)
+✔ a complete audit helper cannot start near native liveness deadline; bounded heartbeat preparation creates a new service interval (8.55606ms)
+✔ closed owner admission and unsettled shared physical gate start no verification, audit or source work (2.713714ms)
+✔ due native setup retains its service opportunity after deferred, busy or backoff outcomes without origin-preparation fallthrough (74.294087ms)
+✔ due native control uses the shared control window during an HTTP-only cooldown (10.455216ms)
+✔ due native support and ready audits use the RPC window during a control-only cooldown (35.541413ms)
+✔ an RPC cooldown defers audit preparation without manufacturing completeness or a source gap (10.196202ms)
+✔ known structural outside-family seed is excluded once without converting its provisional token into an unsupported market (0.797954ms)
+✔ SYNTHETIC migration churn prunes evicted verification seeds and does not strand newest retained identities (4988.216011ms)
+✔ SYNTHETIC six strong scopes retain every rolling predictive decision with 50 ms step jitter and 200 ms audit responses (885.045ms)
+✔ SYNTHETIC six strong scopes retain every rolling predictive decision with 100 ms step jitter and 200 ms audit responses (719.05733ms)
+✔ SYNTHETIC slow settled audit response exceeds its per-page operation envelope without a false predictive decision or hidden retry (67.148438ms)
+✔ served-node context below the audit floor cannot become an independent predictive pass (33.340297ms)
+✔ SYNTHETIC protocol-aware audited predictive pass remains shadow-only with strict baseline unavailable and no financial qualification (73.482086ms)
+✔ SYNTHETIC busy audit yields one page per step and services a due native control between pages without backdating (621.481797ms)
+✔ SYNTHETIC gap after page one cancels its generation and cannot qualify using later retained history (292.043562ms)
+✔ SYNTHETIC graceful stop preserves a between-page audit diagnostic without dispatching more history (292.909988ms)
+✔ independent lower-fence warming is not a scheduler deadline miss; the next complete target can still be assessed (37.801ms)
+✔ independently fence-ready work still misses its deadline when the shared physical gate prevents every dispatch (47.13945ms)
+✔ a partial physical history timeout remains an unavailable evaluation and a true deadline miss (18.917349ms)
+✔ a known independent lower context does not copy a busy notification ledger merely to classify dispatch readiness (75.406679ms)
+✔ diagnostic audit tail uses exact ACK generation and cannot alter frozen features (none) (24.325336ms)
+✔ diagnostic audit tail uses exact ACK generation and cannot alter frozen features (connection) (34.022299ms)
+✔ diagnostic audit tail uses exact ACK generation and cannot alter frozen features (closed-admission) (45.788588ms)
+✔ SYNTHETIC one pool timeout does not retry its unavailable target or starve five other ready audits (32.787428ms)
+✔ malformed peer close: an unadmitted library reply is not written, and recovery remains paced (21.684861ms)
+✔ normal peer close: an unadmitted library reply is not written, and recovery remains paced (7.115243ms)
+✔ malformed close during another physical operation cannot settle or bypass that occupied gate (5.657431ms)
+✔ an explicitly scheduled close still writes one counted frame and settles on the real ws close handshake (9.394103ms)
+✔ six independent strict-window audits share one physical batch without merging their params, fences or availability (35.342077ms)
+✔ preflight no-call failures cannot deadlock valid siblings or an entirely ineligible batch (31.949475ms)
+✔ ordinary per-item errors affect only that candidate and preserve all transport receipt metadata (9.290859ms)
+✔ overload closes every current admission but retains valid sibling response facts and blocks future shared-gate use explicitly (1.714513ms)
+✔ per-item429 is a shared provider refusal even if the receipt flag is missing (0.807377ms)
+✔ individual cancellations, expired starts and closed admission are explicit without dispatching those queries (14.008977ms)
+✔ a late individual cancellation invalidates its information but does not cancel or lose its sibling (3.090353ms)
+✔ latestStartAt applies at request admission; actual information still must meet its separate validity deadline (8.771168ms)
+✔ outer cancellation does not finish the audit until the one physical operation actually settles (1.051169ms)
+✔ transport failure and refused starts are not mislabeled as known physical or provider-query consumption (1.041385ms)
+✔ the original audit still rejects missing history, malformed rows, corrections and saturated history (170.581154ms)
+✔ context-fence and notification-fence jobs preserve their distinct history cursors and original Clock provenance (0.756942ms)
+✔ a reused old transport receipt cannot be presented as a fresh independent audit (0.544047ms)
+✔ bounded collector rejects duplicate jobs, mixed targets and seven jobs without provider work (9.422165ms)
+✔ the actual batch transport plus existing semantic audits use one injected HTTP response and one durable physical start (205.803779ms)
+✔ missing transport items returns keyed unavailable results and safe aggregate evidence instead of throwing from final recording (0.609334ms)
+✔ actual cancelled stalled fetch keeps physical ownership and uncertainty after the collector returns unavailable (71.300819ms)
+✔ a partial context-not-reached error cannot verify that pool while six logical query identities remain intact (13.651937ms)
+✔ recorded mWT3 late packets corroborate history without changing the original60s information or making extra requests (134.838613ms)
+✔ recorded vv2 known tail packets cannot waive its1unknown successful history row or become ordinary flow (33.350783ms)
+✔ late successful/failed status reversal, correction, unusable packet and hash change remain blocking (199.082786ms)
+✔ tail packets require exact pool/mint/connection/subscription and actual post-snapshot availability (494.134446ms)
+✔ tail refresh preserves8192row bounds and never changes a fence to admit delayed information (939.194218ms)
+✔ cancelled or expired sessions do not refresh diagnostics, admit information or imply physical settlement (59.484854ms)
+✔ deadline or admission closing during diagnostic callback leaves the audit unavailable with honest final availability (204.646558ms)
+✔ deferred completion refreshes actual mWT diagnostic tail once while generation input remains immutable (63.247134ms)
+✔ strict interior signature audit verifies a complete target using actual pre/post window fences (30.701925ms)
+✔ failed and nontrade captured signatures participate without becoming executed trades (1.083387ms)
+✔ an unobserved successful or failed interior pool transaction makes the window unusable without inventing a swap (10.10046ms)
+✔ a target signature absent from independent history is unavailable, not a silent complete pass (0.632508ms)
+✔ same-slot target boundaries and missing before/after fences cannot establish coverage (38.852103ms)
+✔ three bounded history pages follow actual last-row cursors and cover all required unique signatures (121.076844ms)
+✔ saturated four-page history retains an explicit incomplete denominator and performs no fifth read (140.535497ms)
+✔ duplicate capture preserves the earliest availability; corrections and confirmed status disagreement are not accepted (8.783117ms)
+✔ malformed and duplicate independent history rows fail closed without extra requests (3.144093ms)
+✔ provider refusal, elapsed time, abort and closed admission retain honest availability and never retry (24.339809ms)
+✔ recording delay is included in audit availability and immutable source-window timestamps are never backdated (0.422577ms)
+✔ quiet interval can verify bounded signature absence only with genuine temporal fences and independent history coverage (0.304893ms)
+✔ invalid target, candidate identity and excessive input bounds perform no provider request (6.846174ms)
+✔ fresh coherent bank Clock ceiling independently audits quiet history without an invented notification anchor (13.936299ms)
+✔ old, future or time-unbound context ceilings are unavailable before any history request (0.58642ms)
+✔ context quiet audit still rejects unobserved interior activity and ambiguous target boundary slots (0.416588ms)
+✔ empty independent history does not prove quietness when it never reaches the known lower context (0.186326ms)
+✔ a genuine newer pre-window notification narrows context history without hiding target activity (0.520132ms)
+✔ SYNTHETIC busy1000-row page verifies every strict-interior signature in one bounded callback (371.617626ms)
+✔ saturated1000 history that cannot reach its lower fence is explicit capacity-unknown, never a partial pass (307.751275ms)
+✔ 1000-row response has an explicit1MiB processing bound and preserves known rejected payload bytes (113.818874ms)
+✔ 1000-page mode preserves exact row validation, provider failure and accepted option values (10.483198ms)
+✔ a node behind the upper slot floor cannot verify quiet history in either fence mode (0.635201ms)
+✔ Clock-fenced pagination retains the original served-node floor as history cursors move backward (39.543021ms)
+✔ adaptive quiet audit requests100 rows and keeps the original strict coverage checks (1.327388ms)
+✔ adaptive103-row quiet history escalates only after a full100-row page cannot reach the lower fence (26.833964ms)
+✔ adaptive busy2200-row history starts1000 and counts three separate physical pages without raising the cap (428.085736ms)
+✔ adaptive sizing refuses a response larger than the actual100 request and does not escalate a short uncovered page (14.711316ms)
+✔ adaptive history remains incomplete after four full pages and performs no fifth read (276.573162ms)
+✔ executed-flow scope retains independently failed missing packets as explicit diagnostics without claiming full notification coverage (0.963648ms)
+✔ executed-flow scope still rejects missing successful activity and every captured/history status reversal (5.696013ms)
+✔ a failed source hint without independently confirmed failed history remains unavailable, and malformed status cannot waive evidence (6.622286ms)
+✔ adaptive paging preserves actual elapsed/refusal failures and never retries them as an escalation (4.468393ms)
+✔ final admission clock failure clears packet and executed-flow completeness flags (0.726858ms)
+✖ test/native-flow-heartbeat.test.ts (1985.739655ms)
+✖ test/native-paper-interop.test.ts (79.251788ms)
+✖ test/native-research-profile-integration.test.ts
+✖ test/native-research-profile.test.ts
+✖ test/native-settled-recovery.test.ts
+✖ test/native-source-fatal-policy.test.ts
+✖ test/native-startup-integration.test.ts
+✖ test/native-transport-yield.test.ts
+✖ test/native-two-hour-accounting.test.ts
+✖ test/network.test.ts
+✖ test/observation-age-study.test.ts
+✖ test/observation-age.test.ts
+✖ test/observation-cutoff.test.ts
+✖ test/observation.test.ts
+✖ test/origin-network-policy.test.ts
+✖ test/overnight-corrected-replay.test.ts
+✖ test/overnight-field.test.ts
+✖ test/overnight-notifications.test.ts
+✖ test/paper-mode-readiness.test.ts
+✖ test/pilot-capacity-recovery.test.ts
+✖ test/pilot-concurrency.test.ts
+✖ test/pilot-cpu-assessment.test.ts
+✖ test/pilot-discovery.test.ts
+✖ test/pilot-feeds.test.ts
+✖ test/pilot-integration.test.ts
+✖ test/pilot-launcher.test.ts
+✖ test/pilot-mapper-forward.test.ts
+✖ test/pilot-market-registry.test.ts
+✖ test/pilot-market.test.ts
+✖ test/pilot-native-flow.test.ts
+✖ test/pilot-origin-recovery.test.ts
+✖ test/pilot-reporting.test.ts
+✖ test/pilot-rpc-derived-status.test.ts
+✖ test/pilot-rpc-minute-research.test.ts
+✖ test/pilot-rpc-query-timeout.test.ts
+✖ test/pilot-rpc.test.ts
+✖ test/pilot-stage.test.ts
+✖ test/pilot-start-configuration.test.ts
+✖ test/pilot-trader.test.ts
+✖ test/pilot-watch-feed.test.ts
+✖ test/pilot-watch-lookup.test.ts
+✖ test/pilot-watch-prepared-selection.test.ts
+✖ test/pilot-watch.test.ts
+✖ test/pool.test.ts
+✖ test/predictive-assessment.test.ts
+✖ test/prepare-standing-subject.test.ts
+✖ test/program-log-identity.test.ts
+✖ test/program-log-mapping.test.ts
+✖ test/progressive-pilot-fixture.test.ts
+✖ test/progressive-scheduler.test.ts
+✖ test/protocol-classic-burn.test.ts
+✖ test/protocol-flow-evidence.test.ts
+✖ test/protocol-pool-effect.test.ts
+✖ test/pumpapi-exact-buy.test.ts
+✖ test/pumpapi-field-capture.test.ts
+✖ test/pumpapi-mapping.test.ts
+✖ test/pumpapi-probe.test.ts
+✖ test/pumpapi-short-exact-buy.test.ts
+✖ test/reporting.test.ts
+✖ test/research-baseline.test.ts
+✖ test/research-clock-pricing.test.ts
+✖ test/research-dispatch.test.ts
+✖ test/research-end-to-end.test.ts
+✖ test/research-held-market.test.ts
+✖ test/research-pacing.test.ts
+✖ test/research-phase.test.ts
+✖ test/research-pricing.test.ts
+✖ test/research-rpc.test.ts
+✖ test/research-scheduler-execution.test.ts
+✖ test/rpc-market.test.ts
+✖ test/rpc-minute-workload.test.ts
+✖ test/runtime.test.ts
+✖ test/scheduler-forward-audit.test.ts
+✖ test/scheduler-forward-evidence.test.ts
+✖ test/scheduler-forward-launcher.test.ts
+✖ test/scheduler-forward-preflight.test.ts
+✖ test/scheduler-forward-runner.test.ts
+✖ test/scheduler-proposal.test.ts
+✖ test/selection-rejections.test.ts
+✖ test/shared-scheduler-trace.test.ts
+✖ test/source-version.test.ts
+✖ test/standing-research.test.ts
+✖ test/strategy.test.ts
+✖ test/summarize-pilot.test.ts
+✖ test/trader.test.ts
+✖ test/valuation.test.ts
+ℹ tests 564
+ℹ suites 0
+ℹ pass 476
+ℹ fail 1
+ℹ cancelled 87
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 77389.411334
+
+✖ failing tests:
+
+test at test/account.test.ts:1:17587
+✖ compiled and TSX account CLIs dispatch through directory symlinks and preserve existing inception (20090.058966ms)
+  Error: Command failed: /opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node node_modules/typescript/bin/tsc --outDir /workspace/poe-native-audit-http-repair/.poe-account-entrypoint-fixture-WaTjvF/compiled --noEmit false
+  
+      at genericNodeError (node:internal/errors:985:15)
+      at wrappedFn (node:internal/errors:539:14)
+      at ChildProcess.exithandler (node:child_process:417:12)
+      at ChildProcess.emit (node:events:509:28)
+      at maybeClose (node:internal/child_process:1141:16)
+      at ChildProcess._handle.onexit (node:internal/child_process:306:5) {
+    code: null,
+    killed: true,
+    signal: 'SIGTERM',
+    cmd: '/opt/codex/runtimes/codex-primary-runtime/dependencies/node/bin/node node_modules/typescript/bin/tsc --outDir /workspace/poe-native-audit-http-repair/.poe-account-entrypoint-fixture-WaTjvF/compiled --noEmit false',
+    stdout: '',
+    stderr: ''
+  }
+
+test at test/backup.test.ts:1:1
+✖ test/backup.test.ts (64944.903608ms)
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-flow-heartbeat.test.ts:1:1
+✖ test/native-flow-heartbeat.test.ts (1985.739655ms)
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-paper-interop.test.ts:1:1
+✖ test/native-paper-interop.test.ts (79.251788ms)
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-research-profile-integration.test.ts:1:1
+✖ test/native-research-profile-integration.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-research-profile.test.ts:1:1
+✖ test/native-research-profile.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-settled-recovery.test.ts:1:1
+✖ test/native-settled-recovery.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-source-fatal-policy.test.ts:1:1
+✖ test/native-source-fatal-policy.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-startup-integration.test.ts:1:1
+✖ test/native-startup-integration.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-transport-yield.test.ts:1:1
+✖ test/native-transport-yield.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/native-two-hour-accounting.test.ts:1:1
+✖ test/native-two-hour-accounting.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/network.test.ts:1:1
+✖ test/network.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/observation-age-study.test.ts:1:1
+✖ test/observation-age-study.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/observation-age.test.ts:1:1
+✖ test/observation-age.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/observation-cutoff.test.ts:1:1
+✖ test/observation-cutoff.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/observation.test.ts:1:1
+✖ test/observation.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/origin-network-policy.test.ts:1:1
+✖ test/origin-network-policy.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/overnight-corrected-replay.test.ts:1:1
+✖ test/overnight-corrected-replay.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/overnight-field.test.ts:1:1
+✖ test/overnight-field.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/overnight-notifications.test.ts:1:1
+✖ test/overnight-notifications.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/paper-mode-readiness.test.ts:1:1
+✖ test/paper-mode-readiness.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-capacity-recovery.test.ts:1:1
+✖ test/pilot-capacity-recovery.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-concurrency.test.ts:1:1
+✖ test/pilot-concurrency.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-cpu-assessment.test.ts:1:1
+✖ test/pilot-cpu-assessment.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-discovery.test.ts:1:1
+✖ test/pilot-discovery.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-feeds.test.ts:1:1
+✖ test/pilot-feeds.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-integration.test.ts:1:1
+✖ test/pilot-integration.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-launcher.test.ts:1:1
+✖ test/pilot-launcher.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-mapper-forward.test.ts:1:1
+✖ test/pilot-mapper-forward.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-market-registry.test.ts:1:1
+✖ test/pilot-market-registry.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-market.test.ts:1:1
+✖ test/pilot-market.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-native-flow.test.ts:1:1
+✖ test/pilot-native-flow.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-origin-recovery.test.ts:1:1
+✖ test/pilot-origin-recovery.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-reporting.test.ts:1:1
+✖ test/pilot-reporting.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-rpc-derived-status.test.ts:1:1
+✖ test/pilot-rpc-derived-status.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-rpc-minute-research.test.ts:1:1
+✖ test/pilot-rpc-minute-research.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-rpc-query-timeout.test.ts:1:1
+✖ test/pilot-rpc-query-timeout.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-rpc.test.ts:1:1
+✖ test/pilot-rpc.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-stage.test.ts:1:1
+✖ test/pilot-stage.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-start-configuration.test.ts:1:1
+✖ test/pilot-start-configuration.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-trader.test.ts:1:1
+✖ test/pilot-trader.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-watch-feed.test.ts:1:1
+✖ test/pilot-watch-feed.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-watch-lookup.test.ts:1:1
+✖ test/pilot-watch-lookup.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-watch-prepared-selection.test.ts:1:1
+✖ test/pilot-watch-prepared-selection.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pilot-watch.test.ts:1:1
+✖ test/pilot-watch.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pool.test.ts:1:1
+✖ test/pool.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/predictive-assessment.test.ts:1:1
+✖ test/predictive-assessment.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/prepare-standing-subject.test.ts:1:1
+✖ test/prepare-standing-subject.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/program-log-identity.test.ts:1:1
+✖ test/program-log-identity.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/program-log-mapping.test.ts:1:1
+✖ test/program-log-mapping.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/progressive-pilot-fixture.test.ts:1:1
+✖ test/progressive-pilot-fixture.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/progressive-scheduler.test.ts:1:1
+✖ test/progressive-scheduler.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/protocol-classic-burn.test.ts:1:1
+✖ test/protocol-classic-burn.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/protocol-flow-evidence.test.ts:1:1
+✖ test/protocol-flow-evidence.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/protocol-pool-effect.test.ts:1:1
+✖ test/protocol-pool-effect.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pumpapi-exact-buy.test.ts:1:1
+✖ test/pumpapi-exact-buy.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pumpapi-field-capture.test.ts:1:1
+✖ test/pumpapi-field-capture.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pumpapi-mapping.test.ts:1:1
+✖ test/pumpapi-mapping.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pumpapi-probe.test.ts:1:1
+✖ test/pumpapi-probe.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/pumpapi-short-exact-buy.test.ts:1:1
+✖ test/pumpapi-short-exact-buy.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/reporting.test.ts:1:1
+✖ test/reporting.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-baseline.test.ts:1:1
+✖ test/research-baseline.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-clock-pricing.test.ts:1:1
+✖ test/research-clock-pricing.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-dispatch.test.ts:1:1
+✖ test/research-dispatch.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-end-to-end.test.ts:1:1
+✖ test/research-end-to-end.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-held-market.test.ts:1:1
+✖ test/research-held-market.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-pacing.test.ts:1:1
+✖ test/research-pacing.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-phase.test.ts:1:1
+✖ test/research-phase.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-pricing.test.ts:1:1
+✖ test/research-pricing.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-rpc.test.ts:1:1
+✖ test/research-rpc.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/research-scheduler-execution.test.ts:1:1
+✖ test/research-scheduler-execution.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/rpc-market.test.ts:1:1
+✖ test/rpc-market.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/rpc-minute-workload.test.ts:1:1
+✖ test/rpc-minute-workload.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/runtime.test.ts:1:1
+✖ test/runtime.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/scheduler-forward-audit.test.ts:1:1
+✖ test/scheduler-forward-audit.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/scheduler-forward-evidence.test.ts:1:1
+✖ test/scheduler-forward-evidence.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/scheduler-forward-launcher.test.ts:1:1
+✖ test/scheduler-forward-launcher.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/scheduler-forward-preflight.test.ts:1:1
+✖ test/scheduler-forward-preflight.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/scheduler-forward-runner.test.ts:1:1
+✖ test/scheduler-forward-runner.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/scheduler-proposal.test.ts:1:1
+✖ test/scheduler-proposal.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/selection-rejections.test.ts:1:1
+✖ test/selection-rejections.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/shared-scheduler-trace.test.ts:1:1
+✖ test/shared-scheduler-trace.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/source-version.test.ts:1:1
+✖ test/source-version.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/standing-research.test.ts:1:1
+✖ test/standing-research.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/strategy.test.ts:1:1
+✖ test/strategy.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/summarize-pilot.test.ts:1:1
+✖ test/summarize-pilot.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/trader.test.ts:1:1
+✖ test/trader.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'
+
+test at test/valuation.test.ts:1:1
+✖ test/valuation.test.ts
+  'Promise resolution is still pending but the event loop has already resolved'

@@ -1,0 +1,292 @@
+{
+  "schemaVersion": 1,
+  "classification": "ISOLATED_HYPOTHETICAL_HOLDING_PUBLIC_RPC_BATCH_TEST",
+  "startedAt": "2026-10-27T01:34:41.927Z",
+  "completedAt": "2026-10-27T01:34:42.824Z",
+  "actualWallMs": 897.441847,
+  "sourceVersion": {
+    "commit": "6a831a2cdf0e8649b740ef4b0c7229696e085618",
+    "dirty": true
+  },
+  "sourceHashes": {
+    "src/pool.ts": "7ad31c8eff0eb6331bd439889c897e0cd58b536a1ca370d3311f23b4d7a1915c",
+    "src/network.ts": "db385176ffe1f89eb7f5a3811a5b81c39b98a0d755e825b05af0d73d06294505",
+    "src/source-version.ts": "c8b3c5de50c958470041a2f4ce6f7d1f4a35a1a628531bb1573610845e0e46f7",
+    "scripts/batched-pricing-probe.ts": "9b95fccd8dc457ba2da27e1a99a7ec1ce4b48731b11b5e1eab2b42ef76f65bd3"
+  },
+  "productionChanged": false,
+  "financialAccountCreated": false,
+  "paperEntriesEnabled": false,
+  "naturalPaperTrades": 0,
+  "liveTradingDisabled": true,
+  "providerCredentialsLoaded": false,
+  "apiDataChargeUsd": "0",
+  "networkTransferAllocationVerified": false,
+  "hardLimits": {
+    "calls": 9,
+    "totalResponseBytes": 8388608,
+    "singleResponseBytes": 2000000,
+    "wallMs": 30000,
+    "rssBytes": 268435456,
+    "recordBytes": 3000000
+  },
+  "cohort": [
+    {
+      "mint": "CRpqtPYyBckKTwgrixiPBYQsi6YESBxA8LMJ5p3fpump",
+      "hypotheticalBaseUnits": "11376382925120",
+      "migrationSlot": 461880832,
+      "proof": "evidence/free-data-20261027/discovery/evidence/integration-proof-2026-10-27T01-15-44.429Z.json",
+      "selection": "first successful next observed migration; supported real pool"
+    },
+    {
+      "mint": "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump",
+      "hypotheticalBaseUnits": "25229743127804",
+      "migrationSlot": 461852043,
+      "proof": "evidence/integration-proof-2026-10-26T23-32-41.255Z.json",
+      "selection": "previously captured supported pool; now outside candidate age, hypothetical held pricing only"
+    }
+  ],
+  "rpc": {
+    "profile": "runtime",
+    "calls": 9,
+    "bytes": 38298,
+    "inFlight": 0,
+    "rollingMinuteCalls": 9,
+    "rollingMinuteLimit": 9,
+    "durationSamples": 9
+  },
+  "callsByMethod": {
+    "getMultipleAccounts": 6,
+    "getBlockTime": 3
+  },
+  "durationsMs": [
+    273.20774000000006,
+    72.03945999999996,
+    64.54015500000014,
+    84.21716300000003,
+    62.99657199999979,
+    51.66489200000001,
+    63.12988099999984,
+    78.84493300000008,
+    64.0325969999999
+  ],
+  "rounds": [
+    {
+      "round": 0,
+      "availableAt": 1793064882360,
+      "durationMs": 432.00304900000003,
+      "calls": 3,
+      "context": {
+        "slot": 461886046,
+        "requestedAt": "2026-10-27T01:34:42.210Z",
+        "receivedAt": "2026-10-27T01:34:42.282Z",
+        "marketBlockTime": 1793064881
+      },
+      "unavailable": {},
+      "quotes": {
+        "CRpqtPYyBckKTwgrixiPBYQsi6YESBxA8LMJ5p3fpump": {
+          "sell": {
+            "inputBaseUnits": "11376382925120",
+            "outputLamports": "513711",
+            "grossCurveOutputLamports": "520216",
+            "embeddedPoolFeeLamports": "6505"
+          },
+          "slot": 461886046,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "mintExtensions": [
+            "MetadataPointer",
+            "TokenMetadata"
+          ],
+          "feeBps": {
+            "lpFeeBps": "2",
+            "protocolFeeBps": "93",
+            "creatorFeeBps": "30"
+          },
+          "rawQuoteReserve": "47415416",
+          "virtualQuoteReserves": "-6984867",
+          "effectiveQuoteReserve": "40430549",
+          "requestedAt": "2026-10-27T01:34:42.210Z",
+          "receivedAt": "2026-10-27T01:34:42.282Z",
+          "validatedAt": "2026-10-27T01:34:42.355Z",
+          "sourceAgeAtAvailabilityMs": 78
+        },
+        "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump": {
+          "sell": {
+            "inputBaseUnits": "25229743127804",
+            "outputLamports": "229733",
+            "grossCurveOutputLamports": "232642",
+            "embeddedPoolFeeLamports": "2909"
+          },
+          "slot": 461886046,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "mintExtensions": [
+            "MetadataPointer",
+            "TokenMetadata"
+          ],
+          "feeBps": {
+            "lpFeeBps": "2",
+            "protocolFeeBps": "93",
+            "creatorFeeBps": "30"
+          },
+          "rawQuoteReserve": "10882084",
+          "virtualQuoteReserves": "-23315",
+          "effectiveQuoteReserve": "10858769",
+          "requestedAt": "2026-10-27T01:34:42.210Z",
+          "receivedAt": "2026-10-27T01:34:42.282Z",
+          "validatedAt": "2026-10-27T01:34:42.360Z",
+          "sourceAgeAtAvailabilityMs": 78
+        }
+      },
+      "sameCapturedBytesSingleHelperParity": true
+    },
+    {
+      "round": 1,
+      "availableAt": 1793064882585,
+      "durationMs": 209.250131,
+      "calls": 3,
+      "context": {
+        "slot": 461886047,
+        "requestedAt": "2026-10-27T01:34:42.463Z",
+        "receivedAt": "2026-10-27T01:34:42.526Z",
+        "marketBlockTime": 1793064882
+      },
+      "unavailable": {},
+      "quotes": {
+        "CRpqtPYyBckKTwgrixiPBYQsi6YESBxA8LMJ5p3fpump": {
+          "sell": {
+            "inputBaseUnits": "11376382925120",
+            "outputLamports": "513711",
+            "grossCurveOutputLamports": "520216",
+            "embeddedPoolFeeLamports": "6505"
+          },
+          "slot": 461886047,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "mintExtensions": [
+            "MetadataPointer",
+            "TokenMetadata"
+          ],
+          "feeBps": {
+            "lpFeeBps": "2",
+            "protocolFeeBps": "93",
+            "creatorFeeBps": "30"
+          },
+          "rawQuoteReserve": "47415416",
+          "virtualQuoteReserves": "-6984867",
+          "effectiveQuoteReserve": "40430549",
+          "requestedAt": "2026-10-27T01:34:42.463Z",
+          "receivedAt": "2026-10-27T01:34:42.526Z",
+          "validatedAt": "2026-10-27T01:34:42.581Z",
+          "sourceAgeAtAvailabilityMs": 59
+        },
+        "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump": {
+          "sell": {
+            "inputBaseUnits": "25229743127804",
+            "outputLamports": "229733",
+            "grossCurveOutputLamports": "232642",
+            "embeddedPoolFeeLamports": "2909"
+          },
+          "slot": 461886047,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "mintExtensions": [
+            "MetadataPointer",
+            "TokenMetadata"
+          ],
+          "feeBps": {
+            "lpFeeBps": "2",
+            "protocolFeeBps": "93",
+            "creatorFeeBps": "30"
+          },
+          "rawQuoteReserve": "10882084",
+          "virtualQuoteReserves": "-23315",
+          "effectiveQuoteReserve": "10858769",
+          "requestedAt": "2026-10-27T01:34:42.463Z",
+          "receivedAt": "2026-10-27T01:34:42.526Z",
+          "validatedAt": "2026-10-27T01:34:42.585Z",
+          "sourceAgeAtAvailabilityMs": 59
+        }
+      },
+      "sameCapturedBytesSingleHelperParity": true
+    },
+    {
+      "round": 2,
+      "availableAt": 1793064882813,
+      "durationMs": 216.39204700000005,
+      "calls": 3,
+      "context": {
+        "slot": 461886048,
+        "requestedAt": "2026-10-27T01:34:42.662Z",
+        "receivedAt": "2026-10-27T01:34:42.741Z",
+        "marketBlockTime": 1793064882
+      },
+      "unavailable": {},
+      "quotes": {
+        "CRpqtPYyBckKTwgrixiPBYQsi6YESBxA8LMJ5p3fpump": {
+          "sell": {
+            "inputBaseUnits": "11376382925120",
+            "outputLamports": "513711",
+            "grossCurveOutputLamports": "520216",
+            "embeddedPoolFeeLamports": "6505"
+          },
+          "slot": 461886048,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "mintExtensions": [
+            "MetadataPointer",
+            "TokenMetadata"
+          ],
+          "feeBps": {
+            "lpFeeBps": "2",
+            "protocolFeeBps": "93",
+            "creatorFeeBps": "30"
+          },
+          "rawQuoteReserve": "47415416",
+          "virtualQuoteReserves": "-6984867",
+          "effectiveQuoteReserve": "40430549",
+          "requestedAt": "2026-10-27T01:34:42.662Z",
+          "receivedAt": "2026-10-27T01:34:42.741Z",
+          "validatedAt": "2026-10-27T01:34:42.808Z",
+          "sourceAgeAtAvailabilityMs": 72
+        },
+        "2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump": {
+          "sell": {
+            "inputBaseUnits": "25229743127804",
+            "outputLamports": "229733",
+            "grossCurveOutputLamports": "232642",
+            "embeddedPoolFeeLamports": "2909"
+          },
+          "slot": 461886048,
+          "tokenProgram": "TokenzQdBNbLqP5VEhdkAS6EPFLC1PHnBqCXEpPxuEb",
+          "mintExtensions": [
+            "MetadataPointer",
+            "TokenMetadata"
+          ],
+          "feeBps": {
+            "lpFeeBps": "2",
+            "protocolFeeBps": "93",
+            "creatorFeeBps": "30"
+          },
+          "rawQuoteReserve": "10882084",
+          "virtualQuoteReserves": "-23315",
+          "effectiveQuoteReserve": "10858769",
+          "requestedAt": "2026-10-27T01:34:42.662Z",
+          "receivedAt": "2026-10-27T01:34:42.741Z",
+          "validatedAt": "2026-10-27T01:34:42.812Z",
+          "sourceAgeAtAvailabilityMs": 72
+        }
+      },
+      "sameCapturedBytesSingleHelperParity": true
+    }
+  ],
+  "failure": null,
+  "resources": {
+    "cpuMs": 300.202,
+    "peakSampledRssBytes": 144625664,
+    "currentRssBytes": 147771392
+  },
+  "limitations": [
+    "Three immediate rounds are a small current quote probe, not continuous freshness/position-protection acceptance.",
+    "Quantities are hypothetical retained integration sizes, not new accounts, balances, positions, trades or performance.",
+    "Two pool dependency sets share one actual confirmed batch context; USD is absent and no cross-source atomicity is asserted.",
+    "The established helper is compared with identical captured bytes offline; no provider completeness is implied.",
+    "No account subscriptions or flow reconstruction are measured by this probe."
+  ]
+}

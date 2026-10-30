@@ -1,0 +1,11 @@
+{
+  "transportSha256": "093f5d27c1eb0047328ea7420cb2859c76e23c45d4f22d8b6c21ff4770d536f7",
+  "packedBytes": 2042725,
+  "rawBytes": 7646262,
+  "files": 14,
+  "source": {
+    "commit": "5e55d8b939de99698ddb311a282461931fcbc957",
+    "sha256": "531012e82b6cb86149350ec4478c1f7a7b87b6f35f08f3b1f32447f05cd31eaa"
+  },
+  "indexSha256": "fa616981e2a86aec0f9c2711d0b3c961eb5ab922791f49e2a4e7e372497a84dd"
+}

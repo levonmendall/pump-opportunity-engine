@@ -1,0 +1,28 @@
+{
+  "schemaVersion": 1,
+  "reportingCommit": "9161d3849eae1ffa549a6afa2a1c263b6f3d1185",
+  "deploymentId": "dep-dbgl96ugekts73889s40",
+  "runId": "pilot-20261028022044929-0a67e810",
+  "sourceCommit": "e69ad8bf012582a004b1820f28743e6e3e34d056",
+  "sourceSha256": "07590f2df97516d595f24bc7d12ec3b5041b91d275bac101cd643bd86e6bc16b",
+  "configurationHash": "4f159a554019e1d9c52af7df825b4ccbd4e43dedae5ead7ef771013c2001a18d",
+  "startedAt": "2026-10-28T02:20:44.929Z",
+  "sourceTimestamps": [
+    "2026-10-28T02:22:52.032Z",
+    "2026-10-28T02:23:07.105Z"
+  ],
+  "comparisonTimestamps": [
+    "2026-10-28T02:23:04.498Z",
+    "2026-10-28T02:23:14.667Z"
+  ],
+  "twoDistinctExactMatches": true,
+  "scope": "account/inception/run/source identity, running state, age policy, age cohort/observation queues and promotion counters",
+  "entriesEnabled": false,
+  "financialExecutionAuthorized": false,
+  "financialBoundaryEvidence": "read-only local status at generatedAt1793154177034; mode candidate-evaluation",
+  "newMarketRequests": 0,
+  "sourceCodeChanges": false,
+  "deploymentChanges": false,
+  "repeatedUiTests": false,
+  "errors": []
+}

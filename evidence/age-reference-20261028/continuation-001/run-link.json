@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "createdAt": "2026-10-28T02:01:59.717Z",
+  "frozenRun": {
+    "id": "pilot-20261028015809342-f9514585",
+    "startedAt": "2026-10-28T01:58:09.342Z",
+    "durationSeconds": 900,
+    "deepSlots": 6,
+    "mode": "CANDIDATE_ONLY",
+    "sourceCommit": "1657bb407d82ada68e9b6aa82f93c1573119ec24",
+    "configurationHash": "4f159a554019e1d9c52af7df825b4ccbd4e43dedae5ead7ef771013c2001a18d"
+  },
+  "referenceReceipt": {
+    "file": "receipt.json",
+    "sha256": "4ed13e139e6f00a1c57b3e51965cfe7ac90e2590e10445bc07044f7e9bc5f4f6"
+  },
+  "collectionStartedAfterRunStartMs": 163364,
+  "populationFrozenAfterRunStartMs": 199709,
+  "notAnExactStartCensus": true,
+  "reads": "Four indexed HTTPS requests only; no Solana RPC or pilot-state reads",
+  "originalFailedRequestAndUncertaintyPreserved": true
+}

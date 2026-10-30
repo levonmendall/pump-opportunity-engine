@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "source": {
+    "commit": "5e55d8b939de99698ddb311a282461931fcbc957",
+    "sha256": "531012e82b6cb86149350ec4478c1f7a7b87b6f35f08f3b1f32447f05cd31eaa"
+  },
+  "dataContract": "confirmed-program-activity-v3-shadow",
+  "observationAgePolicy": "observation-age-v1",
+  "priorPhysicalSettled": true,
+  "priorCooldownUntil": 0,
+  "baselinePaths": [
+    "/var/lib/poe/native-engine/research-baseline.json"
+  ],
+  "baselineCheckpointSha256": "7c26978f49f0edbb6026766645e8dbbb0af006a7874cdb89949d92cf58ec1a43",
+  "reportingBinding": {
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": 1793052456212,
+    "sourceStatusSha256": "9e96f7504e7396dc8f0ec2c89829eb59ea1c3668cf19bc4487246213098aadeb"
+  },
+  "origins": []
+}

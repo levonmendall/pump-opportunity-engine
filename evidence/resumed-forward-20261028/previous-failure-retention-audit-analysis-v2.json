@@ -1,0 +1,3576 @@
+{
+  "schemaVersion": 1,
+  "classification": "ACTUAL_RETAINED_NATIVE_FORWARD_OBSERVATIONS_NOT_REPLAY_OR_ACCEPTANCE",
+  "analyzedAt": "2026-10-28T14:39:01.098Z",
+  "source": {
+    "commit": "c5ce87b858a6655c4f5dd80e8887554b84717415",
+    "sha256": "c848f60362ad19f290bfcbde64b252bb5309a26fe56a19c37785b76e95274540",
+    "runId": "native-candidates-20261028061222894",
+    "configurationSha256": "8d1fe7e927d3253a5d98aae2bf5a3a2a3bb50e4070407aa16a20470c65aa81c8",
+    "dataContract": "confirmed-program-activity-v3-shadow",
+    "researchProfile": "candidate-native-two-hour-research-v1"
+  },
+  "interval": {
+    "startedAt": 1793167942894,
+    "endedAt": 1793168144920,
+    "elapsedMs": 202026,
+    "plannedDurationMs": 7200000,
+    "stopReason": "NATIVE_RESEARCH_FLOW_FATAL:NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+    "logicalObservationCutoffAt": 1793175132894,
+    "stopRequestedAt": 1793168144730,
+    "transportSettledAt": 1793168144920,
+    "physicalSettlementConfirmed": true,
+    "supervisorRuntimeOutcome": {
+      "classification": "interrupted-or-failed-source-stop",
+      "mechanicallyCompleted": false,
+      "failureReason": "NATIVE_RESEARCH_SOURCE_STOP_NOT_NORMAL",
+      "sourceStopReason": "NATIVE_RESEARCH_FLOW_FATAL:NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+      "sourceRpcFatalState": null,
+      "plannedRunDurationMs": 7200000,
+      "shutdownReserveMs": 10000,
+      "plannedAdmissionDurationMs": 7190000,
+      "actualRunElapsedMs": 202026,
+      "actualWallSpanMs": 202026,
+      "logicalObservationCutoffAt": 1793175132894,
+      "expectedLogicalObservationCutoffAt": 1793175132894,
+      "stopRequestedAt": 1793168144730,
+      "plannedAdmissionCutoffReached": false,
+      "candidateWindowEvidence": {
+        "auditedWindows": 2,
+        "predictiveAssessments": 2,
+        "uniqueEvaluated": 2,
+        "classification": "audited-window-views-recorded-not-readiness",
+        "overlappingViewsAreNotIndependentCoverage": true,
+        "mechanicalCompletionIsNotWindowValidation": true
+      },
+      "reportingMeaning": "Receiver acceptance and physical settlement are evaluated separately; neither makes a fatal or premature source interval successful."
+    },
+    "acceptance": false
+  },
+  "summary": {
+    "eventRows": 18256,
+    "normalizedTrades": 591,
+    "normalizationsAccountedByTerminalNotificationRows": 591,
+    "normalizationsNotAccountedByTerminalRows": 0,
+    "protocolEffects": 10,
+    "uniqueSelectedSignatures": 6353,
+    "validatedPacketUniqueSignatures": 6353,
+    "informationAdmittedUniqueSignatures": 6352,
+    "refusedUniqueSignatures": 0,
+    "allocationEvents": 11,
+    "uniqueAllocatedTokens": 7,
+    "maximumSimultaneousCandidatesRecorded": 5,
+    "peakActiveAllocationsReconstructed": 5,
+    "peakAckedScopesReconstructed": 5,
+    "rawCompleteEndpoints": 9,
+    "uniqueRawCompleteTokens": 4,
+    "verifiedHistoryEndpoints": 2,
+    "admittedPredictiveAssessments": 2,
+    "uniquePredictivelyEvaluatedTokens": 2,
+    "predictiveStatuses": {
+      "failed": 2
+    },
+    "rawEndpointsWithoutAdmittedAssessment": 7,
+    "decisionDeadlineMisses": 5,
+    "qualityGaps": 9,
+    "financialQualifications": 0,
+    "orders": 0,
+    "positions": 0,
+    "pnl": null
+  },
+  "coverage": {
+    "rawCompleteTokenUnionMs": 290000,
+    "rawCompleteWallUnionMs": 150000,
+    "verifiedHistoryTokenUnionMs": 120000,
+    "verifiedHistoryWallUnionMs": 70000,
+    "assessedTokenUnionMs": 120000,
+    "assessedWallUnionMs": 70000,
+    "meaning": "Unioned overlapping60s lookbacks; endpoints are not independent minutes. History verification alone is not timely predictive admission or financial qualification."
+  },
+  "notificationRetention": {
+    "contract": {
+      "version": "candidate-native-two-hour-research-v1",
+      "mode": "candidate-evaluation",
+      "financialExecutionAuthorized": false,
+      "durationMs": 7200000,
+      "maximumDurationMs": 7200000,
+      "shutdownReserveMs": 10000,
+      "statusSnapshotArchive": {
+        "initialFullSnapshots": 4,
+        "minimumLaterIntervalMs": 3600000
+      },
+      "maximumDeep": 6,
+      "maximumUnits": 7500,
+      "maximumChapters": 64,
+      "maximumBaselinePaths": 192,
+      "maximumTotalBaselinePaths": 256,
+      "maximumComponentBookBytes": 524288,
+      "maximumBaselineBytes": 33554432,
+      "maximumRpcMetadataBytes": 2097152,
+      "relatedResponseBytes": 2415919104,
+      "nativeSocketBytes": 2147483648,
+      "nativeRecordedBytes": 939524096,
+      "broadWatchBytes": 8589934592,
+      "discoveryBytes": 41943040,
+      "feedRecordedBytes": 67108864,
+      "retainedEvidenceBytes": 1073741824,
+      "evidenceSegmentBytes": 8388608,
+      "maximumRssBytes": 402653184,
+      "maximumCpuMicros": 1920000000,
+      "startupDiskHeadroom": 1409286144,
+      "additionalDiskReserveBytes": 67108864,
+      "minimumDiskHeadroom": 268435456,
+      "maximumDiscoveryQueue": 256,
+      "physical": {
+        "startsPerMinute": 60,
+        "startsPer10s": 20,
+        "spacingMs": 250,
+        "inFlight": 1,
+        "getTransactionStartsPer10s": 8
+      },
+      "dataValidity": {
+        "supportAgeMs": 30000,
+        "heartbeatIntervalMs": 10000,
+        "physicalTimeoutMs": 1500,
+        "watchdogIntervalMs": 100,
+        "completeWindowMs": 60000,
+        "bucketMs": 10000
+      },
+      "classification": "PROVISIONAL FINITE RESEARCH CEILINGS; NOT TWO-HOUR CAPACITY OR PROVIDER ENTITLEMENT",
+      "infrastructureCost": "Existing compute and transfer allowance/cost unverified; zero API purchase is not zero total cost."
+    },
+    "sourceNotificationLedgerPolicy": null,
+    "sampledRetention": [],
+    "sampledCompactedRowsLowerBound": 0,
+    "capacityRefusals": [],
+    "sourceWideLedgerTermination": true,
+    "sourceContinuedMsAfterFirstCapacityRefusal": null,
+    "predictiveAssessmentsAfterFirstCapacityRefusal": 0,
+    "rawRefusalEvidence": [],
+    "ignoredAfterGapNotifications": 0,
+    "retiredNotifications": 0,
+    "duplicates": 0,
+    "corrections": 0,
+    "scopeBindingUnknownParsedNotifications": 6353,
+    "receiptToValidationMs": {
+      "count": 6353,
+      "minimum": 0,
+      "p50": 864,
+      "p95": 1680,
+      "maximum": 2551
+    },
+    "peakSelectedSignatureArrivals": {
+      "fiveSeconds": 636,
+      "tenSeconds": 1099,
+      "sixtySeconds": 4308
+    },
+    "meaning": "Received/validated packet records and explicit refusals are retained; periodic retention samples are lower-bound instrumentation, not a census of every compaction. Missing or invalidated data is never declared complete."
+  },
+  "audits": {
+    "sessionsOpened": 0,
+    "historyPageRecords": 2,
+    "successfulPagePhysicalMappings": 2,
+    "physicalHistoryStarts": 3,
+    "historyStartsWithoutSuccessfulPageAttribution": [
+      4823
+    ],
+    "historyOutcomes": {
+      "verified:NATIVE_AUDIT_STRICT_INTERIOR_SIGNATURES_VERIFIED": 2,
+      "unavailable:NATIVE_AUDIT_TARGET_SLOT_BOUNDARY_AMBIGUOUS": 1,
+      "unavailable:PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT": 1
+    },
+    "verifiedMultipageEndpoints": 0,
+    "maximumPagesActuallyRecorded": 1,
+    "historyRowsPerOutcome": {
+      "count": 4,
+      "minimum": 0,
+      "p50": 0,
+      "p95": 1000,
+      "maximum": 1000
+    },
+    "requiredSignaturesPerOutcome": {
+      "count": 4,
+      "minimum": 0,
+      "p50": 0,
+      "p95": 4,
+      "maximum": 4
+    },
+    "missingNotifications": 0,
+    "unconfirmedCapturedSignatures": 0,
+    "assessmentWindowEndDelayMs": {
+      "count": 2,
+      "minimum": 2500,
+      "p50": 2500,
+      "p95": 2500,
+      "maximum": 2500
+    },
+    "firstCompleteFeatureToAssessmentMs": {
+      "count": 2,
+      "minimum": 2475,
+      "p50": 2475,
+      "p95": 2499,
+      "maximum": 2499
+    },
+    "pagesByCandidate": {
+      "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump": 1,
+      "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump": 1
+    },
+    "sessions": [
+      {
+        "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+        "targetEndAt": 1793168030000,
+        "openedAt": null,
+        "deadlineAt": null,
+        "maximumPages": 1,
+        "pages": [],
+        "outcome": {
+          "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+          "target": {
+            "startAt": 1793167970000,
+            "endAt": 1793168030000
+          },
+          "status": "verified",
+          "reason": "NATIVE_AUDIT_STRICT_INTERIOR_SIGNATURES_VERIFIED",
+          "complete": true,
+          "startedAt": 1793168031797,
+          "resultAvailableAt": 1793168032500,
+          "recordAvailableAt": 1793168032500,
+          "requestAttempts": 1,
+          "maximumPages": 1,
+          "pages": [
+            {
+              "page": 1,
+              "rows": 1000,
+              "newestSlot": 462370100,
+              "oldestSlot": 462272343,
+              "receivedAt": 1793168032480,
+              "validatedAt": 1793168032500
+            }
+          ],
+          "historyRows": 1000,
+          "historyRangeCovered": true,
+          "interiorRows": 0,
+          "requiredSignatures": 0,
+          "comparedSignatures": 0,
+          "missingNotifications": 0,
+          "unconfirmedCapturedSignatures": 0,
+          "statusDisagreements": 0,
+          "contextFences": {
+            "lower": {
+              "slot": 462370522,
+              "availableAt": 1793167969205,
+              "bankClockAt": 1793167968000
+            },
+            "upper": {
+              "slot": 462370816,
+              "availableAt": 1793168031629,
+              "bankClockAt": 1793168030000
+            }
+          },
+          "evidence": {
+            "file": "run/events/events-002.ndjson",
+            "line": 2,
+            "sha256": "cefa1c57d6b92cf4c08fdebd6e7674731f5396834e3d46d2da44d3d883050054"
+          }
+        },
+        "cancelledAt": null,
+        "sessionOpenInstrumentation": "ABSENT_IN_OLD_SOURCE"
+      },
+      {
+        "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+        "targetEndAt": 1793168030000,
+        "openedAt": null,
+        "deadlineAt": null,
+        "maximumPages": 1,
+        "pages": [],
+        "outcome": {
+          "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+          "target": {
+            "startAt": 1793167970000,
+            "endAt": 1793168030000
+          },
+          "status": "unavailable",
+          "reason": "NATIVE_AUDIT_TARGET_SLOT_BOUNDARY_AMBIGUOUS",
+          "complete": false,
+          "startedAt": 1793168033653,
+          "resultAvailableAt": 1793168033654,
+          "recordAvailableAt": 1793168033654,
+          "requestAttempts": 0,
+          "maximumPages": 1,
+          "pages": [],
+          "historyRows": 0,
+          "historyRangeCovered": false,
+          "interiorRows": 0,
+          "requiredSignatures": 4,
+          "comparedSignatures": 0,
+          "missingNotifications": 0,
+          "unconfirmedCapturedSignatures": 0,
+          "statusDisagreements": 0,
+          "contextFences": {
+            "lower": {
+              "slot": 462370522,
+              "availableAt": 1793167969209,
+              "bankClockAt": 1793167968000
+            },
+            "upper": {
+              "slot": 462370825,
+              "availableAt": 1793168033203,
+              "bankClockAt": 1793168032000
+            }
+          },
+          "evidence": {
+            "file": "run/events/events-002.ndjson",
+            "line": 33,
+            "sha256": "402780c99759cf5421d15fe6623f5a9d0ceaa99734b2f76bceb1d0bbd963f939"
+          }
+        },
+        "cancelledAt": null,
+        "sessionOpenInstrumentation": "ABSENT_IN_OLD_SOURCE"
+      },
+      {
+        "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+        "targetEndAt": 1793168040000,
+        "openedAt": null,
+        "deadlineAt": null,
+        "maximumPages": 1,
+        "pages": [],
+        "outcome": {
+          "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+          "target": {
+            "startAt": 1793167980000,
+            "endAt": 1793168040000
+          },
+          "status": "verified",
+          "reason": "NATIVE_AUDIT_STRICT_INTERIOR_SIGNATURES_VERIFIED",
+          "complete": true,
+          "startedAt": 1793168041793,
+          "resultAvailableAt": 1793168042500,
+          "recordAvailableAt": 1793168042500,
+          "requestAttempts": 1,
+          "maximumPages": 1,
+          "pages": [
+            {
+              "page": 1,
+              "rows": 1000,
+              "newestSlot": 462370575,
+              "oldestSlot": 462351117,
+              "receivedAt": 1793168042488,
+              "validatedAt": 1793168042500
+            }
+          ],
+          "historyRows": 1000,
+          "historyRangeCovered": true,
+          "interiorRows": 1,
+          "requiredSignatures": 1,
+          "comparedSignatures": 1,
+          "missingNotifications": 0,
+          "unconfirmedCapturedSignatures": 0,
+          "statusDisagreements": 0,
+          "contextFences": {
+            "lower": {
+              "slot": 462370522,
+              "availableAt": 1793167969209,
+              "bankClockAt": 1793167968000
+            },
+            "upper": {
+              "slot": 462370861,
+              "availableAt": 1793168041626,
+              "bankClockAt": 1793168040000
+            }
+          },
+          "evidence": {
+            "file": "run/events/events-002.ndjson",
+            "line": 69,
+            "sha256": "01ec3523e004a67350c0c970a57d8878e286ffef1614309b1ebc4d9ef480a735"
+          }
+        },
+        "cancelledAt": null,
+        "sessionOpenInstrumentation": "ABSENT_IN_OLD_SOURCE"
+      },
+      {
+        "mint": "FgsSTazXwy4pxjrNMuzsQbEPbYPjAW17pAN8dfRHpump",
+        "targetEndAt": 1793168140000,
+        "openedAt": null,
+        "deadlineAt": null,
+        "maximumPages": 1,
+        "pages": [],
+        "outcome": {
+          "mint": "FgsSTazXwy4pxjrNMuzsQbEPbYPjAW17pAN8dfRHpump",
+          "target": {
+            "startAt": 1793168080000,
+            "endAt": 1793168140000
+          },
+          "status": "unavailable",
+          "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+          "complete": false,
+          "startedAt": 1793168142086,
+          "resultAvailableAt": 1793168143672,
+          "recordAvailableAt": 1793168143672,
+          "requestAttempts": 1,
+          "maximumPages": 1,
+          "pages": [],
+          "historyRows": 0,
+          "historyRangeCovered": false,
+          "interiorRows": 0,
+          "requiredSignatures": 0,
+          "comparedSignatures": 0,
+          "missingNotifications": 0,
+          "unconfirmedCapturedSignatures": 0,
+          "statusDisagreements": 0,
+          "contextFences": {
+            "lower": {
+              "slot": 462371032,
+              "availableAt": 1793168077431,
+              "bankClockAt": 1793168077000
+            },
+            "upper": {
+              "slot": 462371327,
+              "availableAt": 1793168141729,
+              "bankClockAt": 1793168141000
+            }
+          },
+          "evidence": {
+            "file": "run/events/events-003.ndjson",
+            "line": 8035,
+            "sha256": "fbbbaa6f3bed1f169e0bace6a7e01774e567eaf3a263a6bb49adc6583c36d02b"
+          }
+        },
+        "cancelledAt": null,
+        "sessionOpenInstrumentation": "ABSENT_IN_OLD_SOURCE"
+      }
+    ],
+    "historyPages": [
+      {
+        "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+        "pool": "BTmHL8CAkLKovYVhE2E96PiK1iLwyxbsai3vi6GycCN",
+        "target": {
+          "startAt": 1793167970000,
+          "endAt": 1793168030000
+        },
+        "page": 1,
+        "receivedAt": 1793168032480,
+        "validatedRecordAt": 1793168032499,
+        "rows": 1000,
+        "newestSlot": 462370100,
+        "oldestSlot": 462272343,
+        "physicalId": 4769,
+        "evidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 1,
+          "sha256": "67b09f9d424527fca3585418281657f16927ac22a32ded7c732f7721273a60da"
+        },
+        "physicalStartedAt": 1793168031805,
+        "physicalSettledAt": 1793168032472,
+        "enqueuedAt": 1793168031798,
+        "startWaitMs": 7,
+        "physicalOccupancyMs": 667,
+        "postSettlementToPageValidationMs": 27
+      },
+      {
+        "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+        "pool": "5ALPjDC4WUfReszwbmZLpwwbvfyqbjWgJw4t4K6LvE2k",
+        "target": {
+          "startAt": 1793167980000,
+          "endAt": 1793168040000
+        },
+        "page": 1,
+        "receivedAt": 1793168042488,
+        "validatedRecordAt": 1793168042499,
+        "rows": 1000,
+        "newestSlot": 462370575,
+        "oldestSlot": 462351117,
+        "physicalId": 4777,
+        "evidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 68,
+          "sha256": "bd65dab27c9b74afa55fb0f48625b26855475447d1bfb82427423ea8182c7033"
+        },
+        "physicalStartedAt": 1793168041801,
+        "physicalSettledAt": 1793168042481,
+        "enqueuedAt": 1793168041795,
+        "startWaitMs": 6,
+        "physicalOccupancyMs": 680,
+        "postSettlementToPageValidationMs": 18
+      }
+    ],
+    "cancelledDiagnostics": [],
+    "predictiveDeadlineFailures": [
+      {
+        "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+        "at": 1793168020003,
+        "windowEndAt": 1793168010000,
+        "decisionDeadlineAt": 1793168020000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "evidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 380,
+          "sha256": "4f95db5b0aeac274de1a95d2b3faa22527e0c62e3b812e539e1d21c747323878"
+        }
+      },
+      {
+        "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+        "at": 1793168020003,
+        "windowEndAt": 1793168010000,
+        "decisionDeadlineAt": 1793168020000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "evidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 382,
+          "sha256": "8d77fd0113de9c04f740c2452169b62ef83e6bbb0abaac2611e44f806c41668d"
+        }
+      },
+      {
+        "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+        "at": 1793168030001,
+        "windowEndAt": 1793168020000,
+        "decisionDeadlineAt": 1793168030000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "evidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 412,
+          "sha256": "d487555aee9a4a8ab33378ed0f004854955df4b29434521acdd066e5495f01aa"
+        }
+      },
+      {
+        "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+        "at": 1793168030001,
+        "windowEndAt": 1793168020000,
+        "decisionDeadlineAt": 1793168030000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "evidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 414,
+          "sha256": "e21808da10d1c7305e8fb546ce687ff05574ef0299d28121588f833fa3caf68a"
+        }
+      },
+      {
+        "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+        "at": 1793168040025,
+        "windowEndAt": 1793168030000,
+        "decisionDeadlineAt": 1793168040000,
+        "reason": "no validated predictive decision before next completed bucket; not a strategy rejection",
+        "evidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 39,
+          "sha256": "90ec28885f67a40b4def478bb91f0420cbf74141e53056884214b014b92699a8"
+        }
+      }
+    ],
+    "otherUnavailable": [],
+    "meaning": "Session open is actual audit begin, not recorded original eligibility. Successful one-flight physical pages can be associated chronologically; unmatched failed requests have no invented candidate. A late verified result is not a complete timely evaluation."
+  },
+  "provider": {
+    "physicalStarts": 79,
+    "physicalSettlements": 79,
+    "unsettledPhysicalIds": [],
+    "reconstructedMaximumPhysicalInFlight": 1,
+    "startsByMethod": {
+      "upgrade": 4,
+      "subscribeMigration": 1,
+      "getMultipleAccounts": 33,
+      "logsSubscribe": 11,
+      "ping": 19,
+      "getSignaturesForAddress": 3,
+      "logsUnsubscribe": 2,
+      "getTransaction": 6
+    },
+    "startsPerActualMinute": 23.462326631225682,
+    "peakStartsRollingMinute": 44,
+    "peakStartsRollingTenSeconds": 18,
+    "minimumStartSpacingMs": 256,
+    "queueToStartMs": {
+      "count": 79,
+      "minimum": 6,
+      "p50": 7,
+      "p95": 154,
+      "maximum": 183
+    },
+    "physicalOccupancyMs": {
+      "count": 79,
+      "minimum": 54,
+      "p50": 121,
+      "p95": 680,
+      "maximum": 1585
+    },
+    "httpResponseAvailableMs": {
+      "count": 41,
+      "minimum": 49,
+      "p50": 106,
+      "p95": 654,
+      "maximum": 877
+    },
+    "httpStatuses": {
+      "200": 42
+    },
+    "explicit429or503": [],
+    "physicalTimeouts": [
+      {
+        "id": 4823,
+        "at": 1793168143651,
+        "scheduledAt": 1793168142094,
+        "requestedTimeoutMs": 1500,
+        "scheduledDelayMs": 1500,
+        "elapsedMonotonicMs": 1557.5809509999817,
+        "callbackLatenessMs": 57.580950999981724,
+        "kind": {
+          "transport": "http",
+          "method": "getSignaturesForAddress"
+        },
+        "evidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 8033,
+          "sha256": "aff7683eecb094a072fb6282169f320adaf03541188e38fccd4a6b6f23925e77"
+        }
+      }
+    ],
+    "localAdmissionRefusals": [],
+    "failures": [
+      {
+        "kind": "pilot-data-control-unavailable",
+        "at": 1793168073289,
+        "code": "COMPONENT_OPERATION_FAILED",
+        "controlCooldownUntil": 0,
+        "publicRpcCooldownUnchanged": true,
+        "physicalSettled": true,
+        "reservationsRetained": 65536,
+        "evidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5182,
+          "sha256": "246e91dc5bacdc3605ea32ffd3618225663fe4bcf1627d0189de2e39f1e76054"
+        },
+        "cause": "Recorded failure; only explicit HTTP status establishes a provider rejection."
+      },
+      {
+        "kind": "pilot-rpc-unavailable",
+        "at": 1793168143659,
+        "code": "COMPONENT_PHYSICAL_TIMEOUT",
+        "cooldownUntil": 1793168145659,
+        "physicalSettled": false,
+        "reservationsRetained": 2050324,
+        "evidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 8034,
+          "sha256": "97acb4245196d56893e17e0b22fc33fed5ffb7042c5d9de3f74078d21eb9992a"
+        },
+        "cause": "Recorded failure; only explicit HTTP status establishes a provider rejection."
+      }
+    ],
+    "pacingWaitRecords": 12,
+    "totalDeclaredPacingWaitMs": 1348,
+    "actualRpcCounters": {
+      "persistence": {
+        "attempts": 4856,
+        "totalMs": 31067.817569999446,
+        "maximumMs": 18.269475999986753
+      },
+      "profile": "candidate-native-two-hour-research-v1",
+      "runId": "native-candidates-20261028061222894",
+      "startedAt": 1793167942900,
+      "deadlineAt": 1793175142900,
+      "remainingMs": 6997980,
+      "chapter": 2,
+      "chapterPaths": [
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/000.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/001.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/002.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/003.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/004.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/005.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/006.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/007.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/008.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/009.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/010.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/011.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/012.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/013.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/014.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/015.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/016.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/017.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/018.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/019.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/020.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/021.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/022.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/023.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/024.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/025.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/026.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/027.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/028.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/029.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/030.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/031.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/032.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/033.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/034.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/035.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/036.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/037.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/038.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/039.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/040.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/041.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/042.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/043.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/044.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/045.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/046.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/047.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/048.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/049.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/050.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/051.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/052.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/053.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/054.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/055.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/056.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/057.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/058.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/059.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/060.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/061.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/062.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/063.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/064.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/065.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/066.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/067.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/068.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/069.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/070.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/071.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/072.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/073.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/074.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/075.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/076.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/077.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/078.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/079.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/080.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/081.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/082.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/083.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/084.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/085.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/086.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/087.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/088.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/089.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/090.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/091.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/092.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/093.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/094.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/095.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/096.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/097.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/098.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/099.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/100.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/101.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/102.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/103.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/104.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/105.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/106.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/107.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/108.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/109.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/110.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/111.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/112.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/113.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/114.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/115.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/116.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/117.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/118.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/119.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/120.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/121.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/122.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/123.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/124.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/125.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/126.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/baselines/127.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/run/rpc/chapter-001.json",
+        "/home/mm-ec2-runner/.local/share/poe-native-research/poe-native-candidates-40642437328-1/run/rpc/chapter-002.json"
+      ],
+      "activeChapterPath": null,
+      "cumulativeUnits": 4823,
+      "newUnits": 79,
+      "accountedCumulativeResponseBytes": 180492879,
+      "newAccountedResponseBytes": 12072410,
+      "maximumNewUnits": 7500,
+      "maximumNewResponseBytes": 2415919104,
+      "requestLimits": {
+        "maxStartsPer10s": 20,
+        "maxGetTransactionStartsPer10s": 8,
+        "maxStartsPerMinute": 60,
+        "minSpacingMs": 250,
+        "physicalInFlight": 1
+      },
+      "methodPacing": {
+        "getTransactionStartsLast10s": [],
+        "capacityRefusals": 0,
+        "baselineUnknownMethodsCountConservatively": true
+      },
+      "inFlight": 0,
+      "waitingOrOperating": false,
+      "uncertainResponseBytes": 51052544,
+      "currentChapterUncertainResponseBytes": 0,
+      "inheritedUncertaintyIsRetainedInBaseline": true,
+      "cooldownUntil": 1793168145659,
+      "controlCooldownUntil": 0,
+      "lastFailureWasDataControl": false,
+      "closed": true,
+      "fatal": null,
+      "chapterUsage": null,
+      "rawChapterDispatchWindow": null,
+      "dispatchWindow": null,
+      "automaticRequestRetries": 0
+    },
+    "physicalOperations": [
+      {
+        "id": 4745,
+        "method": "upgrade",
+        "transport": "ws-upgrade",
+        "enqueuedAt": 1793167943611,
+        "reservedAt": 1793167943612,
+        "startedAt": 1793167943619,
+        "recordedStartAt": 1793167943636,
+        "settledAt": 1793167943928,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 183,
+          "sha256": "4a05b2143ec07a27674079b4af457c429f1f92c3d3782f278a2e93fa8d7fe9f5"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 185,
+          "sha256": "dfe23321c30124d2e3bb012ef23e42880465afe26393921d3a148d1079c4e4bc"
+        }
+      },
+      {
+        "id": 4746,
+        "method": "subscribeMigration",
+        "transport": "ws",
+        "enqueuedAt": 1793167943938,
+        "reservedAt": 1793167943938,
+        "startedAt": 1793167943945,
+        "recordedStartAt": 1793167943951,
+        "settledAt": 1793167944061,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 187,
+          "sha256": "635bdecd01c0814b7e76059b5ab74edee09f705902cc80e1a1c6cd4c412d1d44"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 188,
+          "sha256": "3a95c88424b67e270c324c2241fdf5f6dcfe5f7612e61d0ec2a6cca3f48087af"
+        }
+      },
+      {
+        "id": 4747,
+        "method": "upgrade",
+        "transport": "ws-upgrade",
+        "enqueuedAt": 1793167944070,
+        "reservedAt": 1793167944195,
+        "startedAt": 1793167944202,
+        "recordedStartAt": 1793167944209,
+        "settledAt": 1793167944745,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 191,
+          "sha256": "7764a2f0326dc465c797d916557a2886c0d694d5316a18416163b5037a0cd85c"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 193,
+          "sha256": "ac935d26f0370ec9ad12fdec1334400f0b377a98fa0ac1d48df84b80798741ee"
+        }
+      },
+      {
+        "id": 4748,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793167944773,
+        "reservedAt": 1793167944773,
+        "startedAt": 1793167944779,
+        "recordedStartAt": 1793167944805,
+        "settledAt": 1793167944962,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 214,
+          "sha256": "ed9c7a8031b0c6a0cc92b1a4d43ed67790bb9389df92ebe9b6414ca3049e36ab"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 217,
+          "sha256": "3f56003c762b740373595f2e631ded58c2df8dfc33e1c5383cec72b238f414e8"
+        }
+      },
+      {
+        "id": 4749,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793167944978,
+        "reservedAt": 1793167945030,
+        "startedAt": 1793167945037,
+        "recordedStartAt": 1793167945044,
+        "settledAt": 1793167945137,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 220,
+          "sha256": "31c937c4a147de1edcabf3f2c186d93b33c050b26ed713181321659148338164"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 223,
+          "sha256": "740c7ea616414a72328eaee24b7e2a44d1185385e5fb7780fee9f12b97ab71d0"
+        }
+      },
+      {
+        "id": 4750,
+        "method": "upgrade",
+        "transport": "ws-upgrade",
+        "enqueuedAt": 1793167945322,
+        "reservedAt": 1793167945322,
+        "startedAt": 1793167945330,
+        "recordedStartAt": 1793167945339,
+        "settledAt": 1793167945525,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 229,
+          "sha256": "0a65d3322a511352969d803e4fd71734ae905edfc2103d7a9f2cce654418714f"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 230,
+          "sha256": "fb094b91d567c0a68b07e8b5b8d55ae54d908338eaa3d20fd4f69ce0f634c8be"
+        }
+      },
+      {
+        "id": 4751,
+        "method": "logsSubscribe",
+        "transport": "ws",
+        "enqueuedAt": 1793167945590,
+        "reservedAt": 1793167945590,
+        "startedAt": 1793167945597,
+        "recordedStartAt": 1793167945604,
+        "settledAt": 1793167945666,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 232,
+          "sha256": "1da807c0f92c3dc727e578d32423f1f6e1d28ab12c1fb20f776b48f377c40ea3"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 235,
+          "sha256": "276a0ff5a14de753a5713e68f901e653e5a308fba77f5fbe5995a9a0e26dca9a"
+        }
+      },
+      {
+        "id": 4752,
+        "method": "logsSubscribe",
+        "transport": "ws",
+        "enqueuedAt": 1793167945897,
+        "reservedAt": 1793167945897,
+        "startedAt": 1793167945904,
+        "recordedStartAt": 1793167945911,
+        "settledAt": 1793167946011,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 242,
+          "sha256": "702f9c8257e6d1adc7b1654c225e914e65561dd2b09bb81a8b447a86728370b3"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 245,
+          "sha256": "3ac0a7539d1da2f257799b022b6d3582ac9f9adfddbcf9bef2957e1bf59e9223"
+        }
+      },
+      {
+        "id": 4753,
+        "method": "ping",
+        "transport": "ws",
+        "enqueuedAt": 1793167955517,
+        "reservedAt": 1793167955517,
+        "startedAt": 1793167955524,
+        "recordedStartAt": 1793167955531,
+        "settledAt": 1793167955582,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 254,
+          "sha256": "6ac33f7f295009e7eb11dd6ae722b3cb03b3e2d304f39355426bc646f0325852"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 255,
+          "sha256": "717e9e376327cc23ba7039dcaf6c4fc4152570e6b556e35c682a89e6d166d8a2"
+        }
+      },
+      {
+        "id": 4754,
+        "method": "ping",
+        "transport": "ws",
+        "enqueuedAt": 1793167965616,
+        "reservedAt": 1793167965616,
+        "startedAt": 1793167965622,
+        "recordedStartAt": 1793167965628,
+        "settledAt": 1793167965752,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 267,
+          "sha256": "66bece537236b9bd346acc75da5042ad280a8ff22ed7a66ffbce454dfbca445c"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 268,
+          "sha256": "6352707d858d80e46e33ecf6c59c7a92235bf7ce46b4a9eeaeb169c43dc89847"
+        }
+      },
+      {
+        "id": 4755,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793167969037,
+        "reservedAt": 1793167969038,
+        "startedAt": 1793167969044,
+        "recordedStartAt": 1793167969052,
+        "settledAt": 1793167969194,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 274,
+          "sha256": "79967a65269171d34d87c0c946b1cfa751e1f3116d1a79d9b2c04f079834bcc8"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 277,
+          "sha256": "559e293a1d5f1059b55b2fd2fb1e038769bb623a89bea1dbcadf37a6196b8acb"
+        }
+      },
+      {
+        "id": 4756,
+        "method": "ping",
+        "transport": "ws",
+        "enqueuedAt": 1793167975780,
+        "reservedAt": 1793167975780,
+        "startedAt": 1793167975789,
+        "recordedStartAt": 1793167975798,
+        "settledAt": 1793167975856,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 297,
+          "sha256": "3205da02de6396e6f0eff5613b6bcb107452609a8985c0d74320d188ca3d9a98"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 298,
+          "sha256": "deb5bb2c00001b60f297fa7f92ea49ae0f0ea5ed18b83542f228cedc6b6ea26d"
+        }
+      },
+      {
+        "id": 4757,
+        "method": "ping",
+        "transport": "ws",
+        "enqueuedAt": 1793167985871,
+        "reservedAt": 1793167985871,
+        "startedAt": 1793167985878,
+        "recordedStartAt": 1793167985885,
+        "settledAt": 1793167985953,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 311,
+          "sha256": "561eb33373fdc0c43714ab7e5e1c88373215110774414a3f8515ec408b9c22f8"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 312,
+          "sha256": "5cf869a8914bfdfeb734abed951b863bfafff2da74da9256044d1cda2fbfc9bc"
+        }
+      },
+      {
+        "id": 4758,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793167993033,
+        "reservedAt": 1793167993034,
+        "startedAt": 1793167993042,
+        "recordedStartAt": 1793167993050,
+        "settledAt": 1793167993194,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 327,
+          "sha256": "1961334130aa0a011249dbc54020014051afc737db8c1ef4574b0d1d6e217e57"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 330,
+          "sha256": "0ae48ec1ce099e71de8fbdd66ddaf0c5dc07c5c71143985e9aa0a4f25b1f49d6"
+        }
+      },
+      {
+        "id": 4759,
+        "method": "ping",
+        "transport": "ws",
+        "enqueuedAt": 1793167995993,
+        "reservedAt": 1793167995993,
+        "startedAt": 1793167995999,
+        "recordedStartAt": 1793167996005,
+        "settledAt": 1793167996055,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 337,
+          "sha256": "230492eb42a377ee867f3ef57d830fa5ad102b4f7889bf0f3c9c1200cf59f0e7"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 338,
+          "sha256": "1f6124693e81f408e9387da08f287dfec411cf5c785d370a3bb7302d87676fcf"
+        }
+      },
+      {
+        "id": 4760,
+        "method": "ping",
+        "transport": "ws",
+        "enqueuedAt": 1793168006100,
+        "reservedAt": 1793168006101,
+        "startedAt": 1793168006109,
+        "recordedStartAt": 1793168006117,
+        "settledAt": 1793168006192,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 347,
+          "sha256": "afe53a09f64eb8d747b8ca795f1564fd239db163d7688a4225cbe0a38fd46a25"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 348,
+          "sha256": "24648ab8250c93e5f717b7f26349872e44c4fd1b0caafe01073dbc2345229abc"
+        }
+      },
+      {
+        "id": 4761,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168010053,
+        "reservedAt": 1793168010053,
+        "startedAt": 1793168010061,
+        "recordedStartAt": 1793168010068,
+        "settledAt": 1793168010200,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 355,
+          "sha256": "2dfcdbbdc8a2d075d0259e0f7641a5ef0aada4f8e853c2ae8cf33c1e095966e5"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 358,
+          "sha256": "8584408e6d931177df305903ae0ad4bb97d47df7245c65d1be7e2654e7f856ff"
+        }
+      },
+      {
+        "id": 4762,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168011556,
+        "reservedAt": 1793168011556,
+        "startedAt": 1793168011562,
+        "recordedStartAt": 1793168011569,
+        "settledAt": 1793168011669,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 366,
+          "sha256": "cbc09e33692b7ffd45c8d1f19e1c0105038c3b586d4b3fef041b713a710d9814"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 369,
+          "sha256": "f6090085a72bc98cb01e1cb8ca152848f52584b7592c0fbc115f88365e13c6bb"
+        }
+      },
+      {
+        "id": 4763,
+        "method": "ping",
+        "transport": "ws",
+        "enqueuedAt": 1793168016248,
+        "reservedAt": 1793168016249,
+        "startedAt": 1793168016255,
+        "recordedStartAt": 1793168016262,
+        "settledAt": 1793168016310,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 377,
+          "sha256": "d3e5b8c92b7668033e40b9c4c86d48c437b9459196d75fd92c01590d8bc3f3b0"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 378,
+          "sha256": "5014ef622cfb19b1ea6e02a648dee49ca66f2e4a9db8fa89f4153695ca4d2ff6"
+        }
+      },
+      {
+        "id": 4764,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168020009,
+        "reservedAt": 1793168020010,
+        "startedAt": 1793168020016,
+        "recordedStartAt": 1793168020023,
+        "settledAt": 1793168020150,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 386,
+          "sha256": "5e4cc936afd54ca80c621e15736f9177427f615cd057edf7ae7c385141c8f6d0"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 389,
+          "sha256": "12df3af4872648b19ac3f1679564b35136326ba5a6d6db05fb934d94cb2edd3f"
+        }
+      },
+      {
+        "id": 4765,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168021540,
+        "reservedAt": 1793168021540,
+        "startedAt": 1793168021549,
+        "recordedStartAt": 1793168021557,
+        "settledAt": 1793168021631,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 398,
+          "sha256": "f92dc72f37bf08cd26719ac633a4e6739f947bae5a08bca803cc173a63af3c23"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 401,
+          "sha256": "c87d71b7f17abe255fc5fb9baca85822c7947858de07c1610e26f03983fdb41c"
+        }
+      },
+      {
+        "id": 4766,
+        "method": "ping",
+        "transport": "ws",
+        "enqueuedAt": 1793168026319,
+        "reservedAt": 1793168026319,
+        "startedAt": 1793168026326,
+        "recordedStartAt": 1793168026332,
+        "settledAt": 1793168026465,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 410,
+          "sha256": "3bd9bca5826d6afea281d74ec15850d9fdf17d910a13ac3232a90ab393cf8465"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 411,
+          "sha256": "e2be8f7dea8f8bac4c7b6b0d550fb076798a6921c533ada122323a3057c944ce"
+        }
+      },
+      {
+        "id": 4767,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168030007,
+        "reservedAt": 1793168030007,
+        "startedAt": 1793168030014,
+        "recordedStartAt": 1793168030021,
+        "settledAt": 1793168030169,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 418,
+          "sha256": "4da4f708127424ace4573d7540afe25cc00b1751b8cd9c8e51b8b0f6e20cf629"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 422,
+          "sha256": "e8712d5faaa7212300d9f18a7051ccb1a749799746761779f37a32dc4550dcac"
+        }
+      },
+      {
+        "id": 4768,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168031524,
+        "reservedAt": 1793168031524,
+        "startedAt": 1793168031531,
+        "recordedStartAt": 1793168031537,
+        "settledAt": 1793168031620,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 428,
+          "sha256": "3b77e05ee26b8f71064ee6619d8fda46915a97a6fba9a15dfc62ff7dd5b6542c"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 431,
+          "sha256": "e0c05743b55bd6fbdbc55fcd779e312ccb090bb4447479bc3e87426b130ee155"
+        }
+      },
+      {
+        "id": 4769,
+        "method": "getSignaturesForAddress",
+        "transport": "http",
+        "enqueuedAt": 1793168031798,
+        "reservedAt": 1793168031798,
+        "startedAt": 1793168031805,
+        "recordedStartAt": 1793168031812,
+        "settledAt": 1793168032472,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 436,
+          "sha256": "d7ea5ca2f9f3b792c8a840ca7967a0d830a69018e5423d4609023d79f91c0434"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-001.ndjson",
+          "line": 441,
+          "sha256": "a4617ada07f7464efdb98c9f04e83372cb95d1aa273854faad617ee3b959a903"
+        },
+        "auditPage": {
+          "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+          "target": {
+            "startAt": 1793167970000,
+            "endAt": 1793168030000
+          },
+          "page": 1
+        }
+      },
+      {
+        "id": 4770,
+        "method": "logsUnsubscribe",
+        "transport": "ws",
+        "enqueuedAt": 1793168032558,
+        "reservedAt": 1793168032559,
+        "startedAt": 1793168032565,
+        "recordedStartAt": 1793168032572,
+        "settledAt": 1793168032619,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 10,
+          "sha256": "ab3ed853caae474b79ae864ebd24321f2dd2a135bb8fc0271ffe00fa376bf9ba"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 12,
+          "sha256": "10c818311cd958d4fbea888b59a42b86f808d5fb10d9a04966ba0a4b8bc84cfa"
+        }
+      },
+      {
+        "id": 4771,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168032843,
+        "reservedAt": 1793168032844,
+        "startedAt": 1793168032850,
+        "recordedStartAt": 1793168032856,
+        "settledAt": 1793168032930,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 14,
+          "sha256": "e885c58cd717b50570bc6e1ab8adf3f91ec12f6e7bbea08990854b77faa80c69"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 17,
+          "sha256": "15c709560b9502c6488c1a337c734566380a946f5d84a63e85f8514b47dacf7c"
+        }
+      },
+      {
+        "id": 4772,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168032940,
+        "reservedAt": 1793168033101,
+        "startedAt": 1793168033108,
+        "recordedStartAt": 1793168033114,
+        "settledAt": 1793168033190,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 20,
+          "sha256": "a9b020575d1e947d71d1f1abbe8230d36cfb048da92c0008543e50a1516438e4"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 23,
+          "sha256": "0f6854ca5691d8c611b33eb872dcb4cc0f10d257bf9721eb8818cd37f5e49782"
+        }
+      },
+      {
+        "id": 4773,
+        "method": "logsSubscribe",
+        "transport": "ws",
+        "enqueuedAt": 1793168033369,
+        "reservedAt": 1793168033369,
+        "startedAt": 1793168033375,
+        "recordedStartAt": 1793168033381,
+        "settledAt": 1793168033429,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 28,
+          "sha256": "783c5285b1eef1cd805ed542f289b7500f666662960dc628703ed8b8f41e0ce3"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 31,
+          "sha256": "11b7dcdd6d317fcccdc13bc00616528e21c2718f91b45089b7463f7215956a54"
+        }
+      },
+      {
+        "id": 4774,
+        "method": "ping",
+        "transport": "ws",
+        "enqueuedAt": 1793168036516,
+        "reservedAt": 1793168036516,
+        "startedAt": 1793168036525,
+        "recordedStartAt": 1793168036533,
+        "settledAt": 1793168036601,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 37,
+          "sha256": "e50b3d3ed471b8c9e2a00373c1e927405cfae8c6363030d95c5eaaa544d12fea"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 38,
+          "sha256": "45d1a6f3a662d9d77aeae860d5ef137950022f5ce7dd3ad22f2a34cf03ab5d97"
+        }
+      },
+      {
+        "id": 4775,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168040032,
+        "reservedAt": 1793168040032,
+        "startedAt": 1793168040039,
+        "recordedStartAt": 1793168040045,
+        "settledAt": 1793168040226,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 44,
+          "sha256": "b91e51a16e6a1a75a51b88d8d9bc56616fcd52acd3f38c40c9542e1adee73a9f"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 49,
+          "sha256": "cafeb163532e88efef49526a993a965717ea7e6319fbf293b767c1166c54faf1"
+        }
+      },
+      {
+        "id": 4776,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168041532,
+        "reservedAt": 1793168041532,
+        "startedAt": 1793168041539,
+        "recordedStartAt": 1793168041545,
+        "settledAt": 1793168041614,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 56,
+          "sha256": "e005d6c913518a072876f35178437ab2bfa05bb80932536212e68e93827e1513"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 59,
+          "sha256": "bfecf2dccc1af9eaefd891f1d99f1ca9ff8d5a44df8649dcebadfe6d42eb1997"
+        }
+      },
+      {
+        "id": 4777,
+        "method": "getSignaturesForAddress",
+        "transport": "http",
+        "enqueuedAt": 1793168041795,
+        "reservedAt": 1793168041795,
+        "startedAt": 1793168041801,
+        "recordedStartAt": 1793168041808,
+        "settledAt": 1793168042481,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 64,
+          "sha256": "d8d192e087ef7a6f453c32d6b90811efea1d93fd144d9e57e6a465f295a59931"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 67,
+          "sha256": "0a8a96c12a9c2c9c899335bb0280f57db137d666a82eeb72dd45e32cf12cd106"
+        },
+        "auditPage": {
+          "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+          "target": {
+            "startAt": 1793167980000,
+            "endAt": 1793168040000
+          },
+          "page": 1
+        }
+      },
+      {
+        "id": 4778,
+        "method": "logsUnsubscribe",
+        "transport": "ws",
+        "enqueuedAt": 1793168042556,
+        "reservedAt": 1793168042556,
+        "startedAt": 1793168042563,
+        "recordedStartAt": 1793168042570,
+        "settledAt": 1793168042777,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 75,
+          "sha256": "a3129fdb93e4c728e88a7bc37a0f01044e70ef0fa0778627e5d536ae6a0cb5d2"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 77,
+          "sha256": "5a6c259983bf049406e65070d7601c12b3cdf423a6df117c1730828ecb144120"
+        }
+      },
+      {
+        "id": 4779,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168042839,
+        "reservedAt": 1793168042840,
+        "startedAt": 1793168042846,
+        "recordedStartAt": 1793168042853,
+        "settledAt": 1793168042935,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 81,
+          "sha256": "320f0a6252a08dcdded8368923e67b17eed1e6bbe93127ad7a107f073b5a71d0"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 84,
+          "sha256": "e867d61c3cfa776e045644410a8856ab6642cd93c1b721cdfa2d666a18cd8732"
+        }
+      },
+      {
+        "id": 4780,
+        "method": "ping",
+        "transport": "ws",
+        "enqueuedAt": 1793168043108,
+        "reservedAt": 1793168043108,
+        "startedAt": 1793168043115,
+        "recordedStartAt": 1793168043121,
+        "settledAt": 1793168043192,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 90,
+          "sha256": "daef9f7f939f922cccba5c084c81f26f5d6e0849ea7103af5a9e77c2f356d363"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 91,
+          "sha256": "f6763365d3cc238f54f854f61d9cdf3c405135226debb39a0621d66495b5e934"
+        }
+      },
+      {
+        "id": 4781,
+        "method": "getTransaction",
+        "transport": "http",
+        "enqueuedAt": 1793168043421,
+        "reservedAt": 1793168043421,
+        "startedAt": 1793168043428,
+        "recordedStartAt": 1793168043442,
+        "settledAt": 1793168043536,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 94,
+          "sha256": "a610ba32064ab7f04da80edc3b5afc0e132796468b220e230243250f54de90a9"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 98,
+          "sha256": "08f6026dbf72b0aae9da3389ddb19af52e63275a11c8f31af67b99b09269f501"
+        }
+      },
+      {
+        "id": 4782,
+        "method": "getTransaction",
+        "transport": "http",
+        "enqueuedAt": 1793168043547,
+        "reservedAt": 1793168043679,
+        "startedAt": 1793168043685,
+        "recordedStartAt": 1793168043699,
+        "settledAt": 1793168043800,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 101,
+          "sha256": "c916be23704bf38aeb2525d3756ebb61ef44dddb1fad34f7dbac45425bed9962"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 104,
+          "sha256": "05f875d8e81b96cef812dfa2a2c4aea269e6197c0b05d17da542bcc412229fef"
+        }
+      },
+      {
+        "id": 4783,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168043974,
+        "reservedAt": 1793168043974,
+        "startedAt": 1793168043981,
+        "recordedStartAt": 1793168043987,
+        "settledAt": 1793168044045,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 110,
+          "sha256": "182a98ac971461fdf5e3e854320c856af8b585e4ccd5d41146b3103489ce2f3e"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 113,
+          "sha256": "5a97419dd109647fc2201dae1f1f9b5f1c0234d08a37a39c7695499055669131"
+        }
+      },
+      {
+        "id": 4784,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168044054,
+        "reservedAt": 1793168044231,
+        "startedAt": 1793168044237,
+        "recordedStartAt": 1793168044244,
+        "settledAt": 1793168044335,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 116,
+          "sha256": "c102b542728523a012a610743d5a655931d0258bfcb0aaa3e00bd354537b7726"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 119,
+          "sha256": "330c06eca94cfe5e221185565cbe67de53df6fa0c6a9f2250a7c19b1b8ce4702"
+        }
+      },
+      {
+        "id": 4785,
+        "method": "logsSubscribe",
+        "transport": "ws",
+        "enqueuedAt": 1793168044509,
+        "reservedAt": 1793168044509,
+        "startedAt": 1793168044516,
+        "recordedStartAt": 1793168044522,
+        "settledAt": 1793168044612,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 124,
+          "sha256": "58c858d4f15e0b1c6f5277e3fe8f99692fc841181a4dd991fa455ea2f65acbce"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 127,
+          "sha256": "e43c7cbe217eecad4b0bb2694141d49883843ddc6b94d42c0debced1aade62d1"
+        }
+      },
+      {
+        "id": 4786,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168045823,
+        "reservedAt": 1793168045823,
+        "startedAt": 1793168045830,
+        "recordedStartAt": 1793168045836,
+        "settledAt": 1793168045969,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 178,
+          "sha256": "8aac49cc92b110ad95cc4a4a6bbe8d44ea308eb0c9ffa7d051ab696c39c11a34"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 181,
+          "sha256": "e9aeec522b17fa4f76180c670c7c1a166da0c2c100f527de045e82b03de5c075"
+        }
+      },
+      {
+        "id": 4787,
+        "method": "ping",
+        "transport": "ws",
+        "enqueuedAt": 1793168046223,
+        "reservedAt": 1793168046223,
+        "startedAt": 1793168046229,
+        "recordedStartAt": 1793168046235,
+        "settledAt": 1793168046326,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 190,
+          "sha256": "4565dbaa12fa89d1c964bdd0c6989de2cd9436d2f433d398ca52d951263920a4"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 209,
+          "sha256": "1370ea600946742f571edf16a16e447efa3ca3c78675ff6cbffd2fd47e243ad2"
+        }
+      },
+      {
+        "id": 4788,
+        "method": "getTransaction",
+        "transport": "http",
+        "enqueuedAt": 1793168046509,
+        "reservedAt": 1793168046509,
+        "startedAt": 1793168046515,
+        "recordedStartAt": 1793168046529,
+        "settledAt": 1793168046642,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 215,
+          "sha256": "72ddd4aa3a4ce882d44e96044415ccf145412a020d305133b925feed7988bd5e"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 221,
+          "sha256": "84f840eee337f513ddd949181cb66204e3d62ced304cc625ba03d7b66484e2b1"
+        }
+      },
+      {
+        "id": 4789,
+        "method": "getTransaction",
+        "transport": "http",
+        "enqueuedAt": 1793168046654,
+        "reservedAt": 1793168046802,
+        "startedAt": 1793168046808,
+        "recordedStartAt": 1793168046822,
+        "settledAt": 1793168046905,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 227,
+          "sha256": "4869c7baf141ce728188977943abcd7361d2643605c487100970752ecdba020e"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 236,
+          "sha256": "aeb3ca772359018f503a7d4b1ca907121073d167d4ef6d3c0ff4d7f411fc2609"
+        }
+      },
+      {
+        "id": 4790,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168047093,
+        "reservedAt": 1793168047093,
+        "startedAt": 1793168047099,
+        "recordedStartAt": 1793168047106,
+        "settledAt": 1793168047242,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 248,
+          "sha256": "8ef38b0d247eff58240b45f62edd7bec7b4f831b33929123ba623413ac8ad3f0"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 260,
+          "sha256": "ae898e7be43d18023414847dbb0a6f58a41b96221b7f44f9767c8bb52a5a1a97"
+        }
+      },
+      {
+        "id": 4791,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168047253,
+        "reservedAt": 1793168047349,
+        "startedAt": 1793168047356,
+        "recordedStartAt": 1793168047363,
+        "settledAt": 1793168047432,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 263,
+          "sha256": "9855221d89be3db886887ab341fb8d1f87df4c9f3e18991708a37dc4c7a46b8d"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 266,
+          "sha256": "4e418f5165a4bdb2d30ad3d48479cbd99f9b7bd68dc8429136ddf27ba9d9d62c"
+        }
+      },
+      {
+        "id": 4792,
+        "method": "logsSubscribe",
+        "transport": "ws",
+        "enqueuedAt": 1793168047619,
+        "reservedAt": 1793168047620,
+        "startedAt": 1793168047626,
+        "recordedStartAt": 1793168047633,
+        "settledAt": 1793168047693,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 282,
+          "sha256": "9f028ac2a180ed42c9a7f158996df011ebd72c4ae88af488d0ccc55101461319"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 288,
+          "sha256": "e1c8aafeaafdbebace4de7656c68d546e55c9f6dae746895ad2910617079365a"
+        }
+      },
+      {
+        "id": 4793,
+        "method": "ping",
+        "transport": "ws",
+        "enqueuedAt": 1793168056359,
+        "reservedAt": 1793168056360,
+        "startedAt": 1793168056366,
+        "recordedStartAt": 1793168056373,
+        "settledAt": 1793168056429,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 2371,
+          "sha256": "0f3455a356f224686b662eb652471a6ef474372b79270a357f46e8061f1bc6e3"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 2372,
+          "sha256": "23c5b56cb23db47234a5faaefdc4b802f19fd11dde1a967b4148f6ec1cb9d3bf"
+        }
+      },
+      {
+        "id": 4794,
+        "method": "ping",
+        "transport": "ws",
+        "enqueuedAt": 1793168066549,
+        "reservedAt": 1793168066549,
+        "startedAt": 1793168066556,
+        "recordedStartAt": 1793168066562,
+        "settledAt": 1793168066725,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 4751,
+          "sha256": "f972025a027c296a2c9f186c51115a9da65e39eb00836f3ab781b3dd49ada38f"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 4787,
+          "sha256": "c8f2de62e5fb125d07a479066409699e1a4a501ae5c481e6ea05db7913e74ef9"
+        }
+      },
+      {
+        "id": 4795,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168071088,
+        "reservedAt": 1793168071088,
+        "startedAt": 1793168071094,
+        "recordedStartAt": 1793168071102,
+        "settledAt": 1793168071244,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5070,
+          "sha256": "a2e423d8d71551de3034d65a72098f0f283afabfae048e330a4b8bf8895f50fc"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5073,
+          "sha256": "0b1c44c2f106ae3e9db06de9163650f50a559b9007a7436cab3a1d20b0a07ea0"
+        }
+      },
+      {
+        "id": 4796,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168072529,
+        "reservedAt": 1793168072529,
+        "startedAt": 1793168072536,
+        "recordedStartAt": 1793168072542,
+        "settledAt": 1793168072687,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5139,
+          "sha256": "bb9ee92f50874e772760d5eab0e477338267a6816430f927b62485ed1a762fee"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5151,
+          "sha256": "4bf4265480f1d2960a55fe00c97d53613ab34d9cf36347eeec4f73a1652c602e"
+        }
+      },
+      {
+        "id": 4797,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168072698,
+        "reservedAt": 1793168072793,
+        "startedAt": 1793168072799,
+        "recordedStartAt": 1793168072806,
+        "settledAt": 1793168072977,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5156,
+          "sha256": "d7de061c7596545f5e067c944abd09445147d916aad862508860b095dc9f46bc"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5170,
+          "sha256": "54d1463ada06cee72002df774cc4332b6674635d90740e757f9a7ecc739ee70b"
+        }
+      },
+      {
+        "id": 4798,
+        "method": "logsSubscribe",
+        "transport": "ws",
+        "enqueuedAt": 1793168073114,
+        "reservedAt": 1793168073114,
+        "startedAt": 1793168073120,
+        "recordedStartAt": 1793168073127,
+        "settledAt": 1793168073288,
+        "responseComplete": false,
+        "uncertainReservedBytes": 65536,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5180,
+          "sha256": "6d8f02df0207a31142554d2b0d114509c59a628085be6351f9d141e247d7509e"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5181,
+          "sha256": "15c8fb2ae2872a50259c41b9c0039f96b8be3ff1c2afec6a65b781177470ab72"
+        }
+      },
+      {
+        "id": 4799,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168075428,
+        "reservedAt": 1793168075428,
+        "startedAt": 1793168075434,
+        "recordedStartAt": 1793168075440,
+        "settledAt": 1793168075510,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5199,
+          "sha256": "4009a1e827afffb4fd971d1abfb7fca392a91e9a5ba4c8d4368e44aa2b0b4f6d"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5203,
+          "sha256": "bc94d83442765a4c164b77fb39076333668e9a1709a8d1b7b20623cf767edca2"
+        }
+      },
+      {
+        "id": 4800,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168075519,
+        "reservedAt": 1793168075685,
+        "startedAt": 1793168075692,
+        "recordedStartAt": 1793168075698,
+        "settledAt": 1793168075777,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5208,
+          "sha256": "fc200f2a1c9a4a2c51c18978966a73719f1b9f696fca0225a72ca8b96bd49b9e"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5211,
+          "sha256": "076239eb0cc3fd49803b31f4892293a6c02d242ac390c1ac5ab440b063f7e18d"
+        }
+      },
+      {
+        "id": 4801,
+        "method": "upgrade",
+        "transport": "ws-upgrade",
+        "enqueuedAt": 1793168075949,
+        "reservedAt": 1793168075949,
+        "startedAt": 1793168075956,
+        "recordedStartAt": 1793168075963,
+        "settledAt": 1793168076131,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5215,
+          "sha256": "1f5c16302b6272a9768cb0052dc1cb011ead2fbe5a186d097bd82e6f920251f2"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5216,
+          "sha256": "507e360c53bb68bfd0646a9d5202fb1a067f7194b9bd576fa972bc9731c90ee8"
+        }
+      },
+      {
+        "id": 4802,
+        "method": "logsSubscribe",
+        "transport": "ws",
+        "enqueuedAt": 1793168076247,
+        "reservedAt": 1793168076247,
+        "startedAt": 1793168076253,
+        "recordedStartAt": 1793168076260,
+        "settledAt": 1793168076485,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5218,
+          "sha256": "b85e0302fe52bffde6452fa8bcb4f46a23924f1dca3e4f2aea4305f98c081ba7"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5221,
+          "sha256": "cfeeb071f418b2e7ddb4edf20da7711f4af085d652a08da71d13f00bca136dd6"
+        }
+      },
+      {
+        "id": 4803,
+        "method": "getTransaction",
+        "transport": "http",
+        "enqueuedAt": 1793168076549,
+        "reservedAt": 1793168076549,
+        "startedAt": 1793168076556,
+        "recordedStartAt": 1793168076569,
+        "settledAt": 1793168076674,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5225,
+          "sha256": "f395b8ab9cc7eca0e5fb410cefa8a20ed76819ea73887151dbbf9ecd15be7d23"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5228,
+          "sha256": "8a5d60f5e523006cec20a6aa583483209c6d8f44f1946024374664237d277b2f"
+        }
+      },
+      {
+        "id": 4804,
+        "method": "getTransaction",
+        "transport": "http",
+        "enqueuedAt": 1793168076686,
+        "reservedAt": 1793168076806,
+        "startedAt": 1793168076813,
+        "recordedStartAt": 1793168076827,
+        "settledAt": 1793168076957,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5231,
+          "sha256": "3263086898959fe6143804ec0ea80a07e3a7da2c6c970b845472d9de1893e733"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5234,
+          "sha256": "9cf03c7f31b823ce69d7f1b47d10de5b8417a69c774366b23d0cefc2c245a199"
+        }
+      },
+      {
+        "id": 4805,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168077080,
+        "reservedAt": 1793168077080,
+        "startedAt": 1793168077087,
+        "recordedStartAt": 1793168077093,
+        "settledAt": 1793168077205,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5240,
+          "sha256": "f4fe03bffa44ed65cdb95bd0bc326e66898cf0152f35068da0664e8bd8da7eb6"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5243,
+          "sha256": "16841aaa9a358295da0feacbd04abbf0816635329d79e0efb7d523bb237ccb8d"
+        }
+      },
+      {
+        "id": 4806,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168077215,
+        "reservedAt": 1793168077337,
+        "startedAt": 1793168077344,
+        "recordedStartAt": 1793168077351,
+        "settledAt": 1793168077421,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5247,
+          "sha256": "c420ecbc6ee4221f496a3a20458824af75b54c3b70de23c39c061b31f073be5b"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5250,
+          "sha256": "a35ea9e875aae0811c97dc260119467213643494f54ad30183fdbd7a8c08827a"
+        }
+      },
+      {
+        "id": 4807,
+        "method": "logsSubscribe",
+        "transport": "ws",
+        "enqueuedAt": 1793168077596,
+        "reservedAt": 1793168077596,
+        "startedAt": 1793168077603,
+        "recordedStartAt": 1793168077609,
+        "settledAt": 1793168077816,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5256,
+          "sha256": "be2fe0f55aa5b6e31fcdaa4ec63ca537e1a77e0d2dc1609d7ea99c4d7e08d859"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 5259,
+          "sha256": "c7653ba6fd39e937692b4ddb938bd2474dfc1f2e9bfd57e5fcda4bf06d8384b8"
+        }
+      },
+      {
+        "id": 4808,
+        "method": "ping",
+        "transport": "ws",
+        "enqueuedAt": 1793168086434,
+        "reservedAt": 1793168086434,
+        "startedAt": 1793168086441,
+        "recordedStartAt": 1793168086447,
+        "settledAt": 1793168087068,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 6529,
+          "sha256": "3cc2c8be0b914de78f2f7150c8f01bc34150bd480d93b9c5744bd05e99af4885"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 6618,
+          "sha256": "2e5ae30cec734fdc4fe8df7083fd55a1a435d57d386a3564f99c5518bbc8c080"
+        }
+      },
+      {
+        "id": 4809,
+        "method": "ping",
+        "transport": "ws",
+        "enqueuedAt": 1793168097251,
+        "reservedAt": 1793168097251,
+        "startedAt": 1793168097257,
+        "recordedStartAt": 1793168097263,
+        "settledAt": 1793168097401,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 8719,
+          "sha256": "5d97764f877af981cfd2eb34c1698a65cdbfd66c958fa0a6adabe21b3e5049ae"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 8909,
+          "sha256": "623635fcb32c754b5bde85e93e54c80c61a6885497371de0d8755c5c990b329f"
+        }
+      },
+      {
+        "id": 4810,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168102115,
+        "reservedAt": 1793168102115,
+        "startedAt": 1793168102121,
+        "recordedStartAt": 1793168102128,
+        "settledAt": 1793168103010,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 494,
+          "sha256": "1fe97e1c15efed1fa5b386d823445f8c378107c55fa8402a86b9a62aa5302657"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 698,
+          "sha256": "34eb2681416144c1aa0f6e1daeb310def5c614bc4c2f79dfed1242b7eaf6b029"
+        }
+      },
+      {
+        "id": 4811,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168103488,
+        "reservedAt": 1793168103488,
+        "startedAt": 1793168103494,
+        "recordedStartAt": 1793168103501,
+        "settledAt": 1793168103961,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 956,
+          "sha256": "85448b1c71140eae3a4c825c05de8c89ab3c1d2f0b64b0bde70b41d350f65283"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 972,
+          "sha256": "88f47b42c38f7a9ead421c609d61e8fec95c4d3b0956c476643bc1be43d0a581"
+        }
+      },
+      {
+        "id": 4812,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168103973,
+        "reservedAt": 1793168103973,
+        "startedAt": 1793168103979,
+        "recordedStartAt": 1793168103986,
+        "settledAt": 1793168104084,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 974,
+          "sha256": "dc24519df228479238c7a550227b6644b32e1ab5dc8833cb31e7cbd24080bd82"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 1076,
+          "sha256": "d3175f56ddd330c4b4b5910217cab96407ca9c902d5756b049f6dda53ead0062"
+        }
+      },
+      {
+        "id": 4813,
+        "method": "logsSubscribe",
+        "transport": "ws",
+        "enqueuedAt": 1793168104239,
+        "reservedAt": 1793168104239,
+        "startedAt": 1793168104245,
+        "recordedStartAt": 1793168104251,
+        "settledAt": 1793168104341,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 1090,
+          "sha256": "34215a835fa17327105cbd0067150791254e61098e3f8515a139cf5eeb6e7a7b"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 1108,
+          "sha256": "31476003d51d6f7aad97226c8c5633e9eb589a6879810301353efc8879467734"
+        }
+      },
+      {
+        "id": 4814,
+        "method": "logsSubscribe",
+        "transport": "ws",
+        "enqueuedAt": 1793168104513,
+        "reservedAt": 1793168104513,
+        "startedAt": 1793168104520,
+        "recordedStartAt": 1793168104526,
+        "settledAt": 1793168105082,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 1111,
+          "sha256": "44d627593959a026f308647512b3b689f8dd6bf118ea37d2edabfb935503df8d"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 1149,
+          "sha256": "c77e82d3c47d1b45c2c0f9d24fcf7a42cc1d52785b7f51a35b967d94d012266a"
+        }
+      },
+      {
+        "id": 4815,
+        "method": "logsSubscribe",
+        "transport": "ws",
+        "enqueuedAt": 1793168105221,
+        "reservedAt": 1793168105222,
+        "startedAt": 1793168105229,
+        "recordedStartAt": 1793168105235,
+        "settledAt": 1793168105872,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 1181,
+          "sha256": "02624f960b9c4f14cb711b65278d2cc9729a5ecdd50569684101b15e98be1ba8"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 1227,
+          "sha256": "11a6b4bc5457d59ffce562c15773d84daccd3b58393183184bd6414f8c34f3c8"
+        }
+      },
+      {
+        "id": 4816,
+        "method": "ping",
+        "transport": "ws",
+        "enqueuedAt": 1793168107567,
+        "reservedAt": 1793168107567,
+        "startedAt": 1793168107573,
+        "recordedStartAt": 1793168107580,
+        "settledAt": 1793168108108,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 1647,
+          "sha256": "caf24c34b150d006baadfc4e91ab2a5cb04a64b8bfd7eab6b75416e306e80cf3"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 1769,
+          "sha256": "5c1f8d895cf5e76423a3a45f9b802685eb9995e7a1f09d16ab606673661ab7cc"
+        }
+      },
+      {
+        "id": 4817,
+        "method": "ping",
+        "transport": "ws",
+        "enqueuedAt": 1793168118171,
+        "reservedAt": 1793168118171,
+        "startedAt": 1793168118177,
+        "recordedStartAt": 1793168118184,
+        "settledAt": 1793168118298,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 3597,
+          "sha256": "d2a307b8279670a359ab2f09acc9f7f4c2b6a89329d40d2be05159d779ea8192"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 3710,
+          "sha256": "121420e3fe99cf355f70d08e230de3aea63235e3e1deeae1dd0ec44f354c7748"
+        }
+      },
+      {
+        "id": 4818,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168128013,
+        "reservedAt": 1793168128013,
+        "startedAt": 1793168128020,
+        "recordedStartAt": 1793168128027,
+        "settledAt": 1793168128223,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 5292,
+          "sha256": "9f7ff3ac815c205b70608d9591d88169ae25708f1e705ba0dd16ab539304e985"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 5295,
+          "sha256": "5e2eda1f7aae5349e47c1b4848abccd459540b63ec8e171ca3f12286eb5b8d78"
+        }
+      },
+      {
+        "id": 4819,
+        "method": "ping",
+        "transport": "ws",
+        "enqueuedAt": 1793168128406,
+        "reservedAt": 1793168128406,
+        "startedAt": 1793168128412,
+        "recordedStartAt": 1793168128419,
+        "settledAt": 1793168129148,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 5307,
+          "sha256": "5727a37a6b02400291e4f73969358b7289c88099894f33a635eafd95d1076cb7"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 5387,
+          "sha256": "31cd44e72ce998700ae44d14e22516d740e8a39a8bb1392fb87f80e5c5f853db"
+        }
+      },
+      {
+        "id": 4820,
+        "method": "ping",
+        "transport": "ws",
+        "enqueuedAt": 1793168139291,
+        "reservedAt": 1793168139292,
+        "startedAt": 1793168139298,
+        "recordedStartAt": 1793168139304,
+        "settledAt": 1793168139474,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 6881,
+          "sha256": "0ca3734637be3520e2b0acc411b1565aa36a3e4f1ef05f7cb2d69339fbb43c43"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 7173,
+          "sha256": "f3ca31f49451a2e4537990c04f2ae737078920b30dc6b51304a1d7bf9a1de927"
+        }
+      },
+      {
+        "id": 4821,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168140100,
+        "reservedAt": 1793168140100,
+        "startedAt": 1793168140107,
+        "recordedStartAt": 1793168140114,
+        "settledAt": 1793168140491,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 7194,
+          "sha256": "4c92925c432b1cadd021588b08c5a13eb8110bed75fcdb85ce1759be2a69052c"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 7346,
+          "sha256": "455f086cc78176f5f51d1a5974f5a5aaa0b1db2a63c73711a662075340620438"
+        }
+      },
+      {
+        "id": 4822,
+        "method": "getMultipleAccounts",
+        "transport": "http",
+        "enqueuedAt": 1793168141605,
+        "reservedAt": 1793168141605,
+        "startedAt": 1793168141611,
+        "recordedStartAt": 1793168141618,
+        "settledAt": 1793168141719,
+        "responseComplete": true,
+        "uncertainReservedBytes": 0,
+        "startEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 7740,
+          "sha256": "b6a32a3dd9b20bb21ef35872d316618538c3eacb1296734dc4763005728d4004"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 7803,
+          "sha256": "62e46d64c9e145d9bf9a04a8a62b98afebd493aeae161d629487a60cd3935e11"
+        }
+      },
+      {
+        "id": 4823,
+        "method": "getSignaturesForAddress",
+        "transport": "http",
+        "enqueuedAt": 1793168142087,
+        "reservedAt": 1793168142087,
+        "startedAt": 1793168142094,
+        "recordedStartAt": 1793168142100,
+        "settledAt": 1793168143679,
+        "responseComplete": false,
+        "uncertainReservedBytes": 2097152,
+        "startEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 7814,
+          "sha256": "34cbb9d4a3c6f9ad4f21cb257ec3bc83cb3872249c5f1e55ffec3bc69a2e7940"
+        },
+        "settlementEvidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 8036,
+          "sha256": "ff22e496f3b6d2998655be9cb05c2ab97af8890fe86435cfdbdd40a0e452e966"
+        }
+      }
+    ],
+    "meaning": "Queue/occupancy include local persistence/processing. They are not pure provider latency. Explicit HTTP status and local refusal remain separate. Research90/min is not provider entitlement."
+  },
+  "resources": {
+    "maximumRssBytes": 325103616,
+    "cpu": {
+      "user": 38070593,
+      "system": 2081560
+    },
+    "eventLoopDelayP95Ms": 61.767679,
+    "eventLoopDelayMaximumMs": 648.019967,
+    "retainedEvidenceBytes": 23843425,
+    "evidenceSegments": 3,
+    "actualCpuMicros": 40152153,
+    "averageCpuOneCoreFraction": 0.19874745329809035,
+    "flowQueueAgeMs": {
+      "p95": 1087,
+      "maximum": 1111
+    },
+    "flowProcessingMs": {
+      "count": 256,
+      "p95": 4.2269540000124834,
+      "maximum": 6.360981999983778
+    },
+    "incomingNativeSocketBytes": 8927974,
+    "incomingBroadWatchBytes": 155401385,
+    "incomingDiscoveryBytes": 848,
+    "totalIncomingSocketBytes": 164330207,
+    "costMeaning": "Measured application/socket counters; existing compute/network-transfer costs unverified. No zero-total-cost or continuous-capacity claim."
+  },
+  "perCandidate": [
+    {
+      "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+      "notificationRows": 0,
+      "uniqueBoundSignatures": 0,
+      "firstNotificationAt": null,
+      "lastNotificationAt": null,
+      "normalizedTrades": null,
+      "normalizationAttribution": "Not reconstructed from a subscription hint; exact trade-mint mapping requires the retained decoder/SDK analysis.",
+      "protocolEffects": 0,
+      "auditSessions": 0,
+      "auditPages": 1,
+      "verifiedHistoryOutcomes": 1,
+      "auditedAssessments": 1,
+      "decisionDeadlineMisses": 2,
+      "qualityGaps": 0,
+      "ledgerCapacityRefusals": 0
+    },
+    {
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "notificationRows": 0,
+      "uniqueBoundSignatures": 0,
+      "firstNotificationAt": null,
+      "lastNotificationAt": null,
+      "normalizedTrades": null,
+      "normalizationAttribution": "Not reconstructed from a subscription hint; exact trade-mint mapping requires the retained decoder/SDK analysis.",
+      "protocolEffects": 0,
+      "auditSessions": 0,
+      "auditPages": 1,
+      "verifiedHistoryOutcomes": 1,
+      "auditedAssessments": 1,
+      "decisionDeadlineMisses": 3,
+      "qualityGaps": 2,
+      "ledgerCapacityRefusals": 0
+    },
+    {
+      "mint": "Fm6NC85y13gyP17G1WY5D19EerjETVg7y4Y8WnLNpump",
+      "notificationRows": 0,
+      "uniqueBoundSignatures": 0,
+      "firstNotificationAt": null,
+      "lastNotificationAt": null,
+      "normalizedTrades": null,
+      "normalizationAttribution": "Not reconstructed from a subscription hint; exact trade-mint mapping requires the retained decoder/SDK analysis.",
+      "protocolEffects": 5,
+      "auditSessions": 0,
+      "auditPages": 0,
+      "verifiedHistoryOutcomes": 0,
+      "auditedAssessments": 0,
+      "decisionDeadlineMisses": 0,
+      "qualityGaps": 2,
+      "ledgerCapacityRefusals": 0
+    },
+    {
+      "mint": "FfR4XdDPVrRmq7SFhkaH4srv54uFnNW2wfi83eNPpump",
+      "notificationRows": 0,
+      "uniqueBoundSignatures": 0,
+      "firstNotificationAt": null,
+      "lastNotificationAt": null,
+      "normalizedTrades": null,
+      "normalizationAttribution": "Not reconstructed from a subscription hint; exact trade-mint mapping requires the retained decoder/SDK analysis.",
+      "protocolEffects": 0,
+      "auditSessions": 0,
+      "auditPages": 0,
+      "verifiedHistoryOutcomes": 0,
+      "auditedAssessments": 0,
+      "decisionDeadlineMisses": 0,
+      "qualityGaps": 1,
+      "ledgerCapacityRefusals": 0
+    },
+    {
+      "mint": "8JtcwHAk3FhHvyr2tTArT2bYpAhEtSMtny3EUPvzpump",
+      "notificationRows": 0,
+      "uniqueBoundSignatures": 0,
+      "firstNotificationAt": null,
+      "lastNotificationAt": null,
+      "normalizedTrades": null,
+      "normalizationAttribution": "Not reconstructed from a subscription hint; exact trade-mint mapping requires the retained decoder/SDK analysis.",
+      "protocolEffects": 0,
+      "auditSessions": 0,
+      "auditPages": 0,
+      "verifiedHistoryOutcomes": 0,
+      "auditedAssessments": 0,
+      "decisionDeadlineMisses": 0,
+      "qualityGaps": 2,
+      "ledgerCapacityRefusals": 0
+    },
+    {
+      "mint": "2F4h6dPZp4wcvSJxat6t1HGXHagpP8qYqoDZsLFPpump",
+      "notificationRows": 0,
+      "uniqueBoundSignatures": 0,
+      "firstNotificationAt": null,
+      "lastNotificationAt": null,
+      "normalizedTrades": null,
+      "normalizationAttribution": "Not reconstructed from a subscription hint; exact trade-mint mapping requires the retained decoder/SDK analysis.",
+      "protocolEffects": 5,
+      "auditSessions": 0,
+      "auditPages": 0,
+      "verifiedHistoryOutcomes": 0,
+      "auditedAssessments": 0,
+      "decisionDeadlineMisses": 0,
+      "qualityGaps": 1,
+      "ledgerCapacityRefusals": 0
+    },
+    {
+      "mint": "FgsSTazXwy4pxjrNMuzsQbEPbYPjAW17pAN8dfRHpump",
+      "notificationRows": 0,
+      "uniqueBoundSignatures": 0,
+      "firstNotificationAt": null,
+      "lastNotificationAt": null,
+      "normalizedTrades": null,
+      "normalizationAttribution": "Not reconstructed from a subscription hint; exact trade-mint mapping requires the retained decoder/SDK analysis.",
+      "protocolEffects": 0,
+      "auditSessions": 0,
+      "auditPages": 0,
+      "verifiedHistoryOutcomes": 0,
+      "auditedAssessments": 0,
+      "decisionDeadlineMisses": 0,
+      "qualityGaps": 1,
+      "ledgerCapacityRefusals": 0
+    }
+  ],
+  "qualityGaps": [
+    {
+      "mint": "FfR4XdDPVrRmq7SFhkaH4srv54uFnNW2wfi83eNPpump",
+      "at": 1793168073297,
+      "reason": "PILOT_RPC_COMPONENT_OPERATION_FAILED",
+      "requiresFreshWindow": true,
+      "freshWindowRequired": true,
+      "financialExecutionAuthorized": false,
+      "evidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 5183,
+        "sha256": "fe5dca02c23dc45e7caba3e5f278adda3c400573a279eca2dbb44d776a044109"
+      }
+    },
+    {
+      "mint": "Fm6NC85y13gyP17G1WY5D19EerjETVg7y4Y8WnLNpump",
+      "at": 1793168073297,
+      "reason": "PILOT_RPC_COMPONENT_OPERATION_FAILED",
+      "requiresFreshWindow": true,
+      "freshWindowRequired": true,
+      "financialExecutionAuthorized": false,
+      "evidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 5186,
+        "sha256": "2bc039b76897e21f98c6b213a9525677ce9f8335bee9195bf0b45f5d95df8e3e"
+      }
+    },
+    {
+      "mint": "8JtcwHAk3FhHvyr2tTArT2bYpAhEtSMtny3EUPvzpump",
+      "at": 1793168073297,
+      "reason": "PILOT_RPC_COMPONENT_OPERATION_FAILED",
+      "requiresFreshWindow": true,
+      "freshWindowRequired": true,
+      "financialExecutionAuthorized": false,
+      "evidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 5189,
+        "sha256": "c02e9abc07ff9eafa88dd1d2b9790a84f95d310674712384661b9a23d4c6b7b0"
+      }
+    },
+    {
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "at": 1793168073297,
+      "reason": "PILOT_RPC_COMPONENT_OPERATION_FAILED",
+      "requiresFreshWindow": true,
+      "freshWindowRequired": true,
+      "financialExecutionAuthorized": false,
+      "evidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 5192,
+        "sha256": "6b0a4ee0ea36f87200f1fa3074f9e3fd231af4677fe9bc5e57a1b896b3427d07"
+      }
+    },
+    {
+      "mint": "2F4h6dPZp4wcvSJxat6t1HGXHagpP8qYqoDZsLFPpump",
+      "at": 1793168144696,
+      "reason": "NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+      "requiresFreshWindow": true,
+      "freshWindowRequired": true,
+      "financialExecutionAuthorized": false,
+      "evidence": {
+        "file": "run/events/events-003.ndjson",
+        "line": 8270,
+        "sha256": "8c91e462c4ae7d3b12965090026b368e862560b3890a74597438ffe0e451d064"
+      }
+    },
+    {
+      "mint": "FgsSTazXwy4pxjrNMuzsQbEPbYPjAW17pAN8dfRHpump",
+      "at": 1793168144697,
+      "reason": "NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+      "requiresFreshWindow": true,
+      "freshWindowRequired": true,
+      "financialExecutionAuthorized": false,
+      "evidence": {
+        "file": "run/events/events-003.ndjson",
+        "line": 8273,
+        "sha256": "72d35a7b06bff0b0b9c27d0250818699be77b68d7ef1690f896f7228b0ab94cf"
+      }
+    },
+    {
+      "mint": "Fm6NC85y13gyP17G1WY5D19EerjETVg7y4Y8WnLNpump",
+      "at": 1793168144697,
+      "reason": "NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+      "requiresFreshWindow": true,
+      "freshWindowRequired": true,
+      "financialExecutionAuthorized": false,
+      "evidence": {
+        "file": "run/events/events-003.ndjson",
+        "line": 8276,
+        "sha256": "3b41e1bacd8b2ee139b158c8b2fd2b02b6f6ced54925bce6e4e7b0810aea32b3"
+      }
+    },
+    {
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "at": 1793168144697,
+      "reason": "NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+      "requiresFreshWindow": true,
+      "freshWindowRequired": true,
+      "financialExecutionAuthorized": false,
+      "evidence": {
+        "file": "run/events/events-003.ndjson",
+        "line": 8279,
+        "sha256": "7418b5919484bc24c7caa7e6885176bea1008e5382e356fd38e75a4ecbcd930d"
+      }
+    },
+    {
+      "mint": "8JtcwHAk3FhHvyr2tTArT2bYpAhEtSMtny3EUPvzpump",
+      "at": 1793168144697,
+      "reason": "NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+      "requiresFreshWindow": true,
+      "freshWindowRequired": true,
+      "financialExecutionAuthorized": false,
+      "evidence": {
+        "file": "run/events/events-003.ndjson",
+        "line": 8282,
+        "sha256": "23c67db1908678d47c4b7864bee63c2cd26bfe49b87c343b016485eb1f733d08"
+      }
+    }
+  ],
+  "completeEndpoints": [
+    {
+      "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+      "startAt": 1793167950000,
+      "endAt": 1793168010000,
+      "firstCompleteFeatureAt": 1793168010047,
+      "tradeCount": 0,
+      "netBuyLamports": "0",
+      "auditOutcome": null,
+      "assessment": null,
+      "firstFeatureEvidence": {
+        "file": "run/events/events-001.ndjson",
+        "line": 351,
+        "sha256": "09af606f436bda54ec56243ff24c053d374ac0640598dfa7649110b661e2b8b9"
+      }
+    },
+    {
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "startAt": 1793167950000,
+      "endAt": 1793168010000,
+      "firstCompleteFeatureAt": 1793168010047,
+      "tradeCount": 4,
+      "netBuyLamports": "-80883388",
+      "auditOutcome": null,
+      "assessment": null,
+      "firstFeatureEvidence": {
+        "file": "run/events/events-001.ndjson",
+        "line": 352,
+        "sha256": "320d4bce945cc761c868cbbae20fe7a418308c6c59720d6c3504f600e8185ba2"
+      }
+    },
+    {
+      "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+      "startAt": 1793167960000,
+      "endAt": 1793168020000,
+      "firstCompleteFeatureAt": 1793168020003,
+      "tradeCount": 0,
+      "netBuyLamports": "0",
+      "auditOutcome": null,
+      "assessment": null,
+      "firstFeatureEvidence": {
+        "file": "run/events/events-001.ndjson",
+        "line": 381,
+        "sha256": "c93594a8ed6493c27a697fd3ab2b39ef63c1fd0e867575f9c58474d161e99c23"
+      }
+    },
+    {
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "startAt": 1793167960000,
+      "endAt": 1793168020000,
+      "firstCompleteFeatureAt": 1793168020003,
+      "tradeCount": 4,
+      "netBuyLamports": "-80883388",
+      "auditOutcome": null,
+      "assessment": null,
+      "firstFeatureEvidence": {
+        "file": "run/events/events-001.ndjson",
+        "line": 383,
+        "sha256": "74bc72ff3b5e076c93e3368d5cc28d978f09c2aa7bab424e4794308ae857a6b0"
+      }
+    },
+    {
+      "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+      "startAt": 1793167970000,
+      "endAt": 1793168030000,
+      "firstCompleteFeatureAt": 1793168030001,
+      "tradeCount": 0,
+      "netBuyLamports": "0",
+      "auditOutcome": {
+        "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+        "target": {
+          "startAt": 1793167970000,
+          "endAt": 1793168030000
+        },
+        "status": "verified",
+        "reason": "NATIVE_AUDIT_STRICT_INTERIOR_SIGNATURES_VERIFIED",
+        "complete": true,
+        "startedAt": 1793168031797,
+        "resultAvailableAt": 1793168032500,
+        "recordAvailableAt": 1793168032500,
+        "requestAttempts": 1,
+        "maximumPages": 1,
+        "pages": [
+          {
+            "page": 1,
+            "rows": 1000,
+            "newestSlot": 462370100,
+            "oldestSlot": 462272343,
+            "receivedAt": 1793168032480,
+            "validatedAt": 1793168032500
+          }
+        ],
+        "historyRows": 1000,
+        "historyRangeCovered": true,
+        "interiorRows": 0,
+        "requiredSignatures": 0,
+        "comparedSignatures": 0,
+        "missingNotifications": 0,
+        "unconfirmedCapturedSignatures": 0,
+        "statusDisagreements": 0,
+        "contextFences": {
+          "lower": {
+            "slot": 462370522,
+            "availableAt": 1793167969205,
+            "bankClockAt": 1793167968000
+          },
+          "upper": {
+            "slot": 462370816,
+            "availableAt": 1793168031629,
+            "bankClockAt": 1793168030000
+          }
+        },
+        "evidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 2,
+          "sha256": "cefa1c57d6b92cf4c08fdebd6e7674731f5396834e3d46d2da44d3d883050054"
+        }
+      },
+      "assessment": {
+        "at": 1793168032500,
+        "status": "failed",
+        "reason": "persistent-broad-buying-rule-not-met",
+        "auditAvailableAt": 1793168032500,
+        "entryAgeEligible": false,
+        "financialQualification": false,
+        "scope": "protocol-aware-shadow-ordinary-flow-only; not baseline qualification",
+        "strictV2BaselineUnavailable": false,
+        "evidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 4,
+          "sha256": "9cf0842f81221a4a8abd93de4aac3c98e7ea82c761a1e80f06ab5b2fcc9b04b6"
+        }
+      },
+      "firstFeatureEvidence": {
+        "file": "run/events/events-001.ndjson",
+        "line": 413,
+        "sha256": "51bd65b38e1f94590723d4479cd53d24241bda8bb34821cc9ea218175c3846e1"
+      }
+    },
+    {
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "startAt": 1793167970000,
+      "endAt": 1793168030000,
+      "firstCompleteFeatureAt": 1793168030001,
+      "tradeCount": 4,
+      "netBuyLamports": "-80883388",
+      "auditOutcome": {
+        "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+        "target": {
+          "startAt": 1793167970000,
+          "endAt": 1793168030000
+        },
+        "status": "unavailable",
+        "reason": "NATIVE_AUDIT_TARGET_SLOT_BOUNDARY_AMBIGUOUS",
+        "complete": false,
+        "startedAt": 1793168033653,
+        "resultAvailableAt": 1793168033654,
+        "recordAvailableAt": 1793168033654,
+        "requestAttempts": 0,
+        "maximumPages": 1,
+        "pages": [],
+        "historyRows": 0,
+        "historyRangeCovered": false,
+        "interiorRows": 0,
+        "requiredSignatures": 4,
+        "comparedSignatures": 0,
+        "missingNotifications": 0,
+        "unconfirmedCapturedSignatures": 0,
+        "statusDisagreements": 0,
+        "contextFences": {
+          "lower": {
+            "slot": 462370522,
+            "availableAt": 1793167969209,
+            "bankClockAt": 1793167968000
+          },
+          "upper": {
+            "slot": 462370825,
+            "availableAt": 1793168033203,
+            "bankClockAt": 1793168032000
+          }
+        },
+        "evidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 33,
+          "sha256": "402780c99759cf5421d15fe6623f5a9d0ceaa99734b2f76bceb1d0bbd963f939"
+        }
+      },
+      "assessment": null,
+      "firstFeatureEvidence": {
+        "file": "run/events/events-001.ndjson",
+        "line": 415,
+        "sha256": "6542ccc88b78d248ce8edbc935134984cec779d2eabe88caa4f6cdc8de0e19c0"
+      }
+    },
+    {
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "startAt": 1793167980000,
+      "endAt": 1793168040000,
+      "firstCompleteFeatureAt": 1793168040025,
+      "tradeCount": 1,
+      "netBuyLamports": "-80595935",
+      "auditOutcome": {
+        "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+        "target": {
+          "startAt": 1793167980000,
+          "endAt": 1793168040000
+        },
+        "status": "verified",
+        "reason": "NATIVE_AUDIT_STRICT_INTERIOR_SIGNATURES_VERIFIED",
+        "complete": true,
+        "startedAt": 1793168041793,
+        "resultAvailableAt": 1793168042500,
+        "recordAvailableAt": 1793168042500,
+        "requestAttempts": 1,
+        "maximumPages": 1,
+        "pages": [
+          {
+            "page": 1,
+            "rows": 1000,
+            "newestSlot": 462370575,
+            "oldestSlot": 462351117,
+            "receivedAt": 1793168042488,
+            "validatedAt": 1793168042500
+          }
+        ],
+        "historyRows": 1000,
+        "historyRangeCovered": true,
+        "interiorRows": 1,
+        "requiredSignatures": 1,
+        "comparedSignatures": 1,
+        "missingNotifications": 0,
+        "unconfirmedCapturedSignatures": 0,
+        "statusDisagreements": 0,
+        "contextFences": {
+          "lower": {
+            "slot": 462370522,
+            "availableAt": 1793167969209,
+            "bankClockAt": 1793167968000
+          },
+          "upper": {
+            "slot": 462370861,
+            "availableAt": 1793168041626,
+            "bankClockAt": 1793168040000
+          }
+        },
+        "evidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 69,
+          "sha256": "01ec3523e004a67350c0c970a57d8878e286ffef1614309b1ebc4d9ef480a735"
+        }
+      },
+      "assessment": {
+        "at": 1793168042500,
+        "status": "failed",
+        "reason": "persistent-broad-buying-rule-not-met",
+        "auditAvailableAt": 1793168042500,
+        "entryAgeEligible": true,
+        "financialQualification": false,
+        "scope": "protocol-aware-shadow-ordinary-flow-only; not baseline qualification",
+        "strictV2BaselineUnavailable": false,
+        "evidence": {
+          "file": "run/events/events-002.ndjson",
+          "line": 71,
+          "sha256": "a47fc6168f5693d887e0be785afda8d522386cc140322a052b84fd2bc1ce8e7a"
+        }
+      },
+      "firstFeatureEvidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 40,
+        "sha256": "609879767eb4960da9b830bd28cac7f6e52bbcbb04a1749fb4f9495ef762e69e"
+      }
+    },
+    {
+      "mint": "FgsSTazXwy4pxjrNMuzsQbEPbYPjAW17pAN8dfRHpump",
+      "startAt": 1793168080000,
+      "endAt": 1793168140000,
+      "firstCompleteFeatureAt": 1793168140092,
+      "tradeCount": 0,
+      "netBuyLamports": "0",
+      "auditOutcome": {
+        "mint": "FgsSTazXwy4pxjrNMuzsQbEPbYPjAW17pAN8dfRHpump",
+        "target": {
+          "startAt": 1793168080000,
+          "endAt": 1793168140000
+        },
+        "status": "unavailable",
+        "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT",
+        "complete": false,
+        "startedAt": 1793168142086,
+        "resultAvailableAt": 1793168143672,
+        "recordAvailableAt": 1793168143672,
+        "requestAttempts": 1,
+        "maximumPages": 1,
+        "pages": [],
+        "historyRows": 0,
+        "historyRangeCovered": false,
+        "interiorRows": 0,
+        "requiredSignatures": 0,
+        "comparedSignatures": 0,
+        "missingNotifications": 0,
+        "unconfirmedCapturedSignatures": 0,
+        "statusDisagreements": 0,
+        "contextFences": {
+          "lower": {
+            "slot": 462371032,
+            "availableAt": 1793168077431,
+            "bankClockAt": 1793168077000
+          },
+          "upper": {
+            "slot": 462371327,
+            "availableAt": 1793168141729,
+            "bankClockAt": 1793168141000
+          }
+        },
+        "evidence": {
+          "file": "run/events/events-003.ndjson",
+          "line": 8035,
+          "sha256": "fbbbaa6f3bed1f169e0bace6a7e01774e567eaf3a263a6bb49adc6583c36d02b"
+        }
+      },
+      "assessment": null,
+      "firstFeatureEvidence": {
+        "file": "run/events/events-003.ndjson",
+        "line": 7187,
+        "sha256": "39aad99dac98c774b713b021516a2c0e77b1f709ba9550c166ed0bb2acfd17d7"
+      }
+    },
+    {
+      "mint": "2F4h6dPZp4wcvSJxat6t1HGXHagpP8qYqoDZsLFPpump",
+      "startAt": 1793168080000,
+      "endAt": 1793168140000,
+      "firstCompleteFeatureAt": 1793168140092,
+      "tradeCount": 376,
+      "netBuyLamports": "-1445167908",
+      "auditOutcome": null,
+      "assessment": null,
+      "firstFeatureEvidence": {
+        "file": "run/events/events-003.ndjson",
+        "line": 7188,
+        "sha256": "fc392761ac82914d953620d318e4c42e315c261b75990169d92cae9dd967ef5e"
+      }
+    }
+  ],
+  "scopes": [
+    {
+      "mint": "7KbSWyHjXhAVeEy2Q2TBa1B7Rn2S1JrdGaiSh8Nvpump",
+      "allocatedAt": 1793167944754,
+      "openedAt": 1793167945653,
+      "retiredAt": 1793168032500,
+      "retirementReason": "audited predictive observation completed; fair watch revisit",
+      "promotionEvidence": {
+        "file": "run/events/events-001.ndjson",
+        "line": 209,
+        "sha256": "9ad8dc94eaf018ece6084daefc26e15b271e4eee97bd029ff0e203d3fc44d0fe"
+      },
+      "retiredEvidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 6,
+        "sha256": "9eebfd2af1c347d062dd8eb09cb274489402a68021587c553c12181e8f7d20be"
+      }
+    },
+    {
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "allocatedAt": 1793167944754,
+      "openedAt": 1793167945999,
+      "retiredAt": 1793168042500,
+      "retirementReason": "audited predictive observation completed; fair watch revisit",
+      "promotionEvidence": {
+        "file": "run/events/events-001.ndjson",
+        "line": 211,
+        "sha256": "2e002acbd248a5311598a2f4d8a916eb94e54c70bf925f94ded7e4dc1acaf1f7"
+      },
+      "retiredEvidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 73,
+        "sha256": "ee360bebade4374ee87894d15bb9104ebc4db2b6b0e42b312202b1287670f807"
+      }
+    },
+    {
+      "mint": "FfR4XdDPVrRmq7SFhkaH4srv54uFnNW2wfi83eNPpump",
+      "allocatedAt": 1793168032552,
+      "openedAt": 1793168033416,
+      "retiredAt": 1793168073297,
+      "retirementReason": "PILOT_RPC_COMPONENT_OPERATION_FAILED",
+      "promotionEvidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 7,
+        "sha256": "ed344e1fc4f41091b6969686f7bddeb43fd7f0f4ff8c0475d6111a2d866d842d"
+      },
+      "retiredEvidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 5185,
+        "sha256": "d9ff5a2445e1061d7a02e0ec7248d2964f59baa792fc3b8145d4242fcc785cf1"
+      }
+    },
+    {
+      "mint": "Fm6NC85y13gyP17G1WY5D19EerjETVg7y4Y8WnLNpump",
+      "allocatedAt": 1793168043861,
+      "openedAt": 1793168044600,
+      "retiredAt": 1793168073297,
+      "retirementReason": "PILOT_RPC_COMPONENT_OPERATION_FAILED",
+      "promotionEvidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 107,
+        "sha256": "db3c85fd37d4f9902362c2cf0ce342905f7ac417c72a1a164e1e851b659d147e"
+      },
+      "retiredEvidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 5188,
+        "sha256": "6050d96265711703649e45e3b2c540940ad8df082530c8f70a8b1855494e5e8f"
+      }
+    },
+    {
+      "mint": "8JtcwHAk3FhHvyr2tTArT2bYpAhEtSMtny3EUPvzpump",
+      "allocatedAt": 1793168046966,
+      "openedAt": 1793168047681,
+      "retiredAt": 1793168073297,
+      "retirementReason": "PILOT_RPC_COMPONENT_OPERATION_FAILED",
+      "promotionEvidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 239,
+        "sha256": "7dfef3b96cf3c09ff26d6710404fca85dd810f4ed3a161c0929e365c21712606"
+      },
+      "retiredEvidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 5191,
+        "sha256": "9c0fd2dcdb3b543c508b4bd1e55e100ca3be6b7b9500be618e29974b1920e898"
+      }
+    },
+    {
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "allocatedAt": 1793168072521,
+      "openedAt": null,
+      "retiredAt": 1793168073297,
+      "retirementReason": "PILOT_RPC_COMPONENT_OPERATION_FAILED",
+      "promotionEvidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 5136,
+        "sha256": "d0fb34d04a0ea18f8af431d4521121977cea2a7f1c45c556e864b5aff93c58f5"
+      },
+      "retiredEvidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 5194,
+        "sha256": "43e0603cd262f9285e0a0d003c2dc60e1b42b8eb49b37982f33b73cf8f914657"
+      }
+    },
+    {
+      "mint": "FgsSTazXwy4pxjrNMuzsQbEPbYPjAW17pAN8dfRHpump",
+      "allocatedAt": 1793168073348,
+      "openedAt": 1793168076473,
+      "retiredAt": 1793168144697,
+      "retirementReason": "NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+      "promotionEvidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 5196,
+        "sha256": "b346ac9c8c5f54a3637cdc2fa8bf7757600d50d4f469249b418d82bc4c45bf93"
+      },
+      "retiredEvidence": {
+        "file": "run/events/events-003.ndjson",
+        "line": 8275,
+        "sha256": "63cc5d7700e54ac114c71a92313b9f2fa20baa6ee502f509ba0d7fd497cc6d88"
+      }
+    },
+    {
+      "mint": "2F4h6dPZp4wcvSJxat6t1HGXHagpP8qYqoDZsLFPpump",
+      "allocatedAt": 1793168077020,
+      "openedAt": 1793168077803,
+      "retiredAt": 1793168144696,
+      "retirementReason": "NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+      "promotionEvidence": {
+        "file": "run/events/events-002.ndjson",
+        "line": 5237,
+        "sha256": "7ded3f19868f17bff923a10fcc49f07137ddf06e1014e89bcacb870fc29a3398"
+      },
+      "retiredEvidence": {
+        "file": "run/events/events-003.ndjson",
+        "line": 8272,
+        "sha256": "2be2a1b44a8cea303216ff46729fbfe823ea3f70a0c5d9920208ce7a107c08ce"
+      }
+    },
+    {
+      "mint": "Fm6NC85y13gyP17G1WY5D19EerjETVg7y4Y8WnLNpump",
+      "allocatedAt": 1793168103477,
+      "openedAt": 1793168104328,
+      "retiredAt": 1793168144697,
+      "retirementReason": "NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+      "promotionEvidence": {
+        "file": "run/events/events-003.ndjson",
+        "line": 949,
+        "sha256": "e0971d682e866d927386789890d5a9585778f0dfd855b11fcbad55d6b81d4614"
+      },
+      "retiredEvidence": {
+        "file": "run/events/events-003.ndjson",
+        "line": 8278,
+        "sha256": "aa6d4de91e47d343b98d484571f57994778a822b811495900391b0699bb1c850"
+      }
+    },
+    {
+      "mint": "5TdjfgA5eJUFD4xQp8ZRvtZAQZVXZHq1dtB4pEg8pump",
+      "allocatedAt": 1793168103477,
+      "openedAt": 1793168105070,
+      "retiredAt": 1793168144697,
+      "retirementReason": "NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+      "promotionEvidence": {
+        "file": "run/events/events-003.ndjson",
+        "line": 951,
+        "sha256": "8337f473e63e818444a973fd681b6d87105b961c57598f0d3f28216e5b5cb864"
+      },
+      "retiredEvidence": {
+        "file": "run/events/events-003.ndjson",
+        "line": 8281,
+        "sha256": "4d81bb4c34626058b32b253fc6a88f6d5328d1809919d97ef98d2c6a0ec8d805"
+      }
+    },
+    {
+      "mint": "8JtcwHAk3FhHvyr2tTArT2bYpAhEtSMtny3EUPvzpump",
+      "allocatedAt": 1793168103477,
+      "openedAt": 1793168105860,
+      "retiredAt": 1793168144697,
+      "retirementReason": "NATIVE_FLOW_NOTIFICATION_LEDGER_LIMIT",
+      "promotionEvidence": {
+        "file": "run/events/events-003.ndjson",
+        "line": 953,
+        "sha256": "655fb03227b9e4d6dc3be398a8d3db4f8c0a3a3f29057cfa3aaa3755e65ca9b4"
+      },
+      "retiredEvidence": {
+        "file": "run/events/events-003.ndjson",
+        "line": 8284,
+        "sha256": "fbc451e9f793a3749284a83bd99d59f833ca28e904a5b4cfb62ddd6749a0dccf"
+      }
+    }
+  ],
+  "finalCounterParity": {
+    "physicalStarts": true,
+    "physicalSettlements": true,
+    "auditedPredictiveAssessments": true,
+    "uniquePredictiveTokens": true,
+    "qualityGaps": true,
+    "decisionDeadlineMisses": true,
+    "normalizedTradeAdmissions": true
+  },
+  "sourceIndex": {
+    "path": "/workspace/poe-pilot/runs/native-age-20261028061211/artifact/index.json",
+    "sha256": "bb2bfdd9a1cbb033873e65866582e51168305f06cf3d05b88196f80769b2aee7",
+    "filesVerified": 24,
+    "inputBytes": 37091216,
+    "files": [
+      {
+        "file": "after.json",
+        "bytes": 643,
+        "sha256": "c18e5dfdcd7dd569674512dddd07d199a974acc6a77ff23de95a203270957ff8"
+      },
+      {
+        "file": "before.json",
+        "bytes": 979,
+        "sha256": "993cb94039c43f69b3c976af777ae9c449800aef7e8c6c209c5634bdeffd82c1"
+      },
+      {
+        "file": "input.json",
+        "bytes": 5389371,
+        "sha256": "6b6bad58c0daee74506b162467df0648ffd02a0ed3354a0fecd9885ec796f239"
+      },
+      {
+        "file": "package.json",
+        "bytes": 47724,
+        "sha256": "106ab993199957f06947eee8fe9dc9f90e54d1ba36c50f0a2c641a2431819fcb"
+      },
+      {
+        "file": "publisher-final.log",
+        "bytes": 205,
+        "sha256": "8666ffc5b75d92dd25bbdae7ae4c5512a12908f0d0490284b559ecac9c62d2f7"
+      },
+      {
+        "file": "publisher.log",
+        "bytes": 2862,
+        "sha256": "4610ef8ae8cd3af0118459d3968540f4f659266395131bfbe99e404b42578b18"
+      },
+      {
+        "file": "reporting-evidence/accepted-source-001-ack.json",
+        "bytes": 710,
+        "sha256": "6c3ce0342c7d13514db65c068c689ee3e15e76123da8fbd9d8aeff17e499eecd"
+      },
+      {
+        "file": "reporting-evidence/accepted-source-001.json",
+        "bytes": 678435,
+        "sha256": "bbf619542b7cf87b4f82d31b0891997ee6264c8897c93a151518de17767eff41"
+      },
+      {
+        "file": "reporting-evidence/accepted-source-002-ack.json",
+        "bytes": 710,
+        "sha256": "19e560207c00de2bb29bac9cb90e0e4f3c40f6716d1c2145d547f13d36845f06"
+      },
+      {
+        "file": "reporting-evidence/accepted-source-002.json",
+        "bytes": 682024,
+        "sha256": "fc3076f39fa7180c4617b0f94a19a12a30b197e8f8f0c650703e3a5bb0538da0"
+      },
+      {
+        "file": "run/receipt.json",
+        "bytes": 567914,
+        "sha256": "9aa2a03e33e4cbf02cf0d5d091850530e93a989f7f66d178bd5db1be21504803"
+      },
+      {
+        "file": "run/rpc/authorization.json",
+        "bytes": 102251,
+        "sha256": "62e376ee24c8c349e1772a0d30bc6c3e2f5d4232faf4e96adfbcdba4aed4959c"
+      },
+      {
+        "file": "run/rpc/chapter-001-summary.json",
+        "bytes": 72260,
+        "sha256": "73ce98cfc72898513ba78fdcee097bacea95fd6e26e70fb0a494f0112ee3f2ff"
+      },
+      {
+        "file": "run/rpc/chapter-001.json",
+        "bytes": 70869,
+        "sha256": "863955aa05ab21418955e2f1c192d49c3ff33178d19605a84b09f8700e99fd38"
+      },
+      {
+        "file": "run/rpc/chapter-002-summary.json",
+        "bytes": 70739,
+        "sha256": "d781415a9c7bc9ddb1f5dae4283155b65e7fb7c75ce0293d4737dafdb619adb0"
+      },
+      {
+        "file": "run/rpc/chapter-002.json",
+        "bytes": 69749,
+        "sha256": "892f6ff421151ef4257d9c79dccda5dbd3c87e735a22772986fdd1940be1da4e"
+      },
+      {
+        "file": "run/rpc/status.json",
+        "bytes": 15454,
+        "sha256": "d54c157e67a0b862e1235fc21bbbc1d3404c69484181c08d13fe79f3e438eaba"
+      },
+      {
+        "file": "run/status.json",
+        "bytes": 567914,
+        "sha256": "9aa2a03e33e4cbf02cf0d5d091850530e93a989f7f66d178bd5db1be21504803"
+      },
+      {
+        "file": "run/watch-checkpoint.json",
+        "bytes": 5541177,
+        "sha256": "a1c58e0b7e4ef3372eecb020b8f59831bed7baf60e735f6ca4844940a45c10cf"
+      },
+      {
+        "file": "runner.log",
+        "bytes": 466,
+        "sha256": "fc735fac838f916da92c10d61ad7c6223d41291a55c6621e834e43d5e27f50c7"
+      },
+      {
+        "file": "supervisor.json",
+        "bytes": 5540,
+        "sha256": "bb8b3a28bf2f1111c9582c4201b4196d1815176d774ff3ac730b7a70a3444645"
+      },
+      {
+        "file": "run/events/events-001.ndjson",
+        "bytes": 8333128,
+        "sha256": "92b67a0df9eccd89a5efd5d4adbcadb958daa937693230884461c09d56922ec4"
+      },
+      {
+        "file": "run/events/events-002.ndjson",
+        "bytes": 7462081,
+        "sha256": "3d85aeebd7d9ef154721ab8582cc42d7ee52fc617235e4445bc9ce45d51a4a74"
+      },
+      {
+        "file": "run/events/events-003.ndjson",
+        "bytes": 7408011,
+        "sha256": "a15ebd64303ee9800dbda258f01a4d6c667477c05d9d16115e63c06fa067792f"
+      }
+    ]
+  },
+  "limits": {
+    "indexBytes": 2097152,
+    "fileBytes": 16777216,
+    "totalBytes": 1342177280,
+    "eventRows": 4000000,
+    "eventLineBytes": 9437184,
+    "uniqueSignatures": 1500000,
+    "physicalOperations": 20000,
+    "windows": 10000,
+    "auditPages": 40000,
+    "diagnostics": 10000,
+    "outputBytes": 16777216
+  },
+  "limitations": [
+    "No market census, whole-market recall, executable outcome, holdings-protection or profitability is established by this candidate-only analysis.",
+    "Periodic snapshots may miss compaction peaks and candidates retired between snapshots; a zero sampled compaction count is unavailable evidence, not proof compaction did not run.",
+    "Raw complete feature endpoints can lack context warming, audit, current generation or deadlines. They are not automatically valid strategy evaluations.",
+    "Absence of a failure is only evidence for the observed arrivals/concurrency/activity; it does not prove six busy pools if fewer were observed.",
+    "History signatures include non-swap and failed pool-address transactions. Required count is not trade count; provider message count is not event completeness.",
+    "Late information and cancellation stay at recorded availability time; logical cancellation never asserts physical request settlement."
+  ],
+  "networkRequests": 0,
+  "financialFilesOpened": false,
+  "sourceModified": false,
+  "retainedFailureComparison": {
+    "classification": "EXACT_RETAINED_FAILURE_RECONSTRUCTION_NOT_CORRECTED_REPLAY",
+    "checks": {
+      "run": true,
+      "source": true,
+      "elapsed": true,
+      "stopReason": true,
+      "uniqueSignatures": true,
+      "parsedSignatures": true,
+      "admittedSignatures": true,
+      "normalizedTrades": true,
+      "protocolEffects": true,
+      "maximumRss": true
+    },
+    "scopeBindingLimitation": "Old packets lack subscription identity; per-pool4097/66.893s assertion is not reconstructed from invented binding. Existing separately retained forensics remains its source."
+  },
+  "analysisTool": {
+    "path": "evidence/resumed-forward-20261028/analyze-retention-audits.mjs",
+    "sha256": "7e5885322b5dbdc4eaf9cf4313d409a3bc2d0a7cf0e310a02f6a324797883de0"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "classification": "DISCARDED_LOCAL_DRAFT_MICROBENCHMARKS_NOT_FORWARD_RESOURCE_MEASUREMENTS",
+  "description": "Retained negative measurements from successive isolated synthetic drafts. Original individual output files were overwritten during development; these fields are transcribed from completed tool output and are not full raw memory receipts.",
+  "records": [
+    {"draft":"individual52-byteBuffers-with-interned-groups","count":32768,"retainedHeapDeltaBytes":11263624,"rssDeltaBytes":64962560,"maximumRssBytes":129077248,"elapsedMs":185.96033,"result":"rejected for excessive transient allocation"},
+    {"draft":"fixed-arena-with-interned-groups","count":32768,"retainedHeapDeltaBytes":9547352,"rssDeltaBytes":56090624,"maximumRssBytes":121315328,"elapsedMs":231.568295,"result":"replaced repeated group Set/JSON allocation"},
+    {"draft":"fixed-arena-six-bit-mask-before-temporary-allocation-reduction","count":32768,"retainedHeapDeltaBytes":9565648,"rssDeltaBytes":55779328,"maximumRssBytes":121438208,"elapsedMs":205.704812,"result":"reduced temporary Buffer and scope-registration allocations"}
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "classification": "INDEPENDENT_FREE_INDEX_ACCESS_VERIFIED_BUT_HISTORICAL_OPPORTUNITY_CENSUS_AND_EXECUTION_PROOF_UNAVAILABLE",
+  "retrievalDate": "2026-10-27",
+  "generatedAt": "2026-10-27T23:28:56.114321+00:00",
+  "apiFees": {
+    "additionalApiChargesUsd": 0,
+    "basis": "Documented public GeckoTerminal keyless access; actual requests carried no account key, wallet credential or billing identity. No paid API, plan or account was activated.",
+    "infrastructure": "Existing Cloud/network-transfer allocation remains unverified; no claim of zero total operating cost."
+  },
+  "officialDocumentation": {
+    "publicApiLanding": "https://www.geckoterminal.com/dex-api",
+    "ohlcvDemoSchema": "https://docs.coingecko.com/demo/reference/pool-ohlcv-contract-address.md",
+    "topDexPools": "https://docs.coingecko.com/demo/reference/top-pools-dex.md",
+    "newPools": "https://docs.coingecko.com/demo/reference/latest-pools-network.md",
+    "retrievedSources": "Hashes, HTTP dates, exact URLs and bodies retained in reference-network-receipts.json/reference-raw/.",
+    "verifiedClaims": [
+      "Public landing advertises free API and a10calls/min base rate; current observation replaces historical30/min assumptions.",
+      "OHLCV schema is[timestamp,open,high,low,close,volume], minute aggregation1 available, max1000 points; empty/no-swap intervals are omitted unless explicitly filled.",
+      "Top DEX pools return up to20/page; pagination beyond10pages requires a paid Analyst-or-above plan. We did not exceed that boundary.",
+      "CoinGecko demo/keyless docs show their separate api.coingecko.com API-key security schemes; only public api.geckoterminal.com endpoints were used here, not paid CoinGecko access."
+    ],
+    "conflictsAndLimits": [
+      "Requested h24_volume_usd_desc listing was not strictly ordered by reported volume; response order is not treated as a reliable historical ranking.",
+      "Advertised10calls/min is not verified entitlement: page9returned429 despite6.507second start spacing.",
+      "The API returned a Frongus minute exactly at before_timestamp, so analytical cutoffs use actual bar bounds rather than assuming strict endpoint exclusion.",
+      "SI minute-bar volume total differs from separately retrieved pool24hvolume by501.2072204514USD; aggregation/correction convention unresolved, not treated as full trade completeness."
+    ]
+  },
+  "actualWork": {
+    "externalHttpsStarts": 19,
+    "documentationStarts": 6,
+    "publicIndexStarts": 13,
+    "httpStatuses": {
+      "301": 1,
+      "200": 17,
+      "429": 1
+    },
+    "measuredResponseBodyBytes": 515568,
+    "uncertainUninspected429BodyReservationBytes": 272,
+    "accountedBodyBytes": 515840,
+    "physicalRpcRequests": 0,
+    "walletOrFinancialActions": 0,
+    "sourceLegs": [
+      "reference-network-receipts.json",
+      "reference-frongus-corrected-leg.json",
+      "No further automatic network action; completed source leg and throttle evidence remain immutable."
+    ],
+    "sourceThrottle": {
+      "requestStartedAt": "2026-10-27T23:21:26.963Z",
+      "settledAt": "2026-10-27T23:21:27.115Z",
+      "retryAfterHeader": "0",
+      "effect": "Paginated source leg stopped; page10neverstarted. No automatic retry or endpoint/identity rotation.",
+      "deliberateSingleQuestionLeg": {
+        "startedAt": "2026-10-27T23:25:21.292Z",
+        "actualCooldownMs": 234177,
+        "status": 200,
+        "question": "Actual historical minute price/activity of independently identified canonical Frongus pool versus its candidate-capacity failure",
+        "futureAutomaticCalls": 0
+      }
+    }
+  },
+  "independentReferencePopulation": {
+    "selection": "Current public PumpSwap DEX listing,8successful20-pool pages collected23:16:53\u201323:21:20UTC; independent of POE-selected identities.",
+    "uniquePoolRows": 160,
+    "classificationCounts": {
+      "INDEXED_IDENTITY_INCONSISTENT_WITH_CANONICAL_SCOPE": 107,
+      "CANONICAL_SOL_AGE_OVERLAP_LEAD_NEEDS_CHAIN_PROOF": 10,
+      "INDEXED_CREATION_AGE_OUTSIDE_RECORDED_PERIODS": 40,
+      "OUTSIDE_SOL_QUOTE_SCOPE": 3
+    },
+    "canonicalSOLAddressConsistent": 50,
+    "provisionalAgeOverlapAnyRecordedPeriod": 10,
+    "provisionalAgeOverlapMainBenchmark": 9,
+    "notACensus": true,
+    "notHistoricalTop10or20": true,
+    "denominatorLimits": [
+      "Snapshot selected by current provider-volume/index ranking after the runs, with survivor/activity/index coverage bias.",
+      "Only160returned rows; page9throttle prevented the documented maximum200 and omitted pools may include collapsed opportunities.",
+      "Current index metadata and offline canonical PDA derivation do not independently prove migration origin, supported token extensions, historical fees or liquidity.",
+      "All160rows have individual structural/age/address-consistency outcomes and evidence pointers in reference-current-indexed-cohort.json; this is not a top20strongest-opportunity table."
+    ],
+    "newPoolProbe": {
+      "rows": 20,
+      "firstCreatedAt": "2026-10-27T23:18:11Z",
+      "lastCreatedAt": "2026-10-27T23:18:42Z",
+      "coveredSeconds": 31,
+      "canonicalPumpSwapSOLRows": 1,
+      "meaning": "Current latest-pool page is too shallow and too late to recover historical20:21\u201323:17migration population. No unbounded scan was attempted."
+    },
+    "offlineAddressDerivation": "Pinned @pump-fun/pump-swap-sdk2.2.0 canonicalPumpPoolPda via repository src/sdk.ts; current/historical on-chain support remains unverified."
+  },
+  "independentHistories": {
+    "SI": {
+      "bars": 42,
+      "first": "2026-10-27T20:21:00Z",
+      "last": "2026-10-27T22:57:00Z",
+      "evidence": "si-independent-ohlcv-analysis.json",
+      "finding": "Main eligible indexed rally20:28\u201336, crash20:44;21:19quiet observation occurred after collapse. Lead-verified research interruption20:27:18\u201320:54:59containsrally. Whollycontainedbarsafter21:19:30until22:21:11expiry total2.385646USDindexedvolume.",
+      "actualPricePeakUsd": 0.0003359435861199627,
+      "peakBar": "2026-10-27T20:36:00Z",
+      "selectionCaveat": "Owner-nominated case study with independently retrieved history, not an independently sampled universe member."
+    },
+    "FRONGUS": {
+      "bars": 124,
+      "first": "2026-10-27T21:13:00Z",
+      "last": "2026-10-27T23:17:00Z",
+      "evidence": "reference-two-history-price-windows.json",
+      "finding": "Large indexed price/activity acceleration overlaps source20567run22:08\u201329. Strongest exact15minclosepair22:13\u219222:28gained1967.87%indicatively. Later22:43capacity failure is a different, declining phase; cannot transfer the earlier gain to that later entry.",
+      "actualPricePeakUsd": 0.001069720924229121,
+      "peakBar": "2026-10-27T22:28:00Z",
+      "selectionCaveat": "Selected by canonical SOL/age intersection from the independent current indexed cohort before the later local-lifecycle price audit; this does not remove current-volume and survival biases."
+    }
+  },
+  "evidenceStillMissing": [
+    "Independent exhaustive or representative historical reference universe for each exact observation interval, including disappeared/unindexed pools.",
+    "Historical canonical migration/pool/token-program/fee support proof for the9index-derived time-overlap leads.",
+    "Transaction-complete historical flows/trader attribution and six10second buckets before the moves, with actual confirmation/availability context.",
+    "Historical coherent pool/reserve/fee state and actual-size50USD entry/exit estimates at decision+modeled-delay times.",
+    "Per-lead POE lifecycle crosscheck and actual threshold failures; the lead/root handles those local traces.",
+    "Counterfactual thresholds cannot be evaluated honestly from OHLCV alone."
+  ],
+  "permittedConclusions": [
+    "The independent index supplies useful chronological price/activity leads without additional API fees for these calls.",
+    "SI\u2019s known21:19view cannot be compared to an assumed later21:19rally: the returned major rally is earlier.",
+    "Frongus supplies a material in-period price/activity lead requiring lifecycle and data-quality audit.",
+    "No historical opportunity-recall percentage, executed missed-profit claim or profitability conclusion is supported by this access leg alone."
+  ],
+  "smallestRemainingMeasurement": "Crosscheck9independent age/address-consistent leads against localPOElifecycle; prioritize chain-corroborratingFrongus during22:13\u201328 and SI20:26\u201327. Obtain bounded historical trade/state evidence only where it can resolve qualification/executability, not just current metadata.",
+  "productionUntouched": true,
+  "financialExecution": false,
+  "noFurtherNetworkAutomatic": true,
+  "plot": "independent-history-timing.png: indexed minute low\u2013high ranges and closes, no connecting/interpolated path; green bands show runtime-active intervals, not token selection or valid evaluation."
+}

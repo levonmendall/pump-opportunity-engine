@@ -1,0 +1,45 @@
+{
+  "kind": "INDEPENDENT_PURE_ADAPTIVE_MOMENTUM_V2_REVIEW",
+  "at": "2026-10-29T21:17:13.424087+00:00",
+  "classification": "PURE_KERNEL_REVIEW_NOT_ACTIVE_INTEGRATION_OR_FORWARD_ACCEPTANCE",
+  "files": {
+    "src/adaptive-momentum-v2.ts": {
+      "bytes": 16125,
+      "sha256": "0f5c3d92740d0182e5b44f507430b1508e463213b7f4ff285ebfe28e4b090a30"
+    },
+    "test/adaptive-momentum-v2.test.ts": {
+      "bytes": 12603,
+      "sha256": "41a0a8be1fb219ee6d2019af9c70029195457eebe5a056ca16924a82d79a6ed4"
+    }
+  },
+  "focusedTests": {
+    "passed": 19,
+    "failed": 0,
+    "raw": "/tmp/poe-adaptive-v2-independent-tests-final.txt"
+  },
+  "build": {
+    "passed": true,
+    "raw": "/tmp/poe-adaptive-v2-independent-build-final.txt"
+  },
+  "networkRequests": 0,
+  "financialDatabaseOpened": false,
+  "sourceModified": false,
+  "findingCorrected": "Complete valid-flow floor rejects previously became missing-data due null-score check ordering; corrected and full-context regression added without changing thresholds.",
+  "verdict": "APPROVED_PURE_MODULE_WITH_INTEGRATION_REQUIREMENTS",
+  "integrationRequirements": [
+    "Existing independent native certificate and exact-size SDK liquidity/source validation must gate every qualified call; a score alone is not authority.",
+    "Bind high-water state to immutable position/roundtrip, never only mint; do not reuse old peak on reentry.",
+    "Keep optional volatility undefined unless derived from prior-only same-size source-bound mark series; scalar parameter alone carries no as-of provenance.",
+    "Bind reentry closure/reconciliation/conflict evidence to exact mint and most recent roundtrip.",
+    "No promotion/edge/forward guarantee follows from these19controlledtests; experimental parameters are explicitly unvalidated."
+  ],
+  "verifiedProperties": [
+    "Flow malformed/incomplete/provisional/nearneutral/lowliquidity demand cannot qualify.",
+    "Unverified/future migration and pre-migration windows refuse.",
+    "Entry still checks risk permission, same-mint fresh quote<=2s, actual-size liquidity and50USD initial fallback.",
+    "Reentry requires full new window after closure and reconciled conflict-free prior state.",
+    "Fresh<=2s exact-size net marks required to move high water or request exits.",
+    "15% protective cost stop retained; no gain-based30%fullsale or fixed profitable15minuteexit.",
+    "Unknown stress remains unknown; appreciated mark is separated from original deployed cost; no forced sale or capital addition."
+  ]
+}

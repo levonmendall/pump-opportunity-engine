@@ -1,0 +1,165 @@
+{
+  "schemaVersion": 1,
+  "source": "c189a54b7978692ef2f7d098d6b3374aea8deb72",
+  "sourceRunId": "native-paper-20261028210805129",
+  "purpose": "Historical bounded transport diagnostic selection, not fresh pool eligibility or pricing. New probe responses must retain their actual timestamps.",
+  "operatingTimeoutChanged": false,
+  "cases": [
+    {
+      "role": "repeated-first-page-timeout",
+      "mint": "J6NTA5Fa2Y9M3LBgtr5ib9Dote7Ub5wCdFzJ5EBEpump",
+      "pool": "46ZfGg4F6r93ZNGBrQywzA9dQfgbyJu2ye7vb58UhXnR",
+      "observedAuditStatuses": [
+        "unavailable",
+        "unavailable",
+        "unavailable"
+      ],
+      "requestMethod": "getSignaturesForAddress",
+      "firstPageParams": [
+        "46ZfGg4F6r93ZNGBrQywzA9dQfgbyJu2ye7vb58UhXnR",
+        {
+          "limit": 100,
+          "commitment": "confirmed",
+          "minContextSlot": 462628791
+        }
+      ],
+      "beforeAbsentProof": "Zero captured notifications; pinned native-flow-audit source derives optional anchor/before only from captured post-window notifications.",
+      "target": {
+        "startAt": 1793222950000,
+        "endAt": 1793223010000
+      },
+      "historicalContextFences": {
+        "lower": {
+          "slot": 462628470,
+          "availableAt": 1793222942992,
+          "bankClockAt": 1793222942000
+        },
+        "upper": {
+          "slot": 462628791,
+          "availableAt": 1793223011670,
+          "bankClockAt": 1793223010000
+        }
+      },
+      "historicalSupportIsNotCurrent": true,
+      "evidence": [
+        {
+          "file": "events-004.ndjson",
+          "line": 1145,
+          "sha256": "73d7b9180808f14bc495eb90e0fda3d408191599a411611a6919933b3100a245"
+        },
+        {
+          "file": "events-004.ndjson",
+          "line": 1238,
+          "sha256": "2cde2ac0946d9e99a93b525f0c74f05835f15e29fc4ff19f95a33c91f8a8b221"
+        },
+        {
+          "file": "events-004.ndjson",
+          "line": 1317,
+          "sha256": "f770df847e3be6290167139a5babb21f43d6443d001c70326b146396e3593423"
+        }
+      ]
+    },
+    {
+      "role": "repeated-first-page-timeout",
+      "mint": "HKvyE87bzpTTDpSQPNvm79nLgJ6jT1Sa1XFRZccHpump",
+      "pool": "GAZmLL5v2omUcBmfVQyPwZWyrENt4uaonmCodfRUkjLp",
+      "observedAuditStatuses": [
+        "unavailable",
+        "unavailable",
+        "unavailable"
+      ],
+      "requestMethod": "getSignaturesForAddress",
+      "firstPageParams": [
+        "GAZmLL5v2omUcBmfVQyPwZWyrENt4uaonmCodfRUkjLp",
+        {
+          "limit": 100,
+          "commitment": "confirmed",
+          "minContextSlot": 462627573
+        }
+      ],
+      "beforeAbsentProof": "Zero captured notifications; pinned native-flow-audit source derives optional anchor/before only from captured post-window notifications.",
+      "target": {
+        "startAt": 1793222690000,
+        "endAt": 1793222750000
+      },
+      "historicalContextFences": {
+        "lower": {
+          "slot": 462627275,
+          "availableAt": 1793222687174,
+          "bankClockAt": 1793222686000
+        },
+        "upper": {
+          "slot": 462627573,
+          "availableAt": 1793222751640,
+          "bankClockAt": 1793222750000
+        }
+      },
+      "historicalSupportIsNotCurrent": true,
+      "evidence": [
+        {
+          "file": "events-003.ndjson",
+          "line": 5743,
+          "sha256": "47bd326050100e3459d7430f93aca5978af7a5d7073e7fa89085fccb75bdfe1a"
+        },
+        {
+          "file": "events-003.ndjson",
+          "line": 5825,
+          "sha256": "41c80b8c535898280605dd81ecbe9d898eb496732f6a9d5def3bf4ed6647e2d5"
+        },
+        {
+          "file": "events-003.ndjson",
+          "line": 5918,
+          "sha256": "f1fac90fa80f070f376a3f71ee2cb877f7ab1ca0908a7c8d2df51fb69c9a46ce"
+        }
+      ]
+    },
+    {
+      "role": "verified-quiet-control",
+      "mint": "DgxHupiXCbjkqXAwijJDURbDnbvpf5UMPaLFcmMpump",
+      "pool": "oMwGi1ntDawN9qJBhCjBXWaE8Je171DEzKn1rwJTMJp",
+      "observedAuditStatuses": [
+        "verified",
+        "verified"
+      ],
+      "requestMethod": "getSignaturesForAddress",
+      "firstPageParams": [
+        "oMwGi1ntDawN9qJBhCjBXWaE8Je171DEzKn1rwJTMJp",
+        {
+          "limit": 100,
+          "commitment": "confirmed",
+          "minContextSlot": 462629120
+        }
+      ],
+      "beforeAbsentProof": "Zero captured notifications; pinned native-flow-audit source derives optional anchor/before only from captured post-window notifications.",
+      "target": {
+        "startAt": 1793223020000,
+        "endAt": 1793223080000
+      },
+      "historicalContextFences": {
+        "lower": {
+          "slot": 462628801,
+          "availableAt": 1793223014124,
+          "bankClockAt": 1793223013000
+        },
+        "upper": {
+          "slot": 462629120,
+          "availableAt": 1793223081624,
+          "bankClockAt": 1793223081000
+        }
+      },
+      "historicalSupportIsNotCurrent": true,
+      "evidence": [
+        {
+          "file": "events-003.ndjson",
+          "line": 1203,
+          "sha256": "26aab75b9cdcce5270f2b5125aa1ae1e76afffd75cdde546c006f76051d25254"
+        },
+        {
+          "file": "events-004.ndjson",
+          "line": 1613,
+          "sha256": "f2de118d4a4910a5914cd156c684afd2c93501ca2aa87de8f204dd6b19341cf7"
+        }
+      ]
+    }
+  ]
+}

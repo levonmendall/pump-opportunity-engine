@@ -1,0 +1,75 @@
+{
+  "sourceCommit": "5675961a0ad05df508eec6928644c9e403be0811",
+  "artifactDirectory": "/tmp/poe-native-paper-output-provider-recovery-5675961-final",
+  "files": {
+    "metadata.json": {
+      "bytes": 168665,
+      "sha256": "93e00187cfae669fff3a713ffb05329f69033f2692c1171c97e9764a76cc5f85"
+    },
+    "verify-native-paper-package.mjs": {
+      "bytes": 176747,
+      "sha256": "b89dec54b05ea64e6b83fd75151bbbef2ea674b724e256921168f64d0818696d"
+    },
+    "snapshot-publisher.mjs": {
+      "bytes": 32314,
+      "sha256": "7da8c7388a5ec3e4f2e0b46a8226ce457d0a68578e5b5225c50b97f1a508ff44"
+    },
+    "native-paper.mjs": {
+      "bytes": 5267047,
+      "sha256": "157c34efd86bc0b5ae78aa268afe5afc7d3a4c4db8edcbb181445cad92ccb6ae"
+    },
+    "better_sqlite3.node": {
+      "bytes": 2226168,
+      "sha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d"
+    },
+    "backup-worker.mjs": {
+      "bytes": 76572,
+      "sha256": "aa41d0c26f42bc0e3c2c5655907a5ea71b11f3047ef6bfd23e5858c340066af2"
+    }
+  },
+  "financialMode": "PAPER",
+  "liveTradingEnabled": false,
+  "smoke": {
+    "importOnly": true,
+    "networkDisabled": true,
+    "nodeModulesPresent": false,
+    "disposableFinancialFixture": true,
+    "idempotency": true,
+    "backupWorker": true,
+    "reopen": true,
+    "sqlite": {
+      "version": "3.53.4",
+      "source": "2026-07-24 19:02:57 bf7c7f30031888f4e796e429ab3978879485813aaca6f641c7b33e4e09459bcc"
+    },
+    "closure": {
+      "commit": "5675961a0ad05df508eec6928644c9e403be0811",
+      "sha256": "157c34efd86bc0b5ae78aa268afe5afc7d3a4c4db8edcbb181445cad92ccb6ae",
+      "kind": "immutable-startup-native-paper-bundle-closure",
+      "sqliteVersion": "13.0.3",
+      "addonSha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d",
+      "backupWorkerSha256": "aa41d0c26f42bc0e3c2c5655907a5ea71b11f3047ef6bfd23e5858c340066af2",
+      "packageLockSha256": "552d1fc533ec47be8913f220d5d1c08286432fc0e3d3ce54457c488de73ddd4a",
+      "provisionalMetadataSha256": "c2fc414c3020ac1e8ed2ea0b6b4e31bb1dbf27b3c23a8b9eef8705e5f4d01dbd"
+    },
+    "node": "v24.19.0",
+    "directCliGuards": [
+      {
+        "args": "empty",
+        "expectedRefusal": "NATIVE_PAPER_EXPLICIT_RESUME_REQUIRED",
+        "exitStatus": 1
+      },
+      {
+        "args": "explicit-resume-nonexistent-fixture-input",
+        "expectedRefusal": "ENOENT",
+        "exitStatus": 1
+      }
+    ],
+    "stderr": "(node:215406) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.\n(Use `node --trace-deprecation ...` to show where the warning was created)\n",
+    "exitStatus": 0,
+    "soleNativeAddon": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d",
+    "temporaryFixtureRemoved": true,
+    "networkIsolation": "Common networking APIs stubbed; not an OS network sandbox. No real account paths or provider credentials are supplied."
+  },
+  "providerRequests": 0,
+  "financialAccountRead": false
+}

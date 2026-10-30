@@ -1,0 +1,25 @@
+✖ persistent native capture has no research lifetime, cumulative CPU, receive-byte or recorder-volume stop (245.004085ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 0
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1329.195052
+
+✖ failing tests:
+
+test at test/pilot-native-flow.test.ts:1:102503
+✖ persistent native capture has no research lifetime, cumulative CPU, receive-byte or recorder-volume stop (245.004085ms)
+  AssertionError [ERR_ASSERTION]: {"bytes":12043,"trades":0,"gaps":[{"mint":"2VTC8SDSxNZ9taHXsnXgK52fk7afKTNQo9HmzCGTpump","at":1793134631548,"reason":"LOG_NATIVE_PROGRAM_CLOCK_STALE_OR_FUTURE","requiresFreshWindow":true}],"records":["native-flow-contract","native-flow-service-selected","native-flow-service-selected","native-flow-round-trip-proof","native-flow-service-selected","native-flow-subscription-ack","native-flow-round-trip-proof","native-flow-refusal","native-flow-raw-refusal"],"fatal":null}
+      at TestContext.<anonymous> (/workspace/poe-persistent-data-controls/test/pilot-native-flow.test.ts:493:266)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

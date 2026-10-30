@@ -1,0 +1,15 @@
+test_admin_entry_requires_exact_runner_and_only_stage_retrieve (__main__.Offline.test_admin_entry_requires_exact_runner_and_only_stage_retrieve) ... ok
+test_arbitrary_payload_reason_identity_or_write_claim_is_rejected (__main__.Offline.test_arbitrary_payload_reason_identity_or_write_claim_is_rejected) ... ok
+test_available_control_and_reconciliation_facts_keep_original_timestamps (__main__.Offline.test_available_control_and_reconciliation_facts_keep_original_timestamps) ... ok
+test_exact_source_anchors_cannot_claim_unknown_or_future_controls_as_verified (__main__.Offline.test_exact_source_anchors_cannot_claim_unknown_or_future_controls_as_verified) ... ok
+test_fixed_package_stage_is_exact_idempotent_and_nonexecuting (__main__.Offline.test_fixed_package_stage_is_exact_idempotent_and_nonexecuting) ... ok
+test_modified_stage_or_foreign_directory_is_preserved_and_refused (__main__.Offline.test_modified_stage_or_foreign_directory_is_preserved_and_refused) ... ok
+test_owner_command_hashes_source_before_exec_and_has_no_service_operation (__main__.Offline.test_owner_command_hashes_source_before_exec_and_has_no_service_operation) ... ok
+test_retrieval_accepts_only_fixed_sanitized_public_shape (__main__.Offline.test_retrieval_accepts_only_fixed_sanitized_public_shape) ... ok
+test_retrieval_cannot_follow_links_or_read_oversized_file (__main__.Offline.test_retrieval_cannot_follow_links_or_read_oversized_file) ... ok
+test_setter_semantics_cannot_relabel_pause_or_safe_stop_as_enabled (__main__.Offline.test_setter_semantics_cannot_relabel_pause_or_safe_stop_as_enabled) ... ok
+
+----------------------------------------------------------------------
+Ran 10 tests in 0.158s
+
+OK

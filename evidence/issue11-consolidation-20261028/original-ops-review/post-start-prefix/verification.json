@@ -1,0 +1,82 @@
+{
+  "schemaVersion": 1,
+  "sourceCommit": "77ef8f8504a7dbecee99d9c15eedc842e86a3282",
+  "verifiedAt": "2026-10-29T00:27:39.659216+00:00",
+  "tests": [
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-I",
+        "operator/native-paper-ec2/test-authoritative-service.py"
+      ],
+      "exitCode": 0,
+      "bytes": 121,
+      "sha256": "95a7b7dddff07667fa802eb01995d82546dd594a711ef52b358e1353f4459471"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-I",
+        "operator/native-paper-ec2/test-cutover-original-service.py"
+      ],
+      "exitCode": 0,
+      "bytes": 116,
+      "sha256": "9dc643229373b931825a3a7c9965099f844e48cce8c5fa034d23c590b44f2e4a"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-I",
+        "operator/native-paper-ec2/test-audit-original-account.py"
+      ],
+      "exitCode": 0,
+      "bytes": 104,
+      "sha256": "b95b5805bef96b568b1b2424b637003cd6f306e6312d682e4f2e4e23f635b26a"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "-I",
+        "operator/native-paper-ec2/test-prepare-original-service-package.py"
+      ],
+      "exitCode": 0,
+      "bytes": 98,
+      "sha256": "a52c1ff8889b999d6fe8749db50643a0137218a538230cf4806a56ad932bd101"
+    }
+  ],
+  "totalTests": 46,
+  "independentReview": {
+    "reviewer": "/root/finish_original_ops/review_ops_supervisor",
+    "result": "CONDITIONAL_GO_FOR_OFFLINE_SCOPE",
+    "sourceCommit": "77ef8f8504a7dbecee99d9c15eedc842e86a3282",
+    "independentlyRerunDriverAndAuditTests": 23
+  },
+  "files": [
+    {
+      "file": "operator/native-paper-ec2/cutover-original-service.py",
+      "sha256": "eff48bd06b5947a303174e135123eff5ee877e47d38d6a8757ad4a72ebcb020f"
+    },
+    {
+      "file": "operator/native-paper-ec2/audit-original-account.py",
+      "sha256": "48860a612c22876fb8bbc1c0219ac3735d3f53cbfc63b6ca02a8d609bc12ae88"
+    }
+  ],
+  "verifiedMechanics": [
+    "Same-transaction read-only audit and complete historical actions/journal EXCEPT comparison",
+    "Appended rows allowed; historical payload mutation refused",
+    "Funding, inception, original price/rounding and nondecreasing revision checks",
+    "Public status waits at most 30 seconds; financial query progress deadline five seconds",
+    "Public-only delay preserves automatic reporting freshness recovery",
+    "Financial proof failure pauses only candidates and retains the financial manager",
+    "Separate auditor exception class contained; public receipt excludes financial state bodies"
+  ],
+  "hostFinancialLedgerRead": false,
+  "hostServiceStarted": false,
+  "rootCommandExecuted": false,
+  "actualRenderParityVerified": false,
+  "claim": "OFFLINE VERIFIED. Live original-account source, local post-start receipt and original-channel Render parity still require actual owner-root cutover."
+}

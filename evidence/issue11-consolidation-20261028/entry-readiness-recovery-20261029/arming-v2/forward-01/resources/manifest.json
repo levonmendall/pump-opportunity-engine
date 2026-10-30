@@ -1,0 +1,50 @@
+{
+  "kind": "actual-target-run-matched-resource-and-ack-samples",
+  "source": {
+    "commit": "5648606bf78f6687c47632be5c789af5e7f19772",
+    "sha256": "cf2089281edcdf03e7ee40492ebe06fc0e715de9c1b31f94b732905dea8318eb"
+  },
+  "configurationSha256": "96ec314c0b0256365286659f64680a81e7225386848f3c12567854ced76cd69c",
+  "files": [
+    {
+      "file": "README.md",
+      "bytes": 2622,
+      "sha256": "593a8e24cfc03088776ac638b19f35a0748cfcfbc72eaac76561ea4e4d182fb5"
+    },
+    {
+      "file": "analyze-resource-series.py",
+      "bytes": 6140,
+      "sha256": "94932db30621cb418d4f80aacc92f5e7a474d7d4bf8ffe8172177264e6e0923a"
+    },
+    {
+      "file": "host-40942583200.json",
+      "bytes": 43330,
+      "sha256": "ddfd31ecafa3bc6a568ab44a8c066f9eed7323ddf62aa5fc4d33313820275d24"
+    },
+    {
+      "file": "host-40943421169.json",
+      "bytes": 43325,
+      "sha256": "99691fbcf4ac55633f4638c62923b37ed842008bdc2d6878fd1d6c6533ea75c7"
+    },
+    {
+      "file": "host-40943421169.raw.txt",
+      "bytes": 51203,
+      "sha256": "f3d067184d479aed8be8bd1727b3d7ebb8f756abc4e76bdec87549dc6347e641"
+    },
+    {
+      "file": "host-40943717309.json",
+      "bytes": 43347,
+      "sha256": "05e0300d396572b9c89583011270725f32a54a93a47926be71b0f7e6d106ecb7"
+    },
+    {
+      "file": "host-40943717309.raw.txt",
+      "bytes": 51225,
+      "sha256": "832126aa0bc2c26cd4296cf4e0385ff013f7fab472e5c33c40a986b4521fce0f"
+    },
+    {
+      "file": "resource-series-analysis.json",
+      "bytes": 16780,
+      "sha256": "3c5d6136f39882cfd5b73ca24e3d9f307c5ec2ba3f05af2424cdf37c049698ba"
+    }
+  ]
+}

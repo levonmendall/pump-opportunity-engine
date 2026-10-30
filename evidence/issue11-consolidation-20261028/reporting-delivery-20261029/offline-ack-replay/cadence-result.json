@@ -1,0 +1,177 @@
+{
+  "meaning": "Chronological 15-second reports with ACK delayed19 seconds: newer report is cached before prior ACK arrives",
+  "finalMatched": 6,
+  "events": [
+    {
+      "event": "report",
+      "ordinal": 0,
+      "timeMs": 1793244820571,
+      "currentReportAt": 1793244820571,
+      "cacheKeys": [
+        1793244820571
+      ],
+      "matchedCount": 0,
+      "pending": 0,
+      "outputErrors": 0
+    },
+    {
+      "event": "report",
+      "ordinal": 1,
+      "timeMs": 1793244835571,
+      "currentReportAt": 1793244835571,
+      "cacheKeys": [
+        1793244820571,
+        1793244835571
+      ],
+      "matchedCount": 0,
+      "pending": 0,
+      "outputErrors": 0
+    },
+    {
+      "event": "ack",
+      "ordinal": 0,
+      "timeMs": 1793244839571,
+      "currentReportAt": 1793244835571,
+      "cacheKeys": [
+        1793244820571,
+        1793244835571
+      ],
+      "matchedCount": 1,
+      "pending": 0,
+      "outputErrors": 0
+    },
+    {
+      "event": "report",
+      "ordinal": 2,
+      "timeMs": 1793244850571,
+      "currentReportAt": 1793244850571,
+      "cacheKeys": [
+        1793244820571,
+        1793244835571,
+        1793244850571
+      ],
+      "matchedCount": 1,
+      "pending": 0,
+      "outputErrors": 0
+    },
+    {
+      "event": "ack",
+      "ordinal": 1,
+      "timeMs": 1793244854571,
+      "currentReportAt": 1793244850571,
+      "cacheKeys": [
+        1793244820571,
+        1793244835571,
+        1793244850571
+      ],
+      "matchedCount": 2,
+      "pending": 0,
+      "outputErrors": 0
+    },
+    {
+      "event": "report",
+      "ordinal": 3,
+      "timeMs": 1793244865571,
+      "currentReportAt": 1793244865571,
+      "cacheKeys": [
+        1793244820571,
+        1793244835571,
+        1793244850571,
+        1793244865571
+      ],
+      "matchedCount": 2,
+      "pending": 0,
+      "outputErrors": 0
+    },
+    {
+      "event": "ack",
+      "ordinal": 2,
+      "timeMs": 1793244869571,
+      "currentReportAt": 1793244865571,
+      "cacheKeys": [
+        1793244820571,
+        1793244835571,
+        1793244850571,
+        1793244865571
+      ],
+      "matchedCount": 3,
+      "pending": 0,
+      "outputErrors": 0
+    },
+    {
+      "event": "report",
+      "ordinal": 4,
+      "timeMs": 1793244880571,
+      "currentReportAt": 1793244880571,
+      "cacheKeys": [
+        1793244835571,
+        1793244850571,
+        1793244865571,
+        1793244880571
+      ],
+      "matchedCount": 3,
+      "pending": 0,
+      "outputErrors": 0
+    },
+    {
+      "event": "ack",
+      "ordinal": 3,
+      "timeMs": 1793244884571,
+      "currentReportAt": 1793244880571,
+      "cacheKeys": [
+        1793244835571,
+        1793244850571,
+        1793244865571,
+        1793244880571
+      ],
+      "matchedCount": 4,
+      "pending": 0,
+      "outputErrors": 0
+    },
+    {
+      "event": "report",
+      "ordinal": 5,
+      "timeMs": 1793244895571,
+      "currentReportAt": 1793244895571,
+      "cacheKeys": [
+        1793244850571,
+        1793244865571,
+        1793244880571,
+        1793244895571
+      ],
+      "matchedCount": 4,
+      "pending": 0,
+      "outputErrors": 0
+    },
+    {
+      "event": "ack",
+      "ordinal": 4,
+      "timeMs": 1793244899571,
+      "currentReportAt": 1793244895571,
+      "cacheKeys": [
+        1793244850571,
+        1793244865571,
+        1793244880571,
+        1793244895571
+      ],
+      "matchedCount": 5,
+      "pending": 0,
+      "outputErrors": 0
+    },
+    {
+      "event": "ack",
+      "ordinal": 5,
+      "timeMs": 1793244914571,
+      "currentReportAt": 1793244895571,
+      "cacheKeys": [
+        1793244850571,
+        1793244865571,
+        1793244880571,
+        1793244895571
+      ],
+      "matchedCount": 6,
+      "pending": 0,
+      "outputErrors": 0
+    }
+  ]
+}

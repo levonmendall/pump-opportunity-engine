@@ -1,0 +1,19 @@
+{
+  "kind": "IMMUTABLE_PUBLIC_ROUND_TRIP_RECONSTRUCTION_VALIDATION",
+  "analysisSha256": "3a190a3561580beedc51d397b3d53c2028eaab87b5c5664288b539bd01d680b1",
+  "analyzerSha256": "ec7f0f6e77b2af5774e957c58e0730715b778246e63f6199fc7de17d02845af7",
+  "reproductionPassedWithoutChangingFrozenOutput": true,
+  "sameFxPnlBaselineSourceSequence": "11362",
+  "sameFxPnlAfterExitSourceSequence": "11377",
+  "sameFxUsdPerSol": "94.995",
+  "cashBaselineSourceSequence": "11361",
+  "cashAtPendingSourceSequence": "11362",
+  "cashAtFillSourceSequence": "11363",
+  "cashAfterExitSourceSequence": "11377",
+  "exactPrivateLedgerDepositGasPrincipalUnknown": true,
+  "naturalPaperRoundTripObserved": true,
+  "independentEntryOrExitQualityUnverified": true,
+  "providerRequests": 0,
+  "financialWrites": 0,
+  "serviceControlOperations": 0
+}

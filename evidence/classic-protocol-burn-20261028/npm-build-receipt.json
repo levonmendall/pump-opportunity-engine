@@ -1,0 +1,13 @@
+{
+  "name": "npm-build",
+  "command": [
+    "npm",
+    "run",
+    "build"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 7.363129399999707,
+  "endedAt": "2026-10-28T14:48:03.421258+00:00",
+  "logSha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+  "logBytes": 55
+}

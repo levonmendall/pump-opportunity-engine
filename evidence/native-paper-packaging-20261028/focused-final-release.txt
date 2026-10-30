@@ -1,0 +1,14 @@
+✔ unbundled helper cannot grant compiled PAPER provenance (0.967103ms)
+✔ compiled PAPER provenance pins executable worker addon source and exact input without initializing account (67.700422ms)
+✔ native PAPER CLI requires explicit resume/contract and optional flags cannot alias args[0] (2.552794ms)
+✔ wrong source contract and invalid resource selection fail before directory, lease, ledger or provider access (1.285755ms)
+✔ unbound public source and mutable/mismatched startup provenance cannot open a financial writer (13.611111ms)
+✔ 750ms holding reads retain reporting service opportunities without moving the two-second reference cadence (0.518558ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 904.024717

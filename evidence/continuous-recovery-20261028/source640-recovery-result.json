@@ -1,0 +1,351 @@
+{
+  "schemaVersion": 1,
+  "kind": "fixed-source640-recovery-result",
+  "sourceRun": "40714364745",
+  "source": {
+    "commit": "640143a5924a7ff7d98039967c2db17957f71f24",
+    "sha256": "4c035987338ab4dfa8982b5314c2ce3aebb41b12f23268a6425d8861d3e1909a"
+  },
+  "sourceStatus": {
+    "runId": "native-candidates-20261028151711944",
+    "generatedAt": 1793202794375,
+    "running": false,
+    "stopReason": "NATIVE_RESEARCH_FLOW_FATAL:NATIVE_FLOW_UNSCOPED_NOTIFICATION",
+    "physicalSettlementConfirmed": true,
+    "transportSettledAt": 1793202794375,
+    "resources": {
+      "maximumRssBytes": 378204160,
+      "cpu": {
+        "user": 351946872,
+        "system": 18708168
+      },
+      "eventLoopDelayP95Ms": 32.702463,
+      "eventLoopDelayMaximumMs": 1183.842303,
+      "retainedEvidenceBytes": 100244724,
+      "evidenceSegments": 13
+    },
+    "unmanagedControlUnits": 0
+  },
+  "sourceStatusSha256": "92db0d2ea1b06ab43c18cd96f139cd672aa2447249601fd52ae65b828a6deaee",
+  "existingFinalPublisherLog": {
+    "path": "publisher-final.log",
+    "preservedUnchanged": true,
+    "present": true,
+    "meaning": "Historical publisher log only; presence or an old ACK does not prove current process or transport settlement.",
+    "bytes": 206,
+    "sha256": "c98f5260f7e05acae187c12c0b4f6d25560612e4e117c6c74ceea1965c265b2d",
+    "matchingHistoricalStoppedAck": {
+      "published": true,
+      "result": "accepted",
+      "accountId": "poe-pilot-8468add6-f916-48cf-a585-6cd008a81360",
+      "runId": "native-candidates-20261028151711944",
+      "sourceAt": 1793202794375,
+      "running": false,
+      "sourceAgeMs": 1040
+    }
+  },
+  "recoveryPublisherLogEvidence": {
+    "path": "reporting-evidence/recovery-publisher-40724174920-1.json",
+    "bytes": 74,
+    "sha256": "21fb1d258b8c557d991e88202908b6ec482de0c5ed28a72dfa9a4223620b214d",
+    "format": "Publisher line-delimited records retained unchanged under allowlisted reporting-evidence/*.json"
+  },
+  "candidateCounters": {
+    "migrationHints": 23,
+    "verificationQueueRefusals": 0,
+    "verificationAttempts": 53,
+    "verifiedOrigins": 136,
+    "verificationRefusals": 36,
+    "normalizedEvents": 7817,
+    "qualityGaps": 122,
+    "featureViews": 881,
+    "auditedWindows": 13,
+    "predictiveAssessments": 13,
+    "predictiveFailed": 13,
+    "predictiveNotRejected": 0,
+    "predictiveUnavailable": 0,
+    "auditUnavailable": 24,
+    "auditUnusable": 2,
+    "decisionDeadlineMisses": 21,
+    "auditFenceWarmingWindows": 55,
+    "uniqueEvaluated": 11,
+    "strictV2BaselineUnavailableViews": 1,
+    "protocolAwareShadowViews": 13
+  },
+  "settledGroups": [],
+  "ownedProcessGroupsSettled": true,
+  "finalStoppedReportAccepted": false,
+  "originalIdentityPidRestartsUnchanged": true,
+  "archive": {
+    "file": "selected-evidence.tar.gz",
+    "bytes": 16291835,
+    "sha256": "1e11cc2fbe94ffa81e1e0ff669b6b382a671acdb575b6822a1d9fa5147931c75",
+    "stat": {
+      "device": 66305,
+      "inode": 62135,
+      "size": 16291835,
+      "mtimeNs": 1793204138166836997,
+      "ctimeNs": 1793204138185836962
+    }
+  },
+  "archiveComplete": true,
+  "indexSha256": "9f49bfdf575bc41d91cc92c48f394d583caadce0ac33b8d823739b280c14fc29",
+  "selectedEvidenceBytes": 93761597,
+  "uncompressedSelectedBytes": 117348345,
+  "recentDiagnostics": {
+    "records": [
+      {
+        "kind": "native-candidate-quality-gap",
+        "receivedAt": "2026-10-28T15:52:09.715Z",
+        "sequence": 6603,
+        "data": {
+          "mint": "mWTK7nLFCjcAWXH4tyCUSvLvdwjZ9sQ6NWbK72cpump",
+          "at": 1793202729715,
+          "reason": "PILOT_RPC_COOLDOWN"
+        },
+        "originalLineSha256": "da4594d7cb73d60ead57938818b192f26b224259f850d62ba3618f0ae5299018",
+        "file": "run/events/events-012.ndjson"
+      },
+      {
+        "kind": "native-candidate-quality-gap",
+        "receivedAt": "2026-10-28T15:52:09.715Z",
+        "sequence": 6606,
+        "data": {
+          "mint": "c5mcBcoBN1xyouRiy3foN7Lh8BBbZrJEFyKUAoWpump",
+          "at": 1793202729715,
+          "reason": "PILOT_RPC_COOLDOWN"
+        },
+        "originalLineSha256": "940768eab5bbc3b49e8a9a1e39f24d3a8d26c2d9e9650bafbb89a9373dc45b1e",
+        "file": "run/events/events-012.ndjson"
+      },
+      {
+        "kind": "native-candidate-quality-gap",
+        "receivedAt": "2026-10-28T15:52:09.715Z",
+        "sequence": 6609,
+        "data": {
+          "mint": "AUzxwHbzhR1rxC8xU4YV438oYVaQYZydotSNBf6vpump",
+          "at": 1793202729715,
+          "reason": "PILOT_RPC_COOLDOWN"
+        },
+        "originalLineSha256": "fb5b7d2f7a26b3b6ac8aa2fe93963867cb670fbc7a1d14ecdedafbf4d95174a9",
+        "file": "run/events/events-012.ndjson"
+      },
+      {
+        "kind": "native-candidate-quality-gap",
+        "receivedAt": "2026-10-28T15:52:09.715Z",
+        "sequence": 6612,
+        "data": {
+          "mint": "HWjJ8dFwf68sdWzhj4qHQpUf6rSG3u3xRWzV2Y29pump",
+          "at": 1793202729715,
+          "reason": "PILOT_RPC_COOLDOWN"
+        },
+        "originalLineSha256": "c7b7260e49268d512f876e75d5a7ec862118c88d3683f024409ee81931afb82a",
+        "file": "run/events/events-012.ndjson"
+      },
+      {
+        "kind": "native-candidate-quality-gap",
+        "receivedAt": "2026-10-28T15:52:09.715Z",
+        "sequence": 6615,
+        "data": {
+          "mint": "4biV2urUKduJvWvwpZfw4Cn8VnQf1cefhev5rakBA8Cq",
+          "at": 1793202729715,
+          "reason": "PILOT_RPC_COOLDOWN"
+        },
+        "originalLineSha256": "184e060277c17fcde5bde4a7067e7ac3428f073bb929ec1f03c5410b5f5d6852",
+        "file": "run/events/events-012.ndjson"
+      },
+      {
+        "kind": "native-candidate-quality-gap",
+        "receivedAt": "2026-10-28T15:52:09.715Z",
+        "sequence": 6618,
+        "data": {
+          "mint": "YxD2uUmH7cBiWYhfgXnPon3NThaK6BGSzAU2JNjpump",
+          "at": 1793202729715,
+          "reason": "PILOT_RPC_COOLDOWN"
+        },
+        "originalLineSha256": "6df213d6cc44b790cd7a6640d77f6d5ac1fdb64061e43b6fb08c81c6d5fcb346",
+        "file": "run/events/events-012.ndjson"
+      },
+      {
+        "kind": "native-flow-disconnected",
+        "receivedAt": "2026-10-28T15:52:09.716Z",
+        "sequence": 6621,
+        "data": {
+          "connection": 18,
+          "at": 1793202729716,
+          "reason": "NATIVE_FLOW_DISCONNECTED_1006",
+          "retryAt": 1793202789716
+        },
+        "originalLineSha256": "16bc75f1463e4eebe2041e6ff72c975dde4a51acb266fbf6d75ac1af20e472b0",
+        "file": "run/events/events-012.ndjson"
+      },
+      {
+        "kind": "component-physical-timeout",
+        "receivedAt": "2026-10-28T15:52:38.890Z",
+        "sequence": 6676,
+        "data": {
+          "id": 5673,
+          "at": 1793202758883
+        },
+        "originalLineSha256": "abf1abd1f04e064dcf6655db410ad1a9c9c2d332066226b51247738bc724bba1",
+        "file": "run/events/events-012.ndjson"
+      },
+      {
+        "kind": "pilot-rpc-unavailable",
+        "receivedAt": "2026-10-28T15:52:38.891Z",
+        "sequence": 6677,
+        "data": {
+          "at": 1793202758891,
+          "code": "COMPONENT_PHYSICAL_TIMEOUT",
+          "cooldownUntil": 1793202760891
+        },
+        "originalLineSha256": "9a77c1e32e82038e2cce248bbe7f3e356ea41710262f9b8d4a34d073d746d34d",
+        "file": "run/events/events-012.ndjson"
+      },
+      {
+        "kind": "component-physical-timeout",
+        "receivedAt": "2026-10-28T15:53:14.103Z",
+        "sequence": 6791,
+        "data": {
+          "id": 5681,
+          "at": 1793202794085
+        },
+        "originalLineSha256": "f73734b69fe5a969390f2e8a277b3d5f76c040ab7da60c974bead3c6cea495e5",
+        "file": "run/events/events-012.ndjson"
+      },
+      {
+        "kind": "pilot-data-control-unavailable",
+        "receivedAt": "2026-10-28T15:53:14.103Z",
+        "sequence": 6792,
+        "data": {
+          "at": 1793202794103,
+          "code": "COMPONENT_PHYSICAL_TIMEOUT"
+        },
+        "originalLineSha256": "4de69bf3cc8da0736bae5649626a5299ebe1e60e0379468b37bc996094fa6d6b",
+        "file": "run/events/events-012.ndjson"
+      },
+      {
+        "kind": "native-candidate-quality-gap",
+        "receivedAt": "2026-10-28T15:53:14.119Z",
+        "sequence": 6793,
+        "data": {
+          "mint": "x5tzEf5eF5EUMxYLvQa6wxe9bL3mLubKtBH7fpspump",
+          "at": 1793202794119,
+          "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT"
+        },
+        "originalLineSha256": "3c21427499bc3b2020270202e009d2b08353b620d5b8d6ec9612630b40eef48f",
+        "file": "run/events/events-012.ndjson"
+      },
+      {
+        "kind": "native-candidate-quality-gap",
+        "receivedAt": "2026-10-28T15:53:14.119Z",
+        "sequence": 6796,
+        "data": {
+          "mint": "F8wvZ5HLxfsvTCz7z6um2T5kyaLkBDUFqXGrqQzupump",
+          "at": 1793202794119,
+          "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT"
+        },
+        "originalLineSha256": "e9b876697dd86948f5e1928aeefe6badb74e28850694d05c26fa1870fe98c53a",
+        "file": "run/events/events-012.ndjson"
+      },
+      {
+        "kind": "native-candidate-quality-gap",
+        "receivedAt": "2026-10-28T15:53:14.119Z",
+        "sequence": 6799,
+        "data": {
+          "mint": "EzDyLqyhLBQBXGG9MDoammU79oD3dHp7mLuXC2U3pump",
+          "at": 1793202794119,
+          "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT"
+        },
+        "originalLineSha256": "4aa47caeb8052b53771572b98c6f0f9f762833272495d2e8f117d1bc1692041a",
+        "file": "run/events/events-012.ndjson"
+      },
+      {
+        "kind": "native-candidate-quality-gap",
+        "receivedAt": "2026-10-28T15:53:14.119Z",
+        "sequence": 6802,
+        "data": {
+          "mint": "FhsZqiGsBrBe3kkZZ1H3Z35ae9uCqfKhMJdJs9bPpump",
+          "at": 1793202794119,
+          "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT"
+        },
+        "originalLineSha256": "53ea48179a470554f26f078654f87369bdb16d3ebda944e745b5cfadb95e06e4",
+        "file": "run/events/events-012.ndjson"
+      },
+      {
+        "kind": "native-candidate-quality-gap",
+        "receivedAt": "2026-10-28T15:53:14.119Z",
+        "sequence": 6805,
+        "data": {
+          "mint": "HpUwLF6GZwvvp2Bcx86LQ1UpTnVaUnWgHhY3wNb2pump",
+          "at": 1793202794119,
+          "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT"
+        },
+        "originalLineSha256": "10dce6995ee07e4e39411353eb9c86c61de7619194a0bae81f3bb07304a31410",
+        "file": "run/events/events-012.ndjson"
+      },
+      {
+        "kind": "native-candidate-quality-gap",
+        "receivedAt": "2026-10-28T15:53:14.119Z",
+        "sequence": 6808,
+        "data": {
+          "mint": "EFUwoW2EW5qEinEyVFzqo9SAxtFiPA8AhEBnSxeCpump",
+          "at": 1793202794119,
+          "reason": "PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT"
+        },
+        "originalLineSha256": "eaccc0444fddbacc93e16888d0f1bf50a738acc70cd6bcbb16cb98cd885626ed",
+        "file": "run/events/events-012.ndjson"
+      },
+      {
+        "kind": "native-flow-control-refused",
+        "receivedAt": "2026-10-28T15:53:14.127Z",
+        "sequence": 4,
+        "data": {
+          "at": 1793202794127,
+          "method": "logsSubscribe",
+          "mint": "HpUwLF6GZwvvp2Bcx86LQ1UpTnVaUnWgHhY3wNb2pump",
+          "pool": "7RRNa3XTJESFq1eyeNyEUbFgMdk1pTLZ7TfTidMQxuJi",
+          "connection": 19,
+          "operationId": 5681,
+          "reason": "NATIVE_FLOW_CONTROL_CANCELLED",
+          "physicalSettlementClaimed": false
+        },
+        "originalLineSha256": "c9fb1eb64b6bbff547d27724106292749ad48c6a81d86aae069c3fc12717c406",
+        "file": "run/events/events-013.ndjson"
+      },
+      {
+        "kind": "native-flow-disconnected",
+        "receivedAt": "2026-10-28T15:53:14.159Z",
+        "sequence": 6,
+        "data": {
+          "connection": 19,
+          "at": 1793202794159,
+          "reason": "NATIVE_FLOW_DISCONNECTED_1006",
+          "retryAt": 1793202854159
+        },
+        "originalLineSha256": "899c4b0ae371250d0675f120ea92b8623b8de10bc5d9916cf2ce709d50729971",
+        "file": "run/events/events-013.ndjson"
+      },
+      {
+        "kind": "native-candidate-source-stop",
+        "receivedAt": "2026-10-28T15:53:14.173Z",
+        "sequence": 7,
+        "data": {
+          "at": 1793202794173,
+          "reason": "NATIVE_RESEARCH_FLOW_FATAL:NATIVE_FLOW_UNSCOPED_NOTIFICATION"
+        },
+        "originalLineSha256": "bc1ff45a18ea5e1103df028c2eb7943b27bd42b82239b34d508cd87d2f23e11b",
+        "file": "run/events/events-013.ndjson"
+      }
+    ],
+    "maximumRecords": 20,
+    "scannedBytes": 9195355,
+    "partialOrInvalidLinesRetainedRaw": 0,
+    "meaning": "Bounded recent metadata only; original complete selected evidence is preserved in the archive."
+  },
+  "elapsedSeconds": 1.8676256510661915,
+  "marketProviderRequests": 0,
+  "financialWriterOpened": false,
+  "credentialsReadByHelper": false,
+  "rawEvidenceDeleted": false
+}

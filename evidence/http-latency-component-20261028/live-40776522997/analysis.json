@@ -1,0 +1,139 @@
+{
+  "verifiedAt": "2026-10-28T22:06:08.923209+00:00",
+  "workflowRunId": 40776522997,
+  "adminCommit": "f5b7244e0d14b0c40a8af16268f7e51efeea0aa3",
+  "endpoint": "https://api.mainnet.solana.com",
+  "actualRequests": 9,
+  "measuredResponseBytes": 97220,
+  "uncertainReservedBytesRetained": 4194304,
+  "providerRecovery": {
+    "recommendedNextRequestNotBeforeAt": 0,
+    "unresolvedProviderCooldown": false,
+    "stillActiveAtResult": false,
+    "policy": "Append-only diagnostic handoff only; account cooldown is not rewritten. Honor this receipt before any subsequent provider requests."
+  },
+  "sourceGroupSettled": true,
+  "originalObserverUnchanged": true,
+  "financialFilesModified": false,
+  "sourceBookCumulativeUnits": 8542,
+  "auxiliaryRequests": 9,
+  "knownAggregateSolanaUnits": 8551,
+  "metadataReadsSeparately": 2,
+  "limitations": [
+    "No causal claim from six history calls",
+    "sendHeaders hook precedes write; does not prove transmission or remote receipt",
+    "Historical floors are not current quote/account state",
+    "No operating deadline, timeout, plan or strategy changed",
+    "No account counterbook or financial manifest rewritten; auxiliary receipt append-only"
+  ],
+  "rows": [
+    {
+      "ordinal": 1,
+      "role": "repeated-timeout",
+      "method": "getMultipleAccounts",
+      "floorKind": null,
+      "elapsedMs": 167.46395,
+      "headersAt": 1793224825670,
+      "bytes": 330,
+      "outcome": "COMPLETE_JSON_RESPONSE",
+      "sameSocketObservedPreviously": false,
+      "physicalSettlementConfirmed": true
+    },
+    {
+      "ordinal": 2,
+      "role": "repeated-timeout",
+      "method": "getSignaturesForAddress",
+      "floorKind": "historical",
+      "elapsedMs": 3013.923993,
+      "headersAt": null,
+      "bytes": 0,
+      "outcome": "TIMED_OUT_OR_ABORTED",
+      "sameSocketObservedPreviously": true,
+      "physicalSettlementConfirmed": true
+    },
+    {
+      "ordinal": 3,
+      "role": "repeated-timeout",
+      "method": "getSignaturesForAddress",
+      "floorKind": "fresh",
+      "elapsedMs": 3011.713693,
+      "headersAt": null,
+      "bytes": 0,
+      "outcome": "TIMED_OUT_OR_ABORTED",
+      "sameSocketObservedPreviously": false,
+      "physicalSettlementConfirmed": true
+    },
+    {
+      "ordinal": 4,
+      "role": "repeated-timeout",
+      "method": "getMultipleAccounts",
+      "floorKind": null,
+      "elapsedMs": 123.0115109999997,
+      "headersAt": 1793224832421,
+      "bytes": 330,
+      "outcome": "COMPLETE_JSON_RESPONSE",
+      "sameSocketObservedPreviously": false,
+      "physicalSettlementConfirmed": true
+    },
+    {
+      "ordinal": 5,
+      "role": "repeated-timeout",
+      "method": "getSignaturesForAddress",
+      "floorKind": "fresh",
+      "elapsedMs": 2509.245722999999,
+      "headersAt": 1793224835559,
+      "bytes": 23248,
+      "outcome": "COMPLETE_JSON_RESPONSE",
+      "sameSocketObservedPreviously": false,
+      "physicalSettlementConfirmed": true
+    },
+    {
+      "ordinal": 6,
+      "role": "repeated-timeout",
+      "method": "getSignaturesForAddress",
+      "floorKind": "historical",
+      "elapsedMs": 2248.9023739999993,
+      "headersAt": 1793224837811,
+      "bytes": 23248,
+      "outcome": "COMPLETE_JSON_RESPONSE",
+      "sameSocketObservedPreviously": true,
+      "physicalSettlementConfirmed": true
+    },
+    {
+      "ordinal": 7,
+      "role": "successful-control",
+      "method": "getMultipleAccounts",
+      "floorKind": null,
+      "elapsedMs": 49.1587559999989,
+      "headersAt": 1793224837870,
+      "bytes": 330,
+      "outcome": "COMPLETE_JSON_RESPONSE",
+      "sameSocketObservedPreviously": true,
+      "physicalSettlementConfirmed": true
+    },
+    {
+      "ordinal": 8,
+      "role": "successful-control",
+      "method": "getSignaturesForAddress",
+      "floorKind": "historical",
+      "elapsedMs": 85.72215700000015,
+      "headersAt": 1793224838657,
+      "bytes": 24867,
+      "outcome": "COMPLETE_JSON_RESPONSE",
+      "sameSocketObservedPreviously": true,
+      "physicalSettlementConfirmed": true
+    },
+    {
+      "ordinal": 9,
+      "role": "successful-control",
+      "method": "getSignaturesForAddress",
+      "floorKind": "fresh",
+      "elapsedMs": 68.08526399999937,
+      "headersAt": 1793224839393,
+      "bytes": 24867,
+      "outcome": "COMPLETE_JSON_RESPONSE",
+      "sameSocketObservedPreviously": true,
+      "physicalSettlementConfirmed": true
+    }
+  ]
+}

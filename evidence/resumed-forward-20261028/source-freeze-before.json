@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "at": "2026-10-28T14:18:22.624243+00:00",
+  "commit": "63f4ac439c6b22c7d532c284890cf47e78ad5d62",
+  "verifiedRuntimeSource": "5362e007280191dafeac7fe6dae717c288ecc57d",
+  "runtimeSourcesUnchangedFromVerifiedCommit": true,
+  "sourceStatus": "",
+  "sourceTrees": {
+    "src": "47e4f310694fe9164394dd91e991ce375d881bfe",
+    "scripts": "3b5ed9aeb8fcc9a7a7e592f94abe9ddd2c2ebcd5",
+    "test": "78bc4df59e16c793c890dbc500e0254b1924b987"
+  }
+}

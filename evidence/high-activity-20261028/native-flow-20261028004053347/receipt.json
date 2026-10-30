@@ -1,0 +1,324 @@
+{
+  "schemaVersion": 1,
+  "purpose": "Targeted public confirmed logsSubscribe component; no production admission",
+  "runId": "pilot-native-flow-20261028004053347",
+  "mint": "BtM6yvMeqZ9ZHdeEJRcep9EnaZm6qGWCEwz9t8hapump",
+  "pool": "27v9YuHL5YLF6bCpQhsBmZGMBAyahhLoPkCFZH2oS9xR",
+  "startedAt": 1793148053347,
+  "finishedAt": 1793148096143,
+  "elapsedMs": 42796,
+  "limits": {
+    "totalMs": 120000,
+    "observationMs": 70000,
+    "maximumUnits": 24,
+    "maximumMeasuredResponses": 8388608,
+    "conservativeAccountingAllowance": 16777216,
+    "httpInFlightMaximum": 2097152,
+    "accountingHeadroomPerAdmission": 4194304,
+    "shutdownReserveMs": 5000,
+    "preAuditReserveMs": 15000,
+    "socketStopBytes": 6291456,
+    "notificationPayloadBytes": 65536,
+    "notificationMaximum": 256,
+    "retainedBytes": 2097152,
+    "retainedStreamSoftBytes": 1310720,
+    "rssBytes": 268435456,
+    "cpuUs": 20000000
+  },
+  "sourceCommit": "81047212804a73de5aaeb62ad708350b372ff272",
+  "preflight": {
+    "mint": "BtM6yvMeqZ9ZHdeEJRcep9EnaZm6qGWCEwz9t8hapump",
+    "evidence": "pilot-observation-support:b0bca41eeba8da02b44ad7b0e7607da338e84bf49065e4dd3de2481033e1ce24",
+    "at": 1793148054396,
+    "sourceSlot": 462276963
+  },
+  "activity": {
+    "signature": "QytY43qbcmCkLg9mw8S3w7vkouxtKSmvigggpbwiga6R6H9uKWhBu322zuwuK7pkBkUr1css2hyzyGf9eWT7wxD",
+    "slot": 462276965,
+    "blockTime": 1793148053,
+    "swaps": 1,
+    "availableAt": 1793148054828
+  },
+  "socket": {
+    "socketOpenedAt": 1793148055197,
+    "subscriptionAt": 1793148055272,
+    "subscription": 235067104,
+    "logicalCutoffAt": 1793148125272,
+    "lastAcceptedAt": 1793148096057,
+    "stopRequestedAt": 1793148096097,
+    "transportSettledAt": 1793148096057,
+    "closed": true,
+    "applicationBytes": 968743,
+    "socketBytes": 973189,
+    "connections": 1
+  },
+  "calls": [
+    {
+      "method": "getSignaturesForAddress",
+      "params": [
+        "27v9YuHL5YLF6bCpQhsBmZGMBAyahhLoPkCFZH2oS9xR",
+        {
+          "limit": 100,
+          "commitment": "confirmed"
+        }
+      ],
+      "requestedAt": 1793148054396,
+      "availableAt": 1793148054619
+    },
+    {
+      "method": "getTransaction",
+      "params": [
+        "QytY43qbcmCkLg9mw8S3w7vkouxtKSmvigggpbwiga6R6H9uKWhBu322zuwuK7pkBkUr1css2hyzyGf9eWT7wxD",
+        {
+          "encoding": "json",
+          "commitment": "confirmed",
+          "maxSupportedTransactionVersion": 1
+        }
+      ],
+      "requestedAt": 1793148054619,
+      "availableAt": 1793148054820
+    }
+  ],
+  "matches": [],
+  "notifications": {
+    "received": 189,
+    "withinLogicalInterval": 189,
+    "successful": 177,
+    "failed": 12,
+    "parsedEvents": 177,
+    "refused": [
+      {
+        "signature": "ZhMH24uqEsAZgYvAZpT8SRtjC5naiUEC2MuJzgfEyQ3KNeNK436SLkrFk3sezpiTi3aR1wskBQasEDYNhG7xTGd",
+        "reason": "LOG_NATIVE_TRANSACTION_NOT_SUCCESSFUL"
+      },
+      {
+        "signature": "4M75U18RGZ7LjbCB6gYPRBRe8Gtnvhju5yBP7Raeq3y6iZvvBCjp5jeSv5eARR3i6hNQPPgiqbu1rd2dciMR5nwU",
+        "reason": "LOG_NATIVE_TRANSACTION_NOT_SUCCESSFUL"
+      },
+      {
+        "signature": "4xGS3gQUAHUV271yV61f1eXAHvxNNf8GjcqevvizyT9dQXD8ydpS62mJBgkLyTgVRey2yEM8Yqi5AJseYnKa8RZz",
+        "reason": "LOG_NATIVE_TRANSACTION_NOT_SUCCESSFUL"
+      },
+      {
+        "signature": "3hVZ2kKGyvoMMomK9UYiSSScyWH3LpaevCMfryAdyTNb1xWVU5Bx1QHBYUFvPp9Aq26fLzbm1QMf1q8r2ZHBwp4s",
+        "reason": "LOG_NATIVE_TRANSACTION_NOT_SUCCESSFUL"
+      },
+      {
+        "signature": "CGmJE5UmZz5mxzS3KmgANcgCEE2jTCDguavhUVQ17h5QSYdbRqBnGrpYhCT3GCD76LwbAEAJTnpHzTukn8dRepL",
+        "reason": "LOG_NATIVE_TRANSACTION_NOT_SUCCESSFUL"
+      },
+      {
+        "signature": "2G1x1UMQdqbYaPGCf6XJ5B2sEm6STTvH17SBgXShZiLwFUBt5aFUdjpJDP132EMjauasGVDKKmiHyqSVTL9tjHrf",
+        "reason": "LOG_NATIVE_TRANSACTION_NOT_SUCCESSFUL"
+      },
+      {
+        "signature": "2e4ukxNGL1wfWjYPzsjmX1jVdJKfvA4UA1VzVCnNw9JYe2VwcH1qkcqRJNvUyTxRPnYpRQmjq5jyAPVGnRwqd95c",
+        "reason": "LOG_NATIVE_TRANSACTION_NOT_SUCCESSFUL"
+      },
+      {
+        "signature": "2ejJQErssXi6KqF2HGCrDeqvANrxS29JA9aZMdhukaLE5m6eeh3guTsW2RuVRfywxjBYyH2NYYas9hTDgzYa4Ghs",
+        "reason": "LOG_NATIVE_TRANSACTION_NOT_SUCCESSFUL"
+      },
+      {
+        "signature": "aCVKr6GdXvy7ke98VYGBmbvri8fJnGc6sX1tcriD11D9Soy1ccXu3TD4yK2pcwDUZPzpn534q65iPcMVTCEuzWX",
+        "reason": "LOG_NATIVE_TRANSACTION_NOT_SUCCESSFUL"
+      },
+      {
+        "signature": "2F5YyVfJ4DGHJff2uY46aLobA7pF1cTDbsftsRkpa7XYLbL5wkjvFxFJaoFNA4jGFEyszEmzMT5iJHLnVpzsmcHc",
+        "reason": "LOG_NATIVE_TRANSACTION_NOT_SUCCESSFUL"
+      },
+      {
+        "signature": "467ddDbkBTpa7XyEJtQPbX8TtbB9VKEuNyQEXvfkpSECHFgaPw2YL3QTX32aDSYyKaG4yoLhQ9fxTq6gwa3pFJEC",
+        "reason": "LOG_NATIVE_TRANSACTION_NOT_SUCCESSFUL"
+      },
+      {
+        "signature": "2uTrBL6kcTJJx8mYDpo66esEf1BCh7hyCbaoYDHuw7RgWKJupTnK1zBw1nXTMvgZieZ3GpuckrVMagN5J5TRySsr",
+        "reason": "LOG_NATIVE_TRANSACTION_NOT_SUCCESSFUL"
+      }
+    ],
+    "uniqueSignatures": 189,
+    "duplicates": 0
+  },
+  "independentAudit": {
+    "beforeRows": 100,
+    "afterRows": 0,
+    "saturated": false,
+    "interiorSlotRange": [
+      462276969,
+      462277154
+    ],
+    "denominatorCovered": false,
+    "interiorPoolAddressTransactions": 0,
+    "missingNotificationSignatures": [],
+    "notAllRowsAreSwaps": true,
+    "completenessClaim": "Unavailable: bounded history does not establish the whole target interval."
+  },
+  "failure": "NATIVE_FLOW_RETAINED_SOFT_STOP",
+  "physicalSettled": true,
+  "usage": {
+    "runId": "pilot-native-flow-20261028004053347",
+    "startedAt": 1793148053352,
+    "deadlineAt": 1793148173352,
+    "remainingMs": 77204.86674299999,
+    "chapter": 1,
+    "chapterPaths": [
+      "/workspace/pump-opportunity-engine/evidence/free-data-20261027/active-approved-rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/public-component-20261027/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/01-basic/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/02-multi/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/03-discovery/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/04-active/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/05-sampler/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/06-targeted/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/07-field/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/08-audit/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/09-notifications/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/10-notifications/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/11-combined/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/12-combined-audit/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/13-buy-finality/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/overnight-20261027/14-retained-buy/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/scheduler-forward-20261027/01-preflight/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/scheduler-forward-20261027/02-combined/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/scheduler-forward-20261027/03-audit/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/01-paced-combined/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/02-failed-buy-audit/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/03-corrected-combined/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/04-current-subject/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/06-targeted-retry-subject/rpc-budget.json",
+      "/workspace/pump-opportunity-engine/evidence/standing-research-20261027/08-current-combined/rpc-budget.json",
+      "/workspace/poe-pilot/runs/pilot-20261027175613061-393704a5/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027175710755-f4320bd5/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027180216582-fc8d1a1d/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027180216582-fc8d1a1d/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027180538359-2e0d1205/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-005.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-006.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-007.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-008.json",
+      "/workspace/poe-pilot/runs/pilot-20261027182846019-d6171b19/rpc/chapter-009.json",
+      "/workspace/poe-pilot/runs/pilot-20261027195343952-418513ae/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027200603791-46c145af/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027201954438-c75c4513/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027201954438-c75c4513/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027205459767-1840d6f4/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027210316237-57a92bce/rpc/chapter-005.json",
+      "/workspace/poe-pilot/runs/pilot-20261027211320693-9bb70ba1/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027211320693-9bb70ba1/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027212808269-733416a8/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-005.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-006.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-007.json",
+      "/workspace/poe-pilot/runs/pilot-20261027214222149-d39aee9a/rpc/chapter-008.json",
+      "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027215124336-ed67d639/rpc/chapter-005.json",
+      "/workspace/poe-pilot/research/pilot-migration-diagnostic-1793138401524/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027220800928-089eac29/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223455745-ec07c3bc/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223455745-ec07c3bc/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-20261027223839107-205d2bb9/rpc/chapter-004.json",
+      "/workspace/poe-pilot/runs/pilot-20261027230222347-7a5dc2cf/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027230222347-7a5dc2cf/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261027230222347-7a5dc2cf/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027232426805/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027232707767/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027232852598/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027233451534/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027234046662/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-si-history-20261027234449066/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027235124302-99e43f99/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261027235124302-99e43f99/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261028001353575-91ed5596/rpc/chapter-001.json",
+      "/workspace/poe-pilot/runs/pilot-20261028001353575-91ed5596/rpc/chapter-002.json",
+      "/workspace/poe-pilot/runs/pilot-20261028001353575-91ed5596/rpc/chapter-003.json",
+      "/workspace/poe-pilot/runs/pilot-native-flow-20261028004053347/rpc/chapter-001.json"
+    ],
+    "activeChapterPath": null,
+    "cumulativeUnits": 3632,
+    "newUnits": 7,
+    "accountedCumulativeResponseBytes": 100923552,
+    "newAccountedResponseBytes": 1019094,
+    "maximumNewUnits": 24,
+    "maximumNewResponseBytes": 16777216,
+    "requestLimits": {
+      "maxStartsPer10s": 20,
+      "maxGetTransactionStartsPer10s": 8,
+      "maxStartsPerMinute": 60,
+      "minSpacingMs": 250,
+      "physicalInFlight": 1
+    },
+    "methodPacing": {
+      "getTransactionStartsLast10s": [],
+      "capacityRefusals": 0,
+      "baselineUnknownMethodsCountConservatively": true
+    },
+    "inFlight": 0,
+    "waitingOrOperating": false,
+    "uncertainResponseBytes": 37748736,
+    "currentChapterUncertainResponseBytes": 0,
+    "inheritedUncertaintyIsRetainedInBaseline": true,
+    "cooldownUntil": 1793147036106,
+    "controlCooldownUntil": 0,
+    "lastFailureWasDataControl": false,
+    "closed": true,
+    "fatal": null,
+    "chapterUsage": null,
+    "dispatchWindow": null,
+    "automaticRequestRetries": 0
+  },
+  "measuredResponses": {
+    "httpBodyBytes": 45905,
+    "socketBytes": 973189,
+    "combined": 1019094,
+    "httpHeadersAndEncryptedWireBytes": "unmeasured under existing decoded-body accounting convention",
+    "priorUncertaintyRetained": true
+  },
+  "resource": {
+    "maximumRss": 186249216,
+    "cpu": {
+      "user": 1747925,
+      "system": 217460
+    },
+    "retainedEventBytes": 1314435
+  },
+  "packetContract": {
+    "identity": "solana-program-log-v1:signature:program:actualLogArrayIndex",
+    "commitment": "explicit confirmed subscription request; notification context slot",
+    "amounts": "Exact pinned SDK event integers for known shapes, matched against full transactions only where fetched",
+    "trader": "event.user, not fee payer; no claim of independent people",
+    "fullTransferChecks": "UNAVAILABLE_FROM_LOGS; verified only for each separately retrieved representative transaction",
+    "compiledInstructionIdentity": "UNAVAILABLE_FROM_LOGS; no invented indices",
+    "sourceTime": "Program Clock timestamp separate from RPC blockTime; actual receive/validation times retained",
+    "adoption": "UNADOPTED; no candidate window, qualification or financial execution from this component"
+  },
+  "financialWriterOpened": false,
+  "financialExecution": false,
+  "productionChanged": false,
+  "automaticRetries": 0
+}

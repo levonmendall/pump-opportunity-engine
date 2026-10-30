@@ -1,0 +1,25 @@
+{
+  "receiverCommit": "bb1e91eb7c9f00d00aa459c6984cdbddfc0a27a1",
+  "actualLegacyValidatorAccepted": true,
+  "originalDashboardRendersNotesAsText": true,
+  "newSchema": false,
+  "projectorMutatedInput": false,
+  "retainedFailureCounts": {
+    "breaches": 73,
+    "unavailableChecks": 240,
+    "maximumCompletedGapMs": 89426
+  },
+  "notes": [
+    "Existing source meaning",
+    "Protection totals and maxima retain known prior-run failures as lower bounds; completion freshness and recovery progress belong to the current run.",
+    "Current runtime observed completed protection maxima since 2026-10-30T01:30:00.000Z: gap 8877 ms; quote age at use 65 ms. Open or unmonitored gaps are not bounded by these values; historical failures remain retained.",
+    "Holding RPC current instance since 2026-10-30T01:31:40.000Z: calls 200; logical attempts 205; rapid probes 1; RPC retry successes 1; dispatch refusals 5; holding starts in 10s / 60s 5 / 30. These counts are not completed protection evaluations.",
+    "Holding RPC failure stages (current instance, not completed evaluations): protection-retry-paced:5, physical-timeout:3.",
+    "Last holding RPC failure 2026-10-30T01:39:58.500Z: protection-retry-paced; physical-in-flight false. Candidate quote failures (current market instance) 2: last 2026-10-30T01:39:59.000Z, So11111111111111111111111111111111111111112, rent/PILOT_MARKET_ENTRY_DEPOSIT_MISMATCH, 260.25 ms; caller/deadline aborted false/false. This is not a qualification or order.",
+    "So11111111111111111111111111111111111111112: Adaptive Momentum v2 historical executable net peak 0.400000000 SOL at 2026-10-30T01:39:59.000Z; measured trail 2000 bps (lagged-width-with-nondecreasing-boundary); dispersion 1000 bps/15 prior quotes; boundary 0.320000000 SOL (modeled, fill not guaranteed); evaluated 2026-10-30T01:39:59.910Z. No fixed profit or profitable holding-time exit.",
+    "11111111111111111111111111111111: Adaptive Momentum v2 historical executable net peak 0.400000000 SOL at 2026-10-30T01:39:59.000Z; fallback trail 1500 bps (awaiting-new-high-water); dispersion 1000 bps/15 prior quotes; boundary 0.320000000 SOL (modeled, fill not guaranteed); evaluated 2026-10-30T01:39:59.910Z. No fixed profit or profitable holding-time exit."
+  ],
+  "providerRequests": 0,
+  "financialActions": 0,
+  "serviceControls": 0
+}

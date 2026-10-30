@@ -1,0 +1,10 @@
+{
+  "originalCommandSha256": "2a5edcc3c01cb3cbc65cef51a3faa44df2b58291eba1a08617bc202e0a8ab903",
+  "readableCommandSha256": "dca7c2a2e94d591856b59f8cccb269148abc248d25b09f9e77e6d194591b8ecb",
+  "sameInterpreterArguments": true,
+  "identicalPythonAST": true,
+  "driverHash": "2b1eb71355697fbdc9459b2dd354ed869102aa448a1e500b769b57fa91890fab",
+  "indexHash": "fa616981e2a86aec0f9c2711d0b3c961eb5ab922791f49e2a4e7e372497a84dd",
+  "payloadChanged": false,
+  "meaning": "Only Python string delimiters and shell presentation are normalized; parsed code and every guard are identical."
+}

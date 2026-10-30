@@ -1,87 +1,107 @@
-# POE status — 2026-10-26 UTC
+# Current POE status — 2026-10-28 UTC
 
-**EC2 healthy; authenticated reporting accepted; public dashboard fresh.**
-Natural PAPER trades: **0**. Cash-only reconciliation is current. New metered
-data/cloud spending: none; existing hosting allocation/invoices remain unknown.
-No supported-market coverage or production throughput claim. Main blocker:
-billing-wallet recovery/funding and real selected-token flow verification.
-**No acceptance clock has started. Edge UNPROVEN; LIVE DISABLED.**
+The last isolated six-slot candidate interval completed normally at02:58:38.671UTC
+(sourcecf8d8bc,895.320seconds). No research runtime is currently active. The
+independent Cloud publisher truthfully republishes that stopped source; it does
+not make old market evidence fresh. The original EC2 observer remains unchanged,
+last directly verified active02:17UTC, samePID2333724/NRestarts0/account/inception.
 
-| Status | Evidence |
-|---|---|
-| BUILT | Observer/accounting/reporting installed; development strategy, execution, costs and backup core tested |
-| RUNNING | One restricted EC2 observer and existing free Render viewer |
-| OBSERVING CURRENT DATA | Free PumpPortal migrations and public Coinbase SOL/USD; no selected-token flow |
-| PAPER-ENTRY ENABLED | **No**: feed fields/budget unverified, rule unfrozen, production management integration incomplete |
-| NATURAL PAPER TRADES | **0**, positions0; disposable tests remain separate |
-| ACCOUNTING RECONCILED | Fresh authoritative cash-account reconciliation; independent private DB balance audit unavailable through runner |
-| DASHBOARD FRESH | Same actual account/inception/runtime/strategy; public GET, private machine POST |
-| OPERATIONALLY ACCEPTED | **No**; Gates A–D incomplete,24/72-hour clocks unstarted |
+The completed interval admitted25distinct tokens and assessed21. It produced
+50actual predictive assessments, all failed, including one valid quiet assessment
+atage4.464minutes.51audit-covered endpoints do not mean51actual decisions. Other
+early tokens lost usable information to mapping, audit or enrichment failures.
+The preceding interval's CPU stop remained adverse evidence; equivalent WATCH
+projection changes completed the next interval under the same240CPU-second bound.
 
-## Installed authority
+A separate EC2 native-data component obtained a real149-trade/60second FRONGUS
+window, audited293interior pool-address transactions with0missing notifications,
+and matched4representative full transactions/SPLtransfers. Its unchanged buying
+rule failed. This is an explicitv2program-event data contract, not whole-market
+recall, eligible-entry profitability or position-protection acceptance.
 
-Instance i-00044d4ea1471b957, account133857166104, us-west-2.
-poe-runtime.service runs enabled/nonroot uid988 since22:30:55UTC, zero restarts.
-Installed release **bce3d22bb434eb429aafacb788a18f39ec189c1b**.
-The owner-completed standard Node launch override fixes C2's symlink main-path
-bug; no bootstrap rerun, replacement/reseed or key change occurred.
+Observation now starts after verified market availability; selected2–6hour
+research is bounded independently from baseline5–120minute entries. There is no
+evidence of an economically optimal entry-age range. Earlier/older observation
+never grants trading permission or weakens quote/source/financial controls.
 
-Account **poe-3123e352-4581-455b-85db-acd7e825e99e**.
-Original inception **2026-10-26T22:07:36.212Z**, one $1,000 VIRTUAL conversion.
-Strategy **UNIMPLEMENTED_FLOW_BLOCKED**. No legacy/fixture history imported.
+Current code includes the resource-aware overload repairs, coherent support
+batching, lean readiness, native selected-flow adapter and a fix for audit-ready
+candidate-only assessments blocked by unrelated RPC hints. Build/compile and
+971repository tests passed. Native integrated candidate runner and independent
+host reporting are being prepared/reviewed separately. No24/72hour acceptance
+clock has started and no natural PAPER order/fill/position exists.
 
-Read-only run40415427271 attempt3/job121922314841 during Render rollout:
-reconciliation/USD facts aged4.168seconds, latest migration117.275seconds,
-shortlist12/12, NTPyes, memory63,074,304bytes, cumulative CPU12.525seconds,
-root filesystem57,831,047,168bytes available. No cleanup needed/performed.
-This is a low-load observer sample, not a trading capacity benchmark.
+Full standing development, account-preserving PAPER deployment and reporting
+authorization remains in force. Current candidate-only operation intentionally
+disables financial execution. Live-money trading, real signing/submission,
+funding and new spending remain prohibited. Original authoritative financial
+history and the separate experimental account/inception are preserved.
 
-## Dashboard
+See [the migration-age evaluation](docs/MIGRATION_AGE_EVALUATION.md),
+[completed cohort scorecard](evidence/age-forward-20261028/cpu-forward-three-intervals/README.md)
+and [continuation checkpoint](docs/CONTINUATION_CHECKPOINT.md). Historical source
+versions and restrictions below apply to their named intervals, not current
+standing research authority.
 
-https://meme-machine-dashboard-staging.onrender.com .
-Only srv-daqon53tqb8s73bdceq0 / tea-daqk6h8jo6nc73eojtp0, free, auto-deploy off.
-Verified live web source **b3df32ce098d5de0c38c706bf9cf8e6066eccec1**,
-deploy **dep-dbfuh559el5s73bbf3pg**, finished23:57:11UTC.
+---
 
-Owner explicitly confirmed PUBLIC read-only viewing. Dedicated machine ingestion
-remains authenticated; wallet/provider/Turnkey keys never reached Render.
-Earlier41 live protocol checks passed; a concurrent UI passed20 current core/
-mobile checks but dropped visible release/strategy metadata. The dashboard-only
-fix restores those fields while preserving design and financial identity.
-Final22/22 deployed checks pass at23:57:48UTC: sequence159, source facts
-34.7–35.7seconds old, full versions visible,12cards/actual history agree,
-no mobile overflow, controls, script errors or external requests. One waiting503
-resolved by natural full republication; no EC2 restart. See
-evidence/render-current-live.json. Final23:59:47UTC source check: sequence163,
-source/reconciliation age26.3seconds, correct identity, zero trades/positions.
+# POE status — 2026-10-27 UTC
 
-EC2 remained active with unchanged startup/account through cache/redeploy outages.
-Normal full republication restores bounded history and genuine gaps; dashboard
-heartbeat does not refresh underlying facts. Zero-trade movements are SOL price
-effects, not strategy profit. Missing operating allocations keep economic P&L
-unavailable. Some installed observer projections remain explicitly unavailable.
+One authorized diagnostic obtained5validated on-chain market swaps and one usable
+60s recorded-information window; bounded independent chain audit5/5matched.
+There were no PAPER orders/fills. Production, original account/inception and
+Render were untouched; no fresh production-health check occurred in this task.
 
-## Development and next work
+Protection is not accepted:40three-holding checks had2056ms maxgap/2033ms p95,
+21gaps above2s target and no natural stop/TP/max-hold crossing. Recorded observation
+75002ms exceeded the75s bound by2ms; no decision information was admitted after
+cutoff. This remains a disclosed harness deficiency, not an approved tolerance.
 
-Reviewed commit b3df32c adds bounded normalized features/rule, measurement core,
-delayed one-attempt execution, connected DISPOSABLE trader, actual-size sell
-pricing, same-writer operating costs and asynchronous bounded backups.
-Typecheck, compiled build,185/185 regressions and11 operator tests pass.
-Strict script checking/independent review also pass. Synthetic replay preserves
-information availability and drains its tested workload; it is not EC2 capacity
-or forward performance. Actual free migration/Mayhem Token-2022 quote evidence
-is preserved, explicitly QUOTE_ONLY and modified-source where applicable.
+[Actual decision](evidence/scheduler-forward-20261027/decision.json),
+[bounded audit](evidence/scheduler-forward-20261027/audit.json) and the final
+section of [the evaluation](docs/ADAPTIVE_MONITORING_EVALUATION.md) separate
+mapping/window evidence from timing and integration limitations.
 
-**These trading/backup changes are not installed on EC2.** Finish actual feed
-field/rate/charge proof; production RPC/management/scheduler and projections;
-freeze rules/cost assumptions; deploy an account-preserving reviewed release;
-prove actual backup/restore, restart/outage/pressure/headroom and alert delivery.
-No critical-alert channel is verified. No full gate or economic edge claimed.
+| Status | Actual evidence |
+| --- | --- |
+| BUILT | Installed observer; undeployed trader/accounting/recovery and isolated diagnostic components. Capture source349e67b, approved proposalde102ee |
+| RUNNING | Existing EC2 observer preserved; not directly checked in this task. Diagnostic process/socket ended normally |
+| OBSERVING CURRENT DATA | New captured interval15:19:07.293–15:20:22.295UTC is closed; no continuing research subscription |
+| PAPER-ENTRY ENABLED | No. Installed strategyUNIMPLEMENTED_FLOW_BLOCKED; frozen contract, management wiring, robustness and acceptance incomplete |
+| NATURAL PAPER TRADES | Last production source reported0; this diagnostic created0orders/fills/positions |
+| ACCOUNTING RECONCILED | Last source report true08:03:56.948UTC; no private financial DB audit in this task |
+| DASHBOARD FRESH | Last check08:04:36UTC/snapshot1049, facts39.682s old then. Current freshness not checked; research never published |
+| OPERATIONALLY ACCEPTED | No. No24/72-hour clock started |
+| EDGE | UNPROVEN |
+| LIVE TRADING | DISABLED |
 
-Turnkey authentication/source identification are complete and credentials unchanged.
-Existing source cannot fund requested0.06SOL plus fee; billing wallet remains0SOL.
-Durable owner recovery lacks an actual named private route. No key export,
-transfer approval/signing/broadcast, paid RPC/hosting upgrade or automatic top-up.
-Measurement caps remain0.01SOL/day,0.04SOL/four-day total,$2.50/day/$10total
-whichever binds,0.02SOL floor. They do not establish continuous-window capacity.
-See docs/OWNER_ACTIONS.md for only actual owner dependencies.
+## Preserved authority
+
+Instancei-00044d4ea1471b957, AWS133857166104/us-west-2; restrictedpoe-runtime.service.
+Installed releasebce3d22bb434eb429aafacb788a18f39ec189c1b. Original account
+poe-3123e352-4581-455b-85db-acd7e825e99e, inception2026-10-26T22:07:36.212Z,
+one $1,000 virtual conversion. No bootstrap/reseed, service/credential change,
+root installation, wallet operation or infrastructure change.
+Public viewer https://meme-machine-dashboard-staging.onrender.com unchanged;
+authenticated machine publishing unchanged. No synthetic performance was sent.
+
+## Diagnostic scope and counters
+
+Actual1routed buy_v2,3direct Sells and1routed Sell. All5independent confirmed
+responses match original fingerprints/amounts/transfers;2Sells also passed
+finalized executed-byte rechecks. Exact-quote Buy variants/multiswap were absent.
+All5fall inside the recorded15:19:10–15:20:10availability window; the5/5chain-time
+audit does not establish generic receive-window completeness or market coverage.
+One buyer100% concentration, negative net buying and0positivebins reject the
+existing predictive rule; origin/entry-age eligibility remained unverified.
+
+58newunits bring cumulative usage to221/240;19unused is not retry permission.
+Related bytes2,314,558measured +2,097,152olduncertain =4,411,710/67,108,864.
+PumpApi actual271,949,619bytes cumulative; reservations396MiB/320s fully committed,
+no refunds. New run76,013,520bytes/48,819frames. API fees$0; infrastructure/transfer
+costs unverified. Cloud resource results do not establish EC2 capacity.
+
+The single grant is complete. Keep the scheduler in research: offline cutoff/
+shutdown hardening and known50/100ms-jitter,3-event-burst and pending-contention
+failures must be addressed before production review. No merge/deployment/entries,
+new capture, paid provider, wallet or completed setup action is requested.

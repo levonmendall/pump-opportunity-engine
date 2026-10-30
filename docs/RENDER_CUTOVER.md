@@ -8,8 +8,32 @@ https://meme-machine-dashboard-staging.onrender.com .
 Source: levonmendall/pump-opportunity-engine, main, Node, empty root.
 Build: npm ci --include=dev && npm run compile.
 Start: npm run dashboard. Health:/healthz.
-Verified live deploy:dep-dbfuh559el5s73bbf3pg,
-dashboard sourceb3df32ce098d5de0c38c706bf9cf8e6066eccec1.
+Verified live reporting deploy: `dep-dbgi1guk1f9s738ri93g`, source
+`3409b767ffdc72a45eb836c440186ed2d030e1a4`, finished22:09:00.256UTC.
+Connector reverified live status and unchanged Free plan/auto-deploy off.
+
+The separate authenticated pilot channel displays allowlisted experimental
+counters, not pilot financial balances or P&L. Actual account binding is
+`poe-pilot-8468add6-f916-48cf-a585-6cd008a81360`, inception
+`2026-10-27T17:56:13.252Z`. A filesystem-restricted independent publisher reads
+only its status and dedicated reporting credential. It cannot open the ledger,
+spawn children, or trade. Original snapshot identity/channel remain unchanged.
+Two exact local/remote projections passed at22:35:31/22:35:48UTC, unauthenticated
+POST returned401, and390px mobile rendering had no horizontal overflow or script
+errors. Source timestamp and publisher contact are distinct. Earlier cache-loss,
+stale/disconnected and duplicate/conflict checks remain retained.
+
+The observations below are historical and do not describe the current reporting
+release. Research trader code is not merged into the Render branch.
+
+## Latest read-only observation — 2026-10-27
+
+No Render settings, source, credentials or deploys changed overnight. At08:04:36UTC,
+health200 and accepted snapshot1049 matched the original EC2 account/inception/
+release below; source reconciliation true, entries disabled, zero positions/trades.
+Underlying source facts were39.682seconds old then. This is a read-model check,
+not direct EC2 health or private-database verification. Receipt:
+`evidence/overnight-20261027/reporting-readonly-check.json`.
 
 ## Confirmed visibility and source identity
 

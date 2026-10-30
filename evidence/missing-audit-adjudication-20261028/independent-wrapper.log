@@ -1,0 +1,55 @@
+{
+  "offline": true,
+  "providerRequests": 0,
+  "financialReads": 0,
+  "cases": [
+    {
+      "case": "happy",
+      "elapsedSeconds": 0.01258962599968072,
+      "result": {
+        "sourceExit": 0,
+        "reason": null,
+        "elapsedMs": 13,
+        "maximumSourceRssBytes": 6549504,
+        "stdoutReceivedBytes": 8,
+        "stdoutRetainedBytes": 8,
+        "physicalProcessGroupSettled": true,
+        "transportSettlementMeaning": "Use final child result; an outer kill leaves all started/uncertain operations unresolved. No provider retry is authorized by this wrapper."
+      }
+    },
+    {
+      "case": "wall",
+      "elapsedSeconds": 0.2042203029996017,
+      "result": {
+        "sourceExit": -15,
+        "reason": "WALL_LIMIT",
+        "elapsedMs": 204,
+        "maximumSourceRssBytes": 6529024,
+        "stdoutReceivedBytes": 0,
+        "stdoutRetainedBytes": 0,
+        "physicalProcessGroupSettled": true,
+        "transportSettlementMeaning": "Use final child result; an outer kill leaves all started/uncertain operations unresolved. No provider retry is authorized by this wrapper."
+      }
+    },
+    {
+      "case": "rss",
+      "elapsedSeconds": 0.05299704899516655,
+      "result": {
+        "sourceExit": -15,
+        "reason": "RSS_LIMIT",
+        "elapsedMs": 53,
+        "maximumSourceRssBytes": 90112,
+        "stdoutReceivedBytes": 0,
+        "stdoutRetainedBytes": 0,
+        "physicalProcessGroupSettled": true,
+        "transportSettlementMeaning": "Use final child result; an outer kill leaves all started/uncertain operations unresolved. No provider retry is authorized by this wrapper."
+      }
+    },
+    {
+      "case": "exited-leader-descendant",
+      "elapsedSeconds": 1.069495697003731,
+      "error": "CHILD_GROUP_UNSETTLED",
+      "descendantState": "Z"
+    }
+  ]
+}

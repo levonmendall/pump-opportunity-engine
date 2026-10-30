@@ -1,0 +1,65 @@
+{
+  "schemaVersion": 1,
+  "kind": "offline-native-paper-portfolio-projection-repair",
+  "baseCommit": "6d894c1262b93d22f288e214016bfb314799e0ae",
+  "recordedAt": "2026-10-28T19:59:05.583091+00:00",
+  "scope": "OFFLINE fixtures only; no market, account, deployment or financial permission changes",
+  "sourceFiles": [
+    {
+      "path": "src/pilot-reporting.ts",
+      "bytes": 12763,
+      "sha256": "d4018047b68029aa59f80184a86f1e4a5b4c5fcf61b170b95399b1c714e8d506"
+    },
+    {
+      "path": "src/run-native-paper.ts",
+      "bytes": 45925,
+      "sha256": "6296b8223ef274fecb930692cffc094d19a94b5f301a690e59db537c6745b4b7"
+    },
+    {
+      "path": "test/pilot-reporting.test.ts",
+      "bytes": 16421,
+      "sha256": "750c4d4c53a3833d13e2f621d1e1e73a94039723ef2206acf09cf0fea887d6ac"
+    }
+  ],
+  "results": {
+    "before": {
+      "tests": 11,
+      "pass": 10,
+      "fail": 1,
+      "cause": "Actual PaperTrader.funnel includes reserved; strict Snapshot.funnel rejects unexpected field"
+    },
+    "focused": {
+      "tests": 16,
+      "pass": 16
+    },
+    "regressions": {
+      "tests": 55,
+      "pass": 55
+    },
+    "build": "PASS",
+    "diffCheck": "PASS",
+    "independentReview": "GO; focused16/16 independently rerun; no blocking findings"
+  },
+  "artifacts": [
+    {
+      "path": "evidence/paper-portfolio-projection-20261028/before.txt",
+      "bytes": 2373,
+      "sha256": "9be4f0ee2a658ae22c956168eb19c2132318586fffc88a0368d8559b60f3ae93"
+    },
+    {
+      "path": "evidence/paper-portfolio-projection-20261028/build.txt",
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    {
+      "path": "evidence/paper-portfolio-projection-20261028/focused.txt",
+      "bytes": 1964,
+      "sha256": "911d1df6ee9b23a503601c009febda4140a4f5e8a107c64e2ba9ffe91701aef5"
+    },
+    {
+      "path": "evidence/paper-portfolio-projection-20261028/regressions.txt",
+      "bytes": 6598,
+      "sha256": "86f099ec2a06572b13a0b60d0cadea4d4d07bf24ab214c1519339f50456e4284"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "at": 1793217787545,
+  "publicSnapshotSha256": "1a14b0199f977e229b459ef901dc0d8abb894e67a8247a94caf004af62903aff",
+  "originalAccount": {
+    "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "initialUsd": 1000
+  },
+  "source": {
+    "release": "bce3d22bb434eb429aafacb788a18f39ec189c1b",
+    "strategy": "UNIMPLEMENTED_FLOW_BLOCKED"
+  },
+  "sourceTimes": {
+    "generatedAt": "2026-10-28T19:53:24.032Z",
+    "marketAt": "2026-10-28T19:53:24.032Z",
+    "reconciledAt": "2026-10-28T19:53:24.032Z",
+    "usefulProgressAt": "2026-10-28T19:53:24.032Z"
+  },
+  "separateFromExperimentalAccount": true,
+  "publicReceiverFreshness": {
+    "state": "observing-with-zero-trades",
+    "receivedAt": "2026-10-28T19:53:43.443Z",
+    "generatedAt": "2026-10-28T19:53:24.032Z",
+    "marketAt": "2026-10-28T19:53:24.032Z",
+    "reconciledAt": "2026-10-28T19:53:24.032Z",
+    "usefulProgressAt": "2026-10-28T19:53:24.032Z",
+    "sourceAgeMs": 31703,
+    "marketAgeMs": 31703,
+    "reconciliationAgeMs": 31703
+  },
+  "remoteProcessHealthClaimed": false
+}

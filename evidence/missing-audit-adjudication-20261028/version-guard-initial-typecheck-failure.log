@@ -1,0 +1,6 @@
+
+> pump-opportunity-engine@0.1.0 build
+> tsc --noEmit
+
+test/missing-audit-adjudication.test.ts(31,570): error TS2339: Property 'observedTransactionVersion' does not exist on type '{ classification: string; observedTransactionVersion: any; reason: string; essentialFlowComplete: boolean; meaning: string; signature: string; mint: string; pool: string; expectedSlot: number; diagnosticAvailableAt: number; originalWindowAdmission: string; earlierDecisionReconstructed: boolean; qualificationAuthoriz...'.
+  Property 'observedTransactionVersion' does not exist on type '{ classification: string; inspection: { checks: ScopedPumpSwapInstructionCheck[]; supportedSwapInstructions: number; knownNonSwapInstructions: number; }; ... 10 more ...; qualificationAuthorized: boolean; }'.

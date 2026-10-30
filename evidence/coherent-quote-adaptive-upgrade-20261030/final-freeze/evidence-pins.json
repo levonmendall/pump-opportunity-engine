@@ -1,0 +1,37 @@
+{
+  "source": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+  "files": {
+    "npm-test.raw.txt": {
+      "bytes": 266641,
+      "sha256": "07fee94b3a9fbf5feb63254d588707d20867a3f4e68741d910bd7b27e3871cad"
+    },
+    "source-before.json": {
+      "bytes": 49809,
+      "sha256": "986192efcb64c945c596bd7c52cfa1e9d57783f3072b314760591f41d83d403d"
+    },
+    "npm-build.raw.txt": {
+      "bytes": 55,
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    },
+    "verification.json": {
+      "bytes": 860,
+      "sha256": "cdcdd0a76b5486ff0296c889edf4a4a33a60c0a09b943dbe25dbafc707b0090f"
+    },
+    "active-configuration.json": {
+      "bytes": 369,
+      "sha256": "f2fa54573917774cc0b8d5759b85495a7598b12c55ee1774ae6b13357958dec1"
+    },
+    "standalone-build.raw.txt": {
+      "bytes": 626,
+      "sha256": "460374776e5ceaef310ffbe2785566c657e729c49b3e524b325d36c0497878da"
+    },
+    "source-after.json": {
+      "bytes": 49809,
+      "sha256": "986192efcb64c945c596bd7c52cfa1e9d57783f3072b314760591f41d83d403d"
+    },
+    "bundle-metadata.json": {
+      "bytes": 168825,
+      "sha256": "e64fb548f2ffdee50898b67432a05f20710160039b9291bfc731f3379f209042"
+    }
+  }
+}

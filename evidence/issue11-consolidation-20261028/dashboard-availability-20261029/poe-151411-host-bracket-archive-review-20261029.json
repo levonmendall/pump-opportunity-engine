@@ -1,0 +1,252 @@
+{
+  "kind": "READ_ONLY_HISTORICAL_ARCHIVE_REVIEW",
+  "archive": "/tmp/gh-cli-cache/run-log-40899463759-1793286845.zip",
+  "archiveSha256": "a3c4a7780d5546824eb83d04a62fcc42e1c3fea4a1bc2593a50f33e181e710d8",
+  "member": "read-original-lifecycle/3_Read metadata without changing or starting a service.txt",
+  "line": 24,
+  "loggedAt": "2026-10-29T15:14:11.3214030Z",
+  "hostCheckedAt": "2026-10-29T15:14:11.310000+00:00",
+  "rawObjectSha256": "92b53430bec3271e300fd8cf191f8958d1a37629c99150082c8ad47c4e4502ac",
+  "requestedInterval": {
+    "from": "2026-10-29T15:16:00.000Z",
+    "through": "2026-10-29T15:24:59.999Z"
+  },
+  "withinRequestedInterval": false,
+  "findings": "Actual host read, not merely successful command metadata. An earlier bracket only. No contemporaneous 15:16\u201315:24 observation recovered from locally retained compressed archives. No privileged health or publisher content was readable in this receipt.",
+  "selectedActualHostFields": {
+    "checkedAt": 1793286851310,
+    "publicStatus": {
+      "sha256": "c64bdcdf6a73eb143c76b3000c1cd9d63eb3744488af67b86abd8eb9558d57a8",
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "release": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+      "strategy": "persistent-buying-pilot-v1",
+      "generatedAt": "2026-10-29T15:14:10.449Z",
+      "entriesDisabled": true,
+      "flowVerified": false,
+      "mode": "PAPER",
+      "liveTrading": false,
+      "blocker": "current equity or liquidation unavailable; entries closed",
+      "shortlistCount": 2,
+      "feedConnected": true,
+      "lastUsefulProgressAt": "2026-10-29T15:14:10.055Z",
+      "lastReconciledAt": "2026-10-29T15:14:10.055Z",
+      "lastMigrationReceivedAt": "2026-10-29T15:13:22.933Z",
+      "reportingConfigured": true
+    },
+    "acceptedSource": {
+      "available": true,
+      "sha256": "13eda2f040b8530d6d109e0f39d89ff9b3cc30b2a9d936537008cac880b1ca0c",
+      "value": {
+        "schemaVersion": 1,
+        "kind": "poe-original-snapshot-delivery-receipt-v1",
+        "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "source": {
+          "commit": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+          "sha256": "fa10982125bd77c1586606283a9fabed4daee5434792dcef90be2bd312cc5315"
+        },
+        "runId": "native-paper-20261029145012717",
+        "sourceAtMs": 1793286791551,
+        "sequence": "8710",
+        "fingerprint": "d98b31138b968dc5343d02bbfa21ce8f1104f8b5d5427ab2b892bd9defae2a36",
+        "rawSourceSha256": "992f1b6068f912065ecdb5264fac0f87e132616e4abe851c5e1f2531215494db",
+        "acknowledgedAtMs": 1793286794619,
+        "observedBySupervisorAtMs": 1793286794953,
+        "acceptedDistinctSourcesThisSupervisor": 80,
+        "meaning": "Duplicate metadata of an already matched original-channel Render acknowledgement; source timestamp is unchanged. No financial or market evidence is replaced."
+      }
+    },
+    "ownedProcessRoles": [
+      {
+        "pid": 2454440,
+        "role": "original-supervisor",
+        "ownerUid": 988,
+        "cpuSeconds": 12.2,
+        "rssBytes": 31432704,
+        "nice": 19,
+        "explicitMaxOldSpaceSizeMiB": [],
+        "argvExported": false
+      },
+      {
+        "pid": 2454443,
+        "role": "native-source",
+        "ownerUid": 988,
+        "cpuSeconds": 141.49,
+        "rssBytes": 305758208,
+        "nice": 19,
+        "explicitMaxOldSpaceSizeMiB": [
+          192
+        ],
+        "argvExported": false
+      },
+      {
+        "pid": 2455319,
+        "role": "original-publisher",
+        "ownerUid": 988,
+        "cpuSeconds": 2.57,
+        "rssBytes": 125718528,
+        "nice": 19,
+        "explicitMaxOldSpaceSizeMiB": [
+          64
+        ],
+        "argvExported": false
+      }
+    ],
+    "hostResourceUsage": {
+      "sampleAt": 1793286851310,
+      "hostScope": "HOST-AGGREGATE; includes unrelated applications and administration runner, not POE-attributable",
+      "serviceScope": "poe-runtime.service cgroup, including owned children",
+      "hostMemory": {
+        "available": true,
+        "totalBytes": 8153255936,
+        "availableBytes": 6894682112
+      },
+      "rootFilesystem": {
+        "available": true,
+        "capacityBytes": 331712798720,
+        "availableBytes": 288988225536
+      },
+      "serviceCpu": {
+        "available": true,
+        "usage_usec": 161198918,
+        "user_usec": 148817926,
+        "system_usec": 12380992,
+        "nr_periods": 14395,
+        "nr_throttled": 431,
+        "throttled_usec": 39847894
+      },
+      "serviceMemory": {
+        "current": {
+          "available": true,
+          "bytes": 483876864,
+          "unlimited": false
+        },
+        "max": {
+          "available": true,
+          "bytes": 805306368,
+          "unlimited": false
+        },
+        "peak": {
+          "available": true,
+          "bytes": 499384320,
+          "unlimited": false
+        }
+      },
+      "hostNetwork": {
+        "available": true,
+        "scope": "HOST-AGGREGATE; not POE-attributable",
+        "interfaceCount": 2,
+        "truncated": false,
+        "interfaces": [
+          {
+            "interface": "lo",
+            "receivedBytes": 561938061,
+            "receivedPackets": 3784268,
+            "transmittedBytes": 561938061,
+            "transmittedPackets": 3784268
+          },
+          {
+            "interface": "ens5",
+            "receivedBytes": 82471862078,
+            "receivedPackets": 68635353,
+            "transmittedBytes": 10594716062,
+            "transmittedPackets": 26024085
+          }
+        ]
+      }
+    },
+    "effectivePerformanceControls": {
+      "sampleAt": 1793286851310,
+      "logicalCpuCount": 4,
+      "systemd": {
+        "CPUQuotaPerSecUSec": "500ms",
+        "CPUQuotaPeriodUSec": "100ms",
+        "CPUWeight": "10",
+        "Nice": "19",
+        "MemoryHigh": "671088640",
+        "MemoryMax": "805306368",
+        "MemorySwapMax": "0",
+        "TasksMax": "64",
+        "LimitNOFILE": "256",
+        "LimitAS": "infinity",
+        "OOMPolicy": "stop",
+        "IOWeight": "[not set]",
+        "CPUAffinity": "",
+        "AllowedCPUs": "",
+        "ProtectSystem": "strict",
+        "ReadWritePaths": "/var/lib/poe /run/poe -/var/lib/poe-public /var/lib/poe /run/poe -/var/lib/poe-public"
+      },
+      "systemdMissingProperties": [],
+      "cgroupCpuMax": {
+        "available": true,
+        "unlimited": false,
+        "quotaUsec": 50000,
+        "periodUsec": 100000,
+        "equivalentCpuCores": 0.5
+      },
+      "cgroupCpuWeight": {
+        "available": true,
+        "value": 10
+      },
+      "cgroupMemory": {
+        "high": {
+          "available": true,
+          "unlimited": false,
+          "bytes": 671088640
+        },
+        "max": {
+          "available": true,
+          "unlimited": false,
+          "bytes": 805306368
+        }
+      },
+      "cgroupMemoryEvents": {
+        "available": true,
+        "low": 0,
+        "high": 0,
+        "max": 0,
+        "oom": 0,
+        "oom_kill": 0,
+        "oom_group_kill": 0,
+        "sock_throttled": 0
+      }
+    },
+    "privateDiagnosticAccess": {
+      "supervisorHealth": {
+        "metadataAvailable": false,
+        "errno": 13,
+        "contentRead": false
+      },
+      "publisherDiagnostic": {
+        "metadataAvailable": false,
+        "errno": 13,
+        "contentRead": false
+      },
+      "reportingCredentialMetadata": {
+        "metadataAvailable": false,
+        "errno": 13,
+        "contentRead": false
+      }
+    },
+    "journalReceipt": {
+      "exitCode": 1,
+      "stdoutBytes": 0,
+      "stderrBytes": 62,
+      "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "stderrSha256": "69290b924ebefd68d1806a463f5c072523b1c5ed4c35e4096eee215ff5916e2e"
+    },
+    "financialDatabaseOpened": false,
+    "credentialReads": 0,
+    "serviceChanges": 0,
+    "providerRequests": 0,
+    "service": {
+      "MainPID": "2454440",
+      "ActiveState": "active",
+      "SubState": "running",
+      "NRestarts": "0",
+      "ExecMainStartTimestamp": "Thu 2026-10-29 14:50:11 UTC",
+      "Result": "success"
+    }
+  }
+}

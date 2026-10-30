@@ -1,0 +1,1520 @@
+{
+  "classification": "BOUNDED_INDEPENDENT_CHAIN_AND_CAPTURED_HINT_AUDIT",
+  "complete": false,
+  "completeScope": "Exact nominal chain interval plus every explicitly recorded selected signature; not proof of receive-window completeness",
+  "applicationAvailabilityTarget": {
+    "startAt": 1793121290000,
+    "endAt": 1793121350000,
+    "interval": "[startAt,endAt)",
+    "timeBasis": "fully validated application availability; never chain or feed time"
+  },
+  "chainAuditTarget": {
+    "startAt": 1793121290000,
+    "endAt": 1793121350000,
+    "interval": "[startAt,endAt)",
+    "boundaryExclusionMs": 0,
+    "timeBasis": "on-chain blockTime seconds; separate from the application window"
+  },
+  "limits": {
+    "historyPages": 2,
+    "signaturesPerPage": 50,
+    "independentTransactions": 20,
+    "finalityRechecks": 2,
+    "requestUnits": 24,
+    "elapsedMs": 25000
+  },
+  "startedAt": 1793121364969,
+  "history": [
+    {
+      "blockTime": 1793121363,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "TQxmTvNxKZDygbVwbZLDx2G9j9qeqLLww2VnBnQZQ6XToY7rmeKQu7ZJiD5iKKtZLKshWS2wDsnzqMfxUZJSwKj",
+      "slot": 462151689,
+      "transactionIndex": 365
+    },
+    {
+      "blockTime": 1793121355,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "4YKkw52TipD1JdkRxpLg29s5cFGCD3JcSPuKWH55YYPJVfG3e1NtQArJD31DkAU7UETtsJ7ULpLNsdgXfzMe48M2",
+      "slot": 462151652,
+      "transactionIndex": 386
+    },
+    {
+      "blockTime": 1793121355,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "526P6YLdFAFofscRNfZeEZSxeLaNWh5ii82RvLG4BZd3iyyAo2av9fQFVhhquiYrwQxAPNEhnyj1xAGtFZxmwAUL",
+      "slot": 462151652,
+      "transactionIndex": 101
+    },
+    {
+      "blockTime": 1793121345,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "3PfPQ2xfT8wxFhFyAzaPAc6jWBqVKsTqVzMrb4p8q4UxXjMwEYX7zYccuaHNXDuoiW4L71GSwNCdcRwtbCTe278c",
+      "slot": 462151604,
+      "transactionIndex": 50
+    },
+    {
+      "blockTime": 1793121337,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "XrCh4SWxahbzyQWEQNFe9GKY1dDwfEokpUuVbzQ9KZZL2ovLxEBTEGvw7QaEDGGcynEt2GeDghXGcYrffJxvpMA",
+      "slot": 462151562,
+      "transactionIndex": 292
+    },
+    {
+      "blockTime": 1793121332,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "4cSd2AMRJw3qUAukdMUxWznUk7uj8Pk8WNAEVh8uxNVrKpAA1fH7mmRe75ooyzRNzSryNJFSxxnk9MVpVJff4GhB",
+      "slot": 462151540,
+      "transactionIndex": 399
+    },
+    {
+      "blockTime": 1793121325,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "2K7QbqS57qbBFghYKoDSNHCXTMgFGu7VfUHRXVFVsgxvcLEcPQHSLBSyVMwtRFjZDoPPYAEtNSkevzTwoSFy4ftq",
+      "slot": 462151507,
+      "transactionIndex": 192
+    },
+    {
+      "blockTime": 1793121324,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "pSjxBAuDsFGSQK5iFbky5knLFcXQs6jLEesJsLyTGrYzNEoHvBABDEbudVmq6JYcLscQZqsxFTfLq6uisZ7FBcV",
+      "slot": 462151505,
+      "transactionIndex": 249
+    },
+    {
+      "blockTime": 1793121318,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "aT4M1yKF3AHCCgwb2tTzHbfrbyavytFDYPVDCrBPPkLbvNt16Atc1CJuwFW9YJ3SnKBMHPgTCgMnPKGPzzZ4wzf",
+      "slot": 462151478,
+      "transactionIndex": 64
+    },
+    {
+      "blockTime": 1793121312,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "3YuA263Moqxbmeqarmavn1H6arQZf9tSToLAGgrADb4rik1cRdqwXCfz8L3okbsShfW4FS6C6DMwRZGAVSExztcv",
+      "slot": 462151450,
+      "transactionIndex": 508
+    },
+    {
+      "blockTime": 1793121306,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "2XxViSzRrkMUBHh4TxtvFmAkTVrYmMXAR3PwwNk51Nw8CN6qVX6EBC9LVdkTiUuZEmmaEU5AqsbQe7nWtk6ah9Yk",
+      "slot": 462151422,
+      "transactionIndex": 428
+    },
+    {
+      "blockTime": 1793121300,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "4VqUkwkDdoUFk9Xt7iGrdDLjn1ujBwCB77gRpqpEBE9gbsbkxUTy7nGc3kdT9iSonL4kgzxWBNACKW7owaZDnTnd",
+      "slot": 462151394,
+      "transactionIndex": 368
+    },
+    {
+      "blockTime": 1793121294,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "5Czgd2LaMVSbrFrtR5JzmYx1X7VdrLezZ3C5akzDgqtu9pffwm9eLMqxm6zifzG1eXDfMGM1ij4q4KSdxmyEYqEj",
+      "slot": 462151367,
+      "transactionIndex": 234
+    },
+    {
+      "blockTime": 1793121294,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "4DUwR5wUjRx4D1xrj4UNezoSvBcK4Jn7Mphyaskd3GqcuxVJWkgK3kMBfBp54zptdrc25NzHgzSEwRzqet2mzwJH",
+      "slot": 462151365,
+      "transactionIndex": 349
+    },
+    {
+      "blockTime": 1793121288,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "3UrMcUWQEz4L2owRVvm32XpDYfhzvpDEtkihM6CkPx5ANvEfZpFPFPM4Q1WjJDtmkdhbDgwavUncy6XzqD6GZbhS",
+      "slot": 462151338,
+      "transactionIndex": 394
+    },
+    {
+      "blockTime": 1793121283,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "3q5P3MjvB6PFN7iHXEhkogpyyoJkp5ZdxWWHKoB7VGHtv7JaDpZ9EihXiyzgquy9Z2j59q2Givj3cUfiUi9c86Kq",
+      "slot": 462151312,
+      "transactionIndex": 131
+    },
+    {
+      "blockTime": 1793121279,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "2e9xnfLtJvybymcitpkzDDVTMtJ6G3TCfj9wMJhZQ9oTPuhwXPaP3raaS5APPKapPz7b1R6uBAmfphTQAkgT5G9v",
+      "slot": 462151297,
+      "transactionIndex": 132
+    },
+    {
+      "blockTime": 1793121276,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "4fKnQCGbYDAXuyTRa56cYxCyodD8LnR9biCrisDD1DwFUAeV4RXsfYP4zdWAdfeRTqLeUNEtQ5ELrA7UW5WReAg6",
+      "slot": 462151282,
+      "transactionIndex": 202
+    },
+    {
+      "blockTime": 1793121270,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "2qKYzq1F6Ji7cKs1pJowVzAJwZvBh2iPCprLDhjNtecA3AWv6XsBGRaMteNhntYD6qpvfrKdhf1KjXRjF5i8ngoD",
+      "slot": 462151255,
+      "transactionIndex": 415
+    },
+    {
+      "blockTime": 1793121264,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "5Z7QqtNGpAwoVRPzQH5qvzgBQiDMBsEukrL7UfcFT1sTvgn4UUY6qJr4J37tzCFkuUPH4CRRyiT3iJRMF8dmLao7",
+      "slot": 462151227,
+      "transactionIndex": 38
+    },
+    {
+      "blockTime": 1793121263,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "2YiysShuRxwUJSUWzGYm5U6japSidsphsyz6i2T6gTwqWCpB31Jr1HCoMFWGi7QMx4j76d25pYv9EySJqqMggBCK",
+      "slot": 462151221,
+      "transactionIndex": 37
+    },
+    {
+      "blockTime": 1793121258,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "5boKB7jQ68mAajUTyvdZ48q3HswexPFKyhscwPfxPFddGMah7UXepAjAbQLL4SHuxaKw5ELCB6gtesn34ZDHxG2W",
+      "slot": 462151198,
+      "transactionIndex": 329
+    },
+    {
+      "blockTime": 1793121249,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "Cu16NPN4JYQNjCcNQ8j6g7Fmihk7kR5GSroeb9wbgbb8gim6GSPJksacZWayrzp1VCpyDP4Q4JHwmg9HFyYWy1k",
+      "slot": 462151158,
+      "transactionIndex": 193
+    },
+    {
+      "blockTime": 1793121249,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "DnhGPZdeQNYLyJmgZq1VHvjSeNxVNSeZ1YjjnEoiR7kAX4sJgLbknCKYBEoCCsA2Zg9Pzotk1pPE1UePtYDTooy",
+      "slot": 462151157,
+      "transactionIndex": 177
+    },
+    {
+      "blockTime": 1793121241,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "3AsTrPQqqYqFQ5mrvE82EEVJFJCd4Re3nBnuFevxKWF48c5TRWkctrP1Jr4xNezdWQ3S14cnq7zWzM8YUqg9BKCM",
+      "slot": 462151120,
+      "transactionIndex": 352
+    },
+    {
+      "blockTime": 1793121235,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "4j1on8RmodvqNfahkrTa2ejEByHLkqtETT5BhKGUpxgCcK6BmoyEvvPoqFnrnSZ5n6QLFSkjKQahU2js61Js3Lfw",
+      "slot": 462151088,
+      "transactionIndex": 42
+    },
+    {
+      "blockTime": 1793121228,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "46bRLYw4fb4cCSY4yLw8SB5GMQUG4NmTKYKBKwxc1gbaaB4NZbX4komSrAT3QHW3suQaGfvZWQ8LY1m4GUiH52sE",
+      "slot": 462151055,
+      "transactionIndex": 310
+    },
+    {
+      "blockTime": 1793121227,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "5U86oXovGgN6nwCShEzTFg7wmL2G5stu6aTyyzCjsDxBTNSdxTEgRHXE1ShJHL4zoBVTtm3A3qfGXhPb8d47SbGq",
+      "slot": 462151049,
+      "transactionIndex": 134
+    },
+    {
+      "blockTime": 1793121222,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "66D1Sci3ngytWhV4ExCcAeqVH7M7BQo1MYDefAVGfm2Cfaamy8hNbmvEejAJ2kZEUYtYUC8h9G6M4UzWtWaLzfYy",
+      "slot": 462151028,
+      "transactionIndex": 112
+    },
+    {
+      "blockTime": 1793121219,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "5LPXfYhoeWkE99JuX6GkBBd4BuLR1zDqRGabzJU95RULqJSSYYDHzKaueE3zef9zi11mKSZKZ372PPuNKaNosiFF",
+      "slot": 462151014,
+      "transactionIndex": 79
+    },
+    {
+      "blockTime": 1793121210,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "5Nxi5gboDrJGYoj95tQBpKDFyGLAfATpcXEEZkoUxzSKrpmsXHzEXiN3zXk9y9kmy8GW5w1otfCL4oiunyYWixPt",
+      "slot": 462150972,
+      "transactionIndex": 221
+    },
+    {
+      "blockTime": 1793121204,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "63n8ocVDBSeN8GB9QSh6echsiscdEecNk8XUb8o335Z4Xs3NFcbnyGnjHCogA3bTWMPQ95XvCksav2WXDnzboq1Y",
+      "slot": 462150941,
+      "transactionIndex": 407
+    },
+    {
+      "blockTime": 1793121204,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "57BHZGWD5HNJ8Q3oGALLSAMBNqNwF2ZD75kCuA3fjgd8BDQU35GM3Cv1B3Qnsvei8taDhm2enBriWgVXZgQeyZs3",
+      "slot": 462150940,
+      "transactionIndex": 1324
+    },
+    {
+      "blockTime": 1793121198,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "2cjLVhQZvRqAZs6tyZ2UZTbTnhqFqh5LntEJA6n8fJNJhVB1xyE5cvzVE6VE5mLbuAFp1xmx52oomqMNWmTJ6u5w",
+      "slot": 462150912,
+      "transactionIndex": 568
+    },
+    {
+      "blockTime": 1793121192,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "YREM1CG74MLUS24kLQw22rizacKomsNsbyR7dydcTrDEZtjZ5Qo55FQCT4qUc78ey9aDfRfRSF8KxGozXZga6to",
+      "slot": 462150889,
+      "transactionIndex": 381
+    },
+    {
+      "blockTime": 1793121190,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "2hwvnyAyK7AEL2M5t18ePn31FXYEKjkGfHHAPy4e3yXKCBPyU8HXRVyA2UaxhUACGJWRbtjrcZKvXdHVKJ1cb91b",
+      "slot": 462150880,
+      "transactionIndex": 417
+    },
+    {
+      "blockTime": 1793121189,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "4xmYzAnCmt6R1fRiggkG68RgnyGCMeE2eguyYP2T3Y95KJLBwm3C8WXMBYvirHS7v9rFYB615MHs9XU3WcDPzCLe",
+      "slot": 462150876,
+      "transactionIndex": 189
+    },
+    {
+      "blockTime": 1793121180,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "4CJ9T3QhXnD9F7QNZQsbREg4pgXLCKHRg9TEvWX74zDAJ72mZCS8ue5xTX2vKxTDxmBTmSsq2L6PRNHwt9bzVB9c",
+      "slot": 462150831,
+      "transactionIndex": 275
+    },
+    {
+      "blockTime": 1793121174,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "3QW9Cftb3sKZZ8bsZ3uSVrPGrhF987xMDZRPvbdKyY5Ry9T5UVczbvTvFc82oZGRKhKpVLuScPx8RKUxkxXvQ81f",
+      "slot": 462150804,
+      "transactionIndex": 498
+    },
+    {
+      "blockTime": 1793121174,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "56CgbR5k4mLybcNZsR4PXtfsVvwrXsm7HQVKeLCmaAfPfMRTHj5kJpEthG8dvbDfLtuYkCs4gf1KNYhwXUnK3Wf2",
+      "slot": 462150804,
+      "transactionIndex": 324
+    },
+    {
+      "blockTime": 1793121168,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "szkLLyJHzvkP5hHpzkD5Jr2urVBU23gRUBXXqKeL2MEL5Kpu68rWTbknXhiWcibaFMdWkRX4tNPnFYsofYVCuwa",
+      "slot": 462150774,
+      "transactionIndex": 240
+    },
+    {
+      "blockTime": 1793121159,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "4s4vNJZ72xmGr18GtqN1Kf5tF8QbiYh7Pee9dqCCUTxHR71fRUSWrVHRqxQNJkkNqd8SbBtwpRmUuKRZ4c1uvegz",
+      "slot": 462150735,
+      "transactionIndex": 547
+    },
+    {
+      "blockTime": 1793121156,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "3HiN2mUkqJzgFuhK31wiANnRfmQipShJmtUbFRqBfGaPWahP77sttYkW7GWr9vyaEkFmG573PU66yBJxjK4WFwqu",
+      "slot": 462150720,
+      "transactionIndex": 1300
+    },
+    {
+      "blockTime": 1793121144,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "5mM5E3RFCNKwCLPsYfR5fcFevPgYGZDRLW6TWnRvqg3G1D8ypukc2mL323E59drJLd3MEQSEMBSQMuu5xMvG69j8",
+      "slot": 462150662,
+      "transactionIndex": 854
+    },
+    {
+      "blockTime": 1793121144,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "5wcDE4NPm6qGiGZP5KZWiWYf1VtG3pkVQ4ApopiGJjEKTzoXt5NJmJn3gv4zdhxJEen31gJ4diTTDtErLcAB71Gu",
+      "slot": 462150661,
+      "transactionIndex": 672
+    },
+    {
+      "blockTime": 1793121138,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "3QHSWyisspSxVKw1UBEbcZK7Zexkumuu72MbKSUhXiZJ1iUg9xykuFzDJ5urNhYVXt8ZKzxZvb95cVqBq7dHnzgY",
+      "slot": 462150632,
+      "transactionIndex": 1106
+    },
+    {
+      "blockTime": 1793121132,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "3LJPix7s4Cjp44LohXnRA7a6kU1Nu4oyLxeNCa4Qto4ZUnKZ5QmFuo4Fa72SgXdNibEahFHnuGqLnBUcX6aEq1kN",
+      "slot": 462150603,
+      "transactionIndex": 364
+    },
+    {
+      "blockTime": 1793121126,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "5m4VbHregE6ZtgdR3KkYxTaCszHCZbLMXFdvN33NMwfHodVXZ8QWFgPndJnAbSy2bKoxS2nicJBLsi4919BRUBtN",
+      "slot": 462150576,
+      "transactionIndex": 114
+    },
+    {
+      "blockTime": 1793121120,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "2N6mWDh7KVyHvnwmSdkBgFfSXbB3auoE6dtwpncy2iVwmTLozyWfsT83UEg99TZcMkvjaVHNcmXC6m18yLpUxBvv",
+      "slot": 462150548,
+      "transactionIndex": 419
+    },
+    {
+      "blockTime": 1793121115,
+      "confirmationStatus": "finalized",
+      "err": null,
+      "memo": null,
+      "signature": "3kcUWnaFAdDRukjxHji15YGX6zH3EAFUgK8tSpqEHysLAtW7WJvhnyTcid2nx6vr9rr8AVong8E3nt2QpQhie8oG",
+      "slot": 462150522,
+      "transactionIndex": 19
+    }
+  ],
+  "historyPages": [
+    {
+      "page": 0,
+      "requestedAt": 1793121364969,
+      "availableAt": 1793121365169,
+      "before": null,
+      "limit": 50,
+      "rows": [
+        {
+          "blockTime": 1793121363,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "TQxmTvNxKZDygbVwbZLDx2G9j9qeqLLww2VnBnQZQ6XToY7rmeKQu7ZJiD5iKKtZLKshWS2wDsnzqMfxUZJSwKj",
+          "slot": 462151689,
+          "transactionIndex": 365
+        },
+        {
+          "blockTime": 1793121355,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "4YKkw52TipD1JdkRxpLg29s5cFGCD3JcSPuKWH55YYPJVfG3e1NtQArJD31DkAU7UETtsJ7ULpLNsdgXfzMe48M2",
+          "slot": 462151652,
+          "transactionIndex": 386
+        },
+        {
+          "blockTime": 1793121355,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "526P6YLdFAFofscRNfZeEZSxeLaNWh5ii82RvLG4BZd3iyyAo2av9fQFVhhquiYrwQxAPNEhnyj1xAGtFZxmwAUL",
+          "slot": 462151652,
+          "transactionIndex": 101
+        },
+        {
+          "blockTime": 1793121345,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "3PfPQ2xfT8wxFhFyAzaPAc6jWBqVKsTqVzMrb4p8q4UxXjMwEYX7zYccuaHNXDuoiW4L71GSwNCdcRwtbCTe278c",
+          "slot": 462151604,
+          "transactionIndex": 50
+        },
+        {
+          "blockTime": 1793121337,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "XrCh4SWxahbzyQWEQNFe9GKY1dDwfEokpUuVbzQ9KZZL2ovLxEBTEGvw7QaEDGGcynEt2GeDghXGcYrffJxvpMA",
+          "slot": 462151562,
+          "transactionIndex": 292
+        },
+        {
+          "blockTime": 1793121332,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "4cSd2AMRJw3qUAukdMUxWznUk7uj8Pk8WNAEVh8uxNVrKpAA1fH7mmRe75ooyzRNzSryNJFSxxnk9MVpVJff4GhB",
+          "slot": 462151540,
+          "transactionIndex": 399
+        },
+        {
+          "blockTime": 1793121325,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "2K7QbqS57qbBFghYKoDSNHCXTMgFGu7VfUHRXVFVsgxvcLEcPQHSLBSyVMwtRFjZDoPPYAEtNSkevzTwoSFy4ftq",
+          "slot": 462151507,
+          "transactionIndex": 192
+        },
+        {
+          "blockTime": 1793121324,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "pSjxBAuDsFGSQK5iFbky5knLFcXQs6jLEesJsLyTGrYzNEoHvBABDEbudVmq6JYcLscQZqsxFTfLq6uisZ7FBcV",
+          "slot": 462151505,
+          "transactionIndex": 249
+        },
+        {
+          "blockTime": 1793121318,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "aT4M1yKF3AHCCgwb2tTzHbfrbyavytFDYPVDCrBPPkLbvNt16Atc1CJuwFW9YJ3SnKBMHPgTCgMnPKGPzzZ4wzf",
+          "slot": 462151478,
+          "transactionIndex": 64
+        },
+        {
+          "blockTime": 1793121312,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "3YuA263Moqxbmeqarmavn1H6arQZf9tSToLAGgrADb4rik1cRdqwXCfz8L3okbsShfW4FS6C6DMwRZGAVSExztcv",
+          "slot": 462151450,
+          "transactionIndex": 508
+        },
+        {
+          "blockTime": 1793121306,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "2XxViSzRrkMUBHh4TxtvFmAkTVrYmMXAR3PwwNk51Nw8CN6qVX6EBC9LVdkTiUuZEmmaEU5AqsbQe7nWtk6ah9Yk",
+          "slot": 462151422,
+          "transactionIndex": 428
+        },
+        {
+          "blockTime": 1793121300,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "4VqUkwkDdoUFk9Xt7iGrdDLjn1ujBwCB77gRpqpEBE9gbsbkxUTy7nGc3kdT9iSonL4kgzxWBNACKW7owaZDnTnd",
+          "slot": 462151394,
+          "transactionIndex": 368
+        },
+        {
+          "blockTime": 1793121294,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "5Czgd2LaMVSbrFrtR5JzmYx1X7VdrLezZ3C5akzDgqtu9pffwm9eLMqxm6zifzG1eXDfMGM1ij4q4KSdxmyEYqEj",
+          "slot": 462151367,
+          "transactionIndex": 234
+        },
+        {
+          "blockTime": 1793121294,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "4DUwR5wUjRx4D1xrj4UNezoSvBcK4Jn7Mphyaskd3GqcuxVJWkgK3kMBfBp54zptdrc25NzHgzSEwRzqet2mzwJH",
+          "slot": 462151365,
+          "transactionIndex": 349
+        },
+        {
+          "blockTime": 1793121288,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "3UrMcUWQEz4L2owRVvm32XpDYfhzvpDEtkihM6CkPx5ANvEfZpFPFPM4Q1WjJDtmkdhbDgwavUncy6XzqD6GZbhS",
+          "slot": 462151338,
+          "transactionIndex": 394
+        },
+        {
+          "blockTime": 1793121283,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "3q5P3MjvB6PFN7iHXEhkogpyyoJkp5ZdxWWHKoB7VGHtv7JaDpZ9EihXiyzgquy9Z2j59q2Givj3cUfiUi9c86Kq",
+          "slot": 462151312,
+          "transactionIndex": 131
+        },
+        {
+          "blockTime": 1793121279,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "2e9xnfLtJvybymcitpkzDDVTMtJ6G3TCfj9wMJhZQ9oTPuhwXPaP3raaS5APPKapPz7b1R6uBAmfphTQAkgT5G9v",
+          "slot": 462151297,
+          "transactionIndex": 132
+        },
+        {
+          "blockTime": 1793121276,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "4fKnQCGbYDAXuyTRa56cYxCyodD8LnR9biCrisDD1DwFUAeV4RXsfYP4zdWAdfeRTqLeUNEtQ5ELrA7UW5WReAg6",
+          "slot": 462151282,
+          "transactionIndex": 202
+        },
+        {
+          "blockTime": 1793121270,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "2qKYzq1F6Ji7cKs1pJowVzAJwZvBh2iPCprLDhjNtecA3AWv6XsBGRaMteNhntYD6qpvfrKdhf1KjXRjF5i8ngoD",
+          "slot": 462151255,
+          "transactionIndex": 415
+        },
+        {
+          "blockTime": 1793121264,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "5Z7QqtNGpAwoVRPzQH5qvzgBQiDMBsEukrL7UfcFT1sTvgn4UUY6qJr4J37tzCFkuUPH4CRRyiT3iJRMF8dmLao7",
+          "slot": 462151227,
+          "transactionIndex": 38
+        },
+        {
+          "blockTime": 1793121263,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "2YiysShuRxwUJSUWzGYm5U6japSidsphsyz6i2T6gTwqWCpB31Jr1HCoMFWGi7QMx4j76d25pYv9EySJqqMggBCK",
+          "slot": 462151221,
+          "transactionIndex": 37
+        },
+        {
+          "blockTime": 1793121258,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "5boKB7jQ68mAajUTyvdZ48q3HswexPFKyhscwPfxPFddGMah7UXepAjAbQLL4SHuxaKw5ELCB6gtesn34ZDHxG2W",
+          "slot": 462151198,
+          "transactionIndex": 329
+        },
+        {
+          "blockTime": 1793121249,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "Cu16NPN4JYQNjCcNQ8j6g7Fmihk7kR5GSroeb9wbgbb8gim6GSPJksacZWayrzp1VCpyDP4Q4JHwmg9HFyYWy1k",
+          "slot": 462151158,
+          "transactionIndex": 193
+        },
+        {
+          "blockTime": 1793121249,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "DnhGPZdeQNYLyJmgZq1VHvjSeNxVNSeZ1YjjnEoiR7kAX4sJgLbknCKYBEoCCsA2Zg9Pzotk1pPE1UePtYDTooy",
+          "slot": 462151157,
+          "transactionIndex": 177
+        },
+        {
+          "blockTime": 1793121241,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "3AsTrPQqqYqFQ5mrvE82EEVJFJCd4Re3nBnuFevxKWF48c5TRWkctrP1Jr4xNezdWQ3S14cnq7zWzM8YUqg9BKCM",
+          "slot": 462151120,
+          "transactionIndex": 352
+        },
+        {
+          "blockTime": 1793121235,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "4j1on8RmodvqNfahkrTa2ejEByHLkqtETT5BhKGUpxgCcK6BmoyEvvPoqFnrnSZ5n6QLFSkjKQahU2js61Js3Lfw",
+          "slot": 462151088,
+          "transactionIndex": 42
+        },
+        {
+          "blockTime": 1793121228,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "46bRLYw4fb4cCSY4yLw8SB5GMQUG4NmTKYKBKwxc1gbaaB4NZbX4komSrAT3QHW3suQaGfvZWQ8LY1m4GUiH52sE",
+          "slot": 462151055,
+          "transactionIndex": 310
+        },
+        {
+          "blockTime": 1793121227,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "5U86oXovGgN6nwCShEzTFg7wmL2G5stu6aTyyzCjsDxBTNSdxTEgRHXE1ShJHL4zoBVTtm3A3qfGXhPb8d47SbGq",
+          "slot": 462151049,
+          "transactionIndex": 134
+        },
+        {
+          "blockTime": 1793121222,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "66D1Sci3ngytWhV4ExCcAeqVH7M7BQo1MYDefAVGfm2Cfaamy8hNbmvEejAJ2kZEUYtYUC8h9G6M4UzWtWaLzfYy",
+          "slot": 462151028,
+          "transactionIndex": 112
+        },
+        {
+          "blockTime": 1793121219,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "5LPXfYhoeWkE99JuX6GkBBd4BuLR1zDqRGabzJU95RULqJSSYYDHzKaueE3zef9zi11mKSZKZ372PPuNKaNosiFF",
+          "slot": 462151014,
+          "transactionIndex": 79
+        },
+        {
+          "blockTime": 1793121210,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "5Nxi5gboDrJGYoj95tQBpKDFyGLAfATpcXEEZkoUxzSKrpmsXHzEXiN3zXk9y9kmy8GW5w1otfCL4oiunyYWixPt",
+          "slot": 462150972,
+          "transactionIndex": 221
+        },
+        {
+          "blockTime": 1793121204,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "63n8ocVDBSeN8GB9QSh6echsiscdEecNk8XUb8o335Z4Xs3NFcbnyGnjHCogA3bTWMPQ95XvCksav2WXDnzboq1Y",
+          "slot": 462150941,
+          "transactionIndex": 407
+        },
+        {
+          "blockTime": 1793121204,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "57BHZGWD5HNJ8Q3oGALLSAMBNqNwF2ZD75kCuA3fjgd8BDQU35GM3Cv1B3Qnsvei8taDhm2enBriWgVXZgQeyZs3",
+          "slot": 462150940,
+          "transactionIndex": 1324
+        },
+        {
+          "blockTime": 1793121198,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "2cjLVhQZvRqAZs6tyZ2UZTbTnhqFqh5LntEJA6n8fJNJhVB1xyE5cvzVE6VE5mLbuAFp1xmx52oomqMNWmTJ6u5w",
+          "slot": 462150912,
+          "transactionIndex": 568
+        },
+        {
+          "blockTime": 1793121192,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "YREM1CG74MLUS24kLQw22rizacKomsNsbyR7dydcTrDEZtjZ5Qo55FQCT4qUc78ey9aDfRfRSF8KxGozXZga6to",
+          "slot": 462150889,
+          "transactionIndex": 381
+        },
+        {
+          "blockTime": 1793121190,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "2hwvnyAyK7AEL2M5t18ePn31FXYEKjkGfHHAPy4e3yXKCBPyU8HXRVyA2UaxhUACGJWRbtjrcZKvXdHVKJ1cb91b",
+          "slot": 462150880,
+          "transactionIndex": 417
+        },
+        {
+          "blockTime": 1793121189,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "4xmYzAnCmt6R1fRiggkG68RgnyGCMeE2eguyYP2T3Y95KJLBwm3C8WXMBYvirHS7v9rFYB615MHs9XU3WcDPzCLe",
+          "slot": 462150876,
+          "transactionIndex": 189
+        },
+        {
+          "blockTime": 1793121180,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "4CJ9T3QhXnD9F7QNZQsbREg4pgXLCKHRg9TEvWX74zDAJ72mZCS8ue5xTX2vKxTDxmBTmSsq2L6PRNHwt9bzVB9c",
+          "slot": 462150831,
+          "transactionIndex": 275
+        },
+        {
+          "blockTime": 1793121174,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "3QW9Cftb3sKZZ8bsZ3uSVrPGrhF987xMDZRPvbdKyY5Ry9T5UVczbvTvFc82oZGRKhKpVLuScPx8RKUxkxXvQ81f",
+          "slot": 462150804,
+          "transactionIndex": 498
+        },
+        {
+          "blockTime": 1793121174,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "56CgbR5k4mLybcNZsR4PXtfsVvwrXsm7HQVKeLCmaAfPfMRTHj5kJpEthG8dvbDfLtuYkCs4gf1KNYhwXUnK3Wf2",
+          "slot": 462150804,
+          "transactionIndex": 324
+        },
+        {
+          "blockTime": 1793121168,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "szkLLyJHzvkP5hHpzkD5Jr2urVBU23gRUBXXqKeL2MEL5Kpu68rWTbknXhiWcibaFMdWkRX4tNPnFYsofYVCuwa",
+          "slot": 462150774,
+          "transactionIndex": 240
+        },
+        {
+          "blockTime": 1793121159,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "4s4vNJZ72xmGr18GtqN1Kf5tF8QbiYh7Pee9dqCCUTxHR71fRUSWrVHRqxQNJkkNqd8SbBtwpRmUuKRZ4c1uvegz",
+          "slot": 462150735,
+          "transactionIndex": 547
+        },
+        {
+          "blockTime": 1793121156,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "3HiN2mUkqJzgFuhK31wiANnRfmQipShJmtUbFRqBfGaPWahP77sttYkW7GWr9vyaEkFmG573PU66yBJxjK4WFwqu",
+          "slot": 462150720,
+          "transactionIndex": 1300
+        },
+        {
+          "blockTime": 1793121144,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "5mM5E3RFCNKwCLPsYfR5fcFevPgYGZDRLW6TWnRvqg3G1D8ypukc2mL323E59drJLd3MEQSEMBSQMuu5xMvG69j8",
+          "slot": 462150662,
+          "transactionIndex": 854
+        },
+        {
+          "blockTime": 1793121144,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "5wcDE4NPm6qGiGZP5KZWiWYf1VtG3pkVQ4ApopiGJjEKTzoXt5NJmJn3gv4zdhxJEen31gJ4diTTDtErLcAB71Gu",
+          "slot": 462150661,
+          "transactionIndex": 672
+        },
+        {
+          "blockTime": 1793121138,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "3QHSWyisspSxVKw1UBEbcZK7Zexkumuu72MbKSUhXiZJ1iUg9xykuFzDJ5urNhYVXt8ZKzxZvb95cVqBq7dHnzgY",
+          "slot": 462150632,
+          "transactionIndex": 1106
+        },
+        {
+          "blockTime": 1793121132,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "3LJPix7s4Cjp44LohXnRA7a6kU1Nu4oyLxeNCa4Qto4ZUnKZ5QmFuo4Fa72SgXdNibEahFHnuGqLnBUcX6aEq1kN",
+          "slot": 462150603,
+          "transactionIndex": 364
+        },
+        {
+          "blockTime": 1793121126,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "5m4VbHregE6ZtgdR3KkYxTaCszHCZbLMXFdvN33NMwfHodVXZ8QWFgPndJnAbSy2bKoxS2nicJBLsi4919BRUBtN",
+          "slot": 462150576,
+          "transactionIndex": 114
+        },
+        {
+          "blockTime": 1793121120,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "2N6mWDh7KVyHvnwmSdkBgFfSXbB3auoE6dtwpncy2iVwmTLozyWfsT83UEg99TZcMkvjaVHNcmXC6m18yLpUxBvv",
+          "slot": 462150548,
+          "transactionIndex": 419
+        },
+        {
+          "blockTime": 1793121115,
+          "confirmationStatus": "finalized",
+          "err": null,
+          "memo": null,
+          "signature": "3kcUWnaFAdDRukjxHji15YGX6zH3EAFUgK8tSpqEHysLAtW7WJvhnyTcid2nx6vr9rr8AVong8E3nt2QpQhie8oG",
+          "slot": 462150522,
+          "transactionIndex": 19
+        }
+      ]
+    }
+  ],
+  "historyRangeCovered": true,
+  "historyBoundary": "OLDER_THAN_EXACT_TARGET_START_OBSERVED",
+  "requiredIndependentSignatures": [
+    "3PfPQ2xfT8wxFhFyAzaPAc6jWBqVKsTqVzMrb4p8q4UxXjMwEYX7zYccuaHNXDuoiW4L71GSwNCdcRwtbCTe278c",
+    "XrCh4SWxahbzyQWEQNFe9GKY1dDwfEokpUuVbzQ9KZZL2ovLxEBTEGvw7QaEDGGcynEt2GeDghXGcYrffJxvpMA",
+    "4cSd2AMRJw3qUAukdMUxWznUk7uj8Pk8WNAEVh8uxNVrKpAA1fH7mmRe75ooyzRNzSryNJFSxxnk9MVpVJff4GhB",
+    "2K7QbqS57qbBFghYKoDSNHCXTMgFGu7VfUHRXVFVsgxvcLEcPQHSLBSyVMwtRFjZDoPPYAEtNSkevzTwoSFy4ftq",
+    "pSjxBAuDsFGSQK5iFbky5knLFcXQs6jLEesJsLyTGrYzNEoHvBABDEbudVmq6JYcLscQZqsxFTfLq6uisZ7FBcV",
+    "aT4M1yKF3AHCCgwb2tTzHbfrbyavytFDYPVDCrBPPkLbvNt16Atc1CJuwFW9YJ3SnKBMHPgTCgMnPKGPzzZ4wzf",
+    "3YuA263Moqxbmeqarmavn1H6arQZf9tSToLAGgrADb4rik1cRdqwXCfz8L3okbsShfW4FS6C6DMwRZGAVSExztcv",
+    "2XxViSzRrkMUBHh4TxtvFmAkTVrYmMXAR3PwwNk51Nw8CN6qVX6EBC9LVdkTiUuZEmmaEU5AqsbQe7nWtk6ah9Yk",
+    "4VqUkwkDdoUFk9Xt7iGrdDLjn1ujBwCB77gRpqpEBE9gbsbkxUTy7nGc3kdT9iSonL4kgzxWBNACKW7owaZDnTnd",
+    "5Czgd2LaMVSbrFrtR5JzmYx1X7VdrLezZ3C5akzDgqtu9pffwm9eLMqxm6zifzG1eXDfMGM1ij4q4KSdxmyEYqEj",
+    "4DUwR5wUjRx4D1xrj4UNezoSvBcK4Jn7Mphyaskd3GqcuxVJWkgK3kMBfBp54zptdrc25NzHgzSEwRzqet2mzwJH"
+  ],
+  "independentTransactions": [
+    {
+      "signature": "3PfPQ2xfT8wxFhFyAzaPAc6jWBqVKsTqVzMrb4p8q4UxXjMwEYX7zYccuaHNXDuoiW4L71GSwNCdcRwtbCTe278c",
+      "requestedAt": 1793121365170,
+      "availableAt": 1793121365423,
+      "slot": 462151604,
+      "chainBlockTime": 1793121345,
+      "inChainTarget": true,
+      "compiledSwapInstructions": 1,
+      "events": [
+        {
+          "identity": {
+            "signature": "3PfPQ2xfT8wxFhFyAzaPAc6jWBqVKsTqVzMrb4p8q4UxXjMwEYX7zYccuaHNXDuoiW4L71GSwNCdcRwtbCTe278c",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 5,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "identityKey": "3PfPQ2xfT8wxFhFyAzaPAc6jWBqVKsTqVzMrb4p8q4UxXjMwEYX7zYccuaHNXDuoiW4L71GSwNCdcRwtbCTe278c:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:5:outer:6:0",
+          "fingerprint": "3b010f6d0fc16f751042114b175ee50c07e266e8d3568a7b3d4242aea98970e3",
+          "matchedOriginal": true,
+          "originalRpcAvailableAt": 1793121347174,
+          "originalValidationCompletedAt": 1793121347176,
+          "validationInsideApplicationTarget": true,
+          "independentAvailableAt": 1793121365423
+        }
+      ]
+    },
+    {
+      "signature": "XrCh4SWxahbzyQWEQNFe9GKY1dDwfEokpUuVbzQ9KZZL2ovLxEBTEGvw7QaEDGGcynEt2GeDghXGcYrffJxvpMA",
+      "requestedAt": 1793121365428,
+      "availableAt": 1793121365680,
+      "slot": 462151562,
+      "chainBlockTime": 1793121337,
+      "inChainTarget": true,
+      "compiledSwapInstructions": 1,
+      "events": [
+        {
+          "identity": {
+            "signature": "XrCh4SWxahbzyQWEQNFe9GKY1dDwfEokpUuVbzQ9KZZL2ovLxEBTEGvw7QaEDGGcynEt2GeDghXGcYrffJxvpMA",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 5,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "identityKey": "XrCh4SWxahbzyQWEQNFe9GKY1dDwfEokpUuVbzQ9KZZL2ovLxEBTEGvw7QaEDGGcynEt2GeDghXGcYrffJxvpMA:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:5:outer:6:0",
+          "fingerprint": "2157f8a2e19ea3edc6e4dfc5172990ebf6292e18f5168206a48d49178692c3ee",
+          "matchedOriginal": true,
+          "originalRpcAvailableAt": 1793121338130,
+          "originalValidationCompletedAt": 1793121338131,
+          "validationInsideApplicationTarget": true,
+          "independentAvailableAt": 1793121365680
+        }
+      ]
+    },
+    {
+      "signature": "4cSd2AMRJw3qUAukdMUxWznUk7uj8Pk8WNAEVh8uxNVrKpAA1fH7mmRe75ooyzRNzSryNJFSxxnk9MVpVJff4GhB",
+      "requestedAt": 1793121365683,
+      "availableAt": 1793121365934,
+      "slot": 462151540,
+      "chainBlockTime": 1793121332,
+      "inChainTarget": true,
+      "compiledSwapInstructions": 1,
+      "events": [
+        {
+          "identity": {
+            "signature": "4cSd2AMRJw3qUAukdMUxWznUk7uj8Pk8WNAEVh8uxNVrKpAA1fH7mmRe75ooyzRNzSryNJFSxxnk9MVpVJff4GhB",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 4,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "identityKey": "4cSd2AMRJw3qUAukdMUxWznUk7uj8Pk8WNAEVh8uxNVrKpAA1fH7mmRe75ooyzRNzSryNJFSxxnk9MVpVJff4GhB:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:4:outer:6:0",
+          "fingerprint": "57ad82d6c3ac421f9fcf7358194dcd62ffd6ddf5c38bc1f92d61a6bdcf12d8c4",
+          "matchedOriginal": true,
+          "originalRpcAvailableAt": 1793121333618,
+          "originalValidationCompletedAt": 1793121333620,
+          "validationInsideApplicationTarget": true,
+          "independentAvailableAt": 1793121365934
+        }
+      ]
+    },
+    {
+      "signature": "2K7QbqS57qbBFghYKoDSNHCXTMgFGu7VfUHRXVFVsgxvcLEcPQHSLBSyVMwtRFjZDoPPYAEtNSkevzTwoSFy4ftq",
+      "requestedAt": 1793121365937,
+      "availableAt": 1793121366180,
+      "slot": 462151507,
+      "chainBlockTime": 1793121325,
+      "inChainTarget": true,
+      "compiledSwapInstructions": 1,
+      "events": [
+        {
+          "identity": {
+            "signature": "2K7QbqS57qbBFghYKoDSNHCXTMgFGu7VfUHRXVFVsgxvcLEcPQHSLBSyVMwtRFjZDoPPYAEtNSkevzTwoSFy4ftq",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 6,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "identityKey": "2K7QbqS57qbBFghYKoDSNHCXTMgFGu7VfUHRXVFVsgxvcLEcPQHSLBSyVMwtRFjZDoPPYAEtNSkevzTwoSFy4ftq:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:6:outer:6:0",
+          "fingerprint": "ee13cd89fe751cf58281600533a0f4445fec3f9d521b7e21896d30ea780ab03f",
+          "matchedOriginal": true,
+          "originalRpcAvailableAt": 1793121326172,
+          "originalValidationCompletedAt": 1793121326175,
+          "validationInsideApplicationTarget": true,
+          "independentAvailableAt": 1793121366180
+        }
+      ]
+    },
+    {
+      "signature": "pSjxBAuDsFGSQK5iFbky5knLFcXQs6jLEesJsLyTGrYzNEoHvBABDEbudVmq6JYcLscQZqsxFTfLq6uisZ7FBcV",
+      "requestedAt": 1793121366182,
+      "availableAt": 1793121366918,
+      "slot": 462151505,
+      "chainBlockTime": 1793121324,
+      "inChainTarget": true,
+      "compiledSwapInstructions": 1,
+      "events": [
+        {
+          "identity": {
+            "signature": "pSjxBAuDsFGSQK5iFbky5knLFcXQs6jLEesJsLyTGrYzNEoHvBABDEbudVmq6JYcLscQZqsxFTfLq6uisZ7FBcV",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 5,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "identityKey": "pSjxBAuDsFGSQK5iFbky5knLFcXQs6jLEesJsLyTGrYzNEoHvBABDEbudVmq6JYcLscQZqsxFTfLq6uisZ7FBcV:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:5:outer:6:0",
+          "fingerprint": "fad9657927bf24590225e9d2a902e7200d6752e95527eea81038ed0f88d6dbd8",
+          "matchedOriginal": true,
+          "originalRpcAvailableAt": 1793121325928,
+          "originalValidationCompletedAt": 1793121325930,
+          "validationInsideApplicationTarget": true,
+          "independentAvailableAt": 1793121366918
+        }
+      ]
+    },
+    {
+      "signature": "aT4M1yKF3AHCCgwb2tTzHbfrbyavytFDYPVDCrBPPkLbvNt16Atc1CJuwFW9YJ3SnKBMHPgTCgMnPKGPzzZ4wzf",
+      "requestedAt": 1793121366920,
+      "availableAt": 1793121368922,
+      "slot": 462151478,
+      "chainBlockTime": 1793121318,
+      "inChainTarget": true,
+      "compiledSwapInstructions": 1,
+      "events": [
+        {
+          "identity": {
+            "signature": "aT4M1yKF3AHCCgwb2tTzHbfrbyavytFDYPVDCrBPPkLbvNt16Atc1CJuwFW9YJ3SnKBMHPgTCgMnPKGPzzZ4wzf",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 5,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "identityKey": "aT4M1yKF3AHCCgwb2tTzHbfrbyavytFDYPVDCrBPPkLbvNt16Atc1CJuwFW9YJ3SnKBMHPgTCgMnPKGPzzZ4wzf:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:5:outer:6:0",
+          "fingerprint": "c37c93e352386a1b74df40593bbaae21368bc5844b7f0d76fa1b117c584a810b",
+          "matchedOriginal": true,
+          "originalRpcAvailableAt": 1793121319920,
+          "originalValidationCompletedAt": 1793121319922,
+          "validationInsideApplicationTarget": true,
+          "independentAvailableAt": 1793121368922
+        }
+      ]
+    },
+    {
+      "signature": "3YuA263Moqxbmeqarmavn1H6arQZf9tSToLAGgrADb4rik1cRdqwXCfz8L3okbsShfW4FS6C6DMwRZGAVSExztcv",
+      "requestedAt": 1793121368925,
+      "availableAt": 1793121370939,
+      "slot": 462151450,
+      "chainBlockTime": 1793121312,
+      "inChainTarget": true,
+      "compiledSwapInstructions": 1,
+      "events": [
+        {
+          "identity": {
+            "signature": "3YuA263Moqxbmeqarmavn1H6arQZf9tSToLAGgrADb4rik1cRdqwXCfz8L3okbsShfW4FS6C6DMwRZGAVSExztcv",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 4,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "identityKey": "3YuA263Moqxbmeqarmavn1H6arQZf9tSToLAGgrADb4rik1cRdqwXCfz8L3okbsShfW4FS6C6DMwRZGAVSExztcv:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:4:outer:6:0",
+          "fingerprint": "4612227153870ca892964ce3530a1281a12520bbafc1e4b20fb829c4b197fcf9",
+          "matchedOriginal": true,
+          "originalRpcAvailableAt": 1793121313919,
+          "originalValidationCompletedAt": 1793121313921,
+          "validationInsideApplicationTarget": true,
+          "independentAvailableAt": 1793121370939
+        }
+      ]
+    },
+    {
+      "signature": "2XxViSzRrkMUBHh4TxtvFmAkTVrYmMXAR3PwwNk51Nw8CN6qVX6EBC9LVdkTiUuZEmmaEU5AqsbQe7nWtk6ah9Yk",
+      "requestedAt": 1793121370941,
+      "availableAt": 1793121372919,
+      "slot": 462151422,
+      "chainBlockTime": 1793121306,
+      "inChainTarget": true,
+      "compiledSwapInstructions": 1,
+      "events": [
+        {
+          "identity": {
+            "signature": "2XxViSzRrkMUBHh4TxtvFmAkTVrYmMXAR3PwwNk51Nw8CN6qVX6EBC9LVdkTiUuZEmmaEU5AqsbQe7nWtk6ah9Yk",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 4,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "identityKey": "2XxViSzRrkMUBHh4TxtvFmAkTVrYmMXAR3PwwNk51Nw8CN6qVX6EBC9LVdkTiUuZEmmaEU5AqsbQe7nWtk6ah9Yk:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:4:outer:6:0",
+          "fingerprint": "666e1524b0cf5462fa0789cd3f5373fc3a9f06cdf35bb3f66b64fe852103edcd",
+          "matchedOriginal": true,
+          "originalRpcAvailableAt": 1793121307931,
+          "originalValidationCompletedAt": 1793121307934,
+          "validationInsideApplicationTarget": true,
+          "independentAvailableAt": 1793121372919
+        }
+      ]
+    },
+    {
+      "signature": "4VqUkwkDdoUFk9Xt7iGrdDLjn1ujBwCB77gRpqpEBE9gbsbkxUTy7nGc3kdT9iSonL4kgzxWBNACKW7owaZDnTnd",
+      "requestedAt": 1793121372921,
+      "availableAt": 1793121374918,
+      "slot": 462151394,
+      "chainBlockTime": 1793121300,
+      "inChainTarget": true,
+      "compiledSwapInstructions": 1,
+      "events": [
+        {
+          "identity": {
+            "signature": "4VqUkwkDdoUFk9Xt7iGrdDLjn1ujBwCB77gRpqpEBE9gbsbkxUTy7nGc3kdT9iSonL4kgzxWBNACKW7owaZDnTnd",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 4,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "identityKey": "4VqUkwkDdoUFk9Xt7iGrdDLjn1ujBwCB77gRpqpEBE9gbsbkxUTy7nGc3kdT9iSonL4kgzxWBNACKW7owaZDnTnd:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:4:outer:6:0",
+          "fingerprint": "c084651e327cc5331f9aff8539da3b738f54d7cf7189efadac2e02464c4a53b8",
+          "matchedOriginal": true,
+          "originalRpcAvailableAt": 1793121301947,
+          "originalValidationCompletedAt": 1793121301950,
+          "validationInsideApplicationTarget": true,
+          "independentAvailableAt": 1793121374918
+        }
+      ]
+    },
+    {
+      "signature": "5Czgd2LaMVSbrFrtR5JzmYx1X7VdrLezZ3C5akzDgqtu9pffwm9eLMqxm6zifzG1eXDfMGM1ij4q4KSdxmyEYqEj",
+      "requestedAt": 1793121374921,
+      "availableAt": 1793121375182,
+      "slot": 462151367,
+      "chainBlockTime": 1793121294,
+      "inChainTarget": true,
+      "compiledSwapInstructions": 1,
+      "events": [
+        {
+          "identity": {
+            "signature": "5Czgd2LaMVSbrFrtR5JzmYx1X7VdrLezZ3C5akzDgqtu9pffwm9eLMqxm6zifzG1eXDfMGM1ij4q4KSdxmyEYqEj",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 6,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "identityKey": "5Czgd2LaMVSbrFrtR5JzmYx1X7VdrLezZ3C5akzDgqtu9pffwm9eLMqxm6zifzG1eXDfMGM1ij4q4KSdxmyEYqEj:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:6:outer:6:0",
+          "fingerprint": "27d957cb55c1c2416935d9b4a7c48ba47c429611ec9251d219cd742b69f3c236",
+          "matchedOriginal": true,
+          "originalRpcAvailableAt": 1793121296188,
+          "originalValidationCompletedAt": 1793121296190,
+          "validationInsideApplicationTarget": true,
+          "independentAvailableAt": 1793121375182
+        }
+      ]
+    },
+    {
+      "signature": "4DUwR5wUjRx4D1xrj4UNezoSvBcK4Jn7Mphyaskd3GqcuxVJWkgK3kMBfBp54zptdrc25NzHgzSEwRzqet2mzwJH",
+      "requestedAt": 1793121375184,
+      "availableAt": 1793121375435,
+      "slot": 462151365,
+      "chainBlockTime": 1793121294,
+      "inChainTarget": true,
+      "compiledSwapInstructions": 1,
+      "events": [
+        {
+          "identity": {
+            "signature": "4DUwR5wUjRx4D1xrj4UNezoSvBcK4Jn7Mphyaskd3GqcuxVJWkgK3kMBfBp54zptdrc25NzHgzSEwRzqet2mzwJH",
+            "program": "pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA",
+            "outerInstructionIndex": 5,
+            "swapInnerInstructionIndex": null,
+            "eventInnerInstructionIndex": 6,
+            "eventIndex": 0
+          },
+          "identityKey": "4DUwR5wUjRx4D1xrj4UNezoSvBcK4Jn7Mphyaskd3GqcuxVJWkgK3kMBfBp54zptdrc25NzHgzSEwRzqet2mzwJH:pAMMBay6oceH9fJKBRHGP5D4bD4sWpmSwMn52FMfXEA:5:outer:6:0",
+          "fingerprint": "30be3c0829e0d8b36b324be4fae8033349d4e5b3c80a03234dbab5fd4818ba2b",
+          "matchedOriginal": true,
+          "originalRpcAvailableAt": 1793121295968,
+          "originalValidationCompletedAt": 1793121295974,
+          "validationInsideApplicationTarget": true,
+          "independentAvailableAt": 1793121375435
+        }
+      ]
+    }
+  ],
+  "unretrievedSignatures": [],
+  "denominatorChecks": [
+    {
+      "signature": "3PfPQ2xfT8wxFhFyAzaPAc6jWBqVKsTqVzMrb4p8q4UxXjMwEYX7zYccuaHNXDuoiW4L71GSwNCdcRwtbCTe278c",
+      "requestCommitment": "confirmed",
+      "compiledSwapInstructions": 1,
+      "decodedSwapEvents": 1
+    },
+    {
+      "signature": "XrCh4SWxahbzyQWEQNFe9GKY1dDwfEokpUuVbzQ9KZZL2ovLxEBTEGvw7QaEDGGcynEt2GeDghXGcYrffJxvpMA",
+      "requestCommitment": "confirmed",
+      "compiledSwapInstructions": 1,
+      "decodedSwapEvents": 1
+    },
+    {
+      "signature": "4cSd2AMRJw3qUAukdMUxWznUk7uj8Pk8WNAEVh8uxNVrKpAA1fH7mmRe75ooyzRNzSryNJFSxxnk9MVpVJff4GhB",
+      "requestCommitment": "confirmed",
+      "compiledSwapInstructions": 1,
+      "decodedSwapEvents": 1
+    },
+    {
+      "signature": "2K7QbqS57qbBFghYKoDSNHCXTMgFGu7VfUHRXVFVsgxvcLEcPQHSLBSyVMwtRFjZDoPPYAEtNSkevzTwoSFy4ftq",
+      "requestCommitment": "confirmed",
+      "compiledSwapInstructions": 1,
+      "decodedSwapEvents": 1
+    },
+    {
+      "signature": "pSjxBAuDsFGSQK5iFbky5knLFcXQs6jLEesJsLyTGrYzNEoHvBABDEbudVmq6JYcLscQZqsxFTfLq6uisZ7FBcV",
+      "requestCommitment": "confirmed",
+      "compiledSwapInstructions": 1,
+      "decodedSwapEvents": 1
+    },
+    {
+      "signature": "aT4M1yKF3AHCCgwb2tTzHbfrbyavytFDYPVDCrBPPkLbvNt16Atc1CJuwFW9YJ3SnKBMHPgTCgMnPKGPzzZ4wzf",
+      "requestCommitment": "confirmed",
+      "compiledSwapInstructions": 1,
+      "decodedSwapEvents": 1
+    },
+    {
+      "signature": "3YuA263Moqxbmeqarmavn1H6arQZf9tSToLAGgrADb4rik1cRdqwXCfz8L3okbsShfW4FS6C6DMwRZGAVSExztcv",
+      "requestCommitment": "confirmed",
+      "compiledSwapInstructions": 1,
+      "decodedSwapEvents": 1
+    },
+    {
+      "signature": "2XxViSzRrkMUBHh4TxtvFmAkTVrYmMXAR3PwwNk51Nw8CN6qVX6EBC9LVdkTiUuZEmmaEU5AqsbQe7nWtk6ah9Yk",
+      "requestCommitment": "confirmed",
+      "compiledSwapInstructions": 1,
+      "decodedSwapEvents": 1
+    },
+    {
+      "signature": "4VqUkwkDdoUFk9Xt7iGrdDLjn1ujBwCB77gRpqpEBE9gbsbkxUTy7nGc3kdT9iSonL4kgzxWBNACKW7owaZDnTnd",
+      "requestCommitment": "confirmed",
+      "compiledSwapInstructions": 1,
+      "decodedSwapEvents": 1
+    },
+    {
+      "signature": "5Czgd2LaMVSbrFrtR5JzmYx1X7VdrLezZ3C5akzDgqtu9pffwm9eLMqxm6zifzG1eXDfMGM1ij4q4KSdxmyEYqEj",
+      "requestCommitment": "confirmed",
+      "compiledSwapInstructions": 1,
+      "decodedSwapEvents": 1
+    },
+    {
+      "signature": "4DUwR5wUjRx4D1xrj4UNezoSvBcK4Jn7Mphyaskd3GqcuxVJWkgK3kMBfBp54zptdrc25NzHgzSEwRzqet2mzwJH",
+      "requestCommitment": "confirmed",
+      "compiledSwapInstructions": 1,
+      "decodedSwapEvents": 1
+    }
+  ],
+  "relevantInstructionChecks": [
+    {
+      "signature": "3PfPQ2xfT8wxFhFyAzaPAc6jWBqVKsTqVzMrb4p8q4UxXjMwEYX7zYccuaHNXDuoiW4L71GSwNCdcRwtbCTe278c",
+      "requestCommitment": "confirmed",
+      "outerInstructionIndex": 5,
+      "innerInstructionIndex": null,
+      "discriminatorHex": "66063d1201daebea",
+      "instructionName": "buy",
+      "exactRecognizedLayout": true,
+      "exactPackagedLayout": true,
+      "instructionLayout": "pinned-sdk",
+      "trackVolumeAvailable": true,
+      "knownNonSwap": false
+    },
+    {
+      "signature": "XrCh4SWxahbzyQWEQNFe9GKY1dDwfEokpUuVbzQ9KZZL2ovLxEBTEGvw7QaEDGGcynEt2GeDghXGcYrffJxvpMA",
+      "requestCommitment": "confirmed",
+      "outerInstructionIndex": 5,
+      "innerInstructionIndex": null,
+      "discriminatorHex": "66063d1201daebea",
+      "instructionName": "buy",
+      "exactRecognizedLayout": true,
+      "exactPackagedLayout": true,
+      "instructionLayout": "pinned-sdk",
+      "trackVolumeAvailable": true,
+      "knownNonSwap": false
+    },
+    {
+      "signature": "4cSd2AMRJw3qUAukdMUxWznUk7uj8Pk8WNAEVh8uxNVrKpAA1fH7mmRe75ooyzRNzSryNJFSxxnk9MVpVJff4GhB",
+      "requestCommitment": "confirmed",
+      "outerInstructionIndex": 4,
+      "innerInstructionIndex": null,
+      "discriminatorHex": "66063d1201daebea",
+      "instructionName": "buy",
+      "exactRecognizedLayout": true,
+      "exactPackagedLayout": true,
+      "instructionLayout": "pinned-sdk",
+      "trackVolumeAvailable": true,
+      "knownNonSwap": false
+    },
+    {
+      "signature": "2K7QbqS57qbBFghYKoDSNHCXTMgFGu7VfUHRXVFVsgxvcLEcPQHSLBSyVMwtRFjZDoPPYAEtNSkevzTwoSFy4ftq",
+      "requestCommitment": "confirmed",
+      "outerInstructionIndex": 6,
+      "innerInstructionIndex": null,
+      "discriminatorHex": "66063d1201daebea",
+      "instructionName": "buy",
+      "exactRecognizedLayout": true,
+      "exactPackagedLayout": true,
+      "instructionLayout": "pinned-sdk",
+      "trackVolumeAvailable": true,
+      "knownNonSwap": false
+    },
+    {
+      "signature": "pSjxBAuDsFGSQK5iFbky5knLFcXQs6jLEesJsLyTGrYzNEoHvBABDEbudVmq6JYcLscQZqsxFTfLq6uisZ7FBcV",
+      "requestCommitment": "confirmed",
+      "outerInstructionIndex": 5,
+      "innerInstructionIndex": null,
+      "discriminatorHex": "66063d1201daebea",
+      "instructionName": "buy",
+      "exactRecognizedLayout": true,
+      "exactPackagedLayout": true,
+      "instructionLayout": "pinned-sdk",
+      "trackVolumeAvailable": true,
+      "knownNonSwap": false
+    },
+    {
+      "signature": "aT4M1yKF3AHCCgwb2tTzHbfrbyavytFDYPVDCrBPPkLbvNt16Atc1CJuwFW9YJ3SnKBMHPgTCgMnPKGPzzZ4wzf",
+      "requestCommitment": "confirmed",
+      "outerInstructionIndex": 5,
+      "innerInstructionIndex": null,
+      "discriminatorHex": "66063d1201daebea",
+      "instructionName": "buy",
+      "exactRecognizedLayout": true,
+      "exactPackagedLayout": true,
+      "instructionLayout": "pinned-sdk",
+      "trackVolumeAvailable": true,
+      "knownNonSwap": false
+    },
+    {
+      "signature": "3YuA263Moqxbmeqarmavn1H6arQZf9tSToLAGgrADb4rik1cRdqwXCfz8L3okbsShfW4FS6C6DMwRZGAVSExztcv",
+      "requestCommitment": "confirmed",
+      "outerInstructionIndex": 4,
+      "innerInstructionIndex": null,
+      "discriminatorHex": "66063d1201daebea",
+      "instructionName": "buy",
+      "exactRecognizedLayout": true,
+      "exactPackagedLayout": true,
+      "instructionLayout": "pinned-sdk",
+      "trackVolumeAvailable": true,
+      "knownNonSwap": false
+    },
+    {
+      "signature": "2XxViSzRrkMUBHh4TxtvFmAkTVrYmMXAR3PwwNk51Nw8CN6qVX6EBC9LVdkTiUuZEmmaEU5AqsbQe7nWtk6ah9Yk",
+      "requestCommitment": "confirmed",
+      "outerInstructionIndex": 4,
+      "innerInstructionIndex": null,
+      "discriminatorHex": "66063d1201daebea",
+      "instructionName": "buy",
+      "exactRecognizedLayout": true,
+      "exactPackagedLayout": true,
+      "instructionLayout": "pinned-sdk",
+      "trackVolumeAvailable": true,
+      "knownNonSwap": false
+    },
+    {
+      "signature": "4VqUkwkDdoUFk9Xt7iGrdDLjn1ujBwCB77gRpqpEBE9gbsbkxUTy7nGc3kdT9iSonL4kgzxWBNACKW7owaZDnTnd",
+      "requestCommitment": "confirmed",
+      "outerInstructionIndex": 4,
+      "innerInstructionIndex": null,
+      "discriminatorHex": "66063d1201daebea",
+      "instructionName": "buy",
+      "exactRecognizedLayout": true,
+      "exactPackagedLayout": true,
+      "instructionLayout": "pinned-sdk",
+      "trackVolumeAvailable": true,
+      "knownNonSwap": false
+    },
+    {
+      "signature": "5Czgd2LaMVSbrFrtR5JzmYx1X7VdrLezZ3C5akzDgqtu9pffwm9eLMqxm6zifzG1eXDfMGM1ij4q4KSdxmyEYqEj",
+      "requestCommitment": "confirmed",
+      "outerInstructionIndex": 6,
+      "innerInstructionIndex": null,
+      "discriminatorHex": "66063d1201daebea",
+      "instructionName": "buy",
+      "exactRecognizedLayout": true,
+      "exactPackagedLayout": true,
+      "instructionLayout": "pinned-sdk",
+      "trackVolumeAvailable": true,
+      "knownNonSwap": false
+    },
+    {
+      "signature": "4DUwR5wUjRx4D1xrj4UNezoSvBcK4Jn7Mphyaskd3GqcuxVJWkgK3kMBfBp54zptdrc25NzHgzSEwRzqet2mzwJH",
+      "requestCommitment": "confirmed",
+      "outerInstructionIndex": 5,
+      "innerInstructionIndex": null,
+      "discriminatorHex": "66063d1201daebea",
+      "instructionName": "buy",
+      "exactRecognizedLayout": true,
+      "exactPackagedLayout": true,
+      "instructionLayout": "pinned-sdk",
+      "trackVolumeAvailable": true,
+      "knownNonSwap": false
+    }
+  ],
+  "compiledSwapInstructions": 11,
+  "verifiedSwapEvents": 11,
+  "matchedOriginalEvents": 11,
+  "unmatchedOriginalEvents": [],
+  "unsupported": [],
+  "unresolvedSelectedHints": [],
+  "rechecks": [],
+  "calls": 13,
+  "attemptedOperations": {
+    "history": 1,
+    "independent": 11,
+    "finality": 1
+  },
+  "originalResponseReuse": false,
+  "reason": "COMPONENT_HTTP_429",
+  "receiveWindowCompleteness": "NOT_ESTABLISHED_BY_CHAIN_TIME_ALONE",
+  "entryEligibility": "UNVERIFIED_SEPARATE_REQUIREMENT",
+  "primaryStrategyEnabled": false,
+  "paperTradesCreated": 0,
+  "financialAccountChanged": false,
+  "profile": "standing-measured-18",
+  "finishedAt": 1793121375676,
+  "elapsedMs": 10707.32388299999,
+  "physicalSlotUncertain": false,
+  "independentTransactionAttempts": [
+    "3PfPQ2xfT8wxFhFyAzaPAc6jWBqVKsTqVzMrb4p8q4UxXjMwEYX7zYccuaHNXDuoiW4L71GSwNCdcRwtbCTe278c",
+    "XrCh4SWxahbzyQWEQNFe9GKY1dDwfEokpUuVbzQ9KZZL2ovLxEBTEGvw7QaEDGGcynEt2GeDghXGcYrffJxvpMA",
+    "4cSd2AMRJw3qUAukdMUxWznUk7uj8Pk8WNAEVh8uxNVrKpAA1fH7mmRe75ooyzRNzSryNJFSxxnk9MVpVJff4GhB",
+    "2K7QbqS57qbBFghYKoDSNHCXTMgFGu7VfUHRXVFVsgxvcLEcPQHSLBSyVMwtRFjZDoPPYAEtNSkevzTwoSFy4ftq",
+    "pSjxBAuDsFGSQK5iFbky5knLFcXQs6jLEesJsLyTGrYzNEoHvBABDEbudVmq6JYcLscQZqsxFTfLq6uisZ7FBcV",
+    "aT4M1yKF3AHCCgwb2tTzHbfrbyavytFDYPVDCrBPPkLbvNt16Atc1CJuwFW9YJ3SnKBMHPgTCgMnPKGPzzZ4wzf",
+    "3YuA263Moqxbmeqarmavn1H6arQZf9tSToLAGgrADb4rik1cRdqwXCfz8L3okbsShfW4FS6C6DMwRZGAVSExztcv",
+    "2XxViSzRrkMUBHh4TxtvFmAkTVrYmMXAR3PwwNk51Nw8CN6qVX6EBC9LVdkTiUuZEmmaEU5AqsbQe7nWtk6ah9Yk",
+    "4VqUkwkDdoUFk9Xt7iGrdDLjn1ujBwCB77gRpqpEBE9gbsbkxUTy7nGc3kdT9iSonL4kgzxWBNACKW7owaZDnTnd",
+    "5Czgd2LaMVSbrFrtR5JzmYx1X7VdrLezZ3C5akzDgqtu9pffwm9eLMqxm6zifzG1eXDfMGM1ij4q4KSdxmyEYqEj",
+    "4DUwR5wUjRx4D1xrj4UNezoSvBcK4Jn7Mphyaskd3GqcuxVJWkgK3kMBfBp54zptdrc25NzHgzSEwRzqet2mzwJH"
+  ],
+  "firstQualityFailure": null,
+  "stopsOnFirstQualityFailure": true,
+  "noRetry": true,
+  "laterAuditInformationBackdated": false
+}

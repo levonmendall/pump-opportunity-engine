@@ -1,0 +1,18 @@
+{
+  "sourceCommit": "880512fa9f59470f202c86aaeda724abb2898ca2",
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "--test",
+    "test/trader.test.ts",
+    "test/native-paper-interop.test.ts",
+    "test/ledger.test.ts",
+    "test/execution.test.ts",
+    "test/paper-mode-readiness.test.ts"
+  ],
+  "exitCode": 0,
+  "elapsedSeconds": 4.5178279090000615,
+  "endedAt": "2026-10-28T14:27:20.771546+00:00",
+  "logSha256": "375688b2c2dab8570abaa2c7bbe50c78b3d02309026f93fae35cb301a2ddf304"
+}

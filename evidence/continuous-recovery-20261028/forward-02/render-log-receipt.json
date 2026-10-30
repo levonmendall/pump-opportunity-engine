@@ -1,0 +1,7 @@
+{
+  "path": "/workspace/pump-opportunity-engine/evidence/continuous-recovery-20261028/forward-02/render-cycles.ndjson",
+  "bytes": 1019501,
+  "sha256": "944eb607c2d2b87e9d15350e3f2fa41c44f6af96bb6043f5b59f222f82f60ec9",
+  "scope": "Public receiver polling evidence; public sampler started about48 seconds after source startup. Not an exact match of both first local source snapshots.",
+  "retainedRawPrivatelyOrInLeadWorkingTree": true
+}

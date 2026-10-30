@@ -1,0 +1,82 @@
+✔ all internal stop/finally intents survive many later one-second reconciliations and do not clear the raw stop (287.642958ms)
+✔ a failed resume cannot hide an owner stop or become the successful recovery boundary (14.034147ms)
+✔ only the last successful resume is an anchor and a later failed resume does not discard internal stops (14.774706ms)
+✔ absence of a successful resume uses validated inception and every control intention, never a bounded journal tail (189.443767ms)
+✔ owner, unknown-run and malformed-looking stop identities remain blocked even after an internal finally (52.543559ms)
+✔ hard or owner pause intent cannot be masked by later internal stops and restore markers (115.991352ms)
+✔ restore-hard-pause with safe-stop wording requires an earlier already-proven internal stop (13.296843ms)
+✔ only typed temporary readiness and ordinary shutdown pauses are recoverable provenance (15.376007ms)
+✔ unknown or invalid run sets and future/inconsistent source times fail closed (42.975272ms)
+✔ more than128 stops or512 filtered control intentions are unavailable rather than silently truncated (178.79138ms)
+✔ malformed joined actions, payloads and current control state do not yield provenance proof (69.788089ms)
+✔ new native adapter opens two SDK-priced PAPER positions, retains source-independent protection and recovers two uncertain exits (566.079529ms)
+✔ new native adapter refuses financial preparation without actual monitoring admission despite complete predictive evidence (27.80224ms)
+✔ DISPOSABLE reporting-readiness admission blocks new risk while native observations and owned entry/exit work continue (90.535032ms)
+✔ native regular protection performs one durable reconciliation per completed evaluation, including reused context (24.181439ms)
+✔ real native runner certificates restore temporary cash readiness without SDK/RPC work or an order; entry still requires full preparation (61.183986ms)
+✖ a genuinely audited weak window arms an inherited internal checkpoint before retirement, without a qualification or any market request (34.889062ms)
+▶ owner or unknown stop is not armed by an otherwise complete weak audit
+  ✔ operator-stop:CONTROLLED (27.967384ms)
+  ✔ unknown-stop:CONTROLLED (25.17331ms)
+✔ owner or unknown stop is not armed by an otherwise complete weak audit (53.715997ms)
+✔ routine checkpoints cancel only safely unattempted buys and do not invent an owner stop or erase uncertain obligations (39.650685ms)
+✔ routine checkpoint preserves a buy with uncertain commit and pending exits, without an invented financial outcome (36.164974ms)
+✔ due native PAPER entry retains a distinct fresh execution reconciliation before the modeled attempt (50.606696ms)
+✔ temporary entry preparation failure receives a bounded new audited window and a new qualification before one PAPER fill (66.896354ms)
+✔ an unresolved financial attempt cannot queue a duplicate entry; terminal technical failure preserves state and requires a later full decision (58.829599ms)
+✔ a terminal missing execution quote retains charged gas and may create only a separately qualified later order (74.190378ms)
+✔ certificate expiry during a checkpoint rearms a consumed claim without using earlier features or creating an order (29.874969ms)
+✔ flat five-second reconciliation creates a derived pause without changing controls; local maintenance preserves two-second guard (54.591797ms)
+✔ expired USD closes entries, new original-timestamp USD and fresh complete window recover without predictive pass or RPC (12.48519ms)
+✔ fresh audit-completion timestamp cannot substitute for an old executed-flow cutoff (10.771708ms)
+▶ owner pause, safe stop, daily loss, admission failure, disconnected source and absent certificate do not auto-resume
+  ✔ owner (8.017442ms)
+  ✔ stop (8.507109ms)
+  ✔ loss (8.634528ms)
+  ✔ admission (8.529351ms)
+  ✔ connection (10.742174ms)
+  ✔ certificate (12.012818ms)
+✔ owner pause, safe stop, daily loss, admission failure, disconnected source and absent certificate do not auto-resume (58.091629ms)
+✔ pending action and actual held inventory block cash-only maintenance without changing obligations (14.737202ms)
+✔ unknown post-commit financial failure latches closed; later maintenance and restart cannot reinterpret success (14.086505ms)
+✔ recorder failure after permission recovery closes controls and preserves the evidence latch (9.619944ms)
+✔ nonthrowing recovery recorder that revokes current admission cannot report a successful recovery (8.132479ms)
+✔ a terminal failed entry cannot release cash maintenance while its actual execution adapter remains unsettled (115.617838ms)
+✔ slow reconciliation never backdates the resume after the actual two-second deadline (8.299381ms)
+✔ hard failure after a soft pause is durable across restart instead of hiding behind the old soft reason (8.687647ms)
+✔ historical restriction latch clears only after the real complete candidate-preparation path succeeds (19.678759ms)
+✔ cash maintenance continues during source waits, defers financial ownership, and measures true synchronous lateness (16.60386ms)
+✔ actual maintenance timer contains unexpected callback failure and keeps retry bounded (1.938825ms)
+✔ old startup reconciliation and known FX-unavailable intervals are not maintenance deadline misses (11.113625ms)
+✔ backup failure retries at the bounded next attempt rather than waiting five minutes; success restores the normal cadence (0.258714ms)
+✔ verified backup recovery unlocks temporary readiness only after success and a current audited cutoff (12.212935ms)
+✔ actual interval runs local maintenance while an awaited source operation is unsettled (20.567879ms)
+✔ current derived source/provider/monitoring restrictions remain distinct from unchanged durable permission (11.015959ms)
+ℹ tests 52
+ℹ suites 0
+ℹ pass 51
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2774.948206
+
+✖ failing tests:
+
+test at test/native-paper-integration.test.ts:1:20438
+✖ a genuinely audited weak window arms an inherited internal checkpoint before retirement, without a qualification or any market request (34.889062ms)
+  AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:
+  
+    assert.ok(f.auditReadiness.some(r=>r.recovered))
+  
+      at TestContext.<anonymous> (/workspace/poe-entry-arming-repair/test/native-paper-integration.test.ts:83:134)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

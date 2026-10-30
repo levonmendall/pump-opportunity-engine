@@ -1,0 +1,55 @@
+name: POE bounded existing-endpoint HTTP latency component
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: meme-machine-ec2-administration
+  cancel-in-progress: false
+jobs:
+  http-latency:
+    if: github.repository == 'levonmendall/meme-machine-admin' && github.ref == 'refs/heads/main'
+    runs-on: meme-machine-ec2-admin
+    timeout-minutes: 2
+    steps:
+      - name: Read only exact reviewed diagnostic and existing host helper
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+          sparse-checkout-cone-mode: false
+          sparse-checkout: |
+            operator/native-paper-ec2/http-latency-probe.mjs
+            operator/native-paper-ec2/http-latency-plan.json
+            operator/native-paper-ec2/http-latency-run.py
+            scripts/poe/native-candidate-run-bounded.py
+      - name: Verify source pins and run one bounded read-only component
+        env:
+          ACTUAL_RUNNER: ${{ runner.name }}
+          EXPECTED_PROBE_SHA256: 2e4ee21f25f81699f6c8390d5f928417a87ba98bfd5e93bdc1b840034b1b1409
+          EXPECTED_PLAN_SHA256: 56e600923818ea94720b13e7bd405230edfe80372a1c60624e74e44e065446ca
+          EXPECTED_WRAPPER_SHA256: 9f3befc3a691fb3d5f82e46e79d8359378e58219cce19454989fa5348098a946
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$ACTUAL_RUNNER" = meme-machine-ec2-admin
+          test "$(id -u)" = 994
+          python3 -B -I - "$EXPECTED_WRAPPER_SHA256" <<'PYHASH'
+          import hashlib,os,stat,sys
+          fd=os.open('operator/native-paper-ec2/http-latency-run.py',os.O_RDONLY|os.O_NOFOLLOW|os.O_NONBLOCK)
+          try:
+              s=os.fstat(fd)
+              assert stat.S_ISREG(s.st_mode) and s.st_uid==994 and s.st_nlink==1 and 0<s.st_size<=32768 and not s.st_mode&0o022
+              b=os.read(fd,s.st_size+1)
+              assert len(b)==s.st_size and len(sys.argv[1])==64 and hashlib.sha256(b).hexdigest()==sys.argv[1]
+          finally:os.close(fd)
+          PYHASH
+          /usr/bin/env -i PATH=/usr/bin:/bin ACTUAL_RUNNER="$ACTUAL_RUNNER" \
+            RUNNER_TEMP="$RUNNER_TEMP" GITHUB_RUN_ID="$GITHUB_RUN_ID" \
+            GITHUB_RUN_ATTEMPT="$GITHUB_RUN_ATTEMPT" \
+            EXPECTED_PROBE_SHA256="$EXPECTED_PROBE_SHA256" \
+            EXPECTED_PLAN_SHA256="$EXPECTED_PLAN_SHA256" \
+            /usr/bin/timeout --signal=TERM --kill-after=2s 45s \
+            /usr/bin/nice -n 19 /usr/bin/prlimit \
+            --cpu=12:13 --nofile=64:128 --fsize=1048576:1048576 --core=0:0 -- \
+            /usr/bin/python3 -B -I operator/native-paper-ec2/http-latency-run.py

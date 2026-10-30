@@ -1,0 +1,18 @@
+{
+  "source": "5675961a0ad05df508eec6928644c9e403be0811",
+  "configurationSha256": "ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db",
+  "configuration": {
+    "service": true,
+    "strategy": "adaptive-momentum-v2",
+    "stage": "two",
+    "deepSlots": 4,
+    "managementOnly": false,
+    "ledgerPath": "/var/lib/poe/state/ledger.sqlite"
+  },
+  "strategy": "adaptive-momentum-v2-paper-v1",
+  "maxPositions": 2,
+  "financialMode": "PAPER",
+  "liveTradingEnabled": false,
+  "networkRequests": 0,
+  "financialAccountRead": false
+}

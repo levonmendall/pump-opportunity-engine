@@ -1,0 +1,43 @@
+{
+  "completedAt": "2026-10-30T01:19:42.634551+00:00",
+  "source": "cd354281ea36123fa3df5db118d05db6752df091",
+  "commands": [
+    {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "test/operating-intelligence.test.ts",
+        "test/adaptive-operating-intelligence.test.ts",
+        "test/pilot-reporting.test.ts",
+        "test/reporting.test.ts",
+        "test/snapshot-file-publisher.test.ts",
+        "test/native-paper-observation-reporting.test.ts",
+        "test/operating-financial-readiness.test.ts",
+        "test/dashboard.test.ts",
+        "test/operating-pnl-reporting.test.ts"
+      ],
+      "exitCode": 0,
+      "raw": "focused-tests.raw.txt",
+      "sha256": "f0a47d3ef9257be72149da58ce1d5db7ae21aab9a88b84826f548b0913525202"
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0,
+      "raw": "build.raw.txt",
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b"
+    }
+  ],
+  "sourceUnchanged": true,
+  "providerRequests": 0,
+  "originalFinancialAccountRead": false,
+  "serviceControls": 0,
+  "schemaChanges": false,
+  "receiverSource": "bb1e91eb7c9f00d00aa459c6984cdbddfc0a27a1",
+  "deployed": false
+}

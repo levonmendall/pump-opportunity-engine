@@ -1,0 +1,153 @@
+{
+  "recordedAt": "2026-10-29T02:40:54.990185+00:00",
+  "currentSource": "5e55d8b939de99698ddb311a282461931fcbc957",
+  "actualNativeServiceStartAt": "2026-10-29T02:26:29Z",
+  "actualSupervisorPid": 2437741,
+  "systemdRestartCounterUnchangedSinceStart": 163,
+  "verifiedActualProgress": {
+    "originalAccount": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "originalInception": "2026-10-26T22:07:36.212Z",
+    "lastSourceAt": "2026-10-29T02:38:51.992Z",
+    "lastReconciledAt": "2026-10-29T02:38:47.086Z",
+    "feedConnected": true,
+    "currentShortlistCount": 6,
+    "entriesDisabled": true,
+    "liveTrading": false
+  },
+  "actualLimitations": [
+    "Publisher child absent in both process-role checks",
+    "Render still503AwaitingPOEdata, no newsource accepted",
+    "SourcechildPIDchanged while supervisorremainedsame; do notclaim continuouschildgeneration or infercause withoutprivatehealth",
+    "No current completeevaluation/qualification/trade/position/PnLscorecard availablefromfilteredpublicstatus",
+    "Post-start fullpriorfinancialprefix independentlyunverified; earlier successfulbackup/prefix retained"
+  ],
+  "providerOrResourceSaturationClaimed": false,
+  "measuredResources": [
+    {
+      "pid": 2437741,
+      "role": "original-supervisor",
+      "ownerUid": 988,
+      "cpuSeconds": 1.33,
+      "rssBytes": 28704768,
+      "argvExported": false
+    },
+    {
+      "pid": 2438621,
+      "role": "native-source",
+      "ownerUid": 988,
+      "cpuSeconds": 32.43,
+      "rssBytes": 239108096,
+      "argvExported": false
+    }
+  ],
+  "privateDiagnosticAccess": {
+    "supervisorHealth": {
+      "metadataAvailable": false,
+      "errno": 13,
+      "contentRead": false
+    },
+    "publisherDiagnostic": {
+      "metadataAvailable": false,
+      "errno": 13,
+      "contentRead": false
+    },
+    "reportingCredentialMetadata": {
+      "metadataAvailable": false,
+      "errno": 13,
+      "contentRead": false
+    }
+  },
+  "offlineFindings": "Node24.19 actualfrozenpublisher canstayalive withmissing snapshot andmatchesmockreceiver; badprivatecredentialmetadata reproducesimmediateexit. This makespre-watchstartup/credential validation a hypothesis, not a verifiedhostcause. Runtimeuseris988; privateRead acceptsitsactualprocessUID or root forcredential only.",
+  "smallestOwnerOnlyDependency": "Read-only stat metadata through currentservice mountnamespace; no secretcontents/financialDB/providercredentials needed. RunneractuallyreceivedEACCES13. Leavecurrentfinancialmanager running.",
+  "reportingCredentialContentsRead": false,
+  "financialDatabaseOpenedByDiagnostics": false,
+  "newOperatingAccountOrPublisherCreated": false,
+  "originalFinancialHistoryReset": false,
+  "operationalAcceptance": false,
+  "files": {
+    "publisher-access-host.json": {
+      "bytes": 4077,
+      "sha256": "05fadc0f876d5ab2cfcf544c90eb991beb550172743e9ef35ccab6ef55beff81"
+    },
+    "native-start-host.json": {
+      "bytes": 2981,
+      "sha256": "596516b6a48ee32710c74007f99c4a5d648f9740b7e1ee0ff1d223d5b92b2457"
+    },
+    "native-roles-host.json": {
+      "bytes": 3360,
+      "sha256": "6e1741e6acb238e69a8f75efc59ab15b297a9d9182502fda6e0d96ae4c050007"
+    },
+    "render-after-start.json": {
+      "bytes": 470,
+      "sha256": "e641fa24ad6675afb71ef60dfb0693e82b7be1bd2e56a53593d2ba2fc8966f18"
+    },
+    "native-roles-host-raw.txt": {
+      "bytes": 26447,
+      "sha256": "09f3344083e80b8250ac544af441d4a1e2d29f549ec3ce73f7915df8938fcc80"
+    },
+    "native-start-host-raw.txt": {
+      "bytes": 24731,
+      "sha256": "aba7481f7fd9797d374cb11e1bb42f10f473a0f5d2c5677644d5a150ab3ed6ca"
+    },
+    "publisher-access-host-raw.txt": {
+      "bytes": 27010,
+      "sha256": "225d45b1d058b23ad245baf89b013765d781dbf9bbf4703053fa02d77c8df906"
+    },
+    "OWNER_READONLY_CREDENTIAL_METADATA.txt": {
+      "bytes": 205,
+      "sha256": "0d2193d460f45321e8399a53ae2cb0b1ebf352dbdb05a86cc3ff44b232472928"
+    },
+    "offline-publisher/receiver-compat-result.json": {
+      "bytes": 1659,
+      "sha256": "8af8ad625956c574955c421279ef26400b9845f6aabfe4141e554c303e9cb367"
+    },
+    "offline-publisher/exact-cli-unsafe-credential-mode.stderr.txt": {
+      "bytes": 44,
+      "sha256": "a5e89b2037e227811c7b7642c45bfcff1675ef530834602b01f0a02e4d84bf3b"
+    },
+    "offline-publisher/cli-results.json": {
+      "bytes": 2323,
+      "sha256": "71df27424ef40507f6c49b77770cf7685c0824e7358b38469f4be1bdaa23b2f7"
+    },
+    "offline-publisher/exact-cli-missing-snapshot.argv.json": {
+      "bytes": 869,
+      "sha256": "b431478b3fc6cc600a38da42e2b690e02a910fa9ecef2f34590d6e3ae532172f"
+    },
+    "offline-publisher/same-flags-credential-fixture.stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "offline-publisher/exact-cli-unsafe-credential-mode.argv.json": {
+      "bytes": 869,
+      "sha256": "b431478b3fc6cc600a38da42e2b690e02a910fa9ecef2f34590d6e3ae532172f"
+    },
+    "offline-publisher/receiver-compat-fixture.mjs": {
+      "bytes": 4922,
+      "sha256": "dea099e80f317ae8f99af08a5563e068fde0eea8b104ef0f74484b7533ca90f2"
+    },
+    "offline-publisher/same-flags-credential-fixture.stdout.txt": {
+      "bytes": 33,
+      "sha256": "358438e76308d7a4ec7595d114eeea844cb233fee42e60b51c8929c483d492c5"
+    },
+    "offline-publisher/reproduce-cli.py": {
+      "bytes": 4549,
+      "sha256": "2f4b896b28e0ecffeba3edbb0a1b22286c90737a2f0a19db6bf163d3a5482b5e"
+    },
+    "offline-publisher/exact-cli-unsafe-credential-mode.stdout.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "offline-publisher/same-flags-credential-fixture.argv.json": {
+      "bytes": 896,
+      "sha256": "2ba76599b9e8f91aadfc51daf4cfaee594fb4bd1573c5e35a948eec48bf756db"
+    },
+    "offline-publisher/exact-cli-missing-snapshot.stderr.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "offline-publisher/exact-cli-missing-snapshot.stdout.txt": {
+      "bytes": 86,
+      "sha256": "db560f2989e698b6de6cb1ec781487774fa9653e438ccd3e2c9d8a46ee779c27"
+    }
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "schemaVersion": 1,
+  "kind": "OFFLINE_RETAINED_FORWARD9A_ANALYSIS",
+  "sourceCommit": "9a520267f8e446a634b3e7ca773dd7471e14e7bc",
+  "administrationRun": 40747004112,
+  "files": [
+    {
+      "file": "analysis-forward9a-output.txt",
+      "bytes": 3913,
+      "sha256": "d6fc299898782f072d9c121808d028050b8d71b09b79a8e3e290886af2898ac6"
+    },
+    {
+      "file": "analysis-forward9a.json",
+      "bytes": 352836,
+      "sha256": "e3e2ecb402912daa1156ef38d2e4214da4d1015aee111615579c132f87c08639"
+    },
+    {
+      "file": "analysis-forward9a.md",
+      "bytes": 10749,
+      "sha256": "22ea905571c885953b7ebbf59a2ca0e2ca603ea91db0afc788dc71482e9fa05e"
+    },
+    {
+      "file": "analysis-forward9a.py",
+      "bytes": 15309,
+      "sha256": "0fe1e8895b9e60db292ff7a7fd2337ec34514d28179c7cbbb7c4f35085b59ba9"
+    }
+  ],
+  "networkRequests": 0,
+  "financialStateRead": false,
+  "sourceModified": false
+}

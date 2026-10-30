@@ -1,0 +1,24 @@
+✔ native PAPER CLI requires explicit resume/contract and optional flags cannot alias args[0] (1.600533ms)
+✔ wrong source contract and invalid resource selection fail before directory, lease, ledger or provider access (1.382921ms)
+✔ unbound public source and mutable/mismatched startup provenance cannot open a financial writer (17.053127ms)
+✔ 750ms holding reads retain reporting service opportunities without moving the two-second reference cadence (0.62744ms)
+✔ experimental portfolio uses exact account/source/outer timestamp and explicit unknown USD decomposition (41.162829ms)
+✔ reservations remain part of cash and do not create another asset or double debit (7.691756ms)
+✔ actual-size fresh liquidation includes locked rent once and stale/source-expired marks become unknown (15.329716ms)
+✔ only durable filled actions become trades; a real USD-unknown SOL exit remains visible with null costs (7.038617ms)
+✔ source projections whitelist decision and journal fields and reject unbounded history (7.507893ms)
+✔ reporting history starts with actual inception and a genuine unknown interval, and restart sequences remain durable (8.596908ms)
+✔ durable recent fills survive more than50 reconciliation rows and same-account restart without changing balances (31.312171ms)
+✔ a corrupted recent-fill projection is refused by source and backup recovery (363.521675ms)
+✔ history admission and portfolio use the same source bounds while fresh SOL marks survive unknownUSD (10.050003ms)
+✔ actual PaperTrader funnel extra diagnostic counters do not enter the strict financial snapshot (8.246939ms)
+✔ both limited-history labels fit the receiver bound without dropping limitation meanings (6.598525ms)
+✔ projection failures expose their bounded stage and known reason without exporting arbitrary exceptions (0.333895ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1153.209683

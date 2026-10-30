@@ -1,0 +1,32 @@
+{
+  "classification": "OFFLINE_VERIFICATION_NOT_FORWARD_CAPACITY",
+  "fullSuite": {
+    "passed": 779,
+    "failed": 0,
+    "durationMs": 48247.159348
+  },
+  "focusedFinal": {
+    "passed": 57,
+    "failed": 0
+  },
+  "typecheck": "PASS",
+  "review": "GO isolated frozen3-slot interval",
+  "registryLimit": 150,
+  "verificationQueueLimit": 256,
+  "deepStages": [
+    3,
+    6,
+    12
+  ],
+  "positionRiskCeiling": 3,
+  "selectedHintQueueLimit": 16,
+  "unchanged": [
+    "predictive entry rule",
+    "60second/six10second windows",
+    "execution/fee/risk rules",
+    "2second quote age",
+    "physical shared gate",
+    "original account and production observer"
+  ],
+  "boundedLiveNext": "3deep slots; same existing pilot ledger; no forced entry"
+}

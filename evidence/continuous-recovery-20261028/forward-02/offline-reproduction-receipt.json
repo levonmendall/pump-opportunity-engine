@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "verifiedAt": "2026-10-28T18:17:24.543521+00:00",
+  "classification": "OFFLINE_RETAINED_ACTUAL_FORWARD_EVIDENCE_REPRODUCTION",
+  "sourceCommit": "71896104f07faa2b193b90d3d3133a8e29236f35",
+  "administrationRun": 40735836963,
+  "archiveBytes": 22036792,
+  "archiveSha256": "d34137bfcdeb0bb33af05ddd6838d6f9d2a3ff2a0d09d559d701ed3983f52a5b",
+  "allIndexFilesRehashed": 124,
+  "allIndexFileBytes": 164406945,
+  "analysisReproduction": {
+    "command": "python3 evidence/continuous-recovery-20261028/forward-02/analysis-forward718.py",
+    "outputSha256": "1ebb235777b22d598f38c24853350b1207dd7b65b36a8a6ece67df46e6ee3728",
+    "matchesOriginalOutputExactly": true
+  },
+  "marketRequests": 0,
+  "sourceModified": false,
+  "accountModified": false,
+  "financialExecutionStarted": false,
+  "privateRawArchiveCommitted": false,
+  "indexBytes": 16681,
+  "archiveUncompressedBytesIncludingIndex": 164423626
+}

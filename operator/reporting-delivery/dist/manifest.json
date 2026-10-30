@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "sourceRelease": "a40c75e7256ffdf4aff720cf79e53a0960252246",
+  "destination": "https://meme-machine-dashboard-staging.onrender.com/api/pilot",
+  "sources": {
+    "scripts/publish-pilot-status.mjs": {
+      "bytes": 4364,
+      "sha256": "a1366c786e68be3d0b680ed36b6d45211b7078d6e24231af5cf49a485b8050bb"
+    },
+    "src/pilot-telemetry.ts": {
+      "bytes": 24413,
+      "sha256": "7b44c725834d8510e0bcb125cd157b0b4515c00cc76eb272fca6188ef4d68050"
+    },
+    "src/reporting.ts": {
+      "bytes": 17173,
+      "sha256": "c39bd0153bcb91ceaa3e951610b3578b61f2dbd5c186a96a06ed9750eec35294"
+    }
+  },
+  "bundle": {
+    "file": "publisher.mjs",
+    "bytes": 30148,
+    "sha256": "649f4cc27f74f3aa53fcc831a3437b7e3d9eb8eef63896782b5b451aba1427eb"
+  },
+  "build": {
+    "esbuild": "0.27.7",
+    "format": "esm",
+    "target": "node24",
+    "requiresExactReportingCheckoutAtBuildOnly": true,
+    "externalImports": [
+      "node:fs/promises",
+      "node:path",
+      "node:url"
+    ],
+    "thirdPartyRuntimeDependencies": 0
+  },
+  "execution": {
+    "minimumNode": "24.19.0",
+    "defaultCadenceMs": 15000,
+    "maximumBackoffMs": 60000,
+    "requestTimeoutMs": 5000,
+    "statusMaximumBytes": 4194304,
+    "acknowledgementMaximumBytes": 4096,
+    "financialWriter": false,
+    "walletAccess": false
+  }
+}

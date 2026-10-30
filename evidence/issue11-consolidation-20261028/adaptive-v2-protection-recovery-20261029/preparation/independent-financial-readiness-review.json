@@ -1,0 +1,33 @@
+{
+  "kind": "independent-financial-readiness-critical-review-v1",
+  "at": "2026-10-29T23:04:38.862327+00:00",
+  "reviewedWorktree": "/workspace/poe-general-arming-window",
+  "authorCommit": "afed587ce0cc377f929b0e2168113307cd17644b",
+  "verdict": "APPROVED",
+  "sourceHashes": {
+    "src/ledger.ts": "99e81fa26cda5fe89124fb231c72ad5aa2b89bf785d7663a32fd546295ceaa7b",
+    "src/native-paper.ts": "219c1c67047acbfa0a49e6de1225557b2a59da69fd05840a2eda5c92fb78ca88",
+    "src/trader.ts": "e6133e4bd270b9ebd6b045bda90234d9b5abc85fcaf4b430e488f86f85e5b735",
+    "src/technical-protection-recovery.ts": "759e7431ba0ba70c6673095b546bdae8b0e30f14796190ab6d56b2935dfd99f1"
+  },
+  "sourceUnchangedDuringVerification": true,
+  "focusedTests": {
+    "passed": 137,
+    "failed": 0,
+    "rawSha256": "785c084e71e4d6ce3cc7c25a993b78c1cc0d4663ac1e704c8f8a7f0612296e4f"
+  },
+  "blockingDefectFoundAndRepaired": "Owner/custom pause with copied temporary wording could be overwritten by execution startup and incorrectly re-enabled. Fixed with bounded authenticated whole-control history for ordinary and technical recovery, regression covers startup and startup followed by ordinary soft pause.",
+  "reviewScope": [
+    "exact original account/inception, revision, complete inventory and pending obligations",
+    "original bank Clock/source expiry, two-second reconciliation/liquidation and ten-second USD freshness",
+    "legacy/new resume and internal shutdown strict journal/payload digest compatibility",
+    "known ordinary temporary recovery without asserting candidate-window completeness",
+    "separate technical control authority plus actual sixty-second complete protection interval",
+    "mandatory retained recovery evidence and current health before private hard-latch clearing",
+    "owner/manual/unknown financial/evidence/daily loss/uncertain order failures remain closed",
+    "no order or fill created by readiness controller; existing independent entry proof required"
+  ],
+  "runtimeAcceptance": false,
+  "financialAccountRead": false,
+  "providerRequests": 0
+}

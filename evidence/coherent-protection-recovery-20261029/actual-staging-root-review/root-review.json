@@ -1,0 +1,25 @@
+{
+  "verifiedAt": "2026-10-29T23:42:43.164425+00:00",
+  "reviewer": "root",
+  "status": "PASS",
+  "source": {
+    "commit": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
+    "sha256": "8a0f001a3ae0c6acedaae6fb8a0370e02293a8b0c35142d74daf19086a41203c"
+  },
+  "configurationSha256": "44b82455003f04f75eb1ad7a3dc21555406c1d4d0c7626386d3d21661fdb47c9",
+  "workflowRun": 40974772473,
+  "workflowHead": "755120aac648717b77e78dfd81a3797709105301",
+  "actualStage": "/var/tmp/poe-original-v2-protection-upgrade",
+  "rawSha256": "1894662f348c10f11cee4f4c3122370477f2ccea1ab9bc53a3b25330550917cc",
+  "exactStagedFilesMatchedLocalIndex": 11,
+  "sourcePolicy": "PAPER/V2/two-held/four-deep",
+  "ownerCommandSha256": "1d7a15f36800bf168c3167117b98a104732c0fe1e85291b4a53958c5dda85cb6",
+  "commandShellAndASTVerified": true,
+  "driverAndIndexAndTransportPinsMatched": true,
+  "supervisorUnchanged": true,
+  "financialDatabaseOpened": false,
+  "serviceControlOperations": 0,
+  "installed": false,
+  "strictRecoveryForwardVerified": false,
+  "renderBindingChanged": false
+}

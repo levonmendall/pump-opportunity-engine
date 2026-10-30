@@ -1,0 +1,12 @@
+{
+  "command": [
+    "npm",
+    "test"
+  ],
+  "sourceCommit": "5362e007280191dafeac7fe6dae717c288ecc57d",
+  "endedAt": "2026-10-28T14:14:42.191194+00:00",
+  "elapsedSeconds": 71.04938309599993,
+  "exitCode": 0,
+  "logSha256": "4ac44c4f0ef1661e48a1658d098c80b9d600449dd841014deff838fb7aa1a416",
+  "logBytes": 142594
+}

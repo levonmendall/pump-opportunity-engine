@@ -1,0 +1,51 @@
+{
+  "schemaVersion": 1,
+  "decision": "GO FOR THE REVIEWED OFFLINE PREPARATION AND FRESH HOST GUARDS",
+  "sourceCommit": "a318c9f59d36d72e213e720d6c259d249b0f37c3",
+  "reviewedAt": "2026-10-29T00:12:53.293364+00:00",
+  "files": [
+    {
+      "path": "src/prepare-original-accounting.ts",
+      "sha256": "2b8f86b816e198a155732bdb610dda0b5c636bf4516265db48ef2032f8908701"
+    },
+    {
+      "path": "operator/native-paper-ec2/prepare-original-accounting.py",
+      "sha256": "f68c4b293efa749394981dc9b691adc9d901121063f492afd8660162687f3e03"
+    }
+  ],
+  "verification": {
+    "typescriptTestsPassed": 15,
+    "pythonTestsPassed": 4,
+    "typecheckExitCode": 0,
+    "additionalCrossProcessCheck": "Disposable Python lock_existing acquired three existing O_RDONLY EX locks and passed descriptors 3,4,5 through Node exec; Node fstat/FDflags verified each readonly regular file. No host paths or financial database were involved."
+  },
+  "actualPriorRetainedStatus": {
+    "path": "/workspace/poe-pilot/migration-20261028/paper-coherent08-readback/artifact/final-status.json",
+    "sha256": "437df26cac8cf5d455085f51ab344a396894ebe00281dd0a18bdb075a4f24d07",
+    "runtimePid": 2426207,
+    "runId": "native-paper-20261028223428977",
+    "generatedAt": 1793227957195,
+    "rpc": {
+      "closed": true,
+      "inFlight": 0,
+      "waitingOrOperating": false,
+      "activeChapterPath": null,
+      "cumulativeUnits": 8959,
+      "accountedCumulativeResponseBytes": 1016377544,
+      "uncertainResponseBytes": 519831552,
+      "baselineCheckpointSha256": "bc67d2353eb49413dbb9a071840ea2584d7fc707e165efc9e8fb388e3f4e0be2"
+    }
+  },
+  "scope": [
+    "No new financial account or original financial database read.",
+    "Only stopped-source accounting records and the original public status are read.",
+    "Wrapper acquires existing read-only leases; missing/busy/replaced leases refuse preparation.",
+    "Sealed source cumulative and uncertain accounting must recompute exactly; old 429 survives and auxiliary 33 units remain separate.",
+    "Only three allowlisted new output files are emitted; no financial balances or credential values are transmitted."
+  ],
+  "limitations": [
+    "Actual host preparation has not been performed by this review.",
+    "Host current original status, stopped manifest, settlement and every accounting chapter must pass the runtime guards.",
+    "This preparation does not audit, migrate, deploy or accept original-account financial operation."
+  ]
+}
