@@ -1,0 +1,34 @@
+# Reporting-only companion; installation requires verified owner EC2 access.
+# Never replace or restart poe-runtime.service to install this unit.
+[Unit]
+Description=POE original-account durable equity recorder and Render replay
+After=network-online.target poe-runtime.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=poe-runtime
+Group=poe-runtime
+WorkingDirectory=/opt/poe-lifetime-equity/current
+Environment=POE_EQUITY_SOURCE_FILE=/var/lib/poe/service/snapshot.json
+Environment=POE_EQUITY_STORE_FILE=/var/lib/poe/lifetime-equity/equity.sqlite
+LoadCredential=poe-ingest-secret:/etc/poe/secrets/ingest-secret
+ExecStart=/opt/poe/node/bin/node /opt/poe-lifetime-equity/current/dist/src/lifetime-equity-publisher.js
+Restart=on-failure
+RestartSec=15
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectHome=yes
+ProtectSystem=strict
+ReadOnlyPaths=/var/lib/poe/service
+ReadWritePaths=/var/lib/poe/lifetime-equity
+UMask=0077
+Nice=10
+CPUQuota=15%
+MemoryMax=268435456
+TasksMax=32
+LimitNOFILE=64
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+
+[Install]
+WantedBy=multi-user.target
