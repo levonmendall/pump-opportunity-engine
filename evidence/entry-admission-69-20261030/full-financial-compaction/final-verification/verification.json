@@ -1,0 +1,41 @@
+{
+  "source": "b1a628bf421a0b7b86035858283f8e35d712c398",
+  "startedAt": "2026-10-30T03:30:28.450481+00:00",
+  "commands": [
+    {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "test/native-paper-integration.test.ts",
+        "test/native-paper-interop.test.ts",
+        "test/financial-provider-permission.test.ts",
+        "test/component-known-uninvoked.test.ts",
+        "test/known-uninvoked-checkpoint.test.ts",
+        "test/uninvoked-compaction-recovery.test.ts"
+      ],
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "providerRequests": 0,
+  "originalFinancialAccountRead": false,
+  "inertEntryBudgetIncluded": false,
+  "sourceUnchanged": true,
+  "passed": true,
+  "completedAt": "2026-10-30T03:30:42.944321+00:00",
+  "artifacts": {
+    "tests.raw.txt": "49c0f1112431aa7484fbaff99acf956a5054b98be5d146d625d5df63c1613f01",
+    "source-before.json": "f297bdd35d98751d340945535df125b3df146444bf2ddcb44cdbec23f8b36346",
+    "build.raw.txt": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+    "source-after.json": "f297bdd35d98751d340945535df125b3df146444bf2ddcb44cdbec23f8b36346"
+  }
+}
