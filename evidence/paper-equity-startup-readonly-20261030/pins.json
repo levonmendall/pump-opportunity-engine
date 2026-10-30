@@ -1,0 +1,14 @@
+{
+  "kind": "poe-startup-root-readonly-diagnostic-pins-v1",
+  "sourceCommit": "02fbec4f548c02f81663c707f31b7b62ea335133",
+  "helperFile": "read-paper-equity-startup-20261030.py",
+  "helperBytes": 47607,
+  "helperSha256": "119efbb3b44a0c039e4e21667a3f2a2f7de19b4c5a0f4474cdb50f347a738ecc",
+  "stageDirectory": "/var/tmp/poe-paper-equity-startup-readonly-20261030",
+  "ownerCommandSha256": "3f38085b2dc2263c7ee3c292a2324065af99715e5f0c873bb2071752be1263f6",
+  "rootInstallation": false,
+  "serviceControlOperations": 0,
+  "financialDatabaseOpened": false,
+  "credentialsRead": false,
+  "providerRequests": 0
+}
