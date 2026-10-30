@@ -423,10 +423,6 @@ function plot(points,epochStartAt=null){
   current.push(point);
  }
  if(current.length>=2)segments.push(current);
- for(const point of valid.filter(p=>p.kind==='epoch-start')){
-  root.append(makeSvg('line',{x1:x(point.at),x2:x(point.at),y1:top,y2:bottom,stroke:'#b78cff','stroke-width':1,'data-capital-restatement':'10-sol'}));
-  root.append(makeSvg('text',{x:Math.min(right-135,Math.max(left,x(point.at)+5)),y:top+12,fill:'#d5b8ff','font-size':10},'NEW RELEASE · 10 SOL EPOCH'));
- }
  for(const segment of segments){
   const d=segment.map((p,i)=>(i?'L':'M')+x(p.at).toFixed(2)+' '+y(p.equityUsd).toFixed(2)).join(' ');
   root.append(makeSvg('path',{'data-chart-series':'portfolio-equity-usd',d,stroke:'#91f9e2','stroke-width':3.2,fill:'none','stroke-linecap':'round','stroke-linejoin':'round'}));

@@ -121,11 +121,12 @@ test('actual served holographic dashboard uses a single account equity line with
  assert.equal(result.headers.get('cache-control'),'no-store');
 });
 
-test('10SOL contribution is labeled and never joined to historical losses as trading recovery',()=>{
+test('10SOL contribution remains a segment boundary without a purple chart marker',()=>{
  const v=chart(),data=[point(0,885),point(1,884),{...point(2,950),kind:'epoch-start' as const},point(3,951)];
  v.plot(data);assert.equal(v.lines().length,2);
- assert.ok(v.root.children.some(e=>e.attributes['data-capital-restatement']==='10-sol'));
- assert.ok(v.root.children.some(e=>e.textContent==='NEW RELEASE · 10 SOL EPOCH'));
+ assert.ok(!v.root.children.some(e=>e.attributes['data-capital-restatement']==='10-sol'),'no vertical epoch-marker line');
+ assert.ok(!v.root.children.some(e=>e.textContent==='NEW RELEASE · 10 SOL EPOCH'),'no in-plot epoch label');
+ assert.ok(source.includes("put('chartTag',s.financialEpoch||latestEquityHistory?.financialEpoch?'NEW RELEASE · 10 SOL EPOCH'"),'epoch label remains in the separate chart header');
  for(const line of v.lines())assert.equal((line.attributes.d??'').match(/L/g)?.length,1);
 });
 
