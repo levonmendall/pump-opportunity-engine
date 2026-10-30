@@ -5,10 +5,11 @@
 import {createHash} from 'node:crypto';
 import {createRequire} from 'node:module';
 import BN from 'bn.js';
-import {PublicKey,SystemProgram,type AccountInfo,type TransactionInstruction} from '@solana/web3.js';
+import {PublicKey,SystemProgram,ComputeBudgetProgram,type AccountInfo,type TransactionInstruction} from '@solana/web3.js';
 import {NATIVE_MINT,TOKEN_PROGRAM_ID,ASSOCIATED_TOKEN_PROGRAM_ID,getAssociatedTokenAddressSync} from '@solana/spl-token';
 import {decodeSupportedPoolAccounts,type PoolWireAccount} from './pool.js';
 import {PUMP_AMM_SDK,PUMP_AMM_PROGRAM_ID,canonicalPumpPoolPda,buyQuoteInput,sellBaseInput} from './sdk.js';
+import {PAPER_EXECUTION_POLICY} from './execution-realism.js';
 const SDK=createRequire(import.meta.url)('@pump-fun/pump-swap-sdk') as typeof import('@pump-fun/pump-swap-sdk');
 export const PAPER_UNSIGNED_PUMPSWAP_VERSION='paper-unsigned-pumpswap-v2' as const;
 /** Off-curve placeholder deliberately supplies no keypair or usable signature.
@@ -73,6 +74,10 @@ export async function buildPaperUnsignedPumpSwap(batchInput:PaperUnsignedMarketB
   const q=sellBaseInput({...state.opts,base:new BN(input.toString())});expected=q.uiQuote;sellFee=q.internalQuoteAmountOut.sub(q.uiQuote).toString();
   instructions=await PUMP_AMM_SDK.sellInstructions(swap,new BN(input.toString()),new BN(minimum.toString()));const sellDefinition=SDK.OFFLINE_PUMP_AMM_PROGRAM.idl.instructions.find(i=>i.name==='sell');need(sellDefinition,'PACKAGED_SELL_LAYOUT_REQUIRED');const matches=instructions.filter(ix=>ix.programId.equals(PUMP_AMM_PROGRAM_ID)&&ix.data.subarray(0,8).equals(Buffer.from(sellDefinition.discriminator)));need(matches.length===1,'SINGLE_SELL_INSTRUCTION_REQUIRED');tradeInstruction=matches[0]!;
  }
+ // Encode the same compute bid that the PAPER fee scenario charges. Retain
+ // every SDK instruction byte/order; a new SDK-supplied bid requires review.
+ need(!instructions.some(i=>i.programId.equals(ComputeBudgetProgram.programId)),'SDK_COMPUTE_BUDGET_CONFLICT');
+ instructions=[ComputeBudgetProgram.setComputeUnitLimit({units:PAPER_EXECUTION_POLICY.computeUnitLimitScenario}),ComputeBudgetProgram.setComputeUnitPrice({microLamports:BigInt(PAPER_EXECUTION_POLICY.computeUnitPriceMicroLamportsScenario)}),...instructions];
  // The quote ATA is transient. Keep the REAL SDK create/unwrap sequence and
  // prove its exact account/authority layout and order around this single swap.
  // Current rent is temporary funding returned by the same atomic success; it

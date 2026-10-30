@@ -3,10 +3,11 @@ import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createHash} from 'node:crypto';
 import {createRequire} from 'node:module';
-import {PublicKey,SystemProgram} from '@solana/web3.js';
+import {PublicKey,SystemProgram,ComputeBudgetProgram} from '@solana/web3.js';
 import {TOKEN_PROGRAM_ID,TOKEN_2022_PROGRAM_ID,ASSOCIATED_TOKEN_PROGRAM_ID,ExtensionType} from '@solana/spl-token';
 import {buildPaperUnsignedPumpSwap,PAPER_CONSTRUCTION_WALLET,type PaperUnsignedMarketBatch,type PaperUnsignedRequest} from '../src/paper-unsigned-pumpswap.js';
-import {PUMP_AMM_PROGRAM_ID} from '../src/sdk.js';
+import {PUMP_AMM_PROGRAM_ID,PUMP_AMM_SDK} from '../src/sdk.js';
+import {PAPER_EXECUTION_POLICY} from '../src/execution-realism.js';
 const SDK=createRequire(import.meta.url)('@pump-fun/pump-swap-sdk') as typeof import('@pump-fun/pump-swap-sdk');
 function fixture(run='2026-10-26T19-42-16.130Z'){
  const rows=readFileSync(`evidence/integration-${run}.ndjson`,'utf8').trim().split('\n').map(x=>JSON.parse(x)),proof=JSON.parse(readFileSync(`evidence/integration-proof-${run}.json`,'utf8')),raw=structuredClone(rows.find(x=>x.kind==='pool-state').data),at=Date.parse(proof.quote.validatedAt);
@@ -15,6 +16,18 @@ function fixture(run='2026-10-26T19-42-16.130Z'){
  return {batch,request,at,proof};
 }
 const decode=(data:string)=>(SDK.OFFLINE_PUMP_AMM_PROGRAM.coder.instruction as unknown as {decode:(data:Buffer)=>{name:string;data:unknown}|null}).decode(Buffer.from(data,'base64'));
+test('unsigned buy and sell encode exactly the charged compute bid before all SDK swap instructions',async()=>{
+ const f=fixture();for(const side of ['buy','sell']as const){const q=await buildPaperUnsignedPumpSwap(f.batch,{...f.request,side,inputUnits:side==='buy'?f.request.inputUnits:f.proof.quote.buy.outputBaseUnits,accountPlan:{...f.request.accountPlan,baseExists:side==='sell'}},()=>f.at),budget=q.instructions.filter(i=>i.programId==='ComputeBudget111111111111111111111111111111');
+  assert.equal(budget.length,2);assert.deepEqual(q.instructions.slice(0,2),budget);assert.ok(budget.every(i=>i.keys.length===0));const limit=Buffer.from(budget[0]!.dataBase64,'base64'),price=Buffer.from(budget[1]!.dataBase64,'base64');
+  assert.equal(limit.length,5);assert.equal(limit[0],2);assert.equal(limit.readUInt32LE(1),200000);assert.equal(price.length,9);assert.equal(price[0],3);assert.equal(price.readBigUInt64LE(1),10000n);
+  assert.equal(PAPER_EXECUTION_POLICY.computeUnitLimitScenario,limit.readUInt32LE(1));assert.equal(BigInt(PAPER_EXECUTION_POLICY.computeUnitPriceMicroLamportsScenario),price.readBigUInt64LE(1));assert.equal((BigInt(limit.readUInt32LE(1))*price.readBigUInt64LE(1)+999999n)/1000000n,2000n);
+  assert.equal(q.accounts.quoteClosedByInstructions,true);assert.equal(q.requiredSignerCount,1);
+ }
+});
+test('SDK-supplied duplicate or conflicting compute bids fail closed instead of creating an ambiguous fee',async t=>{
+ const original=PUMP_AMM_SDK.buyInstructions;t.mock.method(PUMP_AMM_SDK,'buyInstructions',async(...args:Parameters<typeof original>)=>[ComputeBudgetProgram.setComputeUnitLimit({units:100000}),...await original.apply(PUMP_AMM_SDK,args)]);const f=fixture();
+ await assert.rejects(buildPaperUnsignedPumpSwap(f.batch,f.request,()=>f.at),/SDK_COMPUTE_BUDGET_CONFLICT/);
+});
 for(const run of ['2026-10-26T19-41-20.717Z','2026-10-26T19-42-16.130Z'])test(`actual SDK exact-input unsigned buy bytes and same-state cost reproduction: ${run}`,async()=>{
  const f=fixture(run),old=globalThis.fetch;let requests=0;globalThis.fetch=(async()=>{requests++;throw Error('OFFLINE_NETWORK_FORBIDDEN');})as typeof fetch;
  try{
@@ -65,9 +78,9 @@ test('the exact SDK quote create/close pair and every real swap/setup byte remai
  SDK.PUMP_AMM_SDK.buyInstructions=async function(...args){produced=await original.apply(this,args);return produced;};
  try{
   const q=await buildPaperUnsignedPumpSwap(f.batch,f.request,()=>f.at);
-  const closes=produced.filter(i=>i.programId.equals(TOKEN_PROGRAM_ID)&&i.data.length===1&&i.data[0]===9);assert.equal(closes.length,1);assert.equal(q.instructions.length,produced.length);
+  const closes=produced.filter(i=>i.programId.equals(TOKEN_PROGRAM_ID)&&i.data.length===1&&i.data[0]===9);assert.equal(closes.length,1);assert.equal(q.instructions.length,produced.length+2);
   const retained=produced.map(i=>({programId:i.programId.toBase58(),keys:i.keys.map(k=>({pubkey:k.pubkey.toBase58(),isSigner:k.isSigner,isWritable:k.isWritable})),dataBase64:i.data.toString('base64')}));
-  assert.deepEqual(q.instructions,retained,'constructor retains every SDK instruction exactly; the real buy bytes are the checked exact-quote variant');
+  assert.deepEqual(q.instructions.slice(2),retained,'after the policy compute prefix, every SDK instruction is retained exactly; buy bytes are the checked exact-quote variant');
   assert.equal(q.accounts.quoteClosedByInstructions,true);assert.ok(q.limitations.some(x=>x.includes('collectible sell proceeds unwrap to SOL')));
  }finally{SDK.PUMP_AMM_SDK.buyInstructions=original;}
 });
