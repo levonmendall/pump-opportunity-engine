@@ -1,0 +1,16 @@
+{
+  "kind": "AGENT_SUPERVISION_CAPACITY_HANDOFF",
+  "lastReportedWatchReadAt": "2026-10-30T03:08:28.535Z",
+  "lastReportedSourceAt": "2026-10-30T03:08:23.007Z",
+  "failure": "Selected model is at capacity. Please try a different model.",
+  "directTakeoverReadAt": "2026-10-30T03:10:15.509Z",
+  "directTakeoverSourceAt": "2026-10-30T03:09:57.930Z",
+  "betweenVerifiedAgentReadsMs": 106974,
+  "collectorContinued": true,
+  "serviceStopped": false,
+  "collectorStopped": false,
+  "newHoldingProtectionIncrementDetectedAcrossGap": false,
+  "quoteFailuresAtTakeover": 24,
+  "watchAgentRetryVerifiedAt": "2026-10-30T03:11:36.281Z",
+  "meaning": "The intervalbetweenverifiedagentreadsisnotclaimedasactiveagent supervision. ExistingpubliccollectorretainedsourcefactsandEC2autonomoussupervisioncontinued. Directagentreadsresumedwithoutowneractionornewcollector."
+}

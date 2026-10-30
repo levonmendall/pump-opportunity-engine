@@ -1,0 +1,231 @@
+[
+  {
+    "record": 1,
+    "sequence": "11632",
+    "sourceAt": "2026-10-30T03:38:34.532Z",
+    "collectorReceivedAt": "2026-10-30T03:38:40.397Z",
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-1.ndjson",
+        "line": 23,
+        "rawLineSha256": "14be74c0bbac6b183c9e73fa20d9bd68e73debf89f604c7e81a0485cd7e6d571"
+      },
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/material-transitions.ndjson",
+        "line": 764,
+        "rawLineSha256": "14be74c0bbac6b183c9e73fa20d9bd68e73debf89f604c7e81a0485cd7e6d571"
+      }
+    ]
+  },
+  {
+    "record": 2,
+    "sequence": "11633",
+    "sourceAt": "2026-10-30T03:38:50.081Z",
+    "collectorReceivedAt": "2026-10-30T03:38:55.552Z",
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-1.ndjson",
+        "line": 24,
+        "rawLineSha256": "a0bb7a107cc8ed3287febcb18a8fec68169645441180d772b3c825b7b8eb5079"
+      },
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/material-transitions.ndjson",
+        "line": 765,
+        "rawLineSha256": "a0bb7a107cc8ed3287febcb18a8fec68169645441180d772b3c825b7b8eb5079"
+      }
+    ]
+  },
+  {
+    "record": 3,
+    "sequence": "11634",
+    "sourceAt": "2026-10-30T03:39:05.127Z",
+    "collectorReceivedAt": "2026-10-30T03:39:10.704Z",
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-1.ndjson",
+        "line": 25,
+        "rawLineSha256": "46d4d4a7613d621f708cff5bedf30730b5cf0359ecbb0687dfdadcd071233586"
+      },
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/material-transitions.ndjson",
+        "line": 766,
+        "rawLineSha256": "46d4d4a7613d621f708cff5bedf30730b5cf0359ecbb0687dfdadcd071233586"
+      }
+    ]
+  },
+  {
+    "record": 4,
+    "sequence": "11634",
+    "sourceAt": "2026-10-30T03:39:05.127Z",
+    "collectorReceivedAt": "2026-10-30T03:39:26.039Z",
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-1.ndjson",
+        "line": 26,
+        "rawLineSha256": "28b3a80f81eb137cf4704164d17caa6abd4e34ad0fe662c809a93394c431c2fc"
+      }
+    ]
+  },
+  {
+    "record": 5,
+    "sequence": "11635",
+    "sourceAt": "2026-10-30T03:39:26.848Z",
+    "collectorReceivedAt": "2026-10-30T03:39:41.234Z",
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-1.ndjson",
+        "line": 27,
+        "rawLineSha256": "c9e17f0530c3a94c99eb8506612c1b199bf34101cdcf5c6cbf5887e62de57785"
+      },
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/material-transitions.ndjson",
+        "line": 767,
+        "rawLineSha256": "c9e17f0530c3a94c99eb8506612c1b199bf34101cdcf5c6cbf5887e62de57785"
+      }
+    ]
+  },
+  {
+    "record": 6,
+    "sequence": "11636",
+    "sourceAt": "2026-10-30T03:39:41.892Z",
+    "collectorReceivedAt": "2026-10-30T03:39:56.645Z",
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-1.ndjson",
+        "line": 28,
+        "rawLineSha256": "1e234c5bc5a08d0faad298ea92d0bfc800e897e27b0ecff5b0486c77a816d54d"
+      },
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/material-transitions.ndjson",
+        "line": 768,
+        "rawLineSha256": "1e234c5bc5a08d0faad298ea92d0bfc800e897e27b0ecff5b0486c77a816d54d"
+      }
+    ]
+  },
+  {
+    "record": 7,
+    "sequence": "11637",
+    "sourceAt": "2026-10-30T03:39:56.931Z",
+    "collectorReceivedAt": "2026-10-30T03:40:11.974Z",
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-1.ndjson",
+        "line": 29,
+        "rawLineSha256": "d24d3a77f71cfdb1c15de6a7cacfcacadc3e57cb7b95f47f99fcb456c81560c2"
+      },
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/material-transitions.ndjson",
+        "line": 769,
+        "rawLineSha256": "d24d3a77f71cfdb1c15de6a7cacfcacadc3e57cb7b95f47f99fcb456c81560c2"
+      }
+    ]
+  },
+  {
+    "record": 8,
+    "sequence": "11638",
+    "sourceAt": "2026-10-30T03:40:12.162Z",
+    "collectorReceivedAt": "2026-10-30T03:40:27.148Z",
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-1.ndjson",
+        "line": 30,
+        "rawLineSha256": "11b512e2f2342573cd12d4ed4ed8871c011c1b6acee92d5503601f102e72147f"
+      },
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/material-transitions.ndjson",
+        "line": 770,
+        "rawLineSha256": "11b512e2f2342573cd12d4ed4ed8871c011c1b6acee92d5503601f102e72147f"
+      }
+    ]
+  },
+  {
+    "record": 9,
+    "sequence": "11639",
+    "sourceAt": "2026-10-30T03:40:27.219Z",
+    "collectorReceivedAt": "2026-10-30T03:40:42.370Z",
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-1.ndjson",
+        "line": 31,
+        "rawLineSha256": "e77c3206e40d62553675f0714f7b6ac195f7dc71897789b9e26dcb21fa14d102"
+      },
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/material-transitions.ndjson",
+        "line": 771,
+        "rawLineSha256": "e77c3206e40d62553675f0714f7b6ac195f7dc71897789b9e26dcb21fa14d102"
+      }
+    ]
+  },
+  {
+    "record": 10,
+    "sequence": "11640",
+    "sourceAt": "2026-10-30T03:40:42.541Z",
+    "collectorReceivedAt": "2026-10-30T03:40:57.688Z",
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-1.ndjson",
+        "line": 32,
+        "rawLineSha256": "de77df5aabd838e3acdd8d62fd23f0134a3cf448af943e275749f1e04b004382"
+      },
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/material-transitions.ndjson",
+        "line": 772,
+        "rawLineSha256": "de77df5aabd838e3acdd8d62fd23f0134a3cf448af943e275749f1e04b004382"
+      }
+    ]
+  },
+  {
+    "record": 11,
+    "sequence": "11641",
+    "sourceAt": "2026-10-30T03:40:57.551Z",
+    "collectorReceivedAt": "2026-10-30T03:41:12.872Z",
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-1.ndjson",
+        "line": 33,
+        "rawLineSha256": "21ed0a3729a31601c1fc257749f0d63a4e72726496e2dd23e5dbe4841775f13d"
+      },
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/material-transitions.ndjson",
+        "line": 773,
+        "rawLineSha256": "21ed0a3729a31601c1fc257749f0d63a4e72726496e2dd23e5dbe4841775f13d"
+      }
+    ]
+  },
+  {
+    "record": 12,
+    "sequence": "11642",
+    "sourceAt": "2026-10-30T03:41:12.589Z",
+    "collectorReceivedAt": "2026-10-30T03:41:28.057Z",
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-1.ndjson",
+        "line": 34,
+        "rawLineSha256": "c14b22ff418597fc62dcac2bd4a67b506cd3d2ff9c00270745138fd567e812d1"
+      },
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/material-transitions.ndjson",
+        "line": 774,
+        "rawLineSha256": "c14b22ff418597fc62dcac2bd4a67b506cd3d2ff9c00270745138fd567e812d1"
+      }
+    ]
+  },
+  {
+    "record": 13,
+    "sequence": "11643",
+    "sourceAt": "2026-10-30T03:41:27.764Z",
+    "collectorReceivedAt": "2026-10-30T03:41:43.425Z",
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-1.ndjson",
+        "line": 35,
+        "rawLineSha256": "efff1ba1a5c3218dd08f16d95228f20ef3dcc7a814194f243b05b37076f6d09a"
+      },
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/material-transitions.ndjson",
+        "line": 775,
+        "rawLineSha256": "efff1ba1a5c3218dd08f16d95228f20ef3dcc7a814194f243b05b37076f6d09a"
+      }
+    ]
+  }
+]
