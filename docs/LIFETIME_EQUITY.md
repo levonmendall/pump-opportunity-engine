@@ -72,3 +72,33 @@ dashboard does not by itself activate lifetime recording.**
 If the credential or source-file path is unverified or missing, refuse
 activation rather than alter the finance service, read secrets into logs, or
 relax authentication. No funded execution is enabled by this change.
+
+## Preserved pre-deployment original receiver evidence — 2026-10-30
+
+A read-only GitHub Actions run (admin repository action 41012043804)
+captured **59 actual accepted equity observations**, from
+`2026-10-30T04:49:57.058Z` through `2026-10-30T05:47:16.815Z`, to
+`/home/mm-ec2-runner/.local/share/poe-lifetime-equity/accepted-original-equity-20261030T060531507844Z.json`.
+Exact private-file SHA-256:
+`c977ff8a130d555394178179aba4d67c43083e9e4c7b496bada61a2ecfa34cb1`.
+The action read NO finance database and made NO original-service changes.
+This is a bounded copy of original receiver-accepted USD equity, NOT a
+reconstruction of all history since October 26. Earlier coverage remains
+unverified.
+
+For source-side import, an authorized owner must copy **those exact
+unchanged bytes** from the UID994 private runner home into the isolated
+UID988 equity sidecar directory, maintaining file mode 0600 and owner
+`poe-runtime`. Do NOT alter the original PAPER ledger. In the optional
+root-owned `/etc/poe/lifetime-equity.env`, specify:
+
+```ini
+POE_EQUITY_BOOTSTRAP_FILE=/var/lib/poe/lifetime-equity/accepted-original-equity-20261030T060531507844Z.json
+POE_EQUITY_BOOTSTRAP_SHA256=c977ff8a130d555394178179aba4d67c43083e9e4c7b496bada61a2ecfa34cb1
+```
+
+The companion verifies the file path, ownership, mode, SHA-256, original
+account identity, chronology and actual accepted equity values; it imports
+idempotently without modifying source financial history. It retains a
+separate witness in `equity_imported_capture`. Conflicting values fail
+rather than overwriting prior evidence.
