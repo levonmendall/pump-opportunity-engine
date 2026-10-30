@@ -1,0 +1,36 @@
+{
+  "kind": "POE_INERT_ORIGINAL_PROVIDER_RECOVERY_UPGRADE_PREPARATION",
+  "at": "2026-10-30T00:16:35.115337+00:00",
+  "installedSource": {
+    "commit": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
+    "sha256": "8a0f001a3ae0c6acedaae6fb8a0370e02293a8b0c35142d74daf19086a41203c"
+  },
+  "installedConfiguration": "44b82455003f04f75eb1ad7a3dc21555406c1d4d0c7626386d3d21661fdb47c9",
+  "installedManifestSha256": "7c80563b76fa9cab96d7addcb2a272409db0ad9ad0d3208bdcd1f606b320e51d",
+  "priorRootDriverSha256": "dc386c823e85b5c607a8643d7034a5e7c02d031e5de9051b083b48821020750c",
+  "priorRootIndexSha256": "823365cd07361885f2097b64fdf0a7503eeba8c8252a2835b77eb806a0a9ad9e",
+  "knownInstalledInputSha256": "ae9f0bd9e6e3ead1d8cac0a9cc1f0f3278be190c9ff59f57a8fa95e61759dd89",
+  "targetPins": {
+    "NEW_CONFIGURATION_SHA": null,
+    "NEW_BACKUP_WORKER_SHA": null,
+    "NEW_REPORTER": null,
+    "NEW_SUPERVISOR": null,
+    "NEW_NATIVE_DROPIN_SHA": null,
+    "NEW_POLICY_SHA": null,
+    "FORENSIC_SHA": null
+  },
+  "futureStage": "/var/tmp/poe-original-provider-recovery-upgrade",
+  "newForensicOutput": "/var/lib/poe-public/provider-recovery-forensics-20261030.json",
+  "priorForensicOutputPreserved": "/var/lib/poe-public/current-run-forensics-20261029.json",
+  "originalAccountPreserved": true,
+  "financialPositionLimit": 2,
+  "deepSlots": 4,
+  "strategyVersion": "adaptive-momentum-v2-paper-v1",
+  "sourceFrozen": false,
+  "bundleCreated": false,
+  "staged": false,
+  "rootCommandCreated": false,
+  "serviceChanges": 0,
+  "financialDatabaseOpened": false,
+  "providerRequests": 0
+}

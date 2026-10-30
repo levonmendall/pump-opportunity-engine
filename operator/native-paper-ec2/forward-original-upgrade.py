@@ -9,12 +9,12 @@ No bootstrap, account initialization, DB restore, secret access or Render call.
 """
 import fcntl,grp,hashlib,json,os,pathlib,pwd,re,shlex,sqlite3,stat,subprocess,sys,time,types
 
-OLD_SOURCE={'commit':'ba33ee535ad1703da36905a5e2f44088ae19a43d','sha256':'870ac98a2377fefde564b9a3a252a7cc7cb3a561582abd48bda22ee18a14bee7'}
+OLD_SOURCE={'commit':'93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2','sha256':'8a0f001a3ae0c6acedaae6fb8a0370e02293a8b0c35142d74daf19086a41203c'}
 OLD_INDEX='fa616981e2a86aec0f9c2711d0b3c961eb5ab922791f49e2a4e7e372497a84dd'
-PRIOR_INDEX='196b38ef950804ab93da1b5f86c027a83c85e18097df2eca0975986684d1cc49'
+PRIOR_INDEX='823365cd07361885f2097b64fdf0a7503eeba8c8252a2835b77eb806a0a9ad9e'
 PRIOR_RECORD='forward-'+OLD_SOURCE['commit']
-PRIOR_FORWARD_DRIVER_SHA='f65a95224c23244ec19ad1984d85e484e51161c53396a887483a74952bf9f816'
-OLD_MANIFEST='e37b9ec56a9aa0f3e24f42619214ef64f7779c2b7b3ae715a7553ff3654aab42'
+PRIOR_FORWARD_DRIVER_SHA='dc386c823e85b5c607a8643d7034a5e7c02d031e5de9051b083b48821020750c'
+OLD_MANIFEST='7c80563b76fa9cab96d7addcb2a272409db0ad9ad0d3208bdcd1f606b320e51d'
 # Root-indexed validation helper and current financial release have distinct pins.
 INDEXED_SUPERVISOR='d90ea175e17ef165afc8a4dcc24ab302204d500aad738bd4554cdc5f32e3d6fb'
 OLD_SUPERVISOR='66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e'
@@ -24,33 +24,34 @@ AUDITOR_SHA='08947c651488089e2eb2274404e69132ab54cfb89e30a640255c756746dad2c1'
 # supervisor remains pinned for pre-start rollback. SQLite ABI stays unchanged.
 # Old/new reporters and backup closures are separately pinned; no credential change.
 OLD_REPORTER='7da8c7388a5ec3e4f2e0b46a8226ce457d0a68578e5b5225c50b97f1a508ff44'
-OLD_BACKUP_WORKER_SHA='7ff2e950011cf10fb2d3b820f31099e3acac46fcf64abcf8d5bf800abba43062'
-NEW_BACKUP_WORKER_SHA='042ca47275d0ba287bc6444c31a98c4b215c1f228bfca36cdd02de64c81e8a2a'
-NEW_REPORTER='7da8c7388a5ec3e4f2e0b46a8226ce457d0a68578e5b5225c50b97f1a508ff44'
-NEW_SUPERVISOR='66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e'
+OLD_BACKUP_WORKER_SHA='042ca47275d0ba287bc6444c31a98c4b215c1f228bfca36cdd02de64c81e8a2a'
+NEW_BACKUP_WORKER_SHA=None
+NEW_REPORTER=None
+NEW_SUPERVISOR=None
 OLD_STAGE,NEW_STAGE='two','two'
 OLD_STRATEGY='adaptive-momentum-v2-paper-v1'
 NEW_STRATEGY='adaptive-momentum-v2-paper-v1'
 UNCHANGED={'better_sqlite3.node':'6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d'}
-COMPATIBILITY={'scope':'active-adaptive-momentum-v2-protection-recovery','financialSchemaChanged':False,'strategyChanged':False,'riskChanged':False,'authorizedPositionLimit':{'before':2,'after':2},'authorizedStrategyTransition':{'before':OLD_STRATEGY,'after':NEW_STRATEGY,'mode':'active-paper'},'baselineEntryExitThresholdsPreserved':True,'completeRelevantTradingEvidencePreserved':True,'originalAccountFinancialHistoryPreserved':True,'hardFinancialControlsPreserved':True,'ownerDailyLossResetInvoked':False,'providerAccountingSchema':'continuous-component-budget-v2','postStartExecutableRollbackAllowed':False,'providerCounterbooksRestored':False}
+COMPATIBILITY={'scope':'active-adaptive-momentum-v2-provider-recovery','financialSchemaChanged':False,'strategyChanged':False,'riskChanged':False,'authorizedPositionLimit':{'before':2,'after':2},'authorizedStrategyTransition':{'before':OLD_STRATEGY,'after':NEW_STRATEGY,'mode':'active-paper'},'baselineEntryExitThresholdsPreserved':True,'completeRelevantTradingEvidencePreserved':True,'originalAccountFinancialHistoryPreserved':True,'hardFinancialControlsPreserved':True,'ownerDailyLossResetInvoked':False,'providerAccountingSchema':'continuous-component-budget-v2','postStartExecutableRollbackAllowed':False,'providerCounterbooksRestored':False}
 TOOLS=pathlib.Path('/opt/poe/cutover/issue11')
 PACKAGE=pathlib.Path('/var/lib/poe-cutover/issue11')
-STAGE=pathlib.Path('/var/tmp/poe-original-v2-protection-upgrade')
+STAGE=pathlib.Path('/var/tmp/poe-original-provider-recovery-upgrade')
 UNITDIR=pathlib.Path('/etc/systemd/system/poe-runtime.service.d')
 NATIVE_DROPIN_SHA='d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df'
 LEGACY_SHA='309bba18b7f3f17b403f6ef950df707587044b5e049f47ff3495c87d8de7d4df'
-NEW_NATIVE_DROPIN_SHA='d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df'
-OLD_CONFIGURATION_SHA='797f8c1f0a1e23a9771b05356ff51d71f081b520e994f4cf6b2ed1c7c44c6511'
-# Frozen service/V2/two/four import from immutable executable source93bf0b5.
-NEW_CONFIGURATION_SHA='44b82455003f04f75eb1ad7a3dc21555406c1d4d0c7626386d3d21661fdb47c9'
-FORENSIC_FILE='export-current-run-forensics-20261029.py'
-FORENSIC_SHA='1c684b1c88c95c75488f056ad00a8ea756c906e45dcb0f4f8725f5e75b193c59'
-FORENSIC_OUTPUT='/var/lib/poe-public/current-run-forensics-20261029.json'
+NEW_NATIVE_DROPIN_SHA=None
+OLD_CONFIGURATION_SHA='44b82455003f04f75eb1ad7a3dc21555406c1d4d0c7626386d3d21661fdb47c9'
+# INERT: final source/configuration and operational pins must be independently
+# frozen after the coherent provider-recovery application suite passes.
+NEW_CONFIGURATION_SHA=None
+FORENSIC_FILE='export-provider-recovery-forensics-20261030.py'
+FORENSIC_SHA=None
+FORENSIC_OUTPUT='/var/lib/poe-public/provider-recovery-forensics-20261030.json'
 FORENSIC_UID,FORENSIC_GID=988,982
-FORENSIC_RUN='native-paper-20261029221651345'
+FORENSIC_RUN='native-paper-20261029234856700'
 FORENSIC_OUTPUT_BOUND=131072
 OLD_POLICY_SHA='ee240f9c3b2edabb385d67676303e95327839e73cbb28d1072cba68015de8728'
-NEW_POLICY_SHA='ee240f9c3b2edabb385d67676303e95327839e73cbb28d1072cba68015de8728'
+NEW_POLICY_SHA=None
 RESOURCE_BEFORE={'CPUQuotaPerSecUSec':'infinity','CPUQuotaPeriodUSec':'100ms','CPUWeight':'100','Nice':'0','MemoryHigh':'2684354560','MemoryMax':'3221225472','MemorySwapMax':'0','TasksMax':'64','LimitNOFILE':'256','LimitCORE':'0','LimitCPU':'infinity','LimitFSIZE':'infinity','LimitAS':'infinity','OOMPolicy':'stop'}
 RESOURCE_AFTER=dict(RESOURCE_BEFORE)
 UID,GID,RUNNER=988,982,994
