@@ -438,7 +438,7 @@ function showSnapshot(s,received,f,equityHistory=null){
     (latestEquityHistory?.points?.length??0)>=2?'TEMPORARY HISTORY':'COLLECTING EQUITY');
  put('freshness','Last source report '+s.times.generatedAt.slice(0,19).replace('T',' ')+' UTC');
  put('chartNote',latestEquityHistory?.retention==='ec2-durable-republished'?
-   'Original $1,000 account lifetime · verified EC2 equity observations · durable source replay after restarts. Missing periods remain gaps'+(latestEquityHistory.downsampled?' · display downsampled.':'.'):
+   'Original account lifetime · verified EC2 equity observations · durable source replay after restarts. Missing periods remain gaps'+(latestEquityHistory.downsampled?' · display downsampled.':'.'):
    'Temporary receiver history (rolling 24 hours). Durable EC2 lifetime source not yet connected; earlier equity is not invented.');
  if(!s.intelligence){
   const state=String(f.state).toUpperCase();
