@@ -5,7 +5,7 @@ import {createContext,Script} from 'node:vm';
 import {createDashboard} from '../src/dashboard.js';
 
 const source=readFileSync(new URL('../src/dashboard.ts',import.meta.url),'utf8');
-const start=source.indexOf('function plot(points){');
+const start=source.indexOf('function plot(points,epochStartAt=null){');
 const end=source.indexOf('function showSnapshot(',start);
 assert.ok(start>=0&&end>start,'dashboard must include one standalone equity-line renderer');
 const code=source.slice(start,end);
@@ -32,7 +32,8 @@ function chart(width=900){
   assert.equal(id,'chart','only the source-equity SVG is accessed by the renderer');return root;
  },makeSvg,Date,Math,Number,Intl});
  new Script(code).runInContext(context);
- const plot=(context as unknown as {plot:(p:EquityPoint[])=>void}).plot;
+ const rawPlot=(context as unknown as {plot:(p:EquityPoint[],epochStartAt:string|null)=>void}).plot;
+ const plot=(points:EquityPoint[],epochStartAt:string|null=points[0]?.at??null)=>rawPlot(points,epochStartAt);
  const lines=()=>root.children.filter(e=>e.tag==='path'&&e.attributes['data-chart-series']==='portfolio-equity-usd');
  return {plot,root,lines};
 }
@@ -91,11 +92,12 @@ test('no historical equity or a single current value does not fabricate a past t
 
 test('portfolio source and dashboard render path are tied to the same equity value, not unrelated P&L',()=>{
  assert.match(source,/equityHistory: cache\.equityHistory\(\)/);
- assert.match(source,/plot\(latestEquityHistory\?\.points\?\?\[\]\)/);
+ assert.match(source,/plot\(latestEquityHistory\?\.points\?\?\[\],latest\?\.financialEpoch\?\.activatedAt/);
  assert.match(source,/showSnapshot\(result\.snapshot,result\.receivedAt,result\.freshness,result\.equityHistory\?\?null\)/);
  assert.match(source,/Portfolio equity trajectory/);
  assert.match(source,/PORTFOLIO EQUITY · USD/);
- assert.match(source,/Actual portfolio equity in USD, matching Portfolio Overview/);
+ assert.match(source,/Actual portfolio equity in USD from the new release’s 10 SOL epoch/);
+ assert.match(source,/Earlier history is retained in exports and is not backfilled into this graph/);
  assert.ok(!code.includes('tradingUsd'),'trading P&L cannot be substituted for portfolio equity');
  assert.ok(!code.includes('economicUsd'),'economic P&L cannot be substituted for portfolio equity');
  assert.ok(!source.includes("panelFold('#performance'"),'equity line remains expanded');
@@ -123,6 +125,19 @@ test('10SOL contribution is labeled and never joined to historical losses as tra
  const v=chart(),data=[point(0,885),point(1,884),{...point(2,950),kind:'epoch-start' as const},point(3,951)];
  v.plot(data);assert.equal(v.lines().length,2);
  assert.ok(v.root.children.some(e=>e.attributes['data-capital-restatement']==='10-sol'));
- assert.ok(v.root.children.some(e=>e.textContent==='10 SOL CAPITAL RESTATEMENT'));
+ assert.ok(v.root.children.some(e=>e.textContent==='NEW RELEASE · 10 SOL EPOCH'));
  for(const line of v.lines())assert.equal((line.attributes.d??'').match(/L/g)?.length,1);
+});
+
+test('the visible graph starts at the durable new-release epoch and leaves old exported observations unchanged',()=>{
+ const data=[point(0,885),point(1,884),{...point(2,950),kind:'epoch-start' as const},point(3,951),point(4,949)],original=JSON.stringify(data),v=chart();
+ v.plot(data,point(2,950).at);assert.equal(v.lines().length,1);assert.equal((v.lines()[0]!.attributes.d??'').match(/L/g)?.length,2,'only the baseline plus two actual forward readings');
+ const labels=v.root.children.filter(e=>e.tag==='text').map(e=>e.textContent);assert.ok(!labels.some(text=>/\$88[45]/.test(text)),'old losses are absent from chart axes');assert.equal(JSON.stringify(data),original,'the full source/API history is not mutated');
+ v.plot(data,null);assert.equal(v.lines().length,0,'no older-history fallback while awaiting the epoch receipt');
+});
+
+test('new-release graph never invents a connecting observation across an actual forward gap',()=>{
+ const data=[point(0,880),{...point(2,950),kind:'epoch-start' as const},point(3,951),point(15,947),point(16,948)],v=chart();v.plot(data,point(2,950).at);assert.equal(v.lines().length,2);for(const line of v.lines())assert.equal((line.attributes.d??'').match(/L/g)?.length,1);
+ assert.match(source,/window\.addEventListener\('resize',\(\)=>plot\(latestEquityHistory\?\.points\?\?\[\],latest\?\.financialEpoch\?\.activatedAt/,'resize reuses the source-owned epoch rather than a process start or historical fallback');
+ assert.ok(!code.includes('fetch('),'the renderer makes no historical backfill requests');
 });

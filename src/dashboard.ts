@@ -383,14 +383,15 @@ function renderMetrics(m,source,intelligence=null){
  q.limitations.forEach(note=>add(p,'p',note,'panel-sub'));
 }
 
-/** Single simple series: exact USD equity values from accepted authoritative
- * portfolio reports. Never derive it from trading P&L or initial funding. */
-function plot(points){
+// Display only the durable new-release PAPER epoch. Older source history stays
+// in exports, never in this line; a child restart cannot move the boundary.
+function plot(points,epochStartAt=null){
  const root=byId('chart');root.replaceChildren();
  const width=Math.max(305,Math.min(960,Math.floor(root.parentElement.clientWidth||900)));
  const height=280;root.setAttribute('viewBox','0 0 '+width+' '+height);
  const left=width<500?67:79,right=width-17,top=20,bottom=height-37;
- const valid=Array.isArray(points)?points.filter(p=>p&&typeof p.equityUsd==='number'&&Number.isFinite(p.equityUsd)&&typeof p.at==='string'&&Number.isFinite(Date.parse(p.at))):[];
+ const startAt=typeof epochStartAt==='string'?Date.parse(epochStartAt):NaN;
+ const valid=Number.isFinite(startAt)&&Array.isArray(points)?points.filter(p=>p&&typeof p.equityUsd==='number'&&Number.isFinite(p.equityUsd)&&typeof p.at==='string'&&Number.isFinite(Date.parse(p.at))&&Date.parse(p.at)>=startAt):[];
  if(valid.length<2){
   root.append(makeSvg('text',{x:width/2,y:128,'text-anchor':'middle',fill:'#a9c7dc','font-size':width<420?12:14,'font-weight':600},'RECORDING PORTFOLIO EQUITY'));
   root.append(makeSvg('text',{x:width/2,y:153,'text-anchor':'middle',fill:'#7b90aa','font-size':10},'Line forms as verified equity reports arrive'));
@@ -424,7 +425,7 @@ function plot(points){
  if(current.length>=2)segments.push(current);
  for(const point of valid.filter(p=>p.kind==='epoch-start')){
   root.append(makeSvg('line',{x1:x(point.at),x2:x(point.at),y1:top,y2:bottom,stroke:'#b78cff','stroke-width':1,'data-capital-restatement':'10-sol'}));
-  root.append(makeSvg('text',{x:Math.min(right-135,Math.max(left,x(point.at)+5)),y:top+12,fill:'#d5b8ff','font-size':10},'10 SOL CAPITAL RESTATEMENT'));
+  root.append(makeSvg('text',{x:Math.min(right-135,Math.max(left,x(point.at)+5)),y:top+12,fill:'#d5b8ff','font-size':10},'NEW RELEASE · 10 SOL EPOCH'));
  }
  for(const segment of segments){
   const d=segment.map((p,i)=>(i?'L':'M')+x(p.at).toFixed(2)+' '+y(p.equityUsd).toFixed(2)).join(' ');
@@ -441,15 +442,13 @@ function showSnapshot(s,received,f,equityHistory=null){
  put('tradesCount',s.trades.length+' REPORTED');
  renderTable('positions',['Token / quantity','Entry / net liquidation','Costs','Status'],s.positions.map(p=>[p.label+' · '+p.mint+' / '+p.quantity,money(p.entryCostUsd)+' / '+money(p.netLiquidationUsd),money(p.executionCostsUsd),p.status]),'NO OPEN POSITIONS','No positions in the current published window.',s.positions.map(p=>p.mint),0);
  renderTable('trades',['UTC / side','Token / quantity','Value / costs','Status / reason'],s.trades.map(t=>[t.at+' / '+t.side,t.mint+' / '+t.quantity,money(t.valueUsd)+' / '+money(t.executionCostsUsd),t.status+' · '+t.reason]),'NO PAPER TRADES','No trades in the current published window.',s.trades.map(t=>t.mint),1);
- renderCandidateIntelligence();renderMetrics(s.metrics,s.source,s.intelligence||null);plot(latestEquityHistory?.points??[]);
- put('chartBasis','Actual portfolio equity in USD, matching Portfolio Overview.'+(s.financialEpoch?' 10 SOL restatement starts a separate segment; contribution is not profit.':''));put('chartLegend','PORTFOLIO EQUITY · USD');
+ renderCandidateIntelligence();renderMetrics(s.metrics,s.source,s.intelligence||null);plot(latestEquityHistory?.points??[],latest?.financialEpoch?.activatedAt??latestEquityHistory?.financialEpoch?.activatedAt??null);
+ put('chartBasis','Actual portfolio equity in USD from the new release’s 10 SOL epoch. Earlier history is retained in exports and is not backfilled into this graph.');put('chartLegend','PORTFOLIO EQUITY · USD');
  const orders=s.intelligence?s.intelligence.pendingOrders:[];renderTable('orders',['Decision / side','Token / minimum receive','Reserved SOL','Execution / expiry'],orders.map(o=>[o.decidedAt+' / '+o.side,o.mint+' / '+o.quantityMinimum,o.reservedSol,o.executeAt+' / '+o.expiresAt]),s.intelligence?'NO PENDING ORDERS':'PENDING-ACTION DETAIL UNAVAILABLE',s.intelligence?'No unresolved orders or reservations were reported by this account.':'This source does not publish order-level details. Missing detail does not establish that no action is pending.');
- put('chartTag',latestEquityHistory?.retention==='durable-with-preserved-receiver'?'LIFETIME + PRESERVED CAPTURE':latestEquityHistory?.retention==='ec2-durable-republished'?'LIFETIME EQUITY':
-    (latestEquityHistory?.points?.length??0)>=2?'TEMPORARY HISTORY':'COLLECTING EQUITY');
+ put('chartTag',s.financialEpoch||latestEquityHistory?.financialEpoch?'NEW RELEASE · 10 SOL EPOCH':'AWAITING NEW EPOCH');
  put('freshness','Last source report '+s.times.generatedAt.slice(0,19).replace('T',' ')+' UTC');
- put('chartNote',latestEquityHistory?.retention==='durable-with-preserved-receiver'?'Verified EC2 lifetime equity plus exact original receiver observations preserved before redeploy. Actual timestamped values; missing intervals remain unknown.':latestEquityHistory?.retention==='ec2-durable-republished'?
-   'Original account lifetime · verified EC2 equity observations · durable source replay after restarts. Missing periods remain gaps'+(latestEquityHistory.downsampled?' · display downsampled.':'.'):
-   'Temporary receiver history (rolling 24 hours). Durable EC2 lifetime source not yet connected; earlier equity is not invented.');
+ const epochStartAt=s.financialEpoch?.activatedAt??latestEquityHistory?.financialEpoch?.activatedAt;
+ put('chartNote',epochStartAt?'Starts '+epochStartAt+' · verified epoch baseline and actual forward observations only. Missing periods remain gaps; the capital contribution is not profit.':'Waiting for the source-owned new-release epoch receipt; earlier observations remain available in exports.');
  if(!s.intelligence){
   const state=String(f.state).toUpperCase();
   const bad=f.state==='stale'||f.state==='unavailable';
@@ -505,7 +504,7 @@ function paintFreshness(){
 clock();setInterval(()=>{clock();paintFreshness()},1000);plot([]);refresh();setInterval(refresh,15000);
 window.addEventListener('focus',()=>{void refresh()});document.addEventListener('visibilitychange',()=>{if(!document.hidden)void refresh()});
 byId('refreshNow').addEventListener('click',()=>{void refresh()});
-window.addEventListener('resize',()=>plot(latestEquityHistory?.points??[]));
+window.addEventListener('resize',()=>plot(latestEquityHistory?.points??[],latest?.financialEpoch?.activatedAt??latestEquityHistory?.financialEpoch?.activatedAt??null));
 
 /** UI-only progressive disclosure. All projections, API endpoints and financial boundaries are unchanged. */
 (function compactCommandView(){
