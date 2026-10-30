@@ -276,3 +276,51 @@ test('companion shutdown during HTTP delivery cannot query a closed sidecar or r
  const pending=companion.tick(now);assert.equal(typeof release,'function');companion.close();companion.close();release(new Response('',{status:200}));await pending;
  companion.start();assert.deepEqual(await companion.tick(now+1000),{ingested:'unavailable',delivered:false});
 });
+
+function v3Epoch(prior:FinancialEpochReport,at:number):FinancialEpochReport {
+ if(prior.version!=='poe-paper-epoch-v1')throw Error('legacy fixture required');
+ return {...prior,version:'poe-paper-epoch-v3',id:'poe-paper-10sol-v3-20261030',activatedAt:iso(at),priceAt:iso(at-100),priorEpoch:prior,priorEquitySol:'9.500000000',priorArchivedCashSol:'9.490000000',capitalAdjustmentSol:'0.500000000',priorRealizedPnlSol:'-1.100000000',priorExecutionCostsSol:'0.000200000'};
+}
+test('durable equity accepts only the immutable V2 to V3 successor and retains both capital boundaries through reopen',t=>{
+ const {path}=store(t),now=Date.now(),oldAt=now-180000,newAt=now-30000,old=epochReceipt(oldAt),next=v3Epoch(old,newAt),db=new LifetimeEquityStore(path);
+ db.accept(sample('1',oldAt-30000,885),sha('original'),oldAt-30000);
+ db.accept({...sample('2',oldAt+30000,910),financialEpoch:old},sha('v2-loss'),oldAt+30000);
+ const priorHistory=db.history(now),before=structuredClone(priorHistory.points);
+ db.accept({...sample('3',now,951),financialEpoch:next},sha('v3-contribution'),now);
+ const history=db.history(now);assert.deepEqual(history.points.slice(0,before.length),before);assert.deepEqual(history.points.filter(p=>p.kind==='epoch-start').map(p=>p.at),[old.activatedAt,next.activatedAt]);assert.equal(history.points.at(-1)!.equityUsd,951);assert.deepEqual(history.financialEpoch,next);assert.deepEqual(validateLifetimeEquityHistory(history,now),history);
+ assert.throws(()=>db.accept({...sample('4',now+1000,952),financialEpoch:old},sha('regression'),now+1000),/EPOCH_REGRESSION/);
+ if(next.version!=='poe-paper-epoch-v3')throw Error('V3 fixture required');const conflict={...next,priorEpoch:{...next.priorEpoch,backupSha256:'c'.repeat(64)}};
+ assert.throws(()=>db.accept({...sample('4',now+1000,952),financialEpoch:conflict},sha('rewrite-old'),now+1000),/EPOCH_REGRESSION/);
+ const missing=structuredClone(history);missing.points=missing.points.filter(p=>p.at!==old.activatedAt);assert.throws(()=>validateLifetimeEquityHistory(missing,now),/EPOCH_MARKER|EPOCH_PROOF/);
+ db.close();const reopened=new LifetimeEquityStore(path);assert.deepEqual(reopened.history(now),history);reopened.close();
+});
+test('receiver tolerates asynchronous V3 source and durable history delivery while forbidding obsolete epoch after activation',t=>{
+ const {path}=store(t),now=Date.now(),oldAt=now-180000,newAt=now-30000,old=epochReceipt(oldAt),next=v3Epoch(old,newAt),db=new LifetimeEquityStore(path);
+ const oldSnapshot={...sample('1',oldAt+30000,910),financialEpoch:old},newSnapshot={...sample('2',now,951),financialEpoch:next};
+ db.accept(oldSnapshot,sha('v2'),oldAt+30000);const oldHistory=db.history(now);db.accept(newSnapshot,sha('v3'),now);const newHistory=db.history(now);db.close();
+ for(const order of ['source-first','history-first']){
+  const cache=new SnapshotCache(original);cache.accept(oldSnapshot,oldAt+30000);cache.acceptLifetimeEquityHistory(oldHistory,oldAt+30000);
+  if(order==='source-first'){cache.accept(newSnapshot,now);cache.acceptLifetimeEquityHistory(newHistory,now);}else{cache.acceptLifetimeEquityHistory(newHistory,now);cache.accept(newSnapshot,now);}
+  const history=cache.equityHistory();assert.deepEqual(history.financialEpoch,next);assert.deepEqual(history.points.filter(p=>p.kind==='epoch-start').map(p=>p.at),[old.activatedAt,next.activatedAt]);assert.equal(history.points.at(-1)!.equityUsd,951);
+  assert.throws(()=>cache.accept({...sample('3',now+1000,951),financialEpoch:old},now+1000),/epoch.*regression|epoch.*conflict/i);
+ }
+});
+test('a fresh receiver and companion accept both explicit epoch receipts without fabricating intervening market observations',t=>{
+ const {path}=store(t),now=Date.now(),old=epochReceipt(now-180000),next=v3Epoch(old,now-30000),source={...sample('1',now,951),financialEpoch:next},db=new LifetimeEquityStore(path),cache=new SnapshotCache(original);
+ db.accept(source,sha('first-v3'),now);cache.accept(source,now);
+ assert.deepEqual(db.history(now).points.map(p=>p.kind),['inception','epoch-start','epoch-start','observed']);assert.deepEqual(cache.equityHistory().points.map(p=>p.kind),['epoch-start','epoch-start','observed']);db.close();
+});
+
+test('lifetime trading source values reconcile independently from active capital and reject altered decomposition',async()=>{
+ const {validateSnapshot}=await import('../src/reporting.js'),now=Date.now(),source=sample('1',now,950);
+ source.lifetimeTrading={basis:'lifetime-token-trading-excludes-capital-contributions',realizedSol:'-1.200000000',unrealizedSol:'0.010000000',netSol:'-1.190000000',executionCostsSol:'0.000040000',currentUsdTranslation:-119,priceAt:iso(now-100)};
+ assert.equal(validateSnapshot(source,original,now).lifetimeTrading!.currentUsdTranslation,-119);
+ for(const invalid of [{...source.lifetimeTrading,netSol:'10'},{...source.lifetimeTrading,currentUsdTranslation:1000},{...source.lifetimeTrading,priceAt:iso(now-10001)},{...source.lifetimeTrading,netSol:null},{...source.lifetimeTrading,secret:'reject-unknown-field'}])assert.throws(()=>validateSnapshot({...source,lifetimeTrading:invalid},original,now));
+});
+
+test('receiver sample expiry retains both immutable epoch capital markers',()=>{
+ const now=Date.now(),old=epochReceipt(now-180000),next=v3Epoch(old,now-30000),cache=new SnapshotCache(original);
+ cache.accept({...sample('1',now,951),financialEpoch:next},now);
+ const later=now+25*60*60*1000;cache.accept({...sample('2',later,952),financialEpoch:next},later);
+ const history=cache.equityHistory();assert.equal(history.windowLimited,true);assert.deepEqual(history.points.filter(p=>p.kind==='epoch-start').map(p=>p.at),[old.activatedAt,next.activatedAt]);assert.equal(history.points.at(-1)!.at,iso(later));
+});

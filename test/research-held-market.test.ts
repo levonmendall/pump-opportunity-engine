@@ -176,3 +176,13 @@ test('a Clock boundary crossed after final source validation stays explicitly ex
   const market=f.makeMarket({now:()=>{const observed=f.now();if(crossAfterRead){crossAfterRead=false;f.advance(1);}return observed;},recorder:{record(kind){if(kind==='research-held-market-context')crossAfterRead=true;}}});
   const context=await market.context(f.ledger.state().positions,signal()),position=Object.values(f.ledger.state().positions)[0]!;assert.equal(f.now(),expiry+1);assert.ok(context.marks[position.mint]);assert.equal(context.sourceValidUntil,expiry);assert.ok(context.sourceValidUntil!<f.now(),'consumer can reject the explicit known expiry at actual use');assert.equal(await market.quote({mint:position.mint,side:'sell',inputUnits:position.units},signal()),null);
 });
+
+
+test('held continuation evidence getter refuses stale, changed-size and retired inventory without making requests',async t=>{
+ const f=fixture(t),market=f.makeMarket(),c=f.coordinator(market);f.setSetupMarket(market);c.recover();f.ready();await f.buy(c,0);
+ const position=Object.values(f.ledger.state().positions)[0]!;assert.equal(market.currentObservation(position.mint,position.units),null);
+ await market.context(f.ledger.state().positions,signal());const before=f.calls.length,q=market.currentObservation(position.mint,position.units);assert.ok(q);
+ assert.equal(q.sell.inputBaseUnits,position.units);q.sell.inputBaseUnits='1';assert.equal(market.currentObservation(position.mint,position.units)!.sell.inputBaseUnits,position.units);
+ assert.equal(market.currentObservation(position.mint,(BigInt(position.units)+1n).toString()),null);assert.equal(f.calls.length,before);
+ f.advance(2001);assert.equal(market.currentObservation(position.mint,position.units),null);assert.equal(f.calls.length,before);
+});

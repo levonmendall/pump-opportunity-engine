@@ -4,7 +4,7 @@ import {readFileSync} from 'node:fs';
 import {PublicKey,SYSVAR_CLOCK_PUBKEY} from '@solana/web3.js';
 import {quotePositionsSell,quotePool,type PoolWireAccount} from '../src/pool.js';
 import type {ReadOnlyRpc} from '../src/network.js';
-import {ResearchClockPositionPricer,decodeResearchBankClock} from '../src/research-clock-pricing.js';
+import {ResearchClockPositionPricer,decodeResearchBankClock,RESEARCH_CLOCK_COHERENT_POOL_CAPACITY,RESEARCH_CLOCK_RPC_ACCOUNT_CAPACITY} from '../src/research-clock-pricing.js';
 
 const copy=<T>(x:T):T=>structuredClone(x);
 function fixture(){
@@ -285,7 +285,7 @@ test('missing discovery pool is isolated before dependency union and no duplicat
   assert.equal((f.calls[1]!.params[0] as string[]).length,12);
   const before=f.calls.length;
   await assert.rejects(p.quoteMany([]),/POSITION_BATCH_CAPACITY/);
-  await assert.rejects(p.quoteMany([...f.requests,f.requests[0]!] ),/POSITION_BATCH_CAPACITY/);
+  await assert.rejects(p.quoteMany([...f.requests,f.requests[0]!] ),/DUPLICATE_POSITION_MINT/);
   await assert.rejects(p.quoteMany([f.requests[1]!,f.requests[1]!] ),/DUPLICATE_POSITION_MINT/);
   assert.equal(f.calls.length,before);
 }));
@@ -337,7 +337,7 @@ test('six distinct observation pools use2cold/1steady shared Clock reads without
   const p=new ResearchClockPositionPricer(f.rpc,f.rec),cold=await p.validateMany(f.requests);assert.equal(f.calls.length,2);assert.equal((f.calls[0]!.params[0] as string[]).length,6);assert.equal((f.calls[1]!.params[0] as string[]).length,28);
   const before=f.calls.length,steady=await p.validateMany(f.requests);assert.equal(f.calls.length-before,1);assert.equal((f.calls.at(-1)!.params[0] as string[]).length,28);
   for(const result of [cold,steady]){assert.deepEqual(result.unavailable,{});assert.equal(Object.keys(result.validations).length,6);for(const r of f.requests){const support=result.validations[r.mint.toBase58()]!;assert.equal(support.sourceSlot,f.context.slot);assert.equal(support.summary.clockSlot,f.context.slot);assert.equal(support.summary.receivedAt,result.context!.receivedAt);assert.equal(support.at,Date.now());assert.match(support.evidence,/^research-clock-observation-support:[a-f0-9]{64}$/);assert.equal(Object.hasOwn(support.summary,'sell'),false);assert.equal(Object.hasOwn(support.summary,'buy'),false);}}
-  assert.equal(f.records.some(r=>r.kind==='research-clock-position-sell-quote'),false);assert.equal(p.usage().cachePoolCapacity,9);assert.equal(p.usage().dependencyAccountCapacity,40);
+  assert.equal(f.records.some(r=>r.kind==='research-clock-position-sell-quote'),false);assert.equal(p.usage().cachePoolCapacity,RESEARCH_CLOCK_COHERENT_POOL_CAPACITY+7);assert.equal(p.usage().dependencyAccountCapacity,RESEARCH_CLOCK_RPC_ACCOUNT_CAPACITY);
 }));
 
 test('observation support does not depend on whether a one-base-unit hypothetical sell produces output',async()=>withTime(async f=>{
@@ -347,7 +347,7 @@ test('observation support does not depend on whether a one-base-unit hypothetica
 test('alternating six observation pools and three holdings preserves shared links without pruning other observation identities',async()=>withObservationTime(async f=>{
   const p=new ResearchClockPositionPricer(f.rpc,f.rec);await p.validateMany(f.requests);const holdings=f.requests.slice(0,3).map(r=>({...r,fullBaseUnits:1_000_000_000n}));let before=f.calls.length;const quoted=await p.quoteMany(holdings);assert.equal(f.calls.length-before,1);assert.equal(Object.keys(quoted.quotes).length,3);assert.equal(Object.keys(p.usage().cachedPoolSlots).length,6);
   before=f.calls.length;const supported=await p.validateMany(f.requests);assert.equal(f.calls.length-before,1);assert.equal(Object.keys(supported.validations).length,6);assert.equal(Object.keys(p.usage().highestHoldingSlots).length,3);assert.equal(Object.keys(p.usage().highestObservationSlots).length,6);
-  before=f.calls.length;await assert.rejects(p.quoteMany([...holdings,holdings[0]!] ),/POSITION_BATCH_CAPACITY/);assert.equal(f.calls.length,before);
+  before=f.calls.length;await assert.rejects(p.quoteMany([...holdings,holdings[0]!] ),/DUPLICATE_POSITION_MINT/);assert.equal(f.calls.length,before);
 }));
 
 test('observation changed links and missing vaults isolate affected pools and rediscover links in one recovery batch',async()=>withObservationTime(async f=>{
@@ -404,11 +404,11 @@ test('alternating buys, three held quotes and six observations preserves their e
   const p=new ResearchClockPositionPricer(f.rpc,f.rec),held=f.requests.slice(0,3).map(r=>({...r,fullBaseUnits:1000000000n})),buy={...f.requests[4]!,buyLamports:10000000n};
   await p.validateMany(f.requests);let before=f.calls.length;await p.quoteMany(held);assert.equal(f.calls.length-before,1);
   for(let i=0;i<3;i++){before=f.calls.length;await p.quoteBuy(buy);await p.quoteMany(held);await p.validateMany(f.requests);assert.equal(f.calls.length-before,3);assert.equal(Object.keys(p.usage().cachedPoolSlots).length,6);assert.equal(Object.keys(p.usage().highestHoldingSlots).length,3);assert.equal(Object.keys(p.usage().highestObservationSlots).length,6);assert.equal(Object.keys(p.usage().highestBuySlots).length,1);}
-  for(const r of f.requests)await p.quoteBuy({...r,buyLamports:10000000n});assert.equal(Object.keys(p.usage().highestBuySlots).length,1);assert.ok(Object.keys(p.usage().cachedPoolSlots).length<=9);
+  for(const r of f.requests)await p.quoteBuy({...r,buyLamports:10000000n});assert.equal(Object.keys(p.usage().highestBuySlots).length,1);assert.ok(Object.keys(p.usage().cachedPoolSlots).length<=RESEARCH_CLOCK_COHERENT_POOL_CAPACITY+7);
 }));
 
 
-test('nine reserved working identities refuse a tenth buy without poisoning higher-priority observation',async()=>withObservationTime(async f=>{
+test('an unavailable optional buy does not discard independently owned held and observation links',async()=>withObservationTime(async f=>{
   const p=new ResearchClockPositionPricer(f.rpc,f.rec);await p.validateMany(f.requests);
   // Explicitly unsupported additional held fixtures exercise retained ownership
   // and cache bounds; no valid protection quote is claimed for these identities.
@@ -416,7 +416,29 @@ test('nine reserved working identities refuse a tenth buy without poisoning high
   const unavailable=await p.quoteMany(missing);assert.equal(Object.keys(unavailable.unavailable).length,3);
   const buy={...f.requests[0]!,buyLamports:10000000n};await p.quoteBuy(buy);
   const before=f.calls.length,cache=copy(p.usage().cachedPoolSlots),heldSlots=copy(p.usage().highestHoldingSlots),observationSlots=copy(p.usage().highestObservationSlots);
-  await assert.rejects(p.quoteBuy({mint:new PublicKey(Buffer.alloc(32,224)),buyLamports:10000000n}),/POOL_CACHE_CAPACITY/);
-  assert.equal(f.calls.length,before);assert.deepEqual(p.usage().cachedPoolSlots,cache);assert.deepEqual(p.usage().highestHoldingSlots,heldSlots);assert.deepEqual(p.usage().highestObservationSlots,observationSlots);
-  const supported=await p.validateMany(f.requests);assert.equal(Object.keys(supported.validations).length,6);assert.equal(f.calls.length-before,1);assert.ok(Object.keys(p.usage().cachedPoolSlots).length<=9);
+  await assert.rejects(p.quoteBuy({mint:new PublicKey(Buffer.alloc(32,224)),buyLamports:10000000n}),/BAD_POOL_OWNER/);
+  assert.equal(f.calls.length,before+1);assert.deepEqual(p.usage().cachedPoolSlots,cache);assert.deepEqual(p.usage().highestHoldingSlots,heldSlots);assert.deepEqual(p.usage().highestObservationSlots,observationSlots);
+  const supported=await p.validateMany(f.requests);assert.equal(Object.keys(supported.validations).length,6);assert.equal(f.calls.length-before,2);assert.ok(Object.keys(p.usage().cachedPoolSlots).length<=RESEARCH_CLOCK_COHERENT_POOL_CAPACITY+7);
+}));
+
+
+test('four through six held pools retain coherent exact-size pricing without the obsolete three-position gate',async()=>withObservationTime(async f=>{
+  const p=new ResearchClockPositionPricer(f.rpc,f.rec);
+  for(const count of [4,6]){
+    const requests=f.requests.slice(0,count).map(r=>({...r,fullBaseUnits:1000000000n}));
+    const before=f.calls.length,result=await p.quoteMany(requests);
+    assert.equal(f.calls.length-before,2);assert.equal(Object.keys(result.quotes).length,count);assert.deepEqual(result.unavailable,{});
+    assert.equal((f.calls.at(-1)!.params[0] as string[]).length,4*count+4);
+    assert.ok(Object.values(result.quotes).every(q=>q.slot===result.context!.slot&&q.receivedAt===result.context!.receivedAt));
+    // Established SDK pricing still agrees; the old helper admits three per
+    // invocation, so use separate immutable fixture calls for comparison only.
+    for(let i=0;i<requests.length;i+=3){const legacyRpc={call:async<T>(method:string,params:unknown[]=[])=>method==='getBlockTime'?Math.floor(Date.now()/1000) as T:f.rpc.call<T>(method,params)};const expected=await quotePositionsSell(legacyRpc as ReadOnlyRpc,requests.slice(i,i+3),{record(){}});for(const [mint,q]of Object.entries(expected.quotes))assert.deepEqual(result.quotes[mint]!.sell,q.sell);}
+    const warm=f.calls.length;await p.quoteMany(requests);assert.equal(f.calls.length-warm,1);
+  }
+}));
+
+test('provider-derived coherent cardinality refuses before any source request',async()=>withObservationTime(async f=>{
+  const p=new ResearchClockPositionPricer(f.rpc,f.rec);assert.equal(RESEARCH_CLOCK_COHERENT_POOL_CAPACITY*4+4,RESEARCH_CLOCK_RPC_ACCOUNT_CAPACITY);
+  const tooMany=Array.from({length:RESEARCH_CLOCK_COHERENT_POOL_CAPACITY+1},(_,i)=>({mint:new PublicKey(Buffer.alloc(32,i+1)),fullBaseUnits:1n}));
+  await assert.rejects(p.quoteMany(tooMany),/POSITION_BATCH_CAPACITY/);assert.equal(f.calls.length,0);
 }));

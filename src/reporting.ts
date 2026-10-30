@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import {validateFinancialEpochReport,type FinancialEpochReport} from './financial-epoch-reporting.js';
+import {financialEpochEqual,financialEpochLineage,financialEpochTransitionAllowed,validateFinancialEpochReport,type FinancialEpochReport} from './financial-epoch-reporting.js';
 import {validateOperatingIntelligence,ORIGINAL_POE_ACCOUNT,ORIGINAL_POE_INCEPTION,type OperatingIntelligence} from './operating-intelligence.js';
 import { EQUITY_GAP_MS, validateLifetimeEquityHistory, type LifetimeEquityHistory } from './lifetime-equity-contract.js';
 
@@ -26,7 +26,9 @@ export type ReceivedEquityHistory = {
 };
 
 export type ReportingIdentity = { accountId: string; inceptionAt: string; release: string; strategy: string };
+export type LifetimeTradingReport={basis:'lifetime-token-trading-excludes-capital-contributions';realizedSol:string;unrealizedSol:string|null;netSol:string|null;executionCostsSol:string;currentUsdTranslation:number|null;priceAt:string|null};
 export type Snapshot = {
+  lifetimeTrading?:LifetimeTradingReport;
   intelligence?: OperatingIntelligence;
   financialEpoch?:FinancialEpochReport;
   project: 'pump-opportunity-engine'; mode: 'PAPER'; liveTrading: false; schemaVersion: 1;
@@ -74,6 +76,11 @@ function bool(value: unknown) { if (typeof value !== 'boolean') throw new Error(
 function units(value: unknown, decimals: boolean) {
   if (typeof value !== 'string' || !(decimals ? /^(0|[1-9]\d{0,20})(\.\d{1,9})?$/ : /^(0|[1-9]\d{0,39})$/).test(value)) throw new Error('decimal integer quantity required');
 }
+function signedSol(value:unknown){
+  if(typeof value!=='string'||!/^(-?)(0|[1-9]\d{0,20})(\.\d{1,9})?$/.test(value)||/^-0(?:\.0+)?$/.test(value))throw Error('lifetime signed SOL required');
+  const negative=value.startsWith('-'),[whole,part='']=(negative?value.slice(1):value).split('.');
+  return (negative?-1n:1n)*(BigInt(whole!)*1000000000n+BigInt(part.padEnd(9,'0')));
+}
 function list(value: unknown, max: number, check: (v: unknown) => void) {
   if (!Array.isArray(value) || value.length > max) throw new Error('bounded array required');
   value.forEach(check);
@@ -85,8 +92,9 @@ export function validateIdentity(identity: ReportingIdentity) {
 export function validateSnapshot(value: unknown, expected: ReportingIdentity, now = Date.now()): Snapshot {
   validateIdentity(expected);
   const hasIntelligence=!!value&&typeof value==='object'&&Object.hasOwn(value,'intelligence');
+  const hasLifetime=!!value&&typeof value==='object'&&Object.hasOwn(value,'lifetimeTrading');
   const hasEpoch=!!value&&typeof value==='object'&&Object.hasOwn(value,'financialEpoch');
-  const s = object(value, ['project','mode','liveTrading','schemaVersion','account','sequence','source','times','status','balances','costLabels','positions','trades','decisions','pnl','history','funnel','metrics',...(hasIntelligence?['intelligence']:[]),...(hasEpoch?['financialEpoch']:[])]);
+  const s = object(value, ['project','mode','liveTrading','schemaVersion','account','sequence','source','times','status','balances','costLabels','positions','trades','decisions','pnl','history','funnel','metrics',...(hasIntelligence?['intelligence']:[]),...(hasEpoch?['financialEpoch']:[]),...(hasLifetime?['lifetimeTrading']:[])]);
   oneOf(s.project, ['pump-opportunity-engine']); oneOf(s.mode, ['PAPER']); oneOf(s.liveTrading, [false]); oneOf(s.schemaVersion, [1]);
   const a = object(s.account, ['id','inceptionAt','initialUsd']);
   if (a.id !== expected.accountId || a.inceptionAt !== expected.inceptionAt || a.initialUsd !== 1000) throw new Error('wrong account/inception');
@@ -97,6 +105,14 @@ export function validateSnapshot(value: unknown, expected: ReportingIdentity, no
   const generated = time(ts.generatedAt);
   if (generated > now + 30_000 || generated < time(expected.inceptionAt)) throw new Error('invalid generation time');
   if(hasEpoch)validateFinancialEpochReport(s.financialEpoch,ts.generatedAt as string);
+  if(hasLifetime){
+    const l=object(s.lifetimeTrading,['basis','realizedSol','unrealizedSol','netSol','executionCostsSol','currentUsdTranslation','priceAt']);
+    if(expected.accountId!==ORIGINAL_POE_ACCOUNT||expected.inceptionAt!==ORIGINAL_POE_INCEPTION||l.basis!=='lifetime-token-trading-excludes-capital-contributions')throw Error('lifetime trading basis requires original account');
+    const realized=signedSol(l.realizedSol);units(l.executionCostsSol,true);
+    if((l.unrealizedSol===null)!==(l.netSol===null)||l.netSol!==null&&signedSol(l.netSol)!==realized+signedSol(l.unrealizedSol))throw Error('lifetime trading reconciliation');
+    nullable(l.currentUsdTranslation,v=>number(v));nullable(l.priceAt,v=>{if(time(v)>generated||generated-time(v)>10000)throw Error('lifetime trading price stale');});
+    if(l.currentUsdTranslation!==null&&(l.netSol===null||l.priceAt===null))throw Error('lifetime trading valuation unavailable');
+  }
   for (const key of ['marketAt','reconciledAt','usefulProgressAt']) nullable(ts[key], v => { if (time(v) > generated) throw new Error('source time newer than generation'); });
   const status = object(s.status, ['runtime','market','entries','reconciled','blocker']);
   oneOf(status.runtime, ['running','stopped','unavailable']); oneOf(status.market, ['observing','warming','unavailable']); oneOf(status.entries, ['enabled','paused','disabled']); bool(status.reconciled); nullable(status.blocker, v => text(v, 512));
@@ -107,9 +123,18 @@ export function validateSnapshot(value: unknown, expected: ReportingIdentity, no
   for (const key of ['equityUsd','realizedUsd','unrealizedUsd','tradingPnlUsd','economicPnlUsd']) nullable(b[key], v => number(v));
   number(b.positionCostUsd, true);
   for (const key of ['markedExposureUsd','drawdownUsd','executionCostsUsd','operatingCostsUsd','passiveSolEquityUsd','solPriceUsd']) nullable(b[key], v => number(v, true));
+  if(hasLifetime){
+    const l=s.lifetimeTrading as LifetimeTradingReport;
+    if(l.currentUsdTranslation!==null){
+      const rate=typeof b.solPriceUsd==='number'?Math.round(b.solPriceUsd*1e6):null;
+      if(rate===null||!Number.isSafeInteger(rate)||rate<=0||l.currentUsdTranslation!==Number(signedSol(l.netSol)*BigInt(rate)/1000000000n)/1e6)throw Error('lifetime trading USD translation conflict');
+    }
+  }
   const costs = object(s.costLabels, ['execution','operating']); oneOf(costs.execution, ['simulated']); oneOf(costs.operating, ['actual','estimated','allocated','mixed','unavailable']);
   const eventTime = (value: unknown) => { const n = time(value); if (n < time(expected.inceptionAt) || n > generated) throw new Error('event outside account/source chronology'); };
-  list(s.positions, 3, v => {
+  // Position count is a source risk/capacity fact. The reporting byte limit
+  // bounds transfer size without introducing another position admission cap.
+  list(s.positions, MAX_SNAPSHOT_BYTES, v => {
     const p = object(v, ['mint','label','quantity','enteredAt','entryCostUsd','netLiquidationUsd','executionCostsUsd','status']);
     text(p.mint, 96); text(p.label, 80); units(p.quantity, false); eventTime(p.enteredAt); number(p.entryCostUsd, true); nullable(p.netLiquidationUsd, v => number(v, true)); number(p.executionCostsUsd, true); text(p.status, 80);
   });
@@ -272,16 +297,18 @@ export class SnapshotCache {
       if (Date.parse(snapshot.times.generatedAt) < Date.parse(this.current.snapshot.times.generatedAt)) throw new Error('generation time regression');
     }
     const historicalEpoch=this.sourceEquity?.financialEpoch;
-    if(historicalEpoch&&Date.parse(snapshot.times.generatedAt)>=Date.parse(historicalEpoch.activatedAt)&&JSON.stringify(snapshot.financialEpoch)!==JSON.stringify(historicalEpoch))throw Error('financial epoch source regression or conflict');
-    if(snapshot.financialEpoch&&this.sourceEquity&&!this.sourceEquity.financialEpoch&&Date.parse(this.sourceEquity.points.at(-1)!.at)>=Date.parse(snapshot.financialEpoch.activatedAt))throw Error('financial epoch historical chronology conflict');
+    if(historicalEpoch&&!financialEpochTransitionAllowed(historicalEpoch,snapshot.financialEpoch)&&!(financialEpochTransitionAllowed(snapshot.financialEpoch,historicalEpoch)&&Date.parse(snapshot.times.generatedAt)<Date.parse(snapshot.financialEpoch?historicalEpoch.activatedAt:financialEpochLineage(historicalEpoch)[0]!.activatedAt)))throw Error('financial epoch source regression or conflict');
+    if(snapshot.financialEpoch&&this.sourceEquity&&!this.sourceEquity.financialEpoch&&Date.parse(this.sourceEquity.points.at(-1)!.at)>=Date.parse(financialEpochLineage(snapshot.financialEpoch)[0]!.activatedAt))throw Error('financial epoch historical chronology conflict');
     if(snapshot.financialEpoch?.activatedAt===snapshot.times.generatedAt&&snapshot.balances.equityUsd!==null&&snapshot.balances.equityUsd!==snapshot.financialEpoch.initialUsd)throw Error('epoch activation equity conflict');
-    if(this.acceptedEpoch&&(!snapshot.financialEpoch||JSON.stringify(snapshot.financialEpoch)!==JSON.stringify(this.acceptedEpoch)))throw Error('financial epoch regression or conflict');
-    if(snapshot.financialEpoch&&!this.acceptedEpoch){
-      const epoch=snapshot.financialEpoch;
-      const prior=this.acceptedEquity.at(-1);
-      if(prior&&Date.parse(prior.at)>=Date.parse(epoch.activatedAt))throw Error('financial epoch chronology conflict');
-      this.acceptedEquity.push({at:epoch.activatedAt,equityUsd:epoch.initialUsd,kind:'epoch-start',segment:(prior?.segment??0)+1});
-      this.acceptedEpoch=structuredClone(epoch);
+    if(!financialEpochTransitionAllowed(this.acceptedEpoch,snapshot.financialEpoch))throw Error('financial epoch regression or conflict');
+    if(snapshot.financialEpoch&&!financialEpochEqual(snapshot.financialEpoch,this.acceptedEpoch)){
+      const lineage=financialEpochLineage(snapshot.financialEpoch);
+      for(const epoch of lineage.slice(this.acceptedEpoch?1:0)){
+        const prior=this.acceptedEquity.at(-1);
+        if(prior&&Date.parse(prior.at)>=Date.parse(epoch.activatedAt))throw Error('financial epoch chronology conflict');
+        this.acceptedEquity.push({at:epoch.activatedAt,equityUsd:epoch.initialUsd,kind:'epoch-start',segment:(prior?.segment??0)+1});
+      }
+      this.acceptedEpoch=structuredClone(snapshot.financialEpoch);
     }
     // Replace one complete immutable value; never mutate fields of the visible read model.
     this.current = { snapshot: JSON.parse(JSON.stringify(snapshot)) as Snapshot, fingerprint, receivedAt: new Date(now).toISOString() };
@@ -298,9 +325,13 @@ export class SnapshotCache {
         this.acceptedEquity.push(point);
       }
       const mostRecentAt = Date.parse(point.at);
-      while (this.acceptedEquity.length > MAX_RECEIVED_EQUITY_MINUTES ||
-             mostRecentAt - Date.parse(this.acceptedEquity[0]!.at) > EQUITY_HISTORY_MS) {
-        this.acceptedEquity.shift(); this.equityWindowLimited = true;
+      const retained=this.acceptedEquity.filter(p=>p.kind==='epoch-start'||p.kind==='inception'||mostRecentAt-Date.parse(p.at)<=EQUITY_HISTORY_MS);
+      if(retained.length!==this.acceptedEquity.length)this.equityWindowLimited=true;
+      this.acceptedEquity=retained;
+      while(this.acceptedEquity.length>MAX_RECEIVED_EQUITY_MINUTES){
+        const index=this.acceptedEquity.findIndex(p=>p.kind!=='epoch-start'&&p.kind!=='inception');
+        if(index<0)break;
+        this.acceptedEquity.splice(index,1);this.equityWindowLimited=true;
       }
     }
     return 'accepted';
@@ -313,10 +344,10 @@ export class SnapshotCache {
     if (!this.identity || this.identity.accountId !== ORIGINAL_POE_ACCOUNT ||
         this.identity.inceptionAt !== ORIGINAL_POE_INCEPTION) throw Error('EQUITY_ORIGINAL_SOURCE_NOT_CONFIGURED');
     const history = validateLifetimeEquityHistory(input, now);
-    if(this.sourceEquity?.financialEpoch&&JSON.stringify(history.financialEpoch)!==JSON.stringify(this.sourceEquity.financialEpoch))throw Error('EQUITY_EPOCH_REGRESSION_OR_CONFLICT');
-    if(this.current?.snapshot.financialEpoch&&Date.parse(history.points.at(-1)!.at)>=Date.parse(this.current.snapshot.financialEpoch.activatedAt)&&!history.financialEpoch)throw Error('EQUITY_EPOCH_MARKER_REQUIRED');
-    if(history.financialEpoch&&this.current&&!this.current.snapshot.financialEpoch&&Date.parse(this.current.snapshot.times.generatedAt)>=Date.parse(history.financialEpoch.activatedAt))throw Error('EQUITY_EPOCH_SOURCE_CONFLICT');
-    if(history.financialEpoch&&this.current?.snapshot.financialEpoch&&JSON.stringify(history.financialEpoch)!==JSON.stringify(this.current.snapshot.financialEpoch))throw Error('EQUITY_EPOCH_SOURCE_CONFLICT');
+    if(!financialEpochTransitionAllowed(this.sourceEquity?.financialEpoch,history.financialEpoch))throw Error('EQUITY_EPOCH_REGRESSION_OR_CONFLICT');
+    if(this.current?.snapshot.financialEpoch&&Date.parse(history.points.at(-1)!.at)>=Date.parse(financialEpochLineage(this.current.snapshot.financialEpoch)[0]!.activatedAt)&&!history.financialEpoch)throw Error('EQUITY_EPOCH_MARKER_REQUIRED');
+    if(history.financialEpoch&&this.current&&!this.current.snapshot.financialEpoch&&Date.parse(this.current.snapshot.times.generatedAt)>=Date.parse(financialEpochLineage(history.financialEpoch)[0]!.activatedAt))throw Error('EQUITY_EPOCH_SOURCE_CONFLICT');
+    if(history.financialEpoch&&this.current?.snapshot.financialEpoch){const currentEpoch=this.current.snapshot.financialEpoch;if(!financialEpochTransitionAllowed(history.financialEpoch,currentEpoch)&&!(financialEpochTransitionAllowed(currentEpoch,history.financialEpoch)&&Date.parse(this.current.snapshot.times.generatedAt)<Date.parse(history.financialEpoch.activatedAt))||!financialEpochTransitionAllowed(currentEpoch,history.financialEpoch)&&Date.parse(history.points.at(-1)!.at)>=Date.parse(currentEpoch.activatedAt))throw Error('EQUITY_EPOCH_SOURCE_CONFLICT');}
     if (this.sourceEquity) {
       const prior = BigInt(this.sourceEquity.lastSequence), next = BigInt(history.lastSequence);
       if (next < prior) throw Error('EQUITY_HISTORY_REGRESSION');
@@ -343,11 +374,8 @@ export class SnapshotCache {
       const history = this.sourceEquity, points = structuredClone(history.points);
       let latest = points.at(-1)!;
       const current = this.current?.snapshot;
-      const epoch=current?.financialEpoch??history.financialEpoch;
-      if(epoch&&Date.parse(latest.at)<Date.parse(epoch.activatedAt)){
-        latest={at:epoch.activatedAt,equityUsd:epoch.initialUsd,segment:latest.segment+1,kind:'epoch-start'};
-        points.push(latest);
-      }
+      const epoch=history.financialEpoch&&financialEpochTransitionAllowed(current?.financialEpoch,history.financialEpoch)?history.financialEpoch:current?.financialEpoch??history.financialEpoch;
+      for(const receipt of epoch?financialEpochLineage(epoch):[]){if(Date.parse(latest.at)<Date.parse(receipt.activatedAt)){latest={at:receipt.activatedAt,equityUsd:receipt.initialUsd,segment:latest.segment+1,kind:'epoch-start'};points.push(latest);}}
       const at = current ? Date.parse(current.times.generatedAt) : NaN;
       const market = current?.times.marketAt ? Date.parse(current.times.marketAt) : NaN;
       const reconciled = current?.times.reconciledAt ? Date.parse(current.times.reconciledAt) : NaN;

@@ -278,25 +278,29 @@ function financialPolicyCards(s){
  const ready=risk?.state==='ready',entry=risk?.entry,daily=risk?.daily,execution=policy?.version==='poe-paper-financial-policy-v1'?policy.execution:null,valuation=policy?.version==='poe-paper-financial-policy-v1'?policy.valuation:null;
  const observed=valuation?.lastObservation,usdObservation=observed?' SOL/USD last '+observed.outcome+' ('+observed.reasonCode+') at '+observed.completedAt+'; publication time unknown.':valuation?' SOL/USD not yet observed in this source instance.':'';
  const entryFoot=(entry?(ready?'':'Risk facts unavailable ('+risk.reasonCode+'). ')+'5% target cost as of '+risk.asOf+'; cash ceiling '+(ready?entry.cashLimitedConsumedCostSol??'unavailable':'unavailable')+' SOL before token rent/liquidity. Entry safeguards still apply.':'Policy unavailable from this source; legacy figures retained without assuming 5% sizing.')+usdObservation;
- const remaining=!ready?null:daily?.drawdownBps===null||daily?.drawdownBps===undefined?null:Math.max(0,daily.limitBps-daily.drawdownBps);
+ const dailyStopDisabled=risk?.version==='paper-equity-risk-v3-no-daily-stop-v1'&&daily?.limitBps===null;
+ const remaining=!ready||dailyStopDisabled?null:daily?.drawdownBps===null||daily?.drawdownBps===undefined?null:Math.max(0,daily.limitBps-daily.drawdownBps);
  const modelLast=execution?.last,modelTiming=modelLast?' Last observed RPC '+(modelLast.observedRpcMs??'unavailable')+' ms; modeled delay '+(modelLast.modeledDelayMs??'unavailable')+' ms; scenario fee '+(modelLast.feeSol??'unavailable')+' SOL; '+modelLast.stage+' ('+modelLast.reasonCode+') at '+modelLast.at+'.':'';
  const modelFoot=execution?execution.plans+' plans; '+execution.supportedLandingStates+' supported landing states, '+execution.preflightUnsubmitted+' preflight unsubmitted, '+execution.unknownLanding+' unknown, '+execution.legacyProtectionFallbacks+' legacy exit fallbacks. Current adapter preparations, not financial fills.'+modelTiming+(modelLast?.stage==='legacy-protection-fallback'?' Legacy exit model; v1 landing fidelity unavailable.':'')+' No chain landing or fee observed.':'Execution model unavailable from this source; historical PAPER records retain their original model.';
  const remainingLabel=daily?.lossPaused?'allowance latched; new entries paused':percent(remaining)+' / '+usd(ready?daily?.remainingBeforePauseMicroUsd:null);
- const drawdownFoot=daily?'HWM '+usd(daily.highWaterMicroUsd)+(daily.highWaterAt?' at '+daily.highWaterAt.slice(11,19)+' UTC':'')+' · remaining '+remainingLabel+'; '+(daily.lossPaused?'loss guard paused':'loss guard not latched')+'. USD equity includes SOL/USD; '+daily.day+' · '+daily.historyCoverage+'.':'Daily high-water and remaining allowance unavailable; no historical peak inferred.';
+ const drawdownFoot=daily?'HWM '+usd(daily.highWaterMicroUsd)+(daily.highWaterAt?' at '+daily.highWaterAt.slice(11,19)+' UTC':'')+(dailyStopDisabled?' · Daily loss stop disabled; informational drawdown remains measured.':' · remaining '+remainingLabel+'; '+(daily.lossPaused?'loss guard paused':'loss guard not latched')+'.')+' USD equity includes SOL/USD; '+daily.day+' · '+daily.historyCoverage+'.':'Daily high-water and remaining allowance unavailable; no historical peak inferred.';
  return [
  [entry?'NEXT PAPER ENTRY · 5% TARGET':'NEXT PAPER ENTRY POLICY',entry&&ready?usd(entry.targetConsumedCostMicroUsd):'Unavailable',entryFoot,null],
- [daily?'DAILY DRAWDOWN · 10% GUARD':'DAILY DRAWDOWN POLICY',daily?percent(ready?daily.drawdownBps:null)+' / '+percent(daily.limitBps):'Unavailable',drawdownFoot,null],
+ [daily?(dailyStopDisabled?'DAILY DRAWDOWN · INFORMATIONAL':'DAILY DRAWDOWN · 10% GUARD'):'DAILY DRAWDOWN POLICY',daily?percent(ready?daily.drawdownBps:null)+(dailyStopDisabled?'':' / '+percent(daily.limitBps)):'Unavailable',drawdownFoot,null],
  ['PAPER EXECUTION MODEL',execution?(modelLast?.stage==='legacy-protection-fallback'?'Legacy exit fallback':execution.state==='active'?'Active PAPER model':'Unavailable'):'Unavailable',modelFoot,null],
  ];
 }
 function renderCards(s){
  const b=s.balances,operating=!!s.intelligence,epoch=s.financialEpoch;const data=[
  ['PORTFOLIO EQUITY',money(b.equityUsd),'Includes passive SOL/USD valuation',b.equityUsd],
- [operating?'TOKEN TRADING P&L':'EQUITY CHANGE FROM INCEPTION',money(b.tradingPnlUsd),epoch?'Current epoch only; contribution excluded':operating?'Net token result translated at current SOL/USD':'Includes passive SOL/USD movement; not pure trading',b.tradingPnlUsd],
+ [operating?(epoch?'ACTIVE EPOCH TOKEN TRADING P&L':'TOKEN TRADING P&L'):'EQUITY CHANGE FROM INCEPTION',money(b.tradingPnlUsd),epoch?'Current epoch only; contribution excluded':operating?'Net token result translated at current SOL/USD':'Includes passive SOL/USD movement; not pure trading',b.tradingPnlUsd],
  ['CASH / RESERVED SOL',b.cashSol+' / '+b.reservedSol,'SOL · free cash / reservations',null],
  [operating?'TRADING AFTER OPERATING COSTS':'EQUITY CHANGE AFTER COSTS',money(b.economicPnlUsd),operating?'Current USD translation; unknown costs stay unavailable':'Includes passive SOL/USD movement',b.economicPnlUsd],
  [epoch?'EPOCH REALIZED TRADING P&L':'REALIZED TRADING P&L',money(b.realizedUsd),epoch?'Current epoch only; original outcomes retained':'Realized PAPER outcomes',b.realizedUsd],
  ['UNREALIZED TRADING P&L',money(b.unrealizedUsd),'Based on available marks',b.unrealizedUsd],
+ ...(s.lifetimeTrading?[[
+ 'LIFETIME TOKEN TRADING P&L',money(s.lifetimeTrading.currentUsdTranslation),'Original account across all epochs; net '+(s.lifetimeTrading.netSol??'unavailable')+' SOL. Capital contributions excluded; modeled execution costs included. Current SOL/USD translation.',s.lifetimeTrading.currentUsdTranslation
+ ]]:[]),
  ['MODELED EXECUTION COSTS',money(b.executionCostsUsd),'Simulated transaction costs',null],
  ['OPERATING COSTS',money(b.operatingCostsUsd),'Cost evidence: '+s.costLabels.operating,null],
  ['POSITION COST / EXPOSURE',money(b.positionCostUsd)+' / '+money(b.markedExposureUsd),'USD · cost / marked exposure',null],
@@ -305,8 +309,11 @@ function renderCards(s){
  ['INCEPTION REFERENCE',money(s.account.initialUsd),'Original October 26 virtual contribution; historical account retained',null],
  ...(epoch?[
  ['CURRENT PAPER EPOCH',epoch.contributionSol+' SOL','Activated '+epoch.activatedAt+'; verified baseline '+money(epoch.initialUsd)+' at '+money(epoch.solPriceUsd)+'/SOL',null],
- ['ORIGINAL EPOCH CLOSING EQUITY',epoch.priorEquitySol+' SOL','Archived cash '+epoch.priorArchivedCashSol+' SOL + deposits '+epoch.priorArchivedDepositsSol+' SOL; new10 SOL contribution is separate',null],
- ['ORIGINAL REALIZED TOKEN RESULT',epoch.priorRealizedPnlSol+' SOL','Historical recorded loss/profit remains intact; simulated fees '+epoch.priorExecutionCostsSol+' SOL',null]
+ [epoch.priorEpoch?'PRIOR V2 EPOCH CLOSING EQUITY':'ORIGINAL EPOCH CLOSING EQUITY',epoch.priorEquitySol+' SOL','Archived cash '+epoch.priorArchivedCashSol+' SOL + deposits '+epoch.priorArchivedDepositsSol+' SOL; new10 SOL contribution is separate',null],
+ ['LIFETIME REALIZED BEFORE ACTIVE EPOCH',epoch.priorRealizedPnlSol+' SOL','Historical recorded loss/profit remains intact; cumulative simulated fees '+epoch.priorExecutionCostsSol+' SOL',null],
+ ...(epoch.priorEpoch?[[
+ 'PRIOR V2 PAPER EPOCH',epoch.priorEpoch.contributionSol+' SOL','Activated '+epoch.priorEpoch.activatedAt+'; original closing equity '+epoch.priorEpoch.priorEquitySol+' SOL and original realized result '+epoch.priorEpoch.priorRealizedPnlSol+' SOL remain in the immutable receipt and exports.',null
+ ]]:[])
  ]:[])
  ];
  const p=byId('cards');p.replaceChildren();

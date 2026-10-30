@@ -1,13 +1,15 @@
 /** Small isolated integration adapter. Existing PaperLedger remains the sole
  * financial writer. Program-native evidence never becomes a blockchain order. */
 import type {MigrationIdentity} from './migration-identity.js';
-import {PaperLedger,OPERATING_FINANCIAL_READINESS_VERSION,TECHNICAL_PROTECTION_PAUSE_REASONS,type OperatingFinancialReadiness,type LedgerState,type UsdPrice} from './ledger.js';
+import {PaperLedger,OPERATING_FINANCIAL_READINESS_VERSION,TECHNICAL_PROTECTION_PAUSE_REASONS,dailyLossEntryBlocked,isV3PaperRiskState,type OperatingFinancialReadiness,type LedgerState,type UsdPrice,type Position,type Mark} from './ledger.js';
+import {createHash} from 'node:crypto';
 import {PaperTrader,TEMPORARY_ENTRY_READINESS_PAUSES,type TraderTickOptions} from './trader.js';
 import {PilotMarket} from './pilot-market.js';
 import type {PilotNativeFlow,PilotNativeFlowOptions} from './pilot-native-flow.js';
 import type {NativeAuditCertificate} from './native-candidate-runner.js';
-import {ADAPTIVE_PILOT_BINDING,type PilotBinding} from './pilot-contract.js';
-import {PROVISIONAL_RULE,assessPredictiveBuying} from './strategy.js';
+import {ADAPTIVE_PILOT_BINDING,LIQUIDITY_RESILIENT_PILOT_BINDING,type PilotBinding} from './pilot-contract.js';
+import {PROVISIONAL_RULE,assessPredictiveBuying,eventIdentity,type FlowFeatures,type NormalizedTrade} from './strategy.js';
+import {LIQUIDITY_RESILIENT_MOMENTUM_V3_VERSION,assessLiquidityResilientBuying,deriveV3Consolidation,v3CpmmSell,type V3AuditedFlow,type V3ConsolidationEvidence,type V3Evidence,type V3ExitInput,type V3MarketEvidence,type V3ReserveObservation} from './liquidity-resilient-momentum-v3.js';
 import {entryAgeEligible} from './observation-age.js';
 import {assessAdaptiveBuying,adaptiveMigrationEligible} from './adaptive-momentum-v2.js';
 import {NATIVE_PAPER_DATA_CONTRACT_VERSION,nativePaperEvidenceReady} from './native-paper-contract.js';
@@ -22,12 +24,13 @@ export type NativeTechnicalReevaluation={mint:string;reason:TechnicalReevaluatio
 export type NativePaperOptions={executionRealism?:true;operatingFinancialReadiness?:boolean;entryPreparationMaximumMs?:(at:number)=>number;ledger:PaperLedger;market:PilotMarket;binding:PilotBinding;source:Pick<PilotNativeFlow,'snapshot'|'usage'>;certificate:(mint:string,at:number)=>NativeAuditCertificate|null;record:RecordSource['record'];withProtectionWork?:<T>(work:()=>Promise<T>)=>Promise<T>;withFinancialExecutionWork?:<T>(work:()=>Promise<T>)=>Promise<T>;admitNewRisk?:(at:number)=>boolean;admitFinancialReadiness?:(at:number)=>boolean;internalShutdownRecovery?:(at:number)=>ReturnType<PaperLedger['internalShutdownRecoveryProof']>;now?:()=>number;restoredPools?:Readonly<Record<string,NativePaperPool>>;fixtureAccountBinding?:OperatingAccountBinding;pinQualification?:(proof:NativeQualificationProof)=>void;onTechnicalReevaluation?:(request:NativeTechnicalReevaluation)=>void;onEvaluationComplete?:(mint:string,at:number)=>void};
 function need(value:unknown,reason:string):asserts value{if(!value)throw Error(reason);}
 export const NATIVE_PAPER_FINANCIAL_READINESS_POLICY=Object.freeze({version:'native-paper-general-arming-internal-checkpoint-v2',targetMs:1000,maximumReconciliationAgeMs:2000,timerMs:250,localHeadroomMs:250,usdMaximumAgeMs:10000,marketEvidence:'original audited windowEndAt <= 2000ms after mandatory assessment record, before normal weak-candidate retirement; no price or executable quote claimed',internalStopRecovery:'bounded ordered original-account known-run control provenance; no owner/unknown/hard safety intent',operatingFinancialReadinessVersion:OPERATING_FINANCIAL_READINESS_VERSION,operatingFinancialPermission:'Current cash or complete exact-size held inventory plus original verified bank Clock, fresh USD/reconciliation and current financial admission; no candidate window or qualification asserted',generalPermission:'financial authorization independent of individual candidate qualification, queued work, physical RPC occupancy and position capacity; actual entry admission remains separate',recoverablePauseReasons:TEMPORARY_ENTRY_READINESS_PAUSES});
-export const NATIVE_PAPER_ENTRY_BLOCKERS=Object.freeze({manual:'POE_ENTRY_MANUAL_PAUSE',stop:'POE_ENTRY_SAFE_STOP',loss:'POE_ENTRY_DAILY_LOSS',uncertainty:'POE_ENTRY_FINANCIAL_UNCERTAINTY',evidence:'POE_ENTRY_EVIDENCE_UNAVAILABLE',usd:'POE_ENTRY_USD_UNAVAILABLE',liquidation:'POE_ENTRY_LIQUIDATION_UNAVAILABLE',reconciliationRequired:'POE_ENTRY_RECONCILIATION_REQUIRED',reconciliationStale:'POE_ENTRY_RECONCILIATION_STALE',provider:'POE_ENTRY_PROVIDER_UNAVAILABLE',source:'POE_ENTRY_SOURCE_UNAVAILABLE',monitoring:'POE_ENTRY_MONITORING_UNAVAILABLE',readiness:'POE_ENTRY_READINESS_REQUIRED',protection:'POE_ENTRY_PROTECTION_RECOVERY_REQUIRED',paused:'POE_ENTRY_FINANCIAL_PAUSED'} as const);
+export const NATIVE_PAPER_ENTRY_BLOCKERS=Object.freeze({manual:'POE_ENTRY_MANUAL_PAUSE',stop:'POE_ENTRY_SAFE_STOP',loss:'POE_ENTRY_DAILY_LOSS',policy:'POE_ENTRY_RISK_POLICY_REQUIRED',uncertainty:'POE_ENTRY_FINANCIAL_UNCERTAINTY',evidence:'POE_ENTRY_EVIDENCE_UNAVAILABLE',usd:'POE_ENTRY_USD_UNAVAILABLE',liquidation:'POE_ENTRY_LIQUIDATION_UNAVAILABLE',reconciliationRequired:'POE_ENTRY_RECONCILIATION_REQUIRED',reconciliationStale:'POE_ENTRY_RECONCILIATION_STALE',provider:'POE_ENTRY_PROVIDER_UNAVAILABLE',source:'POE_ENTRY_SOURCE_UNAVAILABLE',monitoring:'POE_ENTRY_MONITORING_UNAVAILABLE',readiness:'POE_ENTRY_READINESS_REQUIRED',protection:'POE_ENTRY_PROTECTION_RECOVERY_REQUIRED',paused:'POE_ENTRY_FINANCIAL_PAUSED'} as const);
 export const NATIVE_PAPER_PROTECTION_PAUSE_REASONS=TECHNICAL_PROTECTION_PAUSE_REASONS;
 const INTERNAL_STOP_DIAGNOSTIC_CODES=['INTERNAL_SHUTDOWN_NOT_EVALUATED','INTERNAL_SHUTDOWN_VERIFIED','INTERNAL_SHUTDOWN_PROOF_TIME','INTERNAL_SHUTDOWN_NOT_REQUESTED','INTERNAL_SHUTDOWN_RUN_SET','INTERNAL_SHUTDOWN_RUN_TIME','INTERNAL_SHUTDOWN_INCEPTION','INTERNAL_SHUTDOWN_HISTORY_MALFORMED','INTERNAL_SHUTDOWN_HISTORY_BOUND','INTERNAL_SHUTDOWN_OWNER_OR_UNKNOWN_STOP','INTERNAL_SHUTDOWN_STOP_BOUND','INTERNAL_SHUTDOWN_HARD_OR_UNKNOWN_PAUSE','INTERNAL_SHUTDOWN_CHAIN_ABSENT','INTERNAL_SHUTDOWN_STATE_CHANGED'] as const;
-export function nativePaperDerivedEntryBlocker(input:{at:number;state:LedgerState;projection:ReturnType<PaperLedger['projection']>;safety:ReturnType<PaperTrader['entryReadinessSafety']>;manualPaused?:boolean;safeStopRequested?:boolean;evidenceAvailable?:boolean;providerAvailable?:boolean;sourceAvailable?:boolean;monitoringAvailable?:boolean;candidateEvidenceReady?:boolean}){
+export function nativePaperDerivedEntryBlocker(input:{at:number;state:LedgerState;projection:ReturnType<PaperLedger['projection']>;safety:ReturnType<PaperTrader['entryReadinessSafety']>;requireV3Policy?:boolean;manualPaused?:boolean;safeStopRequested?:boolean;evidenceAvailable?:boolean;providerAvailable?:boolean;sourceAvailable?:boolean;monitoringAvailable?:boolean;candidateEvidenceReady?:boolean}){
  const {at,state:s,projection:p,safety}=input,b=NATIVE_PAPER_ENTRY_BLOCKERS;
- if(input.safeStopRequested||s.controls.stopRequested)return b.stop;if(input.manualPaused)return b.manual;if(s.daily.lossPaused)return b.loss;
+ if(input.safeStopRequested||s.controls.stopRequested)return b.stop;if(input.manualPaused)return b.manual;if(dailyLossEntryBlocked(s))return b.loss;
+ if(input.requireV3Policy&&!isV3PaperRiskState(s))return b.policy;
  if(!safety.recoveryComplete||!safety.idle||!safety.financialAvailable||safety.uncertainActions>0)return b.uncertainty;if(!safety.evidenceAvailable||input.evidenceAvailable===false)return b.evidence;
  if(!p.usdValuationAvailable)return b.usd;if(p.unknownMarks)return b.liquidation;
  if(s.daily.day!==new Date(at).toISOString().slice(0,10)||s.daily.reconciledAt<=0||s.daily.reconciledAt>at)return b.reconciliationRequired;
@@ -37,12 +40,15 @@ export function nativePaperDerivedEntryBlocker(input:{at:number;state:LedgerStat
  return null;
 }
 export class NativePaper {
- readonly trader:PaperTrader;private readonly adaptive:boolean;private readonly now:()=>number;private readonly maximumPositions:PilotBinding['maxPositions'];private readonly pools=new Map<string,NativePaperPool>();private readonly retired=new Set<string>();private readonly lastCandidateBucket=new Map<string,number>();
+ readonly trader:PaperTrader;private readonly adaptive:boolean;private readonly resilient:boolean;private readonly now:()=>number;private readonly maximumPositions:PilotBinding['maxPositions'];private readonly pools=new Map<string,NativePaperPool>();private readonly retired=new Set<string>();private readonly lastCandidateBucket=new Map<string,number>();
+ private readonly v3Trades=new Map<string,Map<string,{trade:NormalizedTrade;reserve:V3ReserveObservation|null;inventory:NonNullable<V3AuditedFlow['observedWalletInventory']>[number]|null}>>();
+ private readonly v3Consolidation=new Map<string,V3ConsolidationEvidence[]>();
+ private readonly v3PriorHeldReserves=new Map<string,{units:string;roundTripId:string;at:number;raw:string}>();
  private context:ExecutionContext={price:null,marks:{}};
  private internalStopDiagnostic:{code:typeof INTERNAL_STOP_DIAGNOSTIC_CODES[number];at:number|null;lastSuccessfulResumeRevision:number|null;knownStopCount:number|null}={code:'INTERNAL_SHUTDOWN_NOT_EVALUATED',at:null,lastSuccessfulResumeRevision:null,knownStopCount:null};
  private readonly internalStopRefusalCounts:Partial<Record<typeof INTERNAL_STOP_DIAGNOSTIC_CODES[number],number>>={};
  constructor(private readonly options:NativePaperOptions){
-  this.now=options.now??Date.now;this.adaptive=options.binding.version===ADAPTIVE_PILOT_BINDING.version;this.maximumPositions=options.binding.maxPositions;const state=options.ledger.state();assertNativePaperAccount(state,options.fixtureAccountBinding);
+  this.now=options.now??Date.now;this.resilient=options.binding.version===LIQUIDITY_RESILIENT_PILOT_BINDING.version;this.adaptive=this.resilient||options.binding.version===ADAPTIVE_PILOT_BINDING.version;this.maximumPositions=options.binding.maxPositions;const state=options.ledger.state();assertNativePaperAccount(state,options.fixtureAccountBinding);
   for(const [mint,pool]of Object.entries(options.restoredPools??{}))if(state.positions[mint]||Object.values(state.pending).some(o=>o.mint===mint))this.register(pool.identity,pool.evidence);
   for(const mint of new Set([...Object.keys(state.positions),...Object.values(state.pending).map(o=>o.mint)]))need(this.pools.has(mint),'NATIVE_PAPER_OWNED_POOL_PROOF_REQUIRED');
   // Ordinary ticks validate/sanitize this read and reconcile in PaperTrader.
@@ -56,8 +62,8 @@ export class NativePaper {
    return options.withFinancialExecutionWork?options.withFinancialExecutionWork(()=>options.market.executionQuote(request,signal)):options.market.executionQuote(request,signal);
   };
   if(options.executionRealism)need(options.market.executionRealismEnabled(),'NATIVE_PAPER_EXECUTION_MODEL_REQUIRED');
-  this.trader=new PaperTrader({ledger:options.ledger,now:this.now,...(options.executionRealism?{executionPlan:(order)=>options.market.executionPlan(order)}:{}),context,quote:options.market.quote,costs:{gasLamports:'7000',depositLamports:'0',slippageBps:100,evidence:'Frozen isolated PAPER fees/delay; program-native data contract '+NATIVE_PAPER_DATA_CONTRACT_VERSION},recorder:{record:options.record},flowVerification:{verified:true,evidence:NATIVE_PAPER_DATA_CONTRACT_VERSION},predictiveDiagnostics:true,deferPredictivelyRejectedQuotes:true,candidateReadiness:(mint,at)=>this.options.admitNewRisk?.(at)===true&&this.ready(mint,at)&&this.entryAge(mint,at),predictiveReadiness:(mint,at)=>this.ready(mint,at),experimentalPilot:options.binding,operatingAccount:options.fixtureAccountBinding?undefined:true,pilotExecution:{context:executionContext,quote:executionQuote},timeoutMs:3000,...(this.adaptive?{adaptiveMomentumV2:true as const}:{})});
-  this.trader.start();options.record('native-paper-start',{at:this.now(),accountId:state.accountId,inceptionAt:state.inceptionAt,contract:NATIVE_PAPER_DATA_CONTRACT_VERSION,sourceContract:options.source.usage().dataContract,strategyVersion:options.binding.version,strategyMode:this.adaptive?'adaptive-momentum-v2':'baseline',liveTradingEnabled:false,capitalInitialized:false});
+  this.trader=new PaperTrader({ledger:options.ledger,now:this.now,...(this.resilient?{maximumCandidates:4}:{}),...(options.executionRealism?{executionPlan:(order)=>options.market.executionPlan(order)}:{}),context,quote:options.market.quote,costs:{gasLamports:'7000',depositLamports:'0',slippageBps:100,evidence:'Frozen isolated PAPER fees/delay; program-native data contract '+NATIVE_PAPER_DATA_CONTRACT_VERSION},recorder:{record:options.record},flowVerification:{verified:true,evidence:NATIVE_PAPER_DATA_CONTRACT_VERSION},predictiveDiagnostics:true,deferPredictivelyRejectedQuotes:true,candidateReadiness:(mint,at)=>this.options.admitNewRisk?.(at)===true&&this.ready(mint,at)&&this.entryAge(mint,at),predictiveReadiness:(mint,at)=>this.ready(mint,at),experimentalPilot:options.binding,operatingAccount:options.fixtureAccountBinding?undefined:true,pilotExecution:{context:executionContext,quote:executionQuote},timeoutMs:3000,...(this.resilient?{liquidityResilientMomentumV3:true as const,v3Evidence:(mint:string,at:number,market?:V3MarketEvidence)=>this.v3Evidence(mint,at,market),v3HoldingEvidence:(position:Position,mark:Mark|null,at:number)=>this.v3HoldingEvidence(position,mark,at)}:this.adaptive?{adaptiveMomentumV2:true as const}:{})});
+  this.trader.start();options.record('native-paper-start',{at:this.now(),accountId:state.accountId,inceptionAt:state.inceptionAt,contract:NATIVE_PAPER_DATA_CONTRACT_VERSION,sourceContract:options.source.usage().dataContract,strategyVersion:options.binding.version,strategyMode:this.resilient?LIQUIDITY_RESILIENT_MOMENTUM_V3_VERSION:this.adaptive?'adaptive-momentum-v2':'baseline',liveTradingEnabled:false,capitalInitialized:false});
  }
  private entryAge(mint:string,at:number){const pool=this.pools.get(mint);if(!pool)return false;const migrationAt=pool.identity.chainBlockTime*1000;return this.adaptive?adaptiveMigrationEligible(migrationAt,true,at):entryAgeEligible(migrationAt,at);}
  private entryHistory(mint:string,at:number,windowEndAt?:number){
@@ -65,20 +71,51 @@ export class NativePaper {
   const end=windowEndAt??this.trader.candidateFeatures(mint,at)?.windowEndAt;
   return end!==undefined&&this.options.ledger.entryEligibility(mint,this.options.binding.version,end,at).allowed;
  }
- private assessment(features:ReturnType<PaperTrader['candidateFeatures']>,at:number){return features?(this.adaptive?assessAdaptiveBuying(features,at):assessPredictiveBuying(features,at)):null;}
+ private assessment(features:ReturnType<PaperTrader['candidateFeatures']>,at:number){return features?(this.resilient?assessLiquidityResilientBuying(features,at,this.v3Evidence(features.mint,at)??undefined):this.adaptive?assessAdaptiveBuying(features,at):assessPredictiveBuying(features,at)):null;}
+ candidateAssessment=(mint:string,features:FlowFeatures,at:number)=>assessLiquidityResilientBuying(features,at,this.v3Evidence(mint,at)??undefined);
+ private v3Evidence(mint:string,at:number,market?:V3MarketEvidence):V3Evidence|null{
+  const features=this.trader?.candidateFeatures(mint,at),pool=this.pools.get(mint),certificate=this.options.certificate(mint,at);
+  if(!this.resilient||!features||!pool||!certificate||!this.ready(mint,at))return null;
+  const rows=[...(this.v3Trades.get(mint)?.values()??[])].filter(row=>row.trade.receivedAt>=features.windowStartAt&&row.trade.receivedAt<features.windowEndAt).sort((a,b)=>a.trade.receivedAt-b.trade.receivedAt);
+  const prior=this.v3Consolidation.get(mint)??[],auditEvidence='native-audit:'+createHash('sha256').update(JSON.stringify(certificate)).digest('hex');
+  const flow:V3AuditedFlow={mint,pool:pool.identity.pool,windowStartAt:features.windowStartAt,windowEndAt:features.windowEndAt,auditedAt:certificate.auditAvailableAt,auditEvidence,complete:true,
+   trades:rows.map(row=>structuredClone(row.trade)),reserveObservations:rows.flatMap(row=>row.reserve?[structuredClone(row.reserve)]:[]),observedWalletInventory:rows.flatMap(row=>row.inventory?[structuredClone(row.inventory)]:[]),
+   ...(prior.findLast(row=>row.windowEndAt<=features.windowStartAt)?{priorConsolidation:structuredClone(prior.findLast(row=>row.windowEndAt<=features.windowStartAt)!)}:{})};
+  if(!prior.some(row=>row.windowEndAt===features.windowEndAt)){
+   const measured=deriveV3Consolidation(features,flow,at);if(measured){prior.push(measured);if(prior.length>12)prior.shift();this.v3Consolidation.set(mint,prior);}
+  }
+  // The pure strategy verifies every trade and aggregate, including count and
+  // identities; a sampled/overflown local series cannot pass as complete flow.
+  return {flow,...(market?{market}:{})};
+ }
+ private v3HoldingEvidence(position:Position,mark:Mark|null,at:number):Pick<V3ExitInput,'liquidityContext'|'flowContext'>{
+  const evidence:Pick<V3ExitInput,'liquidityContext'|'flowContext'>={},q=mark?this.options.market.currentObservation(position.mint,position.units):null;
+  if(mark&&q&&Date.parse(q.receivedAt)===mark.at&&q.sell.inputBaseUnits===position.units){
+   try{
+    const pool={base:BigInt(q.rawBaseReserve),raw:BigInt(q.rawQuoteReserve),virtual:BigInt(q.virtualQuoteReserves),buckets:BigInt(q.feeBuckets),fees:{lpFeeBps:Number(q.feeBps.lpFeeBps),protocolFeeBps:Number(q.feeBps.protocolFeeBps),creatorFeeBps:q.creatorFeeApplied?Number(q.feeBps.creatorFeeBps):0}};
+    const prior=this.v3PriorHeldReserves.get(position.mint),same=prior?.units===position.units&&prior.roundTripId===position.strategy?.roundTripId;
+    const stressedPool=v3CpmmSell(pool,(pool.base+99n)/100n).pool,stressedGross=v3CpmmSell(stressedPool,BigInt(position.units)).output,gas=BigInt(this.options.market.gasLamports);
+    evidence.liquidityContext={at:mark.at,evidence:mark.evidence,pricedBaseUnits:position.units,immediateNetLamports:mark.netLamports,stressedNetLamports:(stressedGross>gas?stressedGross-gas:0n).toString(),rawQuoteReserveLamports:q.rawQuoteReserve,...(same&&prior.at<mark.at?{priorRawQuoteReserveLamports:prior.raw}:{})};
+    if(!same||prior.at<mark.at)this.v3PriorHeldReserves.set(position.mint,{units:position.units,roundTripId:position.strategy?.roundTripId??'',at:mark.at,raw:q.rawQuoteReserve});
+   }catch{/* A failed declared stress is unknown; never an invented valuation. */}
+  }
+  const flow=this.v3Evidence(position.mint,at)?.flow,features=this.trader.candidateFeatures(position.mint,at);
+  if(flow&&features){const recent=flow.trades.filter(t=>t.receivedAt>=flow.windowEndAt-30000).reduce((sum,t)=>sum+(t.side==='buy'?1n:-1n)*BigInt(t.quoteLamports),0n);evidence.flowContext={at:flow.windowEndAt,availableAt:flow.auditedAt,evidence:flow.auditEvidence,complete:true,netBuyLamports:features.netBuyLamports,recentNetBuyLamports:recent.toString(),priceReturnBps:features.priceReturnBps};}
+  return evidence;
+ }
  private register(identity:MigrationIdentity,evidence='independently decoded finalized migration identity'){
   const prior=this.pools.get(identity.baseMint);need(!prior||prior.identity.pool===identity.pool&&prior.identity.signature===identity.signature,'NATIVE_PAPER_POOL_IDENTITY_CHANGED');
   this.options.market.registerPool({mint:identity.baseMint,migrationSlot:identity.slot,migrationVerified:true,evidence});this.pools.set(identity.baseMint,{identity:structuredClone(identity),evidence});
  }
  allocated=(identity:MigrationIdentity)=>{this.register(identity);this.retired.delete(identity.baseMint);this.trader.admit({mint:identity.baseMint,migrationAt:identity.chainBlockTime*1000,migrationVerified:true,supportedPool:true,evidence:'native verified origin '+identity.signature});};
- opened=(row:{mint:string;at:number})=>{if(!this.pools.has(row.mint))return;this.trader.activateFlow(row.mint,'native actual confirmed subscription ACK',row.at);};
- trade: PilotNativeFlowOptions['onTrade']=row=>{if(!this.pools.has(row.trade.mint))return;this.trader.ingest(row.trade,'curve');this.slot(row.trade.mint,row.trade.slot!);};
+ opened=(row:{mint:string;at:number})=>{if(!this.pools.has(row.mint))return;this.v3Trades.delete(row.mint);this.v3Consolidation.delete(row.mint);this.trader.activateFlow(row.mint,'native actual confirmed subscription ACK',row.at);};
+ trade: PilotNativeFlowOptions['onTrade']=row=>{if(!this.pools.has(row.trade.mint))return;this.trader.ingest(row.trade,'curve');this.slot(row.trade.mint,row.trade.slot!);if(this.resilient){const rows=this.v3Trades.get(row.trade.mint)??new Map(),key=eventIdentity(row.trade.identity),cutoff=Math.floor(row.trade.receivedAt/PROVISIONAL_RULE.bucketMs)*PROVISIONAL_RULE.bucketMs-PROVISIONAL_RULE.windowMs;for(const [id,item]of rows){if(item.trade.receivedAt<cutoff)rows.delete(id);else break;}if(!rows.has(key)&&rows.size>=4096){this.gap({mint:row.trade.mint,at:row.validatedAt,reason:'V3_COMPLETE_TRADE_RETENTION_UNAVAILABLE'});return;}rows.delete(key);rows.set(key,{trade:structuredClone(row.trade),reserve:row.evidence.reserveObservation?{...row.evidence.reserveObservation,at:row.trade.receivedAt,evidence:row.evidence.eventBytesSha256}:null,inventory:row.evidence.userBaseTokenReserveUnits===undefined||!row.evidence.userBaseTokenAccount||row.evidence.userBaseTokenAccount==='11111111111111111111111111111111'?null:{wallet:row.evidence.trader,baseUnits:row.evidence.userBaseTokenReserveUnits,at:row.trade.receivedAt,evidence:row.evidence.eventBytesSha256,tokenAccount:row.evidence.userBaseTokenAccount,eventIdentity:key,balanceTiming:'before-trade' as const}});this.v3Trades.set(row.trade.mint,rows);}};
  protocol:NonNullable<PilotNativeFlowOptions['onProtocolEffect']>=row=>{if(this.pools.has(row.mint))this.slot(row.mint,row.slot);};
  private slot(mint:string,slot:number){this.options.market.minimumSlot(mint,slot);if(this.trader.hasCandidate(mint))this.trader.noteCandidateSlot(mint,slot);}
- gap=(row:{mint?:string;at:number;reason:string})=>{const mints=row.mint?[row.mint]:[...this.pools.keys()];for(const mint of mints)if(this.trader.hasCandidate(mint))this.trader.candidateGap(mint,row.reason);};
+ gap=(row:{mint?:string;at:number;reason:string})=>{const mints=row.mint?[row.mint]:[...this.pools.keys()];for(const mint of mints){this.v3Trades.delete(mint);this.v3Consolidation.delete(mint);if(this.trader.hasCandidate(mint))this.trader.candidateGap(mint,row.reason);}};
  retiredCandidate=(mint:string,reason:string)=>{this.gap({mint,at:this.now(),reason});this.retired.add(mint);};
  ownership=(mint:string):'HELD'|'ENTRY_PENDING'|null=>{const state=this.options.ledger.state();return state.positions[mint]?'HELD':Object.values(state.pending).some(o=>o.mint===mint)?'ENTRY_PENDING':null;};
- private entryCapacity(){const state=this.options.ledger.state(),heldPositions=Object.keys(state.positions).length,pendingBuyOrders=Object.values(state.pending).filter(o=>o.side==='buy').length;return {heldPositions,pendingBuyOrders,maximumPositions:this.maximumPositions,available:heldPositions+pendingBuyOrders<this.maximumPositions};}
+ private entryCapacity(){const state=this.options.ledger.state(),heldPositions=Object.keys(state.positions).length,pendingBuyOrders=Object.values(state.pending).filter(o=>o.side==='buy').length;return {heldPositions,pendingBuyOrders,maximumPositions:this.maximumPositions,available:this.maximumPositions===null?this.options.ledger.v3RiskPolicyActive():heldPositions+pendingBuyOrders<this.maximumPositions};}
  ready(mint:string,at=this.now()){
   const view=this.options.source.snapshot(mint,at),certificate=this.options.certificate(mint,at),pool=this.pools.get(mint),features=this.trader.candidateFeatures(mint,at);
   return !!(view&&pool&&nativePaperEvidenceReady({contractVersion:NATIVE_PAPER_DATA_CONTRACT_VERSION,certificate,at,mint,pool:pool.identity.pool,dataContract:view.dataContract,openedAt:view.openedAt,connectionId:view.connectionId,subscriptionId:view.subscription,features,connected:view.connected,sourceSupportFresh:view.sourceSupportFresh,hasQualityLoss:view.hasQualityLoss}));
@@ -113,7 +150,8 @@ export class NativePaper {
   * by cash readiness; ordinary temporary preparation pauses remain retryable. */
  private candidateEntryAuthority(){
   const state=this.options.ledger.state(),safety=this.trader.entryReadinessSafety();
-  if(state.daily.lossPaused||!safety.recoveryComplete||!safety.idle||!safety.evidenceAvailable||!safety.financialAvailable||safety.uncertainActions||safety.newHardPauseObserved)return false;
+  if(this.resilient&&!this.options.ledger.v3RiskPolicyActive())return false;
+  if(dailyLossEntryBlocked(state)||!safety.recoveryComplete||!safety.idle||!safety.evidenceAvailable||!safety.financialAvailable||safety.uncertainActions||safety.newHardPauseObserved)return false;
   const proof=(state.controls.stopRequested||!safety.automaticRecoveryAllowed)?this.options.internalShutdownRecovery?.(this.now()):null;
   const provedInternal=proof?.verified===true&&proof.stateRevision===state.revision&&proof.accountId===state.accountId&&proof.inceptionAt===state.inceptionAt;
   if(state.controls.stopRequested&&!provedInternal||!safety.automaticRecoveryAllowed&&!provedInternal)return false;
@@ -173,11 +211,12 @@ export class NativePaper {
   const technicalAuthority=this.options.operatingFinancialReadiness&&NATIVE_PAPER_PROTECTION_PAUSE_REASONS.includes(state.controls.reason as never)?this.options.ledger.technicalProtectionRecoveryAuthority(at):null;
   const refuse=(reasonCode:string,resetTechnical=true)=>{if(resetTechnical&&technicalAuthority?.verified)this.trader.technicalProtectionRecoveryProof(technicalAuthority,false,at);return {kind:'not-ready' as const,recovered:false,reasonCode};};
   if(!this.options.operatingFinancialReadiness)return refuse('OPERATING_READINESS_NOT_SELECTED');
+  if(this.resilient&&!this.options.ledger.v3RiskPolicyActive())return refuse('OPERATING_READINESS_V3_EPOCH_AND_POLICY_REQUIRED');
   if(Object.keys(state.pending).length||!safety.idle||this.options.market.retirementReady?.()===false){refuse('OPERATING_READINESS_FINANCIAL_WORK_ACTIVE');return {kind:'busy' as const,recovered:false};}
   if(!recover||state.controls.entriesEnabled)return refuse('OPERATING_READINESS_NOT_REQUIRED');
   const technicalAllowed=technicalAuthority?.verified===true;
   if(state.controls.stopRequested||(!safety.automaticRecoveryAllowed||safety.newHardPauseObserved||!NATIVE_PAPER_FINANCIAL_READINESS_POLICY.recoverablePauseReasons.includes(state.controls.reason as never))&&!technicalAllowed)return refuse('OPERATING_READINESS_OWNER_OR_HARD_CONTROL');
-  if(state.daily.lossPaused)return refuse('OPERATING_READINESS_DAILY_LOSS');
+  if(dailyLossEntryBlocked(state))return refuse('OPERATING_READINESS_DAILY_LOSS');
   if(!safety.recoveryComplete||!safety.evidenceAvailable||!safety.financialAvailable||safety.uncertainActions)return refuse('OPERATING_READINESS_FINANCIAL_OR_EVIDENCE_UNAVAILABLE');
   const admission=this.options.admitFinancialReadiness??this.options.admitNewRisk;if(admission?.(at)!==true)return refuse('OPERATING_READINESS_CURRENT_ADMISSION_UNAVAILABLE');
   if(!price||!Number.isSafeInteger(price.at)||price.at<0||price.at>at||at-price.at>NATIVE_PAPER_FINANCIAL_READINESS_POLICY.usdMaximumAgeMs||typeof price.microUsdPerSol!=='string'||!/^([1-9][0-9]{0,38})$/.test(price.microUsdPerSol)||typeof price.source!=='string'||!price.source||price.source.length>512||/[\u0000-\u001f]/.test(price.source)||state.daily.reconciledAt<=0||state.daily.reconciledAt>at||at-state.daily.reconciledAt>NATIVE_PAPER_FINANCIAL_READINESS_POLICY.maximumReconciliationAgeMs)return refuse('OPERATING_READINESS_FRESH_FINANCE_REQUIRED');
@@ -221,7 +260,7 @@ export class NativePaper {
   const when=this.now();if(!currentPrice(when)||when-at>NATIVE_PAPER_FINANCIAL_READINESS_POLICY.maximumReconciliationAgeMs)return {kind:'reconciled' as const,recovered:false};
   const current=this.options.ledger.state(),freshSafety=this.trader.entryReadinessSafety(),financialAdmission=this.options.admitFinancialReadiness??this.options.admitNewRisk;
   if(this.options.operatingFinancialReadiness&&!current.controls.stopRequested)return this.maintainOperatingFinancialReadiness(price,recover);
-  if(!recover||current.controls.entriesEnabled||current.daily.lossPaused||!freshSafety.recoveryComplete||!freshSafety.evidenceAvailable||!freshSafety.financialAvailable||freshSafety.uncertainActions||financialAdmission?.(when)!==true)return {kind:'reconciled' as const,recovered:false};
+  if(!recover||this.resilient&&!this.options.ledger.v3RiskPolicyActive()||current.controls.entriesEnabled||dailyLossEntryBlocked(current)||!freshSafety.recoveryComplete||!freshSafety.evidenceAvailable||!freshSafety.financialAvailable||freshSafety.uncertainActions||financialAdmission?.(when)!==true)return {kind:'reconciled' as const,recovered:false};
   for(const [mint,pool]of this.pools){
    if(freshlyAuditedMint!==undefined&&mint!==freshlyAuditedMint)continue;
    const now=this.now(),certificate=this.options.certificate(mint,now);if(!currentPrice(now)||!certificate||certificate.windowEndAt>now||now-certificate.windowEndAt>NATIVE_PAPER_FINANCIAL_READINESS_POLICY.maximumReconciliationAgeMs||!this.entryHistory(mint,now,certificate.windowEndAt)||!this.entryAge(mint,now)||!this.ready(mint,now)||financialAdmission?.(now)!==true)continue;

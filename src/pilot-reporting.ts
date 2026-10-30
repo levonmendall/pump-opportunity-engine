@@ -1,7 +1,7 @@
 /** Bounded, pure projection of the isolated PAPER account. No provider, writer or publisher. */
-import {financialEpochReport,type FinancialEpochReport} from './financial-epoch-reporting.js';
+import {financialEpochLineage,financialEpochReport,type FinancialEpochReport} from './financial-epoch-reporting.js';
 import {assertPoeOperatingAccount} from './poe-operating-account.js';
-import {operatingPnlReporting} from './operating-pnl-reporting.js';
+import {lifetimeTradingReporting,operatingPnlReporting} from './operating-pnl-reporting.js';
 import {createHash} from 'node:crypto';
 import {validateOperatingReportingHistory,type LedgerState,type Mark,type PaperLedger,type ReportingHistory,type ReportingPoint,type UsdPrice} from './ledger.js';
 import {validateSnapshot,validateReportingTradeCache,reportingFilledTrade,type ReportingFilledTrade,type ReportingTradeCache,type ReportingIdentity,type Snapshot} from './reporting.js';
@@ -68,7 +68,7 @@ export function pilotExperimentalAccounting(input:ValuationInput){const {state:s
  * unchanged; omitted samples remain an explicit chart gap after inception. */
 export function boundOperatingSnapshot(snapshot:Snapshot):Snapshot{
  if(Buffer.byteLength(JSON.stringify(snapshot))<=96*1024)return snapshot;
- const last=snapshot.pnl.slice(-180),initial=snapshot.pnl.slice(0,2),epoch=snapshot.financialEpoch?Date.parse(snapshot.financialEpoch.activatedAt):null,boundary=epoch===null?[]:snapshot.pnl.filter(p=>Math.abs(Date.parse(p.at)-epoch)<=1),pnl=[...new Map([...initial,...boundary,...last].map(p=>[p.at,p])).values()].sort((a,b)=>Date.parse(a.at)-Date.parse(b.at));
+ const last=snapshot.pnl.slice(-180),initial=snapshot.pnl.slice(0,2),epochs=snapshot.financialEpoch?financialEpochLineage(snapshot.financialEpoch).map(e=>Date.parse(e.activatedAt)):[],boundary=snapshot.pnl.filter(p=>epochs.some(epoch=>Math.abs(Date.parse(p.at)-epoch)<=1)),pnl=[...new Map([...initial,...boundary,...last].map(p=>[p.at,p])).values()].sort((a,b)=>Date.parse(a.at)-Date.parse(b.at));
  return {...snapshot,decisions:snapshot.decisions.slice(-20),trades:snapshot.trades.slice(0,20),pnl,history:{...snapshot.history,downsampled:true,label:'PUBLIC WINDOW LIMITED; durable ledger retained. Actual samples, explicit gaps. Trading SOL at current USD; passive SOL separate. Pre-cutover and historical USD/gas unknown. Latest bounded fills/decisions.'}};
 }
 
@@ -76,11 +76,14 @@ export function boundOperatingSnapshot(snapshot:Snapshot):Snapshot{
  * Keep original observations, break interpolation, and never classify capital
  * restatement as a token return. Financial journal/history rows are untouched. */
 export function epochOperatingPnlHistory(points:Snapshot['pnl'],epoch:FinancialEpochReport|undefined):Snapshot['pnl']{
- if(!epoch)return points;const started=Date.parse(epoch.activatedAt),values=new Map(points.map(p=>[Date.parse(p.at),p]));
- const prior=points.filter(p=>Date.parse(p.at)<started).at(-1),existing=values.get(started);
- if(existing?.tradingUsd!==undefined&&existing.tradingUsd!==null&&existing.tradingUsd!==0)throw Error('epoch trading baseline conflict');
- if(prior&&Date.parse(prior.at)<started-1)values.set(started-1,{at:iso(started-1),tradingUsd:null,economicUsd:null});
- values.set(started,{at:epoch.activatedAt,tradingUsd:0,economicUsd:existing?.economicUsd??null});
+ if(!epoch)return points;
+ const values=new Map(points.map(p=>[Date.parse(p.at),p]));
+ for(const receipt of financialEpochLineage(epoch)){
+  const started=Date.parse(receipt.activatedAt),prior=[...values.entries()].filter(([at])=>at<started).sort((a,b)=>a[0]-b[0]).at(-1)?.[1],existing=values.get(started);
+  if(existing?.tradingUsd!==undefined&&existing.tradingUsd!==null&&existing.tradingUsd!==0)throw Error('epoch trading baseline conflict');
+  if(prior&&Date.parse(prior.at)<started-1)values.set(started-1,{at:iso(started-1),tradingUsd:null,economicUsd:null});
+  values.set(started,{at:receipt.activatedAt,tradingUsd:0,economicUsd:existing?.economicUsd??null});
+ }
  return [...values.entries()].sort((a,b)=>a[0]-b[0]).map(([,point])=>point);
 }
 
@@ -91,10 +94,10 @@ export function buildPilotPortfolio(input:PilotPortfolioInput):Snapshot {
  const {currentPrice,validMark,marksUsable,marketAt,reconciled}=portfolioValidity(input),operating=input.authoritativeOperating?operatingPnlReporting({at,projection:p,price:input.price,valuationUsable:marksUsable}):null;
  const epoch=s.paperEpoch?financialEpochReport(s.paperEpoch,at):undefined;
  const epochHistory=epochOperatingPnlHistory(input.history.points.map(point=>({at:iso(point.at),tradingUsd:micro(point.tradingMicroUsd),economicUsd:micro(point.economicMicroUsd)})),epoch);
- const history=epochHistory.length<=720?epochHistory:[...new Map([...epochHistory.slice(0,2),...epochHistory.filter(point=>epoch&&Math.abs(Date.parse(point.at)-Date.parse(epoch.activatedAt))<=1),...epochHistory.slice(-716)].map(point=>[point.at,point])).values()].sort((a,b)=>Date.parse(a.at)-Date.parse(b.at));
+ const history=epochHistory.length<=720?epochHistory:[...new Map([...epochHistory.slice(0,2),...epochHistory.filter(point=>epoch&&financialEpochLineage(epoch).some(receipt=>Math.abs(Date.parse(point.at)-Date.parse(receipt.activatedAt))<=1)),...epochHistory.slice(-(718-(epoch?financialEpochLineage(epoch).length*2:0)))].map(point=>[point.at,point])).values()].sort((a,b)=>Date.parse(a.at)-Date.parse(b.at));
  const projected=projectPilotFilledTrades(input),unresolvedFilledRows=projected.unresolvedFilledRows;
  const cached=input.tradeCache?validateReportingTradeCache(input.tradeCache,s.accountId,s.inceptionAt,at).trades:projected.trades;const trades=cached.map(({actionId,...trade})=>trade);
- const snapshot:Snapshot={...(epoch?{financialEpoch:epoch}:{}),project:'pump-opportunity-engine',mode:'PAPER',liveTrading:false,schemaVersion:1,
+ const snapshot:Snapshot={...(epoch?{financialEpoch:epoch}:{}),...(input.authoritativeOperating?{lifetimeTrading:lifetimeTradingReporting({at,projection:p,price:input.price,valuationUsable:marksUsable})}:{}),project:'pump-opportunity-engine',mode:'PAPER',liveTrading:false,schemaVersion:1,
   account:{id:s.accountId,inceptionAt:identity.inceptionAt,initialUsd:1000},sequence:input.sequence,source:{release:identity.release,strategy:identity.strategy},
   times:{generatedAt:iso(at),marketAt:marketAt===null?null:iso(marketAt),reconciledAt:s.daily.reconciledAt?iso(s.daily.reconciledAt):null,usefulProgressAt:input.usefulProgressAt===null?null:iso(input.usefulProgressAt)},
   status:{runtime:input.running?'running':'stopped',market:!input.connected||marketAt===null?'unavailable':input.warming?'warming':'observing',entries:p.entriesEnabled&&reconciled?'enabled':'paused',reconciled,blocker:input.blocker},

@@ -104,3 +104,10 @@ test('stale rates and unavailable liquidation preserve explicit unknown trading 
   assert.equal(unavailable.netTokenTradingLamports,null);assert.equal(unavailable.currentUsdTranslationMicroUsd,null);assert.equal(unavailable.overallEquityChangeMicroUsd,null);
   const degraded=operatingPnlReporting({at,projection,price:p,valuationUsable:false});assert.equal(degraded.netTokenTradingLamports,null);assert.equal(degraded.currentUsdTranslationMicroUsd,null);assert.equal(degraded.passiveSolPriceEffectMicroUsd,'0','independently fresh passive conversion remains identified separately');
 });
+
+test('lifetime trading retains prior epoch losses when active capital is independently10SOL',async t=>{
+ const {lifetimeTradingReporting}=await import('../src/operating-pnl-reporting.js'),f=fixture(t),at=T+1000,p=price(at),projection=f.ledger.projection(at,p,{});
+ const input={at,price:p,valuationUsable:true,projection:{...projection,totalPnlLamports:'-10000000',realizedLamports:'-20000000',lifetimeRealizedLamports:'-1200000000',lifetimeExecutionCostsLamports:'40000',equityLamports:'9990000000'}};
+ const before=structuredClone(input.projection),report=lifetimeTradingReporting(input);assert.equal(report.realizedSol,'-1.200000000');assert.equal(report.unrealizedSol,'0.010000000');assert.equal(report.netSol,'-1.190000000');assert.equal(report.currentUsdTranslation,-119);assert.equal(report.executionCostsSol,'0.000040000');assert.deepEqual(input.projection,before);
+ const missing=lifetimeTradingReporting({...input,valuationUsable:false});assert.equal(missing.realizedSol,'-1.200000000');assert.equal(missing.netSol,null);assert.equal(missing.currentUsdTranslation,null);
+});

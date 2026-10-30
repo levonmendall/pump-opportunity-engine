@@ -8,6 +8,7 @@ import type {ExecutionContext,QuoteRequest} from './execution.js';
 import type {ExecutionQuote,Order,Position,UsdPrice} from './ledger.js';
 import type {VerifiedMarketPool} from './rpc-market.js';
 import type {ResearchClockPositionPricer,ResearchClockQuote} from './research-clock-pricing.js';
+import {RESEARCH_CLOCK_COHERENT_POOL_CAPACITY} from './research-clock-pricing.js';
 import type {SizeQuote,SizeRequest} from './trader.js';
 
 type Inventory={positions:Readonly<Record<string,Position>>;pending:Readonly<Record<string,Order>>};
@@ -25,13 +26,14 @@ type Options={
 const amount=(v:string)=>{if(typeof v!=='string'||!/^(0|[1-9][0-9]{0,19})$/.test(v))throw Error('RESEARCH_HELD_INVALID_AMOUNT');return BigInt(v);};
 const validText=(v:unknown):v is string=>typeof v==='string'&&v.length>0&&v.length<=512&&!/[\u0000-\u001f]/.test(v);
 const need=(v:unknown,m:string)=>{if(!v)throw Error(m);};
-export const HELD_PRICING_FAILURE_CODES=['HELD_PRICING_BUSY','HELD_PRICING_ABORTED','HELD_PRICING_PROVIDER_TIMEOUT','HELD_PRICING_PROVIDER_COOLDOWN','HELD_PRICING_DISPATCH_UNAVAILABLE','HELD_PRICING_PROVIDER_RESPONSE_UNAVAILABLE','HELD_PRICING_BANK_CLOCK_UNAVAILABLE','HELD_PRICING_SLOT_UNAVAILABLE','HELD_PRICING_STALE_EVIDENCE','HELD_PRICING_INVENTORY_CHANGED','HELD_PRICING_DATA_UNAVAILABLE'] as const;
+export const HELD_PRICING_FAILURE_CODES=['HELD_PRICING_BUSY','HELD_PRICING_PROVIDER_CAPACITY','HELD_PRICING_ABORTED','HELD_PRICING_PROVIDER_TIMEOUT','HELD_PRICING_PROVIDER_COOLDOWN','HELD_PRICING_DISPATCH_UNAVAILABLE','HELD_PRICING_PROVIDER_RESPONSE_UNAVAILABLE','HELD_PRICING_BANK_CLOCK_UNAVAILABLE','HELD_PRICING_SLOT_UNAVAILABLE','HELD_PRICING_STALE_EVIDENCE','HELD_PRICING_INVENTORY_CHANGED','HELD_PRICING_DATA_UNAVAILABLE'] as const;
 export type HeldPricingFailureCode=typeof HELD_PRICING_FAILURE_CODES[number];
 /** Only static categories leave the pricing adapter. Never publish arbitrary
  * provider messages, URLs, account bytes or a false successful evaluation. */
 export function heldPricingFailureCode(error:unknown):HeldPricingFailureCode{
  const name=error instanceof Error?error.name:'',message=error instanceof Error?error.message:typeof error==='string'?error:'';
  if(name==='AbortError'||/ABORT|CANCEL/.test(message))return 'HELD_PRICING_ABORTED';
+ if(/POSITION_BATCH_CAPACITY|DEPENDENCY_CAP|HELD_POSITION_CAPACITY/.test(message))return 'HELD_PRICING_PROVIDER_CAPACITY';
  if(/CONCURRENT|READ_IN_FLIGHT|PHYSICAL_SLOT_OCCUPIED|DISPATCH_BUSY/.test(message))return 'HELD_PRICING_BUSY';
  if(/PHYSICAL_TIMEOUT|REQUEST_TIMEOUT|preparation timeout/.test(message))return 'HELD_PRICING_PROVIDER_TIMEOUT';
  if(/COOLDOWN|HTTP_STATUS_429|HTTP_STATUS_503/.test(message))return 'HELD_PRICING_PROVIDER_COOLDOWN';
@@ -60,13 +62,13 @@ export class ResearchHeldMarket {
   }
   registerPool(pool:VerifiedMarketPool){
     need(new PublicKey(pool.mint).toBase58()===pool.mint&&pool.migrationVerified===true&&Number.isSafeInteger(pool.migrationSlot)&&pool.migrationSlot>=0&&validText(pool.evidence),'RESEARCH_HELD_VERIFIED_POOL_REQUIRED');
-    need(this.pools.has(pool.mint)||this.pools.size<15,'RESEARCH_HELD_POOL_CAPACITY');
+    need(this.pools.has(pool.mint)||this.pools.size<RESEARCH_CLOCK_COHERENT_POOL_CAPACITY+7,'RESEARCH_HELD_POOL_CAPACITY');
     const old=this.pools.get(pool.mint);need(!old||old.migrationSlot===pool.migrationSlot,'RESEARCH_HELD_MIGRATION_CONFLICT');
     this.pools.set(pool.mint,Object.freeze({...pool}));
   }
   /** Retire replaceable observation ownership only. Financial inventory and
    * its migration/accounting evidence belong to the caller and are untouched.
-   * Other held snapshots remain usable; the pricer's at-most-three link cache
+   * Other held snapshots remain usable; the pricer's provider-bounded link cache
    * already evicts unrequested mints on its next coherent holding read.
    */
   unregisterPool(mint:string){
@@ -94,6 +96,11 @@ export class ResearchHeldMarket {
   private current(mint:string,units:string){const p=this.options.inventory().positions[mint];return !!p&&p.mint===mint&&p.units===units;}
   private noteContext(heldPositions:number,reasonCode:HeldPricingFailureCode|null){this.lastContext={at:this.clock(),state:reasonCode?'unavailable':'available',reasonCode,heldPositions};if(reasonCode)this.contextFailureCounts[reasonCode]=Math.min(Number.MAX_SAFE_INTEGER,(this.contextFailureCounts[reasonCode]??0)+1);}
   usage(){return {lastContext:this.lastContext?{...this.lastContext}:null,contextFailureCounts:{...this.contextFailureCounts}};}
+  /** Reuse only an existing fresh actual-inventory snapshot. No request, cached
+   * reserve refresh, quote-size substitution or financial mutation occurs. */
+  currentObservation(mint:string,units:string):ResearchClockQuote|null{
+    try{const q=this.snapshots.get(mint);need(q&&q.sell.inputBaseUnits===units&&this.current(mint,units),'RESEARCH_HELD_EXACT_SIZE_REQUIRED');this.source(q!);return structuredClone(q!);}catch{return null;}
+  }
   private source(q:ResearchClockQuote,minSlot=0){
     const now=this.clock(),requestedAt=Date.parse(q.requestedAt),receivedAt=Date.parse(q.receivedAt),validatedAt=Date.parse(q.validatedAt),pool=this.pools.get(q.mint),floor=Math.max(minSlot,this.floors.get(q.mint)??0,pool?.migrationSlot??0);
     need(pool&&q.commitment==='confirmed'&&q.timeEvidence==='confirmed-bank-clock'&&Number.isSafeInteger(q.slot)&&q.slot>=floor&&q.clockSlot===q.slot,'RESEARCH_HELD_SOURCE_CONTEXT');
@@ -109,7 +116,7 @@ export class ResearchHeldMarket {
     const result:ExecutionContext={price:this.price(),marks:{}};
     if(this.busy||signal.aborted){this.noteContext(Object.keys(positions).length,signal.aborted?'HELD_PRICING_ABORTED':'HELD_PRICING_BUSY');return result;}
     const selected=Object.entries(positions).map(([mint,p])=>({mint,units:p.units,positionMint:p.mint}));
-    if(selected.length>3)throw Error('RESEARCH_HELD_POSITION_CAPACITY');
+    if(selected.length>RESEARCH_CLOCK_COHERENT_POOL_CAPACITY){this.snapshots.clear();this.noteContext(selected.length,'HELD_PRICING_PROVIDER_CAPACITY');return result;}
     const sourceExpiry=()=>{
       // Missing/changed holdings cannot inherit the expiry of an unaffected
       // subset. Cash-only context has no invented bank Clock or source expiry.

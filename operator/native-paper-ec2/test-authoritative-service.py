@@ -19,6 +19,16 @@ class FakeProcess:
  def __init__(self,pid=123,exit=None):self.pid=pid;self.exit=exit
  def poll(self):return self.exit
 class Tests(unittest.TestCase):
+ def test_v3_exact_strategy_four_deep_and_dynamic_owned_inventory(self):
+  v=manifest();v.update(strategy=m.LIQUIDITY_RESILIENT_STRATEGY,stage='two',deepSlots=4);self.assertEqual(m.validate_manifest(v),v)
+  args=m.source_args('/OFFLINE/node',pathlib.Path('/OFFLINE/release'),v);self.assertEqual(args[-2:],['--strategy','liquidity-resilient-momentum-v3'])
+  at=m.INCEPTION+100000;s=status(at);s.update(strategyVersion=m.LIQUIDITY_RESILIENT_STRATEGY,activeStrategy=m.LIQUIDITY_RESILIENT_STRATEGY,positions={str(i):{}for i in range(24)},pending={str(i):{}for i in range(24)})
+  self.assertEqual(m.validate_status(s,v,at-2000,123,at),s)
+  s['strategyVersion']=m.ADAPTIVE_STRATEGY
+  with self.assertRaisesRegex(m.Guard,'EXACT_V3_STRATEGY'):m.validate_status(s,v,at-2000,123,at)
+  for slots in [3,5]:
+   bad=copy.deepcopy(v);bad['deepSlots']=slots
+   with self.assertRaisesRegex(m.Guard,'FOUR_SLOT_PROFILE'):m.validate_manifest(bad)
  def controller(self):return m.Supervisor(manifest(),None,{k:Log()for k in['source','publisher','supervisor']})
  def test_original_identity_and_frozen_mode_are_mandatory(self):
   at=m.INCEPTION+100000;v=status(at);self.assertEqual(m.validate_status(v,manifest(),at-2000,123,at),v)

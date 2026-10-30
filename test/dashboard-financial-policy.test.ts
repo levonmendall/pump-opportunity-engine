@@ -53,3 +53,9 @@ test('legacy held-exit fallback remains visible without claiming new-model landi
  const p=risk() as any;p.execution={version:'paper-chain-conditioned-v1',state:'active',scope:'current-market-instance',plans:2,supportedLandingStates:1,preflightUnsubmitted:1,unknownLanding:1,legacyProtectionFallbacks:1,last:{at:'2026-10-30T03:49:59.900Z',stage:'legacy-protection-fallback',reasonCode:'LEGACY_HELD_ACCOUNT_MODEL',observedRpcMs:null,modeledDelayMs:1000,feeSol:'0.000007000',sourceSlot:null},meaning:'PAPER_PREPARATION_NOT_OBSERVED_CHAIN_OUTCOME'};
  const all=cards(p).flat().join('\n');assert.match(all,/Legacy exit fallback/);assert.match(all,/LEGACY_HELD_ACCOUNT_MODEL/);assert.match(all,/1 legacy exit fallbacks/);assert.match(all,/Legacy exit model; v1 landing fidelity unavailable/);assert.match(all,/No chain landing or fee observed/);assert.doesNotMatch(all,/Active PAPER model|confirmed landed/);
 });
+
+test('V3 reports drawdown informationally without a daily halt or an invented remaining allowance',()=>{
+ const p=risk() as any;p.risk.version='paper-equity-risk-v3-no-daily-stop-v1';p.risk.daily.limitBps=null;p.risk.daily.remainingBeforePauseMicroUsd=null;p.risk.daily.lossPaused=false;p.risk.daily.drawdownBps=2250;
+ const all=cards(p).flat().join('\n');assert.match(all,/DAILY DRAWDOWN · INFORMATIONAL/);assert.match(all,/22\.50%/);assert.match(all,/Daily loss stop disabled; informational drawdown remains measured/);assert.match(all,/HWM \$1,000\.00/);assert.doesNotMatch(all,/10% GUARD|remaining|loss guard|latched|entries paused/);
+ p.risk.state='unavailable';const unavailable=cards(p).flat().join('\n');assert.match(unavailable,/Daily loss stop disabled/);assert.match(unavailable,/HWM \$1,000\.00/);assert.equal(cards(p)[1]![1],'Unavailable');
+});

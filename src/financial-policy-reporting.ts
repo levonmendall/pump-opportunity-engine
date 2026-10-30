@@ -2,10 +2,11 @@
  * Never grants financial permission or reconstructs missing policy history. */
 export const FINANCIAL_POLICY_REPORTING_VERSION='poe-paper-financial-policy-v1' as const;
 export const EQUITY_RISK_REPORTING_VERSION='paper-equity-risk-5-10-v1' as const;
+export const V3_EQUITY_RISK_REPORTING_VERSION='paper-equity-risk-v3-no-daily-stop-v1' as const;
 export type FinancialRiskReporting={
- version:typeof EQUITY_RISK_REPORTING_VERSION;state:'ready'|'unavailable';reasonCode:typeof EQUITY_RISK_REASON_CODES[number]|null;asOf:string;
+ version:typeof EQUITY_RISK_REPORTING_VERSION|typeof V3_EQUITY_RISK_REPORTING_VERSION;state:'ready'|'unavailable';reasonCode:typeof EQUITY_RISK_REASON_CODES[number]|null;asOf:string;
  entry:{targetBps:500;targetConsumedCostMicroUsd:string|null;targetConsumedCostSol:string|null;unreservedCashSol:string;cashLimitedConsumedCostSol:string|null;refundableDepositsIncluded:false;executabilityClaimed:false};
- daily:{day:string;limitBps:1000;highWaterMicroUsd:string|null;highWaterAt:string|null;currentEquityMicroUsd:string|null;drawdownMicroUsd:string|null;drawdownBps:number|null;remainingBeforePauseMicroUsd:string|null;lossPaused:boolean;historyCoverage:'verified-retained-same-day'|'first-complete-observation'|'unavailable';basis:'complete-observed-executable-equity-current-usd'};
+ daily:{day:string;limitBps:1000|null;highWaterMicroUsd:string|null;highWaterAt:string|null;currentEquityMicroUsd:string|null;drawdownMicroUsd:string|null;drawdownBps:number|null;remainingBeforePauseMicroUsd:string|null;lossPaused:boolean;historyCoverage:'verified-retained-same-day'|'first-complete-observation'|'unavailable';basis:'complete-observed-executable-equity-current-usd'};
 };
 export type FinancialPolicyReporting={version:typeof FINANCIAL_POLICY_REPORTING_VERSION;risk:FinancialRiskReporting|null;execution:FinancialExecutionReporting|null;valuation:FinancialValuationReporting|null};
 export const EQUITY_RISK_REASON_CODES=['EQUITY_RISK_INITIALIZING','EQUITY_RISK_HISTORY_UNAVAILABLE','EQUITY_RISK_VALUATION_UNAVAILABLE','EQUITY_RISK_RECONCILIATION_STALE','EQUITY_RISK_DAILY_DRAWDOWN','EQUITY_RISK_POLICY_INVALID'] as const;
@@ -22,32 +23,32 @@ function iso(v:unknown,generated:number){need(Number.isSafeInteger(v)&&Number(v)
 function sol(v:unknown){amount(v);const n=BigInt(v!);return `${n/1000000000n}.${(n%1000000000n).toString().padStart(9,'0')}`;}
 function solAmount(v:unknown,nullable=false){if(nullable&&v===null)return;need(typeof v==='string'&&/^(0|[1-9]\d{0,29})\.\d{9}$/.test(v));const [whole,part]=v.split('.');need(BigInt(whole!)*1000000000n+BigInt(part!)<=MAX);}
 export function validateFinancialRiskReporting(value:unknown,generated:number):FinancialRiskReporting {
- const r=exact(value,'version state reasonCode asOf entry daily');need(r.version===EQUITY_RISK_REPORTING_VERSION&&['ready','unavailable'].includes(r.state));time(r.asOf,generated);
+ const r=exact(value,'version state reasonCode asOf entry daily');need((r.version===EQUITY_RISK_REPORTING_VERSION||r.version===V3_EQUITY_RISK_REPORTING_VERSION)&&['ready','unavailable'].includes(r.state));time(r.asOf,generated);const v3=r.version===V3_EQUITY_RISK_REPORTING_VERSION;
  need(r.reasonCode===null||(EQUITY_RISK_REASON_CODES as readonly unknown[]).includes(r.reasonCode));
  const e=exact(r.entry,'targetBps targetConsumedCostMicroUsd targetConsumedCostSol unreservedCashSol cashLimitedConsumedCostSol refundableDepositsIncluded executabilityClaimed');
  need(e.targetBps===500&&e.refundableDepositsIncluded===false&&e.executabilityClaimed===false);amount(e.targetConsumedCostMicroUsd,true);solAmount(e.targetConsumedCostSol,true);solAmount(e.unreservedCashSol);solAmount(e.cashLimitedConsumedCostSol,true);
  const d=exact(r.daily,'day limitBps highWaterMicroUsd highWaterAt currentEquityMicroUsd drawdownMicroUsd drawdownBps remainingBeforePauseMicroUsd lossPaused historyCoverage basis');
- need(typeof d.day==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(d.day)&&Number.isFinite(Date.parse(d.day+'T00:00:00.000Z'))&&new Date(d.day+'T00:00:00.000Z').toISOString().slice(0,10)===d.day&&d.day>='2026-10-26'&&d.day<=String(r.asOf).slice(0,10)&&d.limitBps===1000&&typeof d.lossPaused==='boolean'&&['verified-retained-same-day','first-complete-observation','unavailable'].includes(d.historyCoverage)&&d.basis==='complete-observed-executable-equity-current-usd');
+ need(typeof d.day==='string'&&/^\d{4}-\d{2}-\d{2}$/.test(d.day)&&Number.isFinite(Date.parse(d.day+'T00:00:00.000Z'))&&new Date(d.day+'T00:00:00.000Z').toISOString().slice(0,10)===d.day&&d.day>='2026-10-26'&&d.day<=String(r.asOf).slice(0,10)&&d.limitBps===(v3?null:1000)&&typeof d.lossPaused==='boolean'&&(!v3||d.lossPaused===false&&d.remainingBeforePauseMicroUsd===null&&r.reasonCode!=='EQUITY_RISK_DAILY_DRAWDOWN')&&['verified-retained-same-day','first-complete-observation','unavailable'].includes(d.historyCoverage)&&d.basis==='complete-observed-executable-equity-current-usd');
  for(const key of ['highWaterMicroUsd','currentEquityMicroUsd','drawdownMicroUsd','remainingBeforePauseMicroUsd'])amount(d[key],true);
  time(d.highWaterAt,Date.parse(r.asOf),true);need((d.highWaterMicroUsd===null)===(d.highWaterAt===null));if(d.highWaterAt!==null)need(d.highWaterAt.slice(0,10)===d.day);
  if(d.drawdownBps!==null)count(d.drawdownBps,10000);
- if(r.state==='ready')need(d.day===r.asOf.slice(0,10)&&e.targetConsumedCostMicroUsd!==null&&e.targetConsumedCostSol!==null&&e.cashLimitedConsumedCostSol!==null&&d.highWaterMicroUsd!==null&&d.currentEquityMicroUsd!==null&&d.drawdownMicroUsd!==null&&d.drawdownBps!==null&&d.remainingBeforePauseMicroUsd!==null&&d.historyCoverage!=='unavailable'&&(r.reasonCode===null||r.reasonCode==='EQUITY_RISK_DAILY_DRAWDOWN'));
+ if(r.state==='ready')need(d.day===r.asOf.slice(0,10)&&e.targetConsumedCostMicroUsd!==null&&e.targetConsumedCostSol!==null&&e.cashLimitedConsumedCostSol!==null&&d.highWaterMicroUsd!==null&&d.currentEquityMicroUsd!==null&&d.drawdownMicroUsd!==null&&d.drawdownBps!==null&&(v3||d.remainingBeforePauseMicroUsd!==null)&&d.historyCoverage!=='unavailable'&&(r.reasonCode===null||r.reasonCode==='EQUITY_RISK_DAILY_DRAWDOWN'));
  else need(r.reasonCode!==null);
  // Reporting verifies the producer's integer identities without granting risk.
  // Positive-amount division truncates: floor(5% equity), floor(drawdown bps),
  // and max(floor(10% HWM) - drawdown, 0). A prior latch may remain after rebound.
  if(e.cashLimitedConsumedCostSol!==null&&e.targetConsumedCostSol!==null){const cash=BigInt(e.cashLimitedConsumedCostSol.replace('.',''));need(cash<=BigInt(e.targetConsumedCostSol.replace('.',''))&&cash<=BigInt(e.unreservedCashSol.replace('.','')));}
  if(e.targetConsumedCostMicroUsd!==null&&d.currentEquityMicroUsd!==null)need(BigInt(e.targetConsumedCostMicroUsd)===BigInt(d.currentEquityMicroUsd)*500n/10000n);
- if(d.highWaterMicroUsd!==null&&d.currentEquityMicroUsd!==null&&d.drawdownMicroUsd!==null&&d.drawdownBps!==null&&d.remainingBeforePauseMicroUsd!==null){
-  const h=BigInt(d.highWaterMicroUsd),c=BigInt(d.currentEquityMicroUsd),dd=h>c?h-c:0n,limit=h*1000n/10000n,remaining=limit>dd?limit-dd:0n;
-  need(BigInt(d.drawdownMicroUsd)===dd&&d.drawdownBps===(h===0n?0:Number(dd*10000n/h))&&BigInt(d.remainingBeforePauseMicroUsd)===remaining);
-  if(h>0n&&dd*10000n>=h*1000n)need(d.lossPaused===true);
+ if(d.highWaterMicroUsd!==null&&d.currentEquityMicroUsd!==null&&d.drawdownMicroUsd!==null&&d.drawdownBps!==null){
+  const h=BigInt(d.highWaterMicroUsd),c=BigInt(d.currentEquityMicroUsd),dd=h>c?h-c:0n;
+  need(BigInt(d.drawdownMicroUsd)===dd&&d.drawdownBps===(h===0n?0:Number(dd*10000n/h)));
+  if(!v3&&d.remainingBeforePauseMicroUsd!==null){const limit=h*1000n/10000n,remaining=limit>dd?limit-dd:0n;need(BigInt(d.remainingBeforePauseMicroUsd)===remaining);if(h>0n&&dd*10000n>=h*1000n)need(d.lossPaused===true);}
  }
  if(r.state==='ready')need(d.lossPaused?r.reasonCode==='EQUITY_RISK_DAILY_DRAWDOWN':r.reasonCode===null);
  return r as FinancialRiskReporting;
 }
 function projectRisk(value:unknown,generated:number):FinancialRiskReporting|null {
- try{const r=record(value);need(r.version===EQUITY_RISK_REPORTING_VERSION);const e=record(r.entry),d=record(r.daily);
+ try{const r=record(value);need(r.version===EQUITY_RISK_REPORTING_VERSION||r.version===V3_EQUITY_RISK_REPORTING_VERSION);const e=record(r.entry),d=record(r.daily);
   return validateFinancialRiskReporting({version:r.version,state:r.state,reasonCode:r.reasonCode,asOf:iso(r.asOf,generated),entry:{targetBps:e.targetBps,targetConsumedCostMicroUsd:e.targetConsumedCostMicroUsd,targetConsumedCostSol:e.targetConsumedCostLamports===null?null:sol(e.targetConsumedCostLamports),unreservedCashSol:sol(e.unreservedCashLamports),cashLimitedConsumedCostSol:e.cashLimitedConsumedCostLamports===null?null:sol(e.cashLimitedConsumedCostLamports),refundableDepositsIncluded:e.refundableDepositsIncluded,executabilityClaimed:e.executabilityClaimed},daily:{day:d.day,limitBps:d.limitBps,highWaterMicroUsd:d.highWaterMicroUsd,highWaterAt:d.highWaterAt===null?null:iso(d.highWaterAt,generated),currentEquityMicroUsd:d.currentEquityMicroUsd,drawdownMicroUsd:d.drawdownMicroUsd,drawdownBps:d.drawdownBps,remainingBeforePauseMicroUsd:d.remainingBeforePauseMicroUsd,lossPaused:d.lossPaused,historyCoverage:d.historyCoverage,basis:d.basis}},generated);
  }catch{return null;}
 }

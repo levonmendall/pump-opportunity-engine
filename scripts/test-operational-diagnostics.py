@@ -264,5 +264,52 @@ class ReadOnlyDiagnostics(unittest.TestCase):
         self.assertEqual(result['supervisorEvents']['omittedMatchingRecords'],removed)
         self.assertEqual(result['supervisorEvents']['omittedKindCounts']['supervisor-sample'],removed)
 
+    def test_v3_scalar_financial_policy_and_epoch_do_not_hide_historical_latch_or_expose_secrets(self):
+        with tempfile.TemporaryDirectory() as directory:
+            p=pathlib.Path(directory)/'ledger.sqlite'
+            db=sqlite3.connect(p)
+            db.execute('PRAGMA journal_mode=WAL')
+            db.execute('PRAGMA wal_autocheckpoint=0')
+            db.executescript('CREATE TABLE financial_state(singleton INTEGER PRIMARY KEY,body TEXT); CREATE TABLE actions(id TEXT PRIMARY KEY,payload_hash TEXT,result TEXT); CREATE TABLE journal(revision INTEGER PRIMARY KEY,action_id TEXT,at INTEGER,kind TEXT,detail TEXT);')
+            state={'accountId':diag.ACCOUNT,'inceptionAt':diag.INCEPTION,'mode':'PAPER','revision':10,
+                   'positions':{},'pending':{},'lockedDeposits':{'closed-token-account':'990'},
+                   'lamports':'10000000000','realizedLamports':'-1116818003','executionCosts':'77000',
+                   'controls':{'entriesEnabled':False,'reason':'https://private/?secret=SECRET'},
+                   'daily':{'lossPaused':True,'paused':True},
+                   'paperEpoch':{'id':'poe-paper-10sol-v3-20261030','version':'poe-paper-epoch-v3',
+                                 'startedAt':100,'transitionRevision':10,'initialLamports':'10000000000','contributionLamports':'10000000000'},
+                   'equityRisk':{'version':'paper-equity-risk-v3-no-daily-stop-v1',
+                                 'daily':{'highWaterMicroUsd':'1000000000','lossPaused':False}}}
+            db.execute('INSERT INTO financial_state VALUES(1,?)',(json.dumps(state),))
+            db.execute("INSERT INTO journal VALUES(10,'v3',100,'paper-epoch-transition',?)",(json.dumps({'epoch':state['paperEpoch']}),))
+            db.commit();before=p.with_name(p.name+'-wal').read_bytes()
+            value=diag.ledger_projection(p,0,200)
+            self.assertEqual(value['activeEpoch']['id'],'poe-paper-10sol-v3-20261030')
+            self.assertEqual(value['activeEpoch']['transitionRevision'],10)
+            self.assertFalse(value['riskPolicy']['dailyLossStopEnabled'])
+            self.assertEqual(value['riskPolicy']['entryConsumedCostBps'],500)
+            self.assertTrue(value['daily']['lossPaused'],'raw latch remains visible; diagnostics cannot rewrite it')
+            self.assertEqual(value['balances']['cashLamports'],'10000000000')
+            self.assertEqual(value['balances']['reservedLamports'],'0')
+            self.assertEqual(value['balances']['lockedDepositLamports'],'990')
+            self.assertEqual(value['balances']['realizedLamports'],'-1116818003')
+            self.assertNotIn('SECRET',json.dumps(value));self.assertEqual(before,p.with_name(p.name+'-wal').read_bytes())
+            db.close()
+
+    def test_v3_capital_weighted_metrics_preserve_fractional_values_but_not_provider_payloads(self):
+        value=diag.public_fields({'v3':{'components':{'rawBuyerCount':151,'effectiveBuyerCount':2.39,
+            'top5BuyerBps':9415,'dustBuyVolumeBps':16,'scenarioNetSurplusLamports':'-12001',
+            'providerUrl':'https://private/?secret=SECRET'}}})
+        self.assertEqual(value['v3']['components']['effectiveBuyerCount'],2.39)
+        self.assertEqual(value['v3']['components']['scenarioNetSurplusLamports'],'-12001')
+        self.assertNotIn('SECRET',json.dumps(value))
+        scenarios=diag.public_fields({'scenarios':[
+            {'name':'historical-largest-executed-sell-repeat-diagnostic','requiredForAdmission':False,
+             'assumedExternalSellBaseUnits':'500','netLamports':'1','providerUrl':'SECRET'},
+            {'name':'https://private/?SECRET','netLamports':'1'}]})
+        self.assertFalse(scenarios['scenarios'][0]['requiredForAdmission'])
+        self.assertEqual(scenarios['scenariosProjection']['omittedItems'],1)
+        self.assertNotIn('SECRET',json.dumps(scenarios))
+
 if __name__=='__main__':
     unittest.main()

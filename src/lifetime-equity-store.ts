@@ -2,7 +2,7 @@ import Database from 'better-sqlite3';
 import { createHash } from 'node:crypto';
 import { chmodSync, constants, closeSync, fstatSync, lstatSync, mkdirSync, openSync, readFileSync, realpathSync } from 'node:fs';
 import { dirname, isAbsolute, resolve } from 'node:path';
-import {validateFinancialEpochReport,type FinancialEpochReport} from './financial-epoch-reporting.js';
+import {financialEpochEqual,financialEpochLineage,financialEpochTransitionAllowed,validateFinancialEpochReport,type FinancialEpochReport} from './financial-epoch-reporting.js';
 import { ORIGINAL_POE_ACCOUNT, ORIGINAL_POE_INCEPTION } from './operating-intelligence.js';
 import { EQUITY_GAP_MS, LIFETIME_EQUITY_SOURCE, MAX_LIFETIME_EQUITY_POINTS,
   validateLifetimeEquityHistory, type LifetimeEquityHistory, type LifetimeEquityPoint } from './lifetime-equity-contract.js';
@@ -238,16 +238,20 @@ export class LifetimeEquityStore {
       const at = Date.parse(snapshot.times.generatedAt);
       let last = this.db.prepare(SQL.last).get() as PointRow;
       const epochRow=this.db.prepare('SELECT receipt FROM equity_epoch WHERE id=1').get() as {receipt:string}|undefined;
-      if(epochRow&&JSON.stringify(snapshot.financialEpoch)!==epochRow.receipt)throw Error('EQUITY_EPOCH_REGRESSION_OR_CONFLICT');
-      if(snapshot.financialEpoch&&!epochRow){
-        const epoch=validateFinancialEpochReport(snapshot.financialEpoch,snapshot.times.generatedAt),started=Date.parse(epoch.activatedAt);
-        if(started<=last.at_ms)throw Error('EQUITY_EPOCH_TIME_CONFLICT');
-        if(at===started&&snapshot.balances.equityUsd!==epoch.initialUsd)throw Error('EQUITY_EPOCH_INITIAL_VALUE_CONFLICT');
-        const segment=last.segment+1;
-        this.db.prepare('INSERT INTO equity_epoch VALUES(1,?)').run(JSON.stringify(epoch));
-        this.db.prepare('INSERT INTO equity_samples VALUES(?,?,?,?,?,?)').run('epoch:'+epoch.id,started,epoch.initialUsd,segment,'epoch-start',sha256);
-        this.db.prepare('INSERT INTO equity_plot VALUES(?,?,?,?)').run(started,epoch.initialUsd,segment,'epoch-start');
-        last={at_ms:started,equity_usd:epoch.initialUsd,segment,kind:'epoch-start'};
+      const previousEpoch=epochRow?validateFinancialEpochReport(JSON.parse(epochRow.receipt),snapshot.times.generatedAt):undefined;
+      if(!financialEpochTransitionAllowed(previousEpoch,snapshot.financialEpoch))throw Error('EQUITY_EPOCH_REGRESSION_OR_CONFLICT');
+      if(snapshot.financialEpoch&&!financialEpochEqual(snapshot.financialEpoch,previousEpoch)){
+        const epoch=validateFinancialEpochReport(snapshot.financialEpoch,snapshot.times.generatedAt);
+        for(const receipt of financialEpochLineage(epoch).slice(previousEpoch?1:0)){
+          const started=Date.parse(receipt.activatedAt);
+          if(started<=last.at_ms)throw Error('EQUITY_EPOCH_TIME_CONFLICT');
+          if(at===started&&snapshot.balances.equityUsd!==receipt.initialUsd)throw Error('EQUITY_EPOCH_INITIAL_VALUE_CONFLICT');
+          const segment=last.segment+1;
+          this.db.prepare('INSERT INTO equity_samples VALUES(?,?,?,?,?,?)').run('epoch:'+receipt.id,started,receipt.initialUsd,segment,'epoch-start',sha256);
+          this.db.prepare('INSERT INTO equity_plot VALUES(?,?,?,?)').run(started,receipt.initialUsd,segment,'epoch-start');
+          last={at_ms:started,equity_usd:receipt.initialUsd,segment,kind:'epoch-start'};
+        }
+        this.db.prepare('INSERT INTO equity_epoch VALUES(1,?) ON CONFLICT(id) DO UPDATE SET receipt=excluded.receipt').run(JSON.stringify(epoch));
       }
       if(at===last.at_ms&&last.kind==='epoch-start'){
         this.db.prepare('UPDATE equity_identity SET last_sequence=?,last_sha=? WHERE id=1').run(snapshot.sequence,sha256);

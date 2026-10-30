@@ -1,4 +1,4 @@
-import {validateFinancialEpochReport,type FinancialEpochReport} from './financial-epoch-reporting.js';
+import {financialEpochLineage,validateFinancialEpochReport,type FinancialEpochReport} from './financial-epoch-reporting.js';
 import { ORIGINAL_POE_ACCOUNT, ORIGINAL_POE_INCEPTION } from './operating-intelligence.js';
 
 /**
@@ -43,7 +43,7 @@ export function validateLifetimeEquityHistory(input: unknown, now = Date.now()):
   const hasEpoch=!!input&&typeof input==='object'&&Object.hasOwn(input,'financialEpoch');
   const obj = exactObject(input, ['schemaVersion', 'accountId', 'inceptionAt', 'source', 'lastSequence', 'downsampled', 'points',...(hasEpoch?['financialEpoch']:[])]);
   const epoch=hasEpoch?validateFinancialEpochReport(obj.financialEpoch,new Date(now+30000).toISOString()):null;
-  let epochSeen=false;
+  const epochs=epoch?financialEpochLineage(epoch):[];let epochsSeen=0;
   if (obj.schemaVersion !== 1 || obj.accountId !== ORIGINAL_POE_ACCOUNT ||
       obj.inceptionAt !== ORIGINAL_POE_INCEPTION || obj.source !== LIFETIME_EQUITY_SOURCE)
     throw Error('EQUITY_ORIGINAL_ACCOUNT_REQUIRED');
@@ -67,13 +67,13 @@ export function validateLifetimeEquityHistory(input: unknown, now = Date.now()):
         point.equityUsd !== 1000 || point.segment !== 0)) throw Error('EQUITY_INCEPTION_PROOF_REQUIRED');
     if (index > 0 && point.kind === 'inception') throw Error('EQUITY_INCEPTION_DUPLICATED');
     if(point.kind==='epoch-start'){
-      if(!epoch||epochSeen||point.at!==epoch.activatedAt||point.equityUsd!==epoch.initialUsd||(point.segment as number)<=previousSegment)throw Error('EQUITY_EPOCH_PROOF_REQUIRED');
-      epochSeen=true;
-    }else if(epoch&&at>=Date.parse(epoch.activatedAt)&&!epochSeen)throw Error('EQUITY_EPOCH_MARKER_REQUIRED');
+      const receipt=epochs[epochsSeen];if(!receipt||point.at!==receipt.activatedAt||point.equityUsd!==receipt.initialUsd||(point.segment as number)<=previousSegment)throw Error('EQUITY_EPOCH_PROOF_REQUIRED');
+      epochsSeen++;
+    }else if(epochs[epochsSeen]&&at>=Date.parse(epochs[epochsSeen]!.activatedAt))throw Error('EQUITY_EPOCH_MARKER_REQUIRED');
     previousAt = at;
     previousSegment = point.segment as number;
   }
-  if(epoch&&!epochSeen)throw Error('EQUITY_EPOCH_MARKER_REQUIRED');
+  if(epochsSeen!==epochs.length)throw Error('EQUITY_EPOCH_MARKER_REQUIRED');
   if (Buffer.byteLength(JSON.stringify(input)) > 128 * 1024) throw Error('EQUITY_TRANSFER_BOUND');
   return structuredClone(input) as LifetimeEquityHistory;
 }

@@ -460,5 +460,5 @@ test('active adaptive coverage includes early and selected older cohorts without
  const checkpoint=f.registry.export(),baseline=f.registry.snapshot(),active=f.registry.snapshot(f.now(),'adaptive-momentum-v2');
  assert.equal(baseline.summary.eligibleKnown,1);assert.equal(baseline.summary.queued,1);assert.equal(baseline.summary.coverage.atLeastOneValidWindow,0);
  assert.equal(active.summary.eligibleKnown,3);assert.equal(active.summary.queued,3);assert.equal(active.summary.coverage.atLeastOneValidWindow,1);assert.match(active.summary.coverage.denominator,/AdaptiveMomentumV2/);assert.equal(active.summary.ageCohorts.entryEligible,1);assert.equal(active.summary.ageCohorts.preEntry,1);assert.equal(active.summary.ageCohorts.olderSelected,1);
- assert.equal(active.summary.waitMs.maximum,1001);assert.equal(active.summary.deepActive,0);assert.deepEqual(f.registry.export(),checkpoint,'reporting cohort selection changes neither allocation nor financial ownership');
+ assert.match(f.registry.snapshot(f.now(),'liquidity-resilient-momentum-v3').summary.coverage.denominator,/liquidity-resilient-momentum-v3/);assert.equal(active.summary.waitMs.maximum,1001);assert.equal(active.summary.deepActive,0);assert.deepEqual(f.registry.export(),checkpoint,'reporting cohort selection changes neither allocation nor financial ownership');
 });

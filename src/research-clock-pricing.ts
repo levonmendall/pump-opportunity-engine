@@ -16,6 +16,14 @@ type Rec=Pick<Recorder,'record'>;
 type Batch={context:{slot:number};value:(PoolWireAccount|null)[]};
 const SYSVAR_OWNER='Sysvar1111111111111111111111111111111111111';
 const MAX_UNITS=(1n<<64n)-1n;
+// getMultipleAccounts accepts at most100 keys. Each supported pool adds four
+// distinct keys (pool, base mint, base vault, quote vault); config, fee config,
+// WSOL mint and Clock are shared. This is a coherent-read capacity, not an
+// allocation/exposure policy. The actual union is checked before dispatch too.
+export const RESEARCH_CLOCK_RPC_ACCOUNT_CAPACITY=100;
+export const RESEARCH_CLOCK_COHERENT_POOL_CAPACITY=Math.floor((RESEARCH_CLOCK_RPC_ACCOUNT_CAPACITY-4)/4);
+const OBSERVATION_POOL_CAPACITY=6;
+const LINK_CACHE_CAPACITY=RESEARCH_CLOCK_COHERENT_POOL_CAPACITY+OBSERVATION_POOL_CAPACITY+1;
 function need(value:unknown,reason:string):asserts value {if(!value)throw Error(reason);}
 function checkedBatch(batch:Batch,count:number,minSlot:number){
   need(batch&&Number.isSafeInteger(batch.context?.slot)&&batch.context.slot>=minSlot&&Array.isArray(batch.value)&&batch.value.length===count,'RESEARCH_CLOCK_REGRESSING_OR_MALFORMED_BATCH');
@@ -81,7 +89,7 @@ export class ResearchClockPositionPricer {
     this.cached.delete(mint);this.constructionBatches.delete(mint);this.invalidations++;
     this.rec.record('research-clock-cache-invalidation',{at:Date.now(),mint,reason});
   }
-  usage(){return {networkCalls:this.networkCalls,linkCacheHits:this.linkHits,invalidations:this.invalidations,retainedLinkReadFailures:this.retainedLinkReadFailures,highestVerifiedSlot:this.highestSlot,highestHoldingSlots:Object.fromEntries(this.holdingSlots),highestObservationSlots:Object.fromEntries(this.observationSlots),highestBuySlots:Object.fromEntries(this.buySlots),cachePoolCapacity:9,dependencyAccountCapacity:40,cachedPoolSlot:this.cached.size===1?[...this.cached.values()][0]!.slot:null,cachedPoolSlots:Object.fromEntries([...this.cached].map(([mint,value])=>[mint,value.slot])),timeEvidence:'confirmed-bank-clock',liveValidation:'UNTESTED'};}
+  usage(){return {networkCalls:this.networkCalls,linkCacheHits:this.linkHits,invalidations:this.invalidations,retainedLinkReadFailures:this.retainedLinkReadFailures,highestVerifiedSlot:this.highestSlot,highestHoldingSlots:Object.fromEntries(this.holdingSlots),highestObservationSlots:Object.fromEntries(this.observationSlots),highestBuySlots:Object.fromEntries(this.buySlots),cachePoolCapacity:LINK_CACHE_CAPACITY,dependencyAccountCapacity:RESEARCH_CLOCK_RPC_ACCOUNT_CAPACITY,coherentPoolCapacity:RESEARCH_CLOCK_COHERENT_POOL_CAPACITY,capacityBasis:'Solana getMultipleAccounts100keys; four pool-specific and four common dependency accounts',cachedPoolSlot:this.cached.size===1?[...this.cached.values()][0]!.slot:null,cachedPoolSlots:Object.fromEntries([...this.cached].map(([mint,value])=>[mint,value.slot])),timeEvidence:'confirmed-bank-clock',liveValidation:'UNTESTED'};}
   /** Compatibility API: one holding either yields one fresh quote or refuses. */
   async quote(request:PositionSellRequest,signal?:AbortSignal):Promise<ResearchClockQuote>{
     const name=request.mint.toBase58(),batch=await this.quoteMany([request],signal),quote=batch.quotes[name];
@@ -100,14 +108,14 @@ export class ResearchClockPositionPricer {
     if(!result.buys[name])throw Error(result.unavailable[name]??'RESEARCH_CLOCK_POOL_UNAVAILABLE');
     return result.buys[name]!;
   }
-  /** One fresh union batch for1–3 hypothetical holdings. Only dependency links
+  /** One fresh union batch within the provider's100-account limit. Only dependency links
    * are reused. Every quoted pool/config/fee/mint/vault and the common Clock is
    * newly read in this single context. A per-pool fault cannot price that pool;
    * a common batch/Clock/source-age fault makes the entire batch unavailable.
    */
   async quoteMany(requests:readonly PositionSellRequest[],signal?:AbortSignal,admission?:Admission):Promise<ResearchClockQuoteBatch>{
     need(!this.busy,'RESEARCH_CLOCK_CONCURRENT_QUOTE');
-    need(requests.length>0&&requests.length<=3,'POSITION_BATCH_CAPACITY');
+    need(requests.length>0&&requests.length<=RESEARCH_CLOCK_COHERENT_POOL_CAPACITY,'POSITION_BATCH_CAPACITY');
     const selected=requests.map(r=>({mint:new PublicKey(r.mint),units:r.fullBaseUnits,minSlot:r.minSlot??0}));
     const names=selected.map(r=>r.mint.toBase58());need(new Set(names).size===names.length,'DUPLICATE_POSITION_MINT');
     for(const r of selected){need(Number.isSafeInteger(r.minSlot)&&r.minSlot>=0,'INVALID_MINIMUM_SLOT');need(typeof r.units==='bigint'&&r.units>0n&&r.units<=MAX_UNITS,'POSITION_SELL_SIZE_OUT_OF_RANGE');}
@@ -139,9 +147,9 @@ export class ResearchClockPositionPricer {
       const held=purpose==='quote'?new Set(names):this.heldActive,observed=purpose==='observation'?new Set(names):this.observationActive;
       let buying=purpose==='buy'?new Set(names):this.buyActive,active=new Set([...held,...observed,...buying]);
       // Replaceable entry links cannot evict the established held/observation
-      // working sets. If they need all nine slots, only entry links give way.
-      if(purpose!=='buy'&&active.size>9){buying=new Set();active=new Set([...held,...observed]);}
-      need(active.size<=9,'RESEARCH_CLOCK_POOL_CACHE_CAPACITY');
+      // working sets. At the provider-derived capacity, only entry links give way.
+      if(purpose!=='buy'&&active.size>LINK_CACHE_CAPACITY){buying=new Set();active=new Set([...held,...observed]);}
+      need(active.size<=LINK_CACHE_CAPACITY,'RESEARCH_CLOCK_POOL_CACHE_CAPACITY');
       this.heldActive=held;this.observationActive=observed;this.buyActive=buying;
       for(const mint of this.buySlots.keys())if(!buying.has(mint))this.buySlots.delete(mint);
       for(const mint of this.cached.keys())if(!active.has(mint))this.cached.delete(mint);
@@ -169,7 +177,7 @@ export class ResearchClockPositionPricer {
       });
       if(!holdings.length)return {quotes,buys,validations,unavailable,context:null};
       const addresses=[...new Set([...holdings.flatMap(h=>h.addresses),SYSVAR_CLOCK_PUBKEY.toBase58()])];
-      need(addresses.length<=40,'RESEARCH_CLOCK_DEPENDENCY_CAP');
+      need(addresses.length<=RESEARCH_CLOCK_RPC_ACCOUNT_CAPACITY,'RESEARCH_CLOCK_DEPENDENCY_CAP');
       const requestedAt=new Date(Date.now()).toISOString();this.networkCalls++;
       checkAdmission();sourceReadAttempted=true;const batch=await this.rpc.call<Batch>('getMultipleAccounts',[addresses,{encoding:'base64',commitment:'confirmed',minContextSlot:floor}],signal,options);checkAdmission();
       const receivedAt=new Date(Date.now()).toISOString();checkedBatch(batch,addresses.length,floor);

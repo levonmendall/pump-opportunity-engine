@@ -1,6 +1,6 @@
-import {PAPER_EPOCH_VERSION,PAPER_EPOCH_ASSET_SEGREGATION,verifyArchivedEpochAssets,PAPER_TEN_SOL_EPOCH_ID,PAPER_TEN_SOL_EPOCH_AUTHORIZATION,validatePaperEpoch,requireEpochFlat,verifiedEpochBackup,paperEpochStateSha256,type PaperEpoch,type PaperEpochBackupReceipt} from './paper-epoch.js';
+import {PAPER_EPOCH_VERSION,PAPER_V3_EPOCH_VERSION,PAPER_V3_TEN_SOL_EPOCH_ID,PAPER_V3_TEN_SOL_EPOCH_AUTHORIZATION,PAPER_EPOCH_ASSET_SEGREGATION,verifyArchivedEpochAssets,PAPER_TEN_SOL_EPOCH_ID,PAPER_TEN_SOL_EPOCH_AUTHORIZATION,validatePaperEpoch,requireEpochFlat,verifiedEpochBackup,paperEpochStateSha256,type PaperEpoch,type LegacyPaperEpoch,type V3PaperEpoch,type PaperEpochBackupReceipt} from './paper-epoch.js';
 import Database from 'better-sqlite3';
-import {PAPER_EQUITY_RISK_VERSION,PAPER_EQUITY_RISK_POLICY,consumedEntryAllowance,drawdownFacts,validateEquityRiskState,validateEntryAllocation,entryAllocation,type EquityRiskState,type EntryAllocation} from './paper-equity-risk.js';
+import {PAPER_EQUITY_RISK_VERSION,PAPER_EQUITY_RISK_POLICY,PAPER_V3_EQUITY_RISK_VERSION,PAPER_V3_EQUITY_RISK_POLICY,consumedEntryAllowance,drawdownFacts,validateEquityRiskState,validateEntryAllocation,entryAllocation,type EquityRiskState,type EntryAllocation} from './paper-equity-risk.js';
 import {validatePaperExecutionPlan,validatePaperExecutionLanding,validatePaperExecutionAttempt,paperExecutionFee,type PaperExecutionPlan,type PaperExecutionLanding,type PaperExecutionAttempt} from './execution-realism.js';
 import { createHash } from 'node:crypto';
 import { openSync, closeSync, fstatSync, lstatSync, statSync, realpathSync, constants, type Stats } from 'node:fs';
@@ -15,8 +15,9 @@ export type UsdPrice = { microUsdPerSol: string; at: number; source: string };
 /** Actual-size token liquidation net of exit costs; excludes separately locked rent deposits. */
 export type Mark = { netLamports: string; pricedBaseUnits: string; at: number; evidence: string };
 export const ADAPTIVE_PAPER_STRATEGY_VERSION='adaptive-momentum-v2-paper-v1' as const;
-export type EntryStrategy={version:typeof ADAPTIVE_PAPER_STRATEGY_VERSION;cycle:number;windowStartAt:number;windowEndAt:number;assessedAt:number;signalId:string};
-export type PositionStrategy=EntryStrategy&{roundTripId:string;highWaterNetLamports:string;highWaterAt:number};
+export const V3_PAPER_STRATEGY_VERSION='liquidity-resilient-momentum-v3' as const;
+export type EntryStrategy={version:typeof ADAPTIVE_PAPER_STRATEGY_VERSION|typeof V3_PAPER_STRATEGY_VERSION;cycle:number;windowStartAt:number;windowEndAt:number;assessedAt:number;signalId:string};
+export type PositionStrategy=EntryStrategy&{roundTripId:string;highWaterNetLamports:string;highWaterAt:number;profitProtectionFloorLamports?:string};
 type ClosedCycle={schemaVersion:1;mint:string;cycle:number;entryOrderId:string;entryWindowEndAt:number;closedAt:number|null;exitOrderId:string|null;legacyEntryCutoff:boolean};
 export type EntryEligibility={allowed:boolean;reason:string;closedAt:number|null;previousWindowEndAt:number|null;cycle:number};
 export type Position = {
@@ -53,6 +54,11 @@ export type LedgerState = {
   controls: { entriesEnabled: boolean; reason: string; changedAt: number; readinessVersion: string | null; stopRequested: boolean };
 };
 type State = LedgerState;
+/** Structural policy selector; admission additionally verifies its durable
+ * epoch/policy anchor through PaperLedger. Legacy policy remains unchanged. */
+export function isV3PaperEpochState(s:Pick<LedgerState,'paperEpoch'>){return s.paperEpoch?.id===PAPER_V3_TEN_SOL_EPOCH_ID&&s.paperEpoch.version===PAPER_V3_EPOCH_VERSION;}
+export function isV3PaperRiskState(s:Pick<LedgerState,'paperEpoch'|'equityRisk'>){return isV3PaperEpochState(s)&&s.equityRisk?.version===PAPER_V3_EQUITY_RISK_VERSION;}
+export function dailyLossEntryBlocked(s:Pick<LedgerState,'daily'|'paperEpoch'|'equityRisk'>){return !isV3PaperEpochState(s)&&s.daily.lossPaused;}
 export const OPERATING_FINANCIAL_READINESS_VERSION='paper-operating-financial-readiness-v1' as const;
 export const TECHNICAL_PROTECTION_PAUSE_REASONS=Object.freeze(['completed PAPER protection gap exceeded research boundary','completed protection deadline exceeded; candidate windows must restart','first completed protection deadline exceeded; fresh observation required','PAPER protection currently overdue; candidate admissions closed','PAPER protection unavailable; exposure retained'] as const);
 export type TechnicalProtectionRecoveryAuthority={verified:true;accountId:string;inceptionAt:number;stateRevision:number;controlChangedAt:number;controlReason:string;originRevision:number;authoritySha256:string}|{verified:false;reason:string};
@@ -105,12 +111,12 @@ function priceAt(price: UsdPrice, now: number) {
 }
 /** Shared input/history validation prevents a new readiness receipt from
  * becoming an unknown or unbounded historical control intent after restart. */
-function runtimeReadinessKind(value:unknown,now:number,marks:unknown,revision?:number,accountId?:string,price?:unknown):'legacy'|'financial'|null{
+function runtimeReadinessKind(value:unknown,now:number,marks:unknown,revision?:number,accountId?:string,price?:unknown,unrestrictedPositions=false):'legacy'|'financial'|null{
  const object=(v:unknown):v is Record<string,any>=>!!v&&typeof v==='object'&&!Array.isArray(v),integer=(v:unknown):v is number=>Number.isSafeInteger(v)&&Number(v)>=0,exact=(v:Record<string,unknown>,keys:string)=>Object.keys(v).sort().join(',')===keys;
  if(!object(value)||!boundedText(value.version,128)||!boundedText(value.evidence)||value.recoveryComplete!==true||value.budgetAvailable!==true)return null;
  if(value.version!==OPERATING_FINANCIAL_READINESS_VERSION)return exact(value,'budgetAvailable,candidateWindowsReady,evidence,marketAt,recoveryComplete,version')&&integer(value.marketAt)&&value.marketAt<=now&&now-value.marketAt<=MAX_QUOTE_AGE&&value.candidateWindowsReady===true?'legacy':null;
  const financialKeys='accountId,budgetAvailable,evidence,financialInventoryReady,positionUnits,purpose,reconciledAt,recoveryComplete,source,stateRevision,version'.split(',');if(Object.hasOwn(value,'technicalProtectionRecovery'))financialKeys.push('technicalProtectionRecovery');
- if(!exact(value,financialKeys.sort().join(','))||value.purpose!=='financial-permission-only'||value.financialInventoryReady!==true||!boundedText(value.accountId,160)||accountId!==undefined&&value.accountId!==accountId||!integer(value.stateRevision)||revision!==undefined&&value.stateRevision!==revision||!integer(value.reconciledAt)||value.reconciledAt>now||now-value.reconciledAt>MAX_QUOTE_AGE||!object(value.positionUnits)||Object.keys(value.positionUnits).length>3||!object(marks)||!object(value.source)||!exact(value.source,'bankClockAt,kind,receivedAt,validUntil'))return null;
+ if(!exact(value,financialKeys.sort().join(','))||value.purpose!=='financial-permission-only'||value.financialInventoryReady!==true||!boundedText(value.accountId,160)||accountId!==undefined&&value.accountId!==accountId||!integer(value.stateRevision)||revision!==undefined&&value.stateRevision!==revision||!integer(value.reconciledAt)||value.reconciledAt>now||now-value.reconciledAt>MAX_QUOTE_AGE||!object(value.positionUnits)||!unrestrictedPositions&&Object.keys(value.positionUnits).length>3||!object(marks)||!object(value.source)||!exact(value.source,'bankClockAt,kind,receivedAt,validUntil'))return null;
  const source=value.source,keys=Object.keys(value.positionUnits).sort();if(!integer(source.bankClockAt)||!integer(source.receivedAt)||!integer(source.validUntil)||source.bankClockAt>source.receivedAt||source.receivedAt>now||source.validUntil!==source.bankClockAt+30000||now>source.validUntil||source.kind!==(keys.length?'complete-held-liquidation-context':'selected-native-support')||Object.keys(marks).sort().join('|')!==keys.join('|'))return null;
  try{for(const mint of keys){const units=value.positionUnits[mint],m=marks[mint];if(!boundedText(mint,96)||amount(units)===0n||!object(m)||!exact(m,'at,evidence,netLamports,pricedBaseUnits')||m.pricedBaseUnits!==units||!integer(m.at)||m.at>now||now-m.at>MAX_QUOTE_AGE||m.at<source.receivedAt||!boundedText(m.evidence)||/[\u0000-\u001f]/.test(m.evidence))return null;amount(m.netLamports);}}catch{return null;}
  if(Object.hasOwn(value,'technicalProtectionRecovery')){
@@ -121,7 +127,7 @@ function runtimeReadinessKind(value:unknown,now:number,marks:unknown,revision?:n
 const usd = (lamports: bigint, price: bigint) => lamports * price / L;
 const digest = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex');
 function validateEntryStrategy(value:EntryStrategy,at:number){
- if(!value||typeof value!=='object'||Array.isArray(value)||value.version!==ADAPTIVE_PAPER_STRATEGY_VERSION||!Number.isSafeInteger(value.cycle)||value.cycle<1||!Number.isSafeInteger(value.windowStartAt)||value.windowStartAt<0||value.windowEndAt!==value.windowStartAt+60000||value.windowEndAt!==Math.floor(at/10000)*10000||!Number.isSafeInteger(value.assessedAt)||value.assessedAt<value.windowEndAt||value.assessedAt>at||!boundedText(value.signalId,160)||/[\u0000-\u001f]/.test(value.signalId))throw Error('adaptive entry strategy invariant');
+ if(!value||typeof value!=='object'||Array.isArray(value)||value.version!==ADAPTIVE_PAPER_STRATEGY_VERSION&&value.version!==V3_PAPER_STRATEGY_VERSION||!Number.isSafeInteger(value.cycle)||value.cycle<1||!Number.isSafeInteger(value.windowStartAt)||value.windowStartAt<0||value.windowEndAt!==value.windowStartAt+60000||value.windowEndAt!==Math.floor(at/10000)*10000||!Number.isSafeInteger(value.assessedAt)||value.assessedAt<value.windowEndAt||value.assessedAt>at||!boundedText(value.signalId,160)||/[\u0000-\u001f]/.test(value.signalId))throw Error('adaptive entry strategy invariant');
 }
 
 /** Shared with backup/recovery validation. No database or financial mutation. */
@@ -199,7 +205,7 @@ export function validateFinancialState(s: LedgerState, accountId: string, mode: 
   if (initialLamports <= gasReserve) throw new Error('inception gas reserve invariant');
   amount(s.executionCosts); amount(s.daily.baselineMicroUsd);
   if (typeof s.realizedLamports !== 'string' || !/^-?(0|[1-9][0-9]*)$/.test(s.realizedLamports) || amount(s.realizedLamports.startsWith('-') ? s.realizedLamports.slice(1) : s.realizedLamports) > (1n << 127n) - 1n) throw new Error('realized balance invariant');
-  if (!record(s.positions) || !record(s.pending) || !record(s.lockedDeposits) || Object.keys(s.positions).length > 3 || Object.keys(s.pending).length > 3) throw new Error('capacity/state map invariant');
+  if (!record(s.positions) || !record(s.pending) || !record(s.lockedDeposits) || !isV3PaperEpochState(s)&&(Object.keys(s.positions).length > 3 || Object.keys(s.pending).length > 3)) throw new Error('capacity/state map invariant');
   for (const [mint, deposit] of Object.entries(s.lockedDeposits)) {
     if (!key(mint, 96)) throw new Error('locked deposit identity invariant');
     amount(deposit);
@@ -208,7 +214,7 @@ export function validateFinancialState(s: LedgerState, accountId: string, mode: 
     if (!record(p) || !key(mint, 96) || p.mint !== mint || !eventTime(p.enteredAt) || amount(p.units) === 0n || amount(p.entryLamports) === 0n || amount(p.entryGas) === 0n || (p.allocation===undefined&&amount(p.costMicroUsd) > 50_000_000n) || amount(p.deposit) > amount(s.lockedDeposits[mint] ?? '0')) throw new Error('position identity/amount invariant');
     if(p.executionModelVersion!==undefined&&p.executionModelVersion!=='paper-chain-conditioned-v1')throw Error('position execution model version invariant');
     if(p.allocation!==undefined){if(!s.equityRisk&&!options.allowUnavailableEntryPolicy)throw Error('position allocation policy unavailable');validateEntryAllocation(p.allocation,p.enteredAt,amount(p.entryLamports)+amount(p.entryGas));if(amount(p.costMicroUsd)!==usd(amount(p.allocation.consumedLamports),amount(p.allocation.microUsdPerSol)))throw Error('position allocation cost invariant');}
-    if(p.strategy!==undefined){validateEntryStrategy(p.strategy,p.strategy.assessedAt);if(!boundedText(p.strategy.roundTripId,100)||!Number.isSafeInteger(p.strategy.highWaterAt)||p.strategy.highWaterAt<p.enteredAt||p.strategy.highWaterAt>s.lastAt||p.strategy.assessedAt>p.enteredAt)throw Error('adaptive position strategy invariant');amount(p.strategy.highWaterNetLamports);}
+    if(p.strategy!==undefined){validateEntryStrategy(p.strategy,p.strategy.assessedAt);if(!boundedText(p.strategy.roundTripId,100)||!Number.isSafeInteger(p.strategy.highWaterAt)||p.strategy.highWaterAt<p.enteredAt||p.strategy.highWaterAt>s.lastAt||p.strategy.assessedAt>p.enteredAt)throw Error('adaptive position strategy invariant');amount(p.strategy.highWaterNetLamports);if(p.strategy.profitProtectionFloorLamports!==undefined&&(p.strategy.version!==V3_PAPER_STRATEGY_VERSION||amount(p.strategy.profitProtectionFloorLamports)<=amount(p.entryLamports)+amount(p.entryGas)||amount(p.strategy.profitProtectionFloorLamports)>amount(p.strategy.highWaterNetLamports)))throw Error('V3 executable profit floor invariant');}
   }
   let reservations = 0n;
   const pendingMints = new Set<string>(); let pendingBuys = 0;
@@ -230,7 +236,7 @@ export function validateFinancialState(s: LedgerState, accountId: string, mode: 
   if(s.equityRisk!==undefined)try{validateEquityRiskState(s.equityRisk,s.inceptionAt,s.lastAt,s.revision);}catch(error){if(!options.allowUnavailableEntryPolicy)throw error;}
   // The gas reserve protects NEW entries, not exits. Held-position management
   // may consume it, but no action may spend another action's reservation.
-  if (reservations > cash || Object.keys(s.positions).length + pendingBuys > 3) throw new Error('cash reservation/capacity invariant');
+  if (reservations > cash || !isV3PaperEpochState(s)&&Object.keys(s.positions).length + pendingBuys > 3) throw new Error('cash reservation/capacity invariant');
 }
 
 export class PaperLedger {
@@ -285,14 +291,17 @@ export class PaperLedger {
   state(): Readonly<State> {
     const s = this.read();
     if (!s) throw new Error('PAPER account not initialized');
-    if(s.paperEpoch)this.validateEpochAnchor(s);else if(this.db.prepare('SELECT 1 FROM actions WHERE id=? UNION ALL SELECT 1 FROM journal WHERE action_id=? LIMIT 1').get('epoch:'+PAPER_TEN_SOL_EPOCH_ID,'epoch:'+PAPER_TEN_SOL_EPOCH_ID))throw Error('PAPER_EPOCH_STATE_MISSING_FROM_RECORDED_HISTORY');
+    if(s.paperEpoch)this.validateEpochAnchor(s);else if(this.db.prepare('SELECT 1 FROM actions WHERE id IN (?,?) UNION ALL SELECT 1 FROM journal WHERE action_id IN (?,?) LIMIT 1').get('epoch:'+PAPER_TEN_SOL_EPOCH_ID,'epoch:'+PAPER_V3_TEN_SOL_EPOCH_ID,'epoch:'+PAPER_TEN_SOL_EPOCH_ID,'epoch:'+PAPER_V3_TEN_SOL_EPOCH_ID))throw Error('PAPER_EPOCH_STATE_MISSING_FROM_RECORDED_HISTORY');
+    if(s.paperEpoch?.id===PAPER_TEN_SOL_EPOCH_ID&&this.db.prepare('SELECT 1 FROM journal WHERE action_id=? LIMIT 1').get('epoch:'+PAPER_V3_TEN_SOL_EPOCH_ID))throw Error('PAPER_V3_EPOCH_STATE_REGRESSED');
     return s;
   }
   private validateEpochAnchor(s:State){
     const epoch=s.paperEpoch;if(!epoch)return;validatePaperEpoch(epoch,s);
-    const id='epoch:'+PAPER_TEN_SOL_EPOCH_ID,row=this.db.prepare('SELECT a.payload_hash payloadHash,a.result,j.revision,j.at,j.kind,j.detail FROM actions a JOIN journal j ON j.action_id=a.id WHERE a.id=?').get(id) as {payloadHash:string;result:string;revision:number;at:number;kind:string;detail:string}|undefined;
+    const id='epoch:'+epoch.id,row=this.db.prepare('SELECT a.payload_hash payloadHash,a.result,j.revision,j.at,j.kind,j.detail FROM actions a JOIN journal j ON j.action_id=a.id WHERE a.id=?').get(id) as {payloadHash:string;result:string;revision:number;at:number;kind:string;detail:string}|undefined;
     if(!row||row.kind!=='paper-epoch-transition'||row.at!==epoch.startedAt||row.revision!==epoch.transitionRevision||Buffer.byteLength(row.detail)>65536||Buffer.byteLength(row.result)>65536)throw Error('PAPER_EPOCH_HISTORY_UNAVAILABLE');
-    const payload=JSON.parse(row.detail),result=JSON.parse(row.result);if(row.payloadHash!==digest({kind:row.kind,payload})||payload.authorization!==PAPER_TEN_SOL_EPOCH_AUTHORIZATION||!isDeepStrictEqual(result.epoch,epoch)||!isDeepStrictEqual(payload.epoch,epoch)||paperEpochStateSha256(payload.previousState)!==epoch.priorStateSha256||payload.backup?.backupSha256!==epoch.backupSha256||payload.backup.stateSha256!==epoch.priorStateSha256||payload.backup.revision!==epoch.transitionRevision-1||payload.backup.accountId!==s.accountId||payload.backup.inceptionAt!==s.inceptionAt||Object.keys(epoch.archivedAssets.lockedDeposits).length>0&&payload.assetDisposition!==PAPER_EPOCH_ASSET_SEGREGATION||payload.previousState?.paperEpoch!==undefined||payload.previousState?.accountId!==s.accountId||payload.previousState?.inceptionAt!==s.inceptionAt||epoch.archivedAssets.cashLamports!==payload.previousState.lamports||!isDeepStrictEqual(epoch.archivedAssets.lockedDeposits,Object.fromEntries(Object.entries(payload.previousState.lockedDeposits).filter(([,v])=>BigInt(v as string)>0n))))throw Error('PAPER_EPOCH_HISTORY_UNAVAILABLE');
+    const payload=JSON.parse(row.detail),result=JSON.parse(row.result),v3=epoch.id===PAPER_V3_TEN_SOL_EPOCH_ID;
+    if(row.payloadHash!==digest({kind:row.kind,payload})||payload.authorization!==(v3?PAPER_V3_TEN_SOL_EPOCH_AUTHORIZATION:PAPER_TEN_SOL_EPOCH_AUTHORIZATION)||!isDeepStrictEqual(result.epoch,epoch)||!isDeepStrictEqual(payload.epoch,epoch)||paperEpochStateSha256(payload.previousState)!==epoch.priorStateSha256||payload.backup?.backupSha256!==epoch.backupSha256||payload.backup.stateSha256!==epoch.priorStateSha256||payload.backup.revision!==epoch.transitionRevision-1||payload.backup.accountId!==s.accountId||payload.backup.inceptionAt!==s.inceptionAt||Object.keys(epoch.archivedAssets.lockedDeposits).length>0&&payload.assetDisposition!==PAPER_EPOCH_ASSET_SEGREGATION||(!v3&&payload.previousState?.paperEpoch!==undefined)||payload.previousState?.accountId!==s.accountId||payload.previousState?.inceptionAt!==s.inceptionAt||epoch.archivedAssets.cashLamports!==payload.previousState.lamports||!isDeepStrictEqual(epoch.archivedAssets.lockedDeposits,Object.fromEntries(Object.entries(payload.previousState.lockedDeposits).filter(([,v])=>BigInt(v as string)>0n))))throw Error('PAPER_EPOCH_HISTORY_UNAVAILABLE');
+    if(v3){if(!isDeepStrictEqual(epoch.priorEpoch,payload.previousState.paperEpoch)||!isDeepStrictEqual(payload.riskPolicy,PAPER_V3_EQUITY_RISK_POLICY)||result.equityRisk?.version!==PAPER_V3_EQUITY_RISK_VERSION||result.equityRisk?.activatedAt!==epoch.startedAt||result.equityRisk?.activationRevision!==epoch.transitionRevision)throw Error('PAPER_V3_EPOCH_HISTORY_UNAVAILABLE');this.validateEpochAnchor(payload.previousState);}
   }
   private assertState(s: State) { validateFinancialState(s, this.accountId, this.mode,{allowUnavailableEntryPolicy:true}); }
   private apply<T>(id: string, kind: string, now: number, payload: unknown, fn: (s: State) => T): T {
@@ -366,13 +375,20 @@ export class PaperLedger {
   /** Optional entry-policy corruption closes new risk while the independent
    * cash/inventory/order invariants still permit genuine existing exits. */
   private equityRiskStatus(s:State):{kind:'legacy'|'active'|'unavailable';reasonCode?:'EQUITY_RISK_POLICY_INVALID'|'EQUITY_RISK_HISTORY_UNAVAILABLE'}{
+    if(s.paperEpoch?.id===PAPER_V3_TEN_SOL_EPOCH_ID||s.equityRisk?.version===PAPER_V3_EQUITY_RISK_VERSION){
+      try{if(!isV3PaperRiskState(s))throw Error();validateEquityRiskState(s.equityRisk,s.inceptionAt,s.lastAt,s.revision);this.validateEpochAnchor(s);
+        const risk=s.equityRisk!;if(risk.activatedAt!==s.paperEpoch!.startedAt||risk.activationRevision!==s.paperEpoch!.transitionRevision)throw Error();
+      }catch{return {kind:'unavailable',reasonCode:'EQUITY_RISK_HISTORY_UNAVAILABLE'};}
+      return {kind:'active'};
+    }
     const anchor=this.db.prepare('SELECT a.payload_hash payloadHash,a.result,j.revision,j.at,j.kind,j.detail FROM (SELECT ? id) x LEFT JOIN actions a ON a.id=x.id LEFT JOIN journal j ON j.action_id=x.id').get('activate:'+PAPER_EQUITY_RISK_VERSION) as {payloadHash:string|null;result:string|null;revision:number|null;at:number|null;kind:string|null;detail:string|null};
     if(s.equityRisk===undefined)return anchor.result!==null||anchor.detail!==null?{kind:'unavailable',reasonCode:'EQUITY_RISK_HISTORY_UNAVAILABLE'}:{kind:'legacy'};
     try{validateEquityRiskState(s.equityRisk,s.inceptionAt,s.lastAt,s.revision);}catch{return {kind:'unavailable',reasonCode:'EQUITY_RISK_POLICY_INVALID'};}
     try{if(!anchor.result||!anchor.detail||Buffer.byteLength(anchor.result)>65536||Buffer.byteLength(anchor.detail)>65536||anchor.kind!=='equity-risk-policy-activation'||anchor.revision!==s.equityRisk.activationRevision||anchor.at!==s.equityRisk.activatedAt)throw Error();const payload=JSON.parse(anchor.detail),result=JSON.parse(anchor.result);if(anchor.payloadHash!==digest({kind:anchor.kind,payload})||!isDeepStrictEqual(payload,{version:PAPER_EQUITY_RISK_VERSION,policy:PAPER_EQUITY_RISK_POLICY})||result.version!==PAPER_EQUITY_RISK_VERSION||result.activatedAt!==anchor.at||result.activationRevision!==anchor.revision)throw Error();}catch{return {kind:'unavailable',reasonCode:'EQUITY_RISK_HISTORY_UNAVAILABLE'};}
     return {kind:'active'};
   }
-  private newRiskDay(s:State,now:number):EquityRiskState['daily']{return {day:utcDay(now),highWaterMicroUsd:null,highWaterAt:null,lossPaused:false,historyState:'scanning',historyCoverage:'unavailable',historyCutoffRevision:s.revision,historyCursorRevision:0,historyReceipts:0,historyDigest:digest({version:PAPER_EQUITY_RISK_VERSION,day:utcDay(now),accountId:s.accountId,inceptionAt:s.inceptionAt,cutoffRevision:s.revision})};}
+  v3RiskPolicyActive(){const s=this.state();return isV3PaperRiskState(s)&&this.equityRiskStatus(s).kind==='active';}
+  private newRiskDay(s:State,now:number):EquityRiskState['daily']{return {day:utcDay(now),highWaterMicroUsd:null,highWaterAt:null,lossPaused:false,historyState:'scanning',historyCoverage:'unavailable',historyCutoffRevision:s.revision,historyCursorRevision:0,historyReceipts:0,historyDigest:digest({version:s.equityRisk?.version??PAPER_EQUITY_RISK_VERSION,day:utcDay(now),accountId:s.accountId,inceptionAt:s.inceptionAt,cutoffRevision:s.revision})};}
   private scanRiskHistory(s:State,now:number){
     const risk=s.equityRisk;if(!risk)return;const d=risk.daily;if(d.historyState!=='scanning')return;
     const dayStart=Date.parse(d.day+'T00:00:00.000Z'),from=Math.max(dayStart,s.paperEpoch?.startedAt??0),through=dayStart+86400000;
@@ -401,6 +417,13 @@ export class PaperLedger {
     if(scan)this.scanRiskHistory(s,now);
     if(d.highWaterMicroUsd===null||equity>amount(d.highWaterMicroUsd)){d.highWaterMicroUsd=equity.toString();d.highWaterAt=now;}
     if(d.historyState!=='complete')return false;
+    if(isV3PaperRiskState(s)){
+      // V3 records drawdown but has no portfolio loss admission latch. The
+      // superseded latches remain in the immutable previous epoch journal.
+      d.lossPaused=false;s.daily.lossPaused=false;
+      if(legacyLoss&&s.controls.entriesEnabled&&!s.controls.stopRequested)s.daily.paused=false;
+      return true;
+    }
     if(drawdownFacts(amount(d.highWaterMicroUsd),equity).breached)d.lossPaused=true;
     s.daily.lossPaused=d.lossPaused;if(d.lossPaused)s.daily.paused=true;
     else if(legacyLoss&&s.controls.entriesEnabled&&!s.controls.stopRequested)s.daily.paused=false;
@@ -427,6 +450,20 @@ export class PaperLedger {
     for(const position of Object.values(probe.positions))if(position.strategy){const mark=marks[position.mint];let usable=false;try{usable=!!mark&&boundedText(mark.evidence)&&mark.pricedBaseUnits===position.units&&Number.isSafeInteger(mark.at)&&mark.at>=position.enteredAt&&mark.at<=now&&now-mark.at<=MAX_QUOTE_AGE; if(usable)amount(mark!.netLamports);}catch{usable=false;}if(usable)valid[position.mint]=mark!;else unavailable.push(position.mint);}
     if(!this.updateAdaptiveHighWater(probe,now,valid).length)return {updated:[] as string[],unavailable};
     return this.apply(id,'adaptive-protection-peak',now,{now,marks:valid},s=>({updated:this.updateAdaptiveHighWater(s,now,valid),unavailable}));
+  }
+  /** Persist a tighter V3 executable-profit floor in the original writer.
+   * This cannot reprice cash, clear controls or loosen protection after restart. */
+  checkpointV3ProtectionFloor(id:string,now:number,input:{mint:string;units:string;roundTripId:string;floorLamports:string;quoteAt:number;evidence:string}){
+    const check=(s:Readonly<State>)=>{
+      const p=s.positions[input.mint],floor=amount(input.floorLamports);
+      if(!p||p.strategy?.version!==V3_PAPER_STRATEGY_VERSION||p.units!==input.units||p.strategy.roundTripId!==input.roundTripId||!Number.isSafeInteger(now)||!Number.isSafeInteger(input.quoteAt)||input.quoteAt<p.enteredAt||input.quoteAt>now||now-input.quoteAt>MAX_QUOTE_AGE||!boundedText(input.evidence)||floor<=amount(p.entryLamports)+amount(p.entryGas)||floor>amount(p.strategy.highWaterNetLamports))throw Error('V3 fresh exact-inventory executable profit floor required');
+      return {floor,prior:amount(p.strategy.profitProtectionFloorLamports??'0')};
+    };
+    const previous=check(this.state());if(previous.floor<=previous.prior)return {updated:false,floorLamports:previous.prior.toString()};
+    return this.apply(id,'v3-protection-profit-floor',now,{now,...input},s=>{
+      const value=check(s);if(value.floor<=value.prior)return {updated:false,floorLamports:value.prior.toString()};
+      s.positions[input.mint]!.strategy!.profitProtectionFloorLamports=value.floor.toString();return {updated:true,floorLamports:value.floor.toString()};
+    });
   }
 
   reconcile(id: string, now: number, price: UsdPrice, marks: Record<string, Mark>) {
@@ -517,16 +554,16 @@ export class PaperLedger {
       const object=(v:unknown):v is Record<string,any>=>!!v&&typeof v==='object'&&!Array.isArray(v);
       const select="SELECT j.revision,j.action_id actionId,j.at,j.kind,CASE WHEN length(CAST(j.detail AS BLOB))<=65536 THEN j.detail END detail,a.payload_hash payloadHash,CASE WHEN length(CAST(a.result AS BLOB))<=65536 THEN a.result END result FROM journal j LEFT JOIN actions a ON a.id=j.action_id";
       const read=(row:Row)=>{if(!Number.isSafeInteger(row.revision)||row.revision<1||row.revision>state.revision||!Number.isSafeInteger(row.at)||row.at<state.inceptionAt||row.at>at||!boundedText(row.actionId,160)||typeof row.detail!=='string'||typeof row.result!=='string')throw Error('malformed');const payload=JSON.parse(row.detail),result=JSON.parse(row.result);if(!object(payload)||payload.now!==row.at||!object(result)||row.payloadHash!==digest({kind:row.kind,payload}))throw Error('malformed');return {payload,result};};
-      const validateResume=(row:Row,enabled:boolean)=>{const {payload,result}=read(row),kind=runtimeReadinessKind(payload.readiness,row.at,payload.marks,row.revision-1,state.accountId,payload.price);if(row.kind!=='resume'||Object.keys(payload).sort().join(',')!=='marks,now,price,readiness'||!kind||Object.keys(result).sort().join(',')!=='enabled,reason'||result.enabled!==enabled||enabled&&result.reason!==(kind==='financial'?'explicit verified operating financial readiness':'explicit verified runtime readiness')||!enabled&&result.reason!=='fresh reconciliation or next UTC-day loss reset required'&&!(kind==='financial'&&result.reason==='fresh reconciled inventory and authorized temporary recovery required'))throw Error('malformed');priceAt(payload.price,row.at);return {payload,result};};
+      const validateResume=(row:Row,enabled:boolean)=>{const {payload,result}=read(row),kind=runtimeReadinessKind(payload.readiness,row.at,payload.marks,row.revision-1,state.accountId,payload.price,isV3PaperRiskState(state));if(row.kind!=='resume'||Object.keys(payload).sort().join(',')!=='marks,now,price,readiness'||!kind||Object.keys(result).sort().join(',')!=='enabled,reason'||result.enabled!==enabled||enabled&&result.reason!==(kind==='financial'?'explicit verified operating financial readiness':'explicit verified runtime readiness')||!enabled&&result.reason!=='fresh reconciliation or next UTC-day loss reset required'&&!(kind==='financial'&&result.reason==='fresh reconciled inventory and authorized temporary recovery required'))throw Error('malformed');priceAt(payload.price,row.at);return {payload,result};};
       let anchor=this.db.prepare(select+" WHERE j.kind='resume' AND CASE WHEN length(CAST(a.result AS BLOB))<=65536 AND json_valid(a.result) THEN json_type(a.result,'$.enabled')='true' ELSE 0 END ORDER BY j.revision DESC LIMIT 1").get()as Row|undefined;
-      if(state.paperEpoch&&(!anchor||anchor.revision<state.paperEpoch.transitionRevision)){this.validateEpochAnchor(state);anchor=this.db.prepare(select+' WHERE j.action_id=?').get('epoch:'+PAPER_TEN_SOL_EPOCH_ID) as Row;}
+      if(state.paperEpoch&&(!anchor||anchor.revision<state.paperEpoch.transitionRevision)){this.validateEpochAnchor(state);anchor=this.db.prepare(select+' WHERE j.action_id=?').get('epoch:'+state.paperEpoch.id) as Row;}
       if(anchor?.kind==='paper-epoch-transition')this.validateEpochAnchor(state);else if(anchor)validateResume(anchor,true);else{const inception=this.db.prepare("SELECT action_id actionId,at,kind,CASE WHEN length(CAST(detail AS BLOB))<=65536 THEN detail END detail FROM journal WHERE revision=0").get()as{actionId:string;at:number;kind:string;detail:string}|undefined;if(!inception||inception.actionId!=='inception'||inception.at!==state.inceptionAt||inception.kind!=='inception'||typeof inception.detail!=='string'||!isDeepStrictEqual(JSON.parse(inception.detail),{price:state.inceptionPrice,gasReserve:state.gasReserve,mode:state.mode}))throw Error('malformed inception');}
       const boundary=anchor?.revision??0,size=this.db.prepare("SELECT count(*) count,coalesce(sum(length(CAST(j.detail AS BLOB))+coalesce(length(CAST(a.result AS BLOB)),0)),0) bytes FROM journal j LEFT JOIN actions a ON a.id=j.action_id WHERE j.revision>? AND j.kind IN ('pause','safe-stop','resume')").get(boundary)as{count:number;bytes:number};if(size.count>512||size.bytes>1024*1024)return null;
       const rows=this.db.prepare(select+" WHERE j.revision>? AND j.kind IN ('pause','safe-stop','resume') ORDER BY j.revision LIMIT 513").all(boundary)as Row[];if(rows.length!==size.count)return null;
       let previousAt=anchor?.at??state.inceptionAt,previousRevision=boundary;
       const decoded=rows.map(row=>{if(row.revision<=previousRevision||row.at<previousAt)throw Error('malformed order');previousRevision=row.revision;previousAt=row.at;const {payload,result}=read(row);
         if(row.kind==='resume')validateResume(row,false);
-        else if(row.kind==='pause'){if(Object.keys(payload).sort().join(',')!=='now,reason'||!boundedText(payload.reason)||Object.keys(result).sort().join(',')!=='paused,pendingBuyCancellations'||result.paused!==true||!Array.isArray(result.pendingBuyCancellations)||result.pendingBuyCancellations.length>3||!result.pendingBuyCancellations.every((id:unknown)=>boundedText(id,100)))throw Error('malformed pause');}
+        else if(row.kind==='pause'){if(Object.keys(payload).sort().join(',')!=='now,reason'||!boundedText(payload.reason)||Object.keys(result).sort().join(',')!=='paused,pendingBuyCancellations'||result.paused!==true||!Array.isArray(result.pendingBuyCancellations)||!isV3PaperRiskState(state)&&result.pendingBuyCancellations.length>3||!result.pendingBuyCancellations.every((id:unknown)=>boundedText(id,100)))throw Error('malformed pause');}
         else if(row.kind!=='safe-stop')throw Error('unknown control');
         const ordinary=/^trader:pause:(\d+):(\d+)$/.exec(row.actionId),restored=/^trader:restore-hard-pause:(\d+):(\d+)$/.exec(row.actionId),startup=row.actionId===`execution-recovery:${state.accountId}:${row.revision-1}`,stamp=ordinary??restored;
         if(stamp&&(Number(stamp[1])!==row.revision-1||!Number.isSafeInteger(Number(stamp[2]))||Number(stamp[2])<state.inceptionAt||Number(stamp[2])>at))throw Error('malformed action identity');
@@ -540,7 +577,7 @@ export class PaperLedger {
   technicalProtectionRecoveryAuthority(at:number):TechnicalProtectionRecoveryAuthority{
     const state=this.state(),no=(reason:string):TechnicalProtectionRecoveryAuthority=>({verified:false,reason});
     if(!Number.isSafeInteger(at)||at<state.lastAt)return no('TECHNICAL_PROTECTION_CONTROL_TIME');
-    if(state.controls.entriesEnabled||state.controls.stopRequested||state.daily.lossPaused||Object.keys(state.pending).length||!TECHNICAL_PROTECTION_PAUSE_REASONS.includes(state.controls.reason as never))return no('TECHNICAL_PROTECTION_CONTROL_NOT_ELIGIBLE');
+    if(state.controls.entriesEnabled||state.controls.stopRequested||dailyLossEntryBlocked(state)||Object.keys(state.pending).length||!TECHNICAL_PROTECTION_PAUSE_REASONS.includes(state.controls.reason as never))return no('TECHNICAL_PROTECTION_CONTROL_NOT_ELIGIBLE');
     const history=this.operatingControlHistory(state,at);if(!history||!history.anchor)return no('TECHNICAL_PROTECTION_CONTROL_HISTORY_UNAVAILABLE');
     let originRevision:number|null=null,lastControl:{at:number;reason:string}|null=null;
     const intents:Array<{revision:number;actionId:string;at:number;kind:string;payloadHash:string;resultSha256:string}>=[];
@@ -567,11 +604,11 @@ export class PaperLedger {
 
   /** Preflight for the operating candidate path; no preparation or state
    * change may launder an owner intent behind temporary startup wording. */
-  operatingFinancialRecoveryAllowed(at:number){const state=this.state();return Number.isSafeInteger(at)&&at>=state.lastAt&&!state.controls.entriesEnabled&&!state.controls.stopRequested&&!state.daily.lossPaused&&!Object.keys(state.pending).length&&INTERNAL_SHUTDOWN_SOFT_PAUSES.has(state.controls.reason)&&this.operatingTemporaryControlVerified(state,at);}
+  operatingFinancialRecoveryAllowed(at:number){const state=this.state();return Number.isSafeInteger(at)&&at>=state.lastAt&&!state.controls.entriesEnabled&&!state.controls.stopRequested&&!dailyLossEntryBlocked(state)&&!Object.keys(state.pending).length&&INTERNAL_SHUTDOWN_SOFT_PAUSES.has(state.controls.reason)&&this.operatingTemporaryControlVerified(state,at);}
 
   resume(id: string, now: number, price: UsdPrice, marks: Record<string, Mark>, readiness: RuntimeReadiness) {
     const p = priceAt(price, now);
-    const kind=runtimeReadinessKind(readiness,now,marks,undefined,this.accountId,price);if(!kind)throw new Error('fresh explicit runtime readiness required');
+    const kind=runtimeReadinessKind(readiness,now,marks,undefined,this.accountId,price,this.v3RiskPolicyActive());if(!kind)throw new Error('fresh explicit runtime readiness required');
     return this.apply(id, 'resume', now, { now, price, marks, readiness }, s => {
       if(kind==='financial'){
         const q=readiness as OperatingFinancialReadiness,units=Object.fromEntries(Object.entries(s.positions).map(([mint,position])=>[mint,position.units]));
@@ -580,7 +617,7 @@ export class PaperLedger {
       }
       const equity = this.equity(s, p, marks, now);
       const riskReady=this.observeEquityRisk(s,now,equity);
-      if (!riskReady || s.daily.day !== utcDay(now) || s.daily.reconciledAt === 0 || now - s.daily.reconciledAt > MAX_QUOTE_AGE || s.daily.lossPaused) return { enabled: false, reason: 'fresh reconciliation or next UTC-day loss reset required' };
+      if (!riskReady || s.daily.day !== utcDay(now) || s.daily.reconciledAt === 0 || now - s.daily.reconciledAt > MAX_QUOTE_AGE || dailyLossEntryBlocked(s)) return { enabled: false, reason: 'fresh reconciliation or next UTC-day loss reset required' };
       s.daily.paused = false;
       s.controls = { entriesEnabled: true, reason: kind==='financial'?'explicit verified operating financial readiness':'explicit verified runtime readiness', changedAt: now, readinessVersion: readiness.version, stopRequested: false };
       return { enabled: true, reason: s.controls.reason };
@@ -653,7 +690,7 @@ export class PaperLedger {
     const prior=this.closedCycle(mint,state,ignoredPendingId),result=(allowed:boolean,reason:string):EntryEligibility=>({allowed,reason,closedAt:prior?.closedAt??null,previousWindowEndAt:prior?.entryWindowEndAt??null,cycle:(prior?.cycle??0)+1});
     if(!prior&&this.db.prepare('SELECT 1 FROM metadata WHERE key=?').get('paper_round_trip_v2:'+mint))return result(false,'round-trip recovery index unavailable; no entry authority');
     if(!this.hasTradedMint(mint))return result(true,'first complete qualified entry remains subject to financial controls');
-    if(strategyVersion!==ADAPTIVE_PAPER_STRATEGY_VERSION)return result(false,'legacy no-reentry policy');
+    if(strategyVersion!==ADAPTIVE_PAPER_STRATEGY_VERSION&&strategyVersion!==V3_PAPER_STRATEGY_VERSION)return result(false,'legacy no-reentry policy');
     if(!prior||prior.closedAt===null)return result(false,'prior fill has no verified completed closure');
     if(state.daily.reconciledAt<prior.closedAt||state.daily.reconciledAt>at)return result(false,'post-close financial reconciliation required');
     if(windowEndAt-60000<=prior.closedAt||windowEndAt<=prior.entryWindowEndAt)return result(false,'new complete audited window after closure required');
@@ -674,7 +711,7 @@ export class PaperLedger {
       const spend = amount(input.maxSpend); const min = amount(input.minReceive);
       if (gas === 0n || min === 0n || input.id.length > 100 || !input.id || !input.mint || ['__proto__', 'constructor', 'prototype'].some(k => k === input.id || k === input.mint)) throw new Error('invalid order amounts/identity');
       if (Object.values(s.pending).some(o => o.mint === input.mint)) throw new Error('one pending action per token');
-      if (Object.keys(s.pending).length >= 3) throw new Error('pending capacity');
+      if (!isV3PaperEpochState(s)&&Object.keys(s.pending).length >= 3) throw new Error('pending capacity');
       const temporary=amount(input.temporaryRentLamports??'0');if(!input.executionModel&&input.temporaryRentLamports!==undefined)throw Error('temporary rent requires supported execution model');
       let reserved = gas+temporary;
       if (input.side === 'buy') {
@@ -689,9 +726,9 @@ export class PaperLedger {
         if (s.lockedDeposits[input.mint] && dep > 0n) throw new Error('existing account deposit cannot be charged twice');
         if (!s.equityRisk && Object.keys(s.lockedDeposits).length >= 128 && !s.lockedDeposits[input.mint]) throw new Error('unresolved deposit capacity');
         const pendingBuys = Object.values(s.pending).filter(o => o.side === 'buy');
-        if (Object.keys(s.positions).length + pendingBuys.length >= (s.equityRisk?2:3)) throw new Error('position capacity');
+        if (!isV3PaperRiskState(s)&&Object.keys(s.positions).length + pendingBuys.length >= (s.equityRisk?2:3)) throw new Error('position capacity');
         reserved += spend + dep;
-        if(s.equityRisk){if(gas+spend>consumedEntryAllowance(equity,p))throw Error('5% current equity consumed-entry limit');allocation=entryAllocation(equity,p,now,gas+spend);}
+        if(s.equityRisk){if(gas+spend>consumedEntryAllowance(equity,p))throw Error('5% current equity consumed-entry limit');allocation=entryAllocation(equity,p,now,gas+spend,s.equityRisk.version);}
         else if (usd(reserved, p) > 50_000_000n) throw new Error('$50 initial commitment limit');
         const heldCost = Object.values(s.positions).reduce((n, x) => n + amount(x.costMicroUsd), 0n);
         const pendingCost = pendingBuys.reduce((n, x) => n + usd(amount(x.reserved), p), 0n);
@@ -748,7 +785,7 @@ export class PaperLedger {
       if (received < amount(o.minReceive) || (o.side === 'buy' && (spend > amount(o.maxSpend) || spend === 0n)) || (o.side === 'sell' && spend !== 0n)) return finish('failed', 'price constraint failed; gas charged; no retry');
       if (o.side === 'buy') {
         let allocation:EntryAllocation|undefined;
-        if(s.equityRisk){const equity=entryEquity!;if(spend+gas>consumedEntryAllowance(equity,p))return finish('failed','5% current equity consumed-entry limit at execution; gas charged');allocation=entryAllocation(equity,p,now,spend+gas);}
+        if(s.equityRisk){const equity=entryEquity!;if(spend+gas>consumedEntryAllowance(equity,p))return finish('failed','5% current equity consumed-entry limit at execution; gas charged');allocation=entryAllocation(equity,p,now,spend+gas,s.equityRisk.version);}
         else if (usd(spend + gas + amount(o.deposit), p) > 50_000_000n) return finish('failed', '$50 commitment limit at execution; gas charged');
         if (s.positions[o.mint]) throw new Error('position already held');
         this.historicalClosedCycles.delete(o.mint);
@@ -858,7 +895,7 @@ export class PaperLedger {
       const inceptionPayload=JSON.parse(inception.detail);
       if(!isDeepStrictEqual(inceptionPayload,{price:s.inceptionPrice,gasReserve:s.gasReserve,mode:s.mode}))return no('INTERNAL_SHUTDOWN_INCEPTION');
       const successfulResumeRevision=anchor?.revision??0;
-      if(s.paperEpoch&&(!anchor||anchor.revision<s.paperEpoch.transitionRevision)){this.validateEpochAnchor(s);anchor=this.db.prepare(select+' WHERE j.action_id=?').get('epoch:'+PAPER_TEN_SOL_EPOCH_ID) as Row;}
+      if(s.paperEpoch&&(!anchor||anchor.revision<s.paperEpoch.transitionRevision)){this.validateEpochAnchor(s);anchor=this.db.prepare(select+' WHERE j.action_id=?').get('epoch:'+s.paperEpoch.id) as Row;}
       const boundary=anchor?.revision??0;
       if(!Number.isSafeInteger(boundary)||boundary<0||boundary>s.revision)return no('INTERNAL_SHUTDOWN_HISTORY_MALFORMED');
       const size=this.db.prepare("SELECT count(*) count,coalesce(sum(length(CAST(j.detail AS BLOB))+coalesce(length(CAST(a.result AS BLOB)),0)),0) bytes FROM journal j LEFT JOIN actions a ON a.id=j.action_id WHERE j.revision>? AND j.kind IN ('pause','safe-stop','resume')").get(boundary) as {count:number;bytes:number};
@@ -872,7 +909,7 @@ export class PaperLedger {
       };
       const resume=(r:Row,expectedEnabled:boolean)=>{
         const {payload,result}=read(r),q=payload.readiness;
-        const kind=runtimeReadinessKind(q,r.at,payload.marks,r.revision-1,s.accountId,payload.price),validReason=expectedEnabled?(kind==='financial'?'explicit verified operating financial readiness':'explicit verified runtime readiness'):result.reason==='fresh reconciliation or next UTC-day loss reset required'||kind==='financial'&&result.reason==='fresh reconciled inventory and authorized temporary recovery required';
+        const kind=runtimeReadinessKind(q,r.at,payload.marks,r.revision-1,s.accountId,payload.price,isV3PaperRiskState(s)),validReason=expectedEnabled?(kind==='financial'?'explicit verified operating financial readiness':'explicit verified runtime readiness'):result.reason==='fresh reconciliation or next UTC-day loss reset required'||kind==='financial'&&result.reason==='fresh reconciled inventory and authorized temporary recovery required';
         if(r.kind!=='resume'||Object.keys(payload).sort().join(',')!=='marks,now,price,readiness'||!object(payload.price)||!object(payload.marks)||!kind||Object.keys(result).sort().join(',')!=='enabled,reason'||result.enabled!==expectedEnabled||(expectedEnabled?result.reason!==validReason:!validReason))throw Error('malformed');
         priceAt(payload.price as UsdPrice,r.at);return {payload,result};
       };
@@ -884,12 +921,12 @@ export class PaperLedger {
         const {payload,result}=read(r);intents.push({revision:r.revision,actionId:r.actionId,at:r.at,kind:r.kind,payloadHash:r.payloadHash,resultSha256:digest(result)});
         if(r.kind==='resume'){resume(r,false);continue;}
         if(r.kind==='safe-stop'){
-          if(Object.keys(payload).join(',')!=='now'||typeof result.safeToExit!=='boolean'||!['management-required','stopped-safe'].includes(result.state)||!Number.isSafeInteger(result.openPositions)||result.openPositions<0||!Number.isSafeInteger(result.uncertainActions)||result.uncertainActions<0||!Array.isArray(result.canceledEntries)||result.canceledEntries.length>3||!result.canceledEntries.every((id:unknown)=>boundedText(id,100))||result.safeToExit!==(result.openPositions===0&&result.uncertainActions===0)||result.state!==(result.safeToExit?'stopped-safe':'management-required'))return no('INTERNAL_SHUTDOWN_HISTORY_MALFORMED');
+          if(Object.keys(payload).join(',')!=='now'||typeof result.safeToExit!=='boolean'||!['management-required','stopped-safe'].includes(result.state)||!Number.isSafeInteger(result.openPositions)||result.openPositions<0||!Number.isSafeInteger(result.uncertainActions)||result.uncertainActions<0||!Array.isArray(result.canceledEntries)||!isV3PaperRiskState(s)&&result.canceledEntries.length>3||!result.canceledEntries.every((id:unknown)=>boundedText(id,100))||result.safeToExit!==(result.openPositions===0&&result.uncertainActions===0)||result.state!==(result.safeToExit?'stopped-safe':'management-required'))return no('INTERNAL_SHUTDOWN_HISTORY_MALFORMED');
           const match=/^native-paper-(?:stop|finally):(native-paper-\d{17})$/.exec(r.actionId),run=match?runs.get(match[1]!):undefined;
           if(!match||run===undefined||r.at<run)return no('INTERNAL_SHUTDOWN_OWNER_OR_UNKNOWN_STOP');
           if(stops.length>=p.maximumStops)return no('INTERNAL_SHUTDOWN_STOP_BOUND');stops.push({revision:r.revision,actionId:r.actionId,at:r.at});internalStop=true;lastControl={at:r.at,reason:'safe stop requested'};continue;
         }
-        if(r.kind!=='pause'||Object.keys(payload).sort().join(',')!=='now,reason'||!boundedText(payload.reason)||Object.keys(result).sort().join(',')!=='paused,pendingBuyCancellations'||result.paused!==true||!Array.isArray(result.pendingBuyCancellations)||result.pendingBuyCancellations.length>3||!result.pendingBuyCancellations.every((id:unknown)=>boundedText(id,100)))return no('INTERNAL_SHUTDOWN_HISTORY_MALFORMED');
+        if(r.kind!=='pause'||Object.keys(payload).sort().join(',')!=='now,reason'||!boundedText(payload.reason)||Object.keys(result).sort().join(',')!=='paused,pendingBuyCancellations'||result.paused!==true||!Array.isArray(result.pendingBuyCancellations)||!isV3PaperRiskState(s)&&result.pendingBuyCancellations.length>3||!result.pendingBuyCancellations.every((id:unknown)=>boundedText(id,100)))return no('INTERNAL_SHUTDOWN_HISTORY_MALFORMED');
         const ordinary=/^trader:pause:(\d+):(\d+)$/.exec(r.actionId),restored=/^trader:restore-hard-pause:(\d+):(\d+)$/.exec(r.actionId),recovery=r.actionId===`execution-recovery:${s.accountId}:${r.revision-1}`;
         const stamp=ordinary??restored,typed=stamp&&Number(stamp[1])===r.revision-1&&Number.isSafeInteger(Number(stamp[2]))&&Number(stamp[2])>=s.inceptionAt&&Number(stamp[2])<=at;
         if(payload.reason==='safe stop requested'&&restored&&typed&&internalStop){lastControl={at:r.at,reason:payload.reason};continue;}
@@ -968,6 +1005,34 @@ export class PaperLedger {
       s.equityRisk!.daily={day:utcDay(at),highWaterMicroUsd:epoch.initialMicroUsd,highWaterAt:at,lossPaused:false,historyState:'complete',historyCoverage:'first-complete-observation',historyCutoffRevision:s.revision,historyCursorRevision:s.revision,historyReceipts:0,historyDigest:digest({epoch,backup:backup.logicalSha256})};
       s.controls={entriesEnabled:false,reason:'execution startup: fresh reconciliation/readiness required',changedAt:at,readinessVersion:null,stopRequested:false};
       return {epoch:structuredClone(epoch),backup:structuredClone(backup)};
+    });
+    this.validateEpochAnchor(this.state());return {...result,alreadyApplied:false};
+  }
+  /** Owner-authorized V3 is a distinct, append-only capital/policy boundary.
+   * The old epoch, latches, policies and every lifetime row remain recoverable.
+   * Reruns return the original receipt without another contribution or reset. */
+  async beginAuthorizedV3TenSolEpoch(input:{authorization:typeof PAPER_V3_TEN_SOL_EPOCH_AUTHORIZATION;price:UsdPrice;backupDirectory:string;assetDisposition?:typeof PAPER_EPOCH_ASSET_SEGREGATION},clock:()=>number=Date.now):Promise<{epoch:V3PaperEpoch;backup:PaperEpochBackupReceipt;alreadyApplied:boolean;riskPolicy:typeof PAPER_V3_EQUITY_RISK_POLICY;equityRisk:EquityRiskState}> {
+    if(input.authorization!==PAPER_V3_TEN_SOL_EPOCH_AUTHORIZATION)throw Error('PAPER_V3_EPOCH_OWNER_AUTHORIZATION_REQUIRED');
+    const id='epoch:'+PAPER_V3_TEN_SOL_EPOCH_ID,existing=this.state();
+    if(existing.paperEpoch?.id===PAPER_V3_TEN_SOL_EPOCH_ID){
+      this.validateEpochAnchor(existing);if(this.equityRiskStatus(existing).kind!=='active')throw Error('PAPER_V3_EPOCH_POLICY_UNAVAILABLE');
+      const prior=this.actionResult(id) as {epoch:V3PaperEpoch;backup:PaperEpochBackupReceipt;riskPolicy:typeof PAPER_V3_EQUITY_RISK_POLICY;equityRisk:EquityRiskState};return {...structuredClone(prior),alreadyApplied:true};
+    }
+    if(existing.paperEpoch?.id!==PAPER_TEN_SOL_EPOCH_ID||existing.equityRisk?.version!==PAPER_EQUITY_RISK_VERSION||this.equityRiskStatus(existing).kind!=='active')throw Error('PAPER_V3_VERIFIED_PREVIOUS_EPOCH_REQUIRED');
+    if(this.db.prepare('SELECT 1 FROM actions WHERE id=?').get(id)||this.db.prepare('SELECT 1 FROM journal WHERE action_id=?').get(id))throw Error('PAPER_V3_EPOCH_HISTORY_CONFLICT');
+    requireEpochFlat(existing,input.assetDisposition);const assets=verifyArchivedEpochAssets(this.db,existing);
+    const backup=await verifiedEpochBackup(this.db,input.backupDirectory,s=>validateFinancialState(s,this.accountId,this.mode),input.assetDisposition,PAPER_V3_TEN_SOL_EPOCH_ID);
+    const at=clock(),p=priceAt(input.price,at),previousState=this.state();
+    if(previousState.revision!==backup.revision||paperEpochStateSha256(previousState)!==backup.stateSha256)throw Error('PAPER_EPOCH_SOURCE_CHANGED_AFTER_BACKUP');
+    requireEpochFlat(previousState,input.assetDisposition);if(previousState.paperEpoch?.id!==PAPER_TEN_SOL_EPOCH_ID||!Number.isSafeInteger(at)||at<=previousState.paperEpoch.startedAt||at<previousState.lastAt)throw Error('PAPER_V3_EPOCH_TIME_OR_CHAIN_INVALID');
+    const epoch:V3PaperEpoch={version:PAPER_V3_EPOCH_VERSION,id:PAPER_V3_TEN_SOL_EPOCH_ID,priorEpoch:structuredClone(previousState.paperEpoch),startedAt:at,transitionRevision:previousState.revision+1,initialLamports:'10000000000',initialMicroUsd:(10n*p).toString(),price:structuredClone(input.price),priorStateSha256:backup.stateSha256,backupSha256:backup.backupSha256,priorRealizedLamports:previousState.realizedLamports,priorExecutionCostsLamports:previousState.executionCosts,priorOperatingCostsMicroUsd:projectOperatingCosts(this.getOperatingCosts(),{asOf:at,now:at,tradingPnlMicroUsd:null}).operatingCostsMicroUsd,capitalAdjustmentLamports:(10000000000n-BigInt(assets.totalLamports)).toString(),contributionLamports:'10000000000',capitalArchivedLamports:assets.totalLamports,archivedAssets:assets};
+    const result=this.apply(id,'paper-epoch-transition',at,{authorization:input.authorization,assetDisposition:input.assetDisposition??null,previousState,epoch,backup,riskPolicy:PAPER_V3_EQUITY_RISK_POLICY},s=>{
+      if(s.paperEpoch?.id!==PAPER_TEN_SOL_EPOCH_ID||s.revision!==backup.revision||paperEpochStateSha256(s)!==backup.stateSha256)throw Error('PAPER_EPOCH_SOURCE_CHANGED_BEFORE_APPEND');requireEpochFlat(s,input.assetDisposition);
+      s.paperEpoch=epoch;s.lamports=epoch.initialLamports;s.lockedDeposits={};
+      s.daily={day:utcDay(at),baselineMicroUsd:epoch.initialMicroUsd,paused:true,lossPaused:false,reconciledAt:0};
+      s.equityRisk={version:PAPER_V3_EQUITY_RISK_VERSION,activatedAt:at,activationRevision:s.revision+1,daily:{day:utcDay(at),highWaterMicroUsd:epoch.initialMicroUsd,highWaterAt:at,lossPaused:false,historyState:'complete',historyCoverage:'first-complete-observation',historyCutoffRevision:s.revision,historyCursorRevision:s.revision,historyReceipts:0,historyDigest:digest({epoch,backup:backup.logicalSha256,riskPolicy:PAPER_V3_EQUITY_RISK_POLICY})}};
+      s.controls={entriesEnabled:false,reason:'execution startup: fresh reconciliation/readiness required',changedAt:at,readinessVersion:null,stopRequested:false};
+      return {epoch:structuredClone(epoch),backup:structuredClone(backup),riskPolicy:PAPER_V3_EQUITY_RISK_POLICY,equityRisk:structuredClone(s.equityRisk)};
     });
     this.validateEpochAnchor(this.state());return {...result,alreadyApplied:false};
   }
@@ -1092,9 +1157,10 @@ export class PaperLedger {
     const dayFresh = s.daily.day === utcDay(now) && s.daily.reconciledAt > 0 && now >= s.daily.reconciledAt && now - s.daily.reconciledAt <= MAX_QUOTE_AGE;
     const policy=this.equityRiskStatus(s),risk=policy.kind==='active'?s.equityRisk:undefined,d=risk?.daily,historyReady=!!d&&d.day===utcDay(now)&&d.historyState==='complete';
     const drawdown=historyReady&&d.highWaterMicroUsd!==null&&equityMicroUsd!==null?drawdownFacts(amount(d.highWaterMicroUsd),equityMicroUsd):null;
-    const riskReason=!risk?null:d?.historyState==='invalid'?'EQUITY_RISK_HISTORY_UNAVAILABLE':!historyReady?'EQUITY_RISK_INITIALIZING':equityMicroUsd===null?'EQUITY_RISK_VALUATION_UNAVAILABLE':!dayFresh?'EQUITY_RISK_RECONCILIATION_STALE':d!.lossPaused||drawdown?.breached?'EQUITY_RISK_DAILY_DRAWDOWN':null;
+    const v3=isV3PaperEpochState(s),lossBlocked=!v3&&(d?.lossPaused===true||drawdown?.breached===true);
+    const riskReason=!risk?null:d?.historyState==='invalid'?'EQUITY_RISK_HISTORY_UNAVAILABLE':!historyReady?'EQUITY_RISK_INITIALIZING':equityMicroUsd===null?'EQUITY_RISK_VALUATION_UNAVAILABLE':!dayFresh?'EQUITY_RISK_RECONCILIATION_STALE':lossBlocked?'EQUITY_RISK_DAILY_DRAWDOWN':null;
     const target=historyReady&&equityMicroUsd!==null&&p!==null?consumedEntryAllowance(equityMicroUsd,p):null,unreserved=amount(s.lamports)-reservedLamports,cashAllowance=unreserved>amount(s.gasReserve)?unreserved-amount(s.gasReserve):0n;
-    const equityRisk=risk?{version:PAPER_EQUITY_RISK_VERSION,state:historyReady&&equityMicroUsd!==null&&dayFresh?'ready' as const:'unavailable' as const,reasonCode:riskReason,asOf:now,entry:{targetBps:500,targetConsumedCostMicroUsd:target===null?null:(equityMicroUsd!*500n/10000n).toString(),targetConsumedCostLamports:target?.toString()??null,unreservedCashLamports:unreserved.toString(),cashLimitedConsumedCostLamports:target===null?null:(target<cashAllowance?target:cashAllowance).toString(),refundableDepositsIncluded:false,executabilityClaimed:false},daily:{day:d!.day,limitBps:1000,highWaterMicroUsd:d!.highWaterMicroUsd,highWaterAt:d!.highWaterAt,currentEquityMicroUsd:equityMicroUsd?.toString()??null,drawdownMicroUsd:drawdown?.drawdownMicroUsd??null,drawdownBps:drawdown?.drawdownBps??null,remainingBeforePauseMicroUsd:drawdown?.remainingBeforePauseMicroUsd??null,lossPaused:d!.lossPaused||drawdown?.breached===true,historyCoverage:d!.historyCoverage,basis:'complete-observed-executable-equity-current-usd'}}:policy.kind==='unavailable'?{version:PAPER_EQUITY_RISK_VERSION,state:'unavailable' as const,reasonCode:policy.reasonCode!,asOf:now,entry:{targetBps:500,targetConsumedCostMicroUsd:null,targetConsumedCostLamports:null,unreservedCashLamports:unreserved.toString(),cashLimitedConsumedCostLamports:null,refundableDepositsIncluded:false,executabilityClaimed:false},daily:{day:utcDay(now),limitBps:1000,highWaterMicroUsd:null,highWaterAt:null,currentEquityMicroUsd:equityMicroUsd?.toString()??null,drawdownMicroUsd:null,drawdownBps:null,remainingBeforePauseMicroUsd:null,lossPaused:s.daily.lossPaused,historyCoverage:'unavailable' as const,basis:'complete-observed-executable-equity-current-usd'}}:null;
+    const equityRisk=risk?{version:risk.version,state:historyReady&&equityMicroUsd!==null&&dayFresh?'ready' as const:'unavailable' as const,reasonCode:riskReason,asOf:now,entry:{targetBps:500,targetConsumedCostMicroUsd:target===null?null:(equityMicroUsd!*500n/10000n).toString(),targetConsumedCostLamports:target?.toString()??null,unreservedCashLamports:unreserved.toString(),cashLimitedConsumedCostLamports:target===null?null:(target<cashAllowance?target:cashAllowance).toString(),refundableDepositsIncluded:false,executabilityClaimed:false},daily:{day:d!.day,limitBps:v3?null:1000,highWaterMicroUsd:d!.highWaterMicroUsd,highWaterAt:d!.highWaterAt,currentEquityMicroUsd:equityMicroUsd?.toString()??null,drawdownMicroUsd:drawdown?.drawdownMicroUsd??null,drawdownBps:drawdown?.drawdownBps??null,remainingBeforePauseMicroUsd:v3?null:drawdown?.remainingBeforePauseMicroUsd??null,lossPaused:lossBlocked,historyCoverage:d!.historyCoverage,basis:'complete-observed-executable-equity-current-usd'}}:policy.kind==='unavailable'?{version:v3?PAPER_V3_EQUITY_RISK_VERSION:PAPER_EQUITY_RISK_VERSION,state:'unavailable' as const,reasonCode:policy.reasonCode!,asOf:now,entry:{targetBps:500,targetConsumedCostMicroUsd:null,targetConsumedCostLamports:null,unreservedCashLamports:unreserved.toString(),cashLimitedConsumedCostLamports:null,refundableDepositsIncluded:false,executabilityClaimed:false},daily:{day:utcDay(now),limitBps:v3?null:1000,highWaterMicroUsd:null,highWaterAt:null,currentEquityMicroUsd:equityMicroUsd?.toString()??null,drawdownMicroUsd:null,drawdownBps:null,remainingBeforePauseMicroUsd:null,lossPaused:dailyLossEntryBlocked(s),historyCoverage:'unavailable' as const,basis:'complete-observed-executable-equity-current-usd'}}:null;
     return {
       ...(equityRisk?{equityRisk}:{}),
       accountId: s.accountId, mode: s.mode, inceptionAt: s.inceptionAt, initialMicroUsd: s.initialMicroUsd, revision: s.revision,
@@ -1111,7 +1177,7 @@ export class PaperLedger {
       positionLiquidationLamports: unknownMarks ? null : positionLiquidationLamports.toString(),
       positionCostMicroUsd: Object.values(s.positions).reduce((sum, x) => sum + amount(x.costMicroUsd), 0n).toString(),
       openPositions: Object.keys(s.positions).length, pendingActions: Object.keys(s.pending).length,
-      entriesEnabled: s.controls.entriesEnabled && !s.controls.stopRequested && !s.daily.paused && dayFresh && equityMicroUsd !== null && policy.kind!=='unavailable' && (!risk||historyReady&&!d!.lossPaused&&!drawdown?.breached),
+      entriesEnabled: s.controls.entriesEnabled && !s.controls.stopRequested && !s.daily.paused && dayFresh && equityMicroUsd !== null && policy.kind!=='unavailable' && (!risk||historyReady&&!lossBlocked),
       unknownMarks, usdValuationAvailable: p !== null, daily: s.daily, controls: s.controls,
     };
   }

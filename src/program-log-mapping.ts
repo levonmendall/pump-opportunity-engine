@@ -32,6 +32,14 @@ export type ProgramLogEvidence={
  identity:{namespace:'solana-program-log-v1';signature:string;program:string;logArrayIndex:number};identityKey:string;
  frameOrdinal:number;framePath:string[];rawNotificationSha256:string;eventBase64:string;
  pool:string;mint:string;side:'buy'|'sell';trader:string;tokenUnits:string;curveQuoteLamports:string;userQuoteLamports:string;fees:Record<string,string>;
+ /** Original program-event pre-swap reserves, retained as observations only.
+  * Real/virtual quote reserves stay distinct; no synthetic post-state or SPL
+  * transfer cross-check is asserted. Optional for historical evidence. */
+ reserveObservation?:{baseReserveUnits:string;rawQuoteReserveLamports:string;virtualQuoteReserveLamports:string};
+ /** Event-reported balance of this actor's token account, not a whole-wallet
+  * inventory census or proof that separate actors have independent owners. */
+ userBaseTokenReserveUnits?:string;
+ userBaseTokenAccount?:string;
  invocationDepth:number;rootInvocationOrdinal:number;instructionLabel:string;eventIxName:string|null;eventBytesSha256:string;eventByteLength:number;
  slot:number;commitment:'confirmed'|'finalized';receivedAt:number|null;availableAt:number;programClockTimestamp:string;chainBlockTime:null;
  transferChecks:null;compiledInstructionIdentity:null;transactionCompleteness:'NOT_ESTABLISHED';fingerprint:string;
@@ -157,7 +165,8 @@ function parseProgramActivity(input:ProgramLogInput,scopes:readonly ProgramLogSc
   const checkedMultiHop=multiHop?multiHopPoolBuyEconomics(e):null;if(scope&&multiHop)need(scope.baseTokenProgram===TOKEN_2022_PROGRAM_ID.toBase58(),'MULTI_HOP_VERIFIED_BASE_PROGRAM');if(!scope)continue;
   const exact=side==='buy'&&['buy_exact_quote_in','buy_exact_quote_in_v2'].includes(instruction),economics=checkedMultiHop??{tokenUnits:decimal(e[side==='buy'?'base_amount_out':'base_amount_in']),curveQuoteLamports:decimal(e[side==='buy'?(exact?'user_quote_amount_in':'quote_amount_in'):'quote_amount_out']),userQuoteLamports:decimal(e[side==='buy'?(exact?'quote_amount_in':'user_quote_amount_in'):'user_quote_amount_out']),fees:Object.fromEntries(FEES.map(n=>[n,decimal(e[n])]))};need(BigInt(economics.tokenUnits)>0n&&BigInt(economics.curveQuoteLamports)>0n&&BigInt(economics.userQuoteLamports)>0n,'EMPTY_AMOUNTS');
   const identity={namespace:'solana-program-log-v1' as const,signature:input.signature,program:PROGRAM,logArrayIndex},content={identity,frameOrdinal:frame.ordinal,pool,mint:scope.mint,side,trader:key(e.user),...economics,slot:input.slot};
-  result.push({...content,version:CONFIRMED_PROGRAM_EVENTS_V2,normalizedForStrategy:false,identityKey:[identity.namespace,input.signature,PROGRAM,logArrayIndex,frame.ordinal].join(':'),framePath:stack.map(f=>f.program),rawNotificationSha256,eventBase64:encoded,invocationDepth:stack.length,rootInvocationOrdinal:frame.root,instructionLabel:frame.label!,eventIxName:ixName,eventBytesSha256:digest(bytes),eventByteLength:bytes.length,commitment:input.commitment,receivedAt:input.receivedAt??null,availableAt:input.availableAt,programClockTimestamp:e.timestamp.toString(10),chainBlockTime:null,transferChecks:null,compiledInstructionIdentity:null,transactionCompleteness:'NOT_ESTABLISHED',fingerprint:digest(JSON.stringify(content))});
+  const reserveObservation=BN.isBN(e.pool_base_token_reserves)&&BN.isBN(e.pool_quote_token_reserves)&&BN.isBN(e.virtual_quote_reserves)?{baseReserveUnits:decimal(e.pool_base_token_reserves),rawQuoteReserveLamports:decimal(e.pool_quote_token_reserves),virtualQuoteReserveLamports:e.virtual_quote_reserves.toString(10)}:undefined;
+  result.push({...content,...(reserveObservation?{reserveObservation}:{}),...(BN.isBN(e.user_base_token_reserves)?{userBaseTokenReserveUnits:decimal(e.user_base_token_reserves),userBaseTokenAccount:key(e.user_base_token_account)}:{}),version:CONFIRMED_PROGRAM_EVENTS_V2,normalizedForStrategy:false,identityKey:[identity.namespace,input.signature,PROGRAM,logArrayIndex,frame.ordinal].join(':'),framePath:stack.map(f=>f.program),rawNotificationSha256,eventBase64:encoded,invocationDepth:stack.length,rootInvocationOrdinal:frame.root,instructionLabel:frame.label!,eventIxName:ixName,eventBytesSha256:digest(bytes),eventByteLength:bytes.length,commitment:input.commitment,receivedAt:input.receivedAt??null,availableAt:input.availableAt,programClockTimestamp:e.timestamp.toString(10),chainBlockTime:null,transferChecks:null,compiledInstructionIdentity:null,transactionCompleteness:'NOT_ESTABLISHED',fingerprint:digest(JSON.stringify(content))});
  }
  need(stack.length===0,'INCOMPLETE_LOG_STACK');return {dataContract:CONFIRMED_PROGRAM_ACTIVITY_V3_SHADOW,trades:result,protocolEffects,protocolFramesObserved,baselineFeatureSemantics:protocolFramesObserved?'UNAVAILABLE_PROTOCOL_EFFECT_SHADOW':'V2_WITHOUT_PROTOCOL_FRAMES',financialQualificationAllowed:false};
 }

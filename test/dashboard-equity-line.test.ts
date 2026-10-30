@@ -142,3 +142,9 @@ test('new-release graph never invents a connecting observation across an actual 
  assert.match(source,/window\.addEventListener\('resize',\(\)=>plot\(latestEquityHistory\?\.points\?\?\[\],latest\?\.financialEpoch\?\.activatedAt/,'resize reuses the source-owned epoch rather than a process start or historical fallback');
  assert.ok(!code.includes('fetch('),'the renderer makes no historical backfill requests');
 });
+
+test('V3 latest source epoch selects a fresh10SOL graph while retained V2 losses remain untouched in API input',()=>{
+ const values=[point(0,885),{...point(2,950),kind:'epoch-start' as const},point(3,910),{...point(5,945),kind:'epoch-start' as const},point(6,944),point(7,946)],before=JSON.stringify(values),v=chart();
+ v.plot(values,point(5,945).at);assert.equal(v.lines().length,1);assert.equal((v.lines()[0]!.attributes.d??'').match(/L/g)?.length,2);assert.ok(!v.root.children.some(e=>e.tag==='circle'||e.attributes['data-capital-restatement']));assert.equal(JSON.stringify(values),before);
+ const labels=v.root.children.filter(e=>e.tag==='text').map(e=>e.textContent);assert.ok(!labels.some(text=>/\$8|\$910/.test(text)),'old losses do not enter active epoch chart axes');
+});

@@ -76,6 +76,12 @@ SCALARS.update(('startAt endAt lower upper bankClockAt openedAt connectionId '
  'requiredTargetSignaturesUnchanged featureInformationBackdated page requestedLimit '
  'newestSlot oldestSlot validatedAt reusedRows freshOverlapSlot '
  'freshProviderOverlapRequired originalDeadlineUnchanged').split())
+SCALARS.update(('dailyLossStopEnabled entryConsumedCostBps limitBps transitionRevision '
+ 'rawBuyerCount capitalDiversityBps effectiveBuyerCount effectiveBuyerCountBps largestBuyerBps '
+ 'top5BuyerBps top10BuyerBps dustBuyerCount dustBuyVolumeBps '
+ 'equalSizeBuyVolumeBps multiEventSignatureBuyVolumeBps netFlowShareBps '
+ 'recentPositiveBuckets scenarioNetSurplusBps lossFromConsumedCostBps '
+ 'executable cashLimited observations requiredForAdmission').split())
 OBJECTS = set(('timing protection protectionRecovery failureStages provider rpc '
  'resources resource cpu processes source publisher financialReadiness safety '
  'reporting dispatchTrace localPhases diagnostics usage localPhases '
@@ -85,6 +91,8 @@ OBJECTS.update(('input request quote order price mark allocation entryStrategy '
  'strategy executionModel equityRisk adaptiveHoldingSignal').split())
 OBJECTS.update(('result target anchor lowerFence strictInteriorSlots contextFences '
  'lower upper notificationSnapshot originalSnapshot postSnapshotTail generation').split())
+OBJECTS.update(('v3 assessments genuineDemand liquidityResilience continuation '
+ 'netEconomics components reserveStability liquidityContext flowContext').split())
 STRINGS = {'kind', 'reasonCode', 'stage', 'state', 'outcome', 'method', 'purpose',
            'reason', 'runId', 'mint', 'side', 'code', 'sourceState', 'ingestionReasonCode',
            'deliveryState', 'status', 'action', 'version', 'strategyVersion', 'mode',
@@ -97,8 +105,16 @@ UNSIGNED_AMOUNTS = set(('units inputUnits outputUnits pricedBaseUnits receiveUni
  'maximumConsumedLamports maximumConsumedCostMicroUsd baselineMicroUsd '
  'highWaterMicroUsd currentEquityMicroUsd drawdownMicroUsd '
  'remainingBeforePauseMicroUsd').split())
+UNSIGNED_AMOUNTS.update(('cashLamports reservedLamports lockedDepositLamports '
+ 'executionCostsLamports contributionLamports initialLamports '
+ 'proposedConsumedLamports immediateNetLamports observedInventoryLargestBaseUnits '
+ 'minimumRawQuoteLamports maximumRawQuoteLamports assumedExternalSellBaseUnits '
+ 'grossCurveLamports retainedProfitFloorLamports profitProtectionFloorLamports '
+ 'stressedNetLamports historicalMaximumObservedAccountBaseUnits '
+ 'windowNetPurchasedLargestBaseUnits renewedDemandScenarioLamports').split())
 SIGNED_AMOUNTS = {'realizedLamports', 'tradingMicroUsd', 'economicMicroUsd',
                   'roundingResidualMicroUsd'}
+SIGNED_AMOUNTS.update(('recentNetBuyLamports scenarioNetSurplusLamports').split())
 HASH_FIELDS = set(('sha256 policySha256 constructionSha256 intentSha256 '
  'quoteRentProofSha256 planSha256 authoritySha256 proofSha256 rawHash').split())
 HASHED_TEXT = {'id', 'orderId', 'roundTripId', 'signalId', 'evidence',
@@ -239,6 +255,17 @@ def public_fields(value, depth=0):
             out[key] = item
         elif key == 'sourceCommit' and isinstance(item,str) and re.fullmatch(r'[a-f0-9]{40}',item):
             out[key] = item
+        elif key == 'scenarios' and isinstance(item,list):
+            names={'immediate-full-liquidation','latest-point-in-time-observed-account-balance-scenario',
+                   'plausible-undisposed-window-net-purchases-scenario',
+                   'historical-largest-executed-sell-repeat-diagnostic',
+                   'historical-maximum-observed-account-balance-repeat-diagnostic',
+                   'unobserved-seller-one-percent-pool-base-scenario'}
+            kept=[{'name':row['name'],**public_fields(row,depth+1)} for row in item[:16]
+                  if isinstance(row,dict) and row.get('name') in names]
+            out[key]=kept
+            out[key+'Projection']={'sourceItems':len(item),'retainedItems':len(kept),
+                                  'omittedItems':len(item)-len(kept)}
         elif key in SIGNATURE_ARRAYS | ROW_ARRAYS and isinstance(item,list):
             kept=[]
             for row in item[:MAX_TYPED_ROWS]:
@@ -306,12 +333,36 @@ def ledger_projection(path, start, end):
                 projected_bytes+=size
         records.sort(key=lambda r:r['revision'])
         retained_counts = collections.Counter(r['kind'] for r in records)
+        # Scalar projection of the authoritative current state, not permission
+        # to trade. Keep legacy latch facts separate from the active versioned
+        # policy so a removed loss stop cannot be mistaken for a cleared ledger.
+        balance=public_fields({'cashLamports':s.get('lamports'),
+                              'realizedLamports':s.get('realizedLamports'),
+                              'executionCostsLamports':s.get('executionCosts')})
+        for name,values in [('reservedLamports',[o.get('reserved') for o in s['pending'].values()]),
+                            ('lockedDepositLamports',list(s['lockedDeposits'].values()))]:
+            if all(isinstance(v,str) and re.fullmatch(r'(?:0|[1-9][0-9]{0,38})',v) and int(v)<=MAX_AMOUNT for v in values):
+                total=sum(int(v) for v in values)
+                if total<=MAX_AMOUNT:
+                    balance[name]=str(total)
+        epoch=s.get('paperEpoch') or {}
+        epoch_id=epoch.get('id')
+        active_epoch={'id':epoch_id if epoch_id in ('poe-paper-10sol-20261030','poe-paper-10sol-v3-20261030') else None,
+                      **public_fields({k:epoch.get(k) for k in ('version','startedAt','transitionRevision','initialLamports','contributionLamports')})}
+        risk=s.get('equityRisk') or {}
+        known_version=risk.get('version') in ('paper-equity-risk-5-10-v1','paper-equity-risk-v3-no-daily-stop-v1')
+        no_daily_stop=epoch_id=='poe-paper-10sol-v3-20261030' and risk.get('version')=='paper-equity-risk-v3-no-daily-stop-v1'
+        risk_projection={'version':risk.get('version') if known_version else None,
+                         'dailyLossStopEnabled':not no_daily_stop if known_version else None,
+                         'entryConsumedCostBps':500 if known_version else None,
+                         'daily':public_fields(risk.get('daily') or {})}
         return {'available':True, 'accountId':ACCOUNT, 'inceptionAt':INCEPTION,
                 'revision':s['revision'], 'stateBodySha256':digest(row[0].encode()),
                 'actions':actions, 'journalRows':journal[0], 'firstRevision':journal[1],
                 'lastRevision':journal[2], 'positionCount':len(s['positions']),
                 'pendingCount':len(s['pending']), 'lockedDepositCount':len(s['lockedDeposits']),
                 'controls':public_fields(s['controls']),
+                'balances':balance,'activeEpoch':active_epoch,'riskPolicy':risk_projection,
                 'daily':public_fields(s['daily']), 'intervalKindCounts':counts,
                 'records':records, 'omittedRecords':sum(counts.values())-len(records),
                 'selectionPolicy':'financial-actions-then-controls-then-latest-reconciliations',

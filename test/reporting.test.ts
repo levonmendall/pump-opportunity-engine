@@ -563,3 +563,10 @@ test('single portfolio viewer retires the experimental channel and retains origi
 });
 
 test('compact one-account command view keeps metrics accessible without a duplicate portfolio',async t=>{const app=await serve(t,{...config,publicViewer:true}),html=await app.get('/').then(r=>r.text());assert.match(html,/Show all /);assert.match(html,/portfolio metrics/);assert.match(html,/compact-disclosure/);assert.match(html,/focus-visible/);assert.match(html,/overflow-wrap:anywhere/);assert.doesNotMatch(html,/experimental-portfolio|pilotIntelligence|setPilotIntelligence/);});
+
+test('source financial positions beyond the legacy three-position profile remain complete under the snapshot byte bound',()=>{
+ const source=sample();source.positions=Array.from({length:4},(_,index)=>({mint:'fixture-held-'+index,label:'DISPOSABLE held '+index,quantity:'100',enteredAt:source.times.generatedAt,entryCostUsd:10,netLiquidationUsd:9,executionCostsUsd:0,status:'PAPER held'}));
+ const before=structuredClone(source);assert.deepEqual(validateSnapshot(source,config,NOW).positions,source.positions);assert.deepEqual(source,before);
+ const cache=new SnapshotCache(config);cache.accept(source,NOW);assert.equal(cache.read()!.snapshot.positions.length,4);
+ const oversized={...source,positions:Array.from({length:500},(_,index)=>({...source.positions[index%4]!,mint:'fixture-held-'+index,status:'x'.repeat(80)}))};assert.throws(()=>validateSnapshot(oversized,config,NOW),/payload limit/);
+});

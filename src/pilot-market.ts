@@ -113,6 +113,8 @@ export class PilotMarket {
   /** A timeout does not prove physical settlement. Retire replaceable pool
    * state only after every earlier market continuation actually releases it. */
   retirementReady(){return !this.active&&!this.holdingActive;}
+  /** Fresh already-owned holding state; this accessor never schedules a read. */
+  currentObservation(mint:string,units:string){return this.held.currentObservation(mint,units);}
   /** Release only a retired, unowned pool's replaceable market state. Locked
    * deposits and the caller's durable origin/financial history are preserved. */
   unregisterPool(mint:string){
@@ -280,7 +282,7 @@ export class PilotMarket {
       attempt.phase='freshness';const at=this.freshClock(state,input.mint,signal);need(generation===this.generation&&this.freshPlan(input.mint).evidence===plan.evidence&&state.slot>=this.floor(input.mint,input.minSlot),'PILOT_MARKET_ENTRY_STATE_CHANGED');
       const costs={depositLamports:required.toString(),plan:accountPlan,rents,gas:this.options.gas,gasLamports:this.gasLamports,classification:'simulated' as const};
       const evidence='rpc-market:'+hash({request:input,state,costs,gas:this.options.gas,migrationEvidence:pool.evidence});
-      const q:PilotSizeQuote={...input,outputUnits:state.buy.outputBaseUnits,at,evidence,slot:state.slot,effectiveQuoteLiquidityLamports:state.effectiveQuoteReserve,requiredDepositLamports:plan.depositLamports,depositEvidence:'pilot-entry-validated-costs:'+hash({preparation:plan.evidence,quote:evidence,deposit:plan.depositLamports})};
+      const q:PilotSizeQuote={...input,outputUnits:state.buy.outputBaseUnits,at,evidence,slot:state.slot,effectiveQuoteLiquidityLamports:state.effectiveQuoteReserve,requiredDepositLamports:plan.depositLamports,depositEvidence:'pilot-entry-validated-costs:'+hash({preparation:plan.evidence,quote:evidence,deposit:plan.depositLamports}),liquidityResilience:{mint:input.mint,pool:state.pool,at,evidence,baseReserveUnits:state.rawBaseReserve,rawQuoteReserveLamports:state.rawQuoteReserve,virtualQuoteReserveLamports:state.virtualQuoteReserves,feeBucketsLamports:state.feeBuckets,fees:{lpFeeBps:Number(state.feeBps.lpFeeBps),protocolFeeBps:Number(state.feeBps.protocolFeeBps),creatorFeeBps:state.creatorFeeApplied?Number(state.feeBps.creatorFeeBps):0},buyInputLamports:state.buy.inputLamports,expectedBaseUnits:state.buy.outputBaseUnits,buyCurveInputLamports:state.buy.internalQuoteWithoutFees,entryGasLamports:this.gasLamports,exitGasLamports:this.gasLamports,slippageBps:100}};
       attempt.phase='evidence';this.options.recorder.record('rpc-market-quote',{request:input,quote:q,source:{slot:state.slot,commitment:state.commitment,requestedAt:state.requestedAt,receivedAt:state.receivedAt,validatedAt:state.validatedAt,timeEvidence:state.timeEvidence,clockSlot:state.clockSlot,marketClockUnixSeconds:state.marketClockUnixSeconds,migrationSlot:pool.migrationSlot},costs});
       attempt.phase='post-evidence';
       this.freshClock(state,input.mint,signal);need(generation===this.generation&&this.freshPlan(input.mint).evidence===plan.evidence&&state.slot>=this.floor(input.mint,input.minSlot),'PILOT_MARKET_ENTRY_STATE_CHANGED');
