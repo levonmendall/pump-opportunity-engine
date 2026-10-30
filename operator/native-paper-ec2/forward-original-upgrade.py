@@ -25,9 +25,9 @@ AUDITOR_SHA='08947c651488089e2eb2274404e69132ab54cfb89e30a640255c756746dad2c1'
 # Old/new reporters and backup closures are separately pinned; no credential change.
 OLD_REPORTER='7da8c7388a5ec3e4f2e0b46a8226ce457d0a68578e5b5225c50b97f1a508ff44'
 OLD_BACKUP_WORKER_SHA='aa41d0c26f42bc0e3c2c5655907a5ea71b11f3047ef6bfd23e5858c340066af2'
-NEW_BACKUP_WORKER_SHA=None
-NEW_REPORTER=None
-NEW_SUPERVISOR=None
+NEW_BACKUP_WORKER_SHA='aa41d0c26f42bc0e3c2c5655907a5ea71b11f3047ef6bfd23e5858c340066af2'
+NEW_REPORTER='7da8c7388a5ec3e4f2e0b46a8226ce457d0a68578e5b5225c50b97f1a508ff44'
+NEW_SUPERVISOR='66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e'
 OLD_STAGE,NEW_STAGE='two','two'
 OLD_STRATEGY='adaptive-momentum-v2-paper-v1'
 NEW_STRATEGY='adaptive-momentum-v2-paper-v1'
@@ -39,19 +39,19 @@ STAGE=pathlib.Path('/var/tmp/poe-original-adaptive-followthrough-upgrade')
 UNITDIR=pathlib.Path('/etc/systemd/system/poe-runtime.service.d')
 NATIVE_DROPIN_SHA='d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df'
 LEGACY_SHA='309bba18b7f3f17b403f6ef950df707587044b5e049f47ff3495c87d8de7d4df'
-NEW_NATIVE_DROPIN_SHA=None
+NEW_NATIVE_DROPIN_SHA='d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df'
 OLD_CONFIGURATION_SHA='ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db'
-# INERT: exact coherent application and operational pins follow final source
-# validation plus independent package review before any actual EC2 staging.
-NEW_CONFIGURATION_SHA=None
+# Exact69aa coherent application and unchanged operational pins; independent
+# final package review precedes any actual EC2 staging.
+NEW_CONFIGURATION_SHA='ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db'
 FORENSIC_FILE='export-adaptive-followthrough-forensics-20261030.py'
-FORENSIC_SHA=None
+FORENSIC_SHA='d31e59fe85b2935455c27798199287e072bae4e951d629dd6729322294bd7b75'
 FORENSIC_OUTPUT='/var/lib/poe-public/adaptive-followthrough-forensics-20261030.json'
 FORENSIC_UID,FORENSIC_GID=988,982
 FORENSIC_RUN='native-paper-20261030010446598'
 FORENSIC_OUTPUT_BOUND=131072
 OLD_POLICY_SHA='ee240f9c3b2edabb385d67676303e95327839e73cbb28d1072cba68015de8728'
-NEW_POLICY_SHA=None
+NEW_POLICY_SHA='ee240f9c3b2edabb385d67676303e95327839e73cbb28d1072cba68015de8728'
 RESOURCE_BEFORE={'CPUQuotaPerSecUSec':'infinity','CPUQuotaPeriodUSec':'100ms','CPUWeight':'100','Nice':'0','MemoryHigh':'2684354560','MemoryMax':'3221225472','MemorySwapMax':'0','TasksMax':'64','LimitNOFILE':'256','LimitCORE':'0','LimitCPU':'infinity','LimitFSIZE':'infinity','LimitAS':'infinity','OOMPolicy':'stop'}
 RESOURCE_AFTER=dict(RESOURCE_BEFORE)
 UID,GID,RUNNER=988,982,994

@@ -13,7 +13,7 @@ class Guards(unittest.TestCase):
     read.assert_not_called()
  def test_fixed_prior_package_and_separate_future_namespace(self):
   self.assertEqual(m.OLD.parts[-2:],('provider-protection-recovery-20261030','upgrade-package-final'));self.assertEqual(m.OUTPUT.name,'upgrade-package-final');self.assertNotEqual(m.OLD,m.OUTPUT);self.assertNotIn('upgrade-package-owner-reset',str(m.OLD))
- def test_final_target_remains_inert_and_prior567_package_is_preserved(self):
-  for name in('COMMIT','BUNDLE_SHA','METADATA_SHA','CONFIGURATION'):self.assertIsNone(getattr(m,name))
-  self.assertFalse(m.OUTPUT.exists());self.assertEqual(m.sha((m.OLD/'service.json').read_bytes()),'3cf20e5a6e8b97e0f5a5e570e5ca96ae4827bf6e62d9ff5529c74cf9c204817c')
+ def test_final_target_is_source_pinned_and_prior567_package_is_preserved(self):
+  self.assertEqual(m.COMMIT,'69aa1ef214a8c79524a25a8aca79299ccaad93dc');self.assertEqual(m.BUNDLE_SHA,'bbdd0515089a823600c158c668e6a3f76a0a92525422d63677989d963ae43480')
+  self.assertEqual(m.OUTPUT.parts[-2:],('adaptive-followthrough-20261030','upgrade-package-final'));self.assertEqual(m.sha((m.OLD/'service.json').read_bytes()),'3cf20e5a6e8b97e0f5a5e570e5ca96ae4827bf6e62d9ff5529c74cf9c204817c')
 if __name__=='__main__':unittest.main()
