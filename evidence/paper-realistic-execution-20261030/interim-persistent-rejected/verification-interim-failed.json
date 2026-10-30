@@ -1,0 +1,5 @@
+{
+  "sourceGuardUnchanged": true,
+  "head": "8ae34b53caae01cbf1a2955808e7cec299c9891f",
+  "suite": "FAIL; preserve raw full-tests.log; blocking WSOL normalization design defect independently found; source frozen until guard closed"
+}

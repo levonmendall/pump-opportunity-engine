@@ -1,0 +1,25 @@
+{
+  "buildExitCode": 0,
+  "fallback": "Legacy held obligations retain explicit legacy-paper-protection-fallback-v1; newly modeled holdings do not downgrade on transient preparation failure.",
+  "head": "ad31b58c1ba1616cdc8968a78660b755a7f74b69",
+  "model": "paper-chain-conditioned-v1",
+  "parentFinanceCommits": [
+    "309ce33",
+    "85e6323",
+    "5d1c1d8",
+    "1b9fa95"
+  ],
+  "scope": "Offline actual classes and SDK/account bytes; synthetic clock/disposable financial fixtures. No mainnet landing or economic-performance proof. Optional preflight NOT_RUN; no supplied credentials/account.",
+  "sourceFiles": 465,
+  "sourceGuardUnchanged": true,
+  "suite": {
+    "cancelled": 0,
+    "fail": 0,
+    "pass": 2235,
+    "skipped": 0,
+    "tests": 2235
+  },
+  "suiteExitCode": 0,
+  "testConcurrency": 4,
+  "unsignedConstruction": "paper-unsigned-pumpswap-v2"
+}
