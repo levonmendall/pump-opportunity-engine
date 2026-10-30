@@ -1,0 +1,36 @@
+{
+  "kind": "poe-provider-recovery-actual-nonroot-stage-verification",
+  "runId": 40983035212,
+  "url": "https://github.com/levonmendall/meme-machine-admin/actions/runs/40983035212",
+  "adminCommit": "c785102db60361bca6caa0f2023f4f857255c2ba",
+  "source": {
+    "commit": "5675961a0ad05df508eec6928644c9e403be0811",
+    "sha256": "157c34efd86bc0b5ae78aa268afe5afc7d3a4c4db8edcbb181445cad92ccb6ae"
+  },
+  "actualReceiptSha256": "25fc4636f4c8feb504e8d8b3c5a2bb83d192506c70e9334fe9c11873e6e7994c",
+  "rawLogSha256": "7e0bfed9800fe9b02992f65a2b1cae6e204ee54f0145b0e53d7d85d3dd234afb",
+  "all11StagedFilesMatch": true,
+  "sameSupervisor": true,
+  "serviceBefore": {
+    "MainPID": "2476672",
+    "NRestarts": "0",
+    "User": "poe-runtime",
+    "LoadState": "loaded",
+    "ActiveState": "active",
+    "SubState": "running"
+  },
+  "serviceAfter": {
+    "MainPID": "2476672",
+    "NRestarts": "0",
+    "User": "poe-runtime",
+    "LoadState": "loaded",
+    "ActiveState": "active",
+    "SubState": "running"
+  },
+  "staged": true,
+  "installed": false,
+  "rootCommandExecuted": false,
+  "financialDatabaseOpened": false,
+  "serviceControlOperations": 0,
+  "providerRequests": 0
+}
