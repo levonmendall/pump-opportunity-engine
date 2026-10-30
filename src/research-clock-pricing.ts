@@ -103,7 +103,7 @@ export class ResearchClockPositionPricer {
     need(!this.busy,'RESEARCH_CLOCK_CONCURRENT_QUOTE');
     const mint=new PublicKey(request.mint),minSlot=request.minSlot??0;
     need(Number.isSafeInteger(minSlot)&&minSlot>=0,'INVALID_MINIMUM_SLOT');
-    need(typeof request.buyLamports==='bigint'&&request.buyLamports>10n&&request.buyLamports<=MAX_UNITS,'INTEGRATION_SIZE_OUT_OF_RANGE');
+    need(typeof request.buyLamports==='bigint'&&request.buyLamports>0n&&request.buyLamports<=MAX_UNITS,'INTEGRATION_SIZE_OUT_OF_RANGE');
     const result=await this.readMany([{mint,minSlot,buyLamports:request.buyLamports}],'buy',signal,admission),name=mint.toBase58();
     if(!result.buys[name])throw Error(result.unavailable[name]??'RESEARCH_CLOCK_POOL_UNAVAILABLE');
     return result.buys[name]!;

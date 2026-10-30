@@ -8,7 +8,8 @@ import {PublicKey} from '@solana/web3.js';
 import type {ExecutionContext,QuoteRequest} from './execution.js';
 import type {ExecutionQuote,Order,Position,UsdPrice} from './ledger.js';
 import type {ReadOnlyRpc} from './network.js';
-import {quotePool} from './pool.js';
+import {quotePool,buyFromState,decodeSupportedPoolAccounts,type PoolWireAccount} from './pool.js';
+import {PUMP_AMM_SDK,canonicalPumpPoolPda} from './sdk.js';
 import {ResearchClockPositionPricer,type ResearchClockBuyQuote} from './research-clock-pricing.js';
 import {ResearchHeldMarket} from './research-held-market.js';
 import type {PaperAccountPlan,VerifiedMarketPool} from './rpc-market.js';
@@ -43,10 +44,11 @@ function need(value:unknown,reason:string):asserts value {if(!value)throw Error(
 const integer=(value:string)=>{need(typeof value==='string'&&/^(0|[1-9][0-9]{0,19})$/.test(value),'PILOT_MARKET_AMOUNT');return BigInt(value);};
 const hash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const MODEL='per-mint-dedicated-base-and-WSOL-accounts-v1' as const;
-export const PILOT_ENTRY_QUOTE_FAILURE_PHASES=['admission','plan','pool-state','rent','freshness','evidence','post-evidence'] as const;
+export const PILOT_ENTRY_QUOTE_FAILURE_PHASES=['admission','plan','pool-state','rent','freshness','evidence','post-evidence','local-reprice'] as const;
 export const PILOT_ENTRY_QUOTE_FAILURE_CODES=['ENTRY_QUOTE_BUSY','ENTRY_QUOTE_CALLER_ABORTED','ENTRY_QUOTE_TIMEOUT','ENTRY_QUOTE_UNKNOWN',
  'PAPER_EXECUTION_QUOTE_RENT_UNAVAILABLE','PAPER_EXECUTION_POOL_EXTENSION_RENT_UNAVAILABLE','PAPER_EXECUTION_CONSTRUCTION_STALE','PAPER_EXECUTION_ORIGINAL_BATCH_REQUIRED','PAPER_EXECUTION_SIMULATED_ACCOUNT_PLAN_REQUIRED',
  'PILOT_MARKET_ENTRY_COSTS_UNAVAILABLE','PILOT_MARKET_ENTRY_POOL_REQUIRED','PILOT_MARKET_ENTRY_DEPOSIT_MISMATCH','PILOT_MARKET_RENT_UNAVAILABLE','PILOT_MARKET_ACCOUNT_LENGTH','PILOT_MARKET_PREPARATION_CHANGED_OR_STALE','PILOT_MARKET_ENTRY_STATE_CHANGED',
+ 'PILOT_MARKET_REPRICE_ORIGINAL_REQUIRED','PILOT_MARKET_REPRICE_SIZE_REQUIRED','PILOT_MARKET_REPRICE_PROOF_REQUIRED','PILOT_MARKET_REPRICE_OWNERSHIP_CHANGED',
  'PILOT_RPC_ABORTED','PILOT_RPC_COOLDOWN','PILOT_RPC_PHYSICAL_SLOT_OCCUPIED','PILOT_RPC_METHOD_PACING','PILOT_RPC_LOWER_PRIORITY_DEFER','PILOT_RPC_COMPONENT_ADMISSION_CLOSED','PILOT_RPC_COMPONENT_DISPATCH_EXPIRED','PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT','PILOT_RPC_COMPONENT_ABORTED','PILOT_RPC_COMPONENT_HTTP_TRANSPORT','PILOT_RPC_COMPONENT_HTTP_429','PILOT_RPC_COMPONENT_HTTP_STATUS_502','PILOT_RPC_COMPONENT_HTTP_STATUS_503','PILOT_RPC_COMPONENT_HTTP_STATUS_504','RESEARCH_CLOCK_POOL_UNAVAILABLE','RESEARCH_CLOCK_ADMISSION_CLOSED'] as const;
 type EntryQuotePhase=typeof PILOT_ENTRY_QUOTE_FAILURE_PHASES[number];
 type EntryQuoteAttempt={mint:string;phase:EntryQuotePhase;began:number;recorded:boolean;caller:AbortSignal;deadline:AbortSignal};
@@ -61,6 +63,7 @@ export class PilotMarket {
   private readonly plans=new Map<string,PilotEntryCosts>();
   private readonly floors=new Map<string,number>();
   private readonly entrySnapshots=new Map<string,PilotSizeQuote>();
+  private readonly entryRepriceSources=new Map<string,{quote:PilotSizeQuote;state:ResearchClockBuyQuote;generation:number;planEvidence:string;accountPlanAt:number}>();
   private readonly pricer:ResearchClockPositionPricer;
   private readonly holdingPricer:ResearchClockPositionPricer;
   private readonly preparationRpc:PilotRpc;
@@ -120,10 +123,10 @@ export class PilotMarket {
   unregisterPool(mint:string){
     need(!this.active&&!this.holdingActive,'PILOT_MARKET_READ_IN_FLIGHT');
     const removed=this.held.unregisterPool(mint);if(!removed)return false;
-    this.generation++;this.pools.delete(mint);this.plans.delete(mint);this.floors.delete(mint);this.entrySnapshots.delete(mint);return true;
+    this.generation++;this.pools.delete(mint);this.plans.delete(mint);this.floors.delete(mint);this.entrySnapshots.delete(mint);this.entryRepriceSources.delete(mint);return true;
   }
   minimumSlot(mint:string,slot:number){this.held.minimumSlot(mint,slot);this.floors.set(mint,Math.max(this.floors.get(mint)??0,slot));}
-  invalidate(reason:string){this.generation++;this.plans.clear();this.entrySnapshots.clear();this.constructions.clear();this.legacyProtectionQuotes.clear();this.quoteRentsByEvidence.clear();this.quoteRentSnapshot=null;this.pricer.invalidate(reason);this.held.invalidate(reason);}
+  invalidate(reason:string){this.generation++;this.plans.clear();this.entrySnapshots.clear();this.entryRepriceSources.clear();this.constructions.clear();this.legacyProtectionQuotes.clear();this.quoteRentsByEvidence.clear();this.quoteRentSnapshot=null;this.pricer.invalidate(reason);this.held.invalidate(reason);}
   private clock(){const at=this.now();need(Number.isSafeInteger(at)&&at>=0,'PILOT_MARKET_CLOCK');return at;}
   private locked(mint:string){const value=this.options.inventory().lockedDeposits[mint]??'0';integer(value);return value;}
   private freshPlan(mint:string){
@@ -258,6 +261,7 @@ export class PilotMarket {
     try{this.options.recorder.record('pilot-entry-quote-unavailable',{...fact,executableQualification:false,orderCreated:false});}catch{/* Quote remains unavailable; the source recorder owns its integrity handling. */}
   }
   private async readEntryQuote(request:SizeRequest,signal:AbortSignal,generation:number,attempt:EntryQuoteAttempt):Promise<PilotSizeQuote|null>{
+    this.entryRepriceSources.delete(request.mint);
     try{
       attempt.phase='plan';
       const plan=this.freshPlan(request.mint),pool=this.pools.get(request.mint);need(pool&&request.side==='buy','PILOT_MARKET_ENTRY_POOL_REQUIRED');
@@ -289,9 +293,52 @@ export class PilotMarket {
       this.minimumSlot(input.mint,state.slot);this.entryEstimates++;
       if(this.options.executionRealism)this.rememberQuoteRent(q.evidence,rents[plan.accountLengths.quote]!);
       await this.rememberConstruction(q);
+      this.freshClock(state,input.mint,signal);need(generation===this.generation&&this.freshPlan(input.mint).evidence===plan.evidence&&state.slot>=this.floor(input.mint,input.minSlot),'PILOT_MARKET_ENTRY_STATE_CHANGED');
+      this.entryRepriceSources.set(input.mint,{quote:structuredClone(q),state:structuredClone(state),generation,planEvidence:plan.evidence,accountPlanAt:accountPlan.at});
       this.entrySnapshots.set(input.mint,structuredClone(q));return q;
     }catch(error){this.entryQuoteFailure(attempt,error);return null;}
   }
+  /** A smaller decision-size quote from the baseline's already validated bank
+   * state. This performs SDK arithmetic and unsigned construction only. Original
+   * Clock/receive times, source slot, rent proof and freshness limits are kept;
+   * this is never a substitute for the fresh post-delay execution quote. */
+  readonly repriceEntryQuote=async(request:SizeRequest,original:SizeQuote,signal:AbortSignal):Promise<PilotSizeQuote|null>=>{
+    const controller=new AbortController(),attempt:EntryQuoteAttempt={mint:request.mint,phase:'local-reprice',began:performance.now(),recorded:false,caller:signal,deadline:controller.signal};
+    if(this.active||this.holdingActive||signal.aborted){this.entryQuoteFailure(attempt,Error('ENTRY_QUOTE_BUSY'));return null;}
+    this.active=true;let evidence:string|null=null;
+    try{
+      const source=this.entryRepriceSources.get(request.mint),plan=this.freshPlan(request.mint),pool=this.pools.get(request.mint);
+      const proof=(q:SizeQuote)=>({mint:q.mint,side:q.side,inputUnits:q.inputUnits,outputUnits:q.outputUnits,at:q.at,evidence:q.evidence,slot:q.slot,requiredDepositLamports:q.requiredDepositLamports,depositEvidence:q.depositEvidence,effectiveQuoteLiquidityLamports:q.effectiveQuoteLiquidityLamports,liquidityResilience:q.liquidityResilience});
+      need(source&&pool&&request.side==='buy'&&original.side==='buy'&&original.mint===request.mint&&hash(proof(original))===hash(proof(source.quote))&&this.entrySnapshots.get(request.mint)?.evidence===original.evidence,'PILOT_MARKET_REPRICE_ORIGINAL_REQUIRED');
+      const inputUnits=integer(request.inputUnits);need(inputUnits>0n&&inputUnits<=integer(original.inputUnits),'PILOT_MARKET_REPRICE_SIZE_REQUIRED');
+      need(request.requiredDepositLamports===undefined||request.requiredDepositLamports===plan.depositLamports,'PILOT_MARKET_ENTRY_DEPOSIT_MISMATCH');
+      const current=()=>{
+        signal.throwIfAborted();this.freshClock(source.state,request.mint,signal);
+        need(source.generation===this.generation&&source.planEvidence===this.freshPlan(request.mint).evidence&&source.accountPlanAt<=this.clock()&&this.clock()-source.accountPlanAt<=10000&&source.state.slot>=this.floor(request.mint,request.minSlot??0),'PILOT_MARKET_ENTRY_STATE_CHANGED');
+        const inventory=this.options.inventory();need(!inventory.positions[request.mint]&&!Object.values(inventory.pending).some(order=>order.mint===request.mint),'PILOT_MARKET_REPRICE_OWNERSHIP_CHANGED');
+      };
+      current();
+      const batch=this.pricer.constructionBatch(request.mint,source.quote.slot,source.quote.at);
+      need(batch&&batch.accounts.length===7&&batch.accounts.every(a=>a!==null),'PILOT_MARKET_REPRICE_PROOF_REQUIRED');
+      const accounts=batch.accounts as PoolWireAccount[],wire=accounts[0]!,mint=new PublicKey(request.mint),key=canonicalPumpPoolPda(mint);
+      const first=PUMP_AMM_SDK.decodePool({...wire,owner:new PublicKey(wire.owner),data:Buffer.from(wire.data[0],'base64')});
+      const decoded=decodeSupportedPoolAccounts(mint,key,first,accounts,{slot:batch.slot},batch.requestedAt,batch.receivedAt);
+      const state=buyFromState({...decoded,summary:source.state},inputUnits,{record(){}},signal);
+      need(state.slot===source.state.slot&&state.pool===source.state.pool&&state.receivedAt===source.state.receivedAt,'PILOT_MARKET_REPRICE_PROOF_REQUIRED');
+      const at=this.freshClock(state,request.mint,signal),input={mint:request.mint,side:'buy' as const,inputUnits:inputUnits.toString(),minSlot:this.floor(request.mint,request.minSlot??0)};
+      evidence='rpc-market:'+hash({request:input,state,parentQuoteEvidence:original.evidence,preparation:plan.evidence,gas:this.options.gas,migrationEvidence:pool.evidence,reusedSource:true});
+      const q:PilotSizeQuote={...source.quote,...input,outputUnits:state.buy.outputBaseUnits,at,evidence,slot:state.slot,depositEvidence:'pilot-entry-validated-costs:'+hash({preparation:plan.evidence,quote:evidence,deposit:plan.depositLamports}),liquidityResilience:{...source.quote.liquidityResilience!,at,evidence,buyInputLamports:inputUnits.toString(),expectedBaseUnits:state.buy.outputBaseUnits,buyCurveInputLamports:state.buy.internalQuoteWithoutFees}};
+      need(q.liquidityResilience&&q.liquidityResilience.mint===request.mint&&q.liquidityResilience.pool===state.pool,'PILOT_MARKET_REPRICE_PROOF_REQUIRED');
+      this.options.recorder.record('pilot-entry-local-reprice',{at:this.clock(),request:input,quote:q,parentQuoteEvidence:original.evidence,source:{slot:state.slot,requestedAt:state.requestedAt,receivedAt:state.receivedAt,validatedAt:state.validatedAt,timeEvidence:state.timeEvidence,clockSlot:state.clockSlot,marketClockUnixSeconds:state.marketClockUnixSeconds},providerRequests:0,sourceTimestampUnchanged:true,financialStateChanged:false});
+      current();
+      if(this.options.executionRealism){const rent=this.quoteRentsByEvidence.get(original.evidence);need(rent,'PAPER_EXECUTION_QUOTE_RENT_UNAVAILABLE');this.rememberQuoteRent(evidence,rent.lamports,rent.at);}
+      await this.rememberConstruction(q);current();
+      if(this.options.executionRealism){const built=this.constructions.get(evidence)?.construction;need(built&&built.inputUnits===q.inputUnits&&built.expectedOutputUnits===q.outputUnits&&built.sourceSlot===q.slot&&built.receivedAt===state.receivedAt,'PILOT_MARKET_REPRICE_PROOF_REQUIRED');}
+      this.entrySnapshots.set(request.mint,structuredClone(q));this.entryRepriceSources.set(request.mint,{...source,quote:structuredClone(q),state:structuredClone(state)});
+      return q;
+    }catch(error){if(evidence){this.constructions.delete(evidence);this.quoteRentsByEvidence.delete(evidence);}this.entryQuoteFailure(attempt,error);return null;}
+    finally{this.active=false;}
+  };
   readonly context=async(positions:Readonly<Record<string,Position>>,signal:AbortSignal):Promise<ExecutionContext>=>{
     if(this.holdingActive||this.active&&!this.protectionYield||signal.aborted)return {price:null,marks:{}};
     this.holdingActive=true;

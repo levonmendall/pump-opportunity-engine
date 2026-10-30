@@ -22,6 +22,7 @@ INCEPTION_ISO='2026-10-26T22:07:36.212Z'
 CONTRACT='confirmed-program-ordinary-flow-paper-v1'
 ADAPTIVE_STRATEGY='adaptive-momentum-v2-paper-v1'
 LIQUIDITY_RESILIENT_STRATEGY='liquidity-resilient-momentum-v3'
+LIQUIDITY_RESILIENT_V3_1_STRATEGY='liquidity-resilient-momentum-v3.1'
 MIB=1024*1024
 POLICY={'version':'poe-authoritative-persistent-supervisor-resource-v2','sampleSeconds':15,'statusStaleSeconds':90,'startupStatusSeconds':30,'minimumStartRamMiB':768,'minimumStartDiskMiB':512,'criticalRamMiB':256,'criticalDiskMiB':128,'candidateSourceRssMiB':1536,'resumeSourceRssMiB':1408,'sourceRssMiB':2048,'publisherRssMiB':256,'parentRssMiB':128,'rollingCpuSeconds':60,'cpuUtilizationAdmissionEnforced':False,'sourceCpuCloseCores':None,'sourceCpuResumeCores':None,'publisherCpuRestartCores':None,'resumeHealthySamples':3,'maximumRecoveryBackoffSeconds':60,'gracefulSourceStopSeconds':30,'sourceHeapMiB':1024,'publisherHeapMiB':128,'diagnosticFileBytes':MIB,'diagnosticFiles':4,'resourceFileBytes':2*MIB,'resourceFiles':4}
 RELEASE_FILES={'native-paper.mjs':8*MIB,'backup-worker.mjs':MIB,'better_sqlite3.node':4*MIB,'metadata.json':MIB,'snapshot-publisher.mjs':MIB,'lifetime-equity-publisher.mjs':8*MIB,'paper-epoch.mjs':8*MIB}
@@ -59,7 +60,7 @@ def validate_manifest(v):
  need(hashed(v['configurationSha256']),'PINNED_CONFIG_REQUIRED');need(v['stage']in['single','shadow','two','three']and type(v['deepSlots'])is int and 1<=v['deepSlots']<=6,'SUPPORTED_FROZEN_STAGE_REQUIRED')
  need(type(v['strategy'])is str and 1<=len(v['strategy'])<=128 and all(32<=ord(c)<=126 for c in v['strategy']),'VERSIONED_STRATEGY_REQUIRED')
  if v['strategy']==ADAPTIVE_STRATEGY:need(v['stage']=='two'and v['deepSlots']==4,'ADAPTIVE_STRATEGY_REQUIRES_TWO_POSITION_FOUR_SLOT_PROFILE')
- if v['strategy']==LIQUIDITY_RESILIENT_STRATEGY:need(v['stage']=='two'and v['deepSlots']==4,'LIQUIDITY_RESILIENT_STRATEGY_REQUIRES_FOUR_SLOT_PROFILE')
+ if v['strategy']in[LIQUIDITY_RESILIENT_STRATEGY,LIQUIDITY_RESILIENT_V3_1_STRATEGY]:need(v['stage']=='two'and v['deepSlots']==4,'LIQUIDITY_RESILIENT_STRATEGY_REQUIRES_FOUR_SLOT_PROFILE')
  need(type(v['files'])is list and len(v['files'])==len(RELEASE_FILES)and{r.get('file')for r in v['files']if type(r)is dict}==set(RELEASE_FILES),'PINNED_IMMUTABLE_RELEASE_REQUIRED')
  for row in v['files']:need(set(row)=={'file','bytes','sha256'}and integer(row['bytes'])and 0<row['bytes']<=RELEASE_FILES[row['file']]and hashed(row['sha256']),'PINNED_RELEASE_FILE_REQUIRED')
  return v
@@ -68,18 +69,18 @@ def validate_status(v,manifest,started_at,pid,now):
  need(type(v)is dict and v.get('accountId')==ACCOUNT_ID and v.get('inceptionAt')==INCEPTION and v.get('mode')=='paper'and v.get('authoritative')is True and v.get('experimental')is False and v.get('financialExecutionAuthorized')is True and v.get('liveTradingEnabled')is False,'ORIGINAL_PAPER_IDENTITY_REQUIRED')
  source=v.get('source',{});need(source.get('commit')==manifest['source']['commit']and source.get('sha256')==manifest['source']['sha256']and v.get('configurationSha256')==manifest['configurationSha256'],'FROZEN_SERVICE_SOURCE_REQUIRED')
  need(v.get('persistent')is True and v.get('operatingMode')=='persistent-service'and v.get('managementOnly')is False,'PERSISTENT_SERVICE_MODE_REQUIRED')
- if manifest['strategy']==LIQUIDITY_RESILIENT_STRATEGY:need(v.get('strategyVersion')==LIQUIDITY_RESILIENT_STRATEGY and v.get('activeStrategy')==LIQUIDITY_RESILIENT_STRATEGY,'EXACT_V3_STRATEGY_REQUIRED')
+ if manifest['strategy']in[LIQUIDITY_RESILIENT_STRATEGY,LIQUIDITY_RESILIENT_V3_1_STRATEGY]:need(v.get('strategyVersion')==manifest['strategy'] and v.get('activeStrategy')==manifest['strategy'],'EXACT_V3_STRATEGY_REQUIRED')
  need(integer(v.get('runtimePid'))and v['runtimePid']==pid and integer(v.get('startedAt'))and integer(v.get('generatedAt'))and started_at<=v['startedAt']<=v['generatedAt']<=now+5000 and now-v['generatedAt']<=POLICY['statusStaleSeconds']*1000,'FRESH_ACTUAL_PROCESS_REQUIRED')
  need(v.get('sourceRecovery')is None or type(v.get('sourceRecovery'))is dict,'SOURCE_RECOVERY_SCHEMA_REQUIRED')
  need(type(v.get('running'))is bool and type(v.get('runId'))is str and v['runId'].startswith('native-paper-')and len(v['runId'])<=64,'SOURCE_RUN_REQUIRED')
- need(type(v.get('positions'))is dict and type(v.get('pending'))is dict and (manifest['strategy']==LIQUIDITY_RESILIENT_STRATEGY or len(v['positions'])<=3 and len(v['pending'])<=6),'OWNERSHIP_PROJECTION_REQUIRED');return v
+ need(type(v.get('positions'))is dict and type(v.get('pending'))is dict and (manifest['strategy']in[LIQUIDITY_RESILIENT_STRATEGY,LIQUIDITY_RESILIENT_V3_1_STRATEGY] or len(v['positions'])<=3 and len(v['pending'])<=6),'OWNERSHIP_PROJECTION_REQUIRED');return v
 
 def source_args(node,release,manifest):
  args=[node,'--max-old-space-size='+str(POLICY['sourceHeapMiB']),str(release/'native-paper.mjs'),'--resume','--directory',str(ACCOUNT),'--ledger',str(LEDGER),'--input',str(ACCOUNT/'input.json'),'--paper-contract',CONTRACT,'--stage',manifest['stage'],'--deep-slots',str(manifest['deepSlots']),'--service']
  # Legacy source564 has no strategy flag. Derive the new opt-in only from the
  # exact reviewed profile; a rollback retains its original command unchanged.
  if manifest['strategy']==ADAPTIVE_STRATEGY:args.extend(['--strategy','adaptive-momentum-v2'])
- if manifest['strategy']==LIQUIDITY_RESILIENT_STRATEGY:args.extend(['--strategy',LIQUIDITY_RESILIENT_STRATEGY])
+ if manifest['strategy']in[LIQUIDITY_RESILIENT_STRATEGY,LIQUIDITY_RESILIENT_V3_1_STRATEGY]:args.extend(['--strategy',manifest['strategy']])
  return args
 def credential_path():
  value=os.environ.get('CREDENTIALS_DIRECTORY');need(value=='/run/credentials/poe-runtime.service','ORIGINAL_SYSTEMD_CREDENTIAL_REQUIRED');return pathlib.Path(value)/'poe-ingest-secret'

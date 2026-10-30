@@ -1,12 +1,13 @@
 import type {PaperExecutionLanding} from './execution-realism.js';
 import {assertPoeOperatingAccount} from './poe-operating-account.js';
-import {PaperLedger,ADAPTIVE_PAPER_STRATEGY_VERSION,OPERATING_FINANCIAL_READINESS_VERSION,dailyLossEntryBlocked,type ExecutionQuote,type Mark,type Position,type EntryStrategy} from './ledger.js';
+import {PaperLedger,ADAPTIVE_PAPER_STRATEGY_VERSION,isLiquidityResilientPaperStrategy,OPERATING_FINANCIAL_READINESS_VERSION,dailyLossEntryBlocked,type ExecutionQuote,type Mark,type Position,type EntryStrategy} from './ledger.js';
 import {PaperExecutionCoordinator,type ExecutionContext,type ExecutionResult,type QuoteRequest} from './execution.js';
 import {FlowWindow,copyEventIdentity,PROVISIONAL_RULE,evaluateExit,evaluatePrimary,assessPredictiveBuying,type EventIdentity,type NormalizedTrade,type RuleDecision} from './strategy.js';
 import {assertPilotBaseline,resolvePilotBinding,type PilotBinding,type ResolvedPilotBinding} from './pilot-contract.js';
 import {ADAPTIVE_MOMENTUM_V2_VERSION,ADAPTIVE_MOMENTUM_V2_POLICY,assessAdaptiveBuying,evaluateAdaptivePrimary,evaluateAdaptiveExit,type AdaptiveRuleContext} from './adaptive-momentum-v2.js';
 import {AdaptiveHeldSeries,ADAPTIVE_HELD_SERIES_POLICY,type AdaptiveHeldSignal} from './adaptive-held-series.js';
 import {LIQUIDITY_RESILIENT_MOMENTUM_V3_VERSION,LIQUIDITY_RESILIENT_MOMENTUM_V3_POLICY,assessLiquidityResilientBuying,evaluateLiquidityResilientPrimary,evaluateLiquidityResilientExit,type V3Evidence,type V3MarketEvidence,type V3RuleContext,type V3ExitInput,type V3ExitDecision} from './liquidity-resilient-momentum-v3.js';
+import {LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION,LIQUIDITY_RESILIENT_MOMENTUM_V31_POLICY,assessLiquidityResilientBuyingV31,evaluateLiquidityResilientPrimaryV31,evaluateV31SizeFrontier} from './liquidity-resilient-momentum-v3-1.js';
 import {PAPER_V3_EQUITY_RISK_VERSION} from './paper-equity-risk.js';
 import {TechnicalProtectionRecoveryTracker,type TechnicalProtectionRecoveryAuthority,type TechnicalProtectionRecoveryProof} from './technical-protection-recovery.js';
 export type {TechnicalProtectionRecoveryProof} from './technical-protection-recovery.js';
@@ -17,7 +18,7 @@ export type SizeQuote=SizeRequest&{outputUnits:string;at:number;evidence:string;
 export type PilotExecutionQuote=ExecutionQuote&{executionModel?:PaperExecutionLanding;slot?:number;requiredDepositLamports?:string;depositEvidence?:string};
 export type PilotQuoteRequest=QuoteRequest&{minSlot?:number};
 export type TraderOptions={
-  ledger:PaperLedger;now?:()=>number;
+  ledger:PaperLedger;now?:()=>number;runId?:string;
   /** Deep-analysis capacity, independent of the financial position limit. */
   maximumCandidates?:number;
   context:(positions:Readonly<Record<string,Position>>,signal:AbortSignal)=>Promise<ExecutionContext>;
@@ -42,6 +43,9 @@ export type TraderOptions={
   /** Explicit active versioned PAPER strategy; never inferred from a dashboard label. */
   adaptiveMomentumV2?:true;
   liquidityResilientMomentumV3?:true;
+  liquidityResilientMomentumV31?:true;
+  /** Same already-acquired SDK pool/Clock bytes; never a provider refresh. */
+  repriceEntryQuote?:(request:SizeRequest,original:SizeQuote,signal:AbortSignal)=>Promise<SizeQuote|null>;
   /** Already owned independently audited events and quote state; no I/O. */
   v3Evidence?:(mint:string,at:number,market?:V3MarketEvidence)=>V3Evidence|null;
   v3HoldingEvidence?:(position:Position,mark:Mark|null,at:number)=>Pick<V3ExitInput,'liquidityContext'|'flowContext'>;
@@ -55,6 +59,7 @@ type Candidate=CandidateEvidence&{admittedAt:number;window:FlowWindow;active:boo
 type Decision={mint:string;at:number;stage:string;reason:string;ruleVersion:string;holdingPolicyVersion?:string;scoreBps?:number|null;adaptiveComponents?:unknown;strategyAssessments?:unknown;limitations?:readonly string[];features?:RuleDecision['features'];quote?:SizeQuote|null;permissionContext?:{mode:'candidate-evaluation';primaryKind:string;primaryReason:string;performanceFailure:false}};
 type TraderRuleDecision=Omit<RuleDecision,'ruleVersion'>&{ruleVersion:string};
 const validText=(s:unknown,max=512):s is string=>typeof s==='string'&&s.length>0&&s.length<=max&&!/[\u0000-\u001f]/.test(s);
+const isResilientQuoteMissing=(reason:string)=>reason==='v3-matched-fresh-actual-size-quote-required'||reason==='v31-matched-fresh-actual-size-quote-required'||reason==='v3.1-matched-fresh-actual-size-quote-required';
 const unsigned=(s:string)=>{if(typeof s!=='string'||!/^(0|[1-9][0-9]{0,38})$/.test(s))throw new Error('bounded integer amount required');return BigInt(s);};
 export const ROUTINE_PAPER_CHECKPOINT_REASON='native PAPER routine checkpoint: fresh audited readiness required' as const;
 export const TEMPORARY_ENTRY_READINESS_PAUSES=Object.freeze(['execution startup: fresh reconciliation/readiness required','current equity or liquidation unavailable; entries closed','current financial reconciliation unavailable; exposure retained','entry preparation or reconciliation unavailable','consistent backup unavailable; exposure retained',ROUTINE_PAPER_CHECKPOINT_REASON] as const);
@@ -97,6 +102,7 @@ export class PaperTrader{
   private readonly pilotConfig:Readonly<ResolvedPilotBinding>|null;
   private readonly adaptive:boolean;
   private readonly resilient:boolean;
+  private readonly resilient31:boolean;
   private pilotDeposit:{lamports:string;evidence:string;preparedAt:number;temporaryRentLamports?:string}|null=null;
   private readonly pilotDeposits=new Map<string,{lamports:string;evidence:string;preparedAt:number;temporaryRentLamports?:string}>();
   readonly funnel={discovered:0,supported:0,sufficientlyObserved:0,evaluated:0,qualified:0,reserved:0,attempted:0,paperFilled:0,exited:0,reconciled:0};
@@ -106,9 +112,9 @@ export class PaperTrader{
     this.candidateEvaluationOnly=options.candidateEvaluationOnly===true;
     if(this.candidateEvaluationOnly&&(!this.pilot||options.predictiveDiagnostics!==true))throw Error('candidate-only mode requires isolated predictive diagnostics');
     this.pilotConfig=this.pilot?resolvePilotBinding(options.experimentalPilot):null;
-    this.resilient=options.liquidityResilientMomentumV3===true;this.adaptive=options.adaptiveMomentumV2===true||this.resilient;
-    if(options.adaptiveMomentumV2===true&&this.resilient||this.resilient!==(this.pilotConfig?.version===LIQUIDITY_RESILIENT_MOMENTUM_V3_VERSION)||(options.adaptiveMomentumV2===true)!==(this.pilotConfig?.version===ADAPTIVE_MOMENTUM_V2_VERSION)||ADAPTIVE_MOMENTUM_V2_VERSION!==ADAPTIVE_PAPER_STRATEGY_VERSION)throw Error('explicit active adaptive PAPER binding required');
-    if(this.resilient&&(typeof options.v3Evidence!=='function'||typeof options.v3HoldingEvidence!=='function'))throw Error('V3 audited flow and held evidence adapters required');
+    this.resilient31=options.liquidityResilientMomentumV31===true;this.resilient=options.liquidityResilientMomentumV3===true||this.resilient31;this.adaptive=options.adaptiveMomentumV2===true||this.resilient;
+    if(options.liquidityResilientMomentumV3===true&&this.resilient31||options.adaptiveMomentumV2===true&&this.resilient||this.resilient31!==(this.pilotConfig?.version===LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION)||(options.liquidityResilientMomentumV3===true)!==(this.pilotConfig?.version===LIQUIDITY_RESILIENT_MOMENTUM_V3_VERSION)||(options.adaptiveMomentumV2===true)!==(this.pilotConfig?.version===ADAPTIVE_MOMENTUM_V2_VERSION)||ADAPTIVE_MOMENTUM_V2_VERSION!==ADAPTIVE_PAPER_STRATEGY_VERSION)throw Error('explicit active adaptive PAPER binding required');
+    if(this.resilient&&(typeof options.v3Evidence!=='function'||typeof options.v3HoldingEvidence!=='function'||this.resilient31&&typeof options.repriceEntryQuote!=='function'))throw Error('V3 audited flow and held evidence adapters required');
     if(options.predictiveDiagnostics===true&&!this.pilot)throw Error('predictive diagnostics require the isolated pilot contract');
     if(this.pilot){const state=options.ledger.state();if(options.operatingAccount===true)assertPoeOperatingAccount(state);assertPilotBaseline();if(!this.pilotConfig||state.mode!=='PAPER'||!(options.operatingAccount===true||/^poe-pilot-[a-z0-9-]+$/.test(state.accountId))||options.costs.gasLamports!=='7000'||options.costs.slippageBps!==100||(options.timeoutMs??3000)>3000||typeof options.pilotExecution?.context!=='function'||typeof options.pilotExecution?.quote!=='function')throw Error('isolated pilot identity, frozen contract and fresh execution adapters required');}
     else if(options.pilotExecution)throw Error('pilot execution adapters require the isolated pilot contract');
@@ -194,7 +200,7 @@ export class PaperTrader{
     try{this.options.ledger.activateEquityRiskPolicy(this.clock());this.entryPolicyActivationUnavailable=false;}
     catch{if(!this.entryPolicyActivationUnavailable)this.record('trader-entry-policy-unavailable',{at:this.clock(),reason:'EQUITY_RISK_HISTORY_UNAVAILABLE',newEntriesAllowed:false,existingFinancialManagementRetained:true});this.entryPolicyActivationUnavailable=true;}
   }
-  start(){if(this.started)return;if(this.candidateEvaluationOnly)this.assertCandidateOnlyState();else{const prior=this.options.ledger.state(),hardClosed=!prior.controls.entriesEnabled&&!TEMPORARY_ENTRY_READINESS_PAUSES.includes(prior.controls.reason as never)&&prior.controls.reason!=='startup: observation only; explicit runtime readiness required';for(const id of this.execution.recover().uncertainExitOrders)this.uncertainOrders.add(id);if(hardClosed){this.nonRecoverablePauseObserved=true;this.options.ledger.pause(this.id('restore-hard-pause'),this.clock(),prior.controls.reason);}}this.maintainEquityRiskPolicy();this.started=true;this.record('trader-config',{mode:this.options.ledger.state().mode,candidateEvaluationOnly:this.candidateEvaluationOnly,financialExecutionAuthorized:!this.candidateEvaluationOnly,accountId:this.options.ledger.accountId,rule:this.resilient?LIQUIDITY_RESILIENT_MOMENTUM_V3_POLICY:this.adaptive?ADAPTIVE_MOMENTUM_V2_POLICY:{...PROVISIONAL_RULE,version:this.effectiveVersion},...(this.adaptive?{adaptiveHoldingSignalPolicy:ADAPTIVE_HELD_SERIES_POLICY}:{}),costs:{...this.options.costs},flowVerification:this.options.flowVerification??{verified:false,evidence:'unverified'},quoteRetrieval:this.options.deferPredictivelyRejectedQuotes===true?'RESEARCH_DEFER_ALREADY_REJECTED_PREDICTIVE_QUOTES':'EXISTING_QUOTE_FIRST_ORDER',...(this.pilotConfig?{pilot:{version:this.pilotConfig.version,contractSha256:this.pilotConfig.contractSha256,maxPositions:this.pilotConfig.maxPositions,...(this.pilotConfig.stage===null?{}:{stage:this.pilotConfig.stage}),amountConvention:'curve',entryDepositPreparation:'required-before-entry',contract:this.pilotConfig.contract}}:{})});}
+  start(){if(this.started)return;if(this.candidateEvaluationOnly)this.assertCandidateOnlyState();else{const prior=this.options.ledger.state(),hardClosed=!prior.controls.entriesEnabled&&!TEMPORARY_ENTRY_READINESS_PAUSES.includes(prior.controls.reason as never)&&prior.controls.reason!=='startup: observation only; explicit runtime readiness required';for(const id of this.execution.recover().uncertainExitOrders)this.uncertainOrders.add(id);if(hardClosed){this.nonRecoverablePauseObserved=true;this.options.ledger.pause(this.id('restore-hard-pause'),this.clock(),prior.controls.reason);}}this.maintainEquityRiskPolicy();this.started=true;this.record('trader-config',{mode:this.options.ledger.state().mode,candidateEvaluationOnly:this.candidateEvaluationOnly,financialExecutionAuthorized:!this.candidateEvaluationOnly,accountId:this.options.ledger.accountId,rule:this.resilient31?LIQUIDITY_RESILIENT_MOMENTUM_V31_POLICY:this.resilient?LIQUIDITY_RESILIENT_MOMENTUM_V3_POLICY:this.adaptive?ADAPTIVE_MOMENTUM_V2_POLICY:{...PROVISIONAL_RULE,version:this.effectiveVersion},...(this.adaptive?{adaptiveHoldingSignalPolicy:ADAPTIVE_HELD_SERIES_POLICY}:{}),costs:{...this.options.costs},flowVerification:this.options.flowVerification??{verified:false,evidence:'unverified'},quoteRetrieval:this.options.deferPredictivelyRejectedQuotes===true?'RESEARCH_DEFER_ALREADY_REJECTED_PREDICTIVE_QUOTES':'EXISTING_QUOTE_FIRST_ORDER',...(this.pilotConfig?{pilot:{version:this.pilotConfig.version,contractSha256:this.pilotConfig.contractSha256,maxPositions:this.pilotConfig.maxPositions,...(this.pilotConfig.stage===null?{}:{stage:this.pilotConfig.stage}),amountConvention:'curve',entryDepositPreparation:'required-before-entry',contract:this.pilotConfig.contract}}:{})});}
   admit(input:CandidateEvidence){
     const now=this.clock();if(!validText(input.mint,96)||!validText(input.evidence)||!Number.isSafeInteger(input.migrationAt)||input.migrationAt<0||input.migrationAt>now)throw new Error('verified candidate identity/time required');
     const owned=this.options.ledger.state(),pendingMints=new Set(Object.values(owned.pending).map(order=>order.mint));
@@ -249,7 +255,7 @@ export class PaperTrader{
   adaptiveHoldingDiagnostics():Record<string,AdaptiveHoldingDiagnosticsRow>{
     const rows:Record<string,AdaptiveHoldingDiagnosticsRow>={},at=this.now(),validAt=Number.isSafeInteger(at)&&at>=0;
     for(const position of Object.values(this.options.ledger.state().positions).slice(0,256)){
-      if(position.strategy?.version!==ADAPTIVE_MOMENTUM_V2_VERSION&&position.strategy?.version!==LIQUIDITY_RESILIENT_MOMENTUM_V3_VERSION)continue;
+      if(position.strategy?.version!==ADAPTIVE_MOMENTUM_V2_VERSION&&!isLiquidityResilientPaperStrategy(position.strategy?.version))continue;
       const row=this.latestAdaptiveHoldingSignals.get(position.mint),same=!!row&&row.roundTripId===position.strategy.roundTripId&&row.units===position.units;
       const reason=!same?'holding-signal-not-evaluated':!validAt||row.evaluatedAt>at||row.quoteAt!==null&&row.quoteAt>at?'holding-signal-time-invalid':!this.sourceCurrent(at)?'holding-signal-source-unavailable':row.quoteAt===null||row.signal.modeledTrailingBoundaryLamports===null?row.signal.reason:at-row.quoteAt>PROVISIONAL_RULE.maximumQuoteAgeMs||at-row.evaluatedAt>ADAPTIVE_HELD_SERIES_POLICY.maximumCompletedGapMs?'holding-signal-stale':null;
       rows[position.mint]={state:reason?'unavailable':row!.signal.state,reason:reason??row!.signal.reason,quoteAt:same?row!.quoteAt:null,evaluatedAt:same?row!.evaluatedAt:null,measuredVolatilityBps:reason?null:row!.signal.measuredVolatilityBps,effectiveTrailingDistanceBps:reason?null:row!.signal.trailingDistanceBps,priorQuoteCount:reason?null:row!.signal.priorQuoteCount,modeledTrailingBoundaryLamports:reason?null:row!.signal.modeledTrailingBoundaryLamports,meaning:'MODELED_TRIGGER_NOT_GUARANTEED_FILL'};
@@ -282,6 +288,13 @@ export class PaperTrader{
     if(due===null||due>this.clock()){try{q=this.cleanQuote(await this.read(s=>this.options.quote(Object.freeze({...expected}),s),undefined,due===null?undefined:due-this.clock()),expected);}catch{}}
     this.record('trader-quote',{at:this.clock(),purpose:'decision',request:{...expected},quote:q});return q;
   }
+  private async repriceEntry(request:SizeRequest,original:SizeQuote){
+    const expected=this.withKnownFloor(request),due=this.execution.nextDueAt();let q:SizeQuote|null=null;
+    if(this.resilient31&&this.options.repriceEntryQuote&&(due===null||due>this.clock())){
+      try{q=this.cleanQuote(await this.read(signal=>this.options.repriceEntryQuote!(expected,original,signal),undefined,due===null?undefined:due-this.clock()),expected);}catch{/* A local proof failure is unavailable execution evidence, not a strategy rejection. */}
+    }
+    this.record('trader-quote',{at:this.clock(),purpose:'same-source-size-selection',request:expected,parentEvidence:original.evidence,quote:q,providerRequests:0});return q;
+  }
   private async attempts(){
     if(this.tickActionsRemaining===0)return [];
     const pending=this.options.ledger.state().pending,batch=await this.execution.runDue(this.tickActionsRemaining===null?{}:{maxActions:this.tickActionsRemaining as 1|2|3});
@@ -296,12 +309,14 @@ export class PaperTrader{
   }
   private async dueActions(){const due=this.execution.nextDueAt();return due!==null&&due<=this.clock()?this.attempts():[];}
   private sourceCurrent(at:number){return this.context.sourceValidUntil===undefined||Number.isSafeInteger(this.context.sourceValidUntil)&&this.context.sourceValidUntil>=at;}
+  private resilientVersion(){return this.resilient31?LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION:LIQUIDITY_RESILIENT_MOMENTUM_V3_VERSION;}
+  private assessResilient(features:Parameters<typeof assessLiquidityResilientBuying>[0],at:number,mint:string){const evidence=this.options.v3Evidence?.(mint,at)??undefined;return this.resilient31?assessLiquidityResilientBuyingV31(features,at,evidence):assessLiquidityResilientBuying(features,at,evidence);}
   private entryDecision(features:Parameters<typeof evaluatePrimary>[0],context:V3RuleContext):TraderRuleDecision{
     if(!this.adaptive)return evaluatePrimary(features,context);
-    const version=this.resilient?LIQUIDITY_RESILIENT_MOMENTUM_V3_VERSION:ADAPTIVE_MOMENTUM_V2_VERSION,eligibility=this.options.ledger.entryEligibility(context.mint,version,features.windowEndAt,context.now),state=this.options.ledger.state();
+    const version=this.resilient?this.resilientVersion():ADAPTIVE_MOMENTUM_V2_VERSION,eligibility=this.options.ledger.entryEligibility(context.mint,version,features.windowEndAt,context.now),state=this.options.ledger.state();
     let allowance:ReturnType<PaperLedger['entryRiskBudget']>|null=null;try{if(this.context.price)allowance=this.options.ledger.entryRiskBudget(context.now,this.context.price,this.context.marks);}catch{/* Incomplete financial valuation is no sizing authority. */}
     const effective={...context,maximumConsumedCostMicroUsd:allowance?.ready?(BigInt(allowance.maximumConsumedLamports)*BigInt(allowance.microUsdPerSol)/1_000_000_000n).toString():undefined,...(context.alreadyTradedMint&&eligibility.closedAt!==null&&eligibility.previousWindowEndAt!==null?{reentry:{closedAt:eligibility.closedAt,reconciledAt:state.daily.reconciledAt,previousWindowEndAt:eligibility.previousWindowEndAt,unresolved:!eligibility.allowed||this.uncertainOrders.size>0||!this.execution.readinessSafety().recoveryComplete}}:{})};
-    if(this.resilient){const v3=context.v3??this.options.v3Evidence?.(context.mint,context.now)??undefined;return evaluateLiquidityResilientPrimary(features,{...effective,...(v3?{v3}:{})});}
+    if(this.resilient){const v3=context.v3??this.options.v3Evidence?.(context.mint,context.now)??undefined;return this.resilient31?evaluateLiquidityResilientPrimaryV31(features,{...effective,...(v3?{v3}:{})}):evaluateLiquidityResilientPrimary(features,{...effective,...(v3?{v3}:{})});}
     return evaluateAdaptivePrimary(features,effective);
   }
   private entriesAllowed(c:Candidate,at:number){
@@ -343,12 +358,12 @@ export class PaperTrader{
     if(this.evidenceUnavailable||!this.pilot||this.options.predictiveDiagnostics!==true||!c.active||c.informationPending||this.options.flowVerification?.verified!==true||!decision.features)return;
     const initialAt=this.clock(),bucket=Math.floor(initialAt/PROVISIONAL_RULE.bucketMs);
     if(c.predictiveAssessedBucket===bucket||Math.floor(decision.at/PROVISIONAL_RULE.bucketMs)!==bucket)return;
-    const original=this.resilient?assessLiquidityResilientBuying(decision.features,decision.at,this.options.v3Evidence?.(c.mint,decision.at)??undefined):this.adaptive?assessAdaptiveBuying(decision.features,decision.at):assessPredictiveBuying(decision.features,decision.at);if(!original.features?.sufficientlyObserved)return;
+    const original=this.resilient?this.assessResilient(decision.features,decision.at,c.mint):this.adaptive?assessAdaptiveBuying(decision.features,decision.at):assessPredictiveBuying(decision.features,decision.at);if(!original.features?.sufficientlyObserved)return;
     let ready=false;try{ready=(this.options.predictiveReadiness??this.options.candidateReadiness)?.(c.mint,initialAt)===true;}catch{return;}
     const availableAt=this.clock();if(!ready||Math.floor(availableAt/PROVISIONAL_RULE.bucketMs)!==bucket||this.candidates.get(c.mint)!==c||!c.active||c.informationPending)return;
     // Re-read only bounded in-memory features at actual diagnostic availability;
     // no quote/provider work or change to the existing primary risk decision.
-    const assessment=this.resilient?assessLiquidityResilientBuying(c.window.features(availableAt),availableAt,this.options.v3Evidence?.(c.mint,availableAt)??undefined):this.adaptive?assessAdaptiveBuying(c.window.features(availableAt),availableAt):assessPredictiveBuying(c.window.features(availableAt),availableAt);if(assessment.status==='unavailable'||!assessment.features)return;
+    const assessment=this.resilient?this.assessResilient(c.window.features(availableAt),availableAt,c.mint):this.adaptive?assessAdaptiveBuying(c.window.features(availableAt),availableAt):assessPredictiveBuying(c.window.features(availableAt),availableAt);if(assessment.status==='unavailable'||!assessment.features)return;
     c.predictiveAssessedBucket=bucket;this.record('trader-predictive-assessment',{mint:c.mint,at:availableAt,windowEndAt:assessment.features.windowEndAt,strategyVersion:this.effectiveVersion,status:assessment.status,reason:assessment.reason,features:assessment.features,...(this.resilient&&'assessments'in assessment?{strategyAssessments:assessment.assessments,components:'components'in assessment?assessment.components:null}:{}),riskDecision:{kind:decision.kind,reason:decision.reason},meaning:'Predictive predicates only; no eligibility, quote, risk or entry permission is granted.'});
   }
   private assertCandidateOnlyState(){
@@ -393,13 +408,13 @@ export class PaperTrader{
     for(const position of Object.values(this.options.ledger.state().positions)){
       execution.push(...await this.dueActions());if(!this.options.ledger.state().positions[position.mint])continue;
       const evaluatedAt=this.clock(),mark=this.sourceCurrent(evaluatedAt)?this.context.marks[position.mint]??null:null,exitInput={now:evaluatedAt,enteredAt:position.enteredAt,entryCostLamports:(unsigned(position.entryLamports)+unsigned(position.entryGas)).toString(),heldBaseUnits:position.units,mark};
-      const versionedHolding=position.strategy?.version===ADAPTIVE_MOMENTUM_V2_VERSION||position.strategy?.version===LIQUIDITY_RESILIENT_MOMENTUM_V3_VERSION;
+      const versionedHolding=position.strategy?.version===ADAPTIVE_MOMENTUM_V2_VERSION||isLiquidityResilientPaperStrategy(position.strategy?.version);
       const adaptiveSignal=versionedHolding?this.adaptiveHeldSeries.observe({now:evaluatedAt,mint:position.mint,roundTripId:position.strategy!.roundTripId,enteredAt:position.enteredAt,heldBaseUnits:position.units,highWaterNetLamports:position.strategy!.highWaterNetLamports,mark,sourceCurrent:this.sourceCurrent(evaluatedAt)}):null;
       if(adaptiveSignal&&position.strategy)this.latestAdaptiveHoldingSignals.set(position.mint,{roundTripId:position.strategy.roundTripId,units:position.units,evaluatedAt,quoteAt:mark&&Number.isSafeInteger(mark.at)&&mark.at>=0?mark.at:null,signal:adaptiveSignal});
-      const holdingContext=position.strategy?.version===LIQUIDITY_RESILIENT_MOMENTUM_V3_VERSION?this.options.v3HoldingEvidence?.(position,mark,evaluatedAt)??{}:undefined;
+      const holdingContext=isLiquidityResilientPaperStrategy(position.strategy?.version)?this.options.v3HoldingEvidence?.(position,mark,evaluatedAt)??{}:undefined;
       const versionedInput={...exitInput,highWaterNetLamports:position.strategy?.highWaterNetLamports,...(adaptiveSignal?.effectiveVolatilityBps===null||adaptiveSignal?.effectiveVolatilityBps===undefined?{}:{volatilityBps:adaptiveSignal.effectiveVolatilityBps})};
-      const exit=position.strategy?.version===LIQUIDITY_RESILIENT_MOMENTUM_V3_VERSION?evaluateLiquidityResilientExit({...versionedInput,...holdingContext,...(position.strategy.profitProtectionFloorLamports?{priorProfitProtectionFloorLamports:position.strategy.profitProtectionFloorLamports}:{})}):position.strategy?.version===ADAPTIVE_MOMENTUM_V2_VERSION?evaluateAdaptiveExit(versionedInput):evaluateExit(exitInput);
-      if(position.strategy?.version===LIQUIDITY_RESILIENT_MOMENTUM_V3_VERSION&&mark){const floor=(exit as V3ExitDecision).profitProtectionFloorLamports;if(floor&&BigInt(floor)>BigInt(position.strategy.profitProtectionFloorLamports??'0')){try{this.options.ledger.checkpointV3ProtectionFloor(this.id('v3-profit-floor'),this.clock(),{mint:position.mint,units:position.units,roundTripId:position.strategy.roundTripId,floorLamports:floor,quoteAt:mark.at,evidence:mark.evidence});}catch{this.financialUnavailable=true;this.pause('V3 protection evidence persistence unavailable; exposure retained');}}}
+      const exit=isLiquidityResilientPaperStrategy(position.strategy?.version)?evaluateLiquidityResilientExit({...versionedInput,...holdingContext,...(position.strategy.profitProtectionFloorLamports?{priorProfitProtectionFloorLamports:position.strategy.profitProtectionFloorLamports}:{})}):position.strategy?.version===ADAPTIVE_MOMENTUM_V2_VERSION?evaluateAdaptiveExit(versionedInput):evaluateExit(exitInput);
+      if(isLiquidityResilientPaperStrategy(position.strategy?.version)&&mark){const floor=(exit as V3ExitDecision).profitProtectionFloorLamports;if(floor&&BigInt(floor)>BigInt(position.strategy.profitProtectionFloorLamports??'0')){try{this.options.ledger.checkpointV3ProtectionFloor(this.id('v3-profit-floor'),this.clock(),{mint:position.mint,units:position.units,roundTripId:position.strategy.roundTripId,floorLamports:floor,quoteAt:mark.at,evidence:mark.evidence});}catch{this.financialUnavailable=true;this.pause('V3 protection evidence persistence unavailable; exposure retained');}}}
       const pendingExit=Object.values(this.options.ledger.state().pending).some(o=>o.mint===position.mint&&o.side==='sell');
       const completed=(outcome:string)=>{const completedAt=this.clock();this.record('trader-held-evaluation',{mint:position.mint,units:position.units,strategyVersion:position.strategy?.version??(this.adaptive?'persistent-buying-pilot-v1':this.effectiveVersion),highWaterNetLamports:position.strategy?.highWaterNetLamports??null,evaluatedAt,completedAt,quoteAt:mark?.at??null,sourceValidUntil:this.context.sourceValidUntil??null,usable:!!mark&&mark.pricedBaseUnits===position.units&&mark.at<=completedAt&&completedAt-mark.at<=PROVISIONAL_RULE.maximumQuoteAgeMs&&this.sourceCurrent(completedAt)&&/^(0|[1-9][0-9]{0,38})$/.test(mark.netLamports)&&validText(mark.evidence),action:exit.action,reason:exit.reason,pendingExit,outcome,...(adaptiveSignal?{adaptiveHoldingSignal:adaptiveSignal}: {}),...(holdingContext?{liquidityResilientHolding:{...holdingContext,decision:exit,participationEvidence:holdingContext.flowContext?'current-independent-audit':'UNKNOWN_NATIVE_HELD_FLOW_NOT_AVAILABLE'}}:{})});};
       // A retained owned exit blocks duplicate actions, not observation. This
@@ -431,21 +446,53 @@ export class PaperTrader{
       const risk=this.entriesAllowed(c,at);
       const context={mint:c.mint,now:at,migrationAt:c.migrationAt,migrationVerified:c.migrationVerified,supportedPool:c.supportedPool,flowFieldsVerified:fields?.verified===true&&c.active,flowVerificationEvidence:fields?.evidence??null,riskEntriesAllowed:risk,alreadyTradedMint:this.options.ledger.hasTradedMint(c.mint),quote:null};
       let decision=this.entryDecision(features,context),q:SizeQuote|null=null;
-      if(this.options.deferPredictivelyRejectedQuotes===true&&(decision.reason==='fresh-size-specific-quote-unavailable'||decision.reason==='v3-matched-fresh-actual-size-quote-required')){
-        const adaptiveAssessment=this.resilient?assessLiquidityResilientBuying(features,at,this.options.v3Evidence?.(c.mint,at)??undefined):this.adaptive?assessAdaptiveBuying(features,at):null,rejected=this.adaptive?(adaptiveAssessment?.status==='failed'?{...decision,kind:'strategy-rejection' as const,reason:adaptiveAssessment.reason}:null):quoteIndependentRefusal(decision as RuleDecision);
+      if(this.options.deferPredictivelyRejectedQuotes===true&&(decision.reason==='fresh-size-specific-quote-unavailable'||isResilientQuoteMissing(decision.reason))){
+        const adaptiveAssessment=this.resilient?this.assessResilient(features,at,c.mint):this.adaptive?assessAdaptiveBuying(features,at):null,rejected=this.adaptive?(adaptiveAssessment?.status==='failed'?{...decision,kind:'strategy-rejection' as const,reason:adaptiveAssessment.reason}:null):quoteIndependentRefusal(decision as RuleDecision);
         if(rejected){decision=rejected;this.record('trader-quote-deferred',{mint:c.mint,at,reason:rejected.reason,featuresAsOf:features.asOf,knownSlotFloor:c.knownSlot,quoteSupportRefreshed:false,meaning:'Same predictive rule already rejects; current quote/support/liquidity knowledge was not obtained. No entry qualification or held-position protection depends on this skipped read.'});}
       }
-      if((decision.reason==='fresh-size-specific-quote-unavailable'||decision.reason==='v3-matched-fresh-actual-size-quote-required')&&this.context.price){
-        const price=unsigned(this.context.price.microUsdPerSol),allocation=this.adaptive?this.options.ledger.entryRiskBudget(at,this.context.price,this.context.marks,entryDeposit,temporaryEntryRent):null,budget=this.adaptive?(allocation?.ready?BigInt(allocation.cashLimitedConsumedLamports)-unsigned(this.options.costs.gasLamports):0n):BigInt(PROVISIONAL_RULE.maximumInitialCostMicroUsd)*1_000_000_000n/price-unsigned(this.options.costs.gasLamports)-unsigned(entryDeposit);
-        if(budget>0n){q=await this.estimate({mint:c.mint,side:'buy',inputUnits:budget.toString(),...(this.pilot?{requiredDepositLamports:entryDeposit}:{})});
+      let opportunityEvidence:V3Evidence|null=null,baselineMarket:V3MarketEvidence|null=null,selectedMarket:V3MarketEvidence|null=null;
+      let sizing:ReturnType<typeof evaluateV31SizeFrontier>|null=null,normalAllocation:ReturnType<PaperLedger['entryRiskBudget']>|null=null;
+      if((decision.reason==='fresh-size-specific-quote-unavailable'||isResilientQuoteMissing(decision.reason))&&this.context.price){
+        const price=unsigned(this.context.price.microUsdPerSol),allocation=this.adaptive?this.options.ledger.entryRiskBudget(at,this.context.price,this.context.marks,entryDeposit,temporaryEntryRent):null;
+        normalAllocation=allocation;
+        const budget=this.adaptive?(allocation?.ready?BigInt(allocation.cashLimitedConsumedLamports)-unsigned(this.options.costs.gasLamports):0n):BigInt(PROVISIONAL_RULE.maximumInitialCostMicroUsd)*1_000_000_000n/price-unsigned(this.options.costs.gasLamports)-unsigned(entryDeposit);
+        if(budget>0n){
+          q=await this.estimate({mint:c.mint,side:'buy',inputUnits:budget.toString(),...(this.pilot?{requiredDepositLamports:entryDeposit}:{})});
           execution.push(...await this.dueActions());
-          // Servicing pending actions can yield while new selected evidence
-          // raises the floor. Recheck at actual rule use, without refreshing q.
+          // Every candidate size uses the same originally received coherent
+          // pool/Clock bytes. A later slot, expired quote or due action revokes
+          // it; local arithmetic never refreshes source timestamps.
+          const assessQuote=(quote:SizeQuote)=>{
+            let liquidityBps=10_001;try{const liquidity=unsigned(quote.effectiveQuoteLiquidityLamports??'0');if(liquidity>0n)liquidityBps=Number((unsigned(quote.inputUnits)*10_000n+liquidity-1n)/liquidity);}catch{}
+            const current=this.clock(),market=this.resilient&&quote.liquidityResilience&&allocation?.ready?{...quote.liquidityResilience,maximumConsumedLamports:allocation.maximumConsumedLamports,...(BigInt(allocation.cashLimitedConsumedLamports)<BigInt(allocation.maximumConsumedLamports)?{cashLimited:true as const}:{})}:undefined;
+            const evidence=market?this.options.v3Evidence?.(c.mint,current,market)??null:null;
+            return {evidence,market:market??null,decision:this.entryDecision(c.window.features(current),{...context,now:current,flowFieldsVerified:fields?.verified===true&&c.active,riskEntriesAllowed:this.entriesAllowed(c,current),alreadyTradedMint:this.options.ledger.hasTradedMint(c.mint),quote:{mint:quote.mint,at:quote.at,evidence:quote.evidence,allInInitialCostMicroUsd:((unsigned(quote.inputUnits)+unsigned(this.options.costs.gasLamports)+(this.adaptive?0n:unsigned(entryDeposit)))*price/1_000_000_000n).toString(),sizeToEffectiveLiquidityBps:liquidityBps,expectedBaseUnits:quote.outputUnits,effectiveQuoteLiquidityLamports:quote.effectiveQuoteLiquidityLamports},...(evidence?{v3:evidence}:{})})};
+          };
           if(q&&(this.pilot||this.options.deferPredictivelyRejectedQuotes===true))q=this.cleanQuote(q,this.withKnownFloor({mint:c.mint,side:'buy',inputUnits:budget.toString(),...(this.pilot?{requiredDepositLamports:entryDeposit}:{})}));
-          if(q){let liquidityBps=10_001;try{const liquidity=unsigned(q.effectiveQuoteLiquidityLamports??'0');if(liquidity>0n)liquidityBps=Number((budget*10_000n+liquidity-1n)/liquidity);}catch{}
-            const current=this.clock();decision=this.entryDecision(c.window.features(current),{...context,now:current,flowFieldsVerified:fields?.verified===true&&c.active,riskEntriesAllowed:this.entriesAllowed(c,current),alreadyTradedMint:this.options.ledger.hasTradedMint(c.mint),quote:{mint:q.mint,at:q.at,evidence:q.evidence,allInInitialCostMicroUsd:((budget+unsigned(this.options.costs.gasLamports)+(this.adaptive?0n:unsigned(entryDeposit)))*price/1_000_000_000n).toString(),sizeToEffectiveLiquidityBps:liquidityBps,expectedBaseUnits:q.outputUnits,effectiveQuoteLiquidityLamports:q.effectiveQuoteLiquidityLamports},...(this.resilient&&q.liquidityResilience&&allocation?.ready?{v3:this.options.v3Evidence?.(c.mint,current,{...q.liquidityResilience,maximumConsumedLamports:allocation.maximumConsumedLamports,...(BigInt(allocation.cashLimitedConsumedLamports)<BigInt(allocation.maximumConsumedLamports)?{cashLimited:true as const}:{})})??undefined}:{})});
+          if(q){
+            const original=q,initial=assessQuote(q);decision=initial.decision;opportunityEvidence=initial.evidence;baselineMarket=initial.market;selectedMarket=initial.market;
+            if(this.resilient31&&initial.evidence?.market){
+              sizing=evaluateV31SizeFrontier(c.window.features(this.clock()),this.clock(),{...initial.evidence,market:initial.evidence.market});
+              const chosen=sizing.selected;if(!chosen)selectedMarket=null;
+              if(chosen&&chosen.buyInputLamports!==original.inputUnits){
+                if(unsigned(chosen.buyInputLamports)>0n&&unsigned(chosen.buyInputLamports)<=unsigned(original.inputUnits)){
+                  q=await this.repriceEntry({mint:c.mint,side:'buy',inputUnits:chosen.buyInputLamports,...(this.pilot?{requiredDepositLamports:entryDeposit}:{})},original);
+                  execution.push(...await this.dueActions());
+                  if(q)q=this.cleanQuote(q,this.withKnownFloor({mint:c.mint,side:'buy',inputUnits:chosen.buyInputLamports,...(this.pilot?{requiredDepositLamports:entryDeposit}:{})}));
+                  if(q&&(q.outputUnits!==chosen.expectedBaseUnits||q.liquidityResilience?.buyCurveInputLamports!==chosen.buyCurveInputLamports))q=null;
+                  if(q){const actual=assessQuote(q);decision=actual.decision;opportunityEvidence=actual.evidence;selectedMarket=actual.market;}
+                  else{selectedMarket=null;decision={...decision,qualified:false,kind:'missing-data',reason:'v3.1-selected-size-sdk-quote-unavailable'};}
+                }else{q=null;selectedMarket=null;decision={...decision,qualified:false,kind:'missing-data',reason:'v3.1-selected-size-outside-verified-allocation'};}
+              }
+            }
           }
         }
+      }
+      if(this.resilient31){
+        // Durable decision-time replay inputs, using already audited events.
+        // This is evidence only: no future market outcome or fill is inferred.
+        const captured=opportunityEvidence??this.options.v3Evidence?.(c.mint,this.clock())??null;
+        this.record('native-opportunity-evaluation',{version:'poe-opportunity-evaluation-v1',stage:'execution-economics',...(this.options.runId?{runId:this.options.runId}:{}),at:this.clock(),mint:c.mint,strategyVersion:this.resilientVersion(),features:decision.features??features,auditedFlow:captured?.flow??null,normalAllocation,baselineMarket,selectedMarket,sizing:sizing?{reason:sizing.reason,selected:sizing.selected,candidates:sizing.candidates,sourceEvidence:sizing.sourceEvidence,isGlobalOptimumCertified:sizing.isGlobalOptimumCertified}:null,decision:{kind:decision.kind,reason:decision.reason,qualified:decision.qualified,...('assessments'in decision?{assessments:decision.assessments}:{}),...('components'in decision?{components:decision.components}:{})},technicalFailure:decision.kind==='missing-data',providerRequests:0,financialQualification:decision.qualified,fillClaimed:false});
       }
       c.evaluatedBucket=Math.max(c.evaluatedBucket,Math.floor(decision.at/PROVISIONAL_RULE.bucketMs));
       this.funnel.evaluated++;if(features.sufficientlyObserved&&c.active&&fields?.verified===true)this.funnel.sufficientlyObserved++;
@@ -454,7 +501,7 @@ export class PaperTrader{
       if(decision.qualified&&q&&this.options.candidateReadiness!==undefined)q=this.cleanQuote(q,this.withKnownFloor({mint:c.mint,side:'buy',inputUnits:q.inputUnits,...(this.pilot?{requiredDepositLamports:entryDeposit}:{})}));
       const reservationAt=this.clock(),reservationReady=decision.qualified&&q&&!this.evidenceUnavailable&&this.entriesAllowed(c,reservationAt);
       if(reservationReady&&q){this.funnel.qualified++;const at=reservationAt,min=unsigned(q.outputUnits)*BigInt(10_000-this.options.costs.slippageBps)/10_000n;
-        if(min>0n){try{const eligibility=this.adaptive?this.options.ledger.entryEligibility(c.mint,this.resilient?LIQUIDITY_RESILIENT_MOMENTUM_V3_VERSION:ADAPTIVE_MOMENTUM_V2_VERSION,decision.features!.windowEndAt,at):null,entryStrategy:EntryStrategy|undefined=eligibility?.allowed?{version:this.resilient?LIQUIDITY_RESILIENT_MOMENTUM_V3_VERSION:ADAPTIVE_MOMENTUM_V2_VERSION,cycle:eligibility.cycle,windowStartAt:decision.features!.windowStartAt,windowEndAt:decision.features!.windowEndAt,assessedAt:decision.at,signalId:[this.resilient?LIQUIDITY_RESILIENT_MOMENTUM_V3_VERSION:ADAPTIVE_MOMENTUM_V2_VERSION,c.mint,decision.features!.windowEndAt].join(':')}:undefined;if(this.adaptive&&!entryStrategy)throw Error('adaptive re-entry requires verified closed cycle and fresh audited signal');const result=this.execution.reserve({id:`buy:${this.options.ledger.state().revision}:${at}`,side:'buy',mint:c.mint,decidedAt:at,executeAt:at+PROVISIONAL_RULE.modeledDelayMs,expiresAt:at+PROVISIONAL_RULE.orderExpiryMs,gas:this.options.costs.gasLamports,deposit:entryDeposit,maxSpend:q.inputUnits,minReceive:min.toString(),decisionEvidence:q.evidence,...(entryStrategy?{entryStrategy}:{})},this.context);if('reserved' in result){this.funnel.reserved++;break;}else this.decision({mint:c.mint,at,stage:'risk-rejection',reason:result.rejected,ruleVersion:PROVISIONAL_RULE.version});}catch(error){
+        if(min>0n){try{const eligibility=this.adaptive?this.options.ledger.entryEligibility(c.mint,this.resilient?this.resilientVersion():ADAPTIVE_MOMENTUM_V2_VERSION,decision.features!.windowEndAt,at):null,entryStrategy:EntryStrategy|undefined=eligibility?.allowed?{version:this.resilient?this.resilientVersion():ADAPTIVE_MOMENTUM_V2_VERSION,cycle:eligibility.cycle,windowStartAt:decision.features!.windowStartAt,windowEndAt:decision.features!.windowEndAt,assessedAt:decision.at,signalId:[this.resilient?this.resilientVersion():ADAPTIVE_MOMENTUM_V2_VERSION,c.mint,decision.features!.windowEndAt].join(':')}:undefined;if(this.adaptive&&!entryStrategy)throw Error('adaptive re-entry requires verified closed cycle and fresh audited signal');const result=this.execution.reserve({id:`buy:${this.options.ledger.state().revision}:${at}`,side:'buy',mint:c.mint,decidedAt:at,executeAt:at+PROVISIONAL_RULE.modeledDelayMs,expiresAt:at+PROVISIONAL_RULE.orderExpiryMs,gas:this.options.costs.gasLamports,deposit:entryDeposit,maxSpend:q.inputUnits,minReceive:min.toString(),decisionEvidence:q.evidence,...(entryStrategy?{entryStrategy}:{})},this.context);if('reserved' in result){this.funnel.reserved++;break;}else this.decision({mint:c.mint,at,stage:'risk-rejection',reason:result.rejected,ruleVersion:PROVISIONAL_RULE.version});}catch(error){
           const reason=error instanceof Error?error.message:'';
           const technicalExecution=reason==='PAPER execution preparation unavailable';
           const expected=['pending capacity','position capacity','5% current equity consumed-entry limit','$150 cost limit','$50 initial commitment limit','insufficient unreserved cash','one pending action per token','adds/re-entry into held position forbidden','re-entry after a prior PAPER fill forbidden','adaptive re-entry requires verified closed cycle and fresh audited signal','existing account deposit cannot be charged twice','unresolved deposit capacity'].includes(reason);

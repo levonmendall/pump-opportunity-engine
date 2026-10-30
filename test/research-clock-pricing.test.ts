@@ -385,11 +385,20 @@ test('coherent actual-input buy preserves retained SDK amounts and fees with2col
 
 test('buy admission, aborts, invalid amounts and unsupported state refuse without partial success',async()=>withTime(async f=>{
   const p=new ResearchClockPositionPricer(f.rpc,f.rec),request={mint:f.request.mint,buyLamports:10000000n,minSlot:f.request.minSlot};
-  for(const buyLamports of[0n,10n,1n<<64n])await assert.rejects(p.quoteBuy({...request,buyLamports}),/SIZE_OUT_OF_RANGE/);
+  for(const buyLamports of[0n,-1n,1n<<64n])await assert.rejects(p.quoteBuy({...request,buyLamports}),/SIZE_OUT_OF_RANGE/);
   const controller=new AbortController();controller.abort();await assert.rejects(p.quoteBuy(request,controller.signal));
   await assert.rejects(p.quoteBuy(request,undefined,{latestStartAt:Date.now()+1000,admissionOpen:()=>false}),/ADMISSION_CLOSED/);assert.equal(f.calls.length,0);
   await p.quoteBuy(request);f.state.value[5].owner=PublicKey.default.toBase58();
   await assert.rejects(p.quoteBuy(request));assert.deepEqual(p.usage().cachedPoolSlots,{});
+}));
+
+test('positive tiny buys use exact SDK validity instead of an arbitrary ten-lamport floor',async()=>withTime(async f=>{
+  const p=new ResearchClockPositionPricer(f.rpc,f.rec),request={mint:f.request.mint,buyLamports:10n,minSlot:f.request.minSlot};
+  const current=await p.quoteBuy(request),legacy=await quotePool(f.rpc as ReadOnlyRpc,request.mint,request.buyLamports,f.rec,request.minSlot);
+  assert.equal(current.buy.inputLamports,'10');assert.ok(BigInt(current.buy.outputBaseUnits)>0n);assert.deepEqual(current.buy,legacy.buy);assert.deepEqual(current.correspondingSell,legacy.correspondingSell);
+  // A positive input can still be genuine SDK dust; removing a trading floor
+  // must not turn zero output or invalid curve arithmetic into a quote.
+  await assert.rejects(p.quoteBuy({...request,buyLamports:1n}));
 }));
 
 test('buy validation retains the original receive time through slow recording and bank expiry',async()=>withTime(async f=>{

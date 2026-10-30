@@ -16,7 +16,10 @@ export type UsdPrice = { microUsdPerSol: string; at: number; source: string };
 export type Mark = { netLamports: string; pricedBaseUnits: string; at: number; evidence: string };
 export const ADAPTIVE_PAPER_STRATEGY_VERSION='adaptive-momentum-v2-paper-v1' as const;
 export const V3_PAPER_STRATEGY_VERSION='liquidity-resilient-momentum-v3' as const;
-export type EntryStrategy={version:typeof ADAPTIVE_PAPER_STRATEGY_VERSION|typeof V3_PAPER_STRATEGY_VERSION;cycle:number;windowStartAt:number;windowEndAt:number;assessedAt:number;signalId:string};
+export const V3_1_PAPER_STRATEGY_VERSION='liquidity-resilient-momentum-v3.1' as const;
+/** Existing holdings keep their recorded version; these share only financial protection invariants. */
+export function isLiquidityResilientPaperStrategy(version:unknown):version is typeof V3_PAPER_STRATEGY_VERSION|typeof V3_1_PAPER_STRATEGY_VERSION{return version===V3_PAPER_STRATEGY_VERSION||version===V3_1_PAPER_STRATEGY_VERSION;}
+export type EntryStrategy={version:typeof ADAPTIVE_PAPER_STRATEGY_VERSION|typeof V3_PAPER_STRATEGY_VERSION|typeof V3_1_PAPER_STRATEGY_VERSION;cycle:number;windowStartAt:number;windowEndAt:number;assessedAt:number;signalId:string};
 export type PositionStrategy=EntryStrategy&{roundTripId:string;highWaterNetLamports:string;highWaterAt:number;profitProtectionFloorLamports?:string};
 type ClosedCycle={schemaVersion:1;mint:string;cycle:number;entryOrderId:string;entryWindowEndAt:number;closedAt:number|null;exitOrderId:string|null;legacyEntryCutoff:boolean};
 export type EntryEligibility={allowed:boolean;reason:string;closedAt:number|null;previousWindowEndAt:number|null;cycle:number};
@@ -127,7 +130,7 @@ function runtimeReadinessKind(value:unknown,now:number,marks:unknown,revision?:n
 const usd = (lamports: bigint, price: bigint) => lamports * price / L;
 const digest = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex');
 function validateEntryStrategy(value:EntryStrategy,at:number){
- if(!value||typeof value!=='object'||Array.isArray(value)||value.version!==ADAPTIVE_PAPER_STRATEGY_VERSION&&value.version!==V3_PAPER_STRATEGY_VERSION||!Number.isSafeInteger(value.cycle)||value.cycle<1||!Number.isSafeInteger(value.windowStartAt)||value.windowStartAt<0||value.windowEndAt!==value.windowStartAt+60000||value.windowEndAt!==Math.floor(at/10000)*10000||!Number.isSafeInteger(value.assessedAt)||value.assessedAt<value.windowEndAt||value.assessedAt>at||!boundedText(value.signalId,160)||/[\u0000-\u001f]/.test(value.signalId))throw Error('adaptive entry strategy invariant');
+ if(!value||typeof value!=='object'||Array.isArray(value)||value.version!==ADAPTIVE_PAPER_STRATEGY_VERSION&&!isLiquidityResilientPaperStrategy(value.version)||!Number.isSafeInteger(value.cycle)||value.cycle<1||!Number.isSafeInteger(value.windowStartAt)||value.windowStartAt<0||value.windowEndAt!==value.windowStartAt+60000||value.windowEndAt!==Math.floor(at/10000)*10000||!Number.isSafeInteger(value.assessedAt)||value.assessedAt<value.windowEndAt||value.assessedAt>at||!boundedText(value.signalId,160)||/[\u0000-\u001f]/.test(value.signalId))throw Error('adaptive entry strategy invariant');
 }
 
 /** Shared with backup/recovery validation. No database or financial mutation. */
@@ -214,7 +217,7 @@ export function validateFinancialState(s: LedgerState, accountId: string, mode: 
     if (!record(p) || !key(mint, 96) || p.mint !== mint || !eventTime(p.enteredAt) || amount(p.units) === 0n || amount(p.entryLamports) === 0n || amount(p.entryGas) === 0n || (p.allocation===undefined&&amount(p.costMicroUsd) > 50_000_000n) || amount(p.deposit) > amount(s.lockedDeposits[mint] ?? '0')) throw new Error('position identity/amount invariant');
     if(p.executionModelVersion!==undefined&&p.executionModelVersion!=='paper-chain-conditioned-v1')throw Error('position execution model version invariant');
     if(p.allocation!==undefined){if(!s.equityRisk&&!options.allowUnavailableEntryPolicy)throw Error('position allocation policy unavailable');validateEntryAllocation(p.allocation,p.enteredAt,amount(p.entryLamports)+amount(p.entryGas));if(amount(p.costMicroUsd)!==usd(amount(p.allocation.consumedLamports),amount(p.allocation.microUsdPerSol)))throw Error('position allocation cost invariant');}
-    if(p.strategy!==undefined){validateEntryStrategy(p.strategy,p.strategy.assessedAt);if(!boundedText(p.strategy.roundTripId,100)||!Number.isSafeInteger(p.strategy.highWaterAt)||p.strategy.highWaterAt<p.enteredAt||p.strategy.highWaterAt>s.lastAt||p.strategy.assessedAt>p.enteredAt)throw Error('adaptive position strategy invariant');amount(p.strategy.highWaterNetLamports);if(p.strategy.profitProtectionFloorLamports!==undefined&&(p.strategy.version!==V3_PAPER_STRATEGY_VERSION||amount(p.strategy.profitProtectionFloorLamports)<=amount(p.entryLamports)+amount(p.entryGas)||amount(p.strategy.profitProtectionFloorLamports)>amount(p.strategy.highWaterNetLamports)))throw Error('V3 executable profit floor invariant');}
+    if(p.strategy!==undefined){validateEntryStrategy(p.strategy,p.strategy.assessedAt);if(!boundedText(p.strategy.roundTripId,100)||!Number.isSafeInteger(p.strategy.highWaterAt)||p.strategy.highWaterAt<p.enteredAt||p.strategy.highWaterAt>s.lastAt||p.strategy.assessedAt>p.enteredAt)throw Error('adaptive position strategy invariant');amount(p.strategy.highWaterNetLamports);if(p.strategy.profitProtectionFloorLamports!==undefined&&(!isLiquidityResilientPaperStrategy(p.strategy.version)||amount(p.strategy.profitProtectionFloorLamports)<=amount(p.entryLamports)+amount(p.entryGas)||amount(p.strategy.profitProtectionFloorLamports)>amount(p.strategy.highWaterNetLamports)))throw Error('V3 executable profit floor invariant');}
   }
   let reservations = 0n;
   const pendingMints = new Set<string>(); let pendingBuys = 0;
@@ -456,7 +459,7 @@ export class PaperLedger {
   checkpointV3ProtectionFloor(id:string,now:number,input:{mint:string;units:string;roundTripId:string;floorLamports:string;quoteAt:number;evidence:string}){
     const check=(s:Readonly<State>)=>{
       const p=s.positions[input.mint],floor=amount(input.floorLamports);
-      if(!p||p.strategy?.version!==V3_PAPER_STRATEGY_VERSION||p.units!==input.units||p.strategy.roundTripId!==input.roundTripId||!Number.isSafeInteger(now)||!Number.isSafeInteger(input.quoteAt)||input.quoteAt<p.enteredAt||input.quoteAt>now||now-input.quoteAt>MAX_QUOTE_AGE||!boundedText(input.evidence)||floor<=amount(p.entryLamports)+amount(p.entryGas)||floor>amount(p.strategy.highWaterNetLamports))throw Error('V3 fresh exact-inventory executable profit floor required');
+      if(!p||!p.strategy||!isLiquidityResilientPaperStrategy(p.strategy.version)||p.units!==input.units||p.strategy.roundTripId!==input.roundTripId||!Number.isSafeInteger(now)||!Number.isSafeInteger(input.quoteAt)||input.quoteAt<p.enteredAt||input.quoteAt>now||now-input.quoteAt>MAX_QUOTE_AGE||!boundedText(input.evidence)||floor<=amount(p.entryLamports)+amount(p.entryGas)||floor>amount(p.strategy.highWaterNetLamports))throw Error('V3 fresh exact-inventory executable profit floor required');
       return {floor,prior:amount(p.strategy.profitProtectionFloorLamports??'0')};
     };
     const previous=check(this.state());if(previous.floor<=previous.prior)return {updated:false,floorLamports:previous.prior.toString()};
@@ -690,7 +693,7 @@ export class PaperLedger {
     const prior=this.closedCycle(mint,state,ignoredPendingId),result=(allowed:boolean,reason:string):EntryEligibility=>({allowed,reason,closedAt:prior?.closedAt??null,previousWindowEndAt:prior?.entryWindowEndAt??null,cycle:(prior?.cycle??0)+1});
     if(!prior&&this.db.prepare('SELECT 1 FROM metadata WHERE key=?').get('paper_round_trip_v2:'+mint))return result(false,'round-trip recovery index unavailable; no entry authority');
     if(!this.hasTradedMint(mint))return result(true,'first complete qualified entry remains subject to financial controls');
-    if(strategyVersion!==ADAPTIVE_PAPER_STRATEGY_VERSION&&strategyVersion!==V3_PAPER_STRATEGY_VERSION)return result(false,'legacy no-reentry policy');
+    if(strategyVersion!==ADAPTIVE_PAPER_STRATEGY_VERSION&&!isLiquidityResilientPaperStrategy(strategyVersion))return result(false,'legacy no-reentry policy');
     if(!prior||prior.closedAt===null)return result(false,'prior fill has no verified completed closure');
     if(state.daily.reconciledAt<prior.closedAt||state.daily.reconciledAt>at)return result(false,'post-close financial reconciliation required');
     if(windowEndAt-60000<=prior.closedAt||windowEndAt<=prior.entryWindowEndAt)return result(false,'new complete audited window after closure required');
@@ -721,7 +724,7 @@ export class PaperLedger {
         const riskReady=this.observeEquityRisk(s,now,equity);
         if (!riskReady || s.daily.day !== utcDay(now) || s.daily.reconciledAt === 0 || now - s.daily.reconciledAt > MAX_QUOTE_AGE || s.daily.paused || !s.controls.entriesEnabled || s.controls.stopRequested) return { rejected: 'entries paused or reconciliation required' };
         if (s.positions[input.mint]) throw new Error('adds/re-entry into held position forbidden');
-        if(input.entryStrategy){validateEntryStrategy(input.entryStrategy,now);const eligibility=this.entryEligibilityFrom(s,input.mint,input.entryStrategy.version,input.entryStrategy.windowEndAt,now);if(!eligibility.allowed||input.entryStrategy.cycle!==eligibility.cycle)throw Error('adaptive re-entry requires verified closed cycle and fresh audited signal');}
+        if(input.entryStrategy){validateEntryStrategy(input.entryStrategy,now);if(input.entryStrategy.version===V3_1_PAPER_STRATEGY_VERSION&&!isV3PaperRiskState(s))throw Error('V3.1 requires existing V3 financial epoch and policy');const eligibility=this.entryEligibilityFrom(s,input.mint,input.entryStrategy.version,input.entryStrategy.windowEndAt,now);if(!eligibility.allowed||input.entryStrategy.cycle!==eligibility.cycle)throw Error('adaptive re-entry requires verified closed cycle and fresh audited signal');}
         else if (this.hasTradedMint(input.mint)) throw new Error('re-entry after a prior PAPER fill forbidden');
         if (s.lockedDeposits[input.mint] && dep > 0n) throw new Error('existing account deposit cannot be charged twice');
         if (!s.equityRisk && Object.keys(s.lockedDeposits).length >= 128 && !s.lockedDeposits[input.mint]) throw new Error('unresolved deposit capacity');

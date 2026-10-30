@@ -3,6 +3,7 @@ import {createHash} from 'node:crypto';
 import {PROVISIONAL_RULE} from './strategy.js';
 import {ADAPTIVE_MOMENTUM_V2_POLICY,ADAPTIVE_MOMENTUM_V2_SHA256,ADAPTIVE_MOMENTUM_V2_VERSION} from './adaptive-momentum-v2.js';
 import {LIQUIDITY_RESILIENT_MOMENTUM_V3_POLICY,LIQUIDITY_RESILIENT_MOMENTUM_V3_SHA256,LIQUIDITY_RESILIENT_MOMENTUM_V3_VERSION} from './liquidity-resilient-momentum-v3.js';
+import {LIQUIDITY_RESILIENT_MOMENTUM_V3_1_POLICY,LIQUIDITY_RESILIENT_MOMENTUM_V3_1_SHA256,LIQUIDITY_RESILIENT_MOMENTUM_V3_1_VERSION} from './liquidity-resilient-momentum-v3-1.js';
 
 export const PILOT_VERSION='persistent-buying-pilot-v1' as const;
 const baseline=Object.freeze({version:'persistent-buying-v0-unfrozen',windowMs:60000,bucketMs:10000,minimumAgeMs:300000,maximumAgeMs:7200000,minimumNetBuyLamports:'1000000000',minimumPositiveBuckets:4,minimumBuyers:5,maximumLargestBuyerBps:3500,maximumSizeToLiquidityBps:500,maximumInitialCostMicroUsd:'50000000',maximumHoldingMs:900000,stopLossBps:1500,takeProfitBps:3000,modeledDelayMs:1000,orderExpiryMs:5000,maximumQuoteAgeMs:2000});
@@ -42,10 +43,20 @@ export const LIQUIDITY_RESILIENT_PILOT_CONTRACT=Object.freeze({...PILOT_CONTRACT
 export const LIQUIDITY_RESILIENT_PILOT_CONTRACT_SHA256=createHash('sha256').update(JSON.stringify(LIQUIDITY_RESILIENT_PILOT_CONTRACT)).digest('hex');
 export const LIQUIDITY_RESILIENT_PILOT_BINDING=Object.freeze({version:LIQUIDITY_RESILIENT_MOMENTUM_V3_VERSION,
  stage:2 as const,contractSha256:LIQUIDITY_RESILIENT_PILOT_CONTRACT_SHA256,maxPositions:null});
+/** V3.1 evolves decision-time economics within the existing V3 financial epoch.
+ * The original V3 contract stays immutable for retained holdings and provenance. */
+export const LIQUIDITY_RESILIENT_V3_1_PILOT_CONTRACT=Object.freeze({...LIQUIDITY_RESILIENT_PILOT_CONTRACT,
+ version:LIQUIDITY_RESILIENT_MOMENTUM_V3_1_VERSION,
+ resilient:Object.freeze({...LIQUIDITY_RESILIENT_PILOT_CONTRACT.resilient,
+  policy:LIQUIDITY_RESILIENT_MOMENTUM_V3_1_POLICY,policySha256:LIQUIDITY_RESILIENT_MOMENTUM_V3_1_SHA256,
+  equityRisk:'At most5% current executable equity consumed entry cost; size may decrease with evidenced liquidity and costs; rent separately reserved; existing V3 epoch and no daily-loss trading halt'})});
+export const LIQUIDITY_RESILIENT_V3_1_PILOT_CONTRACT_SHA256=createHash('sha256').update(JSON.stringify(LIQUIDITY_RESILIENT_V3_1_PILOT_CONTRACT)).digest('hex');
+export const LIQUIDITY_RESILIENT_V3_1_PILOT_BINDING=Object.freeze({version:LIQUIDITY_RESILIENT_MOMENTUM_V3_1_VERSION,
+ stage:2 as const,contractSha256:LIQUIDITY_RESILIENT_V3_1_PILOT_CONTRACT_SHA256,maxPositions:null});
 type SinglePilotBinding={version:typeof PILOT_VERSION;contractSha256:string;maxPositions:1};
 type ConcurrentPilotBinding={[S in ConcurrentPilotStage]:{version:(typeof CONCURRENT_PILOTS)[S]['contract']['version'];stage:S;contractSha256:string;maxPositions:S}}[ConcurrentPilotStage];
-export type PilotBinding=SinglePilotBinding|ConcurrentPilotBinding|typeof ADAPTIVE_PILOT_BINDING|typeof LIQUIDITY_RESILIENT_PILOT_BINDING;
-type PilotContract=typeof PILOT_CONTRACT|(typeof CONCURRENT_PILOTS)[ConcurrentPilotStage]['contract']|typeof ADAPTIVE_PILOT_CONTRACT|typeof LIQUIDITY_RESILIENT_PILOT_CONTRACT;
+export type PilotBinding=SinglePilotBinding|ConcurrentPilotBinding|typeof ADAPTIVE_PILOT_BINDING|typeof LIQUIDITY_RESILIENT_PILOT_BINDING|typeof LIQUIDITY_RESILIENT_V3_1_PILOT_BINDING;
+type PilotContract=typeof PILOT_CONTRACT|(typeof CONCURRENT_PILOTS)[ConcurrentPilotStage]['contract']|typeof ADAPTIVE_PILOT_CONTRACT|typeof LIQUIDITY_RESILIENT_PILOT_CONTRACT|typeof LIQUIDITY_RESILIENT_V3_1_PILOT_CONTRACT;
 export type ResolvedPilotBinding={version:PilotBinding['version'];stage:ConcurrentPilotStage|null;contract:PilotContract;contractSha256:string;maxPositions:1|2|3|null};
 /** Resolve only the three known frozen contracts, never arbitrary settings. */
 export function resolvePilotBinding(value:unknown):Readonly<ResolvedPilotBinding>|null{
@@ -54,6 +65,7 @@ export function resolvePilotBinding(value:unknown):Readonly<ResolvedPilotBinding
   if(p.version===PILOT_VERSION&&p.contractSha256===PILOT_CONTRACT_SHA256&&p.maxPositions===1&&!Object.hasOwn(p,'stage'))return Object.freeze({version:PILOT_VERSION,stage:null,contract:PILOT_CONTRACT,contractSha256:PILOT_CONTRACT_SHA256,maxPositions:1});
   if(p.version===ADAPTIVE_PILOT_BINDING.version&&p.stage===2&&p.maxPositions===2&&p.contractSha256===ADAPTIVE_PILOT_CONTRACT_SHA256)return Object.freeze({version:ADAPTIVE_PILOT_BINDING.version,stage:2,contract:ADAPTIVE_PILOT_CONTRACT,contractSha256:ADAPTIVE_PILOT_CONTRACT_SHA256,maxPositions:2});
   if(p.version===LIQUIDITY_RESILIENT_PILOT_BINDING.version&&p.stage===2&&p.maxPositions===null&&p.contractSha256===LIQUIDITY_RESILIENT_PILOT_CONTRACT_SHA256)return Object.freeze({version:LIQUIDITY_RESILIENT_PILOT_BINDING.version,stage:2,contract:LIQUIDITY_RESILIENT_PILOT_CONTRACT,contractSha256:LIQUIDITY_RESILIENT_PILOT_CONTRACT_SHA256,maxPositions:null});
+  if(p.version===LIQUIDITY_RESILIENT_V3_1_PILOT_BINDING.version&&p.stage===2&&p.maxPositions===null&&p.contractSha256===LIQUIDITY_RESILIENT_V3_1_PILOT_CONTRACT_SHA256)return Object.freeze({version:LIQUIDITY_RESILIENT_V3_1_PILOT_BINDING.version,stage:2,contract:LIQUIDITY_RESILIENT_V3_1_PILOT_CONTRACT,contractSha256:LIQUIDITY_RESILIENT_V3_1_PILOT_CONTRACT_SHA256,maxPositions:null});
   if(p.stage!==2&&p.stage!==3)return null;
   const spec=CONCURRENT_PILOTS[p.stage];
   return p.version===spec.contract.version&&p.contractSha256===spec.contractSha256&&p.maxPositions===p.stage?Object.freeze({version:spec.contract.version,stage:p.stage,contract:spec.contract,contractSha256:spec.contractSha256,maxPositions:p.stage}):null;
@@ -66,6 +78,11 @@ export function resolveAdaptivePilotBinding(stage:2=2):Readonly<ResolvedPilotBin
 export function resolveLiquidityResilientPilotBinding(stage:2=2):Readonly<ResolvedPilotBinding>{
  if(stage!==2)throw Error('LIQUIDITY_RESILIENT_FOUR_SLOT_PROFILE_REQUIRED');
  return resolvePilotBinding(LIQUIDITY_RESILIENT_PILOT_BINDING)!;
+}
+
+export function resolveLiquidityResilientV3_1PilotBinding(stage:2=2):Readonly<ResolvedPilotBinding>{
+ if(stage!==2)throw Error('LIQUIDITY_RESILIENT_FOUR_SLOT_PROFILE_REQUIRED');
+ return resolvePilotBinding(LIQUIDITY_RESILIENT_V3_1_PILOT_BINDING)!;
 }
 
 /** A later global strategy change cannot silently alter this frozen pilot. */

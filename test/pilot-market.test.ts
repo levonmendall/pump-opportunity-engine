@@ -21,7 +21,7 @@ import {NativePaperEntryAdmission,type NativePaperEntryAdmissionToken} from '../
 import {pilotLowerPriorityAdmission} from '../src/pilot.js';
 
 const signal=()=>new AbortController().signal;
-function fixture(t:TestContext,timeoutMs=1000,cooperative=false,paced=false){
+function fixture(t:TestContext,timeoutMs=1000,cooperative=false,paced=false,executionRealism=false){
   const runs=['2026-10-26T19-41-20.717Z','2026-10-26T19-42-16.130Z'];
   const captures=runs.map(run=>{
     const proof=JSON.parse(readFileSync(`evidence/integration-proof-${run}.json`,'utf8'));
@@ -52,7 +52,7 @@ function fixture(t:TestContext,timeoutMs=1000,cooperative=false,paced=false){
   let physical:PilotRpc|undefined;
   if(paced){const old=join(root,'prior.json');writeFileSync(old,JSON.stringify({schemaVersion:1,blockedReason:'RPC_HTTP_429',calls:1,bytes:0,lastObservedAt:at-120000,starts:[at-121000],pending:[]}));physical=new PilotRpc({directory:join(root,'paced-rpc'),runId:'offline-entry-quote-pacing',baselinePaths:[old],priorPhysicalSettled:true,...nativePaperRpcConfiguration(true),now:()=>at,monotonic:()=>at,sleep:async ms=>{at+=ms;activity?.(ms);},fetcher:(async(_url,init)=>{const q=JSON.parse(String(init?.body)),result=await rpc.call(q.method,q.params);return new Response(JSON.stringify({jsonrpc:'2.0',id:q.id,result}));}),record:(kind,data)=>records.push({kind,data:structuredClone(data)})});}
   let adapter:any=physical??rpc;const routed={call:<T>(method:string,params?:unknown[],signal?:AbortSignal)=>adapter.call(method,params,signal) as Promise<T>,usage:()=>adapter.usage?.()};
-  const market=new PilotMarket({rpc:routed,inventory:()=>ledger.state(),price,now:()=>at,recorder:{record(kind,data){records.push({kind,data:structuredClone(data)});recordHook?.(kind);}},...(cooperative?{beforeEntryPreparationRead:async(input:{method:string;signal:AbortSignal})=>{await preparationHook?.(input);}}:{}),gas:{baseFeeLamports:'5000',priorityFeeLamports:'2000',evidence:'DISPOSABLE7k simulated network/priority cost'},timeoutMs});
+  const market=new PilotMarket({rpc:routed,inventory:()=>ledger.state(),price,now:()=>at,...(executionRealism?{executionRealism:true as const}:{}),recorder:{record(kind,data){records.push({kind,data:structuredClone(data)});recordHook?.(kind);}},...(cooperative?{beforeEntryPreparationRead:async(input:{method:string;signal:AbortSignal})=>{await preparationHook?.(input);}}:{}),gas:{baseFeeLamports:'5000',priorityFeeLamports:'2000',evidence:'DISPOSABLE7k simulated network/priority cost'},timeoutMs});
   for(const c of captures)market.registerPool({mint:c.proof.quote.mint,migrationVerified:true,migrationSlot:c.proof.origin.slot,evidence:'retained actual migration; synthetic current timing'});
   const coordinator=new PaperExecutionCoordinator({ledger,now:()=>at,timeoutMs:1000,context:s=>market.context(ledger.state().positions,s),quote:market.executionQuote});
   coordinator.recover();ledger.reconcile('initial-reconcile',at,price(),{});ledger.resume('fixture-ready',at,price(),{},{version:'isolated-pilot-market-fixture',evidence:'synthetic readiness for market/ledger mechanics only',marketAt:at,recoveryComplete:true,candidateWindowsReady:true,budgetAvailable:true});
@@ -290,4 +290,57 @@ test('an unrelated candidate bank cannot raise a holding slot floor; the holding
   assert.equal(f.market.usage().held.highestVerifiedSlot,heldSlot);
   f.market.minimumSlot(mint,heldSlot+1);assert.deepEqual((await f.market.context(inventory,block)).marks,{});
   assert.equal(f.market.usage().holdingDiagnostics.lastContext!.reasonCode,'HELD_PRICING_SLOT_UNAVAILABLE');
+});
+
+for(const realism of [false,true])test(`smaller actual entry reuses one fresh SDK batch and original proof times without provider reads (${realism?'unsigned construction':'quote'})`,async t=>{
+ const f=fixture(t,1000,false,false,realism),mint=f.captures[1]!.proof.quote.mint;
+ const deposit=await f.market.prepareEntryCosts(mint,signal()),baseline=await f.market.quote({mint,side:'buy',inputUnits:'10000000',requiredDepositLamports:deposit.depositLamports},signal());assert.ok(baseline);
+ const before=f.ledger.state(),calls=f.calls.length,sourceAt=baseline.at;
+ f.advance(200);
+ // PaperTrader deliberately returns a cleaned quote without the request's slot
+ // floor; the actual public proof fields must still match the owned baseline.
+ const {minSlot:ignored,...original}=baseline;
+ const smaller=await f.market.repriceEntryQuote({mint,side:'buy',inputUnits:'5000000',requiredDepositLamports:deposit.depositLamports,minSlot:baseline.slot},original,signal());
+ assert.ok(smaller,JSON.stringify(f.market.usage().entryQuoteFailures));assert.equal(f.calls.length,calls,'same-state sizing adds no rent, reserve or RPC reads');
+ assert.equal(smaller.at,sourceAt);assert.equal(smaller.slot,baseline.slot);assert.notEqual(smaller.evidence,baseline.evidence);assert.equal(smaller.inputUnits,'5000000');assert.ok(BigInt(smaller.outputUnits)<BigInt(baseline.outputUnits));
+ assert.equal(smaller.liquidityResilience?.buyInputLamports,smaller.inputUnits);assert.equal(smaller.liquidityResilience?.expectedBaseUnits,smaller.outputUnits);assert.equal(smaller.liquidityResilience?.at,sourceAt);assert.equal(smaller.requiredDepositLamports,deposit.depositLamports);
+ const fact=f.records.find(r=>r.kind==='pilot-entry-local-reprice')!.data;assert.equal(fact.providerRequests,0);assert.equal(fact.parentQuoteEvidence,baseline.evidence);assert.equal(Date.parse(fact.source.receivedAt),sourceAt);assert.equal(fact.sourceTimestampUnchanged,true);
+ if(realism){const built=f.records.filter(r=>r.kind==='paper-unsigned-pumpswap').at(-1)!.data;assert.equal(built.quoteEvidence,smaller.evidence);assert.equal(built.construction.inputUnits,smaller.inputUnits);assert.equal(built.construction.expectedOutputUnits,smaller.outputUnits);assert.equal(built.construction.receivedAt,fact.source.receivedAt);assert.equal(built.construction.networkRequests,0);}
+ assert.deepEqual(f.ledger.state(),before);
+ // An independent fresh call over the unchanged retained pool verifies that
+ // the selected SDK result is exact, rather than proportional output scaling.
+ const fresh=await f.market.quote({mint,side:'buy',inputUnits:'5000000',requiredDepositLamports:deposit.depositLamports},signal());assert.ok(fresh);assert.equal(smaller.outputUnits,fresh.outputUnits);assert.equal(smaller.liquidityResilience?.buyCurveInputLamports,fresh.liquidityResilience?.buyCurveInputLamports);
+});
+
+test('tiny executable local sizing has no arbitrary input floor and retains full SDK construction checks',async t=>{
+ const f=fixture(t,1000,false,false,true),mint=f.captures[1]!.proof.quote.mint,deposit=await f.market.prepareEntryCosts(mint,signal()),q=await f.market.quote({mint,side:'buy',inputUnits:'10000000',requiredDepositLamports:deposit.depositLamports},signal());assert.ok(q);
+ const before=f.ledger.state(),calls=f.calls.length,tiny=await f.market.repriceEntryQuote({mint,side:'buy',inputUnits:'10',requiredDepositLamports:deposit.depositLamports},q,signal());
+ assert.ok(tiny,JSON.stringify(f.market.usage().entryQuoteFailures));assert.equal(tiny.inputUnits,'10');assert.ok(BigInt(tiny.outputUnits)>0n);assert.equal(f.calls.length,calls);assert.equal(tiny.at,q.at);assert.equal(tiny.slot,q.slot);assert.deepEqual(f.ledger.state(),before);
+ const constructed=f.records.filter(r=>r.kind==='paper-unsigned-pumpswap').at(-1)!.data.construction;assert.equal(constructed.inputUnits,'10');assert.equal(constructed.expectedOutputUnits,tiny.outputUnits);assert.equal(constructed.networkRequests,0);
+ assert.equal(await f.market.repriceEntryQuote({mint,side:'buy',inputUnits:'0',requiredDepositLamports:deposit.depositLamports},tiny,signal()),null);assert.equal(f.calls.length,calls);assert.deepEqual(f.ledger.state(),before);
+});
+
+for(const fault of ['stale','raised-floor','aborted','plan-changed','cross-mint','tampered-output','oversize','invalidated']as const)test(`local entry reprice refuses ${fault} without new provider work or financial changes`,async t=>{
+ const f=fixture(t),mint=f.captures[1]!.proof.quote.mint,deposit=await f.market.prepareEntryCosts(mint,signal()),q=await f.market.quote({mint,side:'buy',inputUnits:'10000000',requiredDepositLamports:deposit.depositLamports},signal());assert.ok(q);
+ let request={mint,side:'buy' as const,inputUnits:'5000000',requiredDepositLamports:deposit.depositLamports},original={...q};const controller=new AbortController();
+ if(fault==='stale')f.advance(2001);
+ if(fault==='raised-floor')f.market.minimumSlot(mint,q.slot!+1);
+ if(fault==='aborted')controller.abort();
+ if(fault==='plan-changed'){f.rentChanged();await f.market.prepareEntryCosts(mint,signal());}
+ if(fault==='cross-mint')request={...request,mint:f.captures[0]!.proof.quote.mint};
+ if(fault==='tampered-output')original={...original,outputUnits:(BigInt(q.outputUnits)+1n).toString()};
+ if(fault==='oversize')request={...request,inputUnits:'10000001'};
+ if(fault==='invalidated')f.market.invalidate('OFFLINE local state replacement');
+ const before=f.ledger.state(),calls=f.calls.length;
+ assert.equal(await f.market.repriceEntryQuote(request,original,controller.signal),null);assert.equal(f.calls.length,calls);assert.deepEqual(f.ledger.state(),before);assert.equal(f.market.retirementReady(),true);
+ assert.equal(f.market.usage().entryQuoteFailures.last?.phase,'local-reprice');
+});
+
+for(const fault of ['raised-floor','aborted','stale']as const)test(`local entry reprice rechecks ${fault} after unsigned construction callbacks`,async t=>{
+ const f=fixture(t,1000,false,false,true),mint=f.captures[1]!.proof.quote.mint,deposit=await f.market.prepareEntryCosts(mint,signal()),q=await f.market.quote({mint,side:'buy',inputUnits:'10000000',requiredDepositLamports:deposit.depositLamports},signal());assert.ok(q);
+ const before=f.ledger.state(),calls=f.calls.length,controller=new AbortController();
+ f.onRecord(kind=>{if(kind!=='paper-unsigned-pumpswap')return;if(fault==='raised-floor')f.market.minimumSlot(mint,q.slot!+1);else if(fault==='aborted')controller.abort();else f.advance(2001);});
+ assert.equal(await f.market.repriceEntryQuote({mint,side:'buy',inputUnits:'5000000',requiredDepositLamports:deposit.depositLamports},q,controller.signal),null);
+ assert.equal(f.calls.length,calls);assert.deepEqual(f.ledger.state(),before);assert.equal(f.market.usage().entryQuoteFailures.last?.phase,'local-reprice');
+ assert.equal(f.market.usage().entryQuoteFailures.last?.reasonCode,fault==='aborted'?'ENTRY_QUOTE_CALLER_ABORTED':'PILOT_MARKET_PREPARATION_CHANGED_OR_STALE');
 });

@@ -12,7 +12,7 @@ import {SelectionRejections} from './selection-rejections.js';
 import {readResearchBaseline,RESEARCH_MAXIMUM_PATHS} from './research-baseline.js';
 import {PilotRpc} from './pilot-rpc.js';
 import {PilotFeeds,PILOT_FEED_MAXIMUM_RECORDED_BYTES} from './pilot-feeds.js';
-import {PILOT_CONTRACT,PILOT_CONTRACT_SHA256,PILOT_VERSION,CONCURRENT_PILOTS,ADAPTIVE_PILOT_CONTRACT_SHA256,LIQUIDITY_RESILIENT_PILOT_CONTRACT_SHA256,resolvePilotBinding,type PilotBinding} from './pilot-contract.js';
+import {PILOT_CONTRACT,PILOT_CONTRACT_SHA256,PILOT_VERSION,CONCURRENT_PILOTS,ADAPTIVE_PILOT_CONTRACT_SHA256,LIQUIDITY_RESILIENT_PILOT_CONTRACT_SHA256,LIQUIDITY_RESILIENT_V3_1_PILOT_CONTRACT_SHA256,resolvePilotBinding,type PilotBinding} from './pilot-contract.js';
 import {chooseProtectedResearchWork,type ResearchJob} from './research-dispatch.js';
 import {fetchPublicUsdPrice} from './valuation.js';
 import {FinancialBackupStore} from './backup.js';
@@ -112,7 +112,8 @@ export function resolvePilotStage(value:unknown,candidateLimit?:number,deepSlots
 export function recordPilotStageTransition<T extends {contractSha256:string;stageHistory?:Array<{runId:string;at:number;stage:PilotStage;contractSha256:string;previousContractSha256:string}>}>(manifest:T,stage:PilotStage,runId:string,at:number,bindingOverride?:PilotBinding){
   const base=resolvePilotStage(stage),resolved=bindingOverride===undefined?null:resolvePilotBinding(bindingOverride);
   const adaptive=resolved?.version==='adaptive-momentum-v2-paper-v1'&&resolved.maxPositions===2;
-  const resilient=resolved?.version==='liquidity-resilient-momentum-v3'&&resolved.maxPositions===null;
+  const v31=resolved?.version==='liquidity-resilient-momentum-v3.1'&&resolved.maxPositions===null;
+  const resilient=(resolved?.version==='liquidity-resilient-momentum-v3'||v31)&&resolved?.maxPositions===null;
   need(bindingOverride===undefined||stage==='two'&&(adaptive||resilient),'PILOT_EXPLICIT_ADAPTIVE_BINDING_REQUIRED');
   const configuration=resolved?{...base,contract:resolved.contract,contractSha256:resolved.contractSha256,binding:bindingOverride!}:base,known=[PILOT_CONTRACT_SHA256,...Object.values(CONCURRENT_PILOTS).map(s=>s.contractSha256),ADAPTIVE_PILOT_CONTRACT_SHA256] as string[];
   // Source69's retained adaptive contract predates the 5%/10% risk policy.
@@ -123,7 +124,7 @@ export function recordPilotStageTransition<T extends {contractSha256:string;stag
   // V3 is an explicit successor to the installed adaptive policy. Its own
   // immutable hash is also valid on ordinary process restart; no financial
   // epoch or risk state is created or changed by this operating-manifest row.
-  const predecessorAllowed=resilient?[ADAPTIVE_PILOT_CONTRACT_SHA256,LIQUIDITY_RESILIENT_PILOT_CONTRACT_SHA256].includes(manifest.contractSha256):known.includes(manifest.contractSha256)||priorAdaptive;
+  const predecessorAllowed=v31?[LIQUIDITY_RESILIENT_PILOT_CONTRACT_SHA256,LIQUIDITY_RESILIENT_V3_1_PILOT_CONTRACT_SHA256].includes(manifest.contractSha256):resilient?[ADAPTIVE_PILOT_CONTRACT_SHA256,LIQUIDITY_RESILIENT_PILOT_CONTRACT_SHA256].includes(manifest.contractSha256):known.includes(manifest.contractSha256)||priorAdaptive;
   need(predecessorAllowed&&/^[a-z0-9-]{1,60}$/.test(runId)&&Number.isSafeInteger(at)&&at>=0,'PILOT_STAGE_TRANSITION_BINDING');
   const previous=manifest.stageHistory??[];need(previous.length<64&&(!previous.length||at>=previous.at(-1)!.at),'PILOT_STAGE_HISTORY_BOUND');
   manifest.stageHistory=[...previous,{runId,at,stage,contractSha256:configuration.contractSha256,previousContractSha256:manifest.contractSha256}];manifest.contractSha256=configuration.contractSha256;return configuration;

@@ -32,3 +32,11 @@ test('historical peak requires a verified holding lifetime rather than any past 
  const unknown={...source(),positions:{FirstMint:{strategy:{version:'adaptive-momentum-v2-paper-v1',highWaterNetLamports:'250000000',highWaterAt:at}}}};
  assert.ok(projectOperatingIntelligence(unknown).quality.limitations.some(x=>x.includes('peak unavailable')));
 });
+
+
+test('V3.1 reports preserved V3-family held floors and current strategy identity',()=>{
+ const raw={...source(),strategyVersion:'liquidity-resilient-momentum-v3.1',positions:{OldV3:{enteredAt:at-10000,strategy:{version:'liquidity-resilient-momentum-v3',profitProtectionFloorLamports:'123'}}}};
+ const result=projectOperatingIntelligence(raw);validateOperatingIntelligence(result,new Date(at).toISOString());
+ assert.equal(result.run.strategyVersion,'liquidity-resilient-momentum-v3.1');
+ assert.ok(result.quality.limitations.some(s=>s.includes('1 retain')&&s.includes('1 have persisted executable-profit floors')));
+});
