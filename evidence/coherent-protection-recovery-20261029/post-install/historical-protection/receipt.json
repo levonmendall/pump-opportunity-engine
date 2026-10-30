@@ -1,0 +1,30 @@
+{
+  "kind": "HISTORICAL_PROTECTION_FOLLOWUP_FILE_HASHES",
+  "createdAt": "2026-10-30T00:01:52.252791+00:00",
+  "files": {
+    "reproduction-receipt.json": {
+      "sha256": "a987bf32be738a630afeeafb529bf5c4e8838683a202d730fee84d8bed27b392",
+      "bytes": 1184
+    },
+    "historical-protection-followup.json": {
+      "sha256": "3bb5a6460e11d76b10825c388f52461c66f67f1f6dc7e8d92cbf9d441b6a371e",
+      "bytes": 11476
+    },
+    "reproduced-scorecard.json": {
+      "sha256": "2ee7988ee1654bbf5d951a6008464956d15179f567f5e525bff335a056a9a7a2",
+      "bytes": 55756
+    },
+    "existing-audit-tests.raw.txt": {
+      "sha256": "cec9140f7ed6a6426c44d9e94681de944c466f03bcbb4e06a5defd5028190936",
+      "bytes": 1372
+    },
+    "README.md": {
+      "sha256": "5461b62100b64abc3cafc9b649b9ed2af454ae0d1c574d5177ae3e273b2fb07d",
+      "bytes": 7824
+    },
+    "existing-audit-reproduction.raw.txt": {
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    }
+  }
+}

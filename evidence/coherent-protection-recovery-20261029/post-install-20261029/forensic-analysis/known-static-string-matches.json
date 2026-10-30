@@ -1,0 +1,100 @@
+{
+  "7c9539f1f348f2f3789ac06ce91be91c89e0e536dcd40253edf4d87733a2775a": [
+    {
+      "value": "committed-candidate-deadline-reserved",
+      "source": "src/run-native-paper.ts",
+      "line": 145
+    }
+  ],
+  "3ce9504dcc7f388d6715ed51d5cf00af968cc04825ed537a390e39a545c98218": [
+    {
+      "value": "PAPER protection currently overdue; candidate admissions closed",
+      "source": "src/ledger.ts",
+      "line": 46
+    },
+    {
+      "value": "PAPER protection currently overdue; candidate admissions closed",
+      "source": "src/run-native-paper.ts",
+      "line": 328
+    }
+  ],
+  "3d6598319a9851a5edb3e1898e1c8b4a626b31f8fdfbd5c09f9274be8c8de415": [
+    {
+      "value": "native-paper-general-arming-internal-checkpoint-v2",
+      "source": "src/native-paper.ts",
+      "line": 24
+    }
+  ],
+  "bc94bf4a701caec3b9d77f9826883d74a97b6871a4c29a48539edbb3b090a46e": [
+    {
+      "value": "INTERNAL_SHUTDOWN_NOT_EVALUATED",
+      "source": "src/native-paper.ts",
+      "line": 27
+    },
+    {
+      "value": "INTERNAL_SHUTDOWN_NOT_EVALUATED",
+      "source": "src/native-paper.ts",
+      "line": 42
+    },
+    {
+      "value": "INTERNAL_SHUTDOWN_NOT_EVALUATED",
+      "source": "src/native-paper.ts",
+      "line": 223
+    }
+  ],
+  "7e7edc2c6615ce8d92625e0e457d3097a9eda6ffb3f88013f289e3462d13c41d": [
+    {
+      "value": "poe-owned-rotating-evidence-v1",
+      "source": "src/retained-recorder.ts",
+      "line": 9
+    }
+  ],
+  "489fc0e82500d0f7ea085681a582f3d97c3e2dba0b1c2d00017ff76c6fc136ed": [
+    {
+      "value": "native-paper-persistent-service-resource-v2",
+      "source": "src/paper-service-policy.ts",
+      "line": 6
+    }
+  ],
+  "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c": [
+    {
+      "value": "adaptive-thesis-not-disproved; volatility-unknown-protective-trailing-fallback",
+      "source": "src/adaptive-momentum-v2.ts",
+      "line": 102
+    }
+  ],
+  "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c": [
+    {
+      "value": "quote-required",
+      "source": "src/strategy.ts",
+      "line": 223
+    },
+    {
+      "value": "quote-required",
+      "source": "src/strategy.ts",
+      "line": 228
+    },
+    {
+      "value": "quote-required",
+      "source": "src/adaptive-momentum-v2.ts",
+      "line": 88
+    },
+    {
+      "value": "quote-required",
+      "source": "src/adaptive-momentum-v2.ts",
+      "line": 95
+    },
+    {
+      "value": "quote-required",
+      "source": "src/active-pipeline.ts",
+      "line": 213
+    }
+  ],
+  "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a": [
+    {
+      "value": "fresh-actual-size-net-liquidation-required",
+      "source": "src/adaptive-momentum-v2.ts",
+      "line": 95
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "frozenAt": "2026-10-30T00:01:03.785679+00:00",
+  "files": {
+    "analysis.json": {
+      "bytes": 25011,
+      "sha256": "a88f75deed956dd9d8347ee916414343e9e303471d68778d870c6b67f9dbcb82"
+    },
+    "source-observations.ndjson": {
+      "bytes": 179667,
+      "sha256": "9a92f2b7c4dc9338019f959941403368de51cd0268395440cad1ef8e0578d7ac"
+    }
+  }
+}

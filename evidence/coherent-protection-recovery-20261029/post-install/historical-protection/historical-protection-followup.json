@@ -1,0 +1,276 @@
+{
+  "kind": "RETAINED_HISTORICAL_PROTECTION_FOLLOWUP",
+  "createdAt": "2026-10-30T00:00:53.861506+00:00",
+  "originalAudit": "evidence/trade-quality-20261029",
+  "originalScorecardSha256": "2ee7988ee1654bbf5d951a6008464956d15179f567f5e525bff335a056a9a7a2",
+  "classification": "KNOWN PROTECTION FAILURES; HISTORICAL CAUSAL ATTRIBUTION STILL UNVERIFIED",
+  "trades": [
+    {
+      "name": "AcBX",
+      "mint": "AcBX8a8eHbzQghgqMfqXeAz4kQSRbtHWKUSGXvwMpump",
+      "entryAt": "2026-10-29T15:01:47.821Z",
+      "exitAt": "2026-10-29T15:16:50.857Z",
+      "holdingMs": 903036,
+      "classification": "INADEQUATELY_PROTECTED_POSITION",
+      "observedBreachesLowerBound": 4,
+      "observedUnavailableChecksLowerBound": 14,
+      "segments": [
+        {
+          "runId": "native-paper-20261029145012717",
+          "sourceRelease": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+          "configurationSha256": "5e99ebe042521b3917a11b86ef4b46264205b11d38c407cba264a01046a79344",
+          "heldSnapshotCount": 41,
+          "baselineCounters": {
+            "breaches": 0,
+            "unavailableChecks": 0
+          },
+          "endpointCounters": {
+            "breaches": 4,
+            "unavailableChecks": 14
+          },
+          "observedCounterDelta": {
+            "breaches": 4,
+            "unavailableChecks": 14
+          },
+          "reportedRunMaximumCompletedGapMs": 13745,
+          "maximumAttributableToThisHolding": true,
+          "maximumQuoteAgeAtUseMs": 164,
+          "brackets": [
+            {
+              "fromAt": "2026-10-29T15:02:19.262Z",
+              "throughAt": "2026-10-29T15:02:48.330Z",
+              "increase": {
+                "breaches": 1,
+                "unavailableChecks": 3
+              },
+              "providerCounterDelta": {
+                "httpTimeouts": 0,
+                "httpErrors": 0,
+                "throttles": 0,
+                "rpcRequests": 17
+              },
+              "rollingStartsPerMinuteAtEndpoint": 54,
+              "configuredStartsPerMinuteAtEndpoint": 60,
+              "cpuOneCoreFractionAtEndpoint": 0.0829854555203673,
+              "eventLoopLagMsAtEndpoint": 25.853951,
+              "captureConnectedAtEndpoint": true,
+              "causation": "UNKNOWN: endpoint correlation does not establish dispatch/response, queue or local-phase cause"
+            },
+            {
+              "fromAt": "2026-10-29T15:03:03.368Z",
+              "throughAt": "2026-10-29T15:03:26.482Z",
+              "increase": {
+                "breaches": 1,
+                "unavailableChecks": 3
+              },
+              "providerCounterDelta": {
+                "httpTimeouts": 0,
+                "httpErrors": 0,
+                "throttles": 0,
+                "rpcRequests": 17
+              },
+              "rollingStartsPerMinuteAtEndpoint": 55,
+              "configuredStartsPerMinuteAtEndpoint": 60,
+              "cpuOneCoreFractionAtEndpoint": 0.061760818000067774,
+              "eventLoopLagMsAtEndpoint": 25.739263,
+              "captureConnectedAtEndpoint": true,
+              "causation": "UNKNOWN: endpoint correlation does not establish dispatch/response, queue or local-phase cause"
+            },
+            {
+              "fromAt": "2026-10-29T15:08:22.774Z",
+              "throughAt": "2026-10-29T15:08:46.047Z",
+              "increase": {
+                "breaches": 1,
+                "unavailableChecks": 3
+              },
+              "providerCounterDelta": {
+                "httpTimeouts": 0,
+                "httpErrors": 0,
+                "throttles": 0,
+                "rpcRequests": 19
+              },
+              "rollingStartsPerMinuteAtEndpoint": 60,
+              "configuredStartsPerMinuteAtEndpoint": 60,
+              "cpuOneCoreFractionAtEndpoint": 0.061053130481716365,
+              "eventLoopLagMsAtEndpoint": 25.001983,
+              "captureConnectedAtEndpoint": true,
+              "causation": "UNKNOWN: endpoint correlation does not establish dispatch/response, queue or local-phase cause"
+            },
+            {
+              "fromAt": "2026-10-29T15:13:11.551Z",
+              "throughAt": "2026-10-29T15:37:32.064Z",
+              "increase": {
+                "breaches": 1,
+                "unavailableChecks": 5
+              },
+              "providerCounterDelta": {
+                "httpTimeouts": 31,
+                "httpErrors": 0,
+                "throttles": 0,
+                "rpcRequests": 597
+              },
+              "rollingStartsPerMinuteAtEndpoint": 38,
+              "configuredStartsPerMinuteAtEndpoint": 60,
+              "cpuOneCoreFractionAtEndpoint": 0.11048655931976432,
+              "eventLoopLagMsAtEndpoint": 24.231935,
+              "captureConnectedAtEndpoint": true,
+              "causation": "UNKNOWN: endpoint correlation does not establish dispatch/response, queue or local-phase cause"
+            }
+          ]
+        }
+      ],
+      "verifiedTradeNetSol": null,
+      "completeDecisionTimeEntryEvidence": "NOT VERIFIED"
+    },
+    {
+      "name": "8TJ1",
+      "mint": "8TJ1uhidGn7PmzEtmftDUJkAxEcLpPNWqdvh42SZpump",
+      "entryAt": "2026-10-29T16:08:35.958Z",
+      "exitAt": "2026-10-29T16:23:37.938Z",
+      "holdingMs": 901980,
+      "classification": "INADEQUATELY_PROTECTED_POSITION",
+      "observedBreachesLowerBound": 3,
+      "observedUnavailableChecksLowerBound": 8,
+      "segments": [
+        {
+          "runId": "native-paper-20261029145012717",
+          "sourceRelease": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+          "configurationSha256": "5e99ebe042521b3917a11b86ef4b46264205b11d38c407cba264a01046a79344",
+          "heldSnapshotCount": 25,
+          "baselineCounters": {
+            "breaches": 4,
+            "unavailableChecks": 14
+          },
+          "endpointCounters": {
+            "breaches": 5,
+            "unavailableChecks": 17
+          },
+          "observedCounterDelta": {
+            "breaches": 1,
+            "unavailableChecks": 3
+          },
+          "reportedRunMaximumCompletedGapMs": 19446,
+          "maximumAttributableToThisHolding": false,
+          "maximumQuoteAgeAtUseMs": 176,
+          "brackets": [
+            {
+              "fromAt": "2026-10-29T16:14:08.029Z",
+              "throughAt": "2026-10-29T16:14:32.530Z",
+              "increase": {
+                "breaches": 1,
+                "unavailableChecks": 3
+              },
+              "providerCounterDelta": {
+                "httpTimeouts": 0,
+                "httpErrors": 0,
+                "throttles": 0,
+                "rpcRequests": 12
+              },
+              "rollingStartsPerMinuteAtEndpoint": 52,
+              "configuredStartsPerMinuteAtEndpoint": 60,
+              "cpuOneCoreFractionAtEndpoint": 0.06302589391628538,
+              "eventLoopLagMsAtEndpoint": 23.822335,
+              "captureConnectedAtEndpoint": true,
+              "causation": "UNKNOWN: endpoint correlation does not establish dispatch/response, queue or local-phase cause"
+            }
+          ]
+        },
+        {
+          "runId": "native-paper-20261029161536720",
+          "sourceRelease": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+          "configurationSha256": "f6ce54d7594e14d87955f211cca21f594b3d3eb52e20a75fa2245290f22a4857",
+          "heldSnapshotCount": 29,
+          "baselineCounters": {
+            "breaches": 0,
+            "unavailableChecks": 0
+          },
+          "endpointCounters": {
+            "breaches": 2,
+            "unavailableChecks": 5
+          },
+          "observedCounterDelta": {
+            "breaches": 2,
+            "unavailableChecks": 5
+          },
+          "reportedRunMaximumCompletedGapMs": 13500,
+          "maximumAttributableToThisHolding": true,
+          "maximumQuoteAgeAtUseMs": 172,
+          "brackets": [
+            {
+              "fromAt": "2026-10-29T16:15:38.342Z",
+              "throughAt": "2026-10-29T16:15:53.353Z",
+              "increase": {
+                "breaches": 1,
+                "unavailableChecks": 2
+              },
+              "providerCounterDelta": {
+                "httpTimeouts": 1,
+                "httpErrors": 0,
+                "throttles": 0,
+                "rpcRequests": 20
+              },
+              "rollingStartsPerMinuteAtEndpoint": 53,
+              "configuredStartsPerMinuteAtEndpoint": 60,
+              "cpuOneCoreFractionAtEndpoint": 0.17928885390809468,
+              "eventLoopLagMsAtEndpoint": 38.764543,
+              "captureConnectedAtEndpoint": true,
+              "causation": "UNKNOWN: endpoint correlation does not establish dispatch/response, queue or local-phase cause"
+            },
+            {
+              "fromAt": "2026-10-29T16:21:57.013Z",
+              "throughAt": "2026-10-29T16:22:41.402Z",
+              "increase": {
+                "breaches": 1,
+                "unavailableChecks": 3
+              },
+              "providerCounterDelta": {
+                "httpTimeouts": 0,
+                "httpErrors": 0,
+                "throttles": 0,
+                "rpcRequests": 26
+              },
+              "rollingStartsPerMinuteAtEndpoint": 60,
+              "configuredStartsPerMinuteAtEndpoint": 60,
+              "cpuOneCoreFractionAtEndpoint": 0.056233169047140076,
+              "eventLoopLagMsAtEndpoint": 23.543807,
+              "captureConnectedAtEndpoint": false,
+              "causation": "UNKNOWN: endpoint correlation does not establish dispatch/response, queue or local-phase cause"
+            }
+          ]
+        }
+      ],
+      "verifiedTradeNetSol": null,
+      "completeDecisionTimeEntryEvidence": "NOT VERIFIED"
+    }
+  ],
+  "repairSource": {
+    "commit": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
+    "fileSha256": {
+      "src/component-budget.ts": "1ffe9627926bfc286f6a6040f58d5117dd37618077e3cd54c5be3c6007d65d67",
+      "src/pilot-market.ts": "f578b2821f0823bddc3d68a778fd21d7d36bad128dfcdeb44953080d48ab8984",
+      "src/research-held-market.ts": "72710b1cf1a991ac7ec5f32115761c6b99cbd4e67689a7290770ba744cb39889",
+      "src/run-native-paper.ts": "d72d67fdc80907f105f20aaf0de18f35417342a2204c22be8a8cda8f13f021b1",
+      "src/native-paper.ts": "b256fbeb93952286bab1ad3ebca03de1b4bd8dff44282c8af75ed435dc3e91ce",
+      "src/ledger.ts": "c251d5a68a57e19c0bad3ee9a0bc137f78646bcb74645d70d3ac61e829344aa4",
+      "src/trader.ts": "c93fd6fc2f84d0ad91a52a692df9413e30f68acc667d80e7cdd1ac971d3b802c",
+      "src/technical-protection-recovery.ts": "8df8b3a412a43e8442899b4518448c045b62df6071a9098219dbb757dedfa917",
+      "src/native-held-audit-scheduling.ts": "95c4816261a0606f5834bc1ffddb17c300b2c2422df750de768240ae167c50b8",
+      "src/native-paper-work.ts": "19f11d5e19fee40296fe71ed153110822a9822713426ead632068fa504cfa5fb",
+      "src/native-protection-history.ts": "1a9b9f72619634dd99240459ee2405ce8044e48f1b1a13266fae6649a28685db"
+    },
+    "status": "Source mechanisms reviewed; forward readiness belongs to separate parent verification"
+  },
+  "missingProtectedProofRequest": "evidence/trade-quality-20261029/protected-evidence-request.json",
+  "currentRunExportCoverage": {
+    "source": "ba33ee535ad1703da36905a5e2f44088ae19a43d",
+    "fromAt": "2026-10-29T22:29:45.000Z",
+    "untilAtExclusive": "2026-10-29T22:33:30.000Z",
+    "coversAcBXOr8TJ1": false
+  },
+  "providerRequests": 0,
+  "financialDatabaseOpened": false,
+  "financialWrites": 0,
+  "serviceControlOperations": 0,
+  "applicationSourceChanged": false,
+  "operationalAcceptance": false
+}

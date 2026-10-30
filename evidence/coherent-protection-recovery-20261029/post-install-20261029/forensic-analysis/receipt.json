@@ -1,0 +1,38 @@
+{
+  "kind": "POE_FORENSIC_ANALYSIS_EVIDENCE_HASHES",
+  "createdAt": "2026-10-29T23:58:34.688194+00:00",
+  "files": {
+    "analysis.json": {
+      "bytes": 9503,
+      "sha256": "581fcb749836ff1ebaf035e6ba3219ea1afea7fd0931c869bbb797c773535e9b"
+    },
+    "historical-protection-gap-reconstruction.json": {
+      "bytes": 647,
+      "sha256": "eb49b263f21cfaab8648167021b023d6a724e05a74e316f4ffabb35a9f847f85"
+    },
+    "known-static-string-matches.json": {
+      "bytes": 2711,
+      "sha256": "21f2357b92a6de3bfa25f9ec4bf6661853daf8e55201a2635783c57a10a3ceae"
+    },
+    "current-run-forensics-projection.json": {
+      "bytes": 154655,
+      "sha256": "103b14d19ccb1e270195dc87fa19ad5bdd2ac2a3b37511ba2cb06ddf3d697c95"
+    },
+    "job-123803302862.raw.txt": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "host-40975768876.raw.txt": {
+      "bytes": 23808,
+      "sha256": "3ccb9a696a4d18069b3e948d06091bb2de7a0ff5b5feb3dcd19de2c40249651a"
+    },
+    "host.json": {
+      "bytes": 189389,
+      "sha256": "722845a9fe78a5427dd3a5bd2b91401a30b2ff2ced800274ebd6c1f071f0de7d"
+    },
+    "host-40976447236.raw.txt": {
+      "bytes": 753943,
+      "sha256": "9aec39d8a40de2dbcfaa99e84123ef4242956148363f6316475ea9ef6dda8f20"
+    }
+  }
+}

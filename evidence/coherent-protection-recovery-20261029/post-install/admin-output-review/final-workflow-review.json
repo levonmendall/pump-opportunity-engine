@@ -1,0 +1,21 @@
+{
+  "reviewer": "admin_output_review",
+  "verifiedAt": "2026-10-29T23:56:26.843191+00:00",
+  "status": "PASS",
+  "sourceHashes": {
+    "operator/native-paper-ec2/inspect-original-cutover-refusal.py": "c8cdb79a5906ed41901e28cab82fd450eb26a11c5f828630c36dd40eb55d9957",
+    "operator/native-paper-ec2/test-inspect-original-entrypoint.py": "89f573485d5035bbc94795db30fa8595be63d653a328e2ed41a7032836e17d0a",
+    ".github/workflows/poe-original-cutover-refusal.yml": "3131399a4b2003e9cb77baa38b9e194ab1391a563af9538a78faacceb9de67d5"
+  },
+  "sourceUnchanged": true,
+  "finalEntryPointAndWorkflowTests": 7,
+  "existingCurrentHistoricalIOTests": 28,
+  "workflowChanges": "capture exact bounded read-only inspector stdout in mktemp0600; validate nonempty single JSON kind/zeroactions/size/line bounds under NOFOLLOW/stable metadata and UID994 before exact copy",
+  "factsDiscarded": false,
+  "actorAcquisitionFinancialProviderCredentialGuardsChanged": false,
+  "financialDatabaseOpened": false,
+  "providerRequests": 0,
+  "serviceControlOperations": 0,
+  "credentialReads": 0,
+  "actualHostInspectionNotYetClaimed": true
+}

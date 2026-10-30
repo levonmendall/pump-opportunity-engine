@@ -1,0 +1,61 @@
+{
+  "reviewer": "admin_output_review",
+  "verifiedAt": "2026-10-29T23:55:18.577257+00:00",
+  "sourceHashes": {
+    "operator/native-paper-ec2/inspect-original-cutover-refusal.py": "c8cdb79a5906ed41901e28cab82fd450eb26a11c5f828630c36dd40eb55d9957",
+    "operator/native-paper-ec2/test-inspect-original-entrypoint.py": "47d536bcd813d7fd4d82d56ff8fa80cbe14acdb0feaabcc25983e6160c232beb"
+  },
+  "sourceUnchanged": true,
+  "status": "PASS",
+  "results": [
+    {
+      "command": [
+        "python3",
+        "-B",
+        "operator/native-paper-ec2/test-inspect-original-entrypoint.py"
+      ],
+      "tests": 4,
+      "exitCode": 0,
+      "rawFile": "test-inspect-original-entrypoint.py.raw.txt"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "operator/native-paper-ec2/test-read-current-run-forensics.py"
+      ],
+      "tests": 11,
+      "exitCode": 0,
+      "rawFile": "test-read-current-run-forensics.py.raw.txt"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "operator/native-paper-ec2/test-inspect-original-source-forensics.py"
+      ],
+      "tests": 9,
+      "exitCode": 0,
+      "rawFile": "test-inspect-original-source-forensics.py.raw.txt"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "operator/native-paper-ec2/test-inspect-original-service-io.py"
+      ],
+      "tests": 8,
+      "exitCode": 0,
+      "rawFile": "test-inspect-original-service-io.py.raw.txt"
+    }
+  ],
+  "changes": "complete prettyJSON emission <=512KiB document and <=4KiB per line; fail explicitly before output on overflow",
+  "mainEntryPointActuallyInvoked": true,
+  "largeSyntheticPayloadPreserved": true,
+  "actorGuardPreserved": true,
+  "financialDatabaseOpened": false,
+  "providerRequests": 0,
+  "serviceControlOperations": 0,
+  "credentialReads": 0,
+  "workflowExplicitOutputValidation": "pending additional hunk review"
+}

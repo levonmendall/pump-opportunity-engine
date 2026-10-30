@@ -1,0 +1,42 @@
+{
+  "kind": "EXISTING_RETAINED_TRADE_AUDIT_REPRODUCTION",
+  "at": "2026-10-29T23:59:47.760564+00:00",
+  "originalSource": "evidence/trade-quality-20261029",
+  "commands": [
+    {
+      "command": [
+        "python3",
+        "-m",
+        "unittest",
+        "discover",
+        "-s",
+        "test",
+        "-p",
+        "test_retained_paper_trade_audit.py",
+        "-v"
+      ],
+      "exitCode": 0,
+      "raw": "existing-audit-tests.raw.txt"
+    },
+    {
+      "command": [
+        "python3",
+        "scripts/audit-retained-paper-trades.py",
+        "--manifest",
+        "evidence/trade-quality-20261029/input-manifest.json",
+        "--output",
+        "evidence/coherent-protection-recovery-20261029/post-install/historical-protection/reproduced-scorecard.json"
+      ],
+      "exitCode": 0,
+      "raw": "existing-audit-reproduction.raw.txt"
+    }
+  ],
+  "byteIdenticalScorecard": true,
+  "originalScorecardSha256": "2ee7988ee1654bbf5d951a6008464956d15179f567f5e525bff335a056a9a7a2",
+  "networkRequests": 0,
+  "financialDatabaseOpened": false,
+  "financialWrites": 0,
+  "serviceControlOperations": 0,
+  "applicationSourceChanged": false,
+  "operationalAcceptance": false
+}
