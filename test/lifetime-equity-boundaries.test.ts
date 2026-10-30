@@ -2,7 +2,7 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import Database from 'better-sqlite3';
 import {createHash} from 'node:crypto';
-import {mkdtempSync,rmSync,linkSync,readFileSync,chmodSync,readdirSync,symlinkSync} from 'node:fs';
+import {mkdtempSync,rmSync,linkSync,readFileSync,chmodSync,readdirSync,symlinkSync,writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {LifetimeEquityStore} from '../src/lifetime-equity-store.js';
@@ -33,4 +33,10 @@ test('systemd credential0440 exception is restricted to this exact companion cre
  assert.equal(equityCredentialOwnerModeAccepted(path,file,988,directory),true);
  for(const [p,d,f]of [[path,undefined,file],[path,directory,{...file,uid:988}],[path,directory,{...file,gid:982}],[path,directory,{...file,mode:0o100444}],['/tmp/poe-ingest-secret',directory,file],['/run/credentials/poe-runtime.service/poe-ingest-secret','/run/credentials/poe-runtime.service',file]]as const)assert.equal(equityCredentialOwnerModeAccepted(p,f,988,d),false);
  assert.equal(equityCredentialOwnerModeAccepted('/tmp/test-private',{uid:988,gid:982,mode:0o100600},988),true);
+});
+
+test('interrupted empty or marked atomic initialization recovers without accepting a foreign partial schema',t=>{
+ const dir=directory(t),file=join(dir,'equity.sqlite');writeFileSync(file,'',{mode:0o600});new LifetimeEquityStore(file).close();
+ const marked=join(dir,'marked.sqlite'),db=new Database(marked);db.pragma('application_id = '+0x504f4545);db.close();chmodSync(marked,0o600);new LifetimeEquityStore(marked).close();
+ const partial=join(dir,'partial.sqlite'),foreign=new Database(partial);foreign.pragma('application_id = '+0x504f4545);foreign.exec('CREATE TABLE arbitrary_data(value)');foreign.close();chmodSync(partial,0o600);const before=hash(partial);assert.throws(()=>new LifetimeEquityStore(partial),/FOREIGN_SCHEMA/);assert.equal(hash(partial),before);
 });
