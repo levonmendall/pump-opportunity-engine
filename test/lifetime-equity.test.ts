@@ -10,6 +10,7 @@ import { ORIGINAL_POE_ACCOUNT, ORIGINAL_POE_INCEPTION } from '../src/operating-i
 import { EQUITY_GAP_MS, LIFETIME_EQUITY_SOURCE, validateLifetimeEquityHistory,
   type LifetimeEquityHistory } from '../src/lifetime-equity-contract.js';
 import { LifetimeEquityStore, readPrivateOriginalSnapshot } from '../src/lifetime-equity-store.js';
+import { OriginalEquityCompanion } from '../src/lifetime-equity-publisher.js';
 import { SnapshotCache, type Snapshot } from '../src/reporting.js';
 
 const original = {accountId: ORIGINAL_POE_ACCOUNT, inceptionAt: ORIGINAL_POE_INCEPTION,
@@ -137,6 +138,35 @@ test('private source reader rejects altered permissions, wrong account and prove
   writeFileSync(path,JSON.stringify(source),{mode:0o600});
   assert.throws(()=>readPrivateOriginalSnapshot(path,now),/ORIGINAL_ACCOUNT_REQUIRED/);
 });
+test('nonfinancial companion replays preserved source history after its own restart without a live network',async t=>{
+  const {dir,path}=store(t),sourceFile=join(dir,'snapshot.json'),secretFile=join(dir,'credential');
+  const key='SourceOnlyTestCredential1234567890',now=Date.now()-1000;
+  writeFileSync(secretFile,key,{mode:0o600});
+  writeFileSync(sourceFile,JSON.stringify(sample('1',now,965.37)),{mode:0o600});
+  const receipts:any[]=[];
+  const fakeFetch=(async (_url:any,init:any)=>{
+    assert.equal(init.method,'POST');
+    assert.equal(init.headers.authorization,'Bearer '+key);
+    const parsed=JSON.parse(init.body);
+    receipts.push(parsed);
+    return new Response('',{status:200});
+  }) as typeof fetch;
+  const options={sourceFile,storeFile:path,credentialFile:secretFile,fetch:fakeFetch};
+  const first=new OriginalEquityCompanion(options);
+  const sent=await first.tick(now+1000);
+  assert.equal(sent.ingested,'accepted');
+  assert.equal(sent.delivered,true);
+  assert.equal(receipts[0].points.at(-1).equityUsd,965.37);
+  assert.equal((await first.tick(now+1500)).delivered,false,'upload is throttled despite one-second file polling');
+  first.close();
+  const second=new OriginalEquityCompanion(options);
+  const replay=await second.tick(now+1600);
+  assert.equal(replay.ingested,'duplicate');
+  assert.equal(replay.delivered,true,'full source-owned lifetime series is republished after process restart');
+  assert.deepEqual(receipts[1],receipts[0]);
+  second.close();
+});
+
 test('lifetime source contract rejects wrong account, fabricated negative values, chronology and source spoofing',()=>{
   const at=Date.now()-60_000,base=seededHistory(at);
   assert.deepEqual(validateLifetimeEquityHistory(base),base);
