@@ -33,7 +33,17 @@ export function validateFinancialRiskReporting(value:unknown,generated:number):F
  if(d.drawdownBps!==null)count(d.drawdownBps,10000);
  if(r.state==='ready')need(d.day===r.asOf.slice(0,10)&&e.targetConsumedCostMicroUsd!==null&&e.targetConsumedCostSol!==null&&e.cashLimitedConsumedCostSol!==null&&d.highWaterMicroUsd!==null&&d.currentEquityMicroUsd!==null&&d.drawdownMicroUsd!==null&&d.drawdownBps!==null&&d.remainingBeforePauseMicroUsd!==null&&d.historyCoverage!=='unavailable'&&(r.reasonCode===null||r.reasonCode==='EQUITY_RISK_DAILY_DRAWDOWN'));
  else need(r.reasonCode!==null);
- if(d.highWaterMicroUsd!==null&&d.drawdownMicroUsd!==null)need(BigInt(d.drawdownMicroUsd)<=BigInt(d.highWaterMicroUsd));
+ // Reporting verifies the producer's integer identities without granting risk.
+ // Positive-amount division truncates: floor(5% equity), floor(drawdown bps),
+ // and max(floor(10% HWM) - drawdown, 0). A prior latch may remain after rebound.
+ if(e.cashLimitedConsumedCostSol!==null&&e.targetConsumedCostSol!==null){const cash=BigInt(e.cashLimitedConsumedCostSol.replace('.',''));need(cash<=BigInt(e.targetConsumedCostSol.replace('.',''))&&cash<=BigInt(e.unreservedCashSol.replace('.','')));}
+ if(e.targetConsumedCostMicroUsd!==null&&d.currentEquityMicroUsd!==null)need(BigInt(e.targetConsumedCostMicroUsd)===BigInt(d.currentEquityMicroUsd)*500n/10000n);
+ if(d.highWaterMicroUsd!==null&&d.currentEquityMicroUsd!==null&&d.drawdownMicroUsd!==null&&d.drawdownBps!==null&&d.remainingBeforePauseMicroUsd!==null){
+  const h=BigInt(d.highWaterMicroUsd),c=BigInt(d.currentEquityMicroUsd),dd=h>c?h-c:0n,limit=h*1000n/10000n,remaining=limit>dd?limit-dd:0n;
+  need(BigInt(d.drawdownMicroUsd)===dd&&d.drawdownBps===(h===0n?0:Number(dd*10000n/h))&&BigInt(d.remainingBeforePauseMicroUsd)===remaining);
+  if(h>0n&&dd*10000n>=h*1000n)need(d.lossPaused===true);
+ }
+ if(r.state==='ready')need(d.lossPaused?r.reasonCode==='EQUITY_RISK_DAILY_DRAWDOWN':r.reasonCode===null);
  return r as FinancialRiskReporting;
 }
 function projectRisk(value:unknown,generated:number):FinancialRiskReporting|null {
@@ -56,15 +66,15 @@ export function validateFinancialPolicyReporting(value:unknown,generated:number)
  need(JSON.stringify(p).length<=8192);return p as FinancialPolicyReporting;
 }
 export const FINANCIAL_EXECUTION_REPORTING_VERSION='paper-chain-conditioned-v1' as const;
-export const FINANCIAL_EXECUTION_STAGES=['planned','landing-state-supported','preflight-unsubmitted'] as const;
-export const FINANCIAL_EXECUTION_REASONS=['PLAN_PREPARED','LANDING_STATE_SUPPORTED','LANDING_STATE_UNAVAILABLE'] as const;
-export type FinancialExecutionReporting={version:typeof FINANCIAL_EXECUTION_REPORTING_VERSION;state:'active'|'unavailable';scope:'current-market-instance';plans:number;supportedLandingStates:number;preflightUnsubmitted:number;unknownLanding:number;last:null|{at:string;stage:typeof FINANCIAL_EXECUTION_STAGES[number];reasonCode:typeof FINANCIAL_EXECUTION_REASONS[number];observedRpcMs:number|null;modeledDelayMs:number|null;feeSol:string|null;sourceSlot:number|null};meaning:'PAPER_PREPARATION_NOT_OBSERVED_CHAIN_OUTCOME'};
+export const FINANCIAL_EXECUTION_STAGES=['planned','landing-state-supported','preflight-unsubmitted','legacy-protection-fallback'] as const;
+export const FINANCIAL_EXECUTION_REASONS=['PLAN_PREPARED','LANDING_STATE_SUPPORTED','LANDING_STATE_UNAVAILABLE','UNSIGNED_CONSTRUCTION_UNAVAILABLE','SIMULATED_ACCOUNT_RENT_UNAVAILABLE','PLAN_CONSTRUCTION_UNAVAILABLE','PLAN_DELAY_EXCEEDS_DECISION_LIFETIME','PLAN_FEE_MISMATCH'] as const;
+export type FinancialExecutionReporting={version:typeof FINANCIAL_EXECUTION_REPORTING_VERSION;state:'active'|'unavailable';scope:'current-market-instance';plans:number;supportedLandingStates:number;preflightUnsubmitted:number;unknownLanding:number;legacyProtectionFallbacks:number;last:null|{at:string;stage:typeof FINANCIAL_EXECUTION_STAGES[number];reasonCode:typeof FINANCIAL_EXECUTION_REASONS[number];observedRpcMs:number|null;modeledDelayMs:number|null;feeSol:string|null;sourceSlot:number|null};meaning:'PAPER_PREPARATION_NOT_OBSERVED_CHAIN_OUTCOME'};
 export function validateFinancialExecutionReporting(value:unknown,generated:number):FinancialExecutionReporting {
- const e=exact(value,'version state scope plans supportedLandingStates preflightUnsubmitted unknownLanding last meaning');
+ const e=exact(value,'version state scope plans supportedLandingStates preflightUnsubmitted unknownLanding legacyProtectionFallbacks last meaning');
  need(e.version===FINANCIAL_EXECUTION_REPORTING_VERSION&&['active','unavailable'].includes(e.state)&&e.scope==='current-market-instance'&&e.meaning==='PAPER_PREPARATION_NOT_OBSERVED_CHAIN_OUTCOME');
- for(const key of ['plans','supportedLandingStates','preflightUnsubmitted','unknownLanding'])count(e[key]);
+ for(const key of ['plans','supportedLandingStates','preflightUnsubmitted','unknownLanding','legacyProtectionFallbacks'])count(e[key]);
  if(e.last!==null){const l=exact(e.last,'at stage reasonCode observedRpcMs modeledDelayMs feeSol sourceSlot');time(l.at,generated);need((FINANCIAL_EXECUTION_STAGES as readonly unknown[]).includes(l.stage)&&(FINANCIAL_EXECUTION_REASONS as readonly unknown[]).includes(l.reasonCode));
-  const pairs={planned:'PLAN_PREPARED','landing-state-supported':'LANDING_STATE_SUPPORTED','preflight-unsubmitted':'LANDING_STATE_UNAVAILABLE'};need(pairs[l.stage as keyof typeof pairs]===l.reasonCode);
+  const pairs={planned:['PLAN_PREPARED'],'landing-state-supported':['LANDING_STATE_SUPPORTED'],'preflight-unsubmitted':['LANDING_STATE_UNAVAILABLE','PLAN_CONSTRUCTION_UNAVAILABLE','PLAN_DELAY_EXCEEDS_DECISION_LIFETIME','PLAN_FEE_MISMATCH'],'legacy-protection-fallback':['UNSIGNED_CONSTRUCTION_UNAVAILABLE','SIMULATED_ACCOUNT_RENT_UNAVAILABLE']};need(pairs[l.stage as keyof typeof pairs].includes(l.reasonCode));
   for(const key of ['observedRpcMs','modeledDelayMs'])if(l[key]!==null)need(typeof l[key]==='number'&&Number.isFinite(l[key])&&l[key]>=0&&l[key]<=86400000);
   if(l.sourceSlot!==null)count(l.sourceSlot);solAmount(l.feeSol,true);
  }
@@ -72,7 +82,7 @@ export function validateFinancialExecutionReporting(value:unknown,generated:numb
 }
 function projectExecution(value:unknown,generated:number):FinancialExecutionReporting|null {
  try{const e=record(value);need(e.version===FINANCIAL_EXECUTION_REPORTING_VERSION);const l=record(e.last);
-  return validateFinancialExecutionReporting({version:e.version,state:e.state,scope:e.scope,plans:e.plans,supportedLandingStates:e.supportedLandingStates,preflightUnsubmitted:e.preflightUnsubmitted,unknownLanding:e.unknownLanding,last:e.last===null?null:{at:iso(l.at,generated),stage:l.stage,reasonCode:l.reasonCode,observedRpcMs:l.observedRpcMs,modeledDelayMs:l.modeledDelayMs,feeSol:l.feeLamports===null?null:sol(l.feeLamports),sourceSlot:l.sourceSlot},meaning:'PAPER_PREPARATION_NOT_OBSERVED_CHAIN_OUTCOME'},generated);
+  return validateFinancialExecutionReporting({version:e.version,state:e.state,scope:e.scope,plans:e.plans,supportedLandingStates:e.supportedLandingStates,preflightUnsubmitted:e.preflightUnsubmitted,unknownLanding:e.unknownLanding,legacyProtectionFallbacks:e.legacyProtectionFallbacks,last:e.last===null?null:{at:iso(l.at,generated),stage:l.stage,reasonCode:l.reasonCode,observedRpcMs:l.observedRpcMs,modeledDelayMs:l.modeledDelayMs,feeSol:l.feeLamports===null?null:sol(l.feeLamports),sourceSlot:l.sourceSlot},meaning:'PAPER_PREPARATION_NOT_OBSERVED_CHAIN_OUTCOME'},generated);
  }catch{return null;}
 }
 export const FINANCIAL_VALUATION_REPORTING_VERSION='paper-sol-usd-observation-v1' as const;
