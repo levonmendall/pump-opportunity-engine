@@ -72,3 +72,11 @@ test('bounded migration measures complete10000-receipt history without a synchro
  assert.equal(ledger.state().equityRisk!.daily.historyState,'complete');assert.equal(ledger.state().equityRisk!.daily.historyReceipts,10000);assert.equal(ledger.state().equityRisk!.daily.highWaterMicroUsd,'1200000000');
  t.diagnostic(JSON.stringify({scope:'OFFLINE in-memory10000 authoritative receipts;Cloud measurement, notEC2/protection acceptance',chunks:durations.length,maximumChunkMs:Math.max(...durations),medianChunkMs:[...durations].sort((a,b)=>a-b)[Math.floor(durations.length/2)]}));
 });
+
+test('a retained activation receipt cannot coexist with silently missing active policy state',t=>{
+ const f=fixture(t);f.ledger.activateEquityRiskPolicy(AT);f.ledger.reconcile('ready',AT,price(AT),{});
+ const db=new Database(f.path),row=db.prepare('SELECT body FROM financial_state WHERE singleton=1').get() as {body:string};
+ const state=JSON.parse(row.body);delete state.equityRisk;db.prepare('UPDATE financial_state SET body=? WHERE singleton=1').run(JSON.stringify(state));db.close();
+ assert.ok(f.ledger.actionResult('activate:paper-equity-risk-5-10-v1'));
+ assert.throws(()=>f.ledger.activateEquityRiskPolicy(AT+1),/policy|activation|state/i,'idempotent historical activation result must not authorize legacy financial fallback');
+});

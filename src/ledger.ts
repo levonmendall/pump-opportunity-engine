@@ -24,6 +24,7 @@ export type Position = {
   /** Absent metadata permanently retains the original holding's exit rules. */
   strategy?:PositionStrategy;
   allocation?:EntryAllocation;
+  executionModelVersion?:'paper-chain-conditioned-v1';
 };
 export type Order = {
   id: string; side: 'buy' | 'sell'; mint: string; decidedAt: number; executeAt: number;
@@ -32,6 +33,8 @@ export type Order = {
   entryStrategy?:EntryStrategy;
   allocation?:EntryAllocation;
   executionModel?:PaperExecutionPlan;
+  /** Intratransaction quote-ATA rent: cash reserved, never an asset or consumed cost. */
+  temporaryRentLamports?:string;
 };
 export type LedgerMode = 'PAPER' | 'DISPOSABLE_PAPER';
 export type LedgerState = {
@@ -178,7 +181,7 @@ function acquireOwner(path: string): number {
 }
 
 /** Pure financial schema validation shared by writer recovery and read-only backups. */
-export function validateFinancialState(s: LedgerState, accountId: string, mode: LedgerMode) {
+export function validateFinancialState(s: LedgerState, accountId: string, mode: LedgerMode,options:{allowUnavailableEntryPolicy?:boolean}={}) {
   const record = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v) && Object.getPrototypeOf(v) === Object.prototype;
   const key = (v: unknown, max: number) => boundedText(v, max) && !['__proto__','constructor','prototype'].includes(v);
   const eventTime = (v: unknown) => Number.isSafeInteger(v) && (v as number) >= s.inceptionAt && (v as number) <= s.lastAt;
@@ -200,7 +203,8 @@ export function validateFinancialState(s: LedgerState, accountId: string, mode: 
   }
   for (const [mint, p] of Object.entries(s.positions)) {
     if (!record(p) || !key(mint, 96) || p.mint !== mint || !eventTime(p.enteredAt) || amount(p.units) === 0n || amount(p.entryLamports) === 0n || amount(p.entryGas) === 0n || (p.allocation===undefined&&amount(p.costMicroUsd) > 50_000_000n) || amount(p.deposit) > amount(s.lockedDeposits[mint] ?? '0')) throw new Error('position identity/amount invariant');
-    if(p.allocation!==undefined){if(!s.equityRisk||p.allocation.at<s.equityRisk.activatedAt)throw Error('position allocation policy invariant');validateEntryAllocation(p.allocation,p.enteredAt,amount(p.entryLamports)+amount(p.entryGas));if(amount(p.costMicroUsd)!==usd(amount(p.allocation.consumedLamports),amount(p.allocation.microUsdPerSol)))throw Error('position allocation cost invariant');}
+    if(p.executionModelVersion!==undefined&&p.executionModelVersion!=='paper-chain-conditioned-v1')throw Error('position execution model version invariant');
+    if(p.allocation!==undefined){if(!s.equityRisk&&!options.allowUnavailableEntryPolicy)throw Error('position allocation policy unavailable');validateEntryAllocation(p.allocation,p.enteredAt,amount(p.entryLamports)+amount(p.entryGas));if(amount(p.costMicroUsd)!==usd(amount(p.allocation.consumedLamports),amount(p.allocation.microUsdPerSol)))throw Error('position allocation cost invariant');}
     if(p.strategy!==undefined){validateEntryStrategy(p.strategy,p.strategy.assessedAt);if(!boundedText(p.strategy.roundTripId,100)||!Number.isSafeInteger(p.strategy.highWaterAt)||p.strategy.highWaterAt<p.enteredAt||p.strategy.highWaterAt>s.lastAt||p.strategy.assessedAt>p.enteredAt)throw Error('adaptive position strategy invariant');amount(p.strategy.highWaterNetLamports);}
   }
   let reservations = 0n;
@@ -208,18 +212,19 @@ export function validateFinancialState(s: LedgerState, accountId: string, mode: 
   for (const [id, o] of Object.entries(s.pending)) {
     if (!record(o) || !key(id, 100) || o.id !== id || !key(o.mint, 96) || pendingMints.has(o.mint) || !eventTime(o.decidedAt) || !Number.isSafeInteger(o.executeAt) || !Number.isSafeInteger(o.expiresAt) || o.executeAt < o.decidedAt + 500 || o.expiresAt <= o.executeAt || o.expiresAt > o.decidedAt + 30_000 || !boundedText(o.decisionEvidence) || amount(o.gas) === 0n || amount(o.minReceive) === 0n) throw new Error('pending order identity/time/amount invariant');
     const gas = amount(o.gas), spend = amount(o.maxSpend), deposit = amount(o.deposit), reserved = amount(o.reserved);
-    if(o.executionModel!==undefined&&(!validatePaperExecutionPlan(o.executionModel)||o.executionModel.plannedAt!==o.decidedAt||o.executionModel.executeAt!==o.executeAt||o.executionModel.expiresAt!==o.expiresAt||paperExecutionFee(o.executionModel)!==o.gas))throw Error('pending execution model invariant');
-    if(o.allocation!==undefined){if(!s.equityRisk||o.allocation.at<s.equityRisk.activatedAt)throw Error('pending allocation policy invariant');if(o.side!=='buy')throw Error('allocation belongs to entry only');validateEntryAllocation(o.allocation,o.decidedAt,gas+spend);}
+    if(o.executionModel!==undefined&&(!validatePaperExecutionPlan(o.executionModel)||o.executionModel.plannedAt!==o.decidedAt||o.executionModel.executeAt!==o.executeAt||o.executionModel.expiresAt!==o.expiresAt||paperExecutionFee(o.executionModel)!==o.gas||o.temporaryRentLamports!==o.executionModel.temporaryQuoteRentLamports))throw Error('pending execution model invariant');
+    const temporary=amount(o.temporaryRentLamports??'0');if(!o.executionModel&&o.temporaryRentLamports!==undefined)throw Error('temporary rent requires supported execution model');
+    if(o.allocation!==undefined){if(o.side!=='buy')throw Error('allocation belongs to entry only');validateEntryAllocation(o.allocation,o.decidedAt,gas+spend);}
     if(o.entryStrategy!==undefined){if(o.side!=='buy')throw Error('adaptive strategy belongs to entry only');validateEntryStrategy(o.entryStrategy,o.decidedAt);}
     if (o.side === 'buy') {
       pendingBuys++;
-      if (spend === 0n || s.positions[o.mint] || reserved !== gas + spend + deposit || deposit > 0n && s.lockedDeposits[o.mint]) throw new Error('pending buy reservation invariant');
+      if (spend === 0n || s.positions[o.mint] || reserved !== gas + spend + deposit + temporary || deposit > 0n && s.lockedDeposits[o.mint]) throw new Error('pending buy reservation invariant');
     } else if (o.side === 'sell') {
-      if (!s.positions[o.mint] || spend !== 0n || deposit !== 0n || reserved !== gas) throw new Error('pending exit reservation invariant');
+      if (!s.positions[o.mint] || spend !== 0n || deposit !== 0n || reserved !== gas + temporary) throw new Error('pending exit reservation invariant');
     } else throw new Error('pending order side invariant');
     pendingMints.add(o.mint); reservations += reserved;
   }
-  if(s.equityRisk!==undefined)validateEquityRiskState(s.equityRisk,s.inceptionAt,s.lastAt,s.revision);
+  if(s.equityRisk!==undefined)try{validateEquityRiskState(s.equityRisk,s.inceptionAt,s.lastAt,s.revision);}catch(error){if(!options.allowUnavailableEntryPolicy)throw error;}
   // The gas reserve protects NEW entries, not exits. Held-position management
   // may consume it, but no action may spend another action's reservation.
   if (reservations > cash || Object.keys(s.positions).length + pendingBuys > 3) throw new Error('cash reservation/capacity invariant');
@@ -279,7 +284,7 @@ export class PaperLedger {
     if (!s) throw new Error('PAPER account not initialized');
     return s;
   }
-  private assertState(s: State) { validateFinancialState(s, this.accountId, this.mode); }
+  private assertState(s: State) { validateFinancialState(s, this.accountId, this.mode,{allowUnavailableEntryPolicy:true}); }
   private apply<T>(id: string, kind: string, now: number, payload: unknown, fn: (s: State) => T): T {
     if (!id || id.length > 160 || !Number.isSafeInteger(now)) throw new Error('invalid action identity/time');
     if (JSON.stringify(payload).length > 65_536) throw new Error('financial action payload limit');
@@ -342,11 +347,20 @@ export class PaperLedger {
    * historical repricing. Reconciliation scans all retained same-day receipts
    * incrementally so migration cannot monopolize a protection-critical tick. */
   activateEquityRiskPolicy(now:number){
-    const state=this.state();if(state.equityRisk)return structuredClone(state.equityRisk);
+    const state=this.state(),status=this.equityRiskStatus(state);if(status.kind==='active')return structuredClone(state.equityRisk!);if(status.kind==='unavailable')throw Error('equity risk activation/state unavailable; new risk closed');
     return this.apply('activate:'+PAPER_EQUITY_RISK_VERSION,'equity-risk-policy-activation',now,{version:PAPER_EQUITY_RISK_VERSION,policy:PAPER_EQUITY_RISK_POLICY},s=>{
       s.equityRisk={version:PAPER_EQUITY_RISK_VERSION,activatedAt:now,activationRevision:s.revision+1,daily:this.newRiskDay(s,now)};
       return structuredClone(s.equityRisk);
     });
+  }
+  /** Optional entry-policy corruption closes new risk while the independent
+   * cash/inventory/order invariants still permit genuine existing exits. */
+  private equityRiskStatus(s:State):{kind:'legacy'|'active'|'unavailable';reasonCode?:'EQUITY_RISK_POLICY_INVALID'|'EQUITY_RISK_HISTORY_UNAVAILABLE'}{
+    const anchor=this.db.prepare('SELECT a.payload_hash payloadHash,a.result,j.revision,j.at,j.kind,j.detail FROM (SELECT ? id) x LEFT JOIN actions a ON a.id=x.id LEFT JOIN journal j ON j.action_id=x.id').get('activate:'+PAPER_EQUITY_RISK_VERSION) as {payloadHash:string|null;result:string|null;revision:number|null;at:number|null;kind:string|null;detail:string|null};
+    if(s.equityRisk===undefined)return anchor.result!==null||anchor.detail!==null?{kind:'unavailable',reasonCode:'EQUITY_RISK_HISTORY_UNAVAILABLE'}:{kind:'legacy'};
+    try{validateEquityRiskState(s.equityRisk,s.inceptionAt,s.lastAt,s.revision);}catch{return {kind:'unavailable',reasonCode:'EQUITY_RISK_POLICY_INVALID'};}
+    try{if(!anchor.result||!anchor.detail||Buffer.byteLength(anchor.result)>65536||Buffer.byteLength(anchor.detail)>65536||anchor.kind!=='equity-risk-policy-activation'||anchor.revision!==s.equityRisk.activationRevision||anchor.at!==s.equityRisk.activatedAt)throw Error();const payload=JSON.parse(anchor.detail),result=JSON.parse(anchor.result);if(anchor.payloadHash!==digest({kind:anchor.kind,payload})||!isDeepStrictEqual(payload,{version:PAPER_EQUITY_RISK_VERSION,policy:PAPER_EQUITY_RISK_POLICY})||result.version!==PAPER_EQUITY_RISK_VERSION||result.activatedAt!==anchor.at||result.activationRevision!==anchor.revision)throw Error();}catch{return {kind:'unavailable',reasonCode:'EQUITY_RISK_HISTORY_UNAVAILABLE'};}
+    return {kind:'active'};
   }
   private newRiskDay(s:State,now:number):EquityRiskState['daily']{return {day:utcDay(now),highWaterMicroUsd:null,highWaterAt:null,lossPaused:false,historyState:'scanning',historyCoverage:'unavailable',historyCutoffRevision:s.revision,historyCursorRevision:0,historyReceipts:0,historyDigest:digest({version:PAPER_EQUITY_RISK_VERSION,day:utcDay(now),accountId:s.accountId,inceptionAt:s.inceptionAt,cutoffRevision:s.revision})};}
   private scanRiskHistory(s:State,now:number){
@@ -370,9 +384,10 @@ export class PaperLedger {
     }catch{d.historyState='invalid';d.historyCoverage='unavailable';}
   }
   private observeEquityRisk(s:State,now:number,equity:bigint,scan=false){
-    if(!s.equityRisk){if(BigInt(s.daily.baselineMicroUsd)-equity>=50_000_000n){s.daily.paused=true;s.daily.lossPaused=true;}return true;}
-    if(s.equityRisk.daily.day!==utcDay(now))s.equityRisk.daily=this.newRiskDay(s,now);
-    const d=s.equityRisk.daily,legacyLoss=s.daily.lossPaused;
+    const policy=this.equityRiskStatus(s);if(policy.kind==='unavailable')return false;
+    if(policy.kind==='legacy'){if(BigInt(s.daily.baselineMicroUsd)-equity>=50_000_000n){s.daily.paused=true;s.daily.lossPaused=true;}return true;}
+    if(s.equityRisk!.daily.day!==utcDay(now))s.equityRisk!.daily=this.newRiskDay(s,now);
+    const d=s.equityRisk!.daily,legacyLoss=s.daily.lossPaused;
     if(scan)this.scanRiskHistory(s,now);
     if(d.highWaterMicroUsd===null||equity>amount(d.highWaterMicroUsd)){d.highWaterMicroUsd=equity.toString();d.highWaterAt=now;}
     if(d.historyState!=='complete')return false;
@@ -382,10 +397,10 @@ export class PaperLedger {
     return true;
   }
   /** Current 5% consumed-cost sizing only; no qualification or order claim. */
-  entryRiskBudget(now:number,price:UsdPrice,marks:Record<string,Mark>={},deposit='0'){
-    const s=this.state(),p=priceAt(price,now),equity=this.equity(s,p,marks,now),reserved=Object.values(s.pending).reduce((n,o)=>n+amount(o.reserved),0n),cash=amount(s.lamports),protectedCash=reserved+amount(s.gasReserve)+amount(deposit),available=cash>protectedCash?cash-protectedCash:0n;
-    const maximum=s.equityRisk?consumedEntryAllowance(equity,p):50_000_000n*L/p;
-    const ready=!s.equityRisk||s.equityRisk.daily.day===utcDay(now)&&s.equityRisk.daily.historyState==='complete';
+  entryRiskBudget(now:number,price:UsdPrice,marks:Record<string,Mark>={},deposit='0',temporaryRent='0'){
+    const s=this.state(),p=priceAt(price,now),equity=this.equity(s,p,marks,now),reserved=Object.values(s.pending).reduce((n,o)=>n+amount(o.reserved),0n),cash=amount(s.lamports),protectedCash=reserved+amount(s.gasReserve)+amount(deposit)+amount(temporaryRent),available=cash>protectedCash?cash-protectedCash:0n;
+    const policy=this.equityRiskStatus(s),maximum=policy.kind==='unavailable'?0n:policy.kind==='active'?consumedEntryAllowance(equity,p):50_000_000n*L/p;
+    const ready=policy.kind==='legacy'||policy.kind==='active'&&s.equityRisk!.daily.day===utcDay(now)&&s.equityRisk!.daily.historyState==='complete';
     return {ready,maximumConsumedLamports:maximum.toString(),cashLimitedConsumedLamports:(maximum<available?maximum:available).toString(),equityMicroUsd:equity.toString(),microUsdPerSol:p.toString()};
   }
 
@@ -416,7 +431,6 @@ export class PaperLedger {
       } else {
         // Inception starts closed, and only fresh reconciliation opens it.
         if (s.daily.reconciledAt === 0) s.daily.paused = false;
-        if(!s.equityRisk&&BigInt(s.daily.baselineMicroUsd)-equity>=50_000_000n){s.daily.paused=true;s.daily.lossPaused=true;}
         s.daily.reconciledAt = now;
       }
       this.observeEquityRisk(s,now,equity,true);
@@ -470,7 +484,7 @@ export class PaperLedger {
   resetDailyLoss(id:string,now:number,price:UsdPrice,marks:Record<string,Mark>,reason:string):DailyLossResetReceipt{
     if(!boundedText(reason)||/[\u0000-\u001f]/.test(reason))throw Error('explicit bounded owner daily-loss reset reason required');
     return this.apply(id,'owner-daily-loss-reset',now,{reason},s=>{
-      if(s.equityRisk)throw Error('versioned equity high-water policy cannot be reset by legacy absolute-loss authorization');
+      if(this.equityRiskStatus(s).kind!=='legacy')throw Error('versioned equity high-water policy cannot be reset by legacy absolute-loss authorization');
       if(Object.keys(s.positions).length||Object.keys(s.pending).length)throw Error('daily-loss reset requires flat settled accounting');
       if(Object.keys(marks).length)throw Error('daily-loss reset requires empty flat liquidation marks');
       if(s.daily.day!==utcDay(now)||s.daily.reconciledAt<=0||s.daily.reconciledAt>now||now-s.daily.reconciledAt>MAX_QUOTE_AGE)throw Error('daily-loss reset requires fresh same-day reconciliation');
@@ -643,14 +657,15 @@ export class PaperLedger {
     return this.apply(`order:${input.id}`, 'order', now, { input, price, marks }, s => {
       if (!Number.isSafeInteger(input.executeAt) || !Number.isSafeInteger(input.expiresAt) || input.executeAt < now + 500 || input.expiresAt <= input.executeAt || input.expiresAt > now + 30_000 || !boundedText(input.decisionEvidence)) throw new Error('invalid delay/expiry/evidence');
       if(Object.hasOwn(input,'allocation'))throw Error('entry allocation is ledger-issued');
-      if(input.executionModel!==undefined&&(!validatePaperExecutionPlan(input.executionModel)||input.executionModel.plannedAt!==now||input.executionModel.executeAt!==input.executeAt||input.executionModel.expiresAt!==input.expiresAt||paperExecutionFee(input.executionModel)!==input.gas))throw Error('invalid PAPER execution model');
+      if(input.executionModel!==undefined&&(!validatePaperExecutionPlan(input.executionModel)||input.executionModel.plannedAt!==now||input.executionModel.executeAt!==input.executeAt||input.executionModel.expiresAt!==input.expiresAt||paperExecutionFee(input.executionModel)!==input.gas||input.temporaryRentLamports!==input.executionModel.temporaryQuoteRentLamports))throw Error('invalid PAPER execution model');
       let allocation:EntryAllocation|undefined;
       const gas = amount(input.gas); const dep = amount(input.deposit);
       const spend = amount(input.maxSpend); const min = amount(input.minReceive);
       if (gas === 0n || min === 0n || input.id.length > 100 || !input.id || !input.mint || ['__proto__', 'constructor', 'prototype'].some(k => k === input.id || k === input.mint)) throw new Error('invalid order amounts/identity');
       if (Object.values(s.pending).some(o => o.mint === input.mint)) throw new Error('one pending action per token');
       if (Object.keys(s.pending).length >= 3) throw new Error('pending capacity');
-      let reserved = gas;
+      const temporary=amount(input.temporaryRentLamports??'0');if(!input.executionModel&&input.temporaryRentLamports!==undefined)throw Error('temporary rent requires supported execution model');
+      let reserved = gas+temporary;
       if (input.side === 'buy') {
         if (spend === 0n) throw new Error('positive buy maximum required');
         const p = priceAt(price, now);
@@ -730,7 +745,7 @@ export class PaperLedger {
         if (amount(o.deposit) > 0n) s.lockedDeposits[o.mint] = o.deposit;
         s.positions[o.mint] = {
           mint: o.mint, units: received.toString(), entryLamports: spend.toString(), entryGas: gas.toString(),
-          costMicroUsd: usd(spend + gas, p).toString(), deposit: o.deposit, enteredAt: now,...(allocation?{allocation}:{}),
+          costMicroUsd: usd(spend + gas, p).toString(), deposit: o.deposit, enteredAt: now,...(allocation?{allocation}:{}),...(o.executionModel?{executionModelVersion:o.executionModel.version}:{}),
           ...(o.entryStrategy?{strategy:{...o.entryStrategy,roundTripId:o.id,highWaterNetLamports:'0',highWaterAt:now}}:{}),
         };
         this.db.prepare(o.entryStrategy?'INSERT OR IGNORE INTO metadata VALUES(?,?)':'INSERT INTO metadata VALUES(?,?)').run('traded_mint:' + o.mint, '1');
@@ -1033,11 +1048,11 @@ export class PaperLedger {
     const totalPnlMicroUsd = equityMicroUsd === null ? null : (equityMicroUsd - INITIAL).toString();
     const operating = projectOperatingCosts(this.getOperatingCosts(), { asOf: now, now, tradingPnlMicroUsd: totalPnlMicroUsd });
     const dayFresh = s.daily.day === utcDay(now) && s.daily.reconciledAt > 0 && now >= s.daily.reconciledAt && now - s.daily.reconciledAt <= MAX_QUOTE_AGE;
-    const risk=s.equityRisk,d=risk?.daily,historyReady=!!d&&d.day===utcDay(now)&&d.historyState==='complete';
+    const policy=this.equityRiskStatus(s),risk=policy.kind==='active'?s.equityRisk:undefined,d=risk?.daily,historyReady=!!d&&d.day===utcDay(now)&&d.historyState==='complete';
     const drawdown=historyReady&&d.highWaterMicroUsd!==null&&equityMicroUsd!==null?drawdownFacts(amount(d.highWaterMicroUsd),equityMicroUsd):null;
     const riskReason=!risk?null:d?.historyState==='invalid'?'EQUITY_RISK_HISTORY_UNAVAILABLE':!historyReady?'EQUITY_RISK_INITIALIZING':equityMicroUsd===null?'EQUITY_RISK_VALUATION_UNAVAILABLE':!dayFresh?'EQUITY_RISK_RECONCILIATION_STALE':d!.lossPaused||drawdown?.breached?'EQUITY_RISK_DAILY_DRAWDOWN':null;
     const target=historyReady&&equityMicroUsd!==null&&p!==null?consumedEntryAllowance(equityMicroUsd,p):null,unreserved=amount(s.lamports)-reservedLamports,cashAllowance=unreserved>amount(s.gasReserve)?unreserved-amount(s.gasReserve):0n;
-    const equityRisk=risk?{version:PAPER_EQUITY_RISK_VERSION,state:historyReady&&equityMicroUsd!==null&&dayFresh?'ready' as const:'unavailable' as const,reasonCode:riskReason,asOf:now,entry:{targetBps:500,targetConsumedCostMicroUsd:target===null?null:(equityMicroUsd!*500n/10000n).toString(),targetConsumedCostLamports:target?.toString()??null,unreservedCashLamports:unreserved.toString(),cashLimitedConsumedCostLamports:target===null?null:(target<cashAllowance?target:cashAllowance).toString(),refundableDepositsIncluded:false,executabilityClaimed:false},daily:{day:d!.day,limitBps:1000,highWaterMicroUsd:d!.highWaterMicroUsd,highWaterAt:d!.highWaterAt,currentEquityMicroUsd:equityMicroUsd?.toString()??null,drawdownMicroUsd:drawdown?.drawdownMicroUsd??null,drawdownBps:drawdown?.drawdownBps??null,remainingBeforePauseMicroUsd:drawdown?.remainingBeforePauseMicroUsd??null,lossPaused:d!.lossPaused||drawdown?.breached===true,historyCoverage:d!.historyCoverage,basis:'complete-observed-executable-equity-current-usd'}}:null;
+    const equityRisk=risk?{version:PAPER_EQUITY_RISK_VERSION,state:historyReady&&equityMicroUsd!==null&&dayFresh?'ready' as const:'unavailable' as const,reasonCode:riskReason,asOf:now,entry:{targetBps:500,targetConsumedCostMicroUsd:target===null?null:(equityMicroUsd!*500n/10000n).toString(),targetConsumedCostLamports:target?.toString()??null,unreservedCashLamports:unreserved.toString(),cashLimitedConsumedCostLamports:target===null?null:(target<cashAllowance?target:cashAllowance).toString(),refundableDepositsIncluded:false,executabilityClaimed:false},daily:{day:d!.day,limitBps:1000,highWaterMicroUsd:d!.highWaterMicroUsd,highWaterAt:d!.highWaterAt,currentEquityMicroUsd:equityMicroUsd?.toString()??null,drawdownMicroUsd:drawdown?.drawdownMicroUsd??null,drawdownBps:drawdown?.drawdownBps??null,remainingBeforePauseMicroUsd:drawdown?.remainingBeforePauseMicroUsd??null,lossPaused:d!.lossPaused||drawdown?.breached===true,historyCoverage:d!.historyCoverage,basis:'complete-observed-executable-equity-current-usd'}}:policy.kind==='unavailable'?{version:PAPER_EQUITY_RISK_VERSION,state:'unavailable' as const,reasonCode:policy.reasonCode!,asOf:now,entry:{targetBps:500,targetConsumedCostMicroUsd:null,targetConsumedCostLamports:null,unreservedCashLamports:unreserved.toString(),cashLimitedConsumedCostLamports:null,refundableDepositsIncluded:false,executabilityClaimed:false},daily:{day:utcDay(now),limitBps:1000,highWaterMicroUsd:null,highWaterAt:null,currentEquityMicroUsd:equityMicroUsd?.toString()??null,drawdownMicroUsd:null,drawdownBps:null,remainingBeforePauseMicroUsd:null,lossPaused:s.daily.lossPaused,historyCoverage:'unavailable' as const,basis:'complete-observed-executable-equity-current-usd'}}:null;
     return {
       ...(equityRisk?{equityRisk}:{}),
       accountId: s.accountId, mode: s.mode, inceptionAt: s.inceptionAt, initialMicroUsd: s.initialMicroUsd, revision: s.revision,
@@ -1052,7 +1067,7 @@ export class PaperLedger {
       positionLiquidationLamports: unknownMarks ? null : positionLiquidationLamports.toString(),
       positionCostMicroUsd: Object.values(s.positions).reduce((sum, x) => sum + amount(x.costMicroUsd), 0n).toString(),
       openPositions: Object.keys(s.positions).length, pendingActions: Object.keys(s.pending).length,
-      entriesEnabled: s.controls.entriesEnabled && !s.controls.stopRequested && !s.daily.paused && dayFresh && equityMicroUsd !== null && (!risk||historyReady&&!d!.lossPaused&&!drawdown?.breached),
+      entriesEnabled: s.controls.entriesEnabled && !s.controls.stopRequested && !s.daily.paused && dayFresh && equityMicroUsd !== null && policy.kind!=='unavailable' && (!risk||historyReady&&!d!.lossPaused&&!drawdown?.breached),
       unknownMarks, usdValuationAvailable: p !== null, daily: s.daily, controls: s.controls,
     };
   }
