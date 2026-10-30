@@ -66,7 +66,8 @@ SCALARS.update(('sourceValidUntil attemptedAt decidedAt executeAt expiresAt '
  'changedAt completedEvaluations firstCompletedProtectionAt '
  'lastCompletedProtectionAt currentRunMaximumCompletedGapMs '
  'currentRunMaximumQuoteAgeAtUseMs observedRpcMs modeledDelayMs '
- 'supplyDecimals tokenDecimals decimals slippageBps').split())
+ 'supplyDecimals tokenDecimals decimals slippageBps '
+ 'remainingStarts spent remaining').split())
 SCALARS.update(('startAt endAt lower upper bankClockAt openedAt connectionId '
  'subscriptionId blockTime success complete capturedAt rows requiredRows '
  'refreshedAt duplicate correction requestAttempts maximumPages pageLimit '
