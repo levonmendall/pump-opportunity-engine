@@ -20,6 +20,8 @@ An unavailable, stale, conflicting, future, wrong-size or regressing source rese
 
 The Trader adds no request, subscription, persistence operation or diagnostic record. Existing mandatory `trader-context` and `trader-held-evaluation` records retain the acquired marks and decision inputs. Fresh SOL observations remain usable during an honest USD-quote failure, while original financial entry permission still closes. The source, accounting, duplicate-order, pending-exit and current execution-quote safeguards are unchanged.
 
+The read-only `adaptiveHoldingDiagnostics()` projection returns copied fixed fields for current V2 holdings, internally bound to the exact round trip and quantity. It preserves original quote/evaluation times. Missing, stale, future, malformed or expired source evidence reports unavailable with no active-width claim. Calling this projection cannot acquire prices, evaluate protection, record a completion, refresh timestamps or alter financial state. The parent integrates its bounded output into the existing native source and Render notes; there is no second reporting system.
+
 ## Validation
 
 Focused tests exercise measured active hold/exit behavior, current and later crash handling, a nondecreasing boundary, unchanged cost stops, two positions, unavailable USD, restart fallback, duplicate/conflicting observations, freshness/source gaps, quantity/cycle separation and bounded retention. The independent review separately probes 10,000 seeded observations. Exact-source full-suite/build results are retained separately.

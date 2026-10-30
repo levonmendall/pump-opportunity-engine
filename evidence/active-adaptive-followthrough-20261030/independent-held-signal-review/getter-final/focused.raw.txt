@@ -1,0 +1,29 @@
+✔ prior executable dispersion can widen at a new high-water without lowering the modeled boundary (1.713502ms)
+✔ a crash cannot widen its own trail, on that decision or a later lower quote (0.51851ms)
+✔ constant proportional appreciation measures drift rather than manufactured volatility (0.26278ms)
+✔ duplicate quote is never an extra observation or input to its own lagged statistic (0.925813ms)
+✔ unavailable or invalid evidence restores the legacy fallback without disturbing another holding (0.823912ms)
+✔ quote gaps, completed-evaluation gaps and restart tighten to the persisted high-water fallback (0.277832ms)
+✔ round trips and changed quantities cannot borrow earlier volatility (0.304191ms)
+✔ the absolute cost stop remains active even with a historically wider profit trail (0.20924ms)
+✔ regressing observations and contradictory ledger peaks never supply adaptive permission (0.333004ms)
+✔ descriptive storage is bounded and old samples retire without stopping financial work (24.901701ms)
+✔ ACTIVE V2 qualifies genuine complete lower baseline flow through sized quote/reserve/fill; audit or quote loss remains closed (49.33761ms)
+✔ V2 profitable holding survives +30percent and15minutes; persisted highwater trails independently across restart (28.001262ms)
+✔ two V2 holdings independently retain and exit under highwater/15percent protection (35.95281ms)
+✔ closed V2 token reenters only after full fresh post-close observation, new audit and unique order cycle (32.638011ms)
+✔ legacy holding keeps original max-hold exit after ACTIVE V2 upgrade (18.18768ms)
+✔ fresh SOL highwater persists during unavailable USD; restart cannot lose the protective trail (23.766706ms)
+✔ ACTIVE V2 uses lagged executable dispersion without extra quotes, USD drift or a retreating profit boundary (30.366266ms)
+✔ a restart retains durable high-water and safely returns wider measured protection to the legacy fallback (39.117503ms)
+✔ holding diagnostics cannot refresh prices, complete protection, change finance or turn stale facts current (16.076478ms)
+✔ holding diagnostics follow current independent inventory and omit closed positions (19.944526ms)
+✔ malformed quote times remain unavailable and cannot escape the bounded diagnostics projection (51.925784ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 624.461619

@@ -1,0 +1,29 @@
+{
+  "checkedAt": "2026-10-30T01:30:41.248765+00:00",
+  "sourceBefore": {
+    "src/adaptive-held-series.ts": "7e46330fd1ce704754e8934339e579bdde732b6d2f2abd3fdd006d8e5f63fec2",
+    "src/trader.ts": "9c0ddab5318dcea0e8fbda574073c41042e5071e9cae07edb990f128b3bc0b14",
+    "test/adaptive-held-series.test.ts": "bae59eca256af66a0a68c326bc36aca8172038639feae85ee8db87abcc884293",
+    "test/adaptive-paper-trader.test.ts": "223e57db333feb1b00aec5e5ff5b3597c444aa0fd39419a0ccfaa061f46750e8"
+  },
+  "sourceAfter": {
+    "src/adaptive-held-series.ts": "7e46330fd1ce704754e8934339e579bdde732b6d2f2abd3fdd006d8e5f63fec2",
+    "src/trader.ts": "9c0ddab5318dcea0e8fbda574073c41042e5071e9cae07edb990f128b3bc0b14",
+    "test/adaptive-held-series.test.ts": "bae59eca256af66a0a68c326bc36aca8172038639feae85ee8db87abcc884293",
+    "test/adaptive-paper-trader.test.ts": "223e57db333feb1b00aec5e5ff5b3597c444aa0fd39419a0ccfaa061f46750e8"
+  },
+  "unchanged": true,
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "--test",
+    "test/adaptive-held-series.test.ts",
+    "test/adaptive-paper-trader.test.ts"
+  ],
+  "exitCode": 0,
+  "providerRequests": 0,
+  "financialDatabaseOpened": "disposable fixtures only; original account untouched",
+  "serviceControlOperations": 0,
+  "review": "Getter has no financial, acquisition, evidence-recording, exit-evaluation or protection-completion authority; outputs current owned roundtrip/units only, copied bounded fields and original timestamps; malformed times are null, stale/source-unavailable active widths are null."
+}
