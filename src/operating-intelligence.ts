@@ -94,6 +94,10 @@ export function projectOperatingIntelligence(value:unknown):OperatingIntelligenc
  }
  const operationalRows:string[]=[],history=rec(rec(s.reporting).protectionHistory);
  if(history.scope==='known-lower-bound')operationalRows.push(history.historyUnavailable===true?'Prior protection statistics are unavailable; current counters do not certify earlier protection.':'Protection totals and maxima retain known prior-run failures as lower bounds; completion freshness and recovery progress belong to the current run.');
+ if(Object.hasOwn(timing,'currentRunMaximumCompletedGapMs')||Object.hasOwn(timing,'currentRunMaximumQuoteAgeAtUseMs')){
+  const currentCompletion=lastProtectedAt!==null&&lastProtected!>=start,gap=currentCompletion?finite(timing.currentRunMaximumCompletedGapMs):null,quoteAge=currentCompletion?finite(timing.currentRunMaximumQuoteAgeAtUseMs):null;
+  operationalRows.push(`Current runtime observed completed protection maxima since ${new Date(start).toISOString()}: gap ${gap===null?'unavailable':gap+' ms'}; quote age at use ${quoteAge===null?'unavailable':quoteAge+' ms'}. Open or unmonitored gaps are not bounded by these values; historical failures remain retained.`);
+ }
  const pricing=rec(rec(u.market).holdingDiagnostics),pricingCodes=['HELD_PRICING_BUSY','HELD_PRICING_ABORTED','HELD_PRICING_PROVIDER_TIMEOUT','HELD_PRICING_PROVIDER_COOLDOWN','HELD_PRICING_DISPATCH_UNAVAILABLE','HELD_PRICING_PROVIDER_RESPONSE_UNAVAILABLE','HELD_PRICING_BANK_CLOCK_UNAVAILABLE','HELD_PRICING_SLOT_UNAVAILABLE','HELD_PRICING_STALE_EVIDENCE','HELD_PRICING_INVENTORY_CHANGED','HELD_PRICING_DATA_UNAVAILABLE'],pricingCounts=rec(pricing.contextFailureCounts);
  const refusalCounts=pricingCodes.flatMap(code=>{const n=count(pricingCounts[code]);return n!==null&&n>0?[code+':'+n]:[];});
  if(refusalCounts.length)operationalRows.push('Recorded holding-pricing refusals in this run: '+refusalCounts.slice(0,6).join(', ')+(refusalCounts.length>6?'; additional categories retained.':'.'));
