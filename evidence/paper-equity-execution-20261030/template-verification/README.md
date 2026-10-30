@@ -1,0 +1,13 @@
+# Inert next package template verification
+
+Reviewed operator source: `96beab46485e99cc4e3b24edd90239d175f14132` (new template commits `1f29325`, `96beab4`, based on `a152c2d`). This evidence does not assemble, pin, publish, stage, install or execute a target command.
+
+All exact current-financial-release, prior transition, configuration/artifact/run/window anchors and all new source/artifact/configuration pins remain unset. The actual installed before source must be independently verified at final freeze; the templates cannot accept a source69/sourcea1 list. Existing immutable issue11 bootstrap helper hashes are a separate trust anchor, not a financial before-source selection. Before-relative pacing/priority/audit/acquisition change declarations are likewise unset and must become reviewed booleans after selecting the actual before source.
+
+Guarded offline verification passed74 checks:9 new inert/migration/diagnostic tests,62 existing original-forward-upgrade regressions, and3 existing frozen reservation-package preparation guards. Exact tracked operator source bytes were unchanged, and only new template names differ from the frozen base. No package output or owner command exists. Original target/provider/root operations and target financial writes were0; disposable test databases and mocked service transitions are explicitly fixture activity.
+
+The new test executes the existing full same-writer handoff under disposable paths and mocked systemd, retaining the same ledger/inode/body and exact original action/journal prefixes. Additive risk/allocation/execution/temporary-rent JSON is opaque to the existing read-only root prefix auditor; its acceptance is not a substitute for combined application SDK validation. Old-row mutations still fail. Any possible/requested new start forbids older executable recovery.
+
+The diagnostic exporter does not infer source69 capabilities. It separates validated physical stamps, optional strictly bound never-invoked proof, and still-unclassified reservations. Missing, duplicate, conflicting, future, invalid-pending or unsupported-reason proof never becomes pacing authority or a refund. No old observation windows are assigned to the future source.
+
+Independent review accepted the inert successor with no template blocker (parent artifact: `evidence/equity-risk-policy-20261030/independent-review/inert-96beab4`). Final combined source, exact installed-before facts, manifest/configuration/binary hashes, unprivileged reader and assembled owner command still require the established final review. No operational readiness, profitability or continuous-coverage claim follows from these template tests.
