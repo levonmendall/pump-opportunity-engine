@@ -1,0 +1,14 @@
+{"elapsedFakeMs":600015,"physicalStarts":839,"maximumMinute":85,"maximumShort":15,"maximumActive":1,"heldCompletions":298,"maximumCompletedGapMs":3095,"discretionaryJobs":[135,135,135,135],"successesAfterRetry":1,"measuredUncertaintyBytes":2097152,"scope":"actual RPC/gate and actual launcher admission under four synthetic runnable discretionary queues; not real market or audit coverage","providerRequests":0}
+✔ shared actual provider budget preserves timely held recovery and fair discretionary progress under sustained demand across accounting chapters (6418.849701ms)
+✔ healthy real native notifications survive recurring-financial reserve and entry physical headroom deferrals (35.163249ms)
+✔ genuine required-evidence cutoff still refuses a real native packet despite ample RPC allowance (3.811704ms)
+✔ genuine memory-resource cutoff still refuses a real native packet despite ample RPC allowance (3.680329ms)
+✔ operating launcher wires native capture to safety independently of source/RPC admission (0.88978ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8823.084852

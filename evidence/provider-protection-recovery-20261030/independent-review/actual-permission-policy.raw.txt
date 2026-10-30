@@ -1,0 +1,18 @@
+▶ actual held protection can complete strict recovery despite recurring candidate-only timeout backoff
+  ✔ old coupled admission (180.133896ms)
+  ✔ held explicit-restriction admission (116.509754ms)
+✔ actual held protection can complete strict recovery despite recurring candidate-only timeout backoff (297.708221ms)
+✔ cash inventory retains ordinary provider backoff and cannot invent held recovery credit (107.517973ms)
+✔ actual provider restriction resets the recovery interval even with complete fresh held contexts (136.451961ms)
+▶ held provider admission cannot override owner stop or missing liquidation evidence
+  ✔ owner-stop (73.95724ms)
+  ✔ missing-marks (70.565817ms)
+✔ held provider admission cannot override owner stop or missing liquidation evidence (145.1788ms)
+ℹ tests 8
+ℹ suites 0
+ℹ pass 8
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2038.453985

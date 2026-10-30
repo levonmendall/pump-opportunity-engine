@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-30T00:54:29.266647+00:00",
+  "sourceCommit": "5675961a0ad05df508eec6928644c9e403be0811",
+  "headAfter": "5675961a0ad05df508eec6928644c9e403be0811",
+  "sourceUnchanged": true,
+  "applicationIdenticalToIndependentlyReviewed873": true,
+  "addedRouterRegressionIdenticalToPriorIndependentlyReviewedFixture": true,
+  "auditFixtureSha256": "eb81708d1b020469a1584d35f2975cd20b19e903b864bc1b46132db4894a3f72",
+  "changedTestsExitCode": 0,
+  "resultsSha256": "3e60fa573db02a1cd5c62eee49ffd7db2a8c170a34e9abb11efcdc2bf7cfbfc2",
+  "providerRequests": 0,
+  "financialWrites": 0,
+  "operatingServiceChanged": false,
+  "liveAcceptance": false,
+  "passed": true
+}

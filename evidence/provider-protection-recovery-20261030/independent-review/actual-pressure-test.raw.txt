@@ -1,0 +1,10 @@
+{"elapsedFakeMs":120000,"physicalStarts":171,"maximumMinute":86,"maximumShort":17,"maximumActive":1,"heldCompletions":60,"maximumCompletedGapMs":3095,"discretionaryJobs":[28,28,27,27],"successesAfterRetry":1,"measuredUncertaintyBytes":2097152,"scope":"actual RPC/gate and actual launcher admission under four synthetic runnable discretionary queues; not real market or audit coverage","providerRequests":0}
+✔ shared actual provider budget preserves timely held recovery and fair discretionary progress under sustained demand (1546.454403ms)
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2510.300464

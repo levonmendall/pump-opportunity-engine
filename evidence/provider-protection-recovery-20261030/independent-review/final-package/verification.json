@@ -1,0 +1,94 @@
+{
+  "at": "2026-10-30T00:57:51.052738+00:00",
+  "source": {
+    "commit": "5675961a0ad05df508eec6928644c9e403be0811",
+    "sha256": "157c34efd86bc0b5ae78aa268afe5afc7d3a4c4db8edcbb181445cad92ccb6ae"
+  },
+  "packagePins": {
+    "configurationSha256": "ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db",
+    "driverSha256": "6e4281d08a011aae887407009db34aa917c31d86d599c2d97a9b42503b7c8d43",
+    "indexSha256": "694788119a7eed387d9d8ad10481f7cc8e995463105030547c149aa43f4732d0",
+    "manifestSha256": "3cf20e5a6e8b97e0f5a5e570e5ca96ae4827bf6e62d9ff5529c74cf9c204817c",
+    "transportSha256": "91675a9bd155506f1176e22ee3938bbd066a73e6f2aa1c38bd748dba18615d0a",
+    "ownerCommandSha256": "00f320569585c71b3556ccc5d33182182348ef23c06d283dffbe9d6f56070540"
+  },
+  "exactPackageTransportAndAdminBytesVerified": true,
+  "ownerCommandSyntaxShellRoundTripAndMemoryHashGuardsVerified": true,
+  "accountAndTwoPositionFourSlotPaperProfilePreserved": true,
+  "results": [
+    {
+      "command": [
+        "python3",
+        "-B",
+        "test-forward-original-upgrade.py"
+      ],
+      "exitCode": 0,
+      "raw": "test-forward-original-upgrade.py.raw.txt",
+      "sha256": "a8c2f430aef73592d135c3e4b32b58ae25628a562d680b716f75bb7aa8775ce4"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "test-prepare-provider-recovery-package-20261030.py"
+      ],
+      "exitCode": 0,
+      "raw": "test-prepare-provider-recovery-package-20261030.py.raw.txt",
+      "sha256": "fe008aab760eb03ccac7578e2b84665b1b50b0d7f855b17a0c7a8d039435b658"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "test-export-provider-recovery-forensics-20261030.py"
+      ],
+      "exitCode": 0,
+      "raw": "test-export-provider-recovery-forensics-20261030.py.raw.txt",
+      "sha256": "e7a0081cb641ab52692694a7192383117901bdc9003861ab9cd02b787ab8272f"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "test-read-provider-recovery-forensics-20261030.py"
+      ],
+      "exitCode": 0,
+      "raw": "test-read-provider-recovery-forensics-20261030.py.raw.txt",
+      "sha256": "d034ab39354c2f034fa02526bcbb2b25197c79369aa9fb04ff68ee72fc6a232f"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "operator/native-paper-ec2/test-provider-recovery-stage-workflow.py"
+      ],
+      "cwd": "/workspace/poe-coherent-readiness-stage-admin",
+      "exitCode": 0,
+      "raw": "actual-stager-disposable.raw.txt",
+      "sha256": "1561ea1335e7f6b674365c52ce37055a4bd60a11eaea0a2f13e6adf48fd4836b"
+    }
+  ],
+  "sourceBefore": {
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/forward-original-upgrade.py": "6e4281d08a011aae887407009db34aa917c31d86d599c2d97a9b42503b7c8d43",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/prepare-provider-recovery-package-20261030.py": "49282b1213c29b9cea0ebf56e3c398d47a834adcd5b5bdcb372320878388ba20",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/export-provider-recovery-forensics-20261030.py": "e1c04bc56c27e2341b188d441055eaf5b1eac245ad1d390157a14e3b3d129f7e",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/read-provider-recovery-forensics-20261030.py": "675ddd56d5c0674d4de39a197cc9b44474f7d5a85dd285a5116bee0a4a18857f",
+    "/workspace/poe-coherent-readiness-stage-admin/.github/workflows/poe-original-cutover-resume-stage.yml": "60347a2bd16b50cf233272bcdf9e75da1cc13396d89097712ec994f3dde4fbf2",
+    "/workspace/poe-coherent-readiness-stage-admin/operator/native-paper-ec2/test-provider-recovery-stage-workflow.py": "a975b19c570fe475145360864c0ead4c4a08801c3296622ea488bf59604323f4"
+  },
+  "sourceAfter": {
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/forward-original-upgrade.py": "6e4281d08a011aae887407009db34aa917c31d86d599c2d97a9b42503b7c8d43",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/prepare-provider-recovery-package-20261030.py": "49282b1213c29b9cea0ebf56e3c398d47a834adcd5b5bdcb372320878388ba20",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/export-provider-recovery-forensics-20261030.py": "e1c04bc56c27e2341b188d441055eaf5b1eac245ad1d390157a14e3b3d129f7e",
+    "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/read-provider-recovery-forensics-20261030.py": "675ddd56d5c0674d4de39a197cc9b44474f7d5a85dd285a5116bee0a4a18857f",
+    "/workspace/poe-coherent-readiness-stage-admin/.github/workflows/poe-original-cutover-resume-stage.yml": "60347a2bd16b50cf233272bcdf9e75da1cc13396d89097712ec994f3dde4fbf2",
+    "/workspace/poe-coherent-readiness-stage-admin/operator/native-paper-ec2/test-provider-recovery-stage-workflow.py": "a975b19c570fe475145360864c0ead4c4a08801c3296622ea488bf59604323f4"
+  },
+  "sourceUnchanged": true,
+  "providerRequests": 0,
+  "realFinancialDatabaseOpened": false,
+  "realServiceControlOperations": 0,
+  "rootCommandExecuted": false,
+  "postStartExecutableRollbackPolicy": "Conservative manager retention, not accounting schema incompatibility; before possible start exact93 recovery only, after possible start forward recovery with no ledger/counter rewind",
+  "passed": true
+}

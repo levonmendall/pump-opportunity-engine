@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-30T00:12:28.008441+00:00",
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "--test",
+    "test/research-clock-pricing.test.ts",
+    "test/research-held-market.test.ts"
+  ],
+  "worktree": "/workspace/poe-held-link-recovery",
+  "sourceHashes": {
+    "src/research-clock-pricing.ts": "35ed26800ddf69b9c253dcc77c216b33f9150d17d1903cef8ce5c3246011c955",
+    "test/research-clock-pricing.test.ts": "6f1541bceb034cd9b8cb5bb06c7ad6a2a60dc19a17f1aa28c1e53b8940bca31b",
+    "src/research-held-market.ts": "72710b1cf1a991ac7ec5f32115761c6b99cbd4e67689a7290770ba744cb39889",
+    "test/research-held-market.test.ts": "8e6b596c240d044ef1aba946fc5951fab5d3c31c4b37e8ed0b4725ff5f8f726d"
+  },
+  "sourceUnchanged": true,
+  "exitCode": 0,
+  "rawSha256": "98b89000243f35cec491009d22de7c62ea085d801731d61ec7362218c0a54b00",
+  "providerRequests": 0,
+  "financialActions": 0
+}

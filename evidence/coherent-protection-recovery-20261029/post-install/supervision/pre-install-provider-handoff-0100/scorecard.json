@@ -1,0 +1,263 @@
+{
+  "frozenAt": "2026-10-30T01:00:38.387354+00:00",
+  "sourceAt": "2026-10-30T01:00:14.592Z",
+  "sourceSequence": "11008",
+  "source": {
+    "release": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
+    "strategy": "adaptive-momentum-v2-paper-v1"
+  },
+  "account": {
+    "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "initialUsd": 1000
+  },
+  "run": {
+    "id": "native-paper-20261029234856700",
+    "startedAt": "2026-10-29T23:48:56.700Z",
+    "mode": "persistent-paper",
+    "configurationSha256": "44b82455003f04f75eb1ad7a3dc21555406c1d4d0c7626386d3d21661fdb47c9",
+    "strategyVersion": "adaptive-momentum-v2-paper-v1"
+  },
+  "status": {
+    "runtime": "running",
+    "market": "observing",
+    "entries": "paused",
+    "reconciled": true,
+    "blocker": "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED"
+  },
+  "receiverSourceAgeMs": 14592,
+  "reconciliationAgeAtSourceMs": 262,
+  "candidates": {
+    "migrationsReceived": 565,
+    "verifiedOrigins": 169,
+    "known": 174,
+    "watch": 67,
+    "eligible": 39,
+    "deepActive": 1,
+    "deepMaximum": 4,
+    "queued": 36,
+    "promoted": 4837,
+    "repromoted": 4373,
+    "demoted": 4827,
+    "completeWindows": 2493,
+    "auditedWindows": 2515,
+    "uniqueEvaluated": 75,
+    "uniqueAudited": null,
+    "predictiveAssessments": 396,
+    "predictivePasses": 180,
+    "predictiveFailures": 216,
+    "predictiveUnavailable": 0,
+    "waitMeanMs": null,
+    "waitMaximumMs": 2350480,
+    "olderSelected": 24
+  },
+  "financialFunnel": {
+    "discovered": 140,
+    "supported": 140,
+    "sufficientlyObserved": 7,
+    "evaluated": 7,
+    "qualified": 0,
+    "attempted": 0,
+    "paperFilled": 0,
+    "exited": 0,
+    "reconciled": 2064
+  },
+  "quality": {
+    "captureConnected": true,
+    "qualityGaps": 1425,
+    "auditUnavailable": 131,
+    "auditUnusable": 199,
+    "decisionDeadlineMisses": 350,
+    "enrichmentDeadlineFailures": 0,
+    "incompleteExclusions": 1425,
+    "capacityExclusions": 0,
+    "structuralExclusions": 56
+  },
+  "protection": {
+    "state": "monitored",
+    "targetCadenceMs": 2000,
+    "completedEvaluationBoundaryMs": 4000,
+    "lastCompletedAt": "2026-10-30T01:00:14.345Z",
+    "maximumCompletedGapMs": 89426,
+    "maximumQuoteAgeAtUseMs": 70,
+    "breaches": 68,
+    "unavailableChecks": 222
+  },
+  "provider": {
+    "rpcRequests": 4071,
+    "rpcResponseBytes": 462018426,
+    "nativeStreamBytes": 1384432142,
+    "broadWatchBytes": 72192227180,
+    "discoveryConnected": true,
+    "watchConnected": true,
+    "httpTimeouts": 628,
+    "httpErrors": 0,
+    "throttles": 0,
+    "rollingStartsPerMinute": 63,
+    "maximumStartsPerMinute": 90,
+    "minimumSpacingMs": 250,
+    "primaryCooldownUntil": "2026-10-30T00:59:38.744Z",
+    "historyCooldownUntil": "2026-10-30T00:29:47.824Z",
+    "controlCooldownUntil": null
+  },
+  "resources": {
+    "sampleAt": "2026-10-30T01:00:14.405Z",
+    "cpuOneCoreFraction": 0.15865139176289966,
+    "rssBytes": 388218880,
+    "availableMemoryBytes": 6809882624,
+    "availableDiskBytes": 286964862976,
+    "eventLoopLagMs": 27.131903,
+    "state": "normal"
+  },
+  "admission": {
+    "financialProjectionReady": true,
+    "supervisedNewRiskAllowed": true,
+    "candidateResourceAdmissionAllowed": true,
+    "evidenceAdmissionAllowed": true,
+    "evidencePressureReasonCode": null,
+    "evidenceDiagnosticBytes": 7600393,
+    "evidenceDiagnosticLimitBytes": 134217728,
+    "evidenceRequiresCriticalRecovery": false,
+    "evidenceRefusedRecords": 0,
+    "sourceRecoveryGeneration": 0,
+    "sourceRecoveryFailures": 0,
+    "sourceRecoveryReasonCode": null,
+    "sourceRecoveryRetryAt": null,
+    "sourceRecoveryClosingSettled": false,
+    "sourceRestartRequired": false,
+    "proofPreparationState": "complete"
+  },
+  "positions": [
+    {
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "quantity": "65278155",
+      "enteredAt": "2026-10-29T22:23:36.537Z",
+      "entryCostUsd": 49.708013,
+      "netLiquidationUsd": 57.768389,
+      "executionCostsUsd": 0.00068,
+      "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+    }
+  ],
+  "pendingOrders": [],
+  "balances": {
+    "cashSol": "9.391335448",
+    "reservedSol": "0",
+    "equitySol": "10.022656091",
+    "equityUsd": 948.694513,
+    "realizedUsd": -3.614509,
+    "unrealizedUsd": 9.389262,
+    "tradingPnlUsd": 5.774753,
+    "economicPnlUsd": null,
+    "positionCostUsd": 49.708013,
+    "markedExposureUsd": 57.768389,
+    "drawdownUsd": null,
+    "executionCostsUsd": null,
+    "operatingCostsUsd": null,
+    "passiveSolEquityUsd": 942.919759,
+    "solPriceUsd": 94.655
+  },
+  "observations": {
+    "count": 10,
+    "firstSourceAt": "2026-10-30T00:57:55.314Z",
+    "lastSourceAt": "2026-10-30T01:00:14.592Z",
+    "maximumPollGapMs": 15356,
+    "sha256": "aca29a8ac9b79bde340e17816058c998b326220774298fb2b289201a14b7bdef"
+  },
+  "protectionTransitions": [
+    {
+      "sourceAt": "2026-10-30T00:57:55.314Z",
+      "sequence": "10999",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T00:57:54.349Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 66,
+        "unavailableChecks": 220
+      },
+      "provider": {
+        "httpTimeouts": 626,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 41,
+        "primaryCooldownUntil": "2026-10-30T00:35:40.425Z"
+      },
+      "heldRefusals": [
+        "Recorded holding-pricing refusals in this run: HELD_PRICING_ABORTED:23, HELD_PRICING_PROVIDER_TIMEOUT:11, HELD_PRICING_PROVIDER_COOLDOWN:58."
+      ]
+    },
+    {
+      "sourceAt": "2026-10-30T00:58:40.593Z",
+      "sequence": "11002",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T00:58:40.306Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 67,
+        "unavailableChecks": 221
+      },
+      "provider": {
+        "httpTimeouts": 627,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 58,
+        "primaryCooldownUntil": "2026-10-30T00:58:33.998Z"
+      },
+      "heldRefusals": [
+        "Recorded holding-pricing refusals in this run: HELD_PRICING_ABORTED:23, HELD_PRICING_PROVIDER_TIMEOUT:11, HELD_PRICING_PROVIDER_COOLDOWN:59."
+      ]
+    },
+    {
+      "sourceAt": "2026-10-30T00:59:41.995Z",
+      "sequence": "11006",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T00:59:41.148Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 68,
+        "unavailableChecks": 222
+      },
+      "provider": {
+        "httpTimeouts": 628,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 45,
+        "primaryCooldownUntil": "2026-10-30T00:59:38.744Z"
+      },
+      "heldRefusals": [
+        "Recorded holding-pricing refusals in this run: HELD_PRICING_ABORTED:23, HELD_PRICING_PROVIDER_TIMEOUT:11, HELD_PRICING_PROVIDER_COOLDOWN:60."
+      ]
+    }
+  ],
+  "interpretation": "Source93 remains installed. Future567 repair is staged only. This latest cooldown incident has not yet demonstrated recovered entry eligibility; no completion claimed. Capture/discovery/WATCH and financial position management continued. No manual stop clear, daily reset, financial control, runtime restart or extra provider RPC. Original source snapshot and ledger-derived balances, not synthetic. Cumulative failures include history and are not reset. Stable source fields do not prove every protection interval was observed by15-second Cloud polling. Collector195904 remains PPID1/SID195904 detached and active."
+}

@@ -1,0 +1,10 @@
+✔ twelve ready audit pages use idle real capacity beyond optional lookup smoothing (81.589281ms)
+ℹ {"scope":"actual request router and provider budget only; full NativeRunner timing/qualification not claimed","auditReads":12,"heldReads":5,"optionalPhysicalReads":0,"physicalReads":17,"auditReadsCompletedAfterMs":3350,"maximumPhysicalInFlight":1,"providerRequests":0}
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1386.220894

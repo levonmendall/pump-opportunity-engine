@@ -1,0 +1,2 @@
+{"heldUsesRestriction":false,"recovered":false,"recoveredAfterMs":null,"completedProtection":66,"recoveryRecords":0,"progress":{"startedAt":1793246531000,"completedAt":1793246531000,"completedEvaluations":1,"maximumCompletedGapMs":0,"lastQuoteAt":1793246531000,"heldPositions":1},"ordinaryBackoffActiveAtFinish":false}
+{"heldUsesRestriction":true,"recovered":true,"recoveredAfterMs":64000,"completedProtection":66,"recoveryRecords":1,"progress":null,"ordinaryBackoffActiveAtFinish":false}

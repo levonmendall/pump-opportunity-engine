@@ -1,0 +1,30 @@
+{
+  "verifiedAt": "2026-10-30T00:59:31.544459+00:00",
+  "workflow": 40983035212,
+  "rawSha256": "7e0bfed9800fe9b02992f65a2b1cae6e204ee54f0145b0e53d7d85d3dd234afb",
+  "source": {
+    "commit": "5675961a0ad05df508eec6928644c9e403be0811",
+    "sha256": "157c34efd86bc0b5ae78aa268afe5afc7d3a4c4db8edcbb181445cad92ccb6ae"
+  },
+  "directory": "/var/tmp/poe-original-provider-recovery-upgrade",
+  "allElevenFilesMatch": true,
+  "serviceBefore": {
+    "MainPID": "2476672",
+    "NRestarts": "0",
+    "User": "poe-runtime",
+    "LoadState": "loaded",
+    "ActiveState": "active",
+    "SubState": "running"
+  },
+  "serviceAfter": {
+    "MainPID": "2476672",
+    "NRestarts": "0",
+    "User": "poe-runtime",
+    "LoadState": "loaded",
+    "ActiveState": "active",
+    "SubState": "running"
+  },
+  "financialDatabaseOpened": false,
+  "serviceControlled": false,
+  "installed": false
+}

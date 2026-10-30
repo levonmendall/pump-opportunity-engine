@@ -1,0 +1,94 @@
+{
+  "at": "2026-10-30T00:53:53.514883+00:00",
+  "sourceBefore": {
+    ".github/workflows/poe-original-cutover-refusal.yml": "fbfd961d259489388378f02d22cfe8a038230cfede173342ec15405a20f8628a",
+    "operator/native-paper-ec2/inspect-original-cutover-refusal.py": "d96602326b98e9f9bd75c925b9f9d4a7379858f42617406dc851905fce01f31c",
+    "operator/native-paper-ec2/read-provider-recovery-forensics-20261030.py": "675ddd56d5c0674d4de39a197cc9b44474f7d5a85dd285a5116bee0a4a18857f",
+    "operator/native-paper-ec2/export-provider-recovery-forensics-20261030.py": "e1c04bc56c27e2341b188d441055eaf5b1eac245ad1d390157a14e3b3d129f7e",
+    "operator/native-paper-ec2/test-inspect-original-service-io.py": "aceb4fd56040083a3b318893c3cf4a2fe51058064f5cca9fb0860611664723e1",
+    "operator/native-paper-ec2/test-inspect-original-source-forensics.py": "1aa6258ba7ee85fad7b2766b0b508b18e87263e9c96c24e4755710ad94cd2b89",
+    "operator/native-paper-ec2/test-read-current-run-forensics.py": "f9b42baaef38606510f0859a963fb51819f188eba6b58b1245b35c74124d1c5e",
+    "operator/native-paper-ec2/test-inspect-provider-recovery-reader.py": "d749b49b696230d5d6f9db9542843d8367bd0142bc7fc7315513eef8bdac0b77",
+    "operator/native-paper-ec2/test-read-provider-recovery-forensics-20261030.py": "fe357a7cdf24dc0b17c3f22f1f48cb0224ce69bdffb1a39324d5a64cfcd5a2aa",
+    "operator/native-paper-ec2/test-inspect-original-entrypoint.py": "9971d22da100062d078cb2de0589707632ccea703aeb2677c4c873ada8f357ff"
+  },
+  "sourceAfter": {
+    ".github/workflows/poe-original-cutover-refusal.yml": "fbfd961d259489388378f02d22cfe8a038230cfede173342ec15405a20f8628a",
+    "operator/native-paper-ec2/inspect-original-cutover-refusal.py": "d96602326b98e9f9bd75c925b9f9d4a7379858f42617406dc851905fce01f31c",
+    "operator/native-paper-ec2/read-provider-recovery-forensics-20261030.py": "675ddd56d5c0674d4de39a197cc9b44474f7d5a85dd285a5116bee0a4a18857f",
+    "operator/native-paper-ec2/export-provider-recovery-forensics-20261030.py": "e1c04bc56c27e2341b188d441055eaf5b1eac245ad1d390157a14e3b3d129f7e",
+    "operator/native-paper-ec2/test-inspect-original-service-io.py": "aceb4fd56040083a3b318893c3cf4a2fe51058064f5cca9fb0860611664723e1",
+    "operator/native-paper-ec2/test-inspect-original-source-forensics.py": "1aa6258ba7ee85fad7b2766b0b508b18e87263e9c96c24e4755710ad94cd2b89",
+    "operator/native-paper-ec2/test-read-current-run-forensics.py": "f9b42baaef38606510f0859a963fb51819f188eba6b58b1245b35c74124d1c5e",
+    "operator/native-paper-ec2/test-inspect-provider-recovery-reader.py": "d749b49b696230d5d6f9db9542843d8367bd0142bc7fc7315513eef8bdac0b77",
+    "operator/native-paper-ec2/test-read-provider-recovery-forensics-20261030.py": "fe357a7cdf24dc0b17c3f22f1f48cb0224ce69bdffb1a39324d5a64cfcd5a2aa",
+    "operator/native-paper-ec2/test-inspect-original-entrypoint.py": "9971d22da100062d078cb2de0589707632ccea703aeb2677c4c873ada8f357ff"
+  },
+  "sourceUnchanged": true,
+  "results": [
+    {
+      "command": [
+        "python3",
+        "-B",
+        "operator/native-paper-ec2/test-inspect-original-service-io.py"
+      ],
+      "exitCode": 0,
+      "raw": "test-inspect-original-service-io.raw.txt",
+      "sha256": "75ff54e727b57e4bd7b88956ed0c92c4b9a416e6f0976707e8fb54aa385ac0bd"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "operator/native-paper-ec2/test-inspect-original-source-forensics.py"
+      ],
+      "exitCode": 0,
+      "raw": "test-inspect-original-source-forensics.raw.txt",
+      "sha256": "ca76ae23d74a4f8311220fb98bf9133410292fe2127b0b3238e002043c23db77"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "operator/native-paper-ec2/test-read-current-run-forensics.py"
+      ],
+      "exitCode": 0,
+      "raw": "test-read-current-run-forensics.raw.txt",
+      "sha256": "d2fb41082e408e2f5f8300e0c9aff827e840b3ea83198866cf636f19a4657296"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "operator/native-paper-ec2/test-inspect-provider-recovery-reader.py"
+      ],
+      "exitCode": 0,
+      "raw": "test-inspect-provider-recovery-reader.raw.txt",
+      "sha256": "2c37d50a88147ca2ebd5197d74ee37d462dab650d793512e849814c28d5a38f0"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "operator/native-paper-ec2/test-read-provider-recovery-forensics-20261030.py"
+      ],
+      "exitCode": 0,
+      "raw": "test-read-provider-recovery-forensics-20261030.raw.txt",
+      "sha256": "be23c52c198958daaec4e79b26f3a0fc87c2184160a52a034e6040b00a3d2d97"
+    },
+    {
+      "command": [
+        "python3",
+        "-B",
+        "operator/native-paper-ec2/test-inspect-original-entrypoint.py"
+      ],
+      "exitCode": 0,
+      "raw": "test-inspect-original-entrypoint.raw.txt",
+      "sha256": "62f4decbacb2e031de4e76f2bc96caa7cf3ec498967ced4083e0885df723cc1e"
+    }
+  ],
+  "passed": true,
+  "hostReads": false,
+  "providerRequests": 0,
+  "serviceChanges": 0
+}

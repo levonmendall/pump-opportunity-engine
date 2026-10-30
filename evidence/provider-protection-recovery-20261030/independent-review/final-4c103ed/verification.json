@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-30T00:52:27.618406+00:00",
+  "sourceCommit": "4c103edd6f8fa394074bafa0ba9f58f7c2090f34",
+  "headAfter": "4c103edd6f8fa394074bafa0ba9f58f7c2090f34",
+  "sourceUnchanged": true,
+  "applicationIdenticalToPriorIndependentlyReviewed873": true,
+  "changedTestsPassed": true,
+  "changedTestCount": 5,
+  "resultsSha256": "ee6f7a6a63f6cbaecb0de25a58b7f32093d8afff5ce83f44a2c1d14d6695dea2",
+  "providerRequests": 0,
+  "financialWrites": 0,
+  "operatingServiceChanged": false,
+  "liveAcceptance": false,
+  "passed": true
+}
