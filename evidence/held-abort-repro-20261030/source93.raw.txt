@@ -1,0 +1,11 @@
+✔ source93 whole-context cancellation can report ABORTED without any physical request or HTTP timeout (3009.880799ms)
+✔ original latest-start admission rejects an impossible held read immediately instead of consuming its3s context (10.512131ms)
+✔ four rolling starts of headroom do not cover the known held obligation before existing minute starts expire (3040.934539ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 3
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 7318.5924
