@@ -73,6 +73,51 @@ test('fresh changed reserves and newer slot still get one coherent read and exac
   assert.equal(changed.slot,f.state.context.slot);assert.equal(changed.clockSlot,changed.slot);
 }));
 
+test('a transient failed holding read retains only validated links and recovers using one entirely fresh batch',async()=>{
+  for(const code of ['PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT','PILOT_RPC_COMPONENT_HTTP_TRANSPORT','PILOT_RPC_COOLDOWN','PILOT_RPC_PHYSICAL_SLOT_OCCUPIED','PILOT_RPC_COMPONENT_ADMISSION_CLOSED'])await withTime(async f=>{
+    let failure:string|null=null,attempts=0;
+    const rpc={async call<T>(method:string,params:unknown[]=[],signal?:AbortSignal){attempts++;if(failure){const refused=failure;failure=null;throw Error(refused);}return f.rpc.call<T>(method,params);}};
+    const p=new ResearchClockPositionPricer(rpc,f.rec),first=await p.quote(f.request),links=copy(p.usage().cachedPoolSlots),quotesBefore=f.records.filter(r=>r.kind==='research-clock-position-sell-quote').length;
+    failure=code;await assert.rejects(p.quote(f.request),new RegExp(code));
+    assert.deepEqual(p.usage().cachedPoolSlots,links,'no contradictory pool state was obtained');
+    assert.equal(f.records.filter(r=>r.kind==='research-clock-position-sell-quote').length,quotesBefore,'failure never returns or records a replacement price');
+    const vault=Buffer.from(f.state.value[6].data[0],'base64');vault.writeBigUInt64LE(vault.readBigUInt64LE(64)+10_000_000n,64);f.state.value[6].data[0]=vault.toString('base64');
+    const fee=Buffer.from(f.state.value[2].data[0],'base64'),tiers=fee.readUInt32LE(65);assert.ok(tiers>0&&tiers<256);for(let i=0;i<tiers;i++){const lp=69+i*40+16;fee.writeBigUInt64LE(fee.readBigUInt64LE(lp)+1n,lp);}f.state.value[2].data[0]=fee.toString('base64');f.moveSlot();
+    const before=attempts,recovered=await p.quote(f.request);assert.equal(attempts-before,1,'old verified links avoid a redundant discovery read');
+    const baseline=await quotePositionsSell(f.rpc as ReadOnlyRpc,[f.request],{record(){}}),name=f.request.mint.toBase58();
+    assert.notEqual(recovered.sell.outputLamports,first.sell.outputLamports);assert.notDeepEqual(recovered.feeBps,first.feeBps);assert.deepEqual(recovered.sell,baseline.quotes[name]!.sell);assert.deepEqual(recovered.feeBps,baseline.quotes[name]!.feeBps);
+    assert.equal(recovered.slot,f.state.context.slot);assert.equal(recovered.clockSlot,recovered.slot);
+  });
+});
+
+test('cancellation after a warm read starts preserves existing address links without publishing an aborted quote',async()=>withTime(async f=>{
+  let cancel:AbortController|null=null;
+  const rpc={async call<T>(method:string,params:unknown[]=[],signal?:AbortSignal){if(cancel){cancel.abort();signal!.throwIfAborted();}return f.rpc.call<T>(method,params);}};
+  const p=new ResearchClockPositionPricer(rpc,f.rec);await p.quote(f.request);const links=copy(p.usage().cachedPoolSlots),before=f.calls.length;
+  cancel=new AbortController();await assert.rejects(p.quote(f.request,cancel.signal),error=>error instanceof Error&&error.name==='AbortError');
+  assert.deepEqual(p.usage().cachedPoolSlots,links);assert.equal(f.calls.length,before);
+  cancel=null;await p.quote(f.request);assert.equal(f.calls.length-before,1);
+}));
+
+test('late admission closure cannot commit newly validated links or erase earlier verified links',async()=>withTime(async f=>{
+  let open=true,closeOnQuote=false;
+  const p=new ResearchClockPositionPricer(f.rpc,{record(kind,data){f.rec.record(kind,data);if(closeOnQuote&&kind==='research-clock-position-sell-quote')open=false;}});
+  await p.quote(f.request);const prior=copy(p.usage().cachedPoolSlots);f.moveSlot();closeOnQuote=true;
+  await assert.rejects(p.quoteMany([f.request],undefined,{latestStartAt:Date.now()+1000,admissionOpen:()=>open}),/RESEARCH_CLOCK_ADMISSION_CLOSED/);
+  assert.deepEqual(p.usage().cachedPoolSlots,prior,'only previously committed address metadata survives');
+  assert.equal(p.usage().highestVerifiedSlot,f.state.context.slot,'observed bank nonregression remains required');
+  open=true;closeOnQuote=false;const before=f.calls.length,recovered=await p.quote(f.request);assert.equal(f.calls.length-before,1);assert.equal(recovered.slot,f.state.context.slot);
+}));
+
+test('malformed or unrecognized source failures still retire cached dependency links',async()=>{
+  for(const fault of ['malformed-batch','PILOT_RPC_COMPONENT_HTTP_MALFORMED_JSON','unknown-source-failure'])await withTime(async f=>{
+    let fail=false;
+    const rpc={async call<T>(method:string,params:unknown[]=[],signal?:AbortSignal){if(fail){if(fault==='malformed-batch')return {context:f.state.context,value:[]} as T;throw Error(fault);}return f.rpc.call<T>(method,params);}};
+    const p=new ResearchClockPositionPricer(rpc,f.rec);await p.quote(f.request);fail=true;await assert.rejects(p.quote(f.request));assert.deepEqual(p.usage().cachedPoolSlots,{});
+    fail=false;const before=f.calls.length;await p.quote(f.request);assert.equal(f.calls.length-before,2);
+  });
+});
+
 test('fee-tier changes are read in the fresh dependency batch, with exact established decoder parity',async()=>withTime(async f=>{
   const p=new ResearchClockPositionPricer(f.rpc,f.rec),first=await p.quote(f.request);
   const data=Buffer.from(f.state.value[2].data[0],'base64');
@@ -211,6 +256,17 @@ test('one changed pool link cannot borrow old vault data or invalidate unaffecte
   const name=f.requests[0]!.mint.toBase58();assert.equal(result.unavailable[name],'POOL_LINKS_CHANGED');assert.equal(result.quotes[name],undefined);assert.equal(Object.keys(result.quotes).length,2);
   assert.equal(Object.keys(p.usage().cachedPoolSlots).length,2);
   f.accounts.set(pool,original);const next=f.calls.length;await p.quoteMany(f.requests);assert.equal(f.calls.length-next,2);
+}));
+
+test('two held pools stay warm after a transport failure while a later contradictory pool remains isolated',async()=>withMultiTime(async f=>{
+  let fail=false;
+  const rpc={async call<T>(method:string,params:unknown[]=[],signal?:AbortSignal){if(fail){fail=false;throw Error('PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT');}return f.rpc.call<T>(method,params);}};
+  const held=f.requests.slice(0,2),p=new ResearchClockPositionPricer(rpc,f.rec);await p.quoteMany(held);const links=copy(p.usage().cachedPoolSlots);
+  fail=true;await assert.rejects(p.quoteMany(held),/PHYSICAL_TIMEOUT/);assert.deepEqual(p.usage().cachedPoolSlots,links);
+  const pool=f.retained[0]!.state.addresses[0],original=copy(f.accounts.get(pool))!,changed=copy(original),data=Buffer.from(changed.data[0],'base64');data[175]=data[175]!^1;changed.data[0]=data.toString('base64');f.accounts.set(pool,changed);
+  const before=f.calls.length,result=await p.quoteMany(held),bad=held[0]!.mint.toBase58(),good=held[1]!.mint.toBase58();assert.equal(f.calls.length-before,1);
+  assert.equal(result.unavailable[bad],'POOL_LINKS_CHANGED');assert.equal(result.quotes[bad],undefined);assert.ok(result.quotes[good]);assert.deepEqual(Object.keys(p.usage().cachedPoolSlots),[good]);
+  f.accounts.set(pool,original);const again=f.calls.length,recovered=await p.quoteMany(held);assert.equal(f.calls.length-again,2);assert.deepEqual(recovered.unavailable,{});assert.equal(Object.keys(recovered.quotes).length,2);
 }));
 
 test('common Clock or context faults invalidate every cached holding without losing verified slot floors',async()=>{

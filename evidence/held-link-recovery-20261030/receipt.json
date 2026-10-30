@@ -1,0 +1,68 @@
+{
+  "kind": "OFFLINE_VALIDATED_DEPENDENCY_LINK_RECOVERY",
+  "at": "2026-10-30T00:12:11.954674+00:00",
+  "baseSource": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
+  "files": {
+    "src/research-clock-pricing.ts": {
+      "beforeSha256": "fae5af159cae4c813e8503c63bb371fab877bbae2e4b272de72b88c941d2cae1",
+      "afterSha256": "35ed26800ddf69b9c253dcc77c216b33f9150d17d1903cef8ce5c3246011c955"
+    },
+    "test/research-clock-pricing.test.ts": {
+      "beforeSha256": "897f1d43a7efa65b67a7a749c32cf39ea021ed1884cd608eabef1fa5885859b1",
+      "afterSha256": "6f1541bceb034cd9b8cb5bb06c7ad6a2a60dc19a17f1aa28c1e53b8940bca31b"
+    }
+  },
+  "before": {
+    "command": "node --import tsx --test test/research-clock-pricing.test.ts",
+    "tests": 34,
+    "pass": 30,
+    "fail": 4,
+    "testSource": "before-tests-source.txt",
+    "note": "Initial regression version; final tests additionally mutate fee tiers during recovery."
+  },
+  "after": {
+    "focusedTests": 34,
+    "focusedPass": 34,
+    "broaderTests": 87,
+    "broaderPass": 87,
+    "build": "PASS npm run build",
+    "networkProviderRequests": 0,
+    "originalFinancialAccountRead": false,
+    "sourceChanges": [
+      "src/research-clock-pricing.ts"
+    ],
+    "preserved": "Fresh whole dependency/Clock union, actual-size pricing, fees, source-age and slot floors; contradictory/unknown evidence invalidates; no mark or reserve cache."
+  },
+  "artifacts": {
+    "after.raw.txt": {
+      "sha256": "f84898a3add0d667c22baf52c62f9ce70fffa87cdde75631ea2580aebfb2b90e",
+      "bytes": 4085
+    },
+    "broader.raw.txt": {
+      "sha256": "5679a3bee754592237f102732bccc7d0e8d73f06a29836b5e489aad2500613ed",
+      "bytes": 10284
+    },
+    "final-broader.raw.txt": {
+      "sha256": "6c6254fd8226f45dec1d1e0e7edb4e700cbf46787045a8de9d3fee5e5c1ae826",
+      "bytes": 10283
+    },
+    "before-tests-source.txt": {
+      "sha256": "bab78f1e43d0aca0c601f20d0b951781bd9ef67d6ea06fca32e53790b6c8c5e1",
+      "bytes": 42039
+    },
+    "final-build.raw.txt": {
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+      "bytes": 55
+    },
+    "build.raw.txt": {
+      "sha256": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+      "bytes": 55
+    },
+    "before.raw.txt": {
+      "sha256": "bc2fb30d545e17a9da163c8fe21966efa9abb9fafbe7ec91d42c56131954b762",
+      "bytes": 7995
+    }
+  },
+  "installed": false,
+  "forwardRuntimeVerified": false
+}
