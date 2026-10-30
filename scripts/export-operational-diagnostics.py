@@ -82,6 +82,8 @@ SCALARS.update(('dailyLossStopEnabled entryConsumedCostBps limitBps transitionRe
  'equalSizeBuyVolumeBps multiEventSignatureBuyVolumeBps netFlowShareBps '
  'recentPositiveBuckets scenarioNetSurplusBps lossFromConsumedCostBps '
  'executable cashLimited observations requiredForAdmission').split())
+SCALARS.update(('profitGivebackBps liquidityDeteriorationVerified trailingDistanceBps '
+ 'profitRetentionBps priceReturnBps volatilityBps').split())
 OBJECTS = set(('timing protection protectionRecovery failureStages provider rpc '
  'resources resource cpu processes source publisher financialReadiness safety '
  'reporting dispatchTrace localPhases diagnostics usage localPhases '
@@ -92,7 +94,13 @@ OBJECTS.update(('input request quote order price mark allocation entryStrategy '
 OBJECTS.update(('result target anchor lowerFence strictInteriorSlots contextFences '
  'lower upper notificationSnapshot originalSnapshot postSnapshotTail generation').split())
 OBJECTS.update(('v3 assessments genuineDemand liquidityResilience continuation '
- 'netEconomics components reserveStability liquidityContext flowContext').split())
+ 'netEconomics components reserveStability liquidityContext flowContext '
+ 'liquidityResilientHolding decision').split())
+ENUM_FIELDS = {
+    'continuationConfidence':{'audited-flow','price-reserve-only','unknown'},
+    'participationEvidence':{'current-independent-audit','UNKNOWN_NATIVE_HELD_FLOW_NOT_AVAILABLE'},
+    'inventoryEvidence':{'POINT_IN_TIME_ACCOUNT_OBSERVATIONS_AND_PLAUSIBLE_UNDISPOSED_PURCHASES_NOT_CURRENT_WALLET_BALANCES'},
+    'outOfPoolTransfers':{'UNKNOWN'},'externalSellerInventory':{'UNKNOWN'}}
 STRINGS = {'kind', 'reasonCode', 'stage', 'state', 'outcome', 'method', 'purpose',
            'reason', 'runId', 'mint', 'side', 'code', 'sourceState', 'ingestionReasonCode',
            'deliveryState', 'status', 'action', 'version', 'strategyVersion', 'mode',
@@ -112,6 +120,8 @@ UNSIGNED_AMOUNTS.update(('cashLamports reservedLamports lockedDepositLamports '
  'grossCurveLamports retainedProfitFloorLamports profitProtectionFloorLamports '
  'stressedNetLamports historicalMaximumObservedAccountBaseUnits '
  'windowNetPurchasedLargestBaseUnits renewedDemandScenarioLamports').split())
+UNSIGNED_AMOUNTS.update(('rawQuoteReserveLamports previousRawQuoteReserveLamports '
+ 'rawQuoteLamports priorRawQuoteLamports stressNetLamports').split())
 SIGNED_AMOUNTS = {'realizedLamports', 'tradingMicroUsd', 'economicMicroUsd',
                   'roundingResidualMicroUsd'}
 SIGNED_AMOUNTS.update(('recentNetBuyLamports scenarioNetSurplusLamports').split())
@@ -163,13 +173,17 @@ def enforce_export_bound(value):
     def size():
         return record_bytes(value)+1  # main()/timer append one newline
 
-    sections=[(value.get('supervisorEvents',{}),lambda r:True),
-              (value.get('retainedEvents',{}),lambda r:r.get('stream')!='essential'),
+    sections=[(value.get('supervisorEvents',{}),lambda r:not outcome_record(r)),
+              (value.get('retainedEvents',{}),lambda r:r.get('stream')!='essential' and not outcome_record(r)),
+              (value.get('retainedEvents',{}),lambda r:not outcome_record(r)),
               (value.get('financial',{}),lambda r:r.get('kind')=='reconcile'),
+              (value.get('supervisorEvents',{}),lambda r:True),
               (value.get('retainedEvents',{}),lambda r:True),
               (value.get('financial',{}),lambda r:r.get('kind') not in {'order','attempt','paper-epoch-transition','inception','deposit-release'}),
               (value.get('financial',{}),lambda r:True)]
-    for section,optional in sections:
+    sections=collections.deque(sections)
+    while sections:
+        section,optional=sections.popleft()
         excess=size()-MAX_EXPORT_BYTES
         if excess<=0:
             return value
@@ -192,7 +206,13 @@ def enforce_export_bound(value):
         counts=section.get('intervalKindCounts',section.get('kindCounts',{}))
         section['retainedKindCounts']=dict(retained_counts)
         section['omittedKindCounts']={k:n-retained_counts[k] for k,n in counts.items() if n>retained_counts[k]}
+        if 'distinctMintsInRetainedMatchingEvents' in section:
+            section['distinctMintsInRetainedMatchingEvents']=len({row.get('data',{}).get('mint')
+                for row in kept if isinstance(row.get('data',{}).get('mint'),str)})
         section['projectedRecordBytes']=sum(record_bytes(row) for row in kept)
+        # Omission metadata can itself add bytes. Reuse this same lowest
+        # priority class before escalating to protected audit outcomes.
+        sections.appendleft((section,optional))
     # An unusually large retained-file census must not make every future export
     # unreadable. Preserve its newest metadata and report the omitted file count.
     for name in ('supervisorEvents','retainedEvents'):
@@ -233,7 +253,10 @@ def public_fields(value, depth=0):
         return {}
     out = {}
     for key, item in value.items():
-        if key in SCALARS and (item is None or type(item) is bool or
+        if key in ENUM_FIELDS:
+            if isinstance(item,str) and item in ENUM_FIELDS[key]:
+                out[key]=item
+        elif key in SCALARS and (item is None or type(item) is bool or
                 type(item) in (int, float) and math.isfinite(item)):
             out[key] = item
         elif key in UNSIGNED_AMOUNTS | SIGNED_AMOUNTS:
@@ -375,13 +398,196 @@ def ledger_projection(path, start, end):
     finally:
         db.close()
 
+OUTCOME_KINDS = frozenset(('native-candidate-window-audit native-audit-dispatch-summary '
+    'native-audit-dispatch-state native-flow-audit-post-snapshot-tail '
+    'native-active-strategy-assessment native-predictive-assessment '
+    'trader-predictive-assessment trader-decision trader-held-evaluation '
+    'trader-execution trader-pilot-execution-quote native-paper-entry-permission '
+    'native-paper-entry-work-completed paper-execution-plan paper-execution-landing-state '
+    'native-paper-start native-paper-frozen-start pilot-watch-transition '
+    'pilot-watch-complete-window native-flow-transport-integrity-gap '
+    'pilot-feed-reconnect-scheduled native-paper-admission-suspended '
+    'native-candidate-source-admissions-closed native-paper-technical-reevaluation-request').split())
+RAW_EVENT_KINDS = frozenset(('native-flow-information-available native-flow-validated-events '
+    'trader-input pilot-watch-activity trader-context research-clock-pool-state '
+    'research-clock-position-sell-quote qualification-proof-pinned '
+    'native-paper-entry-proof-pinned').split())
+FAILURE_CODE = re.compile(r'(?:^|[-_])(unavailable|error|failed|failure|refused|timeout|expired|deadline)(?:$|[-_])',re.I)
+
+def event_bucket(record):
+    kind=record['kind']
+    data=record['data']
+    mint=data.get('mint','')
+    if kind in RAW_EVENT_KINDS:
+        return (0,kind,mint,False)
+    outcome=kind in OUTCOME_KINDS
+    failure=any(part in kind for part in (
+        '-refus', '-unavailable', '-failure', '-failed', '-timeout', '-quality-gap',
+        '-deadline', '-gap'))
+    outcome|=failure or '-protection' in kind or '-recovery' in kind
+    if type(data.get('httpStatus')) is int and 400<=data['httpStatus']<=599:
+        failure=True
+    # A shared dispatch/RPC event kind may report both successful and failed
+    # outcomes. Classify only projected codes, never provider/free-form text.
+    for values in (data,data.get('result',{})):
+        if not isinstance(values,dict):
+            continue
+        for key in ('status','outcome','reasonCode','classification'):
+            value=values.get(key)
+            failure|=isinstance(value,str) and FAILURE_CODE.search(value) is not None
+        if outcome:
+            failure|=values.get('usable') is False or values.get('success') is False
+    # Failure and completed evaluations of the same kind/mint each retain
+    # recent evidence; a success flood must not hide the last failed check.
+    return (int(outcome or failure),kind,mint,failure)
+
+def outcome_record(record):
+    return bool(event_bucket(record)[0])
+
+class FairEventReservoir:
+    """Bounded newest samples, outcomes first, fair by kind and public mint.
+
+    A single hot kind/mint cannot evict every sparse outcome. Indexed eviction
+    is amortized logarithmic; lazy indices are periodically compacted so scan
+    volume cannot grow retention memory without bound.
+    """
+    def __init__(self):
+        self.buckets={}
+        self.kinds={}
+        self.indices={0:[],1:[]}
+        self.count=self.bytes=self.version=self.index_entries=0
+        self.byte_bound=False
+
+    def index(self,key):
+        bucket=self.buckets[key]
+        self.version+=1
+        bucket['version']=self.version
+        heap=bucket['heap']
+        pressure=max(len(heap)*MAX_PROJECTED_RECORD_BYTES,bucket['bytes']*MAX_RECORDS)
+        kind=self.kinds[key[:2]]
+        heapq.heappush(kind['index'],(-pressure,heap[0][0],heap[0][1],self.version,key))
+        self.version+=1
+        kind['version']=self.version
+        pressure=max(kind['count']*MAX_PROJECTED_RECORD_BYTES,kind['bytes']*MAX_RECORDS)
+        heapq.heappush(self.indices[key[0]],(-pressure,self.version,key[:2]))
+        self.index_entries+=2
+
+    def worst(self):
+        for priority in (0,1):
+            index=self.indices[priority]
+            while index:
+                _,version,key=index[0]
+                kind=self.kinds.get(key)
+                if kind is not None and kind['version']==version:
+                    break
+                heapq.heappop(index)
+                self.index_entries-=1
+            if index:
+                local=kind['index']
+                while local:
+                    _,_,_,version,key=local[0]
+                    bucket=self.buckets.get(key)
+                    if bucket is not None and bucket['version']==version:
+                        return key
+                    heapq.heappop(local)
+                    self.index_entries-=1
+        raise AssertionError('retention index invariant')
+
+    def compact(self):
+        if self.index_entries>4*MAX_RECORDS+16:
+            self.indices={0:[],1:[]}
+            self.index_entries=0
+            for kind in self.kinds.values():
+                kind['index']=[]
+            for key in self.buckets:
+                self.index(key)
+
+    def add(self,item):
+        size=item[3]
+        if size>MAX_PROJECTED_RECORD_BYTES:
+            self.byte_bound=True
+            return
+        key=event_bucket(item[2])
+        bucket=self.buckets.get(key)
+        # Newest segments are scanned first. Once a bucket is the next fair
+        # eviction target, an older equal-sized row cannot improve it. Replace
+        # a newer row directly without inserting/evicting/reindexing twice.
+        if bucket and (self.count>=MAX_RECORDS or self.bytes+size>MAX_PROJECTED_RECORD_BYTES) and size==bucket['heap'][0][3] and self.worst()==key:
+            if self.bytes+size>MAX_PROJECTED_RECORD_BYTES:
+                self.byte_bound=True
+            if item[:2]>bucket['heap'][0][:2]:
+                heapq.heapreplace(bucket['heap'],item)
+                self.index(key)
+                self.compact()
+            return
+        bucket=self.buckets.setdefault(key,{'heap':[],'bytes':0})
+        kind=self.kinds.setdefault(key[:2],{'count':0,'bytes':0,'index':[],'keys':set()})
+        kind['keys'].add(key)
+        heapq.heappush(bucket['heap'],item)
+        bucket['bytes']+=size
+        kind['count']+=1
+        kind['bytes']+=size
+        self.count+=1
+        self.bytes+=size
+        self.index(key)
+        while self.count>MAX_RECORDS or self.bytes>MAX_PROJECTED_RECORD_BYTES:
+            self.byte_bound|=self.bytes>MAX_PROJECTED_RECORD_BYTES
+            worst=self.worst()
+            worst_kind=worst[:2]
+            current_kind=self.kinds[worst_kind]
+            current=self.buckets[worst]
+            removed=heapq.heappop(current['heap'])
+            self.count-=1
+            self.bytes-=removed[3]
+            current['bytes']-=removed[3]
+            current_kind['count']-=1
+            current_kind['bytes']-=removed[3]
+            if current['heap']:
+                self.index(worst)
+            else:
+                del self.buckets[worst]
+                current_kind['keys'].remove(worst)
+                if not current_kind['count']:
+                    del self.kinds[worst_kind]
+                else:
+                    # Reindex a surviving bucket to update its kind pressure.
+                    surviving=next(iter(current_kind['keys']))
+                    self.index(surviving)
+        self.compact()
+
+    def index_size(self):
+        return self.index_entries
+
+    def items(self):
+        return [item for bucket in self.buckets.values() for item in bucket['heap']]
+
+def fair_event_order(items):
+    # Round robin kinds, and then mints within each kind. Each bucket yields its
+    # newest record first; repeated outcomes remain available with spare space.
+    kinds={}
+    for item in sorted(items,reverse=True):
+        record=item[2]
+        kinds.setdefault(record['kind'],{}).setdefault(event_bucket(record)[2:],collections.deque()).append(item)
+    queues={kind:collections.deque(buckets.values()) for kind,buckets in kinds.items()}
+    active=collections.deque(queues)
+    ordered=[]
+    while active:
+        kind=active.popleft()
+        mints=queues[kind]
+        bucket=mints.popleft()
+        ordered.append(bucket.popleft())
+        if bucket:
+            mints.append(bucket)
+        if mints:
+            active.append(kind)
+    return ordered
+
 def event_projection(paths, start, end):
     counts = collections.Counter()
     mints = set()
     # Keep newest matching observations rather than the last *scanned* ones:
     # scanning newest segments first must not let an older segment evict them.
-    records = {stream:[] for stream in ('essential','diagnostic','other')}
-    heap_bytes = {stream:0 for stream in records}
+    records = {stream:FairEventReservoir() for stream in ('essential','diagnostic','other')}
     counts_by_stream = {stream:collections.Counter() for stream in records}
     groups = {stream:[] for stream in records}
     for path in paths:
@@ -446,59 +652,70 @@ def event_projection(paths, start, end):
                 counts_by_stream[stream][kind]+=1
                 serial += 1
                 record = {'at':at,'kind':kind,'stream':stream,'data':data,'lineSha256':digest(line)}
-                heap = records[stream]
                 size = record_bytes(record)
                 item = (at,serial,record,size)
-                if size>MAX_PROJECTED_RECORD_BYTES:
-                    projection_byte_bound=True
-                    continue
-                heapq.heappush(heap,item)
-                heap_bytes[stream]+=size
-                while len(heap)>MAX_RECORDS or heap_bytes[stream]>MAX_PROJECTED_RECORD_BYTES:
-                    projection_byte_bound|=heap_bytes[stream]>MAX_PROJECTED_RECORD_BYTES
-                    heap_bytes[stream]-=heapq.heappop(heap)[3]
+                records[stream].add(item)
             except (ValueError,TypeError,OverflowError,RecursionError):
                 malformed+=1
-    # Retained essential observations cannot be evicted by high-volume optional
-    # diagnostics. Keep useful diagnostic context with remaining/reused space.
-    essential = sorted(records['essential'],reverse=True)
-    optional = sorted(records['diagnostic']+records['other'],reverse=True)
-    essential_count = min(len(essential),MAX_RECORDS if not optional else max(
+    projection_byte_bound|=any(reservoir.byte_bound for reservoir in records.values())
+    all_items=[item for reservoir in records.values() for item in reservoir.items()]
+    outcomes=fair_event_order([item for item in all_items if outcome_record(item[2])])
+    context=[item for item in all_items if not outcome_record(item[2])]
+    outcome_count=min(len(outcomes),MAX_RECORDS if not context else max(
         MAX_RECORDS*ESSENTIAL_SHARE_NUMERATOR//ESSENTIAL_SHARE_DENOMINATOR,
-        MAX_RECORDS-len(optional)))
+        MAX_RECORDS-len(context)))
+    outcome_bytes_limit=MAX_PROJECTED_RECORD_BYTES if not context else MAX_PROJECTED_RECORD_BYTES*ESSENTIAL_SHARE_NUMERATOR//ESSENTIAL_SHARE_DENOMINATOR
+    kept_outcomes,outcome_bytes=bounded_records([item[2] for item in outcomes],outcome_count,outcome_bytes_limit)
+    remaining_count=MAX_RECORDS-len(kept_outcomes)
+    remaining_bytes=MAX_PROJECTED_RECORD_BYTES-outcome_bytes
+    # Context keeps the original essential/optional share. Outcome priority
+    # crosses stream boundaries: a diagnostic audit cannot lose to raw flow.
+    essential = fair_event_order([item for item in context if item[2]['stream']=='essential'])
+    optional = fair_event_order([item for item in context if item[2]['stream']!='essential'])
+    essential_count = min(len(essential),remaining_count if not optional else max(
+        remaining_count*ESSENTIAL_SHARE_NUMERATOR//ESSENTIAL_SHARE_DENOMINATOR,
+        remaining_count-len(optional)))
     essential_candidates = [item[2] for item in essential]
     optional_candidates = [item[2] for item in optional]
-    essential_byte_limit = MAX_PROJECTED_RECORD_BYTES if not optional else MAX_PROJECTED_RECORD_BYTES*ESSENTIAL_SHARE_NUMERATOR//ESSENTIAL_SHARE_DENOMINATOR
+    essential_byte_limit = remaining_bytes if not optional else remaining_bytes*ESSENTIAL_SHARE_NUMERATOR//ESSENTIAL_SHARE_DENOMINATOR
     kept_essential,essential_bytes = bounded_records(essential_candidates,essential_count,essential_byte_limit)
-    kept_optional,optional_bytes = bounded_records(optional_candidates,MAX_RECORDS-len(kept_essential),MAX_PROJECTED_RECORD_BYTES-essential_bytes)
+    kept_optional,optional_bytes = bounded_records(optional_candidates,remaining_count-len(kept_essential),remaining_bytes-essential_bytes)
     used_ids = {id(record) for record in kept_essential}
     extra_essential,extra_bytes = bounded_records(
         [record for record in essential_candidates if id(record) not in used_ids],
-        MAX_RECORDS-len(kept_essential)-len(kept_optional),
-        MAX_PROJECTED_RECORD_BYTES-essential_bytes-optional_bytes)
+        remaining_count-len(kept_essential)-len(kept_optional),
+        remaining_bytes-essential_bytes-optional_bytes)
     kept_essential+=extra_essential
     essential_bytes+=extra_bytes
-    keep_ids = {id(record) for record in kept_essential+kept_optional}
-    selected = [item for item in essential+optional if id(item[2]) in keep_ids]
+    outcome_ids={id(record) for record in kept_outcomes}
+    extra_outcomes,extra_outcome_bytes=bounded_records(
+        [item[2] for item in outcomes if id(item[2]) not in outcome_ids],
+        MAX_RECORDS-len(kept_outcomes)-len(kept_essential)-len(kept_optional),
+        MAX_PROJECTED_RECORD_BYTES-outcome_bytes-essential_bytes-optional_bytes)
+    kept_outcomes+=extra_outcomes
+    outcome_bytes+=extra_outcome_bytes
+    keep_ids = {id(record) for record in kept_outcomes+kept_essential+kept_optional}
+    selected = [item for item in all_items if id(item[2]) in keep_ids]
     selected.sort(key=lambda item:item[:2])
     retained = [item[2] for item in selected]
     retained_counts = collections.Counter(r['kind'] for r in retained)
     return {'files':files,'bytesScanned':scanned,'scanBoundReached':bounded,
             'malformedRecords':malformed,'partialTrailingRecords':partial,
             'oversizedRecords':oversized,'kindCounts':dict(counts),
-            'distinctMintsInRetainedMatchingEvents':len(mints),
+            'distinctMintsInRetainedMatchingEvents':len({r['data']['mint'] for r in retained if isinstance(r['data'].get('mint'),str)}),
             'distinctMintsInScannedMatchingEvents':len(mints),
             'records':retained,'omittedMatchingRecords':sum(counts.values())-len(retained),
-            'selectionPolicy':'newest-per-stream-essential-priority-with-diagnostic-share',
+            'selectionPolicy':'outcomes-first-fair-kind-and-mint-newest-samples-with-context-share',
             'kindCountsByStream':{k:dict(v) for k,v in counts_by_stream.items()},
             'retainedKindCounts':dict(retained_counts),
             'omittedKindCounts':{k:n-retained_counts[k] for k,n in counts.items() if n>retained_counts[k]},
-            'projectedRecordBytes':essential_bytes+optional_bytes,
-            'projectedRecordByteBoundReached':projection_byte_bound or len(retained)<min(MAX_RECORDS,len(essential)+len(optional)),
+            'projectedRecordBytes':outcome_bytes+essential_bytes+optional_bytes,
+            'projectedRecordByteBoundReached':projection_byte_bound or len(retained)<min(MAX_RECORDS,len(all_items)),
             'coverage':'Retained selected files only; rotation, omitted files, untimestamped console lines and scan bounds prevent a claim of complete historical coverage.'}
 
 def export(root, start, end):
     value={'schemaVersion':1,'kind':'POE_RELEASE_INDEPENDENT_READ_ONLY_DIAGNOSTICS',
+           'diagnosticProjectionVersion':'outcome-kind-mint-v2',
            'generatedAt':int(time.time()*1000),'window':{'fromAt':start,'untilAtExclusive':end},
            'credentialReads':0,'financialWrites':0,'serviceChanges':0,'providerRequests':0}
     try:

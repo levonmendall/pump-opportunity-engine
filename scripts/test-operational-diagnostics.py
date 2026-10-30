@@ -19,6 +19,152 @@ class ReadOnlyDiagnostics(unittest.TestCase):
                                         'data':{'at':at,'usable':True}})+'\n' for at in times))
         return p
 
+    def test_sparse_audit_and_protection_outcomes_survive_newer_raw_event_flood(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=pathlib.Path(directory)
+            outcomes=[('native-candidate-quality-gap',1),('native-candidate-window-audit',2),
+                      ('native-audit-dispatch-summary',3),('native-audit-dispatch-state',4),
+                      ('trader-held-evaluation',5),('native-candidate-window-audit',6000)]
+            p=root/'diagnostic-000000000001.ndjson'
+            rows=[{'receivedAt':at,'kind':kind,'data':{'at':at,'reason':'HISTORY_SIGNATURE_NOT_OBSERVED',
+                   'result':{'status':'complete' if at==6000 else 'unavailable'},
+                   'providerUrl':'https://private/?secret=PRIVATE'}} for kind,at in outcomes]
+            rows.extend({'receivedAt':100+i,'kind':'native-flow-information-available',
+                         'data':{'at':100+i,'slot':i}} for i in range(5000))
+            p.write_text(''.join(json.dumps(row)+'\n' for row in rows))
+            with patch.object(diag,'MAX_RECORDS',64):
+                value=diag.event_projection([p],0,7000)
+            kept=[(r['kind'],r['at']) for r in value['records']]
+            for outcome in outcomes:
+                self.assertIn(outcome,kept)
+            self.assertEqual(len(value['records']),64)
+            self.assertEqual(value['kindCounts']['native-flow-information-available'],5000)
+            self.assertEqual(value['omittedMatchingRecords'],5006-64)
+            self.assertNotIn('PRIVATE',json.dumps(value))
+
+    def test_hot_protection_mint_cannot_evict_sparse_mints_or_audit_kinds(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=pathlib.Path(directory)
+            mints=['1'*31+char for char in '23456789']
+            self.assertTrue(all(diag.public_key(mint,32) for mint in mints))
+            rows=[{'receivedAt':i+1,'kind':'trader-held-evaluation','data':{'mint':mint,'usable':False}}
+                  for i,mint in enumerate(mints)]
+            rows.extend({'receivedAt':100+i,'kind':'trader-held-evaluation',
+                         'data':{'mint':mints[0],'usable':True}} for i in range(5000))
+            rows.extend({'receivedAt':5100+i,'kind':'native-candidate-window-audit',
+                         'data':{'mint':mints[1],'result':{'status':'complete'}}} for i in range(100))
+            p=root/'essential-000000000001.ndjson'
+            p.write_text(''.join(json.dumps(row)+'\n' for row in rows))
+            with patch.object(diag,'MAX_RECORDS',32):
+                value=diag.event_projection([p],0,6000)
+            held=[r for r in value['records'] if r['kind']=='trader-held-evaluation']
+            self.assertEqual({r['data']['mint'] for r in held},set(mints))
+            self.assertIn(5099,[r['at'] for r in held],'keep fresh completed protection too')
+            self.assertIn(5199,[r['at'] for r in value['records'] if r['kind']=='native-candidate-window-audit'])
+            self.assertEqual(value['distinctMintsInRetainedMatchingEvents'],8)
+            self.assertEqual(value['distinctMintsInScannedMatchingEvents'],8)
+            self.assertEqual(sum(value['retainedKindCounts'].values())+sum(value['omittedKindCounts'].values()),5108)
+            self.assertEqual(value['projectedRecordBytes'],sum(diag.record_bytes(r) for r in value['records']))
+
+    def test_diagnostic_outcome_priority_crosses_stream_boundary_without_losing_context(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=pathlib.Path(directory)
+            essential=self.event_file(root,'essential-000000000001.ndjson','trader-context',range(100,300))
+            diagnostic=self.event_file(root,'diagnostic-000000000001.ndjson','native-candidate-window-audit',[1,2])
+            with patch.object(diag,'MAX_RECORDS',8):
+                value=diag.event_projection([essential,diagnostic],0,400)
+            self.assertEqual([r['at'] for r in value['records'] if r['kind']=='native-candidate-window-audit'],[1,2])
+            self.assertEqual([r['at'] for r in value['records'] if r['kind']=='trader-context'],list(range(294,300)))
+            self.assertEqual(value['omittedMatchingRecords'],194)
+
+    def test_failed_provider_outcomes_survive_success_flood_of_same_event_kind(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=pathlib.Path(directory)
+            rows=[{'receivedAt':1,'kind':'http-response-timing','data':{'httpStatus':429}},
+                  {'receivedAt':2,'kind':'component-physical-settled','data':{'outcome':'timeout'}}]
+            rows.extend({'receivedAt':100+i,'kind':'http-response-timing','data':{'httpStatus':200}}
+                        for i in range(1000))
+            p=root/'diagnostic-000000000001.ndjson';p.write_text(''.join(json.dumps(row)+'\n' for row in rows))
+            with patch.object(diag,'MAX_RECORDS',8):
+                value=diag.event_projection([p],0,2000)
+            self.assertIn(1,[r['at'] for r in value['records']])
+            self.assertIn(2,[r['at'] for r in value['records']])
+            self.assertIn(1099,[r['at'] for r in value['records']])
+            self.assertEqual(value['omittedMatchingRecords'],994)
+
+    def test_fair_reservoir_memory_and_byte_bounds_hold_under_many_updates(self):
+        with patch.object(diag,'MAX_RECORDS',16),patch.object(diag,'MAX_PROJECTED_RECORD_BYTES',2400):
+            reservoir=diag.FairEventReservoir()
+            for i in range(5000):
+                record={'at':i,'kind':'trader-held-evaluation','stream':'essential','data':{'at':i},'lineSha256':'a'*64}
+                reservoir.add((i,i,record,diag.record_bytes(record)))
+                self.assertLessEqual(reservoir.count,16)
+                self.assertLessEqual(reservoir.bytes,2400)
+                self.assertLessEqual(reservoir.index_size(),4*16+16)
+            items=reservoir.items()
+            self.assertTrue(reservoir.byte_bound)
+            self.assertEqual(max(item[0] for item in items),4999)
+            self.assertEqual(reservoir.bytes,sum(item[3] for item in items))
+
+    def test_many_mints_of_one_kind_cannot_erase_a_sparse_outcome_kind(self):
+        with patch.object(diag,'MAX_RECORDS',4):
+            reservoir=diag.FairEventReservoir()
+            rows=[{'at':1,'kind':'native-candidate-window-audit','data':{'mint':'1'*31+'2'}}]
+            rows.extend({'at':100+i,'kind':'native-audit-dispatch-state','data':{'mint':'1'*31+char}}
+                        for i,char in enumerate('3456789ABCDEFG'))
+            for i,record in enumerate(rows):
+                reservoir.add((record['at'],i,record,diag.record_bytes(record)))
+            retained=diag.fair_event_order(reservoir.items())
+            self.assertIn('native-candidate-window-audit',[item[2]['kind'] for item in retained])
+            self.assertEqual(len(retained),4)
+
+    def test_completed_protection_cannot_erase_failed_check_for_same_mint(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root=pathlib.Path(directory)
+            rows=[{'receivedAt':1,'kind':'trader-held-evaluation','data':{'usable':False}}]
+            rows.extend({'receivedAt':100+i,'kind':'trader-held-evaluation','data':{'usable':True}}
+                        for i in range(1000))
+            p=root/'essential-000000000001.ndjson';p.write_text(''.join(json.dumps(row)+'\n' for row in rows))
+            with patch.object(diag,'MAX_RECORDS',4):
+                value=diag.event_projection([p],0,2000)
+            self.assertIn(1,[r['at'] for r in value['records']])
+            self.assertIn(1099,[r['at'] for r in value['records']])
+
+    def test_v3_protection_decisions_retain_typed_evidence_and_explicit_unknowns(self):
+        value=diag.public_fields({'liquidityResilientHolding':{
+            'liquidityContext':{'at':123,'rawQuoteLamports':'9000','priorRawQuoteLamports':'10000','stressNetLamports':'80'},
+            'decision':{'action':'hold','profitProtectionFloorLamports':'90','profitGivebackBps':1500,
+                        'continuationConfidence':'price-reserve-only','liquidityDeteriorationVerified':True},
+            'participationEvidence':'UNKNOWN_NATIVE_HELD_FLOW_NOT_AVAILABLE','providerUrl':'PRIVATE'},
+            'components':{'inventoryEvidence':'POINT_IN_TIME_ACCOUNT_OBSERVATIONS_AND_PLAUSIBLE_UNDISPOSED_PURCHASES_NOT_CURRENT_WALLET_BALANCES',
+                          'outOfPoolTransfers':'UNKNOWN','externalSellerInventory':'UNKNOWN'},
+            'continuationConfidence':'https://private/?secret=PRIVATE'})
+        held=value['liquidityResilientHolding']
+        self.assertEqual(held['liquidityContext']['priorRawQuoteLamports'],'10000')
+        self.assertEqual(held['decision']['profitProtectionFloorLamports'],'90')
+        self.assertTrue(held['decision']['liquidityDeteriorationVerified'])
+        self.assertEqual(held['decision']['continuationConfidence'],'price-reserve-only')
+        self.assertEqual(held['participationEvidence'],'UNKNOWN_NATIVE_HELD_FLOW_NOT_AVAILABLE')
+        self.assertEqual(value['components']['externalSellerInventory'],'UNKNOWN')
+        self.assertNotIn('PRIVATE',json.dumps(value))
+
+    def test_whole_export_bound_keeps_audit_outcome_before_raw_essential_context(self):
+        rows=[{'at':1,'kind':'native-candidate-window-audit','stream':'diagnostic',
+               'data':{'mint':'1'*31+'2','result':{'status':'unavailable'}}}]
+        rows.extend({'at':100+i,'kind':'trader-context','stream':'essential',
+                     'data':{'mint':'1'*31+'3','at':100+i}} for i in range(20))
+        section={'records':rows,'kindCounts':{'native-candidate-window-audit':1,'trader-context':20},
+                 'omittedMatchingRecords':0,'distinctMintsInRetainedMatchingEvents':2,
+                 'distinctMintsInScannedMatchingEvents':2}
+        with patch.object(diag,'MAX_EXPORT_BYTES',1100):
+            value=diag.enforce_export_bound({'retainedEvents':section})
+        retained=value['retainedEvents']['records']
+        self.assertIn('native-candidate-window-audit',[row['kind'] for row in retained])
+        self.assertEqual(value['retainedEvents']['distinctMintsInRetainedMatchingEvents'],
+                         len({row['data']['mint'] for row in retained}))
+        self.assertEqual(value['retainedEvents']['distinctMintsInScannedMatchingEvents'],2)
+        self.assertLessEqual(diag.record_bytes(value)+1,1100)
+
     def test_committed_wal_state_is_seen_without_mutating_or_checkpointing(self):
         with tempfile.TemporaryDirectory() as directory:
             root=pathlib.Path(directory)
