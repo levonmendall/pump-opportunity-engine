@@ -1,0 +1,23 @@
+{
+  "source": "5675961a0ad05df508eec6928644c9e403be0811",
+  "at": "2026-10-30T01:34:54.955684+00:00",
+  "probePath": "test/protection-followup-probe.offline.ts",
+  "probeSha256": "077145feba734769f67edd81af8557e586e48640cbe73be3151189d257c76dec",
+  "appHashes": {
+    "src/pilot-rpc.ts": "2fa4166edd4c2ba2b66f34a128fdf8f51f989f0ee8b3f0fba40761e0f836fa3d",
+    "src/component-budget.ts": "1ffe9627926bfc286f6a6040f58d5117dd37618077e3cd54c5be3c6007d65d67",
+    "src/component-transport.ts": "e986d3ecb47f95d42a9b5470505d1a21b136835cfe8ea99b8be9b0581c87e658",
+    "src/research-held-market.ts": "4741cdbddad025d6fcfe532644fd8b992a6ede808eb4d4160eafc37588ff38a4",
+    "src/run-native-paper.ts": "e03c84c5e5b537c79cab360cf012e3330dedd291798533c9f65221d69ce43d9a"
+  },
+  "appSourceUnchanged": true,
+  "probePassed": true,
+  "typescriptBuildPassed": true,
+  "scope": "OFFLINE actual PilotRpc/ComponentBudget/ComponentTransport with injected settled failures and synthetic clock; actual heldPricingFailureCode mapper; no ResearchHeldMarket, NativePaper or financial ledger instantiated",
+  "result": "Three physical timeouts map to two timeout refusals plus five zero-physical dispatch refusals; dispatch refusals are caused by the bounded probe policy, with abundant shared quota headroom. This is not attribution of the live incident.",
+  "providerRequests": 0,
+  "financialAccountRead": false,
+  "financialActions": 0,
+  "serviceChanges": 0,
+  "classificationIssue": "uninvoked-quota-or-spacing is also used when a bounded protection retry probe is paced beyond the current deadline; not proof of quota pressure."
+}
