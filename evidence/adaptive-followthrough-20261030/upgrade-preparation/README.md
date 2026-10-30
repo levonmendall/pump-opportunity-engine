@@ -1,0 +1,11 @@
+# Inert next original-service upgrade preparation
+
+The current installed source is `5675961a0ad05df508eec6928644c9e403be0811`, native `157c34efd86bc0b5ae78aa268afe5afc7d3a4c4db8edcbb181445cad92ccb6ae`, configuration `ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db`. Its frozen package and actual installation receipts remain preserved. New target, helper, exporter-execution and strict-reader pins are unset. No next package, owner command or actual staging has been created.
+
+The next package preserves the original account, ledger, single financial writer, current holdings and obligations, active Adaptive Momentum v2 contract/version, two-position capacity, four deep slots, current risk parameters and original reporting channel. Compatibility metadata explicitly records the upcoming entry-acquisition ordering and measured adaptive exit-input behavior changes. It does not claim that those changes are already installed.
+
+The new fixed567 diagnostic exporter samples only 01:18–01:20 and 01:25–01:27:15 UTC on October30. It reads current diagnostic status and a fixed current-run RPC diagnostic status using privacy allowlists. Bounded sealed-essential manifests select historical segments before the unchanged64MiB/2s body scan. The export remains128KiB maximum; source records and mandatory financial/trading evidence are neither deleted nor modified. Missing, rotated, unscanned or omitted facts remain unknown; current counters do not retroactively prove precise historical causes.
+
+The reviewed driver retains backups, exact complete historical financial prefixes, original ledger inode, source input fields, single-writer settlement, and safe exact pre-start executable/configuration recovery. After any possible new start it retains the new financial manager and all subsequent state. Both sources use provider accounting v2; this is a conservative uncertainty barrier, not a claimed schema incompatibility. No financial state, provider counterbook, daily-loss authorization or owner stop is reset or restored.
+
+Final combined source/build verification and independent package/command review must precede pins, assembly and actual nonroot staging. Protected installation remains the existing owner-only sudo boundary.

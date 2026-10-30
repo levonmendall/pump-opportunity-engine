@@ -9,12 +9,12 @@ No bootstrap, account initialization, DB restore, secret access or Render call.
 """
 import fcntl,grp,hashlib,json,os,pathlib,pwd,re,shlex,sqlite3,stat,subprocess,sys,time,types
 
-OLD_SOURCE={'commit':'93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2','sha256':'8a0f001a3ae0c6acedaae6fb8a0370e02293a8b0c35142d74daf19086a41203c'}
+OLD_SOURCE={'commit':'5675961a0ad05df508eec6928644c9e403be0811','sha256':'157c34efd86bc0b5ae78aa268afe5afc7d3a4c4db8edcbb181445cad92ccb6ae'}
 OLD_INDEX='fa616981e2a86aec0f9c2711d0b3c961eb5ab922791f49e2a4e7e372497a84dd'
-PRIOR_INDEX='823365cd07361885f2097b64fdf0a7503eeba8c8252a2835b77eb806a0a9ad9e'
+PRIOR_INDEX='694788119a7eed387d9d8ad10481f7cc8e995463105030547c149aa43f4732d0'
 PRIOR_RECORD='forward-'+OLD_SOURCE['commit']
-PRIOR_FORWARD_DRIVER_SHA='dc386c823e85b5c607a8643d7034a5e7c02d031e5de9051b083b48821020750c'
-OLD_MANIFEST='7c80563b76fa9cab96d7addcb2a272409db0ad9ad0d3208bdcd1f606b320e51d'
+PRIOR_FORWARD_DRIVER_SHA='6e4281d08a011aae887407009db34aa917c31d86d599c2d97a9b42503b7c8d43'
+OLD_MANIFEST='3cf20e5a6e8b97e0f5a5e570e5ca96ae4827bf6e62d9ff5529c74cf9c204817c'
 # Root-indexed validation helper and current financial release have distinct pins.
 INDEXED_SUPERVISOR='d90ea175e17ef165afc8a4dcc24ab302204d500aad738bd4554cdc5f32e3d6fb'
 OLD_SUPERVISOR='66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e'
@@ -24,34 +24,34 @@ AUDITOR_SHA='08947c651488089e2eb2274404e69132ab54cfb89e30a640255c756746dad2c1'
 # supervisor remains pinned for pre-start rollback. SQLite ABI stays unchanged.
 # Old/new reporters and backup closures are separately pinned; no credential change.
 OLD_REPORTER='7da8c7388a5ec3e4f2e0b46a8226ce457d0a68578e5b5225c50b97f1a508ff44'
-OLD_BACKUP_WORKER_SHA='042ca47275d0ba287bc6444c31a98c4b215c1f228bfca36cdd02de64c81e8a2a'
-NEW_BACKUP_WORKER_SHA='aa41d0c26f42bc0e3c2c5655907a5ea71b11f3047ef6bfd23e5858c340066af2'
-NEW_REPORTER='7da8c7388a5ec3e4f2e0b46a8226ce457d0a68578e5b5225c50b97f1a508ff44'
-NEW_SUPERVISOR='66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e'
+OLD_BACKUP_WORKER_SHA='aa41d0c26f42bc0e3c2c5655907a5ea71b11f3047ef6bfd23e5858c340066af2'
+NEW_BACKUP_WORKER_SHA=None
+NEW_REPORTER=None
+NEW_SUPERVISOR=None
 OLD_STAGE,NEW_STAGE='two','two'
 OLD_STRATEGY='adaptive-momentum-v2-paper-v1'
 NEW_STRATEGY='adaptive-momentum-v2-paper-v1'
 UNCHANGED={'better_sqlite3.node':'6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d'}
-COMPATIBILITY={'scope':'active-adaptive-momentum-v2-provider-recovery','financialSchemaChanged':False,'strategyChanged':False,'riskChanged':False,'authorizedPositionLimit':{'before':2,'after':2},'authorizedStrategyTransition':{'before':OLD_STRATEGY,'after':NEW_STRATEGY,'mode':'active-paper'},'baselineEntryExitThresholdsPreserved':True,'completeRelevantTradingEvidencePreserved':True,'originalAccountFinancialHistoryPreserved':True,'hardFinancialControlsPreserved':True,'ownerDailyLossResetInvoked':False,'providerAccountingSchema':'continuous-component-budget-v2','postStartExecutableRollbackAllowed':False,'providerCounterbooksRestored':False}
+COMPATIBILITY={'scope':'active-adaptive-momentum-v2-entry-quote-and-volatility','financialSchemaChanged':False,'strategyChanged':True,'strategyBehaviorChanged':True,'adaptiveExitInputChanged':True,'entryAcquisitionOrderingChanged':True,'riskChanged':False,'authorizedPositionLimit':{'before':2,'after':2},'authorizedStrategyTransition':{'before':OLD_STRATEGY,'after':NEW_STRATEGY,'mode':'active-paper'},'baselineEntryExitThresholdsPreserved':True,'completeRelevantTradingEvidencePreserved':True,'originalAccountFinancialHistoryPreserved':True,'hardFinancialControlsPreserved':True,'ownerDailyLossResetInvoked':False,'providerAccountingSchema':'continuous-component-budget-v2','postStartExecutableRollbackAllowed':False,'providerCounterbooksRestored':False}
 TOOLS=pathlib.Path('/opt/poe/cutover/issue11')
 PACKAGE=pathlib.Path('/var/lib/poe-cutover/issue11')
-STAGE=pathlib.Path('/var/tmp/poe-original-provider-recovery-upgrade')
+STAGE=pathlib.Path('/var/tmp/poe-original-adaptive-followthrough-upgrade')
 UNITDIR=pathlib.Path('/etc/systemd/system/poe-runtime.service.d')
 NATIVE_DROPIN_SHA='d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df'
 LEGACY_SHA='309bba18b7f3f17b403f6ef950df707587044b5e049f47ff3495c87d8de7d4df'
-NEW_NATIVE_DROPIN_SHA='d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df'
-OLD_CONFIGURATION_SHA='44b82455003f04f75eb1ad7a3dc21555406c1d4d0c7626386d3d21661fdb47c9'
-# Exact coherent provider-recovery application and unchanged operational pins.
-# Offline package review and the parent release gate precede actual EC2 staging.
-NEW_CONFIGURATION_SHA='ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db'
-FORENSIC_FILE='export-provider-recovery-forensics-20261030.py'
-FORENSIC_SHA='e1c04bc56c27e2341b188d441055eaf5b1eac245ad1d390157a14e3b3d129f7e'
-FORENSIC_OUTPUT='/var/lib/poe-public/provider-recovery-forensics-20261030.json'
+NEW_NATIVE_DROPIN_SHA=None
+OLD_CONFIGURATION_SHA='ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db'
+# INERT: exact coherent application and operational pins follow final source
+# validation plus independent package review before any actual EC2 staging.
+NEW_CONFIGURATION_SHA=None
+FORENSIC_FILE='export-adaptive-followthrough-forensics-20261030.py'
+FORENSIC_SHA=None
+FORENSIC_OUTPUT='/var/lib/poe-public/adaptive-followthrough-forensics-20261030.json'
 FORENSIC_UID,FORENSIC_GID=988,982
-FORENSIC_RUN='native-paper-20261029234856700'
+FORENSIC_RUN='native-paper-20261030010446598'
 FORENSIC_OUTPUT_BOUND=131072
 OLD_POLICY_SHA='ee240f9c3b2edabb385d67676303e95327839e73cbb28d1072cba68015de8728'
-NEW_POLICY_SHA='ee240f9c3b2edabb385d67676303e95327839e73cbb28d1072cba68015de8728'
+NEW_POLICY_SHA=None
 RESOURCE_BEFORE={'CPUQuotaPerSecUSec':'infinity','CPUQuotaPeriodUSec':'100ms','CPUWeight':'100','Nice':'0','MemoryHigh':'2684354560','MemoryMax':'3221225472','MemorySwapMax':'0','TasksMax':'64','LimitNOFILE':'256','LimitCORE':'0','LimitCPU':'infinity','LimitFSIZE':'infinity','LimitAS':'infinity','OOMPolicy':'stop'}
 RESOURCE_AFTER=dict(RESOURCE_BEFORE)
 UID,GID,RUNNER=988,982,994
@@ -278,7 +278,7 @@ def known_images(m,record_dir):
   body=read(path,limit,uid,gid,mode);need(body in[read(record_dir/('before-'+name),limit),read(record_dir/('after-'+name),limit)],'UNKNOWN_CURRENT_CONFIGURATION_REFUSED')
 def recover_old(m,auditor,supervisor,record_dir,record,expected_inode):
  # Retain the new manager after a possible start: financial actions and provider
- # uncertainty may already have advanced. Prior93 already uses schema-v2;
+ # uncertainty may already have advanced. Prior567 already uses schema-v2;
  # compatibility alone does not justify replaying older executable state.
  # Possible start, not financial activity, permanently forbids old-code rollback.
  need(not record.get('startRequestedAt')and not record.get('possibleNewSourceStart'),'NEW_SOURCE_MAY_HAVE_RUN_RETAIN_NEW_FINANCIAL_MANAGER');known_images(m,record_dir)

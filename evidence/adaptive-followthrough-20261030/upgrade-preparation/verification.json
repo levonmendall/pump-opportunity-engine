@@ -1,0 +1,62 @@
+{
+  "kind": "poe-original567-adaptive-followthrough-inert-preparation",
+  "at": 1793324755049,
+  "results": [
+    {
+      "file": "test-forward-original-upgrade.py",
+      "exitCode": 0,
+      "rawSha256": "47ac7550514c5b86a2dc438da6669371b726db2e956fdee088b30354d3dfb1ff"
+    },
+    {
+      "file": "test-export-adaptive-followthrough-forensics-20261030.py",
+      "exitCode": 0,
+      "rawSha256": "19664c49e9d111eccd8195894bff21acecf8c8ce16c2c70507edd225fbf03aa6"
+    },
+    {
+      "file": "test-read-adaptive-followthrough-forensics-20261030.py",
+      "exitCode": 0,
+      "rawSha256": "ecd7ba5b75a44f1c6152f17499e61460ce25d58c558dcfaeb286981eaddf0335"
+    },
+    {
+      "file": "test-prepare-adaptive-followthrough-package-20261030.py",
+      "exitCode": 0,
+      "rawSha256": "921b60a7fd52e978fbb551cacd29df2d6708879400278e1fcc70fceeb0c6f8e0"
+    }
+  ],
+  "allPassed": true,
+  "before": {
+    "forward-original-upgrade.py": "783c92f2d4635d69da50ea01f7a01e42da247a08b165cd87c73ba226f2f0eb64",
+    "export-adaptive-followthrough-forensics-20261030.py": "d31e59fe85b2935455c27798199287e072bae4e951d629dd6729322294bd7b75",
+    "read-adaptive-followthrough-forensics-20261030.py": "f0333711472ad107e7ff7c32d27470ec865bfbf0476dd35773ed5497327a540e",
+    "prepare-adaptive-followthrough-package-20261030.py": "4c4078aba4ef0d9e0e0430a4faac06ddcac9388d5945a41362565e5233f9b767",
+    "test-forward-original-upgrade.py": "9eb949d6f85ab882e8126c857ca28905f9625c67fdb9e83b842e7eac3c444dbf",
+    "test-export-adaptive-followthrough-forensics-20261030.py": "629459fec722632b2223bef3fe212e5e8b8e686be4e57707e3cc14e3b2b91457",
+    "test-read-adaptive-followthrough-forensics-20261030.py": "aa0f3e70024b05862eff3ce4be899a969485fffcce304bd8abe7507ff96b063d",
+    "test-prepare-adaptive-followthrough-package-20261030.py": "17f411226ac0eb0b90d0affccd186aada5c4b3493ba4ae5d478348db8b457432"
+  },
+  "after": {
+    "forward-original-upgrade.py": "783c92f2d4635d69da50ea01f7a01e42da247a08b165cd87c73ba226f2f0eb64",
+    "export-adaptive-followthrough-forensics-20261030.py": "d31e59fe85b2935455c27798199287e072bae4e951d629dd6729322294bd7b75",
+    "read-adaptive-followthrough-forensics-20261030.py": "f0333711472ad107e7ff7c32d27470ec865bfbf0476dd35773ed5497327a540e",
+    "prepare-adaptive-followthrough-package-20261030.py": "4c4078aba4ef0d9e0e0430a4faac06ddcac9388d5945a41362565e5233f9b767",
+    "test-forward-original-upgrade.py": "9eb949d6f85ab882e8126c857ca28905f9625c67fdb9e83b842e7eac3c444dbf",
+    "test-export-adaptive-followthrough-forensics-20261030.py": "629459fec722632b2223bef3fe212e5e8b8e686be4e57707e3cc14e3b2b91457",
+    "test-read-adaptive-followthrough-forensics-20261030.py": "aa0f3e70024b05862eff3ce4be899a969485fffcce304bd8abe7507ff96b063d",
+    "test-prepare-adaptive-followthrough-package-20261030.py": "17f411226ac0eb0b90d0affccd186aada5c4b3493ba4ae5d478348db8b457432"
+  },
+  "sourceUnchanged": true,
+  "previousSource": {
+    "commit": "5675961a0ad05df508eec6928644c9e403be0811",
+    "sha256": "157c34efd86bc0b5ae78aa268afe5afc7d3a4c4db8edcbb181445cad92ccb6ae"
+  },
+  "previousConfigurationSha256": "ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db",
+  "newTargetPins": null,
+  "newExporterExecutionPin": null,
+  "newPublicReaderPin": null,
+  "futureStage": "/var/tmp/poe-original-adaptive-followthrough-upgrade",
+  "stageExecuted": false,
+  "ownerCommandGenerated": false,
+  "authoritativeFinancialDatabaseOpened": false,
+  "serviceChanges": 0,
+  "providerRequests": 0
+}
