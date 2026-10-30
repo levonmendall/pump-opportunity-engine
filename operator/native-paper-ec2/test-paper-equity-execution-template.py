@@ -12,12 +12,13 @@ x=module('inert_equity_execution_exporter','export-paper-equity-execution-forens
 BEFORE=['PRIOR_INDEX','PRIOR_FORWARD_DRIVER_SHA','OLD_MANIFEST','OLD_INPUT_SHA','OLD_SUPERVISOR','OLD_REPORTER','OLD_BACKUP_WORKER_SHA','OLD_CONFIGURATION_SHA','NATIVE_DROPIN_SHA','OLD_POLICY_SHA']
 AFTER=['NEW_METADATA_SHA','NEW_CONFIGURATION_SHA','NEW_REPORTER','NEW_BACKUP_WORKER_SHA','NEW_SUPERVISOR','NEW_POLICY_SHA','NEW_NATIVE_DROPIN_SHA','FORENSIC_SHA']
 def pins():
- values={name:'2'*64 for name in BEFORE};values.update({name:'4'*64 for name in AFTER});values.update(OLD_SOURCE={'commit':'1'*40,'sha256':'2'*64},PRIOR_RECORD='forward-'+'1'*40,NEW_SOURCE={'commit':'3'*40,'sha256':'4'*64},FORENSIC_RUN='native-paper-20261030040000000');return values
+ values={name:'2'*64 for name in BEFORE};values.update({name:'4'*64 for name in AFTER});values.update(OLD_SOURCE={'commit':'1'*40,'sha256':'2'*64},PRIOR_RECORD='forward-'+'1'*40,NEW_SOURCE={'commit':'3'*40,'sha256':'4'*64},FORENSIC_RUN='native-paper-20261030040000000');values['COMPATIBILITY']={k:False if v is None else copy.deepcopy(v)for k,v in f.COMPATIBILITY.items()};return values
 class Templates(unittest.TestCase):
  def test_all_current_transition_and_new_artifact_pins_are_unset(self):
   for name in BEFORE+AFTER+['OLD_SOURCE','PRIOR_RECORD','NEW_SOURCE','FORENSIC_RUN']:self.assertIsNone(getattr(f,name),name)
   for name in ['OLD','COMMIT','BUNDLE_SHA','METADATA_SHA','CONFIGURATION']:self.assertIsNone(getattr(p,name),name)
   for name in ['SOURCE','CONFIGURATION','RUN','STARTED','PRIORITY_WINDOWS','START','END']:self.assertIsNone(getattr(x,name),name)
+  for name in ['entryAcquisitionOrderingChanged','physicalPacingEvidenceChanged','financialQuotePriorityChanged','boundedAuditFailureDiagnosticsChanged']:self.assertIsNone(f.COMPATIBILITY[name],name)
  def test_unfrozen_driver_refuses_before_any_host_read_or_service_mutation(self):
   with patch.object(f,'read')as read,patch.object(f,'local_preflight')as pre,patch.object(f,'load_helpers')as helpers:
    with self.assertRaisesRegex(f.Refused,'FINAL_EXACT_BEFORE_SOURCE_PIN_REQUIRED'):f.apply('a'*64,None,None,None,'b'*64)
@@ -32,6 +33,16 @@ class Templates(unittest.TestCase):
    values={**frozen,'OLD_SOURCE':before}
    with patch.multiple(f,**values),self.assertRaisesRegex(f.Refused,'FINAL_EXACT_BEFORE_SOURCE_PIN_REQUIRED'):f.reviewed_transition_pins()
   with patch.multiple(f,**frozen):f.reviewed_transition_pins()
+ def test_exporter_never_invoked_proof_is_optional_bound_and_never_pacing_authority(self):
+  run='native-paper-20261030040000000';root=pathlib.Path('/DISPOSABLE_RPC_FACTS_ONLY');folder=root/'runs'/run/'rpc';at=int(x.time.time()*1000);starts=[at-1000,at-500];book={'grantId':run+'-1','schemaVersion':2,'baseline':{'calls':10},'lastObservedAt':at,'starts':starts,'actualInvocations':[{'id':11,'at':at-999}],'pending':[{'id':12,'transport':'http','reservedBytes':2*1024*1024}]};projection={'projectionGeneratedAt':at,'recoveryBaselinePaths':[],'chapter':1,'activeChapterPath':str(folder/'chapter-001.json')}
+  def facts(b):
+   raw=json.dumps(b).encode()
+   with patch.object(x,'RUN',run),patch.object(x,'read',return_value=(raw,None)):return x.rpc_pacing_fact(root,projection,988)
+  old=facts(book);self.assertTrue(old['currentRawFactsAvailable']);self.assertEqual(old['currentRawUnclassifiedReservations'],1);self.assertFalse(old['currentRawUninvokedProofPresent']);self.assertNotIn('oldSourceCannotProduceNeverInvokedProof',old);self.assertFalse(old['pacingPermissionGranted']);self.assertFalse(old['lifetimeUsageRefunded'])
+  proven=copy.deepcopy(book);proven['knownUninvokedReservations']=[{'kind':'component-known-uninvoked-before-transport-v1','id':12,'attestedAt':at,'reasonCode':'COMPONENT_ABORTED'}]
+  new=facts(proven);self.assertTrue(new['currentRawUninvokedProofVerified']);self.assertEqual(new['currentRawNeverInvokedProofs'],1);self.assertEqual(new['currentRawUnclassifiedReservations'],0);self.assertEqual(new['currentRawPhysicalStamps'],1)
+  for mutate in [lambda b:b['knownUninvokedReservations'][0].update(id=11),lambda b:b['knownUninvokedReservations'][0].update(reasonCode='https://DO_NOT_EXPORT'),lambda b:b['knownUninvokedReservations'][0].update(attestedAt=at+1),lambda b:b['pending'][0].update(reservedBytes=0),lambda b:b['knownUninvokedReservations'].append(copy.deepcopy(b['knownUninvokedReservations'][0]))]:
+   bad=copy.deepcopy(proven);mutate(bad);result=facts(bad);self.assertTrue(result['currentRawFactsAvailable']);self.assertFalse(result['currentRawUninvokedProofVerified']);self.assertEqual(result['currentRawNeverInvokedProofs'],0);self.assertEqual(result['currentRawUnclassifiedReservations'],1);self.assertNotIn('DO_NOT_EXPORT',json.dumps(result))
  def test_configuration_change_is_explicit_and_cannot_be_mislabeled_unchanged(self):
   frozen=pins();frozen['NEW_CONFIGURATION_SHA']=frozen['OLD_CONFIGURATION_SHA']
   with patch.multiple(f,**frozen),self.assertRaisesRegex(f.Refused,'CHANGED_CONFIGURATION'):f.reviewed_transition_pins()
@@ -55,7 +66,7 @@ class Templates(unittest.TestCase):
  def test_frozen_synthetic_transition_uses_the_existing_single_writer_handoff_without_financial_rewrite(self):
   old=module('disposable_equity_execution_handoff','test-forward-original-upgrade.py');baseline=old.f
   frozen={name:getattr(baseline,name)for name in BEFORE+['OLD_SOURCE','PRIOR_RECORD','FORENSIC_RUN']}
-  frozen.update(NEW_SOURCE={'commit':'a'*40,'sha256':f.sha(b'NEW_TIMING_SOURCE')},NEW_METADATA_SHA=f.sha(f.encoded({'git':{'commit':'a'*40},'financialMode':'PAPER','liveTradingEnabled':False})),NEW_CONFIGURATION_SHA='f'*64)
+  frozen.update(COMPATIBILITY=pins()['COMPATIBILITY'],NEW_SOURCE={'commit':'a'*40,'sha256':f.sha(b'NEW_TIMING_SOURCE')},NEW_METADATA_SHA=f.sha(f.encoded({'git':{'commit':'a'*40},'financialMode':'PAPER','liveTradingEnabled':False})),NEW_CONFIGURATION_SHA='f'*64)
   # The fixture supplies synthetic artifact hashes, RO target paths and mocked
   # systemd. No before/source/artifact pin is filled in the actual template.
   with patch.multiple(f,**frozen),patch.object(old,'f',f),old.Tests().prepared(exposure=True)as value:

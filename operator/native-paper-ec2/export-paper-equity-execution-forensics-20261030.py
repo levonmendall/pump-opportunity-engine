@@ -51,16 +51,16 @@ HELD_FAILURE_CODES=frozenset('HELD_PRICING_BUSY HELD_PRICING_ABORTED HELD_PRICIN
 DYNAMIC_KEYS=DYNAMIC_KEYS|HELD_FAILURE_CODES
 STATIC_CODES=STATIC_CODES|HELD_FAILURE_CODES|frozenset('COMPONENT_ABORTED COMPONENT_DISPATCH_EXPIRED COMPONENT_ADMISSION_CLOSED COMPONENT_HTTP_STATUS_502 COMPONENT_HTTP_STATUS_503 COMPONENT_HTTP_STATUS_504 PILOT_RPC_PHYSICAL_SLOT_OCCUPIED POE_ENTRY_PROTECTION_RECOVERY_REQUIRED'.split())
 STATIC_STRINGS=STATIC_STRINGS|frozenset('rpc history available json-decoded not-completed confirmed-bank-clock quote-unavailable observation-support-unavailable fresh-actual-size-net-liquidation-required'.split())
-# Fixed69 provider-stage, current quote and entry-cost diagnostics only.
+# Fixed allowlisted provider-stage, current quote and entry-cost diagnostics only.
 SCALAR_KEYS=SCALAR_KEYS|frozenset('calls logicalAttempts rapidProbes successesAfterRetry refusals providerRestrictionUntil probeAt maximumPhysicalReads maximumReadMs physicalTimeoutMs validationReserveMs rapidProbeIntervalMs outageProbeMs pollMs normalStartsPer10s normalStartsPerMinute rapidStartsPer10s rapidStartsPerMinute currentUninvokedReservationCredit retainedLinkReadFailures cachedPools retainedPrices newLinksCommitted quoteSlot attemptedAt minSlot knownSlotFloor featuresAsOf manifestFilesRead manifestBytesRead manifestUnavailable matchedEssentialSegments manifestSelectionTruncated projectionGeneratedAt'.split())
 OBJECT_KEYS=OBJECT_KEYS|frozenset('protectionRecovery failureStages lastFailure policy rawChapterDispatchWindow protectionDispatchWindow request quote entryQuoteFailures'.split())
-DYNAMIC_KEYS=DYNAMIC_KEYS|frozenset('provider-restriction uninvoked-quota-or-spacing physical-settlement-wait physical-timeout caller-cancel-before-physical caller-cancel-during-physical transport-or-node-response local-admission'.split())
+DYNAMIC_KEYS=DYNAMIC_KEYS|frozenset('provider-restriction protection-retry-paced uninvoked-quota-or-spacing physical-settlement-wait physical-timeout caller-cancel-before-physical caller-cancel-during-physical transport-or-node-response local-admission'.split())
 STRING_KEYS=STRING_KEYS|frozenset('stage side ruleVersion'.split())
-STATIC_STRINGS=STATIC_STRINGS|frozenset('provider-restriction uninvoked-quota-or-spacing physical-settlement-wait physical-timeout caller-cancel-before-physical caller-cancel-during-physical transport-or-node-response local-admission bounded-owned-pricing-recovery-v1 decision buy'.split())
+STATIC_STRINGS=STATIC_STRINGS|frozenset('provider-restriction protection-retry-paced uninvoked-quota-or-spacing physical-settlement-wait physical-timeout caller-cancel-before-physical caller-cancel-during-physical transport-or-node-response local-admission bounded-owned-pricing-recovery-v1 decision buy'.split())
 EVENT_KINDS=EVENT_KINDS|frozenset('research-clock-verified-links-retained pilot-entry-cost-preparation pilot-observation-support-validation trader-pilot-entry-deposit trader-pilot-entry-deposit-cleared trader-candidate-evidence-deferred trader-quote-deferred'.split())
 ISO_TIME_KEYS=frozenset(('requestedAt','receivedAt','validatedAt'))
 EVENT_KINDS=EVENT_KINDS|frozenset(('pilot-operating-accounting-checkpoint',))
-SCALAR_KEYS=SCALAR_KEYS|frozenset('compactedAccountingEpochs chapter baselinePathCount currentChapterUncertainResponseBytes projectionGeneratedAt checkpointCreatedAt checkpointSourceLastObservedAt checkpointRetainedSinceAt checkpointOmittedCount checkpointUnknownAtSeal checkpointRetainedStarts checkpointRecent10s checkpointRecent60s currentRawLastObservedAt currentRawReservations currentRawPhysicalStamps currentRawUnattestedReservations currentRawUnattestedRecent10s currentRawUnattestedRecent60s currentRawPhysicalRecent10s currentRawPhysicalRecent60s oldSourceCannotProduceNeverInvokedProof allHandoffRawBooksInspected pacingFactsAvailable checkpointFactsAvailable currentRawFactsAvailable unknownPhysicalStartsConservativelyAtSeal retainedPhysicalStarts omittedPhysicalStarts lifetimeUsageRefunded'.split())
+SCALAR_KEYS=SCALAR_KEYS|frozenset('compactedAccountingEpochs chapter baselinePathCount currentChapterUncertainResponseBytes projectionGeneratedAt checkpointCreatedAt checkpointSourceLastObservedAt checkpointRetainedSinceAt checkpointOmittedCount checkpointUnknownAtSeal checkpointRetainedStarts checkpointRecent10s checkpointRecent60s currentRawLastObservedAt currentRawReservations currentRawPhysicalStamps currentRawUnattestedReservations currentRawUnattestedRecent10s currentRawUnattestedRecent60s currentRawPhysicalRecent10s currentRawPhysicalRecent60s allHandoffRawBooksInspected pacingFactsAvailable checkpointFactsAvailable currentRawFactsAvailable unknownPhysicalStartsConservativelyAtSeal retainedPhysicalStarts omittedPhysicalStarts lifetimeUsageRefunded'.split())
 OBJECT_KEYS=OBJECT_KEYS|frozenset(('pacingFacts',))
 HASH_KEYS=frozenset(('currentRawSha256','checkpointSha256'))
 SCALAR_KEYS=SCALAR_KEYS|frozenset(('pacingMeasuredAt','currentRawReadAfterProjection','currentRawMeasuredAt','usdRequests','usdFailures','priceAt','priceAgeMs'))
@@ -117,13 +117,30 @@ def source_pins(value):
 def status_fact(value):
  need(type(value)is dict and value.get('accountId')==ACCOUNT and value.get('inceptionAt')==INCEPTION and value.get('runId')==RUN and source_pins(value.get('source'))==SOURCE and value.get('configurationSha256')==CONFIGURATION and value.get('startedAt')==STARTED and value.get('mode')=='paper'and value.get('liveTradingEnabled')is False and integer(value.get('generatedAt'))and value['generatedAt']>=STARTED,'EXACT_CURRENT_RUN_IDENTITY_REQUIRED')
  return {'available':True,'accountId':ACCOUNT,'inceptionAt':INCEPTION,'source':SOURCE,'configurationSha256':CONFIGURATION,'runId':RUN,'startedAt':STARTED,'generatedAt':value['generatedAt'],'running':value.get('running')if type(value.get('running'))is bool else None,'entriesEnabled':value.get('entriesEnabled')if type(value.get('entriesEnabled'))is bool else None,'status':string_fact(value.get('status')),'diagnostics':sanitize({k:value[k]for k in('usage','timing','reporting','financial','financialReadiness','evidenceRetention','resourceControl','resources','sourceRecovery','sourceTimes')if k in value}),'missingDiagnostics':[k for k in('usage','timing','reporting','financialReadiness','evidenceRetention')if k not in value]}
+SCALAR_KEYS=SCALAR_KEYS|frozenset('knownNeverInvokedProofsAreDiagnosticsOnly pacingPermissionGranted currentRawUninvokedProofPresent currentRawUninvokedProofVerified currentRawNeverInvokedProofs currentRawNeverInvokedRecent10s currentRawNeverInvokedRecent60s currentRawUnclassifiedReservations currentRawUnclassifiedRecent10s currentRawUnclassifiedRecent60s'.split())
+def known_uninvoked_proof_ids(book,base,starts,physical_ids,last):
+ """Optional bounded evidence only; invalid/absent proof keeps starts unknown."""
+ rows=book.get('knownUninvokedReservations');pending=book.get('pending')
+ if type(rows)is not list or len(rows)>len(starts)or type(pending)is not list or len(pending)>1000:return set(),False
+ ids=set()
+ for row in rows:
+  if type(row)is not dict or set(row)!={'kind','id','attestedAt','reasonCode'}:return set(),False
+  i=row.get('id');at=row.get('attestedAt')
+  if row.get('kind')!='component-known-uninvoked-before-transport-v1'or not integer(i)or not base<i<=base+len(starts)or i in ids or i in physical_ids or not integer(at)or not starts[i-base-1]<=at<=last or row.get('reasonCode')not in['COMPONENT_ADMISSION_CLOSED','COMPONENT_DISPATCH_EXPIRED','COMPONENT_ABORTED']:return set(),False
+  matches=[p for p in pending if type(p)is dict and p.get('id')==i]
+  if len(matches)!=1:return set(),False
+  item=matches[0];transport=item.get('transport')
+  if transport not in['http','ws','ws-upgrade']or item.get('reservedBytes')!=(2*1024*1024 if transport=='http'else 64*1024):return set(),False
+  ids.add(i)
+ return ids,True
+
 def rpc_pacing_fact(root,value,uid):
  """Two fixed current-run files only. This diagnostic grants no pacing permission.
 
- Old69 cannot produce a never-invoked attestation. Missing stamps stay unknown.
+ No source-version capability is assumed. Missing or invalid proof stays unknown.
  Older unsealed raw books are not scanned; no conclusion follows from omission.
  """
- result={'pacingFactsAvailable':True,'checkpointFactsAvailable':False,'currentRawFactsAvailable':False,'oldSourceCannotProduceNeverInvokedProof':True,'allHandoffRawBooksInspected':False}
+ result={'pacingFactsAvailable':True,'checkpointFactsAvailable':False,'currentRawFactsAvailable':False,'knownNeverInvokedProofsAreDiagnosticsOnly':True,'pacingPermissionGranted':False,'lifetimeUsageRefunded':False,'allHandoffRawBooksInspected':False}
  projection=value.get('projectionGeneratedAt');at=int(time.time()*1000);result['pacingMeasuredAt']=at;paths=value.get('recoveryBaselinePaths')
  if not integer(projection)or type(paths)is not list or len(paths)>512:return result
  result['baselinePathCount']=len(paths);folder=root/'runs'/RUN/'rpc'
@@ -139,8 +156,8 @@ def rpc_pacing_fact(root,value,uid):
   ids=set();physical=[]
   for row in actual:
    need(type(row)is dict and integer(row.get('id'))and base<row['id']<=base+len(starts)and row['id']not in ids and integer(row.get('at'))and starts[row['id']-base-1]<=row['at']<=last,'VALID_CURRENT_PHYSICAL_STAMPS_REQUIRED');ids.add(row['id']);physical.append(row['at'])
-  need(book.get('knownUninvokedReservations')in(None,[]),'UNEXPECTED_PROOF_ON_OLD69_REQUIRED_UNKNOWN');unknown=[t for i,t in enumerate(starts)if base+i+1 not in ids]
-  result.update(currentRawFactsAvailable=True,currentRawSha256=digest(raw),currentRawReadAfterProjection=last>projection,currentRawMeasuredAt=raw_measured,currentRawLastObservedAt=last,currentRawReservations=len(starts),currentRawPhysicalStamps=len(physical),currentRawUnattestedReservations=len(unknown),currentRawUnattestedRecent10s=sum(t>raw_measured-10000 for t in unknown),currentRawUnattestedRecent60s=sum(t>raw_measured-60000 for t in unknown),currentRawPhysicalRecent10s=sum(t>raw_measured-10000 for t in physical),currentRawPhysicalRecent60s=sum(t>raw_measured-60000 for t in physical))
+  proof_ids,proof_verified=known_uninvoked_proof_ids(book,base,starts,ids,last);uninvoked=[t for i,t in enumerate(starts)if base+i+1 in proof_ids];unknown=[t for i,t in enumerate(starts)if base+i+1 not in ids and base+i+1 not in proof_ids]
+  result.update(currentRawFactsAvailable=True,currentRawSha256=digest(raw),currentRawReadAfterProjection=last>projection,currentRawMeasuredAt=raw_measured,currentRawLastObservedAt=last,currentRawReservations=len(starts),currentRawPhysicalStamps=len(physical),currentRawUninvokedProofPresent='knownUninvokedReservations'in book,currentRawUninvokedProofVerified=proof_verified,currentRawNeverInvokedProofs=len(uninvoked),currentRawNeverInvokedRecent10s=sum(t>raw_measured-10000 for t in uninvoked),currentRawNeverInvokedRecent60s=sum(t>raw_measured-60000 for t in uninvoked),currentRawUnclassifiedReservations=len(unknown),currentRawUnclassifiedRecent10s=sum(t>raw_measured-10000 for t in unknown),currentRawUnclassifiedRecent60s=sum(t>raw_measured-60000 for t in unknown),currentRawPhysicalRecent10s=sum(t>raw_measured-10000 for t in physical),currentRawPhysicalRecent60s=sum(t>raw_measured-60000 for t in physical))
  except(OSError,ValueError,TypeError,KeyError,Refused):pass
  return sanitize(result)
 def rpc_status_fact(root,status,uid=UID):
