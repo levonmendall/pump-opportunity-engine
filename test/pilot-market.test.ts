@@ -2,7 +2,7 @@
  * No network, production account, natural fill or economic edge is tested. */
 import {test,type TestContext} from 'node:test';
 import assert from 'node:assert/strict';
-import {mkdtempSync,readFileSync,rmSync} from 'node:fs';
+import {mkdtempSync,readFileSync,rmSync,writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {SYSVAR_CLOCK_PUBKEY} from '@solana/web3.js';
@@ -10,9 +10,11 @@ import {DisposableLedger,type UsdPrice} from '../src/ledger.js';
 import {PaperExecutionCoordinator} from '../src/execution.js';
 import {PilotMarket} from '../src/pilot-market.js';
 import type {PoolWireAccount} from '../src/pool.js';
+import {PilotRpc,PilotRpcUnavailable} from '../src/pilot-rpc.js';
+import {nativePaperRpcConfiguration} from '../src/run-native-paper.js';
 
 const signal=()=>new AbortController().signal;
-function fixture(t:TestContext,timeoutMs=1000,cooperative=false){
+function fixture(t:TestContext,timeoutMs=1000,cooperative=false,paced=false){
   const runs=['2026-10-26T19-41-20.717Z','2026-10-26T19-42-16.130Z'];
   const captures=runs.map(run=>{
     const proof=JSON.parse(readFileSync(`evidence/integration-proof-${run}.json`,'utf8'));
@@ -27,10 +29,11 @@ function fixture(t:TestContext,timeoutMs=1000,cooperative=false){
   const root=mkdtempSync(join(tmpdir(),'poe-DISPOSABLE-pilot-market-')),path=join(root,'fixture.sqlite'),ledger=new DisposableLedger(path,'fixture-pilot-market-mechanics');
   const price=():UsdPrice=>({microUsdPerSol:'100000000',at,source:'DISPOSABLE fixed USD snapshot'});
   ledger.initialize(price(),at);
-  t.after(()=>{ledger.close();Date.now=oldNow;rmSync(root,{recursive:true,force:true});});
-  let wait:Promise<void>|undefined;
+  t.after(()=>{physical?.close();ledger.close();Date.now=oldNow;rmSync(root,{recursive:true,force:true});});
+  let wait:Promise<void>|undefined,rpcHook:((method:string)=>void)|undefined,activity:((ms:number)=>void)|undefined;
   const rpc={async call<T>(method:string,params:unknown[]=[]):Promise<T>{
     calls.push({method,params:structuredClone(params),at});
+    rpcHook?.(method);
     if(wait){const pending=wait;wait=undefined;await pending;}
     if(method==='getMinimumBalanceForRentExemption')return (1000000+Number(params[0])+rentOffset)as T;
     if(method==='getBlockTime')return Math.floor(at/1000)as T;
@@ -39,12 +42,34 @@ function fixture(t:TestContext,timeoutMs=1000,cooperative=false){
     const clock:PoolWireAccount={data:[raw.toString('base64'),'base64'],owner:'Sysvar1111111111111111111111111111111111111',lamports:1169280,executable:false,rentEpoch:0};
     return {context:{slot},value:addresses.map(address=>address===SYSVAR_CLOCK_PUBKEY.toBase58()?clock:structuredClone(accounts.get(address)??null))}as T;
   },usage:()=>({calls:calls.length})};
-  const market=new PilotMarket({rpc,inventory:()=>ledger.state(),price,now:()=>at,recorder:{record(kind,data){records.push({kind,data:structuredClone(data)});recordHook?.(kind);}},...(cooperative?{beforeEntryPreparationRead:async(input:{method:string;signal:AbortSignal})=>{await preparationHook?.(input);}}:{}),gas:{baseFeeLamports:'5000',priorityFeeLamports:'2000',evidence:'DISPOSABLE7k simulated network/priority cost'},timeoutMs});
+  let physical:PilotRpc|undefined;
+  if(paced){const old=join(root,'prior.json');writeFileSync(old,JSON.stringify({schemaVersion:1,blockedReason:'RPC_HTTP_429',calls:1,bytes:0,lastObservedAt:at-120000,starts:[at-121000],pending:[]}));physical=new PilotRpc({directory:join(root,'paced-rpc'),runId:'offline-entry-quote-pacing',baselinePaths:[old],priorPhysicalSettled:true,...nativePaperRpcConfiguration(true),now:()=>at,monotonic:()=>at,sleep:async ms=>{at+=ms;activity?.(ms);},fetcher:(async(_url,init)=>{const q=JSON.parse(String(init?.body)),result=await rpc.call(q.method,q.params);return new Response(JSON.stringify({jsonrpc:'2.0',id:q.id,result}));}),record:(kind,data)=>records.push({kind,data:structuredClone(data)})});}
+  const market=new PilotMarket({rpc:physical??rpc,inventory:()=>ledger.state(),price,now:()=>at,recorder:{record(kind,data){records.push({kind,data:structuredClone(data)});recordHook?.(kind);}},...(cooperative?{beforeEntryPreparationRead:async(input:{method:string;signal:AbortSignal})=>{await preparationHook?.(input);}}:{}),gas:{baseFeeLamports:'5000',priorityFeeLamports:'2000',evidence:'DISPOSABLE7k simulated network/priority cost'},timeoutMs});
   for(const c of captures)market.registerPool({mint:c.proof.quote.mint,migrationVerified:true,migrationSlot:c.proof.origin.slot,evidence:'retained actual migration; synthetic current timing'});
   const coordinator=new PaperExecutionCoordinator({ledger,now:()=>at,timeoutMs:1000,context:s=>market.context(ledger.state().positions,s),quote:market.executionQuote});
   coordinator.recover();ledger.reconcile('initial-reconcile',at,price(),{});ledger.resume('fixture-ready',at,price(),{},{version:'isolated-pilot-market-fixture',evidence:'synthetic readiness for market/ledger mechanics only',marketAt:at,recoveryComplete:true,candidateWindowsReady:true,budgetAvailable:true});
-  return {captures,ledger,market,coordinator,price,calls,records,now:()=>at,advance:(ms:number)=>{at+=ms;},rentChanged:()=>{rentOffset++;},bumpSlot:()=>{slot++;},slot:()=>slot,setSlot:(value:number)=>{slot=value;},pause:(p:Promise<void>)=>{wait=p;},account:(address:string)=>accounts.get(address),onRecord:(hook:(kind:string)=>void)=>{recordHook=hook;},beforePreparationRead:(hook:(input:{method:string;signal:AbortSignal})=>Promise<void>)=>{preparationHook=hook;}};
+  return {captures,ledger,market,coordinator,price,calls,records,now:()=>at,advance:(ms:number)=>{at+=ms;},rentChanged:()=>{rentOffset++;},bumpSlot:()=>{slot++;},slot:()=>slot,setSlot:(value:number)=>{slot=value;},pause:(p:Promise<void>)=>{wait=p;},account:(address:string)=>accounts.get(address),onRpc:(hook:(method:string)=>void)=>{rpcHook=hook;},onPacingWait:(hook:(ms:number)=>void)=>{activity=hook;},onRecord:(hook:(kind:string)=>void)=>{recordHook=hook;},beforePreparationRead:(hook:(input:{method:string;signal:AbortSignal})=>Promise<void>)=>{preparationHook=hook;}};
 }
+
+test('BASELINE quote is invalidated by ancillary rent pacing after its market state despite healthy provider',async t=>{
+ const f=fixture(t,3000,false,true),mint=f.captures[1]!.proof.quote.mint;
+ await f.market.prepareEntryCosts(mint,signal());const before=f.ledger.state();let nextActivity=f.now()+400,activityCount=0;
+ f.onPacingWait(()=>{while(f.now()>=nextActivity){nextActivity+=400;f.bumpSlot();f.market.minimumSlot(mint,f.slot());activityCount++;}});
+ const begin=f.calls.length,q=await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal());
+ assert.equal(q,null);assert.ok(activityCount>0);assert.equal(f.calls.length-begin,3);assert.equal(f.market.usage().entryQuoteFailures.last?.phase,'freshness');assert.equal(f.market.usage().entryQuoteFailures.last?.reasonCode,'PILOT_MARKET_PREPARATION_CHANGED_OR_STALE');assert.deepEqual(f.ledger.state(),before);
+ t.diagnostic(JSON.stringify({scope:'OFFLINE actual SDK/PilotMarket/PilotRpc paced calls and synthetic400ms native slot floors; not live-cause proof',result:q,activityCount,calls:f.calls.slice(begin).map(c=>({method:c.method,at:c.at})),failure:f.market.usage().entryQuoteFailures.last,providerRequests:0}));
+});
+
+test('entry quote failure facts distinguish local admission, rent failure and unknown errors without retaining provider text',async t=>{
+ const f=fixture(t),mint=f.captures[1]!.proof.quote.mint;await f.market.prepareEntryCosts(mint,signal());const before=f.ledger.state();
+ f.onRpc(()=>{throw new PilotRpcUnavailable('COMPONENT_ADMISSION_CLOSED');});assert.equal(await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal()),null);assert.equal(f.market.usage().entryQuoteFailures.last?.phase,'pool-state');assert.equal(f.market.usage().entryQuoteFailures.last?.reasonCode,'PILOT_RPC_COMPONENT_ADMISSION_CLOSED');
+ f.onRpc(method=>{if(method==='getMinimumBalanceForRentExemption')throw Error('PILOT_MARKET_RENT_UNAVAILABLE');});assert.equal(await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal()),null);assert.equal(f.market.usage().entryQuoteFailures.last?.phase,'rent');assert.equal(f.market.usage().entryQuoteFailures.last?.reasonCode,'PILOT_MARKET_RENT_UNAVAILABLE');
+ f.onRpc(()=>{throw Error('https://private-provider.invalid/key=DO_NOT_RETAIN_THIS');});assert.equal(await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal()),null);const failures=f.market.usage().entryQuoteFailures;assert.equal(failures.count,3);assert.equal(failures.last?.reasonCode,'ENTRY_QUOTE_UNKNOWN');assert.match(failures.last?.unknownErrorSha256??'',/^[a-f0-9]{64}$/);assert.doesNotMatch(JSON.stringify({failures,records:f.records.filter(r=>r.kind==='pilot-entry-quote-unavailable')}),/private-provider|DO_NOT_RETAIN_THIS/);assert.deepEqual(f.ledger.state(),before);
+});
+
+for(const callerAbort of [true,false])test(`entry quote ${callerAbort?'caller cancellation':'local timeout'} has one bounded fact and keeps the physical continuation owned`,async t=>{
+ const f=fixture(t,20),mint=f.captures[1]!.proof.quote.mint;await f.market.prepareEntryCosts(mint,signal());let release!:()=>void;f.pause(new Promise<void>(r=>release=r));const controller=new AbortController(),pending=f.market.quote({mint,side:'buy',inputUnits:'10000000'},controller.signal);await Promise.resolve();await Promise.resolve();if(callerAbort)controller.abort();assert.equal(await pending,null);const failure=f.market.usage().entryQuoteFailures;assert.equal(failure.count,1);assert.equal(failure.last?.reasonCode,callerAbort?'ENTRY_QUOTE_CALLER_ABORTED':'ENTRY_QUOTE_TIMEOUT');assert.equal(f.market.retirementReady(),false);release();for(let n=0;n<16;n++)await Promise.resolve();assert.equal(f.market.usage().entryQuoteFailures.count,1,'late physical completion cannot duplicate the failure');assert.equal(f.market.retirementReady(),true);assert.deepEqual(f.ledger.state().pending,{});assert.deepEqual(f.ledger.state().positions,{});
+});
 
 test('fresh supported account lengths and current rent define deposits; every entry repeats rent checks',async t=>{
   const f=fixture(t),mint=f.captures[1]!.proof.quote.mint;

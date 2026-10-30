@@ -37,6 +37,13 @@ function need(value:unknown,reason:string):asserts value {if(!value)throw Error(
 const integer=(value:string)=>{need(typeof value==='string'&&/^(0|[1-9][0-9]{0,19})$/.test(value),'PILOT_MARKET_AMOUNT');return BigInt(value);};
 const hash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const MODEL='per-mint-dedicated-base-and-WSOL-accounts-v1' as const;
+export const PILOT_ENTRY_QUOTE_FAILURE_PHASES=['admission','plan','pool-state','rent','freshness','evidence','post-evidence'] as const;
+export const PILOT_ENTRY_QUOTE_FAILURE_CODES=['ENTRY_QUOTE_BUSY','ENTRY_QUOTE_CALLER_ABORTED','ENTRY_QUOTE_TIMEOUT','ENTRY_QUOTE_UNKNOWN',
+ 'PILOT_MARKET_ENTRY_COSTS_UNAVAILABLE','PILOT_MARKET_ENTRY_POOL_REQUIRED','PILOT_MARKET_ENTRY_DEPOSIT_MISMATCH','PILOT_MARKET_RENT_UNAVAILABLE','PILOT_MARKET_ACCOUNT_LENGTH','PILOT_MARKET_PREPARATION_CHANGED_OR_STALE','PILOT_MARKET_ENTRY_STATE_CHANGED',
+ 'PILOT_RPC_ABORTED','PILOT_RPC_COOLDOWN','PILOT_RPC_PHYSICAL_SLOT_OCCUPIED','PILOT_RPC_METHOD_PACING','PILOT_RPC_LOWER_PRIORITY_DEFER','PILOT_RPC_COMPONENT_ADMISSION_CLOSED','PILOT_RPC_COMPONENT_DISPATCH_EXPIRED','PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT','PILOT_RPC_COMPONENT_ABORTED','PILOT_RPC_COMPONENT_HTTP_TRANSPORT','PILOT_RPC_COMPONENT_HTTP_429','PILOT_RPC_COMPONENT_HTTP_STATUS_502','PILOT_RPC_COMPONENT_HTTP_STATUS_503','PILOT_RPC_COMPONENT_HTTP_STATUS_504','RESEARCH_CLOCK_POOL_UNAVAILABLE','RESEARCH_CLOCK_ADMISSION_CLOSED'] as const;
+type EntryQuotePhase=typeof PILOT_ENTRY_QUOTE_FAILURE_PHASES[number];
+type EntryQuoteAttempt={mint:string;phase:EntryQuotePhase;began:number;recorded:boolean;caller:AbortSignal;deadline:AbortSignal};
+type EntryQuoteFailure={at:number;mint:string|null;phase:EntryQuotePhase;reasonCode:typeof PILOT_ENTRY_QUOTE_FAILURE_CODES[number];elapsedMs:number;callerAborted:boolean;deadlineAborted:boolean;unknownErrorSha256:string|null};
 
 /** Dedicated simulated token-account pairs deliberately over-reserve compared
  * with sharing a WSOL account. Each mint's rent is locked exactly once in the
@@ -60,6 +67,7 @@ export class PilotMarket {
   private prepared=0;
   private entryEstimates=0;
   private entryAttempts=0;
+  private readonly entryQuoteFailures:{count:number;last:EntryQuoteFailure|null}={count:0,last:null};
   readonly gasLamports:string;
   constructor(private readonly options:PilotMarketOptions){
     this.options={...options,gas:Object.freeze({...options.gas})};
@@ -178,38 +186,51 @@ export class PilotMarket {
     return received;
   }
   private async entryQuote(request:SizeRequest,signal:AbortSignal):Promise<PilotSizeQuote|null>{
-    if(this.active||this.holdingActive||signal.aborted)return null;
-    this.active=true;const generation=this.generation,controller=new AbortController(),combined=AbortSignal.any([signal,controller.signal]);
-    const operation=this.readEntryQuote(request,combined,generation);void operation.then(()=>{this.active=false;},()=>{this.active=false;});
+    const controller=new AbortController(),attempt:EntryQuoteAttempt={mint:request.mint,phase:'admission',began:performance.now(),recorded:false,caller:signal,deadline:controller.signal};
+    if(this.active||this.holdingActive||signal.aborted){this.entryQuoteFailure(attempt,Error('ENTRY_QUOTE_BUSY'));return null;}
+    this.active=true;const generation=this.generation,combined=AbortSignal.any([signal,controller.signal]);
+    const operation=this.readEntryQuote(request,combined,generation,attempt);void operation.then(()=>{this.active=false;},()=>{this.active=false;});
     let timer:ReturnType<typeof setTimeout>|undefined,listener:(()=>void)|undefined;
-    try{return await Promise.race([operation,new Promise<null>(resolve=>{listener=()=>resolve(null);combined.addEventListener('abort',listener,{once:true});timer=setTimeout(()=>controller.abort(),this.options.timeoutMs??3000);if(combined.aborted)listener();})]);}
+    try{return await Promise.race([operation,new Promise<null>(resolve=>{listener=()=>{this.entryQuoteFailure(attempt,combined.reason);resolve(null);};combined.addEventListener('abort',listener,{once:true});timer=setTimeout(()=>controller.abort(),this.options.timeoutMs??3000);if(combined.aborted)listener();})]);}
     finally{clearTimeout(timer);if(listener)combined.removeEventListener('abort',listener);controller.abort();}
   }
-  private async readEntryQuote(request:SizeRequest,signal:AbortSignal,generation:number):Promise<PilotSizeQuote|null>{
+  private entryQuoteFailure(attempt:EntryQuoteAttempt,error:unknown){
+    if(attempt.recorded)return;attempt.recorded=true;
+    const message=error instanceof Error?error.message:'',code=attempt.caller.aborted?'ENTRY_QUOTE_CALLER_ABORTED':attempt.deadline.aborted?'ENTRY_QUOTE_TIMEOUT':PILOT_ENTRY_QUOTE_FAILURE_CODES.find(c=>c===message)??'ENTRY_QUOTE_UNKNOWN';
+    let mint:string|null=null;try{if(attempt.mint.length<=44&&new PublicKey(attempt.mint).toBase58()===attempt.mint)mint=attempt.mint;}catch{/* Invalid identifiers never enter retained diagnostics. */}
+    const fact:EntryQuoteFailure={at:this.clock(),mint,phase:attempt.phase,reasonCode:code,elapsedMs:Math.max(0,performance.now()-attempt.began),callerAborted:attempt.caller.aborted,deadlineAborted:attempt.deadline.aborted,unknownErrorSha256:code==='ENTRY_QUOTE_UNKNOWN'?hash(message.slice(0,4096)):null};
+    this.entryQuoteFailures.count++;this.entryQuoteFailures.last=fact;
+    // Bounded diagnostic only. Its absence never makes a quote usable or a
+    // candidate qualified; normal financial decision evidence remains required.
+    try{this.options.recorder.record('pilot-entry-quote-unavailable',{...fact,executableQualification:false,orderCreated:false});}catch{/* Quote remains unavailable; the source recorder owns its integrity handling. */}
+  }
+  private async readEntryQuote(request:SizeRequest,signal:AbortSignal,generation:number,attempt:EntryQuoteAttempt):Promise<PilotSizeQuote|null>{
     try{
+      attempt.phase='plan';
       const plan=this.freshPlan(request.mint),pool=this.pools.get(request.mint);need(pool&&request.side==='buy','PILOT_MARKET_ENTRY_POOL_REQUIRED');
       const expected=(request as SizeRequest&{requiredDepositLamports?:string}).requiredDepositLamports;
       need(expected===undefined||expected===plan.depositLamports,'PILOT_MARKET_ENTRY_DEPOSIT_MISMATCH');
       const input={mint:request.mint,side:'buy' as const,inputUnits:request.inputUnits,minSlot:this.floor(request.mint,request.minSlot??0)};
-      const state=await this.pricer.quoteBuy({mint:new PublicKey(input.mint),buyLamports:integer(input.inputUnits),minSlot:input.minSlot},signal);
+      attempt.phase='pool-state';const state=await this.pricer.quoteBuy({mint:new PublicKey(input.mint),buyLamports:integer(input.inputUnits),minSlot:input.minSlot},signal);
       // As before, every decision/execution quote reads current required rent.
       // Preparation is sizing only; it never substitutes for this fresh check.
-      const accountPlan={...plan.accountPlan,at:this.clock()},rents:Record<string,string>={};let required=0n;
+      attempt.phase='rent';const accountPlan={...plan.accountPlan,at:this.clock()},rents:Record<string,string>={};let required=0n;
       for(const [exists,bytes]of [[accountPlan.baseExists,state.baseAssociatedAccount.accountLengthBytes],[accountPlan.quoteExists,state.quoteAssociatedAccount.accountLengthBytes]]as const){
         if(exists)continue;need(Number.isSafeInteger(bytes)&&bytes>=165&&bytes<=10240,'PILOT_MARKET_ACCOUNT_LENGTH');
         if(rents[bytes]===undefined){const rent=await this.options.rpc.call<number>('getMinimumBalanceForRentExemption',[bytes,{commitment:'confirmed'}],signal);need(Number.isSafeInteger(rent)&&rent>0,'PILOT_MARKET_RENT_UNAVAILABLE');rents[bytes]=BigInt(rent).toString();}
         required+=integer(rents[bytes]!);
       }
       need(required.toString()===plan.depositLamports&&this.clock()-accountPlan.at<=10000,'PILOT_MARKET_ENTRY_DEPOSIT_MISMATCH');
-      const at=this.freshClock(state,input.mint,signal);need(generation===this.generation&&this.freshPlan(input.mint).evidence===plan.evidence&&state.slot>=this.floor(input.mint,input.minSlot),'PILOT_MARKET_ENTRY_STATE_CHANGED');
+      attempt.phase='freshness';const at=this.freshClock(state,input.mint,signal);need(generation===this.generation&&this.freshPlan(input.mint).evidence===plan.evidence&&state.slot>=this.floor(input.mint,input.minSlot),'PILOT_MARKET_ENTRY_STATE_CHANGED');
       const costs={depositLamports:required.toString(),plan:accountPlan,rents,gas:this.options.gas,gasLamports:this.gasLamports,classification:'simulated' as const};
       const evidence='rpc-market:'+hash({request:input,state,costs,gas:this.options.gas,migrationEvidence:pool.evidence});
       const q:PilotSizeQuote={...input,outputUnits:state.buy.outputBaseUnits,at,evidence,slot:state.slot,effectiveQuoteLiquidityLamports:state.effectiveQuoteReserve,requiredDepositLamports:plan.depositLamports,depositEvidence:'pilot-entry-validated-costs:'+hash({preparation:plan.evidence,quote:evidence,deposit:plan.depositLamports})};
-      this.options.recorder.record('rpc-market-quote',{request:input,quote:q,source:{slot:state.slot,commitment:state.commitment,requestedAt:state.requestedAt,receivedAt:state.receivedAt,validatedAt:state.validatedAt,timeEvidence:state.timeEvidence,clockSlot:state.clockSlot,marketClockUnixSeconds:state.marketClockUnixSeconds,migrationSlot:pool.migrationSlot},costs});
+      attempt.phase='evidence';this.options.recorder.record('rpc-market-quote',{request:input,quote:q,source:{slot:state.slot,commitment:state.commitment,requestedAt:state.requestedAt,receivedAt:state.receivedAt,validatedAt:state.validatedAt,timeEvidence:state.timeEvidence,clockSlot:state.clockSlot,marketClockUnixSeconds:state.marketClockUnixSeconds,migrationSlot:pool.migrationSlot},costs});
+      attempt.phase='post-evidence';
       this.freshClock(state,input.mint,signal);need(generation===this.generation&&this.freshPlan(input.mint).evidence===plan.evidence&&state.slot>=this.floor(input.mint,input.minSlot),'PILOT_MARKET_ENTRY_STATE_CHANGED');
       this.minimumSlot(input.mint,state.slot);this.entryEstimates++;
       this.entrySnapshots.set(input.mint,structuredClone(q));return q;
-    }catch{return null;}
+    }catch(error){this.entryQuoteFailure(attempt,error);return null;}
   }
   readonly context=async(positions:Readonly<Record<string,Position>>,signal:AbortSignal):Promise<ExecutionContext>=>{
     if(this.holdingActive||this.active&&!this.protectionYield||signal.aborted)return {price:null,marks:{}};
@@ -232,5 +253,5 @@ export class PilotMarket {
       return {...q,slot:entry.slot,requiredDepositLamports:plan.depositLamports,depositEvidence:'pilot-execution-validated-costs:'+hash({preparation:plan.evidence,quote:q.evidence,deposit:plan.depositLamports})};
     }catch{return null;}
   };
-  usage(){return {classification:'isolated PAPER pilot only',registeredPools:this.pools.size,preparedEntryCostPlans:this.prepared,entryQuoteCalls:this.entryEstimates,entryExecutionQuotes:this.entryAttempts,held:this.holdingPricer.usage(),holdingDiagnostics:this.held.usage(),entryPricing:this.pricer.usage(),rpc:this.options.rpc.usage?.()??null,accountModel:MODEL,depositRefundsAssumed:false};}
+  usage(){return {classification:'isolated PAPER pilot only',registeredPools:this.pools.size,preparedEntryCostPlans:this.prepared,entryQuoteCalls:this.entryEstimates,entryExecutionQuotes:this.entryAttempts,entryQuoteFailures:structuredClone(this.entryQuoteFailures),held:this.holdingPricer.usage(),holdingDiagnostics:this.held.usage(),entryPricing:this.pricer.usage(),rpc:this.options.rpc.usage?.()??null,accountModel:MODEL,depositRefundsAssumed:false};}
 }

@@ -1,0 +1,44 @@
+✔ persistent original service is explicit and cannot hide a finite duration or substitute a financial ledger (2.44645ms)
+✔ actual runtime RPC configuration selects the explicit90 service profile without changing finite verification or physical gates (54.831583ms)
+✔ original binding preserves inception and virtual funding; fixture exception is explicit and cannot bless another live account (0.731616ms)
+✔ persistent management uses rolling shared headroom, never cumulative CPU or completed chapter exhaustion (0.320666ms)
+✔ sealed recovery anchor includes only later unsealed chapter suffix; old actual usage cannot be counted twice (0.582866ms)
+✔ qualification proof work is async and unavailable until settled; expired or different evidence never authorizes an entry (16.489681ms)
+✔ rolling unqualified inputs are not permanently pinned, while actual financial and owned protection evidence are retained (0.601272ms)
+✔ root-owned immutable provenance exception is confined to exact commit release path (0.242189ms)
+✔ candidate diagnostic pressure and recorder failure close new risk without throwing through owned financial work (0.492521ms)
+✔ restart run-index rotation preserves the last referenced current-market recovery checkpoint (0.715432ms)
+✔ only explicit supplementary representatives and local phase metrics may omit capacity diagnostics (0.252755ms)
+✔ an explicit optional capacity omission stays unaccepted without closing healthy capture or inventing required flow (0.184144ms)
+✔ required, essential, IO, unknown and thrown recorder failures still close new risk while preserving held obligations (0.406763ms)
+✔ a required constructor record failure during actual source rebuild cannot be overwritten by a later healthy reset (7.946463ms)
+✔ actual continuous recorder optional omission preserves complete required proof and financial-essential recording through caller wiring (18.469019ms)
+✔ rolling short-window financial reserve blocks new risk before a burst consumes protection and pending-entry starts (0.428286ms)
+✔ BASELINE quote is invalidated by ancillary rent pacing after its market state despite healthy provider (121.107659ms)
+ℹ {"scope":"OFFLINE actual SDK/PilotMarket/PilotRpc paced calls and synthetic400ms native slot floors; not live-cause proof","result":null,"activityCount":1,"calls":[{"method":"getMultipleAccounts","at":1793043737684},{"method":"getMinimumBalanceForRentExemption","at":1793043737934},{"method":"getMinimumBalanceForRentExemption","at":1793043738184}],"failure":{"at":1793043738184,"mint":"A4CSsC9DPkKRnbcX3U3zQZnC9oV4JFieu7pu8oFWpump","phase":"freshness","reasonCode":"PILOT_MARKET_PREPARATION_CHANGED_OR_STALE","elapsedMs":16.77461399999993,"callerAborted":false,"deadlineAborted":false,"unknownErrorSha256":null},"providerRequests":0}
+✔ entry quote failure facts distinguish local admission, rent failure and unknown errors without retaining provider text (27.651696ms)
+✔ entry quote caller cancellation has one bounded fact and keeps the physical continuation owned (15.326325ms)
+✔ entry quote local timeout has one bounded fact and keeps the physical continuation owned (41.77798ms)
+✔ fresh supported account lengths and current rent define deposits; every entry repeats rent checks (42.513553ms)
+✔ real decoder quotes complete a disposable delayed buy and full-size exit with rent retained once (65.716306ms)
+✔ changed rent, unknown account plan, cancellation and invalidation refuse entry without changing account (38.357465ms)
+✔ post-delay buy source carries its actual slot and refuses changed rent or delayed evidence (38.073167ms)
+✔ a newer known flow slot arriving during entry pricing prevents an older result from being used (20.428337ms)
+✔ candidate-only support uses unchanged current state validation without rent or an entry plan (15.956109ms)
+✔ candidate-only support retains mint, pool, vault and fee-owner checks (24.168638ms)
+✔ candidate-only support refuses stale records, invalidation, newer slot floors and cancellation (24.865611ms)
+✔ coherent entry preparation and quote leave held dependency links warm and read every rent again (17.942928ms)
+✔ a slow final recorder cannot refresh an earlier Clock buy into a valid decision or change accounting (15.033ms)
+✔ a timed-out uncooperative buy read retains market ownership until physical work settles (39.134449ms)
+✔ entry preparation can yield between real SDK reads to fresh whole-inventory pricing without reentrant entry work (81.610378ms)
+✔ whole preparation timeout retains uncooperative physical ownership and cannot publish a late plan (35.009942ms)
+✔ cancellation at a preparation yield prevents the next physical request and cannot create a plan (7.974444ms)
+✔ an unrelated candidate bank cannot raise a holding slot floor; the holding own known floor remains mandatory (46.969268ms)
+ℹ tests 35
+ℹ suites 0
+ℹ pass 35
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1876.260938

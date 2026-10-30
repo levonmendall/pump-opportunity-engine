@@ -1,0 +1,10 @@
+✔ BASELINE quote is invalidated by ancillary rent pacing after its market state despite healthy provider (101.305893ms)
+ℹ {"scope":"OFFLINE actual SDK/PilotMarket/PilotRpc paced calls and synthetic400ms native slot floors; not live-cause proof","result":null,"activityCount":1,"calls":[{"method":"getMultipleAccounts","at":1793043737684},{"method":"getMinimumBalanceForRentExemption","at":1793043737934},{"method":"getMinimumBalanceForRentExemption","at":1793043738184}],"failure":{"at":1793043738184,"mint":"A4CSsC9DPkKRnbcX3U3zQZnC9oV4JFieu7pu8oFWpump","phase":"freshness","reasonCode":"PILOT_MARKET_PREPARATION_CHANGED_OR_STALE","elapsedMs":12.046501000000035,"callerAborted":false,"deadlineAborted":false,"unknownErrorSha256":null},"providerRequests":0}
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1233.060907

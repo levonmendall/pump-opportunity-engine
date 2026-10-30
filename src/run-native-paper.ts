@@ -117,7 +117,7 @@ export class NativePaperProofPreparation{
  * risk immediately and the main loop quarantines incomplete candidate evidence. */
 export function nativePaperRequiredEvidence(kind:string,data:unknown,essential=false){
  if(essential)return true;
- return kind!=='native-paper-local-phase'&&!(kind==='native-flow-raw-representative'&&(data as {supplementaryOnly?:unknown}|null)?.supplementaryOnly===true);
+ return kind!=='native-paper-local-phase'&&kind!=='pilot-entry-quote-unavailable'&&!(kind==='native-flow-raw-representative'&&(data as {supplementaryOnly?:unknown}|null)?.supplementaryOnly===true);
 }
 export function nativePaperRecordServiceEvidence(recorder:{record:(kind:string,data:unknown,options:{essential:boolean;required:boolean})=>boolean;recordOutcome?:()=>{kind:'accepted'|'optional-capacity-omitted'|'unavailable';reason:string|null}},kind:string,data:unknown,essential:boolean,onUnavailable:()=>void,required=true){
  const requiredEvidence=essential||required!==false;let accepted=false,optionalCapacityOmitted=false;
