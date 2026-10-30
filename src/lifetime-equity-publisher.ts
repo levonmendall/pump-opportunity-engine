@@ -64,7 +64,7 @@ export class OriginalEquityCompanion {
       // Market data, financial reconciliation, and trading run independently.
     }
     const history = this.store.history(now);
-    if (history.lastSequence === '0') return { ingested, delivered: false };
+    if (history.points.length === 1) return { ingested, delivered: false };
     // Send a complete bounded source-owned series on process startup, after
     // every new observation and periodically for Render restart recovery.
     if (this.delivering || now - this.lastAttemptAt < 30_000 ||
