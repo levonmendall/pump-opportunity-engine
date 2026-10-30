@@ -1,0 +1,15 @@
+{
+  "kind": "POE_STARTUP_READONLY_DIAGNOSTIC_STAGED_NOT_EXECUTED",
+  "directory": "/var/tmp/poe-paper-equity-startup-readonly-20261030",
+  "file": "read-paper-equity-startup-20261030.py",
+  "bytes": 47607,
+  "sha256": "119efbb3b44a0c039e4e21667a3f2a2f7de19b4c5a0f4474cdb50f347a738ecc",
+  "uid": 994,
+  "mode": "600",
+  "financialDatabaseOpened": false,
+  "credentialsRead": false,
+  "providerRequests": 0,
+  "serviceControlOperations": 0,
+  "rootActions": 0,
+  "executed": false
+}

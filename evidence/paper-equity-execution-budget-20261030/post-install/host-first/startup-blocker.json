@@ -1,0 +1,110 @@
+{
+  "kind": "actual-original-paper-upgrade-startup-blocker",
+  "workflowRun": 41010498869,
+  "checkedAt": 1793339334918,
+  "installedSourceReceipt": {
+    "commit": "02fbec4f548c02f81663c707f31b7b62ea335133",
+    "sha256": "16805b01382b10e2bf59952e93e218d8a2e5afc70c4275d65ff4be003095abdb"
+  },
+  "configurationSha256": "1a81d2156865467cab6300c260a809e0f98ae6649bdd88b4161f13b4c7d8edef",
+  "rootVerificationComplete": false,
+  "errors": [
+    "NEW_ORIGINAL_PUBLIC_STATUS_NOT_VERIFIED_WITHIN_30_SECONDS"
+  ],
+  "financialPrefix": {
+    "identityAndInceptionPreserved": true,
+    "initialFundingAndRoundingPreserved": true,
+    "journalAndActionPrefixPreserved": true,
+    "priorRevision": 75255,
+    "currentRevision": 75255,
+    "currentStateBodySha256": "5bc26134160e9e28f2ecba0b2283c882453508a2322af153633974e007ec912c",
+    "prefix": {
+      "actions": {
+        "priorRows": 75255,
+        "exactPriorRowsRetained": true,
+        "currentRows": 75255
+      },
+      "journal": {
+        "priorRows": 75256,
+        "exactPriorRowsRetained": true,
+        "currentRows": 75256
+      }
+    },
+    "comparison": "whole-column-ordered-exact-prefix",
+    "originalSqliteOwnerUid": 988,
+    "financialDatabaseWrites": 0,
+    "backupRestored": false
+  },
+  "newAdmissionsSuspendedByInstaller": false,
+  "service": {
+    "MainPID": "2486669",
+    "NRestarts": "0",
+    "ActiveState": "active",
+    "SubState": "running",
+    "ExecMainStartTimestamp": "Fri 2026-10-30 05:47:19 UTC"
+  },
+  "ownedProcessRoles": [
+    {
+      "pid": 2486669,
+      "role": "original-supervisor",
+      "ownerUid": 988,
+      "cpuSeconds": 0.15,
+      "rssBytes": 29827072,
+      "nice": 0,
+      "explicitMaxOldSpaceSizeMiB": [],
+      "argvExported": false
+    },
+    {
+      "pid": 2486673,
+      "role": "original-publisher",
+      "ownerUid": 988,
+      "cpuSeconds": 0.12,
+      "rssBytes": 55169024,
+      "nice": 0,
+      "explicitMaxOldSpaceSizeMiB": [
+        128
+      ],
+      "argvExported": false
+    }
+  ],
+  "lastLocalPublicStatus": {
+    "sha256": "3b5ffadeea591a54edaf82dfabdcd0508ce26e008ef0851a394e7b3ac7f524da",
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "release": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+    "strategy": "adaptive-momentum-v2-paper-v1",
+    "generatedAt": "2026-10-30T05:47:16.815Z",
+    "entriesDisabled": true,
+    "flowVerified": false,
+    "mode": "PAPER",
+    "liveTrading": false,
+    "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE",
+    "shortlistCount": 0,
+    "feedConnected": false,
+    "lastUsefulProgressAt": "2026-10-30T05:47:15.586Z",
+    "lastReconciledAt": "2026-10-30T05:47:15.586Z",
+    "lastMigrationReceivedAt": "2026-10-30T05:45:29.802Z",
+    "reportingConfigured": true
+  },
+  "privateDiagnosticAccess": {
+    "supervisorHealth": {
+      "metadataAvailable": false,
+      "errno": 13,
+      "contentRead": false
+    },
+    "publisherDiagnostic": {
+      "metadataAvailable": false,
+      "errno": 13,
+      "contentRead": false
+    },
+    "reportingCredentialMetadata": {
+      "metadataAvailable": false,
+      "errno": 13,
+      "contentRead": false
+    }
+  },
+  "currentNativeProgressVerified": false,
+  "financialHistoryReset": false,
+  "backupRestored": false,
+  "nextAction": "Obtain reviewed sanitized bounded startup error through owner root read-only command. Do not blindly rerun installer, downgrade, reset, clear financial controls or rebind Render before native startup identity is verified."
+}

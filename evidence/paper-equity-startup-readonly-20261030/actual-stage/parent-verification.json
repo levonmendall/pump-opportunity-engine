@@ -1,0 +1,15 @@
+{
+  "kind": "parent-verified-actual-root-readonly-helper-staging",
+  "workflowRun": 41011752852,
+  "adminSource": "7ef525dba6a8c5bdf240ce1a31a4f9abccf90e8b",
+  "rawSha256": "396308f1a58311f003e85e350e2cad52b37dee5645916b2d8bf633a714932362",
+  "allStagedBytesSizeOwnershipModeVerified": true,
+  "ownerCommandAstAndShellVerified": true,
+  "ownerCommandSha256": "a2290104aa77dd1574da7d7ec74f201cc3693280baad470d0eeb8e4d72f1b8a8",
+  "executed": false,
+  "rootActions": 0,
+  "serviceControlOperations": 0,
+  "financialDatabaseOpened": false,
+  "providerRequests": 0,
+  "credentialReads": 0
+}

@@ -1,0 +1,1736 @@
+[
+  {
+    "record": 1,
+    "sequence": "12132",
+    "sourceAt": "2026-10-30T05:46:38.554Z",
+    "collectorReceivedAt": "2026-10-30T05:46:46.266Z",
+    "sourceAgeAtReceiptMs": 7712.0,
+    "status": {
+      "runtime": "running",
+      "market": "observing",
+      "entries": "enabled",
+      "reconciled": true,
+      "blocker": null
+    },
+    "operating": {
+      "state": "fresh",
+      "reporting": "current",
+      "reasonCodes": []
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-5.ndjson",
+        "line": 39,
+        "lineSha256": "cdcf46e4d502a7a5101ac88ae803a16e5f4663aa9152c2fa22efa23f1f84a82a"
+      },
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/material-transitions.ndjson",
+        "line": 1259,
+        "lineSha256": "cdcf46e4d502a7a5101ac88ae803a16e5f4663aa9152c2fa22efa23f1f84a82a"
+      }
+    ]
+  },
+  {
+    "record": 2,
+    "sequence": "12133",
+    "sourceAt": "2026-10-30T05:46:53.589Z",
+    "collectorReceivedAt": "2026-10-30T05:47:01.440Z",
+    "sourceAgeAtReceiptMs": 7851.0,
+    "status": {
+      "runtime": "running",
+      "market": "observing",
+      "entries": "enabled",
+      "reconciled": true,
+      "blocker": null
+    },
+    "operating": {
+      "state": "fresh",
+      "reporting": "current",
+      "reasonCodes": []
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-5.ndjson",
+        "line": 40,
+        "lineSha256": "72bdb8bbdbaf2d01dc9ba1944338f388e0c22a595d9804b51fecfdceec8ffd0d"
+      },
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/material-transitions.ndjson",
+        "line": 1260,
+        "lineSha256": "72bdb8bbdbaf2d01dc9ba1944338f388e0c22a595d9804b51fecfdceec8ffd0d"
+      }
+    ]
+  },
+  {
+    "record": 3,
+    "sequence": "12134",
+    "sourceAt": "2026-10-30T05:47:08.638Z",
+    "collectorReceivedAt": "2026-10-30T05:47:16.596Z",
+    "sourceAgeAtReceiptMs": 7958.0,
+    "status": {
+      "runtime": "running",
+      "market": "observing",
+      "entries": "enabled",
+      "reconciled": true,
+      "blocker": null
+    },
+    "operating": {
+      "state": "fresh",
+      "reporting": "current",
+      "reasonCodes": []
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 1,
+        "lineSha256": "a1c301547572584b0be3fcaa3368b6177aa57b0f6b72936395675b54445b8a4f"
+      },
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/material-transitions.ndjson",
+        "line": 1261,
+        "lineSha256": "a1c301547572584b0be3fcaa3368b6177aa57b0f6b72936395675b54445b8a4f"
+      }
+    ]
+  },
+  {
+    "record": 4,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:47:31.753Z",
+    "sourceAgeAtReceiptMs": 14938.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "unavailable",
+      "reporting": "current",
+      "reasonCodes": [
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 2,
+        "lineSha256": "bd583c4fd7afe8ce42fd46f75f419aefdd7694d1c8e3540400cee7a36c8c85a4"
+      },
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/material-transitions.ndjson",
+        "line": 1262,
+        "lineSha256": "bd583c4fd7afe8ce42fd46f75f419aefdd7694d1c8e3540400cee7a36c8c85a4"
+      }
+    ]
+  },
+  {
+    "record": 5,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:47:47.021Z",
+    "sourceAgeAtReceiptMs": 30206.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "unavailable",
+      "reporting": "current",
+      "reasonCodes": [
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 3,
+        "lineSha256": "58d9b70327b7875790c6aa133926a1e60d070fd98a89b0a118eda2d63bdfbb21"
+      }
+    ]
+  },
+  {
+    "record": 6,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:48:02.346Z",
+    "sourceAgeAtReceiptMs": 45531.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "unavailable",
+      "reporting": "current",
+      "reasonCodes": [
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 4,
+        "lineSha256": "736e8fe98a539819b37ca3fc6f330b3214c168bd4fad17010553217ea65f7a19"
+      }
+    ]
+  },
+  {
+    "record": 7,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:48:17.553Z",
+    "sourceAgeAtReceiptMs": 60738.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "unavailable",
+      "reporting": "current",
+      "reasonCodes": [
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 5,
+        "lineSha256": "8d3ddc807b6c6330c6f199fbc95293c692d99bec326603ae3fdd3cfcac7a0c36"
+      }
+    ]
+  },
+  {
+    "record": 8,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:48:32.704Z",
+    "sourceAgeAtReceiptMs": 75889.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "unavailable",
+      "reporting": "current",
+      "reasonCodes": [
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 6,
+        "lineSha256": "a44f77426a4fa471f8c20ee70eb4966b3eb7aea43ae70aecdd9b00a270261a55"
+      }
+    ]
+  },
+  {
+    "record": 9,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:48:47.968Z",
+    "sourceAgeAtReceiptMs": 91153.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 7,
+        "lineSha256": "6674e1074db61ca3ef84bcb213b1175af40fb0e087fb6129217e1c17dcd57318"
+      }
+    ]
+  },
+  {
+    "record": 10,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:49:03.156Z",
+    "sourceAgeAtReceiptMs": 106341.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 8,
+        "lineSha256": "e91716350db86917dda89d30c14635ce59d6d0578c4c51f2bd1012286dfa68c1"
+      }
+    ]
+  },
+  {
+    "record": 11,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:49:18.298Z",
+    "sourceAgeAtReceiptMs": 121483.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 9,
+        "lineSha256": "641a103933fbb3f4dde8bc4d9949a5b3e38016e6a89a312d407b82a9b7d123c2"
+      }
+    ]
+  },
+  {
+    "record": 12,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:49:33.441Z",
+    "sourceAgeAtReceiptMs": 136626.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 10,
+        "lineSha256": "d40f4453edb6db19f0266980bac042df531507414ee17e93c30d94bc74cf9bbe"
+      }
+    ]
+  },
+  {
+    "record": 13,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:49:48.612Z",
+    "sourceAgeAtReceiptMs": 151797.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 11,
+        "lineSha256": "3d0cbc0c60e4f3e7f9dd6d7026bc898842ea359770f39cfa46b07a0ad3b5f524"
+      }
+    ]
+  },
+  {
+    "record": 14,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:50:03.821Z",
+    "sourceAgeAtReceiptMs": 167006.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 12,
+        "lineSha256": "4e94523ea6b77974d9adae3de8e9d0f3ead2eecc2eec358235e19a0a078a9fb6"
+      }
+    ]
+  },
+  {
+    "record": 15,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:50:19.114Z",
+    "sourceAgeAtReceiptMs": 182299.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 13,
+        "lineSha256": "5fb7a700e70e38028a8016eabea9630163faa81b8b1e92e6125c2a66b5dcaab6"
+      }
+    ]
+  },
+  {
+    "record": 16,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:50:34.389Z",
+    "sourceAgeAtReceiptMs": 197574.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 14,
+        "lineSha256": "c18c66f722da26d4024f6995bed26ec021b424808ab036d45a3c9cda9f88d118"
+      }
+    ]
+  },
+  {
+    "record": 17,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:50:49.526Z",
+    "sourceAgeAtReceiptMs": 212711.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 15,
+        "lineSha256": "30d8783cc37af02b89dae0d5ac3df40accced6735386b96d8f65d629d1ff8aa4"
+      }
+    ]
+  },
+  {
+    "record": 18,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:51:04.817Z",
+    "sourceAgeAtReceiptMs": 228002.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 16,
+        "lineSha256": "301cfb87713e21d454017080c2c7f85caf7b637b360238c75c800b7d2bbe4fa4"
+      }
+    ]
+  },
+  {
+    "record": 19,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:51:20.198Z",
+    "sourceAgeAtReceiptMs": 243383.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 17,
+        "lineSha256": "07b2e9aef45a4a3a0762988ceb74a488432f854eaf8fd728c0f157a816ea11c9"
+      }
+    ]
+  },
+  {
+    "record": 20,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:51:35.406Z",
+    "sourceAgeAtReceiptMs": 258591.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 18,
+        "lineSha256": "8fd1fbb822265996b8f0e764f882beec50002ef13ada801f22cdf4bf15e86bf4"
+      }
+    ]
+  },
+  {
+    "record": 21,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:51:50.572Z",
+    "sourceAgeAtReceiptMs": 273757.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 19,
+        "lineSha256": "ce6c842a0347083bdd9378982064bb19794f3559e730f3790ac7596999db08c5"
+      }
+    ]
+  },
+  {
+    "record": 22,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:52:05.734Z",
+    "sourceAgeAtReceiptMs": 288919.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 20,
+        "lineSha256": "02b0fa45986dd1995ab4c792d136a459e9d7e6223de7a9dee1de6c5733fb893a"
+      }
+    ]
+  },
+  {
+    "record": 23,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:52:20.888Z",
+    "sourceAgeAtReceiptMs": 304073.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 21,
+        "lineSha256": "b7aa39893adb46d1b7c8e22bfde2370f4c02c9d312d6b9990257dca1c5501969"
+      }
+    ]
+  },
+  {
+    "record": 24,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:52:36.309Z",
+    "sourceAgeAtReceiptMs": 319494.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 22,
+        "lineSha256": "fb3de6f284e2a1c7d237d816959f6fe8590128a2be34c92371351a95eca714b4"
+      }
+    ]
+  },
+  {
+    "record": 25,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:52:51.461Z",
+    "sourceAgeAtReceiptMs": 334646.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 23,
+        "lineSha256": "e0c30f74981b8893c2eb0a35ad54a553298ef9177adeb13f7d7a746a837f925a"
+      }
+    ]
+  },
+  {
+    "record": 26,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:53:06.603Z",
+    "sourceAgeAtReceiptMs": 349788.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 24,
+        "lineSha256": "b4d47b1a3158b476d764edd5f9f0f5baa0598632b9d841d49f142ddd07e8adf3"
+      }
+    ]
+  },
+  {
+    "record": 27,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:53:21.736Z",
+    "sourceAgeAtReceiptMs": 364921.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 25,
+        "lineSha256": "a095f2a7c0e040a533fd69850f46c3fc26be2c915057d9e0ee4aff3a1ccafa9c"
+      }
+    ]
+  },
+  {
+    "record": 28,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:53:36.902Z",
+    "sourceAgeAtReceiptMs": 380087.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 26,
+        "lineSha256": "8a9bad2cb44993e5d55f857dc0d87efbbc255a9cb96234c27e713b8bf0a42a69"
+      }
+    ]
+  },
+  {
+    "record": 29,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:53:52.056Z",
+    "sourceAgeAtReceiptMs": 395241.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 27,
+        "lineSha256": "80dbedaae43290e38ddebc8a4eb5a29b5696929ca781f5b50e248bbf9ff9c569"
+      }
+    ]
+  },
+  {
+    "record": 30,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:54:07.173Z",
+    "sourceAgeAtReceiptMs": 410358.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 28,
+        "lineSha256": "e27bcd26b48bb2e2049919f89232d2c015ce0655d78ba2a960db8dd43b6eaea6"
+      }
+    ]
+  },
+  {
+    "record": 31,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:54:22.303Z",
+    "sourceAgeAtReceiptMs": 425488.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 29,
+        "lineSha256": "e93401ba32627f2886630ceceb0995cbaad28cd54784a04cb9c52e8001c42680"
+      }
+    ]
+  },
+  {
+    "record": 32,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:54:37.472Z",
+    "sourceAgeAtReceiptMs": 440657.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 30,
+        "lineSha256": "537af5f0d6bc384433513c1aa0e450fa3002d87c7afd2498d37f7c755a6102f2"
+      }
+    ]
+  },
+  {
+    "record": 33,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:54:52.748Z",
+    "sourceAgeAtReceiptMs": 455933.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 31,
+        "lineSha256": "9b2fc82dcc0b2c5f02e9843c2d3fce3245e2daff3437d7cb4e03d907103ec948"
+      }
+    ]
+  },
+  {
+    "record": 34,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:55:07.908Z",
+    "sourceAgeAtReceiptMs": 471093.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 32,
+        "lineSha256": "9aa5ad05056155d21fd747663b1fde30ccef2b24e24fa84db3dd98232c16e003"
+      }
+    ]
+  },
+  {
+    "record": 35,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:55:23.225Z",
+    "sourceAgeAtReceiptMs": 486410.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 33,
+        "lineSha256": "57a448742dc281dae0cb23bdd3bb4e0f4dee25198881f2e453ab31492767776f"
+      }
+    ]
+  },
+  {
+    "record": 36,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:55:38.619Z",
+    "sourceAgeAtReceiptMs": 501804.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 34,
+        "lineSha256": "5821f6c63d7d0ecd86b6996aa71f7a0bd6f987ff4a533c4de256c2a2d5daa548"
+      }
+    ]
+  },
+  {
+    "record": 37,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:55:53.976Z",
+    "sourceAgeAtReceiptMs": 517161.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 35,
+        "lineSha256": "c0e354ab075fcf54e9a76f409dbd2bd9143bf4a2b62cf2fd30cc2a6339884f37"
+      }
+    ]
+  },
+  {
+    "record": 38,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:56:09.137Z",
+    "sourceAgeAtReceiptMs": 532322.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 36,
+        "lineSha256": "cd19d211d59334287305cd088cdedef8bd6645880e23592ba33c51cbd59ce4ee"
+      }
+    ]
+  },
+  {
+    "record": 39,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:56:24.329Z",
+    "sourceAgeAtReceiptMs": 547514.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 37,
+        "lineSha256": "8aea95447cab4b53ac0db67abebf00740791be8539a637d117ac0aaed528a6a8"
+      }
+    ]
+  },
+  {
+    "record": 40,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:56:39.482Z",
+    "sourceAgeAtReceiptMs": 562667.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 38,
+        "lineSha256": "3af84ee8e1d8eea5c85ce65714ceb1a33c8ec2df3ae4712f0a3c8df7bfbd73f2"
+      }
+    ]
+  },
+  {
+    "record": 41,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:56:54.869Z",
+    "sourceAgeAtReceiptMs": 578054.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 39,
+        "lineSha256": "b4eee22a7b12bd9ac4ff18b19e8982321d70952775ada2a2749a0b7cf1eb35c1"
+      }
+    ]
+  },
+  {
+    "record": 42,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:57:10.013Z",
+    "sourceAgeAtReceiptMs": 593198.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "line": 40,
+        "lineSha256": "02ad122274c909004f3903d23f11f99b80e464df8da5bd2fcf463e4fa36e8b83"
+      }
+    ]
+  },
+  {
+    "record": 43,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:57:25.156Z",
+    "sourceAgeAtReceiptMs": 608341.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-7.ndjson",
+        "line": 1,
+        "lineSha256": "c18b68cb6136b7388022995b266dabadafcbb0bc5e87466d0db2a543890334fa"
+      }
+    ]
+  },
+  {
+    "record": 44,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:57:40.304Z",
+    "sourceAgeAtReceiptMs": 623489.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-7.ndjson",
+        "line": 2,
+        "lineSha256": "afb8b7e11fc4bfec0402bea718c88ac8b280567844be235a3d9395c75adbea68"
+      }
+    ]
+  },
+  {
+    "record": 45,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:57:55.490Z",
+    "sourceAgeAtReceiptMs": 638675.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-7.ndjson",
+        "line": 3,
+        "lineSha256": "ebded996d70d24e3be990d9df77c8e9675ca37d518ec0b0d4cc913c2761c2086"
+      }
+    ]
+  },
+  {
+    "record": 46,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:58:10.681Z",
+    "sourceAgeAtReceiptMs": 653866.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-7.ndjson",
+        "line": 4,
+        "lineSha256": "d1ea0aaa606dda3a2ef4acba8f44603f22187d77062c6acc700089ff629a00a1"
+      }
+    ]
+  },
+  {
+    "record": 47,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:58:25.842Z",
+    "sourceAgeAtReceiptMs": 669027.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-7.ndjson",
+        "line": 5,
+        "lineSha256": "7d8eeaeea99322c84be4b5ac4300be41ef03592ed2216b78025f0eef92fbc14a"
+      }
+    ]
+  },
+  {
+    "record": 48,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:58:41.075Z",
+    "sourceAgeAtReceiptMs": 684260.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-7.ndjson",
+        "line": 6,
+        "lineSha256": "0a5d820a54949b7652e011fbc825545d8e2affaf075305c87e0dda2a4d2a0dbb"
+      }
+    ]
+  },
+  {
+    "record": 49,
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:58:56.201Z",
+    "sourceAgeAtReceiptMs": 699386.0,
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "state": "stale",
+      "reporting": "source-stale",
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    },
+    "locations": [
+      {
+        "file": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/routine-7.ndjson",
+        "line": 7,
+        "lineSha256": "c6b4b2abeb19d004c6ca381593d31506007d148b287829a7c0f7e37c53f8d848"
+      }
+    ]
+  }
+]

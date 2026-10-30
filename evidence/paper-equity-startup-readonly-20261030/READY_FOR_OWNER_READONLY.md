@@ -1,0 +1,9 @@
+# Actual engine startup failure — root read-only evidence needed
+
+The owner applied release02fb. Actual host inspections41010498869 and41011136147 confirm the protected update receipt, but no native engine child or new local source snapshot. Only supervisor2486669 and publisher2486673 were present. The stale stopped69 frame is not current trading/protection evidence.
+
+The root installer verified original account/inception/funding and the exact75,255-action/75,256-journal prefix. Its sole error is NEW_ORIGINAL_PUBLIC_STATUS_NOT_VERIFIED_WITHIN_30_SECONDS. No restore/reset/new admission-suspension action occurred. Do not blindly repeat installation or change Render source binding before resolving native startup.
+
+The reviewed diagnostic is ACTUALLY staged by41011752852, matched independently by the parent. It reads exact source02fb/native16805/config1a81/root receipt, bounded private health/source/supervisor logs. It emits finite static reasons and hashes unknown text; bottom summary is suitable for owner return. No ledger, credentials, provider calls, subprocesses, service controls or file mutation. Twelve focused tests, independent privacy/race/catalogue checks and four actual disposable staging cases passed. Exact command is OWNER_READONLY.txt, SHAa2290104aa77dd1574da7d7ec74f201cc3693280baad470d0eeb8e4d72f1b8a8.
+
+Root is required only because maintenance UID994 cannot read those private logs. Run this command in the original EC2 console and return its final summary. Diagnose the actual reason, prepare a forward-compatible targeted repair if needed, verify original account/history and actual engine source before rebinding the same Render receiver. Do not downgrade executable financial management after possible new start, restore old financial state, clear owner/financial protections or fabricate current protection.

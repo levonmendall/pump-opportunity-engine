@@ -1,0 +1,134 @@
+{
+  "kind": "immutable-stale-down-protection-interval-v1",
+  "frozenAt": "2026-10-30T05:59:09.919674+00:00",
+  "selection": "Existing collector records selected by collector receipt time, because retained source generation/sequence stopped advancing. Includes immediately preceding running baseline.",
+  "receiptBounds": {
+    "earliest": "2026-10-30T05:46:46.266Z",
+    "latest": "2026-10-30T05:58:56.201Z"
+  },
+  "records": 49,
+  "firstObservedStoppedRecord": {
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:47:31.753Z",
+    "lastCompletedProtectionAt": "2026-10-30T05:47:15.600Z"
+  },
+  "latestRetainedPublicFrame": {
+    "sequence": "12136",
+    "sourceAt": "2026-10-30T05:47:16.815Z",
+    "collectorReceivedAt": "2026-10-30T05:58:56.201Z",
+    "sourceAgeAtFreezeMs": 713105,
+    "receiverAgeAtFreezeMs": 13719,
+    "reportedSource": {
+      "release": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+      "strategy": "adaptive-momentum-v2-paper-v1"
+    },
+    "reportedRun": {
+      "id": "native-paper-20261030021230118",
+      "startedAt": "2026-10-30T02:12:30.118Z",
+      "mode": "persistent-paper",
+      "configurationSha256": "ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db",
+      "strategyVersion": "adaptive-momentum-v2-paper-v1"
+    },
+    "status": {
+      "runtime": "stopped",
+      "market": "unavailable",
+      "entries": "paused",
+      "reconciled": true,
+      "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+    },
+    "operating": {
+      "kind": "operating-source-v1",
+      "state": "stale",
+      "market": "unavailable",
+      "reporting": "source-stale",
+      "sourceAgeMs": 699344,
+      "receivedAgeMs": 698739,
+      "selectedCapture": false,
+      "discovery": false,
+      "watch": false,
+      "entryRestriction": "POE_ENTRY_PROVIDER_UNAVAILABLE",
+      "financial": {
+        "usdValuation": "available",
+        "reconciled": true,
+        "valuationAgeMs": 701159,
+        "reconciliationAgeMs": 700573
+      },
+      "protection": {
+        "state": "monitored",
+        "completedAt": "2026-10-30T05:47:15.600Z",
+        "completedAgeAtSourceMs": 1215,
+        "boundaryMs": 4000
+      },
+      "reasonCodes": [
+        "SOURCE_STALE",
+        "PUBLISHER_STALE",
+        "RUNTIME_STOPPED",
+        "SELECTED_CAPTURE_LOST",
+        "DISCOVERY_LOST",
+        "WATCH_LOST",
+        "VALUATION_STALE",
+        "RECONCILIATION_STALE",
+        "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      ]
+    }
+  },
+  "protectionInterval": {
+    "classification": "failed/unbounded by current public evidence",
+    "verifiedCurrentGapUpperBoundMs": null,
+    "pastCurrentRunCompletedMaximumMs": 16677,
+    "pastMaximumIsNotABoundForStoppedInterval": true,
+    "currentProtectionValuationReconciliationProgressVerified": false
+  },
+  "historicalAsOfStoppedSourceOnly": {
+    "asOf": "2026-10-30T05:47:16.815Z",
+    "protection": {
+      "state": "monitored",
+      "targetCadenceMs": 2000,
+      "completedEvaluationBoundaryMs": 4000,
+      "lastCompletedAt": "2026-10-30T05:47:15.600Z",
+      "maximumCompletedGapMs": 89426,
+      "maximumQuoteAgeAtUseMs": 101,
+      "breaches": 82,
+      "unavailableChecks": 285
+    },
+    "providerTimeouts": 660,
+    "quoteFailureDiagnostics": [
+      "Last holding RPC failure 2026-10-30T05:34:51.644Z: uninvoked-quota-or-spacing; physical-in-flight false. Candidate quote failures (current market instance) 82: last 2026-10-30T05:43:18.481Z, 4k2bHn5wB2WnoshvGrJD7SNPjiWRN2KQC9dvTHZbpump, rent/PILOT_RPC_COMPONENT_ADMISSION_CLOSED, 70.33131499961019 ms; caller/deadline aborted false/false. This is not a qualification or order."
+    ],
+    "positions": [
+      {
+        "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+        "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+        "quantity": "65278155",
+        "enteredAt": "2026-10-29T22:23:36.537Z",
+        "entryCostUsd": 49.708013,
+        "netLiquidationUsd": 64.136882,
+        "executionCostsUsd": 0.00068,
+        "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+      }
+    ],
+    "pendingOrders": [],
+    "notActualCurrentCounters": true
+  },
+  "rootProvidedContextNotIndependentlyInspected": {
+    "hostReceipts": [
+      "41010498869",
+      "41011136147"
+    ],
+    "corrected02fbProtectedFilesAndRootReceipt": "confirmed by root",
+    "financialPrefix75255And75256": "PASS per root",
+    "nativeChild": "absent per root",
+    "supervisorPid": "2486669",
+    "publisherPid": "2486673",
+    "startupCode": "unknown; UID994 inaccessible per root",
+    "reviewedReadOnlyDiagnostic": "in progress per root"
+  },
+  "limits": [
+    "No new collector/API/provider/financial/control/host inspection action was taken; only existing local collector records were copied.",
+    "Retained old69 stopped public frame does not establish actual current native execution, policy cards, current counters, financial state or protection progress. New02fb files/root receipt reported by root do not establish a running native child from this public evidence.",
+    "The down/stale interval is failed/unbounded; prior completed16,677ms maximum is not its bound, and retained82/285/660/quote82 are historical source facts only.",
+    "Source generation, collector receipt and local capture are distinct. Cause/startup failure remains unknown; no inspection attribution is inferred.",
+    "The copied106974ms capacity handoff remains an agent-supervision gap; no uninterrupted active supervision claim."
+  ]
+}
