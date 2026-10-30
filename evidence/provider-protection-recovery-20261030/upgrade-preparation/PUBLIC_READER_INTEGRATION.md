@@ -7,3 +7,5 @@ After independent exporter/reader review and final package verification, copy th
 The helper reads only the protected public upgrade-verification receipt and the new fixed sanitized provider-recovery export. It requires the exact original account/inception, source93/native8a0/config44/run234856700, old-run preflight/script/root-copy hashes, original UID/GID, mode, link count and stable bounded file. It accepts only the two exact sampled failure intervals and their per-window serialized bounds; the quiet middle remains unobserved.
 
 Do not invoke or stage this preparation before parent authorization of the reviewed final package. It performs no private financial access, provider request, credential read or service control.
+
+Final sampled intervals are 2026-10-30 00:11:15–00:12:30 UTC (timeout/cooldown cascade) and 00:18:10–00:22:30 UTC (ABORTED-only bursts). The quiet middle is not sampled. This supersedes the earlier proposed23:59 interval.
