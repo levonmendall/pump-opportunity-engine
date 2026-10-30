@@ -1,0 +1,10 @@
+✔ entry read scope requires the actual current independent certificate and complete retained proof; pending or stale work cannot inherit it (159.236051ms)
+✔ owned buy and independent two-position exits retain financial quote priority inside a candidate caller (142.680871ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1250.503536

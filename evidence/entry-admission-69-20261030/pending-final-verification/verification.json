@@ -1,0 +1,33 @@
+{
+  "source": "3b2a8932b7c7f48407ca546f5d99832de4081c3a",
+  "startedAt": "2026-10-30T03:15:39.841354+00:00",
+  "commands": [
+    {
+      "command": [
+        "npm",
+        "test"
+      ],
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "providerRequests": 0,
+  "originalFinancialAccountRead": false,
+  "inertEntryBudgetIncluded": false,
+  "sourceUnchanged": true,
+  "passed": true,
+  "completedAt": "2026-10-30T03:17:42.571105+00:00",
+  "artifacts": {
+    "npm-test.raw.txt": "e0032346332b5b8db2fe580fbd198641117cf0c69da285ac8c3f8af6daf6b184",
+    "source-before.json": "bc42917ca110a850fce2b3669f471fbefd0dc44f5ae091b82765268adfd7fa63",
+    "build.raw.txt": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+    "source-after.json": "bc42917ca110a850fce2b3669f471fbefd0dc44f5ae091b82765268adfd7fa63"
+  }
+}

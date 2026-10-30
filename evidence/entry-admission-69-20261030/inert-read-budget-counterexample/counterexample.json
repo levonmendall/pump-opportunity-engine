@@ -1,0 +1,20 @@
+{
+  "status": "INERT_DO_NOT_DEPLOY",
+  "observedSource": "69aa1ef214a8",
+  "hypothesis": "A decreasing required-quote-read budget could bypass optional smoothing while preserving the original future-financial reserve.",
+  "counterexample": "Actual NativePaper/Trader, independent audit certificate, durable retained proof, SDK, shared PilotRpc and two disposable holdings completed the new entry but subsequent whole-inventory protection gap reached4500ms.",
+  "conclusion": "Provider-budget-only quote success is insufficient; retain existing entry admission and optional smoothing until full subsequent financial capacity is demonstrably supported.",
+  "unchangedAuthorizedRepair": "Pending execution quote ownership wrapper at3b2a893 is independently validated. Ghost uninvoked physical pacing defect is separately being repaired.",
+  "financialExecution": "DISPOSABLE offline only; no real account/provider/network/service changes",
+  "limits": "Synthetic retained-state fixture, synthetic flow/Clock/USD/physical responses and timing; not a live strategy qualification or live incident attribution",
+  "sourceFiles": {
+    "src/pilot-market.ts": "acfaf8bf6115a8199d392f6c14e7c319ee06903c748f4f6ed1ce3ceafe765f36",
+    "src/native-paper.ts": "0c5585e37fe61885219a5e07749dee2f8e735bae262cd91665edd947000ddbea",
+    "src/run-native-paper.ts": "103407d6c32c5773e5bffc3b9decefe1e2c2ada9c7e3df70e930fd00609753dd"
+  },
+  "artifacts": {
+    "certificate-retention-guards.raw.txt": "8f316cf2c70b2d55f3ec5c3ea3bc0bd6746e38f3a6943e5597541f8ea309f031",
+    "provider-budget-only-comparison.raw.txt": "1e048771275ec033ef2ac151098df17945c0c7a19327f150e3d25a0f58b82dca",
+    "full-financial-counterexample.raw.txt": "cd767d5f02bd2082f4918400dd2af87461a9e84f7c31ddf2740ae4b94475eef9"
+  }
+}

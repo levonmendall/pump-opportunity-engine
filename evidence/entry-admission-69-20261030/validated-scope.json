@@ -1,0 +1,22 @@
+{
+  "validatedApplicationSource": "3b2a8932b7c7f48407ca546f5d99832de4081c3a",
+  "basedOnActualInstalledSource": "69aa1ef214a8",
+  "activeChanges": [
+    "Only a matching ledger-owned coordinator execution quote enters the pending financial scheduling scope, independent of its caller phase.",
+    "Quote-only financial work never updates lastProtectionStart.",
+    "Decision quotes retain original admission, provider limits, freshness and strategy qualification."
+  ],
+  "fullTestsPassed": 2160,
+  "buildPassed": true,
+  "sourceUnchangedDuringVerification": true,
+  "notPromoted": {
+    "archivedBranch": "poe-entry-read-budget-inert-counterexample-20261030",
+    "commit": "6aff03f5fabba143f974d662782aa2ac625a57a8",
+    "reason": "Provider-budget-only quote completion did not establish safe subsequent financial service. Full actual-class disposable entry/fill/two-held protection produced4500ms gap. Original entry gates are retained."
+  },
+  "interpretationCorrection": "The six-to-five/provider-margin refusal alone does not prove an unnecessarily restrictive completeness or financial check. Future financial/protection obligations must fit. The earlier baseline observations are retained; no missed profitable opportunity claimed.",
+  "providerRequests": 0,
+  "originalFinancialAccountRead": false,
+  "financialControlActions": 0,
+  "deploymentPerformed": false
+}
