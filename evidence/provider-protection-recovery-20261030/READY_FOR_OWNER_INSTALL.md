@@ -1,4 +1,6 @@
-# Original POE provider and entry-recovery repair: staged, not installed
+# Original POE provider and entry-recovery repair: historical installation handoff
+
+**Applied and verified on 2026-10-30. Do not rerun this command as a new repair.** Source5675961 is installed; original account/history/holding verified intact. The same Render receiver accepts567 and entry eligibility recovered automatically. Further genuine provider/pricing failures remain under investigation. Current details are in `docs/CONTINUATION_CHECKPOINT.md` and `post-install/`; the staging-only handoff below is retained as historical evidence.
 
 The repeated entry pauses are caused by real holding-protection interruptions. In the latest actual interval, two non-held HTTP timeouts propagated through shared cooldown into holding-pricing refusals. Separate earlier cancellations occurred while waiting for local RPC capacity, without any HTTP timeout. Automatic entry recovery works between incidents, but repeated failures restart the required healthy protection interval. Market discovery, capture, accounting and reporting continued. Exact causes of every historical interruption remain unknown.
 

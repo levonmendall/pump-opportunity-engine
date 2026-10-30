@@ -1,0 +1,31 @@
+{
+  "source": "5675961a0ad05df508eec6928644c9e403be0811",
+  "commands": [
+    {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "test/protection-demand-burst.offline.ts"
+      ],
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "startedAt": "2026-10-30T02:04:50.959856+00:00",
+  "providerRequests": 0,
+  "financialAccountRead": false,
+  "financialActions": 0,
+  "serviceChanges": 0,
+  "sourceAndProbeUnchanged": true,
+  "passed": true,
+  "completedAt": "2026-10-30T02:05:12.200334+00:00"
+}

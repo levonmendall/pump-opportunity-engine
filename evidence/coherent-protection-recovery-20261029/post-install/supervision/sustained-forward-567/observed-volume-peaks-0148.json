@@ -1,0 +1,196 @@
+{
+  "frozenAt": "2026-10-30T01:49:26.530612+00:00",
+  "source": "5675961a0ad05df508eec6928644c9e403be0811",
+  "meaning": "Observed natural application-stream volume increases, using consecutive actual-source samples. No arbitrary high-volume classification or all-four-busy saturation claim. Application bytes are not host wire bytes. Peak intervals for each stream are separate and must not be added.",
+  "peaks": [
+    {
+      "field": "nativeStreamBytes",
+      "applicationBytesPerSecond": 422676.4913920762,
+      "intervalSeconds": 15.53000020980835,
+      "bytesDelta": 6564166,
+      "beforeSourceAt": "2026-10-30T01:43:21.873Z",
+      "afterSourceAt": "2026-10-30T01:43:37.403Z",
+      "beforeSequence": "11178",
+      "afterSequence": "11179",
+      "statusBefore": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "statusAfter": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "deepActiveBefore": 4,
+      "deepActiveAfter": 4,
+      "protectionBefore": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:43:20.441Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 73,
+        "unavailableChecks": 240
+      },
+      "protectionAfter": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:43:36.762Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 73,
+        "unavailableChecks": 240
+      },
+      "httpTimeoutsBefore": 640,
+      "httpTimeoutsAfter": 640,
+      "resourceAfter": {
+        "sampleAt": "2026-10-30T01:43:36.942Z",
+        "cpuOneCoreFraction": 0.306257991599332,
+        "rssBytes": 412323840,
+        "availableMemoryBytes": 6831087616,
+        "availableDiskBytes": 286599602176,
+        "eventLoopLagMs": 27.934719,
+        "state": "normal"
+      },
+      "qualityDeltas": {
+        "qualityGaps": 0,
+        "auditUnavailable": 0,
+        "auditUnusable": 0,
+        "decisionDeadlineMisses": 0
+      }
+    },
+    {
+      "field": "broadWatchBytes",
+      "applicationBytesPerSecond": 3693482.8201824147,
+      "intervalSeconds": 15.008999824523926,
+      "bytesDelta": 55435483,
+      "beforeSourceAt": "2026-10-30T01:44:55.801Z",
+      "afterSourceAt": "2026-10-30T01:45:10.810Z",
+      "beforeSequence": "11184",
+      "afterSequence": "11185",
+      "statusBefore": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "statusAfter": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "deepActiveBefore": 1,
+      "deepActiveAfter": 1,
+      "protectionBefore": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:44:55.388Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 73,
+        "unavailableChecks": 240
+      },
+      "protectionAfter": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:45:09.487Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 73,
+        "unavailableChecks": 240
+      },
+      "httpTimeoutsBefore": 640,
+      "httpTimeoutsAfter": 640,
+      "resourceAfter": {
+        "sampleAt": "2026-10-30T01:45:09.901Z",
+        "cpuOneCoreFraction": 0.1962245935806586,
+        "rssBytes": 406020096,
+        "availableMemoryBytes": 6824529920,
+        "availableDiskBytes": 286550081536,
+        "eventLoopLagMs": 27.967487,
+        "state": "normal"
+      },
+      "qualityDeltas": {
+        "qualityGaps": 0,
+        "auditUnavailable": 0,
+        "auditUnusable": 0,
+        "decisionDeadlineMisses": 1
+      }
+    },
+    {
+      "field": "rpcResponseBytes",
+      "applicationBytesPerSecond": 427657.3026576901,
+      "intervalSeconds": 15.53000020980835,
+      "bytesDelta": 6641518,
+      "beforeSourceAt": "2026-10-30T01:43:21.873Z",
+      "afterSourceAt": "2026-10-30T01:43:37.403Z",
+      "beforeSequence": "11178",
+      "afterSequence": "11179",
+      "statusBefore": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "statusAfter": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "deepActiveBefore": 4,
+      "deepActiveAfter": 4,
+      "protectionBefore": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:43:20.441Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 73,
+        "unavailableChecks": 240
+      },
+      "protectionAfter": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:43:36.762Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 73,
+        "unavailableChecks": 240
+      },
+      "httpTimeoutsBefore": 640,
+      "httpTimeoutsAfter": 640,
+      "resourceAfter": {
+        "sampleAt": "2026-10-30T01:43:36.942Z",
+        "cpuOneCoreFraction": 0.306257991599332,
+        "rssBytes": 412323840,
+        "availableMemoryBytes": 6831087616,
+        "availableDiskBytes": 286599602176,
+        "eventLoopLagMs": 27.934719,
+        "state": "normal"
+      },
+      "qualityDeltas": {
+        "qualityGaps": 0,
+        "auditUnavailable": 0,
+        "auditUnusable": 0,
+        "decisionDeadlineMisses": 0
+      }
+    }
+  ]
+}

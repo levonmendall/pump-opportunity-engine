@@ -1,0 +1,5114 @@
+{
+  "kind": "POE_ORIGINAL_CUTOVER_REFUSAL_READ_ONLY",
+  "checkedAt": 1793322545857,
+  "service": {
+    "Restart": "always",
+    "MainPID": "2479299",
+    "ControlPID": "0",
+    "Result": "success",
+    "NRestarts": "0",
+    "OOMPolicy": "stop",
+    "ExecMainStartTimestamp": "Fri 2026-10-30 01:04:46 UTC",
+    "ExecMainExitTimestamp": "",
+    "ExecMainPID": "2479299",
+    "ExecMainCode": "0",
+    "ExecMainStatus": "0",
+    "ControlGroup": "/system.slice/poe-runtime.service",
+    "TasksCurrent": "22",
+    "CPUWeight": "100",
+    "CPUQuotaPerSecUSec": "infinity",
+    "CPUQuotaPeriodUSec": "100ms",
+    "AllowedCPUs": "",
+    "IOWeight": "[not set]",
+    "MemoryHigh": "2684354560",
+    "MemoryMax": "3221225472",
+    "MemorySwapMax": "0",
+    "TasksMax": "64",
+    "LimitNOFILE": "256",
+    "LimitAS": "infinity",
+    "RootDirectory": "",
+    "RootImage": "",
+    "Nice": "0",
+    "CPUAffinity": "",
+    "User": "poe-runtime",
+    "Group": "poe-runtime",
+    "ReadWritePaths": "/var/lib/poe /run/poe -/var/lib/poe-public /var/lib/poe /run/poe -/var/lib/poe-public",
+    "ReadOnlyPaths": "",
+    "InaccessiblePaths": "",
+    "PrivateTmp": "yes",
+    "PrivateMounts": "no",
+    "ProtectSystem": "strict",
+    "BindPaths": "",
+    "BindReadOnlyPaths": "",
+    "TemporaryFileSystem": "",
+    "LoadState": "loaded",
+    "ActiveState": "active",
+    "SubState": "running",
+    "StateChangeTimestamp": "Fri 2026-10-30 01:04:46 UTC",
+    "ActiveEnterTimestamp": "Fri 2026-10-30 01:04:46 UTC",
+    "InactiveEnterTimestamp": "Fri 2026-10-30 01:04:44 UTC",
+    "Job": ""
+  },
+  "runtimeIdentity": {
+    "name": "poe-runtime",
+    "uid": 988,
+    "primaryGid": 982,
+    "primaryGroupName": "poe-runtime",
+    "supervisor": {
+      "pid": 2479299,
+      "ownerUid": 988,
+      "uids": [
+        988,
+        988,
+        988,
+        988
+      ],
+      "gids": [
+        982,
+        982,
+        982,
+        982
+      ]
+    },
+    "protectedReportingMetadata": {
+      "publicDirectory": {
+        "uid": 988,
+        "gid": 982,
+        "modeOctal": "0o755",
+        "regular": false,
+        "links": 2,
+        "bytes": 4096,
+        "contentRead": false
+      },
+      "publisher": {
+        "available": false,
+        "errno": 13,
+        "contentRead": false
+      },
+      "manifest": {
+        "available": false,
+        "errno": 13,
+        "contentRead": false
+      }
+    }
+  },
+  "reportingRepair": {
+    "available": true,
+    "sha256": "b93b8a182da1de501b837833a0c5ca0368922707ee113256660a70dc82f402c6",
+    "value": {
+      "kind": "POE_ORIGINAL_REPORTING_ONLY_REPAIR",
+      "at": 1793244274039,
+      "action": "apply",
+      "financialSource": "5e55d8b939de99698ddb311a282461931fcbc957",
+      "reporterSource": "5735db2ca8abc6af6f99bb0ad855c19cdebaf864",
+      "repairDriverSha256": "b2fbce1a36bc047cc5c8047ae4091ed8cb3a4798c91edf2c7d9c6da1e43766fc",
+      "runtimeIdentity": {
+        "uid": 988,
+        "gid": 982,
+        "pid": 2437741
+      },
+      "beforePublisherSha256": "4d80782c1cf6d31aec51c56f088283360f2f90760dd7489d621bbe124cb3df3f",
+      "afterPublisherSha256": "2f6e041872681a2dd5c978cfa8addff0fb3619da56e105c94734a8420a6580fa",
+      "beforeManifestSha256": "8a5b08b27a313a5efc8fb8b15f091f43f3dc639cb1ca0155ab36b8a09cc18555",
+      "afterManifestSha256": "605c5a1e76dbcfc65f1374d74ff54037293fe32b4cc4aa1e7396f613215500c7",
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "serviceBefore": {
+        "MainPID": "2437741",
+        "NRestarts": "163",
+        "User": "poe-runtime",
+        "Group": "poe-runtime",
+        "ActiveState": "active",
+        "SubState": "running"
+      },
+      "financialDatabaseOpened": false,
+      "financialHistoryReset": false,
+      "serviceControlOperations": 0,
+      "credentialContentsRead": false,
+      "phase": "reporting-installed-delivery-not-yet-verified",
+      "serviceAfter": {
+        "MainPID": "2437741",
+        "NRestarts": "163",
+        "User": "poe-runtime",
+        "Group": "poe-runtime",
+        "ActiveState": "active",
+        "SubState": "running"
+      },
+      "financialLedgerInodeUnchanged": true,
+      "diagnostics": {
+        "health": {
+          "generatedAt": 1793244365684,
+          "sourcePid": 2440527,
+          "publisherPid": 2442604,
+          "lastAcceptedSourceAt": null,
+          "matchedSourceAcknowledgements": 0,
+          "outputErrors": 0,
+          "resource": {
+            "critical": false,
+            "resourceMeasurementsAvailable": true,
+            "newRiskPressure": false,
+            "healthy": true,
+            "publisherRestart": false
+          }
+        },
+        "publicStatus": {
+          "generatedAt": "2026-10-29T03:26:04.401Z",
+          "release": "5e55d8b939de99698ddb311a282461931fcbc957",
+          "strategy": "persistent-buying-pilot-v1",
+          "entriesDisabled": true,
+          "flowVerified": false,
+          "shortlistCount": 6,
+          "feedConnected": true,
+          "blocker": "execution startup: fresh reconciliation/readiness required"
+        },
+        "publisherFailureCounts": {
+          "PRIVATE_PUBLISHER_FILE": 0,
+          "ORIGINAL_PUBLISHER_CREDENTIAL_FORMAT": 0,
+          "EACCES": 0,
+          "EPERM": 0,
+          "ENOENT": 0,
+          "ERR_ACCESS_DENIED": 0,
+          "PUBLISHER_STARTUP_UNAVAILABLE": 0
+        }
+      },
+      "acceptedSources": [],
+      "serviceAfterObservation": {
+        "MainPID": "2437741",
+        "NRestarts": "163",
+        "User": "poe-runtime",
+        "Group": "poe-runtime",
+        "ActiveState": "active",
+        "SubState": "running"
+      },
+      "sameSupervisor": true,
+      "operationalAcceptance": false
+    }
+  },
+  "acceptedSource": {
+    "available": true,
+    "sha256": "8fb6ed0fb1b199f2e757afff56f2377e96f37757b665861023bceafcd13135fa",
+    "value": {
+      "schemaVersion": 1,
+      "kind": "poe-original-snapshot-delivery-receipt-v1",
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "source": {
+        "commit": "5675961a0ad05df508eec6928644c9e403be0811",
+        "sha256": "157c34efd86bc0b5ae78aa268afe5afc7d3a4c4db8edcbb181445cad92ccb6ae"
+      },
+      "runId": "native-paper-20261030010446598",
+      "sourceAtMs": 1793322530667,
+      "sequence": "11044",
+      "fingerprint": "83bf5370c6827602f6274cb6a726d242369fd2735c67673396b737a39f654bbb",
+      "rawSourceSha256": "b219c5f4e09d52abfbf1bb54884b2746fba8579ba2869f9d9cc0e4ee1c1e4da2",
+      "acknowledgedAtMs": 1793322542579,
+      "observedBySupervisorAtMs": 1793322542866,
+      "acceptedDistinctSourcesThisSupervisor": 7,
+      "meaning": "Duplicate metadata of an already matched original-channel Render acknowledgement; source timestamp is unchanged. No financial or market evidence is replaced."
+    }
+  },
+  "upgradeVerification": {
+    "available": true,
+    "sha256": "024dca0ef0c76bfdf83722cc8b9ac903e1f31f90115d0afb9548165c3d6f7b84",
+    "value": {
+      "schemaVersion": 1,
+      "kind": "POE_ORIGINAL_FORWARD_UPGRADE_RESULT",
+      "phase": "new-source-post-start-prefix-verified-render-gate-pending",
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "source": {
+        "commit": "5675961a0ad05df508eec6928644c9e403be0811",
+        "sha256": "157c34efd86bc0b5ae78aa268afe5afc7d3a4c4db8edcbb181445cad92ccb6ae"
+      },
+      "previousSource": {
+        "commit": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
+        "sha256": "8a0f001a3ae0c6acedaae6fb8a0370e02293a8b0c35142d74daf19086a41203c"
+      },
+      "complete": true,
+      "installationVerified": true,
+      "verification": {
+        "schemaVersion": 1,
+        "kind": "poe-original-upgrade-verification-v1",
+        "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": "2026-10-26T22:07:36.212Z",
+        "source": {
+          "commit": "5675961a0ad05df508eec6928644c9e403be0811",
+          "sha256": "157c34efd86bc0b5ae78aa268afe5afc7d3a4c4db8edcbb181445cad92ccb6ae"
+        },
+        "configurationSha256": "ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db",
+        "installedInputSha256": "1fcf675833af7d63e0fabf5ecab59c0bead14a54c17c65c79004ee215e71e97a",
+        "verifiedAt": 1793322288204,
+        "complete": true,
+        "newPublicSource": {
+          "available": true,
+          "sourceTimestamp": "2026-10-30T01:04:47.492Z",
+          "statusSha256": "66c0941a836ccaaf48b3383b99a5aa1f616f5d20948647dc875260e0f1391a72",
+          "observedAt": 1793322287741,
+          "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+          "inceptionAt": "2026-10-26T22:07:36.212Z",
+          "release": "5675961a0ad05df508eec6928644c9e403be0811"
+        },
+        "financialVerification": {
+          "identityAndInceptionPreserved": true,
+          "initialFundingAndRoundingPreserved": true,
+          "journalAndActionPrefixPreserved": true,
+          "priorRevision": 66216,
+          "currentRevision": 66217,
+          "currentStateBodySha256": "3376fedc4992d7d9dc60cb9edd64ebcf77944ef990c1056aaf7ffa01b4019494",
+          "prefix": {
+            "actions": {
+              "priorRows": 66216,
+              "exactPriorRowsRetained": true,
+              "currentRows": 66217
+            },
+            "journal": {
+              "priorRows": 66217,
+              "exactPriorRowsRetained": true,
+              "currentRows": 66218
+            }
+          },
+          "comparison": "whole-column-ordered-exact-prefix",
+          "originalSqliteOwnerUid": 988,
+          "financialDatabaseWrites": 0,
+          "backupRestored": false
+        },
+        "errors": [],
+        "elapsedMs": 1965,
+        "newAdmissionsSuspended": false,
+        "admissionPolicy": "existing-supervisor-fresh-reporting-and-financial-validity-gates",
+        "financialManagementStopped": false,
+        "financialDatabaseWrites": 0,
+        "backupRestored": false,
+        "operationalAcceptance": false,
+        "meaning": "One bounded read-only post-start identity and historical-prefix check. Not trading, protection, Render parity, profitability or sustained-operation acceptance."
+      },
+      "interruption": {
+        "stopRequestedAt": 1793322283230,
+        "physicalStopVerifiedAt": 1793322286023,
+        "startRequestedAt": 1793322286225,
+        "localVerificationAt": 1793322288218,
+        "stopToStartMs": 202,
+        "observedNewSource": {
+          "available": true,
+          "sourceTimestamp": "2026-10-30T01:04:47.492Z",
+          "statusSha256": "66c0941a836ccaaf48b3383b99a5aa1f616f5d20948647dc875260e0f1391a72",
+          "observedAt": 1793322287741,
+          "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+          "inceptionAt": "2026-10-26T22:07:36.212Z",
+          "release": "5675961a0ad05df508eec6928644c9e403be0811"
+        },
+        "continuousCoverageClaimed": false
+      },
+      "resourceTransition": {
+        "beforeDropinSha256": "d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df",
+        "afterDropinSha256": "d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df",
+        "beforeConfigurationSha256": "44b82455003f04f75eb1ad7a3dc21555406c1d4d0c7626386d3d21661fdb47c9",
+        "afterConfigurationSha256": "ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db",
+        "beforePolicySha256": "ee240f9c3b2edabb385d67676303e95327839e73cbb28d1072cba68015de8728",
+        "afterPolicySha256": "ee240f9c3b2edabb385d67676303e95327839e73cbb28d1072cba68015de8728",
+        "effectiveBefore": {
+          "CPUQuotaPerSecUSec": "infinity",
+          "CPUQuotaPeriodUSec": "100ms",
+          "CPUWeight": "100",
+          "Nice": "0",
+          "MemoryHigh": "2684354560",
+          "MemoryMax": "3221225472",
+          "MemorySwapMax": "0",
+          "TasksMax": "64",
+          "LimitNOFILE": "256",
+          "LimitCORE": "0",
+          "LimitCPU": "infinity",
+          "LimitFSIZE": "infinity",
+          "LimitAS": "infinity",
+          "OOMPolicy": "stop"
+        },
+        "reviewedAfter": {
+          "CPUQuotaPerSecUSec": "infinity",
+          "CPUQuotaPeriodUSec": "100ms",
+          "CPUWeight": "100",
+          "Nice": "0",
+          "MemoryHigh": "2684354560",
+          "MemoryMax": "3221225472",
+          "MemorySwapMax": "0",
+          "TasksMax": "64",
+          "LimitNOFILE": "256",
+          "LimitCORE": "0",
+          "LimitCPU": "infinity",
+          "LimitFSIZE": "infinity",
+          "LimitAS": "infinity",
+          "OOMPolicy": "stop"
+        },
+        "accountAndSandboxUnchanged": true,
+        "effectiveAfter": {
+          "CPUQuotaPerSecUSec": "infinity",
+          "CPUQuotaPeriodUSec": "100ms",
+          "CPUWeight": "100",
+          "Nice": "0",
+          "MemoryHigh": "2684354560",
+          "MemoryMax": "3221225472",
+          "MemorySwapMax": "0",
+          "TasksMax": "64",
+          "LimitNOFILE": "256",
+          "LimitCORE": "0",
+          "LimitCPU": "infinity",
+          "LimitFSIZE": "infinity",
+          "LimitAS": "infinity",
+          "OOMPolicy": "stop"
+        }
+      },
+      "renderReadinessGate": "Update and verify the SAME Render receiver expected financial source AND exact active AdaptiveMomentumV2 strategy version, then prove fresh original-channel acceptance. This helper does not contact Render or certify operations.",
+      "forensicPreflight": {
+        "schemaVersion": 1,
+        "kind": "POE_CURRENT_RUN_FAILURE_PREFLIGHT",
+        "status": "EXPORTED",
+        "source": {
+          "commit": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
+          "sha256": "8a0f001a3ae0c6acedaae6fb8a0370e02293a8b0c35142d74daf19086a41203c"
+        },
+        "runId": "native-paper-20261029234856700",
+        "financialDatabaseOpened": false,
+        "financialWrites": 0,
+        "serviceChanges": 0,
+        "credentialReads": 0,
+        "requestedAt": 1793322281772,
+        "scriptSha256": "e1c04bc56c27e2341b188d441055eaf5b1eac245ad1d390157a14e3b3d129f7e",
+        "childUid": 988,
+        "childGid": 982,
+        "timeoutSeconds": 8,
+        "completedAt": 1793322282370,
+        "returncode": 0,
+        "receipt": {
+          "kind": "POE_CURRENT_RUN_FORENSIC_EXPORT_RECEIPT",
+          "readerUid": 988,
+          "readerGid": 982,
+          "financialDatabaseOpened": false,
+          "financialWrites": 0,
+          "serviceChanges": 0,
+          "credentialReads": 0,
+          "source": {
+            "commit": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
+            "sha256": "8a0f001a3ae0c6acedaae6fb8a0370e02293a8b0c35142d74daf19086a41203c"
+          },
+          "runId": "native-paper-20261029234856700",
+          "path": "/var/lib/poe-public/provider-recovery-forensics-20261030.json",
+          "bytes": 100707,
+          "sha256": "dd8118e369dbb5b008223b0d0e14b10f4a14b8c00aaf175b2f007a6dae09e6d1"
+        },
+        "rootCopySha256": "dd8118e369dbb5b008223b0d0e14b10f4a14b8c00aaf175b2f007a6dae09e6d1"
+      },
+      "ownerDailyLossReset": {
+        "required": false,
+        "invoked": false,
+        "historicalAuthorizationPreserved": true
+      },
+      "hardFinancialControlsClearedByInstaller": false,
+      "financialHistoryReset": false,
+      "backupRestored": false,
+      "operationalAcceptance": false
+    }
+  },
+  "fourSlotVerification": {
+    "available": true,
+    "sha256": "e791b34fdf2d34c2ba230aabc6db281e751d00ae1da966ac3fa494a8c959765b",
+    "value": {
+      "schemaVersion": 1,
+      "kind": "POE_ORIGINAL_FOUR_SLOT_RECONFIGURATION_RESULT",
+      "complete": true,
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "source": {
+        "commit": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+        "sha256": "fa10982125bd77c1586606283a9fabed4daee5434792dcef90be2bd312cc5315"
+      },
+      "configurationSha256": "f6ce54d7594e14d87955f211cca21f594b3d3eb52e20a75fa2245290f22a4857",
+      "deepSlots": 4,
+      "manifestSha256": "a1dbed9db61e259f759701d6aae2bd102ec3dc7cb357ef121312d7ddb3e4354b",
+      "runtime": {
+        "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": 1793052456212,
+        "runId": "native-paper-20261029161536720",
+        "runtimePid": 2458163,
+        "generatedAt": 1793290538342,
+        "configurationSha256": "f6ce54d7594e14d87955f211cca21f594b3d3eb52e20a75fa2245290f22a4857",
+        "entriesEnabled": false,
+        "source": {
+          "commit": "239a00ea9fbc0a25ebcf318631d26618d941c899",
+          "sha256": "fa10982125bd77c1586606283a9fabed4daee5434792dcef90be2bd312cc5315"
+        },
+        "maximumCandidates": 4,
+        "activeCandidates": 0,
+        "watchMaximumDeep": 4,
+        "feedMaximumCandidates": 4,
+        "process": {
+          "runtimePid": 2458163,
+          "inOriginalUnitCgroup": true,
+          "immutableSourceArgumentMatched": true,
+          "ownerUid": 988,
+          "previousRuntimePid": 2454443,
+          "differentRuntimePidVerified": true,
+          "observedAt": 1793290538612
+        }
+      },
+      "financialPrefix": {
+        "identityAndInceptionPreserved": true,
+        "initialFundingAndRoundingPreserved": true,
+        "journalAndActionPrefixPreserved": true,
+        "priorRevision": 47123,
+        "currentRevision": 47124,
+        "currentStateBodySha256": "727c741bd610420384248a5332601f057a197dece98aa2d6676d865e75e9d890",
+        "prefix": {
+          "actions": {
+            "priorRows": 47123,
+            "exactPriorRowsRetained": true,
+            "currentRows": 47124
+          },
+          "journal": {
+            "priorRows": 47124,
+            "exactPriorRowsRetained": true,
+            "currentRows": 47125
+          }
+        },
+        "comparison": "whole-column-ordered-exact-prefix",
+        "originalSqliteOwnerUid": 988,
+        "financialDatabaseWrites": 0,
+        "backupRestored": false
+      },
+      "service": {
+        "LoadState": "loaded",
+        "User": "poe-runtime",
+        "Group": "poe-runtime",
+        "ActiveState": "active",
+        "SubState": "running",
+        "MainPID": "2458160",
+        "ControlPID": "0",
+        "KillMode": "mixed",
+        "Restart": "always",
+        "NoNewPrivileges": "yes",
+        "PrivateTmp": "yes",
+        "ProtectSystem": "strict",
+        "ProtectHome": "yes",
+        "UMask": "0077",
+        "TimeoutStopUSec": "1min"
+      },
+      "financialHistoryReset": false,
+      "backupRestored": false,
+      "codeInputAndUnitUnchanged": true,
+      "continuousCoverageClaimed": false,
+      "operationalAcceptance": false
+    }
+  },
+  "sourceRecoveryForensics": {
+    "available": false,
+    "reasonCode": "FORENSIC_EXPORT_OR_ROOT_RECEIPT_NOT_VERIFIED"
+  },
+  "currentRunForensics": {
+    "available": false,
+    "reasonCode": "CURRENT_RUN_FORENSIC_EXPORT_OR_ROOT_RECEIPT_NOT_VERIFIED"
+  },
+  "providerRecoveryForensics": {
+    "available": true,
+    "receiptVerified": true,
+    "sha256": "dd8118e369dbb5b008223b0d0e14b10f4a14b8c00aaf175b2f007a6dae09e6d1",
+    "bytes": 100707,
+    "scriptSha256": "e1c04bc56c27e2341b188d441055eaf5b1eac245ad1d390157a14e3b3d129f7e",
+    "value": {
+      "schemaVersion": 1,
+      "kind": "POE_CURRENT_RUN_FORENSICS",
+      "generatedAt": 1793322282356,
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": 1793052456212,
+      "source": {
+        "commit": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
+        "sha256": "8a0f001a3ae0c6acedaae6fb8a0370e02293a8b0c35142d74daf19086a41203c"
+      },
+      "configurationSha256": "44b82455003f04f75eb1ad7a3dc21555406c1d4d0c7626386d3d21661fdb47c9",
+      "runId": "native-paper-20261029234856700",
+      "readerUid": 988,
+      "readerGid": 982,
+      "financialDatabaseOpened": false,
+      "financialWrites": 0,
+      "serviceControlOperations": 0,
+      "credentialReads": 0,
+      "window": {
+        "fromAt": 1793319075000,
+        "untilAtExclusive": 1793319750000
+      },
+      "priorityWindows": [
+        {
+          "fromAt": 1793319075000,
+          "untilAtExclusive": 1793319150000
+        },
+        {
+          "fromAt": 1793319490000,
+          "untilAtExclusive": 1793319750000
+        }
+      ],
+      "currentStatus": {
+        "available": true,
+        "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+        "inceptionAt": 1793052456212,
+        "source": {
+          "commit": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
+          "sha256": "8a0f001a3ae0c6acedaae6fb8a0370e02293a8b0c35142d74daf19086a41203c"
+        },
+        "configurationSha256": "44b82455003f04f75eb1ad7a3dc21555406c1d4d0c7626386d3d21661fdb47c9",
+        "runId": "native-paper-20261029234856700",
+        "startedAt": 1793317736700,
+        "generatedAt": 1793322274410,
+        "running": true,
+        "entriesEnabled": true,
+        "status": {
+          "code": "UNKNOWN_HASHED",
+          "sha256": "8ed3a434901b2cba1e22f20b769d86ba822e5d1cd704f24a08da00bf27bbd59b"
+        },
+        "diagnostics": {
+          "usage": {
+            "market": {
+              "registeredPools": 2,
+              "preparedEntryCostPlans": 7,
+              "entryQuoteCalls": 0,
+              "entryExecutionQuotes": 0,
+              "held": {
+                "networkCalls": 2359,
+                "linkCacheHits": 2213,
+                "invalidations": 105,
+                "highestVerifiedSlot": 463092939,
+                "cachePoolCapacity": 9,
+                "dependencyAccountCapacity": 40,
+                "cachedPoolSlot": 463092939,
+                "timeEvidence": {
+                  "code": "confirmed-bank-clock",
+                  "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+                }
+              },
+              "holdingDiagnostics": {
+                "lastContext": {
+                  "at": 1793322273929,
+                  "state": {
+                    "code": "available",
+                    "sha256": "ddd9818abacfde7afed60c93129175401439367a77e69ea93e0ddb3bb38e0bd9"
+                  },
+                  "heldPositions": 1
+                },
+                "contextFailureCounts": {
+                  "HELD_PRICING_PROVIDER_TIMEOUT": 13,
+                  "HELD_PRICING_PROVIDER_COOLDOWN": 66,
+                  "HELD_PRICING_ABORTED": 26
+                }
+              },
+              "entryPricing": {
+                "networkCalls": 49,
+                "linkCacheHits": 19,
+                "invalidations": 8,
+                "highestVerifiedSlot": 463092867,
+                "cachePoolCapacity": 9,
+                "dependencyAccountCapacity": 40,
+                "cachedPoolSlot": 463092867,
+                "timeEvidence": {
+                  "code": "confirmed-bank-clock",
+                  "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+                }
+              },
+              "rpc": {
+                "persistence": {
+                  "attempts": 6751,
+                  "totalMs": 36547.59221998848,
+                  "maximumMs": 11.124151000054553
+                },
+                "derivedStatus": {
+                  "maximumDelayMs": 1000,
+                  "passiveReceiptCalls": 79704,
+                  "coalescedPassiveReceipts": 79520,
+                  "flushFailures": 0,
+                  "lastFailureAt": null,
+                  "maximumObservedDirtyAgeMs": 1073.0460190000013,
+                  "lastGeneratedAt": 1793322273900,
+                  "dirty": false,
+                  "pendingSinceAt": null,
+                  "pendingAgeMs": 0
+                },
+                "runId": {
+                  "code": "UNKNOWN_HASHED",
+                  "sha256": "e1a9b82953535aced42f61b2141b887751d0a5f4ec4c13cea21b1bee43eb8769"
+                },
+                "startedAt": 1793317736755,
+                "deadlineAt": null,
+                "cumulativeUnits": 44402,
+                "newUnits": 4304,
+                "requestLimits": {
+                  "maxStartsPer10s": 20,
+                  "maxStartsPerMinute": 90,
+                  "minSpacingMs": 250,
+                  "physicalInFlight": 1
+                },
+                "inFlight": 0,
+                "waitingOrOperating": false,
+                "uncertainResponseBytes": 2449735680,
+                "cooldownUntil": 1793322177172,
+                "controlCooldownUntil": 0,
+                "historyCooldownUntil": 1793320187824,
+                "closed": false,
+                "chapterUsage": {
+                  "continuousAccounting": true,
+                  "persistence": {
+                    "attempts": 9,
+                    "totalMs": 49.119167000986636,
+                    "maximumMs": 5.799434999935329
+                  },
+                  "limits": {
+                    "minSpacingMs": 250,
+                    "maxStartsPerMinute": 90,
+                    "maxStartsPer10s": 20
+                  },
+                  "cumulativeUnits": 44402,
+                  "newUnits": 2,
+                  "actualInvokedUnits": 2,
+                  "cumulativeResponseBytes": 4815864791,
+                  "httpBytes": 19338,
+                  "wsBytes": 4849,
+                  "newResponseBytes": 24187,
+                  "remainingGrantUnits": 198,
+                  "remainingCumulativeUnits": null,
+                  "remainingGrantResponseBytes": 268411269,
+                  "remainingCumulativeResponseBytes": null,
+                  "pending": [],
+                  "uncertainResponseBytes": 0,
+                  "rolling60SecondStarts": 59,
+                  "rolling10SecondStarts": 14,
+                  "actualInvocations": [
+                    {
+                      "id": 44401,
+                      "at": 1793322271828
+                    },
+                    {
+                      "id": 44402,
+                      "at": 1793322273836
+                    }
+                  ],
+                  "byOperation": {
+                    "http:getMultipleAccounts": 2
+                  },
+                  "durationsMs": [
+                    48.80288300011307,
+                    58.3076560003683
+                  ],
+                  "inFlight": 0,
+                  "waitingOrOperating": false,
+                  "startedAt": 1793322271803,
+                  "totalMs": 300000,
+                  "deadlineAt": 1793322571803,
+                  "closed": false,
+                  "storageFailed": false
+                },
+                "dispatchWindow": {
+                  "waitMs": 0,
+                  "physicalBusy": false,
+                  "actualPhysicalBusy": false
+                },
+                "rpcDispatchWindow": {
+                  "waitMs": 0,
+                  "physicalBusy": false,
+                  "actualPhysicalBusy": false
+                },
+                "controlDispatchWindow": {
+                  "waitMs": 0,
+                  "physicalBusy": false,
+                  "actualPhysicalBusy": false
+                },
+                "historyDispatchWindow": {
+                  "waitMs": 0,
+                  "physicalBusy": false,
+                  "actualPhysicalBusy": false
+                }
+              }
+            },
+            "rpc": {
+              "persistence": {
+                "attempts": 6751,
+                "totalMs": 36547.59221998848,
+                "maximumMs": 11.124151000054553
+              },
+              "derivedStatus": {
+                "maximumDelayMs": 1000,
+                "passiveReceiptCalls": 79704,
+                "coalescedPassiveReceipts": 79520,
+                "flushFailures": 0,
+                "lastFailureAt": null,
+                "maximumObservedDirtyAgeMs": 1073.0460190000013,
+                "lastGeneratedAt": 1793322273900,
+                "dirty": false,
+                "pendingSinceAt": null,
+                "pendingAgeMs": 0
+              },
+              "runId": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "e1a9b82953535aced42f61b2141b887751d0a5f4ec4c13cea21b1bee43eb8769"
+              },
+              "startedAt": 1793317736755,
+              "deadlineAt": null,
+              "cumulativeUnits": 44402,
+              "newUnits": 4304,
+              "requestLimits": {
+                "maxStartsPer10s": 20,
+                "maxStartsPerMinute": 90,
+                "minSpacingMs": 250,
+                "physicalInFlight": 1
+              },
+              "inFlight": 0,
+              "waitingOrOperating": false,
+              "uncertainResponseBytes": 2449735680,
+              "cooldownUntil": 1793322177172,
+              "controlCooldownUntil": 0,
+              "historyCooldownUntil": 1793320187824,
+              "closed": false,
+              "chapterUsage": {
+                "continuousAccounting": true,
+                "persistence": {
+                  "attempts": 9,
+                  "totalMs": 49.119167000986636,
+                  "maximumMs": 5.799434999935329
+                },
+                "limits": {
+                  "minSpacingMs": 250,
+                  "maxStartsPerMinute": 90,
+                  "maxStartsPer10s": 20
+                },
+                "cumulativeUnits": 44402,
+                "newUnits": 2,
+                "actualInvokedUnits": 2,
+                "cumulativeResponseBytes": 4815864791,
+                "httpBytes": 19338,
+                "wsBytes": 4849,
+                "newResponseBytes": 24187,
+                "remainingGrantUnits": 198,
+                "remainingCumulativeUnits": null,
+                "remainingGrantResponseBytes": 268411269,
+                "remainingCumulativeResponseBytes": null,
+                "pending": [],
+                "uncertainResponseBytes": 0,
+                "rolling60SecondStarts": 59,
+                "rolling10SecondStarts": 14,
+                "actualInvocations": [
+                  {
+                    "id": 44401,
+                    "at": 1793322271828
+                  },
+                  {
+                    "id": 44402,
+                    "at": 1793322273836
+                  }
+                ],
+                "byOperation": {
+                  "http:getMultipleAccounts": 2
+                },
+                "durationsMs": [
+                  48.80288300011307,
+                  58.3076560003683
+                ],
+                "inFlight": 0,
+                "waitingOrOperating": false,
+                "startedAt": 1793322271803,
+                "totalMs": 300000,
+                "deadlineAt": 1793322571803,
+                "closed": false,
+                "storageFailed": false
+              },
+              "dispatchWindow": {
+                "waitMs": 0,
+                "physicalBusy": false,
+                "actualPhysicalBusy": false
+              },
+              "rpcDispatchWindow": {
+                "waitMs": 0,
+                "physicalBusy": false,
+                "actualPhysicalBusy": false
+              },
+              "controlDispatchWindow": {
+                "waitMs": 0,
+                "physicalBusy": false,
+                "actualPhysicalBusy": false
+              },
+              "historyDispatchWindow": {
+                "waitMs": 0,
+                "physicalBusy": false,
+                "actualPhysicalBusy": false
+              },
+              "httpTimeouts": 633,
+              "httpErrors": 0,
+              "throttles": 0
+            },
+            "managementReserve": {
+              "overrun": false
+            },
+            "native": {
+              "memoryPressure": false,
+              "maximumCandidates": 4,
+              "candidates": 1,
+              "retiring": 0,
+              "connected": true,
+              "physicalTransportsSettled": false,
+              "sharedOperationActive": false,
+              "nativePhysicalOperations": 0,
+              "stopped": false,
+              "transportRecovery": {},
+              "retryAt": 1793322177172,
+              "lastNotificationAt": 1793322273357,
+              "lastFreshSupportAt": 1793322264900,
+              "lastBankClockAt": 1793322264000,
+              "notifications": 65843,
+              "receivedBoundNotifications": 667974,
+              "queueAgeMs": {
+                "p95": 28,
+                "maximum": 45
+              }
+            },
+            "maximumRss": 466034688,
+            "eventBytes": 310750617,
+            "localPhases": {
+              "service-startup-report": {
+                "count": 1,
+                "elapsedMs": 128.069663,
+                "maximumMs": 128.069663,
+                "cpuMicros": 120933,
+                "overruns": 0
+              },
+              "ownership-and-maintenance": {
+                "count": 64485,
+                "elapsedMs": 11667.4991549426,
+                "maximumMs": 1.491275000036694,
+                "cpuMicros": 11987391,
+                "overruns": 0
+              },
+              "backup-start": {
+                "count": 16,
+                "elapsedMs": 107.36255900080323,
+                "maximumMs": 7.4079840001650155,
+                "cpuMicros": 65568,
+                "overruns": 0
+              },
+              "backup-prepare-after-lease": {
+                "count": 16,
+                "elapsedMs": 8.267806000196288,
+                "maximumMs": 0.6744149997830391,
+                "cpuMicros": 8996,
+                "overruns": 0
+              },
+              "candidate-shared-step": {
+                "count": 58088,
+                "elapsedMs": 649900.7770579197,
+                "maximumMs": 1538.4423650000244,
+                "cpuMicros": 345147358,
+                "overruns": 0
+              },
+              "report-checkpoint": {
+                "count": 289,
+                "elapsedMs": 38244.014806996565,
+                "maximumMs": 146.86562599998433,
+                "cpuMicros": 27811602,
+                "overruns": 0
+              },
+              "entry-checkpoint": {
+                "count": 62,
+                "elapsedMs": 5584.581977998139,
+                "maximumMs": 116.87171000009403,
+                "cpuMicros": 5081433,
+                "overruns": 0
+              },
+              "candidate-entry-preparation": {
+                "count": 62,
+                "elapsedMs": 27739.425422999426,
+                "maximumMs": 2218.8056420000503,
+                "cpuMicros": 3919226,
+                "overruns": 0
+              }
+            },
+            "cpu": {
+              "user": 753133808,
+              "system": 41658599
+            },
+            "eventLoopDelayP95Ms": 27.115519
+          },
+          "timing": {
+            "targetMs": 2000,
+            "experimentalCompletedEvaluationLimitMs": 4000,
+            "maximumQuoteAgeAtUseMs": 70,
+            "firstCompletedProtectionAt": 1793317742332,
+            "lastCompletedProtectionAt": 1793322273953,
+            "maximumCompletedGapMs": 89426,
+            "protectionBreaches": 72,
+            "unavailableChecks": 233,
+            "openProtectionGaps": [
+              {
+                "mint": {
+                  "code": "UNKNOWN_HASHED",
+                  "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+                },
+                "at": 1793322274410
+              }
+            ]
+          },
+          "reporting": {
+            "targetMs": 15000,
+            "financialProjectionReady": true,
+            "localProjectionBudgetMs": 250,
+            "maximumProjectionMs": 147.31714900000952,
+            "projectionOverruns": 0,
+            "deferrals": 2262,
+            "networkPublisherIndependent": true,
+            "localPublicStatusAvailable": true
+          },
+          "financial": {
+            "revision": 66211,
+            "entriesEnabled": true,
+            "controls": {
+              "entriesEnabled": true,
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "069f24fc8e9939958daf99a2eb375aa8edc6797258f4b3b02ef5a97b6f708e59"
+              },
+              "stopRequested": false
+            }
+          },
+          "financialReadiness": {
+            "maintenance": {
+              "version": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3d6598319a9851a5edb3e1898e1c8b4a626b31f8fdfbd5c09f9274be8c8de415"
+              },
+              "attempts": 0,
+              "cpuMicros": 0,
+              "lastCompletedAt": null
+            },
+            "safety": {
+              "recoveryComplete": true,
+              "idle": true,
+              "evidenceAvailable": true,
+              "financialAvailable": true,
+              "uncertainActions": 0,
+              "automaticRecoveryAllowed": true,
+              "newHardPauseObserved": false
+            },
+            "internalShutdownProof": {
+              "code": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "bc94bf4a701caec3b9d77f9826883d74a97b6871a4c29a48539edbb3b090a46e"
+              },
+              "at": null
+            }
+          },
+          "evidenceRetention": {
+            "version": {
+              "code": "UNKNOWN_HASHED",
+              "sha256": "7e7edc2c6615ce8d92625e0e457d3097a9eda6ffb3f88013f289e3462d13c41d"
+            },
+            "candidateAdmissionAllowed": true,
+            "requiresCriticalRecovery": false,
+            "diagnosticBytes": 15095792,
+            "diagnosticLimitBytes": 134217728,
+            "continuousRotation": true,
+            "retiredBytes": 3886603019,
+            "totalRecordedBytes": 3999114988,
+            "protectedBytes": 1755858861,
+            "refusedRecords": 0,
+            "refusedBytes": 0,
+            "optionalOmittedRecords": 450,
+            "optionalOmittedBytes": 378451,
+            "availableDiskBytes": 286905929728,
+            "minimumDiskReserveBytes": 134217728
+          },
+          "resourceControl": {
+            "version": {
+              "code": "UNKNOWN_HASHED",
+              "sha256": "489fc0e82500d0f7ea085681a582f3d97c3e2dba0b1c2d00017ff76c6fc136ed"
+            },
+            "availableMemoryBytes": 6770081792,
+            "availableDiskBytes": 286903054336,
+            "candidateAdmissionAllowed": true
+          },
+          "resources": {
+            "sampleAt": 1793322274234,
+            "cpuFraction": 0.17397354222520106,
+            "rssBytes": 406679552,
+            "availableDiskBytes": 286903054336,
+            "availableMemoryBytes": 6770081792,
+            "state": {
+              "code": "normal",
+              "sha256": "317b32c143692b9939c197f6a5df54f9698df9a4882fe8bf19608968662be4fa"
+            }
+          },
+          "sourceRecovery": {
+            "generation": 0,
+            "retryAt": 0,
+            "failures": 0,
+            "closingSettled": false,
+            "restartRequired": false
+          },
+          "sourceTimes": {
+            "lastFreshSupportAt": 1793322264900,
+            "lastBankClockAt": 1793322264000,
+            "lastAuditAt": 1793322266139,
+            "lastPredictiveAt": 1793322266139,
+            "financialReconciliationAt": 1793322273940
+          }
+        },
+        "missingDiagnostics": [],
+        "fileSha256": "5c647ce29923ea683226e2849860b05401f8945acb75b59d1cd47cd5e862757c"
+      },
+      "diagnostics": {
+        "files": [
+          {
+            "file": "essential-000000000038.ndjson",
+            "available": true,
+            "bytesRead": 7138353,
+            "sha256": "b2f85d34d1aa87a93ec51e3a18a6fcc8779e89f3385be50ac9bfdcf38d0f85ab",
+            "changedDuringRead": false,
+            "partialTrailingLine": false,
+            "oversizedLines": 0,
+            "malformedLines": 0
+          },
+          {
+            "file": "essential-000000000037.ndjson",
+            "available": true,
+            "bytesRead": 8388548,
+            "sha256": "033d046dab8925f57e1a03e7008d930e5a8473831814af74e998adac9a4b016c",
+            "changedDuringRead": false,
+            "partialTrailingLine": false,
+            "oversizedLines": 0,
+            "malformedLines": 0
+          },
+          {
+            "file": "essential-000000000036.ndjson",
+            "available": true,
+            "bytesRead": 8382572,
+            "sha256": "8fb886b8f2ede80907cd4383d5d5a279e5d505e3d3d6f12437e4514273416a72",
+            "changedDuringRead": false,
+            "partialTrailingLine": false,
+            "oversizedLines": 0,
+            "malformedLines": 0
+          },
+          {
+            "file": "essential-000000000035.ndjson",
+            "available": true,
+            "bytesRead": 8388370,
+            "sha256": "777ab5b908d27b71c86fb390dc836a7b62164a5f70beb92a612a59c55ffd1146",
+            "changedDuringRead": false,
+            "partialTrailingLine": false,
+            "oversizedLines": 0,
+            "malformedLines": 0
+          },
+          {
+            "file": "essential-000000000034.ndjson",
+            "available": true,
+            "bytesRead": 1026817,
+            "sha256": "3a75e32996114a83562e4ab02fe5348cf328b94001f5dfa343ce0886e77538dd",
+            "changedDuringRead": false,
+            "partialTrailingLine": false,
+            "oversizedLines": 0,
+            "malformedLines": 0
+          },
+          {
+            "file": "essential-000000000033.ndjson",
+            "available": true,
+            "bytesRead": 8388541,
+            "sha256": "991c3b4dad944524e4813cc7bb902114e728a39d9adc2eb6ce73e9ea812b993f",
+            "changedDuringRead": false,
+            "partialTrailingLine": false,
+            "oversizedLines": 0,
+            "malformedLines": 0
+          },
+          {
+            "file": "essential-000000000032.ndjson",
+            "available": true,
+            "bytesRead": 8387402,
+            "sha256": "7d0b73ad60e7898a60e8399300933d6cf32d486fac1d70202697ab70b96b5167",
+            "changedDuringRead": false,
+            "partialTrailingLine": false,
+            "oversizedLines": 0,
+            "malformedLines": 0
+          },
+          {
+            "file": "essential-000000000031.ndjson",
+            "available": true,
+            "bytesRead": 8385758,
+            "sha256": "dbc66c098aaad22d44140d939f1a3b157fa2c84d179fa5b64818c9006df14a2c",
+            "changedDuringRead": false,
+            "partialTrailingLine": false,
+            "oversizedLines": 0,
+            "malformedLines": 0
+          },
+          {
+            "file": "essential-000000000030.ndjson",
+            "available": true,
+            "bytesRead": 8382203,
+            "sha256": "69ab92c87739a778f549f26df083e0dd8607b989a50ab0346559be960d4c15cf",
+            "changedDuringRead": false,
+            "partialTrailingLine": false,
+            "oversizedLines": 0,
+            "malformedLines": 0
+          },
+          {
+            "file": "essential-000000000029.ndjson",
+            "available": false,
+            "reasonCode": "SCAN_TIME_OR_BYTE_BOUND"
+          },
+          {
+            "file": "essential-000000000028.ndjson",
+            "available": false,
+            "reasonCode": "SCAN_TIME_OR_BYTE_BOUND"
+          },
+          {
+            "file": "essential-000000000027.ndjson",
+            "available": false,
+            "reasonCode": "SCAN_TIME_OR_BYTE_BOUND"
+          },
+          {
+            "file": "essential-000000000026.ndjson",
+            "available": false,
+            "reasonCode": "SCAN_TIME_OR_BYTE_BOUND"
+          },
+          {
+            "file": "essential-000000000025.ndjson",
+            "available": false,
+            "reasonCode": "SCAN_TIME_OR_BYTE_BOUND"
+          },
+          {
+            "file": "essential-000000000024.ndjson",
+            "available": false,
+            "reasonCode": "SCAN_TIME_OR_BYTE_BOUND"
+          },
+          {
+            "file": "essential-000000000023.ndjson",
+            "available": false,
+            "reasonCode": "SCAN_TIME_OR_BYTE_BOUND"
+          }
+        ],
+        "facts": [
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319089257,
+            "data": {
+              "at": 1793319089257,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319089283,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319089283,
+              "completedAt": 1793319089283,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319092358,
+            "data": {
+              "at": 1793319092358,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319092386,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319092386,
+              "completedAt": 1793319092386,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319093344,
+            "data": {
+              "at": 1793319093344,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319093366,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319093366,
+              "completedAt": 1793319093366,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319095371,
+            "data": {
+              "at": 1793319095371,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319095393,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319095393,
+              "completedAt": 1793319095393,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319098461,
+            "data": {
+              "at": 1793319098461,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319098488,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319098488,
+              "completedAt": 1793319098488,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319099444,
+            "data": {
+              "at": 1793319099444,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319099467,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319099467,
+              "completedAt": 1793319099467,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319101466,
+            "data": {
+              "at": 1793319101466,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319101488,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319101488,
+              "completedAt": 1793319101488,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319103492,
+            "data": {
+              "at": 1793319103492,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319103514,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319103514,
+              "completedAt": 1793319103514,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319105523,
+            "data": {
+              "at": 1793319105523,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319105545,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319105545,
+              "completedAt": 1793319105545,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319107543,
+            "data": {
+              "at": 1793319107543,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319107564,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319107564,
+              "completedAt": 1793319107564,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319110646,
+            "data": {
+              "at": 1793319110646,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319110674,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319110674,
+              "completedAt": 1793319110674,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319111628,
+            "data": {
+              "at": 1793319111628,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319111650,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319111650,
+              "completedAt": 1793319111650,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319113659,
+            "data": {
+              "at": 1793319113659,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319113681,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319113681,
+              "completedAt": 1793319113681,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319115679,
+            "data": {
+              "at": 1793319115679,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319115701,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319115701,
+              "completedAt": 1793319115701,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319117694,
+            "data": {
+              "at": 1793319117694,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319117715,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319117715,
+              "completedAt": 1793319117715,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319119712,
+            "data": {
+              "at": 1793319119712,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319119734,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319119734,
+              "completedAt": 1793319119734,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319121731,
+            "data": {
+              "at": 1793319121731,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319121754,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319121754,
+              "completedAt": 1793319121754,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319123751,
+            "data": {
+              "at": 1793319123751,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319123773,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319123773,
+              "completedAt": 1793319123773,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319125777,
+            "data": {
+              "at": 1793319125777,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319125798,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319125798,
+              "completedAt": 1793319125798,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319127796,
+            "data": {
+              "at": 1793319127796,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319127818,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319127818,
+              "completedAt": 1793319127818,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319129816,
+            "data": {
+              "at": 1793319129816,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319129838,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319129837,
+              "completedAt": 1793319129838,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319139979,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463078301,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463078301,
+              "marketClockUnixSeconds": 1793319139
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319139989,
+            "data": {
+              "at": 1793319139989,
+              "context": {
+                "sourceValidUntil": 1793319169000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319140003,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319140003,
+              "completedAt": 1793319140003,
+              "quoteAt": 1793319139966,
+              "sourceValidUntil": 1793319169000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319142040,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463078311,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463078311,
+              "marketClockUnixSeconds": 1793319141
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319142051,
+            "data": {
+              "at": 1793319142051,
+              "context": {
+                "sourceValidUntil": 1793319171000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319142065,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319142065,
+              "completedAt": 1793319142065,
+              "quoteAt": 1793319142026,
+              "sourceValidUntil": 1793319171000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319144125,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463078322,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463078322,
+              "marketClockUnixSeconds": 1793319143
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319144136,
+            "data": {
+              "at": 1793319144136,
+              "context": {
+                "sourceValidUntil": 1793319173000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319144150,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319144150,
+              "completedAt": 1793319144150,
+              "quoteAt": 1793319144112,
+              "sourceValidUntil": 1793319173000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319146096,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463078331,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463078331,
+              "marketClockUnixSeconds": 1793319145
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319146107,
+            "data": {
+              "at": 1793319146107,
+              "context": {
+                "sourceValidUntil": 1793319175000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319146121,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319146121,
+              "completedAt": 1793319146121,
+              "quoteAt": 1793319146083,
+              "sourceValidUntil": 1793319175000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319148118,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463078341,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463078341,
+              "marketClockUnixSeconds": 1793319147
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319148129,
+            "data": {
+              "at": 1793319148129,
+              "context": {
+                "sourceValidUntil": 1793319177000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319148143,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319148143,
+              "completedAt": 1793319148143,
+              "quoteAt": 1793319148105,
+              "sourceValidUntil": 1793319177000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319513832,
+            "data": {
+              "at": 1793319513832,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319513844,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319513844,
+              "completedAt": 1793319513844,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319516877,
+            "data": {
+              "at": 1793319516877,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319516888,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319516888,
+              "completedAt": 1793319516888,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319519919,
+            "data": {
+              "at": 1793319519919,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319519930,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319519930,
+              "completedAt": 1793319519930,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319524072,
+            "data": {
+              "at": 1793319524072,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319524094,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319524094,
+              "completedAt": 1793319524094,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319586856,
+            "data": {
+              "at": 1793319586856,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319586879,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319586879,
+              "completedAt": 1793319586879,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319647719,
+            "data": {
+              "at": 1793319647719,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319647741,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319647741,
+              "completedAt": 1793319647741,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319672535,
+            "data": {
+              "at": 1793319672535,
+              "context": {
+                "sourceValidUntil": 1793319702000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319672549,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319672549,
+              "completedAt": 1793319672549,
+              "quoteAt": 1793319672510,
+              "sourceValidUntil": 1793319702000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319677408,
+            "data": {
+              "at": 1793319677408,
+              "context": {}
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319677419,
+            "data": {
+              "at": 1793319677419,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319677429,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319677429,
+              "completedAt": 1793319677429,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319680448,
+            "data": {
+              "at": 1793319680448,
+              "context": {}
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319680460,
+            "data": {
+              "at": 1793319680460,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319680470,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319680470,
+              "completedAt": 1793319680470,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319683491,
+            "data": {
+              "at": 1793319683491,
+              "context": {}
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319683513,
+            "data": {
+              "at": 1793319683513,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319683529,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319683529,
+              "completedAt": 1793319683529,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319683545,
+            "data": {
+              "at": 1793319683545,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319683556,
+            "data": {
+              "at": 1793319683556,
+              "context": {}
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319683567,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319683566,
+              "completedAt": 1793319683567,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319686334,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463080861,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463080861,
+              "marketClockUnixSeconds": 1793319685
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319686345,
+            "data": {
+              "at": 1793319686345,
+              "context": {
+                "sourceValidUntil": 1793319715000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319686359,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319686359,
+              "completedAt": 1793319686359,
+              "quoteAt": 1793319686320,
+              "sourceValidUntil": 1793319715000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319687682,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463080867,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463080867,
+              "marketClockUnixSeconds": 1793319686
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319687693,
+            "data": {
+              "at": 1793319687693,
+              "context": {
+                "sourceValidUntil": 1793319716000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319687711,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319687711,
+              "completedAt": 1793319687711,
+              "quoteAt": 1793319687669,
+              "sourceValidUntil": 1793319716000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319689761,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463080876,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463080876,
+              "marketClockUnixSeconds": 1793319688
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319689771,
+            "data": {
+              "at": 1793319689771,
+              "context": {
+                "sourceValidUntil": 1793319718000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319689789,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319689788,
+              "completedAt": 1793319689788,
+              "quoteAt": 1793319689747,
+              "sourceValidUntil": 1793319718000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319691804,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463080887,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463080887,
+              "marketClockUnixSeconds": 1793319691
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319691815,
+            "data": {
+              "at": 1793319691815,
+              "context": {
+                "sourceValidUntil": 1793319721000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319691829,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319691829,
+              "completedAt": 1793319691829,
+              "quoteAt": 1793319691791,
+              "sourceValidUntil": 1793319721000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319693807,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463080897,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463080897,
+              "marketClockUnixSeconds": 1793319693
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319693818,
+            "data": {
+              "at": 1793319693818,
+              "context": {
+                "sourceValidUntil": 1793319723000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319693832,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319693832,
+              "completedAt": 1793319693832,
+              "quoteAt": 1793319693794,
+              "sourceValidUntil": 1793319723000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319695813,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463080906,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463080906,
+              "marketClockUnixSeconds": 1793319694
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319695824,
+            "data": {
+              "at": 1793319695824,
+              "context": {
+                "sourceValidUntil": 1793319724000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319695838,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319695837,
+              "completedAt": 1793319695837,
+              "quoteAt": 1793319695799,
+              "sourceValidUntil": 1793319724000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319697893,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463080915,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463080915,
+              "marketClockUnixSeconds": 1793319697
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319697904,
+            "data": {
+              "at": 1793319697904,
+              "context": {
+                "sourceValidUntil": 1793319727000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319697917,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319697917,
+              "completedAt": 1793319697917,
+              "quoteAt": 1793319697880,
+              "sourceValidUntil": 1793319727000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319699890,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463080925,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463080925,
+              "marketClockUnixSeconds": 1793319699
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319699901,
+            "data": {
+              "at": 1793319699901,
+              "context": {
+                "sourceValidUntil": 1793319729000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319699916,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319699916,
+              "completedAt": 1793319699916,
+              "quoteAt": 1793319699877,
+              "sourceValidUntil": 1793319729000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319701875,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463080933,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463080933,
+              "marketClockUnixSeconds": 1793319701
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319701886,
+            "data": {
+              "at": 1793319701886,
+              "context": {
+                "sourceValidUntil": 1793319731000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319701900,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319701899,
+              "completedAt": 1793319701900,
+              "quoteAt": 1793319701861,
+              "sourceValidUntil": 1793319731000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319704021,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463080943,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463080943,
+              "marketClockUnixSeconds": 1793319703
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319704032,
+            "data": {
+              "at": 1793319704032,
+              "context": {
+                "sourceValidUntil": 1793319733000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319704046,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319704046,
+              "completedAt": 1793319704046,
+              "quoteAt": 1793319704007,
+              "sourceValidUntil": 1793319733000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319705992,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463080951,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463080951,
+              "marketClockUnixSeconds": 1793319705
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319706003,
+            "data": {
+              "at": 1793319706003,
+              "context": {
+                "sourceValidUntil": 1793319735000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319706017,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319706017,
+              "completedAt": 1793319706017,
+              "quoteAt": 1793319705978,
+              "sourceValidUntil": 1793319735000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319707964,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463080961,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463080961,
+              "marketClockUnixSeconds": 1793319707
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319707975,
+            "data": {
+              "at": 1793319707975,
+              "context": {
+                "sourceValidUntil": 1793319737000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319707989,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319707989,
+              "completedAt": 1793319707989,
+              "quoteAt": 1793319707950,
+              "sourceValidUntil": 1793319737000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319710020,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463080971,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463080971,
+              "marketClockUnixSeconds": 1793319709
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319710031,
+            "data": {
+              "at": 1793319710031,
+              "context": {
+                "sourceValidUntil": 1793319739000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319710045,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319710045,
+              "completedAt": 1793319710045,
+              "quoteAt": 1793319710006,
+              "sourceValidUntil": 1793319739000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-cache-invalidation",
+            "at": 1793319711932,
+            "data": {
+              "at": 1793319711932,
+              "reason": {
+                "code": "quote-unavailable",
+                "sha256": "51d52a89b82aaec621e0a715e25f3db9277cbecb5fff3f6e30c6986a302e46c1"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319711942,
+            "data": {
+              "at": 1793319711942,
+              "context": {}
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319711954,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319711954,
+              "completedAt": 1793319711954,
+              "quoteAt": null,
+              "sourceValidUntil": null,
+              "usable": false,
+              "action": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              },
+              "reason": {
+                "code": "fresh-actual-size-net-liquidation-required",
+                "sha256": "69eab4b48a3efeffaa9e7a61543a668430e3a28a3db254d9102b47cf22e1bd2a"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "dd4a8ecba056e57fab045645f36a21327c9cb95d27406cff60ae5a81a0571b3c"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319714712,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463080992,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463080992,
+              "marketClockUnixSeconds": 1793319713
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319714723,
+            "data": {
+              "at": 1793319714723,
+              "context": {
+                "sourceValidUntil": 1793319743000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319714737,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319714737,
+              "completedAt": 1793319714737,
+              "quoteAt": 1793319714698,
+              "sourceValidUntil": 1793319743000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319716070,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463080998,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463080998,
+              "marketClockUnixSeconds": 1793319715
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319716080,
+            "data": {
+              "at": 1793319716080,
+              "context": {
+                "sourceValidUntil": 1793319745000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319716095,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319716095,
+              "completedAt": 1793319716095,
+              "quoteAt": 1793319716056,
+              "sourceValidUntil": 1793319745000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319718270,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463081007,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463081007,
+              "marketClockUnixSeconds": 1793319717
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319718282,
+            "data": {
+              "at": 1793319718282,
+              "context": {
+                "sourceValidUntil": 1793319747000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319718296,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319718296,
+              "completedAt": 1793319718296,
+              "quoteAt": 1793319718257,
+              "sourceValidUntil": 1793319747000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319720155,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463081018,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463081018,
+              "marketClockUnixSeconds": 1793319719
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319720166,
+            "data": {
+              "at": 1793319720166,
+              "context": {
+                "sourceValidUntil": 1793319749000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319720180,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319720180,
+              "completedAt": 1793319720180,
+              "quoteAt": 1793319720142,
+              "sourceValidUntil": 1793319749000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319722227,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463081027,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463081027,
+              "marketClockUnixSeconds": 1793319721
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319722238,
+            "data": {
+              "at": 1793319722238,
+              "context": {
+                "sourceValidUntil": 1793319751000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319722252,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319722252,
+              "completedAt": 1793319722252,
+              "quoteAt": 1793319722214,
+              "sourceValidUntil": 1793319751000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319724178,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463081036,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463081036,
+              "marketClockUnixSeconds": 1793319723
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319724189,
+            "data": {
+              "at": 1793319724189,
+              "context": {
+                "sourceValidUntil": 1793319753000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319724203,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319724203,
+              "completedAt": 1793319724203,
+              "quoteAt": 1793319724165,
+              "sourceValidUntil": 1793319753000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319726260,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463081045,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463081045,
+              "marketClockUnixSeconds": 1793319725
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319726272,
+            "data": {
+              "at": 1793319726272,
+              "context": {
+                "sourceValidUntil": 1793319755000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319726286,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319726286,
+              "completedAt": 1793319726286,
+              "quoteAt": 1793319726247,
+              "sourceValidUntil": 1793319755000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319728214,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463081055,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463081055,
+              "marketClockUnixSeconds": 1793319727
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319728225,
+            "data": {
+              "at": 1793319728225,
+              "context": {
+                "sourceValidUntil": 1793319757000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319728240,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319728240,
+              "completedAt": 1793319728240,
+              "quoteAt": 1793319728201,
+              "sourceValidUntil": 1793319757000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319730216,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463081065,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463081065,
+              "marketClockUnixSeconds": 1793319729
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319730227,
+            "data": {
+              "at": 1793319730227,
+              "context": {
+                "sourceValidUntil": 1793319759000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319730241,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319730241,
+              "completedAt": 1793319730241,
+              "quoteAt": 1793319730203,
+              "sourceValidUntil": 1793319759000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319732293,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463081076,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463081076,
+              "marketClockUnixSeconds": 1793319731
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319732304,
+            "data": {
+              "at": 1793319732304,
+              "context": {
+                "sourceValidUntil": 1793319761000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319732318,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319732318,
+              "completedAt": 1793319732318,
+              "quoteAt": 1793319732280,
+              "sourceValidUntil": 1793319761000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319734280,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463081084,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463081084,
+              "marketClockUnixSeconds": 1793319733
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319734291,
+            "data": {
+              "at": 1793319734291,
+              "context": {
+                "sourceValidUntil": 1793319763000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319734305,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319734305,
+              "completedAt": 1793319734305,
+              "quoteAt": 1793319734267,
+              "sourceValidUntil": 1793319763000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319736316,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463081093,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463081093,
+              "marketClockUnixSeconds": 1793319735
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319736327,
+            "data": {
+              "at": 1793319736327,
+              "context": {
+                "sourceValidUntil": 1793319765000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319736341,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319736341,
+              "completedAt": 1793319736341,
+              "quoteAt": 1793319736302,
+              "sourceValidUntil": 1793319765000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319738385,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463081102,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463081102,
+              "marketClockUnixSeconds": 1793319737
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319738396,
+            "data": {
+              "at": 1793319738396,
+              "context": {
+                "sourceValidUntil": 1793319767000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319738410,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319738410,
+              "completedAt": 1793319738410,
+              "quoteAt": 1793319738372,
+              "sourceValidUntil": 1793319767000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319740406,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463081111,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463081111,
+              "marketClockUnixSeconds": 1793319739
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319740417,
+            "data": {
+              "at": 1793319740417,
+              "context": {
+                "sourceValidUntil": 1793319769000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319740431,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319740431,
+              "completedAt": 1793319740431,
+              "quoteAt": 1793319740393,
+              "sourceValidUntil": 1793319769000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319742431,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463081121,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463081121,
+              "marketClockUnixSeconds": 1793319742
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319742442,
+            "data": {
+              "at": 1793319742442,
+              "context": {
+                "sourceValidUntil": 1793319772000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319742456,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319742456,
+              "completedAt": 1793319742456,
+              "quoteAt": 1793319742417,
+              "sourceValidUntil": 1793319772000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319744548,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463081131,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463081131,
+              "marketClockUnixSeconds": 1793319744
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319744559,
+            "data": {
+              "at": 1793319744559,
+              "context": {
+                "sourceValidUntil": 1793319774000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319744574,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319744574,
+              "completedAt": 1793319744574,
+              "quoteAt": 1793319744535,
+              "sourceValidUntil": 1793319774000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319746517,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463081141,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463081141,
+              "marketClockUnixSeconds": 1793319746
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319746528,
+            "data": {
+              "at": 1793319746528,
+              "context": {
+                "sourceValidUntil": 1793319776000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319746545,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319746545,
+              "completedAt": 1793319746545,
+              "quoteAt": 1793319746504,
+              "sourceValidUntil": 1793319776000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "research-clock-position-sell-quote",
+            "at": 1793319748550,
+            "data": {
+              "pool": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "aa17bd1dd5d646d8b12a0fbb506518c81d1e669655f5129086bd4babc3b2cdea"
+              },
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "slot": 463081150,
+              "timeEvidence": {
+                "code": "confirmed-bank-clock",
+                "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+              },
+              "clockSlot": 463081150,
+              "marketClockUnixSeconds": 1793319747
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-context",
+            "at": 1793319748561,
+            "data": {
+              "at": 1793319748561,
+              "context": {
+                "sourceValidUntil": 1793319777000
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-held-evaluation",
+            "at": 1793319748575,
+            "data": {
+              "mint": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "722974fdc606b188ce1bd56035f4dcff80a711043b961a0741d10c2ef5c0e6fa"
+              },
+              "evaluatedAt": 1793319748575,
+              "completedAt": 1793319748575,
+              "quoteAt": 1793319748537,
+              "sourceValidUntil": 1793319777000,
+              "usable": true,
+              "action": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              },
+              "reason": {
+                "code": "UNKNOWN_HASHED",
+                "sha256": "3ccaa15379b36b6831a67ba8ec0909ba7424d5783984f91e5898e3fe6699fb7c"
+              },
+              "pendingExit": false,
+              "outcome": {
+                "code": "hold",
+                "sha256": "e8b22d83b417e85ba4f24101a49a49cc3246a5e5e4ce6574623063e4e32801e0"
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          }
+        ],
+        "unrecognizedEventKinds": {
+          "c50435c2b5ec38a56f5eca4b16bd6f2b1989a24cd8ee5d35671c002247fbaadf": 1,
+          "d35f357db121c86beafef8b02a345d8572381e41c86f68d633dbf5b2eb9eebac": 1,
+          "951a653282209904a8164f4b3f1c85b54ce9e86d567c7586760ffd004c25a715": 1,
+          "9a80b1f3489846a2303941d348b529cbde2fb2a0146f44fe861acc7d9965d548": 1
+        },
+        "matchingKindCounts": {
+          "research-clock-pool-state": 131,
+          "research-clock-position-sell-quote": 131,
+          "trader-context": 163,
+          "trader-held-evaluation": 163,
+          "research-clock-cache-invalidation": 32
+        },
+        "bytesRead": 66868564,
+        "scanBudgetReached": true,
+        "factCapacityReached": true,
+        "selectionUnknown": false,
+        "stateSha256": "7e1518f2683b30d8b5b0ff4a2d410a76d509dff91b4ff9483b75972f3dba2fc8"
+      },
+      "limitations": [
+        "Hash-bound sanitized93 export of two sampled intervals only. Quiet middle, missing, rotated and bounded records remain unknown; current status is not historical timing proof."
+      ]
+    }
+  },
+  "lastExecStop": {},
+  "effectiveExecStart": {
+    "executable": "/usr/bin/python3",
+    "nativeSupervisorEntrypoint": true,
+    "obsoleteObserverEntrypoint": false,
+    "valueSha256": "4d2a33ff2f59d33ec05ab00cbe4c71249ea991b8ebda2cc18bc3a3d661fc0879",
+    "argumentsExported": false
+  },
+  "dropInBasenames": [
+    "00-legacy-entrypoint.conf",
+    "90-native-engine.conf",
+    "reporting.conf"
+  ],
+  "repairMetadataMissingKeys": [
+    "ExecStop"
+  ],
+  "execStopTypedProperty": {
+    "available": true,
+    "type": "a(sasbttttuii)",
+    "entries": 0,
+    "verifiedEmptyCommandArray": true,
+    "argumentsExported": false
+  },
+  "execStopTypedReceipt": {
+    "exitCode": 0,
+    "stdoutBytes": 36,
+    "stderrBytes": 0,
+    "stdoutSha256": "a8796853c7e18d8b5c0c3fa8272c20fa384b1ef8806f573aa7b73d215ba371f9",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "serviceReceipt": {
+    "exitCode": 0,
+    "stdoutBytes": 1467,
+    "stderrBytes": 0,
+    "stdoutSha256": "8de7b6f9a32ce8631e03870f74d4229e980978b8fd141e2c287e097429777d00",
+    "stderrSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "publicStatus": {
+    "sha256": "dde91806f46c00743af3bb33777e62dcd1196d0548705c7833d90f4cb378dc1f",
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "release": "5675961a0ad05df508eec6928644c9e403be0811",
+    "strategy": "adaptive-momentum-v2-paper-v1",
+    "generatedAt": "2026-10-30T01:09:05.711Z",
+    "entriesDisabled": false,
+    "flowVerified": false,
+    "mode": "PAPER",
+    "liveTrading": false,
+    "blocker": null,
+    "shortlistCount": 4,
+    "feedConnected": true,
+    "lastUsefulProgressAt": "2026-10-30T01:09:04.615Z",
+    "lastReconciledAt": "2026-10-30T01:09:04.615Z",
+    "lastMigrationReceivedAt": "2026-10-30T01:08:56.787Z",
+    "reportingConfigured": true
+  },
+  "currentReleaseLink": null,
+  "currentCgroup": {
+    "available": true,
+    "pids": [
+      2479299,
+      2479302,
+      2479303
+    ]
+  },
+  "ownedProcessRoles": [
+    {
+      "pid": 2479299,
+      "role": "original-supervisor",
+      "ownerUid": 988,
+      "cpuSeconds": 2.16,
+      "rssBytes": 31494144,
+      "nice": 0,
+      "explicitMaxOldSpaceSizeMiB": [],
+      "argvExported": false
+    },
+    {
+      "pid": 2479302,
+      "role": "native-source",
+      "ownerUid": 988,
+      "cpuSeconds": 43.28,
+      "rssBytes": 415936512,
+      "nice": 0,
+      "explicitMaxOldSpaceSizeMiB": [
+        1024
+      ],
+      "argvExported": false
+    },
+    {
+      "pid": 2479303,
+      "role": "original-publisher",
+      "ownerUid": 988,
+      "cpuSeconds": 1.53,
+      "rssBytes": 107085824,
+      "nice": 0,
+      "explicitMaxOldSpaceSizeMiB": [
+        128
+      ],
+      "argvExported": false
+    }
+  ],
+  "hostResourceUsage": {
+    "sampleAt": 1793322545875,
+    "hostScope": "HOST-AGGREGATE; includes unrelated applications and administration runner, not POE-attributable",
+    "serviceScope": "poe-runtime.service cgroup, including owned children",
+    "hostMemory": {
+      "available": true,
+      "totalBytes": 8153255936,
+      "availableBytes": 6813990912
+    },
+    "rootFilesystem": {
+      "available": true,
+      "capacityBytes": 331712798720,
+      "availableBytes": 286780993536
+    },
+    "serviceIo": {
+      "available": true,
+      "scope": "poe-runtime.service cgroup only; not host I/O",
+      "deviceCount": 1,
+      "devices": [
+        {
+          "device": "259:0",
+          "rbytes": 245760,
+          "wbytes": 313184256,
+          "rios": 35,
+          "wios": 3854,
+          "dbytes": 0,
+          "dios": 0
+        }
+      ],
+      "totals": {
+        "rbytes": 245760,
+        "wbytes": 313184256,
+        "rios": 35,
+        "wios": 3854,
+        "dbytes": 0,
+        "dios": 0
+      },
+      "meaning": "Kernel-accounted cumulative I/O; missing fields are not invented and an empty device set does not independently prove no writes."
+    },
+    "serviceCpu": {
+      "available": true,
+      "usage_usec": 47026511,
+      "user_usec": 44445302,
+      "system_usec": 2581209,
+      "nr_periods": 0,
+      "nr_throttled": 0,
+      "throttled_usec": 0
+    },
+    "serviceMemory": {
+      "current": {
+        "available": true,
+        "bytes": 503218176,
+        "unlimited": false
+      },
+      "max": {
+        "available": true,
+        "bytes": 3221225472,
+        "unlimited": false
+      },
+      "peak": {
+        "available": true,
+        "bytes": 511852544,
+        "unlimited": false
+      }
+    },
+    "hostNetwork": {
+      "available": true,
+      "scope": "HOST-AGGREGATE; not POE-attributable",
+      "interfaceCount": 2,
+      "truncated": false,
+      "interfaces": [
+        {
+          "interface": "lo",
+          "receivedBytes": 568188702,
+          "receivedPackets": 3838548,
+          "transmittedBytes": 568188702,
+          "transmittedPackets": 3838548
+        },
+        {
+          "interface": "ens5",
+          "receivedBytes": 131253324385,
+          "receivedPackets": 106097040,
+          "transmittedBytes": 11444764773,
+          "transmittedPackets": 35742441
+        }
+      ]
+    }
+  },
+  "effectivePerformanceControls": {
+    "sampleAt": 1793322545876,
+    "logicalCpuCount": 4,
+    "systemd": {
+      "CPUQuotaPerSecUSec": "infinity",
+      "CPUQuotaPeriodUSec": "100ms",
+      "CPUWeight": "100",
+      "Nice": "0",
+      "MemoryHigh": "2684354560",
+      "MemoryMax": "3221225472",
+      "MemorySwapMax": "0",
+      "TasksMax": "64",
+      "LimitNOFILE": "256",
+      "LimitAS": "infinity",
+      "OOMPolicy": "stop",
+      "IOWeight": "[not set]",
+      "CPUAffinity": "",
+      "AllowedCPUs": "",
+      "ProtectSystem": "strict",
+      "ReadWritePaths": "/var/lib/poe /run/poe -/var/lib/poe-public /var/lib/poe /run/poe -/var/lib/poe-public"
+    },
+    "systemdMissingProperties": [],
+    "cgroupCpuMax": {
+      "available": true,
+      "unlimited": true,
+      "quotaUsec": null,
+      "periodUsec": 100000,
+      "equivalentCpuCores": null
+    },
+    "cgroupCpuWeight": {
+      "available": true,
+      "value": 100
+    },
+    "cgroupMemory": {
+      "high": {
+        "available": true,
+        "unlimited": false,
+        "bytes": 2684354560
+      },
+      "max": {
+        "available": true,
+        "unlimited": false,
+        "bytes": 3221225472
+      }
+    },
+    "cgroupMemoryEvents": {
+      "available": true,
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  },
+  "privateDiagnosticAccess": {
+    "supervisorHealth": {
+      "metadataAvailable": false,
+      "errno": 13,
+      "contentRead": false
+    },
+    "publisherDiagnostic": {
+      "metadataAvailable": false,
+      "errno": 13,
+      "contentRead": false
+    },
+    "reportingCredentialMetadata": {
+      "metadataAvailable": false,
+      "errno": 13,
+      "contentRead": false
+    }
+  },
+  "managerJournal": [],
+  "journalReceipt": {
+    "exitCode": 1,
+    "stdoutBytes": 0,
+    "stderrBytes": 62,
+    "stdoutSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderrSha256": "69290b924ebefd68d1806a463f5c072523b1c5ed4c35e4096eee215ff5916e2e"
+  },
+  "financialDatabaseOpened": false,
+  "credentialReads": 0,
+  "serviceChanges": 0,
+  "providerRequests": 0
+}

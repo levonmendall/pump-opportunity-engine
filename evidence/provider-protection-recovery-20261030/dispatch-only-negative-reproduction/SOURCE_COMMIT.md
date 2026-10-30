@@ -1,0 +1,1 @@
+Read-only reproduction source and exact offline probe are preserved at commit 3a558d2b33900fa7d7ec481e2809b5807d451682, branch poe-dispatch-negative-probe-20261030. Only evidence was copied here so the frozen69 application and tests remain unchanged. Negative results do not establish the cause of the live incident.

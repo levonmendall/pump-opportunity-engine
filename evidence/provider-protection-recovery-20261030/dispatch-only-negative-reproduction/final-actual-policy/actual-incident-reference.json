@@ -1,0 +1,608 @@
+{
+  "path": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/dispatch-protection-incident-0147/observations.ndjson",
+  "sha256": "e08418fccbb802c825cebf5f7c8801fe213a93aee5012718e486cc6cec3772f0",
+  "facts": [
+    {
+      "sequence": "11191",
+      "sourceAt": "2026-10-30T01:46:43.995Z",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "provider": {
+        "httpTimeouts": 640,
+        "rollingStartsPerMinute": 71,
+        "maximumStartsPerMinute": 90
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:46:43.757Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 73,
+        "unavailableChecks": 240
+      },
+      "financialDecisions": [
+        {
+          "id": "native-paper-20261030010446598:48:1793324786750",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:46:26.750Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        }
+      ]
+    },
+    {
+      "sequence": "11192",
+      "sourceAt": "2026-10-30T01:46:59.064Z",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "provider": {
+        "httpTimeouts": 640,
+        "rollingStartsPerMinute": 72,
+        "maximumStartsPerMinute": 90
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:46:59.061Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 73,
+        "unavailableChecks": 240
+      },
+      "financialDecisions": [
+        {
+          "id": "native-paper-20261030010446598:46:1793324786750",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:46:26.750Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        },
+        {
+          "id": "native-paper-20261030010446598:49:1793324818624",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:46:58.624Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        }
+      ]
+    },
+    {
+      "sequence": "11193",
+      "sourceAt": "2026-10-30T01:47:14.918Z",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "provider": {
+        "httpTimeouts": 640,
+        "rollingStartsPerMinute": 78,
+        "maximumStartsPerMinute": 90
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:47:14.817Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 73,
+        "unavailableChecks": 240
+      },
+      "financialDecisions": [
+        {
+          "id": "native-paper-20261030010446598:45:1793324786750",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:46:26.750Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        },
+        {
+          "id": "native-paper-20261030010446598:48:1793324818624",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:46:58.624Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        }
+      ]
+    },
+    {
+      "sequence": "11193",
+      "sourceAt": "2026-10-30T01:47:14.918Z",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "provider": {
+        "httpTimeouts": 640,
+        "rollingStartsPerMinute": 78,
+        "maximumStartsPerMinute": 90
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:47:14.817Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 73,
+        "unavailableChecks": 240
+      },
+      "financialDecisions": [
+        {
+          "id": "native-paper-20261030010446598:45:1793324786750",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:46:26.750Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        },
+        {
+          "id": "native-paper-20261030010446598:48:1793324818624",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:46:58.624Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        }
+      ]
+    },
+    {
+      "sequence": "11194",
+      "sourceAt": "2026-10-30T01:47:44.118Z",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED"
+      },
+      "provider": {
+        "httpTimeouts": 640,
+        "rollingStartsPerMinute": 84,
+        "maximumStartsPerMinute": 90
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:47:43.509Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 74,
+        "unavailableChecks": 245
+      },
+      "financialDecisions": [
+        {
+          "id": "native-paper-20261030010446598:43:1793324786750",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:46:26.750Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        },
+        {
+          "id": "native-paper-20261030010446598:46:1793324818624",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:46:58.624Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        },
+        {
+          "id": "native-paper-20261030010446598:49:1793324847205",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:47:27.205Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        }
+      ]
+    },
+    {
+      "sequence": "11195",
+      "sourceAt": "2026-10-30T01:47:59.203Z",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED"
+      },
+      "provider": {
+        "httpTimeouts": 640,
+        "rollingStartsPerMinute": 82,
+        "maximumStartsPerMinute": 90
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:47:58.461Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 74,
+        "unavailableChecks": 245
+      },
+      "financialDecisions": [
+        {
+          "id": "native-paper-20261030010446598:43:1793324786750",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:46:26.750Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        },
+        {
+          "id": "native-paper-20261030010446598:46:1793324818624",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:46:58.624Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        },
+        {
+          "id": "native-paper-20261030010446598:49:1793324847205",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:47:27.205Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        }
+      ]
+    },
+    {
+      "sequence": "11196",
+      "sourceAt": "2026-10-30T01:48:14.204Z",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED"
+      },
+      "provider": {
+        "httpTimeouts": 640,
+        "rollingStartsPerMinute": 78,
+        "maximumStartsPerMinute": 90
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:48:12.724Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 74,
+        "unavailableChecks": 245
+      },
+      "financialDecisions": [
+        {
+          "id": "native-paper-20261030010446598:43:1793324786750",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:46:26.750Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        },
+        {
+          "id": "native-paper-20261030010446598:46:1793324818624",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:46:58.624Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        },
+        {
+          "id": "native-paper-20261030010446598:49:1793324847205",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:47:27.205Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        }
+      ]
+    },
+    {
+      "sequence": "11197",
+      "sourceAt": "2026-10-30T01:48:29.231Z",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED"
+      },
+      "provider": {
+        "httpTimeouts": 640,
+        "rollingStartsPerMinute": 52,
+        "maximumStartsPerMinute": 90
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:48:28.886Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 74,
+        "unavailableChecks": 245
+      },
+      "financialDecisions": [
+        {
+          "id": "native-paper-20261030010446598:43:1793324786750",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:46:26.750Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        },
+        {
+          "id": "native-paper-20261030010446598:46:1793324818624",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:46:58.624Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        },
+        {
+          "id": "native-paper-20261030010446598:49:1793324847205",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:47:27.205Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        }
+      ]
+    },
+    {
+      "sequence": "11198",
+      "sourceAt": "2026-10-30T01:48:44.241Z",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "provider": {
+        "httpTimeouts": 640,
+        "rollingStartsPerMinute": 56,
+        "maximumStartsPerMinute": 90
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:48:43.343Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 74,
+        "unavailableChecks": 245
+      },
+      "financialDecisions": [
+        {
+          "id": "native-paper-20261030010446598:43:1793324786750",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:46:26.750Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        },
+        {
+          "id": "native-paper-20261030010446598:46:1793324818624",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:46:58.624Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        },
+        {
+          "id": "native-paper-20261030010446598:49:1793324847205",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:47:27.205Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        }
+      ]
+    },
+    {
+      "sequence": "11199",
+      "sourceAt": "2026-10-30T01:48:59.332Z",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "provider": {
+        "httpTimeouts": 640,
+        "rollingStartsPerMinute": 50,
+        "maximumStartsPerMinute": 90
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:48:59.332Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 74,
+        "unavailableChecks": 245
+      },
+      "financialDecisions": [
+        {
+          "id": "native-paper-20261030010446598:43:1793324786750",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:46:26.750Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        },
+        {
+          "id": "native-paper-20261030010446598:46:1793324818624",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:46:58.624Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        },
+        {
+          "id": "native-paper-20261030010446598:49:1793324847205",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:47:27.205Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        }
+      ]
+    },
+    {
+      "sequence": "11200",
+      "sourceAt": "2026-10-30T01:49:14.339Z",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "provider": {
+        "httpTimeouts": 640,
+        "rollingStartsPerMinute": 50,
+        "maximumStartsPerMinute": 90
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:49:13.481Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 74,
+        "unavailableChecks": 245
+      },
+      "financialDecisions": [
+        {
+          "id": "native-paper-20261030010446598:43:1793324786750",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:46:26.750Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        },
+        {
+          "id": "native-paper-20261030010446598:46:1793324818624",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:46:58.624Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        },
+        {
+          "id": "native-paper-20261030010446598:49:1793324847205",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:47:27.205Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        }
+      ]
+    },
+    {
+      "sequence": "11201",
+      "sourceAt": "2026-10-30T01:49:30.215Z",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "provider": {
+        "httpTimeouts": 640,
+        "rollingStartsPerMinute": 47,
+        "maximumStartsPerMinute": 90
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:49:29.710Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 74,
+        "unavailableChecks": 245
+      },
+      "financialDecisions": [
+        {
+          "id": "native-paper-20261030010446598:42:1793324786750",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:46:26.750Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        },
+        {
+          "id": "native-paper-20261030010446598:45:1793324818624",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:46:58.624Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        },
+        {
+          "id": "native-paper-20261030010446598:48:1793324847205",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:47:27.205Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        }
+      ]
+    },
+    {
+      "sequence": "11202",
+      "sourceAt": "2026-10-30T01:49:45.282Z",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "provider": {
+        "httpTimeouts": 640,
+        "rollingStartsPerMinute": 50,
+        "maximumStartsPerMinute": 90
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:49:45.281Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 74,
+        "unavailableChecks": 245
+      },
+      "financialDecisions": [
+        {
+          "id": "native-paper-20261030010446598:42:1793324786750",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:46:26.750Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        },
+        {
+          "id": "native-paper-20261030010446598:45:1793324818624",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:46:58.624Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        },
+        {
+          "id": "native-paper-20261030010446598:48:1793324847205",
+          "mint": "HGpvy6ugSijapMbzMnwmEF3e5zn5YZvCkTvXaVNUpump",
+          "at": "2026-10-30T01:47:27.205Z",
+          "stage": "missing-data",
+          "reason": "fresh-size-specific-quote-unavailable"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,45 @@
+{
+  "checkedAt": "2026-10-30T01:53:45.770943+00:00",
+  "source": "ee549eeff51aa92cf3ca2c4ff6e19e93d1d18d5c",
+  "base": "bb1e91eb7c9f00d00aa459c6984cdbddfc0a27a1",
+  "sourceUnchanged": true,
+  "commands": [
+    {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "test/dashboard-equity-line.test.ts",
+        "test/dashboard-paper-trades-collapse.test.ts",
+        "test/dashboard-candidate-bars.test.ts",
+        "test/dashboard-holographic.test.ts",
+        "test/dashboard-pilot-ui.test.ts",
+        "test/dashboard-pilot-portfolio.test.ts",
+        "test/dashboard-pilot-integration.test.ts"
+      ],
+      "exitCode": 0,
+      "raw": "existing-ui-tests.raw.txt",
+      "sha256": "426841de2d4d33b6cd769d9e67f0107b06e9f7075d5a273a885d10ba22af6167"
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "compile"
+      ],
+      "exitCode": 0,
+      "raw": "compile.raw.txt",
+      "sha256": "c111cbc630b00363e00464dc58c0d48d72870d7a431b9e6ada92ca45f2fe603a"
+    }
+  ],
+  "changedApplicationFiles": [
+    "src/dashboard.ts"
+  ],
+  "schemaChanges": false,
+  "financialGatesChanged": false,
+  "serviceChanges": 0,
+  "providerRequests": 0,
+  "pushed": false,
+  "deployed": false
+}

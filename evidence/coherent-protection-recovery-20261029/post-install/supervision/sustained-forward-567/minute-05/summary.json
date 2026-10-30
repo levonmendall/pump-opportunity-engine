@@ -1,0 +1,427 @@
+{
+  "frozenAt": "2026-10-30T01:14:16.650945+00:00",
+  "analysisWindowMinutes": 5,
+  "anchorSourceAt": "2026-10-30T01:07:19.665Z",
+  "targetEndSourceAt": "2026-10-30T01:12:19.665000+00:00",
+  "firstSourceAt": "2026-10-30T01:07:19.665Z",
+  "lastSourceAt": "2026-10-30T01:12:10.147Z",
+  "actualObservedSourceSeconds": 290.482,
+  "source": {
+    "release": "5675961a0ad05df508eec6928644c9e403be0811",
+    "strategy": "adaptive-momentum-v2-paper-v1"
+  },
+  "account": {
+    "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "initialUsd": 1000
+  },
+  "run": {
+    "id": "native-paper-20261030010446598",
+    "startedAt": "2026-10-30T01:04:46.598Z",
+    "mode": "persistent-paper",
+    "configurationSha256": "ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db",
+    "strategyVersion": "adaptive-momentum-v2-paper-v1"
+  },
+  "observations": {
+    "rows": 20,
+    "validNewSourceRows": 20,
+    "uniqueSourceSnapshots": 20,
+    "readUnavailable": 0,
+    "maximumPollGapMs": 15385,
+    "sha256": "948c1def7785c1f090bad835266027b102c94a4f1a372cedef5ddfc9c458857c",
+    "sourceFiles": [
+      {
+        "path": "detached-after-0006/rolling-supervision/material-transitions.ndjson",
+        "bytes": 4470468,
+        "sha256": "feb3afc2055c9ef05e48bb69ae54d2d3539e74ab78f9197f63da3f1de7822ddf",
+        "partialLinesSkipped": 0
+      },
+      {
+        "path": "detached-after-0006/rolling-supervision/routine-0.ndjson",
+        "bytes": 1046163,
+        "sha256": "9f8d01abfe7a40632e1ff8df9f0c66c3d277219a3ffbb8b0253c84a82e01d55d",
+        "partialLinesSkipped": 0
+      },
+      {
+        "path": "detached-after-0006/rolling-supervision/routine-1.ndjson",
+        "bytes": 1040987,
+        "sha256": "3f7999e7a3b123a66262170c8b29e4b082afe88e192a12900eba2186729c466a",
+        "partialLinesSkipped": 0
+      },
+      {
+        "path": "detached-after-0006/rolling-supervision/routine-2.ndjson",
+        "bytes": 1046448,
+        "sha256": "2ece40a4a1e412214c786c5afead2c781dab130c722ea5563de94a35b28c0607",
+        "partialLinesSkipped": 0
+      },
+      {
+        "path": "detached-after-0006/rolling-supervision/routine-3.ndjson",
+        "bytes": 1047523,
+        "sha256": "69a582064d5a2f2d455b318fd6da541717a1bf4d6e27ded8bb20321b5839c606",
+        "partialLinesSkipped": 0
+      },
+      {
+        "path": "detached-after-0006/rolling-supervision/routine-4.ndjson",
+        "bytes": 900338,
+        "sha256": "1a08c9706bbe9bc82a041902a16cf79601ae85f7417073ca26ad0a63e2f1c7a7",
+        "partialLinesSkipped": 0
+      }
+    ]
+  },
+  "deltas": {
+    "candidates": {
+      "migrationsReceived": 3,
+      "promoted": 8,
+      "repromoted": 6,
+      "demoted": 8,
+      "completeWindows": 11,
+      "auditedWindows": 11,
+      "uniqueEvaluated": 7,
+      "predictiveAssessments": 11,
+      "predictivePasses": 5,
+      "predictiveFailures": 6
+    },
+    "quality": {
+      "qualityGaps": 2,
+      "auditUnavailable": 0,
+      "auditUnusable": 1,
+      "decisionDeadlineMisses": 3
+    },
+    "provider": {
+      "rpcRequests": 262,
+      "rpcResponseBytes": 20269576,
+      "nativeStreamBytes": 2645354,
+      "broadWatchBytes": 334849827,
+      "httpTimeouts": 4,
+      "httpErrors": 0,
+      "throttles": 0
+    },
+    "protection": {
+      "breaches": 0,
+      "unavailableChecks": 0
+    }
+  },
+  "resourceMeasurements": {
+    "cpuOneCoreFraction": {
+      "min": 0.15548464989665775,
+      "max": 0.1851529774988674,
+      "median": 0.16558586299618006
+    },
+    "rssBytes": {
+      "min": 376090624,
+      "max": 402612224,
+      "median": 393398272.0
+    },
+    "availableMemoryBytes": {
+      "min": 6832824320,
+      "max": 6941900800,
+      "median": 6920398848.0
+    },
+    "availableDiskBytes": {
+      "min": 286760042496,
+      "max": 286786945024,
+      "median": 286780792832.0
+    },
+    "eventLoopLagMs": {
+      "min": 26.509311,
+      "max": 27.164671,
+      "median": 27.066367
+    }
+  },
+  "applicationNetworkMeasurements": {
+    "rpcResponseBytes": {
+      "bytesDelta": 20269576,
+      "meanApplicationBytesPerSecond": 69779.11195874443,
+      "maximumSampleIntervalApplicationBytesPerSecond": 297040.5899156314
+    },
+    "nativeStreamBytes": {
+      "bytesDelta": 2645354,
+      "meanApplicationBytesPerSecond": 9106.774257957462,
+      "maximumSampleIntervalApplicationBytesPerSecond": 17956.614178459902
+    },
+    "broadWatchBytes": {
+      "bytesDelta": 334849827,
+      "meanApplicationBytesPerSecond": 1152738.6447353018,
+      "maximumSampleIntervalApplicationBytesPerSecond": 1458879.4812105088
+    }
+  },
+  "rpcRollingStartsMin": 40,
+  "rpcRollingStartsMax": 67,
+  "maximumProtectionAgeAtSourceMs": 1586,
+  "maximumReconciliationAgeAtSourceMs": 1600,
+  "allCaptureDiscoveryWatchConnected": true,
+  "allEvidenceAndResourceAdmissionsHealthy": true,
+  "transitions": [
+    {
+      "sourceAt": "2026-10-30T01:07:19.665Z",
+      "sequence": "11038",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:07:19.081Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 72,
+        "unavailableChecks": 233
+      },
+      "httpTimeouts": 633,
+      "rpcRollingStarts": 63,
+      "capture": true,
+      "heldRefusals": []
+    },
+    {
+      "sourceAt": "2026-10-30T01:07:34.700Z",
+      "sequence": "11039",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:07:33.239Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 72,
+        "unavailableChecks": 233
+      },
+      "httpTimeouts": 633,
+      "rpcRollingStarts": 58,
+      "capture": true,
+      "heldRefusals": []
+    },
+    {
+      "sourceAt": "2026-10-30T01:08:35.195Z",
+      "sequence": "11043",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:08:35.136Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 72,
+        "unavailableChecks": 233
+      },
+      "httpTimeouts": 634,
+      "rpcRollingStarts": 47,
+      "capture": true,
+      "heldRefusals": []
+    },
+    {
+      "sourceAt": "2026-10-30T01:09:05.711Z",
+      "sequence": "11045",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:09:04.629Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 72,
+        "unavailableChecks": 233
+      },
+      "httpTimeouts": 635,
+      "rpcRollingStarts": 58,
+      "capture": true,
+      "heldRefusals": []
+    },
+    {
+      "sourceAt": "2026-10-30T01:09:35.842Z",
+      "sequence": "11047",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:09:35.040Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 72,
+        "unavailableChecks": 233
+      },
+      "httpTimeouts": 636,
+      "rpcRollingStarts": 50,
+      "capture": true,
+      "heldRefusals": []
+    },
+    {
+      "sourceAt": "2026-10-30T01:10:53.529Z",
+      "sequence": "11052",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:10:52.825Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 72,
+        "unavailableChecks": 233
+      },
+      "httpTimeouts": 637,
+      "rpcRollingStarts": 67,
+      "capture": true,
+      "heldRefusals": []
+    }
+  ],
+  "latestStatus": {
+    "runtime": "running",
+    "market": "observing",
+    "entries": "enabled",
+    "reconciled": true,
+    "blocker": null
+  },
+  "latestCandidates": {
+    "migrationsReceived": 572,
+    "verifiedOrigins": 149,
+    "known": 174,
+    "watch": 64,
+    "eligible": 38,
+    "deepActive": 4,
+    "deepMaximum": 4,
+    "queued": 35,
+    "promoted": 4863,
+    "repromoted": 4394,
+    "demoted": 4850,
+    "completeWindows": 2523,
+    "auditedWindows": 2545,
+    "uniqueEvaluated": 11,
+    "uniqueAudited": null,
+    "predictiveAssessments": 426,
+    "predictivePasses": 195,
+    "predictiveFailures": 231,
+    "predictiveUnavailable": 0,
+    "waitMeanMs": null,
+    "waitMaximumMs": 2303603,
+    "olderSelected": 24
+  },
+  "latestQuality": {
+    "captureConnected": true,
+    "qualityGaps": 1432,
+    "auditUnavailable": 131,
+    "auditUnusable": 202,
+    "decisionDeadlineMisses": 357,
+    "enrichmentDeadlineFailures": 0,
+    "incompleteExclusions": 1432,
+    "capacityExclusions": 0,
+    "structuralExclusions": 56
+  },
+  "latestFinancialFunnel": {
+    "discovered": 16,
+    "supported": 16,
+    "sufficientlyObserved": 0,
+    "evaluated": 0,
+    "qualified": 0,
+    "attempted": 0,
+    "paperFilled": 0,
+    "exited": 0,
+    "reconciled": 227
+  },
+  "latestProtection": {
+    "state": "monitored",
+    "targetCadenceMs": 2000,
+    "completedEvaluationBoundaryMs": 4000,
+    "lastCompletedAt": "2026-10-30T01:12:08.983Z",
+    "maximumCompletedGapMs": 89426,
+    "maximumQuoteAgeAtUseMs": 70,
+    "breaches": 72,
+    "unavailableChecks": 233
+  },
+  "latestAdmission": {
+    "financialProjectionReady": true,
+    "supervisedNewRiskAllowed": true,
+    "candidateResourceAdmissionAllowed": true,
+    "evidenceAdmissionAllowed": true,
+    "evidencePressureReasonCode": null,
+    "evidenceDiagnosticBytes": 10214185,
+    "evidenceDiagnosticLimitBytes": 134217728,
+    "evidenceRequiresCriticalRecovery": false,
+    "evidenceRefusedRecords": 0,
+    "sourceRecoveryGeneration": 0,
+    "sourceRecoveryFailures": 0,
+    "sourceRecoveryReasonCode": null,
+    "sourceRecoveryRetryAt": null,
+    "sourceRecoveryClosingSettled": false,
+    "sourceRestartRequired": false,
+    "proofPreparationState": "complete"
+  },
+  "latestPositions": [
+    {
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "quantity": "65278155",
+      "enteredAt": "2026-10-29T22:23:36.537Z",
+      "entryCostUsd": 49.708013,
+      "netLiquidationUsd": 57.638904,
+      "executionCostsUsd": 0.00068,
+      "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+    }
+  ],
+  "latestPendingOrders": [],
+  "latestBalances": {
+    "cashSol": "9.391335448",
+    "reservedSol": "0",
+    "equitySol": "10.023807456",
+    "equityUsd": 944.89421,
+    "realizedUsd": -3.599616,
+    "unrealizedUsd": 9.45911,
+    "tradingPnlUsd": 5.859493,
+    "economicPnlUsd": null,
+    "positionCostUsd": 49.708013,
+    "markedExposureUsd": 57.638904,
+    "drawdownUsd": null,
+    "executionCostsUsd": null,
+    "operatingCostsUsd": null,
+    "passiveSolEquityUsd": 939.034717,
+    "solPriceUsd": 94.265
+  },
+  "limitations": [
+    "This is a finite analysis window; the autonomous EC2 PAPER service continues beyond it.",
+    "Cloud polls actual original Render snapshots every15seconds. Source-time completion freshness is not an individual completed-protection-gap distribution.",
+    "Application stream counters are measured separately and must not be summed or called EC2 wire bytes. Host interface counters and physical RPC latency distribution are unavailable in this public projection.",
+    "CPU fraction/RSS are runtime measurements; available memory/disk describe host headroom. No host aggregate CPU or disk throughput is inferred.",
+    "The controlled deployment restart was separately verified. No deliberate reconnect, provider429, second holding or classified high-volume burst has been exercised in this window.",
+    "Retained historical failure totals and original financial records are preserved. Current-run financial qualifications/fills are separate from overlapping audited candidate windows.",
+    "Quiet versus burst market regimes are not assigned using arbitrary thresholds. Actual rolling RPC starts and application byte rates are reported.",
+    "No financial controls, service restart or extra provider RPC performed by this observer. Short forward windows do not establish24hour reliability or profitability."
+  ]
+}

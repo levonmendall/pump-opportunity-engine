@@ -1,0 +1,8 @@
+{
+  "source": "5675961a0ad05df508eec6928644c9e403be0811",
+  "field": "intelligence.provider.rpcResponseBytes",
+  "mapping": "rpc.newAccountedResponseBytes",
+  "sourceMeaning": "PilotRpc.accountControlBytes charges passive websocket receipt to the same ComponentBudget byte counter; therefore this reported field includes HTTP/control-WS accounting rather than exclusively HTTP body bytes.",
+  "reportingRule": "Keep reported field provenance. Never add it to nativeStreamBytes or label it host wire throughput. ActualhostNetwork kernelmeasurements include unrelatedhosttraffic and are separatelylabelled.",
+  "affectedEvidence": "All original-source snapshots and derived forward windows preserve the actual counter name/value; this note clarifies semantics without replacing evidence."
+}

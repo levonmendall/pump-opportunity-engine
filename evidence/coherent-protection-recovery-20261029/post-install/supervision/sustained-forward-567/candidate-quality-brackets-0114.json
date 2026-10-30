@@ -1,0 +1,215 @@
+{
+  "meaning": "Publiccountertimebrackets, correlationsonly. Actualnativeeventrecords/physicalrequestphases needed for cause; captureconnectedthroughout, resource/evidenceadmissionhealthy. No directproviderrequests.",
+  "records": [
+    {
+      "sourceAt": "2026-10-30T01:07:19.665Z",
+      "sequence": "11038",
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 1430,
+        "auditUnavailable": 131,
+        "auditUnusable": 201,
+        "decisionDeadlineMisses": 354,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1430,
+        "capacityExclusions": 0,
+        "structuralExclusions": 56
+      },
+      "timeouts": 633,
+      "historyCooldownUntil": "2026-10-30T00:29:47.824Z",
+      "primaryCooldownUntil": "2026-10-30T01:02:57.172Z",
+      "deepActive": 4,
+      "promoted": 4855,
+      "complete": 2512,
+      "audited": 2534,
+      "recentDecisionTimes": [
+        {
+          "mint": "ENpKKYYSwhusufT9mKMXkBmkkWsNfBWxKd4pvyuNpump",
+          "at": "2026-10-30T01:06:45.648Z",
+          "stage": "adaptive-predictive-failed",
+          "reason": "adaptive-genuine-demand-floor-not-met"
+        },
+        {
+          "mint": "2tH8qWKg2g3LLdkDDZYv8xvuj3Ekcp6r6kxBrYpUpump",
+          "at": "2026-10-30T01:06:46.212Z",
+          "stage": "adaptive-predictive-failed",
+          "reason": "adaptive-genuine-demand-floor-not-met"
+        },
+        {
+          "mint": "2Q7H4kYsyQWpqEPTeBqFyxUABxRmEQYYwDavAzWppump",
+          "at": "2026-10-30T01:06:46.794Z",
+          "stage": "adaptive-predictive-failed",
+          "reason": "adaptive-genuine-demand-floor-not-met"
+        }
+      ]
+    },
+    {
+      "sourceAt": "2026-10-30T01:10:06.900Z",
+      "sequence": "11049",
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 1431,
+        "auditUnavailable": 131,
+        "auditUnusable": 202,
+        "decisionDeadlineMisses": 354,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1431,
+        "capacityExclusions": 0,
+        "structuralExclusions": 56
+      },
+      "timeouts": 636,
+      "historyCooldownUntil": "2026-10-30T00:29:47.824Z",
+      "primaryCooldownUntil": "2026-10-30T01:09:32.784Z",
+      "deepActive": 3,
+      "promoted": 4859,
+      "complete": 2517,
+      "audited": 2539,
+      "recentDecisionTimes": [
+        {
+          "mint": "EtUBJWYqSCTGMFWG852DDMn3F6GYjETqju9AcExpump",
+          "at": "2026-10-30T01:08:27.125Z",
+          "stage": "adaptive-predictive-failed",
+          "reason": "adaptive-genuine-demand-floor-not-met"
+        },
+        {
+          "mint": "GmksAq1EZ6u1eVoTmQCkRuHKCcStQ7b16vtNZDy7M1dq",
+          "at": "2026-10-30T01:08:36.552Z",
+          "stage": "adaptive-predictive-failed",
+          "reason": "adaptive-genuine-demand-floor-not-met"
+        },
+        {
+          "mint": "7fR4hpUuHYaUTnnUeVLWke2GvMZdZtaeM8yFwu92pump",
+          "at": "2026-10-30T01:10:05.830Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        }
+      ]
+    },
+    {
+      "sourceAt": "2026-10-30T01:10:53.529Z",
+      "sequence": "11052",
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 1431,
+        "auditUnavailable": 131,
+        "auditUnusable": 202,
+        "decisionDeadlineMisses": 355,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1431,
+        "capacityExclusions": 0,
+        "structuralExclusions": 56
+      },
+      "timeouts": 637,
+      "historyCooldownUntil": "2026-10-30T00:29:47.824Z",
+      "primaryCooldownUntil": "2026-10-30T01:10:48.395Z",
+      "deepActive": 1,
+      "promoted": 4859,
+      "complete": 2522,
+      "audited": 2544,
+      "recentDecisionTimes": [
+        {
+          "mint": "7fR4hpUuHYaUTnnUeVLWke2GvMZdZtaeM8yFwu92pump",
+          "at": "2026-10-30T01:10:17.000Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        },
+        {
+          "mint": "7fR4hpUuHYaUTnnUeVLWke2GvMZdZtaeM8yFwu92pump",
+          "at": "2026-10-30T01:10:26.240Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        },
+        {
+          "mint": "7fR4hpUuHYaUTnnUeVLWke2GvMZdZtaeM8yFwu92pump",
+          "at": "2026-10-30T01:10:45.094Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        }
+      ]
+    },
+    {
+      "sourceAt": "2026-10-30T01:11:23.633Z",
+      "sequence": "11054",
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 1431,
+        "auditUnavailable": 131,
+        "auditUnusable": 202,
+        "decisionDeadlineMisses": 357,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1431,
+        "capacityExclusions": 0,
+        "structuralExclusions": 56
+      },
+      "timeouts": 637,
+      "historyCooldownUntil": "2026-10-30T00:29:47.824Z",
+      "primaryCooldownUntil": "2026-10-30T01:10:48.395Z",
+      "deepActive": 1,
+      "promoted": 4859,
+      "complete": 2523,
+      "audited": 2545,
+      "recentDecisionTimes": [
+        {
+          "mint": "7fR4hpUuHYaUTnnUeVLWke2GvMZdZtaeM8yFwu92pump",
+          "at": "2026-10-30T01:10:26.240Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        },
+        {
+          "mint": "7fR4hpUuHYaUTnnUeVLWke2GvMZdZtaeM8yFwu92pump",
+          "at": "2026-10-30T01:10:45.094Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        },
+        {
+          "mint": "7fR4hpUuHYaUTnnUeVLWke2GvMZdZtaeM8yFwu92pump",
+          "at": "2026-10-30T01:10:55.170Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        }
+      ]
+    },
+    {
+      "sourceAt": "2026-10-30T01:11:38.686Z",
+      "sequence": "11055",
+      "quality": {
+        "captureConnected": true,
+        "qualityGaps": 1432,
+        "auditUnavailable": 131,
+        "auditUnusable": 202,
+        "decisionDeadlineMisses": 357,
+        "enrichmentDeadlineFailures": 0,
+        "incompleteExclusions": 1432,
+        "capacityExclusions": 0,
+        "structuralExclusions": 56
+      },
+      "timeouts": 637,
+      "historyCooldownUntil": "2026-10-30T01:11:26.761Z",
+      "primaryCooldownUntil": "2026-10-30T01:10:48.395Z",
+      "deepActive": 4,
+      "promoted": 4863,
+      "complete": 2523,
+      "audited": 2545,
+      "recentDecisionTimes": [
+        {
+          "mint": "7fR4hpUuHYaUTnnUeVLWke2GvMZdZtaeM8yFwu92pump",
+          "at": "2026-10-30T01:10:26.240Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        },
+        {
+          "mint": "7fR4hpUuHYaUTnnUeVLWke2GvMZdZtaeM8yFwu92pump",
+          "at": "2026-10-30T01:10:45.094Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        },
+        {
+          "mint": "7fR4hpUuHYaUTnnUeVLWke2GvMZdZtaeM8yFwu92pump",
+          "at": "2026-10-30T01:10:55.170Z",
+          "stage": "adaptive-predictive-not-rejected",
+          "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+        }
+      ]
+    }
+  ]
+}

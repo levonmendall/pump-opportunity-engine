@@ -1,0 +1,577 @@
+{
+  "kind": "ACTUAL_POST_RECOVERY_PROVIDER_AND_HOLDING_PROTECTION_FAILURE",
+  "frozenAt": "2026-10-30T00:13:20.335280+00:00",
+  "observations": [
+    {
+      "receivedAt": 1793319072413,
+      "sequence": "10819",
+      "times": {
+        "generatedAt": "2026-10-30T00:10:57.414Z",
+        "marketAt": "2026-10-30T00:10:56.000Z",
+        "reconciledAt": "2026-10-30T00:10:56.501Z",
+        "usefulProgressAt": "2026-10-30T00:10:56.501Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T00:10:56.515Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 68,
+        "breaches": 46,
+        "unavailableChecks": 162
+      },
+      "provider": {
+        "rpcRequests": 1247,
+        "httpTimeouts": 603,
+        "rollingStartsPerMinute": 68,
+        "primaryCooldownUntil": "2026-10-30T00:03:48.030Z"
+      },
+      "holdingRefusals": [
+        "Recorded holding-pricing refusals in this run: HELD_PRICING_ABORTED:6, HELD_PRICING_PROVIDER_TIMEOUT:6, HELD_PRICING_PROVIDER_COOLDOWN:22."
+      ],
+      "resources": {
+        "sampleAt": "2026-10-30T00:10:57.209Z",
+        "cpuOneCoreFraction": 0.16432309699432987,
+        "rssBytes": 392159232,
+        "availableMemoryBytes": 6858813440,
+        "availableDiskBytes": 287376441344,
+        "eventLoopLagMs": 26.902527,
+        "state": "normal"
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 13722366,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "receivedAt": 1793319087786,
+      "sequence": "10820",
+      "times": {
+        "generatedAt": "2026-10-30T00:11:12.802Z",
+        "marketAt": "2026-10-30T00:11:11.000Z",
+        "reconciledAt": "2026-10-30T00:11:12.785Z",
+        "usefulProgressAt": "2026-10-30T00:11:12.785Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T00:11:12.801Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 68,
+        "breaches": 46,
+        "unavailableChecks": 162
+      },
+      "provider": {
+        "rpcRequests": 1256,
+        "httpTimeouts": 603,
+        "rollingStartsPerMinute": 67,
+        "primaryCooldownUntil": "2026-10-30T00:03:48.030Z"
+      },
+      "holdingRefusals": [
+        "Recorded holding-pricing refusals in this run: HELD_PRICING_ABORTED:6, HELD_PRICING_PROVIDER_TIMEOUT:6, HELD_PRICING_PROVIDER_COOLDOWN:22."
+      ],
+      "resources": {
+        "sampleAt": "2026-10-30T00:11:11.809Z",
+        "cpuOneCoreFraction": 0.1604686212704925,
+        "rssBytes": 392187904,
+        "availableMemoryBytes": 6866710528,
+        "availableDiskBytes": 287376216064,
+        "eventLoopLagMs": 26.902527,
+        "state": "normal"
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 13884655,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "receivedAt": 1793319103011,
+      "sequence": "10821",
+      "times": {
+        "generatedAt": "2026-10-30T00:11:27.838Z",
+        "marketAt": "2026-10-30T00:11:26.000Z",
+        "reconciledAt": "2026-10-30T00:11:26.998Z",
+        "usefulProgressAt": "2026-10-30T00:11:26.998Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T00:11:27.012Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 68,
+        "breaches": 46,
+        "unavailableChecks": 162
+      },
+      "provider": {
+        "rpcRequests": 1266,
+        "httpTimeouts": 603,
+        "rollingStartsPerMinute": 58,
+        "primaryCooldownUntil": "2026-10-30T00:03:48.030Z"
+      },
+      "holdingRefusals": [
+        "Recorded holding-pricing refusals in this run: HELD_PRICING_ABORTED:6, HELD_PRICING_PROVIDER_TIMEOUT:6, HELD_PRICING_PROVIDER_COOLDOWN:22."
+      ],
+      "resources": {
+        "sampleAt": "2026-10-30T00:11:27.590Z",
+        "cpuOneCoreFraction": 0.1539007599013638,
+        "rssBytes": 392187904,
+        "availableMemoryBytes": 6871240704,
+        "availableDiskBytes": 287375863808,
+        "eventLoopLagMs": 26.902527,
+        "state": "normal"
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 14066222,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "receivedAt": 1793319118455,
+      "sequence": "10821",
+      "times": {
+        "generatedAt": "2026-10-30T00:11:27.838Z",
+        "marketAt": "2026-10-30T00:11:26.000Z",
+        "reconciledAt": "2026-10-30T00:11:26.998Z",
+        "usefulProgressAt": "2026-10-30T00:11:26.998Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T00:11:27.012Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 68,
+        "breaches": 46,
+        "unavailableChecks": 162
+      },
+      "provider": {
+        "rpcRequests": 1266,
+        "httpTimeouts": 603,
+        "rollingStartsPerMinute": 58,
+        "primaryCooldownUntil": "2026-10-30T00:03:48.030Z"
+      },
+      "holdingRefusals": [
+        "Recorded holding-pricing refusals in this run: HELD_PRICING_ABORTED:6, HELD_PRICING_PROVIDER_TIMEOUT:6, HELD_PRICING_PROVIDER_COOLDOWN:22."
+      ],
+      "resources": {
+        "sampleAt": "2026-10-30T00:11:27.590Z",
+        "cpuOneCoreFraction": 0.1539007599013638,
+        "rssBytes": 392187904,
+        "availableMemoryBytes": 6871240704,
+        "availableDiskBytes": 287375863808,
+        "eventLoopLagMs": 26.902527,
+        "state": "normal"
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 14066222,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "receivedAt": 1793319133791,
+      "sequence": "10822",
+      "times": {
+        "generatedAt": "2026-10-30T00:11:48.099Z",
+        "marketAt": null,
+        "reconciledAt": "2026-10-30T00:11:26.998Z",
+        "usefulProgressAt": "2026-10-30T00:11:26.998Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "unavailable",
+        "entries": "paused",
+        "reconciled": false,
+        "blocker": "POE_ENTRY_LIQUIDATION_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "degraded",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T00:11:27.012Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 68,
+        "breaches": 46,
+        "unavailableChecks": 172
+      },
+      "provider": {
+        "rpcRequests": 1269,
+        "httpTimeouts": 606,
+        "rollingStartsPerMinute": 38,
+        "primaryCooldownUntil": "2026-10-30T00:11:48.450Z"
+      },
+      "holdingRefusals": [
+        "Recorded holding-pricing refusals in this run: HELD_PRICING_ABORTED:6, HELD_PRICING_PROVIDER_TIMEOUT:8, HELD_PRICING_PROVIDER_COOLDOWN:30.",
+        "Holding-pricing refusal at 2026-10-30T00:11:47.553Z: HELD_PRICING_PROVIDER_COOLDOWN. This is not a completed protection evaluation."
+      ],
+      "resources": {
+        "sampleAt": "2026-10-30T00:11:47.837Z",
+        "cpuOneCoreFraction": 0.13055235539856672,
+        "rssBytes": 393175040,
+        "availableMemoryBytes": 6860726272,
+        "availableDiskBytes": 287375646720,
+        "eventLoopLagMs": 26.869759,
+        "state": "normal"
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 14230875,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "receivedAt": 1793319149004,
+      "sequence": "10823",
+      "times": {
+        "generatedAt": "2026-10-30T00:12:14.468Z",
+        "marketAt": "2026-10-30T00:12:13.000Z",
+        "reconciledAt": "2026-10-30T00:12:13.954Z",
+        "usefulProgressAt": "2026-10-30T00:12:13.954Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T00:12:13.969Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 68,
+        "breaches": 47,
+        "unavailableChecks": 183
+      },
+      "provider": {
+        "rpcRequests": 1277,
+        "httpTimeouts": 607,
+        "rollingStartsPerMinute": 21,
+        "primaryCooldownUntil": "2026-10-30T00:12:10.635Z"
+      },
+      "holdingRefusals": [
+        "Recorded holding-pricing refusals in this run: HELD_PRICING_ABORTED:6, HELD_PRICING_PROVIDER_TIMEOUT:9, HELD_PRICING_PROVIDER_COOLDOWN:40."
+      ],
+      "resources": {
+        "sampleAt": "2026-10-30T00:12:13.602Z",
+        "cpuOneCoreFraction": 0.09858707794495043,
+        "rssBytes": 392126464,
+        "availableMemoryBytes": 6859395072,
+        "availableDiskBytes": 287375478784,
+        "eventLoopLagMs": 26.820607,
+        "state": "normal"
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 14299382,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "receivedAt": 1793319164297,
+      "sequence": "10824",
+      "times": {
+        "generatedAt": "2026-10-30T00:12:29.515Z",
+        "marketAt": "2026-10-30T00:12:27.000Z",
+        "reconciledAt": "2026-10-30T00:12:28.139Z",
+        "usefulProgressAt": "2026-10-30T00:12:28.139Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T00:12:28.154Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 68,
+        "breaches": 47,
+        "unavailableChecks": 183
+      },
+      "provider": {
+        "rpcRequests": 1293,
+        "httpTimeouts": 607,
+        "rollingStartsPerMinute": 26,
+        "primaryCooldownUntil": "2026-10-30T00:12:10.635Z"
+      },
+      "holdingRefusals": [
+        "Recorded holding-pricing refusals in this run: HELD_PRICING_ABORTED:6, HELD_PRICING_PROVIDER_TIMEOUT:9, HELD_PRICING_PROVIDER_COOLDOWN:40."
+      ],
+      "resources": {
+        "sampleAt": "2026-10-30T00:12:29.457Z",
+        "cpuOneCoreFraction": 0.09923005274190276,
+        "rssBytes": 392359936,
+        "availableMemoryBytes": 6858555392,
+        "availableDiskBytes": 287383457792,
+        "eventLoopLagMs": 26.820607,
+        "state": "normal"
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 6172868,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "receivedAt": 1793319179463,
+      "sequence": "10825",
+      "times": {
+        "generatedAt": "2026-10-30T00:12:44.517Z",
+        "marketAt": "2026-10-30T00:12:43.000Z",
+        "reconciledAt": "2026-10-30T00:12:44.500Z",
+        "usefulProgressAt": "2026-10-30T00:12:44.500Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T00:12:44.514Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 68,
+        "breaches": 48,
+        "unavailableChecks": 184
+      },
+      "provider": {
+        "rpcRequests": 1306,
+        "httpTimeouts": 608,
+        "rollingStartsPerMinute": 37,
+        "primaryCooldownUntil": "2026-10-30T00:12:33.581Z"
+      },
+      "holdingRefusals": [
+        "Recorded holding-pricing refusals in this run: HELD_PRICING_ABORTED:6, HELD_PRICING_PROVIDER_TIMEOUT:9, HELD_PRICING_PROVIDER_COOLDOWN:41."
+      ],
+      "resources": {
+        "sampleAt": "2026-10-30T00:12:43.972Z",
+        "cpuOneCoreFraction": 0.11844840218106926,
+        "rssBytes": 393801728,
+        "availableMemoryBytes": 6877298688,
+        "availableDiskBytes": 287382683648,
+        "eventLoopLagMs": 26.820607,
+        "state": "normal"
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 6831296,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    },
+    {
+      "receivedAt": 1793319194752,
+      "sequence": "10826",
+      "times": {
+        "generatedAt": "2026-10-30T00:12:59.567Z",
+        "marketAt": "2026-10-30T00:12:58.000Z",
+        "reconciledAt": "2026-10-30T00:12:58.585Z",
+        "usefulProgressAt": "2026-10-30T00:12:58.585Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T00:12:58.599Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 68,
+        "breaches": 48,
+        "unavailableChecks": 184
+      },
+      "provider": {
+        "rpcRequests": 1316,
+        "httpTimeouts": 608,
+        "rollingStartsPerMinute": 46,
+        "primaryCooldownUntil": "2026-10-30T00:12:33.581Z"
+      },
+      "holdingRefusals": [
+        "Recorded holding-pricing refusals in this run: HELD_PRICING_ABORTED:6, HELD_PRICING_PROVIDER_TIMEOUT:9, HELD_PRICING_PROVIDER_COOLDOWN:41."
+      ],
+      "resources": {
+        "sampleAt": "2026-10-30T00:12:58.603Z",
+        "cpuOneCoreFraction": 0.1407188453926403,
+        "rssBytes": 395464704,
+        "availableMemoryBytes": 6866604032,
+        "availableDiskBytes": 287382343680,
+        "eventLoopLagMs": 26.836991,
+        "state": "normal"
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 7073525,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      }
+    }
+  ],
+  "rootCauseAttribution": "Current-run holding timeout and cooldown refusal counts increased exactly with unavailable checks; precise physical request causality requires source/RPC evidence, correlation alone is insufficient.",
+  "financialControlsChanged": false,
+  "serviceControlOperations": 0
+}

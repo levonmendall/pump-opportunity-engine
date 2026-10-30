@@ -1,0 +1,49 @@
+✔ independent: reorder really makes rent precede the final coherent SDK quote (113.161123ms)
+✔ independent: rent changes between the two sizes refuse before a market quote (17.488438ms)
+✔ independent: malformed current rent 0 cannot authorize a quote (16.134826ms)
+✔ independent: malformed current rent -1 cannot authorize a quote (16.694604ms)
+✔ independent: malformed current rent NaN cannot authorize a quote (15.985074ms)
+✔ independent: malformed current rent Infinity cannot authorize a quote (25.179009ms)
+✔ independent: malformed current rent 1.5 cannot authorize a quote (21.587404ms)
+✔ independent: malformed current rent 9007199254740992 cannot authorize a quote (22.34583ms)
+✔ independent: final base account-size change refuses after freshly read rent (25.894137ms)
+✔ independent: final quote account-size change refuses after freshly read rent (24.865645ms)
+✔ independent: final actual SDK ownership corruption at dependency 0 cannot use prepared rent (19.832406ms)
+✔ independent: final actual SDK ownership corruption at dependency 2 cannot use prepared rent (18.213221ms)
+✔ independent: final actual SDK ownership corruption at dependency 3 cannot use prepared rent (21.994677ms)
+✔ independent: final actual SDK ownership corruption at dependency 5 cannot use prepared rent (26.887475ms)
+✔ independent: post-evidence age cannot retain a final entry snapshot (23.611479ms)
+✔ independent: post-evidence floor cannot retain a final entry snapshot (23.818105ms)
+✔ independent: post-evidence invalidate cannot retain a final entry snapshot (20.193821ms)
+✔ independent: post-evidence abort cannot retain a final entry snapshot (22.160521ms)
+✔ independent: changed expected deposit refuses before spending any RPC capacity (12.755845ms)
+✔ independent: mutating a returned preparation clone cannot change internal required rent (16.81427ms)
+✔ actual completion accounting separates observed current-run maxima from retained historical failures (3.518837ms)
+✔ fresh final market state remains usable under ancillary rent pacing and active native slot floors (97.660413ms)
+ℹ {"scope":"OFFLINE actual SDK/PilotMarket/PilotRpc paced calls and synthetic400ms native slot floors; not live-cause proof","result":"fresh quote","activityCount":1,"calls":[{"method":"getMinimumBalanceForRentExemption","at":1793043737684},{"method":"getMinimumBalanceForRentExemption","at":1793043737934},{"method":"getMultipleAccounts","at":1793043738184}],"failure":null,"providerRequests":0}
+✔ entry quote failure facts distinguish local admission, rent failure and unknown errors without retaining provider text (17.222985ms)
+✔ entry quote caller cancellation has one bounded fact and keeps the physical continuation owned (19.644377ms)
+✔ entry quote local timeout has one bounded fact and keeps the physical continuation owned (44.398904ms)
+✔ fresh supported account lengths and current rent define deposits; every entry repeats rent checks (35.748499ms)
+✔ real decoder quotes complete a disposable delayed buy and full-size exit with rent retained once (68.166318ms)
+✔ changed rent, unknown account plan, cancellation and invalidation refuse entry without changing account (26.072601ms)
+✔ post-delay buy source carries its actual slot and refuses changed rent or delayed evidence (47.209108ms)
+✔ a newer known flow slot arriving during entry pricing prevents an older result from being used (18.007567ms)
+✔ candidate-only support uses unchanged current state validation without rent or an entry plan (13.763306ms)
+✔ candidate-only support retains mint, pool, vault and fee-owner checks (16.566203ms)
+✔ candidate-only support refuses stale records, invalidation, newer slot floors and cancellation (33.201769ms)
+✔ coherent entry preparation and quote leave held dependency links warm and read every rent again (21.566923ms)
+✔ a slow final recorder cannot refresh an earlier Clock buy into a valid decision or change accounting (17.786279ms)
+✔ a timed-out uncooperative buy read retains market ownership until physical work settles (40.847348ms)
+✔ entry preparation can yield between real SDK reads to fresh whole-inventory pricing without reentrant entry work (90.021924ms)
+✔ whole preparation timeout retains uncooperative physical ownership and cannot publish a late plan (40.97735ms)
+✔ cancellation at a preparation yield prevents the next physical request and cannot create a plan (10.310437ms)
+✔ an unrelated candidate bank cannot raise a holding slot floor; the holding own known floor remains mandatory (62.846982ms)
+ℹ tests 40
+ℹ suites 0
+ℹ pass 40
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2072.683662

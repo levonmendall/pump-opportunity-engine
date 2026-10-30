@@ -1,0 +1,586 @@
+{
+  "frozenAt": "2026-10-30T01:55:51.025998+00:00",
+  "analysisWindowMinutes": 48,
+  "anchorSourceAt": "2026-10-30T01:07:19.665Z",
+  "targetEndSourceAt": "2026-10-30T01:55:19.665000+00:00",
+  "firstSourceAt": "2026-10-30T01:07:19.665Z",
+  "lastSourceAt": "2026-10-30T01:55:05.733Z",
+  "actualObservedSourceSeconds": 2866.068,
+  "source": {
+    "release": "5675961a0ad05df508eec6928644c9e403be0811",
+    "strategy": "adaptive-momentum-v2-paper-v1"
+  },
+  "account": {
+    "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "initialUsd": 1000
+  },
+  "run": {
+    "id": "native-paper-20261030010446598",
+    "startedAt": "2026-10-30T01:04:46.598Z",
+    "mode": "persistent-paper",
+    "configurationSha256": "ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db",
+    "strategyVersion": "adaptive-momentum-v2-paper-v1"
+  },
+  "observations": {
+    "rows": 189,
+    "validNewSourceRows": 189,
+    "uniqueSourceSnapshots": 185,
+    "readUnavailable": 0,
+    "maximumPollGapMs": 15460,
+    "sha256": "e496c83847cc5ace9253dd6cbdfc97939e79da56c365d11d5fee19034fef8de1",
+    "sourceFiles": [
+      {
+        "path": "detached-after-0006/rolling-supervision/material-transitions.ndjson",
+        "bytes": 7819106,
+        "sha256": "08cbed7df3da394464c294f614b00f7ff7def3c3b77e208ff39f7fb3073339a5",
+        "partialLinesSkipped": 0
+      },
+      {
+        "path": "detached-after-0006/rolling-supervision/rotation-receipts.ndjson",
+        "bytes": 231,
+        "sha256": "6173175e9cf9b01f7cb544f8f9e5d0463014645b8c6ca1249d262cd09152771b",
+        "partialLinesSkipped": 0
+      },
+      {
+        "path": "detached-after-0006/rolling-supervision/routine-0.ndjson",
+        "bytes": 400475,
+        "sha256": "7ba5259127c31a6d0bf8a92b1a3132208fbd2c573fd78a61f8f04bd32af81819",
+        "partialLinesSkipped": 0
+      },
+      {
+        "path": "detached-after-0006/rolling-supervision/routine-1.ndjson",
+        "bytes": 1040987,
+        "sha256": "3f7999e7a3b123a66262170c8b29e4b082afe88e192a12900eba2186729c466a",
+        "partialLinesSkipped": 0
+      },
+      {
+        "path": "detached-after-0006/rolling-supervision/routine-2.ndjson",
+        "bytes": 1046448,
+        "sha256": "2ece40a4a1e412214c786c5afead2c781dab130c722ea5563de94a35b28c0607",
+        "partialLinesSkipped": 0
+      },
+      {
+        "path": "detached-after-0006/rolling-supervision/routine-3.ndjson",
+        "bytes": 1047523,
+        "sha256": "69a582064d5a2f2d455b318fd6da541717a1bf4d6e27ded8bb20321b5839c606",
+        "partialLinesSkipped": 0
+      },
+      {
+        "path": "detached-after-0006/rolling-supervision/routine-4.ndjson",
+        "bytes": 1037868,
+        "sha256": "dd6012a1391a664d1dd0191c1eba3a4a821777da8e936f6b972834b730d3eabe",
+        "partialLinesSkipped": 0
+      },
+      {
+        "path": "detached-after-0006/rolling-supervision/routine-5.ndjson",
+        "bytes": 1026533,
+        "sha256": "31b08cfb6c5a8df303915bec984c1df50249fbacd5d4a090c76a83beea329e9d",
+        "partialLinesSkipped": 0
+      },
+      {
+        "path": "detached-after-0006/rolling-supervision/routine-6.ndjson",
+        "bytes": 1039426,
+        "sha256": "84a2e71e616cb615828da2073520e3d0b4a5a0b9504b7474a95be0e1a34b3098",
+        "partialLinesSkipped": 0
+      },
+      {
+        "path": "detached-after-0006/rolling-supervision/routine-7.ndjson",
+        "bytes": 1042420,
+        "sha256": "8ec37a01055b6f6a5efe07ac326205f3f5b3a1e89dbf521c8da85e809c0d3e31",
+        "partialLinesSkipped": 0
+      }
+    ]
+  },
+  "deltas": {
+    "candidates": {
+      "migrationsReceived": 29,
+      "promoted": 83,
+      "repromoted": 62,
+      "demoted": 83,
+      "completeWindows": 140,
+      "auditedWindows": 140,
+      "uniqueEvaluated": 60,
+      "predictiveAssessments": 140,
+      "predictivePasses": 70,
+      "predictiveFailures": 70
+    },
+    "quality": {
+      "qualityGaps": 12,
+      "auditUnavailable": 13,
+      "auditUnusable": 7,
+      "decisionDeadlineMisses": 50
+    },
+    "provider": {
+      "rpcRequests": 2825,
+      "rpcResponseBytes": 164986802,
+      "nativeStreamBytes": 24926237,
+      "broadWatchBytes": 3358288496,
+      "httpTimeouts": 7,
+      "httpErrors": 0,
+      "throttles": 0
+    },
+    "protection": {
+      "breaches": 2,
+      "unavailableChecks": 12
+    }
+  },
+  "resourceMeasurements": {
+    "cpuOneCoreFraction": {
+      "min": 0.09776964007830932,
+      "max": 0.3085267711366582,
+      "median": 0.1694935014712064
+    },
+    "rssBytes": {
+      "min": 376090624,
+      "max": 421580800,
+      "median": 406900736
+    },
+    "availableMemoryBytes": {
+      "min": 6706872320,
+      "max": 6941900800,
+      "median": 6833741824
+    },
+    "availableDiskBytes": {
+      "min": 286529613824,
+      "max": 286786945024,
+      "median": 286671613952
+    },
+    "eventLoopLagMs": {
+      "min": 26.509311,
+      "max": 28.016639,
+      "median": 27.803647
+    }
+  },
+  "applicationNetworkMeasurements": {
+    "rpcResponseBytes": {
+      "bytesDelta": 164986802,
+      "meanApplicationBytesPerSecond": 57565.55741175715,
+      "maximumSampleIntervalApplicationBytesPerSecond": 427657.30843528657
+    },
+    "nativeStreamBytes": {
+      "bytesDelta": 24926237,
+      "meanApplicationBytesPerSecond": 8697.015213874896,
+      "maximumSampleIntervalApplicationBytesPerSecond": 422676.4971023825
+    },
+    "broadWatchBytes": {
+      "bytesDelta": 3358288496,
+      "meanApplicationBytesPerSecond": 1171740.6900324766,
+      "maximumSampleIntervalApplicationBytesPerSecond": 3693482.7770004664
+    }
+  },
+  "rpcRollingStartsMin": 38,
+  "rpcRollingStartsMax": 85,
+  "maximumProtectionAgeAtSourceMs": 1617,
+  "maximumReconciliationAgeAtSourceMs": 1631,
+  "allCaptureDiscoveryWatchConnected": true,
+  "allEvidenceAndResourceAdmissionsHealthy": true,
+  "transitions": [
+    {
+      "sourceAt": "2026-10-30T01:07:19.665Z",
+      "sequence": "11038",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:07:19.081Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 72,
+        "unavailableChecks": 233
+      },
+      "httpTimeouts": 633,
+      "rpcRollingStarts": 63,
+      "capture": true,
+      "heldRefusals": []
+    },
+    {
+      "sourceAt": "2026-10-30T01:07:34.700Z",
+      "sequence": "11039",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:07:33.239Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 72,
+        "unavailableChecks": 233
+      },
+      "httpTimeouts": 633,
+      "rpcRollingStarts": 58,
+      "capture": true,
+      "heldRefusals": []
+    },
+    {
+      "sourceAt": "2026-10-30T01:08:35.195Z",
+      "sequence": "11043",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:08:35.136Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 72,
+        "unavailableChecks": 233
+      },
+      "httpTimeouts": 634,
+      "rpcRollingStarts": 47,
+      "capture": true,
+      "heldRefusals": []
+    },
+    {
+      "sourceAt": "2026-10-30T01:09:05.711Z",
+      "sequence": "11045",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:09:04.629Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 72,
+        "unavailableChecks": 233
+      },
+      "httpTimeouts": 635,
+      "rpcRollingStarts": 58,
+      "capture": true,
+      "heldRefusals": []
+    },
+    {
+      "sourceAt": "2026-10-30T01:09:35.842Z",
+      "sequence": "11047",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:09:35.040Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 72,
+        "unavailableChecks": 233
+      },
+      "httpTimeouts": 636,
+      "rpcRollingStarts": 50,
+      "capture": true,
+      "heldRefusals": []
+    },
+    {
+      "sourceAt": "2026-10-30T01:10:53.529Z",
+      "sequence": "11052",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:10:52.825Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 72,
+        "unavailableChecks": 233
+      },
+      "httpTimeouts": 637,
+      "rpcRollingStarts": 67,
+      "capture": true,
+      "heldRefusals": []
+    },
+    {
+      "sourceAt": "2026-10-30T01:25:45.511Z",
+      "sequence": "11109",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_PROVIDER_UNAVAILABLE"
+      },
+      "protection": {
+        "state": "degraded",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:25:45.508Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 73,
+        "unavailableChecks": 240
+      },
+      "httpTimeouts": 640,
+      "rpcRollingStarts": 74,
+      "capture": true,
+      "heldRefusals": [
+        "Recorded holding-pricing refusals in this run: HELD_PRICING_PROVIDER_TIMEOUT:2, HELD_PRICING_DISPATCH_UNAVAILABLE:5."
+      ]
+    },
+    {
+      "sourceAt": "2026-10-30T01:26:00.524Z",
+      "sequence": "11110",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:25:59.682Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 73,
+        "unavailableChecks": 240
+      },
+      "httpTimeouts": 640,
+      "rpcRollingStarts": 76,
+      "capture": true,
+      "heldRefusals": [
+        "Recorded holding-pricing refusals in this run: HELD_PRICING_PROVIDER_TIMEOUT:2, HELD_PRICING_DISPATCH_UNAVAILABLE:5."
+      ]
+    },
+    {
+      "sourceAt": "2026-10-30T01:26:47.443Z",
+      "sequence": "11113",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:26:47.196Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 73,
+        "unavailableChecks": 240
+      },
+      "httpTimeouts": 640,
+      "rpcRollingStarts": 52,
+      "capture": true,
+      "heldRefusals": [
+        "Recorded holding-pricing refusals in this run: HELD_PRICING_PROVIDER_TIMEOUT:2, HELD_PRICING_DISPATCH_UNAVAILABLE:5."
+      ]
+    },
+    {
+      "sourceAt": "2026-10-30T01:47:44.118Z",
+      "sequence": "11194",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED"
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:47:43.509Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 74,
+        "unavailableChecks": 245
+      },
+      "httpTimeouts": 640,
+      "rpcRollingStarts": 84,
+      "capture": true,
+      "heldRefusals": [
+        "Recorded holding-pricing refusals in this run: HELD_PRICING_PROVIDER_TIMEOUT:2, HELD_PRICING_DISPATCH_UNAVAILABLE:10."
+      ]
+    },
+    {
+      "sourceAt": "2026-10-30T01:48:44.241Z",
+      "sequence": "11198",
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T01:48:43.343Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 70,
+        "breaches": 74,
+        "unavailableChecks": 245
+      },
+      "httpTimeouts": 640,
+      "rpcRollingStarts": 56,
+      "capture": true,
+      "heldRefusals": [
+        "Recorded holding-pricing refusals in this run: HELD_PRICING_PROVIDER_TIMEOUT:2, HELD_PRICING_DISPATCH_UNAVAILABLE:10."
+      ]
+    }
+  ],
+  "latestStatus": {
+    "runtime": "running",
+    "market": "observing",
+    "entries": "enabled",
+    "reconciled": true,
+    "blocker": null
+  },
+  "latestCandidates": {
+    "migrationsReceived": 598,
+    "verifiedOrigins": 174,
+    "known": 174,
+    "watch": 77,
+    "eligible": 54,
+    "deepActive": 4,
+    "deepMaximum": 4,
+    "queued": 49,
+    "promoted": 4938,
+    "repromoted": 4450,
+    "demoted": 4925,
+    "completeWindows": 2652,
+    "auditedWindows": 2674,
+    "uniqueEvaluated": 64,
+    "uniqueAudited": null,
+    "predictiveAssessments": 555,
+    "predictivePasses": 260,
+    "predictiveFailures": 295,
+    "predictiveUnavailable": 0,
+    "waitMeanMs": null,
+    "waitMaximumMs": 2348801,
+    "olderSelected": 24
+  },
+  "latestQuality": {
+    "captureConnected": true,
+    "qualityGaps": 1442,
+    "auditUnavailable": 144,
+    "auditUnusable": 208,
+    "decisionDeadlineMisses": 404,
+    "enrichmentDeadlineFailures": 0,
+    "incompleteExclusions": 1442,
+    "capacityExclusions": 0,
+    "structuralExclusions": 56
+  },
+  "latestFinancialFunnel": {
+    "discovered": 91,
+    "supported": 91,
+    "sufficientlyObserved": 29,
+    "evaluated": 29,
+    "qualified": 0,
+    "attempted": 0,
+    "paperFilled": 0,
+    "exited": 0,
+    "reconciled": 1622
+  },
+  "latestProtection": {
+    "state": "monitored",
+    "targetCadenceMs": 2000,
+    "completedEvaluationBoundaryMs": 4000,
+    "lastCompletedAt": "2026-10-30T01:55:04.293Z",
+    "maximumCompletedGapMs": 89426,
+    "maximumQuoteAgeAtUseMs": 70,
+    "breaches": 74,
+    "unavailableChecks": 245
+  },
+  "latestAdmission": {
+    "financialProjectionReady": true,
+    "supervisedNewRiskAllowed": true,
+    "candidateResourceAdmissionAllowed": true,
+    "evidenceAdmissionAllowed": true,
+    "evidencePressureReasonCode": null,
+    "evidenceDiagnosticBytes": 5729216,
+    "evidenceDiagnosticLimitBytes": 134217728,
+    "evidenceRequiresCriticalRecovery": false,
+    "evidenceRefusedRecords": 0,
+    "sourceRecoveryGeneration": 0,
+    "sourceRecoveryFailures": 0,
+    "sourceRecoveryReasonCode": null,
+    "sourceRecoveryRetryAt": null,
+    "sourceRecoveryClosingSettled": false,
+    "sourceRestartRequired": false,
+    "proofPreparationState": "complete"
+  },
+  "latestPositions": [
+    {
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "quantity": "65278155",
+      "enteredAt": "2026-10-29T22:23:36.537Z",
+      "entryCostUsd": 49.708013,
+      "netLiquidationUsd": 57.670015,
+      "executionCostsUsd": 0.00068,
+      "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+    }
+  ],
+  "latestPendingOrders": [],
+  "latestBalances": {
+    "cashSol": "9.391335448",
+    "reservedSol": "0",
+    "equitySol": "10.028484048",
+    "equityUsd": 938.666107,
+    "realizedUsd": -3.574223,
+    "unrealizedUsd": 9.830109,
+    "tradingPnlUsd": 6.255886,
+    "economicPnlUsd": null,
+    "positionCostUsd": 49.708013,
+    "markedExposureUsd": 57.670015,
+    "drawdownUsd": null,
+    "executionCostsUsd": null,
+    "operatingCostsUsd": null,
+    "passiveSolEquityUsd": 932.410221,
+    "solPriceUsd": 93.6
+  },
+  "limitations": [
+    "This is a finite analysis window; the autonomous EC2 PAPER service continues beyond it.",
+    "Cloud polls actual original Render snapshots every15seconds. Source-time completion freshness is not an individual completed-protection-gap distribution.",
+    "Application stream counters are measured separately and must not be summed or called EC2 wire bytes. Host interface counters and physical RPC latency distribution are unavailable in this public projection.",
+    "CPU fraction/RSS are runtime measurements; available memory/disk describe host headroom. No host aggregate CPU or disk throughput is inferred.",
+    "The controlled deployment restart was separately verified. No deliberate reconnect, provider429, second holding or classified high-volume burst has been exercised in this window.",
+    "Retained historical failure totals and original financial records are preserved. Current-run financial qualifications/fills are separate from overlapping audited candidate windows.",
+    "Quiet versus burst market regimes are not assigned using arbitrary thresholds. Actual rolling RPC starts and application byte rates are reported.",
+    "No financial controls, service restart or extra provider RPC performed by this observer. Short forward windows do not establish24hour reliability or profitability."
+  ]
+}

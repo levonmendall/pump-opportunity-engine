@@ -1,0 +1,221 @@
+{
+  "frozenAt": "2026-10-30T01:30:46.763510+00:00",
+  "sourceFiles": [
+    {
+      "path": "host-40984080357.json",
+      "sha256": "cf1e9a7bae7757db9d5410ceeef84aa6a24df69dd461d277ac454aa1ad502f65"
+    },
+    {
+      "path": "host-40986088676.json",
+      "sha256": "caf8b3c1d417d9cccdf8f87ae699c1260ea248c73a4ce229b7ff05764ade2606"
+    }
+  ],
+  "sampleBefore": "2026-10-30T01:09:05.875000+00:00",
+  "sampleAfter": "2026-10-30T01:28:52.590000+00:00",
+  "elapsedSeconds": 1186.715,
+  "sameOriginalAccountAnd567Source": true,
+  "sameMainPid": "2479299",
+  "sameThreeCgroupPids": [
+    2479299,
+    2479302,
+    2479303
+  ],
+  "restartsBefore": "0",
+  "restartsAfter": "0",
+  "currentPublicSource": {
+    "sha256": "b78fbc62df66374806963de2d08775fae95b71226c69364aa3f0f309b81f27a5",
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "release": "5675961a0ad05df508eec6928644c9e403be0811",
+    "strategy": "adaptive-momentum-v2-paper-v1",
+    "generatedAt": "2026-10-30T01:28:48.705Z",
+    "entriesDisabled": false,
+    "flowVerified": false,
+    "mode": "PAPER",
+    "liveTrading": false,
+    "blocker": null,
+    "shortlistCount": 4,
+    "feedConnected": true,
+    "lastUsefulProgressAt": "2026-10-30T01:28:47.126Z",
+    "lastReconciledAt": "2026-10-30T01:28:47.126Z",
+    "lastMigrationReceivedAt": "2026-10-30T01:28:40.379Z",
+    "reportingConfigured": true
+  },
+  "currentAcceptedSource": {
+    "source": {
+      "commit": "5675961a0ad05df508eec6928644c9e403be0811",
+      "sha256": "157c34efd86bc0b5ae78aa268afe5afc7d3a4c4db8edcbb181445cad92ccb6ae"
+    },
+    "runId": "native-paper-20261030010446598",
+    "sequence": "11120",
+    "sourceAt": "2026-10-30T01:28:33.684000+00:00",
+    "acknowledgedAt": "2026-10-30T01:28:40.736000+00:00",
+    "observedBySupervisorAt": "2026-10-30T01:28:40.737000+00:00"
+  },
+  "serviceCgroupCpu": {
+    "deltas": {
+      "usage_usec": 221881225,
+      "user_usec": 210556221,
+      "system_usec": 11325003,
+      "nr_throttled": 0,
+      "throttled_usec": 0
+    },
+    "meanOneCpuFraction": 0.18697094500364453,
+    "quota": {
+      "available": true,
+      "unlimited": true,
+      "quotaUsec": null,
+      "periodUsec": 100000,
+      "equivalentCpuCores": null
+    },
+    "weight": {
+      "available": true,
+      "value": 100
+    }
+  },
+  "serviceCgroupIo": {
+    "deltas": {
+      "rbytes": 4096,
+      "wbytes": 1803780096,
+      "rios": 1,
+      "wios": 21338,
+      "dbytes": 0,
+      "dios": 0
+    },
+    "meanReadBytesPerSecond": 3.4515448106748465,
+    "meanWriteBytesPerSecond": 1519977.4975457462,
+    "meanWriteOperationsPerSecond": 17.980728313032195
+  },
+  "serviceCgroupMemory": {
+    "before": {
+      "current": {
+        "available": true,
+        "bytes": 503218176,
+        "unlimited": false
+      },
+      "max": {
+        "available": true,
+        "bytes": 3221225472,
+        "unlimited": false
+      },
+      "peak": {
+        "available": true,
+        "bytes": 511852544,
+        "unlimited": false
+      }
+    },
+    "after": {
+      "current": {
+        "available": true,
+        "bytes": 719007744,
+        "unlimited": false
+      },
+      "max": {
+        "available": true,
+        "bytes": 3221225472,
+        "unlimited": false
+      },
+      "peak": {
+        "available": true,
+        "bytes": 743288832,
+        "unlimited": false
+      }
+    },
+    "memoryEvents": {
+      "available": true,
+      "low": 0,
+      "high": 0,
+      "max": 0,
+      "oom": 0,
+      "oom_kill": 0,
+      "oom_group_kill": 0,
+      "sock_throttled": 0
+    }
+  },
+  "ownedProcessRoles": [
+    {
+      "pid": 2479299,
+      "role": "original-supervisor",
+      "cpuSecondsDelta": 10.41,
+      "rssBefore": 31494144,
+      "rssAfter": 31895552,
+      "rssDelta": 401408
+    },
+    {
+      "pid": 2479302,
+      "role": "native-source",
+      "cpuSecondsDelta": 206.21,
+      "rssBefore": 415936512,
+      "rssAfter": 405159936,
+      "rssDelta": -10776576
+    },
+    {
+      "pid": 2479303,
+      "role": "original-publisher",
+      "cpuSecondsDelta": 5.14,
+      "rssBefore": 107085824,
+      "rssAfter": 168181760,
+      "rssDelta": 61095936
+    }
+  ],
+  "hostMemoryBefore": {
+    "available": true,
+    "totalBytes": 8153255936,
+    "availableBytes": 6813990912
+  },
+  "hostMemoryAfter": {
+    "available": true,
+    "totalBytes": 8153255936,
+    "availableBytes": 6744829952
+  },
+  "rootFilesystemBefore": {
+    "available": true,
+    "capacityBytes": 331712798720,
+    "availableBytes": 286780993536
+  },
+  "rootFilesystemAfter": {
+    "available": true,
+    "capacityBytes": 331712798720,
+    "availableBytes": 286677377024
+  },
+  "rootAvailableBytesDelta": -103616512,
+  "hostAggregateNetwork": {
+    "scope": "HOST-AGGREGATE, includes unrelated applications/admin runner; not POE-attributable",
+    "interfaces": [
+      {
+        "interface": "lo",
+        "deltas": {
+          "receivedBytes": 188552,
+          "receivedPackets": 1636,
+          "transmittedBytes": 188552,
+          "transmittedPackets": 1636
+        },
+        "receivedBytesPerSecond": 158.88566336483487,
+        "transmittedBytesPerSecond": 158.88566336483487
+      },
+      {
+        "interface": "ens5",
+        "deltas": {
+          "receivedBytes": 1434016690,
+          "receivedPackets": 1104801,
+          "transmittedBytes": 29699920,
+          "transmittedPackets": 326880
+        },
+        "receivedBytesPerSecond": 1208391.8126930224,
+        "transmittedBytesPerSecond": 25027.003113637227
+      }
+    ]
+  },
+  "inspectionActions": {
+    "financialDatabaseOpened": false,
+    "credentialReads": 0,
+    "serviceChanges": 0,
+    "providerRequests": 0
+  },
+  "limitations": [
+    "One pair of actual kernel counters, not an I/O latency or per-request latency distribution.",
+    "Cgroup memory increased; two samples do not establish a leak. Existing memory guards/events and headroom are reported.",
+    "No host-aggregate CPU utilization inferred from service CPU. Network is explicitly host aggregate.",
+    "No stop, reset, service restart, credential content or financial database access performed."
+  ]
+}
