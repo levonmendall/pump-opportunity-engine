@@ -1,0 +1,45 @@
+/** Versioned deterministic PAPER landing scenario. No signer, RPC, random
+ * success probability or claim that an unsigned transaction landed on-chain. */
+import {createHash} from 'node:crypto';
+export const PAPER_EXECUTION_MODEL_VERSION='paper-chain-conditioned-v1' as const;
+export const PAPER_EXECUTION_POLICY=Object.freeze({version:PAPER_EXECUTION_MODEL_VERSION,observationSamples:32,nominalSlotDurationMs:400,propagationScenarioMs:250,inclusionScenarioSlots:2,computeUnitLimitScenario:200000,computeUnitPriceMicroLamportsScenario:'10000',baseFeePerSignatureLamportsScenario:'5000',routingTipLamports:'0',maximumDecisionLifetimeMs:5000,minimumDecisionDelayMs:500,maximumLandingQuoteAgeMs:2000,blockhashValidity:'UNOBSERVED; bounded decision lifetime is not a measured blockhash lifetime',meaning:'DETERMINISTIC_PAPER_SCENARIO_NOT_OBSERVED_CHAIN_LANDING',feeBasis:'DECLARED_SCENARIO_NOT_RPC_FEE_OR_COMPUTE_MEASUREMENT',simulation:'NOT_RUN_UNFUNDED_PAPER_ACCOUNT',historicalPolicy:'orders without executionModel retain original semantics'});
+const hash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
+export const PAPER_EXECUTION_POLICY_SHA256=hash(PAPER_EXECUTION_POLICY);
+export type PaperExecutionPlan={
+ version:typeof PAPER_EXECUTION_MODEL_VERSION;policySha256:string;constructionSha256:string;
+ plannedAt:number;decisionQuoteAt:number;sourceSlot:number;observedRpcMs:number;slotDurationMs:number;slotDurationBasis:'observed'|'scenario';
+ propagationMs:number;inclusionSlots:number;constructionMs:number;executeAt:number;expiresAt:number;
+ baseFeeLamports:string;priorityFeeLamports:string;routingTipLamports:string;computeUnitLimit:number;computeUnitPriceMicroLamports:string;
+};
+export type PaperExecutionLanding={version:typeof PAPER_EXECUTION_MODEL_VERSION;planSha256:string;constructionSha256:string;preparedAt:number;landingAt:number;sourceSlot:number;outcome:'scenario-landed';feeLamports:string};
+export type PaperExecutionAttempt={version:typeof PAPER_EXECUTION_MODEL_VERSION;planSha256:string;stage:'preflight-unsubmitted'|'scenario-landed';feeLamports:string;reasonCode:'LANDING_STATE_UNAVAILABLE'|'SCENARIO_LANDING_SUPPORTED'|'ORDER_EXPIRED_UNSUBMITTED'};
+const integer=(n:unknown):n is number=>Number.isSafeInteger(n)&&Number(n)>=0;
+const sha=(s:unknown):s is string=>typeof s==='string'&&/^[a-f0-9]{64}$/.test(s);
+const amount=(v:unknown):v is string=>typeof v==='string'&&/^(0|[1-9][0-9]{0,19})$/.test(v);
+const object=(v:unknown):v is Record<string,unknown>=>v!==null&&typeof v==='object'&&!Array.isArray(v);
+const exact=(v:Record<string,unknown>,keys:string)=>Object.keys(v).sort().join(',')===keys.split(',').sort().join(',');
+export function paperExecutionFee(plan:PaperExecutionPlan):string{return (BigInt(plan.baseFeeLamports)+BigInt(plan.priorityFeeLamports)+BigInt(plan.routingTipLamports)).toString();}
+export function paperExecutionPlanSha256(plan:PaperExecutionPlan):string{return hash(plan);}
+export function validatePaperExecutionPlan(value:unknown):value is PaperExecutionPlan{
+ if(!object(value)||!exact(value,'version,policySha256,constructionSha256,plannedAt,decisionQuoteAt,sourceSlot,observedRpcMs,slotDurationMs,slotDurationBasis,propagationMs,inclusionSlots,constructionMs,executeAt,expiresAt,baseFeeLamports,priorityFeeLamports,routingTipLamports,computeUnitLimit,computeUnitPriceMicroLamports')||value.version!==PAPER_EXECUTION_MODEL_VERSION||value.policySha256!==PAPER_EXECUTION_POLICY_SHA256||!sha(value.constructionSha256))return false;
+ for(const key of ['plannedAt','decisionQuoteAt','sourceSlot','observedRpcMs','slotDurationMs','propagationMs','inclusionSlots','constructionMs','executeAt','expiresAt','computeUnitLimit'])if(!integer(value[key]))return false;
+ for(const key of ['baseFeeLamports','priorityFeeLamports','routingTipLamports','computeUnitPriceMicroLamports'])if(!amount(value[key]))return false;
+ const p=value as PaperExecutionPlan,policy=PAPER_EXECUTION_POLICY;
+ return (p.slotDurationBasis==='observed'||p.slotDurationBasis==='scenario')&&p.slotDurationMs>=100&&p.slotDurationMs<=2000&&p.observedRpcMs<=10000&&p.constructionMs<=2000&&p.decisionQuoteAt<=p.plannedAt&&p.plannedAt-p.decisionQuoteAt<=2000&&p.propagationMs===policy.propagationScenarioMs&&p.inclusionSlots===policy.inclusionScenarioSlots&&p.computeUnitLimit===policy.computeUnitLimitScenario&&p.computeUnitPriceMicroLamports===policy.computeUnitPriceMicroLamportsScenario&&p.baseFeeLamports===policy.baseFeePerSignatureLamportsScenario&&p.routingTipLamports===policy.routingTipLamports&&BigInt(p.priorityFeeLamports)===(BigInt(p.computeUnitLimit)*BigInt(p.computeUnitPriceMicroLamports)+999999n)/1000000n&&p.expiresAt===p.plannedAt+policy.maximumDecisionLifetimeMs&&p.executeAt===p.plannedAt+Math.max(policy.minimumDecisionDelayMs,p.constructionMs+p.observedRpcMs+p.propagationMs+p.inclusionSlots*p.slotDurationMs)&&p.executeAt<p.expiresAt;
+}
+export function validatePaperExecutionLanding(value:unknown,plan:PaperExecutionPlan,at?:number):value is PaperExecutionLanding{
+ if(!validatePaperExecutionPlan(plan)||!object(value)||!exact(value,'version,planSha256,constructionSha256,preparedAt,landingAt,sourceSlot,outcome,feeLamports'))return false;
+ const q=value as PaperExecutionLanding;
+ return q.version===PAPER_EXECUTION_MODEL_VERSION&&q.planSha256===paperExecutionPlanSha256(plan)&&sha(q.constructionSha256)&&q.outcome==='scenario-landed'&&integer(q.preparedAt)&&integer(q.landingAt)&&integer(q.sourceSlot)&&q.sourceSlot>=plan.sourceSlot&&q.landingAt>=plan.executeAt&&q.preparedAt>=q.landingAt&&q.preparedAt<plan.expiresAt&&(at===undefined||integer(at)&&q.preparedAt<=at&&at<plan.expiresAt&&at-q.landingAt<=PAPER_EXECUTION_POLICY.maximumLandingQuoteAgeMs)&&q.feeLamports===paperExecutionFee(plan);
+}
+export function validatePaperExecutionAttempt(value:unknown,plan:PaperExecutionPlan):value is PaperExecutionAttempt{
+ if(!validatePaperExecutionPlan(plan)||!object(value)||!exact(value,'version,planSha256,stage,feeLamports,reasonCode'))return false;
+ const a=value as PaperExecutionAttempt;
+ return a.version===PAPER_EXECUTION_MODEL_VERSION&&a.planSha256===paperExecutionPlanSha256(plan)&&(a.stage==='preflight-unsubmitted'&&a.feeLamports==='0'&&['LANDING_STATE_UNAVAILABLE','ORDER_EXPIRED_UNSUBMITTED'].includes(a.reasonCode)||a.stage==='scenario-landed'&&a.feeLamports===paperExecutionFee(plan)&&a.reasonCode==='SCENARIO_LANDING_SUPPORTED');
+}
+export function planPaperExecution(input:{plannedAt:number;decisionQuoteAt:number;sourceSlot:number;constructionSha256:string;constructionMs:number;observedRpcMs:number;slotDurationMs?:number;slotDurationBasis?:'observed'|'scenario'}):PaperExecutionPlan|null{
+ const policy=PAPER_EXECUTION_POLICY,slot=input.slotDurationMs??policy.nominalSlotDurationMs,constructionMs=Math.ceil(input.constructionMs),observedRpcMs=Math.ceil(input.observedRpcMs),plannedAt=input.plannedAt;
+ const plan:PaperExecutionPlan={version:PAPER_EXECUTION_MODEL_VERSION,policySha256:PAPER_EXECUTION_POLICY_SHA256,constructionSha256:input.constructionSha256,plannedAt,decisionQuoteAt:input.decisionQuoteAt,sourceSlot:input.sourceSlot,observedRpcMs,slotDurationMs:slot,slotDurationBasis:input.slotDurationBasis??'scenario',propagationMs:policy.propagationScenarioMs,inclusionSlots:policy.inclusionScenarioSlots,constructionMs,executeAt:plannedAt+Math.max(policy.minimumDecisionDelayMs,constructionMs+observedRpcMs+policy.propagationScenarioMs+policy.inclusionScenarioSlots*slot),expiresAt:plannedAt+policy.maximumDecisionLifetimeMs,baseFeeLamports:policy.baseFeePerSignatureLamportsScenario,priorityFeeLamports:((BigInt(policy.computeUnitLimitScenario)*BigInt(policy.computeUnitPriceMicroLamportsScenario)+999999n)/1000000n).toString(),routingTipLamports:policy.routingTipLamports,computeUnitLimit:policy.computeUnitLimitScenario,computeUnitPriceMicroLamports:policy.computeUnitPriceMicroLamportsScenario};
+ return validatePaperExecutionPlan(plan)?plan:null;
+}
+export function executionAttempt(plan:PaperExecutionPlan,landed:boolean,expired=false):PaperExecutionAttempt{return {version:PAPER_EXECUTION_MODEL_VERSION,planSha256:paperExecutionPlanSha256(plan),stage:landed?'scenario-landed':'preflight-unsubmitted',feeLamports:landed?paperExecutionFee(plan):'0',reasonCode:landed?'SCENARIO_LANDING_SUPPORTED':expired?'ORDER_EXPIRED_UNSUBMITTED':'LANDING_STATE_UNAVAILABLE'};}
