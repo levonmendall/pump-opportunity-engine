@@ -1,0 +1,9 @@
+{
+  "checkedAt": "2026-10-30T05:30:03.552321+00:00",
+  "workflow": "/workspace/poe-paper-equity-execution-admin/.github/workflows/poe-original-cutover-refusal.yml",
+  "workflowSha256": "561626b080d7dd74f1ae72b9c3c37e24c5fab766ee5a367269914e6603c51164",
+  "realReaderSha256": "325786179e53b0fcef5bf0428f12e6a4255754c9d735d8595d465550ae49d326",
+  "cases": 5,
+  "pass": true,
+  "scope": "Execute actual registered PYOUTPUT body against disposable in-memory original snapshot and explicitly substituted diagnostic reader implementation; verified exact real reader separately. Includes unavailable/available merge, changed reader bytes, descriptor race and bounded complete output refusal. No target paths opened."
+}

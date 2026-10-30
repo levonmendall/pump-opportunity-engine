@@ -1,0 +1,29 @@
+{
+  "kind": "parent-independent-actual-02fb-original-service-stage-verification",
+  "verifiedAt": "2026-10-30T05:32:09.784563+00:00",
+  "workflowRun": 41008845379,
+  "adminSource": "e76836edfc2f9703cca78757142d3f7b406b8c23",
+  "rawSha256": "6192cbd2e87f83eab1f86c8a824a6f2ea7797b50ea90bd426b31eb537f4cddb9",
+  "source": {
+    "commit": "02fbec4f548c02f81663c707f31b7b62ea335133",
+    "sha256": "16805b01382b10e2bf59952e93e218d8a2e5afc70c4275d65ff4be003095abdb"
+  },
+  "allElevenPinsVerified": true,
+  "ownerCommandAstAndShellVerified": true,
+  "ownerCommandSha256": "aef4a3adbb70498095961fd15da1d5520058011dba5d77e82d7673bb94dd6a1b",
+  "sameOriginalSupervisor": {
+    "MainPID": "2482038",
+    "NRestarts": "0",
+    "User": "poe-runtime",
+    "LoadState": "loaded",
+    "ActiveState": "active",
+    "SubState": "running"
+  },
+  "actualStagedUnitParserVerified": true,
+  "stage": "/var/tmp/poe-original-paper-equity-execution-budget-upgrade",
+  "installed": false,
+  "financialDatabaseOpened": false,
+  "providerRequests": 0,
+  "credentialReads": 0,
+  "serviceControlOperations": 0
+}

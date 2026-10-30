@@ -1,3 +1,7 @@
+# SUPERSEDED — do not apply the interim a1 command
+
+The coherent corrected02fb update is actually staged and includes the interim protection repair plus the requested financial/execution changes. Use only the command linked from `evidence/paper-equity-execution-budget-20261030/READY_FOR_OWNER_INSTALL.md`; no a1 installation is needed first. The historical packet below remains preserved.
+
 # Original POE protection repair — staged; protected installation required
 
 Actual [EC2 staging 40999151889](https://github.com/levonmendall/meme-machine-admin/actions/runs/40999151889) verified all eleven files on the original machine. The original supervisor 2482038 / NRestarts 0 was identical before and after. Staging performed no service control, provider request, financial database open or credential read.

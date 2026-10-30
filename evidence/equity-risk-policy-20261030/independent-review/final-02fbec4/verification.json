@@ -1,0 +1,25 @@
+{
+  "verifiedAt": "2026-10-30T05:15:07.228883+00:00",
+  "source": "02fbec4f548c02f81663c707f31b7b62ea335133",
+  "scope": "Independent ComputeBudget correction review and empty-directory offline runtime checks; no rebuild/provider/real-ledger/service action",
+  "artifactGuardUnchanged": true,
+  "artifactHashes": {
+    "native-paper.mjs": "16805b01382b10e2bf59952e93e218d8a2e5afc70c4275d65ff4be003095abdb",
+    "metadata.json": "79912bbd07d16c8adaa3cb07e555fc5f2b8014eb076458f00458ba855e168f3f",
+    "backup-worker.mjs": "006dc9b31db5317a5ee5d35f672fac2510c4202290f52ddc8fd189edf6aa5e83",
+    "better_sqlite3.node": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d",
+    "snapshot-publisher.mjs": "fbbe03be34bb9800d5c309088b3429f7ab830ca015dbb3bc888b73bcd718b388",
+    "verify-native-paper-package.mjs": "897c6d3d024cfb5388b40eaeb170e4732c9d919dd4ffe37e314b46f62287bfe8"
+  },
+  "results": [
+    {
+      "check": "unmodified standalone disposable backup/reopen",
+      "returncode": 0
+    },
+    {
+      "check": "four actual bundled unsigned SDK buy/sell constructions, independent wire fee decode and declared-plan consistency",
+      "returncode": 0
+    }
+  ],
+  "pass": true
+}

@@ -1,0 +1,15 @@
+{
+  "source": "02fbec4f548c02f81663c707f31b7b62ea335133",
+  "checkedAt": "2026-10-30T05:17:46.037360+00:00",
+  "command": "node --import tsx --test test/paper-unsigned-pumpswap.test.ts",
+  "returncode": 0,
+  "sourceGuardUnchanged": true,
+  "hashes": {
+    "src/paper-unsigned-pumpswap.ts": "c541abd84368e6f445c74724ab77e6c3d5149eec64cc8fe5f5adb9b210aaa880",
+    "test/paper-unsigned-pumpswap.test.ts": "b2fd0e1628a3b20140e2198129bfb3bdb2c582fbe9176a7305414baadbd9eab1",
+    "src/execution-realism.ts": "95beee4e2d36d05890835bdfec1a98e464b569e22013fb926d23ad35026e531a",
+    "src/pilot-market.ts": "ed2190a7ef01f80ad1da07a7fe07e3a353c5db1f7e632be90ab8595aaa06baf2",
+    "package.json": "4a2422f4b9c09996ab26edfb77ca0fc910d41ff4b1aaf04907fb1da6972d427c",
+    "package-lock.json": "552d1fc533ec47be8913f220d5d1c08286432fc0e3d3ce54457c488de73ddd4a"
+  }
+}

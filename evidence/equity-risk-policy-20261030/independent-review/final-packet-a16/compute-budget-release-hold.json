@@ -1,0 +1,18 @@
+{
+  "recordedAt": "2026-10-30T05:11:29.087466+00:00",
+  "priorSource": "a16a05e642938ad6132e6844712700f344b9b73e",
+  "priorOwnerCommandSha256": "ff32b8e910a6744c914d0c023152105db763a02c7513d30abf46f7c0be0d4116",
+  "releaseStatus": "HELD_SUPERSEDED_PENDING_CORRECTION",
+  "demonstratedIssue": "Unsigned SDK construction omits ComputeBudget instructions while execution plan assumes200000compute units at10000micro-lamports per unit and2000-lamport priority fee. Exact policy-consistent instruction construction requires that limit/price in the bytes.",
+  "minimalCorrection": "Prefix one ComputeBudget set-unit-limit and one set-unit-price using existing policy; retain every SDK instruction, rent/unwrap path, signer and slippage condition; include prefix in intent hash.",
+  "financialOrRiskRuleChangeRequired": false,
+  "priorReviewAcknowledgment": "Instruction-to-fee mismatch missed in earlier construction review. Previous passing review records retained unchanged.",
+  "rootApplyExecuted": false,
+  "actualTargetStageExecuted": false,
+  "knownDeploymentStatusSource": "Root message: stage dispatch404 before target actions; old operating service remains authoritative.",
+  "nextChecks": [
+    "Exact limit/price decoding and no duplicate/conflicting ComputeBudget instruction",
+    "Existing SDK/temporary-rent/signer/slippage semantics unchanged",
+    "Refreshed standalone artifact, packet and owner-command pins independently verified"
+  ]
+}

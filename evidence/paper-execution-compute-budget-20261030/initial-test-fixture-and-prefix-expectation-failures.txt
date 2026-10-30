@@ -1,0 +1,74 @@
+✔ default plan explicitly labels nominal chain conditions and declared fee scenarios (2.673735ms)
+✔ observed construction/RPC/slot latency changes due time with integer rounding and truthful basis (0.317441ms)
+✔ congestion which consumes order lifetime is unavailable, never clipped into an optimistic landing (0.281137ms)
+✔ plan validation rejects forged policy, malformed values, extra fields and altered economic/timing assumptions (2.25526ms)
+✔ invalid plan inputs fail closed without inventing a current latency/source observation (0.371191ms)
+✔ landing binds the exact plan, fresh new construction and nonregressing source without claiming chain confirmation (0.537928ms)
+✔ landing before due, after expiry, stale at preparation/use, wrong slot, wrong fee or malformed hashes is rejected (0.952042ms)
+✔ unsubmitted preparation and expiry carry zero fee; only supported scenario landing carries modeled7000 (2.260026ms)
+✔ attempt validator refuses forged plan binding, stage/reason/fee mismatch and undocumented optimistic flags (0.760338ms)
+✔ new actual-SDK PAPER reservation binds unsigned intent, adapts landing time and fills once using post-delay state (110.427367ms)
+✔ missing actual landing preparation is an unsubmitted zero-fee failure and cannot fabricate a position (36.367824ms)
+✔ post-delay pool deterioration preserves original minimum output; a plausible landed slippage failure charges once (63.270909ms)
+✔ fresh held protection does not construct discretionary transactions or add RPC work (70.545879ms)
+✔ a modeled full-size exit preserves its own intent and leaves no duplicate pending obligation (81.345254ms)
+✔ uncertain financial commit never re-quotes or duplicates a modeled fill (53.804481ms)
+✔ restart quarantines an unresolved modeled exit until expiry and retains the protected holding (69.365398ms)
+✔ legacy held account uncertainty uses an explicit sell-only protection fallback rather than stranding exposure (38.039993ms)
+✔ a component fallback cannot authorize a new PAPER entry (28.837796ms)
+✔ two actual-SDK modeled holdings serialize transient quote rent and preserve independent protection and exits (140.428793ms)
+ℹ Second fixture pool uses synthetic funded extension of retained bytes; not observed mainnet state or profitability proof.
+✔ unselected unsigned diagnostics cannot consume mandatory evidence retention; qualified plans retain exact construction (228.106698ms)
+✔ unsupported old pool extension funding cannot become a new modeled entry (21.600533ms)
+✖ unsigned buy and sell encode exactly the charged compute bid before all SDK swap instructions (37.348537ms)
+✔ SDK-supplied duplicate or conflicting compute bids fail closed instead of creating an ambiguous fee (10.061972ms)
+✔ actual SDK exact-input unsigned buy bytes and same-state cost reproduction: 2026-10-26T19-41-20.717Z (14.729944ms)
+✔ actual SDK exact-input unsigned buy bytes and same-state cost reproduction: 2026-10-26T19-42-16.130Z (19.462342ms)
+✔ actual full-size sell uses current fee-adjusted liquidation and independent slippage constraint (22.170739ms)
+✔ exact-input buy minimum constraint is preserved rather than repriced downward (9.469974ms)
+✔ unsupported, incomplete, stale, future or malformed source/account assumptions fail closed (12.591994ms)
+✔ construction snapshots caller inputs before async work and retains source association (25.029118ms)
+✖ the exact SDK quote create/close pair and every real swap/setup byte remain intact (12.405627ms)
+✔ missing, duplicate or changed WSOL close layout fails closed rather than dropping unrelated instructions (35.120562ms)
+✔ base ATA persists while the quote ATA is recreated and unwrapped on every round trip (7.408396ms)
+✔ instruction construction cannot relabel a source which becomes stale while awaiting SDK work (8.609969ms)
+✔ strict transient quote model rejects retained quote inventory and absent/invalid current rent assumptions (0.853756ms)
+✔ exact quote creation layout, single occurrence and atomic swap ordering are mandatory (73.450887ms)
+✔ temporary quote rent proof binds amount, prep evidence, coherent source and exact atomic pair without inventing income (30.098846ms)
+✔ different mint transactions safely reuse the same global WSOL ATA only because every atomic template creates and closes it (15.256775ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 35
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1970.38548
+
+✖ failing tests:
+
+test at test/paper-unsigned-pumpswap.test.ts:1:1688
+✖ unsigned buy and sell encode exactly the charged compute bid before all SDK swap instructions (37.348537ms)
+  Error: PAPER_UNSIGNED_POSITIVE_SUPPORTED_QUOTE_REQUIRED
+      at need (/workspace/pump-opportunity-engine/src/paper-unsigned-pumpswap.ts:37:72)
+      at buildPaperUnsignedPumpSwap (/workspace/pump-opportunity-engine/src/paper-unsigned-pumpswap.ts:92:2)
+      at async TestContext.<anonymous> (/workspace/pump-opportunity-engine/test/paper-unsigned-pumpswap.test.ts:20:70)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at test/paper-unsigned-pumpswap.test.ts:1:10055
+✖ the exact SDK quote create/close pair and every real swap/setup byte remain intact (12.405627ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+  
+  8 !== 6
+  
+      at TestContext.<anonymous> (/workspace/pump-opportunity-engine/test/paper-unsigned-pumpswap.test.ts:81:144)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 8,
+    expected: 6,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

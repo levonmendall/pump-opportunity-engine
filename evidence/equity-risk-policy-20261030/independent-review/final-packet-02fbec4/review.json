@@ -1,0 +1,34 @@
+{
+  "reviewedAt": "2026-10-30T05:30:30.931085+00:00",
+  "verdict": "PASS_RELEASE_TO_ESTABLISHED_NONROOT_STAGING",
+  "operatorCommit": "955928546fe8ef69321ece9ac4f1bbf58b1a455d",
+  "adminCommit": "e76836edfc2f9703cca78757142d3f7b406b8c23",
+  "targetSource": "02fbec4f548c02f81663c707f31b7b62ea335133",
+  "targetNativeSha256": "16805b01382b10e2bf59952e93e218d8a2e5afc70c4275d65ff4be003095abdb",
+  "ownerCommandSha256": "aef4a3adbb70498095961fd15da1d5520058011dba5d77e82d7673bb94dd6a1b",
+  "operatorTests": 74,
+  "adminTests": 37,
+  "independentRegisteredOutputCases": 5,
+  "operatorTrackedFileGuard": 3432,
+  "adminTrackedFileGuard": 1695,
+  "guardsUnchanged": true,
+  "findings": [
+    "Corrected packet matches independently reviewed source/build and original69 transition only.",
+    "Actual driver bundle parser and preserved-manifest checks passed.",
+    "Original two-position/four-deep limits, ledger identity/history and single-writer handoff remain intact.",
+    "Risk and execution semantics/migration changes are declared; installer grants no entry permission or waiver, clears no financial controls, restores no DB/counterbooks and permits no executable downgrade after possible start.",
+    "Registered staging workflow routes only exact corrected budget transport; registered read-only workflow executes hash-verified separate reader and preserves original inspector size bound.",
+    "Held a16 packet and owner command remain preserved and superseded."
+  ],
+  "limitations": [
+    "This is offline release review, not installed-source or live operational acceptance.",
+    "Parent owns publishing, actual nonroot staging, and separately authenticated privileged owner boundary.",
+    "No real portfolio, host, service, network/provider or financial actions performed by reviewer."
+  ],
+  "evidenceSha256": {
+    "packet-verification.json": "ff27bfb8e16d7facae383ebd6316662c0c02a41ad3497bf8e62036fb945ba3d8",
+    "poe-paper-equity-execution-operator-regressions.json": "a3c2875ee128c34961ccc7fd515de3367daf9da88623f41ae0424e0690c38748",
+    "poe-paper-equity-execution-admin-regressions.json": "b20ce6ddfccf9166640c8c3e8a2ceea467f4f4791b972bf1be91f4621b758fb8",
+    "registered-readback-verification.json": "fb18dd56a05f8cbcadb189e306bb6fc95e25d242fa364ce479187e0fecdfbe1e"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "verifiedAt": "2026-10-30T05:29:24.859450+00:00",
+  "scope": "Exact offline payload/build/transport/admin mirror/owner command/parser/migration and readback pins. No target or financial action.",
+  "source": {
+    "commit": "02fbec4f548c02f81663c707f31b7b62ea335133",
+    "sha256": "16805b01382b10e2bf59952e93e218d8a2e5afc70c4275d65ff4be003095abdb"
+  },
+  "previousSource": {
+    "commit": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+    "sha256": "bbdd0515089a823600c158c668e6a3f76a0a92525422d63677989d963ae43480"
+  },
+  "payloadCount": 10,
+  "transportCount": 11,
+  "reviewedBuildBytesMatched": true,
+  "actualDriverBundleParserPassed": true,
+  "originalManifestPreserved": true,
+  "ownerCommandAstAndShellRoundtrip": true,
+  "heldA16PacketBytesPreserved": true,
+  "readerSha256": "325786179e53b0fcef5bf0428f12e6a4255754c9d735d8595d465550ae49d326",
+  "hashes": {
+    "OWNER_APPLY.txt": "aef4a3adbb70498095961fd15da1d5520058011dba5d77e82d7673bb94dd6a1b",
+    "forward-original-upgrade.py": "133ffec146c63d6336cdb16bc654ec82a73a61999eafc8d065318ec9e4e78dcc",
+    "index.json": "833a0270c4e5c82f483cbca253315f70ef0a24f4fe996487872d933a0ef63043",
+    "service.json": "ce59672d7c0a666f2a90bfdd29a4c7e7c306cd096c587e0a713160f44637a930",
+    "transport/transport.json": "f377bcba2cabc6618e4f672cc37df3b54e9b0943a3560a4708a33c934d0235a8"
+  },
+  "pass": true
+}

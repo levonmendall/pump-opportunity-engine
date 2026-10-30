@@ -1,0 +1,132 @@
+{
+  "kind": "immutable-original-source-compact-checkpoint-v1",
+  "capturedAt": "2026-10-30T05:42:04.375942+00:00",
+  "sourceAt": "2026-10-30T05:41:35.127Z",
+  "sequence": "12112",
+  "collectorReceivedAt": "2026-10-30T05:41:56.918Z",
+  "sourceAgeAtCaptureMs": 29249,
+  "receiverAgeAtCaptureMs": 7458,
+  "source": {
+    "release": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+    "strategy": "adaptive-momentum-v2-paper-v1"
+  },
+  "account": {
+    "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "initialUsd": 1000
+  },
+  "run": {
+    "id": "native-paper-20261030021230118",
+    "startedAt": "2026-10-30T02:12:30.118Z",
+    "mode": "persistent-paper",
+    "configurationSha256": "ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db",
+    "strategyVersion": "adaptive-momentum-v2-paper-v1"
+  },
+  "status": {
+    "runtime": "running",
+    "market": "observing",
+    "entries": "enabled",
+    "reconciled": true,
+    "blocker": null
+  },
+  "operating": {
+    "kind": "operating-source-v1",
+    "state": "fresh",
+    "market": "observing",
+    "reporting": "current",
+    "sourceAgeMs": 21754,
+    "receivedAgeMs": 13641,
+    "selectedCapture": true,
+    "discovery": true,
+    "watch": true,
+    "entryRestriction": null,
+    "financial": {
+      "usdValuation": "available",
+      "reconciled": true,
+      "valuationAgeMs": 22881,
+      "reconciliationAgeMs": 21769
+    },
+    "protection": {
+      "state": "monitored",
+      "completedAt": "2026-10-30T05:41:35.127Z",
+      "completedAgeAtSourceMs": 0,
+      "boundaryMs": 4000
+    },
+    "reasonCodes": []
+  },
+  "retainedProtectionTotals": {
+    "breaches": 82,
+    "unavailableChecks": 285,
+    "state": "monitored",
+    "lastCompletedAt": "2026-10-30T05:41:35.127Z",
+    "boundaryMs": 4000,
+    "historicalMaximumCompletedGapMs": 89426
+  },
+  "currentRunCompletedMaxima": {
+    "completedGapMs": 16677,
+    "quoteAgeAtUseMs": 101
+  },
+  "currentRunMaximumDiagnostic": "Current runtime observed completed protection maxima since 2026-10-30T02:12:30.118Z: gap 16677 ms; quote age at use 101 ms. Open or unmonitored gaps are not bounded by these values; historical failures remain retained.",
+  "currentCompletedMaximumRemainsFailed": true,
+  "providerCounters": {
+    "httpTimeouts": 660,
+    "httpErrors": 0,
+    "throttles": 0,
+    "discoveryConnected": true,
+    "watchConnected": true
+  },
+  "captureConnected": true,
+  "candidateQuoteFailuresCurrentMarket": 80,
+  "holdingAndQuoteFailureDiagnostics": [
+    "Recorded holding-pricing refusals in this run: HELD_PRICING_PROVIDER_TIMEOUT:4, HELD_PRICING_DISPATCH_UNAVAILABLE:35, HELD_PRICING_PROVIDER_RESPONSE_UNAVAILABLE:1.",
+    "Holding RPC failure stages (current instance, not completed evaluations): protection-retry-paced:3, uninvoked-quota-or-spacing:27, physical-settlement-wait:3, physical-timeout:5, transport-or-node-response:1, local-admission:5.",
+    "Last holding RPC failure 2026-10-30T05:34:51.644Z: uninvoked-quota-or-spacing; physical-in-flight false. Candidate quote failures (current market instance) 80: last 2026-10-30T05:38:16.654Z, Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump, rent/PILOT_RPC_COMPONENT_ADMISSION_CLOSED, 70.39895599894226 ms; caller/deadline aborted false/false. This is not a qualification or order."
+  ],
+  "installedPolicyDiagnostic": "Current $50/$150 sizing/exposure are explicit temporary legacy risk fallbacks. Four deep slots and two protected positions remain; old holdings retain their entry-strategy exit policy.",
+  "resourcesState": "normal",
+  "admission": {
+    "financialProjectionReady": true,
+    "supervisedNewRiskAllowed": true,
+    "candidateResourceAdmissionAllowed": true,
+    "evidenceAdmissionAllowed": true,
+    "evidencePressureReasonCode": null,
+    "evidenceDiagnosticBytes": 5343189,
+    "evidenceDiagnosticLimitBytes": 134217728,
+    "evidenceRequiresCriticalRecovery": false,
+    "evidenceRefusedRecords": 0,
+    "sourceRecoveryGeneration": 0,
+    "sourceRecoveryFailures": 0,
+    "sourceRecoveryReasonCode": null,
+    "sourceRecoveryRetryAt": null,
+    "sourceRecoveryClosingSettled": false,
+    "sourceRestartRequired": false,
+    "proofPreparationState": "complete"
+  },
+  "positions": [
+    {
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "quantity": "65278155",
+      "enteredAt": "2026-10-29T22:23:36.537Z",
+      "entryCostUsd": 49.708013,
+      "netLiquidationUsd": 63.707415,
+      "executionCostsUsd": 0.00068,
+      "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+    }
+  ],
+  "pendingOrders": [],
+  "funnel": {
+    "qualified": 1,
+    "attempted": 2,
+    "paperFilled": 1,
+    "exited": 1
+  },
+  "limits": [
+    "This is a point-in-time existing-local-snapshot checkpoint, with source generation, collector receipt and local capture kept distinct.",
+    "Protection totals/historical maxima retain known earlier failures; current-run completed maximum remains failed. Open or unmonitored gaps are not bounded by completed maxima.",
+    "Installed native source/run above are verified from this snapshot; staging a corrected package or frontend does not establish native installation or new policy-card values.",
+    "Historical8r7 is one exited roundtrip; no re-entry/new financial event is claimed. No operational acceptance, profitability or live-fill claim.",
+    "The copied106974 ms capacity handoff is not claimed as active agent supervision.",
+    "No collector/API/provider/financial/control/host inspection action was performed to create this evidence copy."
+  ]
+}

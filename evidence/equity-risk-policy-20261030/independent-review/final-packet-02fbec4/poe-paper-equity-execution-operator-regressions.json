@@ -1,0 +1,40 @@
+{
+  "checkedAt": "2026-10-30T05:28:36.024946+00:00",
+  "root": "/workspace/poe-paper-equity-execution-operator",
+  "commit": "955928546fe8ef69321ece9ac4f1bbf58b1a455d",
+  "trackedFiles": 3432,
+  "exactSourceGuardUnchanged": true,
+  "results": [
+    {
+      "test": "test-forward-original-upgrade.py",
+      "exit": 0,
+      "tail": [
+        "----------------------------------------------------------------------",
+        "Ran 62 tests in 3.070s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "test": "test-paper-equity-execution-budget-package.py",
+      "exit": 0,
+      "tail": [
+        "----------------------------------------------------------------------",
+        "Ran 9 tests in 0.191s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "test": "test-prepare-reservation-priority-package-20261030.py",
+      "exit": 0,
+      "tail": [
+        "----------------------------------------------------------------------",
+        "Ran 3 tests in 0.001s",
+        "",
+        "OK"
+      ]
+    }
+  ],
+  "pass": true
+}

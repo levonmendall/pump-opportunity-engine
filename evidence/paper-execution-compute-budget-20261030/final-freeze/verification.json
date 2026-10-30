@@ -1,0 +1,48 @@
+{
+  "sourceCommit": "02fbec4f548c02f81663c707f31b7b62ea335133",
+  "startedAt": "2026-10-30T05:11:10.619031+00:00",
+  "providerRequests": 0,
+  "originalFinancialAccountRead": false,
+  "financialActions": 0,
+  "commands": [
+    {
+      "name": "focused-sdk-bundle-tests",
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "--test-concurrency=2",
+        "test/paper-unsigned-pumpswap.test.ts",
+        "test/paper-realistic-execution-integration.test.ts",
+        "test/execution-realism.test.ts",
+        "test/native-paper-bundle.test.ts",
+        "test/source-version.test.ts"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "npm-build",
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0
+    },
+    {
+      "name": "standalone-build",
+      "command": [
+        "node",
+        "scripts/build-native-paper-ec2.mjs",
+        "--output-directory",
+        "/tmp/poe-native-paper-output-paper-equity-execution-budget-final"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "sourceUnchanged": true,
+  "passed": true,
+  "completedAt": "2026-10-30T05:11:22.404516+00:00",
+  "elapsedSeconds": 11.785507917404175
+}

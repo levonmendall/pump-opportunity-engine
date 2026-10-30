@@ -1,0 +1,37 @@
+{
+  "reviewedAt": "2026-10-30T05:19:31.806097+00:00",
+  "source": "02fbec4f548c02f81663c707f31b7b62ea335133",
+  "verdict": "PASS_SOURCE_AND_STANDALONE_BUILD_ONLY",
+  "priorHeldSource": "a16a05e642938ad6132e6844712700f344b9b73e",
+  "cause": "Unsigned SDK construction omitted ComputeBudget instructions while the declared PAPER execution scenario charged the corresponding priority fee.",
+  "correction": "Prefix exactly the policy compute limit and compute price, reject any SDK-supplied conflicting or duplicate budget, preserve all SDK instructions and bind the complete array in construction/intent hashes.",
+  "independentChecks": {
+    "sdkHelperTests": 16,
+    "sdkHelperTestsFailed": 0,
+    "actualBundledBuySellConstructions": 4,
+    "computeUnitLimit": 200000,
+    "computeUnitPriceMicroLamports": "10000",
+    "encodedPriorityFeeLamports": "2000",
+    "declaredTotalScenarioFeeLamports": "7000",
+    "transientQuoteCreateSwapClosePreserved": true,
+    "unmodifiedStandaloneDisposableBackupReopen": true,
+    "nodeModulesAbsentInStandaloneFixture": true,
+    "networkRequests": 0,
+    "signerAvailable": false,
+    "artifactAndFocusedSourceGuardsUnchanged": true
+  },
+  "transferredPriorReview": "The accepted risk, financial accounting, immutable historical records, same-day HWM migration, owner-stop preservation, two-holding/four-deep operation, duplicate/uncertain-attempt prevention, and transient-vs-persistent rent reviews transfer unchanged because the diff from a16 contains only the helper prefix and its tests.",
+  "limitations": [
+    "No funded transaction, signer, on-chain landing, real account, host or provider action was performed.",
+    "PAPER compute/propagation/inclusion costs remain explicitly labeled scenarios; this check establishes consistency of the encoded bid with that declared scenario, not actual transaction landing or compute sufficiency.",
+    "Source/build acceptance does not establish forward protection reliability, profitability, or 24-hour reliability.",
+    "The held a16 packet and OWNER_APPLY command are not released; corrected source/artifact/metadata and reader/package/command pins require a separate final review."
+  ],
+  "evidence": {
+    "verification.json": "ffba57ecabacb6b451c115313ebaa17c7efac2567a613e90a5b71c31cb1d8269",
+    "sdk-tests-verification.json": "d5d59dc5f2a9c3b23170f4faff957ac0eebeaccb2dfa5f001043adbfeb37d22f",
+    "lazy-sdk-probe.log": "85b3a80808cd31015b88957b4fe3eebf6444668e810e95a91b5b3b1dde728fab",
+    "standalone-smoke.log": "f0efd3831bb46e469622463dd38d6a0e098e9399bd2b4cc4fffc19722331ae45",
+    "independent-sdk-tests.log": "d13f082322668ac7f12d6fc880a191afbd7a7d75d2cb1bafeb0024575d573cfa"
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "verifiedAt": "2026-10-30T05:03:27.458746+00:00",
+  "scope": "Independent exact offline operator/admin packet regressions; no publish/stage/root apply or actual financial action",
+  "results": [
+    {
+      "worktree": "poe-paper-equity-execution-operator",
+      "source": "eeae8abbbb80ae41e71523e8a3cac3808d9372d5",
+      "trackedPacketAndOperatorFiles": 134,
+      "guardUnchanged": true,
+      "checks": [
+        {
+          "name": "test-paper-equity-execution-template.py",
+          "returncode": 0,
+          "tests": 9
+        },
+        {
+          "name": "test-forward-original-upgrade.py",
+          "returncode": 0,
+          "tests": 62
+        },
+        {
+          "name": "test-prepare-reservation-priority-package-20261030.py",
+          "returncode": 0,
+          "tests": 3
+        }
+      ]
+    },
+    {
+      "worktree": "poe-paper-equity-execution-admin",
+      "source": "3c1caac28ed86c48b1aa8e1909682e3e7a0a8639",
+      "trackedPacketAndOperatorFiles": 287,
+      "guardUnchanged": true,
+      "checks": [
+        {
+          "name": "test-paper-equity-execution-stage-template.py",
+          "returncode": 0,
+          "tests": 5
+        },
+        {
+          "name": "test-provider-recovery-stage-workflow.py",
+          "returncode": 0,
+          "tests": 5
+        }
+      ]
+    }
+  ],
+  "tests": 84,
+  "pass": true
+}

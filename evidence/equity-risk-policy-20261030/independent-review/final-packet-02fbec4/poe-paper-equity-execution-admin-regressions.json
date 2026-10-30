@@ -1,0 +1,60 @@
+{
+  "checkedAt": "2026-10-30T05:28:33.075931+00:00",
+  "root": "/workspace/poe-paper-equity-execution-admin",
+  "commit": "e76836edfc2f9703cca78757142d3f7b406b8c23",
+  "trackedFiles": 1695,
+  "exactSourceGuardUnchanged": true,
+  "results": [
+    {
+      "test": "test-paper-equity-execution-budget-stage.py",
+      "exit": 0,
+      "tail": [
+        "----------------------------------------------------------------------",
+        "Ran 5 tests in 0.288s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "test": "test-read-paper-equity-execution-forensics-20261030.py",
+      "exit": 0,
+      "tail": [
+        "----------------------------------------------------------------------",
+        "Ran 19 tests in 0.044s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "test": "test-paper-equity-execution-readback-workflow.py",
+      "exit": 0,
+      "tail": [
+        "----------------------------------------------------------------------",
+        "Ran 3 tests in 0.006s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "test": "test-provider-recovery-stage-workflow.py",
+      "exit": 0,
+      "tail": [
+        "----------------------------------------------------------------------",
+        "Ran 5 tests in 0.189s",
+        "",
+        "OK"
+      ]
+    },
+    {
+      "test": "test-paper-equity-execution-stage-template.py",
+      "exit": 0,
+      "tail": [
+        "----------------------------------------------------------------------",
+        "Ran 5 tests in 0.274s",
+        "",
+        "OK"
+      ]
+    }
+  ],
+  "pass": true
+}

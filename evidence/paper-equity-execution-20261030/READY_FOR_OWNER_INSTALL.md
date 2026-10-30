@@ -1,3 +1,7 @@
+# WITHHELD — prerelease a16 packet; do not apply
+
+The a16 instruction skeleton omitted the compute bid used by its fee scenario. It was never installed or actually staged. Corrected source02fb includes that bid; a distinct reviewed budget-successor packet will supply the only current owner command. The frozen a16 bytes below remain historical evidence and must not be used.
+
 # Prepared for independent packet review; not staged or installed
 
 This packet upgrades directly from the verified currently running source69 to `a16a05e642938ad6132e6844712700f344b9b73e`. It includes the earlier urgent reservation-priority repair and supersedes the staged but unapplieda1 command. Preserve the old package/command as historical evidence; do not execute it.

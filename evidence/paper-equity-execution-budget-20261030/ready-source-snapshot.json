@@ -1,0 +1,767 @@
+{
+  "requestedAt": 1793338931927,
+  "receivedAt": 1793338932100,
+  "httpStatus": 200,
+  "responseBytes": 93224,
+  "responseSha256": "4c8b6dbfc94645c8efd08088d6bf8875f76c88c29eab457d3731b514896a6380",
+  "account": {
+    "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "initialUsd": 1000
+  },
+  "source": {
+    "release": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+    "strategy": "adaptive-momentum-v2-paper-v1"
+  },
+  "sequence": "12113",
+  "times": {
+    "generatedAt": "2026-10-30T05:41:50.192Z",
+    "marketAt": "2026-10-30T05:41:49.000Z",
+    "reconciledAt": "2026-10-30T05:41:49.485Z",
+    "usefulProgressAt": "2026-10-30T05:41:49.485Z"
+  },
+  "status": {
+    "runtime": "running",
+    "market": "observing",
+    "entries": "enabled",
+    "reconciled": true,
+    "blocker": null
+  },
+  "freshness": {
+    "state": "fresh",
+    "receivedAt": "2026-10-30T05:41:58.349Z",
+    "generatedAt": "2026-10-30T05:41:50.192Z",
+    "marketAt": "2026-10-30T05:41:49.000Z",
+    "reconciledAt": "2026-10-30T05:41:49.485Z",
+    "usefulProgressAt": "2026-10-30T05:41:49.485Z",
+    "sourceAgeMs": 21865,
+    "marketAgeMs": 23057,
+    "reconciliationAgeMs": 22572,
+    "operating": {
+      "kind": "operating-source-v1",
+      "state": "fresh",
+      "market": "observing",
+      "reporting": "current",
+      "sourceAgeMs": 21865,
+      "receivedAgeMs": 13708,
+      "selectedCapture": true,
+      "discovery": true,
+      "watch": true,
+      "entryRestriction": null,
+      "financial": {
+        "usdValuation": "available",
+        "reconciled": true,
+        "valuationAgeMs": 23057,
+        "reconciliationAgeMs": 22572
+      },
+      "protection": {
+        "state": "monitored",
+        "completedAt": "2026-10-30T05:41:49.499Z",
+        "completedAgeAtSourceMs": 693,
+        "boundaryMs": 4000
+      },
+      "reasonCodes": []
+    }
+  },
+  "intelligence": {
+    "version": "poe-operating-intelligence-v1",
+    "admission": {
+      "financialProjectionReady": true,
+      "supervisedNewRiskAllowed": true,
+      "candidateResourceAdmissionAllowed": true,
+      "evidenceAdmissionAllowed": true,
+      "evidencePressureReasonCode": null,
+      "evidenceDiagnosticBytes": 5172252,
+      "evidenceDiagnosticLimitBytes": 134217728,
+      "evidenceRequiresCriticalRecovery": false,
+      "evidenceRefusedRecords": 0,
+      "sourceRecoveryGeneration": 0,
+      "sourceRecoveryFailures": 0,
+      "sourceRecoveryReasonCode": null,
+      "sourceRecoveryRetryAt": null,
+      "sourceRecoveryClosingSettled": false,
+      "sourceRestartRequired": false,
+      "proofPreparationState": "complete"
+    },
+    "run": {
+      "id": "native-paper-20261030021230118",
+      "startedAt": "2026-10-30T02:12:30.118Z",
+      "mode": "persistent-paper",
+      "configurationSha256": "ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db",
+      "strategyVersion": "adaptive-momentum-v2-paper-v1"
+    },
+    "candidates": {
+      "migrationsReceived": 719,
+      "verifiedOrigins": 243,
+      "known": 174,
+      "watch": 69,
+      "eligible": 46,
+      "deepActive": 4,
+      "deepMaximum": 4,
+      "queued": 43,
+      "promoted": 5362,
+      "repromoted": 4768,
+      "demoted": 5344,
+      "completeWindows": 3321,
+      "auditedWindows": 3343,
+      "uniqueEvaluated": 158,
+      "uniqueAudited": null,
+      "predictiveAssessments": 1224,
+      "predictivePasses": 573,
+      "predictiveFailures": 651,
+      "predictiveUnavailable": 0,
+      "waitMeanMs": null,
+      "waitMaximumMs": 2666112,
+      "olderSelected": 24
+    },
+    "quality": {
+      "captureConnected": true,
+      "qualityGaps": 1501,
+      "auditUnavailable": 191,
+      "auditUnusable": 241,
+      "decisionDeadlineMisses": 620,
+      "enrichmentDeadlineFailures": 0,
+      "incompleteExclusions": 1501,
+      "capacityExclusions": 0,
+      "structuralExclusions": 63,
+      "limitations": [
+        "ACTIVE Adaptive Momentum v2 preliminary assessments use complete independently audited60s flow; they are not executable financial qualifications. Actual-size liquidity quotes and ledger controls remain required. Frozen persistent-buying counters are a separate benchmark. Overlapping windows are not distinct tokens.",
+        "Beneficial-owner independence, acceleration, executable price trend and reserve stability are unknown unless separately measured. No theoretical upside is realized profit.",
+        "Current $50/$150 sizing/exposure are explicit temporary legacy risk fallbacks. Four deep slots and two protected positions remain; old holdings retain their entry-strategy exit policy.",
+        "Protection totals and maxima retain known prior-run failures as lower bounds; completion freshness and recovery progress belong to the current run.",
+        "Current runtime observed completed protection maxima since 2026-10-30T02:12:30.118Z: gap 16677 ms; quote age at use 101 ms. Open or unmonitored gaps are not bounded by these values; historical failures remain retained.",
+        "Recorded holding-pricing refusals in this run: HELD_PRICING_PROVIDER_TIMEOUT:4, HELD_PRICING_DISPATCH_UNAVAILABLE:35, HELD_PRICING_PROVIDER_RESPONSE_UNAVAILABLE:1.",
+        "Holding RPC current instance since 2026-10-30T02:12:30.188Z: calls 6645; logical attempts 6616; rapid probes 7; RPC retry successes 0; dispatch refusals 33; holding starts in 10s / 60s 5 / 30. These counts are not completed protection evaluations.",
+        "Holding RPC failure stages (current instance, not completed evaluations): protection-retry-paced:3, uninvoked-quota-or-spacing:27, physical-settlement-wait:3, physical-timeout:5, transport-or-node-response:1, local-admission:5.",
+        "Last holding RPC failure 2026-10-30T05:34:51.644Z: uninvoked-quota-or-spacing; physical-in-flight false. Candidate quote failures (current market instance) 80: last 2026-10-30T05:38:16.654Z, Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump, rent/PILOT_RPC_COMPONENT_ADMISSION_CLOSED, 70.39895599894226 ms; caller/deadline aborted false/false. This is not a qualification or order.",
+        "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump: Adaptive Momentum v2 historical executable net peak 0.650540343 SOL at 2026-10-30T05:41:22.903Z; measured trail 1500 bps (lagged-width-with-nondecreasing-boundary); dispersion 1 bps/29 prior quotes; boundary 0.552959292 SOL (modeled, fill not guaranteed); evaluated 2026-10-30T05:41:49.488Z. No fixed profit or profitable holding-time exit."
+      ]
+    },
+    "provider": {
+      "rpcRequests": 12263,
+      "rpcResponseBytes": 603757236,
+      "nativeStreamBytes": 1484236102,
+      "broadWatchBytes": 89951738877,
+      "discoveryConnected": true,
+      "watchConnected": true,
+      "httpTimeouts": 660,
+      "httpErrors": 0,
+      "throttles": 0,
+      "rollingStartsPerMinute": 39,
+      "maximumStartsPerMinute": 90,
+      "minimumSpacingMs": 250,
+      "primaryCooldownUntil": "2026-10-30T05:16:08.873Z",
+      "historyCooldownUntil": "2026-10-30T01:11:26.761Z",
+      "controlCooldownUntil": null
+    },
+    "resources": {
+      "sampleAt": "2026-10-30T05:41:49.964Z",
+      "cpuOneCoreFraction": 0.16665166426696026,
+      "rssBytes": 416264192,
+      "availableMemoryBytes": 6736982016,
+      "availableDiskBytes": 285375815680,
+      "eventLoopLagMs": 27.770879,
+      "state": "normal"
+    },
+    "protection": {
+      "state": "monitored",
+      "targetCadenceMs": 2000,
+      "completedEvaluationBoundaryMs": 4000,
+      "lastCompletedAt": "2026-10-30T05:41:49.499Z",
+      "maximumCompletedGapMs": 89426,
+      "maximumQuoteAgeAtUseMs": 101,
+      "breaches": 82,
+      "unavailableChecks": 285
+    },
+    "times": {
+      "marketNotificationAt": "2026-10-30T05:41:49.379Z",
+      "freshSupportAt": "2026-10-30T05:41:50.140Z",
+      "bankClockAt": "2026-10-30T05:41:49.000Z",
+      "auditAt": "2026-10-30T05:40:36.477Z",
+      "predictiveAt": "2026-10-30T05:40:36.477Z",
+      "reconciliationAt": "2026-10-30T05:41:49.485Z"
+    },
+    "decisions": [
+      {
+        "id": "native-paper-20261030021230118:0:1793336816613",
+        "mint": "dhf983GAxb7zTMkHhDeo2hSs1eWh1byFfm7N3Q8pump",
+        "at": "2026-10-30T05:06:56.613Z",
+        "stage": "missing-data",
+        "reason": "fresh-size-specific-quote-unavailable"
+      },
+      {
+        "id": "native-paper-20261030021230118:1:1793337796900",
+        "mint": "v5AXPNX9izyj2vXYakFJxjZucaXF2PPFb3e2dYJpump",
+        "at": "2026-10-30T05:23:16.900Z",
+        "stage": "missing-data",
+        "reason": "fresh-size-specific-quote-unavailable"
+      },
+      {
+        "id": "native-paper-20261030021230118:2:1793337808143",
+        "mint": "v5AXPNX9izyj2vXYakFJxjZucaXF2PPFb3e2dYJpump",
+        "at": "2026-10-30T05:23:28.143Z",
+        "stage": "missing-data",
+        "reason": "fresh-size-specific-quote-unavailable"
+      },
+      {
+        "id": "native-paper-20261030021230118:3:1793337826649",
+        "mint": "v5AXPNX9izyj2vXYakFJxjZucaXF2PPFb3e2dYJpump",
+        "at": "2026-10-30T05:23:46.649Z",
+        "stage": "missing-data",
+        "reason": "fresh-size-specific-quote-unavailable"
+      },
+      {
+        "id": "native-paper-20261030021230118:4:1793338018359",
+        "mint": "BPqbR4oD6WMYWvT4Wu1D5K9fYHQLjL3UsqAP1YUpump",
+        "at": "2026-10-30T05:26:58.359Z",
+        "stage": "risk-rejection",
+        "reason": "entries-not-authorized-by-ledger"
+      },
+      {
+        "id": "native-paper-20261030021230118:5:1793338048057",
+        "mint": "BPqbR4oD6WMYWvT4Wu1D5K9fYHQLjL3UsqAP1YUpump",
+        "at": "2026-10-30T05:27:28.057Z",
+        "stage": "missing-data",
+        "reason": "fresh-size-specific-quote-unavailable"
+      },
+      {
+        "id": "native-paper-20261030021230118:6:1793338058699",
+        "mint": "BPqbR4oD6WMYWvT4Wu1D5K9fYHQLjL3UsqAP1YUpump",
+        "at": "2026-10-30T05:27:38.699Z",
+        "stage": "missing-data",
+        "reason": "fresh-size-specific-quote-unavailable"
+      },
+      {
+        "id": "native-paper-20261030021230118:7:1793338076936",
+        "mint": "BPqbR4oD6WMYWvT4Wu1D5K9fYHQLjL3UsqAP1YUpump",
+        "at": "2026-10-30T05:27:56.936Z",
+        "stage": "missing-data",
+        "reason": "fresh-size-specific-quote-unavailable"
+      },
+      {
+        "id": "native-paper-20261030021230118:8:1793338136675",
+        "mint": "BPqbR4oD6WMYWvT4Wu1D5K9fYHQLjL3UsqAP1YUpump",
+        "at": "2026-10-30T05:28:56.675Z",
+        "stage": "missing-data",
+        "reason": "fresh-size-specific-quote-unavailable"
+      },
+      {
+        "id": "native-paper-20261030021230118:9:1793338146722",
+        "mint": "BPqbR4oD6WMYWvT4Wu1D5K9fYHQLjL3UsqAP1YUpump",
+        "at": "2026-10-30T05:29:06.722Z",
+        "stage": "missing-data",
+        "reason": "fresh-size-specific-quote-unavailable"
+      },
+      {
+        "id": "native-paper-20261030021230118:10:1793338165272",
+        "mint": "BPqbR4oD6WMYWvT4Wu1D5K9fYHQLjL3UsqAP1YUpump",
+        "at": "2026-10-30T05:29:25.272Z",
+        "stage": "missing-data",
+        "reason": "fresh-size-specific-quote-unavailable"
+      },
+      {
+        "id": "native-paper-20261030021230118:11:1793338318596",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:31:58.596Z",
+        "stage": "missing-data",
+        "reason": "fresh-size-specific-quote-unavailable"
+      },
+      {
+        "id": "native-paper-20261030021230118:12:1793338368432",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:32:48.432Z",
+        "stage": "risk-rejection",
+        "reason": "entries-not-authorized-by-ledger"
+      },
+      {
+        "id": "native-paper-20261030021230118:13:1793338415253",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:33:35.253Z",
+        "stage": "missing-data",
+        "reason": "fresh-size-specific-quote-unavailable"
+      },
+      {
+        "id": "native-paper-20261030021230118:14:1793338435926",
+        "mint": "8YfMJHucUFRFJdsPZ8UZMsVwrYMrqEnasfUhAmmxpump",
+        "at": "2026-10-30T05:33:55.926Z",
+        "stage": "adaptive-predictive-failed",
+        "reason": "adaptive-genuine-demand-floor-not-met"
+      },
+      {
+        "id": "native-paper-20261030021230118:15:1793338436481",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:33:56.481Z",
+        "stage": "adaptive-predictive-not-rejected",
+        "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+      },
+      {
+        "id": "native-paper-20261030021230118:16:1793338453860",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:34:13.860Z",
+        "stage": "adaptive-predictive-not-rejected",
+        "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+      },
+      {
+        "id": "native-paper-20261030021230118:17:1793338465862",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:34:25.862Z",
+        "stage": "adaptive-predictive-not-rejected",
+        "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+      },
+      {
+        "id": "native-paper-20261030021230118:18:1793338467575",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:34:27.575Z",
+        "stage": "risk-rejection",
+        "reason": "entries-not-authorized-by-ledger"
+      },
+      {
+        "id": "native-paper-20261030021230118:19:1793338482969",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:34:42.969Z",
+        "stage": "adaptive-predictive-not-rejected",
+        "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+      },
+      {
+        "id": "native-paper-20261030021230118:20:1793338502823",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:35:02.823Z",
+        "stage": "adaptive-predictive-not-rejected",
+        "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+      },
+      {
+        "id": "native-paper-20261030021230118:21:1793338514963",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:35:14.963Z",
+        "stage": "adaptive-predictive-not-rejected",
+        "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+      },
+      {
+        "id": "native-paper-20261030021230118:22:1793338535053",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:35:35.053Z",
+        "stage": "adaptive-predictive-not-rejected",
+        "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+      },
+      {
+        "id": "native-paper-20261030021230118:23:1793338545170",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:35:45.170Z",
+        "stage": "adaptive-predictive-not-rejected",
+        "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+      },
+      {
+        "id": "native-paper-20261030021230118:24:1793338553316",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:35:53.316Z",
+        "stage": "adaptive-predictive-not-rejected",
+        "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+      },
+      {
+        "id": "native-paper-20261030021230118:25:1793338563598",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:36:03.598Z",
+        "stage": "adaptive-predictive-not-rejected",
+        "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+      },
+      {
+        "id": "native-paper-20261030021230118:26:1793338565520",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:36:05.520Z",
+        "stage": "missing-data",
+        "reason": "fresh-size-specific-quote-unavailable"
+      },
+      {
+        "id": "native-paper-20261030021230118:27:1793338576142",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:36:16.142Z",
+        "stage": "adaptive-predictive-not-rejected",
+        "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+      },
+      {
+        "id": "native-paper-20261030021230118:28:1793338585232",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:36:25.232Z",
+        "stage": "adaptive-predictive-not-rejected",
+        "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+      },
+      {
+        "id": "native-paper-20261030021230118:29:1793338586792",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:36:26.792Z",
+        "stage": "missing-data",
+        "reason": "fresh-size-specific-quote-unavailable"
+      },
+      {
+        "id": "native-paper-20261030021230118:30:1793338595410",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:36:35.410Z",
+        "stage": "adaptive-predictive-not-rejected",
+        "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+      },
+      {
+        "id": "native-paper-20261030021230118:31:1793338603730",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:36:43.730Z",
+        "stage": "adaptive-predictive-not-rejected",
+        "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+      },
+      {
+        "id": "native-paper-20261030021230118:32:1793338614867",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:36:54.867Z",
+        "stage": "adaptive-predictive-not-rejected",
+        "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+      },
+      {
+        "id": "native-paper-20261030021230118:33:1793338616982",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:36:56.982Z",
+        "stage": "missing-data",
+        "reason": "fresh-size-specific-quote-unavailable"
+      },
+      {
+        "id": "native-paper-20261030021230118:34:1793338626269",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:37:06.269Z",
+        "stage": "adaptive-predictive-not-rejected",
+        "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+      },
+      {
+        "id": "native-paper-20261030021230118:35:1793338636612",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:37:16.612Z",
+        "stage": "adaptive-predictive-not-rejected",
+        "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+      },
+      {
+        "id": "native-paper-20261030021230118:36:1793338656841",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:37:36.841Z",
+        "stage": "adaptive-predictive-not-rejected",
+        "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+      },
+      {
+        "id": "native-paper-20261030021230118:37:1793338676804",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:37:56.804Z",
+        "stage": "adaptive-predictive-not-rejected",
+        "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+      },
+      {
+        "id": "native-paper-20261030021230118:38:1793338684964",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:38:04.964Z",
+        "stage": "adaptive-predictive-not-rejected",
+        "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+      },
+      {
+        "id": "native-paper-20261030021230118:39:1793338695089",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:38:15.089Z",
+        "stage": "adaptive-predictive-not-rejected",
+        "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+      },
+      {
+        "id": "native-paper-20261030021230118:40:1793338696665",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:38:16.665Z",
+        "stage": "missing-data",
+        "reason": "fresh-size-specific-quote-unavailable"
+      },
+      {
+        "id": "native-paper-20261030021230118:41:1793338705197",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:38:25.197Z",
+        "stage": "adaptive-predictive-not-rejected",
+        "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+      },
+      {
+        "id": "native-paper-20261030021230118:42:1793338707987",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:38:27.987Z",
+        "stage": "risk-rejection",
+        "reason": "entries-not-authorized-by-ledger"
+      },
+      {
+        "id": "native-paper-20261030021230118:43:1793338722709",
+        "mint": "Apd2KsSKwXg91tGVnRCNp8R4SSSXT1ApL33ksNadpump",
+        "at": "2026-10-30T05:38:42.709Z",
+        "stage": "adaptive-predictive-failed",
+        "reason": "adaptive-genuine-demand-floor-not-met"
+      },
+      {
+        "id": "native-paper-20261030021230118:44:1793338804144",
+        "mint": "UZAn4b5UskJCf3hc3PwTSw6nt87NQbXXmF5wnB1pump",
+        "at": "2026-10-30T05:40:04.144Z",
+        "stage": "adaptive-predictive-failed",
+        "reason": "adaptive-genuine-demand-floor-not-met"
+      },
+      {
+        "id": "native-paper-20261030021230118:45:1793338806192",
+        "mint": "tBiGsX9yY39UfoppL1hrLrP9MCPPEnJde9C9jA4pump",
+        "at": "2026-10-30T05:40:06.192Z",
+        "stage": "adaptive-predictive-not-rejected",
+        "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+      },
+      {
+        "id": "native-paper-20261030021230118:46:1793338814368",
+        "mint": "YgWCoiyLa8At53sLvgZiS3QqvYzqnko5DEvmnfepump",
+        "at": "2026-10-30T05:40:14.368Z",
+        "stage": "adaptive-predictive-failed",
+        "reason": "adaptive-genuine-demand-floor-not-met"
+      },
+      {
+        "id": "native-paper-20261030021230118:47:1793338816889",
+        "mint": "tBiGsX9yY39UfoppL1hrLrP9MCPPEnJde9C9jA4pump",
+        "at": "2026-10-30T05:40:16.889Z",
+        "stage": "adaptive-predictive-not-rejected",
+        "reason": "adaptive-preliminary-demand-only; exact-size-liquidity-and-financial-checks-required"
+      },
+      {
+        "id": "native-paper-20261030021230118:48:1793338835982",
+        "mint": "CuSa77nDG6jfXidaDLGTff7kje8eV34m86Qg4mhgpump",
+        "at": "2026-10-30T05:40:35.982Z",
+        "stage": "adaptive-predictive-failed",
+        "reason": "adaptive-genuine-demand-floor-not-met"
+      },
+      {
+        "id": "native-paper-20261030021230118:49:1793338836477",
+        "mint": "tBiGsX9yY39UfoppL1hrLrP9MCPPEnJde9C9jA4pump",
+        "at": "2026-10-30T05:40:36.477Z",
+        "stage": "adaptive-predictive-failed",
+        "reason": "adaptive-genuine-demand-floor-not-met"
+      }
+    ],
+    "refusals": [
+      {
+        "reason": "native-quality-gaps",
+        "count": 1501
+      },
+      {
+        "reason": "independent-audit-unavailable",
+        "count": 191
+      },
+      {
+        "reason": "independent-audit-unusable",
+        "count": 241
+      },
+      {
+        "reason": "predictive-window-deadline-missed",
+        "count": 620
+      },
+      {
+        "reason": "optional-diagnostic-omissions-not-required-flow",
+        "count": 450
+      }
+    ],
+    "pendingOrders": []
+  },
+  "funnel": {
+    "discovered": 390,
+    "supported": 390,
+    "sufficientlyObserved": 95,
+    "evaluated": 95,
+    "qualified": 1,
+    "attempted": 2,
+    "paperFilled": 1,
+    "exited": 1,
+    "reconciled": 6582
+  },
+  "balances": {
+    "cashSol": "9.3210895",
+    "reservedSol": "0",
+    "equitySol": "9.995622683",
+    "equityUsd": 979.471067,
+    "realizedUsd": -10.333556,
+    "unrealizedUsd": 13.662769,
+    "tradingPnlUsd": 3.329212,
+    "economicPnlUsd": null,
+    "positionCostUsd": 49.708013,
+    "markedExposureUsd": 63.746448,
+    "drawdownUsd": null,
+    "executionCostsUsd": null,
+    "operatingCostsUsd": null,
+    "passiveSolEquityUsd": 976.141854,
+    "solPriceUsd": 97.99
+  },
+  "positions": [
+    {
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "quantity": "65278155",
+      "enteredAt": "2026-10-29T22:23:36.537Z",
+      "entryCostUsd": 49.708013,
+      "netLiquidationUsd": 63.746448,
+      "executionCostsUsd": 0.00068,
+      "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+    }
+  ],
+  "trades": [
+    {
+      "id": "paper-fill:97844fecbc7122d16fd5803963f4709b",
+      "mint": "8r7gzXUXgqy4PaKfQ4bKUadUcVfZuFafMRJyJiEYpump",
+      "side": "sell",
+      "quantity": "4987415586352",
+      "at": "2026-10-30T02:33:22.864Z",
+      "valueUsd": 43.327651,
+      "executionCostsUsd": 0.000664,
+      "status": "PAPER filled",
+      "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:69032:1793327601701"
+    },
+    {
+      "id": "paper-fill:3212aa854b30998a52be4bf7c8331016",
+      "mint": "8r7gzXUXgqy4PaKfQ4bKUadUcVfZuFafMRJyJiEYpump",
+      "side": "buy",
+      "quantity": "4987415586352",
+      "at": "2026-10-30T02:29:48.157Z",
+      "valueUsd": 49.716546,
+      "executionCostsUsd": 0.000664,
+      "status": "PAPER filled",
+      "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:68919:1793327386466"
+    },
+    {
+      "id": "paper-fill:1a0c8cd86cd25f090f0307fb06d5f232",
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "side": "buy",
+      "quantity": "65278155",
+      "at": "2026-10-29T22:23:36.537Z",
+      "valueUsd": 49.707332,
+      "executionCostsUsd": 0.00068,
+      "status": "PAPER filled",
+      "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:61596:1793312614906"
+    },
+    {
+      "id": "paper-fill:4f9999cd2454f2f8b495153b077f3080",
+      "mint": "CNtdYoJq9viwsj5eogkK45Bn9HjMyGKWpU6GB2dwpump",
+      "side": "sell",
+      "quantity": "271921178563",
+      "at": "2026-10-29T20:05:58.456Z",
+      "valueUsd": 60.85611,
+      "executionCostsUsd": 0.000694,
+      "status": "PAPER filled",
+      "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:53370:1793304357294"
+    },
+    {
+      "id": "paper-fill:8f94d82f6f8d0cb7cd235b91a9ef4d44",
+      "mint": "CNtdYoJq9viwsj5eogkK45Bn9HjMyGKWpU6GB2dwpump",
+      "side": "buy",
+      "quantity": "271921178563",
+      "at": "2026-10-29T19:50:56.681Z",
+      "valueUsd": 49.698831,
+      "executionCostsUsd": 0.0007,
+      "status": "PAPER filled",
+      "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:52923:1793303455037"
+    },
+    {
+      "id": "paper-fill:def906f7b2cc4a0c2732c63eefbe322c",
+      "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+      "side": "sell",
+      "quantity": "195070637",
+      "at": "2026-10-29T19:28:56.225Z",
+      "valueUsd": 49.555833,
+      "executionCostsUsd": 0.0007,
+      "status": "PAPER filled",
+      "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:51615:1793302135089"
+    },
+    {
+      "id": "paper-fill:d5775daf8c2b9df708b307a2a99cb33c",
+      "mint": "qoRXadwqYw98Qe2TmQPrMJZzYXYM2vyA5NrTFDcpump",
+      "side": "buy",
+      "quantity": "195070637",
+      "at": "2026-10-29T19:13:54.251Z",
+      "valueUsd": 49.698274,
+      "executionCostsUsd": 0.000701,
+      "status": "PAPER filled",
+      "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:51167:1793301232511"
+    },
+    {
+      "id": "paper-fill:a3642f8273dedd56f127555852b6bf13",
+      "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+      "side": "sell",
+      "quantity": "1028422062926",
+      "at": "2026-10-29T17:25:39.189Z",
+      "valueUsd": 42.251924,
+      "executionCostsUsd": 0.000711,
+      "status": "PAPER filled",
+      "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:48201:1793294738055"
+    },
+    {
+      "id": "paper-fill:b48482a338aeb715f088a5ac1b2d5514",
+      "mint": "8NTU6e46S8c8VD3uscMAgz8sQYjF2GofuZy4znQwpump",
+      "side": "buy",
+      "quantity": "1028422062926",
+      "at": "2026-10-29T17:20:07.003Z",
+      "valueUsd": 49.694512,
+      "executionCostsUsd": 0.00071,
+      "status": "PAPER filled",
+      "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:48034:1793294405324"
+    },
+    {
+      "id": "paper-fill:8c86a04e730c26bd139f4d3e5783a07c",
+      "mint": "8TJ1uhidGn7PmzEtmftDUJkAxEcLpPNWqdvh42SZpump",
+      "side": "sell",
+      "quantity": "319987598",
+      "at": "2026-10-29T16:23:37.938Z",
+      "valueUsd": 49.63868,
+      "executionCostsUsd": 0.000715,
+      "status": "PAPER filled",
+      "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:47355:1793291016775"
+    },
+    {
+      "id": "paper-fill:c5c94babc37540a39bd3cf70c18d4cf2",
+      "mint": "8TJ1uhidGn7PmzEtmftDUJkAxEcLpPNWqdvh42SZpump",
+      "side": "buy",
+      "quantity": "319987598",
+      "at": "2026-10-29T16:08:35.958Z",
+      "valueUsd": 49.690465,
+      "executionCostsUsd": 0.00072,
+      "status": "PAPER filled",
+      "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:46914:1793290114273"
+    },
+    {
+      "id": "paper-fill:6dd8e14067d2b21a203ce5f5f1ecb921",
+      "mint": "AcBX8a8eHbzQghgqMfqXeAz4kQSRbtHWKUSGXvwMpump",
+      "side": "sell",
+      "quantity": "6411268419",
+      "at": "2026-10-29T15:16:50.857Z",
+      "valueUsd": 50.035441,
+      "executionCostsUsd": 0.000714,
+      "status": "PAPER filled",
+      "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:46296:1793287009656"
+    },
+    {
+      "id": "paper-fill:783fb910281022ac56bff60190469d36",
+      "mint": "AcBX8a8eHbzQghgqMfqXeAz4kQSRbtHWKUSGXvwMpump",
+      "side": "buy",
+      "quantity": "6411268419",
+      "at": "2026-10-29T15:01:47.821Z",
+      "valueUsd": 49.694031,
+      "executionCostsUsd": 0.000711,
+      "status": "PAPER filled",
+      "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:45874:1793286106180"
+    },
+    {
+      "id": "paper-fill:4f60a80e3a2a1138b54933655b1b7c13",
+      "mint": "Fa24xN13pzjmcx1dtKP9nBMMFCwLtXCJrtP5hSPKpump",
+      "side": "sell",
+      "quantity": "400582323928",
+      "at": "2026-10-29T09:18:01.660Z",
+      "valueUsd": 41.245086,
+      "executionCostsUsd": 0.000701,
+      "status": "PAPER filled",
+      "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:sell:41776:1793265480459"
+    },
+    {
+      "id": "paper-fill:f57e6eff547ba02b388fd8a44502d794",
+      "mint": "Fa24xN13pzjmcx1dtKP9nBMMFCwLtXCJrtP5hSPKpump",
+      "side": "buy",
+      "quantity": "400582323928",
+      "at": "2026-10-29T09:15:17.693Z",
+      "valueUsd": 49.698409,
+      "executionCostsUsd": 0.000701,
+      "status": "PAPER filled",
+      "reason": "Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. execution-attempt:buy:41696:1793265315521"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+✔ unsigned buy and sell encode exactly the charged compute bid before all SDK swap instructions (34.355814ms)
+✔ SDK-supplied duplicate or conflicting compute bids fail closed instead of creating an ambiguous fee (8.814995ms)
+✔ actual SDK exact-input unsigned buy bytes and same-state cost reproduction: 2026-10-26T19-41-20.717Z (14.422637ms)
+✔ actual SDK exact-input unsigned buy bytes and same-state cost reproduction: 2026-10-26T19-42-16.130Z (18.066847ms)
+✔ actual full-size sell uses current fee-adjusted liquidation and independent slippage constraint (20.812877ms)
+✔ exact-input buy minimum constraint is preserved rather than repriced downward (7.571106ms)
+✔ unsupported, incomplete, stale, future or malformed source/account assumptions fail closed (11.395612ms)
+✔ construction snapshots caller inputs before async work and retains source association (24.756729ms)
+✔ the exact SDK quote create/close pair and every real swap/setup byte remain intact (9.556042ms)
+✔ missing, duplicate or changed WSOL close layout fails closed rather than dropping unrelated instructions (39.469952ms)
+✔ base ATA persists while the quote ATA is recreated and unwrapped on every round trip (8.089242ms)
+✔ instruction construction cannot relabel a source which becomes stale while awaiting SDK work (7.599257ms)
+✔ strict transient quote model rejects retained quote inventory and absent/invalid current rent assumptions (0.741357ms)
+✔ exact quote creation layout, single occurrence and atomic swap ordering are mandatory (64.349078ms)
+✔ temporary quote rent proof binds amount, prep evidence, coherent source and exact atomic pair without inventing income (22.56614ms)
+✔ different mint transactions safely reuse the same global WSOL ATA only because every atomic template creates and closes it (12.709123ms)
+ℹ tests 16
+ℹ suites 0
+ℹ pass 16
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1004.558574
