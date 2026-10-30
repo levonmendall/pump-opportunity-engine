@@ -63,6 +63,27 @@ export function createDashboard(config: DashboardConfig) {
       }
       return;
     }
+    // Separate, signed reporting-only lifetime history from the original EC2
+    // account. The financial snapshot writer and current ingestion path stay
+    // unchanged; no Render disk or browser persistence is assumed.
+    if (path === '/api/equity-history' && req.method === 'POST') {
+      if (!equal(req.headers.authorization ?? '', publisher)) { req.resume(); send(res, 401, {error: 'unauthorized'}); return; }
+      if (cache.identity === null) { req.resume(); send(res, 503, {error: 'source-not-configured'}); return; }
+      if (req.headers['content-type']?.split(';')[0] !== 'application/json' || req.headers['content-encoding']) {
+        req.resume(); send(res, 415, {error: 'plain application/json required'}); return;
+      }
+      if (Number(req.headers['content-length'] ?? 0) > MAX_SNAPSHOT_BYTES) {
+        req.resume(); send(res, 413, {error: 'payload limit'}); return;
+      }
+      try { send(res, 200, {result: cache.acceptLifetimeEquityHistory(await readBody(req))}); }
+      catch (e) {
+        const message = e instanceof Error ? e.message : 'invalid-equity-history';
+        send(res, message.includes('NOT_CONFIGURED') ? 503 :
+          message === 'payload limit' || message.endsWith('_BOUND') ? 413 :
+          /REGRESSION|CONFLICT/.test(message) ? 409 : 400, {error: message});
+      }
+      return;
+    }
     if (viewer !== null && !equal(req.headers.authorization ?? '', viewer)) {
       res.setHeader('www-authenticate', 'Basic realm="POE owner", charset="UTF-8"');
       req.resume(); send(res, 401, { error: 'owner authentication required' }); return;
@@ -382,7 +403,13 @@ function plot(points){
  }
  const segments=[];let current=[];
  for(const point of valid){
-  if(current.length&&Date.parse(point.at)-Date.parse(current[current.length-1].at)>5*60*1000){
+  // Source-owned segment IDs preserve genuine outages when lifetime samples
+  // are downsampled: a long interval within one verified segment is not an
+  // outage. Legacy receiver-only readings continue using the five-minute gap.
+  if(current.length&&(
+    (Number.isSafeInteger(point.segment)&&Number.isSafeInteger(current[current.length-1].segment))
+      ? point.segment!==current[current.length-1].segment
+      : Date.parse(point.at)-Date.parse(current[current.length-1].at)>5*60*1000)){
    if(current.length>=2)segments.push(current);
    current=[];
   }
@@ -407,9 +434,12 @@ function showSnapshot(s,received,f,equityHistory=null){
  renderCandidateIntelligence();renderMetrics(s.metrics,s.source,s.intelligence||null);plot(latestEquityHistory?.points??[]);
  put('chartBasis','Actual portfolio equity in USD, matching Portfolio Overview.');put('chartLegend','PORTFOLIO EQUITY · USD');
  const orders=s.intelligence?s.intelligence.pendingOrders:[];renderTable('orders',['Decision / side','Token / minimum receive','Reserved SOL','Execution / expiry'],orders.map(o=>[o.decidedAt+' / '+o.side,o.mint+' / '+o.quantityMinimum,o.reservedSol,o.executeAt+' / '+o.expiresAt]),s.intelligence?'NO PENDING ORDERS':'PENDING-ACTION DETAIL UNAVAILABLE',s.intelligence?'No unresolved orders or reservations were reported by this account.':'This source does not publish order-level details. Missing detail does not establish that no action is pending.');
- put('chartTag',(latestEquityHistory?.points?.length??0)>=2?'EQUITY HISTORY':'COLLECTING EQUITY');
+ put('chartTag',latestEquityHistory?.retention==='ec2-durable-republished'?'LIFETIME EQUITY':
+    (latestEquityHistory?.points?.length??0)>=2?'TEMPORARY HISTORY':'COLLECTING EQUITY');
  put('freshness','Last source report '+s.times.generatedAt.slice(0,19).replace('T',' ')+' UTC');
- put('chartNote','Source: verified Portfolio Equity (USD), sampled up to once per minute for a rolling 24 hours. History begins with this reporting receiver; earlier equity values are not inferred.');
+ put('chartNote',latestEquityHistory?.retention==='ec2-durable-republished'?
+   'Original account lifetime · verified EC2 equity observations · durable source replay after restarts. Missing periods remain gaps'+(latestEquityHistory.downsampled?' · display downsampled.':'.'):
+   'Temporary receiver history (rolling 24 hours). Durable EC2 lifetime source not yet connected; earlier equity is not invented.');
  if(!s.intelligence){
   const state=String(f.state).toUpperCase();
   const bad=f.state==='stale'||f.state==='unavailable';

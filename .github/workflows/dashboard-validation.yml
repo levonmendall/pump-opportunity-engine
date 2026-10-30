@@ -12,10 +12,18 @@ on:
       - 'test/dashboard-pilot-ui.test.ts'
       - 'test/dashboard-pilot-integration.test.ts'
       - 'src/reporting.ts'
+      - 'src/lifetime-equity-contract.ts'
+      - 'src/lifetime-equity-store.ts'
+      - 'src/lifetime-equity-publisher.ts'
+      - 'test/lifetime-equity.test.ts'
+      - 'test/dashboard-equity-line.test.ts'
       - 'test/reporting.test.ts'
       - 'package*.json'
       - '.github/workflows/dashboard-validation.yml'
   workflow_dispatch:
+concurrency:
+  group: poe-dashboard-validation-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:

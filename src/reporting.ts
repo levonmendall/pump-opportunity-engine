@@ -1,5 +1,6 @@
 import { createHash } from 'node:crypto';
 import {validateOperatingIntelligence,ORIGINAL_POE_ACCOUNT,ORIGINAL_POE_INCEPTION,type OperatingIntelligence} from './operating-intelligence.js';
+import { EQUITY_GAP_MS, validateLifetimeEquityHistory, type LifetimeEquityHistory } from './lifetime-equity-contract.js';
 
 export const MAX_SNAPSHOT_BYTES = 128 * 1024;
 // The receiver records only source-reported portfolio equity (never trading P&L
@@ -13,10 +14,12 @@ export type ReceivedEquityHistory = {
   schemaVersion: 1;
   accountId: string | null;
   source: 'accepted-authoritative-portfolio-equity';
-  retention: 'receiver-memory-only';
+  retention: 'receiver-memory-only' | 'ec2-durable-republished';
+  downsampled?: boolean;
+  inceptionAt?: string;
   bucketMs: 60_000;
   windowLimited: boolean;
-  points: ReceivedEquityPoint[];
+  points: (ReceivedEquityPoint & {segment?: number; kind?: 'inception' | 'observed'})[];
 };
 
 export type ReportingIdentity = { accountId: string; inceptionAt: string; release: string; strategy: string };
@@ -206,6 +209,7 @@ export class SnapshotCache {
   private current: { snapshot: Snapshot; fingerprint: string; receivedAt: string } | null = null;
   private acceptedEquity: ReceivedEquityPoint[] = [];
   private equityWindowLimited = false;
+  private sourceEquity: LifetimeEquityHistory | null = null;
   constructor(readonly identity: ReportingIdentity | null = null) { if (identity !== null) validateIdentity(identity); }
   accept(value: unknown, now = Date.now()): 'accepted' | 'duplicate' {
     if (this.identity === null) throw new Error('source-not-configured');
@@ -239,8 +243,50 @@ export class SnapshotCache {
     }
     return 'accepted';
   }
-  /** Separate read-only chart history. Never injected into or substituted for an authoritative Snapshot. */
+  /**
+   * A durable, read-only EC2 series is periodically republished to recover
+   * after Render upgrades. No history is derived from P&L or written by Render.
+   */
+  acceptLifetimeEquityHistory(input: unknown, now = Date.now()): 'accepted' | 'duplicate' {
+    if (!this.identity || this.identity.accountId !== ORIGINAL_POE_ACCOUNT ||
+        this.identity.inceptionAt !== ORIGINAL_POE_INCEPTION) throw Error('EQUITY_ORIGINAL_SOURCE_NOT_CONFIGURED');
+    const history = validateLifetimeEquityHistory(input, now);
+    if (this.sourceEquity) {
+      const prior = BigInt(this.sourceEquity.lastSequence), next = BigInt(history.lastSequence);
+      if (next < prior) throw Error('EQUITY_HISTORY_REGRESSION');
+      if (next === prior) {
+        if (JSON.stringify(this.sourceEquity) !== JSON.stringify(history)) throw Error('EQUITY_HISTORY_CONFLICT');
+        return 'duplicate';
+      }
+      const prevLast = this.sourceEquity.points.at(-1)!;
+      const newest = history.points.at(-1)!;
+      if (Date.parse(newest.at) < Date.parse(prevLast.at)) throw Error('EQUITY_HISTORY_TIME_REGRESSION');
+    }
+    if (this.current) {
+      const source = this.current.snapshot, latest = history.points.at(-1)!;
+      if (latest.at === source.times.generatedAt && source.balances.equityUsd !== null &&
+          latest.equityUsd !== source.balances.equityUsd) throw Error('EQUITY_SOURCE_VALUE_CONFLICT');
+    }
+    this.sourceEquity = structuredClone(history);
+    return 'accepted';
+  }
+  /** Original-account equity only: current card and line can share the same actual source value. */
   equityHistory(): ReceivedEquityHistory {
+    if (this.sourceEquity) {
+      const history = this.sourceEquity, points = structuredClone(history.points);
+      const latest = points.at(-1)!;
+      const current = this.current?.snapshot;
+      if (current && current.balances.equityUsd !== null &&
+          Date.parse(current.times.generatedAt) > Date.parse(latest.at)) {
+        const at = Date.parse(current.times.generatedAt), prior = Date.parse(latest.at);
+        points.push({at: current.times.generatedAt, equityUsd: current.balances.equityUsd,
+          segment: latest.segment + (at - prior > EQUITY_GAP_MS ? 1 : 0), kind: 'observed'});
+      }
+      return {schemaVersion: 1, accountId: history.accountId,
+        source: 'accepted-authoritative-portfolio-equity', retention: 'ec2-durable-republished',
+        inceptionAt: history.inceptionAt, downsampled: history.downsampled,
+        bucketMs: 60_000, windowLimited: false, points};
+    }
     return {schemaVersion: 1, accountId: this.identity?.accountId ?? null,
       source: 'accepted-authoritative-portfolio-equity', retention: 'receiver-memory-only',
       bucketMs: 60_000, windowLimited: this.equityWindowLimited, points: structuredClone(this.acceptedEquity)};
