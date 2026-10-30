@@ -73,7 +73,7 @@ test('internal checkpoint proof verdict uses the existing bounded public refusal
 });
 
 test('owned RPC stage observations survive the existing bounded public channel without private errors or implied protection completion',()=>{
- const base=status(),stages=['provider-restriction','uninvoked-quota-or-spacing','physical-settlement-wait','physical-timeout','caller-cancel-before-physical','caller-cancel-during-physical','transport-or-node-response','local-admission'];
+ const base=status(),stages=['provider-restriction','protection-retry-paced','uninvoked-quota-or-spacing','physical-settlement-wait','physical-timeout','caller-cancel-before-physical','caller-cancel-during-physical','transport-or-node-response','local-admission'];
  const raw={...base,usage:{...base.usage,rpc:{...base.usage.rpc,startedAt:T-500000,protectionRecovery:{calls:6,logicalAttempts:7,rolling10SecondStarts:5,rolling60SecondStarts:28,rapidProbes:1,successesAfterRetry:1,refusals:2,providerRestrictionUntil:0,failureStages:Object.fromEntries([...stages.map((s,index)=>[s,index+1]),['https://private.example?apiKey=DO_NOT_EXPORT',500]]),lastFailure:{at:T-3000,stage:'caller-cancel-before-physical',physicalInFlight:false,privateError:'DO_NOT_EXPORT'},policy:{credential:'DO_NOT_EXPORT'}}}}};
  const before=structuredClone(raw),i=projectOperatingIntelligence(raw),notes=i.quality.limitations.join('\n');
  assert.match(notes,/current instance since 2026-10-28T22:51:40\.000Z/);assert.match(notes,/calls 6; logical attempts 7; rapid probes 1; RPC retry successes 1; dispatch refusals 2/);
@@ -99,7 +99,7 @@ test('malformed or future RPC diagnostics stay unknown and cannot export arbitra
 });
 
 test('maximum source-owned stage counters remain below existing notes and snapshot bounds',()=>{
- const base=status(),stages=['provider-restriction','uninvoked-quota-or-spacing','physical-settlement-wait','physical-timeout','caller-cancel-before-physical','caller-cancel-during-physical','transport-or-node-response','local-admission'],maximum=Number.MAX_SAFE_INTEGER;
+ const base=status(),stages=['provider-restriction','protection-retry-paced','uninvoked-quota-or-spacing','physical-settlement-wait','physical-timeout','caller-cancel-before-physical','caller-cancel-during-physical','transport-or-node-response','local-admission'],maximum=Number.MAX_SAFE_INTEGER;
  const raw={...base,reporting:{protectionHistory:{scope:'known-lower-bound',historyUnavailable:false}},observationReportingMeaning:Array(20).fill('Original source meaning'),usage:{...base.usage,rpc:{...base.usage.rpc,startedAt:T-600000,protectionRecovery:{calls:maximum,logicalAttempts:maximum,rolling10SecondStarts:maximum,rolling60SecondStarts:maximum,rapidProbes:maximum,successesAfterRetry:maximum,refusals:maximum,providerRestrictionUntil:0,failureStages:Object.fromEntries(stages.map(stage=>[stage,maximum])),lastFailure:{at:T-1,stage:'physical-timeout',physicalInFlight:true}}}}};
  const i=projectOperatingIntelligence(raw);assert.equal(i.quality.limitations.length,10);assert.ok(i.quality.limitations.every(note=>note.length<=512));assert.ok(Buffer.byteLength(JSON.stringify(i))<32*1024);validateOperatingIntelligence(i,iso(T));
 });

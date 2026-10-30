@@ -6,7 +6,7 @@ export const OPERATING_INTELLIGENCE_VERSION='poe-operating-intelligence-v1';
 type Count=number|null;
 const EVIDENCE_PRESSURE_CODES=['FILESYSTEM_RESERVE','RECORD_BOUND','YOUNG_DIAGNOSTIC_CAPACITY','YOUNG_SEGMENT_CAPACITY','DIAGNOSTIC_HEADROOM','DIAGNOSTIC_SEGMENT_HEADROOM','INTERRUPTED_ESSENTIAL_PROOF','CHECKPOINT_UNAVAILABLE','RECORD_IO_OR_INTEGRITY_FAILURE','FILESYSTEM_UNAVAILABLE','RETENTION_IO_OR_INTEGRITY_FAILURE','RECOVERY_CHECKPOINT_UNAVAILABLE','OTHER_UNEXPORTED_REASON'] as const;
 const RECOVERY_REASON_CODES=['ROLLING_RESOURCE_OR_EVIDENCE_PRESSURE','CANDIDATE_PROVIDER_FAILURE','CANDIDATE_STEP_UNAVAILABLE','OTHER_UNEXPORTED_REASON'] as const;
-const PROTECTION_FAILURE_STAGES=['provider-restriction','uninvoked-quota-or-spacing','physical-settlement-wait','physical-timeout','caller-cancel-before-physical','caller-cancel-during-physical','transport-or-node-response','local-admission'] as const;
+const PROTECTION_FAILURE_STAGES=['provider-restriction','protection-retry-paced','uninvoked-quota-or-spacing','physical-settlement-wait','physical-timeout','caller-cancel-before-physical','caller-cancel-during-physical','transport-or-node-response','local-admission'] as const;
 // Static projection contracts only; do not import the financial SDK/trader into
 // this read-only projection or copy arbitrary error text from those components.
 const ENTRY_QUOTE_PHASES=['admission','plan','pool-state','rent','freshness','evidence','post-evidence'] as const;
