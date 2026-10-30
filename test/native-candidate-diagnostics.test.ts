@@ -32,3 +32,9 @@ test('one worst-case source diagnostic note fits beside three held strategies an
  for(const key of['A','B','C'].map(v=>v.repeat(96)))raw.positions[key]={enteredAt:at-10000,strategy:{version:'adaptive-momentum-v2-paper-v1',highWaterNetLamports:'9'.repeat(38),highWaterAt:at-1000}};
  const i=projectOperatingIntelligence(raw);assert.equal(i.quality.limitations.length,10);assert.ok(i.quality.limitations.every(note=>note.length<=512));assert.ok(i.quality.limitations.some(note=>note.startsWith('Candidate instance')));assert.ok(!i.quality.limitations.some(note=>note.startsWith('Holding RPC current instance since')),'only optional call summary yields at full note capacity');assert.equal(i.quality.limitations.filter(note=>note.includes('Adaptive Momentum')).length,3);assert.equal(i.protection.maximumCompletedGapMs,89426);assert.equal(i.protection.breaches,73);validateOperatingIntelligence(i,new Date(at).toISOString());
 });
+
+
+test('noncanonical wire signatures retain their exact source-quality reason without an arbitrary error string',()=>{
+ const d=new NativeCandidateFailureDiagnostics(at-1000);d.observe({at,mint,kind:'quality-gap',reason:'NATIVE_FLOW_NONCANONICAL_SIGNATURE'});
+ assert.equal(d.snapshot().recent[0]!.reasonCode,'NATIVE_FLOW_NONCANONICAL_SIGNATURE');assert.equal(d.snapshot().byReason.NATIVE_FLOW_NONCANONICAL_SIGNATURE,1);
+});

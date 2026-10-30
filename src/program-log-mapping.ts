@@ -6,7 +6,7 @@ import {createRequire} from 'node:module';
 import {readFileSync} from 'node:fs';
 import {dirname,join} from 'node:path';
 import BN from 'bn.js';
-import bs58 from 'bs58';
+import {canonicalTransactionSignature} from './transaction-signature.js';
 import {BorshCoder,type Idl} from '@coral-xyz/anchor';
 import {PublicKey} from '@solana/web3.js';
 import {getAssociatedTokenAddressSync,NATIVE_MINT,TOKEN_PROGRAM_ID,TOKEN_2022_PROGRAM_ID} from '@solana/spl-token';
@@ -144,7 +144,7 @@ export function parseProgramLogActivity(input:ProgramLogInput,scopes:readonly Pr
 function parseProgramActivity(input:ProgramLogInput,scopes:readonly ProgramLogScope[],protocolOptIn:boolean):ProgramLogActivity{
  need(input.err===null,'TRANSACTION_NOT_SUCCESSFUL');need(input.commitment==='confirmed'||input.commitment==='finalized','REQUEST_COMMITMENT');need(integer(input.slot)&&integer(input.availableAt),'AVAILABILITY');
  need(input.receivedAt===undefined||integer(input.receivedAt)&&input.receivedAt<=input.availableAt,'RECEIPT_AVAILABILITY');
- need(typeof input.signature==='string'&&bs58.decode(input.signature).length===64,'SIGNATURE');
+ need(canonicalTransactionSignature(input.signature),'SIGNATURE');
  need(Array.isArray(input.logs)&&input.logs.length<=4096&&input.logs.every(s=>typeof s==='string'&&Buffer.byteLength(s)<=32768)&&Buffer.byteLength(JSON.stringify(input.logs))<=512*1024,'LOG_ENVELOPE');
  need(scopes.length>0&&scopes.length<=20,'SCOPES');const scopeMap=new Map<string,ProgramLogScope>();for(const scope of scopes){need(canonicalPumpPoolPda(new PublicKey(scope.mint)).toBase58()===scope.pool&&typeof scope.supportedPoolEvidence==='string'&&scope.supportedPoolEvidence.length>0&&scope.supportedPoolEvidence.length<=512&&!scopeMap.has(scope.pool),'VERIFIED_SCOPE_BINDING');need(scope.baseTokenProgram===undefined||[TOKEN_PROGRAM_ID.toBase58(),TOKEN_2022_PROGRAM_ID.toBase58()].includes(scope.baseTokenProgram),'VERIFIED_SCOPE_BASE_TOKEN_PROGRAM');scopeMap.set(scope.pool,scope);}
  const stack:Frame[]=[],result:ProgramLogEvidence[]=[],protocolEffects:ProtocolPoolEffect[]=[];let rootOrdinal=-1,frameOrdinal=-1,protocolFramesObserved=0;const rawNotificationSha256=digest(JSON.stringify({signature:input.signature,slot:input.slot,err:input.err,logs:input.logs}));

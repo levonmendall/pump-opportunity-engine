@@ -499,3 +499,90 @@ test('persistent native rolling bytes are telemetry and every received byte rema
  const f=setup({persistent:true,maximumRssBytes:1536*1024*1024}),socket=await f.open();const before=f.controlBytes;
  socket._socket.bytesRead+=65*1024*1024;socket._socket.emit('data',Buffer.alloc(0));await f.advance(200);const u=f.flow.usage();assert.equal(u.connected,true);assert.equal(u.fatal,null);assert.equal(u.stopped,false);assert.equal(u.rollingTraffic.pressure,true);assert.equal(u.rollingTraffic.admissionEnforced,false);assert.equal(f.controlBytes,socket._socket.bytesRead);assert.ok(f.controlBytes-before>=65*1024*1024);assert.equal(f.gaps.length,0);await f.flow.stop();
 });
+
+for(const dataContract of [CONFIRMED_PROGRAM_EVENTS_V2,CONFIRMED_PROGRAM_ACTIVITY_V3_SHADOW])for(const mode of ['program-event','nontrade','failed-transaction'] as const)test(`missing default signature cannot enter ${dataContract} ${mode} flow or audit fences`,async()=>{
+ const f=setup({dataContract}),socket=await f.open(),beforeBytes=f.controlBytes;
+ try{
+  f.notice(socket,{signature:'1'.repeat(64),...(mode==='nontrade'?{logs:[]}:{}),...(mode==='failed-transaction'?{err:{InstructionError:[1,{Custom:1}]}}:{})});
+  assert.equal(f.trades.length,0);assert.deepEqual(f.flow.notificationLedger(scope.mint),[]);assert.equal(f.flow.snapshot(scope.mint)?.normalizedEvents,0);
+  assert.equal(f.flow.usage().failedPacketDiagnostics.sourceReportedPackets,0,'an invalid identity cannot become a failed audit boundary');
+  assert.equal(f.flow.usage().noncanonicalNotifications,1);assert.equal(f.flow.usage().notifications,0);assert.equal(f.flow.usage().receivedBoundNotifications,1);
+  assert.equal(f.flow.usage().corrections,0);assert.equal(f.flow.snapshot(scope.mint)?.hasQualityLoss,true);assert.equal(f.flow.snapshot(scope.mint)?.suspended,true);
+  assert.equal(f.flow.snapshot(scope.mint)?.lastGapReason,'NATIVE_FLOW_NONCANONICAL_SIGNATURE');assert.equal(f.flow.usage().fatal,null,'the defect is scoped, not an engine/other-pool failure');
+  assert.ok(f.controlBytes>beforeBytes);assert.equal(f.controlBytes,socket._socket.bytesRead,'actual rejected provider bytes remain charged');
+  const refusal=f.records.find(r=>r.kind==='native-flow-noncanonical-notification-refused')!;
+  assert.equal(refusal.data.signature,'1'.repeat(64));assert.equal(refusal.data.selectedInformationAdmitted,false);assert.equal(refusal.data.requiresFreshWindow,true);assert.match(refusal.data.rawHash,/^[a-f0-9]{64}$/);
+  assert.ok(f.records.some(r=>r.kind==='native-flow-raw-refusal'&&r.data.reason==='NATIVE_FLOW_NONCANONICAL_SIGNATURE'));
+  assert.equal(f.records.some(r=>r.kind==='native-flow-validated-events'),false);
+ }finally{await f.flow.stop();}
+});
+
+test('missing, malformed and overlong active signatures fail closed before native event parsing',async()=>{
+ for(const signature of [undefined,'abc','0'.repeat(64),'x'.repeat(101)]){
+  const f=setup(),socket=await f.open();try{
+   socket.frame({jsonrpc:'2.0',method:'logsNotification',params:{subscription:f.flow.snapshot(scope.mint)!.subscription,result:{context:{slot:tx.slot},value:{...(signature===undefined?{}:{signature}),err:null,logs:clone(tx.meta.logMessages)}}}});
+   assert.equal(f.trades.length,0);assert.deepEqual(f.flow.notificationLedger(scope.mint),[]);assert.equal(f.flow.snapshot(scope.mint)?.lastGapReason,'NATIVE_FLOW_NONCANONICAL_SIGNATURE');assert.equal(f.flow.usage().fatal,null);assert.equal(f.controlBytes,socket._socket.bytesRead);
+  }finally{await f.flow.stop();}
+ }
+});
+
+test('default signature cannot contaminate another scope or a later real transaction identity',async()=>{
+ const f=setup({maximumCandidates:2,dataContract:CONFIRMED_PROGRAM_ACTIVITY_V3_SHADOW}),socket=await f.open(),mint=new PublicKey(Buffer.alloc(32,25)),other={mint:mint.toBase58(),pool:canonicalPumpPoolPda(mint).toBase58(),minSlot:0};await f.open(other);
+ try{
+  // The malformed copy is delivered to the other pool while containing the
+  // retained first pool's valid-looking logs. It must never be mapped across.
+  socket.frame({jsonrpc:'2.0',method:'logsNotification',params:{subscription:f.flow.snapshot(other.mint)!.subscription,result:{context:{slot:tx.slot},value:{signature:'1'.repeat(64),err:null,logs:clone(tx.meta.logMessages)}}}});
+  assert.equal(f.trades.length,0);assert.deepEqual(f.flow.notificationLedger(scope.mint),[]);assert.equal(f.flow.snapshot(scope.mint)?.hasQualityLoss,false);assert.equal(f.flow.snapshot(other.mint)?.hasQualityLoss,true);
+  f.notice(socket);assert.equal(f.trades.length,1,'a genuine retained nonzero identity in the unaffected scope remains usable');assert.equal(f.flow.snapshot(scope.mint)?.hasQualityLoss,false);assert.equal(f.flow.usage().corrections,0);assert.equal(f.controlBytes,socket._socket.bytesRead);
+ }finally{await f.flow.stop();}
+});
+
+test('a retired default signature cannot become a correction for a current scope',async()=>{
+ const f=setup({maximumCandidates:2}),socket=await f.open(),mint=new PublicKey(Buffer.alloc(32,25)),other={mint:mint.toBase58(),pool:canonicalPumpPoolPda(mint).toBase58(),minSlot:0};await f.open(other);const retired=f.flow.snapshot(other.mint)!.subscription!;
+ try{
+  f.flow.removeCandidate(other.mint,'OFFLINE_RETIRED_DEFAULT');await f.drive();
+  socket.frame({jsonrpc:'2.0',method:'logsNotification',params:{subscription:retired,result:{context:{slot:tx.slot},value:{signature:'1'.repeat(64),err:null,logs:clone(tx.meta.logMessages)}}}});
+  assert.equal(f.flow.usage().corrections,0);assert.equal(f.flow.usage().retiredCorrectionNotifications,0);assert.equal(f.flow.usage().noncanonicalNotifications,1);assert.equal(f.flow.snapshot(scope.mint)?.hasQualityLoss,false);assert.equal(f.flow.usage().fatal,null);
+  const refusal=f.records.find(r=>r.kind==='native-flow-noncanonical-notification-refused')!;assert.equal(refusal.data.requiresFreshWindow,false);
+  f.notice(socket);assert.equal(f.trades.length,1);assert.equal(f.controlBytes,socket._socket.bytesRead);
+ }finally{await f.flow.stop();}
+});
+
+test('an unknown default-signature subscription retains bounded transport recovery without admitting flow',async()=>{
+ const f=setup(),socket=await f.open();try{
+  socket.frame({jsonrpc:'2.0',method:'logsNotification',params:{subscription:9999999,result:{context:{slot:tx.slot},value:{signature:'1'.repeat(64),err:null,logs:[]}}}});await settle();
+  assert.equal(f.flow.usage().fatal,null);assert.equal(f.flow.usage().transportIntegrityGaps,1);assert.equal(f.flow.usage().lastTransportIntegrityGap!.reason,'NATIVE_FLOW_UNSCOPED_NOTIFICATION');assert.equal(f.trades.length,0);assert.equal(f.flow.snapshot(scope.mint)?.hasQualityLoss,true);assert.equal(f.controlBytes,socket._socket.bytesRead);
+  const row=f.records.find(r=>r.kind==='native-flow-unscoped-notification')!;assert.equal(row.data.wellFormed,true);assert.equal(row.data.selectedInformationAdmitted,false);
+ }finally{await f.flow.stop();}
+});
+
+test('a frame-sized malformed signature is hashed while the complete retained refusal is budgeted',async()=>{
+ const f=setup(),socket=await f.open();try{
+  f.notice(socket,{signature:'x'.repeat(400000),logs:[]});
+  const refusal=f.records.find(r=>r.kind==='native-flow-raw-refusal')!;
+  assert.ok(refusal);assert.equal(Object.hasOwn(refusal.data,'signature'),false);assert.match(refusal.data.signatureSha256,/^[a-f0-9]{64}$/);assert.ok(Buffer.byteLength(JSON.stringify(refusal))<1024);
+  assert.equal(f.flow.usage().rawEvidence.refusalBytes,Buffer.byteLength(JSON.stringify(refusal)),'full retained event envelope consumes the refusal reserve');
+  assert.equal(f.trades.length,0);assert.equal(f.flow.snapshot(scope.mint)?.hasQualityLoss,true);assert.equal(f.controlBytes,socket._socket.bytesRead);
+ }finally{await f.flow.stop();}
+});
+
+test('raw refusal metadata cannot exceed its byte reserve when the received frame is within the transport bound',async()=>{
+ const f=setup(),socket=await f.open();try{
+  const packet={jsonrpc:'2.0',method:'logsNotification',params:{subscription:f.flow.snapshot(scope.mint)!.subscription,result:{context:{slot:tx.slot},value:{signature:'1'.repeat(64),err:null,logs:['']}}}};
+  packet.params.result.value.logs[0]='x'.repeat(512*1024-Buffer.byteLength(JSON.stringify(packet)));
+  assert.equal(Buffer.byteLength(JSON.stringify(packet)),512*1024);socket.frame(packet);
+  assert.equal(f.records.some(r=>r.kind==='native-flow-raw-refusal'),false,'the retained envelope is larger than the frame and must not overrun its reserve');
+  assert.equal(f.flow.usage().rawEvidence.refusalBytes,0);assert.equal(f.flow.usage().rawEvidence.refusalPayloadsOmitted,1);
+  assert.ok(f.records.some(r=>r.kind==='native-flow-raw-refusal-unavailable'&&r.data.rawPayloadBytes>512*1024));
+  assert.equal(f.flow.usage().noncanonicalNotifications,1);assert.equal(f.flow.snapshot(scope.mint)?.hasQualityLoss,true);assert.equal(f.controlBytes,socket._socket.bytesRead);
+ }finally{await f.flow.stop();}
+});
+
+test('the existing parser-refusal path also budgets its complete retained raw event envelope',async()=>{
+ const f=setup(),socket=await f.open();try{
+  const logs=clone(tx.meta.logMessages) as string[],label=logs.findIndex(line=>line.startsWith('Program log: Instruction: ')&&/Buy|Sell/.test(line));assert.ok(label>=0);logs[label]='Program log: Instruction: OfflineUnsupportedExecutedSwap';
+  f.notice(socket,{logs});const raw=f.records.find(r=>r.kind==='native-flow-raw-refusal')!;
+  assert.ok(raw);assert.equal(f.flow.usage().rawEvidence.refusalBytes,Buffer.byteLength(JSON.stringify(raw)),'ordinary parsing and noncanonical identity refusals share the same complete-byte reserve');assert.ok(f.flow.usage().rawEvidence.refusalBytes>Buffer.byteLength(JSON.stringify(logs)));
+  assert.equal(f.trades.length,0);assert.equal(f.flow.snapshot(scope.mint)?.hasQualityLoss,true);assert.equal(f.controlBytes,socket._socket.bytesRead);
+ }finally{await f.flow.stop();}
+});
