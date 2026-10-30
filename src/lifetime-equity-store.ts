@@ -111,20 +111,24 @@ function sidecarFile(file:string) {
  * The hardlink and descriptor identity checks prevent aliasing another file.
  */
 function verifyExistingSidecar(file:string) {
-  const before=sidecarFile(file),db=new Database(file,{readonly:true,fileMustExist:true});
+  const before=sidecarFile(file);
+  // A private zero-byte sidecar has no retained observations to overwrite.
+  if(before.size===0)return before;
+  const db=new Database(file,{readonly:true,fileMustExist:true});
   try {
     const application=db.pragma('application_id',{simple:true});
     const tables=db.prepare("SELECT type,name FROM sqlite_schema WHERE name NOT LIKE 'sqlite_%' ORDER BY name").all() as {type:string;name:string}[];
-    if(![0,SIDECAR_APPLICATION_ID].includes(application as number)||
-        tables.length!==SIDECAR_TABLES.length||tables.some((row,i)=>row.type!=='table'||row.name!==SIDECAR_TABLES[i]))
+    const pendingOwnInitialization=application===SIDECAR_APPLICATION_ID&&tables.length===0;
+    if(!pendingOwnInitialization&&(![0,SIDECAR_APPLICATION_ID].includes(application as number)||
+        tables.length!==SIDECAR_TABLES.length||tables.some((row,i)=>row.type!=='table'||row.name!==SIDECAR_TABLES[i])))
       throw Error('EQUITY_SIDECAR_FOREIGN_SCHEMA');
-    for(const table of SIDECAR_TABLES) {
+    for(const table of pendingOwnInitialization?[]:SIDECAR_TABLES) {
       const columns=db.pragma('table_info('+table+')') as {name:string}[];
       if(JSON.stringify(columns.map(row=>row.name))!==JSON.stringify(SIDECAR_COLUMNS[table]))throw Error('EQUITY_SIDECAR_FOREIGN_SCHEMA');
     }
-    const identity=db.prepare(SQL.meta).get() as MetaRow|undefined;
-    if(!identity||identity.account_id!==ORIGINAL_POE_ACCOUNT||identity.inception_at!==ORIGINAL_POE_INCEPTION)
-      throw Error('EQUITY_SIDECAR_ACCOUNT_CONFLICT');
+    if(!pendingOwnInitialization){const identity=db.prepare(SQL.meta).get() as MetaRow|undefined;
+      if(!identity||identity.account_id!==ORIGINAL_POE_ACCOUNT||identity.inception_at!==ORIGINAL_POE_INCEPTION)
+        throw Error('EQUITY_SIDECAR_ACCOUNT_CONFLICT');}
   } finally {db.close();}
   const after=sidecarFile(file);
   if(before.dev!==after.dev||before.ino!==after.ino||before.size!==after.size||before.mtimeMs!==after.mtimeMs||before.ctimeMs!==after.ctimeMs)
@@ -154,12 +158,14 @@ export class LifetimeEquityStore {
     }
     this.db = new Database(file, {fileMustExist: true});
     const opened=sidecarFile(file);
-    if(opened.dev!==checked.dev||opened.ino!==checked.ino){this.db.close();throw Error('EQUITY_SIDECAR_FILE_CHANGED');}
+    if(opened.dev!==checked.dev||opened.ino!==checked.ino||opened.size!==checked.size||opened.mtimeMs!==checked.mtimeMs||opened.ctimeMs!==checked.ctimeMs){this.db.close();throw Error('EQUITY_SIDECAR_FILE_CHANGED');}
     chmodSync(file, 0o600);
     this.db.pragma('application_id = '+SIDECAR_APPLICATION_ID);
     this.db.pragma('journal_mode = WAL');
     this.db.pragma('synchronous = FULL');
     this.db.pragma('busy_timeout = 1000');
+    // Schema and inception are one transaction; a crash cannot leave partial tables.
+    this.db.transaction(() => {
     this.db.exec(`
       CREATE TABLE IF NOT EXISTS equity_identity (
         id INTEGER PRIMARY KEY CHECK(id=1),
@@ -188,7 +194,6 @@ export class LifetimeEquityStore {
         observation_count INTEGER NOT NULL
       );
     `);
-    this.db.transaction(() => {
       const existing = this.meta();
       if (existing) {
         if (existing.account_id !== ORIGINAL_POE_ACCOUNT ||
