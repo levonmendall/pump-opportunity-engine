@@ -1,0 +1,387 @@
+{
+  "kind": "poe-independent-actual69-install-and-prestop-evidence-verification",
+  "workflowRunId": 40990386819,
+  "source": {
+    "commit": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+    "sha256": "bbdd0515089a823600c158c668e6a3f76a0a92525422d63677989d963ae43480"
+  },
+  "installationVerified": true,
+  "phase": "new-source-post-start-prefix-verified-render-gate-pending",
+  "configurationSha256": "ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db",
+  "installedInputSha256": "6034e83be9ddbb8233c38141c36af97e03d55e3cf99155b65e7f14b0aed469c0",
+  "configuredPositionCapacity": 2,
+  "configuredDeepObservationCapacity": 4,
+  "capacityBasis": "Exact installed runtime configuration hash equals independently imported service=true/stage=two/deepSlots=4/activeV2 configuration; actual post-start private identity/config proof is in the root receipt. This does not prove two holdings have occurred.",
+  "financialVerification": {
+    "identityAndInceptionPreserved": true,
+    "initialFundingAndRoundingPreserved": true,
+    "journalAndActionPrefixPreserved": true,
+    "priorRevision": 68385,
+    "currentRevision": 68386,
+    "currentStateBodySha256": "cd9fd4f5668f1ecca2d2673f765c5280439bf11575b5df1e7fa19a66072a2df6",
+    "prefix": {
+      "actions": {
+        "priorRows": 68385,
+        "exactPriorRowsRetained": true,
+        "currentRows": 68386
+      },
+      "journal": {
+        "priorRows": 68386,
+        "exactPriorRowsRetained": true,
+        "currentRows": 68387
+      }
+    },
+    "comparison": "whole-column-ordered-exact-prefix",
+    "originalSqliteOwnerUid": 988,
+    "financialDatabaseWrites": 0,
+    "backupRestored": false
+  },
+  "service": {
+    "MainPID": "2482038",
+    "NRestarts": "0",
+    "ActiveState": "active",
+    "SubState": "running",
+    "User": "poe-runtime",
+    "Group": "poe-runtime"
+  },
+  "ownedProcessRoles": [
+    {
+      "pid": 2482038,
+      "role": "original-supervisor",
+      "ownerUid": 988,
+      "cpuSeconds": 0.41,
+      "rssBytes": 31346688,
+      "nice": 0,
+      "explicitMaxOldSpaceSizeMiB": [],
+      "argvExported": false
+    },
+    {
+      "pid": 2482041,
+      "role": "native-source",
+      "ownerUid": 988,
+      "cpuSeconds": 10.07,
+      "rssBytes": 353603584,
+      "nice": 0,
+      "explicitMaxOldSpaceSizeMiB": [
+        1024
+      ],
+      "argvExported": false
+    },
+    {
+      "pid": 2482042,
+      "role": "original-publisher",
+      "ownerUid": 988,
+      "cpuSeconds": 0.38,
+      "rssBytes": 96841728,
+      "nice": 0,
+      "explicitMaxOldSpaceSizeMiB": [
+        128
+      ],
+      "argvExported": false
+    }
+  ],
+  "publicStatus": {
+    "sha256": "4bf8446f7402ac1fddbdaa91a869bcdd047412796699b0e27a20331fedb7825c",
+    "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "release": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+    "strategy": "adaptive-momentum-v2-paper-v1",
+    "generatedAt": "2026-10-30T02:13:02.607Z",
+    "entriesDisabled": true,
+    "flowVerified": false,
+    "mode": "PAPER",
+    "liveTrading": false,
+    "blocker": "POE_ENTRY_USD_UNAVAILABLE",
+    "shortlistCount": 4,
+    "feedConnected": true,
+    "lastUsefulProgressAt": "2026-10-30T02:12:55.016Z",
+    "lastReconciledAt": "2026-10-30T02:12:55.016Z",
+    "lastMigrationReceivedAt": null,
+    "reportingConfigured": true
+  },
+  "acceptedSource": {
+    "available": true,
+    "sha256": "fa5dd2118b3d6553a5b65562da5daa52234a13013125fdb17fe51b1836fdad0d",
+    "value": {
+      "schemaVersion": 1,
+      "kind": "poe-original-snapshot-delivery-receipt-v1",
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "source": {
+        "commit": "5675961a0ad05df508eec6928644c9e403be0811",
+        "sha256": "157c34efd86bc0b5ae78aa268afe5afc7d3a4c4db8edcbb181445cad92ccb6ae"
+      },
+      "runId": "native-paper-20261030010446598",
+      "sourceAtMs": 1793326327048,
+      "sequence": "11290",
+      "fingerprint": "3f52a207c390330a3d73cfaa9b02ec728ebac9d3573c5fcc44e38d4f3f13bc3d",
+      "rawSourceSha256": "fec3889f3f601744ac8aa7b4be5647638f11c3e0b7fe584b907a287ff4b9c9ac",
+      "acknowledgedAtMs": 1793326334020,
+      "observedBySupervisorAtMs": 1793326334366,
+      "acceptedDistinctSourcesThisSupervisor": 253,
+      "meaning": "Duplicate metadata of an already matched original-channel Render acknowledgement; source timestamp is unchanged. No financial or market evidence is replaced."
+    }
+  },
+  "newSourceAcknowledgedAtInspection": false,
+  "interruption": {
+    "stopRequestedAt": 1793326346236,
+    "physicalStopVerifiedAt": 1793326349473,
+    "startRequestedAt": 1793326349715,
+    "localVerificationAt": 1793326351757,
+    "stopToStartMs": 242,
+    "observedNewSource": {
+      "available": true,
+      "sourceTimestamp": "2026-10-30T02:12:31.109Z",
+      "statusSha256": "67551e5e55dade12b09f77eeb785d10310c07c65dfb1a3b8230928cf2a7ac633",
+      "observedAt": 1793326351239,
+      "accountId": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+      "inceptionAt": "2026-10-26T22:07:36.212Z",
+      "release": "69aa1ef214a8c79524a25a8aca79299ccaad93dc"
+    },
+    "continuousCoverageClaimed": false
+  },
+  "forensic": {
+    "originalExportBytes": 106497,
+    "originalExportSha256": "a66e5b9aadea925ca7d4079f11ff19ab92318df9016dd468297d63223a8bba43",
+    "strictReaderVerified": true,
+    "rootCopySha256": "a66e5b9aadea925ca7d4079f11ff19ab92318df9016dd468297d63223a8bba43",
+    "projectedCopySha256": "d04adf2313a7c6638b86bc8a4b9239b6ed8ecb977a126da67c3a4f3d254e36b7",
+    "originalCurrentRun": "native-paper-20261030010446598",
+    "prestopGeneratedUtc": "2026-10-30T02:12:22.129000+00:00",
+    "prestopHeldPositions": 1,
+    "prestopHoldingFailureMap": {
+      "HELD_PRICING_DISPATCH_UNAVAILABLE": 10,
+      "HELD_PRICING_PROVIDER_TIMEOUT": 2
+    },
+    "prestopHeldLinkCache": {
+      "networkCalls": 2137,
+      "linkCacheHits": 2135,
+      "invalidations": 0,
+      "retainedLinkReadFailures": 12,
+      "highestVerifiedSlot": 463112045,
+      "cachePoolCapacity": 9,
+      "dependencyAccountCapacity": 40,
+      "cachedPoolSlot": 463112045,
+      "timeEvidence": {
+        "code": "confirmed-bank-clock",
+        "sha256": "9ece842ec94ab926bf47596bd747c3338a62b0ce38a3f954576607e334b004f0"
+      }
+    },
+    "prestopEntryPricingSummary": {
+      "preparedEntryCostPlans": 34,
+      "entryQuoteCalls": 0,
+      "entryExecutionQuotes": 0
+    },
+    "currentRpcStatus": {
+      "available": true,
+      "runId": "native-paper-20261030010446598",
+      "fileSha256": "6e227590b1b92a1f00825952b4b460d902a3841bcd512e96d5d406a36db65e47",
+      "diagnostics": {
+        "startedAt": 1793322286653,
+        "projectionGeneratedAt": 1793326344979,
+        "closed": false,
+        "cooldownUntil": 1793326068438,
+        "controlCooldownUntil": 0,
+        "historyCooldownUntil": 1793322686761,
+        "requestLimits": {
+          "maxStartsPer10s": 20,
+          "maxStartsPerMinute": 90,
+          "minSpacingMs": 250,
+          "physicalInFlight": 1
+        },
+        "dispatchWindow": {
+          "waitMs": 148,
+          "physicalBusy": false,
+          "actualPhysicalBusy": false
+        },
+        "rpcDispatchWindow": {
+          "waitMs": 147,
+          "physicalBusy": false,
+          "actualPhysicalBusy": false
+        },
+        "controlDispatchWindow": {
+          "waitMs": 147,
+          "physicalBusy": false,
+          "actualPhysicalBusy": false
+        },
+        "historyDispatchWindow": {
+          "waitMs": 147,
+          "physicalBusy": false,
+          "actualPhysicalBusy": false
+        },
+        "protectionDispatchWindow": {
+          "waitMs": 147,
+          "physicalBusy": false,
+          "actualPhysicalBusy": false
+        },
+        "protectionRecovery": {
+          "calls": 2138,
+          "logicalAttempts": 2130,
+          "rapidProbes": 6,
+          "successesAfterRetry": 0,
+          "refusals": 10,
+          "failureStages": {
+            "uninvoked-quota-or-spacing": 9,
+            "physical-timeout": 3,
+            "physical-settlement-wait": 1,
+            "local-admission": 1
+          },
+          "lastFailure": {
+            "at": 1793324855289,
+            "stage": {
+              "code": "uninvoked-quota-or-spacing",
+              "sha256": "c44fd2db0260708575eff40493e28e2af9c844b76ec2e05d1d54ad0a20cdecb9"
+            },
+            "physicalInFlight": false
+          },
+          "policy": {
+            "version": {
+              "code": "bounded-owned-pricing-recovery-v1",
+              "sha256": "6b106f35f30589e885879dec1bfd43d8e9c5bf163bf80cdd7c9bfd96ddec4341"
+            },
+            "maximumPhysicalReads": 2,
+            "maximumReadMs": 2000,
+            "physicalTimeoutMs": 1000,
+            "validationReserveMs": 125,
+            "rapidProbeIntervalMs": 10000,
+            "outageProbeMs": 2000,
+            "pollMs": 25,
+            "normalStartsPer10s": 5,
+            "normalStartsPerMinute": 30,
+            "rapidStartsPer10s": 1,
+            "rapidStartsPerMinute": 6
+          },
+          "rolling60SecondStarts": 30,
+          "rolling10SecondStarts": 5,
+          "providerRestrictionUntil": 1793322177172,
+          "probeAt": 0
+        },
+        "inFlight": 0,
+        "waitingOrOperating": false,
+        "currentUninvokedReservationCredit": 0
+      }
+    },
+    "scan": {
+      "matchingKindCounts": {
+        "research-clock-pool-state": 147,
+        "research-clock-position-sell-quote": 137,
+        "trader-context": 151,
+        "trader-held-evaluation": 151,
+        "research-clock-observation-support": 9,
+        "research-clock-verified-links-retained": 12,
+        "pilot-entry-cost-preparation": 7,
+        "trader-pilot-entry-deposit": 7,
+        "trader-quote": 6,
+        "research-clock-buy-quote": 1
+      },
+      "bytesRead": 23283938,
+      "scanBudgetReached": false,
+      "factCapacityReached": true,
+      "selectionUnknown": true,
+      "stateSha256": "c2011352cadfbc3f11465e2857f9d0838f426450a8230302a5632601c59e537a",
+      "manifestFilesRead": 41,
+      "manifestBytesRead": 21791,
+      "manifestUnavailable": 1,
+      "matchedEssentialSegments": 2,
+      "manifestSelectionTruncated": false
+    },
+    "sampledWindows": [
+      {
+        "fromUtc": "2026-10-30T01:18:00+00:00",
+        "untilUtcExclusive": "2026-10-30T01:20:00+00:00",
+        "selectedFacts": 66,
+        "kindCounts": {
+          "research-clock-position-sell-quote": 20,
+          "trader-context": 22,
+          "trader-held-evaluation": 22,
+          "trader-quote": 2
+        },
+        "selectedHeldChecks": 22,
+        "verifiedUnusableHeldChecks": 0,
+        "unusableAtUtc": [],
+        "selectedDecisionQuoteFacts": [
+          {
+            "kind": "trader-quote",
+            "at": 1793323167764,
+            "data": {
+              "at": 1793323167764,
+              "purpose": {
+                "code": "decision",
+                "sha256": "86ae35d58a6aa3b5742df94ef9d7162219f0106a911ae1954c1f0604aaec805d"
+              },
+              "request": {
+                "mint": {
+                  "code": "UNKNOWN_HASHED",
+                  "sha256": "9b5a33c84571116715845f53f41e04fc971879e116d024d031ea86ab47b09cbf"
+                },
+                "side": {
+                  "code": "buy",
+                  "sha256": "e8197b20f8e71e429645f83cc6f07d9d43ee7a30ef5dc6c02dd16692a7bc9aac"
+                },
+                "minSlot": 463097124
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          },
+          {
+            "kind": "trader-quote",
+            "at": 1793323188067,
+            "data": {
+              "at": 1793323188067,
+              "purpose": {
+                "code": "decision",
+                "sha256": "86ae35d58a6aa3b5742df94ef9d7162219f0106a911ae1954c1f0604aaec805d"
+              },
+              "request": {
+                "mint": {
+                  "code": "UNKNOWN_HASHED",
+                  "sha256": "9b5a33c84571116715845f53f41e04fc971879e116d024d031ea86ab47b09cbf"
+                },
+                "side": {
+                  "code": "buy",
+                  "sha256": "e8197b20f8e71e429645f83cc6f07d9d43ee7a30ef5dc6c02dd16692a7bc9aac"
+                },
+                "minSlot": 463097220
+              }
+            },
+            "runAttribution": "time-correlated-with-verified-current-run"
+          }
+        ]
+      },
+      {
+        "fromUtc": "2026-10-30T01:25:00+00:00",
+        "untilUtcExclusive": "2026-10-30T01:27:15+00:00",
+        "selectedFacts": 86,
+        "kindCounts": {
+          "trader-held-evaluation": 34,
+          "research-clock-position-sell-quote": 26,
+          "trader-context": 26
+        },
+        "selectedHeldChecks": 34,
+        "verifiedUnusableHeldChecks": 7,
+        "unusableAtUtc": [
+          "2026-10-30T01:25:29.138000+00:00",
+          "2026-10-30T01:25:31.178000+00:00",
+          "2026-10-30T01:25:33.221000+00:00",
+          "2026-10-30T01:25:35.260000+00:00",
+          "2026-10-30T01:25:39.228000+00:00",
+          "2026-10-30T01:25:39.317000+00:00",
+          "2026-10-30T01:25:42.374000+00:00"
+        ],
+        "selectedDecisionQuoteFacts": []
+      }
+    ],
+    "limits": [
+      "Only two bounded historical intervals are sampled. Omission/missing manifest/rotation and fact-capacity remain explicit UNKNOWN.",
+      "The current RPC protectionRecovery counters aggregate the whole567 run; their last failure is later than the sampled incident and cannot identify every historical request cause.",
+      "The567 uninvoked-quota-or-spacing label combines distinct causes; do not label all9 occurrences as actual quota exhaustion.69 has a more precise classification.",
+      "The selected quote records do not retain detailed ancillary rent/SDK physical timing sufficient for exact live failure attribution; the actual-class reproducible defect is a separate engineering proof.",
+      "Current69 holding identity/units require new authoritative Render financial snapshots; this read-only maintenance inspector intentionally excludes inventory."
+    ]
+  },
+  "financialDatabaseOpened": false,
+  "credentialReads": 0,
+  "providerRequests": 0,
+  "serviceChanges": 0,
+  "operationalAcceptance": false
+}
