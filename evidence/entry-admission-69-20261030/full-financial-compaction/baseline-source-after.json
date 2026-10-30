@@ -1,0 +1,8 @@
+{
+  "src/component-budget.ts": "1ffe9627926bfc286f6a6040f58d5117dd37618077e3cd54c5be3c6007d65d67",
+  "src/research-baseline.ts": "f334972642db61ab80702e7df1b93742700ba6f71092634ec986642b1b1c790c",
+  "src/pilot-rpc.ts": "9f089185d82f3441dfe4cae7bd700e6d0d22f42fb2de0005599615ea3f20e0a4",
+  "src/native-paper.ts": "0c5585e37fe61885219a5e07749dee2f8e735bae262cd91665edd947000ddbea",
+  "src/run-native-paper.ts": "181d3fa5dbf870f3f8da6d5d678ea01fd0205a81abb5096a93a1dc01653b3bc0",
+  "test/native-paper-integration.test.ts": "9d949adc33b14c1006cd55e8837e13b396065be097ab04f760d306833b0fc8fa"
+}

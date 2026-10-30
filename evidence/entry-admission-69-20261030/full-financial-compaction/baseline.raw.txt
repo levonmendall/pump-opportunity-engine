@@ -1,0 +1,10 @@
+✔ BASELINE full two-held PAPER protection exposes the final-admission compaction producer (1273.166481ms)
+ℹ {"scope":"OFFLINE actual NativePaper/Trader/SDK/TWO held ledger plus actual physical budget, rollover and checkpoint; synthetic flow/Clock/liquidity and injected final-admission failures; not live protection acceptance","ghosts":53,"physical":55,"maximumCompletedWholeInventoryGapMs":12000,"unavailableHeldEvaluations":10,"failures":[{"at":1793058384000,"mint":"7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump","code":"local-admission"},{"at":1793058384000,"mint":"2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump","code":"local-admission"},{"at":1793058386000,"mint":"7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump","code":"uninvoked-quota-or-spacing"},{"at":1793058386000,"mint":"2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump","code":"uninvoked-quota-or-spacing"},{"at":1793058388000,"mint":"7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump","code":"uninvoked-quota-or-spacing"},{"at":1793058388000,"mint":"2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump","code":"uninvoked-quota-or-spacing"},{"at":1793058390000,"mint":"7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump","code":"uninvoked-quota-or-spacing"},{"at":1793058390000,"mint":"2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump","code":"uninvoked-quota-or-spacing"},{"at":1793058392000,"mint":"7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump","code":"uninvoked-quota-or-spacing"},{"at":1793058392000,"mint":"2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump","code":"uninvoked-quota-or-spacing"}],"compactions":[{"at":1793058384000,"short":36,"where":"full-NativePaper-protection"}],"allocated":108,"uncertainBytes":111149056,"financialInventoryAndCostsUnchanged":true,"providerRequests":0}
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2287.42203

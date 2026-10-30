@@ -1,0 +1,10 @@
+✔ durable pre-transport refusal proof preserves full two-held PAPER protection through compaction (1464.571137ms)
+ℹ {"scope":"OFFLINE actual NativePaper/Trader/SDK/TWO held ledger plus actual physical budget, rollover and checkpoint; synthetic flow/Clock/liquidity and injected final-admission failures; not live protection acceptance","ghosts":60,"physical":60,"maximumCompletedWholeInventoryGapMs":2250,"unavailableHeldEvaluations":0,"failures":[],"compactions":[{"at":1793058384000,"short":6,"where":"full-NativePaper-protection"}],"allocated":120,"uncertainBytes":125829120,"financialInventoryAndCostsUnchanged":true,"providerRequests":0}
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2428.071195
