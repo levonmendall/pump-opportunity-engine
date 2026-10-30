@@ -43,7 +43,7 @@ test('typed financial facts survive a full ten-note original source view and rem
  const legacy=structuredClone(p);delete legacy.financialPolicy;validateOperatingIntelligence(legacy,new Date(T).toISOString());
  const malformed=structuredClone(p);(malformed.financialPolicy as any).entryPermission=true;assert.throws(()=>validateOperatingIntelligence(malformed,new Date(T).toISOString()),/FINANCIAL_POLICY_REPORTING/);
 });
-function execution(){return {version:'paper-chain-conditioned-v1',state:'active',scope:'current-market-instance',plans:2,supportedLandingStates:1,preflightUnsubmitted:1,unknownLanding:1,last:{at:T-100,stage:'landing-state-supported',reasonCode:'LANDING_STATE_SUPPORTED',observedRpcMs:325,modeledDelayMs:1375,feeLamports:'7000',sourceSlot:400000001}};}
+function execution(){return {version:'paper-chain-conditioned-v1',state:'active',scope:'current-market-instance',plans:2,supportedLandingStates:1,preflightUnsubmitted:1,unknownLanding:1,legacyProtectionFallbacks:0,last:{at:T-100,stage:'landing-state-supported',reasonCode:'LANDING_STATE_SUPPORTED',observedRpcMs:325,modeledDelayMs:1375,feeLamports:'7000',sourceSlot:400000001}};}
 function valuation(){return {lastObservation:{source:'coinbase-public-sol-usd',startedAt:T-1400,completedAt:T-1000,durationMs:398.6,outcome:'unavailable',reasonCode:'USD_PRICE_TIMEOUT',httpStatus:null,receivedAt:null,publicationTimeKnown:false},failuresByReason:{USD_PRICE_TIMEOUT:2}};}
 test('execution preparations keep observed RPC latency separate from scenario delay and fees, without claiming a financial fill or chain landing',()=>{
  const raw={usage:{market:{executionModel:{...execution(),privateInstruction:'DO_NOT_EXPORT',signedTransaction:'DO_NOT_EXPORT'}}}},p=projectFinancialPolicyReporting(raw,T)!;
@@ -71,16 +71,32 @@ test('received USD facts preserve application receive time while malformed or co
  const bad=structuredClone(p);(bad.valuation!.failuresByReason as any).secret=1;assert.throws(()=>validateFinancialPolicyReporting(bad,T),/FINANCIAL_POLICY_REPORTING/);
 });
 test('all policy groups remain bounded together at maximum financial amounts and diagnostic counts',()=>{
- const r=risk(),max=((1n<<127n)-1n).toString();for(const k of ['targetConsumedCostMicroUsd','targetConsumedCostLamports','unreservedCashLamports','cashLimitedConsumedCostLamports'])(r.entry as any)[k]=max;for(const k of ['highWaterMicroUsd','currentEquityMicroUsd','drawdownMicroUsd','remainingBeforePauseMicroUsd'])(r.daily as any)[k]=max;
- const e=execution();for(const k of ['plans','supportedLandingStates','preflightUnsubmitted','unknownLanding'])(e as any)[k]=Number.MAX_SAFE_INTEGER;
+ const r=risk(),max=((1n<<127n)-1n).toString();for(const k of ['targetConsumedCostLamports','unreservedCashLamports','cashLimitedConsumedCostLamports'])(r.entry as any)[k]=max;r.entry.targetConsumedCostMicroUsd=(BigInt(max)*500n/10000n).toString();r.daily.highWaterMicroUsd=max;r.daily.currentEquityMicroUsd=max;r.daily.drawdownMicroUsd='0';r.daily.drawdownBps=0;r.daily.remainingBeforePauseMicroUsd=(BigInt(max)*1000n/10000n).toString();
+ const e=execution();for(const k of ['plans','supportedLandingStates','preflightUnsubmitted','unknownLanding','legacyProtectionFallbacks'])(e as any)[k]=Number.MAX_SAFE_INTEGER;
  const p=projectFinancialPolicyReporting({financial:{equityRisk:r},usage:{market:{executionModel:e},usd:valuation()}},T)!;assert.ok(p.risk&&p.execution&&p.valuation);assert.ok(Buffer.byteLength(JSON.stringify(p))<4096);validateFinancialPolicyReporting(p,T);
 });
 
 test('fresh equity above a retained peak is source-owned evidence, not a malformed or dashboard-recomputed high-water',()=>{
- const r=risk();r.daily.currentEquityMicroUsd='1100000000';r.daily.drawdownMicroUsd='0';r.daily.drawdownBps=0;
+ const r=risk();r.daily.currentEquityMicroUsd='1100000000';r.entry.targetConsumedCostMicroUsd='55000000';r.daily.drawdownMicroUsd='0';r.daily.drawdownBps=0;r.daily.remainingBeforePauseMicroUsd='100000000';
  const p=projectFinancialPolicyReporting({financial:{equityRisk:r}},T)!;assert.equal(p.risk!.daily.highWaterMicroUsd,'1000000000');assert.equal(p.risk!.daily.currentEquityMicroUsd,'1100000000');assert.equal(p.risk!.daily.drawdownBps,0);validateFinancialPolicyReporting(p,T);
 });
 test('a new UTC day can retain an explicitly dated previous-day peak while its current allowance remains unavailable',()=>{
  const r=risk();r.state='unavailable';r.reasonCode='EQUITY_RISK_INITIALIZING' as any;r.daily.day='2026-10-29';r.daily.highWaterAt=Date.parse('2026-10-29T23:59:00.000Z');
  const p=projectFinancialPolicyReporting({financial:{equityRisk:r}},T)!;assert.equal(p.risk!.state,'unavailable');assert.equal(p.risk!.daily.day,'2026-10-29');validateFinancialPolicyReporting(p,T);
+});
+
+test('complete source tuples must agree with the versioned integer five-percent and drawdown identities',()=>{
+ for(const mutate of [(r:any)=>r.entry.targetConsumedCostMicroUsd='50000000',(r:any)=>r.daily.drawdownMicroUsd='49999999',(r:any)=>r.daily.drawdownBps=499,(r:any)=>r.daily.remainingBeforePauseMicroUsd='50000001',(r:any)=>r.entry.cashLimitedConsumedCostLamports='8000000001']){const r=risk();mutate(r);const p=projectFinancialPolicyReporting({financial:{equityRisk:r}},T)!;assert.equal(p.risk,null);}
+ const r=risk();r.daily.highWaterMicroUsd='1000000007';r.daily.currentEquityMicroUsd='950000001';r.entry.targetConsumedCostMicroUsd='47500000';r.daily.drawdownMicroUsd='50000006';r.daily.drawdownBps=500;r.daily.remainingBeforePauseMicroUsd='49999994';
+ const p=projectFinancialPolicyReporting({financial:{equityRisk:r}},T)!;assert.ok(p.risk);validateFinancialPolicyReporting(p,T);
+ const bad=structuredClone(p);bad.risk!.daily.remainingBeforePauseMicroUsd='49999995';assert.throws(()=>validateFinancialPolicyReporting(bad,T),/FINANCIAL_POLICY_REPORTING/);
+});
+test('a recovered daily latch remains true despite a complete zero-drawdown tuple and positive threshold distance',()=>{
+ const r=risk();r.daily.lossPaused=true;r.reasonCode='EQUITY_RISK_DAILY_DRAWDOWN' as any;r.daily.currentEquityMicroUsd=r.daily.highWaterMicroUsd;r.entry.targetConsumedCostMicroUsd='50000000';r.daily.drawdownMicroUsd='0';r.daily.drawdownBps=0;r.daily.remainingBeforePauseMicroUsd='100000000';
+ const p=projectFinancialPolicyReporting({financial:{equityRisk:r}},T)!;assert.equal(p.risk!.daily.lossPaused,true);assert.equal(p.risk!.daily.remainingBeforePauseMicroUsd,'100000000');validateFinancialPolicyReporting(p,T);
+});
+test('sell-only legacy fallback and plan refusals remain distinct from supported landing state or filled accounting',()=>{
+ for(const reason of ['UNSIGNED_CONSTRUCTION_UNAVAILABLE','SIMULATED_ACCOUNT_RENT_UNAVAILABLE']){const e=execution();e.legacyProtectionFallbacks=1;e.last.stage='legacy-protection-fallback';e.last.reasonCode=reason;const p=projectFinancialPolicyReporting({usage:{market:{executionModel:e}}},T)!;assert.equal(p.execution!.last!.stage,'legacy-protection-fallback');assert.equal(p.execution!.legacyProtectionFallbacks,1);assert.equal(p.execution!.supportedLandingStates,1);validateFinancialPolicyReporting(p,T);}
+ for(const reason of ['LANDING_STATE_UNAVAILABLE','PLAN_CONSTRUCTION_UNAVAILABLE','PLAN_DELAY_EXCEEDS_DECISION_LIFETIME','PLAN_FEE_MISMATCH']){const e=execution();e.last.stage='preflight-unsubmitted';e.last.reasonCode=reason;e.last.feeLamports='0';const p=projectFinancialPolicyReporting({usage:{market:{executionModel:e}}},T)!;assert.equal(p.execution!.last!.reasonCode,reason);validateFinancialPolicyReporting(p,T);}
+ const e=execution();e.last.stage='legacy-protection-fallback';e.last.reasonCode='PLAN_FEE_MISMATCH';assert.equal(projectFinancialPolicyReporting({usage:{market:{executionModel:e}}},T)!.execution,null);
 });
