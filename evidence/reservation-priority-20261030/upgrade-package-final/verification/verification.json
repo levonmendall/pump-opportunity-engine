@@ -1,0 +1,31 @@
+{
+  "verifiedAt": "2026-10-30T03:43:34.570045+00:00",
+  "applicationSource": "a1c16c7510ddcc09aa6a9962a70d24ea94b8a12a",
+  "scope": "OFFLINE original-service driver, fixed pre-stop diagnostics, strict public reader and final-source package guards; no host/provider/financial actions",
+  "sourceGuardUnchanged": true,
+  "guardFiles": 81,
+  "results": [
+    {
+      "test": "test-export-reservation-priority-forensics-20261030.py",
+      "returncode": 0,
+      "tests": 42
+    },
+    {
+      "test": "test-read-reservation-priority-forensics-20261030.py",
+      "returncode": 0,
+      "tests": 16
+    },
+    {
+      "test": "test-forward-original-upgrade.py",
+      "returncode": 0,
+      "tests": 62
+    },
+    {
+      "test": "test-prepare-reservation-priority-package-20261030.py",
+      "returncode": 0,
+      "tests": 3
+    }
+  ],
+  "tests": 123,
+  "pass": true
+}

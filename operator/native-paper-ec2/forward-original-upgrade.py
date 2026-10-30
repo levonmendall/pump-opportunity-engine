@@ -9,12 +9,13 @@ No bootstrap, account initialization, DB restore, secret access or Render call.
 """
 import fcntl,grp,hashlib,json,os,pathlib,pwd,re,shlex,sqlite3,stat,subprocess,sys,time,types
 
-OLD_SOURCE={'commit':'5675961a0ad05df508eec6928644c9e403be0811','sha256':'157c34efd86bc0b5ae78aa268afe5afc7d3a4c4db8edcbb181445cad92ccb6ae'}
+OLD_SOURCE={'commit':'69aa1ef214a8c79524a25a8aca79299ccaad93dc','sha256':'bbdd0515089a823600c158c668e6a3f76a0a92525422d63677989d963ae43480'}
 OLD_INDEX='fa616981e2a86aec0f9c2711d0b3c961eb5ab922791f49e2a4e7e372497a84dd'
-PRIOR_INDEX='694788119a7eed387d9d8ad10481f7cc8e995463105030547c149aa43f4732d0'
+PRIOR_INDEX='adef222e9c9f6786e18561025fefe7da717a2cf8eeade147aa874ee75c72706e'
 PRIOR_RECORD='forward-'+OLD_SOURCE['commit']
-PRIOR_FORWARD_DRIVER_SHA='6e4281d08a011aae887407009db34aa917c31d86d599c2d97a9b42503b7c8d43'
-OLD_MANIFEST='3cf20e5a6e8b97e0f5a5e570e5ca96ae4827bf6e62d9ff5529c74cf9c204817c'
+PRIOR_FORWARD_DRIVER_SHA='cafe8a627066b0abda46a7b77944e4ea6c82a640866b1c1f1d96eb1f0cdbadb7'
+OLD_MANIFEST='37dca9aa8d2accf83e3970d8c991d9212b6e23bea5ab9f233b4fcc0ca721558a'
+OLD_INPUT_SHA='6034e83be9ddbb8233c38141c36af97e03d55e3cf99155b65e7f14b0aed469c0'
 # Root-indexed validation helper and current financial release have distinct pins.
 INDEXED_SUPERVISOR='d90ea175e17ef165afc8a4dcc24ab302204d500aad738bd4554cdc5f32e3d6fb'
 OLD_SUPERVISOR='66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e'
@@ -25,30 +26,30 @@ AUDITOR_SHA='08947c651488089e2eb2274404e69132ab54cfb89e30a640255c756746dad2c1'
 # Old/new reporters and backup closures are separately pinned; no credential change.
 OLD_REPORTER='7da8c7388a5ec3e4f2e0b46a8226ce457d0a68578e5b5225c50b97f1a508ff44'
 OLD_BACKUP_WORKER_SHA='aa41d0c26f42bc0e3c2c5655907a5ea71b11f3047ef6bfd23e5858c340066af2'
-NEW_BACKUP_WORKER_SHA='aa41d0c26f42bc0e3c2c5655907a5ea71b11f3047ef6bfd23e5858c340066af2'
-NEW_REPORTER='7da8c7388a5ec3e4f2e0b46a8226ce457d0a68578e5b5225c50b97f1a508ff44'
+NEW_BACKUP_WORKER_SHA='36d4afc64b2592219ff34b24baeb540380c099507fa3ae2f754ddc15188f8fd6'
+NEW_REPORTER='368b828d1e34e8f8d1305b00a1e6d22b3f91a31bd912df426610cd3f1e47070b'
 NEW_SUPERVISOR='66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e'
 OLD_STAGE,NEW_STAGE='two','two'
 OLD_STRATEGY='adaptive-momentum-v2-paper-v1'
 NEW_STRATEGY='adaptive-momentum-v2-paper-v1'
 UNCHANGED={'better_sqlite3.node':'6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d'}
-COMPATIBILITY={'scope':'active-adaptive-momentum-v2-entry-quote-and-volatility','financialSchemaChanged':False,'strategyChanged':True,'strategyBehaviorChanged':True,'adaptiveExitInputChanged':True,'entryAcquisitionOrderingChanged':True,'riskChanged':False,'authorizedPositionLimit':{'before':2,'after':2},'authorizedStrategyTransition':{'before':OLD_STRATEGY,'after':NEW_STRATEGY,'mode':'active-paper'},'baselineEntryExitThresholdsPreserved':True,'completeRelevantTradingEvidencePreserved':True,'originalAccountFinancialHistoryPreserved':True,'hardFinancialControlsPreserved':True,'ownerDailyLossResetInvoked':False,'providerAccountingSchema':'continuous-component-budget-v2','postStartExecutableRollbackAllowed':False,'providerCounterbooksRestored':False}
+COMPATIBILITY={'scope':'durable-physical-pacing-and-financial-quote-priority','financialSchemaChanged':False,'strategyChanged':False,'strategyBehaviorChanged':False,'adaptiveExitInputChanged':False,'entryAcquisitionOrderingChanged':False,'riskChanged':False,'physicalPacingEvidenceChanged':True,'financialQuotePriorityChanged':True,'boundedAuditFailureDiagnosticsChanged':True,'authorizedPositionLimit':{'before':2,'after':2},'authorizedStrategyTransition':{'before':OLD_STRATEGY,'after':NEW_STRATEGY,'mode':'active-paper'},'baselineEntryExitThresholdsPreserved':True,'completeRelevantTradingEvidencePreserved':True,'originalAccountFinancialHistoryPreserved':True,'hardFinancialControlsPreserved':True,'ownerDailyLossResetInvoked':False,'providerAccountingSchema':'continuous-component-budget-v2','postStartExecutableRollbackAllowed':False,'providerCounterbooksRestored':False}
 TOOLS=pathlib.Path('/opt/poe/cutover/issue11')
 PACKAGE=pathlib.Path('/var/lib/poe-cutover/issue11')
-STAGE=pathlib.Path('/var/tmp/poe-original-adaptive-followthrough-upgrade')
+STAGE=pathlib.Path('/var/tmp/poe-original-reservation-priority-upgrade')
 UNITDIR=pathlib.Path('/etc/systemd/system/poe-runtime.service.d')
 NATIVE_DROPIN_SHA='d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df'
 LEGACY_SHA='309bba18b7f3f17b403f6ef950df707587044b5e049f47ff3495c87d8de7d4df'
 NEW_NATIVE_DROPIN_SHA='d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df'
 OLD_CONFIGURATION_SHA='ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db'
-# Exact69aa coherent application and unchanged operational pins; independent
-# final package review precedes any actual EC2 staging.
+# Next application pins remain inert until the combined root source freeze,
+# essential verification, build and independent final package review.
 NEW_CONFIGURATION_SHA='ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db'
-FORENSIC_FILE='export-adaptive-followthrough-forensics-20261030.py'
-FORENSIC_SHA='d31e59fe85b2935455c27798199287e072bae4e951d629dd6729322294bd7b75'
-FORENSIC_OUTPUT='/var/lib/poe-public/adaptive-followthrough-forensics-20261030.json'
+FORENSIC_FILE='export-reservation-priority-forensics-20261030.py'
+FORENSIC_SHA='5154dd86cae6226a21af5b59099e3b488792dbb34875c254f86eb103cb8961f3'
+FORENSIC_OUTPUT='/var/lib/poe-public/reservation-priority-forensics-20261030.json'
 FORENSIC_UID,FORENSIC_GID=988,982
-FORENSIC_RUN='native-paper-20261030010446598'
+FORENSIC_RUN='native-paper-20261030021230118'
 FORENSIC_OUTPUT_BOUND=131072
 OLD_POLICY_SHA='ee240f9c3b2edabb385d67676303e95327839e73cbb28d1072cba68015de8728'
 NEW_POLICY_SHA='ee240f9c3b2edabb385d67676303e95327839e73cbb28d1072cba68015de8728'
@@ -316,7 +317,7 @@ def apply(expected,m,auditor,indexed_supervisor,driver_sha):
   need(sha(read(m.DROPIN,8192,0,0,0o644))==NATIVE_DROPIN_SHA and resource_profile(merged)==RESOURCE_BEFORE,'EXACT_INITIAL_RESOURCE_PROFILE_REQUIRED')
   need(m.CURRENT.resolve(strict=True)==m.RELEASES/OLD_SOURCE['commit']and merged['ActiveState']=='active','RUNNING_SAME_ORIGINAL_FINANCIAL_SERVICE_REQUIRED');old_raw=read(m.MANIFEST,128*1024,0,GID,0o640);need(sha(old_raw)==OLD_MANIFEST,'CURRENT_REPORTER_REPAIRED_MANIFEST_PIN_REQUIRED');old=supervisor.validate_manifest(json.loads(old_raw));preserved_manifest(old,manifest);supervisor.release_verified(old)
   for row in old['files']:read(m.RELEASES/OLD_SOURCE['commit']/row['file'],BOUNDS[row['file']],0,GID,0o640)
-  need(sha(read(m.RELEASES/OLD_SOURCE['commit']/'operator/native-paper-ec2/run-authoritative-service.py',128*1024,0,GID,0o640))==OLD_SUPERVISOR,'CURRENT_OLD_SUPERVISOR_PIN_REQUIRED');before_input=read(m.ACCOUNT/'input.json',MIB,UID,GID,0o600);baseline=read(m.ACCOUNT/'research-baseline.json',512*1024,UID,GID,0o600);after_input=source_input(before_input,old,manifest,baseline,m)
+  need(sha(read(m.RELEASES/OLD_SOURCE['commit']/'operator/native-paper-ec2/run-authoritative-service.py',128*1024,0,GID,0o640))==OLD_SUPERVISOR,'CURRENT_OLD_SUPERVISOR_PIN_REQUIRED');before_input=read(m.ACCOUNT/'input.json',MIB,UID,GID,0o600);need(sha(before_input)==OLD_INPUT_SHA,'EXACT_DEPLOYED_INPUT_REQUIRED');baseline=read(m.ACCOUNT/'research-baseline.json',512*1024,UID,GID,0o600);after_input=source_input(before_input,old,manifest,baseline,m)
   # All root before/after images precede every service/configuration mutation.
   m.make_dir(record_dir,0,0,0o700)
   for name,raw in [('before-service.json',old_raw),('after-service.json',data['service.json']),('before-input.json',before_input),('after-input.json',after_input),('before-research-baseline.json',baseline),('before-native-dropin.conf',read(m.DROPIN,8192)),('after-native-dropin.conf',data['poe-runtime-persistent.conf']),('before-legacy-entrypoint.conf',read(UNITDIR/'00-legacy-entrypoint.conf',8192))]:keep_file(m,record_dir/name,raw)
