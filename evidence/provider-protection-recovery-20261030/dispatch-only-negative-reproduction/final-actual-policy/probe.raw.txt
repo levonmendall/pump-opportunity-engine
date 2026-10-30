@@ -1,0 +1,28 @@
+✔ actual early-protection role demand against unchanged shared quotas 50ms pages released+0 (1391.636063ms)
+ℹ {"scope":"OFFLINE actual PilotRpc, held early planner and reserve/lower admission; synthetic four ready pages per10s and discretionary lookups, not full NativeCandidateRunner/audit or live attribution","auditReleaseOffsetMs":0,"pageLatency":50,"elapsed":180000,"normal":90,"early":0,"lookups":90,"missed":0,"maximumCompletedGapMs":2000,"physicalStarts":252,"httpTimeouts":0,"failures":[],"maximumShort":14,"maximumMinute":84,"providerRequests":0}
+✔ actual early-protection role demand against unchanged shared quotas 300ms pages released+0 (1112.279446ms)
+ℹ {"scope":"OFFLINE actual PilotRpc, held early planner and reserve/lower admission; synthetic four ready pages per10s and discretionary lookups, not full NativeCandidateRunner/audit or live attribution","auditReleaseOffsetMs":0,"pageLatency":300,"elapsed":180000,"normal":90,"early":0,"lookups":90,"missed":0,"maximumCompletedGapMs":2000,"physicalStarts":252,"httpTimeouts":0,"failures":[],"maximumShort":14,"maximumMinute":84,"providerRequests":0}
+✔ actual early-protection role demand against unchanged shared quotas 600ms pages released+0 (900.698262ms)
+ℹ {"scope":"OFFLINE actual PilotRpc, held early planner and reserve/lower admission; synthetic four ready pages per10s and discretionary lookups, not full NativeCandidateRunner/audit or live attribution","auditReleaseOffsetMs":0,"pageLatency":600,"elapsed":180000,"normal":90,"early":0,"lookups":72,"missed":0,"maximumCompletedGapMs":2000,"physicalStarts":234,"httpTimeouts":0,"failures":[],"maximumShort":13,"maximumMinute":78,"providerRequests":0}
+✔ actual early-protection role demand against unchanged shared quotas 800ms pages released+0 (854.589912ms)
+ℹ {"scope":"OFFLINE actual PilotRpc, held early planner and reserve/lower admission; synthetic four ready pages per10s and discretionary lookups, not full NativeCandidateRunner/audit or live attribution","auditReleaseOffsetMs":0,"pageLatency":800,"elapsed":180000,"normal":90,"early":0,"lookups":54,"missed":0,"maximumCompletedGapMs":2000,"physicalStarts":216,"httpTimeouts":0,"failures":[],"maximumShort":12,"maximumMinute":72,"providerRequests":0}
+✔ actual early-protection role demand against unchanged shared quotas 1000ms pages released+0 (722.486004ms)
+ℹ {"scope":"OFFLINE actual PilotRpc, held early planner and reserve/lower admission; synthetic four ready pages per10s and discretionary lookups, not full NativeCandidateRunner/audit or live attribution","auditReleaseOffsetMs":0,"pageLatency":1000,"elapsed":180000,"normal":90,"early":0,"lookups":54,"missed":0,"maximumCompletedGapMs":2000,"physicalStarts":216,"httpTimeouts":0,"failures":[],"maximumShort":12,"maximumMinute":72,"providerRequests":0}
+✔ actual early-protection role demand against unchanged shared quotas 50ms pages released+3500 (1201.874464ms)
+ℹ {"scope":"OFFLINE actual PilotRpc, held early planner and reserve/lower admission; synthetic four ready pages per10s and discretionary lookups, not full NativeCandidateRunner/audit or live attribution","auditReleaseOffsetMs":3500,"pageLatency":50,"elapsed":180000,"normal":74,"early":45,"lookups":79,"missed":7,"maximumCompletedGapMs":2000,"physicalStarts":260,"httpTimeouts":0,"failures":[],"maximumShort":17,"maximumMinute":89,"providerRequests":0}
+✔ actual early-protection role demand against unchanged shared quotas 300ms pages released+3500 (1031.605926ms)
+ℹ {"scope":"OFFLINE actual PilotRpc, held early planner and reserve/lower admission; synthetic four ready pages per10s and discretionary lookups, not full NativeCandidateRunner/audit or live attribution","auditReleaseOffsetMs":3500,"pageLatency":300,"elapsed":180000,"normal":73,"early":48,"lookups":76,"missed":7,"maximumCompletedGapMs":2000,"physicalStarts":260,"httpTimeouts":0,"failures":[],"maximumShort":18,"maximumMinute":88,"providerRequests":0}
+✔ actual early-protection role demand against unchanged shared quotas 600ms pages released+3500 (1087.603928ms)
+ℹ {"scope":"OFFLINE actual PilotRpc, held early planner and reserve/lower admission; synthetic four ready pages per10s and discretionary lookups, not full NativeCandidateRunner/audit or live attribution","auditReleaseOffsetMs":3500,"pageLatency":600,"elapsed":180000,"normal":60,"early":57,"lookups":86,"missed":11,"maximumCompletedGapMs":2000,"physicalStarts":260,"httpTimeouts":0,"failures":[],"maximumShort":17,"maximumMinute":88,"providerRequests":0}
+✔ actual early-protection role demand against unchanged shared quotas 800ms pages released+3500 (943.617949ms)
+ℹ {"scope":"OFFLINE actual PilotRpc, held early planner and reserve/lower admission; synthetic four ready pages per10s and discretionary lookups, not full NativeCandidateRunner/audit or live attribution","auditReleaseOffsetMs":3500,"pageLatency":800,"elapsed":180000,"normal":57,"early":51,"lookups":89,"missed":9,"maximumCompletedGapMs":2000,"physicalStarts":259,"httpTimeouts":0,"failures":[],"maximumShort":17,"maximumMinute":87,"providerRequests":0}
+✔ actual early-protection role demand against unchanged shared quotas 1000ms pages released+3500 (915.471647ms)
+ℹ {"scope":"OFFLINE actual PilotRpc, held early planner and reserve/lower admission; synthetic four ready pages per10s and discretionary lookups, not full NativeCandidateRunner/audit or live attribution","auditReleaseOffsetMs":3500,"pageLatency":1000,"elapsed":180000,"normal":57,"early":50,"lookups":100,"missed":20,"maximumCompletedGapMs":2000,"physicalStarts":258,"httpTimeouts":0,"failures":[],"maximumShort":16,"maximumMinute":88,"providerRequests":0}
+ℹ tests 10
+ℹ suites 0
+ℹ pass 10
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 11347.925282
