@@ -12,7 +12,7 @@ class Fixtures(unittest.TestCase):
  def status(self):return {'accountId':m.ACCOUNT,'inceptionAt':m.INCEPTION,'runId':m.RUN,'startedAt':m.STARTED,'generatedAt':m.END+1000,'source':dict(m.SOURCE),'configurationSha256':m.CONFIGURATION,'mode':'paper','liveTradingEnabled':False,'entriesEnabled':False,'running':True,'status':LEAK,'financial':LEAK,'positions':LEAK,'pending':LEAK,'financialReadiness':{'safety':{'idle':True,'uncertainActions':0,'reason':LEAK,'financial':LEAK}},'usage':{'rpc':{'chapterUsage':{'persistence':{'attempts':100,'totalMs':1000,'maximumMs':123},'durationsMs':[1,2,3000],'endpoint':LEAK}},'localPhases':{'report-checkpoint':{'count':2,'maximumMs':11,'overruns':1,'url':LEAK}}},'reporting':{'maximumProjectionMs':11,'lastDeferral':LEAK},'timing':{'maximumCompletedGapMs':12329,'protectionBreaches':2,'unavailableChecks':4},'evidenceRetention':{'candidateAdmissionAllowed':True,'refusedRecords':0,'path':LEAK}}
  def namespace(self):
   self.write(self.root/'status.json',self.status());d=self.root/'service-evidence';d.mkdir(mode=0o700);self.write(d/'state.json',{'version':'poe-owned-rotating-evidence-v1','diagnostics':[{'file':'diagnostic-000000000001.ndjson','startedAt':m.START-1,'endedAt':m.END+1}],'activeDiagnostic':None,'activeEssential':None});return d
- def event(self,kind='trader-held-evaluation',at=m.START+1,data=None):return {'schemaVersion':1,'receivedAt':'2026-10-29T23:59:25.001Z','kind':kind,'data':{'at':at,'usable':False,'quoteAt':at-9000,'reason':LEAK,'units':LEAK,'mint':LEAK,**(data or{})}}
+ def event(self,kind='trader-held-evaluation',at=m.START+1,data=None):return {'schemaVersion':1,'receivedAt':'2026-10-30T00:11:15.001Z','kind':kind,'data':{'at':at,'usable':False,'quoteAt':at-9000,'reason':LEAK,'units':LEAK,'mint':LEAK,**(data or{})}}
  def test_exact_current_identity_and_useful_diagnostic_scalars(self):
   r=m.status_fact(self.status());raw=json.dumps(r);self.assertNotIn(LEAK,raw);self.assertEqual(r['diagnostics']['timing']['maximumCompletedGapMs'],12329);self.assertEqual(r['diagnostics']['usage']['rpc']['chapterUsage']['persistence']['maximumMs'],123);self.assertEqual(r['diagnostics']['usage']['localPhases']['report-checkpoint']['count'],2);self.assertNotIn('positions',r);self.assertNotIn('pending',r);self.assertNotIn('financial',r['diagnostics'])
  def test_each_identity_component_required(self):
@@ -33,7 +33,7 @@ class Fixtures(unittest.TestCase):
  def test_foreign_source_or_data_run_dropped(self):
   e=self.event();e['source']={'commit':'wrong'};self.assertIsNone(m.event_fact(e));e=self.event(data={'runId':'wrong'});self.assertIsNone(m.event_fact(e))
  def test_event_iso_requires_explicit_utc_when_data_at_absent(self):
-  e=self.event();e['data'].pop('at');self.assertIsNotNone(m.event_fact(e));e['receivedAt']='2026-10-29T23:59:25.001';self.assertIsNone(m.event_fact(e));e['receivedAt']=LEAK;self.assertIsNone(m.event_fact(e))
+  e=self.event();e['data'].pop('at');self.assertIsNotNone(m.event_fact(e));e['receivedAt']='2026-10-30T00:11:15.001';self.assertIsNone(m.event_fact(e));e['receivedAt']=LEAK;self.assertIsNone(m.event_fact(e))
  def test_only_allowlisted_names_can_be_opened(self):
   self.assertTrue(m.valid_segment('diagnostic-000000000001.ndjson'));self.assertTrue(m.valid_segment('essential-000000000002.ndjson'))
   for n in['../ledger.sqlite','diagnostic-000000000001.ndjson/secret','diagnostic-000000000001Xndjson','provider-'+LEAK]:self.assertFalse(m.valid_segment(n))
@@ -85,11 +85,11 @@ class Fixtures(unittest.TestCase):
   def uid(*v):events.append('uid');ids['u']=v
   with patch.object(m.os,'geteuid',return_value=0),patch.object(m.os,'closerange',lambda *_:events.append('fds')),patch.object(m.os,'setgroups',lambda *_:events.append('groups')),patch.object(m.os,'setresgid',gid),patch.object(m.os,'setresuid',uid),patch.object(m.os,'getresuid',lambda:ids['u']),patch.object(m.os,'getresgid',lambda:ids['g']):m.drop_original_identity()
   self.assertEqual(events,['fds','groups','gid','uid']);self.assertEqual(ids['u'],(m.UID,)*3);self.assertEqual(ids['g'],(m.GID,)*3)
- def test_exact93_source_cross_midnight_windows_and_distinct_output(self):
+ def test_exact93_source_prior_day_start_sampled_windows_and_distinct_output(self):
   self.assertEqual(m.SOURCE,{'commit':'93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2','sha256':'8a0f001a3ae0c6acedaae6fb8a0370e02293a8b0c35142d74daf19086a41203c'})
   self.assertEqual(m.CONFIGURATION,'44b82455003f04f75eb1ad7a3dc21555406c1d4d0c7626386d3d21661fdb47c9')
   self.assertEqual(m.STARTED,int(datetime.fromisoformat('2026-10-29T23:48:56.700+00:00').timestamp()*1000))
-  exact=[('2026-10-29T23:59:25+00:00','2026-10-30T00:01:35+00:00'),('2026-10-30T00:11:15+00:00','2026-10-30T00:12:30+00:00')]
+  exact=[('2026-10-30T00:11:15+00:00','2026-10-30T00:12:30+00:00'),('2026-10-30T00:18:10+00:00','2026-10-30T00:22:30+00:00')]
   self.assertEqual(m.PRIORITY_WINDOWS,tuple(tuple(int(datetime.fromisoformat(v).timestamp()*1000)for v in row)for row in exact))
   self.assertEqual(str(m.OUTPUT),'/var/lib/poe-public/provider-recovery-forensics-20261030.json')
   self.assertNotEqual(m.OUTPUT.name,'current-run-forensics-20261029.json')
@@ -139,6 +139,13 @@ class Fixtures(unittest.TestCase):
   _,essential=self.crowded_diagnostics_with_essential_failure()
   with patch.object(m,'MAX_SCAN_BYTES',m.MAX_SEGMENT):r=m.collect(self.root,self.uid)
   self.assertEqual(r['diagnostics']['files'][0]['file'],essential);self.assertTrue(r['diagnostics']['files'][0]['available']);self.assertTrue(any(x['kind']=='trader-held-evaluation'for x in r['diagnostics']['facts']));self.assertTrue(r['diagnostics']['scanBudgetReached']);self.assertLessEqual(r['diagnostics']['bytesRead'],m.MAX_SEGMENT)
+ def dense_healthy_and_candidate_failures(self):
+  d=self.namespace();at=m.PRIORITY_WINDOWS[1][0];rows=[self.event('trader-held-evaluation',at=at+1,data={'usable':False}),self.event('component-physical-start',at=at+2,data={'id':1,'kind':{'transport':'http','method':'getMultipleAccounts'}}),self.event('component-physical-settled',at=at+3,data={'id':1,'responseComplete':False}),self.event('pilot-job-admission-refused',at=at+4,data={'physicalSettled':True}),self.event('native-candidate-audit-cancelled-diagnostic',at=at+5,data={'physicalSettled':True})]
+  rows.extend(self.event('trader-held-evaluation',at=at+1000+i,data={'usable':True})for i in range(150));rows.extend(self.event('native-candidate-window-audit-unavailable',at=at+2000+i)for i in range(150));self.write(d/'diagnostic-000000000001.ndjson',b'\n'.join(json.dumps(x).encode()for x in rows)+b'\n');s=json.loads((d/'state.json').read_text());s['diagnostics'][0]['endedAt']=m.END+1;self.write(d/'state.json',s);return m.collect(self.root,self.uid)
+ def test_critical_rpc_and_held_failure_survive_dense_healthy_and_candidate_failures(self):
+  r=self.dense_healthy_and_candidate_failures();facts=r['diagnostics']['facts'];self.assertTrue(r['diagnostics']['factCapacityReached']);self.assertTrue(any(x['kind']=='trader-held-evaluation'and x['data']['usable']is False for x in facts))
+  for kind in ['component-physical-start','component-physical-settled','pilot-job-admission-refused','native-candidate-audit-cancelled-diagnostic']:self.assertTrue(any(x['kind']==kind for x in facts),kind)
+  self.assertLessEqual(len(facts),128);self.assertLessEqual(len(json.dumps(facts,separators=(',',':')).encode()),57000)
  def test_old_forensic_program_remains_hash_identical(self):
   old=P.with_name('export-current-run-forensics-20261029.py');self.assertEqual(hashlib.sha256(old.read_bytes()).hexdigest(),'1c684b1c88c95c75488f056ad00a8ea756c906e45dcb0f4f8725f5e75b193c59')
 if __name__=='__main__':unittest.main()

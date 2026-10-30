@@ -1,0 +1,12 @@
+{
+  "sourceSha256": "1e204cfec639f5e259d6fa8fca43df80c3af345bf83a86419c95fde43c2d9cbc",
+  "retained": 128,
+  "heldFailureRetained": false,
+  "physicalStartRetained": false,
+  "physicalSettlementRetained": false,
+  "admissionRetained": false,
+  "cancellationRetained": false,
+  "kindCounts": {
+    "native-candidate-window-audit-unavailable": 128
+  }
+}

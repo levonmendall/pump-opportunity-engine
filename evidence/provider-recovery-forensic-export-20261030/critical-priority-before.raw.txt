@@ -1,0 +1,14 @@
+.....F..........................
+======================================================================
+FAIL: test_critical_rpc_and_held_failure_survive_dense_healthy_and_candidate_failures (__main__.Fixtures.test_critical_rpc_and_held_failure_survive_dense_healthy_and_candidate_failures)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-export-provider-recovery-forensics-20261030.py", line 146, in test_critical_rpc_and_held_failure_survive_dense_healthy_and_candidate_failures
+    r=self.dense_healthy_and_candidate_failures();facts=r['diagnostics']['facts'];self.assertTrue(r['diagnostics']['factCapacityReached']);self.assertTrue(any(x['kind']=='trader-held-evaluation'and x['data']['usable']is False for x in facts))
+                                                                                                                                           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: False is not true
+
+----------------------------------------------------------------------
+Ran 32 tests in 0.047s
+
+FAILED (failures=1)

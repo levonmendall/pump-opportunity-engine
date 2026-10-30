@@ -9,7 +9,7 @@ CONFIGURATION='44b82455003f04f75eb1ad7a3dc21555406c1d4d0c7626386d3d21661fdb47c9'
 RUN='native-paper-20261029234856700'
 STARTED=1793317736700
 # Exact observed failures across UTC midnight; the quiet middle is NOT sampled.
-PRIORITY_WINDOWS=((1793318365000,1793318495000),(1793319075000,1793319150000))
+PRIORITY_WINDOWS=((1793319075000,1793319150000),(1793319490000,1793319750000))
 START,END=PRIORITY_WINDOWS[0][0],PRIORITY_WINDOWS[-1][1]
 WINDOW_FACT_LIMITS=(64,128)
 WINDOW_BYTE_LIMITS=(28000,57000)
@@ -108,10 +108,11 @@ def event_fact(value):
  return {'kind':value['kind'],'at':at,'data':sanitize(value['data']),'runAttribution':'explicit-run-field'if value.get('runId')==RUN or value['data'].get('runId')==RUN else'time-correlated-with-verified-current-run'}
 def fact_priority(fact):
  k=fact['kind'];d=fact['data']
- if 'unavailable'in k or k in('component-physical-timeout','native-paper-reporting-overrun','pilot-rpc-provider-backoff-observed')or k=='native-paper-local-phase'and d.get('overrun')is True or k=='trader-held-evaluation'and d.get('usable')is not True:return 0
- if k in('trader-held-evaluation','component-physical-start','component-physical-settled','http-lifecycle-timing','pilot-job-admission-refused','research-clock-cache-invalidation','research-held-market-invalidation'):return 1
- if k in('research-held-market-context','http-response-timing','http-headers'):return 2
- if k=='native-audit-dispatch-summary':return 3
+ outcome=d.get('outcome');http_failed=k=='http-lifecycle-timing'and(d.get('aborted')is True or type(outcome)is dict and outcome.get('code')not in(None,'json-decoded'))
+ if k in('component-physical-timeout','pilot-rpc-unavailable','pilot-rpc-provider-backoff-observed','pilot-derived-status-flush-unavailable','trader-pilot-execution-refusal','native-paper-audit-readiness-unavailable','native-paper-reporting-overrun')or http_failed or k=='native-paper-local-phase'and d.get('overrun')is True or k=='trader-held-evaluation'and d.get('usable')is not True:return 0
+ if k in('component-job-enqueued','component-pacing-wait','component-physical-start','component-physical-settled','http-lifecycle-timing','http-response-timing','http-headers','pilot-job-admission-refused','pilot-method-capacity-refusal','pilot-data-control-unavailable','research-clock-cache-invalidation','research-held-market-invalidation','native-candidate-audit-cancelled-after-page-return','native-candidate-audit-cancelled-diagnostic'):return 1
+ if k in('trader-held-evaluation','trader-context','trader-quote','trader-pilot-execution-quote','rpc-market-quote','research-held-market-context','research-clock-position-sell-quote'):return 2
+ if 'unavailable'in k or k=='native-audit-dispatch-summary':return 3
  if k=='native-paper-local-phase':return 5
  if k=='native-audit-dispatch-state':return 6
  return 4
@@ -120,7 +121,7 @@ def valid_segment(name):
  return type(name)is str and re.fullmatch('(diagnostic|essential)-[0-9]{12}\\.ndjson',name)is not None
 
 def evidence_facts(directory,status,uid=UID,budget_seconds=MAX_SECONDS):
- deadline=time.monotonic()+budget_seconds;private_directory(directory,uid);files=[];facts=[];buckets=[[]for _ in PRIORITY_WINDOWS];bucketbytes=[0 for _ in PRIORITY_WINDOWS];used=0;factbytes=0;unknown={};kind_counts={};result={'files':files,'facts':facts,'unrecognizedEventKinds':unknown,'matchingKindCounts':kind_counts,'samplingPolicy':'Only the two priorityWindows are sampled: up to64 facts/28000B earlier and128 facts/57000B latest, within192 facts/85000B overall. Essential files are reserved first, then interleaved one per three latest matching diagnostic files. Failures, completed holdings and physical RPC timing precede discretionary audit metadata. Omission counts and all bounds are explicit; temporal proximity is not causal attribution.','bytesRead':0,'scanBudgetReached':False,'factCapacityReached':False,'selectionUnknown':False,'meaning':'Surviving bounded diagnostic copies only; timestamp-correlated events do not independently establish run or source provenance. Rotation, missing files, truncation, optional omission and scan bounds remain UNKNOWN; absence of retained facts is not absence of failure.'}
+ deadline=time.monotonic()+budget_seconds;private_directory(directory,uid);files=[];facts=[];buckets=[[]for _ in PRIORITY_WINDOWS];bucketbytes=[0 for _ in PRIORITY_WINDOWS];used=0;factbytes=0;unknown={};kind_counts={};result={'files':files,'facts':facts,'unrecognizedEventKinds':unknown,'matchingKindCounts':kind_counts,'samplingPolicy':'Only the two priorityWindows are sampled: up to64 facts/28000B earlier and128 facts/57000B latest, within192 facts/85000B overall. Essential files are reserved first, then interleaved one per three latest matching diagnostic files. Financial failures and physical RPC/admission/cancellation timing precede healthy holding completions and discretionary audit failures/metadata. Omission counts and all bounds are explicit; temporal proximity is not causal attribution.','bytesRead':0,'scanBudgetReached':False,'factCapacityReached':False,'selectionUnknown':False,'meaning':'Surviving bounded diagnostic copies only; timestamp-correlated events do not independently establish run or source provenance. Rotation, missing files, truncation, optional omission and scan bounds remain UNKNOWN; absence of retained facts is not absence of failure.'}
  if not status.get('available'):result['selectionUnknown']=True;result['reasonCode']='VERIFIED_CURRENT_STATUS_REQUIRED';return result
  candidates=[]
  try:
