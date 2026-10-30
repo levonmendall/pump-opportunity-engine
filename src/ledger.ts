@@ -196,7 +196,7 @@ export function validateFinancialState(s: LedgerState, accountId: string, mode: 
   if (initialLamports <= gasReserve) throw new Error('inception gas reserve invariant');
   amount(s.executionCosts); amount(s.daily.baselineMicroUsd);
   if (typeof s.realizedLamports !== 'string' || !/^-?(0|[1-9][0-9]*)$/.test(s.realizedLamports) || amount(s.realizedLamports.startsWith('-') ? s.realizedLamports.slice(1) : s.realizedLamports) > (1n << 127n) - 1n) throw new Error('realized balance invariant');
-  if (!record(s.positions) || !record(s.pending) || !record(s.lockedDeposits) || Object.keys(s.positions).length > 3 || Object.keys(s.pending).length > 3 || Object.keys(s.lockedDeposits).length > 128) throw new Error('capacity/state map invariant');
+  if (!record(s.positions) || !record(s.pending) || !record(s.lockedDeposits) || Object.keys(s.positions).length > 3 || Object.keys(s.pending).length > 3) throw new Error('capacity/state map invariant');
   for (const [mint, deposit] of Object.entries(s.lockedDeposits)) {
     if (!key(mint, 96)) throw new Error('locked deposit identity invariant');
     amount(deposit);
@@ -676,7 +676,7 @@ export class PaperLedger {
         if(input.entryStrategy){validateEntryStrategy(input.entryStrategy,now);const eligibility=this.entryEligibilityFrom(s,input.mint,input.entryStrategy.version,input.entryStrategy.windowEndAt,now);if(!eligibility.allowed||input.entryStrategy.cycle!==eligibility.cycle)throw Error('adaptive re-entry requires verified closed cycle and fresh audited signal');}
         else if (this.hasTradedMint(input.mint)) throw new Error('re-entry after a prior PAPER fill forbidden');
         if (s.lockedDeposits[input.mint] && dep > 0n) throw new Error('existing account deposit cannot be charged twice');
-        if (Object.keys(s.lockedDeposits).length >= 128 && !s.lockedDeposits[input.mint]) throw new Error('unresolved deposit capacity');
+        if (!s.equityRisk && Object.keys(s.lockedDeposits).length >= 128 && !s.lockedDeposits[input.mint]) throw new Error('unresolved deposit capacity');
         const pendingBuys = Object.values(s.pending).filter(o => o.side === 'buy');
         if (Object.keys(s.positions).length + pendingBuys.length >= (s.equityRisk?2:3)) throw new Error('position capacity');
         reserved += spend + dep;
