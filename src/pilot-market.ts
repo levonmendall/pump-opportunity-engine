@@ -211,16 +211,21 @@ export class PilotMarket {
       const expected=(request as SizeRequest&{requiredDepositLamports?:string}).requiredDepositLamports;
       need(expected===undefined||expected===plan.depositLamports,'PILOT_MARKET_ENTRY_DEPOSIT_MISMATCH');
       const input={mint:request.mint,side:'buy' as const,inputUnits:request.inputUnits,minSlot:this.floor(request.mint,request.minSlot??0)};
-      attempt.phase='pool-state';const state=await this.pricer.quoteBuy({mint:new PublicKey(input.mint),buyLamports:integer(input.inputUnits),minSlot:input.minSlot},signal);
-      // As before, every decision/execution quote reads current required rent.
-      // Preparation is sizing only; it never substitutes for this fresh check.
+      // Read current rent against the independently validated preparation
+      // lengths before acquiring the final executable market state. Ancillary
+      // pacing must not repeatedly age a healthy market quote while native
+      // executed trades advance its mandatory slot floor.
       attempt.phase='rent';const accountPlan={...plan.accountPlan,at:this.clock()},rents:Record<string,string>={};let required=0n;
-      for(const [exists,bytes]of [[accountPlan.baseExists,state.baseAssociatedAccount.accountLengthBytes],[accountPlan.quoteExists,state.quoteAssociatedAccount.accountLengthBytes]]as const){
+      for(const [exists,bytes]of [[accountPlan.baseExists,plan.accountLengths.base],[accountPlan.quoteExists,plan.accountLengths.quote]]as const){
         if(exists)continue;need(Number.isSafeInteger(bytes)&&bytes>=165&&bytes<=10240,'PILOT_MARKET_ACCOUNT_LENGTH');
         if(rents[bytes]===undefined){const rent=await this.options.rpc.call<number>('getMinimumBalanceForRentExemption',[bytes,{commitment:'confirmed'}],signal);need(Number.isSafeInteger(rent)&&rent>0,'PILOT_MARKET_RENT_UNAVAILABLE');rents[bytes]=BigInt(rent).toString();}
         required+=integer(rents[bytes]!);
       }
       need(required.toString()===plan.depositLamports&&this.clock()-accountPlan.at<=10000,'PILOT_MARKET_ENTRY_DEPOSIT_MISMATCH');
+      input.minSlot=this.floor(input.mint,input.minSlot);
+      attempt.phase='pool-state';const state=await this.pricer.quoteBuy({mint:new PublicKey(input.mint),buyLamports:integer(input.inputUnits),minSlot:input.minSlot},signal);
+      need(state.baseAssociatedAccount.accountLengthBytes===plan.accountLengths.base&&state.quoteAssociatedAccount.accountLengthBytes===plan.accountLengths.quote,'PILOT_MARKET_ACCOUNT_LENGTH');
+      need(this.clock()-accountPlan.at<=10000,'PILOT_MARKET_ENTRY_DEPOSIT_MISMATCH');
       attempt.phase='freshness';const at=this.freshClock(state,input.mint,signal);need(generation===this.generation&&this.freshPlan(input.mint).evidence===plan.evidence&&state.slot>=this.floor(input.mint,input.minSlot),'PILOT_MARKET_ENTRY_STATE_CHANGED');
       const costs={depositLamports:required.toString(),plan:accountPlan,rents,gas:this.options.gas,gasLamports:this.gasLamports,classification:'simulated' as const};
       const evidence='rpc-market:'+hash({request:input,state,costs,gas:this.options.gas,migrationEvidence:pool.evidence});

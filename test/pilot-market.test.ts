@@ -51,18 +51,18 @@ function fixture(t:TestContext,timeoutMs=1000,cooperative=false,paced=false){
   return {captures,ledger,market,coordinator,price,calls,records,now:()=>at,advance:(ms:number)=>{at+=ms;},rentChanged:()=>{rentOffset++;},bumpSlot:()=>{slot++;},slot:()=>slot,setSlot:(value:number)=>{slot=value;},pause:(p:Promise<void>)=>{wait=p;},account:(address:string)=>accounts.get(address),onRpc:(hook:(method:string)=>void)=>{rpcHook=hook;},onPacingWait:(hook:(ms:number)=>void)=>{activity=hook;},onRecord:(hook:(kind:string)=>void)=>{recordHook=hook;},beforePreparationRead:(hook:(input:{method:string;signal:AbortSignal})=>Promise<void>)=>{preparationHook=hook;}};
 }
 
-test('BASELINE quote is invalidated by ancillary rent pacing after its market state despite healthy provider',async t=>{
+test('fresh final market state remains usable under ancillary rent pacing and active native slot floors',async t=>{
  const f=fixture(t,3000,false,true),mint=f.captures[1]!.proof.quote.mint;
  await f.market.prepareEntryCosts(mint,signal());const before=f.ledger.state();let nextActivity=f.now()+400,activityCount=0;
  f.onPacingWait(()=>{while(f.now()>=nextActivity){nextActivity+=400;f.bumpSlot();f.market.minimumSlot(mint,f.slot());activityCount++;}});
  const begin=f.calls.length,q=await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal());
- assert.equal(q,null);assert.ok(activityCount>0);assert.equal(f.calls.length-begin,3);assert.equal(f.market.usage().entryQuoteFailures.last?.phase,'freshness');assert.equal(f.market.usage().entryQuoteFailures.last?.reasonCode,'PILOT_MARKET_PREPARATION_CHANGED_OR_STALE');assert.deepEqual(f.ledger.state(),before);
- t.diagnostic(JSON.stringify({scope:'OFFLINE actual SDK/PilotMarket/PilotRpc paced calls and synthetic400ms native slot floors; not live-cause proof',result:q,activityCount,calls:f.calls.slice(begin).map(c=>({method:c.method,at:c.at})),failure:f.market.usage().entryQuoteFailures.last,providerRequests:0}));
+ assert.ok(q);assert.ok(activityCount>0);assert.equal(f.calls.length-begin,3);assert.equal(q.slot,f.slot());assert.equal(q.at,f.now());assert.equal(f.market.usage().entryQuoteFailures.count,0);assert.deepEqual(f.ledger.state(),before);
+ t.diagnostic(JSON.stringify({scope:'OFFLINE actual SDK/PilotMarket/PilotRpc paced calls and synthetic400ms native slot floors; not live-cause proof',result:q?'fresh quote':null,activityCount,calls:f.calls.slice(begin).map(c=>({method:c.method,at:c.at})),failure:f.market.usage().entryQuoteFailures.last,providerRequests:0}));
 });
 
 test('entry quote failure facts distinguish local admission, rent failure and unknown errors without retaining provider text',async t=>{
  const f=fixture(t),mint=f.captures[1]!.proof.quote.mint;await f.market.prepareEntryCosts(mint,signal());const before=f.ledger.state();
- f.onRpc(()=>{throw new PilotRpcUnavailable('COMPONENT_ADMISSION_CLOSED');});assert.equal(await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal()),null);assert.equal(f.market.usage().entryQuoteFailures.last?.phase,'pool-state');assert.equal(f.market.usage().entryQuoteFailures.last?.reasonCode,'PILOT_RPC_COMPONENT_ADMISSION_CLOSED');
+ f.onRpc(()=>{throw new PilotRpcUnavailable('COMPONENT_ADMISSION_CLOSED');});assert.equal(await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal()),null);assert.equal(f.market.usage().entryQuoteFailures.last?.phase,'rent');assert.equal(f.market.usage().entryQuoteFailures.last?.reasonCode,'PILOT_RPC_COMPONENT_ADMISSION_CLOSED');
  f.onRpc(method=>{if(method==='getMinimumBalanceForRentExemption')throw Error('PILOT_MARKET_RENT_UNAVAILABLE');});assert.equal(await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal()),null);assert.equal(f.market.usage().entryQuoteFailures.last?.phase,'rent');assert.equal(f.market.usage().entryQuoteFailures.last?.reasonCode,'PILOT_MARKET_RENT_UNAVAILABLE');
  f.onRpc(()=>{throw Error('https://private-provider.invalid/key=DO_NOT_RETAIN_THIS');});assert.equal(await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal()),null);const failures=f.market.usage().entryQuoteFailures;assert.equal(failures.count,3);assert.equal(failures.last?.reasonCode,'ENTRY_QUOTE_UNKNOWN');assert.match(failures.last?.unknownErrorSha256??'',/^[a-f0-9]{64}$/);assert.doesNotMatch(JSON.stringify({failures,records:f.records.filter(r=>r.kind==='pilot-entry-quote-unavailable')}),/private-provider|DO_NOT_RETAIN_THIS/);assert.deepEqual(f.ledger.state(),before);
 });
