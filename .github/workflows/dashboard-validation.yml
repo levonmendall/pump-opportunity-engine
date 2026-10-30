@@ -21,6 +21,9 @@ on:
       - 'package*.json'
       - '.github/workflows/dashboard-validation.yml'
   workflow_dispatch:
+concurrency:
+  group: poe-dashboard-validation-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
