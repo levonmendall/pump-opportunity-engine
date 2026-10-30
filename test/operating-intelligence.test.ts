@@ -71,3 +71,35 @@ test('proof preparation states distinguish not-started from pending, completed a
 test('internal checkpoint proof verdict uses the existing bounded public refusal list without financial IDs or a schema change',()=>{
  for(const code of ['INTERNAL_SHUTDOWN_OWNER_OR_UNKNOWN_STOP','INTERNAL_SHUTDOWN_HARD_OR_UNKNOWN_PAUSE','INTERNAL_SHUTDOWN_HISTORY_BOUND']){const raw=status()as any;raw.refusals={...raw.refusals,['internal-stop-proof:'+code]:1};const projected=projectOperatingIntelligence(raw);assert.ok(projected.refusals.some(r=>r.reason==='internal-stop-proof:'+code&&r.count===1));validateOperatingIntelligence(projected,iso(T));assert.ok(!JSON.stringify(projected.refusals).includes('native-paper-finally:'));}
 });
+
+test('owned RPC stage observations survive the existing bounded public channel without private errors or implied protection completion',()=>{
+ const base=status(),stages=['provider-restriction','uninvoked-quota-or-spacing','physical-settlement-wait','physical-timeout','caller-cancel-before-physical','caller-cancel-during-physical','transport-or-node-response','local-admission'];
+ const raw={...base,usage:{...base.usage,rpc:{...base.usage.rpc,startedAt:T-500000,protectionRecovery:{calls:6,logicalAttempts:7,rolling10SecondStarts:5,rolling60SecondStarts:28,rapidProbes:1,successesAfterRetry:1,refusals:2,providerRestrictionUntil:0,failureStages:Object.fromEntries([...stages.map((s,index)=>[s,index+1]),['https://private.example?apiKey=DO_NOT_EXPORT',500]]),lastFailure:{at:T-3000,stage:'caller-cancel-before-physical',physicalInFlight:false,privateError:'DO_NOT_EXPORT'},policy:{credential:'DO_NOT_EXPORT'}}}}};
+ const before=structuredClone(raw),i=projectOperatingIntelligence(raw),notes=i.quality.limitations.join('\n');
+ assert.match(notes,/current instance since 2026-10-28T22:51:40\.000Z/);assert.match(notes,/calls 6; logical attempts 7; rapid probes 1; RPC retry successes 1; dispatch refusals 2/);
+ for(const [index,stage]of stages.entries())assert.ok(notes.includes(`${stage}:${index+1}`));
+ assert.match(notes,/Last holding RPC failure 2026-10-28T22:59:57\.000Z: caller-cancel-before-physical; physical request in flight: false/);assert.match(notes,/not completed protection evaluations/);assert.match(notes,/holding starts in 10s \/ 60s 5 \/ 28/);assert.doesNotMatch(notes,/DO_NOT_EXPORT|private\.example|credential/);assert.equal(i.protection.lastCompletedAt,null);assert.deepEqual(raw,before);validateOperatingIntelligence(i,iso(T));
+});
+
+test('new owned protection classification separates optional timeout backoff from real or unknown provider restrictions without changing source gates',()=>{
+ const base=status(),raw={...base,positions:{mint:{units:'10'}},timing:{...base.timing,lastCompletedProtectionAt:T-1000},usage:{...base.usage,rpc:{...base.usage.rpc,cooldownUntil:T+1000,protectionRecovery:{providerRestrictionUntil:0}}}};
+ const protectedSnapshot=projectOperatingIntelligence(raw);assert.equal(protectedSnapshot.protection.state,'monitored');assert.equal(protectedSnapshot.provider.primaryCooldownUntil,iso(T+1000),'ordinary cooldown remains visible');
+ raw.usage.rpc.protectionRecovery.providerRestrictionUntil=T+1000;assert.equal(projectOperatingIntelligence(raw).protection.state,'degraded','real provider restriction remains closed');
+ for(const malformed of [undefined,null,-1,'DO_NOT_EXPORT',NaN]){raw.usage.rpc.protectionRecovery.providerRestrictionUntil=malformed as any;assert.equal(projectOperatingIntelligence(raw).protection.state,'degraded');}
+ raw.usage.rpc.protectionRecovery.providerRestrictionUntil=0;raw.timing.lastCompletedProtectionAt=T-4001;assert.equal(projectOperatingIntelligence(raw).protection.state,'degraded','unchanged actual completion boundary');
+ delete (raw.usage.rpc as any).protectionRecovery;raw.timing.lastCompletedProtectionAt=T-1000;assert.equal(projectOperatingIntelligence(raw).protection.state,'degraded','old sources preserve original cooldown classification');
+ const legacy=projectOperatingIntelligence(base);assert.ok(!legacy.quality.limitations.some(s=>s.includes('Holding RPC')));validateOperatingIntelligence(legacy,iso(T));
+});
+
+test('malformed or future RPC diagnostics stay unknown and cannot export arbitrary metadata',()=>{
+ for(const recovery of [null,[],{calls:-1,logicalAttempts:'DO_NOT_EXPORT',failureStages:{'https://private.example':1,'physical-timeout':-1},lastFailure:{at:T+1,stage:'physical-timeout',physicalInFlight:true}},{lastFailure:{at:T-600001,stage:'physical-timeout',physicalInFlight:true}},{lastFailure:{at:T-1,stage:'https://private.example?DO_NOT_EXPORT',physicalInFlight:true}}]){
+  const base=status(),i=projectOperatingIntelligence({...base,usage:{...base.usage,rpc:{...base.usage.rpc,startedAt:T+1,protectionRecovery:recovery}}}),notes=i.quality.limitations.join('\n');
+  assert.match(notes,/current instance since unavailable: calls unavailable; logical attempts unavailable/);assert.doesNotMatch(notes,/Last holding RPC failure|DO_NOT_EXPORT|private\.example|physical-timeout:-1/);validateOperatingIntelligence(i,iso(T));
+ }
+});
+
+test('maximum source-owned stage counters remain below existing notes and snapshot bounds',()=>{
+ const base=status(),stages=['provider-restriction','uninvoked-quota-or-spacing','physical-settlement-wait','physical-timeout','caller-cancel-before-physical','caller-cancel-during-physical','transport-or-node-response','local-admission'],maximum=Number.MAX_SAFE_INTEGER;
+ const raw={...base,reporting:{protectionHistory:{scope:'known-lower-bound',historyUnavailable:false}},observationReportingMeaning:Array(20).fill('Original source meaning'),usage:{...base.usage,rpc:{...base.usage.rpc,startedAt:T-600000,protectionRecovery:{calls:maximum,logicalAttempts:maximum,rolling10SecondStarts:maximum,rolling60SecondStarts:maximum,rapidProbes:maximum,successesAfterRetry:maximum,refusals:maximum,providerRestrictionUntil:0,failureStages:Object.fromEntries(stages.map(stage=>[stage,maximum])),lastFailure:{at:T-1,stage:'physical-timeout',physicalInFlight:true}}}}};
+ const i=projectOperatingIntelligence(raw);assert.equal(i.quality.limitations.length,10);assert.ok(i.quality.limitations.every(note=>note.length<=512));assert.ok(Buffer.byteLength(JSON.stringify(i))<32*1024);validateOperatingIntelligence(i,iso(T));
+});

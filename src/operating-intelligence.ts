@@ -6,6 +6,7 @@ export const OPERATING_INTELLIGENCE_VERSION='poe-operating-intelligence-v1';
 type Count=number|null;
 const EVIDENCE_PRESSURE_CODES=['FILESYSTEM_RESERVE','RECORD_BOUND','YOUNG_DIAGNOSTIC_CAPACITY','YOUNG_SEGMENT_CAPACITY','DIAGNOSTIC_HEADROOM','DIAGNOSTIC_SEGMENT_HEADROOM','INTERRUPTED_ESSENTIAL_PROOF','CHECKPOINT_UNAVAILABLE','RECORD_IO_OR_INTEGRITY_FAILURE','FILESYSTEM_UNAVAILABLE','RETENTION_IO_OR_INTEGRITY_FAILURE','RECOVERY_CHECKPOINT_UNAVAILABLE','OTHER_UNEXPORTED_REASON'] as const;
 const RECOVERY_REASON_CODES=['ROLLING_RESOURCE_OR_EVIDENCE_PRESSURE','CANDIDATE_PROVIDER_FAILURE','CANDIDATE_STEP_UNAVAILABLE','OTHER_UNEXPORTED_REASON'] as const;
+const PROTECTION_FAILURE_STAGES=['provider-restriction','uninvoked-quota-or-spacing','physical-settlement-wait','physical-timeout','caller-cancel-before-physical','caller-cancel-during-physical','transport-or-node-response','local-admission'] as const;
 type EvidencePressureCode=typeof EVIDENCE_PRESSURE_CODES[number];
 type RecoveryReasonCode=typeof RECOVERY_REASON_CODES[number];
 export type OperatingAdmission={
@@ -47,6 +48,22 @@ function recoveryReasonCode(v:unknown):RecoveryReasonCode|null{
  if(typeof v==='string'&&v.startsWith('candidate step unavailable: '))return 'CANDIDATE_STEP_UNAVAILABLE';
  return 'OTHER_UNEXPORTED_REASON';
 }
+/** These are diagnostics of financially owned acquisition, not completed held
+ * evaluations. Fixed source-owned fields only: arbitrary RPC errors, policy,
+ * URLs, account data and unknown stage names never cross the public boundary.
+ * The existing bounded notes keep old receivers compatible without a parallel
+ * telemetry schema. Instance scope matters because source recovery can replace
+ * the RPC client inside one persistent operating run. */
+function protectionRpcNotes(rpc:Record<string,any>,sourceStart:number,at:number):string[]{
+ if(!Object.hasOwn(rpc,'protectionRecovery'))return [];
+ const r=rec(rpc.protectionRecovery),start=count(rpc.startedAt),since=start!==null&&start>=sourceStart&&start<=at?new Date(start).toISOString():'unavailable',number=(v:unknown)=>count(v)??'unavailable';
+ const notes=[`Holding RPC current instance since ${since}: calls ${number(r.calls)}; logical attempts ${number(r.logicalAttempts)}; rapid probes ${number(r.rapidProbes)}; RPC retry successes ${number(r.successesAfterRetry)}; dispatch refusals ${number(r.refusals)}; holding starts in 10s / 60s ${number(r.rolling10SecondStarts)} / ${number(r.rolling60SecondStarts)}. These counts are not completed protection evaluations.`];
+ const stages=rec(r.failureStages),counts=PROTECTION_FAILURE_STAGES.flatMap(stage=>{const n=count(stages[stage]);return n!==null&&n>0?[`${stage}:${n}`]:[];});
+ if(counts.length)notes.push('Holding RPC failure stages (current instance, not completed evaluations): '+counts.join(', ')+'.');
+ const failure=rec(r.lastFailure),failedAt=count(failure.at),minimum=start!==null&&start>=sourceStart&&start<=at?start:sourceStart;
+ if(failedAt!==null&&failedAt>=minimum&&failedAt<=at&&(PROTECTION_FAILURE_STAGES as readonly unknown[]).includes(failure.stage))notes.push(`Last holding RPC failure ${new Date(failedAt).toISOString()}: ${failure.stage}; physical request in flight: ${boolean(failure.physicalInFlight)??'unavailable'}. This records an acquisition stage, not a diagnosis of every earlier interruption.`);
+ return notes;
+}
 /** Null is an unavailable fact, never a manufactured zero. */
 export function projectOperatingIntelligence(value:unknown):OperatingIntelligence{
  const s=rec(value),at=count(s.generatedAt),start=count(s.startedAt);
@@ -59,7 +76,11 @@ export function projectOperatingIntelligence(value:unknown):OperatingIntelligenc
  if(!runId||!configurationSha256||!/^[a-f0-9]{64}$/.test(configurationSha256)||!strategyVersion)throw Error('OPERATING_RUN_PROVENANCE_REQUIRED');
  const decisions=(Array.isArray(s.decisions)?s.decisions:[]).slice(-50).flatMap((raw:unknown,index:number)=>{const d=rec(raw),when=time(d.at),mint=bounded(d.mint,96),stage=bounded(d.stage,80),reason=bounded(d.reason,512);return when&&mint&&stage&&reason?[{id:bounded(d.id,128)??`${runId}:${index}:${d.at}`,mint,at:when,stage,reason}]:[];});
  const pendingOrders=Object.values(rec(s.pending)).slice(0,3).map(raw=>{const o=rec(raw),fields=['id','mint','side','decidedAt','executeAt','expiresAt','reserved','minReceive','decisionEvidence'];if(fields.some(k=>o[k]===undefined)||!bounded(o.id,128)||!bounded(o.mint,96)||!['buy','sell'].includes(o.side)||!/^(0|[1-9]\d{0,38})$/.test(o.reserved)||!/^(0|[1-9]\d{0,38})$/.test(o.minReceive)||!bounded(o.decisionEvidence,512))throw Error('OPERATING_PENDING_ORDER_PROJECTION');const decidedAt=time(o.decidedAt);if(!decidedAt||!Number.isSafeInteger(o.executeAt)||!Number.isSafeInteger(o.expiresAt)||o.executeAt<o.decidedAt+500||o.expiresAt<=o.executeAt||o.expiresAt>o.decidedAt+30000)throw Error('OPERATING_PENDING_ORDER_TIME');const n=BigInt(o.reserved);return {id:o.id,mint:o.mint,side:o.side as 'buy'|'sell',decidedAt,executeAt:new Date(o.executeAt).toISOString(),expiresAt:new Date(o.expiresAt).toISOString(),reservedSol:`${n/1000000000n}.${(n%1000000000n).toString().padStart(9,'0')}`,quantityMinimum:o.minReceive,reason:o.decisionEvidence};});
- const positions=rec(s.positions),held=Object.keys(positions).length,breaches=count(timing.protectionBreaches),unavailable=count(timing.unavailableChecks),lastProtected=count(timing.lastCompletedProtectionAt),protectionBoundary=count(timing.experimentalCompletedEvaluationLimitMs),primaryUnavailable=(count(rpc.cooldownUntil)??0)>at;
+ // New financially owned reads can recover through optional-work backoff.
+ // Actual provider restrictions remain authoritative; absent legacy metadata
+ // uses its original cooldown, while malformed new metadata stays conservative.
+ const ownedRestriction=count(rec(rpc.protectionRecovery).providerRestrictionUntil),primaryUnavailable=Object.hasOwn(rpc,'protectionRecovery')?ownedRestriction===null||ownedRestriction>at:(count(rpc.cooldownUntil)??0)>at;
+ const positions=rec(s.positions),held=Object.keys(positions).length,breaches=count(timing.protectionBreaches),unavailable=count(timing.unavailableChecks),lastProtected=count(timing.lastCompletedProtectionAt),protectionBoundary=count(timing.experimentalCompletedEvaluationLimitMs);
  const lastProtectedAt=time(lastProtected),protectionState:OperatingIntelligence['protection']['state']=held===0?'flat':!lastProtectedAt?'unavailable':primaryUnavailable||protectionBoundary===null||at-lastProtected!>protectionBoundary?'degraded':'monitored';
  const strategyRows:string[]=[];
  if(strategyVersion==='adaptive-momentum-v2-paper-v1'){
@@ -78,6 +99,7 @@ export function projectOperatingIntelligence(value:unknown):OperatingIntelligenc
  if(refusalCounts.length)operationalRows.push('Recorded holding-pricing refusals in this run: '+refusalCounts.slice(0,6).join(', ')+(refusalCounts.length>6?'; additional categories retained.':'.'));
  const lastPricing=rec(pricing.lastContext),pricingAt=time(lastPricing.at);
  if(lastPricing.state==='unavailable'&&pricingAt&&pricingCodes.includes(lastPricing.reasonCode))operationalRows.push('Holding-pricing refusal at '+pricingAt+': '+lastPricing.reasonCode+'. This is not a completed protection evaluation.');
+ operationalRows.push(...protectionRpcNotes(rpc,start,at));
  const limitations=[...(Array.isArray(s.observationReportingMeaning)?s.observationReportingMeaning:typeof s.observationReportingMeaning==='string'?[s.observationReportingMeaning]:[]).flatMap(v=>bounded(v,512)?[v as string]:[]).slice(0,Math.max(0,10-strategyRows.length-operationalRows.length)),...operationalRows,...strategyRows];
  const hasAdmission=['reporting','serviceSupervision','resourceControl','evidenceRetention','sourceRecovery','proofPreparation'].some(k=>Object.hasOwn(s,k));
  const report=rec(s.reporting),supervision=rec(s.serviceSupervision),control=rec(s.resourceControl),retention=rec(s.evidenceRetention),recovery=rec(s.sourceRecovery),proof=rec(s.proofPreparation);
