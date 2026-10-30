@@ -103,5 +103,12 @@
   "originalFinancialOrServiceActions": 0,
   "providerRequests": 0,
   "deployments": 0,
-  "scope": "existing original owner receiver and Portfolio rendering; fixture tests are not live market proof"
+  "scope": "existing original owner receiver and Portfolio rendering; fixture tests are not live market proof",
+  "testSummary": {
+    "tests": 81,
+    "pass": 81,
+    "fail": 0,
+    "cancelled": 0,
+    "skipped": 0
+  }
 }
