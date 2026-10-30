@@ -113,7 +113,12 @@ export function recordPilotStageTransition<T extends {contractSha256:string;stag
   const base=resolvePilotStage(stage),resolved=bindingOverride===undefined?null:resolvePilotBinding(bindingOverride);
   need(bindingOverride===undefined||!!resolved&&stage==='two'&&resolved.version==='adaptive-momentum-v2-paper-v1'&&resolved.maxPositions===2,'PILOT_EXPLICIT_ADAPTIVE_BINDING_REQUIRED');
   const configuration=resolved?{...base,contract:resolved.contract,contractSha256:resolved.contractSha256,binding:bindingOverride!}:base,known=[PILOT_CONTRACT_SHA256,...Object.values(CONCURRENT_PILOTS).map(s=>s.contractSha256),ADAPTIVE_PILOT_CONTRACT_SHA256] as string[];
-  need(known.includes(manifest.contractSha256)&&/^[a-z0-9-]{1,60}$/.test(runId)&&Number.isSafeInteger(at)&&at>=0,'PILOT_STAGE_TRANSITION_BINDING');
+  // Source69's retained adaptive contract predates the 5%/10% risk policy.
+  // Admit that exact historical predecessor only into the explicitly resolved
+  // current adaptive profile. It never resolves as an active/rollback binding;
+  // the appended row retains its hash while the current policy remains selected.
+  const priorAdaptive=manifest.contractSha256==='8e404a11d1868e3a2c3a4a708133f9831a555a590201c8e70e62c35a44c4d0bb'&&resolved?.version==='adaptive-momentum-v2-paper-v1'&&stage==='two'&&resolved.maxPositions===2;
+  need((known.includes(manifest.contractSha256)||priorAdaptive)&&/^[a-z0-9-]{1,60}$/.test(runId)&&Number.isSafeInteger(at)&&at>=0,'PILOT_STAGE_TRANSITION_BINDING');
   const previous=manifest.stageHistory??[];need(previous.length<64&&(!previous.length||at>=previous.at(-1)!.at),'PILOT_STAGE_HISTORY_BOUND');
   manifest.stageHistory=[...previous,{runId,at,stage,contractSha256:configuration.contractSha256,previousContractSha256:manifest.contractSha256}];manifest.contractSha256=configuration.contractSha256;return configuration;
 }
