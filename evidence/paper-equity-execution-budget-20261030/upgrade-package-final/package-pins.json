@@ -1,0 +1,105 @@
+{
+  "kind": "poe-original-paper-equity-execution-upgrade-pins-v1",
+  "source": {
+    "commit": "02fbec4f548c02f81663c707f31b7b62ea335133",
+    "sha256": "16805b01382b10e2bf59952e93e218d8a2e5afc70c4275d65ff4be003095abdb"
+  },
+  "previousSource": {
+    "commit": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+    "sha256": "bbdd0515089a823600c158c668e6a3f76a0a92525422d63677989d963ae43480"
+  },
+  "configurationSha256": "1a81d2156865467cab6300c260a809e0f98ae6649bdd88b4161f13b4c7d8edef",
+  "previousConfigurationSha256": "ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db",
+  "driverSha256": "133ffec146c63d6336cdb16bc654ec82a73a61999eafc8d065318ec9e4e78dcc",
+  "indexSha256": "833a0270c4e5c82f483cbca253315f70ef0a24f4fe996487872d933a0ef63043",
+  "manifestSha256": "ce59672d7c0a666f2a90bfdd29a4c7e7c306cd096c587e0a713160f44637a930",
+  "transportSha256": "f377bcba2cabc6618e4f672cc37df3b54e9b0943a3560a4708a33c934d0235a8",
+  "ownerCommandSha256": "aef4a3adbb70498095961fd15da1d5520058011dba5d77e82d7673bb94dd6a1b",
+  "stage": "/var/tmp/poe-original-paper-equity-execution-budget-upgrade",
+  "strategyVersion": "adaptive-momentum-v2-paper-v1",
+  "previousStrategyVersion": "adaptive-momentum-v2-paper-v1",
+  "deepSlots": 4,
+  "financialPositionLimit": 2,
+  "strategyChanged": false,
+  "strategyBehaviorChanged": true,
+  "adaptiveExitInputChanged": false,
+  "entryAcquisitionOrderingChanged": true,
+  "riskChanged": true,
+  "configurationChanged": true,
+  "financialSchemaChanged": true,
+  "sqliteTableSchemaChanged": false,
+  "financialStateSchemaVersion": 1,
+  "financialSemanticsChanged": true,
+  "executionSemanticsChanged": true,
+  "financialMigrationOwner": "same-runtime-single-writer",
+  "entryPermissionGrantedByInstaller": false,
+  "newWaiverCreated": false,
+  "hardFinancialControlsClearedByInstaller": false,
+  "ownerDailyLossResetInvoked": false,
+  "forensicPreflight": {
+    "scriptSha256": "c6d317b0ab2b358c3051b34659aa02ab5e95cf509052a742a80632c080c21738",
+    "source": {
+      "commit": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+      "sha256": "bbdd0515089a823600c158c668e6a3f76a0a92525422d63677989d963ae43480"
+    },
+    "runId": "native-paper-20261030021230118",
+    "beforeFirstStop": true,
+    "readerUid": 988,
+    "readerGid": 982,
+    "financialDatabaseOpened": false
+  },
+  "postStartExecutableRollbackAllowed": false,
+  "providerCounterbooksRestored": false,
+  "files": [
+    {
+      "file": "native-paper.mjs",
+      "bytes": 5392932,
+      "sha256": "16805b01382b10e2bf59952e93e218d8a2e5afc70c4275d65ff4be003095abdb"
+    },
+    {
+      "file": "backup-worker.mjs",
+      "bytes": 94226,
+      "sha256": "006dc9b31db5317a5ee5d35f672fac2510c4202290f52ddc8fd189edf6aa5e83"
+    },
+    {
+      "file": "better_sqlite3.node",
+      "bytes": 2226168,
+      "sha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d"
+    },
+    {
+      "file": "metadata.json",
+      "bytes": 170313,
+      "sha256": "79912bbd07d16c8adaa3cb07e555fc5f2b8014eb076458f00458ba855e168f3f"
+    },
+    {
+      "file": "snapshot-publisher.mjs",
+      "bytes": 50015,
+      "sha256": "fbbe03be34bb9800d5c309088b3429f7ab830ca015dbb3bc888b73bcd718b388"
+    },
+    {
+      "file": "run-authoritative-service.py",
+      "bytes": 37955,
+      "sha256": "66cc79a0b8de723ef52e8612bddfd5ec46508198357145b44942a6788c49e47e"
+    },
+    {
+      "file": "forward-original-upgrade.py",
+      "bytes": 56274,
+      "sha256": "133ffec146c63d6336cdb16bc654ec82a73a61999eafc8d065318ec9e4e78dcc"
+    },
+    {
+      "file": "export-paper-equity-execution-forensics-20261030.py",
+      "bytes": 44830,
+      "sha256": "c6d317b0ab2b358c3051b34659aa02ab5e95cf509052a742a80632c080c21738"
+    },
+    {
+      "file": "poe-runtime-persistent.conf",
+      "bytes": 925,
+      "sha256": "d0c911805ba397ad5fa217683bcd63300c4c862e4d1c72be6af655bfa26460df"
+    },
+    {
+      "file": "service.json",
+      "bytes": 1715,
+      "sha256": "ce59672d7c0a666f2a90bfdd29a4c7e7c306cd096c587e0a713160f44637a930"
+    }
+  ]
+}
