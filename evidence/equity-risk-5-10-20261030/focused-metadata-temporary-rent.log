@@ -1,0 +1,30 @@
+✔ activation, chunked history, restart and old owner-reset lookup preserve every prior financial row (256.193812ms)
+✔ missing joined action/result invalidates HWM migration rather than skipping a retained peak (8.516762ms)
+✔ oversized and malformed same-day reconcile receipts cannot be omitted as a complete history (13.331659ms)
+✔ a missing journal row must not erase a still-retained authoritative peak action (9.292833ms)
+✔ fresh-equity resume and order both observe a new HWM before later10% threshold comparison (9.89903ms)
+✔ a journal deletion during multi-chunk migration prevents final completeness certification (134.87461ms)
+✔ bounded migration measures complete10000-receipt history without a synchronous full-payload scan (1889.216317ms)
+ℹ {"scope":"OFFLINE in-memory10000 authoritative receipts;Cloud measurement, notEC2/protection acceptance","chunks":40,"maximumChunkMs":15.925400999999965,"medianChunkMs":4.854414000000361}
+✔ a retained activation receipt cannot coexist with silently missing active policy state (39.691415ms)
+✔ 5% allowance is exact consumed cost; refundable rent is separately reserved (39.066798ms)
+✔ growth supports allocations above$50 and aggregate costs above$150 with only two holdings (15.079769ms)
+✔ holding losses shrink5% cap; stable second intent fails without resize, fee or duplicate execution (12.315052ms)
+✔ 10% daily observed HWM survives recovery/restart and resets at first complete nextUTC observation (15.575484ms)
+✔ all same-day receipts are scanned beyond256 and restart retains cursor, not a lowerHWM (205.794598ms)
+✔ migration preserves genuine10% breach and owner stop; legacy reset cannot waive newHWM (8.476803ms)
+✔ manual pause survives explicit migration retirement of legacy absolute loss latch (7.272098ms)
+✔ missing fresh mark leaves migration unchanged and retries when actual-size valuation returns (16.514183ms)
+✔ invalid authoritative receipt closes only new risk rather than inventing lowerHWM (9.959611ms)
+✔ projection keeps knownHWM separate from unavailable current equity and claims no executability (6.876752ms)
+✔ modeled unsubmitted failure has zero fee; supported landed slippage failure charges once (11.123546ms)
+✔ missing or corrupt optional entry policy closes new risk while actual held exit accounting remains usable (27.283066ms)
+✔ temporaryWSOL rent reserves cash for atomic create+close but never becomes a fee or permanent asset (7.654014ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2950.739696

@@ -1,0 +1,54 @@
+✔ ACTIVE V2 qualifies genuine complete lower baseline flow through sized quote/reserve/fill; audit or quote loss remains closed (56.149926ms)
+✔ V2 profitable holding survives +30percent and15minutes; persisted highwater trails independently across restart (30.359275ms)
+✔ two V2 holdings independently retain and exit under highwater/15percent protection (42.546997ms)
+✔ closed V2 token reenters only after full fresh post-close observation, new audit and unique order cycle (42.683875ms)
+✔ legacy holding keeps original max-hold exit after ACTIVE V2 upgrade (25.071164ms)
+✔ fresh SOL highwater persists during unavailable USD; restart cannot lose the protective trail (36.605487ms)
+✔ ACTIVE V2 uses lagged executable dispersion without extra quotes, USD drift or a retreating profit boundary (31.559565ms)
+✔ a restart retains durable high-water and safely returns wider measured protection to the legacy fallback (31.623235ms)
+✔ holding diagnostics cannot refresh prices, complete protection, change finance or turn stale facts current (20.053975ms)
+✔ holding diagnostics follow current independent inventory and omit closed positions (23.301611ms)
+✔ malformed quote times remain unavailable and cannot escape the bounded diagnostics projection (57.925589ms)
+✔ transient policy activation failure cannot fall back to legacy allocation and retries automatically (10.108408ms)
+✔ activation, chunked history, restart and old owner-reset lookup preserve every prior financial row (237.792674ms)
+✔ missing joined action/result invalidates HWM migration rather than skipping a retained peak (11.118676ms)
+✔ oversized and malformed same-day reconcile receipts cannot be omitted as a complete history (19.959105ms)
+✔ a missing journal row must not erase a still-retained authoritative peak action (9.85974ms)
+✔ fresh-equity resume and order both observe a new HWM before later10% threshold comparison (10.184842ms)
+✔ a journal deletion during multi-chunk migration prevents final completeness certification (147.606639ms)
+✔ bounded migration measures complete10000-receipt history without a synchronous full-payload scan (2203.337597ms)
+ℹ {"scope":"OFFLINE in-memory10000 authoritative receipts;Cloud measurement, notEC2/protection acceptance","chunks":40,"maximumChunkMs":17.14153699999997,"medianChunkMs":5.002457999999933}
+✔ a retained activation receipt cannot coexist with silently missing active policy state (37.323862ms)
+✔ a baseline-failed independently audited window survives for active V2 exact-size evaluation (34.081895ms)
+✔ baseline rollback keeps its unchanged weak-window retirement and does not claim adaptive decisions (12.801712ms)
+✔ active native V2 turns a baseline-rejected early audited window into a real PAPER reservation and preserves winner beyond old caps (102.239125ms)
+✔ active native age eligibility also retains an older audited token beyond120minutes (27.402251ms)
+✔ active native reporting uses adaptive preliminary counts and preserves baseline benchmark separately (7.850741ms)
+✔ active native public intelligence retains honest limitations in the existing strict schema (8.006112ms)
+▶ active adaptive score cannot clear an owner stop or a genuine daily-loss latch
+  ✔ owner-stop (18.380774ms)
+  ✔ daily-loss (14.034429ms)
+✔ active adaptive score cannot clear an owner stop or a genuine daily-loss latch (32.910679ms)
+✔ active native entry still fails closed after genuine source evidence is lost (14.432719ms)
+✔ existing report retires fixed-dollar fallback only from actual activated financial policy facts (18.089192ms)
+✔ 5% allowance is exact consumed cost; refundable rent is separately reserved (39.755487ms)
+✔ growth supports allocations above$50 and aggregate costs above$150 with only two holdings (10.524084ms)
+✔ holding losses shrink5% cap; stable second intent fails without resize, fee or duplicate execution (8.808472ms)
+✔ 10% daily observed HWM survives recovery/restart and resets at first complete nextUTC observation (9.658641ms)
+✔ all same-day receipts are scanned beyond256 and restart retains cursor, not a lowerHWM (163.800051ms)
+✔ migration preserves genuine10% breach and owner stop; legacy reset cannot waive newHWM (10.622601ms)
+✔ manual pause survives explicit migration retirement of legacy absolute loss latch (10.637432ms)
+✔ missing fresh mark leaves migration unchanged and retries when actual-size valuation returns (16.953158ms)
+✔ invalid authoritative receipt closes only new risk rather than inventing lowerHWM (13.020326ms)
+✔ projection keeps knownHWM separate from unavailable current equity and claims no executability (35.262025ms)
+✔ modeled unsubmitted failure has zero fee; supported landed slippage failure charges once (20.578603ms)
+✔ missing or corrupt optional entry policy closes new risk while actual held exit accounting remains usable (59.391083ms)
+✔ temporaryWSOL rent reserves cash for atomic create+close but never becomes a fee or permanent asset (8.40288ms)
+ℹ tests 44
+ℹ suites 0
+ℹ pass 44
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3247.270204

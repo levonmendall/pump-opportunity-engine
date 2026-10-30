@@ -1,0 +1,46 @@
+✔ ACTIVE V2 qualifies genuine complete lower baseline flow through sized quote/reserve/fill; audit or quote loss remains closed (61.634238ms)
+✔ V2 profitable holding survives +30percent and15minutes; persisted highwater trails independently across restart (42.576507ms)
+✔ two V2 holdings independently retain and exit under highwater/15percent protection (40.467409ms)
+✔ closed V2 token reenters only after full fresh post-close observation, new audit and unique order cycle (33.582157ms)
+✔ legacy holding keeps original max-hold exit after ACTIVE V2 upgrade (24.02289ms)
+✔ fresh SOL highwater persists during unavailable USD; restart cannot lose the protective trail (21.02933ms)
+✔ ACTIVE V2 uses lagged executable dispersion without extra quotes, USD drift or a retreating profit boundary (16.7347ms)
+✔ a restart retains durable high-water and safely returns wider measured protection to the legacy fallback (22.933164ms)
+✔ holding diagnostics cannot refresh prices, complete protection, change finance or turn stale facts current (23.554255ms)
+✔ holding diagnostics follow current independent inventory and omit closed positions (34.117842ms)
+✔ malformed quote times remain unavailable and cannot escape the bounded diagnostics projection (67.971492ms)
+✔ activation, chunked history, restart and old owner-reset lookup preserve every prior financial row (159.959539ms)
+✔ missing joined action/result invalidates HWM migration rather than skipping a retained peak (7.896892ms)
+✔ oversized and malformed same-day reconcile receipts cannot be omitted as a complete history (12.506569ms)
+✔ a missing journal row must not erase a still-retained authoritative peak action (5.475561ms)
+✔ fresh-equity resume and order both observe a new HWM before later10% threshold comparison (5.659173ms)
+✔ a baseline-failed independently audited window survives for active V2 exact-size evaluation (22.536194ms)
+✔ baseline rollback keeps its unchanged weak-window retirement and does not claim adaptive decisions (8.263997ms)
+✔ active native V2 turns a baseline-rejected early audited window into a real PAPER reservation and preserves winner beyond old caps (68.039032ms)
+✔ active native age eligibility also retains an older audited token beyond120minutes (24.178009ms)
+✔ active native reporting uses adaptive preliminary counts and preserves baseline benchmark separately (8.107534ms)
+✔ active native public intelligence retains honest limitations in the existing strict schema (8.396403ms)
+▶ active adaptive score cannot clear an owner stop or a genuine daily-loss latch
+  ✔ owner-stop (13.097766ms)
+  ✔ daily-loss (19.819345ms)
+✔ active adaptive score cannot clear an owner stop or a genuine daily-loss latch (33.456581ms)
+✔ active native entry still fails closed after genuine source evidence is lost (13.57931ms)
+✔ 5% allowance is exact consumed cost; refundable rent is separately reserved (46.338648ms)
+✔ growth supports allocations above$50 and aggregate costs above$150 with only two holdings (10.041684ms)
+✔ holding losses shrink5% cap; stable second intent fails without resize, fee or duplicate execution (6.5263ms)
+✔ 10% daily observed HWM survives recovery/restart and resets at first complete nextUTC observation (8.561358ms)
+✔ all same-day receipts are scanned beyond256 and restart retains cursor, not a lowerHWM (143.12835ms)
+✔ migration preserves genuine10% breach and owner stop; legacy reset cannot waive newHWM (8.347631ms)
+✔ manual pause survives explicit migration retirement of legacy absolute loss latch (7.238286ms)
+✔ missing fresh mark leaves migration unchanged and retries when actual-size valuation returns (12.260885ms)
+✔ invalid authoritative receipt closes only new risk rather than inventing lowerHWM (7.804586ms)
+✔ projection keeps knownHWM separate from unavailable current equity and claims no executability (7.487245ms)
+✔ modeled unsubmitted failure has zero fee; supported landed slippage failure charges once (10.398713ms)
+ℹ tests 37
+ℹ suites 0
+ℹ pass 37
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1509.445397
