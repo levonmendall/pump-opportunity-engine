@@ -1,0 +1,25 @@
+{
+  "kind": "POE_INERT93_PROVIDER_RECOVERY_PUBLIC_READER",
+  "at": "2026-10-30T00:24:18.640181+00:00",
+  "files": {
+    "operator/native-paper-ec2/read-provider-recovery-forensics-20261030.py": {
+      "bytes": 24177,
+      "sha256": "b06bf4cc5d91a25b44a627e7771ef371c9a8fb2f1a93ffffec793f12123e93cd"
+    },
+    "operator/native-paper-ec2/test-read-provider-recovery-forensics-20261030.py": {
+      "bytes": 11839,
+      "sha256": "81287a5694a11aafacecdc4164940f0d8c263ccd1a3a4c9947da4777fb2fb852"
+    }
+  },
+  "expectedExporterSha256": "ebcc11a2d73230d82c018eb3f57d2534b378cc41dd438dff085773b3e7c3658c",
+  "scriptSha256Pin": null,
+  "adminWorktreeChanged": false,
+  "readerTests": 13,
+  "actualExporterReaderInteroperabilityPassed": true,
+  "fixedPublicOutput": "/var/lib/poe-public/provider-recovery-forensics-20261030.json",
+  "oldPublicOutputPreserved": "/var/lib/poe-public/current-run-forensics-20261029.json",
+  "financialDatabaseOpened": false,
+  "providerRequests": 0,
+  "serviceChanges": 0,
+  "actualExportPerformed": false
+}
