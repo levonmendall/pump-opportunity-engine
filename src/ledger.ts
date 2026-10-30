@@ -242,6 +242,39 @@ export function validateFinancialState(s: LedgerState, accountId: string, mode: 
   if (reservations > cash || !isV3PaperEpochState(s)&&Object.keys(s.positions).length + pendingBuys > 3) throw new Error('cash reservation/capacity invariant');
 }
 
+/** Exact one-off owner-authorized correction of the observed V3.1 diagnostic
+ * clock failure. This records a closed temporary control, never entry authority. */
+export const V31_DIAGNOSTIC_CONTROL_REPAIR=Object.freeze({
+ actionId:'owner-repair:v31-diagnostic-clock:111076:1793396104846',
+ kind:'owner-v31-diagnostic-control-repair',sourceCommit:'c4e91b312ee25275a65bc8a57dcbdd6cada436b4',
+ accountId:'poe-3123e352-4581-455b-85db-acd7e825e99e',epochId:'poe-paper-10sol-v3-20261030',
+ pauseRevision:111076,controlChangedAt:1793396104846,
+ oldReason:'native candidate financial evaluation unavailable',
+ newReason:'current equity or liquidation unavailable; entries closed',
+} as const);
+export type V31DiagnosticControlRepairReceipt={kind:'POE_V31_DIAGNOSTIC_CONTROL_REPAIR';actionId:string;actionRevision:number;revisionBefore:number;revisionAfter:number;repairedAt:number;previousPauseRevision:number;previousControlChangedAt:number;sourceCommit:string;accountId:string;epochId:string;oldReason:string;newReason:string;priorStateSha256:string;entryPermissionGranted:false;financialControlWrites:1;capitalWrites:0;contributionLamports:'0';balanceAndEpochPreserved:true};
+/** Read-only validation shared by restart control history and receipt retries. */
+export function readV31DiagnosticControlRepair(db:Database.Database,state:Readonly<LedgerState>,at:number):V31DiagnosticControlRepairReceipt|null{
+ const c=V31_DIAGNOSTIC_CONTROL_REPAIR;
+ const row=db.prepare('SELECT j.revision,j.at,j.kind,j.detail,a.payload_hash payloadHash,a.result FROM journal j JOIN actions a ON a.id=j.action_id WHERE j.action_id=?').get(c.actionId)as{revision:number;at:number;kind:string;detail:string;payloadHash:string;result:string}|undefined;
+ if(!row)return null;
+ if(row.kind!==c.kind||!Number.isSafeInteger(row.revision)||row.revision<=c.pauseRevision||row.revision>state.revision||!Number.isSafeInteger(row.at)||row.at<c.controlChangedAt||row.at>at||Buffer.byteLength(row.detail)>65536||Buffer.byteLength(row.result)>65536)throw Error('V31_DIAGNOSTIC_REPAIR_HISTORY_INVALID');
+ const payload=JSON.parse(row.detail),r=JSON.parse(row.result)as V31DiagnosticControlRepairReceipt;
+ const expected={kind:'POE_V31_DIAGNOSTIC_CONTROL_REPAIR',actionId:c.actionId,actionRevision:row.revision,revisionBefore:row.revision-1,revisionAfter:row.revision,repairedAt:row.at,previousPauseRevision:c.pauseRevision,previousControlChangedAt:c.controlChangedAt,sourceCommit:c.sourceCommit,accountId:c.accountId,epochId:c.epochId,oldReason:c.oldReason,newReason:c.newReason,priorStateSha256:payload.priorStateSha256,entryPermissionGranted:false,financialControlWrites:1,capitalWrites:0,contributionLamports:'0',balanceAndEpochPreserved:true};
+ if(state.accountId!==c.accountId||state.mode!=='PAPER'||state.inceptionAt!==1793052456212||state.paperEpoch?.id!==c.epochId||state.equityRisk?.version!==PAPER_V3_EQUITY_RISK_VERSION||!isDeepStrictEqual(r,expected)||!isDeepStrictEqual(payload,{now:row.at,expectedSourceCommit:c.sourceCommit,expectedControlChangedAt:c.controlChangedAt,expectedPauseRevision:c.pauseRevision,expectedRevision:row.revision-1,originalPauseActionId:payload.originalPauseActionId,priorStateSha256:payload.priorStateSha256})||typeof payload.priorStateSha256!=='string'||!/^[a-f0-9]{64}$/.test(payload.priorStateSha256)||row.payloadHash!==digest({kind:row.kind,payload}))throw Error('V31_DIAGNOSTIC_REPAIR_HISTORY_INVALID');
+ // The correction covers only the one diagnostic pause after this verified
+ // successful readiness boundary; it cannot hide an older owner/hard intent.
+ const resume=db.prepare('SELECT j.at,j.kind,j.detail,a.payload_hash payloadHash,a.result FROM journal j JOIN actions a ON a.id=j.action_id WHERE j.revision=111056').get()as{at:number;kind:string;detail:string;payloadHash:string;result:string}|undefined;
+ if(!resume||resume.kind!=='resume'||resume.at!==1793396086950||Buffer.byteLength(resume.detail)>65536||Buffer.byteLength(resume.result)>65536)throw Error('V31_DIAGNOSTIC_REPAIR_PRIOR_RESUME_INVALID');
+ const resumePayload=JSON.parse(resume.detail),resumeResult=JSON.parse(resume.result),resumeKind=runtimeReadinessKind(resumePayload.readiness,resume.at,resumePayload.marks,111055,state.accountId,resumePayload.price,true);
+ if(Object.keys(resumePayload).sort().join(',')!=='marks,now,price,readiness'||resumePayload.now!==resume.at||!resumeKind||!isDeepStrictEqual(resumeResult,{enabled:true,reason:resumeKind==='financial'?'explicit verified operating financial readiness':'explicit verified runtime readiness'})||resume.payloadHash!==digest({kind:'resume',payload:resumePayload})||(db.prepare("SELECT count(*) n FROM journal WHERE revision>111056 AND revision<? AND kind IN ('pause','safe-stop','resume')").get(c.pauseRevision)as{n:number}).n!==0)throw Error('V31_DIAGNOSTIC_REPAIR_PRIOR_CONTROL_INTENT_INVALID');
+ priceAt(resumePayload.price,resume.at);
+ const old=db.prepare('SELECT j.action_id actionId,j.at,j.kind,j.detail,a.payload_hash payloadHash,a.result FROM journal j JOIN actions a ON a.id=j.action_id WHERE j.revision=?').get(c.pauseRevision)as{actionId:string;at:number;kind:string;detail:string;payloadHash:string;result:string}|undefined;
+ const originalPayload={now:c.controlChangedAt,reason:c.oldReason};
+ if(!old||old.kind!=='pause'||old.at!==c.controlChangedAt||old.actionId!==payload.originalPauseActionId||!new RegExp('^trader:pause:'+(c.pauseRevision-1)+':[0-9]+$').test(old.actionId)||!isDeepStrictEqual(JSON.parse(old.detail),originalPayload)||old.payloadHash!==digest({kind:'pause',payload:originalPayload})||!isDeepStrictEqual(JSON.parse(old.result),{paused:true,pendingBuyCancellations:[]})||(db.prepare("SELECT count(*) n FROM journal WHERE revision>? AND revision<? AND kind<>'reconcile'").get(c.pauseRevision,row.revision)as{n:number}).n!==0)throw Error('V31_DIAGNOSTIC_REPAIR_ORIGIN_INVALID');
+ return r;
+}
+
 export class PaperLedger {
   private readonly db: Database.Database;
   private readonly historicalClosedCycles=new Map<string,ClosedCycle|null>();
@@ -499,6 +532,29 @@ export class PaperLedger {
     });
   }
 
+  /** Fixed historical incident only. The installer owns stopped-process and
+   * consistent-backup proof; this sole writer additionally rechecks all finance. */
+  recoverKnownV31DiagnosticPause(input:{expectedRevision:number;at:number;expectedSourceCommit:string;expectedControlChangedAt:number;expectedPauseRevision:number}){
+    const c=V31_DIAGNOSTIC_CONTROL_REPAIR,s=this.state(),at=input.at;
+    if(input.expectedSourceCommit!==c.sourceCommit||input.expectedControlChangedAt!==c.controlChangedAt||input.expectedPauseRevision!==c.pauseRevision||!Number.isSafeInteger(input.expectedRevision)||!Number.isSafeInteger(at)||at<s.lastAt||at>Date.now()+5000)throw Error('V31_DIAGNOSTIC_REPAIR_EXACT_AUTHORIZATION_REQUIRED');
+    const existing=readV31DiagnosticControlRepair(this.db,s,at);if(existing)return existing;
+    if(s.accountId!==c.accountId||s.inceptionAt!==1793052456212||s.mode!=='PAPER'||s.initialMicroUsd!=='1000000000'||s.paperEpoch?.id!==c.epochId||s.paperEpoch.version!==PAPER_V3_EPOCH_VERSION||!this.v3RiskPolicyActive()||s.revision!==input.expectedRevision||s.controls.entriesEnabled||s.controls.stopRequested||s.controls.reason!==c.oldReason||s.controls.changedAt!==c.controlChangedAt||!s.daily.paused||s.daily.lossPaused||Object.keys(s.positions).length||Object.keys(s.pending).length||Object.keys(s.lockedDeposits).length||s.lamports!=='10000000000'||s.realizedLamports!=='-1733277880'||s.executionCosts!=='245000')throw Error('V31_DIAGNOSTIC_REPAIR_EXACT_FLAT_STATE_REQUIRED');
+    const history=this.operatingControlHistory(s,at),only=history?.decoded[0];
+    if(history?.anchor?.kind!=='resume'||history.anchor.revision!==111056||history.anchor.at!==1793396086950||history.decoded.length!==1||!only||only.row.revision!==c.pauseRevision||only.row.kind!=='pause'||!only.ordinary||only.restored||only.startup||only.payload.reason!==c.oldReason)throw Error('V31_DIAGNOSTIC_REPAIR_PRIOR_CONTROL_INTENT_INVALID');
+    const old=this.db.prepare('SELECT j.action_id actionId,j.at,j.kind,j.detail,a.payload_hash payloadHash,a.result FROM journal j JOIN actions a ON a.id=j.action_id WHERE j.revision=?').get(c.pauseRevision)as{actionId:string;at:number;kind:string;detail:string;payloadHash:string;result:string}|undefined;
+    const originalPayload={now:c.controlChangedAt,reason:c.oldReason};
+    if(!old||old.kind!=='pause'||old.at!==c.controlChangedAt||!new RegExp('^trader:pause:'+(c.pauseRevision-1)+':[0-9]+$').test(old.actionId)||!isDeepStrictEqual(JSON.parse(old.detail),originalPayload)||old.payloadHash!==digest({kind:'pause',payload:originalPayload})||!isDeepStrictEqual(JSON.parse(old.result),{paused:true,pendingBuyCancellations:[]})||(this.db.prepare("SELECT count(*) n FROM journal WHERE revision>? AND kind<>'reconcile'").get(c.pauseRevision)as{n:number}).n!==0||(this.db.prepare("SELECT count(*) n FROM journal WHERE revision>? AND kind IN ('order','attempt')").get(s.paperEpoch.transitionRevision)as{n:number}).n!==0)throw Error('V31_DIAGNOSTIC_REPAIR_EXACT_PAUSE_PROOF_REQUIRED');
+    const priorStateSha256=digest(s),payload={now:at,expectedSourceCommit:c.sourceCommit,expectedControlChangedAt:c.controlChangedAt,expectedPauseRevision:c.pauseRevision,expectedRevision:s.revision,originalPauseActionId:old.actionId,priorStateSha256};
+    const result=this.apply(c.actionId,c.kind,at,payload,current=>{
+      if(!isDeepStrictEqual(current,s))throw Error('V31_DIAGNOSTIC_REPAIR_STATE_CHANGED');
+      current.controls.reason=c.newReason;current.controls.changedAt=at;
+      return {kind:'POE_V31_DIAGNOSTIC_CONTROL_REPAIR' as const,actionId:c.actionId,actionRevision:s.revision+1,revisionBefore:s.revision,revisionAfter:s.revision+1,repairedAt:at,previousPauseRevision:c.pauseRevision,previousControlChangedAt:c.controlChangedAt,sourceCommit:c.sourceCommit,accountId:c.accountId,epochId:c.epochId,oldReason:c.oldReason,newReason:c.newReason,priorStateSha256,entryPermissionGranted:false as const,financialControlWrites:1 as const,capitalWrites:0 as const,contributionLamports:'0' as const,balanceAndEpochPreserved:true as const};
+    });
+    const after=this.state(),expected=structuredClone(s) as LedgerState;expected.controls.reason=c.newReason;expected.controls.changedAt=at;expected.lastAt=at;expected.revision++;
+    if(!isDeepStrictEqual(after,expected)||!readV31DiagnosticControlRepair(this.db,after,at))throw Error('V31_DIAGNOSTIC_REPAIR_POST_APPEND_PROOF_FAILED');
+    return result;
+  }
+
   /** One explicit owner-authorized current-day risk reset, through the sole
    * financial writer. Stable id+reason identifies the authorization; changing
    * observational time/price on a retry returns its ORIGINAL durable receipt,
@@ -560,7 +616,10 @@ export class PaperLedger {
       const validateResume=(row:Row,enabled:boolean)=>{const {payload,result}=read(row),kind=runtimeReadinessKind(payload.readiness,row.at,payload.marks,row.revision-1,state.accountId,payload.price,isV3PaperRiskState(state));if(row.kind!=='resume'||Object.keys(payload).sort().join(',')!=='marks,now,price,readiness'||!kind||Object.keys(result).sort().join(',')!=='enabled,reason'||result.enabled!==enabled||enabled&&result.reason!==(kind==='financial'?'explicit verified operating financial readiness':'explicit verified runtime readiness')||!enabled&&result.reason!=='fresh reconciliation or next UTC-day loss reset required'&&!(kind==='financial'&&result.reason==='fresh reconciled inventory and authorized temporary recovery required'))throw Error('malformed');priceAt(payload.price,row.at);return {payload,result};};
       let anchor=this.db.prepare(select+" WHERE j.kind='resume' AND CASE WHEN length(CAST(a.result AS BLOB))<=65536 AND json_valid(a.result) THEN json_type(a.result,'$.enabled')='true' ELSE 0 END ORDER BY j.revision DESC LIMIT 1").get()as Row|undefined;
       if(state.paperEpoch&&(!anchor||anchor.revision<state.paperEpoch.transitionRevision)){this.validateEpochAnchor(state);anchor=this.db.prepare(select+' WHERE j.action_id=?').get('epoch:'+state.paperEpoch.id) as Row;}
-      if(anchor?.kind==='paper-epoch-transition')this.validateEpochAnchor(state);else if(anchor)validateResume(anchor,true);else{const inception=this.db.prepare("SELECT action_id actionId,at,kind,CASE WHEN length(CAST(detail AS BLOB))<=65536 THEN detail END detail FROM journal WHERE revision=0").get()as{actionId:string;at:number;kind:string;detail:string}|undefined;if(!inception||inception.actionId!=='inception'||inception.at!==state.inceptionAt||inception.kind!=='inception'||typeof inception.detail!=='string'||!isDeepStrictEqual(JSON.parse(inception.detail),{price:state.inceptionPrice,gasReserve:state.gasReserve,mode:state.mode}))throw Error('malformed inception');}
+      const diagnosticRepair=readV31DiagnosticControlRepair(this.db,state,at);
+      if(diagnosticRepair&&diagnosticRepair.actionRevision>(anchor?.revision??0))anchor=this.db.prepare(select+' WHERE j.action_id=?').get(V31_DIAGNOSTIC_CONTROL_REPAIR.actionId)as Row;
+      if(anchor?.kind===V31_DIAGNOSTIC_CONTROL_REPAIR.kind){if(!diagnosticRepair||anchor.revision!==diagnosticRepair.actionRevision)throw Error('malformed diagnostic repair');}
+      else if(anchor?.kind==='paper-epoch-transition')this.validateEpochAnchor(state);else if(anchor)validateResume(anchor,true);else{const inception=this.db.prepare("SELECT action_id actionId,at,kind,CASE WHEN length(CAST(detail AS BLOB))<=65536 THEN detail END detail FROM journal WHERE revision=0").get()as{actionId:string;at:number;kind:string;detail:string}|undefined;if(!inception||inception.actionId!=='inception'||inception.at!==state.inceptionAt||inception.kind!=='inception'||typeof inception.detail!=='string'||!isDeepStrictEqual(JSON.parse(inception.detail),{price:state.inceptionPrice,gasReserve:state.gasReserve,mode:state.mode}))throw Error('malformed inception');}
       const boundary=anchor?.revision??0,size=this.db.prepare("SELECT count(*) count,coalesce(sum(length(CAST(j.detail AS BLOB))+coalesce(length(CAST(a.result AS BLOB)),0)),0) bytes FROM journal j LEFT JOIN actions a ON a.id=j.action_id WHERE j.revision>? AND j.kind IN ('pause','safe-stop','resume')").get(boundary)as{count:number;bytes:number};if(size.count>512||size.bytes>1024*1024)return null;
       const rows=this.db.prepare(select+" WHERE j.revision>? AND j.kind IN ('pause','safe-stop','resume') ORDER BY j.revision LIMIT 513").all(boundary)as Row[];if(rows.length!==size.count)return null;
       let previousAt=anchor?.at??state.inceptionAt,previousRevision=boundary;
@@ -597,7 +656,7 @@ export class PaperLedger {
   }
 
   private operatingTemporaryControlVerified(state:State,at:number){
-    const history=this.operatingControlHistory(state,at);if(!history)return false;let lastControl:{at:number;reason:string}|null=history.anchor?.kind==='paper-epoch-transition'?{at:history.anchor.at,reason:'execution startup: fresh reconciliation/readiness required'}:null;
+    const history=this.operatingControlHistory(state,at);if(!history)return false;let lastControl:{at:number;reason:string}|null=history.anchor?.kind===V31_DIAGNOSTIC_CONTROL_REPAIR.kind?{at:history.anchor.at,reason:V31_DIAGNOSTIC_CONTROL_REPAIR.newReason}:history.anchor?.kind==='paper-epoch-transition'?{at:history.anchor.at,reason:'execution startup: fresh reconciliation/readiness required'}:null;
     for(const {row,payload,ordinary,restored,startup}of history.decoded){if(row.kind==='safe-stop')return false;if(row.kind==='resume')continue;
       if(restored||!(ordinary&&INTERNAL_SHUTDOWN_SOFT_PAUSES.has(payload.reason)||startup&&payload.reason==='execution startup: fresh reconciliation/readiness required'))return false;
       lastControl={at:row.at,reason:payload.reason};

@@ -1,3 +1,4 @@
+export {recoverV31DiagnosticPause} from './v31-diagnostic-recovery.js';
 import {nativeHeldAuditScheduling,NATIVE_HELD_AUDIT_SCHEDULING_POLICY} from './native-held-audit-scheduling.js';
 import {readNativeProtectionHistory,NATIVE_PROTECTION_HISTORY_KIND} from './native-protection-history.js';
 import {NativePaperWorkState} from './native-paper-work.js';

@@ -358,7 +358,10 @@ export class PaperTrader{
     if(this.evidenceUnavailable||!this.pilot||this.options.predictiveDiagnostics!==true||!c.active||c.informationPending||this.options.flowVerification?.verified!==true||!decision.features)return;
     const initialAt=this.clock(),bucket=Math.floor(initialAt/PROVISIONAL_RULE.bucketMs);
     if(c.predictiveAssessedBucket===bucket||Math.floor(decision.at/PROVISIONAL_RULE.bucketMs)!==bucket)return;
-    const original=this.resilient?this.assessResilient(decision.features,decision.at,c.mint):this.adaptive?assessAdaptiveBuying(decision.features,decision.at):assessPredictiveBuying(decision.features,decision.at);if(!original.features?.sufficientlyObserved)return;
+    // The completed decision already contains its immutable feature snapshot.
+    // Re-reading mutable live flow at decision.at can rewind a clock advanced
+    // by later actual-size quote/sizing work and throw after a valid rejection.
+    if(!decision.features.sufficientlyObserved)return;
     let ready=false;try{ready=(this.options.predictiveReadiness??this.options.candidateReadiness)?.(c.mint,initialAt)===true;}catch{return;}
     const availableAt=this.clock();if(!ready||Math.floor(availableAt/PROVISIONAL_RULE.bucketMs)!==bucket||this.candidates.get(c.mint)!==c||!c.active||c.informationPending)return;
     // Re-read only bounded in-memory features at actual diagnostic availability;
@@ -403,7 +406,7 @@ export class PaperTrader{
     try{const at=this.clock();if(!this.context.price||Object.keys(this.options.ledger.state().positions).length&&!this.sourceCurrent(at))throw new Error();this.options.ledger.reconcile(this.id('reconcile'),at,this.context.price,this.context.marks);this.funnel.reconciled++;}catch{this.pause('current equity or liquidation unavailable; entries closed');if(this.sourceCurrent(this.clock()))try{this.options.ledger.checkpointAdaptiveProtection(this.id('protection-peak'),this.clock(),this.context.marks);}catch{this.financialUnavailable=true;this.pause('adaptive protection evidence persistence unavailable; exposure retained');}}
     execution.push(...await this.attempts());
     // Existing exposure and pending actions always precede any candidate quote.
-    this.adaptiveHeldSeries.retain(Object.values(this.options.ledger.state().positions).flatMap(p=>p.strategy?.version===ADAPTIVE_MOMENTUM_V2_VERSION||p.strategy?.version===LIQUIDITY_RESILIENT_MOMENTUM_V3_VERSION?[{mint:p.mint,roundTripId:p.strategy.roundTripId}]:[]));
+    this.adaptiveHeldSeries.retain(Object.values(this.options.ledger.state().positions).flatMap(p=>p.strategy?.version===ADAPTIVE_MOMENTUM_V2_VERSION||isLiquidityResilientPaperStrategy(p.strategy?.version)?[{mint:p.mint,roundTripId:p.strategy!.roundTripId}]:[]));
     for(const [mint,row]of this.latestAdaptiveHoldingSignals){const p=this.options.ledger.state().positions[mint];if(p?.strategy?.roundTripId!==row.roundTripId||p.units!==row.units)this.latestAdaptiveHoldingSignals.delete(mint);}
     for(const position of Object.values(this.options.ledger.state().positions)){
       execution.push(...await this.dueActions());if(!this.options.ledger.state().positions[position.mint])continue;
