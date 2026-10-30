@@ -3,6 +3,7 @@
  * is claimed. The existing native audit and execution/ledger gates remain
  * mandatory at integration. Unknown dimensions are never fabricated. */
 import {createHash} from 'node:crypto';
+import {PAPER_EQUITY_RISK_VERSION} from './paper-equity-risk.js';
 import {assessPredictiveBuying,PROVISIONAL_RULE,type FlowFeatures,type RuleContext} from './strategy.js';
 
 export const ADAPTIVE_MOMENTUM_V2_VERSION='adaptive-momentum-v2-paper-v1' as const;
@@ -13,7 +14,7 @@ export const ADAPTIVE_MOMENTUM_V2_POLICY=Object.freeze({
  exit:Object.freeze({stopLossBps:1500,trailingMinimumBps:1500,volatilityMultiplierBps:20000,maximumQuoteAgeMs:2000,takeProfitBps:null,maximumProfitableHoldingMs:null,partialExits:false}),
  age:'verified on-chain migration time; no fixed early/late trading exclusion; complete audited observation remains mandatory',
  opportunityRouting:Object.freeze({earlyCohortThroughMs:7200000,meaning:'Cohort routes the target strategy, not proof of continuation or reacceleration. Earlier consolidation remains unknown unless independently evidenced.'}),
- sizing:Object.freeze({initialComparisonMaximumMicroUsd:'50000000',initialComparisonAggregateMicroUsd:'150000000',state:'EXPLICIT_LEGACY_RISK_FALLBACK_UNTIL_RELIABLE_RISK_AND_SIZE_QUOTES_AVAILABLE',appreciationCausesForcedSale:false}),
+ sizing:Object.freeze({policyVersion:PAPER_EQUITY_RISK_VERSION,entryConsumedCostBps:500,maximumInitialCostMicroUsd:null,maximumAggregatePositionCostMicroUsd:null,dailyEquityHighWaterDrawdownBps:1000,refundableDepositsIncluded:false,appreciationCausesForcedSale:false}),
  unknownDimensions:Object.freeze(['beneficial-owner independence','wallet coordination','within-window acceleration','executable price trend without a matched quote series','reserve stability without matched states','net expected continuation return']),
 });
 export const ADAPTIVE_MOMENTUM_V2_SHA256=createHash('sha256').update(JSON.stringify(ADAPTIVE_MOMENTUM_V2_POLICY)).digest('hex');
@@ -58,7 +59,7 @@ export function describeAdaptiveOpportunity(migrationAt:number|null,verified:boo
  return {targetStrategy:'momentum-reacceleration',migrationAgeMs:age,patternEvidence:confirmed?'prior-consolidation-evidence-supplied; renewed-demand-still-required':'prior-consolidation-unknown; age-alone-does-not-prove-reacceleration'} as const;
 }
 export type AdaptiveReentryEvidence={closedAt:number;reconciledAt:number;previousWindowEndAt:number;unresolved:boolean};
-export type AdaptiveRuleContext=Omit<RuleContext,'quote'>&{quote:(NonNullable<RuleContext['quote']>&{effectiveQuoteLiquidityLamports?:string})|null;reentry?:AdaptiveReentryEvidence};
+export type AdaptiveRuleContext=Omit<RuleContext,'quote'>&{quote:(NonNullable<RuleContext['quote']>&{effectiveQuoteLiquidityLamports?:string})|null;reentry?:AdaptiveReentryEvidence;maximumConsumedCostMicroUsd?:string};
 export type AdaptiveRuleDecision={qualified:boolean;kind:'missing-data'|'market-exclusion'|'strategy-rejection'|'risk-rejection'|'qualified';reason:string;ruleVersion:typeof ADAPTIVE_MOMENTUM_V2_VERSION;at:number;features:FlowFeatures|null;scoreBps:number|null;components:AdaptiveComponents|null;limitations:readonly string[]};
 /** Full-window re-entry: neither an old signal whose end follows the sale nor
  * a previously reserved/uncertain order can become a second round trip. */
@@ -76,7 +77,7 @@ export function evaluateAdaptivePrimary(features:FlowFeatures,context:AdaptiveRu
  if(context.alreadyTradedMint&&!adaptiveReentryEligible(f,context.now,context.reentry))return decision('risk-rejection','fresh-closed-and-reconciled-round-trip-required');
  const q=context.quote;
  if(!q||!text(q.evidence)||q.mint!==context.mint||!uint(q.at)||q.at>context.now||context.now-q.at>PROVISIONAL_RULE.maximumQuoteAgeMs)return decision('missing-data','fresh-size-specific-quote-unavailable');
- if(!money(q.allInInitialCostMicroUsd)||BigInt(q.allInInitialCostMicroUsd)===0n||BigInt(q.allInInitialCostMicroUsd)>BigInt(ADAPTIVE_MOMENTUM_V2_POLICY.sizing.initialComparisonMaximumMicroUsd))return decision('risk-rejection','initial-comparison-size-fallback-exceeded');
+ if(!money(q.allInInitialCostMicroUsd)||BigInt(q.allInInitialCostMicroUsd)===0n||!money(context.maximumConsumedCostMicroUsd)||BigInt(q.allInInitialCostMicroUsd)>BigInt(context.maximumConsumedCostMicroUsd))return decision('risk-rejection','current-equity-consumed-entry-allowance-required');
  if(!money(q.expectedBaseUnits)||BigInt(q.expectedBaseUnits)===0n||!uint(q.sizeToEffectiveLiquidityBps)||q.sizeToEffectiveLiquidityBps>PROVISIONAL_RULE.maximumSizeToLiquidityBps)return decision('market-exclusion','order-size-exceeds-execution-liquidity-bound');
  if(a.status==='unavailable')return decision('missing-data',a.reason);
  if(a.status==='failed')return decision('strategy-rejection',a.reason);
