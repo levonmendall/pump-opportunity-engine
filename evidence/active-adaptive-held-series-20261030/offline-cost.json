@@ -1,0 +1,24 @@
+{
+  "kind": "OFFLINE-adaptive-held-series-cost",
+  "meaning": "Synthetic CPU/memory cost only; not EC2 measurement, actual market evidence or operational acceptance",
+  "simulatedHoldings": 2,
+  "simulatedDurationMs": 3598000,
+  "checks": 3600,
+  "totalWallMs": 31.486942999999997,
+  "cpuUserMs": 48.306,
+  "cpuSystemMs": 4.793,
+  "callP95Ms": 0.016525000000001455,
+  "callP99Ms": 0.08731000000000222,
+  "maximumCallMs": 0.6531980000000033,
+  "heapBefore": 9771672,
+  "heapAfter": 9931768,
+  "heapNetChange": 160096,
+  "gcControlled": false,
+  "retained": {
+    "series": 2,
+    "quotes": 62,
+    "maximumQuotesPerSeries": 256
+  },
+  "providerRequests": 0,
+  "financialActions": 0
+}
