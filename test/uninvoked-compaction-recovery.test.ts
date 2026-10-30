@@ -22,7 +22,7 @@ function fixture(options:{persistent?:boolean;timeoutAdvance?:number;priorCooldo
 }
 
 
-test('BASELINE settled known-uninvoked candidate reservations are rebased into a false short-window provider burst at service compaction',async t=>{
+test('durably proved uninvoked candidate reservations cannot starve actual holding reads at service compaction',async t=>{
  const f=fixture({persistent:true});let lastCompleted:number|null=null,nextHeld=f.now(),nextCandidate=f.now()+500,ghosts=0,roundRobin=0,maximumGap=0;const failures:any[]=[],compactions:any[]=[],beforeCompaction:any[]=[];const began=f.now(),until=began+120000;
  const lower=()=>pilotLowerPriorityAdmission({now:f.now(),endAt:Number.MAX_SAFE_INTEGER,held:1,lastUsable:lastCompleted,nextPendingAt:null,operationBoundMs:1700});
  const source=()=>nativePaperSourceWorkAdmission({informationOpen:true,owned:true,entryWork:false,persistent:true,usage:f.rpc.usage()});
@@ -39,6 +39,6 @@ test('BASELINE settled known-uninvoked candidate reservations are rebased into a
   f.advance(50);
  }
  const timeouts=f.events.filter(e=>e.kind==='component-physical-timeout');t.diagnostic(JSON.stringify({scope:'OFFLINE actual69 RPC/ComponentBudget/source reserve/compaction with injected final-admission closure; four synthetic candidate scopes and normal2s owned reads. Not actual02:48cause attribution.',ghosts,physicalStarts:f.calls,maximumCompletedGapMs:maximumGap,timeouts:timeouts.length,failures,compactions,providerRequests:0}));
- assert.ok(ghosts>=31);assert.ok(compactions.length>0);assert.ok(maximumGap>10000);assert.ok(failures.some(f=>f.code==='PILOT_RPC_COMPONENT_DISPATCH_EXPIRED'&&f.newPhysical===0));assert.equal(timeouts.length,0);
+ assert.ok(ghosts>=31);assert.ok(compactions.length>0);assert.ok(maximumGap<=4000);assert.deepEqual(failures,[]);assert.ok(compactions.every(c=>c.after.short<=20));assert.equal(timeouts.length,0);
  }finally{await f.close();}
 });

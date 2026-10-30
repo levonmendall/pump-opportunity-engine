@@ -4,7 +4,7 @@
 import {createHash} from 'node:crypto';
 import {constants,openSync,closeSync,fstatSync,readSync,lstatSync,writeFileSync,fsyncSync,realpathSync} from 'node:fs';
 import {dirname,resolve} from 'node:path';
-import {COMPONENT_COUNTERBOOK_MAX_BYTES,componentByteAccounting,type ComponentBaseline} from './component-budget.js';
+import {COMPONENT_COUNTERBOOK_MAX_BYTES,componentByteAccounting,componentKnownUninvokedReservations,type ComponentBaseline} from './component-budget.js';
 
 const MIB=1024*1024;
 /** Explicit finite history runway: at most512 books, each at most512KiB,
@@ -52,7 +52,7 @@ export function readResearchBaseline(options:ResearchBaselineOptions){
   need(int(maximumPaths)&&maximumPaths>=1&&maximumPaths<=RESEARCH_MAXIMUM_PATHS&&(options.allowCumulativeBeyondLegacy===undefined||typeof options.allowCumulativeBeyondLegacy==='boolean')&&(options.checkpointSha256===undefined||hex(options.checkpointSha256))&&int(options.now)&&Array.isArray(options.paths)&&options.paths.length>0&&options.paths.length<=maximumPaths,'INVALID_OPTIONS');
   const paths=options.paths.map(p=>{need(typeof p==='string'&&p.length>0,'INVALID_PATH');return resolve(p);});
   need(new Set(paths).size===paths.length,'DUPLICATE_PATH');
-  const sources:ResearchBaselineSource[]=[];let baseline:ComponentBaseline|undefined,observedBytes=0,uncertainResponseBytes=0,pendingOperations=0,lastObservedAt=0,inputBytes=0,checkpointCreatedAt=0;
+  const sources:ResearchBaselineSource[]=[],knownUninvokedStarts:number[]=[];let baseline:ComponentBaseline|undefined,observedBytes=0,uncertainResponseBytes=0,pendingOperations=0,lastObservedAt=0,inputBytes=0,checkpointCreatedAt=0;
   for(let index=0;index<paths.length;index++){
     const path=paths[index]!,{book:b,sha256,inputBytes:bookBytes,stat}=readBook(path,RESEARCH_MAXIMUM_INPUT_BYTES-inputBytes);inputBytes+=bookBytes;need(inputBytes<=RESEARCH_MAXIMUM_INPUT_BYTES,'AGGREGATE_INPUT_BOUND');
     need((b.schemaVersion===1||b.schemaVersion===2&&(index===0&&b.kind===RESEARCH_CHECKPOINT_KIND||index>0&&b.continuousAccounting===true))&&int(b.lastObservedAt)&&b.lastObservedAt<=options.now&&b.lastObservedAt>=lastObservedAt,'INVALID_CLOCK');lastObservedAt=b.lastObservedAt;
@@ -82,6 +82,7 @@ export function readResearchBaseline(options:ResearchBaselineOptions){
           actual.set(r.id,r.at);
         }
       }
+      const known=componentKnownUninvokedReservations(b);for(const r of known)knownUninvokedStarts.push(reserved[r.id-baseline.calls-1]!);
       const newStarts=reserved.map((at,i)=>actual.get(baseline!.calls+i+1)??at);
       const pending=pendingBytes(b.pending,baseline.calls+1,baseline.calls+reserved.length,false),receiptAccounting=componentByteAccounting(b),receiptUncertainty=receiptAccounting?receiptAccounting.uncertainBytes+receiptAccounting.reservedBytes:0;need(int(receiptUncertainty),'INVALID_RECEIPT_UNCERTAINTY');
       observedBytes+=b.httpBytes+b.wsBytes;uncertainResponseBytes+=pending.bytes+receiptUncertainty;pendingOperations+=pending.count;
@@ -94,7 +95,7 @@ export function readResearchBaseline(options:ResearchBaselineOptions){
   if(pendingOperations&&!options.physicalSettled){
     const error=Object.assign(Error('RESEARCH_BASELINE_PHYSICAL_UNCERTAINTY'),{uncertainResponseBytes,pendingOperations});throw error;
   }
-  return {baseline,sources,observedBytes,uncertainResponseBytes,pendingOperations,inputBytes,maximumInputBytes:RESEARCH_MAXIMUM_INPUT_BYTES,physicalSettlementConfirmed:options.physicalSettled===true};
+  return {baseline,sources,knownUninvokedStarts,observedBytes,uncertainResponseBytes,pendingOperations,inputBytes,maximumInputBytes:RESEARCH_MAXIMUM_INPUT_BYTES,physicalSettlementConfirmed:options.physicalSettled===true};
 }
 
 
@@ -138,12 +139,14 @@ export type ResearchCheckpointOptions=ResearchBaselineOptions&{outputPath:string
 export function createResearchBaselineCheckpoint(options:ResearchCheckpointOptions){
  need(options.physicalSettled===true&&plain(options.settlement)&&exact(options.settlement,['inFlight','waitingOrOperating','physicalTransportsSettled'])&&options.settlement.inFlight===0&&options.settlement.waitingOrOperating===false&&(options.settlement.physicalTransportsSettled===true||options.liveAccountingBoundary===true&&options.settlement.physicalTransportsSettled===false),'CHECKPOINT_PHYSICAL_UNSETTLED');
  const linked=readResearchBaseline(options),at=options.now,first=readBook(resolve(options.paths[0]!),RESEARCH_MAXIMUM_INPUT_BYTES),last=readBook(resolve(options.paths.at(-1)!),RESEARCH_MAXIMUM_INPUT_BYTES);const previous=first.book.kind===RESEARCH_CHECKPOINT_KIND?{path:resolve(options.paths[0]!),sha256:first.sha256}:null;
- // Missing physical stamps must not be refunded from a rolling provider
+ // Durably attested pre-transport refusals are not physical starts. Their
+ // allocated units/bytes/pending obligations and hash-linked raw books remain.
+ // Every OTHER missing physical stamp must not be refunded from a rolling provider
  // window. A crash may occur after transport invocation but before persisting
  // that timestamp, so even book.lastObservedAt is not its upper bound. Use this
  // independently verified physical-settlement/seal time. Existing anchors retain
  // their previous estimates without retiming them; actual stamps remain exact.
- let unknownAtSeal=0;const conservative:number[]=[];for(let index=0;index<linked.sources.length;index++){const source=linked.sources[index]!,book=readBook(source.path,RESEARCH_MAXIMUM_INPUT_BYTES);need(book.sha256===source.sha256,'CHECKPOINT_SOURCE_CHANGED');const b=book.book;if(index===0&&b.kind===RESEARCH_CHECKPOINT_KIND)conservative.push(...checkedCheckpoint(b,at).starts.times);else if(index===0)conservative.push(...times(b.starts,Number(b.lastObservedAt)).map(()=>{unknownAtSeal++;return at;}));else{const invoked=new Map<number,number>((b.actualInvocations as Array<{id:number;at:number}>|undefined)?.map(r=>[r.id,r.at])??[]),base=(b.baseline as ComponentBaseline).calls;conservative.push(...times(b.starts,Number(b.lastObservedAt)).map((_t,i)=>invoked.get(base+i+1)??(unknownAtSeal++,at)));}}
+ let unknownAtSeal=0;const conservative:number[]=[];for(let index=0;index<linked.sources.length;index++){const source=linked.sources[index]!,book=readBook(source.path,RESEARCH_MAXIMUM_INPUT_BYTES);need(book.sha256===source.sha256,'CHECKPOINT_SOURCE_CHANGED');const b=book.book;if(index===0&&b.kind===RESEARCH_CHECKPOINT_KIND)conservative.push(...checkedCheckpoint(b,at).starts.times);else if(index===0)conservative.push(...times(b.starts,Number(b.lastObservedAt)).map(()=>{unknownAtSeal++;return at;}));else{const invoked=new Map<number,number>((b.actualInvocations as Array<{id:number;at:number}>|undefined)?.map(r=>[r.id,r.at])??[]),base=(b.baseline as ComponentBaseline).calls;const never=new Set(componentKnownUninvokedReservations(b).map(r=>r.id));conservative.push(...times(b.starts,Number(b.lastObservedAt)).flatMap((_t,i)=>never.has(base+i+1)?[]:[invoked.get(base+i+1)??(unknownAtSeal++,at)]));}}
  const cutoff=Math.max(0,at-60000),retained=conservative.filter(t=>t>=cutoff).sort((a,z)=>a-z),value:ResearchBaselineCheckpoint={schemaVersion:options.liveAccountingBoundary?2:1,kind:RESEARCH_CHECKPOINT_KIND,createdAt:at,lastObservedAt:at,sourceLastObservedAt:Number(last.book.lastObservedAt),previousCheckpoint:previous,sources:linked.sources.map(s=>({...s})),accounted:{calls:linked.baseline.calls,bytes:linked.baseline.bytes,observedBytes:linked.observedBytes,uncertainResponseBytes:linked.uncertainResponseBytes,pendingOperations:linked.pendingOperations},starts:{retainedSinceAt:cutoff,omittedCount:linked.baseline.calls-retained.length,conservativeUnknownAtSeal:unknownAtSeal,times:retained},refusal:{code:'RPC_HTTP_429',at:linked.baseline.refusalAt},physicalSettlement:{verifiedAt:at,inFlight:0,waitingOrOperating:false,physicalTransportsSettled:options.liveAccountingBoundary!==true,...(options.liveAccountingBoundary?{passiveStreamsMayRemainOpen:true as const}:{})},haltedReason:typeof last.book.haltedReason==='string'?last.book.haltedReason:null};
  checkedCheckpoint(value as unknown as Book,at);const check=readResearchBaseline(options);need(JSON.stringify(check)===JSON.stringify(linked),'CHECKPOINT_SOURCE_CHANGED');
  const path=resolve(options.outputPath),parent=lstatSync(dirname(path));need(parent.isDirectory()&&!parent.isSymbolicLink()&&parent.uid===process.getuid?.()&&(parent.mode&0o077)===0&&realpathSync(dirname(path))===dirname(path)&&!linked.sources.some(s=>s.path===path),'CHECKPOINT_UNSAFE_OUTPUT');
