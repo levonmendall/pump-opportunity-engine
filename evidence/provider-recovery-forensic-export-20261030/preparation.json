@@ -1,0 +1,58 @@
+{
+  "kind": "POE_PROVIDER_RECOVERY_FORENSIC_EXPORT_OFFLINE_PREPARATION",
+  "status": "IMPLEMENTED_OFFLINE_ONLY",
+  "createdAt": "2026-10-30T00:19:28.988432+00:00",
+  "files": {
+    "operator/native-paper-ec2/export-provider-recovery-forensics-20261030.py": {
+      "bytes": 29055,
+      "sha256": "4ca36788ea186c91c1c0b40d775ad057ef69e5c364339191d32615fa534d61e9"
+    },
+    "operator/native-paper-ec2/test-export-provider-recovery-forensics-20261030.py": {
+      "bytes": 19324,
+      "sha256": "e89fa404e4e7c573b538ba361a0bfe5bfdd563fd4ffaee1434a5c209db367a27"
+    }
+  },
+  "tests": 28,
+  "testExitCode": 0,
+  "source": {
+    "commit": "93bf0b5d6a3f1258a74ac696798fb4e0ec6147a2",
+    "sha256": "8a0f001a3ae0c6acedaae6fb8a0370e02293a8b0c35142d74daf19086a41203c"
+  },
+  "configurationSha256": "44b82455003f04f75eb1ad7a3dc21555406c1d4d0c7626386d3d21661fdb47c9",
+  "runId": "native-paper-20261029234856700",
+  "startedAt": 1793317736700,
+  "priorityWindows": [
+    {
+      "fromAt": 1793318365000,
+      "untilAtExclusive": 1793318495000
+    },
+    {
+      "fromAt": 1793319075000,
+      "untilAtExclusive": 1793319150000
+    }
+  ],
+  "envelopeWindow": {
+    "fromAt": 1793318365000,
+    "untilAtExclusive": 1793319150000
+  },
+  "output": "/var/lib/poe-public/provider-recovery-forensics-20261030.json",
+  "maximumFacts": 192,
+  "maximumFactBytes": 85000,
+  "windowFactLimits": [
+    64,
+    128
+  ],
+  "windowByteLimits": [
+    28000,
+    57000
+  ],
+  "maximumOutputBytes": 131072,
+  "maximumScanBytes": 67108864,
+  "maximumScanSeconds": 2.0,
+  "maximumFiles": 16,
+  "historicalExporterSha256Preserved": "1c684b1c88c95c75488f056ad00a8ea756c906e45dcb0f4f8725f5e75b193c59",
+  "actualExportExecuted": false,
+  "financialDatabaseOpened": false,
+  "providerRequests": 0,
+  "serviceControls": 0
+}
