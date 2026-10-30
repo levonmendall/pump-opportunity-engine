@@ -1,0 +1,134 @@
+✔ same-batch Clock research path uses2cold/1steady reads, preserving exact established sell and fees (33.08295ms)
+✔ explicit observation admission reaches every physical read and late preparation cannot return a usable mark (11.196491ms)
+✔ fresh changed reserves and newer slot still get one coherent read and exactly match established math (17.847283ms)
+✖ a transient failed holding read retains only validated links and recovers using one entirely fresh batch (11.069169ms)
+✖ cancellation after a warm read starts preserves existing address links without publishing an aborted quote (7.279209ms)
+✖ late admission closure cannot commit newly validated links or erase earlier verified links (11.551267ms)
+✔ malformed or unrecognized source failures still retire cached dependency links (30.269177ms)
+✔ fee-tier changes are read in the fresh dependency batch, with exact established decoder parity (15.594528ms)
+✔ Clock refuses wrong owner, executable, encoding, layout, slot, out-of-range and stale/future timestamp (1.102558ms)
+✔ changed links fail current batch, invalidate reuse and never retry the failing quote (12.601417ms)
+✔ missing dependency, bad owner, Clock mismatch and context regression invalidate rather than price partial state (24.938336ms)
+✔ aborted and invalid-size quotes make no read; explicit invalidation retains nonregression floor (5.477976ms)
+✔ slow validation or recording cannot refresh the original receive time into a fresh returned quote (10.300251ms)
+✔ three holdings share one complete16-account Clock batch with exact established full-size quotes (34.103142ms)
+✔ one missing holding dependency is isolated, while other holdings retain coherent quotes and reusable links (29.625602ms)
+✔ one changed pool link cannot borrow old vault data or invalidate unaffected holding quotes (29.151167ms)
+✖ two held pools stay warm after a transport failure while a later contradictory pool remains isolated (9.745698ms)
+✔ common Clock or context faults invalidate every cached holding without losing verified slot floors (25.295069ms)
+✔ missing discovery pool is isolated before dependency union and no duplicate/capacity request can start (9.5975ms)
+✔ an all-unavailable newer bank still prevents recovery from an older favorable snapshot (14.66199ms)
+✔ bank source-age is rechecked at return even when the batch itself remains within two seconds (6.564251ms)
+✔ unsupported mint extensions keep the exact refusal and isolate the affected holding (25.20038ms)
+✔ six distinct observation pools use2cold/1steady shared Clock reads without hypothetical trading quotes (56.035167ms)
+✔ observation support does not depend on whether a one-base-unit hypothetical sell produces output (9.250932ms)
+✔ alternating six observation pools and three holdings preserves shared links without pruning other observation identities (67.753709ms)
+✔ observation changed links and missing vaults isolate affected pools and rediscover links in one recovery batch (62.851647ms)
+✔ observation common Clock/source/slot faults and slow recording refuse the whole batch without refreshing timestamps (115.952054ms)
+✔ observation invalid cardinality, duplicate identities, minimum slots, aborts and closed admission make no request (5.887447ms)
+✔ an observation refusal before source admission does not evict validated held dependency links (41.775046ms)
+✔ coherent actual-input buy preserves retained SDK amounts and fees with2cold/1warm reads (30.192794ms)
+✔ buy admission, aborts, invalid amounts and unsupported state refuse without partial success (8.994035ms)
+✔ buy validation retains the original receive time through slow recording and bank expiry (7.499463ms)
+✔ alternating buys, three held quotes and six observations preserves their existing dependency working sets (158.740535ms)
+✔ nine reserved working identities refuse a tenth buy without poisoning higher-priority observation (44.804163ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 30
+ℹ fail 4
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1804.542645
+
+✖ failing tests:
+
+test at test/research-clock-pricing.test.ts:1:5343
+✖ a transient failed holding read retains only validated links and recovers using one entirely fresh batch (11.069169ms)
+  AssertionError [ERR_ASSERTION]: no contradictory pool state was obtained
+  + actual - expected
+  
+  + {}
+  - {
+  -   A4CSsC9DPkKRnbcX3U3zQZnC9oV4JFieu7pu8oFWpump: 461786589
+  - }
+  
+      at <anonymous> (/workspace/poe-held-link-recovery/test/research-clock-pricing.test.ts:82:12)
+      at async withTime (/workspace/poe-held-link-recovery/test/research-clock-pricing.test.ts:36:14)
+      at async TestContext.<anonymous> (/workspace/poe-held-link-recovery/test/research-clock-pricing.test.ts:77:194)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: {},
+    expected: { A4CSsC9DPkKRnbcX3U3zQZnC9oV4JFieu7pu8oFWpump: 461786589 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/research-clock-pricing.test.ts:1:7127
+✖ cancellation after a warm read starts preserves existing address links without publishing an aborted quote (7.279209ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {}
+  - {
+  -   A4CSsC9DPkKRnbcX3U3zQZnC9oV4JFieu7pu8oFWpump: 461786589
+  - }
+  
+      at <anonymous> (/workspace/poe-held-link-recovery/test/research-clock-pricing.test.ts:97:10)
+      at async withTime (/workspace/poe-held-link-recovery/test/research-clock-pricing.test.ts:36:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: {},
+    expected: { A4CSsC9DPkKRnbcX3U3zQZnC9oV4JFieu7pu8oFWpump: 461786589 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/research-clock-pricing.test.ts:1:7862
+✖ late admission closure cannot commit newly validated links or erase earlier verified links (11.551267ms)
+  AssertionError [ERR_ASSERTION]: only previously committed address metadata survives
+  + actual - expected
+  
+  + {}
+  - {
+  -   A4CSsC9DPkKRnbcX3U3zQZnC9oV4JFieu7pu8oFWpump: 461786589
+  - }
+  
+      at <anonymous> (/workspace/poe-held-link-recovery/test/research-clock-pricing.test.ts:106:10)
+      at async withTime (/workspace/poe-held-link-recovery/test/research-clock-pricing.test.ts:36:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: {},
+    expected: { A4CSsC9DPkKRnbcX3U3zQZnC9oV4JFieu7pu8oFWpump: 461786589 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at test/research-clock-pricing.test.ts:1:19744
+✖ two held pools stay warm after a transport failure while a later contradictory pool remains isolated (9.745698ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+  
+  + {}
+  - {
+  -   '7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump': 461852043,
+  -   A4CSsC9DPkKRnbcX3U3zQZnC9oV4JFieu7pu8oFWpump: 461852043
+  - }
+  
+      at <anonymous> (/workspace/poe-held-link-recovery/test/research-clock-pricing.test.ts:264:79)
+      at async withMultiTime (/workspace/poe-held-link-recovery/test/research-clock-pricing.test.ts:217:14)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: {},
+    expected: { A4CSsC9DPkKRnbcX3U3zQZnC9oV4JFieu7pu8oFWpump: 461852043, '7q9JLdtpktvSqvep8QLPbqRqeJKC4L3izhKLtoojpump': 461852043 },
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }

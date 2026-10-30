@@ -1,0 +1,42 @@
+✔ same-batch Clock research path uses2cold/1steady reads, preserving exact established sell and fees (30.096784ms)
+✔ explicit observation admission reaches every physical read and late preparation cannot return a usable mark (9.88094ms)
+✔ fresh changed reserves and newer slot still get one coherent read and exactly match established math (16.0053ms)
+✔ a transient failed holding read retains only validated links and recovers using one entirely fresh batch (77.346159ms)
+✔ cancellation after a warm read starts preserves existing address links without publishing an aborted quote (9.935292ms)
+✔ late admission closure cannot commit newly validated links or erase earlier verified links (12.455429ms)
+✔ malformed or unrecognized source failures still retire cached dependency links (29.506663ms)
+✔ fee-tier changes are read in the fresh dependency batch, with exact established decoder parity (14.972564ms)
+✔ Clock refuses wrong owner, executable, encoding, layout, slot, out-of-range and stale/future timestamp (1.08378ms)
+✔ changed links fail current batch, invalidate reuse and never retry the failing quote (11.713285ms)
+✔ missing dependency, bad owner, Clock mismatch and context regression invalidate rather than price partial state (24.812716ms)
+✔ aborted and invalid-size quotes make no read; explicit invalidation retains nonregression floor (5.574566ms)
+✔ slow validation or recording cannot refresh the original receive time into a fresh returned quote (10.242816ms)
+✔ three holdings share one complete16-account Clock batch with exact established full-size quotes (35.195247ms)
+✔ one missing holding dependency is isolated, while other holdings retain coherent quotes and reusable links (27.069687ms)
+✔ one changed pool link cannot borrow old vault data or invalidate unaffected holding quotes (28.267023ms)
+✔ two held pools stay warm after a transport failure while a later contradictory pool remains isolated (20.156064ms)
+✔ common Clock or context faults invalidate every cached holding without losing verified slot floors (34.241284ms)
+✔ missing discovery pool is isolated before dependency union and no duplicate/capacity request can start (7.485586ms)
+✔ an all-unavailable newer bank still prevents recovery from an older favorable snapshot (13.16629ms)
+✔ bank source-age is rechecked at return even when the batch itself remains within two seconds (5.430324ms)
+✔ unsupported mint extensions keep the exact refusal and isolate the affected holding (26.275034ms)
+✔ six distinct observation pools use2cold/1steady shared Clock reads without hypothetical trading quotes (46.958025ms)
+✔ observation support does not depend on whether a one-base-unit hypothetical sell produces output (10.946654ms)
+✔ alternating six observation pools and three holdings preserves shared links without pruning other observation identities (55.816979ms)
+✔ observation changed links and missing vaults isolate affected pools and rediscover links in one recovery batch (67.319012ms)
+✔ observation common Clock/source/slot faults and slow recording refuse the whole batch without refreshing timestamps (110.940349ms)
+✔ observation invalid cardinality, duplicate identities, minimum slots, aborts and closed admission make no request (5.510372ms)
+✔ an observation refusal before source admission does not evict validated held dependency links (48.870252ms)
+✔ coherent actual-input buy preserves retained SDK amounts and fees with2cold/1warm reads (30.10161ms)
+✔ buy admission, aborts, invalid amounts and unsupported state refuse without partial success (9.204424ms)
+✔ buy validation retains the original receive time through slow recording and bank expiry (8.683113ms)
+✔ alternating buys, three held quotes and six observations preserves their existing dependency working sets (145.773626ms)
+✔ nine reserved working identities refuse a tenth buy without poisoning higher-priority observation (47.050432ms)
+ℹ tests 34
+ℹ suites 0
+ℹ pass 34
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1785.208641
