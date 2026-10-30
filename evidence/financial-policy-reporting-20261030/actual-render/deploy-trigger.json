@@ -1,0 +1,25 @@
+{
+  "kind": "original-render-receiver-compatible-policy-deployment",
+  "observedAt": "2026-10-30T04:13:24.928Z",
+  "workspaceId": "tea-daqk6h8jo6nc73eojtp0",
+  "serviceId": "srv-daqon53tqb8s73bdceq0",
+  "url": "https://meme-machine-dashboard-staging.onrender.com",
+  "branch": "main",
+  "autoDeploy": "no",
+  "environmentChanged": false,
+  "financialServiceChanged": false,
+  "sourceExpectedBindingUnchanged": true,
+  "deploy": {
+    "commit": {
+      "createdAt": "2026-10-30T04:09:28Z",
+      "id": "d9c96b8a31d5a9fb7680f1b5f44a63dbb06eff8c",
+      "message": "Attach exact owner Portfolio regression output and totals"
+    },
+    "createdAt": "2026-10-30T04:13:10.492542Z",
+    "id": "dep-dbi1illg1s2s73dnaseg",
+    "startedAt": "2026-10-30T04:13:10.464266Z",
+    "status": "build_in_progress",
+    "trigger": "api",
+    "updatedAt": "2026-10-30T04:13:10.492542Z"
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "verifiedAt": "2026-10-30T04:10:19.397140+00:00",
+  "source": "d627fe7ab24b0932223cadf021928228eaa6eb6a",
+  "sourceDiffFromFreezeEmpty": true,
+  "scope": "Independent OFFLINE bounded reporting/privacy/arithmetic/unknown/owner-dashboard review; no financial or host action",
+  "sourceGuardFiles": 459,
+  "sourceGuardUnchanged": true,
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "--test",
+    "test/financial-policy-reporting.test.ts",
+    "test/operating-intelligence.test.ts"
+  ],
+  "returncode": 0,
+  "tests": 42,
+  "pass": true
+}

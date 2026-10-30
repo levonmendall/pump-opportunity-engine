@@ -1,0 +1,45 @@
+{
+  "verdict": "PASS_SOURCE_REVIEW_ONLY",
+  "source": "7d3f0ca283f8a7227c1aed5731e7eade83b66149",
+  "verification": "verification.json",
+  "checked": [
+    "5% consumed entry allowance uses fresh complete executable USD equity; network scenario fees included and refundable base/temporary rent separately funded. Active fixed$50/$150 and128-retained-deposit ceilings removed while two positions/four deep slots remain.",
+    "All retained same-day reconciliation history is scanned with durable cutoff/cursor and complete journal/action prefix checks; missing/oversized/malformed records cannot certify a lower HWM. UTC daily10% latch persists across rebound/restart; owner stops survive.",
+    "Missing or malformed optional entry policy/activation anchor closes new risk and resume, without weakening cash/inventory/order invariants or preventing an existing above$50 holding from a full SOL exit during USD outage. Raw bad policy and history remain untouched.",
+    "Historical actions, journal and metadata remain byte-identical across policy activation, chunked migration, restart and old owner-reset receipt lookup.",
+    "Actual unsigned SDK create/swap/close/unwrap instructions are retained and validated. A shared quote ATA is transient across all mints; temporary quote rent is reserved cash, never a permanent asset, execution fee or invented proceeds. Only known base rent persists for new strict entries.",
+    "New-model unsubmitted or unsupported landing facts charge no fee; scenario-landed failure charges the declared fee once. Intent, amount, full-size exit, timing, reservation, restart and uncertainty/deduplication checks survive composition.",
+    "The130-settled-mint test retains every refundable asset, cash/fee total, journal prefix and next-entry capability. No historical asset or liability is dropped to bypass a limit.",
+    "Typed reporting remains optional and source-owned; unavailable facts stay unknown, loss latch wording stays explicit after rebound, modeled preparation is separated from financial fills and observed chain outcomes. Original dashboard graphs/trade disclosure/token links remain."
+  ],
+  "resolvedReviewBlockers": [
+    {
+      "priorSource": "309ce33",
+      "issue": "Missing driving journal row could hide a retained peak action.",
+      "correction": "Complete retained-prefix cardinality/min/max and joined-action proof before every scan page/certification."
+    },
+    {
+      "priorSource": "85e6323",
+      "issue": "Absent policy state plus retained activation action could silently select legacy allocation.",
+      "correction": "Explicit policy/anchor availability verdict closes new risk; management remains usable."
+    },
+    {
+      "priorSource": "8ae34b5",
+      "issue": "Persistent WSOL model contradicted SDK close/unwrap and shared quote ATA/native cash flow.",
+      "correction": "Actual SDK atomic create/close pair retained, positive temporary-rent proof and reservation, base-only persistent rent."
+    }
+  ],
+  "limitations": [
+    "Offline tests are not forward-market operation, profitability evidence or24-hour reliability. The two-holding integration uses an explicit synthetic funded extension of retained pool bytes.",
+    "No funded execution, signer, mainnet landing, real fee receipt or transaction simulation is claimed. Propagation/inclusion/compute/network fees are declared PAPER scenarios conditioned partly on observed RPC/slot timing.",
+    "Legacy held positions retain an explicitly reported protective v1 fallback; unsupported new pool-extension funding rejects new strict entry rather than inventing cost completeness.",
+    "Source review does not authorize bypassing genuine owner stops, financial uncertainty, stale evidence or provider restrictions. Root full-suite/build/artifact verification and actual deployment/forward checks remain separate."
+  ],
+  "actionsPerformed": {
+    "providerRequests": 0,
+    "actualLedgerReads": 0,
+    "financialWrites": 0,
+    "serviceControlOperations": 0,
+    "deploymentOperations": 0
+  }
+}

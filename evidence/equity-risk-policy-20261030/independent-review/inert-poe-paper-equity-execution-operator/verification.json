@@ -1,0 +1,9 @@
+{
+  "verifiedAt": "2026-10-30T04:35:24.180921+00:00",
+  "commit": "1f293250386602c3513b19a9269853ebe1424625",
+  "scope": "OFFLINE inert-template/source-bound refusal and mocked same-writer handoff; not final packet or deployment approval",
+  "sourceGuardUnchanged": true,
+  "sourceGuardFiles": 105,
+  "returncode": 0,
+  "pass": true
+}

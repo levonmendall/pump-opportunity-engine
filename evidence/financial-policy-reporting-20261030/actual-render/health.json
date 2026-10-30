@@ -1,0 +1,168 @@
+{
+  "verifiedAt": "2026-10-30T04:19:04.060Z",
+  "scope": "Original Render receiver only; not EC2 holding-protection evidence",
+  "metrics": {
+    "resourceId": "srv-daqon53tqb8s73bdceq0",
+    "timeRange": {
+      "start": "2026-10-30T04:11:00Z"
+    },
+    "metrics": [
+      {
+        "type": "cpu_usage",
+        "data": [
+          {
+            "labels": [
+              {
+                "field": "instance",
+                "value": "srv-daqon53tqb8s73bdceq0-sbdhh"
+              },
+              {
+                "field": "service",
+                "value": "srv-daqon53tqb8s73bdceq0"
+              },
+              {
+                "field": "resource",
+                "value": "srv-daqon53tqb8s73bdceq0"
+              }
+            ],
+            "unit": "cpu",
+            "values": [
+              {
+                "timestamp": "2026-10-30T04:15:00Z",
+                "value": 0.01959095
+              },
+              {
+                "timestamp": "2026-10-30T04:16:00Z",
+                "value": 0.0017570333
+              },
+              {
+                "timestamp": "2026-10-30T04:17:00Z",
+                "value": 0.0012418167
+              },
+              {
+                "timestamp": "2026-10-30T04:18:00Z",
+                "value": 0.0021586334
+              }
+            ]
+          },
+          {
+            "labels": [
+              {
+                "field": "instance",
+                "value": "srv-daqon53tqb8s73bdceq0-5hf6t"
+              },
+              {
+                "field": "service",
+                "value": "srv-daqon53tqb8s73bdceq0"
+              },
+              {
+                "field": "resource",
+                "value": "srv-daqon53tqb8s73bdceq0"
+              }
+            ],
+            "unit": "cpu",
+            "values": [
+              {
+                "timestamp": "2026-10-30T04:11:00Z",
+                "value": 0.0010049833
+              },
+              {
+                "timestamp": "2026-10-30T04:12:00Z",
+                "value": 0.00108015
+              },
+              {
+                "timestamp": "2026-10-30T04:13:00Z",
+                "value": 0.00072165
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "memory_usage",
+        "data": [
+          {
+            "labels": [
+              {
+                "field": "instance",
+                "value": "srv-daqon53tqb8s73bdceq0-5hf6t"
+              },
+              {
+                "field": "service",
+                "value": "srv-daqon53tqb8s73bdceq0"
+              },
+              {
+                "field": "resource",
+                "value": "srv-daqon53tqb8s73bdceq0"
+              }
+            ],
+            "unit": "bytes",
+            "values": [
+              {
+                "timestamp": "2026-10-30T04:11:00Z",
+                "value": 73355260
+              },
+              {
+                "timestamp": "2026-10-30T04:12:00Z",
+                "value": 73355260
+              },
+              {
+                "timestamp": "2026-10-30T04:13:00Z",
+                "value": 73355260
+              }
+            ]
+          },
+          {
+            "labels": [
+              {
+                "field": "service",
+                "value": "srv-daqon53tqb8s73bdceq0"
+              },
+              {
+                "field": "resource",
+                "value": "srv-daqon53tqb8s73bdceq0"
+              },
+              {
+                "field": "instance",
+                "value": "srv-daqon53tqb8s73bdceq0-sbdhh"
+              }
+            ],
+            "unit": "bytes",
+            "values": [
+              {
+                "timestamp": "2026-10-30T04:14:00Z",
+                "value": 2613248
+              },
+              {
+                "timestamp": "2026-10-30T04:15:00Z",
+                "value": 55930880
+              },
+              {
+                "timestamp": "2026-10-30T04:16:00Z",
+                "value": 60702720
+              },
+              {
+                "timestamp": "2026-10-30T04:17:00Z",
+                "value": 58880000
+              },
+              {
+                "timestamp": "2026-10-30T04:18:00Z",
+                "value": 54771710
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "http_latency",
+        "data": []
+      }
+    ]
+  },
+  "logSummary": {
+    "hasMore": false,
+    "errorCount": 0,
+    "startTime": "2026-10-30T04:13:00Z",
+    "endTime": "2026-10-30T04:18:50.396912952Z"
+  }
+}

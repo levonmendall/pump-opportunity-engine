@@ -1,0 +1,21 @@
+{
+  "algorithm": "sha256",
+  "files": {
+    "agent-capacity-handoff-0310.json": {
+      "sha256": "87696d5d1ad9f536dddd141319a041b6c0789558cc3e2e013b0717bf4daff012",
+      "bytes": 856
+    },
+    "capture-index.json": {
+      "sha256": "44b0204c496bd283546f1f7404052a29b29050d962651869fe8bf18236c388fb",
+      "bytes": 10210
+    },
+    "observations.ndjson": {
+      "sha256": "515da3382d41a5916569e9ddd5f2393769a21c53dc90a9064a8b324bd61ad61e",
+      "bytes": 329720
+    },
+    "summary.json": {
+      "sha256": "370a67de513b67622f7e25239b83228e5dd7b0459f3e612314f4459423b2db0b",
+      "bytes": 21280
+    }
+  }
+}

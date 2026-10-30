@@ -1,0 +1,48 @@
+✔ default plan explicitly labels nominal chain conditions and declared fee scenarios (1.666027ms)
+✔ observed construction/RPC/slot latency changes due time with integer rounding and truthful basis (0.355326ms)
+✔ congestion which consumes order lifetime is unavailable, never clipped into an optimistic landing (0.314746ms)
+✔ plan validation rejects forged policy, malformed values, extra fields and altered economic/timing assumptions (1.631246ms)
+✔ invalid plan inputs fail closed without inventing a current latency/source observation (0.339253ms)
+✔ landing binds the exact plan, fresh new construction and nonregressing source without claiming chain confirmation (0.76319ms)
+✔ landing before due, after expiry, stale at preparation/use, wrong slot, wrong fee or malformed hashes is rejected (3.270202ms)
+✔ unsubmitted preparation and expiry carry zero fee; only supported scenario landing carries modeled7000 (0.530085ms)
+✔ attempt validator refuses forged plan binding, stage/reason/fee mismatch and undocumented optimistic flags (0.819664ms)
+✔ unbundled helper cannot grant compiled PAPER provenance (1.58645ms)
+✔ compiled PAPER provenance pins executable worker addon source and exact input without initializing account (71.607096ms)
+✔ new actual-SDK PAPER reservation binds unsigned intent, adapts landing time and fills once using post-delay state (156.541284ms)
+✔ missing actual landing preparation is an unsubmitted zero-fee failure and cannot fabricate a position (48.446654ms)
+✔ post-delay pool deterioration preserves original minimum output; a plausible landed slippage failure charges once (64.71138ms)
+✔ fresh held protection does not construct discretionary transactions or add RPC work (79.231096ms)
+✔ a modeled full-size exit preserves its own intent and leaves no duplicate pending obligation (112.130982ms)
+✔ uncertain financial commit never re-quotes or duplicates a modeled fill (69.702111ms)
+✔ restart quarantines an unresolved modeled exit until expiry and retains the protected holding (104.949557ms)
+✔ legacy held account uncertainty uses an explicit sell-only protection fallback rather than stranding exposure (48.419694ms)
+✔ a component fallback cannot authorize a new PAPER entry (32.007484ms)
+✔ two actual-SDK modeled holdings serialize transient quote rent and preserve independent protection and exits (162.145843ms)
+ℹ Second fixture pool uses synthetic funded extension of retained bytes; not observed mainnet state or profitability proof.
+✔ unselected unsigned diagnostics cannot consume mandatory evidence retention; qualified plans retain exact construction (193.679928ms)
+✔ unsupported old pool extension funding cannot become a new modeled entry (25.47499ms)
+✔ actual SDK exact-input unsigned buy bytes and same-state cost reproduction: 2026-10-26T19-41-20.717Z (41.119734ms)
+✔ actual SDK exact-input unsigned buy bytes and same-state cost reproduction: 2026-10-26T19-42-16.130Z (33.908584ms)
+✔ actual full-size sell uses current fee-adjusted liquidation and independent slippage constraint (25.516622ms)
+✔ exact-input buy minimum constraint is preserved rather than repriced downward (13.944721ms)
+✔ unsupported, incomplete, stale, future or malformed source/account assumptions fail closed (21.914393ms)
+✔ construction snapshots caller inputs before async work and retains source association (35.783111ms)
+✔ the exact SDK quote create/close pair and every real swap/setup byte remain intact (13.571958ms)
+✔ missing, duplicate or changed WSOL close layout fails closed rather than dropping unrelated instructions (50.03746ms)
+✔ base ATA persists while the quote ATA is recreated and unwrapped on every round trip (14.05898ms)
+✔ instruction construction cannot relabel a source which becomes stale while awaiting SDK work (13.764002ms)
+✔ strict transient quote model rejects retained quote inventory and absent/invalid current rent assumptions (1.066129ms)
+✔ exact quote creation layout, single occurrence and atomic swap ordering are mandatory (63.23908ms)
+✔ temporary quote rent proof binds amount, prep evidence, coherent source and exact atomic pair without inventing income (28.07126ms)
+✔ different mint transactions safely reuse the same global WSOL ATA only because every atomic template creates and closes it (14.521204ms)
+✔ nested evidence output cannot mislabel modified or untracked application source as clean (59.584378ms)
+✔ missing repository identity fails conservatively instead of inventing a clean release (3.392364ms)
+ℹ tests 39
+ℹ suites 0
+ℹ pass 39
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 2509.971643

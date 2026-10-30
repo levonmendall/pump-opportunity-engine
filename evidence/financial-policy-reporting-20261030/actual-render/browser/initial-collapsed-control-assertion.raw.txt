@@ -1,0 +1,62 @@
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: The input did not match the regular expression /NEXT PAPER ENTRY POLICY/. Input:
+
+'01 / PORTFOLIO INTELLIGENCE\n' +
+  'Portfolio overview\n' +
+  'AUTHORITATIVE EC2 DATA ONLY\n' +
+  'NO SYNTHETIC BALANCES OR TRADES\n' +
+  'PORTFOLIO EQUITY\n' +
+  '$965.98\n' +
+  'Includes passive SOL/USD valuation\n' +
+  'TOKEN TRADING P&L\n' +
+  '$1.39\n' +
+  'Net token result translated at current SOL/USD\n' +
+  'CASH / RESERVED SOL\n' +
+  '9.3210895 / 0\n' +
+  'SOL · free cash / reservations\n' +
+  'TRADING AFTER OPERATING COSTS\n' +
+  'Unavailable\n' +
+  'Current USD translation; unknown costs stay unavailable\n' +
+  'REALIZED TRADING P&L\n' +
+  '-$10.21\n' +
+  'Realized PAPER outcomes\n' +
+  'UNREALIZED TRADING P&L\n' +
+  '$11.60\n' +
+  'Based on available marks\n' +
+  'Show all portfolio metrics'
+
+    at file:///workspace/pump-opportunity-engine/evidence/financial-policy-reporting-20261030/actual-render/browser/verify-browser.mjs:15:2436 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '01 / PORTFOLIO INTELLIGENCE\n' +
+    'Portfolio overview\n' +
+    'AUTHORITATIVE EC2 DATA ONLY\n' +
+    'NO SYNTHETIC BALANCES OR TRADES\n' +
+    'PORTFOLIO EQUITY\n' +
+    '$965.98\n' +
+    'Includes passive SOL/USD valuation\n' +
+    'TOKEN TRADING P&L\n' +
+    '$1.39\n' +
+    'Net token result translated at current SOL/USD\n' +
+    'CASH / RESERVED SOL\n' +
+    '9.3210895 / 0\n' +
+    'SOL · free cash / reservations\n' +
+    'TRADING AFTER OPERATING COSTS\n' +
+    'Unavailable\n' +
+    'Current USD translation; unknown costs stay unavailable\n' +
+    'REALIZED TRADING P&L\n' +
+    '-$10.21\n' +
+    'Realized PAPER outcomes\n' +
+    'UNREALIZED TRADING P&L\n' +
+    '$11.60\n' +
+    'Based on available marks\n' +
+    'Show all portfolio metrics',
+  expected: /NEXT PAPER ENTRY POLICY/,
+  operator: 'match',
+  diff: 'simple'
+}
+
+Node.js v24.19.0

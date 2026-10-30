@@ -1,0 +1,19 @@
+{
+  "verifiedAt": "2026-10-30T04:14:30.392Z",
+  "deploy": {
+    "commit": {
+      "createdAt": "2026-10-30T04:09:28Z",
+      "id": "d9c96b8a31d5a9fb7680f1b5f44a63dbb06eff8c",
+      "message": "Attach exact owner Portfolio regression output and totals"
+    },
+    "createdAt": "2026-10-30T04:13:10.492542Z",
+    "finishedAt": "2026-10-30T04:13:57.262642Z",
+    "id": "dep-dbi1illg1s2s73dnaseg",
+    "startedAt": "2026-10-30T04:13:10.464266Z",
+    "status": "live",
+    "trigger": "api",
+    "updatedAt": "2026-10-30T04:14:23.627857Z"
+  },
+  "financialServiceChanged": false,
+  "environmentChanged": false
+}

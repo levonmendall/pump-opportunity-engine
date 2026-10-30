@@ -1,0 +1,32 @@
+{
+  "verifiedAt": "2026-10-30T04:29:44.845187+00:00",
+  "source": "7d3f0ca283f8a7227c1aed5731e7eade83b66149",
+  "scope": "Independent OFFLINE composed risk/realistic-PAPER-execution review, actual unsigned SDK bytes and synthetic disposable accounting; no provider/service/actual financial actions",
+  "sourceGuardFiles": 473,
+  "sourceGuardUnchanged": true,
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "--test",
+    "--test-concurrency=1",
+    "test/independent-equity-risk-extra.test.ts",
+    "test/paper-equity-risk.test.ts",
+    "test/paper-unsigned-pumpswap.test.ts",
+    "test/paper-realistic-execution-integration.test.ts",
+    "test/execution-realism.test.ts",
+    "test/financial-policy-reporting.test.ts"
+  ],
+  "tests": 76,
+  "returncode": 0,
+  "pass": true,
+  "sourceHashes": {
+    "src/ledger.ts": "29008e5d0b684b511b7b13cc566926a58ecac4ea7a56efb334bf55244882ba13",
+    "src/paper-equity-risk.ts": "0db12cb48487f68752a9e130beeb1327dd2a4a65a43ad5605d3c9fee8659139c",
+    "src/trader.ts": "3b6555506bc3799f7e7efb3308249556a2c0523bc8ed370de9cc58dd2cb95184",
+    "src/execution-realism.ts": "95beee4e2d36d05890835bdfec1a98e464b569e22013fb926d23ad35026e531a",
+    "src/paper-unsigned-pumpswap.ts": "78ad03f2f987507416dc854c71d9ad548abb4bf278ac302a83e7914a5a4ab069",
+    "src/pilot-market.ts": "ed2190a7ef01f80ad1da07a7fe07e3a353c5db1f7e632be90ab8595aaa06baf2",
+    "src/financial-policy-reporting.ts": "de81ca230bb3020f2578a1ca95eba66869bbc3747cc2e71531c62a0d4222512d"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "verifiedAt": "2026-10-30T04:04:13.216837+00:00",
+  "source": "309ce33cf0313f9cbd7e02e0b0dc870b66a1a745",
+  "scope": "OFFLINE disposable corruption and migration probes; no actual ledger/provider/service access",
+  "sourceGuardFiles": 452,
+  "sourceGuardUnchanged": true,
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "--test",
+    "test/independent-equity-risk-review.test.ts"
+  ],
+  "returncode": 1,
+  "expectedReviewOutcome": "BLOCKER: missing driving journal row hides retained peak action and incorrectly certifies lower high-water history complete",
+  "actualHostCorruptionClaimed": false
+}

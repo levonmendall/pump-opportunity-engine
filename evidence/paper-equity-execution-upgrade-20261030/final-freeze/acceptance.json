@@ -1,0 +1,64 @@
+{
+  "sourceCommit": "a16a05e642938ad6132e6844712700f344b9b73e",
+  "verifiedAt": "2026-10-30T04:45:13.560633+00:00",
+  "passed": true,
+  "checks": {
+    "fullApplicationSuite": {
+      "sourceCommit": "b50c25b1abcb616e9367a812f9609278e18067f4",
+      "passed": 2257,
+      "failed": 0,
+      "sourceUnchanged": true,
+      "evidence": "../combined-b50-tests-pass-bundle-failed/npm-test.raw.txt"
+    },
+    "applicationAndTestBytesIdenticalToFullSuite": true,
+    "onlyPackagingScriptChanged": [
+      "scripts/build-native-paper-ec2.mjs"
+    ],
+    "finalSourceFocusedSdkModelBundleTests": 39,
+    "typeScriptBuild": true,
+    "standaloneImportFromEmptyDirectory": true,
+    "disposableBackupAndReopen": true,
+    "actualFrozenConfigurationImport": {
+      "source": "a16a05e642938ad6132e6844712700f344b9b73e",
+      "configurationSha256": "1a81d2156865467cab6300c260a809e0f98ae6649bdd88b4161f13b4c7d8edef",
+      "measurementExecuted": false,
+      "financialAccountRead": false
+    },
+    "allTrackedSourceTestOperatorPackageGuard": {
+      "files": 472,
+      "unchanged": true
+    }
+  },
+  "build": {
+    "output": "/tmp/poe-native-paper-output-paper-equity-execution-a16a05e-final",
+    "sourceCommit": "a16a05e642938ad6132e6844712700f344b9b73e",
+    "bundleSha256": "768cad1ccfda1304b4db2b69f24b1d616b54aeda91092aafa426d751384ce47d",
+    "bundleBytes": 5392498,
+    "metadataSha256": "1e757832d975a4b99b1e33f0849948d5629c131da54ba1d0217f3783b01aa0e4",
+    "backupWorkerSha256": "006dc9b31db5317a5ee5d35f672fac2510c4202290f52ddc8fd189edf6aa5e83",
+    "addonSha256": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d",
+    "inputs": 555,
+    "dependencies": 54,
+    "smokeImport": true,
+    "disposableBackupAndReopen": true,
+    "measurementExecuted": false,
+    "financialAccountRead": false
+  },
+  "providerRequests": 0,
+  "originalFinancialAccountRead": false,
+  "financialActions": 0,
+  "serviceChanges": 0,
+  "installed": false,
+  "limitations": [
+    "Actual fees, compute units, propagation and inclusion remain explicit PAPER scenarios; no real submission or chain landing is asserted.",
+    "Unsigned off-curve PAPER ownership is not funded-wallet ownership; optional chain preflight is not run.",
+    "Legacy held positions retain explicitly reported protective execution fallback.",
+    "Unsupported pool-extension funding rejects new entries.",
+    "Forward protection and realistic execution are not accepted from tests alone."
+  ],
+  "retainedFailures": [
+    "../combined-7d3-first-failed/verification.json",
+    "../combined-b50-tests-pass-bundle-failed/verification.json",
+    "focused-and-initial-output-guard-verification.json"
+  ]
+}

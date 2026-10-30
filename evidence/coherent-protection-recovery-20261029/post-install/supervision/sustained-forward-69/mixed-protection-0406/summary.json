@@ -1,0 +1,426 @@
+{
+  "kind": "existing-collector-mixed-protection-window-freeze-v1",
+  "frozenAt": "2026-10-30T04:10:02.817959+00:00",
+  "authorization": "Root explicitly requested the 04:06 through automatic-entry-recovery existing-local-frame freeze.",
+  "requestedSourceBounds": {
+    "earliest": "2026-10-30T04:05:15.000Z",
+    "latest": "2026-10-30T04:08:45.000Z"
+  },
+  "observedSourceBounds": {
+    "earliest": "2026-10-30T04:05:17.523Z",
+    "earliestSequence": "11736",
+    "latest": "2026-10-30T04:08:41.835Z",
+    "latestSequence": "11748"
+  },
+  "captureRecords": 13,
+  "sourceSequenceCount": 12,
+  "source": {
+    "release": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+    "strategy": "adaptive-momentum-v2-paper-v1"
+  },
+  "account": {
+    "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "initialUsd": 1000
+  },
+  "run": {
+    "id": "native-paper-20261030021230118",
+    "startedAt": "2026-10-30T02:12:30.118Z",
+    "mode": "persistent-paper",
+    "configurationSha256": "ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db",
+    "strategyVersion": "adaptive-momentum-v2-paper-v1"
+  },
+  "transitions": [
+    {
+      "sequence": "11736",
+      "sourceAt": "2026-10-30T04:05:17.523Z",
+      "collectorReceivedAt": "2026-10-30T04:05:48.132Z",
+      "agentFirstObservedAt": null,
+      "times": {
+        "generatedAt": "2026-10-30T04:05:17.523Z",
+        "marketAt": "2026-10-30T04:05:16.000Z",
+        "reconciledAt": "2026-10-30T04:05:17.506Z",
+        "usefulProgressAt": "2026-10-30T04:05:17.506Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "operating": {
+        "kind": "operating-source-v1",
+        "state": "fresh",
+        "market": "observing",
+        "reporting": "current",
+        "sourceAgeMs": 30558,
+        "receivedAgeMs": 14894,
+        "selectedCapture": true,
+        "discovery": true,
+        "watch": true,
+        "entryRestriction": null,
+        "financial": {
+          "usdValuation": "available",
+          "reconciled": true,
+          "valuationAgeMs": 32081,
+          "reconciliationAgeMs": 30575
+        },
+        "protection": {
+          "state": "monitored",
+          "completedAt": "2026-10-30T04:05:17.522Z",
+          "completedAgeAtSourceMs": 1,
+          "boundaryMs": 4000
+        },
+        "reasonCodes": []
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T04:05:17.522Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 101,
+        "breaches": 77,
+        "unavailableChecks": 259
+      },
+      "provider": {
+        "rpcRequests": 6618,
+        "rpcResponseBytes": 305924229,
+        "nativeStreamBytes": 1461918497,
+        "broadWatchBytes": 84522980442,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 648,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 46,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-30T04:02:19.431Z",
+        "historyCooldownUntil": "2026-10-30T01:11:26.761Z",
+        "controlCooldownUntil": null
+      },
+      "resources": {
+        "sampleAt": "2026-10-30T04:05:17.206Z",
+        "cpuOneCoreFraction": 0.2690615951787758,
+        "rssBytes": 404332544,
+        "availableMemoryBytes": 6765207552,
+        "availableDiskBytes": 285840822272,
+        "eventLoopLagMs": 27.738111,
+        "state": "normal"
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 9641623,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "holdingRPCCounters": {
+        "rapid probes": 2,
+        "RPC retry successes": 0,
+        "dispatch refusals": 12
+      },
+      "notes": [
+        "ACTIVE Adaptive Momentum v2 preliminary assessments use complete independently audited60s flow; they are not executable financial qualifications. Actual-size liquidity quotes and ledger controls remain required. Frozen persistent-buying counters are a separate benchmark. Overlapping windows are not distinct tokens.",
+        "Beneficial-owner independence, acceleration, executable price trend and reserve stability are unknown unless separately measured. No theoretical upside is realized profit.",
+        "Current $50/$150 sizing/exposure are explicit temporary legacy risk fallbacks. Four deep slots and two protected positions remain; old holdings retain their entry-strategy exit policy.",
+        "Protection totals and maxima retain known prior-run failures as lower bounds; completion freshness and recovery progress belong to the current run.",
+        "Current runtime observed completed protection maxima since 2026-10-30T02:12:30.118Z: gap 12324 ms; quote age at use 101 ms. Open or unmonitored gaps are not bounded by these values; historical failures remain retained.",
+        "Recorded holding-pricing refusals in this run: HELD_PRICING_DISPATCH_UNAVAILABLE:14.",
+        "Holding RPC current instance since 2026-10-30T02:12:30.188Z: calls 3560; logical attempts 3548; rapid probes 2; RPC retry successes 0; dispatch refusals 12; holding starts in 10s / 60s 5 / 30. These counts are not completed protection evaluations.",
+        "Holding RPC failure stages (current instance, not completed evaluations): uninvoked-quota-or-spacing:12, local-admission:2.",
+        "Last holding RPC failure 2026-10-30T03:39:24.410Z: uninvoked-quota-or-spacing; physical-in-flight false. Candidate quote failures (current market instance) 44: last 2026-10-30T04:03:36.079Z, 4k2bHn5wB2WnoshvGrJD7SNPjiWRN2KQC9dvTHZbpump, rent/PILOT_RPC_COMPONENT_ADMISSION_CLOSED, 357.0154370004311 ms; caller/deadline aborted false/false. This is not a qualification or order.",
+        "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump: Adaptive Momentum v2 historical executable net peak 0.630068231 SOL at 2026-10-30T04:05:17.470Z; measured trail 1500 bps (lagged-width-with-nondecreasing-boundary); dispersion 0 bps/29 prior quotes; boundary 0.535557997 SOL (modeled, fill not guaranteed); evaluated 2026-10-30T04:05:17.512Z. No fixed profit or profitable holding-time exit."
+      ]
+    },
+    {
+      "sequence": "11741",
+      "sourceAt": "2026-10-30T04:06:53.095Z",
+      "collectorReceivedAt": "2026-10-30T04:07:04.393Z",
+      "agentFirstObservedAt": "2026-10-30T04:07:14.192Z",
+      "times": {
+        "generatedAt": "2026-10-30T04:06:53.095Z",
+        "marketAt": "2026-10-30T04:06:52.000Z",
+        "reconciledAt": "2026-10-30T04:06:53.025Z",
+        "usefulProgressAt": "2026-10-30T04:06:53.025Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "paused",
+        "reconciled": true,
+        "blocker": "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED"
+      },
+      "operating": {
+        "kind": "operating-source-v1",
+        "state": "entry-paused",
+        "market": "observing",
+        "reporting": "current",
+        "sourceAgeMs": 11249,
+        "receivedAgeMs": 647,
+        "selectedCapture": true,
+        "discovery": true,
+        "watch": true,
+        "entryRestriction": "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED",
+        "financial": {
+          "usdValuation": "available",
+          "reconciled": true,
+          "valuationAgeMs": 12344,
+          "reconciliationAgeMs": 11319
+        },
+        "protection": {
+          "state": "monitored",
+          "completedAt": "2026-10-30T04:06:53.039Z",
+          "completedAgeAtSourceMs": 56,
+          "boundaryMs": 4000
+        },
+        "reasonCodes": [
+          "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED"
+        ]
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T04:06:53.039Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 101,
+        "breaches": 78,
+        "unavailableChecks": 266
+      },
+      "provider": {
+        "rpcRequests": 6714,
+        "rpcResponseBytes": 316560114,
+        "nativeStreamBytes": 1462438443,
+        "broadWatchBytes": 84650545266,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 650,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 80,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-30T04:06:34.625Z",
+        "historyCooldownUntil": "2026-10-30T01:11:26.761Z",
+        "controlCooldownUntil": null
+      },
+      "resources": {
+        "sampleAt": "2026-10-30T04:06:53.043Z",
+        "cpuOneCoreFraction": 0.15092328920190973,
+        "rssBytes": 392462336,
+        "availableMemoryBytes": 6773420032,
+        "availableDiskBytes": 285805486080,
+        "eventLoopLagMs": 27.738111,
+        "state": "normal"
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 12342272,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "holdingRPCCounters": {
+        "rapid probes": 3,
+        "RPC retry successes": 0,
+        "dispatch refusals": 17
+      },
+      "notes": [
+        "ACTIVE Adaptive Momentum v2 preliminary assessments use complete independently audited60s flow; they are not executable financial qualifications. Actual-size liquidity quotes and ledger controls remain required. Frozen persistent-buying counters are a separate benchmark. Overlapping windows are not distinct tokens.",
+        "Beneficial-owner independence, acceleration, executable price trend and reserve stability are unknown unless separately measured. No theoretical upside is realized profit.",
+        "Current $50/$150 sizing/exposure are explicit temporary legacy risk fallbacks. Four deep slots and two protected positions remain; old holdings retain their entry-strategy exit policy.",
+        "Protection totals and maxima retain known prior-run failures as lower bounds; completion freshness and recovery progress belong to the current run.",
+        "Current runtime observed completed protection maxima since 2026-10-30T02:12:30.118Z: gap 16677 ms; quote age at use 101 ms. Open or unmonitored gaps are not bounded by these values; historical failures remain retained.",
+        "Recorded holding-pricing refusals in this run: HELD_PRICING_PROVIDER_TIMEOUT:1, HELD_PRICING_DISPATCH_UNAVAILABLE:19, HELD_PRICING_PROVIDER_RESPONSE_UNAVAILABLE:1.",
+        "Holding RPC current instance since 2026-10-30T02:12:30.188Z: calls 3611; logical attempts 3595; rapid probes 3; RPC retry successes 0; dispatch refusals 17; holding starts in 10s / 60s 6 / 26. These counts are not completed protection evaluations.",
+        "Holding RPC failure stages (current instance, not completed evaluations): protection-retry-paced:1, uninvoked-quota-or-spacing:15, physical-settlement-wait:1, physical-timeout:1, transport-or-node-response:1, local-admission:3.",
+        "Last holding RPC failure 2026-10-30T04:06:42.674Z: transport-or-node-response; physical-in-flight false. Candidate quote failures (current market instance) 44: last 2026-10-30T04:03:36.079Z, 4k2bHn5wB2WnoshvGrJD7SNPjiWRN2KQC9dvTHZbpump, rent/PILOT_RPC_COMPONENT_ADMISSION_CLOSED, 357.0154370004311 ms; caller/deadline aborted false/false. This is not a qualification or order.",
+        "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump: Adaptive Momentum v2 historical executable net peak 0.630233321 SOL at 2026-10-30T04:06:52.990Z; measured trail 1500 bps (lagged-width-with-nondecreasing-boundary); dispersion 0 bps/5 prior quotes; boundary 0.535698323 SOL (modeled, fill not guaranteed); evaluated 2026-10-30T04:06:53.029Z. No fixed profit or profitable holding-time exit."
+      ]
+    },
+    {
+      "sequence": "11745",
+      "sourceAt": "2026-10-30T04:07:54.935Z",
+      "collectorReceivedAt": "2026-10-30T04:08:05.313Z",
+      "agentFirstObservedAt": "2026-10-30T04:08:14.200Z",
+      "times": {
+        "generatedAt": "2026-10-30T04:07:54.935Z",
+        "marketAt": "2026-10-30T04:07:53.000Z",
+        "reconciledAt": "2026-10-30T04:07:53.911Z",
+        "usefulProgressAt": "2026-10-30T04:07:53.911Z"
+      },
+      "status": {
+        "runtime": "running",
+        "market": "observing",
+        "entries": "enabled",
+        "reconciled": true,
+        "blocker": null
+      },
+      "operating": {
+        "kind": "operating-source-v1",
+        "state": "fresh",
+        "market": "observing",
+        "reporting": "current",
+        "sourceAgeMs": 10278,
+        "receivedAgeMs": 1082,
+        "selectedCapture": true,
+        "discovery": true,
+        "watch": true,
+        "entryRestriction": null,
+        "financial": {
+          "usdValuation": "available",
+          "reconciled": true,
+          "valuationAgeMs": 12213,
+          "reconciliationAgeMs": 11302
+        },
+        "protection": {
+          "state": "monitored",
+          "completedAt": "2026-10-30T04:07:53.925Z",
+          "completedAgeAtSourceMs": 1010,
+          "boundaryMs": 4000
+        },
+        "reasonCodes": []
+      },
+      "protection": {
+        "state": "monitored",
+        "targetCadenceMs": 2000,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": "2026-10-30T04:07:53.925Z",
+        "maximumCompletedGapMs": 89426,
+        "maximumQuoteAgeAtUseMs": 101,
+        "breaches": 78,
+        "unavailableChecks": 266
+      },
+      "provider": {
+        "rpcRequests": 6764,
+        "rpcResponseBytes": 317201130,
+        "nativeStreamBytes": 1462462566,
+        "broadWatchBytes": 84748340236,
+        "discoveryConnected": true,
+        "watchConnected": true,
+        "httpTimeouts": 650,
+        "httpErrors": 0,
+        "throttles": 0,
+        "rollingStartsPerMinute": 49,
+        "maximumStartsPerMinute": 90,
+        "minimumSpacingMs": 250,
+        "primaryCooldownUntil": "2026-10-30T04:06:34.625Z",
+        "historyCooldownUntil": "2026-10-30T01:11:26.761Z",
+        "controlCooldownUntil": null
+      },
+      "resources": {
+        "sampleAt": "2026-10-30T04:07:54.934Z",
+        "cpuOneCoreFraction": 0.1591668060480364,
+        "rssBytes": 408735744,
+        "availableMemoryBytes": 6738165760,
+        "availableDiskBytes": 285804306432,
+        "eventLoopLagMs": 27.721727,
+        "state": "normal"
+      },
+      "admission": {
+        "financialProjectionReady": true,
+        "supervisedNewRiskAllowed": true,
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidencePressureReasonCode": null,
+        "evidenceDiagnosticBytes": 12896703,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidenceRequiresCriticalRecovery": false,
+        "evidenceRefusedRecords": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRecoveryClosingSettled": false,
+        "sourceRestartRequired": false,
+        "proofPreparationState": "complete"
+      },
+      "holdingRPCCounters": {
+        "rapid probes": 3,
+        "RPC retry successes": 0,
+        "dispatch refusals": 17
+      },
+      "notes": [
+        "ACTIVE Adaptive Momentum v2 preliminary assessments use complete independently audited60s flow; they are not executable financial qualifications. Actual-size liquidity quotes and ledger controls remain required. Frozen persistent-buying counters are a separate benchmark. Overlapping windows are not distinct tokens.",
+        "Beneficial-owner independence, acceleration, executable price trend and reserve stability are unknown unless separately measured. No theoretical upside is realized profit.",
+        "Current $50/$150 sizing/exposure are explicit temporary legacy risk fallbacks. Four deep slots and two protected positions remain; old holdings retain their entry-strategy exit policy.",
+        "Protection totals and maxima retain known prior-run failures as lower bounds; completion freshness and recovery progress belong to the current run.",
+        "Current runtime observed completed protection maxima since 2026-10-30T02:12:30.118Z: gap 16677 ms; quote age at use 101 ms. Open or unmonitored gaps are not bounded by these values; historical failures remain retained.",
+        "Recorded holding-pricing refusals in this run: HELD_PRICING_PROVIDER_TIMEOUT:1, HELD_PRICING_DISPATCH_UNAVAILABLE:19, HELD_PRICING_PROVIDER_RESPONSE_UNAVAILABLE:1.",
+        "Holding RPC current instance since 2026-10-30T02:12:30.188Z: calls 3641; logical attempts 3625; rapid probes 3; RPC retry successes 0; dispatch refusals 17; holding starts in 10s / 60s 5 / 30. These counts are not completed protection evaluations.",
+        "Holding RPC failure stages (current instance, not completed evaluations): protection-retry-paced:1, uninvoked-quota-or-spacing:15, physical-settlement-wait:1, physical-timeout:1, transport-or-node-response:1, local-admission:3.",
+        "Last holding RPC failure 2026-10-30T04:06:42.674Z: transport-or-node-response; physical-in-flight false. Candidate quote failures (current market instance) 44: last 2026-10-30T04:03:36.079Z, 4k2bHn5wB2WnoshvGrJD7SNPjiWRN2KQC9dvTHZbpump, rent/PILOT_RPC_COMPONENT_ADMISSION_CLOSED, 357.0154370004311 ms; caller/deadline aborted false/false. This is not a qualification or order.",
+        "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump: Adaptive Momentum v2 historical executable net peak 0.630373942 SOL at 2026-10-30T04:07:53.877Z; measured trail 1500 bps (lagged-width-with-nondecreasing-boundary); dispersion 0 bps/29 prior quotes; boundary 0.535817851 SOL (modeled, fill not guaranteed); evaluated 2026-10-30T04:07:53.915Z. No fixed profit or profitable holding-time exit."
+      ]
+    }
+  ],
+  "lastPositions": [
+    {
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "quantity": "65278155",
+      "enteredAt": "2026-10-29T22:23:36.537Z",
+      "entryCostUsd": 49.708013,
+      "netLiquidationUsd": 60.88546,
+      "executionCostsUsd": 0.00068,
+      "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+    }
+  ],
+  "lastPendingOrders": [],
+  "firstFunnel": {
+    "discovered": 218,
+    "supported": 218,
+    "sufficientlyObserved": 52,
+    "evaluated": 52,
+    "qualified": 1,
+    "attempted": 2,
+    "paperFilled": 1,
+    "exited": 1,
+    "reconciled": 3481
+  },
+  "lastFunnel": {
+    "discovered": 227,
+    "supported": 227,
+    "sufficientlyObserved": 52,
+    "evaluated": 52,
+    "qualified": 1,
+    "attempted": 2,
+    "paperFilled": 1,
+    "exited": 1,
+    "reconciled": 3579
+  },
+  "claimsAndLimits": [
+    "This is a mixed recorded failure class: physical-timeout, physical-settlement-wait, transport-or-node-response and protection-retry-paced stages coexist with uninvoked-quota-or-spacing/local-admission; do not assign the incident wholly to uninvoked compaction.",
+    "Recorded diagnostic labels do not establish host, provider, transport, WebSocket or other causal attribution; no host inspection or extra provider call was made for this freeze.",
+    "Current-run completed maximum 16677 ms exceeds the completed-evaluation 4000 ms boundary and remains a failure; automatic entry-state recovery is not operational acceptance. Open or unmonitored gaps are not bounded by completed maxima.",
+    "Raw collector records are copied byte-for-byte per record; source generation, collector receipt and known agent observation times remain distinct.",
+    "Installed source remains 69aa1ef214a8c79524a25a8aca79299ccaad93dc with legacy $50/$150/old holding policy; owner a1 installation and future 5%/10% daily-HWM/execution directives remain pending.",
+    "The 106974 ms recorded capacity handoff is not claimed as active agent supervision; collector/service continued.",
+    "No new financial event, live fill, profitability or acceptance is claimed."
+  ]
+}

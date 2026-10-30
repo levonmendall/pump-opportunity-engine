@@ -1,0 +1,12 @@
+{"classification":"SYNTHETIC_FAILED_PACKET_CAPACITY_NOT_FORWARD_AUDIT_OR_PROFIT","failed":7193,"successful":1318,"elapsedSyntheticMs":60001,"wallMs":1662.572562,"cpuMicros":1990067,"rssBefore":150286336,"peakRss":229072896,"retainedRequiredRows":1318,"retainedFailedFenceRows":6,"fullTransactionMetadata":1318,"compactFingerprints":7193,"warm":true,"independentAuditPassed":false,"recordSink":"All source record calls/bytes counted; fixture discards its synthetic record callback rather than archiving them in unbounded test memory"}
+{"classification":"SYNTHETIC_FAILED_PACKET_CAPACITY_NOT_FORWARD_AUDIT_OR_PROFIT","failed":17000,"successful":1318,"elapsedSyntheticMs":60001,"wallMs":2168.2299080000003,"cpuMicros":2489164,"rssBefore":232157184,"peakRss":397119488,"retainedRequiredRows":1318,"retainedFailedFenceRows":6,"fullTransactionMetadata":1318,"compactFingerprints":17000,"warm":true,"independentAuditPassed":false,"recordSink":"All source record calls/bytes counted; fixture discards its synthetic record callback rather than archiving them in unbounded test memory"}
+✔ executed-flow diagnostics handle7193 or17000 failed packets plus1318 successful events without artificial ledger overflow (3865.015823ms)
+✔ 8192 successful notifications remain intact when optional failed fences cannot fit the unchanged audit input bound (4151.169826ms)
+ℹ tests 2
+ℹ suites 0
+ℹ pass 2
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8836.392076

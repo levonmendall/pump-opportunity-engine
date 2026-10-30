@@ -1,0 +1,266 @@
+{
+  "kind": "immutable-late-installed-69-scorecard-v1",
+  "frozenAt": "2026-10-30T04:53:57.558919+00:00",
+  "snapshot": {
+    "sourceFile": "/workspace/pump-opportunity-engine/evidence/coherent-protection-recovery-20261029/post-install/supervision/detached-after-0006/rolling-supervision/latest.json",
+    "sourceAt": "2026-10-30T04:53:28.485Z",
+    "sequence": "11923",
+    "collectorReceivedAt": "2026-10-30T04:53:45.804Z",
+    "sourceAgeAtFreezeMs": 29074,
+    "receiverAgeAtFreezeMs": 11755
+  },
+  "source": {
+    "release": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+    "strategy": "adaptive-momentum-v2-paper-v1"
+  },
+  "account": {
+    "id": "poe-3123e352-4581-455b-85db-acd7e825e99e",
+    "inceptionAt": "2026-10-26T22:07:36.212Z",
+    "initialUsd": 1000
+  },
+  "run": {
+    "id": "native-paper-20261030021230118",
+    "startedAt": "2026-10-30T02:12:30.118Z",
+    "mode": "persistent-paper",
+    "configurationSha256": "ac4a5f288a46b19b605eb5ee53a3f8df34d08b361d5c00346f7c45021f51f8db",
+    "strategyVersion": "adaptive-momentum-v2-paper-v1"
+  },
+  "status": {
+    "runtime": "running",
+    "market": "observing",
+    "entries": "enabled",
+    "reconciled": true,
+    "blocker": null
+  },
+  "operating": {
+    "kind": "operating-source-v1",
+    "state": "fresh",
+    "market": "observing",
+    "reporting": "current",
+    "sourceAgeMs": 17280,
+    "receivedAgeMs": 7877,
+    "selectedCapture": true,
+    "discovery": true,
+    "watch": true,
+    "entryRestriction": null,
+    "financial": {
+      "usdValuation": "available",
+      "reconciled": true,
+      "valuationAgeMs": 18765,
+      "reconciliationAgeMs": 18093
+    },
+    "protection": {
+      "state": "monitored",
+      "completedAt": "2026-10-30T04:53:27.686Z",
+      "completedAgeAtSourceMs": 799,
+      "boundaryMs": 4000
+    },
+    "reasonCodes": []
+  },
+  "admission": {
+    "financialProjectionReady": true,
+    "supervisedNewRiskAllowed": true,
+    "candidateResourceAdmissionAllowed": true,
+    "evidenceAdmissionAllowed": true,
+    "evidencePressureReasonCode": null,
+    "evidenceDiagnosticBytes": 8865243,
+    "evidenceDiagnosticLimitBytes": 134217728,
+    "evidenceRequiresCriticalRecovery": false,
+    "evidenceRefusedRecords": 0,
+    "sourceRecoveryGeneration": 0,
+    "sourceRecoveryFailures": 0,
+    "sourceRecoveryReasonCode": null,
+    "sourceRecoveryRetryAt": null,
+    "sourceRecoveryClosingSettled": false,
+    "sourceRestartRequired": false,
+    "proofPreparationState": "complete"
+  },
+  "resources": {
+    "sampleAt": "2026-10-30T04:53:28.301Z",
+    "cpuOneCoreFraction": 0.20788074151400862,
+    "rssBytes": 417554432,
+    "availableMemoryBytes": 6755147776,
+    "availableDiskBytes": 285594419200,
+    "eventLoopLagMs": 27.787263,
+    "state": "normal"
+  },
+  "protectionTotalsAndHistoricalMaxima": {
+    "state": "monitored",
+    "targetCadenceMs": 2000,
+    "completedEvaluationBoundaryMs": 4000,
+    "lastCompletedAt": "2026-10-30T04:53:27.686Z",
+    "maximumCompletedGapMs": 89426,
+    "maximumQuoteAgeAtUseMs": 101,
+    "breaches": 79,
+    "unavailableChecks": 271
+  },
+  "provider": {
+    "rpcRequests": 9402,
+    "rpcResponseBytes": 439881113,
+    "nativeStreamBytes": 1473449817,
+    "broadWatchBytes": 87423069327,
+    "discoveryConnected": true,
+    "watchConnected": true,
+    "httpTimeouts": 651,
+    "httpErrors": 0,
+    "throttles": 0,
+    "rollingStartsPerMinute": 41,
+    "maximumStartsPerMinute": 90,
+    "minimumSpacingMs": 250,
+    "primaryCooldownUntil": "2026-10-30T04:09:39.196Z",
+    "historyCooldownUntil": "2026-10-30T01:11:26.761Z",
+    "controlCooldownUntil": null
+  },
+  "captureConnected": true,
+  "funnel": {
+    "discovered": 309,
+    "supported": 309,
+    "sufficientlyObserved": 69,
+    "evaluated": 69,
+    "qualified": 1,
+    "attempted": 2,
+    "paperFilled": 1,
+    "exited": 1,
+    "reconciled": 5013
+  },
+  "positions": [
+    {
+      "mint": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "label": "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump",
+      "quantity": "65278155",
+      "enteredAt": "2026-10-29T22:23:36.537Z",
+      "entryCostUsd": 49.708013,
+      "netLiquidationUsd": 61.616162,
+      "executionCostsUsd": 0.00068,
+      "status": "PAPER held; entry-gas USD allocated (<$0.000001 rounding uncertainty)"
+    }
+  ],
+  "pendingOrders": [],
+  "sourceLimitations": [
+    "ACTIVE Adaptive Momentum v2 preliminary assessments use complete independently audited60s flow; they are not executable financial qualifications. Actual-size liquidity quotes and ledger controls remain required. Frozen persistent-buying counters are a separate benchmark. Overlapping windows are not distinct tokens.",
+    "Beneficial-owner independence, acceleration, executable price trend and reserve stability are unknown unless separately measured. No theoretical upside is realized profit.",
+    "Current $50/$150 sizing/exposure are explicit temporary legacy risk fallbacks. Four deep slots and two protected positions remain; old holdings retain their entry-strategy exit policy.",
+    "Protection totals and maxima retain known prior-run failures as lower bounds; completion freshness and recovery progress belong to the current run.",
+    "Current runtime observed completed protection maxima since 2026-10-30T02:12:30.118Z: gap 16677 ms; quote age at use 101 ms. Open or unmonitored gaps are not bounded by these values; historical failures remain retained.",
+    "Recorded holding-pricing refusals in this run: HELD_PRICING_PROVIDER_TIMEOUT:1, HELD_PRICING_DISPATCH_UNAVAILABLE:24, HELD_PRICING_PROVIDER_RESPONSE_UNAVAILABLE:1.",
+    "Holding RPC current instance since 2026-10-30T02:12:30.188Z: calls 5088; logical attempts 5068; rapid probes 4; RPC retry successes 0; dispatch refusals 21; holding starts in 10s / 60s 5 / 30. These counts are not completed protection evaluations.",
+    "Holding RPC failure stages (current instance, not completed evaluations): protection-retry-paced:1, uninvoked-quota-or-spacing:19, physical-settlement-wait:1, physical-timeout:1, transport-or-node-response:1, local-admission:4.",
+    "Last holding RPC failure 2026-10-30T04:32:16.093Z: uninvoked-quota-or-spacing; physical-in-flight false. Candidate quote failures (current market instance) 58: last 2026-10-30T04:49:56.677Z, RkpuEyhZAnHQyFTkwsSzmHRNnTnKbApVJPaeRnqpump, rent/PILOT_RPC_COMPONENT_ADMISSION_CLOSED, 109.53359900042415 ms; caller/deadline aborted false/false. This is not a qualification or order.",
+    "qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump: Adaptive Momentum v2 historical executable net peak 0.634989054 SOL at 2026-10-30T04:53:27.637Z; measured trail 1500 bps (lagged-width-with-nondecreasing-boundary); dispersion 0 bps/29 prior quotes; boundary 0.539740696 SOL (modeled, fill not guaranteed); evaluated 2026-10-30T04:53:27.676Z. No fixed profit or profitable holding-time exit."
+  ],
+  "local0432": {
+    "origin": "/workspace/poe-paper-equity-execution-operator/evidence/paper-equity-execution-20261030/before-verification/local-0432-retained-source-frames.ndjson",
+    "originSha256": "bca7c296c7f095c17166633196b6ae54623dbbda8dfc84d5d999f1c9288ea050",
+    "records": 10,
+    "earliestSourceAt": "2026-10-30T04:31:35.629Z",
+    "earliestSequence": "11837",
+    "latestSourceAt": "2026-10-30T04:33:54.207Z",
+    "latestSequence": "11846",
+    "transitions": [
+      {
+        "sequence": "11837",
+        "sourceAt": "2026-10-30T04:31:35.629Z",
+        "collectorReceivedAt": "2026-10-30T04:31:56.399Z",
+        "status": {
+          "runtime": "running",
+          "market": "observing",
+          "entries": "enabled",
+          "reconciled": true,
+          "blocker": null
+        },
+        "reasons": [],
+        "breaches": 78,
+        "unavailable": 266,
+        "notes": [
+          "Recorded holding-pricing refusals in this run: HELD_PRICING_PROVIDER_TIMEOUT:1, HELD_PRICING_DISPATCH_UNAVAILABLE:19, HELD_PRICING_PROVIDER_RESPONSE_UNAVAILABLE:1.",
+          "Holding RPC failure stages (current instance, not completed evaluations): protection-retry-paced:1, uninvoked-quota-or-spacing:15, physical-settlement-wait:1, physical-timeout:1, transport-or-node-response:1, local-admission:3.",
+          "Last holding RPC failure 2026-10-30T04:06:42.674Z: transport-or-node-response; physical-in-flight false. Candidate quote failures (current market instance) 51: last 2026-10-30T04:31:05.089Z, 6NqCAw6W9KZYMKncMCm5G1zUBBeqbiQNuuNjExb2pump, rent/PILOT_RPC_COMPONENT_ADMISSION_CLOSED, 11.603779999539256 ms; caller/deadline aborted false/false. This is not a qualification or order."
+        ]
+      },
+      {
+        "sequence": "11839",
+        "sourceAt": "2026-10-30T04:32:08.292Z",
+        "collectorReceivedAt": "2026-10-30T04:32:26.888Z",
+        "status": {
+          "runtime": "running",
+          "market": "unavailable",
+          "entries": "paused",
+          "reconciled": false,
+          "blocker": "POE_ENTRY_LIQUIDATION_UNAVAILABLE"
+        },
+        "reasons": [
+          "USD_VALUATION_UNAVAILABLE",
+          "VALUATION_UNAVAILABLE",
+          "RECONCILIATION_NOT_CURRENT",
+          "POE_ENTRY_LIQUIDATION_UNAVAILABLE"
+        ],
+        "breaches": 78,
+        "unavailable": 267,
+        "notes": [
+          "Recorded holding-pricing refusals in this run: HELD_PRICING_PROVIDER_TIMEOUT:1, HELD_PRICING_DISPATCH_UNAVAILABLE:20, HELD_PRICING_PROVIDER_RESPONSE_UNAVAILABLE:1.",
+          "Holding-pricing refusal at 2026-10-30T04:32:08.264Z: HELD_PRICING_DISPATCH_UNAVAILABLE. This is not a completed protection evaluation.",
+          "Holding RPC failure stages (current instance, not completed evaluations): protection-retry-paced:1, uninvoked-quota-or-spacing:15, physical-settlement-wait:1, physical-timeout:1, transport-or-node-response:1, local-admission:4.",
+          "Last holding RPC failure 2026-10-30T04:32:08.253Z: local-admission; physical-in-flight false. Candidate quote failures (current market instance) 52: last 2026-10-30T04:32:07.958Z, 91Y9HWkox2GZ3U634ZNazitb6FFs9jb1H8ayg5atpump, rent/PILOT_RPC_COMPONENT_ADMISSION_CLOSED, 103.93764199968427 ms; caller/deadline aborted false/false. This is not a qualification or order."
+        ]
+      },
+      {
+        "sequence": "11840",
+        "sourceAt": "2026-10-30T04:32:23.310Z",
+        "collectorReceivedAt": "2026-10-30T04:32:42.010Z",
+        "status": {
+          "runtime": "running",
+          "market": "observing",
+          "entries": "paused",
+          "reconciled": true,
+          "blocker": "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED"
+        },
+        "reasons": [
+          "POE_ENTRY_PROTECTION_RECOVERY_REQUIRED"
+        ],
+        "breaches": 79,
+        "unavailable": 271,
+        "notes": [
+          "Recorded holding-pricing refusals in this run: HELD_PRICING_PROVIDER_TIMEOUT:1, HELD_PRICING_DISPATCH_UNAVAILABLE:24, HELD_PRICING_PROVIDER_RESPONSE_UNAVAILABLE:1.",
+          "Holding RPC failure stages (current instance, not completed evaluations): protection-retry-paced:1, uninvoked-quota-or-spacing:19, physical-settlement-wait:1, physical-timeout:1, transport-or-node-response:1, local-admission:4.",
+          "Last holding RPC failure 2026-10-30T04:32:16.093Z: uninvoked-quota-or-spacing; physical-in-flight false. Candidate quote failures (current market instance) 52: last 2026-10-30T04:32:07.958Z, 91Y9HWkox2GZ3U634ZNazitb6FFs9jb1H8ayg5atpump, rent/PILOT_RPC_COMPONENT_ADMISSION_CLOSED, 103.93764199968427 ms; caller/deadline aborted false/false. This is not a qualification or order."
+        ]
+      },
+      {
+        "sequence": "11844",
+        "sourceAt": "2026-10-30T04:33:23.788Z",
+        "collectorReceivedAt": "2026-10-30T04:33:43.180Z",
+        "status": {
+          "runtime": "running",
+          "market": "observing",
+          "entries": "enabled",
+          "reconciled": true,
+          "blocker": null
+        },
+        "reasons": [],
+        "breaches": 79,
+        "unavailable": 271,
+        "notes": [
+          "Recorded holding-pricing refusals in this run: HELD_PRICING_PROVIDER_TIMEOUT:1, HELD_PRICING_DISPATCH_UNAVAILABLE:24, HELD_PRICING_PROVIDER_RESPONSE_UNAVAILABLE:1.",
+          "Holding RPC failure stages (current instance, not completed evaluations): protection-retry-paced:1, uninvoked-quota-or-spacing:19, physical-settlement-wait:1, physical-timeout:1, transport-or-node-response:1, local-admission:4.",
+          "Last holding RPC failure 2026-10-30T04:32:16.093Z: uninvoked-quota-or-spacing; physical-in-flight false. Candidate quote failures (current market instance) 52: last 2026-10-30T04:32:07.958Z, 91Y9HWkox2GZ3U634ZNazitb6FFs9jb1H8ayg5atpump, rent/PILOT_RPC_COMPONENT_ADMISSION_CLOSED, 103.93764199968427 ms; caller/deadline aborted false/false. This is not a qualification or order."
+        ]
+      }
+    ]
+  },
+  "rootProvidedContextNotIndependentlyVerified": {
+    "receiverFrontend": "1d7",
+    "receiverReportedLiveAt": "2026-10-30T04:49:31Z",
+    "pendingNativePackage": "a16",
+    "priorDeferredA1Command": "superseded when final staged command is provided"
+  },
+  "claimsAndLimits": [
+    "Only existing local collector and already-retained operator evidence were read/copied; no collector/API/provider/control/host inspection action was taken.",
+    "Native source release/run above are verified from the copied public snapshot. Receiver frontend context is root-provided and does not establish a native source upgrade or policy installation.",
+    "Nativea16 and new policy cards remain unverified until actual installed source evidence appears; current source limitations still describe legacy $50/$150 and old holding policy.",
+    "Protection totals/historical maxima retain earlier failures. The current-run completed max16677 ms diagnostic remains failed against4000 ms; automatic entry-state recovery is not acceptance. Open/unmonitored gaps are not bounded by completed maxima.",
+    "04:32 includes newly recorded local-admission and uninvoked quota/spacing failures; physical-timeout/settlement/transport stage counts carried from04:06 must not be attributed as new04:32 failures. Cause remains unknown from these labels.",
+    "Original qi6 remains held; historical8r7 buy/sell is one closed roundtrip and is not re-entry. No new trade, profitable exit, live fill or operational acceptance is claimed.",
+    "The copied106974 ms capacity handoff is not claimed as active agent supervision; existing collector/service continued.",
+    "The retained04:32 provenance sidecar is copied as supplied by the forensic agent, without independent verification of its host-related assertions."
+  ]
+}

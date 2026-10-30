@@ -1,0 +1,10 @@
+{
+  "source": "96beab46485e99cc4e3b24edd90239d175f14132",
+  "verifiedAt": "2026-10-30T04:38:33.181006+00:00",
+  "scope": "Inert template only; no final transition pins or package release",
+  "sourceGuardUnchanged": true,
+  "guardFiles": 100,
+  "tests": 9,
+  "returncode": 0,
+  "pass": true
+}

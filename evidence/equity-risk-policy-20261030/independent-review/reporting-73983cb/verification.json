@@ -1,0 +1,21 @@
+{
+  "verifiedAt": "2026-10-30T04:10:19.710474+00:00",
+  "source": "73983cb997ca143a1d1a779b3ed07a6530a6effe",
+  "sourceDiffFromFreezeEmpty": true,
+  "scope": "Independent OFFLINE bounded reporting/privacy/arithmetic/unknown/owner-dashboard review; no financial or host action",
+  "sourceGuardFiles": 73,
+  "sourceGuardUnchanged": true,
+  "command": [
+    "node",
+    "--import",
+    "tsx",
+    "--test",
+    "test/financial-policy-reporting.test.ts",
+    "test/dashboard-financial-policy.test.ts",
+    "test/dashboard.test.ts",
+    "test/operating-intelligence.test.ts"
+  ],
+  "returncode": 0,
+  "tests": 43,
+  "pass": true
+}

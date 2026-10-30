@@ -1,0 +1,25 @@
+{
+  "verifiedAt": "2026-10-30T04:47:01.455682+00:00",
+  "source": "a16a05e642938ad6132e6844712700f344b9b73e",
+  "scope": "Independent build-only transform/pin review and empty-dir disposable runtime probes, no rebuild or real-account/provider action",
+  "artifactGuardUnchanged": true,
+  "artifactHashes": {
+    "native-paper.mjs": "768cad1ccfda1304b4db2b69f24b1d616b54aeda91092aafa426d751384ce47d",
+    "metadata.json": "1e757832d975a4b99b1e33f0849948d5629c131da54ba1d0217f3783b01aa0e4",
+    "backup-worker.mjs": "006dc9b31db5317a5ee5d35f672fac2510c4202290f52ddc8fd189edf6aa5e83",
+    "better_sqlite3.node": "6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d",
+    "snapshot-publisher.mjs": "fbbe03be34bb9800d5c309088b3429f7ab830ca015dbb3bc888b73bcd718b388",
+    "verify-native-paper-package.mjs": "b81cf72d4a64064b92abf75e57b4669590bd88d76e4fab863c6b9feed10a779d"
+  },
+  "results": [
+    {
+      "check": "original standalone disposable backup/reopen smoke in empty directory",
+      "returncode": 0
+    },
+    {
+      "check": "actual unsigned SDK constructors plus active configuration through diagnostic copy without node_modules",
+      "returncode": 0
+    }
+  ],
+  "pass": true
+}

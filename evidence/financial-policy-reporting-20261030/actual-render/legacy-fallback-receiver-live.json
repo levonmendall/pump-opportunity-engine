@@ -1,0 +1,20 @@
+{
+  "verifiedAt": "2026-10-30T04:54:03.857Z",
+  "deploy": {
+    "commit": {
+      "createdAt": "2026-10-30T04:22:31Z",
+      "id": "1d7b0fdc086d97faad21da6ce0363b9c66a51dfa",
+      "message": "Identify intentional legacy holding protection in the original Portfolio"
+    },
+    "createdAt": "2026-10-30T04:48:46.471754Z",
+    "finishedAt": "2026-10-30T04:49:31.306957Z",
+    "id": "dep-dbi23bhsrm7s73d1hcd0",
+    "startedAt": "2026-10-30T04:48:46.443887Z",
+    "status": "live",
+    "trigger": "api",
+    "updatedAt": "2026-10-30T04:49:59.16801Z"
+  },
+  "sourceBindingUnchanged": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+  "environmentChanged": false,
+  "financialServiceChanged": false
+}
