@@ -2,9 +2,9 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {PAPER_EXECUTION_MODEL_VERSION,PAPER_EXECUTION_POLICY,PAPER_EXECUTION_POLICY_SHA256,planPaperExecution,validatePaperExecutionPlan,validatePaperExecutionLanding,validatePaperExecutionAttempt,paperExecutionPlanSha256,paperExecutionFee,executionAttempt,type PaperExecutionPlan,type PaperExecutionLanding} from '../src/execution-realism.js';
 const START=100000,SHA='a'.repeat(64),LANDING_SHA='b'.repeat(64),INTENT_SHA='c'.repeat(64);
-const input=()=>({plannedAt:START,decisionQuoteAt:START-20,sourceSlot:1234,constructionSha256:SHA,intentSha256:INTENT_SHA,constructionMs:10,observedRpcMs:90});
+const input=()=>({plannedAt:START,decisionQuoteAt:START-20,sourceSlot:1234,constructionSha256:SHA,intentSha256:INTENT_SHA,temporaryQuoteRentLamports:'1000000',quoteRentProofSha256:SHA,constructionMs:10,observedRpcMs:90});
 function plan(){const p=planPaperExecution(input());assert.ok(p);return p;}
-function landing(p=plan()):PaperExecutionLanding{return {version:PAPER_EXECUTION_MODEL_VERSION,planSha256:paperExecutionPlanSha256(p),constructionSha256:LANDING_SHA,intentSha256:p.intentSha256,preparedAt:p.executeAt+50,landingAt:p.executeAt,sourceSlot:p.sourceSlot+1,outcome:'scenario-landed',feeLamports:paperExecutionFee(p)};}
+function landing(p=plan()):PaperExecutionLanding{return {version:PAPER_EXECUTION_MODEL_VERSION,planSha256:paperExecutionPlanSha256(p),constructionSha256:LANDING_SHA,intentSha256:p.intentSha256,temporaryQuoteRentLamports:p.temporaryQuoteRentLamports,quoteRentProofSha256:LANDING_SHA,preparedAt:p.executeAt+50,landingAt:p.executeAt,sourceSlot:p.sourceSlot+1,outcome:'scenario-landed',feeLamports:paperExecutionFee(p)};}
 const changed=<T>(value:T,key:string,newValue:unknown)=>({...value,[key]:newValue});
 
 test('default plan explicitly labels nominal chain conditions and declared fee scenarios',()=>{

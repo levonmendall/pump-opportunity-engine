@@ -119,7 +119,7 @@ export class NativePaperProofPreparation{
  * risk immediately and the main loop quarantines incomplete candidate evidence. */
 export function nativePaperRequiredEvidence(kind:string,data:unknown,essential=false){
  if(essential)return true;
- return kind!=='native-paper-local-phase'&&kind!=='pilot-entry-quote-unavailable'&&!(kind==='native-flow-raw-representative'&&(data as {supplementaryOnly?:unknown}|null)?.supplementaryOnly===true);
+ return kind!=='paper-unsigned-pumpswap'&&kind!=='native-paper-local-phase'&&kind!=='pilot-entry-quote-unavailable'&&!(kind==='native-flow-raw-representative'&&(data as {supplementaryOnly?:unknown}|null)?.supplementaryOnly===true);
 }
 export function nativePaperRecordServiceEvidence(recorder:{record:(kind:string,data:unknown,options:{essential:boolean;required:boolean})=>boolean;recordOutcome?:()=>{kind:'accepted'|'optional-capacity-omitted'|'unavailable';reason:string|null}},kind:string,data:unknown,essential:boolean,onUnavailable:()=>void,required=true){
  const requiredEvidence=essential||required!==false;let accepted=false,optionalCapacityOmitted=false;
@@ -134,7 +134,8 @@ export function nativePaperEssentialEvidence(kind:string,work:string,owned:boole
  if(kind==='trader-input'||kind==='trader-predictive-assessment'||kind==='trader-candidate-evidence-deferred'||kind==='trader-quote-deferred')return false;
  if(kind==='trader-context'||kind==='trader-context-reuse'||kind==='trader-held-evaluation')return owned;
  if(kind==='trader-decision'){const stage=(data as {stage?:unknown}|null)?.stage;return owned||stage==='qualified'||stage==='exit-reserved';}
- if(kind.startsWith('paper-execution-')||kind==='paper-unsigned-pumpswap')return true;
+ if(kind==='paper-unsigned-pumpswap')return owned&&(work==='pending'||work==='protection');
+ if(kind.startsWith('paper-execution-'))return true;
  if(kind==='trader-config'||kind==='trader-execution'||kind==='trader-quote'||kind.startsWith('trader-pilot-execution-')||kind==='trader-pilot-entry-deposit')return true;
  if((work==='candidate'||owned&&(work==='pending'||work==='protection'))&&(/^(?:research-clock-|pool-state|price-|sdk-|rent-)/.test(kind)||kind==='pilot-entry-cost-preparation'||kind==='rpc-market-quote'))return true;
  return /^native-paper-(?:start|stop|frozen|entry|recovery|consistent-backup|source-unavailable|management-reserve)/.test(kind);

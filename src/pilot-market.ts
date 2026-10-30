@@ -19,7 +19,8 @@ export type PilotInventory={positions:Readonly<Record<string,Position>>;pending:
 export type PilotEntryCosts={
   mint:string;depositLamports:string;evidence:string;at:number;
   accountPlan:PaperAccountPlan;
-  accountModel:'per-mint-dedicated-base-and-WSOL-accounts-v1';
+  accountModel:'per-mint-dedicated-base-and-WSOL-accounts-v1'|'persistent-base-transient-shared-wsol-v2';
+  temporaryQuoteRentLamports?:string;
   accountLengths:{base:number;quote:number};
   rentLamportsByBytes:Record<string,string>;sourceSlot:number;
   /** Existing locked deposits are assets; they are neither charged nor refunded here. */
@@ -44,7 +45,7 @@ const hash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).d
 const MODEL='per-mint-dedicated-base-and-WSOL-accounts-v1' as const;
 export const PILOT_ENTRY_QUOTE_FAILURE_PHASES=['admission','plan','pool-state','rent','freshness','evidence','post-evidence'] as const;
 export const PILOT_ENTRY_QUOTE_FAILURE_CODES=['ENTRY_QUOTE_BUSY','ENTRY_QUOTE_CALLER_ABORTED','ENTRY_QUOTE_TIMEOUT','ENTRY_QUOTE_UNKNOWN',
- 'PAPER_EXECUTION_POOL_EXTENSION_RENT_UNAVAILABLE','PAPER_EXECUTION_CONSTRUCTION_STALE','PAPER_EXECUTION_ORIGINAL_BATCH_REQUIRED','PAPER_EXECUTION_SIMULATED_ACCOUNT_PLAN_REQUIRED',
+ 'PAPER_EXECUTION_QUOTE_RENT_UNAVAILABLE','PAPER_EXECUTION_POOL_EXTENSION_RENT_UNAVAILABLE','PAPER_EXECUTION_CONSTRUCTION_STALE','PAPER_EXECUTION_ORIGINAL_BATCH_REQUIRED','PAPER_EXECUTION_SIMULATED_ACCOUNT_PLAN_REQUIRED',
  'PILOT_MARKET_ENTRY_COSTS_UNAVAILABLE','PILOT_MARKET_ENTRY_POOL_REQUIRED','PILOT_MARKET_ENTRY_DEPOSIT_MISMATCH','PILOT_MARKET_RENT_UNAVAILABLE','PILOT_MARKET_ACCOUNT_LENGTH','PILOT_MARKET_PREPARATION_CHANGED_OR_STALE','PILOT_MARKET_ENTRY_STATE_CHANGED',
  'PILOT_RPC_ABORTED','PILOT_RPC_COOLDOWN','PILOT_RPC_PHYSICAL_SLOT_OCCUPIED','PILOT_RPC_METHOD_PACING','PILOT_RPC_LOWER_PRIORITY_DEFER','PILOT_RPC_COMPONENT_ADMISSION_CLOSED','PILOT_RPC_COMPONENT_DISPATCH_EXPIRED','PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT','PILOT_RPC_COMPONENT_ABORTED','PILOT_RPC_COMPONENT_HTTP_TRANSPORT','PILOT_RPC_COMPONENT_HTTP_429','PILOT_RPC_COMPONENT_HTTP_STATUS_502','PILOT_RPC_COMPONENT_HTTP_STATUS_503','PILOT_RPC_COMPONENT_HTTP_STATUS_504','RESEARCH_CLOCK_POOL_UNAVAILABLE','RESEARCH_CLOCK_ADMISSION_CLOSED'] as const;
 type EntryQuotePhase=typeof PILOT_ENTRY_QUOTE_FAILURE_PHASES[number];
@@ -76,9 +77,11 @@ export class PilotMarket {
   private readonly entryQuoteFailures:{count:number;last:EntryQuoteFailure|null}={count:0,last:null};
   readonly gasLamports:string;
   private readonly constructions=new Map<string,{quote:PilotSizeQuote;construction:PaperUnsignedConstruction;constructionMs:number}>();
+  private quoteRentSnapshot:{lamports:string;at:number}|null=null;
+  private readonly quoteRentsByEvidence=new Map<string,{lamports:string;at:number}>();
   private readonly legacyProtectionQuotes=new Map<string,{quote:PilotSizeQuote;reasonCode:PaperProtectionExecutionFallback['reasonCode']}>();
   private readonly latencySamples:number[]=[];private lastObservedSource:{at:number;slot:number;sha256:string}|null=null;private observedSlotMs:number|null=null;
-  private readonly executionDiagnostics={plans:0,supportedLandingStates:0,preflightUnsubmitted:0,unknownLanding:0,legacyProtectionFallbacks:0,last:null as {at:number;stage:'planned'|'landing-state-supported'|'preflight-unsubmitted'|'legacy-protection-fallback';reasonCode:'PLAN_PREPARED'|'LANDING_STATE_SUPPORTED'|'LANDING_STATE_UNAVAILABLE'|'UNSIGNED_CONSTRUCTION_UNAVAILABLE'|'SIMULATED_ACCOUNT_RENT_UNAVAILABLE'|'PLAN_CONSTRUCTION_UNAVAILABLE'|'PLAN_DELAY_EXCEEDS_DECISION_LIFETIME'|'PLAN_FEE_MISMATCH';observedRpcMs:number|null;modeledDelayMs:number|null;feeLamports:string|null;sourceSlot:number|null}|null};
+  private readonly executionDiagnostics={plans:0,supportedLandingStates:0,preflightUnsubmitted:0,unknownLanding:0,legacyProtectionFallbacks:0,last:null as {at:number;stage:'planned'|'landing-state-supported'|'preflight-unsubmitted'|'legacy-protection-fallback';reasonCode:'PLAN_PREPARED'|'LANDING_STATE_SUPPORTED'|'LANDING_STATE_UNAVAILABLE'|'UNSIGNED_CONSTRUCTION_UNAVAILABLE'|'SIMULATED_ACCOUNT_RENT_UNAVAILABLE'|'LEGACY_HELD_ACCOUNT_MODEL'|'PLAN_CONSTRUCTION_UNAVAILABLE'|'PLAN_DELAY_EXCEEDS_DECISION_LIFETIME'|'PLAN_FEE_MISMATCH';observedRpcMs:number|null;modeledDelayMs:number|null;feeLamports:string|null;sourceSlot:number|null}|null};
   constructor(private readonly options:PilotMarketOptions){
     this.options={...options,gas:Object.freeze({...options.gas})};
     this.now=options.now??Date.now;
@@ -118,7 +121,7 @@ export class PilotMarket {
     this.generation++;this.pools.delete(mint);this.plans.delete(mint);this.floors.delete(mint);this.entrySnapshots.delete(mint);return true;
   }
   minimumSlot(mint:string,slot:number){this.held.minimumSlot(mint,slot);this.floors.set(mint,Math.max(this.floors.get(mint)??0,slot));}
-  invalidate(reason:string){this.generation++;this.plans.clear();this.entrySnapshots.clear();this.constructions.clear();this.legacyProtectionQuotes.clear();this.pricer.invalidate(reason);this.held.invalidate(reason);}
+  invalidate(reason:string){this.generation++;this.plans.clear();this.entrySnapshots.clear();this.constructions.clear();this.legacyProtectionQuotes.clear();this.quoteRentsByEvidence.clear();this.quoteRentSnapshot=null;this.pricer.invalidate(reason);this.held.invalidate(reason);}
   private clock(){const at=this.now();need(Number.isSafeInteger(at)&&at>=0,'PILOT_MARKET_CLOCK');return at;}
   private locked(mint:string){const value=this.options.inventory().lockedDeposits[mint]??'0';integer(value);return value;}
   private freshPlan(mint:string){
@@ -133,9 +136,10 @@ export class PilotMarket {
   private async construct(q:PilotSizeQuote,minimumOutputUnits:string):Promise<{quote:PilotSizeQuote;construction:PaperUnsignedConstruction;constructionMs:number}>{
     need(this.options.executionRealism===true&&(q.side==='sell'||Number.isSafeInteger(q.slot)),'PAPER_EXECUTION_CONSTRUCTION_REQUIRED');
     const pricer=q.side==='buy'?this.pricer:this.holdingPricer,batch=pricer.constructionBatch(q.mint,q.slot,q.at);need(batch,'PAPER_EXECUTION_ORIGINAL_BATCH_REQUIRED');
-    const held=this.options.inventory().positions[q.mint],locked=this.locked(q.mint),plan=q.side==='buy'?{...this.freshPlan(q.mint).accountPlan,at:this.clock()}:{baseExists:!!held,quoteExists:integer(locked)>0n,at:this.clock(),evidence:'paper-held-inventory:'+hash({mint:q.mint,units:held?.units??null,locked})};
+    const held=this.options.inventory().positions[q.mint],locked=this.locked(q.mint),plan=q.side==='buy'?{...this.freshPlan(q.mint).accountPlan,at:this.clock()}:{baseExists:!!held,quoteExists:false,at:this.clock(),evidence:'paper-held-inventory:'+hash({mint:q.mint,units:held?.units??null,locked})};
     need(typeof plan.baseExists==='boolean'&&typeof plan.quoteExists==='boolean','PAPER_EXECUTION_SIMULATED_ACCOUNT_PLAN_REQUIRED');
-    const began=performance.now(),construction=await buildPaperUnsignedPumpSwap(batch,{side:q.side,inputUnits:q.inputUnits,minimumOutputUnits,accountPlan:{...plan,baseExists:plan.baseExists,quoteExists:plan.quoteExists}},this.now),constructionMs=Math.ceil(performance.now()-began);
+    const quoteRent=this.quoteRentsByEvidence.get(q.evidence);need(quoteRent&&quoteRent.at<=this.clock()&&this.clock()-quoteRent.at<=10000,'PAPER_EXECUTION_QUOTE_RENT_UNAVAILABLE');
+    const began=performance.now(),construction=await buildPaperUnsignedPumpSwap(batch,{side:q.side,inputUnits:q.inputUnits,minimumOutputUnits,quoteRentLamports:quoteRent.lamports,accountPlan:{...plan,baseExists:plan.baseExists,quoteExists:plan.quoteExists,evidence:'paper-account-and-observed-rent:'+hash({inventory:plan.evidence,quoteRent})}},this.now),constructionMs=Math.ceil(performance.now()-began);
     need(q.at<=this.clock()&&this.clock()-q.at<=2000&&(q.side!=='buy'||q.slot!>=this.floor(q.mint)),'PAPER_EXECUTION_CONSTRUCTION_STALE');
     if(this.lastObservedSource?.sha256!==construction.sourceSha256){
       const requested=Date.parse(batch.requestedAt),received=Date.parse(batch.receivedAt);this.latencySamples.push(received-requested);if(this.latencySamples.length>PAPER_EXECUTION_POLICY.observationSamples)this.latencySamples.shift();
@@ -143,10 +147,12 @@ export class PilotMarket {
       this.lastObservedSource={at:received,slot:batch.slot,sha256:construction.sourceSha256};
     }
     need(!construction.accounts.poolExtensionRequired,'PAPER_EXECUTION_POOL_EXTENSION_RENT_UNAVAILABLE');
-    if(q.side==='sell')need(plan.quoteExists,'PAPER_EXECUTION_EXIT_ACCOUNT_RENT_UNAVAILABLE');
+    need(construction.accounts.quoteClosedByInstructions&&construction.temporaryQuoteRentLamports===quoteRent.lamports,'PAPER_EXECUTION_QUOTE_RENT_UNAVAILABLE');
     this.options.recorder.record('paper-unsigned-pumpswap',{at:this.clock(),quoteEvidence:q.evidence,construction,constructionMs,bankClockGuard:'existing same-batch confirmed Clock validated by source pricer; unsigned helper adds no Clock assertion',financialStateChanged:false});
     return {quote:structuredClone(q),construction,constructionMs};
   }
+  private rememberQuoteRent(evidence:string,lamports:string,at=this.clock()){this.quoteRentsByEvidence.set(evidence,{lamports,at});while(this.quoteRentsByEvidence.size>18)this.quoteRentsByEvidence.delete(this.quoteRentsByEvidence.keys().next().value!);}
+  private async prepareExitQuoteRent(q:PilotSizeQuote,signal:AbortSignal){if(!this.options.executionRealism)return;const at=this.clock(),prior=this.quoteRentSnapshot;if(prior&&prior.at<=at&&at-prior.at<=10000){this.rememberQuoteRent(q.evidence,prior.lamports,prior.at);return;}const requestedAt=this.clock(),rent=await this.options.rpc.call<number>('getMinimumBalanceForRentExemption',[165,{commitment:'confirmed'}],signal);need(Number.isSafeInteger(rent)&&rent>0,'PAPER_EXECUTION_QUOTE_RENT_UNAVAILABLE');const snapshot={lamports:BigInt(rent).toString(),at:this.clock()};this.options.recorder.record('paper-execution-rent',{requestedAt,receivedAt:snapshot.at,accountLengthBytes:165,lamports:snapshot.lamports,classification:'actual read-only minimum balance; reusable at original receive time within existing10s account-cost window; no market-price claim'});this.quoteRentSnapshot=snapshot;this.rememberQuoteRent(q.evidence,snapshot.lamports,snapshot.at);}
   private async rememberConstruction(q:PilotSizeQuote){if(!this.options.executionRealism)return;const minimum=integer(q.outputUnits)*9900n/10000n;need(minimum>0n,'PAPER_EXECUTION_NONZERO_MINIMUM_REQUIRED');const result=await this.construct(q,minimum.toString());this.constructions.set(q.evidence,result);while(this.constructions.size>18)this.constructions.delete(this.constructions.keys().next().value!);}
   /** No provider work. All transaction bytes were prepared from the decision's
    * original coherent state; timing is a labeled scenario conditioned on prior
@@ -156,9 +162,9 @@ export class PilotMarket {
     const now=this.clock(),fallback=this.legacyProtectionQuotes.get(order.decisionEvidence);if(fallback&&order.side==='sell'&&fallback.quote.mint===order.mint&&fallback.quote.inputUnits===this.options.inventory().positions[order.mint]?.units&&fallback.quote.at<=now&&now-fallback.quote.at<=2000){const fact:PaperProtectionExecutionFallback={version:'legacy-paper-protection-fallback-v1',mint:order.mint,units:fallback.quote.inputUnits,at:fallback.quote.at,sourceEvidence:order.decisionEvidence,reasonCode:fallback.reasonCode};this.options.recorder.record('paper-execution-protection-fallback',{at:now,orderId:order.id,fallback:fact,meaning:'Existing held obligation only; original PAPER protection execution component retained, no new-model construction or chain landing claim'});this.executionDiagnostics.legacyProtectionFallbacks++;this.executionDiagnostics.last={at:now,stage:'legacy-protection-fallback',reasonCode:fallback.reasonCode,observedRpcMs:null,modeledDelayMs:order.executeAt-order.decidedAt,feeLamports:order.gas,sourceSlot:fallback.quote.slot??null};return fact;}
     const prepared=this.constructions.get(order.decisionEvidence);if(!prepared||prepared.quote.mint!==order.mint||prepared.quote.side!==order.side||prepared.quote.at>now||now-prepared.quote.at>2000||prepared.construction.minimumOutputUnits!==order.minReceive||prepared.construction.inputUnits!==(order.side==='buy'?order.maxSpend:this.options.inventory().positions[order.mint]?.units))return this.refusedPlan('PLAN_CONSTRUCTION_UNAVAILABLE');
     const sorted=[...this.latencySamples].sort((a,b)=>a-b),observedRpcMs=sorted[Math.max(0,Math.ceil(sorted.length*.95)-1)];if(observedRpcMs===undefined)return null;
-    const plan=planPaperExecution({plannedAt:order.decidedAt,decisionQuoteAt:prepared.quote.at,sourceSlot:prepared.construction.sourceSlot,constructionSha256:prepared.construction.constructionSha256,intentSha256:hash(prepared.construction.instructions),constructionMs:prepared.constructionMs,observedRpcMs,...(this.observedSlotMs===null?{}:{slotDurationMs:this.observedSlotMs,slotDurationBasis:'observed' as const})});
+    const plan=planPaperExecution({plannedAt:order.decidedAt,decisionQuoteAt:prepared.quote.at,sourceSlot:prepared.construction.sourceSlot,constructionSha256:prepared.construction.constructionSha256,intentSha256:hash(prepared.construction.instructions),temporaryQuoteRentLamports:prepared.construction.temporaryQuoteRentLamports,quoteRentProofSha256:prepared.construction.quoteRentProofSha256,constructionMs:prepared.constructionMs,observedRpcMs,...(this.observedSlotMs===null?{}:{slotDurationMs:this.observedSlotMs,slotDurationBasis:'observed' as const})});
     if(!plan)return this.refusedPlan('PLAN_DELAY_EXCEEDS_DECISION_LIFETIME');if(paperExecutionFee(plan)!==order.gas)return this.refusedPlan('PLAN_FEE_MISMATCH');
-    this.options.recorder.record('paper-execution-plan',{at:now,mint:order.mint,side:order.side,plan,planSha256:paperExecutionPlanSha256(plan),decisionEvidence:order.decisionEvidence,policy:PAPER_EXECUTION_POLICY,meaning:PAPER_EXECUTION_POLICY.meaning});
+    this.options.recorder.record('paper-execution-plan',{at:now,mint:order.mint,side:order.side,plan,planSha256:paperExecutionPlanSha256(plan),decisionEvidence:order.decisionEvidence,construction:prepared.construction,policy:PAPER_EXECUTION_POLICY,meaning:PAPER_EXECUTION_POLICY.meaning});
     this.executionDiagnostics.plans++;this.executionDiagnostics.last={at:now,stage:'planned',reasonCode:'PLAN_PREPARED',observedRpcMs:plan.observedRpcMs,modeledDelayMs:plan.executeAt-plan.plannedAt,feeLamports:paperExecutionFee(plan),sourceSlot:plan.sourceSlot};return plan;
   }
   private refusedPlan(reasonCode:'PLAN_CONSTRUCTION_UNAVAILABLE'|'PLAN_DELAY_EXCEEDS_DECISION_LIFETIME'|'PLAN_FEE_MISMATCH'){this.options.recorder.record('paper-execution-plan-unavailable',{at:this.clock(),reasonCode,financialStateChanged:false,submissionClaimed:false});this.executionDiagnostics.last={at:this.clock(),stage:'preflight-unsubmitted',reasonCode,observedRpcMs:null,modeledDelayMs:null,feeLamports:'0',sourceSlot:null};return null;}
@@ -207,15 +213,16 @@ export class PilotMarket {
       const lengths={base:state.baseAssociatedAccount.accountLengthBytes,quote:state.quoteAssociatedAccount.accountLengthBytes};
       for(const bytes of Object.values(lengths))need(Number.isSafeInteger(bytes)&&bytes>=165&&bytes<=10240,'PILOT_MARKET_ACCOUNT_LENGTH');
       const locked=this.locked(mint),exists=integer(locked)>0n,rents:Record<string,string>={};let deposit=0n;
-      if(!exists)for(const bytes of Object.values(lengths)){
+      for(const [role,needed,bytes]of [['base',!exists,lengths.base],['quote',this.options.executionRealism===true||!exists,lengths.quote]]as const){
+        if(!needed)continue;
         if(rents[bytes]===undefined){const rent=await this.preparationRpc.call<number>('getMinimumBalanceForRentExemption',[bytes,{commitment:'confirmed'}],signal);need(Number.isSafeInteger(rent)&&rent>0,'PILOT_MARKET_RENT_UNAVAILABLE');rents[bytes]=BigInt(rent).toString();}
-        deposit+=integer(rents[bytes]!);
+        if(!this.options.executionRealism||role==='base')deposit+=integer(rents[bytes]!);
       }
       signal.throwIfAborted();const at=this.clock();this.freshClock(state,mint,signal);
       need(generation===this.generation&&locked===this.locked(mint),'PILOT_MARKET_PREPARATION_CHANGED_OR_STALE');
-      const body={mint,depositLamports:deposit.toString(),at,accountModel:MODEL,accountLengths:lengths,rentLamportsByBytes:rents,sourceSlot:state.slot,lockedDepositLamports:locked};
+      const body={mint,depositLamports:deposit.toString(),at,accountModel:this.options.executionRealism?'persistent-base-transient-shared-wsol-v2' as const:MODEL,...(this.options.executionRealism?{temporaryQuoteRentLamports:rents[lengths.quote]}:{}),accountLengths:lengths,rentLamportsByBytes:rents,sourceSlot:state.slot,lockedDepositLamports:locked};
       const evidence='pilot-entry-costs:'+hash({...body,poolEvidence:this.pools.get(mint)!.evidence,gas:this.options.gas});
-      const plan:PilotEntryCosts={...body,evidence,accountPlan:{baseExists:exists,quoteExists:exists,at,evidence}};
+      const plan:PilotEntryCosts={...body,evidence,accountPlan:{baseExists:exists,quoteExists:this.options.executionRealism?false:exists,at,evidence}};
       this.options.recorder.record('pilot-entry-cost-preparation',{...plan,classification:'simulated account inventory; actual read-only rent and supported account lengths',requests:'One current coherent Clock/state batch plus cold dependency discovery if needed, and one rent read per distinct missing-account length; every physical request uses the shared RPC budget.',depositRefund:'Not assumed; retained locked capital after exit.'});
       need(this.clock()-at<=10000&&generation===this.generation&&locked===this.locked(mint),'PILOT_MARKET_PREPARATION_CHANGED_OR_STALE');
       this.minimumSlot(mint,state.slot);this.plans.set(mint,structuredClone(plan));this.prepared++;
@@ -260,10 +267,10 @@ export class PilotMarket {
       // pacing must not repeatedly age a healthy market quote while native
       // executed trades advance its mandatory slot floor.
       attempt.phase='rent';const accountPlan={...plan.accountPlan,at:this.clock()},rents:Record<string,string>={};let required=0n;
-      for(const [exists,bytes]of [[accountPlan.baseExists,plan.accountLengths.base],[accountPlan.quoteExists,plan.accountLengths.quote]]as const){
+      for(const [role,exists,bytes]of [['base',accountPlan.baseExists,plan.accountLengths.base],['quote',accountPlan.quoteExists,plan.accountLengths.quote]]as const){
         if(exists)continue;need(Number.isSafeInteger(bytes)&&bytes>=165&&bytes<=10240,'PILOT_MARKET_ACCOUNT_LENGTH');
         if(rents[bytes]===undefined){const rent=await this.options.rpc.call<number>('getMinimumBalanceForRentExemption',[bytes,{commitment:'confirmed'}],signal);need(Number.isSafeInteger(rent)&&rent>0,'PILOT_MARKET_RENT_UNAVAILABLE');rents[bytes]=BigInt(rent).toString();}
-        required+=integer(rents[bytes]!);
+        if(!this.options.executionRealism||role==='base')required+=integer(rents[bytes]!);
       }
       need(required.toString()===plan.depositLamports&&this.clock()-accountPlan.at<=10000,'PILOT_MARKET_ENTRY_DEPOSIT_MISMATCH');
       input.minSlot=this.floor(input.mint,input.minSlot);
@@ -278,6 +285,7 @@ export class PilotMarket {
       attempt.phase='post-evidence';
       this.freshClock(state,input.mint,signal);need(generation===this.generation&&this.freshPlan(input.mint).evidence===plan.evidence&&state.slot>=this.floor(input.mint,input.minSlot),'PILOT_MARKET_ENTRY_STATE_CHANGED');
       this.minimumSlot(input.mint,state.slot);this.entryEstimates++;
+      if(this.options.executionRealism)this.rememberQuoteRent(q.evidence,rents[plan.accountLengths.quote]!);
       await this.rememberConstruction(q);
       this.entrySnapshots.set(input.mint,structuredClone(q));return q;
     }catch(error){this.entryQuoteFailure(attempt,error);return null;}
@@ -288,7 +296,18 @@ export class PilotMarket {
     try{return await this.held.context(positions,signal);}
     finally{this.holdingActive=false;}
   };
-  readonly quote=async(request:SizeRequest,signal:AbortSignal):Promise<PilotSizeQuote|null>=>{const q=await this.held.quote(request,signal);if(q&&request.side==='sell'){try{await this.rememberConstruction(q);}catch(error){const held=this.options.inventory().positions[q.mint];if(!held||held.units!==q.inputUnits||signal.aborted||q.at>this.clock()||this.clock()-q.at>2000)return null;const reasonCode=error instanceof Error&&error.message==='PAPER_EXECUTION_EXIT_ACCOUNT_RENT_UNAVAILABLE'?'SIMULATED_ACCOUNT_RENT_UNAVAILABLE' as const:'UNSIGNED_CONSTRUCTION_UNAVAILABLE' as const;this.legacyProtectionQuotes.set(q.evidence,{quote:structuredClone(q),reasonCode});while(this.legacyProtectionQuotes.size>3)this.legacyProtectionQuotes.delete(this.legacyProtectionQuotes.keys().next().value!);}}return q;};
+  readonly quote=async(request:SizeRequest,signal:AbortSignal):Promise<PilotSizeQuote|null>=>{
+    const q=await this.held.quote(request,signal);
+    if(q&&request.side==='sell'&&this.options.executionRealism){
+      const held=this.options.inventory().positions[q.mint];
+      if(held&&held.units===q.inputUnits&&held.executionModelVersion!==PAPER_EXECUTION_MODEL_VERSION){
+        if(signal.aborted||q.at>this.clock()||this.clock()-q.at>2000)return null;
+        this.legacyProtectionQuotes.set(q.evidence,{quote:structuredClone(q),reasonCode:'LEGACY_HELD_ACCOUNT_MODEL'});
+        while(this.legacyProtectionQuotes.size>3)this.legacyProtectionQuotes.delete(this.legacyProtectionQuotes.keys().next().value!);
+      }else{try{await this.prepareExitQuoteRent(q,signal);await this.rememberConstruction(q);}catch{return null;}}
+    }
+    return q;
+  };
   readonly executionQuote=async(request:QuoteRequest&{minSlot?:number},signal:AbortSignal):Promise<PilotExecutionQuote|null>=>{
     const order=request.order;
     try{
@@ -298,12 +317,12 @@ export class PilotMarket {
       const at=this.clock(),pending=this.options.inventory().pending[order.id];
       need(!signal.aborted&&pending&&JSON.stringify(pending)===JSON.stringify(order)&&q.at>=Math.max(order.executeAt,request.attemptedAt)&&q.at<=at&&at-q.at<=2000&&at<order.expiresAt,'PILOT_MARKET_EXECUTION_CHANGED_OR_STALE');
       let modeled:PaperExecutionLanding|undefined;const model=(order as Order&{executionModel?:PaperExecutionPlan}).executionModel;
-      if(model){const sizeQuote:PilotSizeQuote={mint:order.mint,side:order.side,inputUnits:order.side==='buy'?order.maxSpend:request.fullPositionBaseUnits!,outputUnits:q.receiveUnits,at:q.at,evidence:q.evidence,slot:undefined};if(order.side==='buy')sizeQuote.slot=this.entrySnapshots.get(order.mint)?.slot;const built=await this.construct(sizeQuote,order.minReceive);modeled={version:PAPER_EXECUTION_MODEL_VERSION,planSha256:paperExecutionPlanSha256(model),constructionSha256:built.construction.constructionSha256,intentSha256:hash(built.construction.instructions),preparedAt:this.clock(),landingAt:q.at,sourceSlot:built.construction.sourceSlot,outcome:'scenario-landed',feeLamports:paperExecutionFee(model)};need(validatePaperExecutionLanding(modeled,model,this.clock()),'PAPER_EXECUTION_LANDING_INTENT_OR_STATE_UNAVAILABLE');this.options.recorder.record('paper-execution-landing-state',{at:this.clock(),orderId:order.id,executionModel:modeled,quoteEvidence:q.evidence,meaning:PAPER_EXECUTION_POLICY.meaning});this.executionDiagnostics.supportedLandingStates++;this.executionDiagnostics.last={at:this.clock(),stage:'landing-state-supported',reasonCode:'LANDING_STATE_SUPPORTED',observedRpcMs:model.observedRpcMs,modeledDelayMs:model.executeAt-model.plannedAt,feeLamports:modeled.feeLamports,sourceSlot:modeled.sourceSlot};}
+      if(model){const sizeQuote:PilotSizeQuote={mint:order.mint,side:order.side,inputUnits:order.side==='buy'?order.maxSpend:request.fullPositionBaseUnits!,outputUnits:q.receiveUnits,at:q.at,evidence:q.evidence,slot:undefined};if(order.side==='buy')sizeQuote.slot=this.entrySnapshots.get(order.mint)?.slot;else await this.prepareExitQuoteRent(sizeQuote,signal);const built=await this.construct(sizeQuote,order.minReceive);modeled={version:PAPER_EXECUTION_MODEL_VERSION,planSha256:paperExecutionPlanSha256(model),constructionSha256:built.construction.constructionSha256,intentSha256:hash(built.construction.instructions),temporaryQuoteRentLamports:built.construction.temporaryQuoteRentLamports,quoteRentProofSha256:built.construction.quoteRentProofSha256,preparedAt:this.clock(),landingAt:q.at,sourceSlot:built.construction.sourceSlot,outcome:'scenario-landed',feeLamports:paperExecutionFee(model)};need(validatePaperExecutionLanding(modeled,model,this.clock()),'PAPER_EXECUTION_LANDING_INTENT_OR_STATE_UNAVAILABLE');this.options.recorder.record('paper-execution-landing-state',{at:this.clock(),orderId:order.id,executionModel:modeled,quoteEvidence:q.evidence,meaning:PAPER_EXECUTION_POLICY.meaning});this.executionDiagnostics.supportedLandingStates++;this.executionDiagnostics.last={at:this.clock(),stage:'landing-state-supported',reasonCode:'LANDING_STATE_SUPPORTED',observedRpcMs:model.observedRpcMs,modeledDelayMs:model.executeAt-model.plannedAt,feeLamports:modeled.feeLamports,sourceSlot:modeled.sourceSlot};}
       if(order.side==='sell')return {...q,...(modeled?{executionModel:modeled}:{})};
       const plan=this.freshPlan(order.mint),entry=this.entrySnapshots.get(order.mint);need(plan.depositLamports===order.deposit,'PILOT_MARKET_RESERVED_DEPOSIT_MISMATCH');
       need(entry&&entry.evidence===q.evidence&&entry.at===q.at&&entry.outputUnits===q.receiveUnits&&entry.slot!==undefined&&entry.slot>=this.floor(order.mint,request.minSlot??0),'PILOT_MARKET_EXECUTION_SOURCE_REQUIRED');this.entryAttempts++;
       return {...q,...(modeled?{executionModel:modeled}:{}),slot:entry.slot,requiredDepositLamports:plan.depositLamports,depositEvidence:'pilot-execution-validated-costs:'+hash({preparation:plan.evidence,quote:q.evidence,deposit:plan.depositLamports})};
     }catch{if((order as Order&{executionModel?:PaperExecutionPlan}).executionModel)this.unavailableLanding();return null;}
   };
-  usage(){return {executionModel:{version:PAPER_EXECUTION_MODEL_VERSION,state:this.options.executionRealism?'active':'unavailable',scope:'current-market-instance',...structuredClone(this.executionDiagnostics),policySha256:PAPER_EXECUTION_POLICY_SHA256,meaning:PAPER_EXECUTION_POLICY.meaning,assumptions:PAPER_EXECUTION_POLICY},classification:'isolated PAPER pilot only',registeredPools:this.pools.size,preparedEntryCostPlans:this.prepared,entryQuoteCalls:this.entryEstimates,entryExecutionQuotes:this.entryAttempts,entryQuoteFailures:structuredClone(this.entryQuoteFailures),held:this.holdingPricer.usage(),holdingDiagnostics:this.held.usage(),entryPricing:this.pricer.usage(),rpc:this.options.rpc.usage?.()??null,accountModel:MODEL,depositRefundsAssumed:false};}
+  usage(){return {executionModel:{version:PAPER_EXECUTION_MODEL_VERSION,state:this.options.executionRealism?'active':'unavailable',scope:'current-market-instance',...structuredClone(this.executionDiagnostics),policySha256:PAPER_EXECUTION_POLICY_SHA256,meaning:PAPER_EXECUTION_POLICY.meaning,assumptions:PAPER_EXECUTION_POLICY},classification:'isolated PAPER pilot only',registeredPools:this.pools.size,preparedEntryCostPlans:this.prepared,entryQuoteCalls:this.entryEstimates,entryExecutionQuotes:this.entryAttempts,entryQuoteFailures:structuredClone(this.entryQuoteFailures),held:this.holdingPricer.usage(),holdingDiagnostics:this.held.usage(),entryPricing:this.pricer.usage(),rpc:this.options.rpc.usage?.()??null,accountModel:this.options.executionRealism?'persistent-base-transient-shared-wsol-v2':MODEL,depositRefundsAssumed:false};}
 }
