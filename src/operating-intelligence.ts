@@ -7,6 +7,12 @@ type Count=number|null;
 const EVIDENCE_PRESSURE_CODES=['FILESYSTEM_RESERVE','RECORD_BOUND','YOUNG_DIAGNOSTIC_CAPACITY','YOUNG_SEGMENT_CAPACITY','DIAGNOSTIC_HEADROOM','DIAGNOSTIC_SEGMENT_HEADROOM','INTERRUPTED_ESSENTIAL_PROOF','CHECKPOINT_UNAVAILABLE','RECORD_IO_OR_INTEGRITY_FAILURE','FILESYSTEM_UNAVAILABLE','RETENTION_IO_OR_INTEGRITY_FAILURE','RECOVERY_CHECKPOINT_UNAVAILABLE','OTHER_UNEXPORTED_REASON'] as const;
 const RECOVERY_REASON_CODES=['ROLLING_RESOURCE_OR_EVIDENCE_PRESSURE','CANDIDATE_PROVIDER_FAILURE','CANDIDATE_STEP_UNAVAILABLE','OTHER_UNEXPORTED_REASON'] as const;
 const PROTECTION_FAILURE_STAGES=['provider-restriction','uninvoked-quota-or-spacing','physical-settlement-wait','physical-timeout','caller-cancel-before-physical','caller-cancel-during-physical','transport-or-node-response','local-admission'] as const;
+// Static projection contracts only; do not import the financial SDK/trader into
+// this read-only projection or copy arbitrary error text from those components.
+const ENTRY_QUOTE_PHASES=['admission','plan','pool-state','rent','freshness','evidence','post-evidence'] as const;
+const ENTRY_QUOTE_CODES=['ENTRY_QUOTE_BUSY','ENTRY_QUOTE_CALLER_ABORTED','ENTRY_QUOTE_TIMEOUT','ENTRY_QUOTE_UNKNOWN','PILOT_MARKET_ENTRY_COSTS_UNAVAILABLE','PILOT_MARKET_ENTRY_POOL_REQUIRED','PILOT_MARKET_ENTRY_DEPOSIT_MISMATCH','PILOT_MARKET_RENT_UNAVAILABLE','PILOT_MARKET_ACCOUNT_LENGTH','PILOT_MARKET_PREPARATION_CHANGED_OR_STALE','PILOT_MARKET_ENTRY_STATE_CHANGED','PILOT_RPC_ABORTED','PILOT_RPC_COOLDOWN','PILOT_RPC_PHYSICAL_SLOT_OCCUPIED','PILOT_RPC_METHOD_PACING','PILOT_RPC_LOWER_PRIORITY_DEFER','PILOT_RPC_COMPONENT_ADMISSION_CLOSED','PILOT_RPC_COMPONENT_DISPATCH_EXPIRED','PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT','PILOT_RPC_COMPONENT_ABORTED','PILOT_RPC_COMPONENT_HTTP_TRANSPORT','PILOT_RPC_COMPONENT_HTTP_429','PILOT_RPC_COMPONENT_HTTP_STATUS_502','PILOT_RPC_COMPONENT_HTTP_STATUS_503','PILOT_RPC_COMPONENT_HTTP_STATUS_504','RESEARCH_CLOCK_POOL_UNAVAILABLE','RESEARCH_CLOCK_ADMISSION_CLOSED'] as const;
+const ADAPTIVE_HELD_REASONS=['holding-signal-not-evaluated','holding-signal-time-invalid','holding-signal-source-unavailable','holding-signal-stale','holding-identity-unavailable','fresh-current-exact-size-mark-required','authoritative-high-water-not-checkpointed','authoritative-high-water-regressed','observation-time-regressed','quote-time-regressed','same-time-quote-conflict','optional-series-capacity','distinct-prior-quotes-required','zero-relative-price-baseline','dispersion-outside-exit-input-range','round-trip-or-size-changed','completed-protection-gap','same-quote-not-an-additional-sample','awaiting-new-high-water','lagged-executable-return-dispersion','lagged-width-with-nondecreasing-boundary'] as const;
+const ADAPTIVE_AVAILABLE_REASONS=['distinct-prior-quotes-required','zero-relative-price-baseline','dispersion-outside-exit-input-range','round-trip-or-size-changed','completed-protection-gap','same-quote-not-an-additional-sample','awaiting-new-high-water','lagged-executable-return-dispersion','lagged-width-with-nondecreasing-boundary'] as const;
 type EvidencePressureCode=typeof EVIDENCE_PRESSURE_CODES[number];
 type RecoveryReasonCode=typeof RECOVERY_REASON_CODES[number];
 export type OperatingAdmission={
@@ -48,20 +54,41 @@ function recoveryReasonCode(v:unknown):RecoveryReasonCode|null{
  if(typeof v==='string'&&v.startsWith('candidate step unavailable: '))return 'CANDIDATE_STEP_UNAVAILABLE';
  return 'OTHER_UNEXPORTED_REASON';
 }
+function canonicalMint(v:unknown):string|null{
+ if(typeof v!=='string'||!/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(v))return null;
+ const alphabet='123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz';let value=0n,bytes=0;
+ for(const c of v)value=value*58n+BigInt(alphabet.indexOf(c));
+ while(value>0n){bytes++;value>>=8n;}
+ return bytes+(v.match(/^1*/)?.[0].length??0)===32?v:null;
+}
+function entryQuoteNote(value:unknown,sourceStart:number,at:number):string|null{
+ const r=rec(value),n=count(r.count),last=rec(r.last),failedAt=count(last.at);
+ if(n===0&&r.last===null)return null;
+ const prefix=`Candidate quote failures (current market instance) ${n??'unavailable'}`;
+ if(n===null||n===0||failedAt===null||failedAt<sourceStart||failedAt>at||!(ENTRY_QUOTE_PHASES as readonly unknown[]).includes(last.phase)||!(ENTRY_QUOTE_CODES as readonly unknown[]).includes(last.reasonCode)||finite(last.elapsedMs)===null||boolean(last.callerAborted)===null||boolean(last.deadlineAborted)===null)return prefix+'; last failure unavailable. This is not a qualification or order.';
+ return `${prefix}: last ${new Date(failedAt).toISOString()}, ${canonicalMint(last.mint)??'mint unavailable'}, ${last.phase}/${last.reasonCode}, ${last.elapsedMs} ms; caller/deadline aborted ${last.callerAborted}/${last.deadlineAborted}. This is not a qualification or order.`;
+}
+function adaptiveHoldingNote(value:unknown,sourceStart:number,enteredAt:number|null,at:number):string{
+ const d=rec(value),reason=(ADAPTIVE_HELD_REASONS as readonly unknown[]).includes(d.reason)?d.reason:'unavailable-source-reason',quoteAt=count(d.quoteAt),evaluatedAt=count(d.evaluatedAt),width=count(d.effectiveTrailingDistanceBps),volatility=count(d.measuredVolatilityBps),prior=count(d.priorQuoteCount),boundary=typeof d.modeledTrailingBoundaryLamports==='string'&&/^(0|[1-9]\d{0,38})$/.test(d.modeledTrailingBoundaryLamports)?BigInt(d.modeledTrailingBoundaryLamports):null;
+ if(!['measured','fallback'].includes(d.state)||!(ADAPTIVE_AVAILABLE_REASONS as readonly unknown[]).includes(reason)||d.meaning!=='MODELED_TRIGGER_NOT_GUARANTEED_FILL'||enteredAt===null||quoteAt===null||evaluatedAt===null||quoteAt<Math.max(sourceStart,enteredAt)||quoteAt>evaluatedAt||evaluatedAt>at||at-quoteAt>2000||at-evaluatedAt>4000||width===null||width<1500||width>9999||d.state==='fallback'&&width!==1500||prior===null||prior>256||boundary===null||d.measuredVolatilityBps!==null&&(volatility===null||volatility>10000)||d.state==='measured'&&volatility===null)return `holding trail unavailable (${reason}); inspect completed protection`;
+ const sol=`${boundary/1000000000n}.${(boundary%1000000000n).toString().padStart(9,'0')}`;
+ return `${d.state} trail ${width} bps (${reason}); dispersion ${volatility??'unknown'} bps/${prior} prior quotes; boundary ${sol} SOL (modeled, fill not guaranteed); evaluated ${new Date(evaluatedAt).toISOString()}`;
+}
 /** These are diagnostics of financially owned acquisition, not completed held
  * evaluations. Fixed source-owned fields only: arbitrary RPC errors, policy,
  * URLs, account data and unknown stage names never cross the public boundary.
  * The existing bounded notes keep old receivers compatible without a parallel
  * telemetry schema. Instance scope matters because source recovery can replace
  * the RPC client inside one persistent operating run. */
-function protectionRpcNotes(rpc:Record<string,any>,sourceStart:number,at:number):string[]{
- if(!Object.hasOwn(rpc,'protectionRecovery'))return [];
+function protectionRpcNotes(rpc:Record<string,any>,sourceStart:number,at:number,entryNote:string|null):string[]{
+ if(!Object.hasOwn(rpc,'protectionRecovery'))return entryNote?[entryNote]:[];
  const r=rec(rpc.protectionRecovery),start=count(rpc.startedAt),since=start!==null&&start>=sourceStart&&start<=at?new Date(start).toISOString():'unavailable',number=(v:unknown)=>count(v)??'unavailable';
  const notes=[`Holding RPC current instance since ${since}: calls ${number(r.calls)}; logical attempts ${number(r.logicalAttempts)}; rapid probes ${number(r.rapidProbes)}; RPC retry successes ${number(r.successesAfterRetry)}; dispatch refusals ${number(r.refusals)}; holding starts in 10s / 60s ${number(r.rolling10SecondStarts)} / ${number(r.rolling60SecondStarts)}. These counts are not completed protection evaluations.`];
  const stages=rec(r.failureStages),counts=PROTECTION_FAILURE_STAGES.flatMap(stage=>{const n=count(stages[stage]);return n!==null&&n>0?[`${stage}:${n}`]:[];});
  if(counts.length)notes.push('Holding RPC failure stages (current instance, not completed evaluations): '+counts.join(', ')+'.');
  const failure=rec(r.lastFailure),failedAt=count(failure.at),minimum=start!==null&&start>=sourceStart&&start<=at?start:sourceStart;
- if(failedAt!==null&&failedAt>=minimum&&failedAt<=at&&(PROTECTION_FAILURE_STAGES as readonly unknown[]).includes(failure.stage))notes.push(`Last holding RPC failure ${new Date(failedAt).toISOString()}: ${failure.stage}; physical request in flight: ${boolean(failure.physicalInFlight)??'unavailable'}. This records an acquisition stage, not a diagnosis of every earlier interruption.`);
+ const last=failedAt!==null&&failedAt>=minimum&&failedAt<=at&&(PROTECTION_FAILURE_STAGES as readonly unknown[]).includes(failure.stage)?`Last holding RPC failure ${new Date(failedAt).toISOString()}: ${failure.stage}; physical-in-flight ${boolean(failure.physicalInFlight)??'unavailable'}.`:null;
+ if(last||entryNote)notes.push([last,entryNote].filter(Boolean).join(' '));
  return notes;
 }
 /** Null is an unavailable fact, never a manufactured zero. */
@@ -89,7 +116,8 @@ export function projectOperatingIntelligence(value:unknown):OperatingIntelligenc
    if(strategy.version!=='adaptive-momentum-v2-paper-v1'){strategyRows.push(`${mint}: legacy holding retains its original exit rules; new entries use Adaptive Momentum v2.`);continue;}
    const peak=typeof strategy.highWaterNetLamports==='string'&&/^(0|[1-9]\d{0,38})$/.test(strategy.highWaterNetLamports)?BigInt(strategy.highWaterNetLamports):null,enteredAt=count(position.enteredAt),peakTime=count(strategy.highWaterAt),peakAt=enteredAt!==null&&enteredAt>=Date.parse(ORIGINAL_POE_INCEPTION)&&enteredAt<=at&&peakTime!==null&&peakTime>=enteredAt?time(peakTime):null;
    const value=peak!==null&&peak>0n&&peakAt?`${peak/1000000000n}.${(peak%1000000000n).toString().padStart(9,'0')} SOL at ${peakAt}`:'unavailable';
-   strategyRows.push(`${mint}: Adaptive Momentum v2 historical executable net peak ${value}; cost stop and high-water trailing configured; see completed protection status. No fixed profit or profitable holding-time exit.`);
+   const active=Object.hasOwn(s,'adaptiveHoldingDiagnostics')?adaptiveHoldingNote(rec(s.adaptiveHoldingDiagnostics)[mint],start,enteredAt,at):'cost stop and high-water trailing configured; see completed protection status';
+   strategyRows.push(`${mint}: Adaptive Momentum v2 historical executable net peak ${value}; ${active}. No fixed profit or profitable holding-time exit.`);
   }
  }
  const operationalRows:string[]=[],history=rec(rec(s.reporting).protectionHistory);
@@ -103,7 +131,8 @@ export function projectOperatingIntelligence(value:unknown):OperatingIntelligenc
  if(refusalCounts.length)operationalRows.push('Recorded holding-pricing refusals in this run: '+refusalCounts.slice(0,6).join(', ')+(refusalCounts.length>6?'; additional categories retained.':'.'));
  const lastPricing=rec(pricing.lastContext),pricingAt=time(lastPricing.at);
  if(lastPricing.state==='unavailable'&&pricingAt&&pricingCodes.includes(lastPricing.reasonCode))operationalRows.push('Holding-pricing refusal at '+pricingAt+': '+lastPricing.reasonCode+'. This is not a completed protection evaluation.');
- operationalRows.push(...protectionRpcNotes(rpc,start,at));
+ const market=rec(u.market),entryNote=Object.hasOwn(market,'entryQuoteFailures')?entryQuoteNote(market.entryQuoteFailures,start,at):null;
+ operationalRows.push(...protectionRpcNotes(rpc,start,at,entryNote));
  const limitations=[...(Array.isArray(s.observationReportingMeaning)?s.observationReportingMeaning:typeof s.observationReportingMeaning==='string'?[s.observationReportingMeaning]:[]).flatMap(v=>bounded(v,512)?[v as string]:[]).slice(0,Math.max(0,10-strategyRows.length-operationalRows.length)),...operationalRows,...strategyRows];
  const hasAdmission=['reporting','serviceSupervision','resourceControl','evidenceRetention','sourceRecovery','proofPreparation'].some(k=>Object.hasOwn(s,k));
  const report=rec(s.reporting),supervision=rec(s.serviceSupervision),control=rec(s.resourceControl),retention=rec(s.evidenceRetention),recovery=rec(s.sourceRecovery),proof=rec(s.proofPreparation);

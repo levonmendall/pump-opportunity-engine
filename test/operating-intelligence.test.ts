@@ -78,7 +78,7 @@ test('owned RPC stage observations survive the existing bounded public channel w
  const before=structuredClone(raw),i=projectOperatingIntelligence(raw),notes=i.quality.limitations.join('\n');
  assert.match(notes,/current instance since 2026-10-28T22:51:40\.000Z/);assert.match(notes,/calls 6; logical attempts 7; rapid probes 1; RPC retry successes 1; dispatch refusals 2/);
  for(const [index,stage]of stages.entries())assert.ok(notes.includes(`${stage}:${index+1}`));
- assert.match(notes,/Last holding RPC failure 2026-10-28T22:59:57\.000Z: caller-cancel-before-physical; physical request in flight: false/);assert.match(notes,/not completed protection evaluations/);assert.match(notes,/holding starts in 10s \/ 60s 5 \/ 28/);assert.doesNotMatch(notes,/DO_NOT_EXPORT|private\.example|credential/);assert.equal(i.protection.lastCompletedAt,null);assert.deepEqual(raw,before);validateOperatingIntelligence(i,iso(T));
+ assert.match(notes,/Last holding RPC failure 2026-10-28T22:59:57\.000Z: caller-cancel-before-physical; physical-in-flight false/);assert.match(notes,/not completed protection evaluations/);assert.match(notes,/holding starts in 10s \/ 60s 5 \/ 28/);assert.doesNotMatch(notes,/DO_NOT_EXPORT|private\.example|credential/);assert.equal(i.protection.lastCompletedAt,null);assert.deepEqual(raw,before);validateOperatingIntelligence(i,iso(T));
 });
 
 test('new owned protection classification separates optional timeout backoff from real or unknown provider restrictions without changing source gates',()=>{
