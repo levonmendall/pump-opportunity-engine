@@ -87,7 +87,7 @@ test('hash-pinned original receiver snapshot is imported idempotently without gu
       points:[{at:iso(first),equityUsd:990.12},{at:iso(last),equityUsd:992.25}],
     },limitation:'only authenticated receiver history',
   };
-  const text=JSON.stringify(witness)+'\\n',capture=join(dir,'accepted-original-equity-fixture.json');
+  const text=JSON.stringify(witness)+'\n',capture=join(dir,'accepted-original-equity-fixture.json');
   writeFileSync(capture,text,{mode:0o600});
   assert.equal(ledger.importReceiverCapture(capture,sha(text),now),'imported');
   assert.equal(ledger.importReceiverCapture(capture,sha(text),now),'duplicate');
