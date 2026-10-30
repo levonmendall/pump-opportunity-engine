@@ -8,6 +8,7 @@ import {PUMP_AMM_SDK,PUMP_AMM_PROGRAM_ID,GLOBAL_CONFIG_PDA,PUMP_AMM_FEE_CONFIG_P
 import {decodeSupportedPoolAccounts,positionSellFromState,buyFromState,type PoolWireAccount,type PositionSellRequest} from './pool.js';
 import type {ReadOnlyRpc} from './network.js';
 import type {Recorder} from './recorder.js';
+import type {PaperUnsignedMarketBatch} from './paper-unsigned-pumpswap.js';
 
 type Admission={latestStartAt:number;admissionOpen:()=>boolean};
 type Rpc={call<T>(method:string,params?:unknown[],signal?:AbortSignal,options?:{latestStartAt?:number;admissionOpen?:()=>boolean}):Promise<T>};
@@ -64,16 +65,20 @@ function transientLinkReadRefusal(error:unknown):string|null{
 
 export class ResearchClockPositionPricer {
   private readonly cached=new Map<string,{first:Pool;slot:number}>();
+  // Bounded original bytes for unsigned construction only. No pricing path
+  // consumes these as a fresh reserve/fee/Clock read.
+  private readonly constructionBatches=new Map<string,PaperUnsignedMarketBatch>();
+  constructionBatch(mint:string,slot:number|undefined,receivedAt:number):PaperUnsignedMarketBatch|null{const batch=this.constructionBatches.get(mint);return batch&&(slot===undefined||batch.slot===slot)&&Date.parse(batch.receivedAt)===receivedAt?structuredClone(batch):null;}
   private readonly holdingSlots=new Map<string,number>();private readonly observationSlots=new Map<string,number>();private readonly buySlots=new Map<string,number>();
   private heldActive=new Set<string>();private observationActive=new Set<string>();private buyActive=new Set<string>();private highestSlot=0;private busy=false;
   private networkCalls=0;private linkHits=0;private invalidations=0;private retainedLinkReadFailures=0;
   constructor(private readonly rpc:Rpc,private readonly rec:Rec){}
   invalidate(reason='explicit-research-invalidation'){
-    this.cached.clear();this.invalidations++;
+    this.cached.clear();this.constructionBatches.clear();this.invalidations++;
     this.rec.record('research-clock-cache-invalidation',{at:Date.now(),reason});
   }
   private invalidatePool(mint:string,reason:string){
-    this.cached.delete(mint);this.invalidations++;
+    this.cached.delete(mint);this.constructionBatches.delete(mint);this.invalidations++;
     this.rec.record('research-clock-cache-invalidation',{at:Date.now(),mint,reason});
   }
   usage(){return {networkCalls:this.networkCalls,linkCacheHits:this.linkHits,invalidations:this.invalidations,retainedLinkReadFailures:this.retainedLinkReadFailures,highestVerifiedSlot:this.highestSlot,highestHoldingSlots:Object.fromEntries(this.holdingSlots),highestObservationSlots:Object.fromEntries(this.observationSlots),highestBuySlots:Object.fromEntries(this.buySlots),cachePoolCapacity:9,dependencyAccountCapacity:40,cachedPoolSlot:this.cached.size===1?[...this.cached.values()][0]!.slot:null,cachedPoolSlots:Object.fromEntries([...this.cached].map(([mint,value])=>[mint,value.slot])),timeEvidence:'confirmed-bank-clock',liveValidation:'UNTESTED'};}
@@ -90,7 +95,7 @@ export class ResearchClockPositionPricer {
     need(!this.busy,'RESEARCH_CLOCK_CONCURRENT_QUOTE');
     const mint=new PublicKey(request.mint),minSlot=request.minSlot??0;
     need(Number.isSafeInteger(minSlot)&&minSlot>=0,'INVALID_MINIMUM_SLOT');
-    need(typeof request.buyLamports==='bigint'&&request.buyLamports>10n&&request.buyLamports<=1_000_000_000n,'INTEGRATION_SIZE_OUT_OF_RANGE');
+    need(typeof request.buyLamports==='bigint'&&request.buyLamports>10n&&request.buyLamports<=MAX_UNITS,'INTEGRATION_SIZE_OUT_OF_RANGE');
     const result=await this.readMany([{mint,minSlot,buyLamports:request.buyLamports}],'buy',signal,admission),name=mint.toBase58();
     if(!result.buys[name])throw Error(result.unavailable[name]??'RESEARCH_CLOCK_POOL_UNAVAILABLE');
     return result.buys[name]!;
@@ -140,6 +145,7 @@ export class ResearchClockPositionPricer {
       this.heldActive=held;this.observationActive=observed;this.buyActive=buying;
       for(const mint of this.buySlots.keys())if(!buying.has(mint))this.buySlots.delete(mint);
       for(const mint of this.cached.keys())if(!active.has(mint))this.cached.delete(mint);
+      for(const mint of this.constructionBatches.keys())if(!active.has(mint))this.constructionBatches.delete(mint);
       const slots=purpose==='quote'?this.holdingSlots:purpose==='buy'?this.buySlots:this.observationSlots;for(const mint of slots.keys())if(!names.includes(mint))slots.delete(mint);
       let floor=Math.max(this.highestSlot,...selected.map(r=>Math.max(r.minSlot,this.holdingSlots.get(r.mint.toBase58())??0,this.observationSlots.get(r.mint.toBase58())??0,this.buySlots.get(r.mint.toBase58())??0)));
       const missing=selected.filter(r=>!this.cached.has(r.mint.toBase58()));
@@ -192,12 +198,13 @@ export class ResearchClockPositionPricer {
       fresh();signal?.throwIfAborted();
       for(const [mint,first] of pendingCache){this.cached.set(mint,{first,slot:batch.context.slot});const slots=purpose==='quote'?this.holdingSlots:purpose==='buy'?this.buySlots:this.observationSlots;slots.set(mint,Math.max(slots.get(mint)??0,batch.context.slot));}
       if(pendingCache.size)this.highestSlot=Math.max(this.highestSlot,batch.context.slot);
+      for(const h of holdings)if(quotes[h.name]||buys[h.name])this.constructionBatches.set(h.name,{mint:h.name,slot:batch.context.slot,requestedAt,receivedAt,accounts:h.addresses.map(a=>structuredClone(indexed.get(a)??null))});
       return {quotes,buys,validations,unavailable,context:{slot:batch.context.slot,requestedAt,receivedAt,marketClockUnixSeconds:timing.marketClockUnixSeconds}};
     }catch(error){
       if(sourceReadAttempted){
         const code=transientLinkReadRefusal(error);
         if(code){
-          if(this.cached.size){this.retainedLinkReadFailures++;this.rec.record('research-clock-verified-links-retained',{at:Date.now(),reasonCode:code,cachedPools:this.cached.size,retainedPrices:false,newLinksCommitted:false});}
+          if(this.cached.size){this.retainedLinkReadFailures++;this.rec.record('research-clock-verified-links-retained',{at:Date.now(),reasonCode:code,cachedPools:this.cached.size,retainedPricesForPricing:false,unsignedConstructionBatches:this.constructionBatches.size,newLinksCommitted:false});}
         }else this.invalidate(purpose!=='observation'?'quote-unavailable':'observation-support-unavailable');
       }
       throw error;

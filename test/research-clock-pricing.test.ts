@@ -385,7 +385,7 @@ test('coherent actual-input buy preserves retained SDK amounts and fees with2col
 
 test('buy admission, aborts, invalid amounts and unsupported state refuse without partial success',async()=>withTime(async f=>{
   const p=new ResearchClockPositionPricer(f.rpc,f.rec),request={mint:f.request.mint,buyLamports:10000000n,minSlot:f.request.minSlot};
-  for(const buyLamports of[0n,10n,1000000001n])await assert.rejects(p.quoteBuy({...request,buyLamports}),/SIZE_OUT_OF_RANGE/);
+  for(const buyLamports of[0n,10n,1n<<64n])await assert.rejects(p.quoteBuy({...request,buyLamports}),/SIZE_OUT_OF_RANGE/);
   const controller=new AbortController();controller.abort();await assert.rejects(p.quoteBuy(request,controller.signal));
   await assert.rejects(p.quoteBuy(request,undefined,{latestStartAt:Date.now()+1000,admissionOpen:()=>false}),/ADMISSION_CLOSED/);assert.equal(f.calls.length,0);
   await p.quoteBuy(request);f.state.value[5].owner=PublicKey.default.toBase58();

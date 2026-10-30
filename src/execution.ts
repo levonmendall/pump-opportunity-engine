@@ -1,4 +1,5 @@
 import {performance} from 'node:perf_hooks';
+import {validatePaperExecutionPlan,validatePaperExecutionLanding,executionAttempt,type PaperExecutionPlan,type PaperExecutionLanding,type PaperExecutionAttempt} from './execution-realism.js';
 import {PaperLedger,type ExecutionQuote,type Mark,type Order,type OrderOutcome,type UsdPrice} from './ledger.js';
 
 export type ExecutionContext={price:UsdPrice|null;marks:Record<string,Mark>;/** Original bank-source expiry for every required holding; never a publishing heartbeat. */sourceValidUntil?:number};
@@ -14,6 +15,8 @@ export type ExecutionOptions={
   now?:()=>number;
   /** Total context/quote preparation deadline, also capped by order expiry. */
   timeoutMs?:number;
+  /** New reservations only; no provider work or mutation inside this planner. */
+  executionPlan?:(order:Omit<Order,'reserved'>)=>PaperExecutionPlan|null;
   /** Optional scheduling wake after a timed-out adapter actually settles. */
   onAdapterSettled?:()=>void;
 };
@@ -65,7 +68,9 @@ export class PaperExecutionCoordinator{
     if(!Number.isSafeInteger(order.decidedAt)||order.decidedAt>now||!Number.isSafeInteger(order.expiresAt)||order.expiresAt<=now)throw new Error('current nonexpired decision required; future information is unavailable');
     if(order.side==='buy'&&this.uncertain.size)throw new Error('financial uncertainty blocks new entries');
     if(order.side==='buy'&&this.outstanding)throw new Error('execution adapter unavailable for new entries');
-    return this.options.ledger.order(order,context.price??UNKNOWN_PRICE,context.marks);
+    let prepared=order;
+    if(this.options.executionPlan){const plan=this.options.executionPlan(Object.freeze({...order}));if(!plan||!validatePaperExecutionPlan(plan)||plan.plannedAt!==order.decidedAt)throw Error('PAPER execution preparation unavailable');prepared={...order,executeAt:plan.executeAt,expiresAt:plan.expiresAt,executionModel:plan} as typeof prepared;}
+    return this.options.ledger.order(prepared,context.price??UNKNOWN_PRICE,context.marks);
   }
   readinessSafety(){return {recoveryComplete:this.recovered,idle:!this.active&&!this.outstanding,uncertainActions:this.uncertain.size};}
   nextDueAt():number|null{
@@ -137,7 +142,13 @@ export class PaperExecutionCoordinator{
       if(Object.keys(this.options.ledger.state().positions).length&&context.sourceValidUntil!==undefined&&(!Number.isSafeInteger(context.sourceValidUntil)||context.sourceValidUntil<finalizedAt))context={...context,marks:{}};
       if(!this.options.ledger.state().pending[order.id]){this.uncertain.delete(order.id);this.financialRetryAt.delete(order.id);results.push({orderId:order.id,status:'canceled',reason:'financial owner canceled action during preparation',at:finalizedAt});continue;}
       try{
-        const outcome=this.options.ledger.attempt(`execution-attempt:${order.id}`,order.id,finalizedAt,quote,context.price??UNKNOWN_PRICE,context.marks);
+        const model=(order as Order&{executionModel?:PaperExecutionPlan}).executionModel;
+        let modeledAttempt:PaperExecutionAttempt|undefined;
+        if(model){const landing=(quote as (ExecutionQuote&{executionModel?:PaperExecutionLanding})|null)?.executionModel,landed=!!quote&&validatePaperExecutionLanding(landing,model,finalizedAt)&&landing.landingAt===quote.at;modeledAttempt=executionAttempt(model,landed,finalizedAt>=order.expiresAt);if(!landed)quote=null;}
+        // Keep the exact historical call/payload when the order has no model.
+        const outcome=modeledAttempt
+          ?(this.options.ledger.attempt as (...args:[string,string,number,ExecutionQuote|null,UsdPrice,Record<string,Mark>,PaperExecutionAttempt])=>OrderOutcome)(`execution-attempt:${order.id}`,order.id,finalizedAt,quote,context.price??UNKNOWN_PRICE,context.marks,modeledAttempt)
+          :this.options.ledger.attempt(`execution-attempt:${order.id}`,order.id,finalizedAt,quote,context.price??UNKNOWN_PRICE,context.marks);
         this.uncertain.delete(order.id);this.financialRetryAt.delete(order.id);results.push({orderId:order.id,...outcome});
       }catch{
         try{
