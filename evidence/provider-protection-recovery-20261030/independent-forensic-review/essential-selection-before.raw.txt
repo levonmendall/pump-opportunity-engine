@@ -1,0 +1,31 @@
+test_sixteen_optional_segments_cannot_exclude_sealed_held_failure (independent_essential_selection_regressions.Fixtures.test_sixteen_optional_segments_cannot_exclude_sealed_held_failure) ... FAIL
+test_tight_byte_budget_reserves_essential_before_optional_reads (independent_essential_selection_regressions.Fixtures.test_tight_byte_budget_reserves_essential_before_optional_reads) ... FAIL
+
+======================================================================
+FAIL: test_sixteen_optional_segments_cannot_exclude_sealed_held_failure (independent_essential_selection_regressions.Fixtures.test_sixteen_optional_segments_cannot_exclude_sealed_held_failure)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-export-provider-recovery-forensics-20261030.py", line 136, in test_sixteen_optional_segments_cannot_exclude_sealed_held_failure
+    _,essential=self.crowded_diagnostics_with_essential_failure();r=m.collect(self.root,self.uid);self.assertLessEqual(len(r['diagnostics']['files']),16);self.assertEqual(r['diagnostics']['files'][0]['file'],essential);self.assertTrue(any(x['kind']=='trader-held-evaluation'and x['data']['usable']is False for x in r['diagnostics']['facts']));self.assertTrue(r['diagnostics']['scanBudgetReached'])
+                                                                                                                                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'diagnostic-000000000016.ndjson' != 'essential-000000000123.ndjson'
+- diagnostic-000000000016.ndjson
++ essential-000000000123.ndjson
+
+
+======================================================================
+FAIL: test_tight_byte_budget_reserves_essential_before_optional_reads (independent_essential_selection_regressions.Fixtures.test_tight_byte_budget_reserves_essential_before_optional_reads)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/workspace/poe-original-two-position-upgrade/operator/native-paper-ec2/test-export-provider-recovery-forensics-20261030.py", line 141, in test_tight_byte_budget_reserves_essential_before_optional_reads
+    self.assertEqual(r['diagnostics']['files'][0]['file'],essential);self.assertTrue(r['diagnostics']['files'][0]['available']);self.assertTrue(any(x['kind']=='trader-held-evaluation'for x in r['diagnostics']['facts']));self.assertTrue(r['diagnostics']['scanBudgetReached']);self.assertLessEqual(r['diagnostics']['bytesRead'],m.MAX_SEGMENT)
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'diagnostic-000000000016.ndjson' != 'essential-000000000123.ndjson'
+- diagnostic-000000000016.ndjson
++ essential-000000000123.ndjson
+
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.006s
+
+FAILED (failures=2)

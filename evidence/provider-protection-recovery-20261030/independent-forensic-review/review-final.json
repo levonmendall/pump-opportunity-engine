@@ -1,0 +1,58 @@
+{
+  "kind": "INDEPENDENT_FINAL_PROVIDER_FORENSIC_EXPORT_READER_REVIEW",
+  "reviewer": "review_inert_provider_upgrade",
+  "at": "2026-10-30T00:33:09.987704+00:00",
+  "status": "PASS",
+  "reviewedSelectionCommit": "e103e41",
+  "files": {
+    "export-provider-recovery-forensics-20261030.py": {
+      "sha256": "4f576931c55c1f9111350f1079c87ed4815ea054a3c0808c5c87979b73ac82de",
+      "bytes": 29960
+    },
+    "test-export-provider-recovery-forensics-20261030.py": {
+      "sha256": "68bae7ec4dd3c7dc0ed9b6e855a80278fdd67b9db856a9a3262a72e479c87eb1",
+      "bytes": 22119
+    },
+    "read-provider-recovery-forensics-20261030.py": {
+      "sha256": "b06bf4cc5d91a25b44a627e7771ef371c9a8fb2f1a93ffffec793f12123e93cd",
+      "bytes": 24177
+    },
+    "test-read-provider-recovery-forensics-20261030.py": {
+      "sha256": "81287a5694a11aafacecdc4164940f0d8c263ccd1a3a4c9947da4777fb2fb852",
+      "bytes": 11839
+    }
+  },
+  "sourceBytesUnchanged": true,
+  "tests": {
+    "operator": 61,
+    "builder": 2,
+    "exporter": 31,
+    "reader": 13,
+    "total": 107,
+    "allPassed": true
+  },
+  "independentRegressionProof": {
+    "oldCommit": "4ed5a860911b2e4c827257006cb8ba5c575b58fc",
+    "newCases": 2,
+    "oldFailures": 2,
+    "oldErrors": 0,
+    "newPassed": 2,
+    "cases": [
+      "16 optional diagnostic segments cannot omit retained held failure",
+      "tight8MiB scan reserves essential read first"
+    ]
+  },
+  "selection": "Matching active essential or canonical recent sealed essential first, then one essential per three latest matching diagnostics; fixed16-file/64MiB/2s bounds; per-window64/128fact and28KB/57KB serialized-array budgets remain exact",
+  "identityAndPrivacy": "Installed93 native/config/account/inception/run/start pinned; exact two sampled UTC windows only; unknown strings hashed, private payloads/prices/amounts/addresses excluded; all exporter/reader allowlists equal",
+  "reader": "Exact original root receipt, script/source/run/path/bytes/hash/root-copy and public file UID/GID/mode/stable-inode; actual exporter-to-reader interoperability passes; SCRIPT_SHA remains None",
+  "resourceAndFinancialSafeguards": "Permanent original UID/GID drop, bounded private diagnostic inputs, output131072B; root child existing Nice+10/3CPU/128MiB/8s wall. No DB/network/provider/control access or financial actions. Old ba33 exporter/output unchanged.",
+  "limitations": "This is a bounded sanitized diagnostic sample, not complete historical timing or financial readiness; missing/rotated/unscanned facts remain UNKNOWN. Interleaving prevents optional files alone exhausting all eligible slots before any essential read.",
+  "supersedes": "review.json and selection-revision-pending.json for final readiness",
+  "futureTargetFrozen": false,
+  "newExporterExecutedOnEC2": false,
+  "adminFilesModified": false,
+  "actualStaging": false,
+  "financialDatabaseOpened": false,
+  "providerRequests": 0,
+  "serviceChanges": 0
+}

@@ -1,0 +1,68 @@
+{
+  "kind": "INDEPENDENT_FINAL_SELECTED_PROVIDER_FORENSIC_REVIEW",
+  "reviewer": "review_inert_provider_upgrade",
+  "at": "2026-10-30T00:40:38.120496+00:00",
+  "status": "PASS",
+  "reviewedExporterCommit": "7f4f8d0",
+  "files": {
+    "export-provider-recovery-forensics-20261030.py": {
+      "sha256": "e1c04bc56c27e2341b188d441055eaf5b1eac245ad1d390157a14e3b3d129f7e",
+      "bytes": 30670
+    },
+    "test-export-provider-recovery-forensics-20261030.py": {
+      "sha256": "4526c2569f582f0da26038c130ec798f48d4b85ed6e88c8abfccb4f544cfb83e",
+      "bytes": 23798
+    },
+    "read-provider-recovery-forensics-20261030.py": {
+      "sha256": "c3719d93d0570cd08b77d52a6b520a302f8fdf4b793dc2a9c39a7d95e6c35c90",
+      "bytes": 24177
+    },
+    "test-read-provider-recovery-forensics-20261030.py": {
+      "sha256": "81287a5694a11aafacecdc4164940f0d8c263ccd1a3a4c9947da4777fb2fb852",
+      "bytes": 11839
+    }
+  },
+  "sourceBytesUnchanged": true,
+  "tests": {
+    "operator": 61,
+    "builder": 2,
+    "exporter": 32,
+    "reader": 13,
+    "total": 108,
+    "allPassed": true
+  },
+  "priorityRegression": {
+    "priorExporterCommit": "e103e41",
+    "windowsMatchedToFinalForIsolation": true,
+    "priorFailures": 1,
+    "priorErrors": 0,
+    "newPassed": true,
+    "fixture": "Earlyheldfailure and4physical/admission/cancellationfacts followed by150healthyheld plus150candidatefailures"
+  },
+  "essentialReadRegression": "Prior2failures against4ed5a86 and currentpasses preserved; essential-first then1per3latestdiagnostics prevents optional-only exhaustion",
+  "priorityWindowsUtc": [
+    [
+      "2026-10-30T00:11:15Z",
+      "2026-10-30T00:12:30Z"
+    ],
+    [
+      "2026-10-30T00:18:10Z",
+      "2026-10-30T00:22:30Z"
+    ]
+  ],
+  "bounds": "Unchanged16files/64MiBscan/2sscan/131072Boutput;192facts/85KBglobal and64/128facts28KB/57KB per-window serialized arrays",
+  "priority": "Actualheld/physical/financial failures rank0; physical/admission/cancellation rank1; healthyheldrank2; generalcandidate/auditunavailablerank3. Essentialinterleaving remains.",
+  "identityPrivacyAndReader": "Exact93 source/native/config/account/inception/run/start; two sampled windows only. Allowlistsets exporter/reader identical. Unknown strings hashed; quantities/values/addresses/endpoints excluded. Exact root receipt/script/source/run/path/bytes/hash/rootcopy and file ownership/stability checked. Actual export-readerinterop passes; readerSCRIPT_SHA remainsNone.",
+  "limitations": "Bounded diagnostic sample; missing/rotated/unscanned facts and unsampled middle remainUNKNOWN, not absence of failure or proof of operational readiness.",
+  "supersedesForFinalBytes": [
+    "review-final.json",
+    "window-priority-revision-pending.json"
+  ],
+  "futureTargetFrozen": false,
+  "actualStaging": false,
+  "newExporterExecutedOnEC2": false,
+  "adminFilesModified": false,
+  "financialDatabaseOpened": false,
+  "providerRequests": 0,
+  "serviceChanges": 0
+}

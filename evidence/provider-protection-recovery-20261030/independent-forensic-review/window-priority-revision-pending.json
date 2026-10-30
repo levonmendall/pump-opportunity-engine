@@ -1,0 +1,18 @@
+{
+  "at": "2026-10-30T00:37:35.858585+00:00",
+  "status": "FINAL_REVIEW_PENDING_UPDATED_WINDOWS_AND_PHYSICAL_PRIORITY",
+  "priorByteReview": "review-final.json",
+  "requestedWindowsUtc": [
+    [
+      "2026-10-30T00:11:15Z",
+      "2026-10-30T00:12:30Z"
+    ],
+    [
+      "2026-10-30T00:18:10Z",
+      "2026-10-30T00:22:30Z"
+    ]
+  ],
+  "required": "Verify updated UTC constants and physical/admission/cancellation priority regression; rerun exporter-reader tests; preserve fixed bounds and privacy",
+  "actualStaging": false,
+  "serviceChanges": 0
+}
