@@ -29,6 +29,7 @@ function secretFromFile(path: string): string {
 export type EquityCompanionOptions = {
   sourceFile: string; storeFile: string; receiver?: string;
   credentialFile: string; fetch?: typeof fetch;
+  bootstrapFile?: string; bootstrapSha256?: string;
 };
 /**
  * Auxiliary reporting-only process. Never imports PaperLedger or any trader;
@@ -50,6 +51,9 @@ export class OriginalEquityCompanion {
     if ((options.receiver ?? RECEIVER) !== RECEIVER) throw Error('EQUITY_RECEIVER_FIXED');
     this.secret = secretFromFile(options.credentialFile);
     this.store = new LifetimeEquityStore(options.storeFile);
+    if (!!options.bootstrapFile !== !!options.bootstrapSha256) throw Error('EQUITY_BOOTSTRAP_PAIR_REQUIRED');
+    if (options.bootstrapFile && options.bootstrapSha256)
+      this.store.importReceiverCapture(options.bootstrapFile,options.bootstrapSha256);
   }
   async tick(now = Date.now()) {
     let ingested: 'accepted' | 'duplicate' | 'unavailable' = 'unavailable';
@@ -104,7 +108,11 @@ async function main() {
   const storeFile = absolute('EQUITY_STORE', process.env.POE_EQUITY_STORE_FILE ?? STORE);
   const credentialFile = process.env.POE_EQUITY_CREDENTIAL_FILE ??
     (process.env.CREDENTIALS_DIRECTORY ? join(process.env.CREDENTIALS_DIRECTORY, 'poe-ingest-secret') : '');
-  const companion = new OriginalEquityCompanion({sourceFile, storeFile, credentialFile});
+  const bootstrapFile = process.env.POE_EQUITY_BOOTSTRAP_FILE;
+  const bootstrapSha256 = process.env.POE_EQUITY_BOOTSTRAP_SHA256;
+  const companion = new OriginalEquityCompanion({
+    sourceFile, storeFile, credentialFile, bootstrapFile, bootstrapSha256,
+  });
   companion.start();
   const stop = () => { companion.close(); process.exitCode = 0; };
   process.once('SIGINT', stop); process.once('SIGTERM', stop);
