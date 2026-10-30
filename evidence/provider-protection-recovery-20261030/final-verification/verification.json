@@ -1,0 +1,18 @@
+{
+  "sourceCommit": "873b0b96385099d1e329deec3a14c9907ad70b74",
+  "startedAt": "2026-10-30T00:40:41.991059+00:00",
+  "providerRequests": 0,
+  "financialActions": 0,
+  "commands": [
+    {
+      "command": [
+        "npm",
+        "test"
+      ],
+      "exitCode": 1
+    }
+  ],
+  "sourceUnchanged": true,
+  "passed": false,
+  "completedAt": "2026-10-30T00:42:35.781975+00:00"
+}

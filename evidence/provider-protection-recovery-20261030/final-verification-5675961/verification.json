@@ -1,0 +1,39 @@
+{
+  "sourceCommit": "5675961a0ad05df508eec6928644c9e403be0811",
+  "startedAt": "2026-10-30T00:54:18.037557+00:00",
+  "providerRequests": 0,
+  "financialActions": 0,
+  "commands": [
+    {
+      "command": [
+        "npm",
+        "test"
+      ],
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "priorFailurePreserved": "../final-verification/verification.json",
+  "priorCompleteVerification": "../final-verification-4c103ed/verification.json",
+  "sourceUnchanged": true,
+  "passed": true,
+  "completedAt": "2026-10-30T00:56:16.027612+00:00",
+  "artifacts": {
+    "npm-test.raw.txt": "7e7232fad13d8c53922849c0573c56230086d811c3428aaa09b9b7749e466753",
+    "source-before.json": "8234d2897e5167abd9a09d7af372d6fdd84d02429d5d9cfec795e5965e1cb431",
+    "npm-build.raw.txt": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+    "standalone-artifacts.json": "3acbf3dbea851056616342c0792aaa3743f79ef6c9ff12b6287aa91f83e321af",
+    "active-configuration.json": "d85e7c34b76501dbd85c5b862a573b3580a3772cab023b6d2b8a9434f0b1ed38",
+    "standalone-build.raw.txt": "a1617868b3cc46caafdc67f97925094fc4aa1555e2dc756a6250baff8385942c",
+    "reviewed-production-hashes.json": "8f5ca61efb9232f2484059d3762cb268f185ca7c9fd25777462c61b00c300778",
+    "source-after.json": "8234d2897e5167abd9a09d7af372d6fdd84d02429d5d9cfec795e5965e1cb431",
+    "bundle-metadata.json": "93e00187cfae669fff3a713ffb05329f69033f2692c1171c97e9764a76cc5f85"
+  }
+}

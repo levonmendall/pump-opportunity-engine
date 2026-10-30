@@ -1,0 +1,33 @@
+{
+  "sourceCommit": "4c103edd6f8fa394074bafa0ba9f58f7c2090f34",
+  "startedAt": "2026-10-30T00:51:44.356157+00:00",
+  "providerRequests": 0,
+  "financialActions": 0,
+  "commands": [
+    {
+      "command": [
+        "npm",
+        "test"
+      ],
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "priorFailurePreserved": "../final-verification/verification.json",
+  "sourceUnchanged": true,
+  "passed": true,
+  "completedAt": "2026-10-30T00:53:42.035696+00:00",
+  "artifacts": {
+    "npm-test.raw.txt": "25cc3c6ebe557017f59e21e5ae28962cb04e3692ff3276a391319e0a677150d8",
+    "source-before.json": "3c8c3a236d29ad0333ba2d2807e981f3b1385d19f2f0e86b8d153f264fcb0c0c",
+    "npm-build.raw.txt": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+    "source-after.json": "3c8c3a236d29ad0333ba2d2807e981f3b1385d19f2f0e86b8d153f264fcb0c0c"
+  }
+}
