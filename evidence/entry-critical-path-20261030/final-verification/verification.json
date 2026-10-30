@@ -1,0 +1,46 @@
+{
+  "source": "5e7538d100a485c6bdac1429ace4059d24eb1be3",
+  "startedAt": "2026-10-30T01:31:55.611638+00:00",
+  "commands": [
+    {
+      "command": [
+        "node",
+        "--import",
+        "tsx",
+        "--test",
+        "test/pilot-market.test.ts",
+        "test/pilot-market-registry.test.ts",
+        "test/native-paper-integration.test.ts",
+        "test/native-paper-interop.test.ts",
+        "test/native-paper-readiness.test.ts",
+        "test/native-paper-service.test.ts",
+        "test/native-paper-current-protection.test.ts",
+        "test/native-protection-history.test.ts",
+        "test/financial-provider-permission.test.ts",
+        "test/financial-provider-pressure.test.ts",
+        "test/financial-audit-burst.test.ts"
+      ],
+      "exitCode": 0
+    },
+    {
+      "command": [
+        "npm",
+        "run",
+        "build"
+      ],
+      "exitCode": 0
+    }
+  ],
+  "providerRequests": 0,
+  "originalFinancialAccountRead": false,
+  "liveTrading": false,
+  "sourceUnchanged": true,
+  "passed": true,
+  "completedAt": "2026-10-30T01:32:12.901987+00:00",
+  "artifacts": {
+    "regression-tests.raw.txt": "671e675678f52f0c44a379a25626bd81ae7f801cbb3a99399a6d4f55a61ad51b",
+    "source-before.json": "a49ddfb468b12f76efd40e280d281e354e63b6e2275976121d4027ec1332ee95",
+    "build.raw.txt": "7e8b935ab439f07cc56f27c2b7b601d9c61ab7e342f578eedd81f7d6ce3a212b",
+    "source-after.json": "a49ddfb468b12f76efd40e280d281e354e63b6e2275976121d4027ec1332ee95"
+  }
+}

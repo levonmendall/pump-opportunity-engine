@@ -1,0 +1,52 @@
+▶ actual held protection can complete strict recovery despite recurring candidate-only timeout backoff
+  ✔ old coupled admission (323.527681ms)
+  ✔ held explicit-restriction admission (131.697466ms)
+✔ actual held protection can complete strict recovery despite recurring candidate-only timeout backoff (457.787167ms)
+✔ cash inventory retains ordinary provider backoff and cannot invent held recovery credit (108.532934ms)
+✔ actual provider restriction resets the recovery interval even with complete fresh held contexts (159.847187ms)
+▶ held provider admission cannot override owner stop or missing liquidation evidence
+  ✔ owner-stop (58.835836ms)
+  ✔ missing-marks (83.341974ms)
+✔ held provider admission cannot override owner stop or missing liquidation evidence (142.762407ms)
+✔ actual completion accounting separates observed current-run maxima from retained historical failures (2.994011ms)
+✔ native PAPER CLI requires explicit resume/contract and optional flags cannot alias args[0] (1.778548ms)
+✔ wrong source contract and invalid resource selection fail before directory, lease, ledger or provider access (2.82562ms)
+✔ unbound public source and mutable/mismatched startup provenance cannot open a financial writer (21.990226ms)
+✔ 750ms holding reads retain reporting service opportunities without moving the two-second reference cadence (32.990532ms)
+✔ financial reporting admission is versioned and only gates new risk, never native capture or owned work (0.488885ms)
+✔ COHERENT report and checkpoint service obey committed candidate latest-start alongside owned financial priority (0.31643ms)
+✔ source requests reserve the chosen complete operation without changing physical timeout or held protection limits (0.588282ms)
+✔ prior private status seeds retained failures without restoring old healthy proof (3.165405ms)
+✔ cumulative checkpoint/status use per-counter maximum, never sum or reset on repeated resume (0.555674ms)
+✔ checkpoint foreign-account cannot restore statistics (0.241117ms)
+✔ checkpoint wrong-inception cannot restore statistics (0.195079ms)
+✔ checkpoint unknown-run cannot restore statistics (0.214528ms)
+✔ checkpoint future cannot restore statistics (0.153357ms)
+✔ checkpoint pre-inception cannot restore statistics (0.186346ms)
+✔ checkpoint bad-kind cannot restore statistics (0.17587ms)
+✔ checkpoint extra-proof-field cannot restore statistics (0.298653ms)
+✔ previous status account binding cannot claim known protection history (0.481334ms)
+✔ previous status inception binding cannot claim known protection history (0.140909ms)
+✔ previous status run binding cannot claim known protection history (0.255219ms)
+✔ previous status future binding cannot claim known protection history (0.381626ms)
+✔ previous status source-commit binding cannot claim known protection history (0.282829ms)
+✔ previous status source-hash binding cannot claim known protection history (0.263992ms)
+✔ malformed counter -1 cannot become a lower bound (0.86954ms)
+✔ malformed counter 1.5 cannot become a lower bound (0.684845ms)
+✔ malformed counter NaN cannot become a lower bound (0.315859ms)
+✔ malformed counter Infinity cannot become a lower bound (0.24955ms)
+✔ malformed counter 9007199254740992 cannot become a lower bound (0.26968ms)
+✔ malformed counter 3 cannot become a lower bound (0.223562ms)
+✔ malformed counter null cannot become a lower bound (0.200828ms)
+✔ malformed counter undefined cannot become a lower bound (0.209761ms)
+✔ missing or corrupt optional histories remain explicit unknown lower bounds and never throw (0.280336ms)
+✔ valid zero statistics are only a known lower bound, not evidence of a currently healthy position (0.131846ms)
+✔ unsafe helper identity/time/run collection returns unknown without reading optional statistics (0.159006ms)
+ℹ tests 42
+ℹ suites 0
+ℹ pass 42
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3105.348471
