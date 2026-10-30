@@ -1,0 +1,12 @@
+{
+  "source": "69aa1ef214a8c79524a25a8aca79299ccaad93dc",
+  "files": {
+    "src/component-budget.ts": "1ffe9627926bfc286f6a6040f58d5117dd37618077e3cd54c5be3c6007d65d67",
+    "src/research-baseline.ts": "f334972642db61ab80702e7df1b93742700ba6f71092634ec986642b1b1c790c",
+    "src/pilot-rpc.ts": "9f089185d82f3441dfe4cae7bd700e6d0d22f42fb2de0005599615ea3f20e0a4"
+  },
+  "sourceUnchanged": true,
+  "probeSha256": "d27a3ae5ee3204468c078b72be46d95c28e6025f34316fb35a0e05f9a20058b6",
+  "providerRequests": 0,
+  "financialAccountRead": false
+}

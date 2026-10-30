@@ -1,0 +1,10 @@
+✔ BASELINE settled known-uninvoked candidate reservations are rebased into a false short-window provider burst at service compaction (577.335903ms)
+ℹ {"scope":"OFFLINE actual69 RPC/ComponentBudget/source reserve/compaction with injected final-admission closure; four synthetic candidate scopes and normal2s owned reads. Not actual02:48cause attribution.","ghosts":53,"physicalStarts":55,"maximumCompletedGapMs":12000,"timeouts":0,"failures":[{"at":262000,"ended":262000,"code":"PILOT_RPC_COMPONENT_DISPATCH_EXPIRED","newPhysical":0,"allocatedShort":36,"physicalStarts":31,"probeAt":0,"compacted":1,"readyAt":272000},{"at":264000,"ended":264000,"code":"PILOT_RPC_COMPONENT_DISPATCH_EXPIRED","newPhysical":0,"allocatedShort":35,"physicalStarts":31,"probeAt":0,"compacted":1,"readyAt":272000},{"at":266000,"ended":266000,"code":"PILOT_RPC_COMPONENT_DISPATCH_EXPIRED","newPhysical":0,"allocatedShort":34,"physicalStarts":31,"probeAt":0,"compacted":1,"readyAt":272000},{"at":268000,"ended":268000,"code":"PILOT_RPC_COMPONENT_DISPATCH_EXPIRED","newPhysical":0,"allocatedShort":33,"physicalStarts":31,"probeAt":0,"compacted":1,"readyAt":272000},{"at":270000,"ended":270000,"code":"PILOT_RPC_COMPONENT_DISPATCH_EXPIRED","newPhysical":0,"allocatedShort":32,"physicalStarts":31,"probeAt":0,"compacted":1,"readyAt":272000}],"compactions":[{"at":262000,"during":"held-read","before":{"short":9,"minute":59},"after":{"short":36,"minute":61,"readyAt":272000,"compacted":1},"checkpoint":{"retainedSinceAt":202000,"omittedCount":1,"conservativeUnknownAtSeal":32,"times":[202000,204000,206000,208000,210000,212000,214000,216000,218000,220000,222000,224000,226000,228000,230000,232000,234000,236000,238000,240000,242000,244000,246000,248000,250000,252000,254000,256000,258000,260000,262000,262000,262000,262000,262000,262000,262000,262000,262000,262000,262000,262000,262000,262000,262000,262000,262000,262000,262000,262000,262000,262000,262000,262000,262000,262000,262000,262000,262000,262000,262000,262000]},"physicalStarts":31,"ghosts":31}],"providerRequests":0}
+ℹ tests 1
+ℹ suites 0
+ℹ pass 1
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 1655.557825
