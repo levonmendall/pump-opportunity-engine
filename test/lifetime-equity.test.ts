@@ -74,6 +74,32 @@ test('durable EC2 sidecar preserves original lifetime equity after reopen and ne
   reopened.close();
   assert.ok(inception<first);
 });
+test('hash-pinned original receiver snapshot is imported idempotently without guessing earlier equity',t=>{
+  const {dir,path}=store(t),ledger=new LifetimeEquityStore(path);
+  const now=Date.now(),first=now-180_000,last=now-60_000;
+  const witness={
+    schemaVersion:1,kind:'POE_ACCEPTED_ORIGINAL_EQUITY_RECEIVER_CAPTURE',
+    capturedAt:iso(now),sourceUrl:'https://meme-machine-dashboard-staging.onrender.com/api/snapshot',
+    accountId:ORIGINAL_POE_ACCOUNT,inceptionAt:ORIGINAL_POE_INCEPTION,sourceAt:iso(now),
+    sequence:'12',source:{release:'previous-revision',strategy:'previous-strategy'},
+    receiverBodySha256:'a'.repeat(64),receiverHistory:{
+      source:'accepted-authoritative-portfolio-equity',retention:'receiver-memory-only',
+      points:[{at:iso(first),equityUsd:990.12},{at:iso(last),equityUsd:992.25}],
+    },limitation:'only authenticated receiver history',
+  };
+  const text=JSON.stringify(witness)+'\\n',capture=join(dir,'accepted-original-equity-fixture.json');
+  writeFileSync(capture,text,{mode:0o600});
+  assert.equal(ledger.importReceiverCapture(capture,sha(text),now),'imported');
+  assert.equal(ledger.importReceiverCapture(capture,sha(text),now),'duplicate');
+  assert.deepEqual(ledger.history(now).points.map(p=>p.equityUsd),[1000,990.12,992.25]);
+  assert.equal(ledger.history(now).lastSequence,'0','receiver capture does not invent a source ledger sequence');
+  assert.throws(()=>ledger.importReceiverCapture(capture,'b'.repeat(64),now),/HASH_MISMATCH/);
+  ledger.close();
+  const after=new LifetimeEquityStore(path);
+  assert.deepEqual(after.history(now).points.map(p=>p.equityUsd),[1000,990.12,992.25]);
+  after.close();
+});
+
 test('unknown or unreconciled valuations never turn into invented historical points',t=>{
   const {path}=store(t),ledger=new LifetimeEquityStore(path);
   const now=Date.now();
