@@ -11,7 +11,7 @@ const SDK=createRequire(import.meta.url)('@pump-fun/pump-swap-sdk') as typeof im
 function fixture(run='2026-10-26T19-42-16.130Z'){
  const rows=readFileSync(`evidence/integration-${run}.ndjson`,'utf8').trim().split('\n').map(x=>JSON.parse(x)),proof=JSON.parse(readFileSync(`evidence/integration-proof-${run}.json`,'utf8')),raw=structuredClone(rows.find(x=>x.kind==='pool-state').data),at=Date.parse(proof.quote.validatedAt);
  const batch:PaperUnsignedMarketBatch={mint:proof.quote.mint,slot:raw.context.slot,requestedAt:proof.quote.requestedAt,receivedAt:proof.quote.receivedAt,accounts:raw.value};
- const request:PaperUnsignedRequest={side:'buy',inputUnits:proof.quote.buy.inputLamports,minimumOutputUnits:'1',accountPlan:{baseExists:false,quoteExists:false,at,evidence:'retained actual market bytes; explicitly simulated PAPER account inventory'}};
+ const request:PaperUnsignedRequest={side:'buy',inputUnits:proof.quote.buy.inputLamports,minimumOutputUnits:'1',quoteRentLamports:'2039280',accountPlan:{baseExists:false,quoteExists:false,at,evidence:'retained actual market bytes; explicitly simulated PAPER account inventory'}};
  return {batch,request,at,proof};
 }
 const decode=(data:string)=>(SDK.OFFLINE_PUMP_AMM_PROGRAM.coder.instruction as unknown as {decode:(data:Buffer)=>{name:string;data:unknown}|null}).decode(Buffer.from(data,'base64'));
@@ -24,9 +24,9 @@ for(const run of ['2026-10-26T19-41-20.717Z','2026-10-26T19-42-16.130Z'])test(`a
   const swap=q.instructions.filter(i=>i.programId===PUMP_AMM_PROGRAM_ID.toBase58()&&decode(i.dataBase64)?.name==='buyExactQuoteIn');assert.equal(swap.length,1);
   const ix=swap[0]!,decoded=decode(ix.dataBase64)!.data as any;assert.equal(decoded.spendableQuoteIn.toString(),f.request.inputUnits);assert.equal(decoded.minBaseAmountOut.toString(),'1');assert.equal(ix.keys[1]!.pubkey,PAPER_CONSTRUCTION_WALLET);assert.equal(ix.keys[1]!.isSigner,true);
   assert.equal(Buffer.from(ix.dataBase64,'base64').subarray(0,8).toString('hex'),createHash('sha256').update('global:buy_exact_quote_in').digest().subarray(0,8).toString('hex'));
-  assert.equal(q.requiredSignerCount,1);assert.equal(q.accounts.baseCreationRequired,true);assert.equal(q.accounts.quoteCreationRequired,true);assert.equal(q.accounts.quoteClosedByInstructions,false);assert.ok(q.accounts.baseAccountLengthBytes>=165&&q.accounts.baseAccountLengthBytes<=170);
+  assert.equal(q.requiredSignerCount,1);assert.equal(q.accounts.baseCreationRequired,true);assert.equal(q.accounts.quoteCreationRequired,true);assert.equal(q.accounts.quoteClosedByInstructions,true);assert.ok(q.accounts.baseAccountLengthBytes>=165&&q.accounts.baseAccountLengthBytes<=170);
   assert.ok(q.instructions.some(i=>i.programId===ASSOCIATED_TOKEN_PROGRAM_ID.toBase58()));assert.ok(q.instructions.some(i=>i.programId===SystemProgram.programId.toBase58()));
-  assert.equal(q.instructions.some(i=>i.programId===TOKEN_PROGRAM_ID.toBase58()&&Buffer.from(i.dataBase64,'base64')[0]===9),false,'only validated optional WSOL close omitted; dedicated-account rent remains locked');
+  assert.equal(q.instructions.filter(i=>i.programId===TOKEN_PROGRAM_ID.toBase58()&&Buffer.from(i.dataBase64,'base64')[0]===9).length,1,'actual SDK close unwraps liquid output and returns transient quote rent within atomic success');assert.equal(q.temporaryQuoteRentLamports,f.request.quoteRentLamports);assert.match(q.quoteRentProofSha256,/^[a-f0-9]{64}$/);
  }finally{globalThis.fetch=old;}
 });
 test('actual full-size sell uses current fee-adjusted liquidation and independent slippage constraint',async()=>{
@@ -60,15 +60,15 @@ test('construction snapshots caller inputs before async work and retains source 
  const source=structuredClone(original),buffer=Buffer.from(source.accounts[6]!.data[0],'base64');buffer.writeBigUInt64LE(buffer.readBigUInt64LE(64)+1000000n,64);source.accounts[6]!.data[0]=buffer.toString('base64');const changed=await buildPaperUnsignedPumpSwap(source,fixture().request,()=>f.at);assert.notEqual(changed.sourceSha256,q.sourceSha256);assert.notEqual(changed.expectedOutputUnits,q.expectedOutputUnits);
 });
 
-test('only the exact optional WSOL close is removed; real SDK swap/setup bytes and account flags stay intact',async()=>{
+test('the exact SDK quote create/close pair and every real swap/setup byte remain intact',async()=>{
  const f=fixture(),original=SDK.PUMP_AMM_SDK.buyInstructions;let produced:import('@solana/web3.js').TransactionInstruction[]=[];
  SDK.PUMP_AMM_SDK.buyInstructions=async function(...args){produced=await original.apply(this,args);return produced;};
  try{
   const q=await buildPaperUnsignedPumpSwap(f.batch,f.request,()=>f.at);
-  const closes=produced.filter(i=>i.programId.equals(TOKEN_PROGRAM_ID)&&i.data.length===1&&i.data[0]===9);assert.equal(closes.length,1);assert.equal(q.instructions.length,produced.length-1);
-  const retained=produced.filter(i=>i!==closes[0]).map(i=>({programId:i.programId.toBase58(),keys:i.keys.map(k=>({pubkey:k.pubkey.toBase58(),isSigner:k.isSigner,isWritable:k.isWritable})),dataBase64:i.data.toString('base64')}));
-  assert.deepEqual(q.instructions,retained,'constructor retains every other SDK instruction exactly; the real buy bytes are the checked exact-quote variant');
-  assert.equal(q.accounts.quoteClosedByInstructions,false);assert.ok(q.limitations.some(x=>x.includes('locked rent persist')));
+  const closes=produced.filter(i=>i.programId.equals(TOKEN_PROGRAM_ID)&&i.data.length===1&&i.data[0]===9);assert.equal(closes.length,1);assert.equal(q.instructions.length,produced.length);
+  const retained=produced.map(i=>({programId:i.programId.toBase58(),keys:i.keys.map(k=>({pubkey:k.pubkey.toBase58(),isSigner:k.isSigner,isWritable:k.isWritable})),dataBase64:i.data.toString('base64')}));
+  assert.deepEqual(q.instructions,retained,'constructor retains every SDK instruction exactly; the real buy bytes are the checked exact-quote variant');
+  assert.equal(q.accounts.quoteClosedByInstructions,true);assert.ok(q.limitations.some(x=>x.includes('collectible sell proceeds unwrap to SOL')));
  }finally{SDK.PUMP_AMM_SDK.buyInstructions=original;}
 });
 test('missing, duplicate or changed WSOL close layout fails closed rather than dropping unrelated instructions',async()=>{
@@ -80,13 +80,37 @@ test('missing, duplicate or changed WSOL close layout fails closed rather than d
   try{const f=fixture();await assert.rejects(buildPaperUnsignedPumpSwap(f.batch,f.request,()=>f.at),/WSOL_CLOSE/);}finally{SDK.PUMP_AMM_SDK.buyInstructions=original;}
  }
 });
-test('retained dedicated PAPER account inventory does not charge or recreate either ATA on re-entry',async()=>{
- const f=fixture(),q=await buildPaperUnsignedPumpSwap(f.batch,{...f.request,accountPlan:{...f.request.accountPlan,baseExists:true,quoteExists:true}},()=>f.at);
- assert.equal(q.accounts.baseCreationRequired,false);assert.equal(q.accounts.quoteCreationRequired,false);assert.equal(q.accounts.quoteClosedByInstructions,false);assert.equal(q.instructions.some(i=>i.programId===ASSOCIATED_TOKEN_PROGRAM_ID.toBase58()),false);
- assert.equal('rentRefundLamports'in q,false);assert.equal(q.wallet.chainOwnershipVerified,false);
+test('base ATA persists while the quote ATA is recreated and unwrapped on every round trip',async()=>{
+ const f=fixture(),q=await buildPaperUnsignedPumpSwap(f.batch,{...f.request,accountPlan:{...f.request.accountPlan,baseExists:true,quoteExists:false}},()=>f.at);
+ assert.equal(q.accounts.baseCreationRequired,false);assert.equal(q.accounts.quoteCreationRequired,true);assert.equal(q.accounts.quoteClosedByInstructions,true);assert.equal(q.instructions.filter(i=>i.programId===ASSOCIATED_TOKEN_PROGRAM_ID.toBase58()).length,1);
+ assert.equal(q.temporaryQuoteRentLamports,f.request.quoteRentLamports);assert.equal('rentRefundLamports'in q,false);assert.equal(q.wallet.chainOwnershipVerified,false);
 });
 test('instruction construction cannot relabel a source which becomes stale while awaiting SDK work',async()=>{
  const f=fixture(),original=SDK.PUMP_AMM_SDK.buyInstructions;let at=f.at;
  SDK.PUMP_AMM_SDK.buyInstructions=async function(...args){const result=await original.apply(this,args);at+=2001;return result;};
  try{await assert.rejects(buildPaperUnsignedPumpSwap(f.batch,f.request,()=>at),/FRESH_COHERENT_BATCH_REQUIRED/);}finally{SDK.PUMP_AMM_SDK.buyInstructions=original;}
+});
+
+test('strict transient quote model rejects retained quote inventory and absent/invalid current rent assumptions',async()=>{
+ const f=fixture();await assert.rejects(buildPaperUnsignedPumpSwap(f.batch,{...f.request,accountPlan:{...f.request.accountPlan,quoteExists:true}},()=>f.at),/TRANSIENT_QUOTE_ACCOUNT_REQUIRED/);
+ for(const rent of ['0','-1','01','1.5','',String(1n<<64n),undefined])await assert.rejects(buildPaperUnsignedPumpSwap(f.batch,{...f.request,quoteRentLamports:rent as string},()=>f.at),/POSITIVE_U64_REQUIRED/);
+});
+test('exact quote creation layout, single occurrence and atomic swap ordering are mandatory',async()=>{
+ const original=SDK.PUMP_AMM_SDK.buyInstructions;
+ for(const mode of ['missing','duplicate','wrong-owner','wrong-token-program','wrong-data','reordered-create','reordered-close']){
+  SDK.PUMP_AMM_SDK.buyInstructions=async function(...args){const ix=await original.apply(this,args),quote=args[0].userQuoteTokenAccount,create=ix.find(i=>i.programId.equals(ASSOCIATED_TOKEN_PROGRAM_ID)&&i.keys[1]?.pubkey.equals(quote))!,close=ix.find(i=>i.programId.equals(TOKEN_PROGRAM_ID)&&i.data.length===1&&i.data[0]===9)!;
+   if(mode==='missing')return ix.filter(i=>i!==create);if(mode==='duplicate')return [...ix,create];if(mode==='wrong-owner')create.keys[2]!.pubkey=SystemProgram.programId;if(mode==='wrong-token-program')create.keys[5]!.pubkey=TOKEN_2022_PROGRAM_ID;if(mode==='wrong-data')create.data=Buffer.from([0]);if(mode==='reordered-create')return [...ix.filter(i=>i!==create),create];if(mode==='reordered-close')return [close,...ix.filter(i=>i!==close)];return ix;
+  };
+  try{const f=fixture();await assert.rejects(buildPaperUnsignedPumpSwap(f.batch,f.request,()=>f.at),/WSOL_CREATE|WSOL_CREATE_SWAP_CLOSE/);}finally{SDK.PUMP_AMM_SDK.buyInstructions=original;}
+ }
+});
+test('temporary quote rent proof binds amount, prep evidence, coherent source and exact atomic pair without inventing income',async()=>{
+ const f=fixture(),q=await buildPaperUnsignedPumpSwap(f.batch,f.request,()=>f.at),moreRent=await buildPaperUnsignedPumpSwap(f.batch,{...f.request,quoteRentLamports:(BigInt(f.request.quoteRentLamports)+1n).toString()},()=>f.at),otherEvidence=await buildPaperUnsignedPumpSwap(f.batch,{...f.request,accountPlan:{...f.request.accountPlan,evidence:'a different current read-only RPC rent preparation'}},()=>f.at);
+ assert.match(q.quoteRentProofSha256,/^[a-f0-9]{64}$/);assert.notEqual(q.quoteRentProofSha256,moreRent.quoteRentProofSha256);assert.notEqual(q.quoteRentProofSha256,otherEvidence.quoteRentProofSha256);assert.deepEqual(q.instructions,moreRent.instructions,'rent amount is a current runtime requirement, not an invented transfer instruction or extra swap spend');assert.equal(q.expectedOutputUnits,moreRent.expectedOutputUnits);assert.equal(q.poolCosts.buyBudgetAboveInternalCurveInputLamports,moreRent.poolCosts.buyBudgetAboveInternalCurveInputLamports);
+ assert.equal('rentIncomeLamports'in q,false);assert.equal('rentFeeLamports'in q,false);assert.equal('permanentQuoteDepositLamports'in q,false);assert.ok(q.limitations.some(x=>x.includes('never fee or profit')));
+});
+test('different mint transactions safely reuse the same global WSOL ATA only because every atomic template creates and closes it',async()=>{
+ const a=fixture('2026-10-26T19-41-20.717Z'),b=fixture('2026-10-26T19-42-16.130Z'),first=await buildPaperUnsignedPumpSwap(a.batch,a.request,()=>a.at),second=await buildPaperUnsignedPumpSwap(b.batch,b.request,()=>b.at);
+ assert.notEqual(first.mint,second.mint);assert.equal(first.accounts.quoteAssociatedAccount,second.accounts.quoteAssociatedAccount);assert.notEqual(first.accounts.baseAssociatedAccount,second.accounts.baseAssociatedAccount);
+ for(const q of [first,second]){assert.equal(q.accounts.quoteCreationRequired,true);assert.equal(q.accounts.quoteClosedByInstructions,true);assert.equal(q.instructions.filter(i=>i.programId===ASSOCIATED_TOKEN_PROGRAM_ID.toBase58()&&i.keys[1]?.pubkey===q.accounts.quoteAssociatedAccount).length,1);assert.equal(q.instructions.filter(i=>i.programId===TOKEN_PROGRAM_ID.toBase58()&&Buffer.from(i.dataBase64,'base64')[0]===9&&i.keys[0]?.pubkey===q.accounts.quoteAssociatedAccount).length,1);assert.equal(q.temporaryQuoteRentLamports,a.request.quoteRentLamports);}
 });
