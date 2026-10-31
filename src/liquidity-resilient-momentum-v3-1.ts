@@ -8,7 +8,7 @@ import {
  assessLiquidityResilientBuying,deriveV3Consolidation,v3CpmmBuy,v3CpmmSell,
  evaluateLiquidityResilientExit,LIQUIDITY_RESILIENT_MOMENTUM_V3_POLICY,
  type V3AuditedFlow,type V3MarketEvidence,type V3Evidence,type V3Components,
- type V3BuyingAssessment,type V3Dimension,type V3SellScenario,type V3ConsolidationEvidence,
+ type V3BuyingAssessment,type V3Dimension,type V3SellScenario,type V3ConsolidationEvidence,type V3ExitInput,
 } from './liquidity-resilient-momentum-v3.js';
 
 export const LIQUIDITY_RESILIENT_MOMENTUM_V3_1_VERSION='liquidity-resilient-momentum-v3.1' as const;
@@ -23,8 +23,8 @@ export const LIQUIDITY_RESILIENT_MOMENTUM_V3_1_POLICY=Object.freeze({
   concentration:'Wallet volume HHI scales only excess plausible-purchase uncertainty; it is not a beneficial-ownership probability. Directly observed account balances remain point-in-time, potentially already disposed.',
   weakStress:'Unobserved same-size seller and historical maximum/sale repeats remain explicit diagnostic scenarios; they are not independent admission vetoes.',
   frontier:'Finite integer geometric probes and local interval refinement; bit-length bounds arithmetic work, not trading size. Highest tested positive balance, without a global optimum claim.'}),
- exit:LIQUIDITY_RESILIENT_MOMENTUM_V3_POLICY.exit,
- exitPolicy:'UNCHANGED_V3_ACTUAL_SIZE_PROTECTION; entry optimization does not retune held-position stops',
+ exit:Object.freeze({...LIQUIDITY_RESILIENT_MOMENTUM_V3_POLICY.exit,stopLossBps:2500,trailingMinimumBps:2500}),
+ exitPolicy:'OWNER_AUTHORIZED_PAPER_V31_25_PERCENT_COST_STOP_AND_MINIMUM_TRAIL; V3 15-percent exit remains unchanged; profit, flow and liquidity protection stay active',
  limitations:Object.freeze([...LIQUIDITY_RESILIENT_MOMENTUM_V3_POLICY.limitations,
   'Scenario-conditioned net upside is not a predicted return; robustness budgets are uncalibrated and forward economic performance remains unproven.',
   'A point-in-time account observation is not verified current sellable inventory; intervening unseen transfers remain unknown.',
@@ -184,8 +184,8 @@ export function evaluateV31SizeFrontier(features:FlowFeatures,now:number,evidenc
  return chosen?output({buyInputLamports:chosen.row.buyInputLamports,expectedBaseUnits:chosen.row.expectedBaseUnits,buyCurveInputLamports:chosen.row.buyCurveInputLamports,proposedConsumedLamports:chosen.row.proposedConsumedLamports},'v3.1-highest-positive-joint-conditional-balance-among-tested-exact-sizes',chosen.assessment,rows):output(null,'v3.1-no-positive-tested-size-economic-balance; untested-sizes-not-certified',initial,rows);
 }
 export const deriveV31Consolidation=deriveV3Consolidation;
-/** Exits intentionally retain the already approved V3 holding protection. */
-export const evaluateLiquidityResilientExitV31=evaluateLiquidityResilientExit;
+/** V3.1 changes only the owner-authorized cost/trailing stop distances; other V3 holding protections remain. */
+export const evaluateLiquidityResilientExitV31=(input:V3ExitInput)=>evaluateLiquidityResilientExit(input,P.exit);
 export class V31AssessmentSeries{
  private readonly histories=new Map<string,{pool:string;windows:V3ConsolidationEvidence[]}>();private evictions=0;
  constructor(readonly maximumMints=174){if(!uint(maximumMints)||maximumMints<1||maximumMints>174)throw Error('V31_SERIES_CAPACITY');}
