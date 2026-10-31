@@ -5,12 +5,13 @@ import assert from 'node:assert/strict';
 import {runInNewContext} from 'node:vm';
 import {runNativePaper,NATIVE_PAPER_PROCESSING_RESERVE} from '../src/run-native-paper.js';
 import {PILOT_TIMING} from '../src/pilot.js';
+import {NativeFinancialHandoff} from '../src/native-financial-handoff.js';
 
 test('actual completion accounting separates observed current-run maxima from retained historical failures',()=>{
  const source=runNativePaper.toString(),begin=source.search(/const\s+record\s*=/),rest=source.slice(begin),end=rest.search(/;\s*const\s+candidateDiagnostic\s*=/);
  assert.ok(begin>=0&&end>0,'extract the actual complete record/completion closure');
  let at=10000;const positions:any={held:{mint:'held',units:'100',enteredAt:1000}},pauses:string[]=[],holder:any={};
- const context:any={observeSlotOutcome:()=>{},__name:(f:unknown)=>f,holder,Buffer,Date:{now:()=>at},Math,Number,Map,Object,PILOT_TIMING,NATIVE_PAPER_PROCESSING_RESERVE,MIB:1024*1024,
+ const context:any={financialHandoff:new NativeFinancialHandoff('offline-completion-accounting',10000,4),observeSlotOutcome:()=>{},__name:(f:unknown)=>f,holder,Buffer,Date:{now:()=>at},Math,Number,Map,Object,PILOT_TIMING,NATIVE_PAPER_PROCESSING_RESERVE,MIB:1024*1024,
   need:(value:unknown,reason:string)=>{if(!value)throw Error(reason);},service:false,recording:[],providerStats:{httpTimeouts:0,httpErrors:0,throttles:0},eventBytes:0,segmentBytes:0,
   recorder:{record(){}},ledger:{state:()=>({positions})},bridge:{trader:{pauseNewEntries:(reason:string)=>pauses.push(reason)}},completed:new Map(),startedAt:10000,
   maxCompletedGap:89426,maxQuoteAge:70,currentRunMaximumCompletedGapMs:null,currentRunMaximumQuoteAgeAtUseMs:null,protectionBreaches:72,unavailableChecks:233,

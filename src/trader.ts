@@ -359,7 +359,12 @@ export class PaperTrader{
     const at=this.clock(),state=this.options.ledger.state(),safety=this.execution.readinessSafety();
     const refuse=(reason:FlatEntryReconciliationFailure)=>{const current=this.options.ledger.state();this.record('trader-entry-flat-reconciliation-refused',{at:this.clock(),mint,expectedRevision,currentRevision:current.revision,priorReconciledAt:current.daily.reconciledAt,positionCount:Object.keys(current.positions).length,pendingCount:Object.keys(current.pending).length,reconciliationDeadlineAt:current.daily.reconciledAt+PROVISIONAL_RULE.maximumQuoteAgeMs,remainingReconciliationMs:current.daily.reconciledAt+PROVISIONAL_RULE.maximumQuoteAgeMs-this.clock(),quoteAt,usdAt:this.context.price?.at??null,reason,technicalFailure:true,strategyRejection:false,orderCreated:false,transportStarted:false,physicalSettlementClaimed:false});return {revision:null,reason};};
     if(state.revision!==expectedRevision)return refuse('revision-changed');
-    if(Object.keys(state.positions).length||Object.keys(state.pending).length||this.contextInventory===null||Object.keys(this.contextInventory).length)return refuse('inventory-changed');
+    if(Object.keys(state.positions).length||Object.keys(state.pending).length)return refuse('inventory-changed');
+    // An already current reconciliation needs no new maintenance authority.
+    // Keep existing explicit permission semantics; normal final quote/entry
+    // checks still decide whether a reservation is permitted.
+    if(state.daily.reconciledAt>0&&state.daily.reconciledAt<=at&&at-state.daily.reconciledAt<=PROVISIONAL_RULE.maximumQuoteAgeMs)return {revision:state.revision,reason:null};
+    if(this.contextInventory===null||Object.keys(this.contextInventory).length)return refuse('inventory-changed');
     if(!this.started||this.outstanding||!safety.recoveryComplete||!safety.idle)return refuse('financial-work-active');
     if(safety.uncertainActions||this.uncertainOrders.size||this.financialUnavailable)return refuse('financial-uncertainty');
     if(this.evidenceUnavailable)return refuse('evidence-unavailable');
@@ -368,7 +373,6 @@ export class PaperTrader{
     try{
       if(!this.options.ledger.projection(at,this.context.price,{}).usdValuationAvailable)return refuse('usd-unavailable');
       if(state.daily.reconciledAt<=0||state.daily.reconciledAt>at)return refuse('invalid-original-reconciliation');
-      if(at-state.daily.reconciledAt<=PROVISIONAL_RULE.maximumQuoteAgeMs)return {revision:state.revision,reason:null};
       this.options.ledger.reconcile(this.id('entry-flat-reconcile'),at,this.context.price,{});this.funnel.reconciled++;
       const reconciled=this.options.ledger.state();
       this.record('trader-entry-flat-reconciliation',{at,revisionBefore:state.revision,revisionAfter:reconciled.revision,priorReconciledAt:state.daily.reconciledAt,reconciledAt:reconciled.daily.reconciledAt,usdAt:this.context.price.at,positionCount:0,pendingCount:0,marketTimestampsRefreshed:false});
