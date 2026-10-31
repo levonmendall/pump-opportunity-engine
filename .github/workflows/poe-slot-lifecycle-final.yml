@@ -1,0 +1,68 @@
+name: Final POE slot-lifecycle regressions and release
+on:
+  push:
+    branches: [repair/poe-slot-lifecycle-20261031]
+    paths: ['.github/workflows/poe-slot-lifecycle-final.yml']
+permissions:
+  contents: write
+concurrency:
+  group: poe-slot-lifecycle-hosted-validation
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Finish reviewable source commit on repair branch only
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/repair/poe-slot-lifecycle-20261031
+          if ! grep -q 'releaseObservation?:true' src/pilot-watch.ts; then
+            python3 -B -I scripts/complete-slot-lifecycle.py
+            git diff --check
+            git config user.name 'POE repair validation'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add src/pilot-watch.ts src/native-candidate-runner.ts test/native-candidate-runner.test.ts
+            git commit -m 'Preserve pending financial ownership when releasing observation and validate late audit generations'
+            git push origin HEAD:refs/heads/repair/poe-slot-lifecycle-20261031
+          fi
+          mkdir -p /tmp/poe-slot-final
+          git rev-parse HEAD > /tmp/poe-slot-final/source-commit.txt
+          git diff b60fcfc2803a8d5bdd782a6be342d89e44a85c2d -- src test > /tmp/poe-slot-final/source.patch
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+          cache: npm
+      - name: Install pinned dependencies
+        run: npm ci --include=dev
+      - name: Typecheck
+        shell: bash
+        run: set -o pipefail; npm run build 2>&1 | tee /tmp/poe-slot-final/typecheck.log
+      - name: Focused lifecycle and registry regressions
+        shell: bash
+        run: |
+          set -o pipefail
+          node --import tsx --test test/native-candidate-runner.test.ts test/native-slot-productivity.test.ts test/pilot-watch.test.ts test/market-registry.test.ts test/market-registry-lifecycle.test.ts 2>&1 | tee /tmp/poe-slot-final/focused.log
+      - name: Full offline regression suite
+        shell: bash
+        run: set -o pipefail; npm test 2>&1 | tee /tmp/poe-slot-final/full.log
+      - name: Build exact source-only EC2 bundle after all regressions pass
+        shell: bash
+        run: |
+          set -euo pipefail
+          node scripts/build-native-paper-ec2.mjs --output-directory /tmp/poe-slot-final/bundle
+          git archive --format=tar HEAD | gzip -n > /tmp/poe-slot-final/source.tar.gz
+          sha256sum /tmp/poe-slot-final/bundle/* /tmp/poe-slot-final/source.tar.gz > /tmp/poe-slot-final/sha256.txt
+      - name: Preserve logs and immutable release outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: poe-slot-lifecycle-final-${{ github.run_id }}
+          path: /tmp/poe-slot-final/
+          retention-days: 14
+          if-no-files-found: error
