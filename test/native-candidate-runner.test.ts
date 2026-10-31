@@ -832,7 +832,7 @@ test('real concurrent intake writer contention is reported as local deferral wit
  const dir=mkdtempSync(join(tmpdir(),'native-runner-contention-')),path=join(dir,'registry.sqlite'),registry=new MarketRegistry(path,{concurrentIntake:true,now:()=>baseAt}),locker=new Database(path);
  const f=fixture({registry,durableMarketPolicy:true,fairEconomicCompletions:true,marketIntake:{observeIdentity(){},observeActivity(){},observeFeed(){},observeMigration(seed){registry.enqueueMigrationDelivery(seed);}}});
  try{
-  const mint=f.seed(1);await f.steps(1);f.runner.onMarketActivityCommitted([{mint,at:f.now,evidence:'OFFLINE committed activity'}]);const before=registry.health().transactions.contentionBeforeCallback;
+  const mint=f.seed(1);await f.steps(1);f.advance(1);registry.observeActivity({mint,signature:sig(765),receivedAt:f.now,source:'pumpapi-broad',kind:'activity',side:'buy',quoteLamports:'1'});f.runner.onMarketActivityCommitted([{mint,at:f.now,evidence:'OFFLINE committed activity'}]);const before=registry.health().transactions.contentionBeforeCallback;
   locker.exec('BEGIN IMMEDIATE');assert.equal(await f.runner.step(),'wait');
   const event=f.records.find(r=>r.kind==='native-candidate-registry-contention');assert.ok(event);assert.equal(event.data.reason,'MARKET_REGISTRY_CONTENTION');assert.equal(event.data.sqliteCode,'SQLITE_BUSY');assert.equal(event.data.callbackStarted,false);assert.equal(event.data.providerRequestStarted,false);assert.equal(registry.health().transactions.contentionBeforeCallback,before+1);assert.equal(registry.health().storageFailures,0);assert.equal(registry.health().available,true);assert.equal(f.records.some(r=>r.kind==='native-candidate-work-unavailable'&&r.data.reason==='NATIVE_CANDIDATE_OPERATION_UNAVAILABLE'),false);assert.equal(f.rpcCalls.length,0);
   locker.exec('ROLLBACK');await f.steps(2);assert.ok(f.states.has(mint));
@@ -948,4 +948,22 @@ test('slot lifecycle: failed native installation compensates durable admission w
  assert.throws(()=>(f.runner as any).allocate(f.now),/OFFLINE native installation refused/);
  assert.equal(f.states.size,0);assert.equal(f.runner.status().candidates.length,0);assert.equal(f.runner.watch.lookupIdentity(mint)!.deepSince,null);assert.equal(f.runner.slotProductivity().slots[0]!.mint,null);
  f.flow.addCandidate=add;await f.steps(3);assert.equal(f.states.size,1);assert.equal(f.runner.watch.snapshot().summary.deepActive,1);await f.runner.stop();
+});
+
+
+test('slot lifecycle: retired pending-entry observation keeps the financial obligation without repeated cleanup writes',async()=>{
+ const f=fixture({durableMarketPolicy:true,fairEconomicCompletions:true}),mint=f.seed(1);await f.steps(2);
+ f.ownership.set(mint,'ENTRY_PENDING');f.runner.syncFinancialOwnership(new Set([mint]));
+ assert.equal((f.runner as any).retire(mint,'OFFLINE observation lost with pending financial action',f.now,0),true);
+ const row=f.runner.watch.lookupIdentity(mint)!;assert.equal(row.state,'ENTRY_PENDING');assert.equal(row.deepSince,null);assert.equal(f.runner.currentAuditCertificate(mint),null);
+ const before=f.records.filter(r=>r.kind==='native-candidate-orphan-retired').length;await f.steps(4);
+ assert.equal(f.records.filter(r=>r.kind==='native-candidate-orphan-retired').length,before);assert.equal(f.runner.watch.lookupIdentity(mint)!.state,'ENTRY_PENDING');assert.equal(f.states.has(mint),false);await f.runner.stop();
+});
+
+test('slot lifecycle: a deep-state change during an awaited audit cannot publish a current certificate',async()=>{
+ const f=fixture({durableMarketPolicy:true,fairEconomicCompletions:true,forcePredictiveFeatures:true,scopedNotifications:true}),mint=f.seed(1);await f.steps(2);const call=f.rpc.call.bind(f.rpc);let changed=false;
+ f.rpc.call=(async(...args:Parameters<typeof call>)=>{const result=await call(...args);if(!changed){changed=true;f.runner.watch.transition(mint,'DEFERRED','OFFLINE concurrent membership correction',f.now);}return result;}) as typeof f.rpc.call;
+ f.advance(70000);f.refresh();await f.steps(6);
+ assert.equal(changed,true);assert.equal(f.runner.currentAuditCertificate(mint),null);assert.equal(f.runner.status().counters.auditedWindows,0);
+ assert.equal(f.records.some(r=>r.kind==='native-candidate-work-unavailable'&&r.data.reason==='PILOT_WATCH_WINDOW_REQUIRES_DEEP'),false);await f.runner.stop();
 });

@@ -238,11 +238,13 @@ export class PilotWatch {
     r.mint=input.mint;r.pool=input.pool;r.migrationAt=input.migrationAt;r.verifiedAt=input.verifiedAt;this.counters.verified++;
     if(!r.observationIdentity||['DISCOVERED','VERIFYING'].includes(r.state))this.history(r,input.verifiedAt,'WATCH','canonical migration identity verified; current support and fresh observation still required');this.expire(input.verifiedAt);this.emit('pilot-watch-verified',{signature:r.signature,mint:r.mint,pool:r.pool,migrationAt:r.migrationAt,verifiedAt:r.verifiedAt});return copy(r);
   }
-  transition(mint:string,state:WatchState,reason:string,at=this.clock(),options:{deferUntil?:number}={}):WatchRow{
+  transition(mint:string,state:WatchState,reason:string,at=this.clock(),options:{deferUntil?:number;releaseObservation?:true}={}):WatchRow{
     this.at(at);need(STATES.includes(state)&&text(reason)&&integer(options.deferUntil??0),'PILOT_WATCH_TRANSITION');const r=this.row(mint);need(r,'PILOT_WATCH_UNKNOWN_IDENTITY');
+    need(!options.releaseObservation||!['DEEP_OBSERVATION','QUALIFIED'].includes(state),'PILOT_WATCH_RELEASE_OBSERVATION_STATE');
+    const releaseObservation=options.releaseObservation;
     const gated=r.capacityCoverage&&['AWAITING_CAPACITY','PROBE_READY'].includes(r.capacityCoverage.status)&&['WATCH','DEFERRED'].includes(state),requestedState=state;
     if(gated){state='DEFERRED';options={deferUntil:Math.max(r.deferUntil,options.deferUntil??0,r.capacityCoverage!.status==='AWAITING_CAPACITY'?r.capacityCoverage!.reassessAt:0)};this.capacityAdmissions.delete(r.signature);}
-    if(r.state===state&&r.reason===reason&&r.deferUntil===(options.deferUntil??0))return copy(r);
+    if(!releaseObservation&&r.state===state&&r.reason===reason&&r.deferUntil===(options.deferUntil??0))return copy(r);
     if(['DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING','HELD'].includes(state))need(this.identified(r),'PILOT_WATCH_UNVERIFIED_PROMOTION');
     if(state==='DEEP_OBSERVATION'&&!deep(r)){
       need(this.observable(r,at),'PILOT_WATCH_OBSERVATION_AGE');need(!this.durable()||!r.reobservation||r.reobservation.ready!==null,'PILOT_WATCH_NEW_RELEVANT_EVIDENCE_REQUIRED');need(this.olderDeepAvailable(r,at),'PILOT_WATCH_OLDER_DEEP_CAPACITY');need(r.capacityCoverage?.status!=='AWAITING_CAPACITY','PILOT_WATCH_CAPACITY_PROBE_REQUIRED');if(r.capacityCoverage?.status==='PROBE_READY'){const admitted=this.capacityAdmissions.get(r.signature);need(this.freshProbe(r,at)&&admitted!==undefined&&admitted<=at&&at-admitted<=1000,'PILOT_WATCH_CAPACITY_ADMISSION_REQUIRED');}need((this.durable()?this.count("w.deep_since IS NOT NULL AND w.state IN ('DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING')"):[...this.rows.values()].filter(deep).length)<this.maximumDeep,'PILOT_WATCH_DEEP_CAPACITY');
@@ -251,7 +253,7 @@ export class PilotWatch {
       r.deepSince=at;this.emit('pilot-watch-promotion',{mint:r.mint,at,reason,repromotion:again,waitMs,observationWaitMs,entryEligible,ageCohort:this.cohort(r,at),freshFullWindowRequired:true});
     }
     if(deep(r)&&['WATCH','DEFERRED'].includes(state)){r.demotions++;this.counters.demoted++;r.lastDemotedAt=at;r.waitingSince=at;r.deepSince=null;}
-    if(!['DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING'].includes(state))r.deepSince=null;
+    if(releaseObservation||!['DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING'].includes(state))r.deepSince=null;
     if(state==='EXPIRED'&&r.state!=='EXPIRED')this.counters.expired++;
     if(state==='PERMANENTLY_UNSUPPORTED'&&r.state!=='PERMANENTLY_UNSUPPORTED')this.counters.structuralExclusions++;
     if(r.capacityCoverage){if(state==='DEEP_OBSERVATION')r.capacityCoverage.status='OBSERVING';else if(['WATCH','DEFERRED'].includes(state)&&reason!==r.capacityCoverage.reason&&!['VALID_WINDOW','AWAITING_CAPACITY','PROBE_READY'].includes(r.capacityCoverage.status))r.capacityCoverage.status='OTHER_UNAVAILABLE';}

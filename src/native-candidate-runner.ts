@@ -309,7 +309,7 @@ export class NativeCandidateRunner{
   try{this.registry.transaction(()=>{
    callbackStarted=true;const {reason,deferMs}=request,at=Math.max(request.at,this.now());
    const row=this.watch.lookupIdentity(mint,at),owned=this.options.financialOwnership?.(mint);
-   if(row&&(owned||!['EXPIRED','PERMANENTLY_UNSUPPORTED'].includes(row.state)))this.watch.transition(mint,owned??'DEFERRED',reason,at,{deferUntil:Math.max(row.deferUntil,at+deferMs)});
+   if(row&&(owned||!['EXPIRED','PERMANENTLY_UNSUPPORTED'].includes(row.state)))this.watch.transition(mint,owned??'DEFERRED',reason,at,{deferUntil:Math.max(row.deferUntil,at+deferMs),releaseObservation:true});
    this.productivity.retired(mint,at,reason);
    this.registry.afterCommit(()=>{
     if(this.candidates.get(mint)!==c)return;
@@ -334,12 +334,12 @@ export class NativeCandidateRunner{
   }
   // Recovery from a partial old transition must retire, not adopt, a physical
   // scope lacking a coordinator owner. Never manufacture a warm observation.
-  const orphans=new Set([...(this.options.flow.candidateMints?.()??[]),...this.productivity.assignedMints(),...this.watch.identitiesInStates(['DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING'],this.now()).filter(row=>row.deepSince!==null).flatMap(row=>row.mint?[row.mint]:[])]);
+  const orphans=new Set([...(this.options.flow.candidateMints?.()??[]),...this.productivity.assignedMints(),...this.watch.identitiesInStates(['DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING'],this.now()).filter(row=>row.mint&&!this.candidates.has(row.mint)&&this.watch.lookupIdentity(row.mint,this.now())?.deepSince!=null).flatMap(row=>row.mint?[row.mint]:[])]);
   for(const mint of orphans)if(!this.candidates.has(mint)){
    let started=false;
    try{this.registry.transaction(()=>{
     started=true;const at=this.now(),row=this.watch.lookupIdentity(mint,at),owned=this.options.financialOwnership?.(mint);
-    if(row&&!['EXPIRED','PERMANENTLY_UNSUPPORTED'].includes(row.state))this.watch.transition(mint,owned??(['HELD','ENTRY_PENDING'].includes(row.state)?row.state:'DEFERRED'),'orphan observation owner; fresh allocation required',at,{deferUntil:Math.max(row.deferUntil,at)});
+    if(row&&!['EXPIRED','PERMANENTLY_UNSUPPORTED'].includes(row.state))this.watch.transition(mint,owned??(['HELD','ENTRY_PENDING'].includes(row.state)?row.state:'DEFERRED'),'orphan observation owner; fresh allocation required',at,{deferUntil:Math.max(row.deferUntil,at),releaseObservation:true});
     this.productivity.retired(mint,at,'orphan observation owner');this.certificates.delete(mint);
     this.registry.afterCommit(()=>{this.options.flow.removeCandidate(mint,'orphan selected scope; native settlement required');this.options.onCandidateRetired?.(mint,'orphan observation owner');this.record('native-candidate-orphan-retired',{at,mint,physicalCapacityReleased:false,financialPermission:false});});
    });}catch(error){if(!started&&isMarketRegistryContention(error))return false;throw error;}
