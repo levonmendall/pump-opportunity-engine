@@ -3,6 +3,10 @@ import assert from 'node:assert/strict';
 import {MarketRegistry} from '../src/market-registry.js';
 import {NativeSlotProductivity} from '../src/native-slot-productivity.js';
 import {projectNativeSlotProductivityReporting} from '../src/native-slot-productivity-reporting.js';
+import Database from 'better-sqlite3';
+import {mkdtempSync,rmSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
 const start=Date.parse('2026-10-30T23:00:00.000Z');
 const mintA='5XBDiRf4RXJJU9acoSpaReSBhvoTac2GbcSF2Vp4pump',mintB='qi6wtTo9jZhkGcokNrjNNnBSjt12sUxgNyhWuUUpump';
 const sourceInstanceId='native-runner:native-paper-20261030230000000:synthetic-source';
@@ -44,4 +48,23 @@ test('retrospective usable-evidence coverage unions overlapping audited windows 
 
 test('failure counts deduplicate actual windows and never label missing capture as provider latency',()=>{
  const {registry,tracker}=setup();try{for(let i=0;i<3;i++)tracker.failed(mintA,start+1000,start+1100,'audit-unusable','NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED');tracker.failed(mintA,start+1000,start+1200,'decision-expired','DECISION_DEADLINE_EXPIRED');tracker.failed(mintA,start+2000,start+2100,'audit-unavailable','PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT');tracker.failed(mintA,0,start+2200,'audit-unavailable','PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT');assert.deepEqual(tracker.snapshot(start+2300).failureCounts,{historyNotObservedWindows:1,decisionDeadlineWindows:1,auditUnusableWindows:1,providerUnavailableWindows:1});}finally{registry.close();}
+});
+
+test('a real concurrent SQLite writer refusal cannot double-count slot phases or consume a readiness transition',()=>{
+ const dir=mkdtempSync(join(tmpdir(),'poe-slot-contention-')),path=join(dir,'registry.sqlite'),registry=new MarketRegistry(path,{now:()=>start,concurrentIntake:true}),writer=new Database(path),tracker=new NativeSlotProductivity({registry,sourceInstanceId,startedAt:start,maximumSlots:4});
+ try{
+  tracker.allocated(mintA,start+100,start,0);tracker.opened(mintA,start+200);const before=tracker.snapshot(start+500);
+  writer.exec('BEGIN IMMEDIATE');assert.throws(()=>tracker.ready(mintA,start+400,start+500),/writer lease unavailable before callback/);writer.exec('ROLLBACK');
+  const refused=tracker.snapshot(start+500);assert.deepEqual(refused.stateMs,before.stateMs,'uncommitted transition must not add elapsed time before the existing active phase');assert.deepEqual(refused.slots,before.slots,'the exact same ready target remains retryable');assert.ok(projectNativeSlotProductivityReporting({slotProductivity:refused},start+500));
+  tracker.ready(mintA,start+400,start+500);const retried=tracker.snapshot(start+600);assert.equal(retried.slots[0]!.state,'AUDIT_READY');assert.equal(Object.values(retried.stateMs).reduce((a,b)=>a+b,0),4*600);assert.ok(projectNativeSlotProductivityReporting({slotProductivity:retried},start+600));
+ }finally{if(writer.inTransaction)writer.exec('ROLLBACK');writer.close();registry.close();rmSync(dir,{recursive:true,force:true});}
+});
+
+test('a rolled-back observation callback restores counters, assignment and metric identity before retry',()=>{
+ const registry=new MarketRegistry(':memory:',{now:()=>start});let fail=true;
+ const tracker=new NativeSlotProductivity({registry,sourceInstanceId,startedAt:start,maximumSlots:4,record:()=>{if(fail)throw Error('OFFLINE observation callback failure');}});
+ try{
+  assert.throws(()=>tracker.allocated(mintA,start+100,start,0),/OFFLINE observation callback failure/);const refused=tracker.snapshot(start+200);assert.equal(refused.counts.allocations,0);assert.equal(refused.slots[0]!.mint,null);assert.equal(refused.waits.queueToAllocation.count,0);assert.equal(registry.getMetadata<any>(sourceInstanceId+':slot-productivity:latest').counts.allocations,0);assert.ok(projectNativeSlotProductivityReporting({slotProductivity:refused},start+200));
+  fail=false;tracker.allocated(mintA,start+300,start,0);tracker.opened(mintA,start+400);const retried=tracker.snapshot(start+500);assert.equal(retried.counts.allocations,1);assert.equal(retried.waits.queueToAllocation.count,1);assert.equal(retried.waits.allocationToAck.mean,100);assert.equal(Object.values(retried.stateMs).reduce((a,b)=>a+b,0),4*500);assert.ok(projectNativeSlotProductivityReporting({slotProductivity:retried},start+500));
+ }finally{registry.close();}
 });

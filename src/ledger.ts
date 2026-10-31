@@ -96,8 +96,9 @@ const INTERNAL_SHUTDOWN_PROOF_POLICY=Object.freeze({version:'internal-native-shu
 /** Runtime resource admission is a transient operational condition, not owner
  * intent or financial uncertainty. Recovery still authenticates every control
  * row and requires fresh inventory, source, pricing and current admission. */
+export const OPERATIONAL_REPORTING_ENTRY_PAUSE='local reporting projection exceeded reserved budget; exposure retained' as const;
 export const OPERATIONAL_RESOURCE_ENTRY_PAUSES=Object.freeze(['resource pressure; new candidate risk closed','rolling resource or evidence pressure; exposure retained'] as const);
-const INTERNAL_SHUTDOWN_SOFT_PAUSES=new Set<string>([...OPERATIONAL_RESOURCE_ENTRY_PAUSES,'graceful native PAPER segment ended; exposure retained','native PAPER process closing; obligations retained','native PAPER routine checkpoint: fresh audited readiness required','execution startup: fresh reconciliation/readiness required','current equity or liquidation unavailable; entries closed','current financial reconciliation unavailable; exposure retained','entry preparation or reconciliation unavailable','consistent backup unavailable; exposure retained']);
+const INTERNAL_SHUTDOWN_SOFT_PAUSES=new Set<string>([...OPERATIONAL_RESOURCE_ENTRY_PAUSES,OPERATIONAL_REPORTING_ENTRY_PAUSE,'graceful native PAPER segment ended; exposure retained','native PAPER process closing; obligations retained','native PAPER routine checkpoint: fresh audited readiness required','execution startup: fresh reconciliation/readiness required','current equity or liquidation unavailable; entries closed','current financial reconciliation unavailable; exposure retained','entry preparation or reconciliation unavailable','consistent backup unavailable; exposure retained']);
 const L = 1_000_000_000n;
 const INITIAL = 1_000_000_000n; // $1,000 in microUSD
 const MAX_PRICE_AGE = 10_000;
@@ -661,8 +662,14 @@ export class PaperLedger {
 
   private operatingTemporaryControlVerified(state:State,at:number){
     const history=this.operatingControlHistory(state,at);if(!history)return false;let lastControl:{at:number;reason:string}|null=history.anchor?.kind===V31_DIAGNOSTIC_CONTROL_REPAIR.kind?{at:history.anchor.at,reason:V31_DIAGNOSTIC_CONTROL_REPAIR.newReason}:history.anchor?.kind==='paper-epoch-transition'?{at:history.anchor.at,reason:'execution startup: fresh reconciliation/readiness required'}:null;
+    let observedRuntimeReportingPause=false;
     for(const {row,payload,ordinary,restored,startup}of history.decoded){if(row.kind==='safe-stop')return false;if(row.kind==='resume')continue;
-      if(restored||!(ordinary&&INTERNAL_SHUTDOWN_SOFT_PAUSES.has(payload.reason)||startup&&payload.reason==='execution startup: fresh reconciliation/readiness required'))return false;
+      // Older releases restored this exact runtime overrun as a hard pause.
+      // Accept that inherited copy only after its authenticated ordinary cause;
+      // owner/custom wording and every other hard intention remain barriers.
+      if(restored){if(payload.reason!==OPERATIONAL_REPORTING_ENTRY_PAUSE||!observedRuntimeReportingPause)return false;}
+      else if(!(ordinary&&INTERNAL_SHUTDOWN_SOFT_PAUSES.has(payload.reason)||startup&&payload.reason==='execution startup: fresh reconciliation/readiness required'))return false;
+      if(ordinary&&payload.reason===OPERATIONAL_REPORTING_ENTRY_PAUSE)observedRuntimeReportingPause=true;
       lastControl={at:row.at,reason:payload.reason};
     }
     return !!lastControl&&lastControl.at===state.controls.changedAt&&lastControl.reason===state.controls.reason;
@@ -980,7 +987,7 @@ export class PaperLedger {
         priceAt(payload.price as UsdPrice,r.at);return {payload,result};
       };
       if(anchor?.kind==='paper-epoch-transition')this.validateEpochAnchor(s);else if(anchor)resume(anchor,true);
-      let previousAt=anchor?.at??s.inceptionAt,previousRevision=boundary,internalStop=false,lastControl:{at:number;reason:string}|null=null;
+      let previousAt=anchor?.at??s.inceptionAt,previousRevision=boundary,internalStop=false,observedRuntimeReportingPause=false,lastControl:{at:number;reason:string}|null=null;
       const stops:Array<{revision:number;actionId:string;at:number}>=[],intents:Array<{revision:number;actionId:string;at:number;kind:string;payloadHash:string|null;resultSha256:string}>=[];
       for(const r of rows){
         if(r.revision<=previousRevision||r.at<previousAt)return no('INTERNAL_SHUTDOWN_HISTORY_MALFORMED');previousRevision=r.revision;previousAt=r.at;
@@ -996,7 +1003,9 @@ export class PaperLedger {
         const ordinary=/^trader:pause:(\d+):(\d+)$/.exec(r.actionId),restored=/^trader:restore-hard-pause:(\d+):(\d+)$/.exec(r.actionId),recovery=r.actionId===`execution-recovery:${s.accountId}:${r.revision-1}`;
         const stamp=ordinary??restored,typed=stamp&&Number(stamp[1])===r.revision-1&&Number.isSafeInteger(Number(stamp[2]))&&Number(stamp[2])>=s.inceptionAt&&Number(stamp[2])<=at;
         if(payload.reason==='safe stop requested'&&restored&&typed&&internalStop){lastControl={at:r.at,reason:payload.reason};continue;}
+        if(restored&&typed&&payload.reason===OPERATIONAL_REPORTING_ENTRY_PAUSE&&observedRuntimeReportingPause){lastControl={at:r.at,reason:payload.reason};continue;}
         if(!INTERNAL_SHUTDOWN_SOFT_PAUSES.has(payload.reason)||!(ordinary&&typed||recovery&&payload.reason==='execution startup: fresh reconciliation/readiness required'))return no('INTERNAL_SHUTDOWN_HARD_OR_UNKNOWN_PAUSE');
+        if(ordinary&&typed&&payload.reason===OPERATIONAL_REPORTING_ENTRY_PAUSE)observedRuntimeReportingPause=true;
         lastControl={at:r.at,reason:payload.reason};
       }
       if(!internalStop||!lastControl)return no('INTERNAL_SHUTDOWN_CHAIN_ABSENT');

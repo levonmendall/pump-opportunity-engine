@@ -20,6 +20,13 @@ export class NativeSlotProductivity{
   if(!validTime(options.startedAt)||!Number.isSafeInteger(options.maximumSlots)||options.maximumSlots<1||options.maximumSlots>20)throw Error('NATIVE_SLOT_PRODUCTIVITY_OPTIONS');
   this.slots=Array.from({length:options.maximumSlots},(_,slot)=>({slot,mint:null,state:'VACANT',sinceAt:options.startedAt,allocatedAt:null,openedAt:null,windowEndAt:null,readyAt:null,firstPhysicalAt:null,retiredAt:null,warmAt:null,assignment:0,lastVerifiedCoverageEnd:null}));this.persist();
  }
+ /** A refused/rolled-back nonfinancial write must not consume an in-memory
+  * transition or add elapsed time a second time. The snapshot is bounded by
+  * configured slots, independent of discovered market identity count. */
+ private mutate<T>(fn:()=>T):T {
+  const before={slots:this.slots.map(slot=>({...slot})),durations:{...this.durations},counts:{...this.counts},failureCounts:{...this.failureCounts},serial:this.serial,verifiedEvidenceMs:this.verifiedEvidenceMs};
+  try{return this.options.registry.transaction(fn);}catch(error){for(let i=0;i<this.slots.length;i++)Object.assign(this.slots[i]!,before.slots[i]!);Object.assign(this.durations,before.durations);Object.assign(this.counts,before.counts);Object.assign(this.failureCounts,before.failureCounts);this.serial=before.serial;this.verifiedEvidenceMs=before.verifiedEvidenceMs;throw error;}
+ }
  private live(mint:string){return this.slots.find(slot=>slot.mint===mint);}
  private key(suffix:string){return this.options.sourceInstanceId+':slot-productivity:'+suffix;}
  private persist(){this.options.registry.setMetadata(this.key('latest'),{version:'native-slot-productivity-v1',startedAt:this.options.startedAt,counts:this.counts,failureCounts:this.failureCounts,stateMs:this.durations,slots:this.slots,serial:this.serial,verifiedEvidenceMs:this.verifiedEvidenceMs});}
@@ -33,7 +40,7 @@ export class NativeSlotProductivity{
  }
  allocated(mint:string,at:number,waitingSince:number,priorPromotions:number){
   if(this.live(mint))return;const slot=this.slots.find(row=>row.mint===null);if(!slot)throw Error('NATIVE_SLOT_PRODUCTIVITY_CAPACITY');
-  this.options.registry.transaction(()=>{if(slot.retiredAt!==null)this.sample('retirementToReplacement',String(slot.assignment),at-slot.retiredAt,at);
+  this.mutate(()=>{if(slot.retiredAt!==null)this.sample('retirementToReplacement',String(slot.assignment),at-slot.retiredAt,at);
    slot.mint=mint;slot.allocatedAt=at;slot.openedAt=null;slot.windowEndAt=null;slot.readyAt=null;slot.firstPhysicalAt=null;slot.warmAt=null;slot.lastVerifiedCoverageEnd=null;slot.assignment=++this.serial;
    this.counts.allocations++;if(priorPromotions>0)this.counts.repromotions++;
    this.sample('queueToAllocation',String(slot.assignment),Math.max(0,at-waitingSince),at);
@@ -41,24 +48,24 @@ export class NativeSlotProductivity{
   });
  }
  opened(mint:string,at:number){const slot=this.live(mint);if(!slot||slot.allocatedAt===null||at<slot.allocatedAt)return;
-  this.options.registry.transaction(()=>{if(slot.openedAt===null)this.sample('allocationToAck',String(slot.assignment),at-slot.allocatedAt!,at);slot.openedAt=at;slot.lastVerifiedCoverageEnd=at;slot.warmAt=null;slot.windowEndAt=null;slot.readyAt=null;slot.firstPhysicalAt=null;this.move(slot,'EVIDENCE_WARMING',at,'actual-subscription-ack');this.persist();});
+  this.mutate(()=>{if(slot.openedAt===null)this.sample('allocationToAck',String(slot.assignment),at-slot.allocatedAt!,at);slot.openedAt=at;slot.lastVerifiedCoverageEnd=at;slot.warmAt=null;slot.windowEndAt=null;slot.readyAt=null;slot.firstPhysicalAt=null;this.move(slot,'EVIDENCE_WARMING',at,'actual-subscription-ack');this.persist();});
  }
- warmed(mint:string,at:number){const slot=this.live(mint);if(!slot||slot.openedAt===null||slot.warmAt!==null)return;slot.warmAt=at;this.sample('ackToWarm',String(slot.assignment),at-slot.openedAt,at);this.persist();}
- ready(mint:string,windowEndAt:number,at:number){const slot=this.live(mint);if(!slot||slot.windowEndAt===windowEndAt)return;slot.windowEndAt=windowEndAt;slot.readyAt=at;slot.firstPhysicalAt=null;this.move(slot,'AUDIT_READY',at,'actual-auditable-window-ready');this.persist();}
- waiting(mint:string,at:number,provider:boolean,reason:string){const slot=this.live(mint);if(!slot||slot.windowEndAt===null||slot.state==='AUDIT_ACTIVE')return;this.move(slot,provider?'PROVIDER_WAIT':'AUDIT_WAIT',at,reason);}
+ warmed(mint:string,at:number){const slot=this.live(mint);if(!slot||slot.openedAt===null||slot.warmAt!==null)return;this.mutate(()=>{slot.warmAt=at;this.sample('ackToWarm',String(slot.assignment),at-slot.openedAt!,at);this.persist();});}
+ ready(mint:string,windowEndAt:number,at:number){const slot=this.live(mint);if(!slot||slot.windowEndAt===windowEndAt)return;this.mutate(()=>{slot.windowEndAt=windowEndAt;slot.readyAt=at;slot.firstPhysicalAt=null;this.move(slot,'AUDIT_READY',at,'actual-auditable-window-ready');this.persist();});}
+ waiting(mint:string,at:number,provider:boolean,reason:string){const slot=this.live(mint),state=provider?'PROVIDER_WAIT':'AUDIT_WAIT';if(!slot||slot.windowEndAt===null||slot.state==='AUDIT_ACTIVE'||slot.state===state)return;this.mutate(()=>this.move(slot,state,at,reason));}
  physicalStarted(mint:string,windowEndAt:number,at:number,physicalId:string){const slot=this.live(mint);if(!slot||slot.windowEndAt!==windowEndAt||slot.readyAt===null||at<slot.readyAt)return false;
-  this.options.registry.transaction(()=>{if(slot.firstPhysicalAt===null){slot.firstPhysicalAt=at;this.sample('auditReadyToPhysicalStart',String(slot.assignment)+':'+windowEndAt,at-slot.readyAt!,at);}this.distinct('physical-start',physicalId,at);this.move(slot,'AUDIT_ACTIVE',at,'actual-component-physical-start');this.persist();});return true;
+  this.mutate(()=>{if(slot.firstPhysicalAt===null){slot.firstPhysicalAt=at;this.sample('auditReadyToPhysicalStart',String(slot.assignment)+':'+windowEndAt,at-slot.readyAt!,at);}this.distinct('physical-start',physicalId,at);this.move(slot,'AUDIT_ACTIVE',at,'actual-component-physical-start');this.persist();});return true;
  }
- physicalSettled(mint:string,at:number){const slot=this.live(mint);if(slot?.state==='AUDIT_ACTIVE')this.move(slot,'AUDIT_WAIT',at,'physical-operation-returned-to-validation');}
+ physicalSettled(mint:string,at:number){const slot=this.live(mint);if(slot?.state==='AUDIT_ACTIVE')this.mutate(()=>this.move(slot,'AUDIT_WAIT',at,'physical-operation-returned-to-validation'));}
  evaluated(mint:string,windowStartAt:number,windowEndAt:number,at:number){const slot=this.live(mint);if(!slot)return;
-  this.options.registry.transaction(()=>{const begin=Math.max(windowStartAt,slot.openedAt??at,slot.allocatedAt??at,this.options.startedAt,slot.lastVerifiedCoverageEnd??0),end=Math.min(windowEndAt,at);if(end>begin){this.verifiedEvidenceMs+=end-begin;slot.lastVerifiedCoverageEnd=end;}if(this.distinct('audited',mint,at))this.counts.distinctAudited++;if(this.distinct('preliminary-evaluated',mint,at))this.counts.distinctPreliminaryEvaluated++;this.options.registry.recordMetric(this.key('metrics'),'completed-window',mint+':'+windowEndAt,1,at);slot.windowEndAt=null;slot.readyAt=null;slot.firstPhysicalAt=null;this.move(slot,'EVIDENCE_WARMING',at,'verified-window-preliminary-assessment-complete');this.persist();});
+  this.mutate(()=>{const begin=Math.max(windowStartAt,slot.openedAt??at,slot.allocatedAt??at,this.options.startedAt,slot.lastVerifiedCoverageEnd??0),end=Math.min(windowEndAt,at);if(end>begin){this.verifiedEvidenceMs+=end-begin;slot.lastVerifiedCoverageEnd=end;}if(this.distinct('audited',mint,at))this.counts.distinctAudited++;if(this.distinct('preliminary-evaluated',mint,at))this.counts.distinctPreliminaryEvaluated++;this.options.registry.recordMetric(this.key('metrics'),'completed-window',mint+':'+windowEndAt,1,at);slot.windowEndAt=null;slot.readyAt=null;slot.firstPhysicalAt=null;this.move(slot,'EVIDENCE_WARMING',at,'verified-window-preliminary-assessment-complete');this.persist();});
  }
- unusable(mint:string,at:number,reason:string){const slot=this.live(mint);if(slot)this.move(slot,'UNUSABLE',at,reason);}
- retired(mint:string,at:number,reason:string){const slot=this.live(mint);if(!slot)return;this.options.registry.transaction(()=>{this.move(slot,'REPLACEMENT_WAIT',at,reason);slot.mint=null;slot.retiredAt=at;slot.allocatedAt=null;slot.openedAt=null;slot.windowEndAt=null;slot.readyAt=null;slot.firstPhysicalAt=null;slot.warmAt=null;this.persist();});}
- failed(mint:string,windowEndAt:number,at:number,kind:string,reason:string){if(!validTime(windowEndAt)||windowEndAt===0||windowEndAt>at)return;const names:Array<keyof typeof this.failureCounts>=[];if(reason==='NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED')names.push('historyNotObservedWindows');if(kind==='decision-expired')names.push('decisionDeadlineWindows');if(kind==='audit-unusable')names.push('auditUnusableWindows');if(/PHYSICAL_TIMEOUT|HTTP_429|HTTP_STATUS_50[234]|HTTP_TRANSPORT|RPC_OVERLOAD/.test(reason))names.push('providerUnavailableWindows');if(!names.length)return;this.options.registry.transaction(()=>{for(const name of names)if(this.distinct('failure:'+name,mint+':'+windowEndAt,at))this.failureCounts[name]++;this.persist();});}
+ unusable(mint:string,at:number,reason:string){const slot=this.live(mint);if(slot&&slot.state!=='UNUSABLE')this.mutate(()=>this.move(slot,'UNUSABLE',at,reason));}
+ retired(mint:string,at:number,reason:string){const slot=this.live(mint);if(!slot)return;this.mutate(()=>{this.move(slot,'REPLACEMENT_WAIT',at,reason);slot.mint=null;slot.retiredAt=at;slot.allocatedAt=null;slot.openedAt=null;slot.windowEndAt=null;slot.readyAt=null;slot.firstPhysicalAt=null;slot.warmAt=null;this.persist();});}
+ failed(mint:string,windowEndAt:number,at:number,kind:string,reason:string){if(!validTime(windowEndAt)||windowEndAt===0||windowEndAt>at)return;const names:Array<keyof typeof this.failureCounts>=[];if(reason==='NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED')names.push('historyNotObservedWindows');if(kind==='decision-expired')names.push('decisionDeadlineWindows');if(kind==='audit-unusable')names.push('auditUnusableWindows');if(/PHYSICAL_TIMEOUT|HTTP_429|HTTP_STATUS_50[234]|HTTP_TRANSPORT|RPC_OVERLOAD/.test(reason))names.push('providerUnavailableWindows');if(!names.length)return;this.mutate(()=>{for(const name of names)if(this.distinct('failure:'+name,mint+':'+windowEndAt,at))this.failureCounts[name]++;this.persist();});}
  financial(input:{mint:string;kind:NativeSlotFinancialKind;at:number;key:string}){
   if(!validTime(input.at)||input.at<this.options.startedAt)return;const assignment=this.options.registry.getMetadata<{slot:number;assignment:number;allocatedAt:number}>(this.key('assignment:'+input.mint));
-  this.options.registry.transaction(()=>{if(!this.distinct('financial:'+input.kind,input.mint+':'+input.key,input.at))return;
+  this.mutate(()=>{if(!this.distinct('financial:'+input.kind,input.mint+':'+input.key,input.at))return;
    if(!assignment){this.counts.unattributedFinancialEvents++;this.persist();return;}
    if(input.kind==='primary-evaluated'){if(this.distinct('primary-evaluated',input.mint,input.at))this.counts.distinctPrimaryEvaluated++;}else if(input.kind==='qualified')this.counts.qualified++;else if(input.kind==='entry-fill')this.counts.entryFills++;else this.counts.exitFills++;
    this.options.registry.setMetadata(this.key('financial:'+input.kind+':'+input.mint+':'+input.key),{...input,slot:assignment.slot,assignment:assignment.assignment,financialPermission:false});this.persist();

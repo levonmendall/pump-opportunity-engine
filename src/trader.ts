@@ -1,6 +1,6 @@
 import type {PaperExecutionLanding} from './execution-realism.js';
 import {assertPoeOperatingAccount} from './poe-operating-account.js';
-import {PaperLedger,ADAPTIVE_PAPER_STRATEGY_VERSION,isLiquidityResilientPaperStrategy,OPERATING_FINANCIAL_READINESS_VERSION,OPERATIONAL_RESOURCE_ENTRY_PAUSES,dailyLossEntryBlocked,type ExecutionQuote,type Mark,type Position,type EntryStrategy} from './ledger.js';
+import {PaperLedger,ADAPTIVE_PAPER_STRATEGY_VERSION,isLiquidityResilientPaperStrategy,OPERATING_FINANCIAL_READINESS_VERSION,OPERATIONAL_RESOURCE_ENTRY_PAUSES,OPERATIONAL_REPORTING_ENTRY_PAUSE,dailyLossEntryBlocked,type ExecutionQuote,type Mark,type Position,type EntryStrategy} from './ledger.js';
 import {PaperExecutionCoordinator,type ExecutionContext,type ExecutionResult,type QuoteRequest} from './execution.js';
 import {FlowWindow,copyEventIdentity,PROVISIONAL_RULE,evaluateExit,evaluatePrimary,assessPredictiveBuying,type EventIdentity,type NormalizedTrade,type RuleDecision} from './strategy.js';
 import {assertPilotBaseline,resolvePilotBinding,type PilotBinding,type ResolvedPilotBinding} from './pilot-contract.js';
@@ -62,7 +62,7 @@ const validText=(s:unknown,max=512):s is string=>typeof s==='string'&&s.length>0
 const isResilientQuoteMissing=(reason:string)=>reason==='v3-matched-fresh-actual-size-quote-required'||reason==='v31-matched-fresh-actual-size-quote-required'||reason==='v3.1-matched-fresh-actual-size-quote-required';
 const unsigned=(s:string)=>{if(typeof s!=='string'||!/^(0|[1-9][0-9]{0,38})$/.test(s))throw new Error('bounded integer amount required');return BigInt(s);};
 export const ROUTINE_PAPER_CHECKPOINT_REASON='native PAPER routine checkpoint: fresh audited readiness required' as const;
-export const TEMPORARY_ENTRY_READINESS_PAUSES=Object.freeze([...OPERATIONAL_RESOURCE_ENTRY_PAUSES,'execution startup: fresh reconciliation/readiness required','current equity or liquidation unavailable; entries closed','current financial reconciliation unavailable; exposure retained','entry preparation or reconciliation unavailable','consistent backup unavailable; exposure retained',ROUTINE_PAPER_CHECKPOINT_REASON] as const);
+export const TEMPORARY_ENTRY_READINESS_PAUSES=Object.freeze([...OPERATIONAL_RESOURCE_ENTRY_PAUSES,OPERATIONAL_REPORTING_ENTRY_PAUSE,'execution startup: fresh reconciliation/readiness required','current equity or liquidation unavailable; entries closed','current financial reconciliation unavailable; exposure retained','entry preparation or reconciliation unavailable','consistent backup unavailable; exposure retained',ROUTINE_PAPER_CHECKPOINT_REASON] as const);
 /** The exact existing predictive predicates, after evaluatePrimary has already
  * validated this feature snapshot. This cannot qualify an entry or replace any
  * quote/support/liquidity check. Only the refusal's order/knowledge changes. */

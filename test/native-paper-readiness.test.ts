@@ -6,9 +6,9 @@ import {mkdtempSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {PublicKey} from '@solana/web3.js';
-import {PaperLedger,type UsdPrice} from '../src/ledger.js';
+import {PaperLedger,OPERATIONAL_REPORTING_ENTRY_PAUSE,type UsdPrice} from '../src/ledger.js';
 import {NativePaper,NATIVE_PAPER_FINANCIAL_READINESS_POLICY,NATIVE_PAPER_ENTRY_BLOCKERS,nativePaperDerivedEntryBlocker} from '../src/native-paper.js';
-import {NativePaperCashMaintenance,nativePaperBackupDue} from '../src/run-native-paper.js';
+import {NativePaperCashMaintenance,NativePaperReportingHealth,nativePaperBackupDue} from '../src/run-native-paper.js';
 import {FlowWindow,assessPredictiveBuying,type NormalizedTrade} from '../src/strategy.js';
 import {nativePaperFeaturesSha256} from '../src/native-paper-contract.js';
 import {PILOT_VERSION,PILOT_CONTRACT_SHA256} from '../src/pilot-contract.js';
@@ -198,4 +198,36 @@ test('resource recovery preserves an unresolved protective exit and refuses cash
  f.ledger.order({id:'OFFLINE unresolved protective exit',mint:f.mint,side:'sell',decidedAt:f.at,executeAt:f.at+1000,expiresAt:f.at+5000,gas:'7000',deposit:'0',maxSpend:'0',minReceive:'1',decisionEvidence:'OFFLINE unresolved exact-size exit'},f.price!,marks);
  f.bridge.trader.pauseNewEntries('resource pressure; new candidate risk closed');const before=f.ledger.state();
  assert.equal(f.refresh().kind,'busy');assert.equal(f.bridge.maintainOperatingFinancialReadiness(f.price).kind,'busy');assert.deepEqual(f.ledger.state(),before);assert.ok(f.ledger.state().pending['OFFLINE unresolved protective exit']);
+});
+
+test('inherited reporting-overrun pause resumes only after a later successful bounded projection and fresh finance',t=>{
+ const f=fixture(t,false,true),health=new NativePaperReportingHealth(),refresh=()=>{f.admission=health.entryAllowed;return f.refresh();};
+ assert.equal(refresh().recovered,false);health.observe(50,true);assert.equal(refresh().recovered,true);
+ f.at++;f.ledger.pause('trader:pause:'+f.ledger.state().revision+':'+f.at,f.at,OPERATIONAL_REPORTING_ENTRY_PAUSE);
+ f.at++;f.ledger.pause('execution-recovery:'+f.ledger.accountId+':'+f.ledger.state().revision,f.at,'execution startup: fresh reconciliation/readiness required');
+ f.at++;f.ledger.pause('trader:restore-hard-pause:'+f.ledger.state().revision+':'+f.at,f.at,OPERATIONAL_REPORTING_ENTRY_PAUSE);
+ const before=f.ledger.state(),restarted=f.make(),restartRefresh=()=>{f.admission=health.entryAllowed;return restarted.maintainFlatFinancialReadiness(f.price);};
+ health.observe(251,true);assert.equal(restartRefresh().recovered,false);assert.equal(f.ledger.state().controls.entriesEnabled,false);
+ health.observe(10,false);assert.equal(restartRefresh().recovered,false);health.observe(NaN,true);assert.equal(restartRefresh().recovered,false);
+ health.observe(75,true);f.connected=false;assert.equal(restartRefresh().recovered,false);f.connected=true;assert.equal(restartRefresh().recovered,true);
+ assert.equal(f.ledger.state().lamports,before.lamports);assert.equal(f.ledger.state().realizedLamports,before.realizedLamports);assert.deepEqual(f.ledger.state().positions,{});assert.deepEqual(f.ledger.state().pending,{});
+ assert.equal(f.ledger.exportJournal(100).filter(row=>(row as any).kind==='pause'&&JSON.parse((row as any).detail).reason===OPERATIONAL_REPORTING_ENTRY_PAUSE).length,2,'both original and restored failure records remain');
+ assert.deepEqual(f.calls,{context:0,preparation:0,quote:0,execution:0});
+});
+
+test('healthy reporting cannot launder owner wording, mixed hard controls or an unproved restored reporting pause',async t=>{
+ for(const gate of ['owner-before','unknown-before','owner-after','stop','unproved-restore','financial-uncertainty']as const)await t.test(gate,st=>{
+  const f=fixture(st,false,true),health=new NativePaperReportingHealth();health.observe(10,true);assert.equal(f.refresh().recovered,true);
+  if(gate==='owner-before')f.ledger.pause('operator-pause:OFFLINE-report-owner',f.at,OPERATIONAL_REPORTING_ENTRY_PAUSE);
+  if(gate==='unknown-before')f.bridge.trader.pauseNewEntries('OFFLINE unknown hard financial failure');
+  if(gate!=='unproved-restore')f.ledger.pause('trader:pause:'+f.ledger.state().revision+':'+f.at,f.at,OPERATIONAL_REPORTING_ENTRY_PAUSE);
+  f.ledger.pause('execution-recovery:'+f.ledger.accountId+':'+f.ledger.state().revision,f.at,'execution startup: fresh reconciliation/readiness required');
+  f.ledger.pause('trader:restore-hard-pause:'+f.ledger.state().revision+':'+f.at,f.at,OPERATIONAL_REPORTING_ENTRY_PAUSE);
+  if(gate==='owner-after')f.ledger.pause('operator-pause:OFFLINE-report-later-owner',f.at,'operator paused new entries');
+  if(gate==='stop')f.ledger.safeStop('operator-stop:OFFLINE-report-stop',f.at);
+  if(gate==='financial-uncertainty')f.bridge.trader.financialMaintenanceFailed();
+  const before=f.ledger.state(),restarted=f.make();f.admission=health.entryAllowed;
+  assert.equal(restarted.maintainFlatFinancialReadiness(f.price).recovered,false);assert.equal(f.ledger.state().controls.entriesEnabled,false);assert.equal(f.ledger.state().controls.stopRequested,before.controls.stopRequested);
+  assert.equal(f.ledger.state().lamports,before.lamports);assert.deepEqual(f.ledger.state().positions,before.positions);assert.deepEqual(f.ledger.state().pending,before.pending);
+ });
 });
