@@ -67,6 +67,8 @@ type State = LedgerState;
 export function isV3PaperEpochState(s:Pick<LedgerState,'paperEpoch'>){return s.paperEpoch?.id===PAPER_V3_TEN_SOL_EPOCH_ID&&s.paperEpoch.version===PAPER_V3_EPOCH_VERSION;}
 export function isV3PaperRiskState(s:Pick<LedgerState,'paperEpoch'|'equityRisk'>){return isV3PaperEpochState(s)&&s.equityRisk?.version===PAPER_V3_EQUITY_RISK_VERSION;}
 export function dailyLossEntryBlocked(s:Pick<LedgerState,'daily'|'paperEpoch'|'equityRisk'>){return !isV3PaperEpochState(s)&&s.daily.lossPaused;}
+// Durable request grammar remains v1; recovery-policy versions separately
+// identify how authentic denied receipts are interpreted after restart.
 export const OPERATING_FINANCIAL_READINESS_VERSION='paper-operating-financial-readiness-v1' as const;
 export const TECHNICAL_PROTECTION_PAUSE_REASONS=Object.freeze(['completed PAPER protection gap exceeded research boundary','completed protection deadline exceeded; candidate windows must restart','first completed protection deadline exceeded; fresh observation required','PAPER protection currently overdue; candidate admissions closed','PAPER protection unavailable; exposure retained'] as const);
 export type TechnicalProtectionRecoveryAuthority={verified:true;accountId:string;inceptionAt:number;stateRevision:number;controlChangedAt:number;controlReason:string;originRevision:number;authoritySha256:string}|{verified:false;reason:string};
@@ -97,7 +99,8 @@ export type InternalShutdownRecoveryProof={verified:true;accountId:string;incept
 export type DailyLossResetReceipt={accountId:string;inceptionAt:number;at:number;reason:string;revisionBefore:number;revisionAfter:number;previousDaily:LedgerState['daily'];nextDaily:LedgerState['daily'];controlsPreserved:true;entryPermissionGranted:false;orderCreated:false}&({reset:true;alreadyClear:false;currentEquityMicroUsd:string;price:UsdPrice}|{reset:false;alreadyClear:true;currentEquityMicroUsd:null;price:null});
 /** Provenance only. Neither this bounded read nor its digest grants permission
  * to enter, changes a stop, or substitutes for fresh financial/market evidence. */
-const INTERNAL_SHUTDOWN_PROOF_POLICY=Object.freeze({version:'internal-native-shutdown-chain-v1',maximumRuns:128,maximumStops:128,maximumControlIntents:512,maximumControlBytes:1024*1024});
+// v2 preserves accepted denied requests without claiming they granted control.
+const INTERNAL_SHUTDOWN_PROOF_POLICY=Object.freeze({version:'internal-native-shutdown-chain-v2',maximumRuns:128,maximumStops:128,maximumControlIntents:512,maximumControlBytes:1024*1024});
 /** Runtime resource admission is a transient operational condition, not owner
  * intent or financial uncertainty. Recovery still authenticates every control
  * row and requires fresh inventory, source, pricing and current admission. */
@@ -623,7 +626,10 @@ export class PaperLedger {
       const object=(v:unknown):v is Record<string,any>=>!!v&&typeof v==='object'&&!Array.isArray(v);
       const select="SELECT j.revision,j.action_id actionId,j.at,j.kind,CASE WHEN length(CAST(j.detail AS BLOB))<=65536 THEN j.detail END detail,a.payload_hash payloadHash,CASE WHEN length(CAST(a.result AS BLOB))<=65536 THEN a.result END result FROM journal j LEFT JOIN actions a ON a.id=j.action_id";
       const read=(row:Row)=>{if(!Number.isSafeInteger(row.revision)||row.revision<1||row.revision>state.revision||!Number.isSafeInteger(row.at)||row.at<state.inceptionAt||row.at>at||!boundedText(row.actionId,160)||typeof row.detail!=='string'||typeof row.result!=='string')throw Error('malformed');const payload=JSON.parse(row.detail),result=JSON.parse(row.result);if(!object(payload)||payload.now!==row.at||!object(result)||row.payloadHash!==digest({kind:row.kind,payload}))throw Error('malformed');return {payload,result};};
-      const validateResume=(row:Row,enabled:boolean)=>{const {payload,result}=read(row),kind=runtimeReadinessKind(payload.readiness,row.at,payload.marks,row.revision-1,state.accountId,payload.price,isV3PaperRiskState(state));if(row.kind!=='resume'||Object.keys(payload).sort().join(',')!=='marks,now,price,readiness'||!kind||Object.keys(result).sort().join(',')!=='enabled,reason'||result.enabled!==enabled||enabled&&result.reason!==(kind==='financial'?'explicit verified operating financial readiness':'explicit verified runtime readiness')||!enabled&&result.reason!=='fresh reconciliation or next UTC-day loss reset required'&&!(kind==='financial'&&result.reason==='fresh reconciled inventory and authorized temporary recovery required'))throw Error('malformed');priceAt(payload.price,row.at);return {payload,result};};
+      // A denied request can legitimately reference an outdated/future revision:
+      // resume() authenticates its input before refusing that state mismatch.
+      // Only an actual permission grant must bind the immediately prior state.
+      const validateResume=(row:Row,enabled:boolean)=>{const {payload,result}=read(row),kind=runtimeReadinessKind(payload.readiness,row.at,payload.marks,enabled?row.revision-1:undefined,state.accountId,payload.price,isV3PaperRiskState(state));if(row.kind!=='resume'||Object.keys(payload).sort().join(',')!=='marks,now,price,readiness'||!kind||Object.keys(result).sort().join(',')!=='enabled,reason'||result.enabled!==enabled||enabled&&result.reason!==(kind==='financial'?'explicit verified operating financial readiness':'explicit verified runtime readiness')||!enabled&&result.reason!=='fresh reconciliation or next UTC-day loss reset required'&&!(kind==='financial'&&result.reason==='fresh reconciled inventory and authorized temporary recovery required'))throw Error('malformed');priceAt(payload.price,row.at);return {payload,result};};
       let anchor=this.db.prepare(select+" WHERE j.kind='resume' AND CASE WHEN length(CAST(a.result AS BLOB))<=65536 AND json_valid(a.result) THEN json_type(a.result,'$.enabled')='true' ELSE 0 END ORDER BY j.revision DESC LIMIT 1").get()as Row|undefined;
       if(state.paperEpoch&&(!anchor||anchor.revision<state.paperEpoch.transitionRevision)){this.validateEpochAnchor(state);anchor=this.db.prepare(select+' WHERE j.action_id=?').get('epoch:'+state.paperEpoch.id) as Row;}
       const diagnosticRepair=readV31DiagnosticControlRepair(this.db,state,at);
@@ -1010,7 +1016,9 @@ export class PaperLedger {
       };
       const resume=(r:Row,expectedEnabled:boolean)=>{
         const {payload,result}=read(r),q=payload.readiness;
-        const kind=runtimeReadinessKind(q,r.at,payload.marks,r.revision-1,s.accountId,payload.price,isV3PaperRiskState(s)),validReason=expectedEnabled?(kind==='financial'?'explicit verified operating financial readiness':'explicit verified runtime readiness'):result.reason==='fresh reconciliation or next UTC-day loss reset required'||kind==='financial'&&result.reason==='fresh reconciled inventory and authorized temporary recovery required';
+        // Preserve the writer's accepted denied-request schema without treating
+        // the denied request as an authorization for its claimed revision.
+        const kind=runtimeReadinessKind(q,r.at,payload.marks,expectedEnabled?r.revision-1:undefined,s.accountId,payload.price,isV3PaperRiskState(s)),validReason=expectedEnabled?(kind==='financial'?'explicit verified operating financial readiness':'explicit verified runtime readiness'):result.reason==='fresh reconciliation or next UTC-day loss reset required'||kind==='financial'&&result.reason==='fresh reconciled inventory and authorized temporary recovery required';
         if(r.kind!=='resume'||Object.keys(payload).sort().join(',')!=='marks,now,price,readiness'||!object(payload.price)||!object(payload.marks)||!kind||Object.keys(result).sort().join(',')!=='enabled,reason'||result.enabled!==expectedEnabled||(expectedEnabled?result.reason!==validReason:!validReason))throw Error('malformed');
         priceAt(payload.price as UsdPrice,r.at);return {payload,result};
       };
