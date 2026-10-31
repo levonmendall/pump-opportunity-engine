@@ -185,9 +185,11 @@ export type V3ExitInput=AdaptiveExitInput&{priorProfitProtectionFloorLamports?:s
 export type V3ExitDecision=AdaptiveExitDecision&{profitProtectionFloorLamports:string|null;profitGivebackBps:number;continuationConfidence:'audited-flow'|'price-reserve-only'|'unknown';liquidityDeteriorationVerified:boolean};
 /** The source, actual-size quote and financial gate remain authoritative. A
  * boolean cannot invent deterioration. Unknown flow is not zero demand. */
-export function evaluateLiquidityResilientExit(input:V3ExitInput):V3ExitDecision{
+/** Preserve historical V3 exits while allowing a separately authorized V3.1 stop policy. */
+export type V3ExitStopPolicy=Omit<typeof LIQUIDITY_RESILIENT_MOMENTUM_V3_POLICY.exit,'stopLossBps'|'trailingMinimumBps'>&{readonly stopLossBps:number;readonly trailingMinimumBps:number};
+export function evaluateLiquidityResilientExit(input:V3ExitInput,exitPolicy:V3ExitStopPolicy=P.exit):V3ExitDecision{
  if(!uint(input.now)||!uint(input.enteredAt)||input.enteredAt>input.now||!money(input.entryCostLamports)||amount(input.entryCostLamports)===0n||!money(input.heldBaseUnits)||amount(input.heldBaseUnits)===0n)throw Error('V3_EXIT_POSITION');
- const p=P.exit,cost=amount(input.entryCostLamports);if(input.volatilityBps!==undefined&&(!uint(input.volatilityBps)||input.volatilityBps>10000))throw Error('V3_EXIT_VOLATILITY');
+ const p=exitPolicy,cost=amount(input.entryCostLamports);if(input.volatilityBps!==undefined&&(!uint(input.volatilityBps)||input.volatilityBps>10000))throw Error('V3_EXIT_VOLATILITY');
  const trailingDistanceBps=Math.min(9999,Math.max(p.trailingMinimumBps,Math.ceil((input.volatilityBps??0)*p.volatilityMultiplierBps/10000)));let high=input.highWaterNetLamports===undefined?null:amount(input.highWaterNetLamports),profitFloor=input.priorProfitProtectionFloorLamports===undefined?null:amount(input.priorProfitProtectionFloorLamports),profitGivebackBps=p.profitGivebackBps.unknown as number,continuationConfidence:V3ExitDecision['continuationConfidence']='unknown',liquidityDeteriorationVerified=false;
  const result=(action:AdaptiveExitDecision['action'],reason:string,net:bigint|null=null):V3ExitDecision=>({action,reason,highWaterNetLamports:high?.toString()??null,trailingDistanceBps,profitRetentionBps:net!==null&&high!==null&&high>cost?Math.max(0,Math.min(10000,bps(net-cost,high-cost))):null,profitProtectionFloorLamports:profitFloor?.toString()??null,profitGivebackBps,continuationConfidence,liquidityDeteriorationVerified});
  const m=input.mark;if(!m||!text(m.evidence)||!uint(m.at)||m.at<input.enteredAt||m.at>input.now||input.now-m.at>p.maximumQuoteAgeMs||m.pricedBaseUnits!==input.heldBaseUnits||!money(m.netLamports))return result('quote-required','v3-fresh-actual-size-net-liquidation-required');
