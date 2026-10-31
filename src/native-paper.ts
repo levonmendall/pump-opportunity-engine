@@ -44,7 +44,7 @@ export class NativePaper {
  readonly trader:PaperTrader;private readonly adaptive:boolean;private readonly resilient:boolean;private readonly resilient31:boolean;private readonly now:()=>number;private readonly maximumPositions:PilotBinding['maxPositions'];private readonly pools=new Map<string,NativePaperPool>();private readonly retired=new Set<string>();private readonly lastCandidateBucket=new Map<string,number>();
  private readonly v3Trades=new Map<string,Map<string,{trade:NormalizedTrade;reserve:V3ReserveObservation|null;inventory:NonNullable<V3AuditedFlow['observedWalletInventory']>[number]|null}>>();
  private readonly v3Consolidation=new Map<string,V3ConsolidationEvidence[]>();
- private readonly v3PriorHeldReserves=new Map<string,{units:string;roundTripId:string;at:number;raw:string}>();
+ private readonly v3PriorHeldReserves=new Map<string,{units:string;roundTripId:string;at:number;raw:string;economic:V3ReserveObservation}>();
  private context:ExecutionContext={price:null,marks:{}};
  private internalStopDiagnostic:{code:typeof INTERNAL_STOP_DIAGNOSTIC_CODES[number];at:number|null;lastSuccessfulResumeRevision:number|null;knownStopCount:number|null}={code:'INTERNAL_SHUTDOWN_NOT_EVALUATED',at:null,lastSuccessfulResumeRevision:null,knownStopCount:null};
  private readonly internalStopRefusalCounts:Partial<Record<typeof INTERNAL_STOP_DIAGNOSTIC_CODES[number],number>>={};
@@ -97,8 +97,9 @@ export class NativePaper {
     const pool={base:BigInt(q.rawBaseReserve),raw:BigInt(q.rawQuoteReserve),virtual:BigInt(q.virtualQuoteReserves),buckets:BigInt(q.feeBuckets),fees:{lpFeeBps:Number(q.feeBps.lpFeeBps),protocolFeeBps:Number(q.feeBps.protocolFeeBps),creatorFeeBps:q.creatorFeeApplied?Number(q.feeBps.creatorFeeBps):0}};
     const prior=this.v3PriorHeldReserves.get(position.mint),same=prior?.units===position.units&&prior.roundTripId===position.strategy?.roundTripId;
     const stressedPool=v3CpmmSell(pool,(pool.base+99n)/100n).pool,stressedGross=v3CpmmSell(stressedPool,BigInt(position.units)).output,gas=BigInt(this.options.market.gasLamports);
-    evidence.liquidityContext={at:mark.at,evidence:mark.evidence,pricedBaseUnits:position.units,immediateNetLamports:mark.netLamports,stressedNetLamports:(stressedGross>gas?stressedGross-gas:0n).toString(),rawQuoteReserveLamports:q.rawQuoteReserve,...(same&&prior.at<mark.at?{priorRawQuoteReserveLamports:prior.raw}:{})};
-    if(!same||prior.at<mark.at)this.v3PriorHeldReserves.set(position.mint,{units:position.units,roundTripId:position.strategy?.roundTripId??'',at:mark.at,raw:q.rawQuoteReserve});
+    const economic:V3ReserveObservation={at:mark.at,evidence:mark.evidence,baseReserveUnits:q.rawBaseReserve,rawQuoteReserveLamports:q.rawQuoteReserve,virtualQuoteReserveLamports:q.virtualQuoteReserves,feeBucketsLamports:q.feeBuckets};
+    evidence.liquidityContext={at:mark.at,evidence:mark.evidence,pricedBaseUnits:position.units,immediateNetLamports:mark.netLamports,stressedNetLamports:(stressedGross>gas?stressedGross-gas:0n).toString(),rawQuoteReserveLamports:q.rawQuoteReserve,...(same&&prior.at<mark.at?{priorRawQuoteReserveLamports:prior.raw}:{}),...(this.resilient31?{economicReserves:economic,...(same&&prior.at<mark.at?{priorEconomicReserves:prior.economic}:{})}:{})};
+    if(!same||prior.at<mark.at)this.v3PriorHeldReserves.set(position.mint,{units:position.units,roundTripId:position.strategy?.roundTripId??'',at:mark.at,raw:q.rawQuoteReserve,economic});
    }catch{/* A failed declared stress is unknown; never an invented valuation. */}
   }
   const flow=this.v3Evidence(position.mint,at)?.flow,features=this.trader.candidateFeatures(position.mint,at);

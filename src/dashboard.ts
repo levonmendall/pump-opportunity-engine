@@ -154,6 +154,8 @@ main{max-width:1480px;margin:0 auto}
 .paper-trades-disclosure[open] .paper-trades-icon:before{content:"−"}
 .paper-trades-disclosure[open]>.paper-trades-summary{padding-bottom:12px;border-bottom:1px solid rgba(105,149,197,.18)}
 .paper-trades-body{padding-top:12px}
+.trade-explanation-row td{max-width:none;padding-top:0}.trade-outcome{padding:8px 0;max-width:760px}.trade-outcome summary{cursor:pointer;color:var(--cyan);font:600 11px var(--mono);padding:5px 0}.trade-outcome summary:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}.trade-outcome dl{display:grid;grid-template-columns:minmax(120px,1fr) minmax(0,2fr);gap:7px 16px;margin:14px 0}.trade-outcome dt{color:var(--muted)}.trade-outcome dd{margin:0;overflow-wrap:anywhere}.trade-outcome p{color:var(--muted);font-size:11px;line-height:1.6}.trade-outcome h4{margin:14px 0 5px;font-size:12px}.trade-outcome .positive{color:var(--mint)}.trade-outcome .negative{color:var(--red)}
+@media(max-width:640px){.trade-outcome dl{grid-template-columns:1fr;gap:3px}.trade-outcome dd{margin-bottom:6px}}
 .paper-trades-body>.panel-sub:first-child{margin-top:0}
 @media print{.paper-trades-disclosure>.paper-trades-body{display:block!important}}
 
@@ -324,7 +326,7 @@ function renderCards(s){
 function dexScreenerUrl(mint){
  return typeof mint==='string'&&/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(mint)?'https://dexscreener.com/solana/'+mint:null;
 }
-function renderTable(id,heads,rows,emptyTitle,emptyBody,tokenMints=null,tokenColumn=-1){
+function renderTable(id,heads,rows,emptyTitle,emptyBody,tokenMints=null,tokenColumn=-1,explain=null){
  const p=byId(id);p.replaceChildren();
  if(!rows.length){const e=add(p,'div',undefined,'no-records');add(e,'strong',emptyTitle);add(e,'span',emptyBody);return}
  const wrap=add(p,'div',undefined,'table-wrap'),t=add(wrap,'table',undefined,'data-table'),h=add(t,'thead'),tr=add(h,'tr');
@@ -340,7 +342,59 @@ function renderTable(id,heads,rows,emptyTitle,emptyBody,tokenMints=null,tokenCol
    link.href=href;link.target='_blank';link.rel='noopener noreferrer';
    link.setAttribute('aria-label','View token chart on DEX Screener (opens a new tab)');
   });
+  if(explain){const row=add(body,'tr',undefined,'trade-explanation-row'),cell=add(row,'td');cell.colSpan=heads.length;explain(cell,rowIndex);}
  });
+}
+function renderTradeOutcome(parent,trade){
+ const report=trade.outcome,detail=add(parent,'details',undefined,'trade-outcome');
+ const openIds=renderTradeOutcome.openIds||(renderTradeOutcome.openIds=new Set());detail.open=openIds.has(trade.id);
+ detail.addEventListener('toggle',()=>{if(detail.open){openIds.add(trade.id);if(openIds.size>50)openIds.delete(openIds.values().next().value);}else openIds.delete(trade.id);});
+ const sol=value=>{if(value===null||value===undefined)return 'Unknown';const n=BigInt(value),m=n<0n?-n:n,whole=m/1000000000n,fraction=(m%1000000000n).toString().padStart(9,'0').replace(/0+$/,'');return (n<0n?'-':'')+whole+(fraction?'.'+fraction:'')+' SOL';};
+ const stamp=value=>value===null||value===undefined?'Unknown':new Date(value).toISOString();
+ const duration=(from,to)=>from===null||from===undefined||to===null||to===undefined||to<from?'Unknown':((to-from)/1000).toFixed(3)+' seconds';
+ const fields=items=>{const list=add(detail,'dl');items.forEach(([key,value])=>{add(list,'dt',key);add(list,'dd',value);});};
+ if(!report){add(detail,'summary','Historical explanation unavailable');add(detail,'p','Entry and exit decisions, timing stages and the full trade result were not captured in this historical receipt. Its original fill value, execution cost and identity are preserved above. Missing history is unknown.');return;}
+ const e=report.economics,closed=report.kind==='closed-position',entry=report.entry,exit=report.exit;
+ const decisionMeaning=context=>{
+  if(!context?.reason)return 'Unknown: the decision was not recorded.';
+  const reason=context.reason,code=reason.split(';')[0];
+  if(code==='v3-protective-cost-stop')return context.strategyVersion==='liquidity-resilient-momentum-v3.1'?'The observed full-position liquidation value reached the 25% loss threshold from entry cost. The eventual fill can differ.':'The observed liquidation value reached the protective loss threshold for the recorded strategy. The eventual fill can differ.';
+  const meanings={
+   'v3.1-joint-conditional-economics-and-current-execution-checks-passed':'Audited buying activity and the selected position size produced a positive conditional economic balance, and current execution checks passed. This model balance is not a profit forecast.',
+   'v3.1-positive-joint-conditional-economic-balance':'The tested buying-demand and liquidity scenarios produced a positive conditional balance. This is not a profit forecast.',
+   'v3-liquidity-resilient-momentum-and-current-execution-checks-passed':'Audited demand, continuation, liquidity resilience and current execution checks passed for this entry.',
+   'adaptive-score-and-current-execution-checks-passed':'The recorded buying score and current execution checks passed for this entry.',
+   'provisional-rule-passed':'The recorded persistent-buying rule and current execution checks passed for this entry.',
+   'v3-actual-size-net-high-water-trailing-stop':'The observed full-position liquidation value fell far enough below its recorded high to trigger the trailing exit.',
+   'adaptive-net-liquidation-high-water-trailing-stop':'The observed full-position liquidation value fell far enough below its recorded high to trigger the trailing exit.',
+   'v3-risk-adjusted-executable-profit-retention-floor':'The observed liquidation value reached the strategy floor for retaining a portion of its recorded profit.',
+   'v3-complete-audited-demand-reversal-and-adverse-price':'A complete audited flow window showed demand reversing while the observed price moved adversely.',
+   'v3.1-actual-size-stress-and-economic-reserve-decrease':'The position failed the current liquidity stress check while economically comparable reserves decreased. The cause of that decrease is unknown.',
+   'v3-actual-size-liquidity-stress-and-confirmed-reserve-deterioration':'The recorded strategy found liquidity stress and a reserve decrease. This record does not identify the cause of the decrease.',
+   'adaptive-protective-cost-stop':'The observed liquidation value reached the recorded strategy loss threshold. The eventual fill can differ.',
+   'adaptive-verified-liquidity-deterioration':'The recorded holding evidence reported deteriorating liquidity.',
+   'adaptive-verified-momentum-deterioration':'The recorded holding evidence reported deteriorating momentum.',
+   'maximum-holding-time':'The recorded maximum holding time was reached.',
+   'net-liquidation-stop':'The observed liquidation value reached the recorded strategy loss threshold. The eventual fill can differ.',
+   'net-liquidation-take-profit':'The observed liquidation value reached the recorded take-profit threshold.'
+  };
+  return meanings[code]??'A recorded strategy decision requested this action; its exact reason is retained below.';
+ };
+ add(detail,'summary',closed?'Explain outcome · '+(e.closedTradeNetLamports===null?'total net unknown':sol(e.closedTradeNetLamports)+' net'):'Explain this entry');
+ const result=closed?(e.closedTradeNetLamports===null?'Full trade net is unknown because failed-exit fee history is missing. Known entry and closing-fill result: '+sol(e.filledPairNetLamports)+'.':'Closed trade net: '+sol(e.closedTradeNetLamports)+', including charged failed exits during this position.'):'This receipt records a filled entry. Its final outcome will be recorded when the full position closes.';
+ add(detail,'p',result);
+ add(detail,'h4','Recorded decisions');
+ fields([['Why POE entered',decisionMeaning(entry.context)],['Entry strategy',entry.context?.strategyVersion??'Unknown'],['Recorded entry reason',entry.context?.reason??'Unknown'],...(closed?[['Why POE exited',decisionMeaning(exit.context)],['Recorded exit reason',exit.context?.reason??'Unknown'],['Held for',duration(entry.filledAt,exit.filledAt)]]:[])]);
+ const basis=entry.context?.entryBasis;
+ if(basis){const percent=value=>value===null?'Unknown':(value/100).toFixed(2)+'%';add(detail,'h4','Evidence at entry');fields([['Net buying in the window',sol(basis.netBuyLamports)],['Distinct buyer wallets',basis.distinctBuyerWallets??'Unknown'],['Positive flow buckets',basis.positiveNetBuckets??'Unknown'],['Largest buyer share',percent(basis.largestBuyerBps)],['Observed window price change',percent(basis.priceReturnBps)],['Proposed spend',sol(basis.proposedInputLamports)],['Effective quote liquidity',sol(basis.effectiveQuoteLiquidityLamports)],['Conditional model balance',sol(basis.jointConditionalBalanceLamports)]]);add(detail,'p','Wallet counts do not establish independent people. The conditional balance is an uncalibrated scenario result, not an expected return or profit forecast.');}
+ add(detail,'h4','Costs and proceeds');
+ fields([['Entry spend',sol(e.entrySpendLamports)],['Entry transaction fee',sol(e.entryGasLamports)],...(closed?[['Exit proceeds',sol(e.exitReceiveLamports)],['Exit transaction fee',sol(e.exitGasLamports)],['Charged failed-exit fees',sol(e.failedExitGasLamports)],['Entry and closing-fill net',sol(e.filledPairNetLamports)],['Full trade net',sol(e.closedTradeNetLamports)]]:[])]);
+ add(detail,'p','Modeled PAPER amounts. Pool fees are embedded in the quoted spend and proceeds. Deposits, rent refunds, failed entries and operating expenses are outside this trade net; they remain separate account items.');
+ add(detail,'h4','Observed timing');
+ fields([['Candidate admitted',stamp(entry.context?.candidateAdmittedAt)],['Evidence window ended',stamp(entry.context?.windowEndAt)],['Entry assessment',stamp(entry.context?.assessedAt)],['Entry order decided',stamp(entry.decidedAt)],['Entry quote observed',stamp(entry.quoteAt)],['Entry filled',stamp(entry.filledAt)],['Admission → window end',duration(entry.context?.candidateAdmittedAt,entry.context?.windowEndAt)],['Window end → assessment',duration(entry.context?.windowEndAt,entry.context?.assessedAt)],['Assessment → entry order',duration(entry.context?.assessedAt,entry.decidedAt)],['Entry decision → fill',duration(entry.decidedAt,entry.filledAt)],['Entry due → quote',duration(entry.executeAt,entry.quoteAt)],['Entry quote → fill',duration(entry.quoteAt,entry.filledAt)],...(closed?[['Exit decided',stamp(exit.decidedAt)],['Exit quote observed',stamp(exit.quoteAt)],['Exit filled',stamp(exit.filledAt)],['Exit decision → fill',duration(exit.decidedAt,exit.filledAt)],['Exit due → quote',duration(exit.executeAt,exit.quoteAt)],['Exit quote → fill',duration(exit.quoteAt,exit.filledAt)]]:[])]);
+ add(detail,'p','These are recorded stages. Candidate admission is not discovery time. Missing stages stay unknown; these intervals do not isolate scheduling, provider or market causes.');
+ if(closed){const observed=report.observation;add(detail,'h4','Observed exit opportunity');fields([['Best recorded net liquidation mark',sol(observed.bestObservedNetLamports)],['Best mark observed at',stamp(observed.bestObservedAt)],['Giveback below best recorded mark',sol(observed.givebackFromObservedNetLamports)]]);add(detail,'p','This is the best recorded full-position modeled liquidation mark, after the modeled exit fee. Sampling can miss highs; it does not establish an achievable fill or missed profit.');}
+ add(detail,'p','The receipt explains recorded decisions and cash flows. It does not establish why the market moved or assign causal blame.');
 }
 function renderFunnel(f,intelligence=null,isObserver=false){
  const el=byId('funnel');el.replaceChildren();const outer=add(el,'div',undefined,'funnel-grid');
@@ -529,7 +583,7 @@ function showSnapshot(s,received,f,equityHistory=null){
  put('positionsCount',s.positions.length+' REPORTED');
  put('tradesCount',s.trades.length+' REPORTED');
  renderTable('positions',['Token / quantity','Entry / net liquidation','Costs','Status'],s.positions.map(p=>[p.label+' · '+p.mint+' / '+p.quantity,money(p.entryCostUsd)+' / '+money(p.netLiquidationUsd),money(p.executionCostsUsd),p.status]),'NO OPEN POSITIONS','No positions in the current published window.',s.positions.map(p=>p.mint),0);
- renderTable('trades',['UTC / side','Token / quantity','Value / costs','Status / reason'],s.trades.map(t=>[t.at+' / '+t.side,t.mint+' / '+t.quantity,money(t.valueUsd)+' / '+money(t.executionCostsUsd),t.status+' · '+t.reason]),'NO PAPER TRADES','No trades in the current published window.',s.trades.map(t=>t.mint),1);
+ renderTable('trades',['UTC / side','Token / quantity','Value / costs','Status / reason'],s.trades.map(t=>[t.at+' / '+t.side,t.mint+' / '+t.quantity,money(t.valueUsd)+' / '+money(t.executionCostsUsd),t.status+' · '+t.reason]),'NO PAPER TRADES','No trades in the current published window.',s.trades.map(t=>t.mint),1,(cell,index)=>renderTradeOutcome(cell,s.trades[index]));
  renderCandidateIntelligence();renderMetrics(s.metrics,s.source,s.intelligence||null);plot(latestEquityHistory?.points??[],latest?.financialEpoch?.activatedAt??latestEquityHistory?.financialEpoch?.activatedAt??null);
  put('chartBasis','Actual portfolio equity in USD from the new release’s 10 SOL epoch. Earlier history is retained in exports and is not backfilled into this graph.');put('chartLegend','PORTFOLIO EQUITY · USD');
  const orders=s.intelligence?s.intelligence.pendingOrders:[];renderTable('orders',['Decision / side','Token / minimum receive','Reserved SOL','Execution / expiry'],orders.map(o=>[o.decidedAt+' / '+o.side,o.mint+' / '+o.quantityMinimum,o.reservedSol,o.executeAt+' / '+o.expiresAt]),s.intelligence?'NO PENDING ORDERS':'PENDING-ACTION DETAIL UNAVAILABLE',s.intelligence?'No unresolved orders or reservations were reported by this account.':'This source does not publish order-level details. Missing detail does not establish that no action is pending.');

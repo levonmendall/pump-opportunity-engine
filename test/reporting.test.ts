@@ -241,7 +241,7 @@ test('original positions and PAPER trades render safe token-chart links with no 
   const start = html.indexOf('function dexScreenerUrl('), end = html.indexOf('\nfunction renderFunnel(', start);
   assert.ok(start > 0 && end > start, 'link helper and table renderer exist in authoritative dashboard');
   assert.match(html, /s\.positions\.map\(p=>p\.mint\),0\)/);
-  assert.match(html, /s\.trades\.map\(t=>t\.mint\),1\)/);
+  assert.match(html, /s\.trades\.map\(t=>t\.mint\),1(?:,|\))/);
   assert.doesNotMatch(html, /fetch\(['"]https:\/\/dexscreener/);
   class Cell {
     readonly children: Cell[] = [];

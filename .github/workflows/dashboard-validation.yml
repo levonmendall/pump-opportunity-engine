@@ -12,6 +12,8 @@ on:
       - 'test/dashboard-pilot-ui.test.ts'
       - 'test/dashboard-pilot-integration.test.ts'
       - 'src/reporting.ts'
+      - 'src/trade-outcome-reporting.ts'
+      - 'test/trade-outcome-reporting.test.ts'
       - 'src/lifetime-equity-contract.ts'
       - 'src/lifetime-equity-store.ts'
       - 'src/lifetime-equity-publisher.ts'
@@ -44,6 +46,3 @@ jobs:
         run: |
           umask 077
           npm test
-
-      - name: Pilot reporting regressions
-        run: npm run test:pilot-reporting

@@ -4,11 +4,12 @@
 import {createHash} from 'node:crypto';
 import type {FlowFeatures,NormalizedTrade} from './strategy.js';
 import {adaptiveMigrationEligible,adaptiveReentryEligible,type AdaptiveRuleContext} from './adaptive-momentum-v2.js';
+import {ECONOMIC_RESERVE_COMPARISON_VERSION,normalizeEconomicReserves,describeEconomicReserveChange,repeatEconomicReserveDecrease,type EconomicReserveChange} from './economic-reserves.js';
 import {
  assessLiquidityResilientBuying,deriveV3Consolidation,v3CpmmBuy,v3CpmmSell,
  evaluateLiquidityResilientExit,LIQUIDITY_RESILIENT_MOMENTUM_V3_POLICY,
  type V3AuditedFlow,type V3MarketEvidence,type V3Evidence,type V3Components,
- type V3BuyingAssessment,type V3Dimension,type V3SellScenario,type V3ConsolidationEvidence,type V3ExitInput,
+ type V3BuyingAssessment,type V3Dimension,type V3SellScenario,type V3ConsolidationEvidence,type V3ExitInput,type V3ReserveObservation,
 } from './liquidity-resilient-momentum-v3.js';
 
 export const LIQUIDITY_RESILIENT_MOMENTUM_V3_1_VERSION='liquidity-resilient-momentum-v3.1' as const;
@@ -23,7 +24,8 @@ export const LIQUIDITY_RESILIENT_MOMENTUM_V3_1_POLICY=Object.freeze({
   concentration:'Wallet volume HHI scales only excess plausible-purchase uncertainty; it is not a beneficial-ownership probability. Directly observed account balances remain point-in-time, potentially already disposed.',
   weakStress:'Unobserved same-size seller and historical maximum/sale repeats remain explicit diagnostic scenarios; they are not independent admission vetoes.',
   frontier:'Finite integer geometric probes and local interval refinement; bit-length bounds arithmetic work, not trading size. Highest tested positive balance, without a global optimum claim.'}),
- exit:Object.freeze({...LIQUIDITY_RESILIENT_MOMENTUM_V3_POLICY.exit,stopLossBps:2500,trailingMinimumBps:2500}),
+ liquidity:Object.freeze({comparison:ECONOMIC_RESERVE_COMPARISON_VERSION,history:'Effective curve reserves and available real funds are separate coordinates. Missing historical fee buckets remain unknown. Snapshot differences do not prove a withdrawal or a seller.',stress:'Repeat measured economic-coordinate reductions with base reserves and retained fee buckets held fixed; this is a conditional scenario, not an observed future execution.'}),
+ exit:Object.freeze({...LIQUIDITY_RESILIENT_MOMENTUM_V3_POLICY.exit,stopLossBps:2500,trailingMinimumBps:2500,reserveComparison:ECONOMIC_RESERVE_COMPARISON_VERSION}),
  exitPolicy:'OWNER_AUTHORIZED_PAPER_V31_25_PERCENT_COST_STOP_AND_MINIMUM_TRAIL; V3 15-percent exit remains unchanged; profit, flow and liquidity protection stay active',
  limitations:Object.freeze([...LIQUIDITY_RESILIENT_MOMENTUM_V3_POLICY.limitations,
   'Scenario-conditioned net upside is not a predicted return; robustness budgets are uncalibrated and forward economic performance remains unproven.',
@@ -46,11 +48,12 @@ export type V31EconomicBalance={
 };
 export type V31Components=V3Components&{economicBalance:V31EconomicBalance|null;sizingReason:'normal-equity-baseline'|'liquidity-economics'|'cash-affordability';
  continuationEvidence:{wholeWindowNetLamports:string;normalizedRecentNetLamports:string;midpointRenewalLamports:string;priceReturnBps:number|null;recentPositiveBuckets:number;priorConsolidationVerified:boolean};
+ reserveEconomics:{version:typeof ECONOMIC_RESERVE_COMPARISON_VERSION;observations:number;availableFundsObservations:number;maximumEffectiveQuoteLamports:string|null;maximumAvailableQuoteLamports:string|null;comparisons:Array<{at:number;evidence:string;change:EconomicReserveChange}>};
 };
 export type V31BuyingAssessment=Omit<V3BuyingAssessment,'components'>&{components:V31Components|null;assessmentModel:'JOINT_CONDITIONAL_ECONOMICS; dimensions are descriptive, not four independent vetoes'};
-export type V31SellScenario=V3SellScenario&{riskEvidence:'current-liquidation'|'point-in-time-observed-account'|'observed-reserve-depth-change'|'plausible-undisposed-purchases'|'historical-diagnostic'|'unknown-inventory-diagnostic';requestedExternalSellBaseUnits?:string};
+export type V31SellScenario=V3SellScenario&{riskEvidence:'current-liquidation'|'point-in-time-observed-account'|'observed-reserve-depth-change'|'plausible-undisposed-purchases'|'historical-diagnostic'|'unknown-inventory-diagnostic';requestedExternalSellBaseUnits?:string;reserveChange?:EconomicReserveChange};
 type Pool=Parameters<typeof v3CpmmBuy>[0];
-type Prepared={features:FlowFeatures;flow:V3AuditedFlow;components:V31Components;renewal:bigint;net:bigint;recent:bigint;buyerAmounts:bigint[];largestExecutedSell:bigint;reserveMinimum:bigint|null;reserveMaximum:bigint|null;reserveCount:number};
+type Prepared={features:FlowFeatures;flow:V3AuditedFlow;components:V31Components;renewal:bigint;net:bigint;recent:bigint;buyerAmounts:bigint[];largestExecutedSell:bigint;reserveMinimum:bigint|null;reserveMaximum:bigint|null;reserveCount:number;effectiveMaximum:V3ReserveObservation|null;availableMaximum:V3ReserveObservation|null};
 const P=LIQUIDITY_RESILIENT_MOMENTUM_V3_1_POLICY;
 const uint=(v:unknown):v is number=>Number.isSafeInteger(v)&&Number(v)>=0;
 const text=(v:unknown):v is string=>typeof v==='string'&&v.length>0&&v.length<=512&&!/[\u0000-\u001f]/.test(v);
@@ -65,7 +68,7 @@ const dimensions=()=>({genuineDemand:dimension('unavailable','complete-audited-t
 function result(features:FlowFeatures|null,status:V31BuyingAssessment['status'],reason:string,components:V31Components|null=null,assessments=dimensions()):V31BuyingAssessment{
  return {status,reason,qualified:false,features,scoreBps:null,components,assessments,limitations:P.limitations,assessmentModel:'JOINT_CONDITIONAL_ECONOMICS; dimensions are descriptive, not four independent vetoes'};
 }
-function prepare(features:FlowFeatures,now:number,flow:V3AuditedFlow):Prepared|null{
+function prepare(features:FlowFeatures,now:number,flow:V3AuditedFlow,marketAt=now):Prepared|null{
  // Reuse the existing strict audit/aggregate/identity checks and descriptive
  // capital/inventory extraction. None of V3's four admission vetoes is reused.
  const old=assessLiquidityResilientBuying(features,now,{flow});if(!old.components||!old.features)return null;
@@ -75,8 +78,15 @@ function prepare(features:FlowFeatures,now:number,flow:V3AuditedFlow):Prepared|n
  const currentRange=low&&high?bps(amount(high.quoteLamports)*amount(low.tokenUnits)-amount(low.quoteLamports)*amount(high.tokenUnits),amount(low.quoteLamports)*amount(high.tokenUnits)):0;
  const priorVerified=!!prior&&prior.mint===flow.mint&&prior.pool===flow.pool&&uint(prior.windowStartAt)&&uint(prior.windowEndAt)&&prior.windowEndAt-prior.windowStartAt===60000&&prior.windowEndAt<=features.windowStartAt&&uint(prior.auditedAt)&&prior.auditedAt>=prior.windowEndAt&&prior.auditedAt<=now&&text(prior.auditEvidence)&&uint(prior.priceRangeBps)&&prior.priceRangeBps<currentRange&&Number.isSafeInteger(prior.netFlowShareBps)&&Math.abs(prior.netFlowShareBps)<Math.abs(c.netFlowShareBps)&&!!features.lastPrice&&money(prior.highPrice?.quoteLamports)&&money(prior.highPrice?.tokenUnits)&&amount(prior.highPrice.tokenUnits)>0n&&amount(features.lastPrice.quoteLamports)*amount(prior.highPrice.tokenUnits)>amount(prior.highPrice.quoteLamports)*amount(features.lastPrice.tokenUnits)&&recent>0n;
  c.pattern=priorVerified?'audited-reacceleration':renewal>0n?'audited-continuation':'unproven';c.renewedDemandScenarioLamports=renewal.toString();
- let reserveMinimum:bigint|null=null,reserveMaximum:bigint|null=null,reserveCount=0;for(const r of flow.reserveObservations??[])if(r&&uint(r.at)&&r.at>=features.windowStartAt&&r.at<=now&&text(r.evidence)&&money(r.rawQuoteReserveLamports)&&amount(r.rawQuoteReserveLamports)>0n&&money(r.baseReserveUnits)&&amount(r.baseReserveUnits)>0n&&typeof r.virtualQuoteReserveLamports==='string'&&/^(-?[1-9][0-9]{0,38}|0)$/.test(r.virtualQuoteReserveLamports)&&amount(r.rawQuoteReserveLamports)+BigInt(r.virtualQuoteReserveLamports)>0n){const q=amount(r.rawQuoteReserveLamports);reserveMinimum=reserveMinimum===null||q<reserveMinimum?q:reserveMinimum;reserveMaximum=reserveMaximum===null||q>reserveMaximum?q:reserveMaximum;reserveCount++;}
- return {features:old.features,flow,renewal,net,recent,buyerAmounts:[...buyerAmounts.values()],largestExecutedSell,reserveMinimum,reserveMaximum,reserveCount,components:{...c,economicBalance:null,sizingReason:'normal-equity-baseline',continuationEvidence:{wholeWindowNetLamports:net.toString(),normalizedRecentNetLamports:recent.toString(),midpointRenewalLamports:renewal.toString(),priceReturnBps:features.priceReturnBps,recentPositiveBuckets:c.recentPositiveBuckets,priorConsolidationVerified:priorVerified}}};
+ let reserveMinimum:bigint|null=null,reserveMaximum:bigint|null=null,reserveCount=0,effectiveMaximum:V3ReserveObservation|null=null,availableMaximum:V3ReserveObservation|null=null,effectiveMax:bigint|null=null,availableMax:bigint|null=null,availableCount=0;
+ for(const r of flow.reserveObservations??[]){
+  if(!r||!uint(r.at)||r.at<features.windowStartAt||r.at>now||r.at>marketAt||!text(r.evidence))continue;
+  const normalized=normalizeEconomicReserves(r);if(!normalized)continue;
+  const q=amount(r.rawQuoteReserveLamports),effective=amount(normalized.effectiveQuoteReserveLamports);reserveMinimum=reserveMinimum===null||q<reserveMinimum?q:reserveMinimum;reserveMaximum=reserveMaximum===null||q>reserveMaximum?q:reserveMaximum;reserveCount++;
+  if(effectiveMax===null||effective>effectiveMax){effectiveMax=effective;effectiveMaximum=r;}
+  if(normalized.availableQuoteReserveLamports!==null){const available=amount(normalized.availableQuoteReserveLamports);availableCount++;if(availableMax===null||available>availableMax){availableMax=available;availableMaximum=r;}}
+ }
+ return {features:old.features,flow,renewal,net,recent,buyerAmounts:[...buyerAmounts.values()],largestExecutedSell,reserveMinimum,reserveMaximum,reserveCount,effectiveMaximum,availableMaximum,components:{...c,economicBalance:null,sizingReason:'normal-equity-baseline',reserveEconomics:{version:ECONOMIC_RESERVE_COMPARISON_VERSION,observations:reserveCount,availableFundsObservations:availableCount,maximumEffectiveQuoteLamports:effectiveMax?.toString()??null,maximumAvailableQuoteLamports:availableMax?.toString()??null,comparisons:[]},continuationEvidence:{wholeWindowNetLamports:net.toString(),normalizedRecentNetLamports:recent.toString(),midpointRenewalLamports:renewal.toString(),priceReturnBps:features.priceReturnBps,recentPositiveBuckets:c.recentPositiveBuckets,priorConsolidationVerified:priorVerified}}};
 }
 function marketPool(m:V3MarketEvidence,flow:V3AuditedFlow,now:number):Pool{
  if(m.mint!==flow.mint||m.pool!==flow.pool||!text(m.evidence)||!uint(m.at)||m.at>now||now-m.at>P.exit.maximumQuoteAgeMs||!uint(m.slippageBps)||m.slippageBps>=10000||!m.fees||Object.keys(m.fees).sort().join(',')!=='creatorFeeBps,lpFeeBps,protocolFeeBps'||Object.values(m.fees).some(n=>!uint(n)||n>=10000)||Object.values(m.fees).reduce((n,v)=>n+v,0)>=10000)throw Error('V31_FRESH_MATCHED_POOL_REQUIRED');
@@ -113,18 +123,26 @@ function assessPrepared(p:Prepared,now:number,m?:V3MarketEvidence):V31BuyingAsse
  const liquidation=(state:Pool)=>{const sale=v3CpmmSell(state,entry.output),net=sale.output*BigInt(10000-m.slippageBps)/10000n;return {gross:sale.gross,net:max(0n,net-exitGas)};};
  c.proposedConsumedLamports=cost.toString();c.maximumConsumedLamports=m.maximumConsumedLamports;c.cashLimited=m.cashLimited===true;c.sizingReason=m.cashLimited===true?'cash-affordability':cost<amount(m.maximumConsumedLamports)?'liquidity-economics':'normal-equity-baseline';
  const dust=p.buyerAmounts.filter(q=>q*10000n<cost*100n);c.dustBuyerCount=dust.length;c.dustBuyVolumeBps=bps(dust.reduce((n,q)=>n+q,0n),amount(f.buyLamports));
- const largestPriorRaw=max(pool.raw,p.reserveMaximum??0n);c.reserveStability={observations:p.reserveCount,minimumRawQuoteLamports:p.reserveMinimum?.toString()??null,maximumRawQuoteLamports:p.reserveMaximum?.toString()??null};
+ // Raw extrema remain descriptive only; they never establish economic depth.
+ c.reserveStability={observations:p.reserveCount,minimumRawQuoteLamports:p.reserveMinimum?.toString()??null,maximumRawQuoteLamports:p.reserveMaximum?.toString()??null};
  const scenarios:V31SellScenario[]=[];
- const recordScenario=(name:string,evidence:V31SellScenario['riskEvidence'],units:bigint,state?:Pool)=>{
+ const recordScenario=(name:string,evidence:V31SellScenario['riskEvidence'],units:bigint,state?:Pool,reserveChange?:EconomicReserveChange)=>{
   let stressed=state??entry.pool,admitted=units;
   if(units>0n){const opposing=v31VaultBoundedOpposingSale(stressed,units);admitted=opposing.units;stressed=opposing.pool;}
-  try{const sale=liquidation(stressed);scenarios.push({name,riskEvidence:evidence,assumedExternalSellBaseUnits:admitted.toString(),...(admitted!==units?{requestedExternalSellBaseUnits:units.toString()}:{}),requiredForAdmission:evidence==='current-liquidation',grossCurveLamports:sale.gross.toString(),netLamports:sale.net.toString(),lossFromConsumedCostBps:bps(cost-sale.net,cost),executable:sale.net>0n,classification:'CONDITIONAL_CPMM_SCENARIO_NOT_OBSERVED_EXECUTION'});return sale.net;}catch{scenarios.push({name,riskEvidence:evidence,assumedExternalSellBaseUnits:admitted.toString(),requiredForAdmission:evidence==='current-liquidation',grossCurveLamports:null,netLamports:null,lossFromConsumedCostBps:null,executable:false,classification:'CONDITIONAL_CPMM_SCENARIO_NOT_OBSERVED_EXECUTION'});return 0n;}
+  try{const sale=liquidation(stressed);scenarios.push({name,riskEvidence:evidence,assumedExternalSellBaseUnits:admitted.toString(),...(admitted!==units?{requestedExternalSellBaseUnits:units.toString()}:{}),...(reserveChange?{reserveChange}:{}),requiredForAdmission:evidence==='current-liquidation',grossCurveLamports:sale.gross.toString(),netLamports:sale.net.toString(),lossFromConsumedCostBps:bps(cost-sale.net,cost),executable:sale.net>0n,classification:'CONDITIONAL_CPMM_SCENARIO_NOT_OBSERVED_EXECUTION'});return sale.net;}catch{scenarios.push({name,riskEvidence:evidence,assumedExternalSellBaseUnits:admitted.toString(),...(reserveChange?{reserveChange}:{}),requiredForAdmission:evidence==='current-liquidation',grossCurveLamports:null,netLamports:null,lossFromConsumedCostBps:null,executable:false,classification:'CONDITIONAL_CPMM_SCENARIO_NOT_OBSERVED_EXECUTION'});return 0n;}
  };
  const immediate=recordScenario('immediate-full-liquidation','current-liquidation',0n);c.immediateNetLamports=immediate.toString();c.scenarios=scenarios;
  if(immediate===0n){d.liquidityResilience=dimension('failed','current-complete-position-cannot-liquidate-net-of-costs');return result(f,'failed','v3.1-current-full-position-liquidation-not-executable',c,d);}
  const observed=recordScenario('point-in-time-observed-account-inventory','point-in-time-observed-account',amount(c.observedInventoryLargestBaseUnits));
  const plausible=recordScenario('plausible-undisposed-window-net-purchases','plausible-undisposed-purchases',amount(c.windowNetPurchasedLargestBaseUnits));
- const drain=max(0n,largestPriorRaw-pool.raw),remaining=max(0n,entry.pool.raw-drain),depth=drain===0n?immediate:recordScenario('repeat-observed-quote-depth-reduction','observed-reserve-depth-change',0n,{...entry.pool,raw:remaining});
+ // At most two coherent historical snapshots are compared. Do not combine
+ // independent extrema into a state that never existed. A decline in the
+ // effective curve coordinate does not invent a decline in unobserved real
+ // payout funds, and an accounting-only raw decline creates no stress.
+ let depth=immediate;const history=[p.effectiveMaximum,...(p.availableMaximum!==p.effectiveMaximum?[p.availableMaximum]:[])];
+ for(const prior of history){if(!prior)continue;const change=describeEconomicReserveChange(prior,m);if(!change)continue;c.reserveEconomics.comparisons.push({at:prior.at,evidence:prior.evidence,change});if(!change.economicDecreaseObserved)continue;
+  const name=change.effectiveQuoteDecreaseLamports!=='0'?'repeat-observed-effective-reserve-decrease':'repeat-observed-available-funds-decrease',net=recordScenario(name,'observed-reserve-depth-change',0n,repeatEconomicReserveDecrease(entry.pool,change),change);depth=net<depth?net:depth;
+ }
  recordScenario('unknown-seller-as-large-as-proposed-position','unknown-inventory-diagnostic',entry.output);
  recordScenario('historical-largest-executed-sell-repeat','historical-diagnostic',p.largestExecutedSell);
  recordScenario('historical-maximum-account-repeat','historical-diagnostic',amount(c.historicalMaximumObservedAccountBaseUnits));
@@ -138,7 +156,7 @@ function assessPrepared(p:Prepared,now:number,m?:V3MarketEvidence):V31BuyingAsse
  return result(f,balance>0n?'not-rejected':'failed',balance>0n?'v3.1-positive-joint-conditional-economic-balance; not-a-profit-forecast':'v3.1-nonpositive-joint-conditional-economic-balance',c,d);
 }
 export function assessLiquidityResilientBuyingV31(features:FlowFeatures,now:number,evidence?:V31Evidence):V31BuyingAssessment{
- if(!evidence)return result(features,'unavailable','v3.1-complete-audited-trades-required');const p=prepare(features,now,evidence.flow);return p?assessPrepared(p,now,evidence.market):result(features,'unavailable','v3.1-complete-matched-audited-trades-required');
+ if(!evidence)return result(features,'unavailable','v3.1-complete-audited-trades-required');const p=prepare(features,now,evidence.flow,evidence.market?.at);return p?assessPrepared(p,now,evidence.market):result(features,'unavailable','v3.1-complete-matched-audited-trades-required');
 }
 export type V31RuleContext=AdaptiveRuleContext&{v3?:V31Evidence};
 export type V31RuleDecision=Omit<V31BuyingAssessment,'status'|'qualified'>&{qualified:boolean;kind:'missing-data'|'market-exclusion'|'strategy-rejection'|'risk-rejection'|'qualified';ruleVersion:typeof LIQUIDITY_RESILIENT_MOMENTUM_V3_1_VERSION;at:number};
@@ -158,7 +176,7 @@ export type V31FrontierSelected={buyInputLamports:string;expectedBaseUnits:strin
 export type V31FrontierCandidate=V31FrontierSelected&{status:V31BuyingAssessment['status'];reason:string;jointConditionalBalanceLamports:string|null};
 export type V31SizeFrontier={selected:V31FrontierSelected|null;reason:string;assessment:V31BuyingAssessment;candidates:V31FrontierCandidate[];sourceEvidence:string;at:number;isGlobalOptimumCertified:false;search:{integerInputBits:number;testedSizes:number;maximumTests:number;method:'integer-geometric-probes-and-local-refinement';coverage:'BEST_TESTED_NOT_GLOBAL_OPTIMUM'}};
 export function evaluateV31SizeFrontier(features:FlowFeatures,now:number,evidence:V31Evidence&{market:V3MarketEvidence}):V31SizeFrontier{
- const m=evidence.market,p=prepare(features,now,evidence.flow),initial=p?assessPrepared(p,now,m):result(features,'unavailable','v3.1-complete-matched-audited-trades-required'),bits=money(m.buyInputLamports)?amount(m.buyInputLamports).toString(2).length:0,maximumTests=4*bits+8;
+ const m=evidence.market,p=prepare(features,now,evidence.flow,m.at),initial=p?assessPrepared(p,now,m):result(features,'unavailable','v3.1-complete-matched-audited-trades-required'),bits=money(m.buyInputLamports)?amount(m.buyInputLamports).toString(2).length:0,maximumTests=4*bits+8;
  const output=(selected:V31FrontierSelected|null,reason:string,assessment:V31BuyingAssessment,candidates:V31FrontierCandidate[]):V31SizeFrontier=>({selected,reason,assessment,candidates,sourceEvidence:m.evidence,at:m.at,isGlobalOptimumCertified:false,search:{integerInputBits:bits,testedSizes:candidates.length,maximumTests,method:'integer-geometric-probes-and-local-refinement',coverage:'BEST_TESTED_NOT_GLOBAL_OPTIMUM'}});
  if(!p||initial.status==='unavailable')return output(null,initial.reason,initial,[]);let pool:Pool;try{pool=marketPool(m,evidence.flow,now);}catch{return output(null,initial.reason,initial,[]);}
  const candidates=new Map<string,{row:V31FrontierCandidate;assessment:V31BuyingAssessment}>();let best:{row:V31FrontierCandidate;assessment:V31BuyingAssessment;balance:bigint}|null=null;
@@ -184,7 +202,8 @@ export function evaluateV31SizeFrontier(features:FlowFeatures,now:number,evidenc
  return chosen?output({buyInputLamports:chosen.row.buyInputLamports,expectedBaseUnits:chosen.row.expectedBaseUnits,buyCurveInputLamports:chosen.row.buyCurveInputLamports,proposedConsumedLamports:chosen.row.proposedConsumedLamports},'v3.1-highest-positive-joint-conditional-balance-among-tested-exact-sizes',chosen.assessment,rows):output(null,'v3.1-no-positive-tested-size-economic-balance; untested-sizes-not-certified',initial,rows);
 }
 export const deriveV31Consolidation=deriveV3Consolidation;
-/** V3.1 changes only the owner-authorized cost/trailing stop distances; other V3 holding protections remain. */
+/** V3.1 retains its authorized stops and applies economic reserve comparisons;
+ * the historical V3 exit policy and raw comparison path remain unchanged. */
 export const evaluateLiquidityResilientExitV31=(input:V3ExitInput)=>evaluateLiquidityResilientExit(input,P.exit);
 export class V31AssessmentSeries{
  private readonly histories=new Map<string,{pool:string;windows:V3ConsolidationEvidence[]}>();private evictions=0;

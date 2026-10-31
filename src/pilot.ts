@@ -124,7 +124,14 @@ export function recordPilotStageTransition<T extends {contractSha256:string;stag
   // V3 is an explicit successor to the installed adaptive policy. Its own
   // immutable hash is also valid on ordinary process restart; no financial
   // epoch or risk state is created or changed by this operating-manifest row.
-  const predecessorAllowed=v31?[LIQUIDITY_RESILIENT_PILOT_CONTRACT_SHA256,LIQUIDITY_RESILIENT_V3_1_PILOT_CONTRACT_SHA256].includes(manifest.contractSha256):resilient?[ADAPTIVE_PILOT_CONTRACT_SHA256,LIQUIDITY_RESILIENT_PILOT_CONTRACT_SHA256].includes(manifest.contractSha256):known.includes(manifest.contractSha256)||priorAdaptive;
+  // Exact reviewed V3.1 predecessors may advance to the selected current V3.1
+  // contract. They are historical provenance only, never active/rollback
+  // bindings; the transition retains the old hash and all financial history.
+  const priorV31=v31&&[
+    'c6388e70d2366a2310c7f05c5184aaa20b2b469ff746e247f39b358da8af2b7d', // e5dce137: original V3.1 15% stops.
+    'b05238659a3665a877225abccaf5775f3b1df6bc58598888d93879ed560ed271', // 1423b184: owner-authorized V3.1 25% stops.
+  ].includes(manifest.contractSha256);
+  const predecessorAllowed=v31?priorV31||[LIQUIDITY_RESILIENT_PILOT_CONTRACT_SHA256,LIQUIDITY_RESILIENT_V3_1_PILOT_CONTRACT_SHA256].includes(manifest.contractSha256):resilient?[ADAPTIVE_PILOT_CONTRACT_SHA256,LIQUIDITY_RESILIENT_PILOT_CONTRACT_SHA256].includes(manifest.contractSha256):known.includes(manifest.contractSha256)||priorAdaptive;
   need(predecessorAllowed&&/^[a-z0-9-]{1,60}$/.test(runId)&&Number.isSafeInteger(at)&&at>=0,'PILOT_STAGE_TRANSITION_BINDING');
   const previous=manifest.stageHistory??[];need(previous.length<64&&(!previous.length||at>=previous.at(-1)!.at),'PILOT_STAGE_HISTORY_BOUND');
   manifest.stageHistory=[...previous,{runId,at,stage,contractSha256:configuration.contractSha256,previousContractSha256:manifest.contractSha256}];manifest.contractSha256=configuration.contractSha256;return configuration;
