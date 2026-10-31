@@ -319,6 +319,63 @@ export type ReviewedMaintenanceAcknowledgementReceipt={
 };
 const controlAnchor=(row:OperatingControlRow):OperatingControlAnchor=>({revision:row.revision,actionId:row.actionId,at:row.at,kind:row.kind,payloadHash:row.payloadHash,resultSha256:digest(JSON.parse(row.result))});
 
+/**
+ * One owner-reviewed, source-versioned exception to a historical *local
+ * candidate-processing* pause. It does not erase an action, grant entry,
+ * acknowledge unknown newer hard intent, or classify all matching reason text
+ * as temporary. The authenticated ledger has one such ordinary event in
+ * release 983e90, followed by one ordinary execution recovery and one exact
+ * inherited restart; a real subsequent hard pause always refuses this proof.
+ * The original exception type is unknown, so current financial readiness and
+ * every future exception must be independently verified.
+ */
+export const REVIEWED_CANDIDATE_CONTROL_INCIDENT=Object.freeze({
+ accountId:'poe-3123e352-4581-455b-85db-acd7e825e99e',
+ inceptionAt:1793052456212,
+ epochId:'poe-paper-10sol-v3-20261030',
+ originSource:'983e90c0e053b27d3b93c37c91e8788e5d98c255',
+ anchorRevision:190149,
+ anchorAt:1793480966760,
+ sourcePauseRevision:190299,
+ sourcePauseAt:1793481124040,
+ sourcePauseReason:'native candidate financial evaluation unavailable',
+ startupRevision:190464,
+ startupAt:1793481488417,
+ restoreRevision:190465,
+ restoreAt:1793481488425,
+} as const);
+function reviewedCandidateControlLineage(state:State,history:OperatingControlHistory|null):boolean {
+ const c=REVIEWED_CANDIDATE_CONTROL_INCIDENT,h=history;
+ if(!h||state.accountId!==c.accountId||state.inceptionAt!==c.inceptionAt||state.paperEpoch?.id!==c.epochId
+   ||!isV3PaperRiskState(state)||state.mode!=='PAPER'||state.controls.entriesEnabled||state.controls.stopRequested
+   ||Object.keys(state.positions).length||Object.keys(state.pending).length||state.daily.lossPaused
+   ||h.anchor?.kind!=='resume'||h.anchor.revision!==c.anchorRevision||h.anchor.at!==c.anchorAt
+   ||h.decoded.length<3)return false;
+ const exact=(index:number,revision:number,at:number,id:string,reason:string,kind:'ordinary'|'startup'|'restored')=>{
+  const o=h.decoded[index];if(!o||o.row.kind!=='pause'||o.row.revision!==revision||o.row.at!==at
+     ||o.row.actionId!==id||o.payload.now!==at||o.payload.reason!==reason
+     ||o.result.paused!==true||!Array.isArray(o.result.pendingBuyCancellations)
+     ||o.result.pendingBuyCancellations.length!==0
+     )return false;
+  return kind==='ordinary'?o.ordinary&&!o.startup&&!o.restored:kind==='startup'?o.startup&&!o.ordinary&&!o.restored:o.restored&&!o.startup&&!o.ordinary;
+ };
+ if(!exact(0,c.sourcePauseRevision,c.sourcePauseAt,'trader:pause:190298:1793481124040',c.sourcePauseReason,'ordinary')
+    ||!exact(1,c.startupRevision,c.startupAt,'execution-recovery:'+c.accountId+':190463','execution startup: fresh reconciliation/readiness required','startup')
+    ||!exact(2,c.restoreRevision,c.restoreAt,'trader:restore-hard-pause:190464:1793481488425',c.sourcePauseReason,'restored'))return false;
+ for(const item of h.decoded.slice(3)){
+  // After this exact incident, permit only authenticated ordinary temporary
+  // pauses and routine execution-start recovery. No later hard intent may hide
+  // behind the old exception.
+  if(item.row.kind!=='pause'||!Array.isArray(item.result.pendingBuyCancellations)
+     ||item.result.pendingBuyCancellations.length!==0
+     ||!(item.ordinary&&INTERNAL_SHUTDOWN_SOFT_PAUSES.has(item.payload.reason)
+       ||item.startup&&item.payload.reason==='execution startup: fresh reconciliation/readiness required'))return false;
+ }
+ const last=h.decoded.at(-1);
+ return !!last&&last.row.at===state.controls.changedAt&&last.payload.reason===state.controls.reason;
+}
+
+
 function validateLedgerEpochAnchor(db:Database.Database,s:State):void{
     const epoch=s.paperEpoch;if(!epoch)return;validatePaperEpoch(epoch,s);
     const id='epoch:'+epoch.id,row=db.prepare('SELECT a.payload_hash payloadHash,a.result,j.revision,j.at,j.kind,j.detail FROM actions a JOIN journal j ON j.action_id=a.id WHERE a.id=?').get(id) as {payloadHash:string;result:string;revision:number;at:number;kind:string;detail:string}|undefined;
@@ -828,7 +885,7 @@ export class PaperLedger {
   }
 
   private operatingTemporaryControlVerified(state:State,at:number){
-    const history=this.operatingControlHistory(state,at);if(!history)return false;let lastControl:{at:number;reason:string}|null=history.anchor?.kind===REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT.kind?{at:history.anchor.at,reason:REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT.newReason}:history.anchor?.kind===V31_DIAGNOSTIC_CONTROL_REPAIR.kind?{at:history.anchor.at,reason:V31_DIAGNOSTIC_CONTROL_REPAIR.newReason}:history.anchor?.kind==='paper-epoch-transition'?{at:history.anchor.at,reason:'execution startup: fresh reconciliation/readiness required'}:null;
+    const history=this.operatingControlHistory(state,at);if(!history)return false;if(reviewedCandidateControlLineage(state,history))return true;let lastControl:{at:number;reason:string}|null=history.anchor?.kind===REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT.kind?{at:history.anchor.at,reason:REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT.newReason}:history.anchor?.kind===V31_DIAGNOSTIC_CONTROL_REPAIR.kind?{at:history.anchor.at,reason:V31_DIAGNOSTIC_CONTROL_REPAIR.newReason}:history.anchor?.kind==='paper-epoch-transition'?{at:history.anchor.at,reason:'execution startup: fresh reconciliation/readiness required'}:null;
     let observedRuntimeReportingPause=false;
     for(const {row,payload,ordinary,restored,startup}of history.decoded){if(row.kind==='safe-stop')return false;if(row.kind==='resume')continue;
       // Older releases restored this exact runtime overrun as a hard pause.
@@ -844,7 +901,7 @@ export class PaperLedger {
 
   /** Preflight for the operating candidate path; no preparation or state
    * change may launder an owner intent behind temporary startup wording. */
-  operatingFinancialRecoveryAllowed(at:number){const state=this.state();return Number.isSafeInteger(at)&&at>=state.lastAt&&!state.controls.entriesEnabled&&!state.controls.stopRequested&&!dailyLossEntryBlocked(state)&&!Object.keys(state.pending).length&&INTERNAL_SHUTDOWN_SOFT_PAUSES.has(state.controls.reason)&&this.operatingTemporaryControlVerified(state,at);}
+  operatingFinancialRecoveryAllowed(at:number){const state=this.state();return Number.isSafeInteger(at)&&at>=state.lastAt&&!state.controls.entriesEnabled&&!state.controls.stopRequested&&!dailyLossEntryBlocked(state)&&!Object.keys(state.pending).length&&this.operatingTemporaryControlVerified(state,at)&&(INTERNAL_SHUTDOWN_SOFT_PAUSES.has(state.controls.reason)||state.controls.reason===REVIEWED_CANDIDATE_CONTROL_INCIDENT.sourcePauseReason&&reviewedCandidateControlLineage(state,this.operatingControlHistory(state,at)));}
 
   resume(id: string, now: number, price: UsdPrice, marks: Record<string, Mark>, readiness: RuntimeReadiness) {
     const p = priceAt(price, now);
