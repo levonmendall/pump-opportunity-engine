@@ -1,0 +1,45 @@
+name: Build exact POE entry recovery release without runtime access
+on:
+  push:
+    branches: [repair/poe-entry-control-20261031]
+    paths: ['.github/workflows/poe-entry-recovery-release-build.yml']
+permissions:
+  contents: read
+jobs:
+  package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: b60fcfc2803a8d5bdd782a6be342d89e44a85c2d
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+          cache: npm
+      - name: Install pinned dependencies and typecheck
+        run: |
+          set -euo pipefail
+          npm ci --include=dev
+          npm run build
+      - name: Build unchanged EC2 bundle format from exact validated source
+        run: |
+          set -euo pipefail
+          umask 077
+          test "$(git rev-parse HEAD)" = b60fcfc2803a8d5bdd782a6be342d89e44a85c2d
+          node scripts/build-native-paper-ec2.mjs --output-directory /tmp/poe-native-paper-output-entry-recovery
+          git archive --format=tar HEAD | gzip -n > /tmp/poe-entry-recovery-source.tar.gz
+          printf '%s\n' "$(git rev-parse HEAD)" > /tmp/poe-entry-recovery-source-commit.txt
+          sha256sum /tmp/poe-native-paper-output-entry-recovery/* /tmp/poe-entry-recovery-source.tar.gz > /tmp/poe-entry-recovery-sha256.txt
+      - uses: actions/upload-artifact@v4
+        with:
+          name: poe-entry-recovery-b60fcfc-source-and-bundle
+          path: |
+            /tmp/poe-native-paper-output-entry-recovery/
+            /tmp/poe-entry-recovery-source.tar.gz
+            /tmp/poe-entry-recovery-source-commit.txt
+            /tmp/poe-entry-recovery-sha256.txt
+          retention-days: 7
+          if-no-files-found: error
