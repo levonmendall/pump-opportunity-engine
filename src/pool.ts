@@ -31,6 +31,8 @@ function canonical(pool:Pool,mint:PublicKey,key:PublicKey){
   need(pool.creator.equals(pumpPoolAuthorityPda(mint)) && key.equals(canonicalPumpPoolPda(mint)),'BAD_POOL_IDENTITY');
   need(pool.lpMint.equals(lpMintPda(key)),'BAD_LP_MINT');
 }
+/** Shared identity assertions only; this export grants no quote support. */
+export {canonical as assertCanonicalPumpPoolIdentity};
 
 export async function verifyMigration(rpc:ReadOnlyRpc,mint:PublicKey,signature:string,rec:EvidenceRecorder,signal?:AbortSignal){
   // Current mainnet v1 retains compiled JSON instruction indices; unlike web3's

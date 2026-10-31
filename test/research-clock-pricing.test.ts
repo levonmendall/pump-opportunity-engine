@@ -2,6 +2,8 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {PublicKey,SYSVAR_CLOCK_PUBKEY} from '@solana/web3.js';
+import {NATIVE_MINT,TOKEN_PROGRAM_ID,TOKEN_2022_PROGRAM_ID,getAssociatedTokenAddressSync} from '@solana/spl-token';
+import {canonicalPumpPoolPda} from '../src/sdk.js';
 import {quotePositionsSell,quotePool,type PoolWireAccount} from '../src/pool.js';
 import type {ReadOnlyRpc} from '../src/network.js';
 import {ResearchClockPositionPricer,decodeResearchBankClock,RESEARCH_CLOCK_COHERENT_POOL_CAPACITY,RESEARCH_CLOCK_RPC_ACCOUNT_CAPACITY} from '../src/research-clock-pricing.js';
@@ -22,10 +24,8 @@ function fixture(){
     if(method==='getBlockTime')return proof.quote.marketBlockTime as T;
     assert.equal(method,'getMultipleAccounts');
     const addresses=params[0] as string[];
-    if(addresses.length===1)return copy({context:state.context,value:[state.value[0]]}) as T;
-    assert.ok(addresses.length===7||addresses.length===8);
-    if(addresses.length===8)assert.equal(addresses[7],SYSVAR_CLOCK_PUBKEY.toBase58());
-    return copy({...state,value:[...state.value,...(addresses.length===8?[clock]:[])]}) as T;
+    const accounts=new Map<string,PoolWireAccount|null>(state.addresses.map((address:string,i:number)=>[address,state.value[i]??null]));accounts.set(SYSVAR_CLOCK_PUBKEY.toBase58(),clock);
+    return copy({context:state.context,value:addresses.map(address=>accounts.get(address)??null)}) as T;
   }};
   const rec={record(kind:string,data:unknown){records.push({kind,data:copy(data)});}};
   const moveSlot=()=>{state.context.slot++;const b=Buffer.from(clock.data[0],'base64');b.writeBigUInt64LE(BigInt(state.context.slot));clock.data[0]=b.toString('base64');};
@@ -333,8 +333,47 @@ function observationFixture(){
 }
 async function withObservationTime<T>(fn:(f:ReturnType<typeof observationFixture>)=>Promise<T>){const f=observationFixture(),realNow=Date.now;Date.now=()=>f.unix*1000+100;try{return await fn(f);}finally{Date.now=realNow;}}
 
-test('six distinct observation pools use2cold/1steady shared Clock reads without hypothetical trading quotes',async()=>withObservationTime(async f=>{
-  const p=new ResearchClockPositionPricer(f.rpc,f.rec),cold=await p.validateMany(f.requests);assert.equal(f.calls.length,2);assert.equal((f.calls[0]!.params[0] as string[]).length,6);assert.equal((f.calls[1]!.params[0] as string[]).length,28);
+test('one and four cold observation pools each use one RPC with the same total requested accounts as two-read discovery',async()=>{
+  for(const count of [1,4])await withObservationTime(async f=>{
+    const p=new ResearchClockPositionPricer(f.rpc,f.rec),selected=f.requests.slice(0,count),cold=await p.validateMany(selected);
+    assert.deepEqual(cold.unavailable,{});assert.equal(Object.keys(cold.validations).length,count);assert.equal(f.calls.length,1);
+    const keys=f.calls[0]!.params[0]as string[];assert.equal(keys.length,count+(4*count+4));assert.equal(keys.length,count===1?9:24);assert.equal(new Set(keys).size,keys.length);
+    for(const request of selected){const pool=canonicalPumpPoolPda(request.mint);for(const program of [TOKEN_PROGRAM_ID,TOKEN_2022_PROGRAM_ID])assert.ok(keys.includes(getAssociatedTokenAddressSync(request.mint,pool,true,program).toBase58()));assert.ok(keys.includes(getAssociatedTokenAddressSync(NATIVE_MINT,pool,true,TOKEN_PROGRAM_ID).toBase58()));}
+    assert.ok(keys.includes(SYSVAR_CLOCK_PUBKEY.toBase58()));assert.equal(p.usage().canonicalObservation.freshValidatedPools,count);assert.equal(p.usage().canonicalObservation.discoveryRequestsAvoided,1);
+    const warm=await p.validateMany(selected);assert.deepEqual(warm.unavailable,{});assert.equal(f.calls.length,2);assert.equal((f.calls[1]!.params[0]as string[]).length,4*count+4,'warm links omit unused alternate vaults, but never the current actual account');
+    assert.equal(f.calls.every(call=>call.method==='getMultipleAccounts'),true);
+  });
+});
+
+test('cold support selects canonical legacy and Token2022 vaults from each fresh mint owner in a mixed hinted cohort',async()=>withObservationTime(async f=>{
+  // OFFLINE synthetic legacy conversion of retained Token2022 bytes. This is
+  // layout/owner/ATA validation coverage, not an observed token-program change.
+  const request=f.requests[0]!,state=f.states[0]!,pool=canonicalPumpPoolPda(request.mint),legacyVault=getAssociatedTokenAddressSync(request.mint,pool,true,TOKEN_PROGRAM_ID).toBase58(),oldVault=state.addresses[5]as string;
+  const poolWire=copy(f.accounts.get(state.addresses[0]))!,poolRaw=Buffer.from(poolWire.data[0],'base64');assert.equal(poolRaw.subarray(139,171).toString('hex'),new PublicKey(oldVault).toBuffer().toString('hex'));new PublicKey(legacyVault).toBuffer().copy(poolRaw,139);poolWire.data[0]=poolRaw.toString('base64');f.accounts.set(state.addresses[0],poolWire);
+  const mint=copy(f.accounts.get(request.mint.toBase58()))!;mint.owner=TOKEN_PROGRAM_ID.toBase58();mint.data[0]=Buffer.from(mint.data[0],'base64').subarray(0,82).toString('base64');f.accounts.set(request.mint.toBase58(),mint);
+  const base=copy(f.accounts.get(oldVault))!;base.owner=TOKEN_PROGRAM_ID.toBase58();base.data[0]=Buffer.from(base.data[0],'base64').subarray(0,165).toString('base64');f.accounts.set(legacyVault,base);f.accounts.set(oldVault,{...copy(base),owner:PublicKey.default.toBase58()});
+  const selected=f.requests.slice(0,4).map((r,i)=>i>=2?{...r,dependencyHints:{baseVault:f.states[i]!.addresses[5],quoteVault:f.states[i]!.addresses[6]}}:r),p=new ResearchClockPositionPricer(f.rpc,f.rec),supported=await p.validateMany(selected);
+  assert.deepEqual(supported.unavailable,{});assert.equal(Object.keys(supported.validations).length,4);assert.equal(f.calls.length,1);assert.equal((f.calls[0]!.params[0]as string[]).length,22,'two real hints omit two alternate base vault accounts');
+  assert.equal(supported.validations[request.mint.toBase58()]!.summary.tokenProgram,TOKEN_PROGRAM_ID.toBase58());assert.equal(supported.validations[request.mint.toBase58()]!.summary.baseAssociatedAccount.accountLengthBytes,165);
+  assert.equal(supported.validations[f.requests[1]!.mint.toBase58()]!.summary.tokenProgram,TOKEN_2022_PROGRAM_ID.toBase58());assert.equal(p.usage().canonicalObservation.freshValidatedPools,2);assert.equal(p.usage().dependencyHints.freshValidatedPools,2);
+}));
+
+test('cold observation isolates missing pool or mint, unsupported current owner, missing actual vault and noncanonical pool links',async()=>{
+  for(const fault of ['missing-pool','pool-owner','missing-mint','mint-owner','missing-actual-vault','pool-links'])await withObservationTime(async f=>{
+    const request=f.requests[0]!,state=f.states[0]!,name=request.mint.toBase58();
+    if(fault==='missing-pool')f.accounts.set(state.addresses[0],null);
+    if(fault==='pool-owner')f.accounts.get(state.addresses[0])!.owner=PublicKey.default.toBase58();
+    if(fault==='missing-mint')f.accounts.set(name,null);
+    if(fault==='mint-owner')f.accounts.get(name)!.owner=PublicKey.default.toBase58();
+    if(fault==='missing-actual-vault'){const original=copy(f.accounts.get(state.addresses[5]))!;f.accounts.set(state.addresses[5],null);const alternate=getAssociatedTokenAddressSync(request.mint,canonicalPumpPoolPda(request.mint),true,TOKEN_PROGRAM_ID);assert.notEqual(alternate.toBase58(),state.addresses[5]);f.accounts.set(alternate.toBase58(),original);}
+    if(fault==='pool-links'){const wire=f.accounts.get(state.addresses[0])!,raw=Buffer.from(wire.data[0],'base64');raw[139]=raw[139]!^1;wire.data[0]=raw.toString('base64');}
+    const p=new ResearchClockPositionPricer(f.rpc,f.rec),result=await p.validateMany(f.requests.slice(0,4));assert.equal(f.calls.length,1,'invalid state never triggers an inline retry or a discovery call');assert.equal(result.validations[name],undefined);assert.equal(Object.keys(result.validations).length,3);assert.equal(Object.hasOwn(p.usage().cachedPoolSlots,name),false);
+    assert.equal(result.unavailable[name],fault==='missing-pool'||fault==='pool-owner'?'BAD_POOL_OWNER':fault==='mint-owner'?'UNSUPPORTED_TOKEN_PROGRAM':fault==='pool-links'?'BAD_VAULT_ADDRESS':'MISSING_ACCOUNT');
+  });
+});
+
+test('six distinct observation pools use1cold/1steady shared Clock read without hypothetical trading quotes',async()=>withObservationTime(async f=>{
+  const p=new ResearchClockPositionPricer(f.rpc,f.rec),cold=await p.validateMany(f.requests);assert.equal(f.calls.length,1);assert.equal((f.calls[0]!.params[0] as string[]).length,34,'same total account slots as the previous6+28 two-read path');
   const before=f.calls.length,steady=await p.validateMany(f.requests);assert.equal(f.calls.length-before,1);assert.equal((f.calls.at(-1)!.params[0] as string[]).length,28);
   for(const result of [cold,steady]){assert.deepEqual(result.unavailable,{});assert.equal(Object.keys(result.validations).length,6);for(const r of f.requests){const support=result.validations[r.mint.toBase58()]!;assert.equal(support.sourceSlot,f.context.slot);assert.equal(support.summary.clockSlot,f.context.slot);assert.equal(support.summary.receivedAt,result.context!.receivedAt);assert.equal(support.at,Date.now());assert.match(support.evidence,/^research-clock-observation-support:[a-f0-9]{64}$/);assert.equal(Object.hasOwn(support.summary,'sell'),false);assert.equal(Object.hasOwn(support.summary,'buy'),false);}}
   assert.equal(f.records.some(r=>r.kind==='research-clock-position-sell-quote'),false);assert.equal(p.usage().cachePoolCapacity,RESEARCH_CLOCK_COHERENT_POOL_CAPACITY+7);assert.equal(p.usage().dependencyAccountCapacity,RESEARCH_CLOCK_RPC_ACCOUNT_CAPACITY);
@@ -353,7 +392,7 @@ test('alternating six observation pools and three holdings preserves shared link
 test('observation changed links and missing vaults isolate affected pools and rediscover links in one recovery batch',async()=>withObservationTime(async f=>{
   const p=new ResearchClockPositionPricer(f.rpc,f.rec);await p.validateMany(f.requests);const pool=f.states[0]!.addresses[0],original=copy(f.accounts.get(pool))!,changed=copy(original),data=Buffer.from(changed.data[0],'base64');data[175]=data[175]!^1;changed.data[0]=data.toString('base64');f.accounts.set(pool,changed);const vault=f.states[1]!.addresses[6],oldVault=copy(f.accounts.get(vault));f.accounts.set(vault,null);
   let before=f.calls.length;const failed=await p.validateMany(f.requests);assert.equal(f.calls.length-before,1);assert.equal(failed.unavailable[f.requests[0]!.mint.toBase58()],'POOL_LINKS_CHANGED');assert.equal(failed.unavailable[f.requests[1]!.mint.toBase58()],'MISSING_ACCOUNT');assert.equal(Object.keys(failed.validations).length,4);assert.equal(Object.keys(p.usage().cachedPoolSlots).length,4);
-  f.accounts.set(pool,original);f.accounts.set(vault,oldVault??null);before=f.calls.length;const recovered=await p.validateMany(f.requests);assert.equal(f.calls.length-before,2);assert.equal((f.calls[before]!.params[0] as string[]).length,2);assert.equal(Object.keys(recovered.validations).length,6);
+  f.accounts.set(pool,original);f.accounts.set(vault,oldVault??null);before=f.calls.length;const recovered=await p.validateMany(f.requests);assert.equal(f.calls.length-before,1);assert.equal((f.calls[before]!.params[0] as string[]).length,30,'only the two cold pools add alternate canonical base vaults');assert.equal(Object.keys(recovered.validations).length,6);
 }));
 
 test('observation common Clock/source/slot faults and slow recording refuse the whole batch without refreshing timestamps',async()=>{
@@ -458,10 +497,10 @@ test('original vault address hints remove only cold discovery; all support and l
  const oldValue=observation.validations[key]!.summary;const vault=Buffer.from(f.state.value[6].data[0],'base64');vault.writeBigUInt64LE(vault.readBigUInt64LE(64)+10_000_000n,64);f.state.value[6].data[0]=vault.toString('base64');f.moveSlot();const before=f.calls.length,quote=await p.quote(f.request);assert.equal(f.calls.length-before,1);assert.equal(quote.slot,f.state.context.slot);assert.notEqual(quote.slot,oldValue.slot);assert.equal(quote.clockSlot,quote.slot);const baseline=await quotePositionsSell(f.rpc as ReadOnlyRpc,[f.request],{record(){}});assert.deepEqual(quote.sell,baseline.quotes[key]!.sell);assert.deepEqual(quote.feeBps,baseline.quotes[key]!.feeBps);
 }));
 
-test('a stale vault hint is technical unavailability, then the next ordinarily admitted call discovers actual links',async()=>withTime(async f=>{
+test('a stale vault hint is technical unavailability, then the next ordinarily admitted canonical union discovers actual links',async()=>withTime(async f=>{
  const key=f.request.mint.toBase58(),dependencyHints={baseVault:'11111111111111111111111111111111',quoteVault:f.state.addresses[6]},rpc={async call<T>(method:string,params:unknown[]=[]){const response=await f.rpc.call<any>(method,params);if((params[0]as string[]).includes(dependencyHints.baseVault))response.value[5]=null;return response as T;}},p=new ResearchClockPositionPricer(rpc,f.rec);
  const first=await p.validateMany([{mint:f.request.mint,dependencyHints}]);assert.equal(first.unavailable[key],'POOL_LINKS_CHANGED');assert.equal(first.validations[key],undefined);assert.equal(f.calls.length,1,'bad hints never trigger an inline discovery retry');assert.equal(p.usage().dependencyHints.rejectedHints,1);assert.equal(p.usage().dependencyHints.discoveryRequestsAvoided,0);assert.equal(p.usage().cachedPoolSlot,null);assert.ok(f.records.some(r=>r.kind==='research-clock-dependency-hint-rejected'&&r.data.financialPermission===false&&r.data.marketAttractivenessUnknown===true));
- let admitted=false;const before=f.calls.length;await assert.rejects(p.validateMany([{mint:f.request.mint,dependencyHints}],undefined,{latestStartAt:Date.now()+1000,admissionOpen:()=>admitted}),/ADMISSION_CLOSED/);assert.equal(f.calls.length,before,'fallback cannot bypass ordinary admission');admitted=true;const recovered=await p.validateMany([{mint:f.request.mint,dependencyHints}],undefined,{latestStartAt:Date.now()+1000,admissionOpen:()=>admitted});assert.equal(f.calls.length-before,2);assert.ok(recovered.validations[key]);assert.equal(p.usage().dependencyHints.ordinaryDiscoveryFallbackReads,1);assert.equal(p.usage().dependencyHints.hotRejectedHints,1);assert.equal(p.usage().dependencyHints.discoveryRequestsAvoided,0);
+ let admitted=false;const before=f.calls.length;await assert.rejects(p.validateMany([{mint:f.request.mint,dependencyHints}],undefined,{latestStartAt:Date.now()+1000,admissionOpen:()=>admitted}),/ADMISSION_CLOSED/);assert.equal(f.calls.length,before,'fallback cannot bypass ordinary admission');admitted=true;const recovered=await p.validateMany([{mint:f.request.mint,dependencyHints}],undefined,{latestStartAt:Date.now()+1000,admissionOpen:()=>admitted});assert.equal(f.calls.length-before,1);assert.equal((f.calls.at(-1)!.params[0]as string[]).length,9);assert.ok(recovered.validations[key]);assert.equal(p.usage().dependencyHints.ordinaryDiscoveryFallbackReads,1);assert.equal(p.usage().dependencyHints.hotRejectedHints,1);assert.equal(p.usage().dependencyHints.discoveryRequestsAvoided,0);assert.equal(p.usage().canonicalObservation.discoveryRequestsAvoided,1);
 }));
 
 test('hinted discovery never bypasses current fee ownership or same-batch bank Clock freshness',async()=>{

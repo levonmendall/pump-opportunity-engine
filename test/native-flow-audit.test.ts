@@ -1,7 +1,7 @@
 /** Deterministic signature-history audit mechanics. These synthetic identities
  * and timings are not forward market coverage, swaps, or financial evidence. */
 import{test}from'node:test';import assert from'node:assert/strict';import bs58 from'bs58';
-import{auditNativeFlowWindow,type NativeFlowAuditOptions}from'../src/native-flow-audit.js';
+import{auditNativeFlowWindow,type NativeFlowAuditOptions,type NativeAuditHistoryCache}from'../src/native-flow-audit.js';
 import type{NativeNotification}from'../src/pilot-native-flow.js';
 import type{PilotRpcCallOptions}from'../src/pilot-rpc.js';
 const pool=bs58.encode(Buffer.alloc(32,9)),target={startAt:100000,endAt:160000};
@@ -51,6 +51,37 @@ test('duplicate capture preserves the earliest availability; corrections and con
 
 test('malformed and duplicate independent history rows fail closed without extra requests',async()=>{
  for(const page of [[row(2,110),row(2,110)], [{...row(2,110),confirmationStatus:'processed'}],[row(2,110),row(1,120)],[{...row(2,110),signature:'invented'}]]){const f=fixture({pages:[page]}),r=await auditNativeFlowWindow(f.options);assert.equal(r.status,'unavailable');assert.match(r.reason,/HISTORY_CONTEXT/);assert.equal(f.calls.length,1);}
+});
+
+test('optional history blockTime is diagnostic only in both notification and bank-Clock fence modes',async()=>{
+ const samples=[{missing:true},{value:null},{value:'100'},{value:-1},{value:1.5},{value:Number.MAX_SAFE_INTEGER+1},{value:{unused:'malformed optional field'}},{value:0},{value:100}];
+ for(const bankClock of [false,true])for(const sample of samples){
+  const page=[row(2,110),row(1,100),row(4,90)].map(item=>{const value:any={...item};if('missing'in sample)delete value.blockTime;else value.blockTime=sample.value;return value;});
+  const original=structuredClone(page),f=fixture({pages:[page]}),call=f.options.call;let delivered:unknown;
+  f.options.call=async<T>(method:string,params:unknown[],signal?:AbortSignal,admission?:PilotRpcCallOptions)=>{const value=await call<T>(method,params,signal,admission);delivered=value;return value;};
+  const contextFences=bankClock?{lower:{slot:100,availableAt:99900},upper:{slot:200,availableAt:160500,bankClockAt:160000}}:undefined;
+  const result=await auditNativeFlowWindow({...f.options,...(contextFences?{contextFences}:{})});
+  assert.equal(result.status,'verified');assert.equal(result.notificationCompletenessVerified,true);assert.equal(result.executedFlowCompletenessVerified,true);assert.equal(f.calls.length,1);assert.equal(result.availableAt,161025);assert.deepEqual(result.target,target);assert.deepEqual(result.strictInteriorSlots,{lower:100,upper:200});assert.deepEqual(result.requiredSignatures,[signature(2)]);assert.equal(result.anchorKind,bankClock?'confirmed-bank-context':'notification');
+  assert.deepEqual(delivered,original,'the original RPC row objects are never rewritten');
+  const recorded=f.records.find(record=>record.kind==='native-flow-history-page')!.data,valid='value'in sample&&typeof sample.value==='number'&&Number.isSafeInteger(sample.value)&&sample.value>=0;
+  assert.ok(recorded.rows.every((item:any)=>item.blockTime===(valid?sample.value:null)));
+  if('missing'in sample)assert.deepEqual(recorded.blockTimeNormalization,{missing:3,malformed:0,normalizedTo:null,originalOptionalValuesRetained:false});
+  else if(sample.value!==null&&!valid)assert.deepEqual(recorded.blockTimeNormalization,{missing:0,malformed:3,normalizedTo:null,originalOptionalValuesRetained:false});
+  else assert.equal(recorded.blockTimeNormalization,undefined);
+ }
+});
+
+test('unknown optional history times cannot waive signature, slot, error or finality validity',async()=>{
+ for(const patch of [{signature:'invented'},{slot:-1},{slot:110.5},{err:undefined},{err:[]},{err:{}},{confirmationStatus:'processed'}]){
+  const invalid:any={...row(2,110),...patch};delete invalid.blockTime;
+  const f=fixture({pages:[[invalid,row(1,100),row(4,90)]]}),result=await auditNativeFlowWindow(f.options);
+  assert.equal(result.status,'unavailable');assert.equal(result.reason,'NATIVE_AUDIT_HISTORY_CONTEXT');assert.equal(result.complete,false);assert.equal(f.calls.length,1);
+ }
+ for(const success of [false,true]){
+  const unknown:any={...row(5,120,success)};delete unknown.blockTime;
+  const f=fixture({pages:[[unknown,row(2,110),row(1,100),row(4,90)]]}),result=await auditNativeFlowWindow({...f.options,completenessScope:'executed-transactions'});
+  assert.equal(result.status,success?'unusable':'verified');assert.equal(result.missingNotifications[0]!.blockTime,null);assert.equal(result.missingNotifications[0]!.success,success);assert.equal(result.notificationCompletenessVerified,false);assert.equal(result.executedFlowCompletenessVerified,!success);
+ }
 });
 
 test('provider refusal, elapsed time, abort and closed admission retain honest availability and never retry',async()=>{
@@ -201,4 +232,20 @@ test('history reuse preserves missing-success, finalized-conflict, pool-binding 
  const wrong=await auditNativeFlowWindow({...base,reusableHistory:{...cache,pool:bs58.encode(Buffer.alloc(32,8))},now:()=>161000,call:async<T>()=>{throw Error('MUST_NOT_DISPATCH');}});assert.equal(wrong.reason,'NATIVE_AUDIT_HISTORY_CACHE_BINDING');
  at=161000;const late=await auditNativeFlowWindow({...base,maximumElapsedMs:1000,now:()=>at,call:async<T>()=>{at=162001;return history.slice(0,100)as T;}});assert.equal(late.status,'unavailable');assert.equal(late.reason,'NATIVE_AUDIT_ELAPSED_LIMIT');
  const unfinalized=structuredClone(cache);(unfinalized.rows[0] as any).confirmationStatus='confirmed';const invalid=await auditNativeFlowWindow({...base,reusableHistory:unfinalized,now:()=>161000,call:async<T>()=>{throw Error('MUST_NOT_DISPATCH');}});assert.equal(invalid.reason,'NATIVE_AUDIT_HISTORY_CACHE_SCHEMA');
+});
+
+test('finalized history cache and replay normalize optional times without weakening fresh overlap or mutating retained evidence',async()=>{
+ const history=Array.from({length:200},(_,i)=>({...row(299-i,299-i),confirmationStatus:'finalized'})),notes=[note(100,100,99900),...Array.from({length:199},(_,i)=>note(101+i,101+i,100000+i*100)),note(300,300,160100)];
+ let cache:NativeAuditHistoryCache|undefined;
+ const original=fixture({notes,pages:[history.slice(0,100),history.slice(100)]}),first=await auditNativeFlowWindow({...original.options,onVerifiedHistory:value=>{cache=value;}});
+ assert.equal(first.status,'verified');assert.equal(original.calls.length,2);assert.ok(cache);
+ const malformed=structuredClone(cache);delete (malformed.rows[100] as any).blockTime;(malformed.rows[101] as any).blockTime='unavailable';(malformed.rows[102] as any).blockTime={diagnosticOnly:true};const retained=structuredClone(malformed);
+ const page=history.slice(0,100).map(item=>{const value:any={...item};delete value.blockTime;return value;});
+ let normalized:NativeAuditHistoryCache|undefined;const f=fixture({notes,pages:[page]}),result=await auditNativeFlowWindow({...f.options,now:()=>f.now+100,reusableHistory:malformed,onVerifiedHistory:value=>{normalized=value;}});
+ assert.equal(result.status,'verified');assert.equal(f.calls.length,1);assert.equal(result.historyRows,200);assert.deepEqual(result.comparedSignatures,first.comparedSignatures);assert.deepEqual(malformed,retained,'cache normalization happens only on the auditor private clone');assert.ok(normalized);assert.equal(normalized.rows.length,200);
+ assert.ok(normalized.rows.slice(0,103).every(item=>item.blockTime===null));assert.equal(normalized.rows[103]!.blockTime,100);
+ const reused=f.records.find(record=>record.kind==='native-flow-finalized-history-reused')!.data;assert.equal(reused.reusedRows,100);assert.ok(reused.rows.slice(0,3).every((item:any)=>item.blockTime===null));
+ const replay=JSON.parse(JSON.stringify(normalized)) as NativeAuditHistoryCache,replayed=fixture({notes,pages:[page]}),replayResult=await auditNativeFlowWindow({...replayed.options,now:()=>replayed.now+200,reusableHistory:replay});assert.equal(replayResult.status,'verified');assert.equal(replayed.calls.length,1);assert.deepEqual(replayResult.comparedSignatures,result.comparedSignatures);
+ for(const patch of [{success:'unknown'},{slot:-1},{confirmationStatus:'confirmed'}]){const bad=structuredClone(malformed);Object.assign(bad.rows[150]!,patch);const blocked=fixture({notes,pages:[page]}),rejected=await auditNativeFlowWindow({...blocked.options,now:()=>blocked.now+100,reusableHistory:bad});assert.equal(rejected.reason,'NATIVE_AUDIT_HISTORY_CACHE_SCHEMA');assert.equal(blocked.calls.length,0);}
+ const disagreement=structuredClone(malformed);disagreement.rows[50]!.success=false;const conflict=fixture({notes,pages:[page]}),rejected=await auditNativeFlowWindow({...conflict.options,now:()=>conflict.now+100,reusableHistory:disagreement});assert.equal(rejected.reason,'NATIVE_AUDIT_FINALIZED_HISTORY_CONFLICT');assert.equal(conflict.calls.length,1);
 });

@@ -12,7 +12,11 @@ import {FlowWindow,assessPredictiveBuying,type NormalizedTrade} from '../src/str
 import {nativePaperFeaturesSha256} from '../src/native-paper-contract.js';
 import {PILOT_VERSION,PILOT_CONTRACT_SHA256,CONCURRENT_PILOTS,type PilotBinding} from '../src/pilot-contract.js';
 import type {PilotMarket} from '../src/pilot-market.js';
-import type {MigrationIdentity} from '../src/migration-identity.js';
+import {canonicalObservationPool,type NativeObservationIdentity} from '../src/native-observation-identity.js';
+import type {ResearchClockObservationSupport} from '../src/research-clock-pricing.js';
+
+const offlineIdentity=(mint:string,at:number,migrationAt:number):NativeObservationIdentity=>({schemaVersion:1,baseMint:mint,pool:canonicalObservationPool(mint),migrationAt,migrationVerified:true,identityBasis:'retained-verified-metadata',identityAvailableAt:at,identityEvidence:'OFFLINE synthetic retained migration metadata',minimumSlot:1});
+const offlineSupport=(mint:string,at:number):ResearchClockObservationSupport=>({mint,pool:canonicalObservationPool(mint),at,sourceSlot:1,evidence:'OFFLINE synthetic current canonical pool validation',summary:{} as ResearchClockObservationSupport['summary']});
 
 test('native bridge retains every same-packet event when callback recording advances the clock',t=>{
  const directory=mkdtempSync(join(tmpdir(),'poe-OFFLINE-native-multi-event-')),accountId='poe-pilot-native-multi-event-fixture',base=Date.parse('2026-10-29T03:00:00Z'),mint='So11111111111111111111111111111111111111112';
@@ -22,7 +26,7 @@ test('native bridge retains every same-packet event when callback recording adva
  const unavailable=async()=>{throw Error('OFFLINE unexpected market request');};
  const market={registerPool(){},minimumSlot(_mint:string,slot:number){slots.push(slot);},quote:unavailable,executionQuote:unavailable,context:unavailable} as unknown as PilotMarket;
  const bridge=new NativePaper({ledger,market,fixtureAccountBinding:{accountId,inceptionAt:ledger.state().inceptionAt},binding:{version:PILOT_VERSION,contractSha256:PILOT_CONTRACT_SHA256,maxPositions:1},source:{usage:()=>({dataContract:'confirmed-program-activity-v3-shadow'}) as any,snapshot:()=>null},certificate:()=>null,record:(kind,data)=>{const row=data as {kind?:string;trade?:NormalizedTrade};if(kind==='trader-input'&&row.kind==='trade'){trades.push(structuredClone(row.trade!));if(advanceDuringFirstRecord){advanceDuringFirstRecord=false;at++;}}},now:()=>at,admitNewRisk:()=>false});
- bridge.allocated({baseMint:mint,pool:'OFFLINE-POOL',signature:'OFFLINE-ORIGIN',chainBlockTime:Math.floor((base-600000)/1000),slot:1} as MigrationIdentity);bridge.opened({mint,at});
+ bridge.allocated(offlineIdentity(mint,at,base-600000));bridge.currentPoolValidated(offlineSupport(mint,at));bridge.opened({mint,at});
  assert.equal(bridge.trader.hasCandidate(mint),true);assert.equal(bridge.trader.hasCandidate('OFFLINE-UNSELECTED'),false);
  const native=new FlowWindow(mint,at),availableAt=base+100;at=availableAt;
  for(let n=0;n<2;n++){
@@ -30,7 +34,7 @@ test('native bridge retains every same-packet event when callback recording adva
   const trade:NormalizedTrade={identity:{signature:'OFFLINE-SHARED-PACKET',instructionIndex:0,eventIndex:n},mint,wallet:'OFFLINE-BUYER-'+n,side:'buy',quoteLamports:'300000000',tokenUnits:'300000',receivedAt:availableAt,commitment:'confirmed',slot:100+n};
   assert.equal(native.ingest(trade),'accepted');bridge.trade({trade,evidence:{} as any,validatedAt:availableAt,dataContract:'confirmed-program-activity-v3-shadow',transferCrossCheck:'UNAVAILABLE'});
  }
- assert.equal(at,availableAt+1,'actual callback time advances without retiming the packet');assert.deepEqual(trades.map(r=>r.receivedAt),[availableAt,availableAt]);assert.deepEqual(slots,[100,101]);
+ assert.equal(at,availableAt+1,'actual callback time advances without retiming the packet');assert.deepEqual(trades.map(r=>r.receivedAt),[availableAt,availableAt]);assert.deepEqual(slots,[1,100,101],'current pool proof establishes slot floor before both packet events');
  at=base+60000;const nativeFeatures=native.features(at),bridgeFeatures=bridge.trader.candidateFeatures(mint,at)!;assert.equal(nativeFeatures.sufficientlyObserved,true);assert.equal(bridgeFeatures.sufficientlyObserved,true);assert.equal(bridgeFeatures.tradeCount,2);assert.equal(nativePaperFeaturesSha256(bridgeFeatures),nativePaperFeaturesSha256(nativeFeatures),'both complete windows retain the exact same packet evidence');
  assert.deepEqual(ledger.state().positions,{});assert.deepEqual(ledger.state().pending,{});assert.equal(ledger.state().executionCosts,'0');
 });
@@ -42,13 +46,13 @@ function capacityFixture(t:TestContext,concurrent=false){
  const directory=mkdtempSync(join(tmpdir(),'poe-OFFLINE-native-capacity-')),accountId='poe-pilot-native-capacity-fixture',base=Date.parse('2026-10-29T03:00:00Z');let at=base;
  const ledger=new PaperLedger(join(directory,'fixture.sqlite'),accountId);t.after(()=>{ledger.close();rmSync(directory,{recursive:true,force:true});});
  const price=()=>({at,microUsdPerSol:'100000000',source:'OFFLINE controlled USD'});ledger.initialize(price(),at);
- const heldMint=new PublicKey(Buffer.alloc(32,21)).toBase58(),candidateMint=new PublicKey(Buffer.alloc(32,23)).toBase58(),pool=new PublicKey(Buffer.alloc(32,24)).toBase58(),window=new FlowWindow(candidateMint,base),records:Array<{kind:string;data:any}>=[];
+ const heldMint=new PublicKey(Buffer.alloc(32,21)).toBase58(),candidateMint=new PublicKey(Buffer.alloc(32,23)).toBase58(),pool=canonicalObservationPool(candidateMint),window=new FlowWindow(candidateMint,base),records:Array<{kind:string;data:any}>=[];
  const calls={preparation:0,quote:0,proof:0,protection:0};
  const market={registerPool(){},minimumSlot(){},async prepareEntryCosts(){calls.preparation++;return {depositLamports:'0',evidence:'OFFLINE modeled existing account costs',at};},async quote(){calls.quote++;return null;},async executionQuote(){throw Error('OFFLINE no execution expected');},async context(positions:ReturnType<PaperLedger['state']>['positions']){calls.protection++;return {price:price(),marks:Object.fromEntries(Object.values(positions).map(p=>[p.mint,{at,pricedBaseUnits:p.units,netLamports:(BigInt(p.entryLamports)+BigInt(p.entryGas)).toString(),evidence:'OFFLINE current actual-size liquidation mark'}])),sourceValidUntil:at+30000};}}as unknown as PilotMarket;
  const binding:PilotBinding=concurrent?{version:CONCURRENT_PILOTS[2].contract.version,stage:2,contractSha256:CONCURRENT_PILOTS[2].contractSha256,maxPositions:2}:{version:PILOT_VERSION,contractSha256:PILOT_CONTRACT_SHA256,maxPositions:1};
  const bridge=new NativePaper({ledger,market,binding,fixtureAccountBinding:{accountId,inceptionAt:ledger.state().inceptionAt},now:()=>at,admitNewRisk:()=>true,pinQualification:()=>{calls.proof++;},record:(kind,data)=>records.push({kind,data:structuredClone(data)}),source:{usage:()=>({dataContract:'confirmed-program-activity-v3-shadow'})as any,snapshot:(_mint,when)=>({dataContract:'confirmed-program-activity-v3-shadow',openedAt:base,connectionId:1,subscription:11,connected:true,sourceSupportFresh:true,hasQualityLoss:false,features:window.features(when??at)})as any},certificate:(_mint,when)=>{const f=window.features(when);return {schemaVersion:1,mint:candidateMint,pool,dataContract:'confirmed-program-activity-v3-shadow',openedAt:base,connectionId:1,subscriptionId:11,windowStartAt:f.windowStartAt,windowEndAt:f.windowEndAt,auditAvailableAt:when,admittedAt:when,deadlineAt:f.windowEndAt+9999,notificationCompletenessVerified:true,executedFlowCompletenessVerified:true,featuresSha256:nativePaperFeaturesSha256(f)};}});
- bridge.allocated({baseMint:heldMint,pool:new PublicKey(Buffer.alloc(32,22)).toBase58(),signature:'OFFLINE-HELD-ORIGIN',chainBlockTime:Math.floor((base-600000)/1000),slot:1}as MigrationIdentity);
- bridge.allocated({baseMint:candidateMint,pool,signature:'OFFLINE-CANDIDATE-ORIGIN',chainBlockTime:Math.floor((base-600000)/1000),slot:1}as MigrationIdentity);bridge.opened({mint:candidateMint,at});
+ bridge.allocated(offlineIdentity(heldMint,at,base-600000));bridge.currentPoolValidated(offlineSupport(heldMint,at));
+ bridge.allocated(offlineIdentity(candidateMint,at,base-600000));bridge.currentPoolValidated(offlineSupport(candidateMint,at));bridge.opened({mint:candidateMint,at});
  for(let i=0;i<6;i++){at=base+100+i*10000;const trade:NormalizedTrade={identity:{signature:'OFFLINE-CAPACITY-BUY-'+i,instructionIndex:0,eventIndex:0},mint:candidateMint,wallet:'OFFLINE-CAPACITY-BUYER-'+i,side:'buy',quoteLamports:'300000000',tokenUnits:String(300000-i*20000),receivedAt:at,commitment:'confirmed',slot:100+i};assert.equal(window.ingest(trade),'accepted');bridge.trade({trade,evidence:{}as any,validatedAt:at,dataContract:'confirmed-program-activity-v3-shadow',transferCrossCheck:'UNAVAILABLE'});}
  at=base+60000;
  const ready=()=>{const state=ledger.state(),marks=Object.fromEntries(Object.values(state.positions).map(p=>[p.mint,{at,pricedBaseUnits:p.units,netLamports:(BigInt(p.entryLamports)+BigInt(p.entryGas)).toString(),evidence:'OFFLINE current mark'}]));ledger.reconcile('fixture-reconcile:'+state.revision,at,price(),marks);assert.equal(ledger.resume('fixture-ready:'+ledger.state().revision,at,price(),marks,{version:'OFFLINE capacity fixture',evidence:'Controlled readiness only',marketAt:at,recoveryComplete:true,candidateWindowsReady:true,budgetAvailable:true}).enabled,true);};

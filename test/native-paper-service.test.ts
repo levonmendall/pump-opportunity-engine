@@ -9,7 +9,7 @@ import {PAPER_SERVICE_POLICY} from '../src/paper-service-policy.js';
 import {NATIVE_TWO_HOUR_RESEARCH_PROFILE,NATIVE_TWO_HOUR_90_RESEARCH_PROFILE} from '../src/native-research-profile.js';
 /** OFFLINE policy and proof-retention checks. No account, provider or credentials. */
 import {test} from 'node:test';import assert from 'node:assert/strict';
-import {parseNativePaperArgs,nativePaperConfigurationSha256,nativePaperManagementReserve,nativePaperRecoveryInputs,NativePaperProofPreparation,nativePaperEssentialEvidence,nativePaperRecordServiceEvidence,nativePaperRequiredEvidence,nativePaperRetainRunIndex,nativePaperRpcConfiguration,runNativePaper} from '../src/run-native-paper.js';
+import {parseNativePaperArgs,nativePaperConfigurationSha256,nativePaperManagementReserve,nativePaperEntryWorkflowStarts,nativePaperSourceWorkAdmission,nativePaperRecoveryInputs,NativePaperProofPreparation,nativePaperEssentialEvidence,nativePaperRecordServiceEvidence,nativePaperRequiredEvidence,nativePaperRetainRunIndex,nativePaperRpcConfiguration,runNativePaper} from '../src/run-native-paper.js';
 import {POE_OPERATING_ACCOUNT,assertPoeOperatingAccount,assertNativePaperAccount} from '../src/poe-operating-account.js';
 import {nativePaperRootReleasePath} from '../src/native-paper-bundle.js';
 import {NATIVE_PAPER_DATA_CONTRACT_VERSION} from '../src/native-paper-contract.js';
@@ -132,4 +132,18 @@ test('rolling short-window financial reserve blocks new risk before a burst cons
  assert.equal(nativePaperManagementReserve({...normal,chapterUsage:{...normal.chapterUsage,rolling10SecondStarts:14}},true).entryAllowed,false,'ample minute budget cannot authorize entry that consumes the held/pending short-window reserve');
  assert.equal(nativePaperManagementReserve({...normal,chapterUsage:{...normal.chapterUsage,rolling10SecondStarts:16}},true).candidateWorkWithExposureAllowed,true);assert.equal(nativePaperManagementReserve({...normal,chapterUsage:{...normal.chapterUsage,rolling10SecondStarts:17}},true).candidateWorkWithExposureAllowed,false);
  assert.equal(nativePaperManagementReserve({...normal,chapterUsage:{rolling60SecondStarts:20,rolling10SecondStarts:0}},true).entryAllowed,true,'rolling headroom recovers without a restart or cumulative allowance reset');
+});
+
+test('current flat entry admission reserves only its four required reads while real short and minute limits still refuse unavailable work',()=>{
+ const strategy='liquidity-resilient-momentum-v3.1' as const,planned=nativePaperEntryWorkflowStarts(true,strategy,false);
+ const usage={chapter:2,newUnits:20,maximumNewUnits:1500,newAccountedResponseBytes:10000,maximumNewResponseBytes:256*1024*1024,requestLimits:{maxStartsPerMinute:90,maxStartsPer10s:20},chapterUsage:{rolling60SecondStarts:86,rolling10SecondStarts:16}};
+ const admitted=(value:typeof usage)=>nativePaperSourceWorkAdmission({informationOpen:true,owned:false,entryWork:true,entryStartsRemaining:planned,usage:value,persistent:true});
+ assert.equal(nativePaperManagementReserve(usage,true,false).entryAllowed,false,'old seven-start reservation would decline this otherwise sufficient four-start window');
+ assert.equal(admitted(usage),true);
+ assert.equal(admitted({...usage,chapterUsage:{...usage.chapterUsage,rolling10SecondStarts:17}}),false);
+ assert.equal(admitted({...usage,chapterUsage:{...usage.chapterUsage,rolling60SecondStarts:87}}),false);
+ assert.equal(nativePaperSourceWorkAdmission({informationOpen:false,owned:false,entryWork:true,entryStartsRemaining:planned,usage,persistent:true}),false);
+ assert.equal(nativePaperEntryWorkflowStarts(true,strategy,true),9,'owned work keeps the original envelope for cooperative protection reads');
+ assert.equal(nativePaperEntryWorkflowStarts(false,strategy,false),7);
+ assert.equal(nativePaperEntryWorkflowStarts(true,'liquidity-resilient-momentum-v3',false),7);
 });

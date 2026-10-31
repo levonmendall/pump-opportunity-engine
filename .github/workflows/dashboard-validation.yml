@@ -2,24 +2,9 @@ name: POE dashboard validation
 on:
   pull_request:
     paths:
-      - 'src/dashboard.ts'
-      - 'src/dashboard-connectivity.ts'
-      - 'src/dashboard-connections.ts'
-      - 'src/pilot-telemetry.ts'
-      - 'scripts/publish-pilot-status.mjs'
-      - 'test/pilot-telemetry.test.mjs'
-      - 'test/pilot-publisher.test.mjs'
-      - 'test/dashboard-pilot-ui.test.ts'
-      - 'test/dashboard-pilot-integration.test.ts'
-      - 'src/reporting.ts'
-      - 'src/trade-outcome-reporting.ts'
-      - 'test/trade-outcome-reporting.test.ts'
-      - 'src/lifetime-equity-contract.ts'
-      - 'src/lifetime-equity-store.ts'
-      - 'src/lifetime-equity-publisher.ts'
-      - 'test/lifetime-equity.test.ts'
-      - 'test/dashboard-equity-line.test.ts'
-      - 'test/reporting.test.ts'
+      - 'src/**'
+      - 'scripts/**'
+      - 'test/**'
       - 'package*.json'
       - '.github/workflows/dashboard-validation.yml'
   workflow_dispatch:
@@ -31,7 +16,7 @@ permissions:
 jobs:
   dashboard:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -48,4 +33,6 @@ jobs:
       - name: Offline regressions
         run: |
           umask 077
-          npm test
+          # Compiler subprocess fixtures share the hosted runner's CPU and memory.
+          # Isolate test files without changing their assertions or timeouts.
+          node --import tsx --test --test-concurrency=1 test/*.test.ts

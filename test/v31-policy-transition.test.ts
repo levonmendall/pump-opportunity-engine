@@ -10,6 +10,7 @@ const AT=Date.parse('2026-10-31T04:00:00.000Z');
 const PREDECESSORS=[
  {commit:'e5dce137ae4b967a07b07bc2bbb4b10534cb582f',policySha256:'5f40cf902d5457d0c3b5540ce6bffc7c233a67783e26c9ac67e2d1de8e8bdb20',contractSha256:'c6388e70d2366a2310c7f05c5184aaa20b2b469ff746e247f39b358da8af2b7d'},
  {commit:'1423b1844155b0a4776989932cd9d3b77a3265a3',policySha256:'571e5b0fe26ff81328df2db53689c310d63bf247cf048d77fc4b22f5312644d7',contractSha256:'b05238659a3665a877225abccaf5775f3b1df6bc58598888d93879ed560ed271'},
+ {commit:'59a22419b2afc27ce0af13a532d9889a3a0fc3da',policySha256:'e44679fef5c11c4763ea670159833b9825e219b84a4e2d9e4bcc1531d933af7e',contractSha256:'9ca95a7e90e21201bcbfb926b17116d387d1da5e73e5032df04fb864fd3e8622'},
 ] as const;
 function retained(contractSha256:string){return {
  accountId:'poe-3123e352-4581-455b-85db-acd7e825e99e',inceptionAt:1793052456212,contractSha256,

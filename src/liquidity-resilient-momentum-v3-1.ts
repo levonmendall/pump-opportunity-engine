@@ -4,6 +4,7 @@
 import {createHash} from 'node:crypto';
 import type {FlowFeatures,NormalizedTrade} from './strategy.js';
 import {adaptiveMigrationEligible,adaptiveReentryEligible,type AdaptiveRuleContext} from './adaptive-momentum-v2.js';
+import {assertNativeCurrentPoolIdentityProof,type NativeCurrentPoolIdentityProof} from './native-observation-identity.js';
 import {ECONOMIC_RESERVE_COMPARISON_VERSION,normalizeEconomicReserves,describeEconomicReserveChange,repeatEconomicReserveDecrease,type EconomicReserveChange} from './economic-reserves.js';
 import {
  assessLiquidityResilientBuying,deriveV3Consolidation,v3CpmmBuy,v3CpmmSell,
@@ -16,6 +17,7 @@ export const LIQUIDITY_RESILIENT_MOMENTUM_V3_1_VERSION='liquidity-resilient-mome
 export const LIQUIDITY_RESILIENT_MOMENTUM_V3_1_POLICY=Object.freeze({
  version:LIQUIDITY_RESILIENT_MOMENTUM_V3_1_VERSION,mode:'PAPER',liveTradingEnabled:false,
  calibration:'UNCALIBRATED_CONDITIONAL_ROBUSTNESS_NOT_EXPECTED_RETURN',
+ identity:Object.freeze({version:'verified-current-canonical-pool-before-window-v1',archivedCreationRequired:false,unknownMigrationTime:'null; never inferred from first sighting or current account slot',entryEvidence:'Known verified migration before the window, or independently validated current canonical pool identity before the window. Fresh support, complete audited flow, exact-size quotes and ledger permission remain required.'}),
  sizing:Object.freeze({entryConsumedCostBps:500,refundableDepositsIncluded:false,selection:'highest-positive-joint-conditional-SOL-balance-among-tested-exact-sizes',minimumDollarAllocation:null}),
  demand:Object.freeze({minimumWalletCount:null,minimumNetFlowShareBps:null,minimumPositiveBuckets:null,ownership:'UNKNOWN; distinct addresses do not prove independent beneficial ownership'}),
  continuation:Object.freeze({ageRouting:false,minimumRecentPositiveBuckets:null,nonnegativePriceVeto:false,model:'Arithmetic midpoint of observed60s net demand and twice observed latest30s net demand, floored at zero. The one-half midpoint is a declared scenario assumption, not a probability, fitted coefficient or forecast.'}),
@@ -158,13 +160,16 @@ function assessPrepared(p:Prepared,now:number,m?:V3MarketEvidence):V31BuyingAsse
 export function assessLiquidityResilientBuyingV31(features:FlowFeatures,now:number,evidence?:V31Evidence):V31BuyingAssessment{
  if(!evidence)return result(features,'unavailable','v3.1-complete-audited-trades-required');const p=prepare(features,now,evidence.flow,evidence.market?.at);return p?assessPrepared(p,now,evidence.market):result(features,'unavailable','v3.1-complete-matched-audited-trades-required');
 }
-export type V31RuleContext=AdaptiveRuleContext&{v3?:V31Evidence};
+export type V31RuleContext=AdaptiveRuleContext&{v3?:V31Evidence;currentPoolProof?:NativeCurrentPoolIdentityProof};
 export type V31RuleDecision=Omit<V31BuyingAssessment,'status'|'qualified'>&{qualified:boolean;kind:'missing-data'|'market-exclusion'|'strategy-rejection'|'risk-rejection'|'qualified';ruleVersion:typeof LIQUIDITY_RESILIENT_MOMENTUM_V3_1_VERSION;at:number};
 export function evaluateLiquidityResilientPrimaryV31(features:FlowFeatures,context:V31RuleContext):V31RuleDecision{
  const a=assessLiquidityResilientBuyingV31(features,context.now,context.v3),f=a.features;
  const decision=(kind:V31RuleDecision['kind'],reason:string):V31RuleDecision=>{const {status:_,qualified:__,...rest}=a;return {...rest,qualified:kind==='qualified',kind,reason,ruleVersion:LIQUIDITY_RESILIENT_MOMENTUM_V3_1_VERSION,at:context.now};};
  if(context.flowFieldsVerified!==true||!text(context.flowVerificationEvidence)||!f||f.mint!==context.mint)return decision('missing-data','v3.1-complete-verified-native-flow-required');
- if(!adaptiveMigrationEligible(context.migrationAt,context.migrationVerified,context.now)||context.migrationAt!>f.windowStartAt)return decision('missing-data','v3.1-verified-pre-window-migration-required');
+ const historicalIdentity=adaptiveMigrationEligible(context.migrationAt,context.migrationVerified,context.now)&&context.migrationAt!<=f.windowStartAt;
+ let currentIdentity=false;
+ if(context.migrationAt===null&&context.migrationVerified===false&&context.currentPoolProof){try{const proof=context.currentPoolProof;assertNativeCurrentPoolIdentityProof(proof,context.now);currentIdentity=proof.mint===context.mint&&proof.pool===context.v3?.flow.pool&&proof.verifiedAt<=f.windowStartAt;}catch{/* Invalid identity evidence cannot grant entry. */}}
+ if(!historicalIdentity&&!currentIdentity)return decision('missing-data','v3.1-verified-pre-window-pool-identity-required');
  if(context.supportedPool!==true)return decision('market-exclusion','unsupported-pool');if(context.riskEntriesAllowed!==true)return decision('risk-rejection','entries-not-authorized-by-ledger');
  if(context.alreadyTradedMint&&!adaptiveReentryEligible(f,context.now,context.reentry))return decision('risk-rejection','fresh-closed-and-reconciled-round-trip-required');
  const q=context.quote,m=context.v3?.market;if(!q||!m||q.mint!==context.mint||!text(q.evidence)||q.evidence!==m.evidence||q.at!==m.at||q.expectedBaseUnits!==m.expectedBaseUnits)return decision('missing-data','v3.1-matched-fresh-actual-size-quote-required');

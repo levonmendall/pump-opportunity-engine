@@ -2,8 +2,11 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {createHash} from 'node:crypto';
 import {readFileSync} from 'node:fs';
+import {PublicKey} from '@solana/web3.js';
+import {canonicalPumpPoolPda} from '../src/sdk.js';
+import {evaluateAdaptivePrimary} from '../src/adaptive-momentum-v2.js';
 import {FlowWindow,eventIdentity,type NormalizedTrade} from '../src/strategy.js';
-import {assessLiquidityResilientBuying,v3CpmmBuy,v3CpmmSell,evaluateLiquidityResilientExit,type V3AuditedFlow,type V3MarketEvidence,type V3ExitInput} from '../src/liquidity-resilient-momentum-v3.js';
+import {assessLiquidityResilientBuying,v3CpmmBuy,v3CpmmSell,evaluateLiquidityResilientExit,evaluateLiquidityResilientPrimary,type V3AuditedFlow,type V3MarketEvidence,type V3ExitInput} from '../src/liquidity-resilient-momentum-v3.js';
 import {LIQUIDITY_RESILIENT_MOMENTUM_V3_1_POLICY as P,LIQUIDITY_RESILIENT_MOMENTUM_V3_1_SHA256,assessLiquidityResilientBuyingV31,evaluateV31SizeFrontier,evaluateLiquidityResilientExitV31,evaluateLiquidityResilientPrimaryV31,V31AssessmentSeries,deriveV31Consolidation,v31VaultBoundedOpposingSale,type V31RuleContext} from '../src/liquidity-resilient-momentum-v3-1.js';
 
 function fixture(options:{end?:number;raw?:bigint;base?:bigint;input?:bigint;amounts?:bigint[];wallets?:string[];sides?:Array<'buy'|'sell'>;priceDown?:boolean;virtual?:bigint;gas?:bigint}={}){
@@ -19,6 +22,38 @@ function fixture(options:{end?:number;raw?:bigint;base?:bigint;input?:bigint;amo
 }
 const assess=(f:ReturnType<typeof fixture>)=>assessLiquidityResilientBuyingV31(f.features,f.features.asOf,{flow:f.flow,market:f.market});
 function context(f:ReturnType<typeof fixture>):V31RuleContext{return {mint:'M',now:f.features.asOf,migrationAt:0,migrationVerified:true,supportedPool:true,flowFieldsVerified:true,flowVerificationEvidence:f.flow.auditEvidence,riskEntriesAllowed:true,alreadyTradedMint:false,maximumConsumedCostMicroUsd:'50000000',quote:{mint:'M',at:f.market.at,evidence:f.market.evidence,expectedBaseUnits:f.market.expectedBaseUnits,allInInitialCostMicroUsd:'50000000',sizeToEffectiveLiquidityBps:250,effectiveQuoteLiquidityLamports:f.market.rawQuoteReserveLamports},v3:{flow:f.flow,market:f.market}};}
+
+function currentIdentityFixture(){
+ const f=fixture(),mint=new PublicKey(Buffer.alloc(32,93)).toBase58(),pool=canonicalPumpPoolPda(new PublicKey(mint)).toBase58();
+ f.features.mint=mint;f.flow={...f.flow,mint,pool,trades:f.flow.trades.map(t=>({...t,mint}))};f.market={...f.market,mint,pool};
+ const c=context(f);c.mint=mint;c.quote={...c.quote!,mint};c.migrationAt=null;c.migrationVerified=false;c.currentPoolProof={schemaVersion:1,mint,pool,verifiedAt:f.features.windowStartAt,sourceSlot:1,evidence:'OFFLINE accepted canonical current account support before ACK'};
+ return {f,c};
+}
+
+test('V3.1 can qualify an unknown-age canonical pool verified before its complete audited window',()=>{
+ const {f,c}=currentIdentityFixture(),before=structuredClone(c),r=evaluateLiquidityResilientPrimaryV31(f.features,c);
+ assert.equal(r.qualified,true,r.reason);assert.equal(c.migrationAt,null);assert.equal(c.migrationVerified,false);assert.deepEqual(c,before);
+ assert.equal(P.identity.archivedCreationRequired,false);
+ assert.equal(evaluateLiquidityResilientPrimary(f.features,c).reason,'v3-verified-pre-window-migration-required');
+ assert.equal(evaluateAdaptivePrimary(f.features,c).reason,'verified-migration-time-unavailable');
+});
+
+test('current-pool entry proof cannot substitute a different pool or a post-window or future verification',()=>{
+ const {f,c}=currentIdentityFixture(),proof=c.currentPoolProof!;
+ for(const changed of [undefined,{...proof,mint:new PublicKey(Buffer.alloc(32,94)).toBase58()},{...proof,pool:new PublicKey(Buffer.alloc(32,95)).toBase58()},{...proof,verifiedAt:f.features.windowStartAt+1},{...proof,verifiedAt:c.now+1},{...proof,sourceSlot:-1},{...proof,evidence:''}]){
+  const r=evaluateLiquidityResilientPrimaryV31(f.features,{...c,currentPoolProof:changed});assert.equal(r.qualified,false);assert.equal(r.reason,'v3.1-verified-pre-window-pool-identity-required');
+ }
+ assert.equal(evaluateLiquidityResilientPrimaryV31(f.features,{...c,migrationVerified:true,migrationAt:c.now}).qualified,false,'contradictory historical age is not bypassed');
+ const differentPool={...c.v3!,flow:{...c.v3!.flow,pool:new PublicKey(Buffer.alloc(32,96)).toBase58()}};
+ assert.equal(evaluateLiquidityResilientPrimaryV31(f.features,{...c,v3:differentPool}).qualified,false);
+});
+
+test('archive-free identity retains current support, audit, fresh exact-size quotes and financial permission gates',()=>{
+ const {f,c}=currentIdentityFixture();
+ for(const changed of [{...c,supportedPool:false},{...c,flowFieldsVerified:false},{...c,riskEntriesAllowed:false},{...c,quote:null},{...c,v3:undefined},{...c,v3:{...c.v3!,flow:{...c.v3!.flow,complete:false}as unknown as V3AuditedFlow}},{...c,quote:{...c.quote!,at:c.now-2001},v3:{...c.v3!,market:{...f.market,at:c.now-2001}}}])assert.equal(evaluateLiquidityResilientPrimaryV31(f.features,changed).qualified,false);
+ const refreshed={...c,currentPoolProof:{...c.currentPoolProof!,verifiedAt:f.features.windowStartAt-10000}};
+ assert.equal(evaluateLiquidityResilientPrimaryV31(f.features,refreshed).qualified,true,'initial identity time can remain old while separate current support and quotes are fresh');
+});
 
 test('V3.1 keeps four descriptive assessments and explicitly removes fixed stress/surplus/momentum vetoes',()=>{
  assert.equal(P.version,'liquidity-resilient-momentum-v3.1');assert.equal(P.liveTradingEnabled,false);assert.equal(P.economics.maximumStressLossBps,null);assert.equal(P.economics.minimumNetSurplusBps,null);assert.equal(P.continuation.minimumRecentPositiveBuckets,null);assert.equal(P.continuation.nonnegativePriceVeto,false);assert.equal(P.sizing.minimumDollarAllocation,null);assert.equal(P.sizing.entryConsumedCostBps,500);assert.equal(P.exit.takeProfitBps,null);
