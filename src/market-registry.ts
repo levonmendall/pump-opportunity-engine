@@ -40,6 +40,7 @@ export class MarketRegistry {
  private readonly concurrentIntake:boolean;
  private readonly writerTurn:Int32Array|null;private readonly writerRole:'main'|'intake';private writerRequests=0;private writerTurns=0;private writerYields=0;private writerExpiries=0;
  private readonly economicFlowCache=new Map<string,EconomicFlowCache>();private economicFlowCacheBytes=0;private economicFlowCacheHits=0;private economicFlowColdQueries=0;private economicFlowIncrementalQueries=0;private readonly economicTouchedMints=new Set<string>();
+ private rollbackActions:Array<()=>void>=[];private commitActions:Array<()=>void>=[];
  private readDepth=0;private readSnapshotCommits=0;private writerLeaseReadOnlyCommits=0;private contentionAttempts=0;private transactionAttempts=0;private readOnlyCommits=0;private writeCommits=0;private failedTransactions=0;
  private writes=0;private writeTotalMs=0;private writeMaximumMs=0;private storageFailures=0;private transactionDepth=0;private storageAvailable=true;private lastFailureAt:number|null=null;private lastSuccessfulWriteAt:number|null=null;
  constructor(path:string,options:{now?:()=>number;concurrentIntake?:boolean;writerTurn?:SharedArrayBuffer;writerRole?:'main'|'intake'}={}){
@@ -106,9 +107,14 @@ export class MarketRegistry {
   if(state===1&&Atomics.compareExchange(this.writerTurn,0,1,2)===1)this.writerYields++;
   return Atomics.load(this.writerTurn,0)!==0;
  }
+ /** Hooks are for bounded nonfinancial in-memory mirrors and subscription
+  * ownership only. Nested callers share the outer commit/rollback boundary. */
+ onRollback(undo:()=>void){if(this.readDepth||!this.transactionDepth)throw new MarketRegistryReadOnlyViolation('Rollback hook requires a write transaction');this.rollbackActions.push(undo);}
+ afterCommit(action:()=>void){if(this.readDepth||!this.transactionDepth)throw new MarketRegistryReadOnlyViolation('Commit hook requires a write transaction');this.commitActions.push(action);}
  private write<T>(fn:()=>T):T {
   if(this.readDepth>0)throw new MarketRegistryReadOnlyViolation();
   if(this.transactionDepth>0)return fn();
+  this.rollbackActions=[];this.commitActions=[];let result!:T;
   this.economicTouchedMints.clear();this.transactionAttempts++;const start=performance.now();let committedAt:number|null=null,mutated=false,failed=false,callbackStarted=false,leaseContended=false;
   try{const transaction=this.db.transaction(()=>{callbackStarted=true;this.transactionDepth++;try{
    const before=Number((this.statement('SELECT total_changes() n').get() as {n:number}).n);
@@ -117,9 +123,12 @@ export class MarketRegistry {
    // metadata here used to turn each global activity lookup into a FULL fsync.
    mutated=after!==before;if(mutated){committedAt=Math.max(this.clock(),this.getMetadata<number>('updatedAt')??0);
     this.statement('INSERT INTO registry_metadata(key,body) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET body=excluded.body').run('updatedAt',json(committedAt));}return value;
-  }finally{this.transactionDepth--;}});const result=this.concurrentIntake?transaction.immediate():transaction();if(mutated){this.writeCommits++;this.storageAvailable=true;this.lastSuccessfulWriteAt=committedAt;}else{this.readOnlyCommits++;if(this.concurrentIntake)this.writerLeaseReadOnlyCommits++;}return result;
-  }catch(error){failed=true;this.failedTransactions++;const code=(error as {code?:unknown})?.code;if(this.concurrentIntake&&!callbackStarted&&typeof code==='string'&&/^(SQLITE_BUSY|SQLITE_LOCKED)(_|$)/.test(code)){this.contentionAttempts++;leaseContended=true;this.requestWriterTurn();throw new MarketRegistryContention(code);}if(typeof (error as {code?:unknown})?.code==='string'&&String((error as {code:string}).code).startsWith('SQLITE_')){this.storageFailures++;this.storageAvailable=false;this.lastFailureAt=this.clock();}throw error;
+  }finally{this.transactionDepth--;}});result=this.concurrentIntake?transaction.immediate():transaction();if(mutated){this.writeCommits++;this.storageAvailable=true;this.lastSuccessfulWriteAt=committedAt;}else{this.readOnlyCommits++;if(this.concurrentIntake)this.writerLeaseReadOnlyCommits++;}this.rollbackActions=[];
+  }catch(error){const undo=this.rollbackActions.splice(0).reverse();this.commitActions=[];for(const restore of undo)restore();failed=true;this.failedTransactions++;const code=(error as {code?:unknown})?.code;if(this.concurrentIntake&&!callbackStarted&&typeof code==='string'&&/^(SQLITE_BUSY|SQLITE_LOCKED)(_|$)/.test(code)){this.contentionAttempts++;leaseContended=true;this.requestWriterTurn();throw new MarketRegistryContention(code);}if(typeof (error as {code?:unknown})?.code==='string'&&String((error as {code:string}).code).startsWith('SQLITE_')){this.storageFailures++;this.storageAvailable=false;this.lastFailureAt=this.clock();}throw error;
   }finally{if(!leaseContended)this.releaseWriterTurn();this.economicTouchedMints.clear();if(mutated||failed){const elapsed=performance.now()-start;this.writes++;this.writeTotalMs+=elapsed;this.writeMaximumMs=Math.max(this.writeMaximumMs,elapsed);}}
+  // SQLite has committed and the lease is released. A post-commit callback
+  // failure cannot undo the durable transaction or be retried as lease refusal.
+  const committed=this.commitActions.splice(0);for(const action of committed)action();return result;
  }
  /** Synchronous, consistent deferred snapshot. It takes no writer lease,
   * cannot upgrade to a writer, never changes commit metadata, and never replays
