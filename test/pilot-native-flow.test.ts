@@ -29,6 +29,30 @@ test('native registration is local; fresh support, shared upgrade and actual con
   assert.deepEqual(f.operations.map(x=>x.method),['upgrade','logsSubscribe']);assert.equal(socket.sent.length,1);assert.deepEqual(socket.sent[0]!.params,[{mentions:[scope.pool]},{commitment:'confirmed'}]);assert.equal(f.opens.length,1);assert.equal(f.opens[0].dataContract,CONFIRMED_PROGRAM_EVENTS_V2);assert.equal(f.flow.snapshot(scope.mint)?.auditVerified,false);assert.equal(f.flow.snapshot(scope.mint)?.warm,false);await f.flow.stop();
 });
 
+test('continuously replenished scopes cannot starve an already-validated upgrade and subscription',async()=>{
+ const f=setup({maximumCandidates:4});await f.flow.addCandidate(scope);await f.drive();assert.equal(f.supportCalls.length,1);
+ for(let i=0;i<10;i++){
+  const mint=new PublicKey(Buffer.alloc(32,100+i)),replacement={mint:mint.toBase58(),pool:canonicalPumpPoolPda(mint).toBase58(),minSlot:0};await f.flow.addCandidate(replacement);await f.drive();await f.flow.removeCandidate(replacement.mint,'OFFLINE completed replacement');
+ }
+ assert.deepEqual(f.operations.slice(0,2).map(x=>x.method),['upgrade','logsSubscribe']);assert.equal(f.opens.length,1);assert.equal(f.flow.snapshot(scope.mint)!.connected,true);assert.equal(f.flow.snapshot(scope.mint)!.sourceSupportFresh,true);assert.equal(f.flow.snapshot(scope.mint)!.warm,false,'ACK does not supply a completed observation');assert.equal(f.gaps.filter(g=>g.mint===scope.mint).length,0);await f.flow.stop();
+});
+
+test('fresh pending capture proceeds ahead of new-scope reads while preserving established capture',async()=>{
+ const f=setup({maximumCandidates:4});await f.open();const openedAt=f.flow.snapshot(scope.mint)!.openedAt;
+ const candidates=[121,122].map(n=>{const mint=new PublicKey(Buffer.alloc(32,n));return {mint:mint.toBase58(),pool:canonicalPumpPoolPda(mint).toBase58(),minSlot:0};});
+ await f.flow.addCandidate(candidates[0]!);await f.drive();const reads=f.supportCalls.length;await f.flow.addCandidate(candidates[1]!);
+ assert.equal(f.flow.servicePlan({allowSetup:true,allowRetirement:true}).action,'subscribe');await f.drive();assert.equal(f.supportCalls.length,reads);assert.equal(f.flow.snapshot(candidates[0]!.mint)!.connected,true);assert.equal(f.flow.snapshot(candidates[1]!.mint)!.sourceSupportFresh,false);assert.equal(f.flow.snapshot(scope.mint)!.openedAt,openedAt);assert.equal(f.gaps.length,0);await f.flow.stop();
+});
+
+test('capture priority preserves requested support refresh and mandatory control work',async()=>{
+ const f=setup({maximumCandidates:4}),socket=await f.open(),mint=new PublicKey(Buffer.alloc(32,123)),pending={mint:mint.toBase58(),pool:canonicalPumpPoolPda(mint).toBase58(),minSlot:0};
+ await f.flow.addCandidate(pending);await f.drive();assert.equal(f.flow.snapshot(pending.mint)!.connected,false);
+ f.flow.requestSupportRefresh();assert.equal(f.flow.servicePlan().action,'support-refresh');await f.drive();
+ socket.emit('ping',Buffer.from('OFFLINE owed ping'));assert.equal(f.flow.servicePlan().action,'peer-pong');await f.drive();assert.equal(socket.controls.at(-1),'pong');
+ const incomingMint=new PublicKey(Buffer.alloc(32,124));await f.flow.addCandidate({mint:incomingMint.toBase58(),pool:canonicalPumpPoolPda(incomingMint).toBase58(),minSlot:0});f.flow.requestHeartbeat();assert.equal(f.flow.servicePlan().action,'heartbeat');await f.drive();assert.equal(socket.controls.at(-1),'ping');
+ await f.flow.removeCandidate(scope.mint,'OFFLINE retirement');assert.equal(f.flow.servicePlan().action,'unsubscribe');await f.drive();assert.equal(f.operations.at(-1)!.method,'logsUnsubscribe');assert.equal(f.flow.snapshot(pending.mint)!.connected,false);await f.drive();assert.equal(f.flow.snapshot(pending.mint)!.connected,true);await f.flow.stop();
+});
+
 test('retained actual program events preserve economics, true log identities and availability without claiming SPL checks',async()=>{
   const f=setup(),socket=await f.open();f.notice(socket);const truth=parseProgramLogEvidence({signature,slot:tx.slot,err:null,logs:tx.meta.logMessages,commitment:'confirmed',availableAt:f.now},[{...scope,supportedPoolEvidence:'retained raw fixture'}]);assert.equal(f.trades.length,truth.length);const row=f.trades[0],e=truth[0]!;
   assert.equal(row.dataContract,CONFIRMED_PROGRAM_EVENTS_V2);assert.equal(row.transferCrossCheck,'UNAVAILABLE');assert.deepEqual(row.trade.identity,{kind:'program-log',signature,program:e.identity.program,logIndex:e.identity.logArrayIndex,frameOrdinal:e.frameOrdinal});assert.equal(row.trade.wallet,e.trader);assert.equal(row.trade.quoteLamports,e.curveQuoteLamports);assert.equal(row.trade.tokenUnits,e.tokenUnits);assert.equal(row.trade.receivedAt,row.validatedAt);assert.ok(row.validatedAt>=f.now);assert.equal(Object.hasOwn(row.trade.identity,'instructionIndex'),false);assert.equal(Object.hasOwn(row.trade.identity,'eventIndex'),false);assert.equal(f.flow.snapshot(scope.mint)?.auditVerified,false);assert.equal(f.controlBytes,socket._socket.bytesRead);await f.flow.stop();
