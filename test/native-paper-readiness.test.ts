@@ -70,6 +70,27 @@ test('post-commit maintenance failure retains the first operation and safe finge
  const failures=f.rows.filter(row=>row.kind==='trader-financial-maintenance-failed');assert.equal(failures.length,1);assert.equal(JSON.stringify(failures).includes('DO-NOT-EXPORT'),false);assert.equal(JSON.stringify(failures).includes('provider.invalid'),false);assert.equal(nativePaperEssentialEvidence(failures[0]!.kind,'source',false),true);
 });
 
+test('failed operating resume latches the primary failure before any fallible technical-proof reset',t=>{
+ const f=fixture(t,false,true);assert.equal(f.refresh().recovered,true);
+ f.ledger.pause('trader:pause:'+f.ledger.state().revision+':'+f.at,f.at,'PAPER protection unavailable; exposure retained');
+ const state=f.ledger.state(),primary=Error('OFFLINE operating permission write failed'),secondary=Error('OFFLINE technical reset read failed'),proofCalls:boolean[]=[];
+ const authority={verified:true as const,accountId:state.accountId,inceptionAt:state.inceptionAt,stateRevision:state.revision,controlChangedAt:state.controls.changedAt,controlReason:state.controls.reason,originRevision:state.revision,authoritySha256:'a'.repeat(64)};
+ // The technical authority/proof is supplied only to reach this error boundary.
+ // The actual readiness writer is forced to fail; no permission is fabricated.
+ t.mock.method(f.ledger,'technicalProtectionRecoveryAuthority',()=>authority);
+ t.mock.method(f.bridge.trader,'technicalProtectionRecoveryProof',(_authority:unknown,healthy:boolean)=>{
+  proofCalls.push(healthy);if(!healthy)throw secondary;
+  return {version:'paper-technical-protection-recovery-v1' as const,authoritySha256:authority.authoritySha256,originRevision:authority.originRevision,accountId:state.accountId,inceptionAt:state.inceptionAt,stateRevision:state.revision,controlChangedAt:state.controls.changedAt,controlReason:state.controls.reason,positionUnits:{},startedAt:f.at-60000,completedAt:f.at,completedEvaluations:60,maximumCompletedGapMs:1000,lastQuoteAt:f.at};
+ });
+ const resume=t.mock.method(f.ledger,'resume',()=>{throw primary;});
+ assert.deepEqual(f.bridge.maintainOperatingFinancialReadiness(f.price),{kind:'financial-unavailable',recovered:false});
+ assert.equal(resume.mock.callCount(),1);assert.deepEqual(proofCalls,[true]);
+ const safety=f.bridge.trader.entryReadinessSafety();assert.equal(safety.financialAvailable,false);assert.equal(safety.automaticRecoveryAllowed,false);assert.equal(safety.newHardPauseObserved,true);
+ assert.equal(f.ledger.state().controls.entriesEnabled,false);assert.equal(f.ledger.state().controls.reason,'financial maintenance unavailable; preserve records and close entries');assert.equal(f.ledger.state().lamports,state.lamports);
+ assert.equal(f.bridge.trader.financialMaintenanceFailureDiagnostics()?.errorSha256,createHash('sha256').update(primary.message).digest('hex'));
+ assert.deepEqual(f.bridge.operatingReadinessDiagnostics(),{at:f.at,stateRevision:state.revision,reasonCode:'OPERATING_READINESS_FINANCIAL_OPERATION_FAILED'});
+});
+
 test('failure-record write errors retain the maintenance latch and never mask an uncertain pause commit',t=>{
  const f=fixture(t),original=f.ledger.pause.bind(f.ledger),pauseError=Error('OFFLINE pause committed before callback failure'),primary=Error('OFFLINE initial financial failure');
  (f.bridge.trader as any).options.recorder.record=()=>{throw Error('OFFLINE diagnostic storage unavailable');};
