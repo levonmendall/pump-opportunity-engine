@@ -1,4 +1,5 @@
 import {performance} from 'node:perf_hooks';
+import type {WatchSeed} from './pilot-watch.js';
 import type {MarketIdentityHint,MarketActivityHint,MarketFeedStatus} from './market-discovery.js';
 import type {MarketRegistryCommittedActivity,MarketRegistryIntakeMessage} from './market-registry-intake-worker.js';
 
@@ -31,9 +32,10 @@ export class NativeMarketIntake {
   if(value?.kind==='failure'){this.workerStats=value.stats;this.failed(typeof value.reasonCode==='string'&&/^[A-Z0-9_]+$/.test(value.reasonCode)?value.reasonCode:'WORKER_FAILURE');return;}
   if(value?.kind==='closed'){if(this.pending.size){this.failed('WORKER_CLOSED_WITH_UNACKNOWLEDGED_INTAKE');return;}this.closed=true;this.ready=false;this.worker=null;this.closeResolve?.();}
  }
- private enqueue(operation:'identity'|'activity'|'feed',value:MarketIdentityHint|MarketActivityHint|MarketFeedStatus){if(this.stopping||this.closed)throw Error('MARKET_INTAKE_CLOSED');const message={kind:'intake',id:++this.serial,operation,value:structuredClone(value)} as MarketRegistryIntakeMessage;const bytes=Buffer.byteLength(JSON.stringify(message));this.pending.set(message.id,{message,bytes,queuedAt:this.now(),sent:false});this.bytes+=bytes;this.received++;this.pressure();this.scheduleSend();}
+ private enqueue(operation:'identity'|'activity'|'feed'|'migration',value:MarketIdentityHint|MarketActivityHint|MarketFeedStatus|WatchSeed){if(this.stopping||this.closed)throw Error('MARKET_INTAKE_CLOSED');const message={kind:'intake',id:++this.serial,operation,value:structuredClone(value)} as MarketRegistryIntakeMessage;const bytes=Buffer.byteLength(JSON.stringify(message));this.pending.set(message.id,{message,bytes,queuedAt:this.now(),sent:false});this.bytes+=bytes;this.received++;this.pressure();this.scheduleSend();}
  observeIdentity(value:MarketIdentityHint){this.enqueue('identity',value);}
  observeActivity(value:MarketActivityHint){this.enqueue('activity',value);}
+ observeMigration(value:WatchSeed){this.enqueue('migration',value);}
  observeFeed(value:MarketFeedStatus){this.enqueue('feed',value);}
  private scheduleSend(){if(this.sendTimer||!this.ready||!this.worker||this.closed)return;this.sendTimer=setImmediate(()=>{this.sendTimer=null;if(!this.ready||!this.worker||this.closed)return;const start=performance.now();for(const row of this.pending.values()){if(row.sent)continue;try{this.worker!.postMessage(row.message);row.sent=true;}catch{this.failed('WORKER_SEND_FAILED');return;}if(performance.now()-start>=NATIVE_MARKET_INTAKE_POLICY.sendQuantumMs){this.scheduleSend();return;}}this.maybeStop();});}
  private maybeStop(){if(this.stopping&&this.ready&&this.worker&&this.pending.size===0)this.worker.postMessage({kind:'stop'});}

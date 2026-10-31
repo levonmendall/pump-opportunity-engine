@@ -37,15 +37,20 @@ export class MarketRegistry {
  private readonly statements=new Map<string,Database.Statement>();
  private readonly clock:()=>number;
  private readonly concurrentIntake:boolean;
+ private readonly writerTurn:Int32Array|null;private readonly writerRole:'main'|'intake';private writerRequests=0;private writerTurns=0;private writerYields=0;private writerExpiries=0;
  private readonly economicFlowCache=new Map<string,EconomicFlowCache>();private economicFlowCacheBytes=0;private economicFlowCacheHits=0;private economicFlowColdQueries=0;private economicFlowIncrementalQueries=0;private readonly economicTouchedMints=new Set<string>();
  private readDepth=0;private readSnapshotCommits=0;private writerLeaseReadOnlyCommits=0;private contentionAttempts=0;private transactionAttempts=0;private readOnlyCommits=0;private writeCommits=0;private failedTransactions=0;
  private writes=0;private writeTotalMs=0;private writeMaximumMs=0;private storageFailures=0;private transactionDepth=0;private storageAvailable=true;private lastFailureAt:number|null=null;private lastSuccessfulWriteAt:number|null=null;
- constructor(path:string,options:{now?:()=>number;concurrentIntake?:boolean}={}){
-  this.path=path;this.locator={version:'persistent-market-registry-v1',path};this.clock=options.now??Date.now;this.concurrentIntake=options.concurrentIntake===true;
+ constructor(path:string,options:{now?:()=>number;concurrentIntake?:boolean;writerTurn?:SharedArrayBuffer;writerRole?:'main'|'intake'}={}){
+  this.path=path;this.locator={version:'persistent-market-registry-v1',path};this.clock=options.now??Date.now;this.concurrentIntake=options.concurrentIntake===true;this.writerRole=options.writerRole??'main';
+  if(options.writerTurn!==undefined&&(!(options.writerTurn instanceof SharedArrayBuffer)||options.writerTurn.byteLength!==8))throw Error('MARKET_REGISTRY_WRITER_TURN_BUFFER');
+  this.writerTurn=this.concurrentIntake?new Int32Array(options.writerTurn??new SharedArrayBuffer(8)):null;
   if(path!==':memory:')mkdirSync(dirname(resolve(path)),{recursive:true});
   this.db=new Database(path);this.db.pragma('journal_mode = WAL');this.db.pragma('synchronous = FULL');this.db.pragma('busy_timeout = 25');this.db.pragma('foreign_keys = ON');
   this.db.exec(`
    CREATE TABLE IF NOT EXISTS registry_metadata(key TEXT PRIMARY KEY,body TEXT NOT NULL);
+   CREATE TABLE IF NOT EXISTS migration_deliveries(signature TEXT PRIMARY KEY,received_at INTEGER NOT NULL,body TEXT NOT NULL,state TEXT NOT NULL DEFAULT 'PENDING');
+   CREATE INDEX IF NOT EXISTS migration_deliveries_order ON migration_deliveries(state,received_at,signature);
    CREATE TABLE IF NOT EXISTS market_tokens(mint TEXT PRIMARY KEY,first_seen_at INTEGER NOT NULL,last_seen_at INTEGER NOT NULL,last_activity_at INTEGER,activity_score REAL NOT NULL DEFAULT 0,screen_state TEXT NOT NULL DEFAULT 'UNAVAILABLE',activity_hints INTEGER NOT NULL DEFAULT 0,buy_hints INTEGER NOT NULL DEFAULT 0,sell_hints INTEGER NOT NULL DEFAULT 0,buy_lamports TEXT NOT NULL DEFAULT '0',sell_lamports TEXT NOT NULL DEFAULT '0',last_price REAL,screened_at INTEGER NOT NULL,last_signature TEXT,last_activity_source TEXT,last_activity_kind TEXT,last_economic_activity_at INTEGER);
    CREATE INDEX IF NOT EXISTS market_tokens_discovery ON market_tokens(first_seen_at,mint);
    CREATE INDEX IF NOT EXISTS market_tokens_activity ON market_tokens(last_activity_at DESC,activity_score DESC,mint);
@@ -86,10 +91,23 @@ export class MarketRegistry {
   if(this.getMetadata<number>('createdAt')===undefined)this.setMetadata('createdAt',this.clock());
  }
  private statement(sql:string):Database.Statement {let statement=this.statements.get(sql);if(!statement){statement=this.db.prepare(sql);this.statements.set(sql,statement);}return statement;}
+ /** Shared scheduling hint only; SQLite remains the exclusive writer authority.
+  * A worker yields between commits, never while a transaction is open. A main
+  * request expires after one second so a paused/dead parent cannot stop intake. */
+ writerTurnBuffer():SharedArrayBuffer|undefined{return this.writerTurn?.buffer as SharedArrayBuffer|undefined;}
+ private requestWriterTurn(){if(!this.writerTurn||this.writerRole!=='main')return;Atomics.store(this.writerTurn,1,(performance.timeOrigin+performance.now()+1000)|0);if(Atomics.compareExchange(this.writerTurn,0,0,1)===0)this.writerRequests++;}
+ private releaseWriterTurn(){if(!this.writerTurn||this.writerRole!=='main')return;const state=Atomics.exchange(this.writerTurn,0,0);if(state===2)this.writerTurns++;}
+ deferToMainWriter():boolean{
+  if(!this.writerTurn||this.writerRole!=='intake')return false;
+  const state=Atomics.load(this.writerTurn,0);if(state===0)return false;
+  const deadline=Atomics.load(this.writerTurn,1);if((((performance.timeOrigin+performance.now())|0)-deadline|0)>=0){if(Atomics.compareExchange(this.writerTurn,0,state,0)===state)this.writerExpiries++;return false;}
+  if(state===1&&Atomics.compareExchange(this.writerTurn,0,1,2)===1)this.writerYields++;
+  return Atomics.load(this.writerTurn,0)!==0;
+ }
  private write<T>(fn:()=>T):T {
   if(this.readDepth>0)throw new MarketRegistryReadOnlyViolation();
   if(this.transactionDepth>0)return fn();
-  this.economicTouchedMints.clear();this.transactionAttempts++;const start=performance.now();let committedAt:number|null=null,mutated=false,failed=false,callbackStarted=false;
+  this.economicTouchedMints.clear();this.transactionAttempts++;const start=performance.now();let committedAt:number|null=null,mutated=false,failed=false,callbackStarted=false,leaseContended=false;
   try{const transaction=this.db.transaction(()=>{callbackStarted=true;this.transactionDepth++;try{
    const before=Number((this.statement('SELECT total_changes() n').get() as {n:number}).n);
    const value=fn();const after=Number((this.statement('SELECT total_changes() n').get() as {n:number}).n);
@@ -98,8 +116,8 @@ export class MarketRegistry {
    mutated=after!==before;if(mutated){committedAt=Math.max(this.clock(),this.getMetadata<number>('updatedAt')??0);
     this.statement('INSERT INTO registry_metadata(key,body) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET body=excluded.body').run('updatedAt',json(committedAt));}return value;
   }finally{this.transactionDepth--;}});const result=this.concurrentIntake?transaction.immediate():transaction();if(mutated){this.writeCommits++;this.storageAvailable=true;this.lastSuccessfulWriteAt=committedAt;}else{this.readOnlyCommits++;if(this.concurrentIntake)this.writerLeaseReadOnlyCommits++;}return result;
-  }catch(error){failed=true;this.failedTransactions++;const code=(error as {code?:unknown})?.code;if(this.concurrentIntake&&!callbackStarted&&typeof code==='string'&&/^(SQLITE_BUSY|SQLITE_LOCKED)(_|$)/.test(code)){this.contentionAttempts++;throw new MarketRegistryContention(code);}if(typeof (error as {code?:unknown})?.code==='string'&&String((error as {code:string}).code).startsWith('SQLITE_')){this.storageFailures++;this.storageAvailable=false;this.lastFailureAt=this.clock();}throw error;
-  }finally{this.economicTouchedMints.clear();if(mutated||failed){const elapsed=performance.now()-start;this.writes++;this.writeTotalMs+=elapsed;this.writeMaximumMs=Math.max(this.writeMaximumMs,elapsed);}}
+  }catch(error){failed=true;this.failedTransactions++;const code=(error as {code?:unknown})?.code;if(this.concurrentIntake&&!callbackStarted&&typeof code==='string'&&/^(SQLITE_BUSY|SQLITE_LOCKED)(_|$)/.test(code)){this.contentionAttempts++;leaseContended=true;this.requestWriterTurn();throw new MarketRegistryContention(code);}if(typeof (error as {code?:unknown})?.code==='string'&&String((error as {code:string}).code).startsWith('SQLITE_')){this.storageFailures++;this.storageAvailable=false;this.lastFailureAt=this.clock();}throw error;
+  }finally{if(!leaseContended)this.releaseWriterTurn();this.economicTouchedMints.clear();if(mutated||failed){const elapsed=performance.now()-start;this.writes++;this.writeTotalMs+=elapsed;this.writeMaximumMs=Math.max(this.writeMaximumMs,elapsed);}}
  }
  /** Synchronous, consistent deferred snapshot. It takes no writer lease,
   * cannot upgrade to a writer, never changes commit metadata, and never replays
@@ -117,7 +135,10 @@ export class MarketRegistry {
   }finally{this.db.pragma('query_only = '+(priorQueryOnly?'ON':'OFF'));}
  }
  transaction<T>(fn:()=>T):T{return this.write(fn);}
- health(){return {economicFlow:{cacheBytes:this.economicFlowCacheBytes,cacheEntries:this.economicFlowCache.size,hits:this.economicFlowCacheHits,coldQueries:this.economicFlowColdQueries,incrementalQueries:this.economicFlowIncrementalQueries},transactions:{readSnapshotCommits:this.readSnapshotCommits,writerLeaseReadOnlyCommits:this.writerLeaseReadOnlyCommits,contentionBeforeCallback:this.contentionAttempts,attempted:this.transactionAttempts,readOnlyCommits:this.readOnlyCommits,writeCommits:this.writeCommits,failed:this.failedTransactions,fsyncEligibleCommits:this.writeCommits},available:this.storageAvailable,lastFailureAt:this.lastFailureAt,lastSuccessfulWriteAt:this.lastSuccessfulWriteAt,storageFailures:this.storageFailures,maximumWriteMs:this.writeMaximumMs,meanWriteMs:this.writes?this.writeTotalMs/this.writes:0};}
+ health(){return {writerCoordination:{requests:this.writerRequests,mainTurns:this.writerTurns,workerYields:this.writerYields,expired:this.writerExpiries,state:this.writerTurn?Atomics.load(this.writerTurn,0):null,scope:'NONFINANCIAL_LOCAL_SQLITE_WRITER_TURNS'},economicFlow:{cacheBytes:this.economicFlowCacheBytes,cacheEntries:this.economicFlowCache.size,hits:this.economicFlowCacheHits,coldQueries:this.economicFlowColdQueries,incrementalQueries:this.economicFlowIncrementalQueries},transactions:{readSnapshotCommits:this.readSnapshotCommits,writerLeaseReadOnlyCommits:this.writerLeaseReadOnlyCommits,contentionBeforeCallback:this.contentionAttempts,attempted:this.transactionAttempts,readOnlyCommits:this.readOnlyCommits,writeCommits:this.writeCommits,failed:this.failedTransactions,fsyncEligibleCommits:this.writeCommits},available:this.storageAvailable,lastFailureAt:this.lastFailureAt,lastSuccessfulWriteAt:this.lastSuccessfulWriteAt,storageFailures:this.storageFailures,maximumWriteMs:this.writeMaximumMs,meanWriteMs:this.writes?this.writeTotalMs/this.writes:0};}
+ enqueueMigrationDelivery(seed:WatchSeed):boolean{return this.transaction(()=>{need(name(seed.signature)&&integer(seed.receivedAt)&&(seed.feedMint===undefined||name(seed.feedMint)),'MARKET_REGISTRY_MIGRATION_DELIVERY');return this.statement('INSERT OR IGNORE INTO migration_deliveries(signature,received_at,body) VALUES(?,?,?)').run(seed.signature,seed.receivedAt,json({signature:seed.signature,...(seed.feedMint===undefined?{}:{feedMint:seed.feedMint}),receivedAt:seed.receivedAt})).changes===1;});}
+ nextMigrationDelivery():WatchSeed|undefined{const row=this.statement("SELECT body FROM migration_deliveries WHERE state='PENDING' ORDER BY received_at,signature LIMIT 1").get() as {body:string}|undefined;return row?JSON.parse(row.body) as WatchSeed:undefined;}
+ completeMigrationDelivery(signature:string):void{this.transaction(()=>{need(name(signature),'MARKET_REGISTRY_MIGRATION_DELIVERY');this.statement("UPDATE migration_deliveries SET state='DELIVERED' WHERE signature=? AND state='PENDING'").run(signature);});}
  getMetadata<T>(key:string):T|undefined {const row=this.statement('SELECT body FROM registry_metadata WHERE key=?').get(key) as {body:string}|undefined;return row?JSON.parse(row.body) as T:undefined;}
  setMetadata(key:string,value:unknown):void{this.write(()=>{this.statement('INSERT INTO registry_metadata(key,body) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET body=excluded.body').run(key,json(value));});}
  get(signature:string):WatchRow|undefined{return this.getBySignature(signature);}

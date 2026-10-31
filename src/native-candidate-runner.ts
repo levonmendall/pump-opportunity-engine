@@ -2,7 +2,7 @@
  * and physical RPC gate. This module never imports or opens a financial ledger. */
 import {randomUUID,createHash} from 'node:crypto';
 import {performance} from 'node:perf_hooks';
-import {MarketRegistry} from './market-registry.js';
+import {MarketRegistry,isMarketRegistryContention} from './market-registry.js';
 import {NativeSlotProductivity,type NativeSlotFinancialKind} from './native-slot-productivity.js';
 import type {MarketIdentityHint,MarketActivityHint,MarketFeedStatus} from './market-discovery.js';
 import {nativePaperFeaturesSha256} from './native-paper-contract.js';
@@ -37,7 +37,7 @@ type Rpc=Pick<PilotRpc,'call'|'usage'|'cooldownUntil'>&Partial<Pick<PilotRpc,'ca
 type AuditDispatchReason='eligible'|'native-service-wait'|'native-service-dispatch'|'native-service-return'|'rpc-gate-wait'|'ceiling-backoff'|'ceiling-refresh'|'prepare-native-runway'|'scheduler-wait'|'scheduler-refusal'|'audit-selected'|'peer-selected'|'page-admission'|'page-response'|'page-refusal'|'page-deferred'|'page-not-exposed'|'work-exception';
 type AuditDispatchTrace={windowEndAt:number;deadlineAt:number;firstReadyAt:number;lastAt:number;lastState:{reason:AuditDispatchReason;nextAction:string;context:Record<string,unknown>};reasonCounts:Partial<Record<AuditDispatchReason,number>>;transitionRecords:number;omittedTransitions:number;stateKey:string;final:boolean};
 type Candidate={historyCache?:NativeAuditHistoryCache;identity:NativeObservationIdentity;allocatedAt:number;openedAt:number|null;lastFeatureEnd:number;lastAssessmentEnd:number;lastReadyWindowEnd:number;lastReadyObservedAt:number;lastExpiredWindowEnd:number;lastAuditFenceWarmingWindowEnd:number;auditFailures:number;nextAuditAt:number;lastAuditPageAt:number;auditPageRetryAt:number;readinessCheckedEnd:number;checkedAuditable:boolean;auditDispatch?:AuditDispatchTrace;auditSession?:{session:NativeAuditSession;windowEndAt:number;openedAt:number|null;connectionId:number|null|undefined;subscriptionId:number|null|undefined;deadlineAt:number}};
-export type NativeMarketIntake={observeIdentity:(row:MarketIdentityHint)=>void;observeActivity:(row:MarketActivityHint)=>void;observeFeed:(row:MarketFeedStatus)=>void};
+export type NativeMarketIntake={observeIdentity:(row:MarketIdentityHint)=>void;observeActivity:(row:MarketActivityHint)=>void;observeFeed:(row:MarketFeedStatus)=>void;observeMigration:(seed:PilotMigrationSeed)=>void};
 export type NativeRunnerOptions={marketIntake?:NativeMarketIntake;registry?:MarketRegistry;runId?:string;activeEvidence?:(mint:string,at:number)=>V3Evidence|null;activeStrategy?:'adaptive-momentum-v2'|'liquidity-resilient-momentum-v3'|'liquidity-resilient-momentum-v3.1';activeAssessment?:(mint:string,features:FlowFeatures,at:number)=>V3BuyingAssessment;observationAgePolicy?:ObservationAgePolicyVersion;rpc:Rpc;flow:Flow;record:(kind:string,data:unknown)=>void;now?:()=>number;maximumDeep?:number;restoredWatch?:unknown;resolve?:typeof resolvePilotMigration;audit?:typeof auditNativeFlowWindow;admissionOpen?:()=>boolean;sourceWorkAdmission?:(operationBoundMs:number)=>boolean;onCandidateAllocated?:(identity:NativeObservationIdentity)=>void;onCandidateRetired?:(mint:string,reason:string)=>void;onAuditAvailable?:(certificate:NativeAuditCertificate)=>void;financialOwnership?:(mint:string)=>'HELD'|'ENTRY_PENDING'|null};
 function need(value:unknown,reason:string):asserts value{if(!value)throw Error(reason);}
 const safe=(error:unknown)=>error instanceof Error&&/^[A-Z][A-Z0-9_:-]{0,150}$/.test(error.message)?error.message:'NATIVE_CANDIDATE_OPERATION_UNAVAILABLE';
@@ -61,6 +61,7 @@ export class NativeCandidateRunner{
  private readonly activeDecisions:Array<{at:number;mint:string;stage:string;reason:string}>=[];
  private readonly activeCounters={adaptivePredictiveAssessments:0,adaptivePredictiveNotRejected:0,adaptivePredictiveFailed:0,adaptivePredictiveUnavailable:0};
  private readonly decisions:Array<{at:number;mint:string;stage:string;reason:string}>=[];
+ private readonly pendingGapRetirements:Array<{row:{mint?:string;at:number;reason:string};targets:Array<{mint:string;candidate:Candidate}>;contentionReported:boolean}>=[];
  private readonly failureDiagnostics:NativeCandidateFailureDiagnostics;
  private counters={migrationHints:0,verificationQueueRefusals:0,verificationAttempts:0,verifiedOrigins:0,verificationRefusals:0,normalizedEvents:0,qualityGaps:0,featureViews:0,auditedWindows:0,predictiveAssessments:0,predictiveFailed:0,predictiveNotRejected:0,predictiveUnavailable:0,auditUnavailable:0,auditUnusable:0,decisionDeadlineMisses:0,auditFenceWarmingWindows:0,uniqueEvaluated:0,strictV2BaselineUnavailableViews:0,protocolAwareShadowViews:0};
  constructor(private readonly options:NativeRunnerOptions){
@@ -128,8 +129,19 @@ export class NativeCandidateRunner{
   }
  }
  onMigration(seed:PilotMigrationSeed){
+  if(this.options.marketIntake){this.options.marketIntake.observeMigration(seed);this.counters.migrationHints++;return;}
+  this.applyMigration(seed);this.counters.migrationHints++;
+ }
+ private applyMigration(seed:PilotMigrationSeed){
   const at=this.now();
-  this.registry.transaction(()=>{const row=this.watch.discover(seed);if(row){if(this.currentPoolObservation&&seed.feedMint)this.observeCurrentHint({mint:seed.feedMint,signature:seed.signature,receivedAt:seed.receivedAt,source:'migration-provider-hint'});else this.queueProof(row,at);}});this.counters.migrationHints++;
+  this.registry.transaction(()=>{const row=this.watch.discover(seed);if(row){if(this.currentPoolObservation&&seed.feedMint)this.observeCurrentHint({mint:seed.feedMint,signature:seed.signature,receivedAt:seed.receivedAt,source:'migration-provider-hint'});else this.queueProof(row,at);}});
+ }
+ private drainMigrationDelivery(){
+  if(!this.options.marketIntake||!this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.postValidationMs)||!this.registry.nextMigrationDelivery())return;
+  // The worker committed the original hint. Apply exactly one indexed item
+  // under the main writer lease, and acknowledge it in that same transaction.
+  // A refusal leaves the durable item pending; restart cannot lose the hint.
+  this.registry.transaction(()=>{const seed=this.registry.nextMigrationDelivery();if(!seed)return;this.applyMigration(seed);this.registry.completeMigrationDelivery(seed.signature);});
  }
  private observeCurrentHint(hint:{mint:string;signature?:string;receivedAt:number;source:string}){
   const at=this.now();let pool:string;
@@ -229,7 +241,27 @@ export class NativeCandidateRunner{
  onTrade(){this.counters.normalizedEvents++;}
  onActivity(row:{mint:string;at:number;evidence:string}){const at=this.now(),known=this.watch.lookupIdentity(row.mint,at);if(known?.migrationAt!==null&&known?.migrationAt!==undefined&&at-known.migrationAt>=PROVISIONAL_RULE.maximumAgeMs&&!['HELD','ENTRY_PENDING','PERMANENTLY_UNSUPPORTED'].includes(known.state)&&(!known.olderResearch||known.state==='EXPIRED')){try{this.watch.selectOlderResearch(row.mint,{observedAt:row.at,evidence:row.evidence},at);}catch(error){this.record('native-older-observation-selection-refused',{mint:row.mint,at,reason:safe(error),entryPermission:false});}}this.watch.noteActivity(row.mint,row.at,row.evidence);const current=this.watch.lookupIdentity(row.mint,at);if(!this.currentPoolObservation&&current&&!['EXPIRED','PERMANENTLY_UNSUPPORTED'].includes(current.state)&&!this.hasOrigin(row.mint))this.queueProof(current,at);}
  private pruneProofCache(_at:number){for(const mint of this.origins.keys()){if(this.candidates.has(mint)||this.options.financialOwnership?.(mint))continue;this.origins.delete(mint);this.originProofs.delete(mint);}}
- onGap(row:{mint?:string;at:number;reason:string}){if(row.mint&&!this.candidates.has(row.mint))return;this.counters.qualityGaps++;this.noteFailure('quality-gap',row.mint,row.reason,row.at,row.mint?this.candidates.get(row.mint):undefined);this.record('native-candidate-quality-gap',{...row,freshWindowRequired:true,financialExecutionAuthorized:false});const mints=row.mint?[row.mint]:[...this.candidates.keys()];for(const mint of mints)this.retire(mint,row.reason,row.at,30000);}
+ onGap(row:{mint?:string;at:number;reason:string}){
+  const mints=row.mint?[row.mint]:[...this.candidates.keys()],targets=mints.flatMap(mint=>{const candidate=this.candidates.get(mint);return candidate&&!this.pendingGapRetirements.some(p=>p.targets.some(t=>t.mint===mint&&t.candidate===candidate))?[{mint,candidate}]:[];});
+  if(!targets.length){if(!mints.length){this.counters.qualityGaps++;this.noteFailure('quality-gap',undefined,row.reason,row.at);this.record('native-candidate-quality-gap',{...row,freshWindowRequired:true,financialExecutionAuthorized:false});}return;}
+  // The flow has already suspended this generation. A busy intake writer must
+  // not erase its one-shot retirement notification and strand the slot.
+  this.pendingGapRetirements.push({row:{...row},targets,contentionReported:false});this.drainGapRetirements();
+ }
+ private drainGapRetirements(){
+  while(this.pendingGapRetirements.length){const pending=this.pendingGapRetirements[0]!,targets=pending.targets.filter(t=>this.candidates.get(t.mint)===t.candidate);
+   if(!targets.length){this.pendingGapRetirements.shift();continue;}
+   let callbackStarted=false;
+   try{
+    // Acquire the existing immediate writer lease before any callback mutates
+    // counters, slot state or flow ownership. Only refusal before that callback
+    // is retried; storage/logic failures retain their ordinary recovery path.
+    this.registry.transaction(()=>{callbackStarted=true;const row=pending.row;this.counters.qualityGaps++;this.noteFailure('quality-gap',row.mint,row.reason,row.at,row.mint?this.candidates.get(row.mint):undefined);this.record('native-candidate-quality-gap',{...row,freshWindowRequired:true,financialExecutionAuthorized:false});for(const target of targets)this.retire(target.mint,row.reason,Math.max(row.at,this.now()),30000);});
+    this.pendingGapRetirements.shift();
+   }catch(error){if(callbackStarted||!isMarketRegistryContention(error)){this.pendingGapRetirements.shift();throw error;}if(!pending.contentionReported){pending.contentionReported=true;this.record('native-candidate-gap-retirement-deferred',{at:this.now(),mints:targets.map(t=>t.mint),reason:'MARKET_REGISTRY_CONTENTION',sqliteCode:error.sqliteCode,callbackStarted:false,pendingRetirementRetained:true,providerRequestStarted:false,financialExposure:false});}return false;}
+  }
+  return true;
+ }
  private retire(mint:string,reason:string,at:number,deferMs:number){this.certificates.delete(mint);const c=this.candidates.get(mint);if(!c)return;this.finishAuditDispatch(c,'candidate-retired:'+reason,at);if(c.auditSession){const active=c.auditSession;active.session.cancel('NATIVE_AUDIT_CANDIDATE_RETIRED');need(this.cancelledAuditDiagnostics.length<6,'NATIVE_AUDIT_DIAGNOSTIC_BOUND');this.cancelledAuditDiagnostics.push({mint,targetEndAt:active.windowEndAt,deadlineAt:active.deadlineAt,cancelledAt:at,session:active.session});}delete c.auditSession;this.candidates.delete(mint);this.productivity.retired(mint,at,reason);this.options.flow.removeCandidate(mint,reason);const row=this.watch.lookupIdentity(mint,at);const owned=this.options.financialOwnership?.(mint);if(row&&(owned||!['EXPIRED','PERMANENTLY_UNSUPPORTED'].includes(row.state)))this.watch.transition(mint,owned??'DEFERRED',reason,at,{deferUntil:at+deferMs});this.options.onCandidateRetired?.(mint,reason);this.record('native-candidate-retired',{mint,at,reason,allocatedAt:c.allocatedAt,openedAt:c.openedAt,awarenessRetained:true,completeWindows:c.lastAssessmentEnd?1:0});}
  private async drainCancelledAuditDiagnostics(){for(const item of this.cancelledAuditDiagnostics.splice(0)){await item.session.advance();this.record('native-candidate-audit-cancelled-diagnostic',{mint:item.mint,targetEndAt:item.targetEndAt,deadlineAt:item.deadlineAt,cancelledAt:item.cancelledAt,recordedAt:this.now(),reason:item.session.error(),diagnosticResult:item.session.diagnosticResult(),admitted:false,physicalSettlementClaimed:false,meaning:'Logical cancellation only; original physical gate retains all unsettled work and uncertainty.'});}}
  private admission(deadlineAt:number):PilotRpcCallOptions{return {latestStartAt:Math.min(deadlineAt-1200,this.now()+1200),timeoutMs:1200,admissionOpen:()=>this.open()&&this.now()<deadlineAt};}
@@ -458,6 +490,8 @@ export class NativeCandidateRunner{
  async step(signal?:AbortSignal){
   if(!this.open()||this.working)return 'closed';this.working=true;
   try{
+   if(!this.drainGapRetirements()){this.lastOutcome='MARKET_REGISTRY_CONTENTION';return 'wait';}
+   this.drainMigrationDelivery();
    this.drainCommittedActivity();
    await this.drainCancelledAuditDiagnostics();
    const origin=this.verificationSession;if(origin){if(this.now()>=origin.deadlineAt){origin.controller.abort();origin.pending?.reject(Error('PILOT_MIGRATION_ABORTED'));origin.pending=null;await Promise.resolve();await Promise.resolve();origin.result??={ok:false,reason:'PILOT_MIGRATION_ELAPSED_CAP'};}this.finishVerification(origin);}
@@ -504,7 +538,7 @@ export class NativeCandidateRunner{
    const fresh=this.options.rpc.usage(),dispatch=chooseResearchWork({now:this.now(),readyAt:(jobs.some(job=>job.id.startsWith('audit:'))?(fresh.historyDispatchWindow??fresh.rpcDispatchWindow??fresh.dispatchWindow):(fresh.rpcDispatchWindow??fresh.dispatchWindow))?.readyAt??this.now(),physicalBusy:fresh.waitingOrOperating||fresh.inFlight!==0,nextProtectionAt:null,otherStartSinceProtection:false,jobs});
    this.lastDispatchAt=this.now();if(dispatch.kind==='job'){this.traceAuditDispatch(ready,this.lastDispatchAt,dispatch.job.id.startsWith('audit:')?'audit-selected':'peer-selected',dispatch.job.id.startsWith('audit:')?'dispatch-audit-page':'dispatch-origin-verification',{...this.auditDispatchContext(this.lastDispatchAt,fresh,flow),selectedMint:dispatch.job.id.startsWith('audit:')?dispatchable[0]!.identity.baseMint:null,selectedJob:dispatch.job.id,jobDeadlineAt:dispatch.job.deadlineAt,latestStartAt:dispatch.latestStartAt});if(dispatch.job.id.startsWith('audit:')){const batched=await this.evaluateQuietBatch([...dispatchable,...ready.filter(c=>!dispatchable.includes(c))],dispatch.job.deadlineAt,signal);if(!batched&&this.candidates.get(dispatchable[0]!.identity.baseMint)===dispatchable[0])await this.evaluate(dispatchable[0]!,dispatch.job.deadlineAt,signal);}else if(seed)await this.verify(seed,dispatch.job.deadlineAt,signal);this.lastOutcome=dispatch.job.id;return dispatch.job.id;}
    this.traceAuditDispatch(ready,this.lastDispatchAt,dispatch.kind==='refuse'?'scheduler-refusal':'scheduler-wait',dispatch.kind==='refuse'?'retain-refused-target':'await-next-dispatch',{...this.auditDispatchContext(this.lastDispatchAt,fresh,flow),dispatchReason:'reason'in dispatch?dispatch.reason:null,until:'until'in dispatch?dispatch.until:null,jobCount:jobs.length,auditDeadlineAt:Number.isFinite(auditDeadline)?auditDeadline:null});return dispatch.kind;
-  }catch(error){this.lastOutcome=safe(error);this.traceAuditDispatch([...this.candidates.values()],this.now(),'work-exception','retain-and-recheck-target',{reason:this.lastOutcome,physicalSettlementClaimed:false});this.record('native-candidate-work-unavailable',{at:this.now(),reason:this.lastOutcome,providerCooldownUntil:this.options.rpc.cooldownUntil(),financialExposure:false});return 'unavailable';}
+  }catch(error){if(isMarketRegistryContention(error)){this.lastOutcome='MARKET_REGISTRY_CONTENTION';this.record('native-candidate-registry-contention',{at:this.now(),reason:this.lastOutcome,sqliteCode:error.sqliteCode,callbackStarted:false,providerRequestStarted:false,financialExposure:false});return 'wait';}this.lastOutcome=safe(error);this.traceAuditDispatch([...this.candidates.values()],this.now(),'work-exception','retain-and-recheck-target',{reason:this.lastOutcome,physicalSettlementClaimed:false});this.record('native-candidate-work-unavailable',{at:this.now(),reason:this.lastOutcome,providerCooldownUntil:this.options.rpc.cooldownUntil(),financialExposure:false});return 'unavailable';}
   finally{this.working=false;}
  }
  /** Exact current source certificate; no later audit, stale generation or

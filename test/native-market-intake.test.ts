@@ -85,3 +85,10 @@ test('shutdown rejects new intake, drains remaining ACKs, sends stop only when f
   await f.intake.close();assert.equal(f.intake.usage().durableCommitted,2,'repeated shutdown does not replay commits');
  }finally{await f.close();}
 });
+
+
+test('migration handoff retains the exact seed until its durable worker ACK',async()=>{
+ const f=fixture(100000);try{
+  const seed={signature:'migration-handoff',feedMint:'migration-mint',receivedAt:1000};f.intake.observeMigration(seed);seed.feedMint='external-change';f.current().ready();await until(()=>f.current().intake().length===1);const sent=f.current().intake()[0];assert.equal(sent.operation,'migration');assert.deepEqual(sent.value,{signature:'migration-handoff',feedMint:'migration-mint',receivedAt:1000});assert.equal(f.intake.usage().durableCommitted,0);f.current().ack([sent.id]);assert.equal(f.intake.usage().durableCommitted,1);assert.equal(f.intake.usage().pending,0);
+ }finally{await f.close();}
+});

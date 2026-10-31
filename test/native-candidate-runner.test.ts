@@ -4,7 +4,8 @@
 import{test}from'node:test';import assert from'node:assert/strict';import{readFileSync,mkdtempSync,writeFileSync,rmSync}from'node:fs';
 import{tmpdir}from'node:os';import{join}from'node:path';
 import bs58 from'bs58';import{PublicKey}from'@solana/web3.js';
-import{MarketRegistry}from'../src/market-registry.js';
+import Database from'better-sqlite3';
+import{MarketRegistry,MarketRegistryContention}from'../src/market-registry.js';
 import{NativeCandidateRunner,NATIVE_AUDIT_DISPATCH_DIAGNOSTICS,type NativeOrigin,type NativeEconomicRejection,type NativeMarketIntake}from'../src/native-candidate-runner.js';
 import{CONFIRMED_PROGRAM_ACTIVITY_V3_SHADOW}from'../src/program-log-mapping.js';
 import{FlowWindow}from'../src/strategy.js';import{canonicalPumpPoolPda,PUMP_AMM_PROGRAM_ID}from'../src/sdk.js';
@@ -665,7 +666,7 @@ test('shared activity commits hint and known-watch updates once per packet witho
 
 
 test('worker intake callbacks do no main-thread writes; committed known activity applies from durable rows without double-counting hints',async()=>{
- const registry=new MarketRegistry(':memory:',{now:()=>baseAt}),queued:Array<{kind:string;data:any}>=[],marketIntake:NativeMarketIntake={observeIdentity:data=>{queued.push({kind:'identity',data});},observeActivity:data=>{queued.push({kind:'activity',data});},observeFeed:data=>{queued.push({kind:'feed',data});}},f=fixture({registry,marketIntake});try{
+ const registry=new MarketRegistry(':memory:',{now:()=>baseAt}),queued:Array<{kind:string;data:any}>=[],marketIntake:NativeMarketIntake={observeIdentity:data=>{queued.push({kind:'identity',data});},observeActivity:data=>{queued.push({kind:'activity',data});},observeFeed:data=>{queued.push({kind:'feed',data});},observeMigration:data=>{queued.push({kind:'migration',data});}},f=fixture({registry,marketIntake});try{
   const known=f.importActual(),unknown=new PublicKey(Buffer.alloc(32,182)).toBase58();f.setAllow(false);const before=registry.health().transactions.writeCommits;
   f.runner.onMarketIdentity({mint:unknown,receivedAt:f.now,source:'pumpportal-new-token',kind:'creation',evidence:'unverified-provider-discovery-hint'});
   f.runner.onMarketActivity({mint:known,signature:sig(59001),receivedAt:f.now,source:'pumpapi-broad',kind:'activity',side:'buy',quoteMint:'So11111111111111111111111111111111111111112',quoteLamports:'2000000000',evidence:'unverified-provider-activity-hint'});
@@ -699,4 +700,70 @@ test('local slot allocation uses its125ms bookkeeping runway without claiming a3
  const f=fixture({maximumDeep:2,respectServicePolicy:true});const originalMint=f.importActual();await f.runner.step();const openedAt=f.states.get(originalMint)!.openedAt!,eligibleAt=Math.ceil(openedAt/10000)*10000+60000;f.advance(eligibleAt-f.now-2500);
  assert.equal(f.runner.discretionaryAdmission(6000).admitted,false);assert.equal(f.runner.discretionaryAdmission(3000).admitted,false);assert.equal(f.runner.discretionaryAdmission(125).admitted,true);
  const second=f.seed(2);await f.runner.step();await f.runner.step();assert.ok(f.added.includes(second),'a verified waiting identity receives local slot bookkeeping before the next audit boundary');assert.equal(f.states.get(second)?.openedAt,null,'physical subscription setup still waits for its separate declared operation runway');assert.equal(f.states.get(originalMint)?.openedAt,openedAt);assert.equal(f.runner.status().candidates.length,2);await f.runner.stop();
+});
+
+test('real concurrent intake writer contention is reported as local deferral without a provider or storage failure',async()=>{
+ const dir=mkdtempSync(join(tmpdir(),'native-runner-contention-')),path=join(dir,'registry.sqlite'),registry=new MarketRegistry(path,{concurrentIntake:true,now:()=>baseAt}),locker=new Database(path);
+ const f=fixture({registry,durableMarketPolicy:true,fairEconomicCompletions:true,marketIntake:{observeIdentity(){},observeActivity(){},observeFeed(){},observeMigration(seed){registry.enqueueMigrationDelivery(seed);}}});
+ try{
+  const mint=f.seed(1);await f.steps(1);f.runner.onMarketActivityCommitted([{mint,at:f.now,evidence:'OFFLINE committed activity'}]);const before=registry.health().transactions.contentionBeforeCallback;
+  locker.exec('BEGIN IMMEDIATE');assert.equal(await f.runner.step(),'wait');
+  const event=f.records.find(r=>r.kind==='native-candidate-registry-contention');assert.ok(event);assert.equal(event.data.reason,'MARKET_REGISTRY_CONTENTION');assert.equal(event.data.sqliteCode,'SQLITE_BUSY');assert.equal(event.data.callbackStarted,false);assert.equal(event.data.providerRequestStarted,false);assert.equal(registry.health().transactions.contentionBeforeCallback,before+1);assert.equal(registry.health().storageFailures,0);assert.equal(registry.health().available,true);assert.equal(f.records.some(r=>r.kind==='native-candidate-work-unavailable'&&r.data.reason==='NATIVE_CANDIDATE_OPERATION_UNAVAILABLE'),false);assert.equal(f.rpcCalls.length,0);
+  locker.exec('ROLLBACK');await f.steps(2);assert.ok(f.states.has(mint));
+ }finally{if(locker.inTransaction)locker.exec('ROLLBACK');await f.runner.stop();locker.close();registry.close();rmSync(dir,{recursive:true,force:true});}
+});
+
+test('a one-shot suspended-scope gap survives a real writer refusal and releases its original slot after settlement',async()=>{
+ const dir=mkdtempSync(join(tmpdir(),'native-gap-contention-')),path=join(dir,'registry.sqlite'),registry=new MarketRegistry(path,{concurrentIntake:true,now:()=>baseAt}),locker=new Database(path),f=fixture({registry,durableMarketPolicy:true,fairEconomicCompletions:true,maximumDeep:2});
+ try{
+  const mint=f.seed(1),healthy=f.seed(2);await f.steps(2);const opened=f.states.get(healthy)!.openedAt,originalSnapshot=f.flow.snapshot.bind(f.flow);f.flow.snapshot=((key:string,at?:number)=>{const view=originalSnapshot(key,at);return view&&key===mint?{...view,suspended:true,hasQualityLoss:true,warm:false,connected:false}:view;})as typeof f.flow.snapshot;
+  locker.exec('BEGIN IMMEDIATE');assert.doesNotThrow(()=>f.runner.onGap({mint,at:f.now,reason:'BAD_POOL_OWNER'}));assert.doesNotThrow(()=>f.runner.onGap({mint,at:f.now,reason:'BAD_POOL_OWNER'}));assert.equal(f.states.size,2);assert.equal(f.removed.length,0);assert.equal(f.runner.status().counters.qualityGaps,0);assert.equal(await f.runner.step(),'wait');assert.equal(f.records.filter(r=>r.kind==='native-candidate-gap-retirement-deferred').length,1,'one retained intent per original candidate generation');
+  locker.exec('ROLLBACK');await f.steps(3);assert.equal(f.states.has(mint),false);assert.equal(f.removed.filter(m=>m===mint).length,1);assert.equal(f.runner.watch.lookupIdentity(mint,f.now)!.state,'DEFERRED');assert.equal(f.runner.status().counters.qualityGaps,1);assert.equal(f.states.get(healthy)!.openedAt,opened,'unaffected capture is preserved');assert.equal(f.records.filter(r=>r.kind==='native-candidate-quality-gap'&&r.data.mint===mint).length,1);assert.equal(f.rpcCalls.length,0);assert.equal(registry.health().storageFailures,0);
+ }finally{if(locker.inTransaction)locker.exec('ROLLBACK');await f.runner.stop();locker.close();registry.close();rmSync(dir,{recursive:true,force:true});}
+});
+
+test('gap retirement does not retry an arbitrary storage or logic exception as pre-callback contention',async()=>{
+ const registry=new MarketRegistry(':memory:',{now:()=>baseAt}),f=fixture({registry,durableMarketPolicy:true,fairEconomicCompletions:true}),mint=f.seed(1);await f.steps(1);const transaction=registry.transaction.bind(registry),failure=Error('OFFLINE unexpected gap storage failure');let calls=0;
+ try{registry.transaction=(()=>{calls++;throw failure;})as typeof transaction;assert.throws(()=>f.runner.onGap({mint,at:f.now,reason:'BAD_POOL_OWNER'}),error=>error===failure);assert.equal(calls,1);registry.transaction=transaction;await f.steps(2);assert.equal(f.removed.includes(mint),false,'non-contention failure was not silently replayed');assert.equal(f.records.some(r=>r.kind==='native-candidate-gap-retirement-deferred'),false);}finally{registry.transaction=transaction;await f.runner.stop();registry.close();}
+});
+
+test('worker migration callbacks never acquire the main writer; committed deliveries retry atomically after real contention',async()=>{
+ const dir=mkdtempSync(join(tmpdir(),'native-migration-delivery-')),path=join(dir,'registry.sqlite'),registry=new MarketRegistry(path,{concurrentIntake:true,now:()=>baseAt}),workerRegistry=new MarketRegistry(path,{concurrentIntake:true,now:()=>baseAt}),locker=new Database(path),seeds:Array<{signature:string;feedMint?:string;receivedAt:number}>=[];
+ const intake:NativeMarketIntake={observeIdentity(){},observeActivity(){},observeFeed(){},observeMigration(seed){seeds.push(structuredClone(seed));}},f=fixture({registry,durableMarketPolicy:true,fairEconomicCompletions:true,marketIntake:intake});
+ try{
+  const before=registry.health().transactions.attempted;locker.exec('BEGIN IMMEDIATE');const mint=f.seed(1);assert.equal(seeds.length,1);assert.equal(registry.health().transactions.attempted,before,'migration feed callback only hands the original hint to intake');assert.equal(f.runner.status().counters.migrationHints,1);assert.equal(f.runner.watch.lookupIdentity(mint,f.now),undefined);locker.exec('ROLLBACK');
+  workerRegistry.enqueueMigrationDelivery(seeds[0]!);locker.exec('BEGIN IMMEDIATE');assert.equal(await f.runner.step(),'wait');assert.deepEqual(workerRegistry.nextMigrationDelivery(),seeds[0]);assert.equal(f.runner.watch.lookupIdentity(mint,f.now),undefined,'a refused lease executes neither watch delivery nor completion');locker.exec('ROLLBACK');
+  await f.steps(1);assert.equal(registry.nextMigrationDelivery(),undefined);assert.equal(f.runner.watch.lookupIdentity(mint,f.now)!.mint,mint);assert.equal(f.runner.status().counters.migrationHints,1,'delivering the durable item does not recount the hint');assert.equal(f.states.has(mint),true);assert.equal(f.rpcCalls.length,0);assert.equal(workerRegistry.enqueueMigrationDelivery(seeds[0]!),false,'a worker ACK replay cannot recreate a completed delivery');assert.equal(registry.nextMigrationDelivery(),undefined);
+ }finally{if(locker.inTransaction)locker.exec('ROLLBACK');await f.runner.stop();locker.close();workerRegistry.close();registry.close();rmSync(dir,{recursive:true,force:true});}
+});
+
+test('pending migration delivery survives runner restart and an unexpected apply error without silent acknowledgement',async()=>{
+ const dir=mkdtempSync(join(tmpdir(),'native-migration-restart-')),path=join(dir,'registry.sqlite'),registry=new MarketRegistry(path,{concurrentIntake:true,now:()=>baseAt}),seeds:Array<{signature:string;feedMint?:string;receivedAt:number}>=[],intake:NativeMarketIntake={observeIdentity(){},observeActivity(){},observeFeed(){},observeMigration(seed){seeds.push(structuredClone(seed));}};
+ let current=fixture({registry,durableMarketPolicy:true,fairEconomicCompletions:true,marketIntake:intake});
+ try{
+  const mint=current.seed(1);registry.enqueueMigrationDelivery(seeds[0]!);await current.runner.stop();current=fixture({registry,durableMarketPolicy:true,fairEconomicCompletions:true,marketIntake:intake});const discover=current.runner.watch.discover.bind(current.runner.watch);current.runner.watch.discover=()=>{throw Error('OFFLINE migration delivery validation exception');};assert.equal(await current.runner.step(),'unavailable');assert.deepEqual(registry.nextMigrationDelivery(),seeds[0]);assert.equal(current.runner.watch.lookupIdentity(mint,current.now),undefined);current.runner.watch.discover=discover;
+  await current.steps(1);assert.equal(registry.nextMigrationDelivery(),undefined);assert.equal(current.runner.watch.lookupIdentity(mint,current.now)!.mint,mint);assert.equal(current.runner.status().counters.migrationHints,0,'fresh run did not receive the old hint again');assert.equal(seeds.length,1);assert.equal(current.rpcCalls.length,0);
+ }finally{await current.runner.stop();registry.close();rmSync(dir,{recursive:true,force:true});}
+});
+
+test('deferred source-gap retirement preserves pending financial ownership and cannot retire a replacement generation',async()=>{
+ const dir=mkdtempSync(join(tmpdir(),'native-gap-generation-')),path=join(dir,'registry.sqlite'),registry=new MarketRegistry(path,{concurrentIntake:true,now:()=>baseAt}),locker=new Database(path),f=fixture({registry,durableMarketPolicy:true,fairEconomicCompletions:true});
+ try{
+  const mint=f.seed(1);await f.steps(1);locker.exec('BEGIN IMMEDIATE');f.runner.onGap({mint,at:f.now,reason:'BAD_POOL_OWNER'});locker.exec('ROLLBACK');f.ownership.set(mint,'ENTRY_PENDING');await f.steps(2);
+  assert.equal(f.runner.watch.lookupIdentity(mint,f.now)!.state,'ENTRY_PENDING');assert.equal(f.ownership.get(mint),'ENTRY_PENDING','observation cleanup never cancels the independent financial obligation');assert.equal(f.states.has(mint),false,'unusable observation is not claimed as continuing protection');
+  f.ownership.delete(mint);f.runner.syncFinancialOwnership(new Set([mint]));f.advance(30001);await f.steps(2);assert.ok(f.states.has(mint));const original=(f.runner as any).candidates.get(mint);
+  locker.exec('BEGIN IMMEDIATE');f.runner.onGap({mint,at:f.now,reason:'BAD_POOL_OWNER'});locker.exec('ROLLBACK');
+  // An independent ownership/lifecycle action retires the old scope before
+  // the delayed one-shot gap can take its next turn. Reuse the same mint with
+  // a new candidate object to make the generation guard observable.
+  (f.runner as any).retire(mint,'OFFLINE independent generation replacement',f.now,0);await f.flow.service();(f.runner as any).allocate(f.now);const replacement=(f.runner as any).candidates.get(mint);assert.ok(replacement&&replacement!==original);const removals=f.removed.length;
+  await f.steps(1);assert.equal((f.runner as any).candidates.get(mint),replacement);assert.equal(f.removed.length,removals,'old queued gap cannot remove a new candidate generation');assert.equal(f.states.has(mint),true);assert.equal(f.rpcCalls.length,0);
+ }finally{if(locker.inTransaction)locker.exec('ROLLBACK');await f.runner.stop();locker.close();registry.close();rmSync(dir,{recursive:true,force:true});}
+});
+
+test('a typed contention thrown after the gap callback starts is propagated without replaying its partial effects',async()=>{
+ const registry=new MarketRegistry(':memory:',{now:()=>baseAt}),f=fixture({registry,durableMarketPolicy:true,fairEconomicCompletions:true}),mint=f.seed(1);await f.steps(1);const original=(f.runner as any).noteFailure,failure=new MarketRegistryContention('SQLITE_BUSY');let calls=0;
+ try{
+  (f.runner as any).noteFailure=()=>{calls++;throw failure;};assert.throws(()=>f.runner.onGap({mint,at:f.now,reason:'BAD_POOL_OWNER'}),error=>error===failure);assert.equal(calls,1);assert.equal(f.runner.status().counters.qualityGaps,1);(f.runner as any).noteFailure=original;await f.steps(2);assert.equal(f.runner.status().counters.qualityGaps,1,'a callback that started is never replayed as a refused lease');assert.equal(f.removed.includes(mint),false);assert.equal(f.records.some(r=>r.kind==='native-candidate-gap-retirement-deferred'),false);
+ }finally{(f.runner as any).noteFailure=original;await f.runner.stop();registry.close();}
 });
