@@ -21,11 +21,13 @@ import {NativePaper,nativePaperDerivedEntryBlocker} from '../src/native-paper.js
 import {FlowWindow,type NormalizedTrade} from '../src/strategy.js';
 import {nativePaperFeaturesSha256} from '../src/native-paper-contract.js';
 import {decodeMigrationIdentity} from '../src/migration-identity.js';
+import {nativeObservationIdentityFromMigration,type NativeObservationIdentity} from '../src/native-observation-identity.js';
+import type {ResearchClockObservationSupport} from '../src/research-clock-pricing.js';
 import {parseNativePaperArgs,nativePaperConfigurationSha256,resolveNativePaperStrategy,nativePaperCurrentQualificationProof} from '../src/run-native-paper.js';
 import {NATIVE_PAPER_DATA_CONTRACT_VERSION} from '../src/native-paper-contract.js';
 import type {PoolWireAccount} from '../src/pool.js';
 
-async function fixture(t:TestContext,v3=true,v31=false){
+async function fixture(t:TestContext,v3=true,v31=false,observation:{unknownMigration?:boolean;currentPoolProof?:boolean}={}){
  const directory=mkdtempSync(join(tmpdir(),'poe-OFFLINE-v3-native-')),path=join(directory,'fixture.sqlite'),backups=join(directory,'backups');mkdirSync(backups,{mode:0o700});
  let at=Date.parse('2026-10-30T18:00:00Z'),ledger=new PaperLedger(path,POE_OPERATING_ACCOUNT.accountId),closed=false;
  const oldNow=Date.now;Date.now=()=>at;
@@ -38,22 +40,22 @@ async function fixture(t:TestContext,v3=true,v31=false){
   rows=readFileSync('evidence/integration-'+run+'.ndjson','utf8').trim().split('\n').map(line=>JSON.parse(line)),state=rows.find(row=>row.kind==='pool-state').data,
   origin=rows.find(row=>row.kind==='migration-transaction').data;
  const decoded=decodeMigrationIdentity(origin,{signature:origin.transaction.signatures[0],commitment:'finalized',availableAt:at});assert.equal(decoded.ok,true);if(!decoded.ok)throw Error('retained fixture origin');
- const identity=decoded.identity,mint=proof.quote.mint as string,accounts=new Map<string,PoolWireAccount>(state.addresses.map((address:string,i:number)=>[address,structuredClone(state.value[i])])),calls:string[]=[],records:Array<{kind:string;data:any}>=[];
- let frozenCertificate:NativeAuditCertificate|undefined;let slot=state.context.slot+100,quoteMissing=false,audit=true,bridge!:NativePaper,market!:PilotMarket,recordHook:((kind:string)=>void)|undefined;
+ const mint=proof.quote.mint as string,identity:NativeObservationIdentity=observation.unknownMigration?{schemaVersion:1,baseMint:mint,pool:decoded.identity.pool,migrationAt:null,migrationVerified:false,identityBasis:'canonical-pool-hint',identityAvailableAt:at,identityEvidence:'OFFLINE canonical pool hint with unknown migration history'}:nativeObservationIdentityFromMigration(decoded.identity),accounts=new Map<string,PoolWireAccount>(state.addresses.map((address:string,i:number)=>[address,structuredClone(state.value[i])])),calls:string[]=[],records:Array<{kind:string;data:any}>=[];
+ let frozenCertificate:NativeAuditCertificate|undefined;let slot=state.context.slot+100,quoteMissing=false,audit=true,supportFresh=true,bridge!:NativePaper,market!:PilotMarket,recordHook:((kind:string)=>void)|undefined;
  const reserve=(amount:bigint)=>{const address=state.addresses[6],wire=structuredClone(accounts.get(address)!),bytes=Buffer.from(wire.data[0],'base64');bytes.writeBigUInt64LE(amount,64);wire.lamports=Number(amount+bytes.readBigUInt64LE(113));wire.data[0]=bytes.toString('base64');accounts.set(address,wire);slot++;};reserve(20000000000n);
  const baseReserve=(amount:bigint)=>{const address=state.addresses[5],wire=structuredClone(accounts.get(address)!),bytes=Buffer.from(wire.data[0],'base64');bytes.writeBigUInt64LE(amount,64);wire.data[0]=bytes.toString('base64');accounts.set(address,wire);slot++;};
  const syntheticZeroVirtualAndFeeBuckets=()=>{const address=state.addresses[0],wire=structuredClone(accounts.get(address)!),bytes=Buffer.from(wire.data[0],'base64');assert.ok(bytes.length>=287);bytes.fill(0,245,261);bytes.fill(0,271,287);wire.data[0]=bytes.toString('base64');accounts.set(address,wire);slot++;};
  const window=new FlowWindow(mint,openedAt);
  const rpc={async call<T>(method:string,params:unknown[]=[]):Promise<T>{calls.push(method);assert.ok(['getMultipleAccounts','getMinimumBalanceForRentExemption','getBlockTime'].includes(method),'read-only fixture request only');if(quoteMissing&&method==='getMultipleAccounts')throw Error('OFFLINE unavailable pool quote');if(method==='getMinimumBalanceForRentExemption')return (1000000+Number(params[0]))as T;if(method==='getBlockTime')return Math.floor(at/1000)as T;const clock=Buffer.alloc(40);clock.writeBigUInt64LE(BigInt(slot));clock.writeBigInt64LE(BigInt(Math.floor(at/1000)),32);return {context:{slot},value:(params[0]as string[]).map(address=>address===SYSVAR_CLOCK_PUBKEY.toBase58()?{owner:'Sysvar1111111111111111111111111111111111111',lamports:1169280,executable:false,rentEpoch:0,data:[clock.toString('base64'),'base64']}:structuredClone(accounts.get(address)??null))}as T;}};
- const source={snapshot(name:string,when=at){return name!==mint?null:{scope:{mint,pool:identity.pool},dataContract:'confirmed-program-activity-v3-shadow',openedAt,connectionId:1,subscription:5,connected:true,sourceSupportFresh:true,hasQualityLoss:false,features:window.features(when)};},usage(){return {dataContract:'confirmed-program-activity-v3-shadow',connected:true,stopped:false,fatal:null,lastFreshSupportAt:at,lastBankClockAt:at-1000};}};
+ const source={snapshot(name:string,when=at){return name!==mint?null:{scope:{mint,pool:identity.pool},dataContract:'confirmed-program-activity-v3-shadow',openedAt,connectionId:1,subscription:5,connected:true,sourceSupportFresh:supportFresh,hasQualityLoss:false,features:window.features(when)};},usage(){return {dataContract:'confirmed-program-activity-v3-shadow',connected:true,stopped:false,fatal:null,lastFreshSupportAt:at,lastBankClockAt:at-1000};}};
  const certificate=(name:string,when=at)=>{if(!audit||name!==mint)return null;if(frozenCertificate)return structuredClone(frozenCertificate);const f=window.features(when);return {schemaVersion:1 as const,mint,pool:identity.pool,dataContract:'confirmed-program-activity-v3-shadow' as const,openedAt,connectionId:1,subscriptionId:5,windowStartAt:f.windowStartAt,windowEndAt:f.windowEndAt,auditAvailableAt:when,admittedAt:when,deadlineAt:f.windowEndAt+9999,notificationCompletenessVerified:true,executedFlowCompletenessVerified:true,featuresSha256:nativePaperFeaturesSha256(f)};};
  const compose=(restoredPools?:ReturnType<NativePaper['poolsForRecovery']>)=>{
   market=new PilotMarket({rpc,inventory:()=>ledger.state(),price,now:()=>at,executionRealism:true,recorder:{record:(kind,data)=>{records.push({kind,data:structuredClone(data)});recordHook?.(kind);}},gas:{baseFeeLamports:'5000',priorityFeeLamports:'2000',evidence:'OFFLINE explicit realistic modeled fees'}});
   bridge=new NativePaper({ledger,market,binding:v31?LIQUIDITY_RESILIENT_V3_1_PILOT_BINDING:LIQUIDITY_RESILIENT_PILOT_BINDING,executionRealism:true,operatingFinancialReadiness:true,source:source as any,certificate,now:()=>at,record:(kind,data)=>{records.push({kind,data:structuredClone(data)});recordHook?.(kind);},admitNewRisk:()=>true,admitFinancialReadiness:()=>true,onTechnicalReevaluation:request=>records.push({kind:'OFFLINE technical-reevaluation-request',data:structuredClone(request)}),onEconomicRejection:request=>records.push({kind:'OFFLINE economic-rejection-complete',data:structuredClone(request)}),restoredPools});
  };
- compose();bridge.allocated(identity);bridge.opened({mint,at});
+ compose();bridge.allocated(identity);if(observation.currentPoolProof!==false)bridge.currentPoolValidated({mint,pool:identity.pool,at,sourceSlot:slot,evidence:'OFFLINE synthetic current canonical pool validation before ACK',summary:{} as ResearchClockObservationSupport['summary']});bridge.opened({mint,at});
  t.after(()=>{if(!closed)ledger.close();Date.now=oldNow;rmSync(directory,{recursive:true,force:true});});
- return {mint,calls,records,price,reserve,baseReserve,syntheticZeroVirtualAndFeeBuckets,window,source,freezeAuditCertificate(){const current=certificate(mint,at);assert.ok(current);frozenCertificate=current;},onRecord:(hook:(kind:string)=>void)=>{recordHook=hook;},get at(){return at;},set at(value:number){at=value;slot++;},get ledger(){return ledger;},get bridge(){return bridge;},get market(){return market;},set audit(value:boolean){audit=value;},set quoteMissing(value:boolean){quoteMissing=value;},
+ return {mint,calls,records,price,reserve,baseReserve,syntheticZeroVirtualAndFeeBuckets,window,source,freezeAuditCertificate(){const current=certificate(mint,at);assert.ok(current);frozenCertificate=current;},onRecord:(hook:(kind:string)=>void)=>{recordHook=hook;},get at(){return at;},set at(value:number){at=value;slot++;},get ledger(){return ledger;},get bridge(){return bridge;},get market(){return market;},set audit(value:boolean){audit=value;},set quoteMissing(value:boolean){quoteMissing=value;},set sourceSupportFresh(value:boolean){supportFresh=value;},
   warm(options?:{buyLamports?:string;inventory?:string;base?:string;raw?:string}){for(let n=0;n<6;n++){at=openedAt+n*10000+100;slot++;const trade:NormalizedTrade={mint,wallet:'OFFLINE independent actor-'+n,side:'buy',quoteLamports:options?.buyLamports??'500000000',tokenUnits:String(1000000-n*20000),receivedAt:at,commitment:'confirmed',slot,identity:{signature:'OFFLINE native trade-'+n,instructionIndex:0,eventIndex:0}};window.ingest(trade);bridge.trade({trade,evidence:{trader:trade.wallet,...(options?.inventory?{userBaseTokenAccount:'OFFLINE observed token account-'+n}:{}),eventBytesSha256:String(n).repeat(64),userBaseTokenReserveUnits:n===0?options?.inventory??'0':'0',reserveObservation:{baseReserveUnits:options?.base??'1000000000000',rawQuoteReserveLamports:options?.raw??'20000000000',virtualQuoteReserveLamports:'0'}}as any,validatedAt:at,dataContract:'confirmed-program-activity-v3-shadow',transferCrossCheck:'UNAVAILABLE'});}at=openedAt+60000;slot++;},
   restart(){const pools=bridge.poolsForRecovery();ledger.close();ledger=new PaperLedger(path,POE_OPERATING_ACCOUNT.accountId);compose(pools);},close(){ledger.close();closed=true;}};
 }
@@ -126,6 +128,41 @@ test('V3.1 runtime reserves the selected exact SDK size under the same existing 
  for(const row of economicHeld){const context=row.data.liquidityResilientHolding.liquidityContext;assert.equal(context.economicReserves.evidence,context.evidence);assert.equal(context.economicReserves.at,context.at);assert.equal(context.economicReserves.rawQuoteReserveLamports,context.rawQuoteReserveLamports);assert.match(context.economicReserves.feeBucketsLamports,/^\d+$/);assert.match(context.priorEconomicReserves.feeBucketsLamports,/^\d+$/);assert.ok(context.priorEconomicReserves.at<context.economicReserves.at);}
  assert.ok(economicHeld.some(r=>r.data.liquidityResilientHolding.decision.reserveChange?.version==='effective-curve-and-available-funds-v1'));
  assert.ok(f.calls.every(m=>!['sendTransaction','simulateTransaction'].includes(m)));assert.equal(f.ledger.projection(f.at,f.price(),{}).equityRisk?.daily.limitBps,null);
+});
+
+test('V3.1 unknown migration history reaches full audited SDK qualification from current pool proof before ACK',async t=>{
+ const f=await fixture(t,true,true,{unknownMigration:true}),openedAt=f.at;
+ const registered=f.bridge.poolsForRecovery()[f.mint]!;
+ assert.ok('schemaVersion'in registered.identity);
+ assert.equal(registered.identity.migrationAt,null);assert.equal(registered.identity.migrationVerified,false);
+ assert.equal(registered.identity.identityBasis,'canonical-pool-hint');assert.equal(registered.identity.origin,undefined);
+ assert.equal(registered.currentPoolProof?.verifiedAt,openedAt);assert.equal(f.bridge.trader.hasCandidate(f.mint),true);
+ const currentProof=structuredClone(registered.currentPoolProof),epoch=structuredClone(f.ledger.state().paperEpoch);
+ f.warm();assert.equal(f.bridge.ready(f.mint,f.at),true);assert.ok(f.bridge.qualificationProof(f.mint,f.at));
+ assert.equal(f.bridge.candidateAssessment(f.mint,f.bridge.trader.candidateFeatures(f.mint,f.at)!,f.at).status,'not-rejected');
+ await f.bridge.candidate(f.mint,true);
+ const order=Object.values(f.ledger.state().pending)[0];assert.equal(order?.side,'buy',JSON.stringify({decisions:f.bridge.trader.decisions(),records:f.records.slice(-12)}));
+ assert.equal(order.entryStrategy?.version,LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION);assert.equal(f.bridge.trader.funnel.qualified,1);
+ const evaluation=f.records.findLast(row=>row.kind==='native-opportunity-evaluation')!.data;
+ assert.equal(evaluation.stage,'execution-economics');assert.equal(evaluation.technicalFailure,false);assert.equal(evaluation.auditedFlow.trades.length,6);
+ assert.equal(evaluation.selectedMarket.buyInputLamports,order.maxSpend);assert.deepEqual(f.ledger.state().paperEpoch,epoch);
+ const after=f.bridge.poolsForRecovery()[f.mint]!;assert.ok('schemaVersion'in after.identity);assert.equal(after.identity.migrationAt,null);assert.equal(after.identity.migrationVerified,false);assert.equal(after.identity.origin,undefined);assert.deepEqual(after.currentPoolProof,currentProof,'later pricing must not backdate or replace original current identity evidence');
+ assert.ok(f.calls.every(method=>!['sendTransaction','simulateTransaction'].includes(method)));
+});
+
+test('V3.1 unknown migration history preserves current pool, freshness, complete audit and executable quote gates',async t=>{
+ for(const gate of ['missing-current-pool','stale-source','missing-audit','expired-audit','missing-quote']as const)await t.test(gate,async st=>{
+  const f=await fixture(st,true,true,{unknownMigration:true,currentPoolProof:gate!=='missing-current-pool'});f.warm();
+  if(gate==='stale-source')f.sourceSupportFresh=false;
+  if(gate==='missing-audit')f.audit=false;
+  if(gate==='expired-audit'){f.freezeAuditCertificate();f.at+=10000;}
+  if(gate==='missing-quote')f.quoteMissing=true;
+  const epoch=structuredClone(f.ledger.state().paperEpoch),calls=f.calls.length;
+  if(gate!=='missing-quote'){assert.equal(f.bridge.ready(f.mint,f.at),false);assert.equal(f.bridge.qualificationProof(f.mint,f.at),null);}
+  await f.bridge.candidate(f.mint,true);
+  assert.equal(f.bridge.trader.funnel.qualified,0);assert.deepEqual(f.ledger.state().pending,{});assert.deepEqual(f.ledger.state().positions,{});assert.equal(f.ledger.state().executionCosts,'0');assert.deepEqual(f.ledger.state().paperEpoch,epoch);
+  if(gate!=='missing-quote')assert.equal(f.calls.length,calls,'failed evidence gates do not request financial preparation');
+ });
 });
 
 test('V3.1 exact CLI binding retains four slots and a separately versioned immutable configuration',()=>{

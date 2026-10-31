@@ -5,13 +5,16 @@ import bs58 from 'bs58';
 import type {NativeNotification} from './pilot-native-flow.js';
 import type {PilotRpcCallOptions} from './pilot-rpc.js';
 
-export type NativeAuditHistoryRow={signature:string;slot:number;success:boolean;blockTime:number|null;confirmationStatus:'confirmed'|'finalized'};
+export type NativeAuditHistoryRow={signature:string;slot:number;success:boolean;/** Optional diagnostic only; never a fence or availability clock. */blockTime:number|null;confirmationStatus:'confirmed'|'finalized'};
 /** Ephemeral, pool-bound contiguous finalized suffix from a verified audit.
  * Never restored from packets/checkpoints or accepted without a fresh overlap. */
 export type NativeAuditHistoryCache={pool:string;validatedAt:number;rows:NativeAuditHistoryRow[]};
 type Fence={signature:string;slot:number;receivedAt:number;availableAt:number};
 export type NativeAuditContextFences={lower:{slot:number;availableAt:number;bankClockAt?:number};upper:{slot:number;availableAt:number;bankClockAt:number}};
 export type NativeAuditNotificationGeneration={mint:string;pool:string;openedAt:number;connectionId:number;subscriptionId:number};
+export type NativeNotificationAuditFenceSelection=
+ |{available:true;anchor:NativeNotification;lowerFence:NativeNotification}
+ |{available:false;reason:string};
 type Page={page:number;requestedLimit:100|1000;rows:number;newestSlot:number|null;oldestSlot:number|null;receivedAt:number;validatedAt:number};
 export type NativeFlowAuditResult={
  schemaVersion:1;classification:'BOUNDED_CONFIRMED_POOL_SIGNATURE_WINDOW_AUDIT';status:'verified'|'unusable'|'unavailable';reason:string;
@@ -38,6 +41,10 @@ export type NativeFlowAuditOptions={
  /** Actual local packets that became available after the immutable audit
   * snapshot. Diagnostic history corroboration ONLY, never target features. */
  notificationGeneration?:NativeAuditNotificationGeneration;
+ /** Current-mode scheduling may use already received direct-subscription
+  * boundaries instead of requesting another bank Clock. The actual audit
+  * repeats the identical selector against its immutable notification snapshot. */
+ notificationFenceGeneration?:NativeAuditNotificationGeneration;
  postSnapshotNotifications?:(startedAt:number)=>readonly NativeNotification[];
  record?:(kind:string,data:unknown)=>void;
  /** Already decoded/validated coherent confirmed SDK+Clock contexts. A slot
@@ -49,7 +56,7 @@ export type NativeFlowAuditOptions={
 const limitations=Object.freeze([
  'The denominator is bounded confirmed pool-address history between strict slot fences, not a whole-market census or proof that every row is a swap.',
  'Boundary slots are excluded. Every target-window signature must lie strictly inside both fences; ambiguous boundaries do not pass.',
- 'Local receipt and complete-validation timestamps remain distinct from chain blockTime. Historical information is available only after this audit completes.',
+ 'Local receipt and complete-validation timestamps remain distinct from optional diagnostic chain blockTime. Missing or malformed blockTime is unknown, never a substitute clock or a completeness gate. Historical information is available only after this audit completes.',
  'The anchor is an actual captured confirmed notification, not a separately fetched full transaction. Signature history does not establish SPL transfer checks or missing trade amounts.',
  'Every history page requests minContextSlot at the original upper fence. This is a served-node lower bound, not a per-response bank context or an atomic history snapshot.',
  'Context-fence mode uses caller-validated coherent confirmed SDK/Clock state. Its bank Clock is not getBlockTime or an invented wall-time timestamp for each trade.',
@@ -61,9 +68,41 @@ const limitations=Object.freeze([
  'Finalized history may reuse only a prior verified contiguous suffix reached by a fresh exact finalized overlap. historyRows includes those denominator rows; pages, requestAttempts and historyPayloadBytes describe fresh calls only. Reused rows are recorded separately for replay.'
 ]);
 const int=(v:unknown):v is number=>Number.isSafeInteger(v)&&Number(v)>=0;
+const diagnosticBlockTime=(value:unknown):number|null=>int(value)?value:null;
 function need(v:unknown,reason:string):asserts v{if(!v)throw Error('NATIVE_AUDIT_'+reason);}
 function key(value:unknown,bytes:number){try{return typeof value==='string'&&value.length<=100&&bs58.decode(value).length===bytes;}catch{return false;}}
 const safe=(e:unknown)=>e instanceof Error&&/^[A-Z][A-Z0-9_:-]{0,150}$/.test(e.message)?e.message:'NATIVE_AUDIT_UNAVAILABLE';
+
+/** Pure local eligibility only, never an audit certificate. Interior signature
+ * decoding remains in the authoritative audit before any provider request;
+ * repeating it here on every scheduler turn would add work without evidence.
+ * Preserve every required interior row, including validated cross-scope copies. Optional
+ * generation binding restricts only the actual boundary packets: another
+ * subscription, an old ACK or a replayed duplicate cannot supply their time. */
+export function selectNativeNotificationAuditFences(input:{notifications:readonly NativeNotification[];target:{startAt:number;endAt:number};at:number;generation?:NativeAuditNotificationGeneration}):NativeNotificationAuditFenceSelection{
+ const unavailable=(reason:string):NativeNotificationAuditFenceSelection=>({available:false,reason:'NATIVE_AUDIT_'+reason});
+ const {notifications,target,at,generation}=input;
+ if(!int(at)||!target||!int(target.startAt)||!int(target.endAt)||target.endAt-target.startAt!==60000||target.startAt%10000!==0||target.endAt%10000!==0||target.endAt>at)return unavailable('INVALID_TARGET');
+ if(!Array.isArray(notifications)||notifications.length>8192)return unavailable('NOTIFICATION_BOUND');
+ if(generation&&(!key(generation.mint,32)||!key(generation.pool,32)||!int(generation.openedAt)||generation.openedAt>target.startAt||!int(generation.connectionId)||!int(generation.subscriptionId)))return unavailable('NOTIFICATION_FENCE_GENERATION');
+ const captured=new Map<string,NativeNotification>();
+ for(const n of notifications){
+  if(!n||typeof n.signature!=='string'||n.signature.length<64||n.signature.length>88||!/^[1-9A-HJ-NP-Za-km-z]+$/.test(n.signature)||!int(n.slot)||!int(n.receivedAt)||!int(n.availableAt)||n.receivedAt>n.availableAt||n.availableAt>at||typeof n.success!=='boolean'||typeof n.duplicate!=='boolean'||typeof n.correction!=='boolean'||!/^[a-f0-9]{64}$/.test(n.rawHash)||!['failed-transaction','program-event','nontrade','unusable'].includes(n.classification))return unavailable('NOTIFICATION_SCHEMA');
+  const prior=captured.get(n.signature);
+  if(prior&&(prior.slot!==n.slot||prior.success!==n.success||prior.rawHash!==n.rawHash||n.correction))return unavailable('CAPTURED_CORRECTION');
+  if(n.availableAt>=target.startAt&&n.availableAt<target.endAt&&(n.correction||n.classification==='unusable'))return unavailable('UNUSABLE_TARGET_INFORMATION');
+  if(!prior||n.availableAt<prior.availableAt)captured.set(n.signature,n);
+ }
+ const rows=[...captured.values()],required=rows.filter(n=>n.availableAt>=target.startAt&&n.availableAt<target.endAt),minimum=required.length?Math.min(...required.map(n=>n.slot)):Infinity,maximum=required.length?Math.max(...required.map(n=>n.slot)):-1;
+ const boundary=(n:NativeNotification)=>!n.correction&&n.classification!=='unusable'&&(!generation||n.receivedAt>=generation.openedAt&&n.availableAt>=generation.openedAt&&n.connectionId===generation.connectionId&&n.subscriptionId===generation.subscriptionId&&n.subscriptionMint===generation.mint&&n.subscriptionPool===generation.pool);
+ const anchor=rows.filter(n=>boundary(n)&&n.receivedAt>=target.endAt&&n.availableAt>=target.endAt&&n.slot>maximum).sort((a,b)=>b.receivedAt-a.receivedAt||b.availableAt-a.availableAt)[0];
+ if(!anchor)return unavailable('POST_WINDOW_SLOT_FENCE_UNAVAILABLE');
+ const lowerFence=rows.filter(n=>boundary(n)&&n.receivedAt<target.startAt&&n.availableAt<target.startAt&&n.slot<minimum&&n.slot<anchor.slot).sort((a,b)=>b.slot-a.slot||b.availableAt-a.availableAt)[0];
+ if(!lowerFence)return unavailable('PRE_WINDOW_SLOT_FENCE_UNAVAILABLE');
+ if(!key(anchor.signature,64)||!key(lowerFence.signature,64))return unavailable('NOTIFICATION_SCHEMA');
+ if(required.some(n=>n.slot<=lowerFence.slot||n.slot>=anchor.slot))return unavailable('TARGET_SLOT_BOUNDARY_AMBIGUOUS');
+ return {available:true,anchor:{...anchor},lowerFence:{...lowerFence}};
+}
 
 export async function auditNativeFlowWindow(options:NativeFlowAuditOptions):Promise<NativeFlowAuditResult>{
  const now=options.now??Date.now,startedAt=now(),target={...options.target};let lastAt=startedAt,open=true;
@@ -76,13 +115,15 @@ export async function auditNativeFlowWindow(options:NativeFlowAuditOptions):Prom
   const generation=options.notificationGeneration?{...options.notificationGeneration}:null;
   need(options.postSnapshotNotifications===undefined||typeof options.postSnapshotNotifications==='function'&&generation!==null,'TAIL_OPTIONS');
   if(generation)need(key(generation.mint,32)&&generation.pool===options.pool&&int(generation.openedAt)&&generation.openedAt<=target.startAt&&int(generation.connectionId)&&int(generation.subscriptionId),'TAIL_GENERATION');
+  const fenceGeneration=options.notificationFenceGeneration?{...options.notificationFenceGeneration}:undefined;
+  if(fenceGeneration)need(!options.contextFences&&fenceGeneration.pool===options.pool&&(!generation||fenceGeneration.mint===generation.mint&&fenceGeneration.openedAt===generation.openedAt&&fenceGeneration.connectionId===generation.connectionId&&fenceGeneration.subscriptionId===generation.subscriptionId),'NOTIFICATION_FENCE_GENERATION');
   result.postSnapshotTail.generation=generation;
   need(int(target.startAt)&&int(target.endAt)&&target.endAt-target.startAt===60000&&target.startAt%10000===0&&target.endAt%10000===0&&target.endAt<=startedAt,'INVALID_TARGET');
   need(Array.isArray(options.notifications)&&options.notifications.length<=8192,'NOTIFICATION_BOUND');
   const cache=options.reusableHistory?structuredClone(options.reusableHistory):null;
   if(cache){
    need(cache.pool===options.pool&&int(cache.validatedAt)&&cache.validatedAt<=startedAt&&Array.isArray(cache.rows)&&cache.rows.length<=6000,'HISTORY_CACHE_BINDING');
-   const signatures=new Set<string>();let previous=Infinity;for(const r of cache.rows){need(key(r.signature,64)&&!signatures.has(r.signature)&&int(r.slot)&&r.slot<=previous&&typeof r.success==='boolean'&&(r.blockTime===null||int(r.blockTime))&&r.confirmationStatus==='finalized','HISTORY_CACHE_SCHEMA');signatures.add(r.signature);previous=r.slot;}
+   const signatures=new Set<string>();let previous=Infinity;for(const r of cache.rows){need(r&&key(r.signature,64)&&!signatures.has(r.signature)&&int(r.slot)&&r.slot<=previous&&typeof r.success==='boolean'&&r.confirmationStatus==='finalized','HISTORY_CACHE_SCHEMA');signatures.add(r.signature);previous=r.slot;r.blockTime=diagnosticBlockTime(r.blockTime);}
   }
   const captured=new Map<string,NativeNotification>(),all:NativeNotification[]=[];
   for(const raw of options.notifications){
@@ -91,7 +132,7 @@ export async function auditNativeFlowWindow(options:NativeFlowAuditOptions):Prom
   }
   const required=[...captured.values()].filter(n=>n.availableAt>=target.startAt&&n.availableAt<target.endAt);result.requiredSignatures=required.map(n=>n.signature);result.notificationSnapshot.requiredRows=required.length;
   if(all.some(n=>n.availableAt>=target.startAt&&n.availableAt<target.endAt&&(n.classification==='unusable'||n.correction)))return finish('unusable','NATIVE_AUDIT_UNUSABLE_TARGET_INFORMATION');
-  const minimumRequired=required.length?Math.min(...required.map(n=>n.slot)):Infinity,maximumRequired=required.length?Math.max(...required.map(n=>n.slot)):-1;
+  const minimumRequired=required.length?Math.min(...required.map(n=>n.slot)):Infinity;
   let lowerSlot:number,upperSlot:number,before:string|undefined,previousSlot:number;
   if(options.contextFences){
    const contexts={lower:{...options.contextFences.lower},upper:{...options.contextFences.upper}},lo=contexts.lower,hi=contexts.upper;
@@ -103,10 +144,9 @@ export async function auditNativeFlowWindow(options:NativeFlowAuditOptions):Prom
    const anchor=[...captured.values()].filter(n=>n.receivedAt>=target.endAt&&n.slot>=upperSlot&&!n.correction&&n.classification!=='unusable').sort((a,b)=>b.receivedAt-a.receivedAt)[0];
    if(anchor){result.anchor={signature:anchor.signature,slot:anchor.slot,receivedAt:anchor.receivedAt,availableAt:anchor.availableAt};before=anchor.signature;previousSlot=anchor.slot;}else previousSlot=Infinity;
   }else{
-   const anchor=[...captured.values()].filter(n=>n.receivedAt>=target.endAt&&n.availableAt>=target.endAt&&n.slot>maximumRequired&&!n.correction&&n.classification!=='unusable').sort((a,b)=>b.receivedAt-a.receivedAt||b.availableAt-a.availableAt)[0];
-   if(!anchor)return finish('unavailable','NATIVE_AUDIT_POST_WINDOW_SLOT_FENCE_UNAVAILABLE');
-   const lower=[...captured.values()].filter(n=>n.receivedAt<target.startAt&&n.availableAt<target.startAt&&n.slot<minimumRequired&&n.slot<anchor.slot&&!n.correction&&n.classification!=='unusable').sort((a,b)=>b.slot-a.slot||b.availableAt-a.availableAt)[0];
-   if(!lower)return finish('unavailable','NATIVE_AUDIT_PRE_WINDOW_SLOT_FENCE_UNAVAILABLE');
+   const fences=selectNativeNotificationAuditFences({notifications:[...captured.values()],target,at:startedAt,...(fenceGeneration?{generation:fenceGeneration}:{})});
+   if(!fences.available)return finish('unavailable',fences.reason);
+   const {anchor,lowerFence:lower}=fences;
    result.anchor={signature:anchor.signature,slot:anchor.slot,receivedAt:anchor.receivedAt,availableAt:anchor.availableAt};result.lowerFence={signature:lower.signature,slot:lower.slot,receivedAt:lower.receivedAt,availableAt:lower.availableAt};result.anchorKind='notification';lowerSlot=lower.slot;upperSlot=anchor.slot;before=anchor.signature;previousSlot=anchor.slot;
   }
   result.strictInteriorSlots={lower:lowerSlot,upper:upperSlot};if(required.some(n=>n.slot<=lowerSlot||n.slot>=upperSlot))return finish('unavailable','NATIVE_AUDIT_TARGET_SLOT_BOUNDARY_AMBIGUOUS');
@@ -117,8 +157,12 @@ export async function auditNativeFlowWindow(options:NativeFlowAuditOptions):Prom
    const requestOptions:PilotRpcCallOptions={...options.admission,latestStartAt:Math.min(options.admission?.latestStartAt??Infinity,startedAt+maximumElapsedMs),admissionOpen:()=>open&&!options.signal?.aborted&&now()>=startedAt&&now()-startedAt<=maximumElapsedMs&&(options.admission?.admissionOpen?.()??true)};
    result.requestAttempts++;const payload=await options.call<unknown>('getSignaturesForAddress',[options.pool,{...(before?{before}:{}),limit:requestedLimit,commitment:'confirmed',minContextSlot:upperSlot}],options.signal,requestOptions),receivedAt=clock();
    need(Array.isArray(payload)&&payload.length<=requestedLimit,'HISTORY_PAGE_SCHEMA');const pageBytes=Buffer.byteLength(JSON.stringify(payload));result.historyPayloadBytes+=pageBytes;need(pageBytes<=(requestedLimit===1000?1024*1024:256*1024),'HISTORY_PAGE_PAYLOAD_LIMIT');
-   const rows:NativeAuditHistoryRow[]=[];for(const r of payload){need(r&&key(r.signature,64)&&r.signature!==result.anchor?.signature&&!seen.has(r.signature)&&int(r.slot)&&r.slot<=previousSlot&&Object.hasOwn(r,'err')&&(r.err===null||typeof r.err==='object'&&!Array.isArray(r.err)&&Object.keys(r.err).length>0)&&(r.blockTime===null||int(r.blockTime))&&['confirmed','finalized'].includes(r.confirmationStatus),'HISTORY_CONTEXT');seen.add(r.signature);previousSlot=r.slot;rows.push({signature:r.signature,slot:r.slot,success:r.err===null,blockTime:r.blockTime,confirmationStatus:r.confirmationStatus});}
-   history.push(...rows);result.historyRows=history.length;options.record?.('native-flow-history-page',{pool:options.pool,target,anchor:result.anchor,page:page+1,requestedLimit,requestedBefore:before,receivedAt,rows});const validatedAt=clock();result.pages.push({page:page+1,requestedLimit,rows:rows.length,newestSlot:rows[0]?.slot??null,oldestSlot:rows.at(-1)?.slot??null,receivedAt,validatedAt});
+   // Only signature, slot, success/failure and finality participate in this
+   // census. Keep optional chain time unknown rather than manufacturing one,
+   // and never retain arbitrary malformed diagnostic payloads in audit proof.
+   let missingBlockTimes=0,malformedBlockTimes=0;
+   const rows:NativeAuditHistoryRow[]=[];for(const r of payload){need(r&&key(r.signature,64)&&r.signature!==result.anchor?.signature&&!seen.has(r.signature)&&int(r.slot)&&r.slot<=previousSlot&&Object.hasOwn(r,'err')&&(r.err===null||typeof r.err==='object'&&!Array.isArray(r.err)&&Object.keys(r.err).length>0)&&['confirmed','finalized'].includes(r.confirmationStatus),'HISTORY_CONTEXT');seen.add(r.signature);previousSlot=r.slot;if(!Object.hasOwn(r,'blockTime'))missingBlockTimes++;else if(r.blockTime!==null&&!int(r.blockTime))malformedBlockTimes++;rows.push({signature:r.signature,slot:r.slot,success:r.err===null,blockTime:diagnosticBlockTime(r.blockTime),confirmationStatus:r.confirmationStatus});}
+   history.push(...rows);result.historyRows=history.length;options.record?.('native-flow-history-page',{pool:options.pool,target,anchor:result.anchor,page:page+1,requestedLimit,requestedBefore:before,receivedAt,rows,...(missingBlockTimes||malformedBlockTimes?{blockTimeNormalization:{missing:missingBlockTimes,malformed:malformedBlockTimes,normalizedTo:null,originalOptionalValuesRetained:false}}:{})});const validatedAt=clock();result.pages.push({page:page+1,requestedLimit,rows:rows.length,newestSlot:rows[0]?.slot??null,oldestSlot:rows.at(-1)?.slot??null,receivedAt,validatedAt});
    // A fresh provider page must independently reach an exact finalized
    // overlap. Only its previously audited contiguous suffix is reusable;
    // confirmed history, packet-derived rows and unbridged cache gaps never are.

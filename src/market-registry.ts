@@ -52,6 +52,7 @@ export class MarketRegistry {
    CREATE INDEX IF NOT EXISTS market_tokens_score ON market_tokens(activity_score DESC,last_activity_at DESC,mint);
    CREATE INDEX IF NOT EXISTS market_tokens_screen ON market_tokens(screen_state,mint);
    CREATE TABLE IF NOT EXISTS identity_provenance(mint TEXT NOT NULL,source TEXT NOT NULL,kind TEXT NOT NULL,pool TEXT NOT NULL DEFAULT '',signature TEXT NOT NULL DEFAULT '',first_seen_at INTEGER NOT NULL,last_seen_at INTEGER NOT NULL,PRIMARY KEY(mint,source,kind,pool,signature));
+   CREATE INDEX IF NOT EXISTS identity_provenance_recent_kind ON identity_provenance(kind,last_seen_at DESC,mint);
    CREATE TABLE IF NOT EXISTS watch_rows(signature TEXT PRIMARY KEY,mint TEXT,pool TEXT,migration_at INTEGER,verified_at INTEGER,first_seen_at INTEGER NOT NULL,state TEXT NOT NULL,last_activity_at INTEGER,last_demoted_at INTEGER,deep_since INTEGER,defer_until INTEGER NOT NULL,waiting_since INTEGER NOT NULL,promotions INTEGER NOT NULL,repromotions INTEGER NOT NULL,demotions INTEGER NOT NULL,complete_windows INTEGER NOT NULL,ever_had_window INTEGER NOT NULL,last_window_at INTEGER,older_research INTEGER NOT NULL,capacity_status TEXT,capacity_reassess_at INTEGER,technical_state TEXT,technical_expires_at INTEGER,technical_not_before INTEGER,technical_requested_at INTEGER,body TEXT NOT NULL,archived INTEGER NOT NULL DEFAULT 0,last_decision_kind TEXT,last_decision_at INTEGER,reobserve_ready INTEGER NOT NULL DEFAULT 1);
    CREATE INDEX IF NOT EXISTS watch_rows_mint ON watch_rows(mint,archived,verified_at);
    CREATE INDEX IF NOT EXISTS watch_rows_state ON watch_rows(archived,state,defer_until,waiting_since);
@@ -131,7 +132,7 @@ export class MarketRegistry {
   this.statement(`INSERT INTO watch_rows(${fields.join(',')}) VALUES(${fields.map(()=>'?').join(',')}) ON CONFLICT(signature) DO UPDATE SET ${fields.slice(1).map(f=>`${f}=excluded.${f}`).join(',')},archived=0`).run(...values);
   const old=prior?JSON.parse(prior.body) as WatchRow:undefined;
   if(!old||old.state!==row.state||old.reason!==row.reason||old.history.at(-1)?.at!==row.history.at(-1)?.at){const h=row.history.at(-1);this.statement('INSERT INTO watch_history(signature,at,state,reason,body) VALUES(?,?,?,?,?)').run(row.signature,h?.at??this.clock(),row.state,row.reason,json(row));}
-  if(row.mint)this.observeIdentity({mint:row.mint,signature:row.signature,pool:row.pool??undefined,at:row.verifiedAt??row.firstSeenAt,source:row.verifiedAt===null?'legacy-watch-import':'confirmed-migration',kind:row.verifiedAt===null?'legacy-import':'migration'});
+  if(row.mint)this.observeIdentity({mint:row.mint,signature:row.signature,pool:row.pool??undefined,at:row.verifiedAt??row.observationIdentity?.availableAt??row.firstSeenAt,source:row.verifiedAt!==null?'confirmed-migration':row.observationIdentity?'current-pool-scope':'legacy-watch-import',kind:row.verifiedAt!==null?'migration':row.observationIdentity?'current-pool-observation':'legacy-import'});
  });}
  upsert(row:WatchRow):void{this.put(row);}
  delete(signature:string,at=this.clock(),reason='watch row archived'):void{this.transaction(()=>{this.statement('UPDATE watch_rows SET archived=1 WHERE signature=?').run(signature);this.statement('INSERT INTO watch_history(signature,at,state,reason,body) VALUES(?,?,?,?,?)').run(signature,at,'ARCHIVED',reason,json({archived:true}));});}
@@ -225,6 +226,23 @@ export class MarketRegistry {
  }
  nextWatchActivities(limit=16):{mint:string;at:number;evidence:'unverified-provider-activity-hint'}[]{
   need(integer(limit)&&limit>0,'MARKET_REGISTRY_ACTIVITY_BATCH');return (this.statement(`SELECT DISTINCT w.mint mint,t.last_activity_at at FROM watch_rows w JOIN market_tokens t ON t.mint=w.mint WHERE w.archived=0 AND w.state NOT IN ('HELD','ENTRY_PENDING','PERMANENTLY_UNSUPPORTED') AND t.last_activity_at>COALESCE(w.last_activity_at,-1) ORDER BY COALESCE(w.last_activity_at,0),w.signature LIMIT ?`).all(limit) as {mint:string;at:number}[]).map(r=>({...r,evidence:'unverified-provider-activity-hint' as const}));
+ }
+ /** Current observation selects actual retained mint hints, without needing a
+  * transaction signature or creation archive. The SDK still has to establish
+  * the canonical pool's existence and supported account state. */
+ nextObservationCandidate(at:number):{mint:string;signature:string;receivedAt:number;activityAt:number|null;source:string;priority:number}|undefined {
+  need(integer(at),'MARKET_REGISTRY_OBSERVATION_TIME');
+  return this.statement(`WITH hints AS (
+   SELECT mint,last_activity_at received_at FROM market_tokens WHERE last_activity_at>=? AND last_activity_at<=? AND activity_hints>0
+   UNION
+   SELECT mint,MAX(last_seen_at) received_at FROM identity_provenance WHERE kind='migration' AND last_seen_at>=? AND last_seen_at<=? GROUP BY mint
+  ) SELECT t.mint,
+   COALESCE((SELECT w.signature FROM watch_rows w WHERE w.archived=0 AND w.mint=t.mint ORDER BY w.first_seen_at,w.signature LIMIT 1),(SELECT w.signature FROM verification_queue q JOIN watch_rows w ON w.signature=q.signature WHERE q.feed_mint=t.mint AND w.archived=0 ORDER BY q.received_at,q.signature LIMIT 1),t.last_signature,'current-pool:'||t.mint) signature,
+   hints.received_at receivedAt,t.last_activity_at activityAt,COALESCE(t.last_activity_source,'retained-market-identity') source,t.activity_score priority FROM hints JOIN market_tokens t ON t.mint=hints.mint
+   WHERE (t.last_activity_at IS NULL OR t.last_activity_at<=?)
+   AND NOT EXISTS(SELECT 1 FROM watch_rows w WHERE w.mint=t.mint AND w.archived=0 AND (w.verified_at IS NOT NULL OR json_extract(w.body,'$.observationIdentity.basis')='canonical-pool-hint' OR w.state IN ('HELD','ENTRY_PENDING','PERMANENTLY_UNSUPPORTED')))
+   AND NOT EXISTS(SELECT 1 FROM distinct_events d WHERE d.kind='native-current-hint-invalid' AND d.key=t.mint)
+   ORDER BY t.activity_score DESC,hints.received_at DESC,t.mint LIMIT 1`).get(at-SHARED_ACTIVITY_HORIZON_MS,at,at-SHARED_ACTIVITY_HORIZON_MS,at,at) as {mint:string;signature:string;receivedAt:number;activityAt:number|null;source:string;priority:number}|undefined;
  }
  nextOriginCandidate(at:number):{mint:string;signature:string;receivedAt:number;source:string;priority:number}|undefined {
   const row=this.statement(`SELECT t.mint,t.last_signature signature,t.last_activity_at receivedAt,t.last_activity_source source,t.activity_score priority FROM market_tokens t

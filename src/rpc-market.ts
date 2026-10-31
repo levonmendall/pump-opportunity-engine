@@ -6,8 +6,19 @@ import type {Position,UsdPrice} from './ledger.js';
 import type {ExecutionContext} from './execution.js';
 import type {SizeQuote,SizeRequest} from './trader.js';
 import type {Recorder} from './recorder.js';
+import {assertNativeCurrentPoolIdentityProof} from './native-observation-identity.js';
 
-export type VerifiedMarketPool={mint:string;migrationSlot:number;migrationVerified:true;evidence:string};
+export type VerifiedMarketPool=
+ |{basis?:'migration';mint:string;migrationSlot:number;migrationVerified:true;evidence:string}
+ |{basis:'current-canonical-pool';mint:string;pool:string;sourceSlot:number;verifiedAt:number;evidence:string};
+/** Current account context is a quote floor, not a claim about creation time. */
+export function marketPoolMinimumContextSlot(pool:VerifiedMarketPool|undefined){return !pool?0:pool.basis==='current-canonical-pool'?pool.sourceSlot:pool.migrationSlot;}
+export function validateMarketPool(pool:VerifiedMarketPool,at:number){
+ if(pool.basis==='current-canonical-pool')assertNativeCurrentPoolIdentityProof({schemaVersion:1,...pool},at);
+ else if(new PublicKey(pool.mint).toBase58()!==pool.mint||pool.migrationVerified!==true||!Number.isSafeInteger(pool.migrationSlot)||pool.migrationSlot<0||!text(pool.evidence))throw Error('verified migration context required');
+}
+export function compatibleMarketPools(previous:VerifiedMarketPool,next:VerifiedMarketPool){return previous.mint===next.mint&&(previous.basis==='current-canonical-pool'||next.basis==='current-canonical-pool'||previous.migrationSlot===next.migrationSlot);}
+export function marketPoolContextEvidence(pool:VerifiedMarketPool){return pool.basis==='current-canonical-pool'?{identityBasis:pool.basis,pool:pool.pool,sourceSlot:pool.sourceSlot,verifiedAt:pool.verifiedAt,identityMinimumContextSlot:pool.sourceSlot}:{migrationSlot:pool.migrationSlot};}
 /** This is the simulated account inventory, not an assumption that a real wallet
  * owns an ATA. null means unknown. Deposits stay separate from liquidation marks. */
 export type PaperAccountPlan={baseExists:boolean|null;quoteExists:boolean|null;at:number;evidence:string};
@@ -44,10 +55,11 @@ export class RpcMarket {
   }
   registerPool(pool:VerifiedMarketPool){
     const mint=new PublicKey(pool.mint).toBase58();
-    if(mint!==pool.mint||pool.migrationVerified!==true||!Number.isSafeInteger(pool.migrationSlot)||pool.migrationSlot<0||!text(pool.evidence))throw new Error('verified migration context required');
+    validateMarketPool(pool,this.clock());
     if(!this.pools.has(mint)&&this.pools.size>=15)throw new Error('bounded market pool capacity');
-    const prior=this.pools.get(mint);if(prior&&pool.migrationSlot!==prior.migrationSlot)throw new Error('conflicting migration context');
-    this.pools.set(mint,Object.freeze({mint,migrationSlot:pool.migrationSlot,migrationVerified:true,evidence:pool.evidence}));
+    const prior=this.pools.get(mint);if(prior&&!compatibleMarketPools(prior,pool))throw new Error('conflicting migration context');
+    this.slots.set(mint,Math.max(this.slots.get(mint)??0,marketPoolMinimumContextSlot(prior),marketPoolMinimumContextSlot(pool)));
+    this.pools.set(mint,Object.freeze({...pool}));
   }
   removePool(mint:string){if(this.active)throw new Error('market read in progress');this.pools.delete(mint);this.slots.delete(mint);}
   get blocked(){return !!this.active;}
@@ -62,7 +74,7 @@ export class RpcMarket {
     finally{clearTimeout(timer);if(listener)combined.removeEventListener('abort',listener);controller.abort();}
   }
   private fresh(summary:{mint:string;slot:number;commitment:string;requestedAt:string;receivedAt:string;validatedAt:string;marketBlockTime:number}){
-    const now=this.clock(),requested=Date.parse(summary.requestedAt),at=Date.parse(summary.receivedAt),validated=Date.parse(summary.validatedAt),floor=this.slots.get(summary.mint)??this.pools.get(summary.mint)?.migrationSlot;
+    const now=this.clock(),requested=Date.parse(summary.requestedAt),at=Date.parse(summary.receivedAt),validated=Date.parse(summary.validatedAt),floor=this.slots.get(summary.mint)??(this.pools.has(summary.mint)?marketPoolMinimumContextSlot(this.pools.get(summary.mint)):undefined);
     if(floor===undefined||!Number.isSafeInteger(summary.slot)||summary.slot<floor||summary.commitment!=='confirmed'||!Number.isSafeInteger(requested)||!Number.isSafeInteger(at)||!Number.isSafeInteger(validated)||requested>at||at>validated||validated>now||at>now||now-at>MAX_QUOTE_AGE||!Number.isSafeInteger(summary.marketBlockTime)||summary.marketBlockTime*1000>now||now-summary.marketBlockTime*1000>30_000)throw new Error('RPC_MARKET_SOURCE_UNAVAILABLE');
     this.slots.set(summary.mint,summary.slot);return at;
   }
@@ -81,7 +93,7 @@ export class RpcMarket {
   }
   private async readQuote(request:SizeRequest,signal:AbortSignal):Promise<SizeQuote|null>{
     const r=Object.freeze({mint:request.mint,side:request.side,inputUnits:request.inputUnits,...(request.minSlot===undefined?{}:{minSlot:request.minSlot})}),pool=this.pools.get(r.mint);if(!pool||!['buy','sell'].includes(r.side)||uint(r.inputUnits)===0n||r.minSlot!==undefined&&(!Number.isSafeInteger(r.minSlot)||r.minSlot<0))return null;
-    const floor=Math.max(pool.migrationSlot,this.slots.get(r.mint)??0,r.minSlot??0),mint=new PublicKey(r.mint);
+    const floor=Math.max(marketPoolMinimumContextSlot(pool),this.slots.get(r.mint)??0,r.minSlot??0),mint=new PublicKey(r.mint);
     const state=r.side==='buy'?await quotePool(this.options.rpc,mint,uint(r.inputUnits),this.options.recorder,floor,signal):await quotePositionSell(this.options.rpc,mint,uint(r.inputUnits),this.options.recorder,floor,signal);
     let costs:Awaited<ReturnType<RpcMarket['entryCosts']>>|undefined;
     if(r.side==='buy')costs=await this.entryCosts(r.mint,state,signal);
@@ -90,7 +102,7 @@ export class RpcMarket {
     if(r.side==='sell'&&uint(output)<=uint(this.gasLamports))return null;
     const evidence='rpc-market:'+createHash('sha256').update(JSON.stringify({request:r,state,costs,gas:this.options.gas,migrationEvidence:pool.evidence})).digest('hex');
     const quote:SizeQuote={...r,outputUnits:output,at,evidence,slot:state.slot,effectiveQuoteLiquidityLamports:state.effectiveQuoteReserve};
-    this.options.recorder.record('rpc-market-quote',{request:r,quote,source:{slot:state.slot,commitment:state.commitment,requestedAt:state.requestedAt,receivedAt:state.receivedAt,validatedAt:state.validatedAt,marketBlockTime:state.marketBlockTime,migrationSlot:pool.migrationSlot},costs:costs??{gas:{...this.options.gas},gasLamports:this.gasLamports,classification:'simulated',refundableDepositRefund:'not assumed'}});
+    this.options.recorder.record('rpc-market-quote',{request:r,quote,source:{slot:state.slot,commitment:state.commitment,requestedAt:state.requestedAt,receivedAt:state.receivedAt,validatedAt:state.validatedAt,marketBlockTime:state.marketBlockTime,...marketPoolContextEvidence(pool)},costs:costs??{gas:{...this.options.gas},gasLamports:this.gasLamports,classification:'simulated',refundableDepositRefund:'not assumed'}});
     signal.throwIfAborted();this.fresh(state);return quote;
   }
   readonly quote=(request:SizeRequest,signal:AbortSignal):Promise<SizeQuote|null>=>{const expected=Object.freeze({mint:request.mint,side:request.side,inputUnits:request.inputUnits,...(request.minSlot===undefined?{}:{minSlot:request.minSlot})});return this.bounded(signal,s=>this.readQuote(expected,s),()=>null);};

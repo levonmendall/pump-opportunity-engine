@@ -23,6 +23,37 @@ test('new versioned financial-only permission preserves account/history and asse
  assert.equal(f.ledger.exportJournal(100).filter(x=>(x as any).kind==='inception').length,1);
 });
 
+function deniedReadinessHistory(t:TestContext,ownerPause=false){
+ const f=fixture(t);f.reconcile();
+ assert.equal(f.ledger.resume('OFFLINE initial permission',f.at,f.price(),{},{version:'OFFLINE legacy readiness',evidence:'OFFLINE complete initial finance',marketAt:f.at,recoveryComplete:true,candidateWindowsReady:true,budgetAvailable:true}).enabled,true);
+ f.at+=3001;
+ if(ownerPause)f.ledger.pause('operator-pause:OFFLINE-buried-intent',f.at,'operator paused new entries');
+ f.pause();const controls=structuredClone(f.ledger.state().controls);
+ for(let i=0;i<600;i++)assert.equal(f.ledger.resume('OFFLINE denied readiness '+i,f.at,f.price(),{},{version:'OFFLINE legacy readiness',evidence:'OFFLINE current market while financial reconciliation is stale',marketAt:f.at,recoveryComplete:true,candidateWindowsReady:true,budgetAvailable:true}).enabled,false);
+ assert.deepEqual(f.ledger.state().controls,controls);f.reconcile();return f;
+}
+
+test('more than512 authenticated denied readiness attempts cannot permanently exhaust the control-intent projection',t=>{
+ const f=deniedReadinessHistory(t),before=f.ledger.state(),db=(f.ledger as any).db,history=db.prepare('SELECT * FROM journal ORDER BY revision').all();
+ assert.equal(f.ledger.operatingFinancialRecoveryAllowed(f.at),true);
+ assert.deepEqual(f.ledger.state(),before,'control preflight is read-only');
+ assert.equal(f.ledger.resume('OFFLINE recovered after denied attempts',f.at,f.price(),{},f.proof()).enabled,true);
+ assert.deepEqual(db.prepare('SELECT * FROM journal WHERE revision<=? ORDER BY revision').all(before.revision),history,'all original denied receipts and financial history are retained');
+ assert.equal(f.ledger.state().lamports,before.lamports);assert.deepEqual(f.ledger.state().positions,before.positions);assert.deepEqual(f.ledger.state().pending,before.pending);
+});
+
+test('streaming denied receipts still authenticates each record and preserves buried owner intent',async t=>{
+ for(const fault of ['owner-pause','bad-denied-hash','missing-denied-action','bad-denied-result'])await t.test(fault,st=>{
+  const f=deniedReadinessHistory(st,fault==='owner-pause'),db=(f.ledger as any).db,id='OFFLINE denied readiness 17';
+  if(fault==='bad-denied-hash')db.prepare('UPDATE actions SET payload_hash=? WHERE id=?').run('0'.repeat(64),id);
+  if(fault==='missing-denied-action')db.prepare('DELETE FROM actions WHERE id=?').run(id);
+  if(fault==='bad-denied-result')db.prepare('UPDATE actions SET result=? WHERE id=?').run('{',id);
+  const before=f.ledger.state();assert.equal(f.ledger.operatingFinancialRecoveryAllowed(f.at),false);
+  assert.equal(f.ledger.resume('OFFLINE no control laundering after long history',f.at,f.price(),{},f.proof()).enabled,false);
+  assert.deepEqual(f.ledger.state().controls,before.controls);assert.equal(f.ledger.state().lamports,before.lamports);
+ });
+});
+
 test('operating readiness cannot clear owner stop, owner pause, unknown or protection hard controls',async t=>{
  for(const control of ['operator paused new entries','completed PAPER protection gap exceeded research boundary','PAPER protection currently overdue; candidate admissions closed','unknown hard failure','STOP'])await t.test(control,st=>{
   const f=fixture(st);f.reconcile();if(control==='STOP')f.ledger.safeStop('OFFLINE owner stop',f.at);else f.pause(control);const before=f.ledger.state();

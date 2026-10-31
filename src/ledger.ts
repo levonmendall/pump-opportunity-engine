@@ -630,17 +630,24 @@ export class PaperLedger {
       if(diagnosticRepair&&diagnosticRepair.actionRevision>(anchor?.revision??0))anchor=this.db.prepare(select+' WHERE j.action_id=?').get(V31_DIAGNOSTIC_CONTROL_REPAIR.actionId)as Row;
       if(anchor?.kind===V31_DIAGNOSTIC_CONTROL_REPAIR.kind){if(!diagnosticRepair||anchor.revision!==diagnosticRepair.actionRevision)throw Error('malformed diagnostic repair');}
       else if(anchor?.kind==='paper-epoch-transition')this.validateEpochAnchor(state);else if(anchor)validateResume(anchor,true);else{const inception=this.db.prepare("SELECT action_id actionId,at,kind,CASE WHEN length(CAST(detail AS BLOB))<=65536 THEN detail END detail FROM journal WHERE revision=0").get()as{actionId:string;at:number;kind:string;detail:string}|undefined;if(!inception||inception.actionId!=='inception'||inception.at!==state.inceptionAt||inception.kind!=='inception'||typeof inception.detail!=='string'||!isDeepStrictEqual(JSON.parse(inception.detail),{price:state.inceptionPrice,gasReserve:state.gasReserve,mode:state.mode}))throw Error('malformed inception');}
-      const boundary=anchor?.revision??0,size=this.db.prepare("SELECT count(*) count,coalesce(sum(length(CAST(j.detail AS BLOB))+coalesce(length(CAST(a.result AS BLOB)),0)),0) bytes FROM journal j LEFT JOIN actions a ON a.id=j.action_id WHERE j.revision>? AND j.kind IN ('pause','safe-stop','resume')").get(boundary)as{count:number;bytes:number};if(size.count>512||size.bytes>1024*1024)return null;
-      const rows=this.db.prepare(select+" WHERE j.revision>? AND j.kind IN ('pause','safe-stop','resume') ORDER BY j.revision LIMIT 513").all(boundary)as Row[];if(rows.length!==size.count)return null;
+      const boundary=anchor?.revision??0;
+      // A denied resume never changes control intent. Validate its complete
+      // original receipt, then discard it from the bounded intent projection.
+      // Repeated failed readiness checks must not exhaust that projection and
+      // permanently prevent a later valid recovery. No history is rewritten.
+      const rows=this.db.prepare(select+" WHERE j.revision>? AND j.kind IN ('pause','safe-stop','resume') ORDER BY j.revision").iterate(boundary)as IterableIterator<Row>;
       let previousAt=anchor?.at??state.inceptionAt,previousRevision=boundary;
-      const decoded=rows.map(row=>{if(row.revision<=previousRevision||row.at<previousAt)throw Error('malformed order');previousRevision=row.revision;previousAt=row.at;const {payload,result}=read(row);
-        if(row.kind==='resume')validateResume(row,false);
-        else if(row.kind==='pause'){if(Object.keys(payload).sort().join(',')!=='now,reason'||!boundedText(payload.reason)||Object.keys(result).sort().join(',')!=='paused,pendingBuyCancellations'||result.paused!==true||!Array.isArray(result.pendingBuyCancellations)||!isV3PaperRiskState(state)&&result.pendingBuyCancellations.length>3||!result.pendingBuyCancellations.every((id:unknown)=>boundedText(id,100)))throw Error('malformed pause');}
+      const decoded:Array<{row:Row;payload:Record<string,any>;result:Record<string,any>;ordinary:boolean;restored:boolean;startup:boolean}>=[];let intentBytes=0;
+      for(const row of rows){if(row.revision<=previousRevision||row.at<previousAt)throw Error('malformed order');previousRevision=row.revision;previousAt=row.at;
+        if(row.kind==='resume'){validateResume(row,false);continue;}
+        const {payload,result}=read(row);
+        if(row.kind==='pause'){if(Object.keys(payload).sort().join(',')!=='now,reason'||!boundedText(payload.reason)||Object.keys(result).sort().join(',')!=='paused,pendingBuyCancellations'||result.paused!==true||!Array.isArray(result.pendingBuyCancellations)||!isV3PaperRiskState(state)&&result.pendingBuyCancellations.length>3||!result.pendingBuyCancellations.every((id:unknown)=>boundedText(id,100)))throw Error('malformed pause');}
         else if(row.kind!=='safe-stop')throw Error('unknown control');
         const ordinary=/^trader:pause:(\d+):(\d+)$/.exec(row.actionId),restored=/^trader:restore-hard-pause:(\d+):(\d+)$/.exec(row.actionId),startup=row.actionId===`execution-recovery:${state.accountId}:${row.revision-1}`,stamp=ordinary??restored;
         if(stamp&&(Number(stamp[1])!==row.revision-1||!Number.isSafeInteger(Number(stamp[2]))||Number(stamp[2])<state.inceptionAt||Number(stamp[2])>at))throw Error('malformed action identity');
-        return {row,payload,result,ordinary:!!ordinary,restored:!!restored,startup};
-      });
+        intentBytes+=Buffer.byteLength(row.detail)+Buffer.byteLength(row.result);if(decoded.length>=512||intentBytes>1024*1024)return null;
+        decoded.push({row,payload,result,ordinary:!!ordinary,restored:!!restored,startup});
+      }
       return {anchor,decoded};
     }catch{return null;}
   }

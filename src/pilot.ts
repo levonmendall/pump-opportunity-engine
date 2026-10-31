@@ -130,6 +130,7 @@ export function recordPilotStageTransition<T extends {contractSha256:string;stag
   const priorV31=v31&&[
     'c6388e70d2366a2310c7f05c5184aaa20b2b469ff746e247f39b358da8af2b7d', // e5dce137: original V3.1 15% stops.
     'b05238659a3665a877225abccaf5775f3b1df6bc58598888d93879ed560ed271', // 1423b184: owner-authorized V3.1 25% stops.
+    '9ca95a7e90e21201bcbfb926b17116d387d1da5e73e5032df04fb864fd3e8622', // 59a22419: economic liquidity and explained outcomes.
   ].includes(manifest.contractSha256);
   const predecessorAllowed=v31?priorV31||[LIQUIDITY_RESILIENT_PILOT_CONTRACT_SHA256,LIQUIDITY_RESILIENT_V3_1_PILOT_CONTRACT_SHA256].includes(manifest.contractSha256):resilient?[ADAPTIVE_PILOT_CONTRACT_SHA256,LIQUIDITY_RESILIENT_PILOT_CONTRACT_SHA256].includes(manifest.contractSha256):known.includes(manifest.contractSha256)||priorAdaptive;
   need(predecessorAllowed&&/^[a-z0-9-]{1,60}$/.test(runId)&&Number.isSafeInteger(at)&&at>=0,'PILOT_STAGE_TRANSITION_BINDING');

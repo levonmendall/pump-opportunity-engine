@@ -5,33 +5,38 @@ import assert from 'node:assert/strict';
 import {mkdtempSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
+import {PublicKey} from '@solana/web3.js';
 import {PaperLedger} from '../src/ledger.js';
 import {NativePaper} from '../src/native-paper.js';
 import {resolvePilotStage} from '../src/pilot.js';
 import {nativePaperFinancialProviderAvailable} from '../src/run-native-paper.js';
+import {canonicalObservationPool} from '../src/native-observation-identity.js';
+import type {ResearchClockNativeObservationSupport} from '../src/research-clock-pricing.js';
 
 function fixture(t:TestContext,legacy=false,held=true){
  const root=mkdtempSync(join(tmpdir(),'poe-OFFLINE-provider-permission-'));
  const ledger=new PaperLedger(join(root,'fixture.sqlite'),'poe-pilot-independent-provider-permission');
+ const mint=new PublicKey(Buffer.alloc(32,27)).toBase58(),pool=canonicalObservationPool(mint);
  let at=Date.parse('2026-10-29T04:00:00Z'),ordinaryUntil=0,restrictionUntil=0,missing=false;
  const records:Array<{kind:string;data:any}>=[];
  const price=()=>({at,microUsdPerSol:'100000000',source:'OFFLINE synthetic USD100/SOL'});
  const marks=()=>Object.fromEntries(Object.values(ledger.state().positions).map(p=>[p.mint,{at,pricedBaseUnits:p.units,netLamports:(BigInt(p.entryLamports)+BigInt(p.entryGas)).toString(),evidence:'OFFLINE fresh exact-size liquidation context'}]));
  ledger.initialize(price(),at);
- const market:any={context:async()=>({price:price(),marks:missing?{}:marks(),...(Object.keys(ledger.state().positions).length?{sourceValidUntil:at+30000}:{})}),quote:async()=>null,executionQuote:async()=>null,registerPool(){},retirementReady(){return true;}};
+ const market:any={context:async()=>({price:price(),marks:missing?{}:marks(),...(Object.keys(ledger.state().positions).length?{sourceValidUntil:at+30000}:{})}),quote:async()=>null,executionQuote:async()=>null,registerPool(){},minimumSlot(){},retirementReady(){return true;}};
  const bridge=new NativePaper({ledger,market,binding:resolvePilotStage('two').binding,operatingFinancialReadiness:true,fixtureAccountBinding:{accountId:ledger.state().accountId,inceptionAt:ledger.state().inceptionAt},source:{snapshot:()=>null,usage:()=>({dataContract:'confirmed-program-activity-v3-shadow',connected:true,stopped:false,fatal:null,lastFreshSupportAt:at,lastBankClockAt:at})}as any,certificate:()=>null,record:(kind,data)=>records.push({kind,data:structuredClone(data)}),now:()=>at,admitNewRisk:()=>false,admitFinancialReadiness:()=>legacy?ordinaryUntil<=at:nativePaperFinancialProviderAvailable(at,Object.keys(ledger.state().positions).length>0,true,{closed:false,fatal:null,cooldownUntil:ordinaryUntil,protectionRecovery:{providerRestrictionUntil:restrictionUntil}})});
  const initialize=async()=>{
   await bridge.protection();assert.equal(ledger.state().controls.entriesEnabled,true);
   if(held){
-   bridge.allocated({baseMint:'fixture-token',pool:'fixture-pool',signature:'fixture-migration',slot:1,chainBlockTime:Math.floor((at-600000)/1000)}as any);
-   ledger.order({id:'fixture-entry',side:'buy',mint:'fixture-token',decidedAt:at,executeAt:at+1000,expiresAt:at+5000,gas:'7000',deposit:'0',maxSpend:'10000000',minReceive:'1000',decisionEvidence:'OFFLINE controlled initial entry'},price(),{});at+=1000;
+   bridge.allocated({schemaVersion:1,baseMint:mint,pool,migrationAt:at-600000,migrationVerified:true,identityBasis:'retained-verified-metadata',identityAvailableAt:at,identityEvidence:'OFFLINE synthetic retained migration metadata',minimumSlot:1});
+   bridge.currentPoolValidated({mint,pool,at,sourceSlot:1,evidence:'OFFLINE synthetic current canonical pool binding',summary:{} as ResearchClockNativeObservationSupport['summary']});
+   ledger.order({id:'fixture-entry',side:'buy',mint,decidedAt:at,executeAt:at+1000,expiresAt:at+5000,gas:'7000',deposit:'0',maxSpend:'10000000',minReceive:'1000',decisionEvidence:'OFFLINE controlled initial entry'},price(),{});at+=1000;
    assert.equal(ledger.attempt('fixture-fill','fixture-entry',at,{at,evidence:'OFFLINE controlled initial fill',spendLamports:'10000000',receiveUnits:'1000'},price(),{}).status,'filled');
    await bridge.protection();
   }
   bridge.trader.pauseNewEntries('completed PAPER protection gap exceeded research boundary');
  };
  t.after(()=>{ledger.close();rmSync(root,{recursive:true,force:true});});
- return {ledger,bridge,records,initialize,price,marks,tick:async()=>{at+=2000;await bridge.protection();},get at(){return at;},set ordinaryUntil(v:number){ordinaryUntil=v;},set restrictionUntil(v:number){restrictionUntil=v;},set missing(v:boolean){missing=v;}};
+ return {ledger,bridge,mint,records,initialize,price,marks,tick:async()=>{at+=2000;await bridge.protection();},get at(){return at;},set ordinaryUntil(v:number){ordinaryUntil=v;},set restrictionUntil(v:number){restrictionUntil=v;},set missing(v:boolean){missing=v;}};
 }
 
 test('actual held protection can complete strict recovery despite recurring candidate-only timeout backoff',async t=>{
@@ -46,7 +51,7 @@ test('actual held protection can complete strict recovery despite recurring cand
   const current=f.ledger.state(),recoveries=f.records.filter(r=>r.kind==='native-paper-financial-readiness-recovered'&&r.data.technicalProtectionRecovery);
   assert.equal(current.controls.entriesEnabled,!legacy);
   if(legacy){assert.equal(recoveredAt,null);assert.equal(recoveries.length,0);}
-  else{assert.ok(recoveredAt!==null&&recoveredAt-started>=60000);assert.equal(recoveries.length,1);const proof=recoveries[0]!.data.technicalProtectionRecovery;assert.ok(proof.completedAt-proof.startedAt>=60000);assert.ok(proof.maximumCompletedGapMs<=4000);assert.deepEqual(proof.positionUnits,{'fixture-token':'1000'});assert.equal(recoveries[0]!.data.orderCreated,false);assert.equal(recoveries[0]!.data.candidateWindowClaimed,false);}
+  else{assert.ok(recoveredAt!==null&&recoveredAt-started>=60000);assert.equal(recoveries.length,1);const proof=recoveries[0]!.data.technicalProtectionRecovery;assert.ok(proof.completedAt-proof.startedAt>=60000);assert.ok(proof.maximumCompletedGapMs<=4000);assert.deepEqual(proof.positionUnits,{[f.mint]:'1000'});assert.equal(recoveries[0]!.data.orderCreated,false);assert.equal(recoveries[0]!.data.candidateWindowClaimed,false);}
   assert.deepEqual(current.positions,initial.positions);assert.deepEqual(current.pending,{});assert.equal(current.lamports,initial.lamports);assert.equal(current.executionCosts,initial.executionCosts);assert.equal(f.records.filter(r=>r.kind==='trader-held-evaluation'&&r.data.usable).length,66);
  });
 });

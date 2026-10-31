@@ -3,9 +3,10 @@
  */
 import {createHash} from 'node:crypto';
 import {PublicKey,SYSVAR_CLOCK_PUBKEY,type AccountInfo} from '@solana/web3.js';
-import {NATIVE_MINT} from '@solana/spl-token';
+import {NATIVE_MINT,TOKEN_PROGRAM_ID,TOKEN_2022_PROGRAM_ID,getAssociatedTokenAddressSync} from '@solana/spl-token';
 import {PUMP_AMM_SDK,PUMP_AMM_PROGRAM_ID,GLOBAL_CONFIG_PDA,PUMP_AMM_FEE_CONFIG_PDA,canonicalPumpPoolPda,type Pool} from './sdk.js';
 import {decodeSupportedPoolAccounts,positionSellFromState,buyFromState,type PoolWireAccount,type PositionSellRequest} from './pool.js';
+import {decodeNativeObservationBinding} from './native-observation-binding.js';
 import type {ReadOnlyRpc} from './network.js';
 import type {Recorder} from './recorder.js';
 import type {PaperUnsignedMarketBatch} from './paper-unsigned-pumpswap.js';
@@ -61,6 +62,11 @@ export type ResearchClockDependencyHints={baseVault:string;quoteVault:string};
 export type ResearchClockObservationRequest={mint:PublicKey;minSlot?:number;dependencyHints?:ResearchClockDependencyHints};
 export type ResearchClockObservationSupport={mint:string;pool:string;at:number;sourceSlot:number;evidence:string;summary:ClockSummary};
 export type ResearchClockObservationBatch={validations:Record<string,ResearchClockObservationSupport>;unavailable:Record<string,string>;context:ResearchClockQuoteBatch['context']};
+/** Native observation proves current event interpretation and time, not an
+ * executable price. Full financial support is structurally compatible, but
+ * passive support never supplies fee/vault/rent/quote capability by itself. */
+export type ResearchClockNativeObservationSupport=Omit<ResearchClockObservationSupport,'summary'>&{summary:Pick<ClockSummary,'pool'|'mint'|'slot'|'commitment'|'requestedAt'|'receivedAt'|'tokenProgram'|'validatedAt'|'researchOnly'>&ReturnType<typeof decodeResearchBankClock>};
+export type ResearchClockNativeObservationBatch={validations:Record<string,ResearchClockNativeObservationSupport>;unavailable:Record<string,string>;context:ResearchClockQuoteBatch['context']};
 export type ResearchClockQuoteBatch={quotes:Record<string,ResearchClockQuote>;unavailable:Record<string,string>;context:{slot:number;requestedAt:string;receivedAt:string;marketClockUnixSeconds:number}|null};
 function refusal(error:unknown){const message=error instanceof Error?error.message:'';return /^[A-Z][A-Z0-9_]{0,96}(?::[A-Za-z][A-Za-z0-9_]{0,48})?$/.test(message)?message:'RESEARCH_CLOCK_POOL_UNAVAILABLE';}
 
@@ -78,8 +84,8 @@ function transientLinkReadRefusal(error:unknown):string|null{
 export class ResearchClockPositionPricer {
   private readonly cached=new Map<string,{first:Pool;slot:number}>();
   // Optional address hints can go stale. Remember rejected fingerprints only
-  // for the real hot working set; a later ordinary refresh discovers links
-  // afresh instead of repeating the same bad hint or excluding the token.
+  // for the real hot working set; a later ordinary refresh derives both
+  // supported canonical vault possibilities instead of repeating the bad hint.
   private readonly rejectedDependencyHints=new Map<string,string>();
   // Bounded original bytes for unsigned construction only. No pricing path
   // consumes these as a fresh reserve/fee/Clock read.
@@ -87,7 +93,7 @@ export class ResearchClockPositionPricer {
   constructionBatch(mint:string,slot:number|undefined,receivedAt:number):PaperUnsignedMarketBatch|null{const batch=this.constructionBatches.get(mint);return batch&&(slot===undefined||batch.slot===slot)&&Date.parse(batch.receivedAt)===receivedAt?structuredClone(batch):null;}
   private readonly holdingSlots=new Map<string,number>();private readonly observationSlots=new Map<string,number>();private readonly buySlots=new Map<string,number>();
   private heldActive=new Set<string>();private observationActive=new Set<string>();private buyActive=new Set<string>();private highestSlot=0;private busy=false;
-  private networkCalls=0;private linkHits=0;private invalidations=0;private retainedLinkReadFailures=0;private dependencyHintPlans=0;private dependencyHintValidatedPools=0;private discoveryRequestsAvoidedByHints=0;private dependencyHintRejections=0;private dependencyHintFallbackReads=0;
+  private networkCalls=0;private linkHits=0;private invalidations=0;private retainedLinkReadFailures=0;private dependencyHintPlans=0;private dependencyHintValidatedPools=0;private discoveryRequestsAvoidedByHints=0;private dependencyHintRejections=0;private dependencyHintFallbackReads=0;private canonicalObservationPlans=0;private canonicalObservationValidatedPools=0;private canonicalObservationDiscoveryRequestsAvoided=0;private nativeObservationReads=0;private nativeObservationValidatedPools=0;
   constructor(private readonly rpc:Rpc,private readonly rec:Rec){}
   invalidate(reason='explicit-research-invalidation'){
     this.cached.clear();this.constructionBatches.clear();this.invalidations++;
@@ -97,7 +103,7 @@ export class ResearchClockPositionPricer {
     this.cached.delete(mint);this.constructionBatches.delete(mint);this.invalidations++;
     this.rec.record('research-clock-cache-invalidation',{at:Date.now(),mint,reason});
   }
-  usage(){return {networkCalls:this.networkCalls,linkCacheHits:this.linkHits,dependencyHints:{plans:this.dependencyHintPlans,freshValidatedPools:this.dependencyHintValidatedPools,discoveryRequestsAvoided:this.discoveryRequestsAvoidedByHints,rejectedHints:this.dependencyHintRejections,ordinaryDiscoveryFallbackReads:this.dependencyHintFallbackReads,hotRejectedHints:this.rejectedDependencyHints.size,meaning:'Cold observation address hints only; each accepted pool/fee/mint/vault/Clock is freshly read and validated. Avoided requests count successful fully hinted cold cohorts, not tokens. Rejected hints receive only a later ordinarily admitted discovery read, never an inline retry.'},invalidations:this.invalidations,retainedLinkReadFailures:this.retainedLinkReadFailures,highestVerifiedSlot:this.highestSlot,highestHoldingSlots:Object.fromEntries(this.holdingSlots),highestObservationSlots:Object.fromEntries(this.observationSlots),highestBuySlots:Object.fromEntries(this.buySlots),cachePoolCapacity:LINK_CACHE_CAPACITY,dependencyAccountCapacity:RESEARCH_CLOCK_RPC_ACCOUNT_CAPACITY,coherentPoolCapacity:RESEARCH_CLOCK_COHERENT_POOL_CAPACITY,capacityBasis:'Solana getMultipleAccounts100keys; four pool-specific and four common dependency accounts',cachedPoolSlot:this.cached.size===1?[...this.cached.values()][0]!.slot:null,cachedPoolSlots:Object.fromEntries([...this.cached].map(([mint,value])=>[mint,value.slot])),timeEvidence:'confirmed-bank-clock',liveValidation:'UNTESTED'};}
+  usage(){return {networkCalls:this.networkCalls,linkCacheHits:this.linkHits,dependencyHints:{plans:this.dependencyHintPlans,freshValidatedPools:this.dependencyHintValidatedPools,discoveryRequestsAvoided:this.discoveryRequestsAvoidedByHints,rejectedHints:this.dependencyHintRejections,ordinaryDiscoveryFallbackReads:this.dependencyHintFallbackReads,hotRejectedHints:this.rejectedDependencyHints.size,meaning:'Cold observation address hints only; each accepted pool/fee/mint/vault/Clock is freshly read and validated. Avoided requests compare successful fully hinted cold cohorts with legacy two-read discovery, not the canonical one-read path. Hints omit one alternate vault account per pool. Rejected hints receive only a later ordinarily admitted canonical union read, never an inline retry.'},canonicalObservation:{plans:this.canonicalObservationPlans,freshValidatedPools:this.canonicalObservationValidatedPools,discoveryRequestsAvoided:this.canonicalObservationDiscoveryRequestsAvoided,meaning:'Cold financial-support preparation derives both supported token-program base vaults and selects one from the freshly read mint owner. All accepted accounts and Clock share one fresh batch; avoided requests count successful cold cohorts, not pools.'},nativeObservation:{unionReads:this.nativeObservationReads,freshValidatedPools:this.nativeObservationValidatedPools,meaning:'Passive native observation reads only current canonical pool and base mint per candidate plus one common Clock, two accounts per pool plus one shared account; financial quotes still require the full current dependency union.'},invalidations:this.invalidations,retainedLinkReadFailures:this.retainedLinkReadFailures,highestVerifiedSlot:this.highestSlot,highestHoldingSlots:Object.fromEntries(this.holdingSlots),highestObservationSlots:Object.fromEntries(this.observationSlots),highestBuySlots:Object.fromEntries(this.buySlots),cachePoolCapacity:LINK_CACHE_CAPACITY,dependencyAccountCapacity:RESEARCH_CLOCK_RPC_ACCOUNT_CAPACITY,coherentPoolCapacity:RESEARCH_CLOCK_COHERENT_POOL_CAPACITY,capacityBasis:'Solana getMultipleAccounts100keys; full financial state uses four pool-specific and four common dependency accounts; cold preparation adds one alternate canonical base vault per pool; passive native binding uses two pool-specific and one common account',cachedPoolSlot:this.cached.size===1?[...this.cached.values()][0]!.slot:null,cachedPoolSlots:Object.fromEntries([...this.cached].map(([mint,value])=>[mint,value.slot])),timeEvidence:'confirmed-bank-clock',liveValidation:'UNTESTED'};}
   /** Compatibility API: one holding either yields one fresh quote or refuses. */
   async quote(request:PositionSellRequest,signal?:AbortSignal):Promise<ResearchClockQuote>{
     const name=request.mint.toBase58(),batch=await this.quoteMany([request],signal),quote=batch.quotes[name];
@@ -131,21 +137,34 @@ export class ResearchClockPositionPricer {
     return {quotes:result.quotes,unavailable:result.unavailable,context:result.context};
   }
   /** Current supported observation state needs no successful tiny hypothetical
-   * buy/sell. Initial missing links use one batched discovery unless original
-   * creation vault addresses are supplied as non-authoritative hints. In both
-   * paths every pool/mint/vault/fee dependency and Clock is read afresh together. */
+   * buy/sell or historical creation record. Cold reads derive both supported
+   * canonical base vaults; the fresh mint owner selects the actual one. Real
+   * vault hints may omit the alternate account. Every accepted dependency and
+   * Clock is still read and validated afresh together in one physical request. */
   async validateMany(requests:readonly ResearchClockObservationRequest[],signal?:AbortSignal,admission?:Admission):Promise<ResearchClockObservationBatch>{
     need(!this.busy,'RESEARCH_CLOCK_CONCURRENT_QUOTE');
-    need(requests.length>0&&requests.length<=6,'OBSERVATION_BATCH_CAPACITY');
+    need(requests.length>0&&requests.length<=OBSERVATION_POOL_CAPACITY,'OBSERVATION_BATCH_CAPACITY');
     const selected=requests.map(r=>{const hint=r.dependencyHints;let dependencyHints:ResearchClockDependencyHints|undefined;if(hint){try{const baseVault=new PublicKey(hint.baseVault).toBase58(),quoteVault=new PublicKey(hint.quoteVault).toBase58();need(baseVault===hint.baseVault&&quoteVault===hint.quoteVault&&baseVault!==quoteVault,'RESEARCH_CLOCK_DEPENDENCY_HINTS');dependencyHints={baseVault,quoteVault};}catch{throw Error('RESEARCH_CLOCK_DEPENDENCY_HINTS');}}return {mint:new PublicKey(r.mint),minSlot:r.minSlot??0,...(dependencyHints?{dependencyHints}:{})};});
     const names=selected.map(r=>r.mint.toBase58());need(new Set(names).size===names.length,'DUPLICATE_OBSERVATION_MINT');
     for(const r of selected)need(Number.isSafeInteger(r.minSlot)&&r.minSlot>=0,'INVALID_MINIMUM_SLOT');
     const result=await this.readMany(selected,'observation',signal,admission);
     return {validations:result.validations,unavailable:result.unavailable,context:result.context};
   }
-  private async readMany(selected:readonly {mint:PublicKey;minSlot:number;units?:bigint;buyLamports?:bigint;dependencyHints?:ResearchClockDependencyHints}[],purpose:'quote'|'observation'|'buy',signal?:AbortSignal,admission?:Admission){
-    this.busy=true;let sourceReadAttempted=false;const names=selected.map(r=>r.mint.toBase58());
-    const quotes:Record<string,ResearchClockQuote>={},buys:Record<string,ResearchClockBuyQuote>={},validations:Record<string,ResearchClockObservationSupport>={},unavailable:Record<string,string>={};
+  /** Passive current-pool binding for native events. Origin/vault hints and
+   * financial quote dependencies are unnecessary here. This uses the same
+   * owned source operation, slot floors and cache as the full financial path. */
+  async validateObservationMany(requests:readonly ResearchClockObservationRequest[],signal?:AbortSignal,admission?:Admission):Promise<ResearchClockNativeObservationBatch>{
+    need(!this.busy,'RESEARCH_CLOCK_CONCURRENT_QUOTE');
+    need(requests.length>0&&requests.length<=OBSERVATION_POOL_CAPACITY,'OBSERVATION_BATCH_CAPACITY');
+    const selected=requests.map(r=>({mint:new PublicKey(r.mint),minSlot:r.minSlot??0})),names=selected.map(r=>r.mint.toBase58());
+    need(new Set(names).size===names.length,'DUPLICATE_OBSERVATION_MINT');
+    for(const r of selected)need(Number.isSafeInteger(r.minSlot)&&r.minSlot>=0,'INVALID_MINIMUM_SLOT');
+    const result=await this.readMany(selected,'native-observation',signal,admission);
+    return {validations:result.nativeValidations,unavailable:result.unavailable,context:result.context};
+  }
+  private async readMany(selected:readonly {mint:PublicKey;minSlot:number;units?:bigint;buyLamports?:bigint;dependencyHints?:ResearchClockDependencyHints}[],purpose:'quote'|'observation'|'buy'|'native-observation',signal?:AbortSignal,admission?:Admission){
+    this.busy=true;let sourceReadAttempted=false;const names=selected.map(r=>r.mint.toBase58()),observing=purpose==='observation'||purpose==='native-observation';
+    const quotes:Record<string,ResearchClockQuote>={},buys:Record<string,ResearchClockBuyQuote>={},validations:Record<string,ResearchClockObservationSupport>={},nativeValidations:Record<string,ResearchClockNativeObservationSupport>={},unavailable:Record<string,string>={};
     try{
       signal?.throwIfAborted();
       const checkAdmission=()=>need(!admission||admission.admissionOpen()&&Date.now()<=admission.latestStartAt,'RESEARCH_CLOCK_ADMISSION_CLOSED');
@@ -153,7 +172,7 @@ export class ResearchClockPositionPricer {
       checkAdmission();
       // Separate bounded working sets preserve links across alternating held and
       // observation calls. Only links survive; reserve/fee/price bytes never do.
-      const held=purpose==='quote'?new Set(names):this.heldActive,observed=purpose==='observation'?new Set(names):this.observationActive;
+      const held=purpose==='quote'?new Set(names):this.heldActive,observed=observing?new Set(names):this.observationActive;
       let buying=purpose==='buy'?new Set(names):this.buyActive,active=new Set([...held,...observed,...buying]);
       // Replaceable entry links cannot evict the established held/observation
       // working sets. At the provider-derived capacity, only entry links give way.
@@ -169,72 +188,94 @@ export class ResearchClockPositionPricer {
       const fingerprint=(hint:ResearchClockDependencyHints)=>hint.baseVault+':'+hint.quoteVault;
       const hinted=purpose==='observation'?selected.filter(r=>!this.cached.has(r.mint.toBase58())&&r.dependencyHints&&this.rejectedDependencyHints.get(r.mint.toBase58())!==fingerprint(r.dependencyHints)):[];
       const missing=selected.filter(r=>!this.cached.has(r.mint.toBase58())&&!hinted.includes(r));
-      if(hinted.length){this.dependencyHintPlans++;this.rec.record('research-clock-dependency-hint-plan',{at:Date.now(),mints:hinted.map(r=>r.mint.toBase58()),separateDiscoveryReadPlanned:!!missing.length,pricingEvidence:false,freshUnionReadStillRequired:true});}
+      const canonicalObservation=purpose==='observation'?missing:[],discovery=observing?[]:missing;
+      if(hinted.length){this.dependencyHintPlans++;this.rec.record('research-clock-dependency-hint-plan',{at:Date.now(),mints:hinted.map(r=>r.mint.toBase58()),separateDiscoveryReadPlanned:!!discovery.length,pricingEvidence:false,freshUnionReadStillRequired:true});}
+      if(canonicalObservation.length){this.canonicalObservationPlans++;this.rec.record('research-clock-canonical-observation-plan',{at:Date.now(),mints:canonicalObservation.map(r=>r.mint.toBase58()),separateDiscoveryReadPlanned:false,alternateBaseVaultAccounts:canonicalObservation.length,pricingEvidence:false,freshUnionReadStillRequired:true});}
       const discovered=new Map<string,Pool>();
-      if(missing.length){
-        if(missing.some(r=>r.dependencyHints&&this.rejectedDependencyHints.get(r.mint.toBase58())===fingerprint(r.dependencyHints))){this.dependencyHintFallbackReads++;this.rec.record('research-clock-dependency-hint-fallback',{at:Date.now(),mints:missing.filter(r=>r.dependencyHints&&this.rejectedDependencyHints.get(r.mint.toBase58())===fingerprint(r.dependencyHints)).map(r=>r.mint.toBase58()),ordinaryAdmissionRequired:true,inlineRetry:false,financialPermission:false});}
-        const keys=missing.map(r=>canonicalPumpPoolPda(r.mint).toBase58());this.networkCalls++;sourceReadAttempted=true;
+      if(canonicalObservation.some(r=>r.dependencyHints&&this.rejectedDependencyHints.get(r.mint.toBase58())===fingerprint(r.dependencyHints))){this.dependencyHintFallbackReads++;this.rec.record('research-clock-dependency-hint-fallback',{at:Date.now(),mints:canonicalObservation.filter(r=>r.dependencyHints&&this.rejectedDependencyHints.get(r.mint.toBase58())===fingerprint(r.dependencyHints)).map(r=>r.mint.toBase58()),addressPlan:'canonical-current-accounts',separateDiscoveryReadPlanned:false,ordinaryAdmissionRequired:true,inlineRetry:false,financialPermission:false});}
+      if(discovery.length){
+        const keys=discovery.map(r=>canonicalPumpPoolPda(r.mint).toBase58());this.networkCalls++;sourceReadAttempted=true;
         const initial=await this.rpc.call<Batch>('getMultipleAccounts',[keys,{encoding:'base64',commitment:'confirmed',minContextSlot:floor}],signal,options);checkAdmission();
-        checkedBatch(initial,missing.length,floor);floor=Math.max(floor,initial.context.slot);this.highestSlot=Math.max(this.highestSlot,initial.context.slot);
-        for(let i=0;i<missing.length;i++){
-          const name=missing[i]!.mint.toBase58();
+        checkedBatch(initial,discovery.length,floor);floor=Math.max(floor,initial.context.slot);this.highestSlot=Math.max(this.highestSlot,initial.context.slot);
+        for(let i=0;i<discovery.length;i++){
+          const name=discovery[i]!.mint.toBase58();
           try{discovered.set(name,PUMP_AMM_SDK.decodePool(poolInfo(initial.value[i])));}
           catch(error){signal?.throwIfAborted();const reason=refusal(error);unavailable[name]=reason;this.invalidatePool(name,reason);}
         }
       }
       const holdings=selected.flatMap(request=>{
         const name=request.mint.toBase58(),cached=this.cached.get(name),first=cached?.first??discovered.get(name)??(hinted.includes(request)&&request.dependencyHints?{poolBaseTokenAccount:new PublicKey(request.dependencyHints.baseVault),poolQuoteTokenAccount:new PublicKey(request.dependencyHints.quoteVault)}:undefined);
-        if(!first)return [];
-        if(cached)this.linkHits++;
-        const key=canonicalPumpPoolPda(request.mint),addresses=[key,GLOBAL_CONFIG_PDA,PUMP_AMM_FEE_CONFIG_PDA,request.mint,NATIVE_MINT,first.poolBaseTokenAccount,first.poolQuoteTokenAccount].map(a=>a.toBase58());
-        return [{request,name,key,first,addresses}];
+        const key=canonicalPumpPoolPda(request.mint),canonicalVaults=canonicalObservation.includes(request)?{legacyBase:getAssociatedTokenAddressSync(request.mint,key,true,TOKEN_PROGRAM_ID),token2022Base:getAssociatedTokenAddressSync(request.mint,key,true,TOKEN_2022_PROGRAM_ID),quote:getAssociatedTokenAddressSync(NATIVE_MINT,key,true,TOKEN_PROGRAM_ID)}:undefined;
+        if(!first&&!canonicalVaults&&purpose!=='native-observation')return [];
+        if(cached&&purpose!=='native-observation')this.linkHits++;
+        const addresses=(purpose==='native-observation'?[key,request.mint]:[key,GLOBAL_CONFIG_PDA,PUMP_AMM_FEE_CONFIG_PDA,request.mint,NATIVE_MINT,...(first?[first.poolBaseTokenAccount,first.poolQuoteTokenAccount]:[canonicalVaults!.legacyBase,canonicalVaults!.quote,canonicalVaults!.token2022Base])]).map(a=>a.toBase58());
+        return [{request,name,key,first,addresses,canonicalVaults}];
       });
-      if(!holdings.length)return {quotes,buys,validations,unavailable,context:null};
+      if(!holdings.length)return {quotes,buys,validations,nativeValidations,unavailable,context:null};
       const addresses=[...new Set([...holdings.flatMap(h=>h.addresses),SYSVAR_CLOCK_PUBKEY.toBase58()])];
       need(addresses.length<=RESEARCH_CLOCK_RPC_ACCOUNT_CAPACITY,'RESEARCH_CLOCK_DEPENDENCY_CAP');
       const requestedAt=new Date(Date.now()).toISOString();this.networkCalls++;
-      checkAdmission();sourceReadAttempted=true;const batch=await this.rpc.call<Batch>('getMultipleAccounts',[addresses,{encoding:'base64',commitment:'confirmed',minContextSlot:floor}],signal,options);checkAdmission();
+      checkAdmission();sourceReadAttempted=true;if(purpose==='native-observation')this.nativeObservationReads++;const batch=await this.rpc.call<Batch>('getMultipleAccounts',[addresses,{encoding:'base64',commitment:'confirmed',minContextSlot:floor}],signal,options);checkAdmission();
       const receivedAt=new Date(Date.now()).toISOString();checkedBatch(batch,addresses.length,floor);
-      this.rec.record('research-clock-pool-state',{requestedAt,receivedAt,addresses,context:batch.context,value:batch.value});
+      this.rec.record(purpose==='native-observation'?'research-clock-native-observation-state':'research-clock-pool-state',{requestedAt,receivedAt,addresses,context:batch.context,value:batch.value,...(purpose==='native-observation'?{financialQuoteCapability:false}:{} )});
       const indexed=new Map(addresses.map((address,i)=>[address,batch.value[i]??null]));
       const timing=decodeResearchBankClock(indexed.get(SYSVAR_CLOCK_PUBKEY.toBase58()),batch.context.slot);
       // A current shared bank context remains a floor even when every pool is
       // unavailable. Later recovery cannot borrow an older favorable snapshot.
       this.highestSlot=Math.max(this.highestSlot,batch.context.slot);
       const pendingCache=new Map<string,Pool>();
-      const fresh=()=>{checkAdmission();const now=Date.now();need(now-Date.parse(receivedAt)>=0&&now-Date.parse(receivedAt)<=2000,purpose!=='observation'?'RESEARCH_CLOCK_QUOTE_AGE_AT_USE':'RESEARCH_CLOCK_SUPPORT_AGE_AT_USE');need(timing.marketClockUnixSeconds*1000<=now&&now-timing.marketClockUnixSeconds*1000<=30_000,'RESEARCH_CLOCK_NOT_CURRENT_WITHIN_30_SECONDS');};
+      const fresh=()=>{checkAdmission();const now=Date.now();need(now-Date.parse(receivedAt)>=0&&now-Date.parse(receivedAt)<=2000,!observing?'RESEARCH_CLOCK_QUOTE_AGE_AT_USE':'RESEARCH_CLOCK_SUPPORT_AGE_AT_USE');need(timing.marketClockUnixSeconds*1000<=now&&now-timing.marketClockUnixSeconds*1000<=30_000,'RESEARCH_CLOCK_NOT_CURRENT_WITHIN_30_SECONDS');};
       for(const h of holdings){
-        signal?.throwIfAborted();let quote:ResearchClockQuote|undefined,buy:ResearchClockBuyQuote|undefined,support:ResearchClockObservationSupport|undefined;
+        signal?.throwIfAborted();let quote:ResearchClockQuote|undefined,buy:ResearchClockBuyQuote|undefined,support:ResearchClockObservationSupport|undefined,nativeSupport:ResearchClockNativeObservationSupport|undefined;
         try{
+          if(purpose==='native-observation'){
+            const state=decodeNativeObservationBinding(h.request.mint,h.key,[indexed.get(h.key.toBase58())??null,indexed.get(h.name)??null],batch.context,requestedAt,receivedAt);
+            if(h.first)need(state.pool.poolBaseTokenAccount.equals(h.first.poolBaseTokenAccount)&&state.pool.poolQuoteTokenAccount.equals(h.first.poolQuoteTokenAccount),'POOL_LINKS_CHANGED');
+            const summary={...state.summary,...timing,validatedAt:new Date(Date.now()).toISOString(),researchOnly:true as const},at=Date.now(),evidence='research-clock-native-observation:'+createHash('sha256').update(JSON.stringify({mint:h.name,summary,accounts:h.addresses.map(a=>indexed.get(a)),clock:indexed.get(SYSVAR_CLOCK_PUBKEY.toBase58())})).digest('hex');
+            nativeSupport={mint:h.name,pool:h.key.toBase58(),at,sourceSlot:batch.context.slot,evidence,summary};pendingCache.set(h.name,state.pool);
+          }else{
+          let first=h.first,actualAddresses=h.addresses;
+          const freshPool=hinted.includes(h.request)||h.canonicalVaults?PUMP_AMM_SDK.decodePool(poolInfo(indexed.get(h.key.toBase58()))):undefined;
+          if(h.canonicalVaults){
+            // The mint's current owner, never a retained origin/token-program
+            // claim or whichever vault happens to exist, selects the ATA.
+            const mint=indexed.get(h.name);need(mint,'MISSING_ACCOUNT');
+            need(mint.owner===TOKEN_PROGRAM_ID.toBase58()||mint.owner===TOKEN_2022_PROGRAM_ID.toBase58(),'UNSUPPORTED_TOKEN_PROGRAM');
+            first={poolBaseTokenAccount:mint.owner===TOKEN_PROGRAM_ID.toBase58()?h.canonicalVaults.legacyBase:h.canonicalVaults.token2022Base,poolQuoteTokenAccount:h.canonicalVaults.quote};
+            need(freshPool!.poolBaseTokenAccount.equals(first.poolBaseTokenAccount)&&freshPool!.poolQuoteTokenAccount.equals(first.poolQuoteTokenAccount),'BAD_VAULT_ADDRESS');
+            actualAddresses=[...h.addresses.slice(0,5),first.poolBaseTokenAccount.toBase58(),first.poolQuoteTokenAccount.toBase58()];
+          }
+          need(first,'RESEARCH_CLOCK_POOL_UNAVAILABLE');
           // Check the freshly decoded pool's actual links before looking up
           // hinted vault bytes: a stale hint can otherwise look like a missing
           // vault and repeat forever. It only invalidates this optimization;
           // the full decoder below still validates every accepted account.
-          const hintedPool=hinted.includes(h.request)?PUMP_AMM_SDK.decodePool(poolInfo(indexed.get(h.key.toBase58()))):undefined;
-          if(hintedPool)need(hintedPool.poolBaseTokenAccount.equals(h.first.poolBaseTokenAccount)&&hintedPool.poolQuoteTokenAccount.equals(h.first.poolQuoteTokenAccount),'POOL_LINKS_CHANGED');
-          const state=decodeSupportedPoolAccounts(h.request.mint,h.key,h.first,h.addresses.map(a=>indexed.get(a)??null),batch.context,requestedAt,receivedAt);
+          if(hinted.includes(h.request))need(freshPool!.poolBaseTokenAccount.equals(first.poolBaseTokenAccount)&&freshPool!.poolQuoteTokenAccount.equals(first.poolQuoteTokenAccount),'POOL_LINKS_CHANGED');
+          const state=decodeSupportedPoolAccounts(h.request.mint,h.key,first,actualAddresses.map(a=>indexed.get(a)??null),batch.context,requestedAt,receivedAt);
           const summary:ClockSummary={...state.summary,...timing,validatedAt:new Date(Date.now()).toISOString(),researchOnly:true};
-          if(purpose==='quote'){need(h.request.units!==undefined,'POSITION_SELL_SIZE_OUT_OF_RANGE');quote=positionSellFromState({...state,summary},h.request.units,{record(){}},signal);}else if(purpose==='buy'){need(h.request.buyLamports!==undefined,'INTEGRATION_SIZE_OUT_OF_RANGE');buy=buyFromState({...state,summary},h.request.buyLamports,{record(){}},signal);}else{const at=Date.now(),evidence='research-clock-observation-support:'+createHash('sha256').update(JSON.stringify({mint:h.name,summary,accounts:h.addresses.map(a=>indexed.get(a)),clock:indexed.get(SYSVAR_CLOCK_PUBKEY.toBase58())})).digest('hex');support={mint:h.name,pool:h.key.toBase58(),at,sourceSlot:batch.context.slot,evidence,summary};}
+          if(purpose==='quote'){need(h.request.units!==undefined,'POSITION_SELL_SIZE_OUT_OF_RANGE');quote=positionSellFromState({...state,summary},h.request.units,{record(){}},signal);}else if(purpose==='buy'){need(h.request.buyLamports!==undefined,'INTEGRATION_SIZE_OUT_OF_RANGE');buy=buyFromState({...state,summary},h.request.buyLamports,{record(){}},signal);}else{const at=Date.now(),evidence='research-clock-observation-support:'+createHash('sha256').update(JSON.stringify({mint:h.name,summary,accounts:actualAddresses.map(a=>indexed.get(a)),clock:indexed.get(SYSVAR_CLOCK_PUBKEY.toBase58())})).digest('hex');support={mint:h.name,pool:h.key.toBase58(),at,sourceSlot:batch.context.slot,evidence,summary};}
           // Only exact bytes validated by the shared decoder can seed future
           // address discovery. No cached reserve/fee/value becomes a fresh mark.
-          pendingCache.set(h.name,hintedPool??PUMP_AMM_SDK.decodePool(poolInfo(indexed.get(h.key.toBase58()))));
-        }catch(error){signal?.throwIfAborted();const reason=refusal(error);unavailable[h.name]=reason;if(reason==='POOL_LINKS_CHANGED'&&hinted.includes(h.request)&&h.request.dependencyHints){this.rejectedDependencyHints.set(h.name,fingerprint(h.request.dependencyHints));this.dependencyHintRejections++;this.rec.record('research-clock-dependency-hint-rejected',{at:Date.now(),mint:h.name,reason,nextOrdinaryRefreshUsesDiscovery:true,inlineRetry:false,financialPermission:false,marketAttractivenessUnknown:true});}this.invalidatePool(h.name,reason);continue;}
-        fresh();if(quote){this.rec.record('research-clock-position-sell-quote',quote);fresh();quotes[h.name]=quote;}else if(buy){this.rec.record('research-clock-buy-quote',buy);fresh();buys[h.name]=buy;}else if(support){this.rec.record('research-clock-observation-support',support);fresh();validations[h.name]=support;}
+          pendingCache.set(h.name,freshPool??PUMP_AMM_SDK.decodePool(poolInfo(indexed.get(h.key.toBase58()))));
+          }
+        }catch(error){signal?.throwIfAborted();const reason=refusal(error);unavailable[h.name]=reason;if(reason==='POOL_LINKS_CHANGED'&&hinted.includes(h.request)&&h.request.dependencyHints){this.rejectedDependencyHints.set(h.name,fingerprint(h.request.dependencyHints));this.dependencyHintRejections++;this.rec.record('research-clock-dependency-hint-rejected',{at:Date.now(),mint:h.name,reason,nextOrdinaryRefreshUsesDiscovery:true,nextAddressPlan:'canonical-current-accounts',separateDiscoveryReadPlanned:false,inlineRetry:false,financialPermission:false,marketAttractivenessUnknown:true});}this.invalidatePool(h.name,reason);continue;}
+        fresh();if(quote){this.rec.record('research-clock-position-sell-quote',quote);fresh();quotes[h.name]=quote;}else if(buy){this.rec.record('research-clock-buy-quote',buy);fresh();buys[h.name]=buy;}else if(support){this.rec.record('research-clock-observation-support',support);fresh();validations[h.name]=support;}else if(nativeSupport){this.rec.record('research-clock-native-observation-support',nativeSupport);fresh();nativeValidations[h.name]=nativeSupport;}
       }
       // A slow recorder cannot make earlier per-pool results fresh. Nothing is
       // returned or cached if this common availability condition has expired.
       fresh();signal?.throwIfAborted();
       if(hinted.length&&!missing.length&&pendingCache.size)this.discoveryRequestsAvoidedByHints++;
-      for(const [mint,first] of pendingCache){this.cached.set(mint,{first,slot:batch.context.slot});if(hinted.some(r=>r.mint.toBase58()===mint))this.dependencyHintValidatedPools++;const slots=purpose==='quote'?this.holdingSlots:purpose==='buy'?this.buySlots:this.observationSlots;slots.set(mint,Math.max(slots.get(mint)??0,batch.context.slot));}
+      if(canonicalObservation.some(r=>pendingCache.has(r.mint.toBase58())))this.canonicalObservationDiscoveryRequestsAvoided++;
+      for(const [mint,first] of pendingCache){this.cached.set(mint,{first,slot:batch.context.slot});if(hinted.some(r=>r.mint.toBase58()===mint))this.dependencyHintValidatedPools++;if(canonicalObservation.some(r=>r.mint.toBase58()===mint))this.canonicalObservationValidatedPools++;if(purpose==='native-observation')this.nativeObservationValidatedPools++;const slots=purpose==='quote'?this.holdingSlots:purpose==='buy'?this.buySlots:this.observationSlots;slots.set(mint,Math.max(slots.get(mint)??0,batch.context.slot));}
       if(pendingCache.size)this.highestSlot=Math.max(this.highestSlot,batch.context.slot);
       for(const h of holdings)if(quotes[h.name]||buys[h.name])this.constructionBatches.set(h.name,{mint:h.name,slot:batch.context.slot,requestedAt,receivedAt,accounts:h.addresses.map(a=>structuredClone(indexed.get(a)??null))});
-      return {quotes,buys,validations,unavailable,context:{slot:batch.context.slot,requestedAt,receivedAt,marketClockUnixSeconds:timing.marketClockUnixSeconds}};
+      return {quotes,buys,validations,nativeValidations,unavailable,context:{slot:batch.context.slot,requestedAt,receivedAt,marketClockUnixSeconds:timing.marketClockUnixSeconds}};
     }catch(error){
       if(sourceReadAttempted){
         const code=transientLinkReadRefusal(error);
         if(code){
           if(this.cached.size){this.retainedLinkReadFailures++;this.rec.record('research-clock-verified-links-retained',{at:Date.now(),reasonCode:code,cachedPools:this.cached.size,retainedPricesForPricing:false,unsignedConstructionBatches:this.constructionBatches.size,newLinksCommitted:false});}
-        }else this.invalidate(purpose!=='observation'?'quote-unavailable':'observation-support-unavailable');
+        }else this.invalidate(!observing?'quote-unavailable':'observation-support-unavailable');
       }
       throw error;
     }

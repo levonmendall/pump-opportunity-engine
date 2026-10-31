@@ -6,7 +6,7 @@ import {createHash} from 'node:crypto';
 import {PublicKey} from '@solana/web3.js';
 import type {ExecutionContext,QuoteRequest} from './execution.js';
 import type {ExecutionQuote,Order,Position,UsdPrice} from './ledger.js';
-import type {VerifiedMarketPool} from './rpc-market.js';
+import {compatibleMarketPools,marketPoolMinimumContextSlot,validateMarketPool,type VerifiedMarketPool} from './rpc-market.js';
 import type {ResearchClockPositionPricer,ResearchClockQuote} from './research-clock-pricing.js';
 import {RESEARCH_CLOCK_COHERENT_POOL_CAPACITY} from './research-clock-pricing.js';
 import type {SizeQuote,SizeRequest} from './trader.js';
@@ -61,9 +61,10 @@ export class ResearchHeldMarket {
     this.options={...options,gasLamports:options.gasLamports,gasEvidence:options.gasEvidence};
   }
   registerPool(pool:VerifiedMarketPool){
-    need(new PublicKey(pool.mint).toBase58()===pool.mint&&pool.migrationVerified===true&&Number.isSafeInteger(pool.migrationSlot)&&pool.migrationSlot>=0&&validText(pool.evidence),'RESEARCH_HELD_VERIFIED_POOL_REQUIRED');
+    try{validateMarketPool(pool,this.clock());}catch{throw Error('RESEARCH_HELD_VERIFIED_POOL_REQUIRED');}
     need(this.pools.has(pool.mint)||this.pools.size<RESEARCH_CLOCK_COHERENT_POOL_CAPACITY+7,'RESEARCH_HELD_POOL_CAPACITY');
-    const old=this.pools.get(pool.mint);need(!old||old.migrationSlot===pool.migrationSlot,'RESEARCH_HELD_MIGRATION_CONFLICT');
+    const old=this.pools.get(pool.mint);need(!old||compatibleMarketPools(old,pool),'RESEARCH_HELD_MIGRATION_CONFLICT');
+    this.floors.set(pool.mint,Math.max(this.floors.get(pool.mint)??0,marketPoolMinimumContextSlot(old),marketPoolMinimumContextSlot(pool)));
     this.pools.set(pool.mint,Object.freeze({...pool}));
   }
   /** Retire replaceable observation ownership only. Financial inventory and
@@ -102,7 +103,7 @@ export class ResearchHeldMarket {
     try{const q=this.snapshots.get(mint);need(q&&q.sell.inputBaseUnits===units&&this.current(mint,units),'RESEARCH_HELD_EXACT_SIZE_REQUIRED');this.source(q!);return structuredClone(q!);}catch{return null;}
   }
   private source(q:ResearchClockQuote,minSlot=0){
-    const now=this.clock(),requestedAt=Date.parse(q.requestedAt),receivedAt=Date.parse(q.receivedAt),validatedAt=Date.parse(q.validatedAt),pool=this.pools.get(q.mint),floor=Math.max(minSlot,this.floors.get(q.mint)??0,pool?.migrationSlot??0);
+    const now=this.clock(),requestedAt=Date.parse(q.requestedAt),receivedAt=Date.parse(q.receivedAt),validatedAt=Date.parse(q.validatedAt),pool=this.pools.get(q.mint),floor=Math.max(minSlot,this.floors.get(q.mint)??0,marketPoolMinimumContextSlot(pool));
     need(pool&&q.commitment==='confirmed'&&q.timeEvidence==='confirmed-bank-clock'&&Number.isSafeInteger(q.slot)&&q.slot>=floor&&q.clockSlot===q.slot,'RESEARCH_HELD_SOURCE_CONTEXT');
     need(Number.isSafeInteger(requestedAt)&&Number.isSafeInteger(receivedAt)&&Number.isSafeInteger(validatedAt)&&requestedAt<=receivedAt&&receivedAt<=validatedAt&&validatedAt<=now&&receivedAt<=now&&now-receivedAt<=2000,'RESEARCH_HELD_SOURCE_AGE');
     need(Number.isSafeInteger(q.marketClockUnixSeconds)&&q.marketClockUnixSeconds*1000<=now&&now-q.marketClockUnixSeconds*1000<=30000,'RESEARCH_HELD_CLOCK_AGE');
@@ -130,7 +131,7 @@ export class ResearchHeldMarket {
     this.snapshots.clear();this.busy=true;const generation=this.generation;let failure:HeldPricingFailureCode|null=null;
     try{
       signal.throwIfAborted();
-      const requests=selected.filter(p=>p.mint===p.positionMint&&this.pools.has(p.mint)&&this.current(p.mint,p.units)).map(p=>({mint:new PublicKey(p.mint),fullBaseUnits:amount(p.units),minSlot:Math.max(this.pools.get(p.mint)!.migrationSlot,this.floors.get(p.mint)??0)}));
+      const requests=selected.filter(p=>p.mint===p.positionMint&&this.pools.has(p.mint)&&this.current(p.mint,p.units)).map(p=>({mint:new PublicKey(p.mint),fullBaseUnits:amount(p.units),minSlot:Math.max(marketPoolMinimumContextSlot(this.pools.get(p.mint)),this.floors.get(p.mint)??0)}));
       if(requests.length){
         const batch=await this.options.pricer.quoteMany(requests,signal);signal.throwIfAborted();need(generation===this.generation,'RESEARCH_HELD_INTERRUPTED_CONTEXT');
         for(const r of requests){
@@ -170,7 +171,7 @@ export class ResearchHeldMarket {
       need(['buy','sell'].includes(r.side)&&amount(r.inputUnits)>0n,'RESEARCH_HELD_SIZE_REQUEST');
       const floor=r.minSlot??0;need(Number.isSafeInteger(floor)&&floor>=0,'RESEARCH_HELD_MINIMUM_SLOT');
       if(r.side==='buy'){
-        const generation=this.generation,required=Math.max(floor,this.pools.get(r.mint)!.migrationSlot,this.floors.get(r.mint)??0),q=await this.options.entryQuote?.({...r,minSlot:required},signal),at=this.clock(),currentFloor=Math.max(required,this.floors.get(r.mint)??0);
+        const generation=this.generation,required=Math.max(floor,marketPoolMinimumContextSlot(this.pools.get(r.mint)),this.floors.get(r.mint)??0),q=await this.options.entryQuote?.({...r,minSlot:required},signal),at=this.clock(),currentFloor=Math.max(required,this.floors.get(r.mint)??0);
         need(q&&!signal.aborted&&generation===this.generation&&q.mint===r.mint&&q.side===r.side&&q.inputUnits===r.inputUnits&&Number.isSafeInteger(q.slot)&&q.slot!>=currentFloor&&q.at<=at&&at-q.at<=2000,'RESEARCH_HELD_ENTRY_DELEGATE_UNAVAILABLE');
         this.floors.set(r.mint,Math.max(this.floors.get(r.mint)??0,q!.slot!));return structuredClone(q!);
       }

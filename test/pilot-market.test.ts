@@ -5,10 +5,12 @@ import assert from 'node:assert/strict';
 import {mkdtempSync,readFileSync,rmSync,writeFileSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
-import {SYSVAR_CLOCK_PUBKEY} from '@solana/web3.js';
+import {PublicKey,SYSVAR_CLOCK_PUBKEY} from '@solana/web3.js';
+import {TOKEN_PROGRAM_ID,getAssociatedTokenAddressSync} from '@solana/spl-token';
+import {canonicalPumpPoolPda} from '../src/sdk.js';
 import {DisposableLedger,type UsdPrice} from '../src/ledger.js';
 import {PaperExecutionCoordinator} from '../src/execution.js';
-import {PilotMarket} from '../src/pilot-market.js';
+import {PilotMarket,type PilotInventory} from '../src/pilot-market.js';
 import type {PoolWireAccount} from '../src/pool.js';
 import {PilotRpc,PilotRpcUnavailable} from '../src/pilot-rpc.js';
 import {nativePaperRpcConfiguration} from '../src/run-native-paper.js';
@@ -21,7 +23,7 @@ import {NativePaperEntryAdmission,type NativePaperEntryAdmissionToken} from '../
 import {pilotLowerPriorityAdmission} from '../src/pilot.js';
 
 const signal=()=>new AbortController().signal;
-function fixture(t:TestContext,timeoutMs=1000,cooperative=false,paced=false,executionRealism=false){
+function fixture(t:TestContext,timeoutMs=1000,cooperative=false,paced=false,executionRealism=false,reusePreparedEntryRent=false){
   const runs=['2026-10-26T19-41-20.717Z','2026-10-26T19-42-16.130Z'];
   const captures=runs.map(run=>{
     const proof=JSON.parse(readFileSync(`evidence/integration-proof-${run}.json`,'utf8'));
@@ -37,7 +39,7 @@ function fixture(t:TestContext,timeoutMs=1000,cooperative=false,paced=false,exec
   const price=():UsdPrice=>({microUsdPerSol:'100000000',at,source:'DISPOSABLE fixed USD snapshot'});
   ledger.initialize(price(),at);
   t.after(()=>{physical?.close();ledger.close();Date.now=oldNow;rmSync(root,{recursive:true,force:true});});
-  let wait:Promise<void>|undefined,rpcHook:((method:string)=>void)|undefined,activity:((ms:number)=>void)|undefined;
+  let wait:Promise<void>|undefined,rpcHook:((method:string)=>void)|undefined,activity:((ms:number)=>void)|undefined,inventoryOverride:PilotInventory|null=null;
   const rpc={async call<T>(method:string,params:unknown[]=[]):Promise<T>{
     calls.push({method,params:structuredClone(params),at});
     rpcHook?.(method);
@@ -52,11 +54,11 @@ function fixture(t:TestContext,timeoutMs=1000,cooperative=false,paced=false,exec
   let physical:PilotRpc|undefined;
   if(paced){const old=join(root,'prior.json');writeFileSync(old,JSON.stringify({schemaVersion:1,blockedReason:'RPC_HTTP_429',calls:1,bytes:0,lastObservedAt:at-120000,starts:[at-121000],pending:[]}));physical=new PilotRpc({directory:join(root,'paced-rpc'),runId:'offline-entry-quote-pacing',baselinePaths:[old],priorPhysicalSettled:true,...nativePaperRpcConfiguration(true),now:()=>at,monotonic:()=>at,sleep:async ms=>{at+=ms;activity?.(ms);},fetcher:(async(_url,init)=>{const q=JSON.parse(String(init?.body)),result=await rpc.call(q.method,q.params);return new Response(JSON.stringify({jsonrpc:'2.0',id:q.id,result}));}),record:(kind,data)=>records.push({kind,data:structuredClone(data)})});}
   let adapter:any=physical??rpc;const routed={call:<T>(method:string,params?:unknown[],signal?:AbortSignal)=>adapter.call(method,params,signal) as Promise<T>,usage:()=>adapter.usage?.()};
-  const market=new PilotMarket({rpc:routed,inventory:()=>ledger.state(),price,now:()=>at,...(executionRealism?{executionRealism:true as const}:{}),recorder:{record(kind,data){records.push({kind,data:structuredClone(data)});recordHook?.(kind);}},...(cooperative?{beforeEntryPreparationRead:async(input:{method:string;signal:AbortSignal})=>{await preparationHook?.(input);}}:{}),gas:{baseFeeLamports:'5000',priorityFeeLamports:'2000',evidence:'DISPOSABLE7k simulated network/priority cost'},timeoutMs});
+  const market=new PilotMarket({rpc:routed,inventory:()=>inventoryOverride??ledger.state(),price,now:()=>at,...(executionRealism?{executionRealism:true as const}:{}),...(reusePreparedEntryRent?{reusePreparedEntryRent:true as const}:{}),recorder:{record(kind,data){records.push({kind,data:structuredClone(data)});recordHook?.(kind);}},...(cooperative?{beforeEntryPreparationRead:async(input:{method:string;signal:AbortSignal})=>{await preparationHook?.(input);}}:{}),gas:{baseFeeLamports:'5000',priorityFeeLamports:'2000',evidence:'DISPOSABLE7k simulated network/priority cost'},timeoutMs});
   for(const c of captures)market.registerPool({mint:c.proof.quote.mint,migrationVerified:true,migrationSlot:c.proof.origin.slot,evidence:'retained actual migration; synthetic current timing'});
   const coordinator=new PaperExecutionCoordinator({ledger,now:()=>at,timeoutMs:1000,context:s=>market.context(ledger.state().positions,s),quote:market.executionQuote});
   coordinator.recover();ledger.reconcile('initial-reconcile',at,price(),{});ledger.resume('fixture-ready',at,price(),{},{version:'isolated-pilot-market-fixture',evidence:'synthetic readiness for market/ledger mechanics only',marketAt:at,recoveryComplete:true,candidateWindowsReady:true,budgetAvailable:true});
-  return {captures,ledger,market,coordinator,price,calls,records,get physical(){return physical;},route:(value:any)=>{adapter=value;},now:()=>at,advance:(ms:number)=>{at+=ms;},rentChanged:()=>{rentOffset++;},bumpSlot:()=>{slot++;},slot:()=>slot,setSlot:(value:number)=>{slot=value;},pause:(p:Promise<void>)=>{wait=p;},account:(address:string)=>accounts.get(address),onRpc:(hook:(method:string)=>void)=>{rpcHook=hook;},onPacingWait:(hook:(ms:number)=>void)=>{activity=hook;},onRecord:(hook:(kind:string)=>void)=>{recordHook=hook;},beforePreparationRead:(hook:(input:{method:string;signal:AbortSignal})=>Promise<void>)=>{preparationHook=hook;}};
+  return {captures,ledger,market,coordinator,price,calls,records,get physical(){return physical;},route:(value:any)=>{adapter=value;},now:()=>at,advance:(ms:number)=>{at+=ms;},rentChanged:()=>{rentOffset++;},bumpSlot:()=>{slot++;},slot:()=>slot,setSlot:(value:number)=>{slot=value;},pause:(p:Promise<void>)=>{wait=p;},account:(address:string)=>accounts.get(address),replaceAccount:(address:string,wire:PoolWireAccount)=>{accounts.set(address,structuredClone(wire));},overrideInventory:(value:PilotInventory|null)=>{inventoryOverride=value;},onRpc:(hook:(method:string)=>void)=>{rpcHook=hook;},onPacingWait:(hook:(ms:number)=>void)=>{activity=hook;},onRecord:(hook:(kind:string)=>void)=>{recordHook=hook;},beforePreparationRead:(hook:(input:{method:string;signal:AbortSignal})=>Promise<void>)=>{preparationHook=hook;}};
 }
 
 for(const background of [0,6,9])test(`committed already-prepared actual decision quote after ${background} discretionary reads retains its bounded remaining envelope and holding reserves`,async t=>{
@@ -104,14 +106,57 @@ test('fresh supported account lengths and current rent define deposits; every en
   const plan=await f.market.prepareEntryCosts(mint,signal());
   assert.deepEqual(plan.accountLengths,{base:170,quote:165});
   assert.equal(plan.depositLamports,'2000335');assert.equal(plan.accountPlan.baseExists,false);assert.equal(plan.accountPlan.quoteExists,false);
-  assert.deepEqual(f.calls.map(c=>c.method),['getMultipleAccounts','getMultipleAccounts','getMinimumBalanceForRentExemption','getMinimumBalanceForRentExemption']);
+  assert.deepEqual(f.calls.map(c=>c.method),['getMultipleAccounts','getMinimumBalanceForRentExemption','getMinimumBalanceForRentExemption']);
   const q=await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal());assert.ok(q);
   assert.equal(q.requiredDepositLamports,plan.depositLamports);assert.match(q.depositEvidence!,/^pilot-entry-validated-costs:/);
-  assert.equal(f.calls.length,7);assert.equal(q.outputUnits,f.captures[1]!.proof.quote.buy.outputBaseUnits);
+  assert.equal(f.calls.length,6);assert.equal(q.outputUnits,f.captures[1]!.proof.quote.buy.outputBaseUnits);
   // A sizing plan can remain old, but every used quote still reads current rent.
-  f.advance(10001);const newer=await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal());assert.ok(newer);assert.equal(newer.at,f.now());assert.equal(f.calls.length,10);
+  f.advance(10001);const newer=await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal());assert.ok(newer);assert.equal(newer.at,f.now());assert.equal(f.calls.length,9);
   f.rentChanged();assert.equal(await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal()),null);
   assert.equal(f.ledger.state().lockedDeposits[mint],undefined);assert.equal(Object.keys(f.ledger.state().positions).length,0);
+});
+
+function syntheticLegacyBase(f:ReturnType<typeof fixture>,capture:ReturnType<typeof fixture>['captures'][number]){
+  // Explicit OFFLINE layout conversion; no historical mint-program change is
+  // asserted. The real decoder and unsigned builder still validate every byte.
+  const mint=new PublicKey(capture.proof.quote.mint),pool=canonicalPumpPoolPda(mint),oldVault=capture.state.addresses[5]as string,legacyVault=getAssociatedTokenAddressSync(mint,pool,true,TOKEN_PROGRAM_ID).toBase58();
+  const poolWire=structuredClone(f.account(capture.state.addresses[0]))!,poolRaw=Buffer.from(poolWire.data[0],'base64');assert.ok(poolRaw.subarray(139,171).equals(new PublicKey(oldVault).toBuffer()));new PublicKey(legacyVault).toBuffer().copy(poolRaw,139);poolWire.data[0]=poolRaw.toString('base64');f.replaceAccount(capture.state.addresses[0],poolWire);
+  const mintWire=structuredClone(f.account(mint.toBase58()))!;mintWire.owner=TOKEN_PROGRAM_ID.toBase58();mintWire.data[0]=Buffer.from(mintWire.data[0],'base64').subarray(0,82).toString('base64');f.replaceAccount(mint.toBase58(),mintWire);
+  const vaultWire=structuredClone(f.account(oldVault))!;vaultWire.owner=TOKEN_PROGRAM_ID.toBase58();vaultWire.data[0]=Buffer.from(vaultWire.data[0],'base64').subarray(0,165).toString('base64');f.replaceAccount(legacyVault,vaultWire);
+}
+
+for(const legacy of [true,false])test(`current decision rent reuse removes ${legacy?1:2} duplicate rent calls and preserves original cost times with a fresh SDK quote`,async t=>{
+  const f=fixture(t,1000,false,false,true,true),capture=f.captures[1]!,mint=capture.proof.quote.mint;if(legacy)syntheticLegacyBase(f,capture);
+  const plan=await f.market.prepareEntryCosts(mint,signal()),before=f.ledger.state(),rentReads=f.calls.filter(c=>c.method==='getMinimumBalanceForRentExemption').length;assert.equal(rentReads,legacy?1:2);
+  const originalAt=plan.at;f.advance(1500);f.bumpSlot();const begin=f.calls.length,q=await f.market.quote({mint,side:'buy',inputUnits:'50000000',requiredDepositLamports:plan.depositLamports},signal());assert.ok(q,JSON.stringify(f.market.usage().entryQuoteFailures));
+  assert.equal(f.calls.length-begin,1);assert.equal(f.calls[begin]!.method,'getMultipleAccounts');assert.equal(f.calls.filter(c=>c.method==='getMinimumBalanceForRentExemption').length,rentReads);assert.equal(q.at,f.now());assert.ok(q.at>originalAt);assert.equal(q.slot,f.slot());assert.equal(q.inputUnits,'50000000');
+  const costs=f.records.findLast(r=>r.kind==='rpc-market-quote')!.data.costs;assert.equal(costs.rentSource,'validated-entry-preparation');assert.equal(costs.preparationAt,originalAt);assert.deepEqual(costs.plan,plan.accountPlan);assert.deepEqual(costs.rentObservationsByBytes,plan.rentObservationsByBytes);assert.deepEqual(costs.rents,plan.rentLamportsByBytes);
+  const constructed=f.records.findLast(r=>r.kind==='paper-unsigned-pumpswap')!.data.construction;assert.equal(constructed.networkRequests,0);assert.equal(constructed.sourceSlot,q.slot);assert.equal(constructed.expectedOutputUnits,q.outputUnits);assert.deepEqual(f.ledger.state(),before);
+});
+
+for(const fault of ['plan-age','earliest-rent-age','missing-observation','locked-inventory','different-deposit'])test(`prepared rent reuse refuses ${fault} before provider work without inline refresh`,async t=>{
+  const f=fixture(t,3000,false,fault==='earliest-rent-age',false,true),mint=f.captures[1]!.proof.quote.mint,plan=await f.market.prepareEntryCosts(mint,signal()),before=f.ledger.state();
+  if(fault==='plan-age')f.advance(10001);
+  if(fault==='earliest-rent-age'){assert.ok(plan.rentObservationsByBytes![170]!.receivedAt<plan.at);f.advance(10000);assert.equal(f.now()-plan.at,10000);}
+  if(fault==='missing-observation'){const stored=(f.market as any).plans.get(mint);delete stored.rentObservationsByBytes;}
+  if(fault==='locked-inventory')f.overrideInventory({...before,lockedDeposits:{...before.lockedDeposits,[mint]:'1'}});
+  const calls=f.calls.length,q=await f.market.quote({mint,side:'buy',inputUnits:'10000000',requiredDepositLamports:fault==='different-deposit'?'1':plan.depositLamports},signal());assert.equal(q,null);assert.equal(f.calls.length,calls);assert.deepEqual(f.ledger.state(),before);assert.equal(f.records.some(r=>r.kind==='rpc-market-quote'),false);
+});
+
+for(const fault of ['generation','plan-replaced','layout','cost-expired-during-quote'])test(`prepared rent reuse rejects ${fault} after source work without an extra request`,async t=>{
+  const f=fixture(t,1000,false,false,false,true),capture=f.captures[1]!,mint=capture.proof.quote.mint,plan=await f.market.prepareEntryCosts(mint,signal()),before=f.ledger.state();
+  if(fault==='layout')syntheticLegacyBase(f,capture);
+  if(fault==='cost-expired-during-quote')f.advance(9900);
+  f.onRecord(kind=>{if(kind!=='research-clock-buy-quote')return;if(fault==='generation')f.market.invalidate('OFFLINE source gap');if(fault==='plan-replaced'){const stored=(f.market as any).plans.get(mint);(f.market as any).plans.set(mint,{...stored,evidence:'OFFLINE replacement preparation'});}if(fault==='cost-expired-during-quote')f.advance(101);});
+  const calls=f.calls.length,q=await f.market.quote({mint,side:'buy',inputUnits:'10000000',requiredDepositLamports:plan.depositLamports},signal());assert.equal(q,null);assert.equal(f.calls.length-calls,1);assert.equal(f.calls.at(-1)!.method,'getMultipleAccounts');assert.deepEqual(f.ledger.state(),before);
+});
+
+test('prepared decision rent never replaces fresh post-delay rent or accepts a changed execution deposit',async t=>{
+  const f=fixture(t,1000,false,false,false,true),mint=f.captures[1]!.proof.quote.mint,plan=await f.market.prepareEntryCosts(mint,signal()),q=await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal());assert.ok(q);
+  f.coordinator.reserve({id:'reuse-costs-landing',side:'buy',mint,decidedAt:f.now(),executeAt:f.now()+1000,expiresAt:f.now()+5000,gas:'7000',deposit:plan.depositLamports,maxSpend:'10000000',minReceive:'1',decisionEvidence:q.evidence},{price:f.price(),marks:{}});f.advance(1000);
+  const order=f.ledger.state().pending['reuse-costs-landing']!,before=f.ledger.state(),calls=f.calls.length,ready=await f.market.executionQuote({order,attemptedAt:f.now(),fullPositionBaseUnits:null},signal());assert.ok(ready);assert.deepEqual(f.calls.slice(calls).map(c=>c.method),['getMinimumBalanceForRentExemption','getMinimumBalanceForRentExemption','getMultipleAccounts']);
+  const costs=f.records.findLast(r=>r.kind==='rpc-market-quote')!.data.costs;assert.equal(costs.rentSource,'fresh-quote-rent');assert.ok(Object.values(costs.rentObservationsByBytes).every((r:any)=>r.receivedAt>=order.executeAt));
+  f.rentChanged();const changed=f.calls.length;assert.equal(await f.market.executionQuote({order,attemptedAt:f.now(),fullPositionBaseUnits:null},signal()),null);assert.equal(f.calls.length-changed,2);assert.deepEqual(f.ledger.state(),before);
 });
 
 test('real decoder quotes complete a disposable delayed buy and full-size exit with rent retained once',async t=>{

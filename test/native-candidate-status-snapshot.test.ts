@@ -52,7 +52,7 @@ test('one status publication reads each populated slot metric once and matches s
  assert.deepEqual(Object.fromEntries(reads),Object.fromEntries(WAITS.map(metric=>[metric,3])),'five populated summaries require fifteen SQLite reads, never thirty');
  assert.deepEqual(status.slotProductivity,expectedProductivity);
  assert.deepEqual(status.marketCoverage.pipeline,expectedPipeline);
- assert.equal(status.marketCoverage.pipeline.population.serviceableNow,1);
+ assert.equal(status.marketCoverage.pipeline.population.serviceableNow,2,'optional archived origin bytes do not reduce current observation serviceability');
  assert.equal(status.slotProductivity.configuredSlots,4);
  assert.equal(status.marketCoverage.pipeline.capacityWitness.configuredSlots,4);
  assert.deepEqual(status.slotProductivity.waits.queueToAllocation,{count:3,sum:120,mean:40,max:90,p50:20,p95:90});
