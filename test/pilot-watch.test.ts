@@ -386,29 +386,28 @@ test('capacity admission cannot demote owned obligations or revive terminal excl
  }
 });
 
-test('technical reevaluation claims only newer windows with durable five/fifteen/thirty-second backoff and three-claim cap',()=>{
+test('technical reevaluation uses the next new window without fixed backoff and keeps a bounded priority episode',()=>{
  const f=fixture();f.seed('technical');const started=f.now(),initial={reason:'entry-quote-unavailable' as const,failedWindowEndAt:started};
  assert.equal(f.registry.requestTechnicalReevaluation('mint-technical',initial),true);const first=f.registry.technicalReevaluation('mint-technical')!;
- assert.deepEqual(first,{...initial,requestedAt:started,notBefore:started+5000,expiresAt:started+300000,attempts:0,lastClaimedWindowEndAt:null,state:'WAITING'});
+ assert.deepEqual(first,{...initial,requestedAt:started,notBefore:started,expiresAt:started+300000,attempts:0,lastClaimedWindowEndAt:null,state:'WAITING'});
  first.attempts=99;assert.equal(f.registry.technicalReevaluation('mint-technical')!.attempts,0,'callers receive copies');
  assert.equal(f.registry.requestTechnicalReevaluation('mint-technical',initial),false);assert.equal(f.registry.claimTechnicalReevaluation('mint-technical',started),false);
- f.at(started+4999);assert.equal(f.registry.claimTechnicalReevaluation('mint-technical',started+1),false);
  f.at(started+10000);assert.equal(f.registry.claimTechnicalReevaluation('mint-technical',started),false,'original failed window cannot be replayed');assert.equal(f.registry.claimTechnicalReevaluation('mint-technical',f.now()),true);
  assert.equal(f.registry.claimTechnicalReevaluation('mint-technical',f.now()),false,'a claim is consumed once');
- assert.equal(f.registry.requestTechnicalReevaluation('mint-technical',{reason:'entry-preparation-unavailable',failedWindowEndAt:f.now()}),true);
- assert.equal(f.registry.technicalReevaluation('mint-technical')!.notBefore,f.now()+15000);f.at(started+24999);assert.equal(f.registry.claimTechnicalReevaluation('mint-technical',f.now()),false);
- f.at(started+30000);assert.equal(f.registry.claimTechnicalReevaluation('mint-technical',started+10000),false,'prior claimed window cannot be replayed');assert.equal(f.registry.claimTechnicalReevaluation('mint-technical',f.now()),true);
- assert.equal(f.registry.requestTechnicalReevaluation('mint-technical',{reason:'entry-attempt-data-unavailable',failedWindowEndAt:f.now()}),true);assert.equal(f.registry.technicalReevaluation('mint-technical')!.notBefore,f.now()+30000);
- f.at(started+60000);assert.equal(f.registry.claimTechnicalReevaluation('mint-technical',f.now()),true);assert.equal(f.registry.requestTechnicalReevaluation('mint-technical',{reason:'entry-action-expired',failedWindowEndAt:f.now()}),false);
+ assert.equal(f.registry.requestTechnicalReevaluation('mint-technical',{reason:'entry-preparation-unavailable',failedWindowEndAt:f.now()}),true);assert.equal(f.registry.technicalReevaluation('mint-technical')!.notBefore,f.now());
+ f.at(started+20000);assert.equal(f.registry.claimTechnicalReevaluation('mint-technical',started+10000),false,'prior claimed window cannot be replayed');assert.equal(f.registry.claimTechnicalReevaluation('mint-technical',f.now()),true,'next audited window need not wait for the old fifteen-second delay');
+ assert.equal(f.registry.requestTechnicalReevaluation('mint-technical',{reason:'entry-attempt-data-unavailable',failedWindowEndAt:f.now()}),true);assert.equal(f.registry.technicalReevaluation('mint-technical')!.notBefore,f.now());
+ f.at(started+30000);assert.equal(f.registry.claimTechnicalReevaluation('mint-technical',f.now()),true,'next audited window need not wait for the old thirty-second delay');assert.equal(f.registry.requestTechnicalReevaluation('mint-technical',{reason:'entry-action-expired',failedWindowEndAt:f.now()}),false);
  const exhausted=f.registry.technicalReevaluation('mint-technical')!;assert.equal(exhausted.state,'EXHAUSTED');assert.equal(exhausted.attempts,3);assert.equal(exhausted.requestedAt,started);assert.equal(exhausted.failedWindowEndAt,started);assert.equal(exhausted.expiresAt,started+300000);
- f.at(started+60001);assert.equal(f.registry.requestTechnicalReevaluation('mint-technical',{...initial,failedWindowEndAt:f.now()}),false);assert.equal(f.registry.claimTechnicalReevaluation('mint-technical',f.now()),false);
+ f.at(started+30001);assert.equal(f.registry.requestTechnicalReevaluation('mint-technical',{...initial,failedWindowEndAt:f.now()}),false);assert.equal(f.registry.claimTechnicalReevaluation('mint-technical',f.now()),false);
+ assert.equal(f.registry.next(f.now(),new Set())!.mint,'mint-technical','ended priority episode retains ordinary scheduling awareness');
  assert.equal(f.registry.snapshot().summary.completeWindows,0);assert.equal(f.registry.snapshot().summary.promoted,0);assert.equal(f.registry.snapshot().rows[0]!.state,'WATCH','scheduling metadata supplies no qualification or financial authority');
  assert.ok(f.records.filter(r=>r.kind.startsWith('pilot-watch-technical-reevaluation')).every(r=>r.data.financialPermission===false));
 });
 
-test('a crash after checkpointed claim preserves consumed allowance and requires a newer window after bounded recovery',()=>{
+test('a crash after checkpointed claim preserves consumed allowance and requires a newer window without a fixed recovery wait',()=>{
  const f=fixture();f.seed('crash');const started=f.now();f.registry.requestTechnicalReevaluation('mint-crash',{reason:'entry-preparation-unavailable',failedWindowEndAt:started});f.at(started+10000);f.registry.claimTechnicalReevaluation('mint-crash',f.now());
- const saved=f.registry.export(),resumed=new PilotWatch({...f.options,restored:saved});let t=resumed.technicalReevaluation('mint-crash')!;assert.equal(t.state,'WAITING');assert.equal(t.attempts,1);assert.equal(t.lastClaimedWindowEndAt,started+10000);assert.equal(t.notBefore,f.now()+5000);assert.equal(t.requestedAt,started);assert.equal(t.expiresAt,started+300000);
+ const saved=f.registry.export(),resumed=new PilotWatch({...f.options,restored:saved});let t=resumed.technicalReevaluation('mint-crash')!;assert.equal(t.state,'WAITING');assert.equal(t.attempts,1);assert.equal(t.lastClaimedWindowEndAt,started+10000);assert.equal(t.notBefore,f.now());assert.equal(t.requestedAt,started);assert.equal(t.expiresAt,started+300000);
  f.at(started+20000);assert.equal(resumed.claimTechnicalReevaluation('mint-crash',started+10000),false);assert.equal(resumed.claimTechnicalReevaluation('mint-crash',f.now()),true);assert.equal(resumed.technicalReevaluation('mint-crash')!.attempts,2);
  resumed.requestTechnicalReevaluation('mint-crash',{reason:'entry-quote-unavailable',failedWindowEndAt:f.now()});f.at(started+50000);assert.equal(resumed.claimTechnicalReevaluation('mint-crash',f.now()),true);
  const final=new PilotWatch({...f.options,restored:resumed.export()});t=final.technicalReevaluation('mint-crash')!;assert.equal(t.state,'EXHAUSTED');assert.equal(t.attempts,3);assert.equal(t.requestedAt,started);assert.equal(t.expiresAt,started+300000);assert.equal(final.requestTechnicalReevaluation('mint-crash',{reason:'entry-quote-unavailable',failedWindowEndAt:f.now()}),false);
@@ -449,7 +448,7 @@ test('continuous observation resume preserves an existing allocation but cannot 
 
 test('technical metadata validates checkpoints without weakening old checkpoint compatibility',()=>{
  const f=fixture();f.seed('validation');const old=f.registry.export();assert.equal(new PilotWatch({...f.options,restored:old}).technicalReevaluation('mint-validation'),null);
- f.registry.requestTechnicalReevaluation('mint-validation',{reason:'entry-quote-unavailable',failedWindowEndAt:f.now()});const saved=f.registry.export();const patches:Partial<TechnicalReevaluation>[]=[{attempts:4},{attempts:-1},{reason:'strategy-rejection' as any},{requestedAt:f.now()+1},{expiresAt:f.now()+300001},{notBefore:f.now()+4999},{lastClaimedWindowEndAt:f.now()+1},{state:'CLAIMED'},{state:'EXHAUSTED'},{failedWindowEndAt:f.now()+1}];
+ f.registry.requestTechnicalReevaluation('mint-validation',{reason:'entry-quote-unavailable',failedWindowEndAt:f.now()});const saved=f.registry.export();const patches:Partial<TechnicalReevaluation>[]=[{attempts:4},{attempts:-1},{reason:'strategy-rejection' as any},{requestedAt:f.now()+1},{expiresAt:f.now()+300001},{notBefore:f.now()-1},{lastClaimedWindowEndAt:f.now()+1},{state:'CLAIMED'},{state:'EXHAUSTED'},{failedWindowEndAt:f.now()+1}];
  for(const patch of patches){const invalid=structuredClone(saved);Object.assign(invalid.rows[0]!.technicalReevaluation!,patch);assert.throws(()=>new PilotWatch({...f.options,restored:invalid}),/CHECKPOINT_TECHNICAL_REEVALUATION/,JSON.stringify(patch));}
  const extra=structuredClone(saved);(extra.rows[0]!.technicalReevaluation as any).financialPermission=true;assert.throws(()=>new PilotWatch({...f.options,restored:extra}),/CHECKPOINT_TECHNICAL_REEVALUATION/);assert.equal(TECHNICAL_REEVALUATION_POLICY.maximumAttempts,3);
 });

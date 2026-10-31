@@ -26,6 +26,8 @@ export type PilotEntryCosts={
   rentLamportsByBytes:Record<string,string>;
   /** Original observations, never refreshed by reusing the account-cost plan. */
   rentObservationsByBytes?:Record<string,{requestedAt:number;receivedAt:number}>;sourceSlot:number;
+  /** Stable layout provenance only; never market-price or certificate authority. */
+  layout?:{pool:string;tokenProgram:string;generation:number;preparationEpoch:number;requestedAt:string;receivedAt:string};
   /** Existing locked deposits are assets; they are neither charged nor refunded here. */
   lockedDepositLamports:string;
 };
@@ -49,10 +51,11 @@ function need(value:unknown,reason:string):asserts value {if(!value)throw Error(
 const integer=(value:string)=>{need(typeof value==='string'&&/^(0|[1-9][0-9]{0,19})$/.test(value),'PILOT_MARKET_AMOUNT');return BigInt(value);};
 const hash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const MODEL='per-mint-dedicated-base-and-WSOL-accounts-v1' as const;
+export const PILOT_ENTRY_PREPARATION_POLICY=Object.freeze({version:'stable-cost-stages-before-current-quote-v1',maximumAggregateMs:5000,stableReuseMaxAgeMs:10000});
 export const PILOT_ENTRY_QUOTE_FAILURE_PHASES=['admission','plan','pool-state','rent','freshness','evidence','post-evidence','local-reprice'] as const;
 export const PILOT_ENTRY_QUOTE_FAILURE_CODES=['ENTRY_QUOTE_BUSY','ENTRY_QUOTE_CALLER_ABORTED','ENTRY_QUOTE_TIMEOUT','ENTRY_QUOTE_UNKNOWN',
  'PAPER_EXECUTION_QUOTE_RENT_UNAVAILABLE','PAPER_EXECUTION_POOL_EXTENSION_RENT_UNAVAILABLE','PAPER_EXECUTION_CONSTRUCTION_STALE','PAPER_EXECUTION_ORIGINAL_BATCH_REQUIRED','PAPER_EXECUTION_SIMULATED_ACCOUNT_PLAN_REQUIRED',
- 'PILOT_MARKET_ENTRY_COSTS_UNAVAILABLE','PILOT_MARKET_ENTRY_POOL_REQUIRED','PILOT_MARKET_ENTRY_DEPOSIT_MISMATCH','PILOT_MARKET_RENT_UNAVAILABLE','PILOT_MARKET_ACCOUNT_LENGTH','PILOT_MARKET_PREPARATION_CHANGED_OR_STALE','PILOT_MARKET_ENTRY_STATE_CHANGED',
+ 'POOL_LINKS_CHANGED','PILOT_MARKET_ENTRY_COSTS_UNAVAILABLE','PILOT_MARKET_ENTRY_POOL_REQUIRED','PILOT_MARKET_ENTRY_DEPOSIT_MISMATCH','PILOT_MARKET_RENT_UNAVAILABLE','PILOT_MARKET_ACCOUNT_LENGTH','PILOT_MARKET_PREPARATION_CHANGED_OR_STALE','PILOT_MARKET_ENTRY_STATE_CHANGED',
  'PILOT_MARKET_REPRICE_ORIGINAL_REQUIRED','PILOT_MARKET_REPRICE_SIZE_REQUIRED','PILOT_MARKET_REPRICE_PROOF_REQUIRED','PILOT_MARKET_REPRICE_OWNERSHIP_CHANGED',
  'PILOT_RPC_ABORTED','PILOT_RPC_COOLDOWN','PILOT_RPC_PHYSICAL_SLOT_OCCUPIED','PILOT_RPC_METHOD_PACING','PILOT_RPC_LOWER_PRIORITY_DEFER','PILOT_RPC_COMPONENT_ADMISSION_CLOSED','PILOT_RPC_COMPONENT_DISPATCH_EXPIRED','PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT','PILOT_RPC_COMPONENT_ABORTED','PILOT_RPC_COMPONENT_HTTP_TRANSPORT','PILOT_RPC_COMPONENT_HTTP_429','PILOT_RPC_COMPONENT_HTTP_STATUS_502','PILOT_RPC_COMPONENT_HTTP_STATUS_503','PILOT_RPC_COMPONENT_HTTP_STATUS_504','RESEARCH_CLOCK_POOL_UNAVAILABLE','RESEARCH_CLOCK_ADMISSION_CLOSED'] as const;
 type EntryQuotePhase=typeof PILOT_ENTRY_QUOTE_FAILURE_PHASES[number];
@@ -67,6 +70,9 @@ export class PilotMarket {
   private readonly pools=new Map<string,VerifiedMarketPool>();
   private readonly plans=new Map<string,PilotEntryCosts>();
   private readonly floors=new Map<string,number>();
+  private readonly preparationEpochs=new Map<string,number>();
+  private readonly preparationLayouts=new Map<string,{pool:string;tokenProgram:string;generation:number;preparationEpoch:number;requestedAt:string;receivedAt:string;at:number;sourceSlot:number;lengths:{base:number;quote:number}}>();
+  private readonly preparationRents=new Map<string,{lamports:string;requestedAt:number;receivedAt:number}>();
   private readonly entrySnapshots=new Map<string,PilotSizeQuote>();
   private readonly entryRepriceSources=new Map<string,{quote:PilotSizeQuote;state:ResearchClockBuyQuote;generation:number;planEvidence:string;accountPlanAt:number}>();
   private readonly pricer:ResearchClockPositionPricer;
@@ -129,10 +135,13 @@ export class PilotMarket {
   unregisterPool(mint:string){
     need(!this.active&&!this.holdingActive,'PILOT_MARKET_READ_IN_FLIGHT');
     const removed=this.held.unregisterPool(mint);if(!removed)return false;
-    this.generation++;this.pools.delete(mint);this.plans.delete(mint);this.floors.delete(mint);this.entrySnapshots.delete(mint);this.entryRepriceSources.delete(mint);return true;
+    this.generation++;this.pools.delete(mint);this.plans.delete(mint);this.preparationLayouts.delete(mint);this.preparationEpochs.delete(mint);this.preparationRents.clear();this.floors.delete(mint);this.entrySnapshots.delete(mint);this.entryRepriceSources.delete(mint);return true;
   }
   minimumSlot(mint:string,slot:number){this.held.minimumSlot(mint,slot);this.floors.set(mint,Math.max(this.floors.get(mint)??0,slot));}
-  invalidate(reason:string){this.generation++;this.plans.clear();this.entrySnapshots.clear();this.entryRepriceSources.clear();this.constructions.clear();this.legacyProtectionQuotes.clear();this.quoteRentsByEvidence.clear();this.quoteRentSnapshot=null;this.pricer.invalidate(reason);this.held.invalidate(reason);}
+  invalidate(reason:string){this.generation++;this.preparationEpochs.clear();this.preparationLayouts.clear();this.preparationRents.clear();this.plans.clear();this.entrySnapshots.clear();this.entryRepriceSources.clear();this.constructions.clear();this.legacyProtectionQuotes.clear();this.quoteRentsByEvidence.clear();this.quoteRentSnapshot=null;this.pricer.invalidate(reason);this.held.invalidate(reason);}
+  /** A candidate capture reset revokes discretionary stable-stage reuse, not
+   * an existing financial order's retained cost basis or construction. */
+  invalidateEntryPreparation(mint:string){if(!this.pools.has(mint)&&!this.preparationLayouts.has(mint))return;this.preparationEpochs.set(mint,(this.preparationEpochs.get(mint)??0)+1);this.preparationLayouts.delete(mint);this.preparationRents.clear();this.entryRepriceSources.delete(mint);}
   private clock(){const at=this.now();need(Number.isSafeInteger(at)&&at>=0,'PILOT_MARKET_CLOCK');return at;}
   private locked(mint:string){const value=this.options.inventory().lockedDeposits[mint]??'0';integer(value);return value;}
   private freshPlan(mint:string){
@@ -148,9 +157,9 @@ export class PilotMarket {
   private async construct(q:PilotSizeQuote,minimumOutputUnits:string):Promise<{quote:PilotSizeQuote;construction:PaperUnsignedConstruction;constructionMs:number}>{
     need(this.options.executionRealism===true&&(q.side==='sell'||Number.isSafeInteger(q.slot)),'PAPER_EXECUTION_CONSTRUCTION_REQUIRED');
     const pricer=q.side==='buy'?this.pricer:this.holdingPricer,batch=pricer.constructionBatch(q.mint,q.slot,q.at);need(batch,'PAPER_EXECUTION_ORIGINAL_BATCH_REQUIRED');
-    const quoteRent=this.quoteRentsByEvidence.get(q.evidence);need(quoteRent&&quoteRent.at<=this.clock()&&this.clock()-quoteRent.at<=10000,'PAPER_EXECUTION_QUOTE_RENT_UNAVAILABLE');
+    const quoteRent=this.quoteRentsByEvidence.get(q.evidence);need(quoteRent&&quoteRent.at<=this.clock()&&this.clock()-quoteRent.at<=PILOT_ENTRY_PREPARATION_POLICY.stableReuseMaxAgeMs,'PAPER_EXECUTION_QUOTE_RENT_UNAVAILABLE');
     const held=this.options.inventory().positions[q.mint],locked=this.locked(q.mint),plan=q.side==='buy'?quoteRent.accountPlan:{baseExists:!!held,quoteExists:false,at:this.clock(),evidence:'paper-held-inventory:'+hash({mint:q.mint,units:held?.units??null,locked})};
-    need(plan&&typeof plan.baseExists==='boolean'&&typeof plan.quoteExists==='boolean'&&plan.at<=this.clock()&&this.clock()-plan.at<=10000,'PAPER_EXECUTION_SIMULATED_ACCOUNT_PLAN_REQUIRED');
+    need(plan&&typeof plan.baseExists==='boolean'&&typeof plan.quoteExists==='boolean'&&plan.at<=this.clock()&&this.clock()-plan.at<=PILOT_ENTRY_PREPARATION_POLICY.stableReuseMaxAgeMs,'PAPER_EXECUTION_SIMULATED_ACCOUNT_PLAN_REQUIRED');
     if(q.side==='buy')need(plan.evidence===this.freshPlan(q.mint).evidence,'PAPER_EXECUTION_SIMULATED_ACCOUNT_PLAN_REQUIRED');
     const began=performance.now(),construction=await buildPaperUnsignedPumpSwap(batch,{side:q.side,inputUnits:q.inputUnits,minimumOutputUnits,quoteRentLamports:quoteRent.lamports,accountPlan:{...plan,baseExists:plan.baseExists,quoteExists:plan.quoteExists,evidence:'paper-account-and-observed-rent:'+hash({inventory:plan.evidence,quoteRent})}},this.now),constructionMs=Math.ceil(performance.now()-began);
     need(q.at<=this.clock()&&this.clock()-q.at<=2000&&(q.side!=='buy'||q.slot!>=this.floor(q.mint)),'PAPER_EXECUTION_CONSTRUCTION_STALE');
@@ -165,7 +174,7 @@ export class PilotMarket {
     return {quote:structuredClone(q),construction,constructionMs};
   }
   private rememberQuoteRent(evidence:string,lamports:string,at=this.clock(),accountPlan?:PaperAccountPlan){this.quoteRentsByEvidence.set(evidence,{lamports,at,...(accountPlan?{accountPlan:{...accountPlan}}:{})});while(this.quoteRentsByEvidence.size>18)this.quoteRentsByEvidence.delete(this.quoteRentsByEvidence.keys().next().value!);}
-  private async prepareExitQuoteRent(q:PilotSizeQuote,signal:AbortSignal){if(!this.options.executionRealism)return;const at=this.clock(),prior=this.quoteRentSnapshot;if(prior&&prior.at<=at&&at-prior.at<=10000){this.rememberQuoteRent(q.evidence,prior.lamports,prior.at);return;}const requestedAt=this.clock(),rent=await this.options.rpc.call<number>('getMinimumBalanceForRentExemption',[165,{commitment:'confirmed'}],signal);need(Number.isSafeInteger(rent)&&rent>0,'PAPER_EXECUTION_QUOTE_RENT_UNAVAILABLE');const snapshot={lamports:BigInt(rent).toString(),at:this.clock()};this.options.recorder.record('paper-execution-rent',{requestedAt,receivedAt:snapshot.at,accountLengthBytes:165,lamports:snapshot.lamports,classification:'actual read-only minimum balance; reusable at original receive time within existing10s account-cost window; no market-price claim'});this.quoteRentSnapshot=snapshot;this.rememberQuoteRent(q.evidence,snapshot.lamports,snapshot.at);}
+  private async prepareExitQuoteRent(q:PilotSizeQuote,signal:AbortSignal){if(!this.options.executionRealism)return;const at=this.clock(),prior=this.quoteRentSnapshot;if(prior&&prior.at<=at&&at-prior.at<=PILOT_ENTRY_PREPARATION_POLICY.stableReuseMaxAgeMs){this.rememberQuoteRent(q.evidence,prior.lamports,prior.at);return;}const requestedAt=this.clock(),rent=await this.options.rpc.call<number>('getMinimumBalanceForRentExemption',[165,{commitment:'confirmed'}],signal);need(Number.isSafeInteger(rent)&&rent>0,'PAPER_EXECUTION_QUOTE_RENT_UNAVAILABLE');const snapshot={lamports:BigInt(rent).toString(),at:this.clock()};this.options.recorder.record('paper-execution-rent',{requestedAt,receivedAt:snapshot.at,accountLengthBytes:165,lamports:snapshot.lamports,classification:'actual read-only minimum balance; reusable at original receive time within existing10s account-cost window; no market-price claim'});this.quoteRentSnapshot=snapshot;this.rememberQuoteRent(q.evidence,snapshot.lamports,snapshot.at);}
   private async rememberConstruction(q:PilotSizeQuote){if(!this.options.executionRealism)return;const minimum=integer(q.outputUnits)*9900n/10000n;need(minimum>0n,'PAPER_EXECUTION_NONZERO_MINIMUM_REQUIRED');const result=await this.construct(q,minimum.toString());this.constructions.set(q.evidence,result);while(this.constructions.size>18)this.constructions.delete(this.constructions.keys().next().value!);}
   /** No provider work. All transaction bytes were prepared from the decision's
    * original coherent state; timing is a labeled scenario conditioned on prior
@@ -201,14 +210,14 @@ export class PilotMarket {
     }finally{this.active=false;}
   }
 
-  /** Preparation is not an entry estimate or fill. Current supported SDK state
-   * establishes account lengths (including Token2022 ImmutableOwner), then
-   * current rent is read once per distinct required length. Every call counts.
+  /** Preparation is not an entry estimate or fill. Program/layout-bound SDK
+   * facts and confirmed rent retain their original observations for at most10s.
+   * Every final decision still obtains fresh coherent volatile state afterward.
    */
   async prepareEntryCosts(mint:string,signal:AbortSignal,options?:{maximumMs:number}):Promise<PilotEntryCosts>{
     need(!this.active&&!this.holdingActive&&!signal.aborted&&this.pools.has(mint),'PILOT_MARKET_PREPARATION_UNAVAILABLE');
     const maximumMs=options?.maximumMs??this.options.timeoutMs??3000;
-    need(Number.isSafeInteger(maximumMs)&&maximumMs>0&&maximumMs<=3000,'PILOT_MARKET_PREPARATION_BOUND_REQUIRED');
+    need(Number.isSafeInteger(maximumMs)&&maximumMs>0&&maximumMs<=PILOT_ENTRY_PREPARATION_POLICY.maximumAggregateMs,'PILOT_MARKET_PREPARATION_BOUND_REQUIRED');
     this.active=true;this.preparing=true;const controller=new AbortController(),combined=AbortSignal.any([signal,controller.signal]);
     const operation=this.prepareEntryCostsOperation(mint,combined).finally(()=>{this.active=false;this.preparing=false;});
     let timer:ReturnType<typeof setTimeout>|undefined,listener:(()=>void)|undefined;
@@ -219,26 +228,43 @@ export class PilotMarket {
     finally{clearTimeout(timer);if(listener)combined.removeEventListener('abort',listener);controller.abort();}
   }
   private async prepareEntryCostsOperation(mint:string,signal:AbortSignal):Promise<PilotEntryCosts>{
-    const generation=this.generation;
+    const generation=this.generation,preparationEpoch=this.preparationEpochs.get(mint)??0,epochCurrent=()=>preparationEpoch===(this.preparationEpochs.get(mint)??0);
     try{
-      const supported=await this.pricer.validateMany([{mint:new PublicKey(mint),minSlot:this.floor(mint)}],signal),support=supported.validations[mint];
-      need(support,'PILOT_MARKET_ENTRY_SUPPORT_UNAVAILABLE');const state=support.summary;
-      const lengths={base:state.baseAssociatedAccount.accountLengthBytes,quote:state.quoteAssociatedAccount.accountLengthBytes};
-      for(const bytes of Object.values(lengths))need(Number.isSafeInteger(bytes)&&bytes>=165&&bytes<=10240,'PILOT_MARKET_ACCOUNT_LENGTH');
+      // Discover account layout before ancillary rent. This state is not a
+      // decision quote: the exact-size entry path always reads a fresh coherent
+      // pool/mint/Clock AFTER these stable facts have been prepared.
+      const pool=this.pools.get(mint)!,canonical=('pool'in pool?pool.pool:undefined)??canonicalPumpPoolPda(new PublicKey(mint)).toBase58(),now=this.clock();
+      let layout=this.preparationLayouts.get(mint);
+      if(!layout||layout.generation!==generation||layout.preparationEpoch!==preparationEpoch||layout.pool!==canonical||layout.at>now||now-layout.at>PILOT_ENTRY_PREPARATION_POLICY.stableReuseMaxAgeMs){
+        const supported=await this.pricer.validateMany([{mint:new PublicKey(mint),minSlot:this.floor(mint)}],signal),support=supported.validations[mint];
+        need(support,'PILOT_MARKET_ENTRY_SUPPORT_UNAVAILABLE');const state=support.summary;
+        // validateMany already verified the coherent confirmed bank/Clock.
+        // This retained result supplies only stable layout, not a 2s quote.
+        const lengths={base:state.baseAssociatedAccount.accountLengthBytes,quote:state.quoteAssociatedAccount.accountLengthBytes};
+        for(const bytes of Object.values(lengths))need(Number.isSafeInteger(bytes)&&bytes>=165&&bytes<=10240,'PILOT_MARKET_ACCOUNT_LENGTH');
+        need(state.pool===canonical&&generation===this.generation&&epochCurrent(),'PILOT_MARKET_PREPARATION_CHANGED_OR_STALE');
+        layout={pool:state.pool,tokenProgram:state.tokenProgram,generation,preparationEpoch,requestedAt:state.requestedAt,receivedAt:state.receivedAt,at:Date.parse(state.receivedAt),sourceSlot:state.slot,lengths};
+        this.preparationLayouts.set(mint,layout);
+      }
+      const lengths={...layout.lengths},layoutKey=hash({mint,pool:layout.pool,tokenProgram:layout.tokenProgram,generation,preparationEpoch,lengths});
       const locked=this.locked(mint),exists=integer(locked)>0n,rents:Record<string,string>={},rentObservationsByBytes:Record<string,{requestedAt:number;receivedAt:number}>={};let deposit=0n;
       for(const [role,needed,bytes]of [['base',!exists,lengths.base],['quote',this.options.executionRealism===true||!exists,lengths.quote]]as const){
         if(!needed)continue;
-        if(rents[bytes]===undefined){const requestedAt=this.clock(),rent=await this.preparationRpc.call<number>('getMinimumBalanceForRentExemption',[bytes,{commitment:'confirmed'}],signal),receivedAt=this.clock();need(Number.isSafeInteger(rent)&&rent>0,'PILOT_MARKET_RENT_UNAVAILABLE');rents[bytes]=BigInt(rent).toString();rentObservationsByBytes[bytes]={requestedAt,receivedAt};}
+        if(rents[bytes]===undefined){
+          const key=layoutKey+':'+bytes,prior=this.preparationRents.get(key),at=this.clock();let observation=prior;
+          if(!observation||observation.receivedAt>at||at-observation.receivedAt>PILOT_ENTRY_PREPARATION_POLICY.stableReuseMaxAgeMs){const requestedAt=this.clock(),rent=await this.preparationRpc.call<number>('getMinimumBalanceForRentExemption',[bytes,{commitment:'confirmed'}],signal),receivedAt=this.clock();need(Number.isSafeInteger(rent)&&rent>0,'PILOT_MARKET_RENT_UNAVAILABLE');signal.throwIfAborted();need(generation===this.generation&&epochCurrent(),'PILOT_MARKET_PREPARATION_CHANGED_OR_STALE');observation={lamports:BigInt(rent).toString(),requestedAt,receivedAt};this.preparationRents.set(key,observation);}
+          rents[bytes]=observation.lamports;rentObservationsByBytes[bytes]={requestedAt:observation.requestedAt,receivedAt:observation.receivedAt};
+        }
         if(!this.options.executionRealism||role==='base')deposit+=integer(rents[bytes]!);
       }
-      signal.throwIfAborted();const at=this.clock();this.freshClock(state,mint,signal);
-      need(generation===this.generation&&locked===this.locked(mint),'PILOT_MARKET_PREPARATION_CHANGED_OR_STALE');
-      const body={mint,depositLamports:deposit.toString(),at,accountModel:this.options.executionRealism?'persistent-base-transient-shared-wsol-v2' as const:MODEL,...(this.options.executionRealism?{temporaryQuoteRentLamports:rents[lengths.quote]}:{}),accountLengths:lengths,rentLamportsByBytes:rents,rentObservationsByBytes,sourceSlot:state.slot,lockedDepositLamports:locked};
+      signal.throwIfAborted();const at=this.clock();
+      need(generation===this.generation&&epochCurrent()&&locked===this.locked(mint)&&this.preparationLayouts.get(mint)===layout&&at>=layout.at&&at-layout.at<=PILOT_ENTRY_PREPARATION_POLICY.stableReuseMaxAgeMs,'PILOT_MARKET_PREPARATION_CHANGED_OR_STALE');
+      const body={mint,depositLamports:deposit.toString(),at,accountModel:this.options.executionRealism?'persistent-base-transient-shared-wsol-v2' as const:MODEL,...(this.options.executionRealism?{temporaryQuoteRentLamports:rents[lengths.quote]}:{}),accountLengths:lengths,rentLamportsByBytes:rents,rentObservationsByBytes,sourceSlot:layout.sourceSlot,layout:{pool:layout.pool,tokenProgram:layout.tokenProgram,generation,preparationEpoch,requestedAt:layout.requestedAt,receivedAt:layout.receivedAt},lockedDepositLamports:locked};
       const evidence='pilot-entry-costs:'+hash({...body,poolEvidence:this.pools.get(mint)!.evidence,gas:this.options.gas});
       const plan:PilotEntryCosts={...body,evidence,accountPlan:{baseExists:exists,quoteExists:this.options.executionRealism?false:exists,at,evidence}};
-      this.options.recorder.record('pilot-entry-cost-preparation',{...plan,classification:'simulated account inventory; actual read-only rent and supported account lengths',requests:'One current coherent Clock/state batch, including canonical cold vault alternatives when needed, and one rent read per distinct missing-account length; every physical request uses the shared RPC budget.',depositRefund:'Not assumed; retained locked capital after exit.'});
-      need(this.clock()-at<=10000&&generation===this.generation&&locked===this.locked(mint),'PILOT_MARKET_PREPARATION_CHANGED_OR_STALE');
-      this.minimumSlot(mint,state.slot);this.plans.set(mint,structuredClone(plan));this.prepared++;
+      this.options.recorder.record('pilot-entry-cost-preparation',{...plan,classification:'simulated account inventory; actual read-only rent and supported account lengths',requests:'A generation/pool/program/layout-bound account-layout observation and one original confirmed rent observation per distinct required length; stable facts may be reused within10s. The decision still requires a new exact-size coherent state after preparation; every physical request uses the shared RPC budget.',depositRefund:'Not assumed; retained locked capital after exit.'});
+      need(this.clock()-at<=PILOT_ENTRY_PREPARATION_POLICY.stableReuseMaxAgeMs&&generation===this.generation&&epochCurrent()&&locked===this.locked(mint),'PILOT_MARKET_PREPARATION_CHANGED_OR_STALE');
+      this.minimumSlot(mint,layout.sourceSlot);this.plans.set(mint,structuredClone(plan));this.prepared++;
       return structuredClone(plan);
     }finally{/* Physical ownership is released by the complete operation above. */}
   }
@@ -284,11 +310,11 @@ export class PilotMarket {
       attempt.phase='rent';const accountPlan={...plan.accountPlan,...(reusePreparation?{}:{at:this.clock()})},rents:Record<string,string>=reusePreparation?{...plan.rentLamportsByBytes}:{},rentObservationsByBytes:Record<string,{requestedAt:number;receivedAt:number}>=reusePreparation?structuredClone(plan.rentObservationsByBytes??{}):{};let required=0n;
       const currentCosts=()=>{
         signal.throwIfAborted();const at=this.clock(),current=this.freshPlan(input.mint);
-        need(generation===this.generation&&current.mint===input.mint&&current.evidence===plan.evidence&&hash(current)===hash(plan)&&current.lockedDepositLamports===plan.lockedDepositLamports,'PILOT_MARKET_ENTRY_STATE_CHANGED');
-        need(accountPlan.at<=at&&at-accountPlan.at<=10000,'PILOT_MARKET_PREPARATION_CHANGED_OR_STALE');
+        need((!plan.layout||pendingBuy()||plan.layout.preparationEpoch===(this.preparationEpochs.get(input.mint)??0))&&generation===this.generation&&current.mint===input.mint&&current.evidence===plan.evidence&&hash(current)===hash(plan)&&current.lockedDepositLamports===plan.lockedDepositLamports,'PILOT_MARKET_ENTRY_STATE_CHANGED');
+        need(accountPlan.at<=at&&at-accountPlan.at<=PILOT_ENTRY_PREPARATION_POLICY.stableReuseMaxAgeMs,'PILOT_MARKET_PREPARATION_CHANGED_OR_STALE');
         if(reusePreparation){
-          need(!pendingBuy()&&plan.at<=at&&at-plan.at<=10000&&accountPlan.at===plan.at&&accountPlan.evidence===plan.evidence,'PILOT_MARKET_PREPARATION_CHANGED_OR_STALE');
-          for(const [exists,bytes]of [[accountPlan.baseExists,plan.accountLengths.base],[accountPlan.quoteExists,plan.accountLengths.quote]]as const){if(exists)continue;const observation=rentObservationsByBytes[bytes];need(observation&&Number.isSafeInteger(observation.requestedAt)&&observation.requestedAt>=0&&Number.isSafeInteger(observation.receivedAt)&&observation.requestedAt<=observation.receivedAt&&observation.receivedAt<=plan.at&&observation.receivedAt<=at&&at-observation.receivedAt<=10000,'PILOT_MARKET_PREPARATION_CHANGED_OR_STALE');}
+          need(!pendingBuy()&&plan.at<=at&&at-plan.at<=PILOT_ENTRY_PREPARATION_POLICY.stableReuseMaxAgeMs&&accountPlan.at===plan.at&&accountPlan.evidence===plan.evidence,'PILOT_MARKET_PREPARATION_CHANGED_OR_STALE');
+          for(const [exists,bytes]of [[accountPlan.baseExists,plan.accountLengths.base],[accountPlan.quoteExists,plan.accountLengths.quote]]as const){if(exists)continue;const observation=rentObservationsByBytes[bytes];need(observation&&Number.isSafeInteger(observation.requestedAt)&&observation.requestedAt>=0&&Number.isSafeInteger(observation.receivedAt)&&observation.requestedAt<=observation.receivedAt&&observation.receivedAt<=plan.at&&observation.receivedAt<=at&&at-observation.receivedAt<=PILOT_ENTRY_PREPARATION_POLICY.stableReuseMaxAgeMs,'PILOT_MARKET_PREPARATION_CHANGED_OR_STALE');}
         }
       };
       currentCosts();
@@ -301,10 +327,10 @@ export class PilotMarket {
       need(required.toString()===plan.depositLamports,'PILOT_MARKET_ENTRY_DEPOSIT_MISMATCH');currentCosts();
       input.minSlot=this.floor(input.mint,input.minSlot);
       attempt.phase='pool-state';const state=await this.pricer.quoteBuy({mint:new PublicKey(input.mint),buyLamports:integer(input.inputUnits),minSlot:input.minSlot},signal);
-      need(state.baseAssociatedAccount.accountLengthBytes===plan.accountLengths.base&&state.quoteAssociatedAccount.accountLengthBytes===plan.accountLengths.quote,'PILOT_MARKET_ACCOUNT_LENGTH');
+      if(state.baseAssociatedAccount.accountLengthBytes!==plan.accountLengths.base||state.quoteAssociatedAccount.accountLengthBytes!==plan.accountLengths.quote||plan.layout&&(plan.layout.generation!==generation||plan.layout.pool!==state.pool||plan.layout.tokenProgram!==state.tokenProgram)){this.preparationLayouts.delete(input.mint);this.preparationRents.clear();throw Error('PILOT_MARKET_ACCOUNT_LENGTH');}
       currentCosts();
       attempt.phase='freshness';const at=this.freshClock(state,input.mint,signal);need(generation===this.generation&&this.freshPlan(input.mint).evidence===plan.evidence&&state.slot>=this.floor(input.mint,input.minSlot),'PILOT_MARKET_ENTRY_STATE_CHANGED');
-      const costs={depositLamports:required.toString(),plan:accountPlan,rents,rentObservationsByBytes,rentSource:reusePreparation?'validated-entry-preparation':'fresh-quote-rent',preparationEvidence:plan.evidence,preparationAt:plan.at,rentMaximumAgeMs:10000,gas:this.options.gas,gasLamports:this.gasLamports,classification:'simulated' as const};
+      const costs={depositLamports:required.toString(),plan:accountPlan,rents,rentObservationsByBytes,rentSource:reusePreparation?'validated-entry-preparation':'fresh-quote-rent',preparationEvidence:plan.evidence,preparationAt:plan.at,rentMaximumAgeMs:PILOT_ENTRY_PREPARATION_POLICY.stableReuseMaxAgeMs,gas:this.options.gas,gasLamports:this.gasLamports,classification:'simulated' as const};
       const evidence='rpc-market:'+hash({request:input,state,costs,gas:this.options.gas,migrationEvidence:pool.evidence});
       const q:PilotSizeQuote={...input,outputUnits:state.buy.outputBaseUnits,at,evidence,slot:state.slot,effectiveQuoteLiquidityLamports:state.effectiveQuoteReserve,requiredDepositLamports:plan.depositLamports,depositEvidence:'pilot-entry-validated-costs:'+hash({preparation:plan.evidence,quote:evidence,deposit:plan.depositLamports}),liquidityResilience:{mint:input.mint,pool:state.pool,at,evidence,baseReserveUnits:state.rawBaseReserve,rawQuoteReserveLamports:state.rawQuoteReserve,virtualQuoteReserveLamports:state.virtualQuoteReserves,feeBucketsLamports:state.feeBuckets,fees:{lpFeeBps:Number(state.feeBps.lpFeeBps),protocolFeeBps:Number(state.feeBps.protocolFeeBps),creatorFeeBps:state.creatorFeeApplied?Number(state.feeBps.creatorFeeBps):0},buyInputLamports:state.buy.inputLamports,expectedBaseUnits:state.buy.outputBaseUnits,buyCurveInputLamports:state.buy.internalQuoteWithoutFees,entryGasLamports:this.gasLamports,exitGasLamports:this.gasLamports,slippageBps:100}};
       attempt.phase='evidence';this.options.recorder.record('rpc-market-quote',{request:input,quote:q,source:{slot:state.slot,commitment:state.commitment,requestedAt:state.requestedAt,receivedAt:state.receivedAt,validatedAt:state.validatedAt,timeEvidence:state.timeEvidence,clockSlot:state.clockSlot,marketClockUnixSeconds:state.marketClockUnixSeconds,...marketPoolContextEvidence(pool)},costs});
@@ -316,7 +342,7 @@ export class PilotMarket {
       this.freshClock(state,input.mint,signal);currentCosts();need(generation===this.generation&&this.freshPlan(input.mint).evidence===plan.evidence&&state.slot>=this.floor(input.mint,input.minSlot),'PILOT_MARKET_ENTRY_STATE_CHANGED');
       this.entryRepriceSources.set(input.mint,{quote:structuredClone(q),state:structuredClone(state),generation,planEvidence:plan.evidence,accountPlanAt:accountPlan.at});
       this.entrySnapshots.set(input.mint,structuredClone(q));return q;
-    }catch(error){this.entryQuoteFailure(attempt,error);return null;}
+    }catch(error){if(error instanceof Error&&['POOL_LINKS_CHANGED','BAD_VAULT_ADDRESS','UNSUPPORTED_TOKEN_PROGRAM','QUOTE_PROGRAM_NOT_LEGACY_SOL'].includes(error.message)){this.preparationLayouts.delete(request.mint);this.preparationRents.clear();}this.entryQuoteFailure(attempt,error);return null;}
   }
   /** A smaller decision-size quote from the baseline's already validated bank
    * state. This performs SDK arithmetic and unsigned construction only. Original
@@ -334,7 +360,7 @@ export class PilotMarket {
       need(request.requiredDepositLamports===undefined||request.requiredDepositLamports===plan.depositLamports,'PILOT_MARKET_ENTRY_DEPOSIT_MISMATCH');
       const current=()=>{
         signal.throwIfAborted();this.freshClock(source.state,request.mint,signal);
-        need(source.generation===this.generation&&source.planEvidence===this.freshPlan(request.mint).evidence&&source.accountPlanAt<=this.clock()&&this.clock()-source.accountPlanAt<=10000&&source.state.slot>=this.floor(request.mint,request.minSlot??0),'PILOT_MARKET_ENTRY_STATE_CHANGED');
+        need(source.generation===this.generation&&source.planEvidence===this.freshPlan(request.mint).evidence&&source.accountPlanAt<=this.clock()&&this.clock()-source.accountPlanAt<=PILOT_ENTRY_PREPARATION_POLICY.stableReuseMaxAgeMs&&source.state.slot>=this.floor(request.mint,request.minSlot??0),'PILOT_MARKET_ENTRY_STATE_CHANGED');
         const inventory=this.options.inventory();need(!inventory.positions[request.mint]&&!Object.values(inventory.pending).some(order=>order.mint===request.mint),'PILOT_MARKET_REPRICE_OWNERSHIP_CHANGED');
       };
       current();

@@ -212,6 +212,15 @@ test('SYNTHETIC six-slot saturation preserves seventh watch identity and release
  const f=fixture({maximumDeep:6}),mints=Array.from({length:7},(_,i)=>f.seed(i+1));await f.steps(20);let s=f.runner.status();assert.equal(s.maximumSimultaneousCandidates,6);assert.equal(s.candidates.length,6);assert.equal(s.watch.rows.length,7);const first=s.candidates[0]!.mint;assert.ok(mints.includes(first));f.runner.onGap({mint:first,at:f.now,reason:'SYNTHETIC_SELECTED_DATA_GAP'});assert.equal(f.retiring.size,1);const added=f.added.length;await f.runner.step();assert.equal(f.added.length,added,'retiring native subscription still occupies its bounded slot');assert.equal(f.flowActions.at(-1),'unsubscribe');await f.runner.step();s=f.runner.status();assert.equal(s.candidates.length,6);assert.equal(f.added.length,added+1);assert.equal(s.maximumSimultaneousCandidates,6);assert.equal(s.financialExecutionAuthorized,false);await f.runner.stop();
 });
 
+test('a ready audit keeps its physical page turns while retirement resumes at the next safe turn without a fixed delay',async()=>{
+ const f=fixture({maximumDeep:2,forcePredictiveFeatures:true,fairEconomicCompletions:true,respectServicePolicy:true});f.seed(1);f.seed(2);await f.steps(16);const mints=[...f.states.keys()];f.advance(70000);f.refresh();const target=Math.floor(f.now/10000)*10000,retiredAt=f.now;addBusyHistory(f,mints[0]!,1220);f.runner.onGap({mint:mints[1]!,at:f.now,reason:'OFFLINE_RETIRED_PEER'});
+ const usage=f.flow.usage.bind(f.flow);f.flow.usage=()=>({...usage(),nativeServiceDeadlines:[{action:'unsubscribe',deadlineAt:retiredAt+10000}]});(f.flow as any).servicePlan=()=>f.retiring.size?{at:f.now,domain:'control',action:'unsubscribe',required:true,deadlineAt:retiredAt+10000}:{at:f.now+10000,domain:'control',action:'heartbeat',required:true,deadlineAt:f.now+10000};
+ try{
+  const unsubscribes=f.flowActions.filter(x=>x==='unsubscribe').length;await f.runner.step();assert.equal(f.rpcCalls.length,1);assert.ok(f.runner.status().candidates[0]!.auditSession,'the useful logical audit remains in progress after its first physical page');assert.equal(f.flowActions.filter(x=>x==='unsubscribe').length,unsubscribes);
+  for(let n=0;n<8&&f.runner.status().counters.auditedWindows===0;n++){f.advance(250);await f.runner.step();}assert.equal(f.runner.status().counters.auditedWindows,1);assert.ok(f.runner.currentAuditCertificate(mints[0]!,f.now));for(let n=0;n<3&&f.retiring.size;n++){f.advance(250);await f.runner.step();}assert.equal(f.retiring.size,0);assert.equal(f.flowActions.filter(x=>x==='unsubscribe').length,unsubscribes+1);assert.ok(f.now-retiredAt<1000,'actual completed audit pages free retirement service long before the former8s timer');assert.ok(f.now<target+9999);assert.equal(f.maximumInFlight,1);assert.equal(f.runner.status().counters.decisionDeadlineMisses,0);
+ }finally{await f.runner.stop();}
+});
+
 for(const jitterMs of [50,100])test(`SYNTHETIC six ready rejection audits finish before replacement support/setup with ${jitterMs} ms jitter`,async()=>{
  const f=fixture({maximumDeep:6,responseDelayMs:700}),mints=Array.from({length:7},(_,i)=>f.seed(i+1));await f.steps(30);assert.equal(f.added.length,6);assert.equal(f.resolveCalls,7,'the waiting identity already has its immutable origin proof');
  // The actual forward trace refilled a rejected scope immediately, putting
@@ -477,6 +486,52 @@ test('COHERENT six declared two-second page obligations are disclosed as infeasi
  for(let n=0;n<30&&f.runner.status().counters.predictiveAssessments<6;n++){await f.runner.step();f.advance(50);}assert.equal(f.runner.status().counters.predictiveAssessments,6,'actual fast responses may fit opportunistically; no permanent three-slot ceiling');assert.equal(f.runner.status().counters.decisionDeadlineMisses,0);await f.runner.stop();
 });
 
+async function completedFinancialFixture(maximumDeep=4){
+ const f=fixture({maximumDeep,fairEconomicCompletions:true,forcePredictiveFeatures:true,respectServicePolicy:true});for(let n=1;n<=maximumDeep;n++)f.seed(n);await f.steps(30);f.advance(70000);f.refresh();
+ for(let n=0;n<12&&!f.runner.certifiedCandidateMints(f.now).length;n++)await f.runner.step();
+ const mint=f.runner.certifiedCandidateMints(f.now)[0];assert.ok(mint);const certificate=f.runner.currentAuditCertificate(mint,f.now);assert.ok(certificate);return {f,mint,certificate};
+}
+
+test('a completed exact certificate has request-level financial runway before speculative peer audit reservations',async t=>{
+ const {f,mint,certificate}=await completedFinancialFixture();try{
+  f.advance(Math.max(0,certificate.windowEndAt+3500-f.now));f.setHeadroom(10000);
+  assert.equal(f.runner.deadlineView().readyCount,3);assert.equal(f.runner.discretionaryAdmission(1200).admitted,false,'the prior constituent-request guard reserves three2125ms peers ahead of already completed financial evidence');
+  const plan=f.runner.financialAdmission(certificate,1200,f.now);t.diagnostic(JSON.stringify({scope:'OFFLINE same current independently audited synthetic window; not a live missed-profit claim',at:f.now,windowEndAt:certificate.windowEndAt,certificateDeadlineAt:certificate.deadlineAt,remainingCertificateMs:plan.remainingCertificateMs,requestedOperationMs:1200,peerAudits:plan.peerAuditReservationsDeferred,declaredPeerWorkMs:plan.view.minimumReadyWorkMs,oldDiscretionaryLatestStartAt:f.runner.discretionaryAdmission(1200).latestStartAt,newFinancialLatestStartAt:plan.latestStartAt}));assert.equal(plan.admitted,true);assert.equal(plan.reason,'completed-certificate-financial-priority');assert.equal(plan.bindingDeadline,'original-certificate');assert.equal(plan.latestStartAt,certificate.deadlineAt-125-1200);assert.equal(plan.remainingCertificateMs,certificate.deadlineAt-f.now);assert.equal(plan.peerAuditReservationsDeferred,3);
+  const oldCertificate=structuredClone(certificate);await f.runner.step();assert.equal(f.runner.deadlineView().readyCount,2,'finished peer work is removed from the next actual plan');assert.equal(f.runner.financialAdmission(oldCertificate,1200,f.now).admitted,true);assert.equal(f.runner.currentAuditCertificate(mint,f.now)?.featuresSha256,certificate.featuresSha256);assert.equal(f.runner.status().financialWriterOpened,false);
+ }finally{await f.runner.stop();}
+});
+
+test('financial priority retains mandatory native-service runway and never extends the original certificate deadline',async()=>{
+ const {f,certificate}=await completedFinancialFixture(1);try{
+  f.setHeadroom(1000);const blocked=f.runner.financialAdmission(certificate,1200,f.now);assert.equal(blocked.admitted,false);assert.equal(blocked.reason,'required-native-service-deadline');assert.equal(blocked.bindingDeadline,'required-native-service');assert.equal(blocked.latestStartAt,f.now+1000-125-1200);assert.equal(blocked.certificateLatestStartAt,certificate.deadlineAt-125-1200);
+  f.flow.requestHeartbeat();await f.flow.service();const serviced=f.runner.financialAdmission(certificate,1200,f.now);assert.equal(f.flowActions.at(-1),'ping');assert.equal(serviced.admitted,true,'actual native service completion removes the old conflicting reservation');assert.equal(serviced.certificateLatestStartAt,blocked.certificateLatestStartAt);assert.ok(serviced.nativeLatestStartAt!>blocked.nativeLatestStartAt!);
+  f.setHeadroom(20000);f.advance(Math.max(0,certificate.deadlineAt-125-1200-f.now));const last=f.runner.financialAdmission(certificate,1200,f.now);assert.equal(last.admitted,true);f.advance(1);assert.equal(f.runner.financialAdmission(certificate,1200,f.now).reason,'original-certificate-deadline');
+  f.advance(certificate.deadlineAt-f.now+1);assert.equal(f.runner.financialAdmission(certificate,1,f.now).reason,'current-audit-certificate-required');assert.equal(f.runner.financialAdmission({...certificate,deadlineAt:f.now+20000},1,f.now).admitted,false,'a supplied later deadline cannot renew expired authority');
+ }finally{await f.runner.stop();}
+});
+
+test('financial priority rechecks current source generation, current window, exact features and admission after each yield',async()=>{
+ for(const fault of ['source','generation','subscription','features','bucket','gap','forged-certificate']as const){
+  const {f,mint,certificate}=await completedFinancialFixture(1);try{
+   assert.equal(f.runner.financialAdmission(certificate,1200,f.now).admitted,true);
+   if(fault==='source')f.setAllow(false);if(fault==='generation')f.states.get(mint)!.openedAt!++;
+   if(fault==='subscription'||fault==='features'){const snapshot=f.flow.snapshot.bind(f.flow);f.flow.snapshot=(...args)=>{const v=snapshot(...args);return v?fault==='subscription'?{...v,subscription:2}:{...v,features:v.features?{...v.features,largestBuyerBps:v.features.largestBuyerBps===10000?9999:v.features.largestBuyerBps+1}:null}:null;};}
+   if(fault==='bucket')f.advance(10000-f.now%10000);if(fault==='gap')f.runner.onGap({mint,at:f.now,reason:'OFFLINE_CONFIRMED_CAPTURE_GAP'});
+   const supplied=fault==='forged-certificate'?{...certificate,admittedAt:certificate.admittedAt+1}:certificate;const rejected=f.runner.financialAdmission(supplied,1200,f.now);assert.equal(rejected.admitted,false,fault);assert.equal(rejected.reason,fault==='source'?'source-admission-closed':'current-audit-certificate-required',fault);
+  }finally{await f.runner.stop();}
+ }
+});
+
+test('exhausting a technical priority episode preserves ordinary access to a later current audited window',async()=>{
+ const {f,mint,certificate}=await completedFinancialFixture(1);try{
+  assert.equal(f.runner.requestTechnicalReevaluation(mint,'entry-preparation-unavailable',certificate.windowEndAt,f.now),true);
+  for(let attempt=0;attempt<3;attempt++){
+   f.advance(10000);f.refresh();for(let n=0;n<8&&!f.runner.currentAuditCertificate(mint,f.now);n++)await f.runner.step();const current=f.runner.currentAuditCertificate(mint,f.now);assert.ok(current);assert.equal(f.runner.claimTechnicalReevaluation(mint,f.now),true);f.runner.requestTechnicalReevaluation(mint,'entry-preparation-unavailable',current.windowEndAt,f.now,true);
+  }
+  assert.equal(f.runner.watch.technicalReevaluation(mint,f.now)?.state,'EXHAUSTED');f.advance(10000);f.refresh();for(let n=0;n<8&&!f.runner.currentAuditCertificate(mint,f.now);n++)await f.runner.step();assert.ok(f.runner.currentAuditCertificate(mint,f.now));assert.deepEqual(f.runner.candidateEvaluationOrder([mint],f.now),[mint]);assert.equal(f.runner.claimTechnicalReevaluation(mint,f.now),true,'ordinary current-window admission does not inherit the spent priority episode');
+ }finally{await f.runner.stop();}
+});
+
 test('COHERENT paused origin continuation cancels on stop without dispatching its pending read or admitting partial proof',async()=>{
  const f=fixture();const base=(f.runner as any).resolve;let reads=0;
  (f.runner as any).resolve=async(seed:any,rpc:any,signal:AbortSignal)=>{await rpc.call('getTransaction',[seed.signature],signal);await rpc.call('getTransaction',[seed.signature],signal);return base(seed);};
@@ -530,15 +585,30 @@ test('PLANNING CLOCK real future query cooling still yields to healthy peers und
 /** Actual shared RPC/budget/history validation over local injected responses.
  * Ownership and protection completion clocks below are explicit synthetic
  * scheduling inputs, not real held financial positions or provider evidence. */
-function attachActualHistory(f:ReturnType<typeof fixture>,wrap:(o:PilotRpcCallOptions)=>PilotRpcCallOptions=o=>o,responseDelayMs=25){
+function attachActualHistory(f:ReturnType<typeof fixture>,wrap:(o:PilotRpcCallOptions)=>PilotRpcCallOptions=o=>o,responseDelayMs=25,beforePacing?:(ms:number)=>void){
  const directory=mkdtempSync(join(tmpdir(),'poe-OFFLINE-audit-recovery-')),old=join(directory,'old.json');writeFileSync(old,JSON.stringify({schemaVersion:1,blockedReason:'RPC_HTTP_429',calls:0,bytes:0,lastObservedAt:f.now-100000,starts:[],pending:[]}),{mode:0o600});
  let fetches=0,active=0,maximumActive=0,protectionFetches=0;const records:Array<{kind:string;data:any}>=[],optionsSeen:PilotRpcCallOptions[]=[];
- const client=new PilotRpc({directory:join(directory,'rpc'),runId:'offline-audit-recovery',baselinePaths:[old],priorPhysicalSettled:true,maxStartsPerMinute:90,maxStartsPer10s:20,historyRoute:'publicnode-history-only-v1',now:()=>f.now,monotonic:()=>f.now,sleep:async ms=>f.advance(ms),record:(kind,data)=>records.push({kind,data:structuredClone(data)}),fetcher:(async(_url,init)=>{
+ const client=new PilotRpc({directory:join(directory,'rpc'),runId:'offline-audit-recovery',baselinePaths:[old],priorPhysicalSettled:true,maxStartsPerMinute:90,maxStartsPer10s:20,historyRoute:'publicnode-history-only-v1',now:()=>f.now,monotonic:()=>f.now,sleep:async ms=>{beforePacing?.(ms);f.advance(ms);},record:(kind,data)=>records.push({kind,data:structuredClone(data)}),fetcher:(async(_url,init)=>{
   fetches++;active++;maximumActive=Math.max(maximumActive,active);try{const request=JSON.parse(String(init?.body));if(request.method==='getMultipleAccounts'){protectionFetches++;f.advance(150);return new Response(JSON.stringify({jsonrpc:'2.0',id:request.id,result:{context:{slot:original.slot},value:[]}}));}const state=[...f.states.values()].find(s=>s.scope.pool===request.params[0])!;assert.ok(state);let rows=[...state.notes].reverse().map(n=>({signature:n.signature,slot:n.slot,err:null,blockTime:Math.floor(n.availableAt/1000),confirmationStatus:'confirmed'}));rows.push({signature:originalSignature,slot:original.slot,err:null,blockTime:original.blockTime,confirmationStatus:'finalized'});rows.sort((a,b)=>b.slot-a.slot);const before=request.params[1]?.before;if(before){const i=rows.findIndex(r=>r.signature===before);if(i>=0)rows=rows.slice(i+1);}f.advance(responseDelayMs);return new Response(JSON.stringify({jsonrpc:'2.0',id:request.id,result:rows.slice(0,request.params[1].limit)}));}finally{active--;}
  }) as typeof fetch});
  f.rpc.call=async<T>(method:string,params:unknown[]=[],signal?:AbortSignal,o:PilotRpcCallOptions={})=>{optionsSeen.push({...o});return client.call<T>(method,params,signal,wrap(o));};f.rpc.usage=(()=>client.usage()) as typeof f.rpc.usage;f.rpc.historyQueryReadyAt=(pool:string)=>client.historyQueryReadyAt(pool,f.now);
  return {client,records,optionsSeen,get fetches(){return fetches;},get protectionFetches(){return protectionFetches;},get maximumActive(){return maximumActive;},close(){client.close();rmSync(directory,{recursive:true,force:true});}};
 }
+
+test('CERTIFIED HANDOFF actual PilotRpc and ComponentBudget retain per-request financial priority through pacing without renewing evidence',async t=>{
+ for(const fault of ['healthy','pending','protection','generation','bucket']as const)await t.test(fault,async()=>{
+  const {f,mint,certificate}=await completedFinancialFixture();f.advance(Math.max(0,certificate.windowEndAt+3500-f.now));f.setHeadroom(10000);let pending=false,protectionCurrent=true,injectPacingFault=false;
+  const actual=attachActualHistory(f,o=>o,25,()=>{if(!injectPacingFault)return;injectPacingFault=false;if(fault==='generation')f.states.get(mint)!.openedAt!++;if(fault==='bucket')f.advance(10000-f.now%10000);});
+  const staticCertificateCutoff=f.runner.financialAdmission(certificate,1200,f.now).certificateLatestStartAt!,read=()=>actual.client.call('getMultipleAccounts',[[],{commitment:'confirmed'}],undefined,{timeoutMs:1000,operationBoundMs:1200,latestStartAt:staticCertificateCutoff,admissionOpen:()=>!pending&&protectionCurrent&&f.runner.financialAdmission(certificate,1200,f.now).admitted});
+  try{
+   assert.equal(f.runner.discretionaryAdmission(1200,f.now).admitted,false);assert.equal(f.runner.financialAdmission(certificate,1200,f.now).admitted,true);await read();assert.equal(actual.fetches,1);
+   f.setHeadroom(1000);const obsoleteNativeCutoff=f.runner.financialAdmission(certificate,1200,f.now).nativeLatestStartAt!;await assert.rejects(read(),/COMPONENT_ADMISSION_CLOSED/);assert.equal(actual.fetches,1);f.flow.requestHeartbeat();await f.flow.service();assert.ok(f.runner.financialAdmission(certificate,1200,f.now).nativeLatestStartAt!>obsoleteNativeCutoff);assert.equal(f.runner.financialAdmission(certificate,1200,f.now).certificateLatestStartAt,staticCertificateCutoff);await read();assert.equal(actual.fetches,2);assert.ok(actual.records.some(r=>r.kind==='component-pacing-wait'&&r.data.waitMs>0),'the second actual component request passed its fresh admission after pacing');
+   const cooldown=actual.client.cooldownUntil();if(fault==='pending')pending=true;if(fault==='protection')protectionCurrent=false;if(fault==='generation'||fault==='bucket')injectPacingFault=true;
+   if(fault==='healthy'){await read();assert.equal(actual.fetches,3);}else{await assert.rejects(read(),/COMPONENT_ADMISSION_CLOSED|COMPONENT_DISPATCH_EXPIRED/);assert.equal(actual.fetches,2);const refusal=actual.records.filter(r=>r.kind==='component-local-admission-refused').at(-1)!.data;assert.equal(refusal.transportStarted,false);if(fault==='generation'||fault==='bucket'){assert.equal(refusal.stage,'after-pacing');assert.ok(refusal.pacingWaitMs>0);assert.equal(f.runner.currentAuditCertificate(mint,f.now),null);}}
+   assert.equal(actual.client.cooldownUntil(),cooldown,'local refusal never manufactures a provider cooldown');assert.equal(actual.maximumActive,1);assert.equal(actual.client.usage().inFlight,0);assert.equal(f.runner.status().financialWriterOpened,false);
+  }finally{await f.runner.stop();actual.close();}
+ });
+});
 
 test('HELD AUDIT operation-specific preflight retains an unexpired page until the completed-protection runway is available',async()=>{
  let enforce=false,lastUsable=0;const f=fixture({sourceWorkAdmission:bound=>!enforce||pilotLowerPriorityAdmission({now:f.now,endAt:f.now+120000,held:1,lastUsable,nextPendingAt:null,operationBoundMs:bound}).admitted});const mint=f.importActual();await f.runner.step();f.advance(70000);f.refresh();const target=Math.floor(f.now/10000)*10000;lastUsable=f.now-1000;enforce=true;
@@ -660,6 +730,14 @@ test('economic completion preserves held/pending scopes and rejects stale or tec
 test('a completed economic rejection releases unchanged observation even when no verified peer exists',async()=>{
  const f=fixture({maximumDeep:1,fairEconomicCompletions:true,forcePredictiveFeatures:true});f.seed(1);await f.steps(8);f.advance(70000);f.refresh();await f.steps(5);const mint=[...f.states.keys()][0]!;
  assert.equal(f.runner.finishEconomicRejection(economicRejection(f,mint)),true);assert.equal(f.states.has(mint),false);assert.equal(f.runner.currentAuditCertificate(mint,f.now),null);f.advance(61000);await f.steps(6);assert.equal(f.states.has(mint),false,'unchanged completed-negative economics cannot readmit merely because time passed');await f.runner.stop();
+});
+
+test('a completed preliminary economic rejection waits for meaningful new content without a fixed thirty-second veto',async()=>{
+ const f=fixture({maximumDeep:1,durableMarketPolicy:true,fairEconomicCompletions:true,forcePredictiveFeatures:true}),mint=f.seed(1);(f.runner as any).options.activeAssessment=(_mint:string,features:any,at:number)=>({...assessLiquidityResilientBuyingV31(features,at),features,status:'failed',reason:'OFFLINE verified preliminary economic rejection'});await f.steps(8);f.advance(70000);f.refresh();
+ try{
+  for(let n=0;n<8&&f.states.has(mint);n++)await f.runner.step();assert.equal(f.states.has(mint),false);const rejected=f.runner.watch.lookupIdentity(mint,f.now)!;assert.equal(rejected.reobservation?.kind,'economic-rejection');assert.equal(rejected.deferUntil,rejected.reobservation!.decisionAt);assert.equal(f.runner.watch.next(f.now,new Set(),{requireOrigin:false}),null,'unchanged economics remains retained but unselected');
+  f.advance(1);assert.equal(f.runner.watch.noteRelevantEvidence(mint,{kind:'pool-reserves',at:f.now,fingerprint:'OFFLINE verified numeric reserves changed:base=5000000000,quote=2000000000'},f.now),true);assert.equal(f.runner.watch.next(f.now,new Set(),{requireOrigin:false})?.mint,mint);assert.equal(f.runner.currentAuditCertificate(mint,f.now),null,'a cheap changed-content hint never restores old trade authority or bypasses the new full observation');assert.ok(f.now-rejected.reobservation!.decisionAt<30000);
+ }finally{await f.runner.stop();}
 });
 
 

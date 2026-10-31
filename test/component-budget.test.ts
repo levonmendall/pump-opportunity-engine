@@ -252,6 +252,46 @@ test('admission closure during durable reservation never invokes transport and c
   }finally{b.close();}
 });
 
+test('local refusal diagnostics separate pacing, caller allowance, physical timeout and an uninvoked reservation',async t=>{
+ for(const scenario of ['before-pacing','after-pacing','pacing-plan','before-physical-invocation']as const)await t.test(scenario,async st=>{
+  const f=fixture(st),rows:Array<{kind:string;data:any}>=[];let writes=0,physical=0;
+  const b=new ComponentBudget({...f.options,record:(kind,data)=>rows.push({kind,data}),beforePersist(){if(scenario==='before-physical-invocation'&&++writes===2)f.now+=100;}});
+  try{
+   if(scenario==='after-pacing'||scenario==='pacing-plan')await b.operate(HTTP,done);
+   const options={requestId:'native-paper-offline:request:12',operationBoundMs:1200,timeoutMs:1000,latestStartAt:scenario==='pacing-plan'?100500:103000,admissionOpen:()=>scenario==='before-pacing'?false:scenario==='after-pacing'?f.now<100500:scenario==='before-physical-invocation'?f.now<100050:true};
+   await assert.rejects(b.operate(HTTP,async c=>{physical++;c.completeResponse();},undefined,options),scenario==='pacing-plan'?/DISPATCH_EXPIRED/:/ADMISSION_CLOSED/);
+   const event=rows.filter(r=>r.kind==='component-local-admission-refused').at(-1)!.data;assert.equal(event.stage,scenario);assert.equal(event.callerRequestId,options.requestId);assert.equal(rows.filter(r=>r.kind==='component-job-enqueued').at(-1)!.data.callerRequestId,options.requestId);assert.equal(event.enqueuedAt,100000);assert.equal(event.at,f.now);assert.equal(event.latestStartAt,options.latestStartAt);assert.equal(event.remainingStartMs,options.latestStartAt-f.now);assert.equal(event.requestedOperationMs,1200);assert.equal(event.physicalTimeoutMs,1000);assert.equal(event.transportStarted,false);assert.equal(event.physicalSettlementClaimed,false);assert.equal(event.pacingWaitMs,scenario==='after-pacing'?1000:0);assert.equal(event.plannedPacingWaitMs,scenario==='pacing-plan'?1000:0);assert.equal(event.queueElapsedMs,f.now-100000);assert.equal(event.chargedReservationRetained,scenario==='before-physical-invocation');assert.equal(event.reservationId,scenario==='before-physical-invocation'?21:null);assert.equal(physical,0);
+   assert.equal(b.calls,scenario==='before-pacing'?20:21);assert.equal(b.usage().uncertainResponseBytes,scenario==='before-physical-invocation'?2*MIB:0);
+   if(scenario==='before-physical-invocation'){const settlement=rows.filter(r=>r.kind==='component-physical-settled').at(-1)!.data;assert.equal(settlement.transportStarted,false);assert.equal(settlement.physicalSettlementObserved,false);assert.equal(settlement.physicalElapsedMs,null);assert.equal(settlement.callerRequestId,options.requestId);}
+  }finally{b.close();}
+ });
+});
+
+test('refusal diagnostics cannot mask a binding admission failure or pretend an invoked operation was locally uninvoked',async t=>{
+ const f=fixture(t),rows:Array<{kind:string;data:any}>=[],b=new ComponentBudget({...f.options,record:(kind,data)=>{rows.push({kind,data});if(kind==='component-local-admission-refused')throw Error('OFFLINE diagnostic sink unavailable');}});
+ try{
+  await assert.rejects(b.operate(HTTP,done,undefined,{admissionOpen:()=>false}),/^Error: COMPONENT_ADMISSION_CLOSED$/);assert.equal(b.calls,20);
+  await assert.rejects(b.operate(HTTP,async()=>{throw Error('COMPONENT_ADMISSION_CLOSED');}),/ADMISSION_CLOSED/);assert.equal(b.calls,21);assert.equal(b.usage().actualInvokedUnits,1);assert.equal(rows.filter(r=>r.kind==='component-local-admission-refused').length,1,'only the direct pre-transport guard emits the local-refusal record');const settled=rows.filter(r=>r.kind==='component-physical-settled').at(-1)!.data;assert.equal(settled.transportStarted,true);assert.equal(settled.physicalSettlementObserved,true);assert.equal(settled.responseComplete,false);assert.equal(b.usage().uncertainResponseBytes,2*MIB);
+ }finally{b.close();}
+});
+
+test('caller request correlation is bounded diagnostic metadata and never admission authority',async t=>{
+ const f=fixture(t),rows:Array<{kind:string;data:any}>=[],b=new ComponentBudget({...f.options,record:(kind,data)=>rows.push({kind,data})});
+ try{
+  assert.equal(await b.operate(HTTP,done,undefined,{requestId:'native-paper-offline:request:1',operationBoundMs:1200}),'ok');for(const kind of ['component-job-enqueued','component-physical-start','component-physical-settled'])assert.equal(rows.find(r=>r.kind===kind)!.data.callerRequestId,'native-paper-offline:request:1');
+  assert.equal(await b.operate(HTTP,done,undefined,{requestId:'OFFLINE_PRIVATE\nnot-an-id',operationBoundMs:Infinity}),'ok');for(const kind of ['component-job-enqueued','component-physical-start','component-physical-settled'])assert.equal(rows.filter(r=>r.kind===kind).at(-1)!.data.callerRequestId,null);assert.equal(JSON.stringify(rows).includes('OFFLINE_PRIVATE'),false);assert.equal(rows.filter(r=>r.kind==='component-job-enqueued').at(-1)!.data.requestedOperationMs,null);assert.equal(b.calls,22);
+ }finally{b.close();}
+});
+
+test('actual operation settlement records monotonic elapsed separately from an advancing wall clock',async t=>{
+ const f=fixture(t),rows:Array<{kind:string;data:any}>=[];let wall=100000,mono=500;
+ const b=new ComponentBudget({...f.options,now:()=>wall,monotonic:()=>mono,sleep:async ms=>{wall+=ms;mono+=ms;},record:(kind,data)=>rows.push({kind,data})});
+ try{
+  await b.operate(HTTP,async c=>{wall+=25000;mono+=37;c.completeResponse();return 'ok';},undefined,{requestId:'offline-clock:request:1'});
+  const start=rows.find(r=>r.kind==='component-physical-start')!.data,settled=rows.find(r=>r.kind==='component-physical-settled')!.data;assert.equal(start.at,100000);assert.equal(settled.at,125000);assert.equal(settled.at-start.at,25000);assert.equal(settled.physicalElapsedMs,37);assert.equal(settled.transportStarted,true);assert.equal(settled.responseComplete,true);assert.equal(settled.callerRequestId,'offline-clock:request:1');assert.match(settled.physicalElapsedMeaning,/monotonic/);assert.match(settled.physicalElapsedMeaning,/not provider-only/);assert.equal(b.usage().durationsMs.at(-1),37);
+ }finally{b.close();}
+});
+
 test('malformed or unbounded run-limit settings are refused before creating a counterbook',t=>{
   const f=fixture(t);for(const limits of [{maxNewUnits:0},{maxNewUnits:1001},{minSpacingMs:0},{maxStartsPerMinute:601},{maxStartsPer10s:61},{maxCombinedBytes:0},{maxHttpBytes:257*MIB},{maxCumulativeUnits:undefined},{unknown:1}])assert.throws(()=>new ComponentBudget({...f.options,limits}),/INVALID_LIMITS/);
 });

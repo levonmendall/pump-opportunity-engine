@@ -16,7 +16,7 @@ export type TechnicalReevaluationReason='entry-preparation-unavailable'|'entry-q
 /** Scheduling metadata only. No flow, financial outcome or entry permission is
  * established by requesting or claiming another fresh-window evaluation. */
 export type TechnicalReevaluation={reason:TechnicalReevaluationReason;requestedAt:number;failedWindowEndAt:number;notBefore:number;expiresAt:number;attempts:number;lastClaimedWindowEndAt:number|null;state:'WAITING'|'CLAIMED'|'EXHAUSTED'|'EXPIRED'|'FINISHED'};
-export const TECHNICAL_REEVALUATION_POLICY=Object.freeze({version:'bounded-fresh-window-technical-reevaluation-v1',maximumAttempts:3,lifetimeMs:300000,backoffMs:Object.freeze([5000,15000,30000] as const),restartDelayMs:5000});
+export const TECHNICAL_REEVALUATION_POLICY=Object.freeze({version:'next-fresh-window-technical-reevaluation-v2',maximumAttempts:3,lifetimeMs:300000,backoffMs:Object.freeze([0,0,0] as const),restartDelayMs:0});
 const TECHNICAL_REEVALUATION_REASONS:readonly TechnicalReevaluationReason[]=['entry-preparation-unavailable','entry-quote-unavailable','entry-attempt-data-unavailable','entry-action-expired'];
 export type WatchReobservation={kind:'economic-rejection'|'technical-unavailable';decisionAt:number;windowEndAt:number|null;evidence:string;minimumEconomicChangeLamports:string|null;baseline:MarketEvidence|null;ready:{at:number;reason:string;evidence:string}|null;relevantEvidence?:{kind:'audited-flow'|'pool-reserves'|'liquidity'|'source-recovery'|'migration-hint'|'pool-hint';at:number;fingerprint:string}};
 export type WatchRow={
@@ -111,7 +111,7 @@ export class PilotWatch {
   private recoverDurable(){
     // Only operational proofs need restart repair. Historical inactive rows are
     // left on disk and retain their original decision-time provenance.
-    let after='';for(;;){const batch=this.query("w.signature>? AND (w.state IN ('DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING') OR w.technical_state='CLAIMED' OR (w.state IN ('WATCH','DEFERRED') AND w.capacity_status='OTHER_UNAVAILABLE'))",[after],'w.signature',128);if(!batch.length)break;
+    let after='';for(;;){const batch=this.query("w.signature>? AND (w.state IN ('DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING') OR w.technical_state IN ('CLAIMED','WAITING') OR (w.state IN ('WATCH','DEFERRED') AND w.capacity_status='OTHER_UNAVAILABLE'))",[after],'w.signature',128);if(!batch.length)break;
       for(const r of batch){const v:WatchCheckpoint={schemaVersion:1,observationAgePolicyVersion:this.checkpointObservationAgePolicy.version,rows:[copy(r)],counters:copy(this.counters),capacityProbeAdmissions:copy(this.capacityProbeAdmissions),entryAgePromotionCount:this.entryAgePromotionCount};this.rows.delete(r.signature);this.restore(v);}
       after=batch.at(-1)!.signature;this.flush();this.rows.clear();this.originals.clear();if(batch.length<128)break;
     }
@@ -155,7 +155,11 @@ export class PilotWatch {
 
   private history(r:WatchRow,at:number,state:WatchState,reason:string){r.state=state;r.reason=reason;r.history.push({at,state,reason});if(r.history.length>16)r.history.shift();}
   private refreshTechnicalReevaluation(r:WatchRow,at:number){
-    const t=r.technicalReevaluation;if(t&&['WAITING','CLAIMED'].includes(t.state)&&at>=t.expiresAt){t.state='EXPIRED';this.emit('pilot-watch-technical-reevaluation-expired',{mint:r.mint,at,...copy(t),ordinaryWatchPreserved:true,financialPermission:false});}return t;
+    const t=r.technicalReevaluation;if(t&&['WAITING','CLAIMED'].includes(t.state)&&at>=t.expiresAt){t.state='EXPIRED';this.emit('pilot-watch-technical-reevaluation-expired',{mint:r.mint,at,...copy(t),ordinaryWatchPreserved:true,financialPermission:false});}
+    // Legacy fixed backoff is scheduling metadata, not a provider restriction
+    // or evidence recovery boundary. A new current audited window is still
+    // required by the claim and trading callers; no same-window claim is reset.
+    if(t?.state==='WAITING'&&this.readOperationDepth===0&&at>=t.requestedAt&&t.notBefore>at){const previousNotBefore=t.notBefore;t.notBefore=at;this.emit('pilot-watch-technical-backoff-released',{mint:r.mint,at,previousNotBefore,notBefore:t.notBefore,policy:TECHNICAL_REEVALUATION_POLICY.version,requestedAt:t.requestedAt,expiresAt:t.expiresAt,attempts:t.attempts,lastClaimedWindowEndAt:t.lastClaimedWindowEndAt,newerWindowRequired:true,financialPermission:false});}return t;
   }
   private expire(at:number){
     if(this.observationAgePolicy===PERSISTENT_OBSERVABLE_MARKET_POLICY)return;
@@ -517,7 +521,7 @@ export class PilotWatch {
       need((r.verifiedAt===null)===(r.migrationAt===null)&&(r.mint===null)===(r.pool===null)&&(r.mint===null?r.verifiedAt===null&&r.observationIdentity===undefined:r.verifiedAt!==null||r.observationIdentity!==undefined)&&(!r.mint||!mints.has(r.mint)),'PILOT_WATCH_CHECKPOINT_IDENTITY');if(r.mint)mints.add(r.mint);
       if(r.verifiedAt!==null)need(r.migrationAt!<=r.verifiedAt&&r.verifiedAt<=this.clock(),'PILOT_WATCH_CHECKPOINT_TIME');
       const restored=copy(r);if(['DEEP_OBSERVATION','QUALIFIED'].includes(restored.state)){this.history(restored,this.clock(),'DEFERRED','research process restarted; previous flow is unavailable; fresh full window required');restored.deepSince=null;restored.lastDemotedAt=this.clock();restored.waitingSince=this.clock();restored.deferUntil=this.clock();if(restored.capacityCoverage){restored.capacityCoverage.status='AWAITING_CAPACITY';restored.capacityCoverage.reason=restored.reason;restored.capacityCoverage.reassessAt=this.clock()+5000;}restored.demotions++;this.counters.demoted++;this.emit('pilot-watch-recovery-demotion',{mint:restored.mint,at:this.clock(),priorState:r.state,freshFullWindowRequired:true});}if(restored.state==='ENTRY_PENDING'){restored.deepSince=null;this.emit('pilot-watch-owned-recovery',{mint:restored.mint,at:this.clock(),state:'ENTRY_PENDING',freshFlowUnavailable:true,financialObligationRetained:true});}
-      const technical=this.refreshTechnicalReevaluation(restored,this.clock());if(technical?.state==='CLAIMED'){technical.state=technical.attempts>=TECHNICAL_REEVALUATION_POLICY.maximumAttempts?'EXHAUSTED':'WAITING';technical.notBefore=Math.max(technical.notBefore,this.clock()+TECHNICAL_REEVALUATION_POLICY.restartDelayMs);this.emit('pilot-watch-technical-reevaluation-recovered',{mint:restored.mint,at:this.clock(),...copy(technical),claimConsumedBeforeRestart:true,newerWindowRequired:true,financialOutcomeUnknown:true,financialPermission:false});}
+      const technical=this.refreshTechnicalReevaluation(restored,this.clock());if(technical?.state==='CLAIMED'){const previousNotBefore=technical.notBefore;technical.state=technical.attempts>=TECHNICAL_REEVALUATION_POLICY.maximumAttempts?'EXHAUSTED':'WAITING';technical.notBefore=this.clock()+TECHNICAL_REEVALUATION_POLICY.restartDelayMs;this.emit('pilot-watch-technical-reevaluation-recovered',{mint:restored.mint,at:this.clock(),...copy(technical),previousNotBefore,claimConsumedBeforeRestart:true,newerWindowRequired:true,financialOutcomeUnknown:true,financialPermission:false});}
       // Older versions could erase a technical resource gate merely by changing
       // its WATCH/DEFERRED reason. No valid replacement window was established.
       if(['WATCH','DEFERRED'].includes(restored.state)&&restored.capacityCoverage?.status==='OTHER_UNAVAILABLE'){const c=restored.capacityCoverage;c.status='AWAITING_CAPACITY';c.reassessAt=Math.max(c.reassessAt,this.clock()+5000);restored.deferUntil=Math.max(restored.deferUntil,c.reassessAt);this.history(restored,this.clock(),'DEFERRED','restored technical gap requires current resource reassessment');this.emit('pilot-watch-capacity-gate-recovered',{mint:restored.mint,at:this.clock(),priorStatus:r.capacityCoverage!.status,priorReason:r.reason,currentReason:restored.reason,freshFullWindowRequired:true});}

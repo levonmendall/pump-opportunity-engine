@@ -16,7 +16,7 @@ export type PilotRpcProfile='candidate-native-research-v1'|NativeResearchProfile
  * Time/request/chapter and physical scheduling limits remain the legacy ones.
  * A two-hour profile needs separately validated cumulative-book capacity. */
 export const CANDIDATE_NATIVE_RESEARCH_RPC_PROFILE=Object.freeze({version:'candidate-native-research-v1' as const,maximumDurationMs:1800000,maximumUnits:1500,maximumResponseBytes:256*MIB});
-export type PilotRpcCallOptions={latestStartAt?:number;timeoutMs?:number;/** Caller-owned complete operation/validation reservation. This does not extend the physical timeout or deadline. */operationBoundMs?:number;admissionOpen?:()=>boolean;/** Query-local timeout backoff for independently scheduled history audits only. Actual throttling/overload remains provider-wide in its fixed route domain. */queryTimeoutScope?:'independent-history'};
+export type PilotRpcCallOptions={/** Bounded diagnostic correlation only; never trading authority. */requestId?:string;latestStartAt?:number;timeoutMs?:number;/** Caller-owned complete operation/validation reservation. This does not extend the physical timeout or deadline. */operationBoundMs?:number;admissionOpen?:()=>boolean;/** Query-local timeout backoff for independently scheduled history audits only. Actual throttling/overload remains provider-wide in its fixed route domain. */queryTimeoutScope?:'independent-history'};
 export type PilotRpcOptions={persistent?:boolean;profile?:PilotRpcProfile;directory:string;runId:string;baselinePaths:readonly string[];baselineCheckpointSha256?:string;priorPhysicalSettled:true;priorCooldownUntil?:number;historyRoute?:ComponentHistoryRoute;priorHistoryCooldownUntil?:number;durationMs?:number;maxUnits?:number;maxResponseBytes?:number;chapterMs?:number;chapterUnits?:number;maxChapters?:number;/** Explicit isolated research control; default60, accepted60..90. Not provider entitlement. */maxStartsPerMinute?:number;/** Research-only local gate; default10 retains earlier behavior. */maxStartsPer10s?:number;/** Optional conservative experiment limit, not a provider entitlement. */maxGetTransactionStartsPer10s?:number;record?:(kind:string,data:unknown)=>void;now?:()=>number;monotonic?:()=>number;fetcher?:typeof fetch;sleep?:ComponentBudgetOptions['sleep']};
 /** Existing holdings get one bounded fresh-read recovery opportunity after an
  * unthrottled settled transport failure. Ordinary candidate work keeps its
@@ -52,11 +52,11 @@ const safe=(e:unknown)=>e instanceof Error&&/^(COMPONENT_[A-Z0-9_:-]{1,100}|PAPE
 const localAdmissionRefusal=(code:string)=>['COMPONENT_DISPATCH_EXPIRED','COMPONENT_ADMISSION_CLOSED'].includes(code);
 const candidateBatchFault=(code:string)=>['COMPONENT_HISTORY_BATCH_RESPONSE_SIZE','COMPONENT_HISTORY_BATCH_ENVELOPE','COMPONENT_HISTORY_BATCH_MALFORMED_JSON'].includes(code);
 const recoverable=(code:string)=>['COMPONENT_HTTP_429','COMPONENT_RPC_OVERLOAD','COMPONENT_RPC_ERROR_-32016','COMPONENT_HISTORY_BATCH_RESPONSE_SIZE','COMPONENT_HISTORY_BATCH_ENVELOPE','COMPONENT_HISTORY_BATCH_MALFORMED_JSON','COMPONENT_PHYSICAL_TIMEOUT','COMPONENT_HTTP_TRANSPORT','COMPONENT_WS_TRANSPORT','COMPONENT_ABORTED','COMPONENT_HTTP_STATUS_502','COMPONENT_HTTP_STATUS_503','COMPONENT_HTTP_STATUS_504'].includes(code);
-function retryAfter(value:unknown,at:number,validHeaderPaddingMs:0|5000=5000){
+function retryAfter(value:unknown,at:number){
   if(typeof value!=='string'||value.length>128)return at+65000;
   const n=/^\d+(?:\.\d+)?$/.test(value.trim())?Number(value)*1000:NaN;
   const t=Number.isFinite(n)?at+Math.ceil(n):Date.parse(value);
-  return Number.isSafeInteger(t)&&t>=at?Math.min(Number.MAX_SAFE_INTEGER,t+validHeaderPaddingMs):at+65000;
+  return Number.isSafeInteger(t)&&t>=at?t:at+65000;
 }
 
 export class PilotRpc{
@@ -262,13 +262,13 @@ export class PilotRpc{
       // Preserve that full global-domain floor without adding an unmeasured
       // five seconds. Unknown/malformed headers retain the65-second fallback;
       // the separately managed WS-control grace remains unchanged.
-      this.pendingRetryAfter=retryAfter(h.retryAfter,h.at,0);const until=this.pendingRetryAfter;
+      this.pendingRetryAfter=retryAfter(h.retryAfter,h.at);const until=this.pendingRetryAfter;
       if(history){this.historyCooldown=Math.max(this.historyCooldown,until);this.historyCooldownMono=Math.max(this.historyCooldownMono,this.mono()+Math.max(0,until-this.now()));}else{this.cooldown=Math.max(this.cooldown,until);this.cooldownMono=Math.max(this.cooldownMono,this.mono()+Math.max(0,until-this.now()));this.providerRestriction=Math.max(this.providerRestriction,until);this.providerRestrictionMono=Math.max(this.providerRestrictionMono,this.mono()+Math.max(0,until-this.now()));}
       this.emit('pilot-rpc-explicit-retry-after',{at:h.at,status:h.status,domain:history?'history':'rpc',method:providerMethod(h.method),retryAfterMs:observedRetryAfterMs(h.retryAfter,h.at),physicalRequestId:h.id!==undefined&&int(h.id)?h.id:null,cooldownUntil:until,protectedFinancialReadsRemainRestricted:true,observedAfterLogicalCompletion:!this.active});if(!this.active)persistObservedRestriction=true;
     }
     const throttle=h.status===429,unavailable=[502,503,504].includes(h.status);
     if(!throttle&&!unavailable){if(persistObservedRestriction)this.persist();return;}
-    if(throttle||h.retryAfter!==null&&h.retryAfter!==undefined)this.pendingRetryAfter=retryAfter(h.retryAfter,h.at,0);
+    if(throttle||h.retryAfter!==null&&h.retryAfter!==undefined)this.pendingRetryAfter=retryAfter(h.retryAfter,h.at);
     // Headers can arrive during late physical settlement after perform() has
     // already returned its logical timeout. The original gate is still owned.
     // Actual throttle/overload must take effect before that slot can be reused.

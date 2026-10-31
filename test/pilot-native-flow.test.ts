@@ -477,7 +477,7 @@ test('ACK liveness uses conservative transport receipt rather than later handler
 });
 
 test('native service action exposes the actual upcoming HTTP refresh independently from heartbeat scheduling',async()=>{
- const f=setup(),socket=await f.open();assert.equal(f.flow.usage().nextServiceAction,'heartbeat');await f.advance(7000);f.flow.requestHeartbeat();assert.equal((await f.flow.service()).kind,'ping');await f.advance(10000);f.flow.requestHeartbeat();assert.equal((await f.flow.service()).kind,'ping');await f.advance(4000);const due=f.flow.usage();assert.equal(due.nextServiceDomain,'rpc');assert.equal(due.nextServiceAction,'support-refresh');assert.equal(due.nextServiceAt,Math.min(f.now+4000,f.flow.snapshot(scope.mint)!.supportContext!.bankClockAt+25000));assert.equal(socket.readyState,WebSocket.OPEN);await f.flow.stop();
+ const f=setup(),socket=await f.open();assert.equal(f.flow.usage().nextServiceAction,'heartbeat');await f.advance(7000);f.flow.requestHeartbeat();assert.equal((await f.flow.service()).kind,'ping');await f.advance(10000);f.flow.requestHeartbeat();assert.equal((await f.flow.service()).kind,'ping');await f.advance(4000);const due=f.flow.usage();assert.equal(due.nextServiceDomain,'rpc');assert.equal(due.nextServiceAction,'support-refresh');assert.equal(due.nextServiceAt,f.now,'normal twenty-second refresh is already due without extending source expiry');assert.equal(socket.readyState,WebSocket.OPEN);await f.flow.stop();
 });
 
 test('compact source-failed packets still invalidate every affected peer after a successful correction on active or retired IDs',async()=>{

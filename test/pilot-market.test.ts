@@ -10,14 +10,14 @@ import {TOKEN_PROGRAM_ID,getAssociatedTokenAddressSync} from '@solana/spl-token'
 import {canonicalPumpPoolPda} from '../src/sdk.js';
 import {DisposableLedger,type UsdPrice} from '../src/ledger.js';
 import {PaperExecutionCoordinator} from '../src/execution.js';
-import {PilotMarket,type PilotInventory} from '../src/pilot-market.js';
+import {PILOT_ENTRY_PREPARATION_POLICY,PilotMarket,type PilotInventory} from '../src/pilot-market.js';
 import type {PoolWireAccount} from '../src/pool.js';
 import {PilotRpc,PilotRpcUnavailable} from '../src/pilot-rpc.js';
 import {nativePaperRpcConfiguration} from '../src/run-native-paper.js';
 import {runInNewContext} from 'node:vm';
 import {NativeProtectionDispatch} from '../src/native-protection-dispatch.js';
 import {runNativePaper,nativePaperSourceWorkAdmission,nativePaperRequestOperationBound,nativePaperProtectionReadDeadline,nativePaperManagementReserve} from '../src/run-native-paper.js';
-import {NativeCandidateRunner} from '../src/native-candidate-runner.js';
+import {NativeCandidateRunner,type NativeAuditCertificate} from '../src/native-candidate-runner.js';
 import {NativePaperWorkState} from '../src/native-paper-work.js';
 import {NativePaperEntryAdmission,type NativePaperEntryAdmissionToken} from '../src/native-paper-entry-admission.js';
 import {pilotLowerPriorityAdmission} from '../src/pilot.js';
@@ -61,23 +61,26 @@ function fixture(t:TestContext,timeoutMs=1000,cooperative=false,paced=false,exec
   return {captures,ledger,market,coordinator,price,calls,records,get physical(){return physical;},route:(value:any)=>{adapter=value;},now:()=>at,advance:(ms:number)=>{at+=ms;},rentChanged:()=>{rentOffset++;},bumpSlot:()=>{slot++;},slot:()=>slot,setSlot:(value:number)=>{slot=value;},pause:(p:Promise<void>)=>{wait=p;},account:(address:string)=>accounts.get(address),replaceAccount:(address:string,wire:PoolWireAccount)=>{accounts.set(address,structuredClone(wire));},overrideInventory:(value:PilotInventory|null)=>{inventoryOverride=value;},onRpc:(hook:(method:string)=>void)=>{rpcHook=hook;},onPacingWait:(hook:(ms:number)=>void)=>{activity=hook;},onRecord:(hook:(kind:string)=>void)=>{recordHook=hook;},beforePreparationRead:(hook:(input:{method:string;signal:AbortSignal})=>Promise<void>)=>{preparationHook=hook;}};
 }
 
-for(const background of [0,6,9])test(`committed already-prepared actual decision quote after ${background} discretionary reads retains its bounded remaining envelope and holding reserves`,async t=>{
+for(const [background,fault]of [[0,null],[6,null],[9,null],[0,'scope'],[0,'certificate'],[0,'generation'],[0,'bucket']]as const)test(`committed actual decision quote after ${background} discretionary reads ${fault?'refuses changed '+fault:'uses certified priority over peer reservations'} and preserves holding reserves`,async t=>{
  const f=fixture(t,3000,false,true),owned=f.captures[0]!.proof.quote.mint,mint=f.captures[1]!.proof.quote.mint;
  const plan=await f.market.prepareEntryCosts(owned,signal()),entry=await f.market.quote({mint:owned,side:'buy',inputUnits:'10000000'},signal());assert.ok(entry);
  f.ledger.reconcile('seed-current',f.now(),f.price(),{});f.coordinator.reserve({id:'seed-held',side:'buy',mint:owned,decidedAt:f.now(),executeAt:f.now()+1000,expiresAt:f.now()+5000,gas:'7000',deposit:plan.depositLamports,maxSpend:'10000000',minReceive:'1',decisionEvidence:entry.evidence},{price:f.price(),marks:{}});f.advance(1000);f.ledger.reconcile('seed-attempt-current',f.now(),f.price(),{});const seed=await f.coordinator.runDue();assert.equal(seed.results[0]?.status,'filled',JSON.stringify(seed));
  await f.market.prepareEntryCosts(mint,signal());f.advance(10000);
- const rpc=f.physical!,owner=new NativePaperWorkState(),entryAdmission=new NativePaperEntryAdmission(),engine=new NativeCandidateRunner({rpc,flow:{usage:()=>({dataContract:'confirmed-program-activity-v3-shadow',nativeServiceDeadlines:[{action:'support-refresh',deadlineAt:f.now()+60000}]})}as any,record(){},now:f.now});let lastCompleted:number|null=f.now(),entryToken:NativePaperEntryAdmissionToken|null=null;
+ const rpc=f.physical!,owner=new NativePaperWorkState(),entryAdmission=new NativePaperEntryAdmission(),engine=new NativeCandidateRunner({rpc,flow:{usage:()=>({dataContract:'confirmed-program-activity-v3-shadow',nativeServiceDeadlines:[{action:'support-refresh',deadlineAt:f.now()+60000}]})}as any,record(){},now:f.now});let lastCompleted:number|null=f.now(),entryToken:NativePaperEntryAdmissionToken|null=null,activeCertificate:NativeAuditCertificate|null=null,peerReserved=false;
+ const ordinaryAdmission=engine.discretionaryAdmission.bind(engine);t.mock.method(engine,'discretionaryAdmission',(bound:number,at=f.now())=>{const value=ordinaryAdmission(bound,at);return peerReserved?{...value,admitted:false,latestStartAt:at-1,reason:'committed-native-or-candidate-deadline'}:value;});
+ t.mock.method(engine,'currentAuditCertificate',(selected:string,at=f.now())=>activeCertificate&&selected===activeCertificate.mint&&at<=activeCertificate.deadlineAt&&Math.floor(at/10000)*10000===activeCertificate.windowEndAt?structuredClone(activeCertificate):null);
  const lowerView=(bound=1200)=>pilotLowerPriorityAdmission({now:f.now(),endAt:Number.MAX_SAFE_INTEGER,held:1,lastUsable:lastCompleted,nextPendingAt:null,operationBoundMs:bound});
  const sourceInformationAdmission=()=>true,sourceAdmission=()=>!(owner.current==='candidate'&&entryToken&&!entryAdmission.valid(entryToken,f.now()))&&nativePaperSourceWorkAdmission({informationOpen:sourceInformationAdmission(),owned:true,entryWork:owner.current==='candidate',entryStartsRemaining:owner.current==='candidate'&&entryToken?entryAdmission.remaining(entryToken,f.now()):undefined,usage:rpc.usage(),persistent:true});
  const localAdmission=(bound=1200)=>lowerView(bound).admitted&&engine.discretionaryAdmission(bound).admitted,optionalAdmission=(bound=1200)=>sourceAdmission()&&localAdmission(bound);
- const holder:any={},context:any={__name:(f:unknown)=>f,NativeProtectionDispatch,record(){},holder,currentLedger:f.ledger,workOwner:owner,currentRpc:rpc,service:true,Date:{now:f.now},endAt:Number.MAX_SAFE_INTEGER,stopped:false,lastCompleted,entryAdmission,entryToken,manifest:{controlCooldownUntil:0},PilotRpcUnavailable,nativePaperRequestOperationBound,nativePaperProtectionReadDeadline,nativePaperSourceWorkAdmission,lowerView,sourceAdmission,sourceInformationAdmission,optionalAdmission,engine};
+ const holder:any={},context:any={__name:(f:unknown)=>f,NativeProtectionDispatch,record(kind:string,data:unknown){f.records.push({kind,data:structuredClone(data)});},runId:'OFFLINE-current-certified-request-options',requestSequence:0,entryCertificate:null,candidateDiagnostic:(run:()=>unknown,fallback:unknown)=>{try{return run();}catch{return fallback;}},holder,currentLedger:f.ledger,workOwner:owner,currentRpc:rpc,service:true,Date:{now:f.now},endAt:Number.MAX_SAFE_INTEGER,stopped:false,lastCompleted,entryAdmission,entryToken,manifest:{controlCooldownUntil:0},PilotRpcUnavailable,nativePaperRequestOperationBound,nativePaperProtectionReadDeadline,nativePaperSourceWorkAdmission,lowerView,sourceAdmission,sourceInformationAdmission,optionalAdmission,engine};
  const text=runNativePaper.toString(),begin=text.search(/const\s+requestOptions\s*=/),rest=text.slice(begin),end=rest.search(/;\s*const\s+market\s*=/);assert.ok(begin>=0&&end>0);runInNewContext(rest.slice(0,end)+';holder.scheduled=scheduled;',context,{timeout:1000});f.route(holder.scheduled);
  const protect=async()=>{owner.set('protection');const marks=await f.market.context(f.ledger.state().positions,signal());assert.ok(marks.marks[owned]);lastCompleted=f.now();context.lastCompleted=lastCompleted;};await protect();
  owner.set('source');for(let n=0;n<background;n++){if(!lowerView(1500).admitted){await protect();owner.set('source');}await holder.scheduled.call('getSlot');}
  await protect();const before=f.ledger.state(),calls=f.calls.length,reserve=nativePaperManagementReserve(rpc.usage(),true,true,3);
- entryToken=entryAdmission.begin({mint,at:f.now(),windowEndAt:Math.floor(f.now()/10000)*10000,deadlineAt:f.now()+9000,maximumAccountedStarts:3,fullyAdmitted:reserve.entryAllowed});context.entryToken=entryToken;owner.set('candidate');
+ const windowEndAt=Math.floor(f.now()/10000)*10000;activeCertificate={schemaVersion:1,mint,pool:canonicalPumpPoolPda(new PublicKey(mint)).toBase58(),dataContract:'confirmed-program-activity-v3-shadow',openedAt:windowEndAt-60000,connectionId:1,subscriptionId:1,windowStartAt:windowEndAt-60000,windowEndAt,auditAvailableAt:f.now(),admittedAt:f.now(),deadlineAt:windowEndAt+9999,notificationCompletenessVerified:true,executedFlowCompletenessVerified:true,featuresSha256:'a'.repeat(64)};context.entryCertificate=structuredClone(activeCertificate);
+ entryToken=entryAdmission.begin({mint,at:f.now(),windowEndAt,deadlineAt:activeCertificate.deadlineAt,maximumAccountedStarts:3,fullyAdmitted:reserve.entryAllowed});context.entryToken=entryToken;owner.set('candidate');peerReserved=true;assert.equal(engine.discretionaryAdmission(1200).admitted,false);assert.equal(engine.financialAdmission(activeCertificate,1200).admitted,true);let invalidated=false;f.onPacingWait(()=>{if(!fault||invalidated)return;invalidated=true;if(fault==='scope')context.entryToken=null;else if(fault==='certificate')activeCertificate={...activeCertificate!,featuresSha256:'b'.repeat(64)};else if(fault==='generation')activeCertificate={...activeCertificate!,connectionId:2};else f.advance(activeCertificate!.deadlineAt-f.now()+1);});
  const quote=entryToken?await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal()):null;
- assert.ok(entryToken);assert.ok(quote,JSON.stringify(f.market.usage().entryQuoteFailures));assert.equal(f.calls.length-calls,3);assert.equal(entryAdmission.valid(entryToken,f.now()),true);assert.equal(entryAdmission.remaining(entryToken,f.now()),0);assert.equal(sourceAdmission(),true,'completed quote readiness needs no fresh whole-entry envelope');const remaining=nativePaperManagementReserve(rpc.usage(),true,true,entryAdmission.remaining(entryToken,f.now()));assert.equal(remaining.entryAllowed,true);assert.ok(remaining.rolling10SecondStartHeadroom!>=remaining.entryStartsRemaining!+remaining.protected10SecondStartReserve!);assert.ok(remaining.rollingStartHeadroom!>=remaining.entryStartsRemaining!+remaining.protectedMinuteStartReserve!);assert.equal(f.market.usage().entryQuoteFailures.count,0);entryAdmission.close(entryToken);
+ assert.ok(entryToken);if(fault){assert.equal(quote,null);assert.equal(invalidated,true);assert.equal(f.calls.length,calls,'scope/current-certificate failure after pacing prevents physical invocation');assert.ok(f.records.some(r=>r.kind==='native-paper-request-admission-refused'));assert.deepEqual(f.ledger.state(),before);entryAdmission.close(entryToken);return;}assert.ok(quote,JSON.stringify(f.market.usage().entryQuoteFailures));assert.equal(f.calls.length-calls,3);assert.equal(entryAdmission.valid(entryToken,f.now()),true);assert.equal(entryAdmission.remaining(entryToken,f.now()),0);assert.equal(sourceAdmission(),true,'completed quote readiness needs no fresh whole-entry envelope');const remaining=nativePaperManagementReserve(rpc.usage(),true,true,entryAdmission.remaining(entryToken,f.now()));assert.equal(remaining.entryAllowed,true);assert.ok(remaining.rolling10SecondStartHeadroom!>=remaining.entryStartsRemaining!+remaining.protected10SecondStartReserve!);assert.ok(remaining.rollingStartHeadroom!>=remaining.entryStartsRemaining!+remaining.protectedMinuteStartReserve!);assert.equal(f.market.usage().entryQuoteFailures.count,0);entryAdmission.close(entryToken);
  assert.deepEqual(f.ledger.state(),before);t.diagnostic(JSON.stringify({scope:'OFFLINE actual SDK, held ledger inventory, NativeCandidateRunner deadlines, launcher router and shared PilotRpc; no independently qualified opportunity represented',background,quoteAvailable:quote!==null,reserve,failure:f.market.usage().entryQuoteFailures.last,providerRequests:0}));
 });
 
@@ -175,7 +178,7 @@ test('real decoder quotes complete a disposable delayed buy and full-size exit w
   const end=f.ledger.state();assert.deepEqual(end.positions,{});assert.deepEqual(end.pending,{});assert.equal(end.executionCosts,'14000');assert.equal(end.lockedDeposits[mint],plan.depositLamports);
   const pnl=BigInt(sell.outputUnits)-10000000n-14000n;
   assert.equal(end.realizedLamports,pnl.toString());assert.equal(BigInt(end.lamports)+BigInt(end.lockedDeposits[mint]!)-BigInt(initial.lamports),pnl);assert.equal(end.inceptionAt,initial.inceptionAt);
-  const beforeExisting=f.calls.length,existing=await f.market.prepareEntryCosts(mint,signal());assert.equal(existing.depositLamports,'0');assert.equal(existing.accountPlan.baseExists,true);assert.equal(existing.accountPlan.quoteExists,true);assert.equal(f.calls.length-beforeExisting,1);
+  const beforeExisting=f.calls.length,existing=await f.market.prepareEntryCosts(mint,signal());assert.equal(existing.depositLamports,'0');assert.equal(existing.accountPlan.baseExists,true);assert.equal(existing.accountPlan.quoteExists,true);assert.equal(f.calls.length-beforeExisting,0,'unchanged generation/layout facts need no new provider read');
 });
 
 test('changed rent, unknown account plan, cancellation and invalidation refuse entry without changing account',async t=>{
@@ -285,7 +288,7 @@ test('entry preparation can yield between real SDK reads to fresh whole-inventor
     f.coordinator.reserve({id:'yield-buy:'+i,side:'buy',mint,decidedAt:f.now(),executeAt:f.now()+1000,expiresAt:f.now()+5000,gas:'7000',deposit:plan.depositLamports,maxSpend:'10000000',minReceive:'1',decisionEvidence:q.evidence},prior);
     f.advance(1000);assert.equal((await f.coordinator.runDue()).results[0]!.status,'filled');
   }
-  const inventory=f.ledger.state().positions;assert.equal(Object.keys(inventory).length,2);
+  const inventory=f.ledger.state().positions;assert.equal(Object.keys(inventory).length,2);f.advance(10001);
   await f.market.context(inventory,block);const before=structuredClone(f.ledger.state()),seen:string[]=[];
   f.beforePreparationRead(async({method,signal})=>{
     seen.push(method);f.advance(1000);const calls=f.calls.length,current=await f.market.context(inventory,signal);
@@ -371,7 +374,7 @@ for(const fault of ['stale','raised-floor','aborted','plan-changed','cross-mint'
  if(fault==='stale')f.advance(2001);
  if(fault==='raised-floor')f.market.minimumSlot(mint,q.slot!+1);
  if(fault==='aborted')controller.abort();
- if(fault==='plan-changed'){f.rentChanged();await f.market.prepareEntryCosts(mint,signal());}
+ if(fault==='plan-changed'){f.advance(1);await f.market.prepareEntryCosts(mint,signal());}
  if(fault==='cross-mint')request={...request,mint:f.captures[0]!.proof.quote.mint};
  if(fault==='tampered-output')original={...original,outputUnits:(BigInt(q.outputUnits)+1n).toString()};
  if(fault==='oversize')request={...request,inputUnits:'10000001'};
@@ -388,4 +391,41 @@ for(const fault of ['raised-floor','aborted','stale']as const)test(`local entry 
  assert.equal(await f.market.repriceEntryQuote({mint,side:'buy',inputUnits:'5000000',requiredDepositLamports:deposit.depositLamports},q,controller.signal),null);
  assert.equal(f.calls.length,calls);assert.deepEqual(f.ledger.state(),before);assert.equal(f.market.usage().entryQuoteFailures.last?.phase,'local-reprice');
  assert.equal(f.market.usage().entryQuoteFailures.last?.reasonCode,fault==='aborted'?'ENTRY_QUOTE_CALLER_ABORTED':'PILOT_MARKET_PREPARATION_CHANGED_OR_STALE');
+});
+
+
+test('slow ancillary preparation retains original stable facts and acquires executable state only afterward',async t=>{
+ const f=fixture(t,3000,false,false,false,true),mint=f.captures[1]!.proof.quote.mint,started=f.now(),before=f.ledger.state();let rents=0;
+ f.onRpc(method=>{if(method==='getMinimumBalanceForRentExemption'){rents++;f.advance(1200);f.bumpSlot();}});
+ const plan=await f.market.prepareEntryCosts(mint,signal(),{maximumMs:5000});assert.equal(rents,2);assert.equal(f.now()-started,2400);assert.equal(plan.layout!.receivedAt,new Date(started).toISOString());assert.equal(plan.at,f.now());assert.equal(plan.rentObservationsByBytes![170]!.receivedAt,started+1200);assert.equal(plan.rentObservationsByBytes![165]!.receivedAt,started+2400);
+ const count=f.calls.length,q=await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal());assert.ok(q,JSON.stringify(f.market.usage().entryQuoteFailures));assert.equal(f.calls.length-count,1);assert.equal(f.calls.at(-1)!.method,'getMultipleAccounts');assert.equal(q.at,f.now());assert.ok(q.slot!>plan.sourceSlot);assert.deepEqual(f.ledger.state(),before);
+ const source=f.records.findLast(r=>r.kind==='rpc-market-quote')!.data.source;assert.equal(source.receivedAt,new Date(f.now()).toISOString());assert.ok(Date.parse(source.receivedAt)>Date.parse(plan.layout!.receivedAt));
+});
+
+test('stable preparation reuse retains original program/layout/rent provenance and is revoked by current layout change',async t=>{
+ const f=fixture(t,3000,false,false,false,true),capture=f.captures[1]!,mint=capture.proof.quote.mint,first=await f.market.prepareEntryCosts(mint,signal());f.advance(1500);const before=f.calls.length,second=await f.market.prepareEntryCosts(mint,signal());assert.equal(f.calls.length,before);assert.deepEqual(second.layout,first.layout);assert.deepEqual(second.rentObservationsByBytes,first.rentObservationsByBytes);
+ syntheticLegacyBase(f,capture);assert.equal(await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal()),null);assert.equal(f.market.usage().entryQuoteFailures.last!.reasonCode,'POOL_LINKS_CHANGED');const fresh=await f.market.prepareEntryCosts(mint,signal());assert.notEqual(fresh.layout!.tokenProgram,first.layout!.tokenProgram);assert.equal(fresh.accountLengths.base,165);assert.ok(await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal()));
+});
+
+test('a locally deferred stable preparation resumes completed facts without renewing their original validity',async t=>{
+ const f=fixture(t),mint=f.captures[1]!.proof.quote.mint;let rent=0;f.onRpc(method=>{if(method==='getMinimumBalanceForRentExemption'&&++rent===2)throw new PilotRpcUnavailable('COMPONENT_ADMISSION_CLOSED');});await assert.rejects(f.market.prepareEntryCosts(mint,signal()),/COMPONENT_ADMISSION_CLOSED/);
+ const layoutAt=f.calls[0]!.at,firstRentAt=f.calls[1]!.at,count=f.calls.length;f.advance(500);f.onRpc(()=>{});const recovered=await f.market.prepareEntryCosts(mint,signal());assert.equal(f.calls.length-count,1);assert.equal(f.calls.at(-1)!.method,'getMinimumBalanceForRentExemption');assert.equal(Date.parse(recovered.layout!.receivedAt),layoutAt);assert.equal(recovered.rentObservationsByBytes![170]!.receivedAt,firstRentAt);
+ f.advance(10001);const old=f.calls.length;await f.market.prepareEntryCosts(mint,signal());assert.equal(f.calls.length-old,3,'expired stable facts require fresh layout and both rents');
+});
+
+
+test('stable preparation policy permits only a bounded five-second cooperative aggregate, never a longer quote',async t=>{
+ assert.equal(PILOT_ENTRY_PREPARATION_POLICY.maximumAggregateMs,5000);assert.equal(PILOT_ENTRY_PREPARATION_POLICY.stableReuseMaxAgeMs,10000);const f=fixture(t),mint=f.captures[1]!.proof.quote.mint,before=f.calls.length;await assert.rejects(f.market.prepareEntryCosts(mint,signal(),{maximumMs:5001}),/PREPARATION_BOUND_REQUIRED/);assert.equal(f.calls.length,before);
+});
+
+
+test('a candidate capture reset revokes stable reuse and in-flight preparation without creating financial actions',async t=>{
+ const f=fixture(t,3000,false,false,false,true),mint=f.captures[1]!.proof.quote.mint;for(let i=0;i<1000;i++)f.market.invalidateEntryPreparation('OFFLINE-unregistered-'+i);assert.equal((f.market as any).preparationEpochs.size,0,'broad unregistered gaps do not create retained preparation identities');await f.market.prepareEntryCosts(mint,signal());f.market.invalidateEntryPreparation(mint);const before=f.calls.length;assert.equal(await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal()),null);assert.equal(f.calls.length,before);const replacement=await f.market.prepareEntryCosts(mint,signal());assert.equal(replacement.layout!.preparationEpoch,1);assert.equal(f.calls.length-before,3);
+ f.market.invalidateEntryPreparation(mint);let release!:()=>void;f.pause(new Promise<void>(r=>release=r));const inFlight=f.market.prepareEntryCosts(mint,signal());await Promise.resolve();await Promise.resolve();f.market.invalidateEntryPreparation(mint);release();await assert.rejects(inFlight,/PREPARATION_CHANGED_OR_STALE/);assert.deepEqual(f.ledger.state().pending,{});
+});
+
+
+test('candidate capture reset retains a reserved financial order and permits its independently fresh post-delay execution pricing',async t=>{
+ const f=fixture(t,3000,false,false,false,true),mint=f.captures[1]!.proof.quote.mint,plan=await f.market.prepareEntryCosts(mint,signal()),q=await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal());assert.ok(q);
+ f.coordinator.reserve({id:'OFFLINE retained pending after capture gap',side:'buy',mint,decidedAt:f.now(),executeAt:f.now()+1000,expiresAt:f.now()+5000,gas:'7000',deposit:plan.depositLamports,maxSpend:'10000000',minReceive:'1',decisionEvidence:q.evidence},{price:f.price(),marks:{}});const order=Object.values(f.ledger.state().pending)[0]!;assert.ok(order);f.market.invalidateEntryPreparation(mint);f.advance(1000);const before=f.ledger.state(),priced=await f.market.executionQuote({order,attemptedAt:f.now(),fullPositionBaseUnits:null},signal());assert.ok(priced);assert.equal(priced.at,f.now());assert.equal(priced.requiredDepositLamports,order.deposit);assert.deepEqual(f.ledger.state(),before,'pricing never cancels, replaces or fabricates the reserved financial action');
 });

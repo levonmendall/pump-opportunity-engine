@@ -68,7 +68,7 @@ test('settled HTTP refusal preserves its Retry-After while permitting separately
 
 test('actual control Retry-After blocks only controls and cannot be cleared by successful HTTP work',async()=>{
  const f=fixture();try{
-  await assert.rejects(f.client.operateData({transport:'ws-upgrade',method:'upgrade'},async()=>{f.client.noteThrottle('10');throw Error('COMPONENT_HTTP_429');}),/HTTP_429/);await turn();const until=f.client.usage().controlCooldownUntil;assert.equal(until,215000);assert.equal(f.client.usage().controlDispatchWindow!.readyAt,until);assert.ok(f.client.usage().rpcDispatchWindow!.readyAt<until);let controls=0;await assert.rejects(f.client.operateData({transport:'ws',method:'ping'},async op=>{controls++;op.completeResponse();}),/COOLDOWN/);assert.equal(controls,0);assert.equal(f.client.usage().newUnits,1);assert.equal(await f.client.call('getSlot'),123);assert.equal(f.client.usage().controlCooldownUntil,until);await assert.rejects(f.client.operateData({transport:'ws',method:'ping'},async op=>{controls++;op.completeResponse();}),/COOLDOWN/);assert.equal(controls,0);f.advance(until-f.now());await f.client.operateData({transport:'ws',method:'ping'},async op=>{controls++;op.completeResponse();});assert.equal(controls,1);assert.equal(f.client.usage().newUnits,3);
+  await assert.rejects(f.client.operateData({transport:'ws-upgrade',method:'upgrade'},async()=>{f.client.noteThrottle('10');throw Error('COMPONENT_HTTP_429');}),/HTTP_429/);await turn();const until=f.client.usage().controlCooldownUntil;assert.equal(until,210000);assert.equal(f.client.usage().controlDispatchWindow!.readyAt,until);assert.ok(f.client.usage().rpcDispatchWindow!.readyAt<until);let controls=0;await assert.rejects(f.client.operateData({transport:'ws',method:'ping'},async op=>{controls++;op.completeResponse();}),/COOLDOWN/);assert.equal(controls,0);assert.equal(f.client.usage().newUnits,1);assert.equal(await f.client.call('getSlot'),123);assert.equal(f.client.usage().controlCooldownUntil,until);await assert.rejects(f.client.operateData({transport:'ws',method:'ping'},async op=>{controls++;op.completeResponse();}),/COOLDOWN/);assert.equal(controls,0);f.advance(until-f.now());await f.client.operateData({transport:'ws',method:'ping'},async op=>{controls++;op.completeResponse();});assert.equal(controls,1);assert.equal(f.client.usage().newUnits,3);
  }finally{f.close();}
 });
 
@@ -118,7 +118,7 @@ test('global time/response allowances remain finite across chapters; a new const
 });
 test('WS throttle observation respects an HTTP-date cooldown without retrying the original control operation',async()=>{
   const f=fixture();try{
-    await assert.rejects(f.client.operateData({transport:'ws-upgrade',method:'upgrade'},async()=>{assert.equal(f.client.noteThrottle(new Date(f.now()+30000).toUTCString()),235000);throw Error('COMPONENT_HTTP_429');}),/HTTP_429/);await turn();assert.equal(f.client.cooldownUntil(),0);assert.equal(f.client.usage().controlCooldownUntil,235000);assert.equal(f.client.usage().newUnits,1);assert.equal(f.client.available(),true);assert.equal(await f.client.call('getSlot'),123);assert.equal(f.client.usage().chapter,2);assert.equal(f.client.usage().uncertainResponseBytes,2*MIB+65536);
+    await assert.rejects(f.client.operateData({transport:'ws-upgrade',method:'upgrade'},async()=>{assert.equal(f.client.noteThrottle(new Date(f.now()+30000).toUTCString()),230000);throw Error('COMPONENT_HTTP_429');}),/HTTP_429/);await turn();assert.equal(f.client.cooldownUntil(),0);assert.equal(f.client.usage().controlCooldownUntil,230000);assert.equal(f.client.usage().newUnits,1);assert.equal(f.client.available(),true);assert.equal(await f.client.call('getSlot'),123);assert.equal(f.client.usage().chapter,2);assert.equal(f.client.usage().uncertainResponseBytes,2*MIB+65536);
     assert.equal(createHash('sha256').update(readFileSync(f.old)).digest('hex'),createHash('sha256').update(f.before).digest('hex'));
   }finally{f.close();}
 });
@@ -475,4 +475,14 @@ test('explicit HTTP delay expiry never releases an unsettled physical response o
  let calls=0,releaseCancel:(()=>void)|undefined;const f=fixture({fetcher:(async(_url,init)=>{calls++;const b=JSON.parse(String(init?.body));return calls===1?new Response(new ReadableStream({cancel(){return new Promise<void>(resolve=>{releaseCancel=resolve;});}}),{status:429,headers:{'retry-after':'10'}}):new Response(JSON.stringify({jsonrpc:'2.0',id:b.id,result:123}));})as typeof fetch});try{
   await assert.rejects(f.client.call('getTransaction',[],undefined,{timeoutMs:5}),/PHYSICAL_TIMEOUT/);assert.ok(releaseCancel);assert.equal(f.client.cooldownUntil(),210000);assert.equal(f.client.usage().inFlight,1);f.advance(10000);await assert.rejects(f.client.call('getMultipleAccounts'),/PHYSICAL_SLOT_OCCUPIED/);assert.equal(calls,1);assert.equal(f.client.usage().inFlight,1);assert.equal(f.client.usage().uncertainResponseBytes,4*MIB);releaseCancel();await turn();await turn();assert.equal(f.client.usage().inFlight,0);assert.equal(await f.client.call('getMultipleAccounts'),123);assert.equal(calls,2);assert.equal(f.client.usage().uncertainResponseBytes,4*MIB);
  }finally{releaseCancel?.();await turn();await turn();f.close();}
+});
+
+
+test('WebSocket Retry-After preserves exact numeric/date floors and the separate unknown-header fallback',async()=>{
+ for(const [header,delay]of [['10',10000],[new Date(210000).toUTCString(),10000],[null,65000],['not-a-delay',65000],[new Date(190000).toUTCString(),65000]]as const){
+  const f=fixture();try{
+   const at=f.now(),until=f.client.noteThrottle(header);assert.equal(until,at+delay);assert.equal(f.client.usage().newUnits,0,'observing a provider restriction starts no request');
+   let starts=0;f.advance(delay-1);await assert.rejects(f.client.operateData({transport:'ws',method:'ping'},async op=>{starts++;op.completeResponse();}),/COOLDOWN/);assert.equal(starts,0);f.advance(1);await f.client.operateData({transport:'ws',method:'ping'},async op=>{starts++;op.completeResponse();});assert.equal(starts,1);assert.equal(f.client.usage().controlCooldownUntil,until);
+  }finally{f.close();}
+ }
 });

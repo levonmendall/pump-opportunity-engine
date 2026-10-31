@@ -48,7 +48,7 @@ const canonical=(value:unknown):unknown=>Array.isArray(value)?value.map(canonica
 // canonical on-chain creation identity. Every chain role/context remains bound.
 const stable=(id:MigrationIdentity)=>{const {commitment:_c,availableAt:_a,feedHintRole:_hint,...value}=id;return JSON.stringify(canonical(value));};
 
-export const NATIVE_DEADLINE_POLICY=Object.freeze({version:'native-end-to-end-operation-admission-v2',pageOperationMs:2000,postValidationMs:125,discretionaryReadMs:1500,originWorkflowMs:20000,maximumOriginReads:6,uninvokedPageRetryMs:250,nativeOperationMs:1700,heartbeatOperationMs:1200});
+export const NATIVE_DEADLINE_POLICY=Object.freeze({version:'native-certified-financial-handoff-admission-v3',pageOperationMs:2000,postValidationMs:125,discretionaryReadMs:1500,originWorkflowMs:20000,maximumOriginReads:6,uninvokedPageRetryMs:250,nativeOperationMs:1700,heartbeatOperationMs:1200});
 export type NativeDeadlineTarget={mint:string;eligibleAt:number;deadlineAt:number;ready:boolean;continuing:boolean;minimumPageWorkMs:number;prospective:boolean;historyReadyAt:number;serviceableBeforeDeadline:boolean};
 export type NativeDeadlineView={at:number;targets:NativeDeadlineTarget[];readyCount:number;nextEligibleAt:number|null;earliestDeadlineAt:number|null;discretionaryUntil:number|null;minimumReadyWorkMs:number;unavailableReadyCount:number;conservativeReadyEnvelopeFits:boolean;requiredNativeAt:number|null;requiredNativeAction:string|null;meaning:string};
 type VerificationRead={method:string;params:unknown[];signal?:AbortSignal;resolve:(value:unknown)=>void;reject:(error:unknown)=>void};
@@ -356,6 +356,19 @@ export class NativeCandidateRunner{
   need(Number.isSafeInteger(boundMs)&&boundMs>0&&boundMs<=10000,'NATIVE_DISCRETIONARY_BOUND');const view=this.deadlineView(at),latest=Math.min(view.discretionaryUntil??Infinity,view.requiredNativeAt??Infinity)-NATIVE_DEADLINE_POLICY.postValidationMs;
   return {admitted:at+boundMs<=latest,latestStartAt:Number.isFinite(latest)?latest-boundMs:null,view,reason:at+boundMs<=latest?'shared-deadline-slack':'committed-native-or-candidate-deadline'};
  }
+ /** Already completed independent evidence gets one current financial work
+  * opportunity before hypothetical remaining peer pages. This is scheduling
+  * only: the caller still owns protection, pending actions, provider pacing,
+  * financial permission and the exact-size quote. Re-read this view after
+  * pacing; neither an old bucket nor a replacement generation can inherit it. */
+ financialAdmission(certificate:NativeAuditCertificate,boundMs:number,at=this.now()){
+  need(Number.isSafeInteger(boundMs)&&boundMs>0&&boundMs<=10000,'NATIVE_DISCRETIONARY_BOUND');
+  const view=this.deadlineView(at),current=this.currentAuditCertificate(certificate?.mint??'',at),fields=['schemaVersion','mint','pool','dataContract','openedAt','connectionId','subscriptionId','windowStartAt','windowEndAt','auditAvailableAt','admittedAt','deadlineAt','notificationCompletenessVerified','executedFlowCompletenessVerified','featuresSha256']as const;
+  const matches=!!current&&fields.every(key=>certificate?.[key]===current[key]),sourceOpen=this.open(),certificateDeadlineAt=current?.deadlineAt??null,nativeServiceLatestAt=view.requiredNativeAt;
+  const completionDeadlineAt=matches?Math.min(current!.deadlineAt,nativeServiceLatestAt??Infinity):null,latest=completionDeadlineAt===null?null:completionDeadlineAt-NATIVE_DEADLINE_POLICY.postValidationMs-boundMs;
+  const bindingDeadline=completionDeadlineAt===null?'current-certificate':nativeServiceLatestAt!==null&&nativeServiceLatestAt<=current!.deadlineAt?'required-native-service':'original-certificate',admitted=matches&&sourceOpen&&latest!==null&&at<=latest;
+  return {admitted,latestStartAt:latest,certificateLatestStartAt:matches?current!.deadlineAt-NATIVE_DEADLINE_POLICY.postValidationMs-boundMs:null,nativeLatestStartAt:nativeServiceLatestAt===null?null:nativeServiceLatestAt-NATIVE_DEADLINE_POLICY.postValidationMs-boundMs,view,reason:!matches?'current-audit-certificate-required':!sourceOpen?'source-admission-closed':admitted?'completed-certificate-financial-priority':bindingDeadline==='required-native-service'?'required-native-service-deadline':'original-certificate-deadline',bindingDeadline,certificateDeadlineAt,nativeServiceLatestAt,completionDeadlineAt,requestedOperationMs:boundMs,postValidationMs:NATIVE_DEADLINE_POLICY.postValidationMs,remainingCertificateMs:certificateDeadlineAt===null?null:certificateDeadlineAt-at,peerAuditReservationsDeferred:view.readyCount};
+ }
  private observationIdentity(row:WatchRow):NativeObservationIdentity|undefined{
   if(!row.mint||!row.pool)return;
   const origin=this.currentPoolObservation?undefined:this.origin(row.mint);
@@ -470,7 +483,7 @@ export class NativeCandidateRunner{
    this.opportunity(mint,availableAt,current.features,{kind:activeAssessment.status==='unavailable'?'missing-data':activeAssessment.status==='failed'?'strategy-rejection':'preliminary-pass',reason:activeAssessment.reason,qualified:false,...('assessments'in activeAssessment?{assessments:activeAssessment.assessments}:{}),...('components'in activeAssessment?{components:activeAssessment.components}:{})},activeAssessment.status==='unavailable');
   }
   const admittedCertificate=this.certificates.get(mint);if(admittedCertificate)this.options.onAuditAvailable?.(structuredClone(admittedCertificate));
-  if(activeAssessment.status!=='not-rejected'){this.watch.noteEvaluation(mint,{kind:activeAssessment.status==='failed'?'economic-rejection':'technical-unavailable',windowEndAt:end,evidence:activeAssessment.reason.slice(0,512)},availableAt);this.watch.finishTechnicalReevaluation(mint,availableAt,'new audited predictive assessment did not pass');this.retire(mint,'audited predictive observation completed; fair watch revisit',availableAt,30000);}
+  if(activeAssessment.status!=='not-rejected'){this.watch.noteEvaluation(mint,{kind:activeAssessment.status==='failed'?'economic-rejection':'technical-unavailable',windowEndAt:end,evidence:activeAssessment.reason.slice(0,512)},availableAt);this.watch.finishTechnicalReevaluation(mint,availableAt,'new audited predictive assessment did not pass');this.retire(mint,'audited predictive observation completed; fair watch revisit',availableAt,this.options.activeStrategy===LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION&&activeAssessment.status==='failed'?0:30000);}
  }
  private async evaluate(c:Candidate,deadlineAt:number,signal?:AbortSignal){
   if(!c.auditSession)await this.beginAudit(c,signal);
