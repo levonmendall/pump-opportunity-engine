@@ -1,0 +1,64 @@
+name: Build exact regression-validated POE slot repair
+on:
+  push:
+    branches: [repair/poe-slot-lifecycle-20261031]
+    paths: ['.github/workflows/poe-slot-reviewed-build.yml']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: f8ab5d74c5f8c8e792ab0b099388a6f3ad68d2d2
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/download-artifact@v4
+        with:
+          run-id: 41252095541
+          name: poe-slot-lifecycle-final-41252095541
+          github-token: ${{ github.token }}
+          path: /tmp/poe-slot-validated
+      - name: Verify exact source and complete passing regression evidence
+        run: |
+          python3 -B -I - <<'PY'
+          import pathlib,re,subprocess,json
+          p=pathlib.Path('/tmp/poe-slot-validated')
+          source='f8ab5d74c5f8c8e792ab0b099388a6f3ad68d2d2'
+          assert (p/'source-commit.txt').read_text().strip()==source
+          assert subprocess.check_output(['git','rev-parse','HEAD'],text=True).strip()==source
+          for name,count in [('full.log',3022),('focused.log',239)]:
+              text=(p/name).read_text()
+              def metric(k):
+                  a=re.findall(r'(?m)^(?:# |ℹ )'+re.escape(k)+r'\s+(\d+)\s*$',text)
+                  assert len(a)==1
+                  return int(a[0])
+              assert metric('tests')==count and metric('pass')==count
+              assert all(metric(k)==0 for k in ['fail','cancelled','skipped'])
+          print(json.dumps({'source':source,'fullTestsPassed':3022,'focusedTestsPassed':239,'applicationSourceChanged':False}))
+          PY
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+          cache: npm
+      - name: Install pinned dependencies and typecheck exact source
+        run: npm ci --include=dev && npm run build
+      - name: Build in the existing restricted output scope
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          node scripts/build-native-paper-ec2.mjs --output-directory /tmp/poe-native-paper-output-slot-lifecycle
+          mv /tmp/poe-native-paper-output-slot-lifecycle /tmp/poe-slot-validated/bundle
+          git archive --format=tar HEAD | gzip -n > /tmp/poe-slot-validated/source.tar.gz
+          sha256sum /tmp/poe-slot-validated/bundle/* /tmp/poe-slot-validated/source.tar.gz > /tmp/poe-slot-validated/sha256.txt
+      - uses: actions/upload-artifact@v4
+        if: success()
+        with:
+          name: poe-slot-f8ab5d74-validated-source-and-bundle
+          path: /tmp/poe-slot-validated/
+          retention-days: 14
+          if-no-files-found: error
