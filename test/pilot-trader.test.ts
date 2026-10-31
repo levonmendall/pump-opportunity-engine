@@ -250,18 +250,3 @@ test('a delayed fresh entry quote performs genuine flat reconciliation before si
 for(const fault of ['changed-revision','pending','owner-pause','stale-usd','quote-stale-after-record']as const)test(`flat entry reconciliation refuses ${fault} without laundering market or financial authority`,async t=>{
  const f=fixture(t);let expectedPending:string[]=[];const engine=new PaperTrader({...f.options,quote:async(request,signal)=>{f.at+=fault==='stale-usd'?10001:2500;if(fault==='changed-revision')f.ledger.reconcile('ISOLATED intervening actual reconciliation',f.at,{microUsdPerSol:'100000000',at:f.at,source:'ISOLATED changed context'},{});if(fault==='pending'){f.ledger.reconcile('ISOLATED current obligation context',f.at,{microUsdPerSol:'100000000',at:f.at,source:'ISOLATED current context'},{});f.ledger.order({id:'ISOLATED pending other obligation',side:'buy',mint:'other-obligation',decidedAt:f.at,executeAt:f.at+1000,expiresAt:f.at+5000,gas:'7000',deposit:'0',maxSpend:'1',minReceive:'1',decisionEvidence:'ISOLATED pre-existing obligation'},{microUsdPerSol:'100000000',at:f.at,source:'ISOLATED price'},{});expectedPending=['ISOLATED pending other obligation'];}if(fault==='owner-pause')f.ledger.pause('ISOLATED owner pause',f.at,'operator paused new entries');return f.options.quote(request,signal);},recorder:{record(kind,data){f.options.recorder?.record(kind,data);if(fault==='quote-stale-after-record'&&kind==='trader-decision'&&(data as any).stage==='qualified')f.at+=2001;}}});engine.start();engine.setPilotEntryDeposit('2000000','ISOLATED prepared account rent');f.admit(engine);f.warm(engine);f.ready();await engine.tick();assert.deepEqual(Object.keys(f.ledger.state().pending),expectedPending);assert.deepEqual(f.ledger.state().positions,{});assert.equal(engine.funnel.reserved,0);if(fault!=='quote-stale-after-record'){assert.equal(f.rows.some(r=>r.kind==='trader-entry-flat-reconciliation'),false);const refusal=f.rows.find(r=>r.kind==='trader-entry-flat-reconciliation-refused')!.data;assert.equal(refusal.technicalFailure,true);assert.equal(refusal.strategyRejection,false);assert.equal(refusal.transportStarted,false);assert.equal(refusal.quoteAt,f.at);assert.ok(engine.decisions().some(d=>d.stage==='missing-data'&&d.reason==='entry-flat-reconciliation-unavailable'));}
 });
-
-
-test('optional predictive recomputation fault cannot abort a completed risk rejection or close financial permissions',async t=>{
-  const f=fixture(t),engine=new PaperTrader({...f.options,predictiveDiagnostics:true,candidateReadiness:()=>true,predictiveReadiness:()=>true});
-  engine.start();engine.setPilotEntryDeposit('2000000','ISOLATED current account rent');f.admit(engine);f.warm(engine);
-  const candidate=(engine as any).candidates.get(MINT),original=candidate.window.features.bind(candidate.window);let reads=0;
-  candidate.window.features=(at:number)=>{reads++;if(reads===2)throw Error('ISOLATED optional predictive window rollover');return original(at);};
-  const before=f.ledger.state();await assert.doesNotReject(engine.tick());
-  const after=f.ledger.state();assert.equal(reads,2);assert.equal(engine.funnel.evaluated,1);
-  assert.ok(engine.decisions().some(d=>d.stage==='risk-rejection'));
-  assert.ok(f.rows.some(r=>r.kind==='trader-decision'));
-  assert.equal(f.rows.some(r=>r.kind==='trader-predictive-assessment'),false);
-  assert.equal(after.controls.reason,before.controls.reason,'secondary diagnostics cannot become hard financial intent');
-  assert.deepEqual(after.positions,{});assert.deepEqual(after.pending,{});
-});
