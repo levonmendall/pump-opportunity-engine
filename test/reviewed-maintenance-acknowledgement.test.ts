@@ -5,14 +5,14 @@ import {test,before,after,type TestContext} from 'node:test';
 import assert from 'node:assert/strict';
 import {mkdtempSync,mkdirSync,copyFileSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';import {join} from 'node:path';import {createHash} from 'node:crypto';
-import {PaperLedger,OPERATING_FINANCIAL_READINESS_VERSION,REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT as C,inspectReviewedMaintenanceAcknowledgement,readReviewedMaintenanceAcknowledgement,type LedgerState,type OperatingFinancialReadiness,type UsdPrice} from '../src/ledger.js';
+import {PaperLedger,OPERATING_FINANCIAL_READINESS_VERSION,OPERATIONAL_REPORTING_ENTRY_PAUSE,REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT as C,inspectReviewedMaintenanceAcknowledgement,readReviewedMaintenanceAcknowledgement,type LedgerState,type OperatingFinancialReadiness,type UsdPrice} from '../src/ledger.js';
 import {PAPER_TEN_SOL_EPOCH_AUTHORIZATION,PAPER_V3_TEN_SOL_EPOCH_AUTHORIZATION,PAPER_EPOCH_ASSET_SEGREGATION} from '../src/paper-epoch.js';
 import {acknowledgeReviewedMaintenancePause} from '../src/reviewed-maintenance-recovery.js';
 const DAY=Date.parse('2026-10-30T18:00:00Z'),AT=DAY+3600000,SOURCE='a'.repeat(40),RUN='native-paper-20261030190000000';
 const hash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
 const price=(at=AT+1):UsdPrice=>({at,microUsdPerSol:'100000000',source:'OFFLINE original-time fixture conversion'});
 const proof=(s:Readonly<LedgerState>,at:number):OperatingFinancialReadiness=>({version:OPERATING_FINANCIAL_READINESS_VERSION,purpose:'financial-permission-only',evidence:'OFFLINE financial-only fixture request',accountId:s.accountId,stateRevision:s.revision,reconciledAt:s.daily.reconciledAt,positionUnits:{},source:{kind:'selected-native-support',bankClockAt:at,receivedAt:at,validUntil:at+30000},recoveryComplete:true,financialInventoryReady:true,budgetAvailable:true});
-let templateDirectory:string,templatePath:string;
+let templateDirectory:string,templatePath:string,maintenanceState:LedgerState;
 before(async()=>{
  templateDirectory=mkdtempSync(join(tmpdir(),'poe-OFFLINE-reviewed-maintenance-template-'));templatePath=join(templateDirectory,'ledger.sqlite');const backups=join(templateDirectory,'backups');mkdirSync(backups,{mode:0o700});
  const ledger=new PaperLedger(templatePath,C.accountId);
@@ -27,7 +27,7 @@ before(async()=>{
   Object.assign(s,{revision:122328,lamports:C.cashLamports,realizedLamports:C.realizedLamports,executionCosts:C.executionCosts,lockedDeposits:{'OFFLINE retained rent A':'1513840','OFFLINE retained rent B':'1513840'}});
   db.prepare('UPDATE financial_state SET body=?').run(JSON.stringify(s));ledger.reconcile('OFFLINE fresh anchor context',AT,price(AT),{});
   assert.equal(ledger.resume('OFFLINE authentic successful anchor',AT,price(AT),{},proof(ledger.state(),AT)).enabled,true);assert.equal(ledger.state().revision,122330);
-  ledger.pause('trader:pause:122330:'+AT,AT,C.maintenanceReason);assert.equal(ledger.state().revision,C.firstMaintenancePauseRevision);
+  ledger.pause('trader:pause:122330:'+AT,AT,C.maintenanceReason);assert.equal(ledger.state().revision,C.firstMaintenancePauseRevision);maintenanceState=structuredClone(ledger.state())as LedgerState;
   const insert=(revision:number,id:string,kind:string,payload:unknown,result:unknown)=>{db.prepare('INSERT INTO actions VALUES(?,?,?)').run(id,hash({kind,payload}),JSON.stringify(result));db.prepare('INSERT INTO journal VALUES(?,?,?,?,?)').run(revision,id,(payload as any).now,kind,JSON.stringify(payload));};
   db.transaction(()=>{
    let revision=122332;
@@ -52,16 +52,84 @@ function fixture(t:TestContext){
  return {ledger,db,input,plan,apply,logical,startup,get at(){return at;},set at(value:number){at=value;}};
 }
 function rewrite(f:ReturnType<typeof fixture>,id:string,change:(payload:any)=>void){const row=f.db.prepare('SELECT kind,detail FROM journal WHERE action_id=?').get(id),p=JSON.parse(row.detail);change(p);f.db.prepare('UPDATE journal SET detail=? WHERE action_id=?').run(JSON.stringify(p),id);f.db.prepare('UPDATE actions SET payload_hash=? WHERE id=?').run(hash({kind:row.kind,payload:p}),id);}
+function moveControl(f:ReturnType<typeof fixture>,from:number,to:number,id:string){const old=f.db.prepare('SELECT action_id id FROM journal WHERE revision=?').get(from).id;f.db.prepare('UPDATE actions SET id=? WHERE id=?').run(id,old);f.db.prepare('UPDATE journal SET revision=?,action_id=? WHERE action_id=?').run(to,id,old);}
+function reportingMixture(f:ReturnType<typeof fixture>,restoredCopies=1){
+ // Rebuild just this isolated fixture's short historical interval through the
+ // real pause writer. The same inspected 37/3674/16 totals can contain different
+ // maintenance/reporting mixtures; the live account's mixture is not assumed.
+ const closed=structuredClone(f.ledger.state())as LedgerState,first=122346-restoredCopies;
+ f.db.transaction(()=>{
+  for(const {action_id:id}of f.db.prepare('SELECT action_id FROM journal WHERE revision BETWEEN ? AND 122347').all(first)){f.db.prepare('DELETE FROM actions WHERE id=?').run(id);f.db.prepare('DELETE FROM journal WHERE action_id=?').run(id);}
+  const prior={...structuredClone(maintenanceState),revision:first-1};f.db.prepare('UPDATE financial_state SET body=?').run(JSON.stringify(prior));
+  const pause=(restore:boolean,reason:string)=>f.ledger.pause('trader:'+(restore?'restore-hard-pause':'pause')+':'+f.ledger.state().revision+':'+AT,AT,reason);
+  pause(false,OPERATIONAL_REPORTING_ENTRY_PAUSE);for(let n=0;n<restoredCopies;n++)pause(true,OPERATIONAL_REPORTING_ENTRY_PAUSE);pause(true,C.maintenanceReason);
+  assert.equal(f.ledger.state().revision,122347);f.db.prepare('UPDATE financial_state SET body=?').run(JSON.stringify(closed));
+ })();
+}
 
 test('exact reviewed owner acknowledgement preserves deposits and all financial state, retains history, and grants no entries',t=>{
  const f=fixture(t),before=f.logical(),request=f.input(),plan=f.plan();assert.deepEqual(f.logical(),before,'inspection writes nothing');
- assert.deepEqual(plan.reviewedCounts,{deniedResumes:3674,pauseIntents:37,stopIntents:0,maintenancePauses:16});assert.deepEqual(plan.lockedDeposits,{count:2,totalLamports:'3027680',sha256:hash(before.state.lockedDeposits)});assert.equal(plan.priorRevision,140833);assert.equal(plan.anchor.revision,122330);assert.equal(f.ledger.operatingFinancialRecoveryAllowed(f.at),false);
+ assert.deepEqual(plan.reviewedCounts,{deniedResumes:3674,pauseIntents:37,stopIntents:0,maintenancePauses:16,restoredReportingPauses:0,suspiciousControlIntents:16});assert.deepEqual(plan.lockedDeposits,{count:2,totalLamports:'3027680',sha256:hash(before.state.lockedDeposits)});assert.equal(plan.priorRevision,140833);assert.equal(plan.anchor.revision,122330);assert.equal(f.ledger.operatingFinancialRecoveryAllowed(f.at),false);
  const result=f.ledger.acknowledgeReviewedMaintenancePause(request,plan),after=f.logical();
  assert.equal(result.historicalCauseKnown,false);assert.equal(result.historicalFailureDeclaredHarmless,false);assert.equal(result.entryPermissionGranted,false);assert.equal(result.financialControlWrites,1);assert.equal(result.capitalWrites,0);
  assert.deepEqual(after.state,{...before.state,revision:before.state.revision+1,lastAt:f.at,controls:{...before.state.controls,reason:C.newReason,changedAt:f.at}});assert.equal(after.state.controls.entriesEnabled,false);assert.equal(after.state.daily.paused,true);assert.deepEqual(after.metadata,before.metadata);assert.deepEqual(after.journal.slice(0,-1),before.journal);assert.deepEqual(after.actions.filter((a:any)=>a.id!==C.actionId),before.actions);
  assert.equal(f.ledger.operatingFinancialRecoveryAllowed(f.at),true);assert.deepEqual(readReviewedMaintenanceAcknowledgement(f.db,after.state,f.at),result);
  f.startup();f.ledger.reconcile('OFFLINE post-ack fresh finance',f.at,price(f.at),{});assert.equal(f.ledger.resume('OFFLINE separately verified fresh readiness',f.at,price(f.at),{},proof(f.ledger.state(),f.at)).enabled,true);
  assert.deepEqual(f.ledger.state().lockedDeposits,before.state.lockedDeposits);assert.equal(f.ledger.state().lamports,before.state.lamports);
+});
+
+test('reviewed suspicious count accepts authenticated maintenance/reporting mixtures without assuming sixteen maintenance pauses',async t=>{
+ for(const restoredCopies of [1,2])await t.test(String(restoredCopies)+' proven reporting copies',st=>{
+  const f=fixture(st);reportingMixture(f,restoredCopies);const before=f.logical(),request=f.input(),plan=f.plan();
+  assert.deepEqual(plan.reviewedCounts,{deniedResumes:3674,pauseIntents:37,stopIntents:0,maintenancePauses:16-restoredCopies,restoredReportingPauses:restoredCopies,suspiciousControlIntents:16});assert.deepEqual(f.logical(),before,'inspection writes nothing');
+  const receipt=f.ledger.acknowledgeReviewedMaintenancePause(request,plan),after=f.logical();assert.equal(receipt.entryPermissionGranted,false);assert.equal(after.state.controls.entriesEnabled,false);assert.deepEqual(after.state.lockedDeposits,before.state.lockedDeposits);assert.equal(after.state.lamports,before.state.lamports);assert.deepEqual(after.journal.slice(0,-1),before.journal);
+  assert.deepEqual(readReviewedMaintenanceAcknowledgement(f.db,after.state,f.at),receipt);assert.equal(f.ledger.operatingFinancialRecoveryAllowed(f.at),true);
+ });
+});
+
+test('proven reporting copies after the reviewed cutoff do not inflate the original suspicious count',t=>{
+ const f=fixture(t);reportingMixture(f);const original=f.plan();
+ f.ledger.pause('trader:restore-hard-pause:'+f.ledger.state().revision+':'+f.at,f.at,OPERATIONAL_REPORTING_ENTRY_PAUSE);f.startup();
+ const before=f.logical(),plan=f.plan();assert.deepEqual(plan.reviewedCounts,original.reviewedCounts);assert.equal(plan.reviewedPrefixSha256,original.reviewedPrefixSha256);assert.notEqual(plan.controlPrefixSha256,original.controlPrefixSha256);assert.deepEqual(f.logical(),before);
+ const receipt=f.ledger.acknowledgeReviewedMaintenancePause(f.input(),plan);assert.equal(receipt.entryPermissionGranted,false);assert.equal(f.ledger.state().controls.entriesEnabled,false);
+});
+
+test('a reporting restore without an authenticated ordinary reporting cause is still unreviewed',t=>{
+ const f=fixture(t);f.ledger.pause('trader:restore-hard-pause:'+f.ledger.state().revision+':'+f.at,f.at,OPERATIONAL_REPORTING_ENTRY_PAUSE);f.startup();const before=f.logical();
+ assert.throws(()=>f.plan(),/OWNER_MAINTENANCE_UNREVIEWED_RESTORED_INTENT/);assert.deepEqual(f.logical(),before);
+});
+
+test('matching total sixteen cannot hide a suspicious reporting restore before the reviewed first maintenance',t=>{
+ const f=fixture(t);reportingMixture(f);
+ moveControl(f,122330,122327,'OFFLINE authentic successful anchor');rewrite(f,'OFFLINE authentic successful anchor',p=>{p.readiness.stateRevision=122326;});
+ moveControl(f,122345,122328,'trader:pause:122327:'+AT);moveControl(f,122346,122330,'trader:restore-hard-pause:122329:'+AT);
+ const before=f.logical();assert.throws(()=>f.plan(),/OWNER_MAINTENANCE_REVIEWED_ORIGIN_MISMATCH/);assert.deepEqual(f.logical(),before);
+});
+
+test('changed reviewed suspicious totals remain distinct refusals',async t=>{
+ for(const extra of [false,true])await t.test(extra?'seventeenth suspicious intent':'missing suspicious intent',st=>{
+  const f=fixture(st);reportingMixture(f);const revision=extra?122348:122332,id='trader:'+(extra?'restore-hard-pause':'pause')+':'+(revision-1)+':'+AT;
+  moveControl(f,revision,revision,id);rewrite(f,id,p=>{p.reason=extra?OPERATIONAL_REPORTING_ENTRY_PAUSE:'current equity or liquidation unavailable; entries closed';});
+  const before=f.logical();assert.throws(()=>f.plan(),/OWNER_MAINTENANCE_REVIEWED_SUSPICIOUS_COUNT_MISMATCH/);assert.deepEqual(f.logical(),before);
+ });
+});
+
+test('reviewed count does not silently reinterpret non-writer payload bytes or duplicate result keys',async t=>{
+ for(const fault of ['payload spacing','duplicate result key','result spacing']as const)await t.test(fault,st=>{
+  const f=fixture(st),row=f.db.prepare('SELECT action_id id,detail FROM journal WHERE revision=122347').get();
+  if(fault==='payload spacing')f.db.prepare('UPDATE journal SET detail=? WHERE action_id=?').run(' '+row.detail,row.id);
+  else f.db.prepare('UPDATE actions SET result=? WHERE id=?').run(fault==='duplicate result key'?'{"paused":false,"paused":true,"pendingBuyCancellations":[]}':'{ "paused":true,"pendingBuyCancellations":[]}',row.id);
+  const before=f.logical();assert.throws(()=>f.plan(),/OWNER_MAINTENANCE_REVIEWED_INTENT_ENCODING_MISMATCH/);assert.deepEqual(f.logical(),before);
+ });
+});
+
+test('the count correction preserves distinct current control reason, timestamp and temporary classification checks',async t=>{
+ for(const fault of ['reason','timestamp','not temporary']as const)await t.test(fault,st=>{
+  const f=fixture(st);reportingMixture(f);const state=structuredClone(f.ledger.state())as LedgerState;
+  if(fault==='reason')state.controls.reason='current equity or liquidation unavailable; entries closed';else if(fault==='timestamp')state.controls.changedAt=AT;else state.controls.reason=C.maintenanceReason;
+  const code=fault==='reason'?'REASON_MISMATCH':fault==='timestamp'?'TIME_MISMATCH':'NOT_TEMPORARY';
+  f.db.prepare('UPDATE financial_state SET body=?').run(JSON.stringify(state));const before=f.logical();assert.throws(()=>f.plan(),{message:'OWNER_MAINTENANCE_CURRENT_CONTROL_'+code});assert.deepEqual(f.logical(),before);
+ });
 });
 
 test('replay is historical only after new owner and hard intents and never changes current controls',async t=>{

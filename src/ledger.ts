@@ -296,7 +296,7 @@ export const REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT=Object.freeze({
  authorization:'OWNER_ACKNOWLEDGE_REVIEWED_PAPER_MAINTENANCE_HISTORY_20261031',
  accountId:'poe-3123e352-4581-455b-85db-acd7e825e99e',inceptionAt:1793052456212,epochId:'poe-paper-10sol-v3-20261030',
  reviewedSourceCommit:'0d9c42d2a607e0c29220bc2370470926d1575334',firstMaintenancePauseRevision:122331,reviewedCutoffRevision:140833,
- reviewedDeniedResumes:3674,reviewedPauseIntents:37,reviewedStopIntents:0,reviewedMaintenancePauses:16,
+ reviewedDeniedResumes:3674,reviewedPauseIntents:37,reviewedStopIntents:0,reviewedSuspiciousControlIntents:16,
  maintenanceReason:'financial maintenance unavailable; preserve records and close entries',
  newReason:'execution startup: fresh reconciliation/readiness required',
  cashLamports:'9915222622',realizedLamports:'-1815027578',executionCosts:'273000',lockedDepositCount:2,lockedDepositLamports:'3027680',
@@ -310,7 +310,7 @@ export type ReviewedMaintenanceAcknowledgementPlan={
  accountId:string;inceptionAt:number;epochId:string;expectedSourceCommit:string;reviewedSourceCommit:string;
  priorRevision:number;priorStateSha256:string;controlPrefixSha256:string;reviewedPrefixSha256:string;
  anchor:OperatingControlAnchor;reviewedCutoffRevision:number;firstMaintenancePauseRevision:number;
- reviewedCounts:ReviewedControlCounts&{maintenancePauses:number};lockedDeposits:{count:number;totalLamports:string;sha256:string};
+ reviewedCounts:ReviewedControlCounts&{maintenancePauses:number;restoredReportingPauses:number;suspiciousControlIntents:number};lockedDeposits:{count:number;totalLamports:string;sha256:string};
 };
 export type ReviewedMaintenanceAcknowledgementReceipt={
  kind:'POE_REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT';actionId:string;revisionBefore:number;revisionAfter:number;acknowledgedAt:number;
@@ -400,21 +400,37 @@ function reviewedMaintenancePlan(db:Database.Database,state:State,input:Reviewed
  if(!history?.anchor||history.anchor.revision>=c.firstMaintenancePauseRevision)throw Error('OWNER_MAINTENANCE_CONTROL_HISTORY_UNAVAILABLE');
  const counts=history.reviewedCounts;
  if(counts.deniedResumes!==c.reviewedDeniedResumes||counts.pauseIntents!==c.reviewedPauseIntents||counts.stopIntents!==c.reviewedStopIntents)throw Error('OWNER_MAINTENANCE_REVIEWED_PREFIX_MISMATCH');
- let firstMaintenance:number|null=null,maintenancePauses=0,observedMaintenance=false,observedReporting=false,last:{at:number;reason:string}|null=null;
+ let firstMaintenance:number|null=null,firstReviewedSuspicious:number|null=null,maintenancePauses=0,restoredReportingPauses=0,observedMaintenance=false,observedReporting=false,last:{at:number;reason:string}|null=null;
  for(const {row,payload,result,ordinary,restored,startup}of history.decoded){
   if(row.kind!=='pause'||result.pendingBuyCancellations.length)throw Error('OWNER_MAINTENANCE_UNREVIEWED_CONTROL_INTENT');
+  const reviewed=row.revision<=c.reviewedCutoffRevision;
+  // The owner's inspection authenticated the original payload bytes and
+  // rejected duplicate JSON keys. Bind its count to writer-form receipts;
+  // native runtime history validation outside this acknowledgement is unchanged.
+  if(reviewed&&(row.payloadHash!==createHash('sha256').update('{"kind":'+JSON.stringify(row.kind)+',"payload":'+row.detail+'}').digest('hex')||row.result!==JSON.stringify(result)))throw Error('OWNER_MAINTENANCE_REVIEWED_INTENT_ENCODING_MISMATCH');
   const reason=payload.reason;
   if(reason===c.maintenanceReason){
    if(row.revision>c.reviewedCutoffRevision||!(ordinary||restored&&observedMaintenance))throw Error('OWNER_MAINTENANCE_UNREVIEWED_HARD_INTENT');
    if(firstMaintenance===null){if(!ordinary)throw Error('OWNER_MAINTENANCE_ORIGIN_REQUIRED');firstMaintenance=row.revision;}
    observedMaintenance=true;maintenancePauses++;
-  }else if(restored){if(reason!==OPERATIONAL_REPORTING_ENTRY_PAUSE||!observedReporting)throw Error('OWNER_MAINTENANCE_UNREVIEWED_RESTORED_INTENT');}
+  }else if(restored){if(reason!==OPERATIONAL_REPORTING_ENTRY_PAUSE||!observedReporting)throw Error('OWNER_MAINTENANCE_UNREVIEWED_RESTORED_INTENT');if(reviewed)restoredReportingPauses++;}
   else if(!(ordinary&&INTERNAL_SHUTDOWN_SOFT_PAUSES.has(reason)||startup&&reason===c.newReason))throw Error('OWNER_MAINTENANCE_UNREVIEWED_CONTROL_INTENT');
+  // The reported 16 suspicious rows include every restored pause, even the
+  // authenticated temporary reporting copies. They are not 16 maintenance
+  // reasons. All other classes the inspector marked suspicious are refused
+  // above; later temporary rows do not change the inspected prefix's count.
+  if(reviewed&&(reason===c.maintenanceReason||restored)&&firstReviewedSuspicious===null)firstReviewedSuspicious=row.revision;
   if(ordinary&&reason===OPERATIONAL_REPORTING_ENTRY_PAUSE)observedReporting=true;
   last={at:row.at,reason};
  }
- if(firstMaintenance!==c.firstMaintenancePauseRevision||maintenancePauses!==c.reviewedMaintenancePauses||!last||last.at!==state.controls.changedAt||last.reason!==state.controls.reason||!INTERNAL_SHUTDOWN_SOFT_PAUSES.has(state.controls.reason))throw Error('OWNER_MAINTENANCE_REVIEWED_CONTROL_MISMATCH');
- return {accountId:c.accountId,inceptionAt:c.inceptionAt,epochId:c.epochId,expectedSourceCommit:input.expectedSourceCommit,reviewedSourceCommit:c.reviewedSourceCommit,priorRevision:state.revision,priorStateSha256:digest(state),controlPrefixSha256:history.controlPrefixSha256,reviewedPrefixSha256:history.reviewedPrefixSha256,anchor:controlAnchor(history.anchor),reviewedCutoffRevision:c.reviewedCutoffRevision,firstMaintenancePauseRevision:c.firstMaintenancePauseRevision,reviewedCounts:{...counts,maintenancePauses},lockedDeposits:{count:deposits.length,totalLamports:total,sha256:digest(state.lockedDeposits)}};
+ if(firstMaintenance!==c.firstMaintenancePauseRevision||firstReviewedSuspicious!==c.firstMaintenancePauseRevision)throw Error('OWNER_MAINTENANCE_REVIEWED_ORIGIN_MISMATCH');
+ const suspiciousControlIntents=maintenancePauses+restoredReportingPauses;
+ if(suspiciousControlIntents!==c.reviewedSuspiciousControlIntents)throw Error('OWNER_MAINTENANCE_REVIEWED_SUSPICIOUS_COUNT_MISMATCH');
+ if(!last)throw Error('OWNER_MAINTENANCE_CONTROL_HISTORY_UNAVAILABLE');
+ if(!INTERNAL_SHUTDOWN_SOFT_PAUSES.has(state.controls.reason))throw Error('OWNER_MAINTENANCE_CURRENT_CONTROL_NOT_TEMPORARY');
+ if(last.at!==state.controls.changedAt)throw Error('OWNER_MAINTENANCE_CURRENT_CONTROL_TIME_MISMATCH');
+ if(last.reason!==state.controls.reason)throw Error('OWNER_MAINTENANCE_CURRENT_CONTROL_REASON_MISMATCH');
+ return {accountId:c.accountId,inceptionAt:c.inceptionAt,epochId:c.epochId,expectedSourceCommit:input.expectedSourceCommit,reviewedSourceCommit:c.reviewedSourceCommit,priorRevision:state.revision,priorStateSha256:digest(state),controlPrefixSha256:history.controlPrefixSha256,reviewedPrefixSha256:history.reviewedPrefixSha256,anchor:controlAnchor(history.anchor),reviewedCutoffRevision:c.reviewedCutoffRevision,firstMaintenancePauseRevision:c.firstMaintenancePauseRevision,reviewedCounts:{...counts,maintenancePauses,restoredReportingPauses,suspiciousControlIntents},lockedDeposits:{count:deposits.length,totalLamports:total,sha256:digest(state.lockedDeposits)}};
 }
 /** Read-only first-application preview. It grants no permission and does not
  * reserve a revision; apply must reproduce the entire plan under the writer. */
