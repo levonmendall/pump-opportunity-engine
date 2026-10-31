@@ -1,3 +1,4 @@
+import {readTradeOutcome,type TradeOutcomeReport} from './trade-outcome-reporting.js';
 import { createHash } from 'node:crypto';
 import {financialEpochEqual,financialEpochLineage,financialEpochTransitionAllowed,validateFinancialEpochReport,type FinancialEpochReport} from './financial-epoch-reporting.js';
 import {validateOperatingIntelligence,ORIGINAL_POE_ACCOUNT,ORIGINAL_POE_INCEPTION,type OperatingIntelligence} from './operating-intelligence.js';
@@ -45,7 +46,7 @@ export type Snapshot = {
   };
   costLabels: { execution: 'simulated'; operating: 'actual' | 'estimated' | 'allocated' | 'mixed' | 'unavailable' };
   positions: { mint: string; label: string; quantity: string; enteredAt: string; entryCostUsd: number; netLiquidationUsd: number | null; executionCostsUsd: number; status: string }[];
-  trades: { id: string; mint: string; side: 'buy' | 'sell'; quantity: string; at: string; valueUsd: number | null; executionCostsUsd: number | null; status: string; reason: string }[];
+  trades: { id: string; mint: string; side: 'buy' | 'sell'; quantity: string; at: string; valueUsd: number | null; executionCostsUsd: number | null; status: string; reason: string; outcome?:TradeOutcomeReport }[];
   decisions: { id: string; mint: string; at: string; stage: string; reason: string }[];
   pnl: { at: string; tradingUsd: number | null; economicUsd: number | null }[];
   history: { windowStartAt: string | null; downsampled: boolean; label: string };
@@ -139,8 +140,10 @@ export function validateSnapshot(value: unknown, expected: ReportingIdentity, no
     text(p.mint, 96); text(p.label, 80); units(p.quantity, false); eventTime(p.enteredAt); number(p.entryCostUsd, true); nullable(p.netLiquidationUsd, v => number(v, true)); number(p.executionCostsUsd, true); text(p.status, 80);
   });
   list(s.trades, 50, v => {
-    const t = object(v, ['id','mint','side','quantity','at','valueUsd','executionCostsUsd','status','reason']);
+    const hasOutcome=!!v&&typeof v==='object'&&Object.hasOwn(v,'outcome');
+    const t = object(v, ['id','mint','side','quantity','at','valueUsd','executionCostsUsd','status','reason',...(hasOutcome?['outcome']:[])]);
     text(t.id, 128); text(t.mint, 96); oneOf(t.side, ['buy','sell']); units(t.quantity, false); eventTime(t.at); nullable(t.valueUsd, v => number(v, true)); nullable(t.executionCostsUsd, v => number(v, true)); text(t.status, 80); text(t.reason, 512);
+    if(hasOutcome&&!readTradeOutcome(t.outcome,time(t.at),t.side as 'buy'|'sell'))throw Error('trade outcome explanation invalid');
   });
   list(s.decisions, 50, v => { const d = object(v, ['id','mint','at','stage','reason']); text(d.id, 128); text(d.mint, 96); eventTime(d.at); text(d.stage, 80); text(d.reason, 512); });
   let last = -Infinity;
@@ -167,7 +170,7 @@ export function validateReportingTradeCache(value:unknown,accountId:string,incep
   const cache=object(value,['schemaVersion','accountId','inceptionAt','windowLimited','trades']);
   if(cache.schemaVersion!==1||cache.accountId!==accountId||cache.inceptionAt!==inceptionAt||!Number.isSafeInteger(inceptionAt)||!Number.isSafeInteger(now)||now<inceptionAt)throw Error('reporting trade cache identity');
   bool(cache.windowLimited);let previous=Infinity;const seen=new Set<string>();
-  list(cache.trades,50,value=>{const t=object(value,['actionId','id','mint','side','quantity','at','valueUsd','executionCostsUsd','status','reason']);text(t.actionId,160);text(t.id,128);text(t.mint,96);oneOf(t.side,['buy','sell']);units(t.quantity,false);const at=time(t.at);if(at<inceptionAt||at>now||at>previous||seen.has(String(t.actionId)))throw Error('reporting trade cache chronology');previous=at;seen.add(String(t.actionId));nullable(t.valueUsd,v=>number(v,true));nullable(t.executionCostsUsd,v=>number(v,true));oneOf(t.status,['PAPER filled']);text(t.reason,512);});
+  list(cache.trades,50,value=>{const hasOutcome=!!value&&typeof value==='object'&&Object.hasOwn(value,'outcome'),t=object(value,['actionId','id','mint','side','quantity','at','valueUsd','executionCostsUsd','status','reason',...(hasOutcome?['outcome']:[])]);text(t.actionId,160);text(t.id,128);text(t.mint,96);oneOf(t.side,['buy','sell']);units(t.quantity,false);const at=time(t.at);if(at<inceptionAt||at>now||at>previous||seen.has(String(t.actionId)))throw Error('reporting trade cache chronology');previous=at;seen.add(String(t.actionId));nullable(t.valueUsd,v=>number(v,true));nullable(t.executionCostsUsd,v=>number(v,true));oneOf(t.status,['PAPER filled']);text(t.reason,512);if(hasOutcome&&!readTradeOutcome(t.outcome,at,t.side as 'buy'|'sell'))throw Error('trade outcome explanation invalid');});
   if(Buffer.byteLength(JSON.stringify(cache))>128*1024)throw Error('reporting trade cache bound');return cache as ReportingTradeCache;
 }
 /** Derive one filled row only from the exact durable attempt, order and result. */
@@ -177,7 +180,8 @@ export function reportingFilledTrade(actionId:string,at:number,attempt:any,order
   if(result?.status!=='filled'||result.at!==at||!o||attempt.orderId!==o.id||typeof o.mint!=='string'||o.mint.length>96||!['buy','sell'].includes(o.side)||!integer(o.gas)||!q||!integer(q.receiveUnits)||!integer(q.spendLamports)||o.side==='sell'&&!integer(q.pricedBaseUnits))return null;
   const p=attempt.price,validPrice=!!p&&integer(p.microUsdPerSol)&&BigInt(p.microUsdPerSol)>0n&&Number.isSafeInteger(p.at)&&p.at<=at&&at-p.at<=10000;
   const usd=(v:string)=>validPrice?Number(BigInt(v)*BigInt(p.microUsdPerSol)/1000000000n)/1e6:null;
-  return {actionId,id:'paper-fill:'+createHash('sha256').update(actionId).digest('hex').slice(0,32),mint:o.mint,side:o.side,quantity:o.side==='buy'?q.receiveUnits:q.pricedBaseUnits,at:new Date(at).toISOString(),valueUsd:usd(o.side==='buy'?q.spendLamports:q.receiveUnits),executionCostsUsd:usd(o.gas),status:'PAPER filled',reason:'Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. '+actionId};
+  const proposed=readTradeOutcome(result.tradeOutcome,at,o.side),point=proposed&&(o.side==='buy'?proposed.entry:proposed.exit),outcome=proposed&&point&&point.orderId===o.id&&point.decidedAt===o.decidedAt&&point.executeAt===o.executeAt&&point.quoteAt===q.at&&(o.side==='buy'?proposed.economics.entrySpendLamports===q.spendLamports&&proposed.economics.entryGasLamports===o.gas:proposed.economics.exitReceiveLamports===q.receiveUnits&&proposed.economics.exitGasLamports===o.gas)?proposed:null;
+  return {...(outcome?{outcome}:{}),actionId,id:'paper-fill:'+createHash('sha256').update(actionId).digest('hex').slice(0,32),mint:o.mint,side:o.side,quantity:o.side==='buy'?q.receiveUnits:q.pricedBaseUnits,at:new Date(at).toISOString(),valueUsd:usd(o.side==='buy'?q.spendLamports:q.receiveUnits),executionCostsUsd:usd(o.gas),status:'PAPER filled',reason:'Durable single modeled attempt; pool fees embedded, gas separate; no live-fill claim. '+actionId};
 }
 function canonical(value: unknown): string {
   if (Array.isArray(value)) return '[' + value.map(canonical).join(',') + ']';

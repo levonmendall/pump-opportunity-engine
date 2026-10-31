@@ -1,3 +1,4 @@
+import {tradeDecisionContext,entryTradeProvenance,withFailedExitGas,makeTradeOutcome,type TradeDecisionContext,type TradeEntryProvenance,type TradeOutcomeReport} from './trade-outcome-reporting.js';
 import {PAPER_EPOCH_VERSION,PAPER_V3_EPOCH_VERSION,PAPER_V3_TEN_SOL_EPOCH_ID,PAPER_V3_TEN_SOL_EPOCH_AUTHORIZATION,PAPER_EPOCH_ASSET_SEGREGATION,verifyArchivedEpochAssets,PAPER_TEN_SOL_EPOCH_ID,PAPER_TEN_SOL_EPOCH_AUTHORIZATION,validatePaperEpoch,requireEpochFlat,verifiedEpochBackup,paperEpochStateSha256,type PaperEpoch,type LegacyPaperEpoch,type V3PaperEpoch,type PaperEpochBackupReceipt} from './paper-epoch.js';
 import Database from 'better-sqlite3';
 import {PAPER_EQUITY_RISK_VERSION,PAPER_EQUITY_RISK_POLICY,PAPER_V3_EQUITY_RISK_VERSION,PAPER_V3_EQUITY_RISK_POLICY,consumedEntryAllowance,drawdownFacts,validateEquityRiskState,validateEntryAllocation,entryAllocation,type EquityRiskState,type EntryAllocation} from './paper-equity-risk.js';
@@ -28,6 +29,8 @@ export type Position = {
   costMicroUsd: string; deposit: string; enteredAt: number;
   /** Absent metadata permanently retains the original holding's exit rules. */
   strategy?:PositionStrategy;
+  /** Optional reporting provenance; invalid/missing history stays unknown. */
+  tradeProvenance?:TradeEntryProvenance;
   allocation?:EntryAllocation;
   executionModelVersion?:'paper-chain-conditioned-v1';
 };
@@ -36,6 +39,8 @@ export type Order = {
   expiresAt: number; gas: string; deposit: string; maxSpend: string;
   minReceive: string; reserved: string; decisionEvidence: string;
   entryStrategy?:EntryStrategy;
+  /** Descriptive provenance only; it never grants financial permission. */
+  decisionContext?:TradeDecisionContext;
   allocation?:EntryAllocation;
   executionModel?:PaperExecutionPlan;
   /** Intratransaction quote-ATA rent: cash reserved, never an asset or consumed cost. */
@@ -87,7 +92,7 @@ export type ExecutionQuote = {
   refundedDepositLamports?: string; refundEvidence?: string;
   executionModel?:PaperExecutionLanding;
 };
-export type OrderOutcome = { status: 'filled' | 'failed' | 'expired'; reason: string; at: number };
+export type OrderOutcome = { status: 'filled' | 'failed' | 'expired'; reason: string; at: number; tradeOutcome?:TradeOutcomeReport };
 export type InternalShutdownRecoveryProof={verified:true;accountId:string;inceptionAt:number;stateRevision:number;lastSuccessfulResumeRevision:number;stops:Array<{revision:number;actionId:string;at:number}>;proofSha256:string}|{verified:false;reason:string};
 export type DailyLossResetReceipt={accountId:string;inceptionAt:number;at:number;reason:string;revisionBefore:number;revisionAfter:number;previousDaily:LedgerState['daily'];nextDaily:LedgerState['daily'];controlsPreserved:true;entryPermissionGranted:false;orderCreated:false}&({reset:true;alreadyClear:false;currentEquityMicroUsd:string;price:UsdPrice}|{reset:false;alreadyClear:true;currentEquityMicroUsd:null;price:null});
 /** Provenance only. Neither this bounded read nor its digest grants permission
@@ -774,6 +779,9 @@ export class PaperLedger {
   entryEligibility(mint:string,strategyVersion:string,windowEndAt:number,at:number):EntryEligibility{return this.entryEligibilityFrom(this.state(),mint,strategyVersion,windowEndAt,at);}
 
   order(input: Omit<Order, 'reserved'|'allocation'>, price: UsdPrice, marks: Record<string, Mark>) {
+    // Reporting is optional. Malformed analytics never create a new order gate.
+    const {decisionContext:rawContext,...financialInput}=input,context=tradeDecisionContext(rawContext,input.decidedAt);
+    input=context?{...financialInput,decisionContext:context}:financialInput;
     const now = input.decidedAt;
     return this.apply(`order:${input.id}`, 'order', now, { input, price, marks }, s => {
       if (!Number.isSafeInteger(input.executeAt) || !Number.isSafeInteger(input.expiresAt) || input.executeAt < now + 500 || input.expiresAt <= input.executeAt || input.expiresAt > now + 30_000 || !boundedText(input.decisionEvidence)) throw new Error('invalid delay/expiry/evidence');
@@ -821,10 +829,14 @@ export class PaperLedger {
     return this.apply(id, 'attempt', now, { orderId, now, quote, price, marks,...(executionAttempt===undefined?{}:{executionAttempt}) }, s => {
       const o = s.pending[orderId]; if (!o) throw new Error('order is not pending');
       if (now < o.executeAt) throw new Error('modeled delay not elapsed');
-      let chargedGas = 0n;
+      let chargedGas = 0n,tradeOutcome:TradeOutcomeReport|null=null;
       const finish = (status: OrderOutcome['status'], reason: string) => {
-        if (status === 'failed') s.realizedLamports = (BigInt(s.realizedLamports) - chargedGas).toString();
-        delete s.pending[orderId]; return { status, reason, at: now };
+        if (status === 'failed') {
+          s.realizedLamports = (BigInt(s.realizedLamports) - chargedGas).toString();
+          const held=o.side==='sell'?s.positions[o.mint]:undefined;
+          if(held&&chargedGas>0n){const provenance=withFailedExitGas(held,chargedGas.toString(),now);if(provenance)held.tradeProvenance=provenance;else delete held.tradeProvenance;}
+        }
+        delete s.pending[orderId]; return { status, reason, at: now,...(status==='filled'&&tradeOutcome?{tradeOutcome}:{}) };
       };
       if (now >= o.expiresAt) return finish('expired', 'expiry reached before attempt');
       let p = 0n,entryEquity:bigint|null=null;
@@ -869,6 +881,7 @@ export class PaperLedger {
           costMicroUsd: usd(spend + gas, p).toString(), deposit: o.deposit, enteredAt: now,...(allocation?{allocation}:{}),...(o.executionModel?{executionModelVersion:o.executionModel.version}:{}),
           ...(o.entryStrategy?{strategy:{...o.entryStrategy,roundTripId:o.id,highWaterNetLamports:'0',highWaterAt:now}}:{}),
         };
+        if(o.decisionContext){const provenance=entryTradeProvenance(o,quote,now);if(provenance)s.positions[o.mint]!.tradeProvenance=provenance;tradeOutcome=makeTradeOutcome(o,quote,now);}
         this.db.prepare(o.entryStrategy?'INSERT OR IGNORE INTO metadata VALUES(?,?)':'INSERT INTO metadata VALUES(?,?)').run('traded_mint:' + o.mint, '1');
         if(o.entryStrategy){this.preservePriorRoundTripIndex(o.mint,now,s.revision);this.db.prepare('INSERT INTO metadata VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value').run('paper_round_trip_v2:'+o.mint,JSON.stringify({schemaVersion:1,mint:o.mint,cycle:o.entryStrategy.cycle,entryOrderId:o.id,entryWindowEndAt:o.entryStrategy.windowEndAt,closedAt:null,exitOrderId:null,legacyEntryCutoff:false} satisfies ClosedCycle));}
       } else {
@@ -887,6 +900,7 @@ export class PaperLedger {
         // Exit protection depends on the held obligation, never optional
         // re-entry metadata. A malformed index cannot prevent liquidation.
         this.preservePriorRoundTripIndex(o.mint,now,s.revision);this.db.prepare('INSERT INTO metadata VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value').run('paper_round_trip_v2:'+o.mint,JSON.stringify({schemaVersion:1,mint:o.mint,cycle:pos.strategy?.cycle??1,entryOrderId:pos.strategy?.roundTripId??'legacy-held:'+o.mint+':'+pos.enteredAt,entryWindowEndAt:pos.strategy?.windowEndAt??Math.floor(pos.enteredAt/10000)*10000,closedAt:now,exitOrderId:o.id,legacyEntryCutoff:!pos.strategy} satisfies ClosedCycle));
+        if(o.decisionContext||pos.tradeProvenance)tradeOutcome=makeTradeOutcome(o,quote,now,pos);
         delete s.positions[o.mint];
       }
       return finish('filled', 'single modeled PAPER attempt; no live fill claim');
@@ -926,11 +940,18 @@ export class PaperLedger {
     if(!expected||!isDeepStrictEqual(trade,expected))throw Error('reporting trade durable evidence mismatch');
   }
   recordReportingTrades(trades:readonly ReportingFilledTrade[]):ReportingTradeCache {
-    const state=this.state();validateReportingTradeCache({schemaVersion:1,accountId:state.accountId,inceptionAt:state.inceptionAt,windowLimited:false,trades:[...trades].sort((a,b)=>Date.parse(b.at)-Date.parse(a.at))},state.accountId,state.inceptionAt,state.lastAt);
+    const state=this.state();
+    if(trades.length>50)throw Error('reporting trade cache bound');
+    if(new Set(trades.map(trade=>trade.actionId)).size!==trades.length)throw Error('reporting trade cache chronology');
+    // Validate each supplied row even when optional explanations make the full
+    // presentation exceed its byte budget. Durable actions are never pruned.
+    for(const trade of trades)validateReportingTradeCache({schemaVersion:1,accountId:state.accountId,inceptionAt:state.inceptionAt,windowLimited:false,trades:[trade]},state.accountId,state.inceptionAt,state.lastAt);
     return this.db.transaction(()=>{
       const previous=this.getReportingTrades(),byId=new Map(previous.trades.map(row=>[row.actionId,row]));
       for(const trade of trades){this.validateReportingTrade(trade);const old=byId.get(trade.actionId);if(old&&!isDeepStrictEqual(old,trade))throw Error('reporting trade cache conflict');byId.set(trade.actionId,structuredClone(trade));}
       const sorted=[...byId.values()].sort((a,b)=>Date.parse(b.at)-Date.parse(a.at)||a.actionId.localeCompare(b.actionId)),next:ReportingTradeCache={...previous,windowLimited:previous.windowLimited||sorted.length>50,trades:sorted.slice(0,50)};
+      while(Buffer.byteLength(JSON.stringify(next))>128*1024&&next.trades.length){next.trades.pop();next.windowLimited=true;}
+      validateReportingTradeCache(next,state.accountId,state.inceptionAt,state.lastAt);
       if(!isDeepStrictEqual(previous,next))this.db.prepare("INSERT INTO metadata VALUES('reporting_trades',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").run(JSON.stringify(next));
       return next;
     }).immediate();

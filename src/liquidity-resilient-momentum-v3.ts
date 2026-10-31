@@ -4,6 +4,7 @@
 import {createHash} from 'node:crypto';
 import {assessPredictiveBuying,eventIdentity,type FlowFeatures,type NormalizedTrade} from './strategy.js';
 import {adaptiveMigrationEligible,adaptiveReentryEligible,type AdaptiveRuleContext,type AdaptiveExitInput,type AdaptiveExitDecision} from './adaptive-momentum-v2.js';
+import {ECONOMIC_RESERVE_COMPARISON_VERSION,describeEconomicReserveChange,type EconomicReserveChange} from './economic-reserves.js';
 
 export const LIQUIDITY_RESILIENT_MOMENTUM_V3_VERSION='liquidity-resilient-momentum-v3' as const;
 export const LIQUIDITY_RESILIENT_MOMENTUM_V3_POLICY=Object.freeze({
@@ -17,7 +18,7 @@ export const LIQUIDITY_RESILIENT_MOMENTUM_V3_POLICY=Object.freeze({
  limitations:Object.freeze(['beneficial-owner independence and wallet coordination unknown','current whole-wallet inventories and out-of-pool transfers unknown; known account balances are point-in-time observations','historical maximum balances and executed sells are diagnostic repeat scenarios, not current seller-inventory evidence','future order flow, fee-tier changes, landing and stop fills not guaranteed','partial profit-taking unavailable without explicit lot/cost allocation accounting']),
 });
 export const LIQUIDITY_RESILIENT_MOMENTUM_V3_SHA256=createHash('sha256').update(JSON.stringify(LIQUIDITY_RESILIENT_MOMENTUM_V3_POLICY)).digest('hex');
-export type V3ReserveObservation={at:number;evidence:string;baseReserveUnits:string;rawQuoteReserveLamports:string;virtualQuoteReserveLamports:string};
+export type V3ReserveObservation={at:number;evidence:string;baseReserveUnits:string;rawQuoteReserveLamports:string;virtualQuoteReserveLamports:string;feeBucketsLamports?:string};
 export type V3ConsolidationEvidence={mint:string;pool:string;windowStartAt:number;windowEndAt:number;auditedAt:number;auditEvidence:string;netFlowShareBps:number;priceRangeBps:number;highPrice:{quoteLamports:string;tokenUnits:string}};
 export type V3InventoryObservation={wallet:string;tokenAccount?:string;baseUnits:string;at:number;evidence:string;eventIdentity?:string;balanceTiming?:'before-trade'|'after-trade'};
 export type V3AuditedFlow={mint:string;pool:string;windowStartAt:number;windowEndAt:number;auditedAt:number;auditEvidence:string;complete:true;trades:readonly NormalizedTrade[];reserveObservations?:readonly V3ReserveObservation[];/** Point-in-time account observations, never a current whole-wallet census. */observedWalletInventory?:readonly V3InventoryObservation[];priorConsolidation?:V3ConsolidationEvidence};
@@ -181,31 +182,40 @@ export class V3AssessmentSeries {
   return result;
  }
 }
-export type V3ExitInput=AdaptiveExitInput&{priorProfitProtectionFloorLamports?:string;liquidityContext?:{at:number;evidence:string;pricedBaseUnits:string;immediateNetLamports:string;stressedNetLamports:string;rawQuoteReserveLamports:string;priorRawQuoteReserveLamports?:string};flowContext?:{at:number;availableAt:number;evidence:string;complete:boolean;netBuyLamports:string;recentNetBuyLamports:string;priceReturnBps:number|null}};
-export type V3ExitDecision=AdaptiveExitDecision&{profitProtectionFloorLamports:string|null;profitGivebackBps:number;continuationConfidence:'audited-flow'|'price-reserve-only'|'unknown';liquidityDeteriorationVerified:boolean};
+export type V3ExitInput=AdaptiveExitInput&{priorProfitProtectionFloorLamports?:string;liquidityContext?:{at:number;evidence:string;pricedBaseUnits:string;immediateNetLamports:string;stressedNetLamports:string;rawQuoteReserveLamports:string;priorRawQuoteReserveLamports?:string;economicReserves?:V3ReserveObservation;priorEconomicReserves?:V3ReserveObservation};flowContext?:{at:number;availableAt:number;evidence:string;complete:boolean;netBuyLamports:string;recentNetBuyLamports:string;priceReturnBps:number|null}};
+export type V3ExitDecision=AdaptiveExitDecision&{profitProtectionFloorLamports:string|null;profitGivebackBps:number;continuationConfidence:'audited-flow'|'price-reserve-only'|'unknown';liquidityDeteriorationVerified:boolean;reserveChange?:EconomicReserveChange|null};
 /** The source, actual-size quote and financial gate remain authoritative. A
  * boolean cannot invent deterioration. Unknown flow is not zero demand. */
 /** Preserve historical V3 exits while allowing a separately authorized V3.1 stop policy. */
-export type V3ExitStopPolicy=Omit<typeof LIQUIDITY_RESILIENT_MOMENTUM_V3_POLICY.exit,'stopLossBps'|'trailingMinimumBps'>&{readonly stopLossBps:number;readonly trailingMinimumBps:number};
+export type V3ExitStopPolicy=Omit<typeof LIQUIDITY_RESILIENT_MOMENTUM_V3_POLICY.exit,'stopLossBps'|'trailingMinimumBps'>&{readonly stopLossBps:number;readonly trailingMinimumBps:number;readonly reserveComparison?:typeof ECONOMIC_RESERVE_COMPARISON_VERSION};
 export function evaluateLiquidityResilientExit(input:V3ExitInput,exitPolicy:V3ExitStopPolicy=P.exit):V3ExitDecision{
  if(!uint(input.now)||!uint(input.enteredAt)||input.enteredAt>input.now||!money(input.entryCostLamports)||amount(input.entryCostLamports)===0n||!money(input.heldBaseUnits)||amount(input.heldBaseUnits)===0n)throw Error('V3_EXIT_POSITION');
  const p=exitPolicy,cost=amount(input.entryCostLamports);if(input.volatilityBps!==undefined&&(!uint(input.volatilityBps)||input.volatilityBps>10000))throw Error('V3_EXIT_VOLATILITY');
  const trailingDistanceBps=Math.min(9999,Math.max(p.trailingMinimumBps,Math.ceil((input.volatilityBps??0)*p.volatilityMultiplierBps/10000)));let high=input.highWaterNetLamports===undefined?null:amount(input.highWaterNetLamports),profitFloor=input.priorProfitProtectionFloorLamports===undefined?null:amount(input.priorProfitProtectionFloorLamports),profitGivebackBps=p.profitGivebackBps.unknown as number,continuationConfidence:V3ExitDecision['continuationConfidence']='unknown',liquidityDeteriorationVerified=false;
- const result=(action:AdaptiveExitDecision['action'],reason:string,net:bigint|null=null):V3ExitDecision=>({action,reason,highWaterNetLamports:high?.toString()??null,trailingDistanceBps,profitRetentionBps:net!==null&&high!==null&&high>cost?Math.max(0,Math.min(10000,bps(net-cost,high-cost))):null,profitProtectionFloorLamports:profitFloor?.toString()??null,profitGivebackBps,continuationConfidence,liquidityDeteriorationVerified});
+ let reserveChange:EconomicReserveChange|null=null;const economicComparison=p.reserveComparison===ECONOMIC_RESERVE_COMPARISON_VERSION;
+ const result=(action:AdaptiveExitDecision['action'],reason:string,net:bigint|null=null):V3ExitDecision=>({action,reason,highWaterNetLamports:high?.toString()??null,trailingDistanceBps,profitRetentionBps:net!==null&&high!==null&&high>cost?Math.max(0,Math.min(10000,bps(net-cost,high-cost))):null,profitProtectionFloorLamports:profitFloor?.toString()??null,profitGivebackBps,continuationConfidence,liquidityDeteriorationVerified,...(economicComparison?{reserveChange}:{})});
  const m=input.mark;if(!m||!text(m.evidence)||!uint(m.at)||m.at<input.enteredAt||m.at>input.now||input.now-m.at>p.maximumQuoteAgeMs||m.pricedBaseUnits!==input.heldBaseUnits||!money(m.netLamports))return result('quote-required','v3-fresh-actual-size-net-liquidation-required');
  const net=amount(m.netLamports);high=high===null?net:max(high,net);
  const flow=input.flowContext,freshFlow=!!flow&&flow.complete===true&&uint(flow.at)&&flow.at>=input.enteredAt&&uint(flow.availableAt)&&flow.at<=flow.availableAt&&flow.availableAt<=input.now&&input.now-flow.at<10000&&text(flow.evidence)&&/^-?(0|[1-9][0-9]{0,38})$/.test(flow.netBuyLamports)&&/^-?(0|[1-9][0-9]{0,38})$/.test(flow.recentNetBuyLamports)&&Number.isSafeInteger(flow.priceReturnBps),flowReversal=freshFlow&&BigInt(flow!.netBuyLamports)<0n&&BigInt(flow!.recentNetBuyLamports)<0n&&flow!.priceReturnBps!<0;
  if(freshFlow&&BigInt(flow!.netBuyLamports)>0n&&BigInt(flow!.recentNetBuyLamports)>0n&&flow!.priceReturnBps!>=0){continuationConfidence='audited-flow';profitGivebackBps=Math.min(p.profitGivebackBps.auditedDemandMaximum,Math.max(p.profitGivebackBps.auditedDemandMinimum,(input.volatilityBps??0)*4));}
  const l=input.liquidityContext;if(l&&uint(l.at)&&l.at===m.at&&l.at<=input.now&&input.now-l.at<=2000&&l.evidence===m.evidence&&l.pricedBaseUnits===input.heldBaseUnits&&money(l.immediateNetLamports)&&l.immediateNetLamports===m.netLamports&&money(l.stressedNetLamports)&&money(l.rawQuoteReserveLamports)){
   const stress=amount(l.stressedNetLamports),raw=amount(l.rawQuoteReserveLamports),prior=l.priorRawQuoteReserveLamports&&money(l.priorRawQuoteReserveLamports)?amount(l.priorRawQuoteReserveLamports):null;
-  if(stress<=net&&prior!==null&&raw>=prior&&continuationConfidence==='unknown'){continuationConfidence='price-reserve-only';profitGivebackBps=p.profitGivebackBps.priceReserveOnly;}
-  liquidityDeteriorationVerified=stress<=net&&net>0n&&(net-stress)*10000n>net*BigInt(P.economics.maximumStressLossBps)&&prior!==null&&raw<prior;
-  if(stress<=net&&prior!==null&&raw<prior)profitGivebackBps=p.profitGivebackBps.verifiedDeterioration;
+  let nondecreasing=prior!==null&&raw>=prior,decreasing=prior!==null&&raw<prior;
+  if(economicComparison){
+   const current=l.economicReserves,previous=l.priorEconomicReserves;
+   if(current&&previous&&current.at===m.at&&current.evidence===m.evidence&&current.rawQuoteReserveLamports===l.rawQuoteReserveLamports&&uint(previous.at)&&previous.at>=input.enteredAt&&previous.at<current.at&&text(previous.evidence))reserveChange=describeEconomicReserveChange(previous,current);
+   // Missing historical buckets remain unknown. Raw vault movement alone is
+   // never a V3.1 deterioration signal or evidence of an LP withdrawal.
+   nondecreasing=reserveChange?.economicNondecreaseObserved===true;decreasing=reserveChange?.economicDecreaseObserved===true;
+  }
+  if(stress<=net&&nondecreasing&&continuationConfidence==='unknown'){continuationConfidence='price-reserve-only';profitGivebackBps=p.profitGivebackBps.priceReserveOnly;}
+  liquidityDeteriorationVerified=stress<=net&&net>0n&&(net-stress)*10000n>net*BigInt(P.economics.maximumStressLossBps)&&decreasing;
+  if(stress<=net&&decreasing)profitGivebackBps=p.profitGivebackBps.verifiedDeterioration;
  }
  if(flowReversal)profitGivebackBps=p.profitGivebackBps.verifiedDeterioration;
  if(high>cost){const modeled=high-(high-cost)*BigInt(profitGivebackBps)/10000n;profitFloor=profitFloor===null?modeled:max(profitFloor,modeled);}
  if(net*10000n<=cost*BigInt(10000-p.stopLossBps))return result('request-exit','v3-protective-cost-stop; fill-price-not-guaranteed',net);
- if(liquidityDeteriorationVerified)return result('request-exit','v3-actual-size-liquidity-stress-and-confirmed-reserve-deterioration',net);
+ if(liquidityDeteriorationVerified)return result('request-exit',economicComparison?'v3.1-actual-size-stress-and-economic-reserve-decrease; cause-unverified':'v3-actual-size-liquidity-stress-and-confirmed-reserve-deterioration',net);
  if(flowReversal)return result('request-exit','v3-complete-audited-demand-reversal-and-adverse-price',net);
  if(profitFloor!==null&&net<=profitFloor)return result('request-exit','v3-risk-adjusted-executable-profit-retention-floor',net);
  if(high>cost&&net*10000n<=high*BigInt(10000-trailingDistanceBps))return result('request-exit','v3-actual-size-net-high-water-trailing-stop',net);

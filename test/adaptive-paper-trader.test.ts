@@ -81,3 +81,18 @@ test('transient policy activation failure cannot fall back to legacy allocation 
  const f=fixture(t,true,2);assert.equal(f.ledger.state().equityRisk,undefined);f.admit();f.warm();f.ready();await f.trader.tick();assert.deepEqual(f.ledger.state().pending,{});assert.equal(f.quotes.length,0);assert.equal(f.ledger.state().equityRisk,undefined);assert.equal(f.rows.filter(r=>r.kind==='trader-entry-policy-unavailable').length,1);
  f.at+=1000;await f.trader.tick({evaluateCandidates:false});assert.equal(f.ledger.state().equityRisk!.version,'paper-equity-risk-5-10-v1');assert.equal(f.ledger.state().equityRisk!.daily.historyState,'complete');assert.equal(f.ledger.state().initialMicroUsd,'1000000000');assert.equal(f.ledger.state().executionCosts,'0');
 });
+
+
+test('valid adaptive and baseline trader entries retain exact decision context through full outcome receipts',async t=>{
+ for(const adaptive of [true,false]){
+  const f=fixture(t,adaptive);f.admit();f.warm([MINT],f.at,!adaptive);f.ready();await f.trader.tick();
+  const order=Object.values(f.ledger.state().pending)[0]!;assert.ok(order);assert.ok(order.decisionContext);
+  assert.equal(order.decisionContext.candidateAdmittedAt,START);assert.equal(order.decisionContext.windowEndAt,f.at);assert.equal(order.decisionContext.assessedAt,f.at);
+  assert.equal(order.decisionContext.entryBasis!.proposedInputLamports,order.maxSpend);assert.equal(order.decisionContext.entryBasis!.distinctBuyerWallets,adaptive?3:6);
+  const qualified=f.trader.decisions().find(d=>d.stage==='qualified')!;assert.equal(order.decisionContext.reason,qualified.reason);assert.equal(order.decisionContext.strategyVersion,qualified.ruleVersion);
+  f.at+=1000;await f.trader.tick({evaluateCandidates:false});assert.ok(f.ledger.state().positions[MINT]!.tradeProvenance);
+  const entry=f.ledger.actionResult('execution-attempt:'+order.id) as {tradeOutcome:any};assert.ok(entry.tradeOutcome);assert.equal(entry.tradeOutcome.entry.context.reason,qualified.reason);
+  f.marks.set(MINT,400000000n);f.at+=1000;await f.trader.tick({evaluateCandidates:false});const exit=Object.values(f.ledger.state().pending)[0]!;assert.equal(exit.side,'sell');assert.ok(exit.decisionContext?.reason);
+  f.at+=1000;await f.trader.tick({evaluateCandidates:false});const result=f.ledger.actionResult('execution-attempt:'+exit.id) as {tradeOutcome:any};assert.equal(result.tradeOutcome.exit.context.reason,exit.decisionContext.reason);assert.equal(result.tradeOutcome.entry.orderId,order.id);assert.equal(result.tradeOutcome.economics.closedTradeNetLamports,f.ledger.state().realizedLamports);assert.deepEqual(f.ledger.state().positions,{});
+ }
+});
