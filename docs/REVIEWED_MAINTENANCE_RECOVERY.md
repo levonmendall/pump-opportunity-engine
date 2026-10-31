@@ -2,11 +2,21 @@
 
 ## Why the running account remained closed
 
-The original PAPER account remained closed after current-pool observation became healthy. The owner-run inspection through ledger revision `140833` reported 3,674 denied resume receipts, 37 pause intentions, no stop intentions, and 16 hard or restored-hard pause rows. It reported no payload-hash, envelope, or denied-revision mismatch. Its first hard row was revision `122331`, with the reason `financial maintenance unavailable; preserve records and close entries`.
+The original PAPER account remained closed after current-pool observation became healthy. The owner-run inspection through ledger revision `140833` reported 3,674 denied resume receipts, 37 pause intentions, no stop intentions, and 16 flagged pause rows. That last total included restored pauses as well as hard reasons; it was not a count of maintenance failures. It reported no payload-hash, envelope, or denied-revision mismatch. Its first flagged row was an ordinary maintenance pause at revision `122331`, with the reason `financial maintenance unavailable; preserve records and close entries`.
 
-The inspection was a bounded diagnostic. It did not perform the native validator's complete historical grammar or anchor verification. The new recovery implementation authenticates those original records on the host before any acknowledgement can be appended. If any of the other hard rows differs from the reviewed maintenance chain, recovery refuses before that append.
+The inspection was a bounded diagnostic. It did not perform the native validator's complete historical grammar or anchor verification. The recovery implementation authenticates those original records on the host before any acknowledgement can be appended. It permits only the reviewed maintenance chain and separately proven temporary reporting restores within the flagged group. Other hard reasons or unproved restores refuse before that append.
 
 The original exception is not known. Healthy current reconciliation and idle execution do not establish that the old operation was harmless. This release therefore adds an explicit owner acknowledgement of the bounded historical incident. It does not reclassify maintenance failures as ordinary temporary pauses.
+
+## Correct interpretation of the reviewed count
+
+The first recovery candidate incorrectly required 16 exact maintenance pauses. Its validator already allowed a restored reporting pause when an earlier authenticated ordinary reporting pause proved its origin, but excluded that allowed row from its fixed total. A valid mixture could therefore pass authentication and every individual control check, then fail the final count.
+
+The owner's exact native diagnostic subsequently returned `OWNER_MAINTENANCE_REVIEWED_CONTROL_MISMATCH` at source `370d3599f28451cc6d21cfee298ced71ebe8218d`, bundle location `80032:265`, on a read-only inspection of revision `167294`. The combined final check did not expose the live maintenance/reporting split. An authenticated disposable history with 15 maintenance pauses and one proven reporting restore reproduces the same refusal; that mixture is a regression fixture, not a claim about the actual account's split.
+
+The corrected plan preserves the observed total of 16 flagged control intentions and reports its actual components: `maintenancePauses`, `restoredReportingPauses`, and their `suspiciousControlIntents` total. These reviewed counts cover only revisions through `140833`. The first flagged intention must still be the ordinary maintenance origin at `122331`. A later authenticated temporary reporting restore does not alter the earlier reviewed total, and any later maintenance failure or other hard/owner intention still refuses.
+
+The current control reason and change time must continue to match the final authenticated control intention. These checks remain separate from the reviewed count, with specific refusal codes so another mismatch can be explained without inferring its cause from a generic error.
 
 ## One closed control boundary
 
