@@ -16,7 +16,7 @@ permissions:
 jobs:
   dashboard:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
         with:
@@ -33,4 +33,6 @@ jobs:
       - name: Offline regressions
         run: |
           umask 077
-          npm test
+          # Compiler subprocess fixtures share the hosted runner's CPU and memory.
+          # Isolate test files without changing their assertions or timeouts.
+          node --import tsx --test --test-concurrency=1 test/*.test.ts
