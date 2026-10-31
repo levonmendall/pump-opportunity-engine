@@ -33,7 +33,7 @@ export type NativeAuditCertificate={schemaVersion:1;mint:string;pool:string;data
  * refusal. Carries only scheduling provenance; it grants no financial authority. */
 export type NativeEconomicRejection={kind:'completed-economic-rejection';mint:string;pool:string;strategyVersion:typeof LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION;windowEndAt:number;openedAt:number;decisionAt:number;quoteAt:number;quoteEvidence:string;reobservationCostLamports?:string;reason:'v3.1-nonpositive-joint-conditional-economic-balance';at:number};
 export type NativeOrigin={originConfirmed:{signature:string;availableAt:number;transaction:unknown};originFinalized:{signature:string;availableAt:number;transaction:unknown};olderSelection?:{observedAt:number;evidence:string}};
-type Flow=Pick<PilotNativeFlow,'addCandidate'|'removeCandidate'|'snapshot'|'notificationLedger'|'requestSupportRefresh'|'requestHeartbeat'|'service'|'usage'|'stop'>&Partial<Pick<PilotNativeFlow,'servicePlan'|'captureState'>>;
+type Flow=Pick<PilotNativeFlow,'addCandidate'|'removeCandidate'|'snapshot'|'notificationLedger'|'requestSupportRefresh'|'requestHeartbeat'|'service'|'usage'|'stop'>&Partial<Pick<PilotNativeFlow,'servicePlan'|'captureState'|'candidateMints'>>;
 type Rpc=Pick<PilotRpc,'call'|'usage'|'cooldownUntil'>&Partial<Pick<PilotRpc,'callSignatureHistoryBatch'|'historyQueryReadyAt'>>;
 type AuditDispatchReason='eligible'|'native-service-wait'|'native-service-dispatch'|'native-service-return'|'rpc-gate-wait'|'ceiling-backoff'|'ceiling-refresh'|'prepare-native-runway'|'scheduler-wait'|'scheduler-refusal'|'audit-selected'|'peer-selected'|'page-admission'|'page-response'|'page-refusal'|'page-deferred'|'page-not-exposed'|'work-exception';
 type AuditDispatchTrace={windowEndAt:number;deadlineAt:number;firstReadyAt:number;lastAt:number;lastState:{reason:AuditDispatchReason;nextAction:string;context:Record<string,unknown>};reasonCounts:Partial<Record<AuditDispatchReason,number>>;transitionRecords:number;omittedTransitions:number;stateKey:string;final:boolean};
@@ -56,6 +56,7 @@ type VerificationSession={seed:PilotMigrationSeed;startedAt:number;deadlineAt:nu
 
 export class NativeCandidateRunner{
  readonly dataContract:NativeFlowDataContract;readonly currentPoolObservation:boolean;readonly watch:PilotWatch;readonly observationAgePolicy:ObservationAgePolicy;private readonly now:()=>number;private readonly candidates=new Map<string,Candidate>();private readonly origins=new Map<string,MigrationIdentity>();private readonly originProofs=new Map<string,NativeOrigin>();private readonly registry:MarketRegistry;private readonly runScope:string;private readonly certificates=new Map<string,NativeAuditCertificate>();private readonly productivity:NativeSlotProductivity;private pendingAuditPhysical:{mint:string;windowEndAt:number}|null=null;
+ private readonly retirementRequests=new Map<string,{candidate:Candidate;reason:string;at:number;deferMs:number}>();
  private readonly cancelledAuditDiagnostics:Array<{mint:string;targetEndAt:number;deadlineAt:number;cancelledAt:number;session:NativeAuditSession}>=[];
  private verificationSession:VerificationSession|null=null;private committedActivityPending=true;private legacyObservationRepairPending=true;private primaryEconomicEvaluations=0;
  private readonly audit:typeof auditNativeFlowWindow;private readonly resolve:typeof resolvePilotMigration;
@@ -192,7 +193,7 @@ export class NativeCandidateRunner{
   const at=this.now(),rows=this.registry.nextPoolSourceProgress(at);if(!rows.length)return;const began=performance.now();
   this.registry.transaction(()=>{for(const row of rows){if(performance.now()-began>=NATIVE_DEADLINE_POLICY.postValidationMs)break;this.watch.notePoolHintProgress(row.mint,at);}});
  }
- private drainCommittedActivity(){if(!this.options.marketIntake||!this.committedActivityPending||!this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.postValidationMs))return;const began=performance.now();this.registry.transaction(()=>{const rows=this.registry.nextWatchActivities(16);if(!rows.length){this.committedActivityPending=false;return;}for(const row of rows){if(performance.now()-began>=5)break;this.onActivity(row);}});}
+ private drainCommittedActivity(){if(!this.options.marketIntake||!this.committedActivityPending||!this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.postValidationMs))return;if(!this.registry.nextWatchActivities(1).length){this.committedActivityPending=false;return;}const began=performance.now();this.registry.transaction(()=>{const rows=this.registry.nextWatchActivities(16);if(!rows.length){this.committedActivityPending=false;return;}for(const row of rows){if(performance.now()-began>=5)break;this.onActivity(row);}});}
  /** Select one measured shared-stream opportunity only when the existing
   * origin-work dispatcher has actual spare runway. A trade signature is a
   * lookup hint: only the unchanged confirmed/finalized resolver may prove an
@@ -294,7 +295,57 @@ export class NativeCandidateRunner{
   }
   return true;
  }
- private retire(mint:string,reason:string,at:number,deferMs:number){this.certificates.delete(mint);const c=this.candidates.get(mint);if(!c)return;this.finishAuditDispatch(c,'candidate-retired:'+reason,at);if(c.auditSession){const active=c.auditSession;active.session.cancel('NATIVE_AUDIT_CANDIDATE_RETIRED');need(this.cancelledAuditDiagnostics.length<6,'NATIVE_AUDIT_DIAGNOSTIC_BOUND');this.cancelledAuditDiagnostics.push({mint,targetEndAt:active.windowEndAt,deadlineAt:active.deadlineAt,cancelledAt:at,session:active.session});}delete c.auditSession;this.candidates.delete(mint);this.productivity.retired(mint,at,reason);this.options.flow.removeCandidate(mint,reason);const row=this.watch.lookupIdentity(mint,at);const owned=this.options.financialOwnership?.(mint);if(row&&(owned||!['EXPIRED','PERMANENTLY_UNSUPPORTED'].includes(row.state)))this.watch.transition(mint,owned??'DEFERRED',reason,at,{deferUntil:at+deferMs});this.options.onCandidateRetired?.(mint,reason);this.record('native-candidate-retired',{mint,at,reason,allocatedAt:c.allocatedAt,openedAt:c.openedAt,awarenessRetained:true,completeWindows:c.lastAssessmentEnd?1:0});}
+ /** Persist logical retirement as one write before changing native ownership.
+  * A refused lease retains the exact generation and blocks its further audits;
+  * physical occupancy is released only by the native unsubscribe/close ACK. */
+ private retire(mint:string,reason:string,at:number,deferMs:number){
+  this.certificates.delete(mint);const c=this.candidates.get(mint);if(!c)return true;
+  this.retirementRequests.set(mint,{candidate:c,reason,at,deferMs});return this.commitRetirement(mint);
+ }
+ private commitRetirement(mint:string){
+  const request=this.retirementRequests.get(mint);if(!request)return true;
+  const c=request.candidate;if(this.candidates.get(mint)!==c){this.retirementRequests.delete(mint);return true;}
+  let callbackStarted=false;
+  try{this.registry.transaction(()=>{
+   callbackStarted=true;const {reason,deferMs}=request,at=Math.max(request.at,this.now());
+   const row=this.watch.lookupIdentity(mint,at),owned=this.options.financialOwnership?.(mint);
+   if(row&&(owned||!['EXPIRED','PERMANENTLY_UNSUPPORTED'].includes(row.state)))this.watch.transition(mint,owned??'DEFERRED',reason,at,{deferUntil:Math.max(row.deferUntil,at+deferMs),releaseObservation:true});
+   this.productivity.retired(mint,at,reason);
+   this.registry.afterCommit(()=>{
+    if(this.candidates.get(mint)!==c)return;
+    this.finishAuditDispatch(c,'candidate-retired:'+reason,at);
+    if(c.auditSession){const active=c.auditSession;active.session.cancel('NATIVE_AUDIT_CANDIDATE_RETIRED');need(this.cancelledAuditDiagnostics.length<6,'NATIVE_AUDIT_DIAGNOSTIC_BOUND');this.cancelledAuditDiagnostics.push({mint,targetEndAt:active.windowEndAt,deadlineAt:active.deadlineAt,cancelledAt:at,session:active.session});}
+    delete c.auditSession;this.candidates.delete(mint);this.retirementRequests.delete(mint);
+    this.options.flow.removeCandidate(mint,reason);this.options.onCandidateRetired?.(mint,reason);
+    this.record('native-candidate-retired',{mint,at,reason,allocatedAt:c.allocatedAt,openedAt:c.openedAt,awarenessRetained:true,completeWindows:c.lastAssessmentEnd?1:0});
+   });
+  });return true;}catch(error){if(!callbackStarted&&isMarketRegistryContention(error))return false;throw error;}
+ }
+ private observationMember(c:Candidate,at:number){
+  const mint=c.identity.baseMint;if(this.candidates.get(mint)!==c||this.retirementRequests.has(mint))return false;
+  const row=this.watch.lookupIdentity(mint,at);
+  return !!row&&row.pool===c.identity.pool&&row.deepSince===c.allocatedAt&&['DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING'].includes(row.state)&&this.productivity.hasAssignment(mint,c.allocatedAt);
+ }
+ private reconcileObservationMembership(){
+  for(const mint of this.retirementRequests.keys())if(!this.commitRetirement(mint))return false;
+  for(const c of [...this.candidates.values()])if(!this.observationMember(c,this.now())){
+   const mint=c.identity.baseMint;this.record('native-candidate-membership-invalid',{at:this.now(),mint,allocatedAt:c.allocatedAt,action:'retire-original-generation',freshObservationRequired:true,financialPermission:false});
+   if(!this.retire(mint,'observation membership mismatch; fresh allocation required',this.now(),0))return false;
+  }
+  // Recovery from a partial old transition must retire, not adopt, a physical
+  // scope lacking a coordinator owner. Never manufacture a warm observation.
+  const orphans=new Set([...(this.options.flow.candidateMints?.()??[]),...this.productivity.assignedMints(),...this.watch.identitiesInStates(['DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING'],this.now()).filter(row=>row.mint&&!this.candidates.has(row.mint)&&this.watch.lookupIdentity(row.mint,this.now())?.deepSince!=null).flatMap(row=>row.mint?[row.mint]:[])]);
+  for(const mint of orphans)if(!this.candidates.has(mint)){
+   let started=false;
+   try{this.registry.transaction(()=>{
+    started=true;const at=this.now(),row=this.watch.lookupIdentity(mint,at),owned=this.options.financialOwnership?.(mint);
+    if(row&&!['EXPIRED','PERMANENTLY_UNSUPPORTED'].includes(row.state))this.watch.transition(mint,owned??(['HELD','ENTRY_PENDING'].includes(row.state)?row.state:'DEFERRED'),'orphan observation owner; fresh allocation required',at,{deferUntil:Math.max(row.deferUntil,at),releaseObservation:true});
+    this.productivity.retired(mint,at,'orphan observation owner');this.certificates.delete(mint);
+    this.registry.afterCommit(()=>{this.options.flow.removeCandidate(mint,'orphan selected scope; native settlement required');this.options.onCandidateRetired?.(mint,'orphan observation owner');this.record('native-candidate-orphan-retired',{at,mint,physicalCapacityReleased:false,financialPermission:false});});
+   });}catch(error){if(!started&&isMarketRegistryContention(error))return false;throw error;}
+  }
+  return true;
+ }
  private async drainCancelledAuditDiagnostics(){for(const item of this.cancelledAuditDiagnostics.splice(0)){await item.session.advance();this.record('native-candidate-audit-cancelled-diagnostic',{mint:item.mint,targetEndAt:item.targetEndAt,deadlineAt:item.deadlineAt,cancelledAt:item.cancelledAt,recordedAt:this.now(),reason:item.session.error(),diagnosticResult:item.session.diagnosticResult(),admitted:false,physicalSettlementClaimed:false,meaning:'Logical cancellation only; original physical gate retains all unsettled work and uncertainty.'});}}
  private admission(deadlineAt:number):PilotRpcCallOptions{return {latestStartAt:Math.min(deadlineAt-1200,this.now()+1200),timeoutMs:1200,admissionOpen:()=>this.open()&&this.now()<deadlineAt};}
  private finishVerification(session:VerificationSession){
@@ -392,8 +443,19 @@ export class NativeCandidateRunner{
    if(!row?.mint||!row.pool)break;excluded.add(row.mint);const id=this.observationIdentity(row);
    if(!id){this.record('native-observation-identity-unavailable',{mint:row.mint,at,awarenessRetained:true,deepAdmission:false,archivalCreationRequired:!this.currentPoolObservation,otherCandidatesContinue:true});continue;}
    if(!this.observationAllowed(row,at)){this.watch.transition(row.mint,'EXPIRED','remaining horizon cannot fit a complete required window',at);continue;}
-   this.options.flow.addCandidate({mint:id.baseMint,pool:id.pool,...(id.minimumSlot===undefined?{}:{minSlot:id.minimumSlot}),...(id.dependencyHints?{dependencyHints:{...id.dependencyHints}}:{})});
-   this.candidates.set(id.baseMint,{identity:id,allocatedAt:at,openedAt:null,lastFeatureEnd:0,lastAssessmentEnd:0,lastReadyWindowEnd:0,lastReadyObservedAt:0,lastExpiredWindowEnd:0,lastAuditFenceWarmingWindowEnd:0,auditFailures:0,nextAuditAt:0,lastAuditPageAt:0,auditPageRetryAt:0,readinessCheckedEnd:0,checkedAuditable:false});this.productivity.allocated(id.baseMint,at,this.watch.allocationReadySince(id.baseMint,at,{requireOrigin:!this.currentPoolObservation})??at,row.promotions);this.watch.transition(id.baseMint,'DEEP_OBSERVATION','fresh native confirmed pool observation allocated; no financial permission',at);this.registry.markStage(id.baseMint,'deep-admitted',at);this.maximumSimultaneous=Math.max(this.maximumSimultaneous,this.candidates.size);this.options.onCandidateAllocated?.(structuredClone(id));
+   // Acquire the writer before any slot/transport mirror is changed. Hooks
+   // restore watch/productivity mirrors if an outer transaction rolls back.
+   this.registry.transaction(()=>{
+    const waitingSince=this.watch.allocationReadySince(id.baseMint,at,{requireOrigin:!this.currentPoolObservation})??at;
+    this.watch.transition(id.baseMint,'DEEP_OBSERVATION','fresh native confirmed pool observation allocated; no financial permission',at);
+    this.productivity.allocated(id.baseMint,at,waitingSince,row.promotions);this.registry.markStage(id.baseMint,'deep-admitted',at);
+    this.registry.afterCommit(()=>{
+     this.candidates.set(id.baseMint,{identity:id,allocatedAt:at,openedAt:null,lastFeatureEnd:0,lastAssessmentEnd:0,lastReadyWindowEnd:0,lastReadyObservedAt:0,lastExpiredWindowEnd:0,lastAuditFenceWarmingWindowEnd:0,auditFailures:0,nextAuditAt:0,lastAuditPageAt:0,auditPageRetryAt:0,readinessCheckedEnd:0,checkedAuditable:false});
+     try{this.options.flow.addCandidate({mint:id.baseMint,pool:id.pool,...(id.minimumSlot===undefined?{}:{minSlot:id.minimumSlot}),...(id.dependencyHints?{dependencyHints:{...id.dependencyHints}}:{})});
+      this.maximumSimultaneous=Math.max(this.maximumSimultaneous,this.candidates.size);this.options.onCandidateAllocated?.(structuredClone(id));
+     }catch(error){this.retire(id.baseMint,'native allocation setup failed; fresh allocation required',this.now(),0);throw error;}
+    });
+   });
   }
  }
  /** This prerequisite is independent of scheduler admission. A complete raw
@@ -420,7 +482,7 @@ export class NativeCandidateRunner{
   this.record('native-independent-audit-warming',{mint:c.identity.baseMint,at,windowStartAt:view.features!.windowStartAt,windowEndAt:end,openedAt:view.openedAt,reason:'no confirmed lower context or actual notification after subscription ACK and before target window; pre-ACK activity is not a capture failure',historyRequestStarted:false,deadlineEligible:false,windowUsable:false,financialQualification:false});
  }
  private readyAudits(at:number){
-  return [...this.candidates.values()].flatMap(candidate=>{const view=this.options.flow.snapshot(candidate.identity.baseMint,at);if(!candidate.auditSession&&!(view?.warm&&view.features&&view.features.windowEndAt!==candidate.lastAuditFenceWarmingWindowEnd&&view.features.windowEndAt>candidate.lastAssessmentEnd&&at>=candidate.nextAuditAt))return [];return [{candidate,deadlineAt:candidate.auditSession?.deadlineAt??view!.features!.windowEndAt+NATIVE_CANDIDATE_AUDIT_PROFILE.maximumAuditSpanMs}];}).sort((a,b)=>a.deadlineAt-b.deadlineAt||a.candidate.lastAuditPageAt-b.candidate.lastAuditPageAt||a.candidate.allocatedAt-b.candidate.allocatedAt).map(row=>row.candidate);
+  return [...this.candidates.values()].filter(c=>this.observationMember(c,at)).flatMap(candidate=>{const view=this.options.flow.snapshot(candidate.identity.baseMint,at);if(!candidate.auditSession&&!(view?.warm&&view.features&&view.features.windowEndAt!==candidate.lastAuditFenceWarmingWindowEnd&&view.features.windowEndAt>candidate.lastAssessmentEnd&&at>=candidate.nextAuditAt))return [];return [{candidate,deadlineAt:candidate.auditSession?.deadlineAt??view!.features!.windowEndAt+NATIVE_CANDIDATE_AUDIT_PROFILE.maximumAuditSpanMs}];}).sort((a,b)=>a.deadlineAt-b.deadlineAt||a.candidate.lastAuditPageAt-b.candidate.lastAuditPageAt||a.candidate.allocatedAt-b.candidate.allocatedAt).map(row=>row.candidate);
  }
  private async beginAudit(c:Candidate,signal?:AbortSignal){
   const mint=c.identity.baseMint,at=this.now(),view=this.options.flow.snapshot(mint,at);if(!view?.warm||!view.features)return;
@@ -459,17 +521,19 @@ export class NativeCandidateRunner{
   const mint=c.identity.baseMint;
   const availableAt=this.now();this.finishAuditDispatch(c,sessionFailure??'audit-result:'+result.status,availableAt);if(result.requestAttempts>0)this.lastAuditAt=availableAt;this.record('native-candidate-window-audit',{mint,result,availableAt,notBackdated:true});
   if(this.candidates.get(mint)!==c)return;
+  if(!this.observationMember(c,availableAt)){this.retire(mint,'audit result lost deep-observation membership; fresh allocation required',availableAt,0);return;}
   if(sessionFailure){this.counters.predictiveUnavailable++;this.noteFailure('predictive-unavailable',mint,sessionFailure,availableAt,c,{end,deadlineAt:end+NATIVE_CANDIDATE_AUDIT_PROFILE.maximumAuditSpanMs},result);this.record('native-predictive-unavailable',{mint,at:availableAt,reason:sessionFailure,targetEndAt:end,auditPreserved:true});return;}
   if(result.status!=='verified'){if(result.status==='unusable'){this.counters.auditUnusable++;this.noteFailure('audit-unusable',mint,result.reason,availableAt,c,{end,deadlineAt:end+NATIVE_CANDIDATE_AUDIT_PROFILE.maximumAuditSpanMs},result);this.onGap({mint,at:availableAt,reason:result.reason});}else{this.counters.auditUnavailable++;this.noteFailure('audit-unavailable',mint,result.reason,availableAt,c,{end,deadlineAt:end+NATIVE_CANDIDATE_AUDIT_PROFILE.maximumAuditSpanMs},result);c.auditFailures++;if(c.auditFailures>=3)this.retire(mint,result.reason,availableAt,15000);}return;}
   const current=this.options.flow.snapshot(mint,availableAt);
   if(!current?.warm||!current.features||current.features.windowEndAt!==end){this.counters.predictiveUnavailable++;this.noteFailure('predictive-unavailable',mint,'AUDIT_COMPLETED_AFTER_DECISION_BUCKET',availableAt,c,{end,deadlineAt:end+NATIVE_CANDIDATE_AUDIT_PROFILE.maximumAuditSpanMs},result);this.record('native-predictive-unavailable',{mint,at:availableAt,reason:'audit-completed-after-target-window-decision-bucket',targetEndAt:end,currentEndAt:current?.features?.windowEndAt??null,auditPreserved:true});return;}
+  this.watch.noteWindow(mint,availableAt);
   if(Number.isSafeInteger(current.connectionId)&&Number.isSafeInteger(current.subscription)&&Number.isSafeInteger(c.openedAt)){
    const certificate:NativeAuditCertificate={schemaVersion:1,mint,pool:c.identity.pool,dataContract:this.dataContract,openedAt:c.openedAt!,connectionId:current.connectionId!,subscriptionId:current.subscription!,windowStartAt:current.features.windowStartAt,windowEndAt:end,auditAvailableAt:result.availableAt,admittedAt:availableAt,deadlineAt:end+PROVISIONAL_RULE.bucketMs-1,notificationCompletenessVerified:result.notificationCompletenessVerified,executedFlowCompletenessVerified:result.executedFlowCompletenessVerified,featuresSha256:nativePaperFeaturesSha256(current.features)};
    this.certificates.set(mint,certificate);
   }
   this.watch.noteRelevantEvidence(mint,{kind:'source-recovery',at:availableAt,fingerprint:'verified-audited-signatures:'+createHash('sha256').update(JSON.stringify({pool:result.pool,required:result.requiredSignatures,compared:result.comparedSignatures})).digest('hex')},availableAt);
   this.productivity.evaluated(mint,current.features.windowStartAt,end,availableAt);
-  const assessment=assessPredictiveBuying(current.features,availableAt);if(current.strictV2Unavailable)this.counters.strictV2BaselineUnavailableViews++;if(this.dataContract!==CONFIRMED_PROGRAM_EVENTS_V2)this.counters.protocolAwareShadowViews++;c.lastAssessmentEnd=end;c.auditFailures=0;c.nextAuditAt=end+PROVISIONAL_RULE.bucketMs;this.counters.auditedWindows++;this.counters.predictiveAssessments++;this.lastPredictiveAt=availableAt;this.decisions.push({at:availableAt,mint,stage:(this.dataContract===CONFIRMED_PROGRAM_EVENTS_V2?'predictive-':'shadow-predictive-')+assessment.status,reason:assessment.reason});if(this.decisions.length>30)this.decisions.shift();this.watch.noteWindow(mint,availableAt);
+  const assessment=assessPredictiveBuying(current.features,availableAt);if(current.strictV2Unavailable)this.counters.strictV2BaselineUnavailableViews++;if(this.dataContract!==CONFIRMED_PROGRAM_EVENTS_V2)this.counters.protocolAwareShadowViews++;c.lastAssessmentEnd=end;c.auditFailures=0;c.nextAuditAt=end+PROVISIONAL_RULE.bucketMs;this.counters.auditedWindows++;this.counters.predictiveAssessments++;this.lastPredictiveAt=availableAt;this.decisions.push({at:availableAt,mint,stage:(this.dataContract===CONFIRMED_PROGRAM_EVENTS_V2?'predictive-':'shadow-predictive-')+assessment.status,reason:assessment.reason});if(this.decisions.length>30)this.decisions.shift();
   if(this.registry.markDistinct(this.runScope+':evaluated',mint,availableAt))this.counters.uniqueEvaluated++;this.registry.markStage(mint,'verified-audit',availableAt);if(assessment.status==='failed')this.counters.predictiveFailed++;else if(assessment.status==='not-rejected')this.counters.predictiveNotRejected++;else this.counters.predictiveUnavailable++;
   this.record('native-predictive-assessment',{mint,pool:c.identity.pool,at:availableAt,assessment,baselineFeatureSemantics:current.baselineFeatureSemantics??'V2_WITHOUT_PROTOCOL_FRAMES',strictV2BaselineUnavailable:current.strictV2Unavailable??false,protocolPoolEffects:current.protocolPoolEffects??null,assessmentScope:this.dataContract===CONFIRMED_PROGRAM_EVENTS_V2?'strict-v2-feature-only':'protocol-aware-shadow-ordinary-flow-only; not baseline qualification',auditAvailableAt:result.availableAt,auditCompletenessScope:result.completenessScope,notificationCompletenessVerified:result.notificationCompletenessVerified,executedFlowCompletenessVerified:result.executedFlowCompletenessVerified,windowEndAt:end,dataContract:this.dataContract,strategyVersion:PROVISIONAL_RULE.version,entryAgeEligible:c.identity.migrationAt!==null&&entryAgeEligible(c.identity.migrationAt,availableAt),ageCohort:c.identity.migrationAt===null?'unknown-migration-age':observationAgeCohort(c.identity.migrationAt,availableAt,this.watch.lookupIdentity(mint,availableAt)?.olderResearch!==undefined,this.observationAgePolicy),observationAgePolicy:this.observationAgePolicy.version,financialQualification:false,executionFeasibility:'not assessed; candidate-only mode',transferCrossCheck:'UNAVAILABLE'});
   // The frozen baseline remains independently measured. It must not retire
@@ -536,6 +600,7 @@ export class NativeCandidateRunner{
   if(!this.open()||this.working)return 'closed';this.working=true;
   try{
    if(!this.drainGapRetirements()){this.lastOutcome='MARKET_REGISTRY_CONTENTION';return 'wait';}
+   if(!this.reconcileObservationMembership()){this.lastOutcome='MARKET_REGISTRY_CONTENTION';return 'wait';}
    this.reconcileFlowOpen();
    this.drainNativeActivity();
    this.drainMigrationDelivery();
@@ -592,7 +657,7 @@ export class NativeCandidateRunner{
  /** Exact current source certificate; no later audit, stale generation or
   * merely warm feature view can authorize an external PAPER decision. */
  currentAuditCertificate(mint:string,at=this.now()):NativeAuditCertificate|null{
-  const c=this.candidates.get(mint),certificate=this.certificates.get(mint);if(!c||!certificate||!Number.isSafeInteger(at)||at>this.now()||at<certificate.admittedAt||at>certificate.deadlineAt)return null;
+  const c=this.candidates.get(mint),certificate=this.certificates.get(mint);if(!c||!certificate||!Number.isSafeInteger(at)||at>this.now()||at<certificate.admittedAt||at>certificate.deadlineAt||!this.observationMember(c,at))return null;
   const view=this.options.flow.snapshot(mint,at);if(!view?.warm||!view.features||view.openedAt!==certificate.openedAt||view.connectionId!==certificate.connectionId||view.subscription!==certificate.subscriptionId||view.features.windowStartAt!==certificate.windowStartAt||view.features.windowEndAt!==certificate.windowEndAt||nativePaperFeaturesSha256(view.features)!==certificate.featuresSha256)return null;
   return structuredClone(certificate);
  }
