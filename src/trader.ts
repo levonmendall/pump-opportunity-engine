@@ -420,7 +420,11 @@ export class PaperTrader{
     const availableAt=this.clock();if(!ready||Math.floor(availableAt/PROVISIONAL_RULE.bucketMs)!==bucket||this.candidates.get(c.mint)!==c||!c.active||c.informationPending)return;
     // Re-read only bounded in-memory features at actual diagnostic availability;
     // no quote/provider work or change to the existing primary risk decision.
-    const assessment=this.resilient?this.assessResilient(c.window.features(availableAt),availableAt,c.mint):this.adaptive?assessAdaptiveBuying(c.window.features(availableAt),availableAt):assessPredictiveBuying(c.window.features(availableAt),availableAt);if(assessment.status==='unavailable'||!assessment.features)return;
+    // This secondary predictive snapshot is diagnostic only. A clock rollover,
+    // corrected flow window or optional assessor exception cannot invalidate the
+    // already-recorded primary decision or permanently disable PAPER entries.
+    // Mandatory recorder failures remain handled by this.record below.
+    const assessment=(()=>{try{const observed=c.window.features(availableAt);return this.resilient?this.assessResilient(observed,availableAt,c.mint):this.adaptive?assessAdaptiveBuying(observed,availableAt):assessPredictiveBuying(observed,availableAt);}catch{return null;}})();if(!assessment||assessment.status==='unavailable'||!assessment.features)return;
     c.predictiveAssessedBucket=bucket;this.record('trader-predictive-assessment',{mint:c.mint,at:availableAt,windowEndAt:assessment.features.windowEndAt,strategyVersion:this.effectiveVersion,status:assessment.status,reason:assessment.reason,features:assessment.features,...(this.resilient&&'assessments'in assessment?{strategyAssessments:assessment.assessments,components:'components'in assessment?assessment.components:null}:{}),riskDecision:{kind:decision.kind,reason:decision.reason},meaning:'Predictive predicates only; no eligibility, quote, risk or entry permission is granted.'});
   }
   private assertCandidateOnlyState(){
