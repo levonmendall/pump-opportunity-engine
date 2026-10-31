@@ -141,12 +141,16 @@ test('explicit ten-minute migration listener duration persists and cannot be enl
   for(const totalMs of [0,600001,1.5,Number.NaN])assert.throws(()=>new ComponentBudget({...f.options,totalMs}),/INVALID_DURATION/);
 });
 
-test('minimum duration is bounded and free migration permission does not permit metered or trading subscriptions',async t=>{
-  const f=fixture(t),b=new ComponentBudget({...f.options,totalMs:1});
-  try{
-    for(const method of ['subscribeTokenTrade','unsubscribeTokenTrade','subscribeAccountTrade','subscribeNewToken','trade','signTransaction','sendTransaction'])await assert.rejects(b.operate({transport:'ws',method},done),/DENIED/);
-    assert.equal(b.calls,20);f.now++;await assert.rejects(b.operate({transport:'ws',method:'subscribeMigration'},done),/TIME_CAP/);assert.equal(b.calls,20);
-  }finally{b.close();}
+test('minimum duration bounds both free discovery subscriptions and denies metered or trading operations',async t=>{
+  for(const discovery of ['subscribeMigration','subscribeNewToken']){
+    const f=fixture(t),b=new ComponentBudget({...f.options,totalMs:1});
+    try{
+      for(const method of ['subscribeTokenTrade','unsubscribeTokenTrade','subscribeAccountTrade','trade','signTransaction','sendTransaction'])await assert.rejects(b.operate({transport:'ws',method},done),/DENIED/);
+      assert.equal(b.calls,20,'denied operations never start');
+      assert.equal(await b.operate({transport:'ws',method:discovery},done),'ok');assert.equal(b.calls,21);assert.equal(b.newUnits,1,'free discovery still consumes the shared physical-start allowance');
+      f.now++;await assert.rejects(b.operate({transport:'ws',method:discovery},done),/TIME_CAP/);assert.equal(b.calls,21,'the minimum deadline cannot admit a late discovery start');
+    }finally{b.close();}
+  }
 });
 
 test('signing/simulation/trading, concurrent ownership and malformed baseline are denied offline',async t=>{

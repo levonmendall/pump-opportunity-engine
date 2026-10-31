@@ -34,6 +34,9 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Offline provenance checks compare against approved historical commits.
+          fetch-depth: 0
       - uses: actions/setup-node@v4
         with:
           node-version: '24.19.0'
