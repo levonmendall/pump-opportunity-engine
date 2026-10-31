@@ -53,6 +53,7 @@ export class NativePaper {
  private context:ExecutionContext={price:null,marks:{}};
  private internalStopDiagnostic:{code:typeof INTERNAL_STOP_DIAGNOSTIC_CODES[number];at:number|null;lastSuccessfulResumeRevision:number|null;knownStopCount:number|null}={code:'INTERNAL_SHUTDOWN_NOT_EVALUATED',at:null,lastSuccessfulResumeRevision:null,knownStopCount:null};
  private readonly internalStopRefusalCounts:Partial<Record<typeof INTERNAL_STOP_DIAGNOSTIC_CODES[number],number>>={};
+  private operatingReadinessDiagnostic:{at:number|null;stateRevision:number|null;reasonCode:string}={at:null,stateRevision:null,reasonCode:'OPERATING_READINESS_NOT_EVALUATED'};
  constructor(private readonly options:NativePaperOptions){
   this.now=options.now??Date.now;this.resilient31=options.binding.version===LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION;this.resilient=isLiquidityResilientPaperStrategy(options.binding.version);this.adaptive=this.resilient||options.binding.version===ADAPTIVE_PILOT_BINDING.version;this.maximumPositions=options.binding.maxPositions;const state=options.ledger.state();assertNativePaperAccount(state,options.fixtureAccountBinding);
   for(const [mint,pool]of Object.entries(options.restoredPools??{}))if(state.positions[mint]||Object.values(state.pending).some(o=>o.mint===mint)){need(pool.identity.baseMint===mint,'NATIVE_PAPER_RECOVERY_MINT_MISMATCH');this.restorePool(pool);}
@@ -209,7 +210,7 @@ export class NativePaper {
     // not the account's financial permission. Unexpected financial work or a
     // missing mandatory permission record remain global fail-closed events.
     const candidateLocal=phase==='candidate-proof'||phase==='candidate-preparation';
-    if(!candidateLocal){if(phase==='permission-evidence')this.trader.pauseNewEntries('selected evidence unavailable; entries closed');else this.trader.financialMaintenanceFailed();}
+     if(!candidateLocal){if(phase==='permission-evidence')this.trader.pauseNewEntries('selected evidence unavailable; entries closed');else if(phase==='financial-context'||phase==='financial-resume')this.trader.financialMaintenanceFailed(phase,error);}
     try{this.options.record('native-paper-entry-preparation-unavailable',{mint,at:this.now(),windowEndAt:features.windowEndAt,predictiveOnly:true,executableQualification:false,orderCreated:false,phase,candidateLocal,globalFinancialPermissionChanged:!candidateLocal,reason:error instanceof Error?error.message.slice(0,180):'unavailable'});}catch{this.trader.pauseNewEntries('selected evidence unavailable; entries closed');}
     this.lastCandidateBucket.set(mint,features.windowEndAt);if(candidateLocal)this.technical(mint,'entry-preparation-unavailable');return {kind:'preparation-unavailable' as const};}
   }
@@ -228,6 +229,7 @@ export class NativePaper {
  poolsForRecovery():Record<string,NativePaperPool>{return Object.fromEntries([...this.pools].map(([mint,pool])=>[mint,pool.currentPoolProof?structuredClone(pool):{identity:structuredClone(pool.identity.origin!),evidence:pool.evidence}]));}
  valuation(){return this.context;}
  internalShutdownDiagnostics(){return {...this.internalStopDiagnostic};}
+  operatingReadinessDiagnostics(){return {...this.operatingReadinessDiagnostic};}
  internalShutdownRefusals(){return Object.fromEntries(Object.entries(this.internalStopRefusalCounts).map(([code,count])=>['internal-stop-proof:'+code,count!]));}
  /** Source-versioned operational permission, separate from any candidate's
   * qualification. Reuses completed financial facts only: no RPC, quote refresh,
@@ -235,7 +237,7 @@ export class NativePaper {
  maintainOperatingFinancialReadiness(price:UsdPrice|null,recover=true){
   const at=this.now(),state=this.options.ledger.state(),safety=this.trader.entryReadinessSafety();
   const technicalAuthority=this.options.operatingFinancialReadiness&&NATIVE_PAPER_PROTECTION_PAUSE_REASONS.includes(state.controls.reason as never)?this.options.ledger.technicalProtectionRecoveryAuthority(at):null;
-  const refuse=(reasonCode:string,resetTechnical=true)=>{if(resetTechnical&&technicalAuthority?.verified)this.trader.technicalProtectionRecoveryProof(technicalAuthority,false,at);return {kind:'not-ready' as const,recovered:false,reasonCode};};
+  const refuse=(reasonCode:string,resetTechnical=true)=>{this.operatingReadinessDiagnostic={at,stateRevision:state.revision,reasonCode};if(resetTechnical&&technicalAuthority?.verified)this.trader.technicalProtectionRecoveryProof(technicalAuthority,false,at);return {kind:'not-ready' as const,recovered:false,reasonCode};};
   if(!this.options.operatingFinancialReadiness)return refuse('OPERATING_READINESS_NOT_SELECTED');
   if(this.resilient&&!this.options.ledger.v3RiskPolicyActive())return refuse('OPERATING_READINESS_V3_EPOCH_AND_POLICY_REQUIRED');
   if(Object.keys(state.pending).length||!safety.idle||this.options.market.retirementReady?.()===false){refuse('OPERATING_READINESS_FINANCIAL_WORK_ACTIVE');return {kind:'busy' as const,recovered:false};}
@@ -255,7 +257,7 @@ export class NativePaper {
   const projection=this.options.ledger.projection(at,price,marks);if(!projection.usdValuationAvailable||projection.unknownMarks)return refuse('OPERATING_READINESS_CURRENT_INVENTORY_REQUIRED');
   const technicalProof=technicalAllowed?this.trader.technicalProtectionRecoveryProof(technicalAuthority,true,at):null;if(technicalAllowed&&!technicalProof)return refuse('OPERATING_READINESS_SUSTAINED_PROTECTION_RECOVERY_REQUIRED',false);
   const readiness:OperatingFinancialReadiness={...(technicalProof?{technicalProtectionRecovery:technicalProof}:{}),version:OPERATING_FINANCIAL_READINESS_VERSION,purpose:'financial-permission-only',evidence:'current original financial reconciliation, exact complete inventory and original verified bank Clock source; no candidate window, signal, entry price or order asserted',accountId:state.accountId,stateRevision:state.revision,reconciledAt:state.daily.reconciledAt,positionUnits,source:{kind:keys.length?'complete-held-liquidation-context':'selected-native-support',bankClockAt:Number(bankClockAt),receivedAt:Number(receivedAt),validUntil:Number(validUntil)},recoveryComplete:true,financialInventoryReady:true,budgetAvailable:true};
-  let result;try{result=this.options.ledger.resume('native-paper-operating-financial-ready:'+state.revision+':'+at,at,price,marks,readiness);}catch{this.trader.financialMaintenanceFailed();return {kind:'financial-unavailable' as const,recovered:false};}
+  let result;try{result=this.options.ledger.resume('native-paper-operating-financial-ready:'+state.revision+':'+at,at,price,marks,readiness);}catch(error){refuse('OPERATING_READINESS_FINANCIAL_OPERATION_FAILED');this.trader.financialMaintenanceFailed('operating-financial-permission',error,state.revision);return {kind:'financial-unavailable' as const,recovered:false};}
   if(result.enabled&&!technicalProof)this.trader.verifiedEntryReadinessRecovered();
   const retained=this.trader.recordFinancialReadiness({at,version:readiness.version,purpose:readiness.purpose,source:readiness.source,reconciledAt:readiness.reconciledAt,positionUnits,financialPermissionOnly:true,candidateWindowClaimed:false,entryQuoteClaimed:false,orderCreated:false,...(technicalProof?{technicalProtectionRecovery:technicalProof}:{}),result});
   if(result.enabled&&technicalProof&&!retained){
@@ -270,7 +272,9 @@ export class NativePaper {
    else if(!this.trader.technicalProtectionRecoveryCommitted(technicalProof))this.trader.pauseNewEntries('technical protection recovery commit unavailable; entries closed');
   }
   const afterRecord=this.now(),finalSafety=this.trader.entryReadinessSafety();
-  return {kind:'reconciled' as const,recovered:result.enabled&&retained&&finalSafety.evidenceAvailable&&finalSafety.financialAvailable&&finalSafety.automaticRecoveryAllowed&&!finalSafety.newHardPauseObserved&&!finalSafety.uncertainActions&&readiness.source.validUntil>=afterRecord&&admission?.(afterRecord)===true&&this.options.ledger.projection(afterRecord,price,marks).entriesEnabled};
+  const recovered=result.enabled&&retained&&finalSafety.evidenceAvailable&&finalSafety.financialAvailable&&finalSafety.automaticRecoveryAllowed&&!finalSafety.newHardPauseObserved&&!finalSafety.uncertainActions&&readiness.source.validUntil>=afterRecord&&admission?.(afterRecord)===true&&this.options.ledger.projection(afterRecord,price,marks).entriesEnabled;
+  this.operatingReadinessDiagnostic={at:afterRecord,stateRevision:state.revision,reasonCode:recovered?'OPERATING_READINESS_RECOVERED':result.enabled?'OPERATING_READINESS_RECOVERY_NOT_RETAINED':'OPERATING_READINESS_PERMISSION_NOT_GRANTED'};
+  return {kind:'reconciled' as const,recovered};
  }
  /** Cash-only maintenance: no market adapter, quote, feature assessment, order,
   * or outstanding financial action is driven by this synchronous operation. */
@@ -281,7 +285,7 @@ export class NativePaper {
   const currentPrice=(when:number)=>!!price&&Number.isSafeInteger(price.at)&&price.at>=0&&price.at<=when&&when-price.at<=NATIVE_PAPER_FINANCIAL_READINESS_POLICY.usdMaximumAgeMs&&typeof price.microUsdPerSol==='string'&&/^(0|[1-9][0-9]{0,38})$/.test(price.microUsdPerSol)&&BigInt(price.microUsdPerSol)>0n&&typeof price.source==='string'&&price.source.length>0&&price.source.length<=512&&!/[\u0000-\u001f]/.test(price.source);
   if(!currentPrice(at)){this.context={price:null,marks:{}};this.trader.refreshFlatContext(null);this.trader.pauseNewEntries('current equity or liquidation unavailable; entries closed');return {kind:'unavailable' as const,recovered:false};}
   try{this.options.ledger.reconcile('native-paper-cash:'+state.revision+':'+at,at,price!,{});this.trader.funnel.reconciled++;this.context={price:{...price!},marks:{}};this.trader.refreshFlatContext(price);}
-  catch{this.trader.financialMaintenanceFailed();return {kind:'financial-unavailable' as const,recovered:false};}
+  catch(error){this.trader.financialMaintenanceFailed('flat-reconcile-context',error,state.revision);return {kind:'financial-unavailable' as const,recovered:false};}
   // Reconciliation/SQLite callbacks can consume real time. Never apply later
   // readiness using the pre-write wall clock or make an old cutoff look fresh.
   const when=this.now();if(!currentPrice(when)||when-at>NATIVE_PAPER_FINANCIAL_READINESS_POLICY.maximumReconciliationAgeMs)return {kind:'reconciled' as const,recovered:false};
@@ -298,7 +302,7 @@ export class NativePaper {
    // The original executed-flow cutoff is used, never its later audit/receipt
    // time. This global permission is neither prediction nor executable pricing.
    const resumeAt=this.now();if(!currentPrice(resumeAt)||certificate.windowEndAt>resumeAt||resumeAt-certificate.windowEndAt>NATIVE_PAPER_FINANCIAL_READINESS_POLICY.maximumReconciliationAgeMs)continue;
-   let result;try{result=this.options.ledger.resume('native-paper-cash-ready:'+current.revision+':'+resumeAt,resumeAt,price!,{},{version:NATIVE_PAPER_FINANCIAL_READINESS_POLICY.version,evidence:'current cash reconciliation and complete exact audited flow through original cutoff; no entry price claimed',marketAt:certificate.windowEndAt,recoveryComplete:true,candidateWindowsReady:true,budgetAvailable:true});}catch{this.trader.financialMaintenanceFailed();return {kind:'financial-unavailable' as const,recovered:false};}
+   let result;try{result=this.options.ledger.resume('native-paper-cash-ready:'+current.revision+':'+resumeAt,resumeAt,price!,{},{version:NATIVE_PAPER_FINANCIAL_READINESS_POLICY.version,evidence:'current cash reconciliation and complete exact audited flow through original cutoff; no entry price claimed',marketAt:certificate.windowEndAt,recoveryComplete:true,candidateWindowsReady:true,budgetAvailable:true});}catch(error){this.trader.financialMaintenanceFailed('legacy-financial-permission',error,current.revision);return {kind:'financial-unavailable' as const,recovered:false};}
    if(provedInternal&&result.enabled)this.trader.verifiedEntryReadinessRecovered();
    const retained=this.trader.recordFinancialReadiness({at:resumeAt,mint,windowEndAt:certificate.windowEndAt,version:NATIVE_PAPER_FINANCIAL_READINESS_POLICY.version,result,...(provedInternal?{internalShutdownProvenance:{proofSha256:internalStop.proofSha256,lastSuccessfulResumeRevision:internalStop.lastSuccessfulResumeRevision,stopActions:internalStop.stops.length}}:{}),orderCreated:false,entryQuoteClaimed:false}),afterRecord=this.now(),finalSafety=this.trader.entryReadinessSafety();
    return {kind:'reconciled' as const,recovered:result.enabled&&retained&&finalSafety.evidenceAvailable&&finalSafety.financialAvailable&&finalSafety.automaticRecoveryAllowed&&!finalSafety.uncertainActions&&financialAdmission?.(afterRecord)===true&&this.options.ledger.projection(afterRecord,price??undefined,{}).entriesEnabled};
