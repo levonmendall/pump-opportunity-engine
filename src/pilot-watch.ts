@@ -414,12 +414,11 @@ export class PilotWatch {
       const where=ready.where+(notExcluded.length?' AND w.mint NOT IN ('+notExcluded.map(()=>'?').join(',')+')':'')+(options.requireOrigin?' AND EXISTS (SELECT 1 FROM origin_proofs o WHERE o.mint=w.mint AND o.available=1)':'');
       const params=[...ready.params,...notExcluded];
       const technical=this.query(where+" AND w.technical_state='WAITING' AND w.technical_not_before<=? AND w.technical_expires_at>?",[...params,at,at],'w.technical_not_before,w.technical_requested_at,w.signature',1)[0];if(technical)return copy(technical);
-      // Every serviceable identity competes on the same measured shared-flow
-      // priority. Promotion phase/age cohorts never force an inactive turn over
-      // a stronger opportunity. These hints grant no financial qualification;
-      // FIFO breaks equal economic-hint priority and preserves ordinary fairness.
-      const demandPriority="COALESCE((SELECT MAX(0,mt.activity_score)/(1.0+MAX(0,?-COALESCE(mt.last_activity_at,0))/60000.0) FROM market_tokens mt WHERE mt.mint=w.mint),0) DESC,";
-      const selected=this.query(where,[...params,at],demandPriority+'w.waiting_since,w.first_seen_at,w.signature',1)[0];return selected?copy(selected):null;
+      // Available broad-feed economics rank research only. Continuous wait
+      // credit prevents starvation; unchanged-pool and financial gates above
+      // remain prerequisites for every candidate, regardless of priority.
+      this.flush();const selected=this.options.registry!.nextOpportunity({where,params},at,this.readyAnchorSql());if(!selected)return null;this.retain(selected.row);
+      this.emit('pilot-watch-opportunity-priority',{at,mint:selected.row.mint,pool:selected.row.pool,...selected.hints,meaning:'Unverified scheduling hints; two-sided price stability is a limited activity proxy, not reserves, executable depth or causal price impact; no expected-profit, audit or execution claim'});return copy(selected.row);
     }
     const ready=[...this.rows.values()].filter(r=>r.mint!==null&&!excluded.has(r.mint)&&['WATCH','DEFERRED'].includes(r.state)&&r.capacityCoverage?.status!=='AWAITING_CAPACITY'&&at>=r.deferUntil&&this.observable(r,at)&&this.olderDeepAvailable(r,at));
     const technical=ready.filter(r=>{const t=this.refreshTechnicalReevaluation(r,at);return t?.state==='WAITING'&&at>=t.notBefore;});

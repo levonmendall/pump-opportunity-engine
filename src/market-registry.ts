@@ -11,6 +11,7 @@ export function isMarketRegistryContention(error:unknown):error is MarketRegistr
 export class MarketRegistryReadOnlyViolation extends Error {readonly code='MARKET_REGISTRY_READ_ONLY_VIOLATION';constructor(message='Mutation is forbidden inside a market registry read snapshot'){super(message);this.name='MarketRegistryReadOnlyViolation';}}
 export type RegistryParameter=string|number|bigint|null|Buffer;
 export type RegistryMetricSummary={count:number;sum:number;mean:number|null;max:number|null;p50:number|null;p95:number|null};
+export type ObservationPriorityHints={version:'shared-flow-opportunity-priority-v1';horizonMs:number;recentNetSol:number|null;priorNetSol:number|null;netAccelerationSolPerMinute:number|null;priceReturnBps:number|null;priceDemandAgreement:number|null;priceMovePerGrossSol:number|null;twoSidedPriceStability:number|null;priceScope:{pool:string;source:string;firstAt:number;lastAt:number}|null;serviceableWaitMs:number;economicMerit:number;priority:number;directLiquidity:'unknown';financialPermission:false};
 export type MarketEvidence={buyLamports:string;sellLamports:string;buyHints:number;sellHints:number;activityHints:number;lastActivityAt:number|null;lastEconomicActivityAt:number|null;lastPrice:number|null;fingerprint:string};
 export type EconomicFlowAfter={buyLamports:string;sellLamports:string;knownEvents:number;unknownEvents:number;latestAt:number|null;complete:boolean;retentionStartAt:number};
 type EconomicFlowCache=Omit<EconomicFlowAfter,'complete'|'retentionStartAt'>&{decisionAt:number;counter:number;bytes:number};
@@ -88,7 +89,7 @@ export class MarketRegistry {
   for(const [table,fields] of [['market_tokens',['last_signature','last_activity_source','last_activity_kind']],['verification_queue',['source','kind']]] as const){const columns=new Set((this.statement(`PRAGMA table_info(${table})`).all() as {name:string}[]).map(r=>r.name));for(const field of fields)if(!columns.has(field))this.db.exec(`ALTER TABLE ${table} ADD COLUMN ${field} TEXT`);}
   {const columns=new Set((this.statement('PRAGMA table_info(market_tokens)').all() as {name:string}[]).map(r=>r.name));if(!columns.has('last_economic_activity_at'))this.db.exec('ALTER TABLE market_tokens ADD COLUMN last_economic_activity_at INTEGER');}
   {const columns=new Set((this.statement('PRAGMA table_info(watch_rows)').all() as {name:string}[]).map(r=>r.name));for(const [column,definition] of [['last_decision_kind','TEXT'],['last_decision_at','INTEGER'],['reobserve_ready','INTEGER NOT NULL DEFAULT 1']])if(!columns.has(column!))this.db.exec(`ALTER TABLE watch_rows ADD COLUMN ${column} ${definition}`);this.db.exec('CREATE INDEX IF NOT EXISTS watch_rows_reobservation ON watch_rows(archived,state,reobserve_ready,defer_until,last_decision_at)');}
-  {const columns=new Set((this.statement('PRAGMA table_info(market_activity_seen)').all() as {name:string}[]).map(r=>r.name));for(const [column,definition] of [['quote_lamports','TEXT'],['activity_sequence','INTEGER'],['pool','TEXT']])if(!columns.has(column!))this.db.exec(`ALTER TABLE market_activity_seen ADD COLUMN ${column} ${definition}`);this.db.exec('CREATE INDEX IF NOT EXISTS market_activity_seen_mint_time ON market_activity_seen(mint,first_seen_at);CREATE INDEX IF NOT EXISTS market_activity_seen_mint_sequence ON market_activity_seen(mint,activity_sequence);CREATE INDEX IF NOT EXISTS market_activity_seen_pool_progress ON market_activity_seen(mint,pool,first_seen_at)');}
+  {const columns=new Set((this.statement('PRAGMA table_info(market_activity_seen)').all() as {name:string}[]).map(r=>r.name));for(const [column,definition] of [['quote_lamports','TEXT'],['activity_sequence','INTEGER'],['pool','TEXT'],['sol_ui_price','REAL'],['hint_source','TEXT']])if(!columns.has(column!))this.db.exec(`ALTER TABLE market_activity_seen ADD COLUMN ${column} ${definition}`);this.db.exec('CREATE INDEX IF NOT EXISTS market_activity_seen_mint_time ON market_activity_seen(mint,first_seen_at);CREATE INDEX IF NOT EXISTS market_activity_seen_mint_sequence ON market_activity_seen(mint,activity_sequence);CREATE INDEX IF NOT EXISTS market_activity_seen_pool_progress ON market_activity_seen(mint,pool,first_seen_at)');}
   if(this.getMetadata<number>('createdAt')===undefined)this.setMetadata('createdAt',this.clock());
  }
  private statement(sql:string):Database.Statement {let statement=this.statements.get(sql);if(!statement){statement=this.db.prepare(sql);this.statements.set(sql,statement);}return statement;}
@@ -161,6 +162,55 @@ export class MarketRegistry {
  mergeWatchAlias(from:string,to:string):void{this.transaction(()=>{need(from!==to&&!!this.getBySignature(to),'MARKET_REGISTRY_ALIAS_TARGET');this.statement('UPDATE watch_aliases SET signature=? WHERE signature=?').run(to,from);this.statement('INSERT INTO watch_aliases(alias,signature) VALUES(?,?) ON CONFLICT(alias) DO UPDATE SET signature=excluded.signature').run(from,to);this.delete(from,this.clock(),'duplicate provisional seed merged into canonical verified identity');});}
  /** Only source-controlled SQL expressions are accepted here. */
  queryRows(q:RegistryQuery={}):WatchRow[]{const limit=q.limit??256;need(integer(limit)&&limit>0,'MARKET_REGISTRY_QUERY_LIMIT');const rows=this.statement(`SELECT w.body FROM watch_rows w WHERE w.archived=0${q.where?` AND (${q.where})`:''} ORDER BY ${q.orderBy??'w.signature'} LIMIT ? OFFSET ?`).all(...(q.params??[]),limit,q.offset??0) as {body:string}[];return rows.map(r=>JSON.parse(r.body) as WatchRow);}
+ /** Ranking only, after the caller's ordinary serviceability gates. Both equal
+  * sixty-second flow windows use the available deduplicated broad-feed sequence,
+  * never selected-callback counts. Unknown observations stay neutral. Ordinal
+  * midranks include a neutral zero reference; their equal mean is an explicitly
+  * uncalibrated scheduling heuristic, not a profit probability or entry rule. */
+ nextOpportunity(q:RegistryQuery,at:number,readyAnchorSql:string):{row:WatchRow;hints:ObservationPriorityHints}|undefined{
+  need(integer(at),'MARKET_REGISTRY_OPPORTUNITY_TIME');const recent=at-SHARED_ACTIVITY_HORIZON_MS,prior=Math.max(0,at-2*SHARED_ACTIVITY_HORIZON_MS);
+  const ordinal=(field:string)=>`CASE WHEN ${field} IS NULL THEN 0.5 ELSE (RANK() OVER(ORDER BY ${field})-1-(COUNT(*) OVER()-COUNT(${field}) OVER())+COUNT(*) OVER(PARTITION BY ${field})/2.0+CASE WHEN ${field}>0 THEN 1.0 WHEN ${field}=0 THEN 0.5 ELSE 0 END)/(COUNT(${field}) OVER()+1.0) END`;
+  const row=this.statement(`WITH eligible AS (
+   SELECT w.signature,w.mint,w.pool,w.waiting_since,w.first_seen_at,MAX(0,?-(${readyAnchorSql})) serviceable_wait_ms FROM watch_rows w WHERE w.archived=0${q.where?` AND (${q.where})`:''}
+  ),scoped_flow AS (
+   SELECT a.mint,a.pool,a.hint_source,SUM(CASE WHEN a.first_seen_at>? AND a.quote_lamports IS NOT NULL THEN 1 ELSE 0 END) recent_known,
+    SUM(CASE WHEN a.first_seen_at>? AND a.quote_lamports IS NOT NULL AND a.side='buy' THEN 1 ELSE 0 END) recent_buys,
+    SUM(CASE WHEN a.first_seen_at>? AND a.quote_lamports IS NOT NULL AND a.side='sell' THEN 1 ELSE 0 END) recent_sells,
+    SUM(CASE WHEN a.first_seen_at<=? AND a.quote_lamports IS NOT NULL THEN 1 ELSE 0 END) prior_known,
+    SUM(CASE WHEN a.first_seen_at>? THEN CASE a.side WHEN 'buy' THEN CAST(a.quote_lamports AS REAL) WHEN 'sell' THEN -CAST(a.quote_lamports AS REAL) ELSE 0 END ELSE 0 END)/1e9 recent_net,
+    SUM(CASE WHEN a.first_seen_at<=? THEN CASE a.side WHEN 'buy' THEN CAST(a.quote_lamports AS REAL) WHEN 'sell' THEN -CAST(a.quote_lamports AS REAL) ELSE 0 END ELSE 0 END)/1e9 prior_net,
+    SUM(CASE WHEN a.first_seen_at>? THEN CAST(a.quote_lamports AS REAL) ELSE 0 END)/1e9 recent_gross
+   FROM market_activity_seen a JOIN eligible e ON e.mint=a.mint WHERE a.first_seen_at>? AND a.first_seen_at<=? GROUP BY a.mint,a.pool,a.hint_source
+  ),flow AS (
+   SELECT mint,SUM(recent_known) recent_known,SUM(prior_known) prior_known,SUM(recent_net) recent_net,SUM(prior_net) prior_net,SUM(recent_gross) recent_gross FROM scoped_flow GROUP BY mint
+  ),price_rows AS (
+   SELECT a.mint,a.pool,a.hint_source,a.first_seen_at,a.signature,a.side,a.sol_ui_price,ROW_NUMBER() OVER(PARTITION BY a.mint,a.pool,a.hint_source ORDER BY a.first_seen_at,a.signature,a.side) first_rank,
+    ROW_NUMBER() OVER(PARTITION BY a.mint,a.pool,a.hint_source ORDER BY a.first_seen_at DESC,a.signature DESC,a.side DESC) last_rank
+   FROM market_activity_seen a JOIN eligible e ON e.mint=a.mint AND e.pool=a.pool WHERE a.first_seen_at>? AND a.first_seen_at<=? AND a.sol_ui_price IS NOT NULL AND a.hint_source IS NOT NULL
+  ),prices AS (
+   SELECT mint,pool,hint_source,MIN(first_seen_at) first_at,MAX(first_seen_at) last_at,
+    MAX(CASE WHEN first_rank=1 THEN sol_ui_price END) first_price,MAX(CASE WHEN last_rank=1 THEN sol_ui_price END) last_price
+   FROM price_rows GROUP BY mint,pool,hint_source
+  ),latest_prices AS (
+   SELECT *,ROW_NUMBER() OVER(PARTITION BY mint,pool ORDER BY last_at DESC,hint_source) source_rank FROM prices WHERE first_at<last_at
+  ),observed AS (
+   SELECT e.*,CASE WHEN f.recent_known>0 THEN f.recent_net END recent_net,CASE WHEN f.prior_known>0 THEN f.prior_net END prior_net,
+    CASE WHEN f.recent_known>0 AND f.prior_known>0 THEN f.recent_net-f.prior_net END acceleration,
+    CASE WHEN p.first_price>0 AND p.last_price>0 THEN p.last_price/p.first_price-1 END price_return,
+    CASE WHEN sf.recent_known>0 AND sf.prior_known>0 THEN sf.recent_net-sf.prior_net END scoped_acceleration,
+    CASE WHEN sf.recent_known>0 THEN sf.recent_net END scoped_net,sf.recent_gross,sf.recent_buys,sf.recent_sells,p.hint_source price_hint_source,p.first_at price_first_at,p.last_at price_last_at
+   FROM eligible e LEFT JOIN flow f ON f.mint=e.mint LEFT JOIN latest_prices p ON p.mint=e.mint AND p.pool=e.pool AND p.source_rank=1 LEFT JOIN scoped_flow sf ON sf.mint=e.mint AND sf.pool=e.pool AND sf.hint_source=p.hint_source
+  ),dimensions AS (
+   SELECT *,CASE WHEN price_return IS NULL OR scoped_net IS NULL OR scoped_acceleration IS NULL THEN NULL
+    WHEN price_return>0 AND scoped_acceleration<0 THEN -price_return WHEN price_return<0 AND scoped_net>0 THEN price_return ELSE 0 END price_agreement,
+    CASE WHEN price_return IS NOT NULL AND recent_gross>0 AND recent_buys>0 AND recent_sells>0 THEN -ABS(price_return)/recent_gross END price_stability
+   FROM observed
+  ),ranked AS (
+   SELECT *,(${ordinal('recent_net')}+${ordinal('acceleration')}+${ordinal('price_agreement')}+${ordinal('price_stability')})/4.0 economic_merit FROM dimensions
+  ) SELECT *,(SELECT body FROM watch_rows w WHERE w.signature=ranked.signature) body,economic_merit*(1.0+serviceable_wait_ms/${SHARED_ACTIVITY_HORIZON_MS}.0) selection_priority FROM ranked
+   ORDER BY selection_priority DESC,waiting_since,first_seen_at,signature LIMIT 1`).get(at,...(q.params??[]),recent,recent,recent,recent,recent,recent,recent,prior,at,recent,at) as {body:string;recent_net:number|null;prior_net:number|null;acceleration:number|null;price_return:number|null;price_agreement:number|null;price_stability:number|null;recent_gross:number|null;pool:string;price_hint_source:string|null;price_first_at:number|null;price_last_at:number|null;serviceable_wait_ms:number;economic_merit:number;selection_priority:number}|undefined;
+  return row?{row:JSON.parse(row.body) as WatchRow,hints:{version:'shared-flow-opportunity-priority-v1',horizonMs:SHARED_ACTIVITY_HORIZON_MS,recentNetSol:row.recent_net,priorNetSol:row.prior_net,netAccelerationSolPerMinute:row.acceleration,priceReturnBps:row.price_return===null?null:row.price_return*10000,priceDemandAgreement:row.price_agreement,priceMovePerGrossSol:row.price_return===null||!row.recent_gross?null:Math.abs(row.price_return)/row.recent_gross,twoSidedPriceStability:row.price_stability,priceScope:row.price_return===null?null:{pool:row.pool,source:row.price_hint_source!,firstAt:row.price_first_at!,lastAt:row.price_last_at!},serviceableWaitMs:row.serviceable_wait_ms,economicMerit:row.economic_merit,priority:row.selection_priority,directLiquidity:'unknown',financialPermission:false}}:undefined;
+ }
  count(where?:string,params:RegistryParameter[]=[]):number{return Number((this.statement(`SELECT COUNT(*) AS n FROM watch_rows w WHERE w.archived=0${where?` AND (${where})`:''}`).get(...params) as {n:number}).n);}
  aggregate(expressions:Record<string,string>,where?:string,params:RegistryParameter[]=[]):Record<string,number|null>{need(Object.keys(expressions).every(k=>/^[A-Za-z][A-Za-z0-9_]*$/.test(k)),'MARKET_REGISTRY_AGGREGATE_ALIAS');return this.statement(`SELECT ${Object.entries(expressions).map(([key,expr])=>`${expr} AS ${key}`).join(',')} FROM watch_rows w WHERE w.archived=0${where?` AND (${where})`:''}`).get(...params) as Record<string,number|null>;}
  listMetadata(q:{after?:string;limit?:number;where?:string;params?:RegistryParameter[]}={}):WatchIdentityMetadata[]{const params=[...(q.params??[])];const conditions=[q.where??'1'];if(q.after){conditions.push('w.signature>?');params.push(q.after);}return this.queryRows({where:conditions.join(' AND '),params,orderBy:'w.signature',limit:q.limit??256}).map(r=>({signature:r.signature,mint:r.mint,pool:r.pool,migrationAt:r.migrationAt,verifiedAt:r.verifiedAt,state:r.state,olderResearch:!!r.olderResearch}));}
@@ -197,7 +247,12 @@ export class MarketRegistry {
   const r=this.statement('SELECT last_activity_at,activity_score,buy_lamports,sell_lamports,activity_hints FROM market_tokens WHERE mint=?').get(input.mint) as {last_activity_at:number|null;activity_score:number;buy_lamports:string;sell_lamports:string;activity_hints:number};
   const amount=input.quoteLamports&&/^\d{1,20}$/.test(input.quoteLamports)&&BigInt(input.quoteLamports)<=18446744073709551615n?BigInt(input.quoteLamports):0n;
   const economic=!!input.signature&&amount>0n&&(side==='buy'||side==='sell')&&(input.quoteMint===undefined||input.quoteMint==='So11111111111111111111111111111111111111112');const buy=economic&&side==='buy'?amount:0n,sell=economic&&side==='sell'?amount:0n;
-  if(input.signature&&this.statement('INSERT OR IGNORE INTO market_activity_seen(mint,signature,side,first_seen_at,quote_lamports,activity_sequence,pool) VALUES(?,?,?,?,?,?,?)').run(input.mint,input.signature,side,at,economic?amount.toString():null,r.activity_hints+1,input.pool??null).changes===0)return false;
+  // Only explicitly SOL-denominated amounts with UI-token units can form a
+  // comparable same-pool price hint. Provider p.price has unspecified units.
+  const tokenAmount=typeof input.tokenAmount==='string'&&input.tokenAmount.length<=128&&/^\d+(?:\.\d+)?$/.test(input.tokenAmount)?Number(input.tokenAmount):NaN;
+  const derivedPrice=economic&&input.quoteMint==='So11111111111111111111111111111111111111112'&&input.pool&&tokenAmount>0&&Number.isFinite(tokenAmount)?Number(amount)/1e9/tokenAmount:NaN;
+  const price=Number.isFinite(derivedPrice)&&derivedPrice>0?derivedPrice:null;
+  if(input.signature&&this.statement('INSERT OR IGNORE INTO market_activity_seen(mint,signature,side,first_seen_at,quote_lamports,activity_sequence,pool,sol_ui_price,hint_source) VALUES(?,?,?,?,?,?,?,?,?)').run(input.mint,input.signature,side,at,economic?amount.toString():null,r.activity_hints+1,input.pool??null,price,input.source).changes===0)return false;
   this.economicTouchedMints.add(input.mint);
   // A decaying measured shared-stream demand priority, not a profit probability.
   const decay=Math.exp(-Math.max(0,at-(r.last_activity_at??at))/60000),sol=Number(amount)/1e9;
