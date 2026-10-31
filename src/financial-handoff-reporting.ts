@@ -1,0 +1,29 @@
+/** Read-only usable-certificate handoff telemetry. A certificate is not a
+ * qualification; time blocked across certificates can overlap. */
+export const FINANCIAL_HANDOFF_VERSION='native-financial-handoff-v1' as const;
+export const FINANCIAL_HANDOFF_REASONS=['await-financial-dispatch','financial-or-source-admission','proof-retention','required-service-or-protection-runway','await-earlier-candidate'] as const;
+type Reason=typeof FINANCIAL_HANDOFF_REASONS[number];
+type Count=number|null;
+export type FinancialHandoffReporting={version:typeof FINANCIAL_HANDOFF_VERSION;scope:'CURRENT_SOURCE_PROCESS';runId:string;startedAt:string;generatedAt:string;seen:Count;dispatched:Count;financialEvaluations:Count;expiredBeforeDispatch:Count;invalidatedBeforeDispatch:Count;blockedMsByReason:Record<Reason,number|null>;deferralTransitionsByReason:Record<Reason,Count>;dispatchWait:{count:Count;mean:number|null;max:number|null;p50UpperMs:number|null;p95UpperMs:number|null;histogramResolutionMs:100};active:{mint:string;windowEndAt:string;deadlineAt:string;admittedAt:string;firstSeenAt:string;state:'waiting'|'dispatched';reason:Reason}[]};
+const INCEPTION=Date.parse('2026-10-26T22:07:36.212Z'),record=(v:unknown):Record<string,any>=>v&&typeof v==='object'&&!Array.isArray(v)?v as Record<string,any>:{};
+const number=(v:unknown):number|null=>typeof v==='number'&&Number.isFinite(v)&&v>=0&&v<=Number.MAX_SAFE_INTEGER?v:null;
+const count=(v:unknown):Count=>Number.isSafeInteger(v)&&number(v)!==null?Number(v):null;
+function need(v:unknown):asserts v {if(!v)throw Error('FINANCIAL_HANDOFF_REPORTING_INVALID');}
+function exact(v:unknown,keys:string){const r=record(v);need(v&&Object.getPrototypeOf(v)===Object.prototype&&Object.keys(r).sort().join(' ')===keys.split(' ').sort().join(' '));return r;}
+const iso=(value:unknown,generated:number,future=false)=>{const at=count(value);need(at!==null&&at>=INCEPTION&&(future||at<=generated)&&at<=8640000000000000);return new Date(at).toISOString();};
+export function projectFinancialHandoffReporting(value:unknown,generated:number):FinancialHandoffReporting|undefined {
+ const r=record(value);if(r.version!==FINANCIAL_HANDOFF_VERSION)return undefined;
+ try{const w=record(r.dispatchWait),c=count(w.count);need(Array.isArray(r.active)&&r.active.length<=16);
+  return validateFinancialHandoffReporting({version:r.version,scope:r.scope,runId:r.runId,startedAt:iso(r.startedAt,generated),generatedAt:iso(r.generatedAt,generated),...Object.fromEntries(['seen','dispatched','financialEvaluations','expiredBeforeDispatch','invalidatedBeforeDispatch'].map(key=>[key,count(r[key])])),blockedMsByReason:Object.fromEntries(FINANCIAL_HANDOFF_REASONS.map(key=>[key,number(record(r.blockedMsByReason)[key])])),deferralTransitionsByReason:Object.fromEntries(FINANCIAL_HANDOFF_REASONS.map(key=>[key,count(record(r.deferralTransitionsByReason)[key])])),dispatchWait:{count:c,mean:c===0?null:number(w.mean),max:c===0?null:number(w.max),p50UpperMs:c===0?null:number(w.p50UpperMs),p95UpperMs:c===0?null:number(w.p95UpperMs),histogramResolutionMs:w.histogramResolutionMs},active:r.active.map((value:unknown)=>{const row=record(value);return {mint:row.mint,windowEndAt:iso(row.windowEndAt,generated),deadlineAt:iso(row.deadlineAt,generated,true),admittedAt:iso(row.admittedAt,generated),firstSeenAt:iso(row.firstSeenAt,generated),state:row.state,reason:row.reason};})},generated);
+ }catch{return undefined;}
+}
+export function validateFinancialHandoffReporting(value:unknown,generated:number):FinancialHandoffReporting {
+ const r=exact(value,'version scope runId startedAt generatedAt seen dispatched financialEvaluations expiredBeforeDispatch invalidatedBeforeDispatch blockedMsByReason deferralTransitionsByReason dispatchWait active');need(r.version===FINANCIAL_HANDOFF_VERSION&&r.scope==='CURRENT_SOURCE_PROCESS'&&typeof r.runId==='string'&&/^[a-zA-Z0-9][a-zA-Z0-9:_-]{0,127}$/.test(r.runId));
+ const time=(v:unknown,future=false)=>{const at=typeof v==='string'?Date.parse(v):NaN;need(Number.isSafeInteger(at)&&at>=INCEPTION&&(future||at<=generated)&&new Date(at).toISOString()===v);return at;};const start=time(r.startedAt),at=time(r.generatedAt);need(start<=at);
+ for(const key of ['seen','dispatched','financialEvaluations','expiredBeforeDispatch','invalidatedBeforeDispatch'])need(r[key]===null||count(r[key])!==null);
+ need(r.seen===null||r.dispatched===null||r.dispatched<=r.seen);
+ for(const field of ['blockedMsByReason','deferralTransitionsByReason']){const section=exact(r[field],FINANCIAL_HANDOFF_REASONS.join(' '));for(const key of FINANCIAL_HANDOFF_REASONS)need(section[key]===null||(field==='blockedMsByReason'?number(section[key]):count(section[key]))!==null);}
+ const w=exact(r.dispatchWait,'count mean max p50UpperMs p95UpperMs histogramResolutionMs');need((w.count===null||count(w.count)!==null)&&w.histogramResolutionMs===100);for(const key of ['mean','max','p50UpperMs','p95UpperMs'])need(w[key]===null||number(w[key])!==null);if(w.count===0)need(w.mean===null&&w.max===null&&w.p50UpperMs===null&&w.p95UpperMs===null);need(w.p50UpperMs===null||w.p95UpperMs===null||w.p50UpperMs<=w.p95UpperMs);
+ need(Array.isArray(r.active)&&r.active.length<=16);const seen=new Set<string>();for(const value of r.active){const row=exact(value,'mint windowEndAt deadlineAt admittedAt firstSeenAt state reason');need(typeof row.mint==='string'&&/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(row.mint)&&['waiting','dispatched'].includes(row.state)&&(FINANCIAL_HANDOFF_REASONS as readonly unknown[]).includes(row.reason));const end=time(row.windowEndAt),admitted=time(row.admittedAt),first=time(row.firstSeenAt),deadline=time(row.deadlineAt,true);need(end<=admitted&&admitted<=first&&first<=at&&admitted<=deadline);const key=row.mint+':'+row.windowEndAt;need(!seen.has(key));seen.add(key);}
+ need(Buffer.byteLength(JSON.stringify(r))<=8192);return r as FinancialHandoffReporting;
+}

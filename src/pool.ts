@@ -73,7 +73,7 @@ async function readSupportedPool(rpc:ReadOnlyRpc,mint:PublicKey,rec:EvidenceReco
 
 /** Pure pricing inputs from one complete confirmed dependency batch. Time
  * provenance is validated by the caller, never inferred from slot ordering. */
-export function decodeSupportedPoolAccounts(mint:PublicKey,key:PublicKey,first:Pool,values:(WireAccount|null)[],context:{slot:number},requestedAt:string,receivedAt:string){
+export function decodeSupportedPoolAccounts(mint:PublicKey,key:PublicKey,first:Pick<Pool,'poolBaseTokenAccount'|'poolQuoteTokenAccount'>,values:(WireAccount|null)[],context:{slot:number},requestedAt:string,receivedAt:string){
   const [pi,gi,fi,mi,qi,bi,vi]=values.map(info);
   need(pi&&gi&&fi&&mi&&qi&&bi&&vi,'MISSING_POOL_STATE');
   need(pi.owner.equals(PUMP_AMM_PROGRAM_ID)&&gi.owner.equals(PUMP_AMM_PROGRAM_ID)&&fi.owner.equals(PUMP_FEE_PROGRAM_ID),'BAD_CONFIG_OWNER');

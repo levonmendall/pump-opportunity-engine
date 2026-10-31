@@ -39,3 +39,8 @@ test('already ACKed capture can recover while new setup is disabled, retaining a
 test('hard peer-PONG deadline precedes an already-late periodic heartbeat target',async()=>{
  const f=setup(),socket=await f.open();f.flow.requestHeartbeat();socket.emit('ping',Buffer.from('OFFLINE_URGENT_PEER_PING'));await f.advance(2500);assert.equal(f.flow.servicePlan(critical).action,'peer-pong');assert.equal((await f.flow.service(undefined,{},critical)).kind,'pong');assert.equal(socket.controls.at(-1),'pong');assert.equal(f.gaps.length,0);assert.equal(f.flow.servicePlan(critical).action,'heartbeat');assert.equal((await f.flow.service(undefined,{},critical)).kind,'ping');assert.equal(f.flow.snapshot(scope.mint)!.connected,true);await f.flow.stop();
 });
+
+test('canonical origin vault hints reach fresh support as defensive address copies without becoming source evidence',async()=>{
+ const f=setup(),dependencyHints={baseVault:'14f29EBGBB1mFMMBnnbwi6Ff9tpcytYtrMX52mQkqG55',quoteVault:'3p2311H7FLZxSdKPAfYisroj5YXvNtbQZDKsqWgPo1B6'};f.flow.addCandidate({...scope,dependencyHints});dependencyHints.baseVault=scope.mint;const snapshot=f.flow.snapshot(scope.mint)!;snapshot.scope.dependencyHints!.quoteVault=scope.mint;
+ await f.flow.service();assert.deepEqual(f.supportCalls[0]![0].dependencyHints,{baseVault:'14f29EBGBB1mFMMBnnbwi6Ff9tpcytYtrMX52mQkqG55',quoteVault:'3p2311H7FLZxSdKPAfYisroj5YXvNtbQZDKsqWgPo1B6'});assert.equal(f.flow.snapshot(scope.mint)!.warm,false);assert.equal(f.flow.snapshot(scope.mint)!.auditVerified,false);await f.flow.stop();
+});

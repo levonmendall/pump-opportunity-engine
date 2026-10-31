@@ -1,0 +1,31 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {MarketRegistry} from '../src/market-registry.js';
+import {PilotWatch} from '../src/pilot-watch.js';
+import {PERSISTENT_OBSERVABLE_MARKET_POLICY} from '../src/observation-age.js';
+import {projectPipelineThroughputReporting,validatePipelineThroughputReporting} from '../src/pipeline-throughput-reporting.js';
+import {projectMarketCoverageReporting} from '../src/market-coverage-reporting.js';
+const T=Date.parse('2026-10-31T00:50:00.000Z'),RUN='native-paper-throughput-fixture';
+const zeroWait=()=>({count:0,mean:null,p50:null,p95:null,max:null});
+const raw=()=>({version:'native-pipeline-throughput-v1',sourceInstanceId:'native-runner:fixture:source',startedAt:T-61123,generatedAt:T,population:{retained:2000,verifiedAwaitingPrerequisites:1600,eligibleNow:7,serviceableNow:3,capacityWaiting:1,activeDeep:2},capacityWitness:{potentialWaiting:1,sourceReady:true,providerReady:true,localReady:true},flow:{discoveredDistinct:47,lightweightArrivals:47,lightweightCompleted:47,deepAdmissions:13,auditCompletions:4,financialEvaluations:2,qualified:0,entryFills:0,exitFills:0},waits:{eligibleQueue:{count:7,mean:1000.125,p50:500,p95:4000,max:4000},capacityQueue:zeroWait()},limitations:['RETAINED_NOT_QUEUE','LOCAL_SERVICEABILITY_REQUIRES_RUNTIME_PROVIDER_ADMISSION','INTAKE_COUNTS_ARE_NEW_UNIQUE_IDENTITY_COHORT','SERVICEABLE_QUEUE_WAIT_IS_NOT_CAUSAL_CAPACITY_DELAY']});
+test('local populations and source-cohort rates remain separate from retention and missing global admission',()=>{
+ const r=raw(),before=structuredClone(r),p=projectPipelineThroughputReporting(r,RUN,T)!;assert.ok(p);validatePipelineThroughputReporting(p,T);assert.deepEqual(r,before);assert.equal(p.population.retained,2000);assert.equal(p.flow.serviceableArrivals,null);assert.equal(p.ratesPerMinute.serviceableArrivals,null);assert.ok(p.limitations.includes('SERVICEABLE_ARRIVALS_UNAVAILABLE'));assert.equal(p.population.eligibleNow,7);assert.equal(p.population.serviceableNow,3);assert.equal(p.waits.eligibleQueue.mean,1000.125);assert.equal(p.waits.capacityQueue.mean,null);assert.equal(p.ratesPerMinute.auditCompletions,4*60000/61123);assert.equal(Object.hasOwn(p,'wholeMarketCoveragePercent'),false);
+ const missing=raw() as any;delete missing.population.serviceableNow;missing.flow.financialEvaluations=undefined;const q=projectPipelineThroughputReporting(missing,RUN,T)!;assert.equal(q.population.serviceableNow,null);assert.equal(q.flow.financialEvaluations,null);assert.equal(q.ratesPerMinute.financialEvaluations,null);
+});
+test('old or malformed optional pipeline never replaces financial reporting and wire rejects inference or private extras',()=>{
+ assert.equal(projectPipelineThroughputReporting(undefined,RUN,T),undefined);assert.equal(projectPipelineThroughputReporting({...raw(),generatedAt:T+1},RUN,T),undefined);
+ const p=projectPipelineThroughputReporting(raw(),RUN,T)!;for(const change of [(r:any)=>r.apiKey='private',(r:any)=>r.population.serviceableNow=8,(r:any)=>r.population.capacityWaiting=4,(r:any)=>r.ratesPerMinute.auditCompletions=100,(r:any)=>r.waits.eligibleQueue.p50=5000]){const bad=structuredClone(p);change(bad);assert.throws(()=>validatePipelineThroughputReporting(bad,T),/INVALID/);}
+ const secret=raw() as any;secret.apiKey='DO_NOT_EXPORT';secret.limitations.push('https://private.example/DO_NOT_EXPORT');assert.doesNotMatch(JSON.stringify(projectPipelineThroughputReporting(secret,RUN,T)),/DO_NOT_EXPORT|private\.example/);
+});
+test('actual SQLite readiness and source-cohort producers pass public projection without manufacturing serviceability from retained rows',()=>{
+ let at=T-60000;const registry=new MarketRegistry(':memory:',{now:()=>at}),watch=new PilotWatch({registry,maximumDeep:4,observationAgePolicy:PERSISTENT_OBSERVABLE_MARKET_POLICY.version,now:()=>at,record:()=>{}});
+ const seed=(mint:string)=>{watch.discover({signature:'origin-'+mint,feedMint:mint,receivedAt:at});watch.verify('origin-'+mint,{mint,pool:'pool-'+mint,migrationAt:at-300000,verifiedAt:at});registry.putOrigin(mint,{fixture:true});};
+ try{
+  seed('ready');seed('no-proof');seed('backoff');registry.archiveOrigin('no-proof','fixture unavailable');watch.transition('backoff','DEFERRED','actual source backoff',at,{deferUntil:T+1000});at=T;
+  const before=registry.health().transactions.writeCommits,pipeline={...raw(),startedAt:T-60000,...watch.serviceableBacklog(T),capacityWitness:{potentialWaiting:0,sourceReady:true,providerReady:true,localReady:true},flow:{...raw().flow,...registry.cohortCounts(T-60000,T)}};
+  const p=projectPipelineThroughputReporting(pipeline,RUN,T)!;assert.ok(p);assert.equal(p.population.retained,3);assert.equal(p.population.eligibleNow,2);assert.equal(p.population.serviceableNow,1);assert.equal(p.waits.capacityQueue.max,60000);assert.equal(p.flow.discoveredDistinct,3);assert.equal(registry.health().transactions.writeCommits,before,'read-only population and cohort queries do not become registry writes');
+  const coverage=projectMarketCoverageReporting({runId:RUN,marketCoverage:{...registry.coverageSnapshot(T),pipeline}},T)!;assert.ok(coverage.pipeline);assert.equal(coverage.pipeline.population.serviceableNow,1);assert.equal(coverage.pipeline.scope,'CURRENT_SOURCE_INSTANCE');
+ }finally{registry.close();}
+});
+
+test('capacity causality stays unavailable without contemporaneous global-admission witness',()=>{const r=raw() as any;r.capacityWitness.providerReady=false;r.population.capacityWaiting=null;const p=projectPipelineThroughputReporting(r,RUN,T)!;assert.ok(p);assert.equal(p.population.capacityWaiting,null);assert.equal(p.capacityWitness!.potentialWaiting,1);assert.equal(p.capacityWitness!.providerReady,false);delete r.capacityWitness;r.population.capacityWaiting=1;const older=projectPipelineThroughputReporting(r,RUN,T)!;assert.equal(older.capacityWitness,null);assert.equal(older.population.capacityWaiting,null);const bad=structuredClone(p);bad.population.capacityWaiting=1;assert.throws(()=>validatePipelineThroughputReporting(bad,T),/INVALID/);});

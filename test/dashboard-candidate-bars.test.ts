@@ -131,3 +131,30 @@ test('holographic desktop and mobile styles provide visible bar tracks rather th
  assert.ok(holographicSource.includes('grid-template-columns:minmax(95px,1fr) minmax(65px,.9fr)'));
  assert.ok(!holographicSource.includes('grid-template-columns:minmax(95px,1fr) 15px'));
 });
+
+test('pipeline bars distinguish retained history, exact local readiness, and actual source-window financial events',()=>{
+ const pipeline={version:'native-pipeline-throughput-v1',population:{retained:1700,verifiedAwaitingPrerequisites:1600,eligibleNow:7,serviceableNow:3,capacityWaiting:1,activeDeep:2},flow:{discoveredDistinct:100,lightweightCompleted:100,deepAdmissions:20,auditCompletions:5,financialEvaluations:2,qualified:1,entryFills:1,exitFills:0}};
+ const coverage={version:'poe-market-coverage-v1',pipeline,persistence:{createdAt:null},lifetime:{uniqueTokensDiscovered:2000},currentHour:{uniqueTokensDiscovered:300},active:{awaitingDeep:999},financial:{entries:999}};
+ const {stage,root}=draw({paperFilled:999},{candidates:{deepMaximum:4},marketCoverage:coverage});
+ assert.equal(stage('retained').count,'1,700');assert.equal(stage('eligibleNow').count,'7');assert.equal(stage('serviceableNow').count,'3');assert.equal(stage('capacityWaiting').count,'1');assert.equal(stage('auditCompletions').count,'5');assert.equal(stage('financialEvaluations').count,'2');assert.equal(stage('paperFilled').count,'1');assert.equal(stage('deepAdmissions').width,'20.00%');
+ assert.match(root.children[1]!.textContent,/Retained records are not an eligible queue/);assert.match(root.children[1]!.textContent,/not unique tokens/);assert.match(root.children[1]!.textContent,/provider, financial and source admission gates remain separate/);
+});
+
+test('pipeline queue deltas use distinct same-source snapshots; first samples and new source generations stay unavailable',()=>{
+ const root=new FakeElement(),start=dashboardSource.indexOf('function renderMetrics('),through=dashboardSource.indexOf('// Display only the durable',start);
+ const add=(parent:FakeElement,_tag:string,value?:unknown,klass?:string)=>{const child=new FakeElement();child.className=klass??'';child.textContent=value===undefined?'':String(value);parent.children.push(child);return child;};
+ const context=createContext({byId:()=>root,add,Number,Math});new Script(dashboardSource.slice(start,through)).runInContext(context);
+ const generated=Date.parse('2026-10-31T01:00:00.000Z');
+ const pipeline={version:'native-pipeline-throughput-v1',sourceInstanceId:'native-runner:fixture:first',startedAt:new Date(generated-60000).toISOString(),generatedAt:new Date(generated).toISOString(),population:{retained:2000,verifiedAwaitingPrerequisites:1980,eligibleNow:7,serviceableNow:3,capacityWaiting:1,activeDeep:2},flow:{deepAdmissions:10,auditCompletions:3,financialEvaluations:2,qualified:0,entryFills:0,exitFills:0},ratesPerMinute:{discoveredDistinct:100,lightweightCompleted:100,deepAdmissions:10,auditCompletions:3,financialEvaluations:2},waits:{eligibleQueue:{count:7,mean:100.5,p50:100,p95:200,max:200},capacityQueue:{count:3,mean:200.25,p50:200,p95:300,max:300}}};
+ const coverage={version:'poe-market-coverage-v1',pipeline,persistence:{state:'sqlite-wal',createdAt:null,updatedAt:null},lifetime:{uniqueTokensDiscovered:2000},active:{},resource:{sourceDispatch:{allocation125Allowed:true,physicalSetup3000Allowed:false}},feeds:[],limitations:[]};
+ const handoff={version:'native-financial-handoff-v1',seen:3,dispatched:1,financialEvaluations:1,expiredBeforeDispatch:1,invalidatedBeforeDispatch:0,blockedMsByReason:{'proof-retention':100.5,'required-service-or-protection-runway':200.25},dispatchWait:{mean:249,p50UpperMs:300,p95UpperMs:300,max:249},active:[]};
+ const drawMetrics=(current:any)=>{
+  (context as any).renderMetrics({}, {}, {marketCoverage:current,financialHandoff:handoff,candidates:{},quality:{limitations:[]},provider:{},resources:{cpuOneCoreFraction:null},protection:{},times:{},run:{}});
+  const facts=new Map<string,string>();const walk=(node:FakeElement)=>{if(node.className==='metric')facts.set(node.children[0]!.textContent,node.children[1]!.textContent);node.children.forEach(walk);};walk(root);return facts;
+ };
+ const first=drawMetrics(coverage);assert.equal(first.get('Eligible / serviceable / capacity queue change'),'Unavailable / Unavailable / Unavailable');assert.equal(first.get('Cheap allocation / physical setup runway'),'true / false');assert.equal(first.get('Retained identities / verified awaiting prerequisites'),'2000 / 1980');assert.match(first.get('Eligible queue wait')!,/100.5 \/ 100 \/ 200 \/ 200/);assert.equal(first.get('Expired / invalidated before dispatch'),'1 / 0');assert.equal(first.get('Dispatch wait: mean / p50 upper / p95 upper / max (ms)'),'249 / 300 / 300 / 249');
+ const next=structuredClone(coverage);next.pipeline.generatedAt=new Date(generated+15000).toISOString();next.pipeline.population.eligibleNow=9;next.pipeline.population.serviceableNow=4;next.pipeline.population.capacityWaiting=2;
+ const second=drawMetrics(next);assert.equal(second.get('Eligible / serviceable / capacity queue change'),'2 / 1 / 1');assert.equal(second.get('Queue comparison interval'),'15.000 s between dashboard samples');assert.equal(drawMetrics(next).get('Eligible / serviceable / capacity queue change'),'2 / 1 / 1','duplicate generation preserves actual preceding sample');
+ assert.equal(drawMetrics(coverage).get('Eligible / serviceable / capacity queue change'),'Unavailable / Unavailable / Unavailable','regressed snapshot cannot claim a forward change');
+ next.pipeline.sourceInstanceId='native-runner:fixture:second';assert.equal(drawMetrics(next).get('Eligible / serviceable / capacity queue change'),'Unavailable / Unavailable / Unavailable','source recovery does not blend queues');
+});

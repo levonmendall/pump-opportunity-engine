@@ -8,9 +8,12 @@ import type {MarketIdentityHint,MarketActivityHint,MarketFeedStatus} from './mar
 
 export class MarketRegistryContention extends Error {readonly code='MARKET_REGISTRY_CONTENTION';readonly callbackStarted=false;constructor(readonly sqliteCode:string){super('Market registry writer lease unavailable before callback');this.name='MarketRegistryContention';}}
 export function isMarketRegistryContention(error:unknown):error is MarketRegistryContention {return error instanceof MarketRegistryContention;}
+export class MarketRegistryReadOnlyViolation extends Error {readonly code='MARKET_REGISTRY_READ_ONLY_VIOLATION';constructor(message='Mutation is forbidden inside a market registry read snapshot'){super(message);this.name='MarketRegistryReadOnlyViolation';}}
 export type RegistryParameter=string|number|bigint|null|Buffer;
 export type RegistryMetricSummary={count:number;sum:number;mean:number|null;max:number|null;p50:number|null;p95:number|null};
 export type MarketEvidence={buyLamports:string;sellLamports:string;buyHints:number;sellHints:number;activityHints:number;lastActivityAt:number|null;lastEconomicActivityAt:number|null;lastPrice:number|null;fingerprint:string};
+export type EconomicFlowAfter={buyLamports:string;sellLamports:string;knownEvents:number;unknownEvents:number;latestAt:number|null;complete:boolean;retentionStartAt:number};
+type EconomicFlowCache=Omit<EconomicFlowAfter,'complete'|'retentionStartAt'>&{decisionAt:number;counter:number;bytes:number};
 export type RegistryQuery={where?:string;params?:RegistryParameter[];orderBy?:string;limit?:number;offset?:number};
 type IdentityInput=Omit<MarketIdentityHint,'receivedAt'|'evidence'|'source'|'kind'>&{receivedAt?:number;at?:number;source:string;kind?:string;evidence?:string};
 type ActivityInput=Omit<MarketActivityHint,'receivedAt'|'evidence'|'source'|'kind'>&{receivedAt?:number;at?:number;source:string;kind?:string;evidence?:string};
@@ -34,7 +37,8 @@ export class MarketRegistry {
  private readonly statements=new Map<string,Database.Statement>();
  private readonly clock:()=>number;
  private readonly concurrentIntake:boolean;
- private contentionAttempts=0;private transactionAttempts=0;private readOnlyCommits=0;private writeCommits=0;private failedTransactions=0;
+ private readonly economicFlowCache=new Map<string,EconomicFlowCache>();private economicFlowCacheBytes=0;private economicFlowCacheHits=0;private economicFlowColdQueries=0;private economicFlowIncrementalQueries=0;private readonly economicTouchedMints=new Set<string>();
+ private readDepth=0;private readSnapshotCommits=0;private writerLeaseReadOnlyCommits=0;private contentionAttempts=0;private transactionAttempts=0;private readOnlyCommits=0;private writeCommits=0;private failedTransactions=0;
  private writes=0;private writeTotalMs=0;private writeMaximumMs=0;private storageFailures=0;private transactionDepth=0;private storageAvailable=true;private lastFailureAt:number|null=null;private lastSuccessfulWriteAt:number|null=null;
  constructor(path:string,options:{now?:()=>number;concurrentIntake?:boolean}={}){
   this.path=path;this.locator={version:'persistent-market-registry-v1',path};this.clock=options.now??Date.now;this.concurrentIntake=options.concurrentIntake===true;
@@ -77,12 +81,14 @@ export class MarketRegistry {
   for(const [table,fields] of [['market_tokens',['last_signature','last_activity_source','last_activity_kind']],['verification_queue',['source','kind']]] as const){const columns=new Set((this.statement(`PRAGMA table_info(${table})`).all() as {name:string}[]).map(r=>r.name));for(const field of fields)if(!columns.has(field))this.db.exec(`ALTER TABLE ${table} ADD COLUMN ${field} TEXT`);}
   {const columns=new Set((this.statement('PRAGMA table_info(market_tokens)').all() as {name:string}[]).map(r=>r.name));if(!columns.has('last_economic_activity_at'))this.db.exec('ALTER TABLE market_tokens ADD COLUMN last_economic_activity_at INTEGER');}
   {const columns=new Set((this.statement('PRAGMA table_info(watch_rows)').all() as {name:string}[]).map(r=>r.name));for(const [column,definition] of [['last_decision_kind','TEXT'],['last_decision_at','INTEGER'],['reobserve_ready','INTEGER NOT NULL DEFAULT 1']])if(!columns.has(column!))this.db.exec(`ALTER TABLE watch_rows ADD COLUMN ${column} ${definition}`);this.db.exec('CREATE INDEX IF NOT EXISTS watch_rows_reobservation ON watch_rows(archived,state,reobserve_ready,defer_until,last_decision_at)');}
+  {const columns=new Set((this.statement('PRAGMA table_info(market_activity_seen)').all() as {name:string}[]).map(r=>r.name));for(const [column,definition] of [['quote_lamports','TEXT'],['activity_sequence','INTEGER']])if(!columns.has(column!))this.db.exec(`ALTER TABLE market_activity_seen ADD COLUMN ${column} ${definition}`);this.db.exec('CREATE INDEX IF NOT EXISTS market_activity_seen_mint_time ON market_activity_seen(mint,first_seen_at);CREATE INDEX IF NOT EXISTS market_activity_seen_mint_sequence ON market_activity_seen(mint,activity_sequence)');}
   if(this.getMetadata<number>('createdAt')===undefined)this.setMetadata('createdAt',this.clock());
  }
  private statement(sql:string):Database.Statement {let statement=this.statements.get(sql);if(!statement){statement=this.db.prepare(sql);this.statements.set(sql,statement);}return statement;}
  private write<T>(fn:()=>T):T {
+  if(this.readDepth>0)throw new MarketRegistryReadOnlyViolation();
   if(this.transactionDepth>0)return fn();
-  this.transactionAttempts++;const start=performance.now();let committedAt:number|null=null,mutated=false,failed=false,callbackStarted=false;
+  this.economicTouchedMints.clear();this.transactionAttempts++;const start=performance.now();let committedAt:number|null=null,mutated=false,failed=false,callbackStarted=false;
   try{const transaction=this.db.transaction(()=>{callbackStarted=true;this.transactionDepth++;try{
    const before=Number((this.statement('SELECT total_changes() n').get() as {n:number}).n);
    const value=fn();const after=Number((this.statement('SELECT total_changes() n').get() as {n:number}).n);
@@ -90,12 +96,27 @@ export class MarketRegistry {
    // metadata here used to turn each global activity lookup into a FULL fsync.
    mutated=after!==before;if(mutated){committedAt=Math.max(this.clock(),this.getMetadata<number>('updatedAt')??0);
     this.statement('INSERT INTO registry_metadata(key,body) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET body=excluded.body').run('updatedAt',json(committedAt));}return value;
-  }finally{this.transactionDepth--;}});const result=this.concurrentIntake?transaction.immediate():transaction();if(mutated){this.writeCommits++;this.storageAvailable=true;this.lastSuccessfulWriteAt=committedAt;}else this.readOnlyCommits++;return result;
+  }finally{this.transactionDepth--;}});const result=this.concurrentIntake?transaction.immediate():transaction();if(mutated){this.writeCommits++;this.storageAvailable=true;this.lastSuccessfulWriteAt=committedAt;}else{this.readOnlyCommits++;if(this.concurrentIntake)this.writerLeaseReadOnlyCommits++;}return result;
   }catch(error){failed=true;this.failedTransactions++;const code=(error as {code?:unknown})?.code;if(this.concurrentIntake&&!callbackStarted&&typeof code==='string'&&/^(SQLITE_BUSY|SQLITE_LOCKED)(_|$)/.test(code)){this.contentionAttempts++;throw new MarketRegistryContention(code);}if(typeof (error as {code?:unknown})?.code==='string'&&String((error as {code:string}).code).startsWith('SQLITE_')){this.storageFailures++;this.storageAvailable=false;this.lastFailureAt=this.clock();}throw error;
-  }finally{if(mutated||failed){const elapsed=performance.now()-start;this.writes++;this.writeTotalMs+=elapsed;this.writeMaximumMs=Math.max(this.writeMaximumMs,elapsed);}}
+  }finally{this.economicTouchedMints.clear();if(mutated||failed){const elapsed=performance.now()-start;this.writes++;this.writeTotalMs+=elapsed;this.writeMaximumMs=Math.max(this.writeMaximumMs,elapsed);}}
+ }
+ /** Synchronous, consistent deferred snapshot. It takes no writer lease,
+  * cannot upgrade to a writer, never changes commit metadata, and never replays
+  * its callback. A nested read scope temporarily guards an existing write scope. */
+ readTransaction<T>(fn:()=>T):T {
+  if(fn.constructor.name==='AsyncFunction')throw new MarketRegistryReadOnlyViolation('Read snapshot callbacks must be synchronous');
+  if(this.readDepth>0)return fn();
+  const priorQueryOnly=Number(this.db.pragma('query_only',{simple:true}));
+  const run=()=>{this.readDepth++;try{const result=fn();if(result&&typeof (result as {then?:unknown}).then==='function')throw new MarketRegistryReadOnlyViolation('Read snapshot callbacks must be synchronous');return result;}catch(error){const code=(error as {code?:unknown})?.code;if(typeof code==='string'&&/^SQLITE_READONLY(?:_|$)/.test(code))throw new MarketRegistryReadOnlyViolation();throw error;}finally{this.readDepth--;}};
+  this.db.pragma('query_only = ON');
+  try{
+   if(this.transactionDepth>0)return run();
+   this.transactionAttempts++;try{const result=this.db.transaction(run).deferred();this.readOnlyCommits++;this.readSnapshotCommits++;return result;}
+   catch(error){this.failedTransactions++;const code=(error as {code?:unknown})?.code;if(typeof code==='string'&&/^SQLITE_READONLY(?:_|$)/.test(code))throw new MarketRegistryReadOnlyViolation();if(typeof code==='string'&&code.startsWith('SQLITE_')){this.storageFailures++;this.storageAvailable=false;this.lastFailureAt=this.clock();}throw error;}
+  }finally{this.db.pragma('query_only = '+(priorQueryOnly?'ON':'OFF'));}
  }
  transaction<T>(fn:()=>T):T{return this.write(fn);}
- health(){return {transactions:{contentionBeforeCallback:this.contentionAttempts,attempted:this.transactionAttempts,readOnlyCommits:this.readOnlyCommits,writeCommits:this.writeCommits,failed:this.failedTransactions,fsyncEligibleCommits:this.writeCommits},available:this.storageAvailable,lastFailureAt:this.lastFailureAt,lastSuccessfulWriteAt:this.lastSuccessfulWriteAt,storageFailures:this.storageFailures,maximumWriteMs:this.writeMaximumMs,meanWriteMs:this.writes?this.writeTotalMs/this.writes:0};}
+ health(){return {economicFlow:{cacheBytes:this.economicFlowCacheBytes,cacheEntries:this.economicFlowCache.size,hits:this.economicFlowCacheHits,coldQueries:this.economicFlowColdQueries,incrementalQueries:this.economicFlowIncrementalQueries},transactions:{readSnapshotCommits:this.readSnapshotCommits,writerLeaseReadOnlyCommits:this.writerLeaseReadOnlyCommits,contentionBeforeCallback:this.contentionAttempts,attempted:this.transactionAttempts,readOnlyCommits:this.readOnlyCommits,writeCommits:this.writeCommits,failed:this.failedTransactions,fsyncEligibleCommits:this.writeCommits},available:this.storageAvailable,lastFailureAt:this.lastFailureAt,lastSuccessfulWriteAt:this.lastSuccessfulWriteAt,storageFailures:this.storageFailures,maximumWriteMs:this.writeMaximumMs,meanWriteMs:this.writes?this.writeTotalMs/this.writes:0};}
  getMetadata<T>(key:string):T|undefined {const row=this.statement('SELECT body FROM registry_metadata WHERE key=?').get(key) as {body:string}|undefined;return row?JSON.parse(row.body) as T:undefined;}
  setMetadata(key:string,value:unknown):void{this.write(()=>{this.statement('INSERT INTO registry_metadata(key,body) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET body=excluded.body').run(key,json(value));});}
  get(signature:string):WatchRow|undefined{return this.getBySignature(signature);}
@@ -149,10 +170,12 @@ export class MarketRegistry {
  observeActivity(input:ActivityInput):boolean{return this.transaction(()=>{const at=input.at??input.receivedAt;need(integer(at),'MARKET_REGISTRY_ACTIVITY_TIME');this.observeIdentity({...input,at,kind:'activity'});
   const now=this.clock();this.maintenance(now,32);
   if(at<now-HINT_DEDUP_RETENTION_MS){this.setMetadata('staleActivityObservations',(this.getMetadata<number>('staleActivityObservations')??0)+1);return false;}
-  const side=input.side??'unknown';if(input.signature&&this.statement('INSERT OR IGNORE INTO market_activity_seen(mint,signature,side,first_seen_at) VALUES(?,?,?,?)').run(input.mint,input.signature,side,at).changes===0)return false;
-  const r=this.statement('SELECT last_activity_at,activity_score,buy_lamports,sell_lamports FROM market_tokens WHERE mint=?').get(input.mint) as {last_activity_at:number|null;activity_score:number;buy_lamports:string;sell_lamports:string};
+  const side=input.side??'unknown';
+  const r=this.statement('SELECT last_activity_at,activity_score,buy_lamports,sell_lamports,activity_hints FROM market_tokens WHERE mint=?').get(input.mint) as {last_activity_at:number|null;activity_score:number;buy_lamports:string;sell_lamports:string;activity_hints:number};
   const amount=input.quoteLamports&&/^\d{1,20}$/.test(input.quoteLamports)&&BigInt(input.quoteLamports)<=18446744073709551615n?BigInt(input.quoteLamports):0n;
-  const economic=!!input.signature&&amount>0n&&(side==='buy'||side==='sell');const buy=economic&&side==='buy'?amount:0n,sell=economic&&side==='sell'?amount:0n;
+  const economic=!!input.signature&&amount>0n&&(side==='buy'||side==='sell')&&(input.quoteMint===undefined||input.quoteMint==='So11111111111111111111111111111111111111112');const buy=economic&&side==='buy'?amount:0n,sell=economic&&side==='sell'?amount:0n;
+  if(input.signature&&this.statement('INSERT OR IGNORE INTO market_activity_seen(mint,signature,side,first_seen_at,quote_lamports,activity_sequence) VALUES(?,?,?,?,?,?)').run(input.mint,input.signature,side,at,economic?amount.toString():null,r.activity_hints+1).changes===0)return false;
+  this.economicTouchedMints.add(input.mint);
   // A decaying measured shared-stream demand priority, not a profit probability.
   const decay=Math.exp(-Math.max(0,at-(r.last_activity_at??at))/60000),sol=Number(amount)/1e9;
   const impulse=economic?(side==='buy'?1:-1)*Math.log1p(Number.isFinite(sol)?sol:0):0;
@@ -164,6 +187,26 @@ export class MarketRegistry {
  marketEvidence(mint:string):MarketEvidence|undefined {
   const row=this.statement('SELECT buy_lamports buyLamports,sell_lamports sellLamports,buy_hints buyHints,sell_hints sellHints,activity_hints activityHints,last_activity_at lastActivityAt,last_economic_activity_at lastEconomicActivityAt,last_price lastPrice FROM market_tokens WHERE mint=?').get(mint) as Omit<MarketEvidence,'fingerprint'>|undefined;
   return row?{...row,fingerprint:createHash('sha256').update(json([row.buyLamports,row.sellLamports,row.lastPrice])).digest('hex')}:undefined;
+ }
+ /** Exact known SOL-hint lower bounds strictly after the decision timestamp.
+  * Unknown/legacy/foreign quote amounts stay unknown. Cache retention may be
+  * shorter than the decision age; completeness is explicit, never inferred. */
+ economicFlowAfter(mint:string,decisionAt:number):EconomicFlowAfter {
+  need(name(mint)&&integer(decisionAt),'MARKET_REGISTRY_ECONOMIC_FLOW_WINDOW');
+  return this.readTransaction(()=>{
+   const retentionStartAt=Math.max(0,this.clock()-HINT_DEDUP_RETENTION_MS),token=this.statement('SELECT activity_hints FROM market_tokens WHERE mint=?').get(mint) as {activity_hints:number}|undefined,counter=Number(token?.activity_hints??0),cache=this.economicFlowCache.get(mint),canCache=!this.economicTouchedMints.has(mint),incremental=canCache&&cache?.decisionAt===decisionAt&&cache.counter<=counter;
+   if(incremental&&cache.counter===counter){this.economicFlowCacheHits++;this.economicFlowCache.delete(mint);this.economicFlowCache.set(mint,cache);return {buyLamports:cache.buyLamports,sellLamports:cache.sellLamports,knownEvents:cache.knownEvents,unknownEvents:cache.unknownEvents,latestAt:cache.latestAt,complete:token!==undefined&&decisionAt>=retentionStartAt&&cache.unknownEvents===0,retentionStartAt};}
+   let buy=BigInt(incremental?cache.buyLamports:'0'),sell=BigInt(incremental?cache.sellLamports:'0'),knownEvents=incremental?cache.knownEvents:0,unknownEvents=incremental?cache.unknownEvents:0,latestAt=incremental?cache.latestAt:null;
+   const query=incremental?'SELECT side,first_seen_at,quote_lamports FROM market_activity_seen WHERE mint=? AND activity_sequence>? AND first_seen_at>?':'SELECT side,first_seen_at,quote_lamports FROM market_activity_seen WHERE mint=? AND first_seen_at>?';
+   if(incremental)this.economicFlowIncrementalQueries++;else this.economicFlowColdQueries++;
+   for(const row of this.statement(query).iterate(...(incremental?[mint,cache.counter,decisionAt]:[mint,decisionAt])) as IterableIterator<{side:string;first_seen_at:number;quote_lamports:string|null}>){if(row.quote_lamports!==null&&/^\d+$/.test(row.quote_lamports)&&(row.side==='buy'||row.side==='sell')){const amount=BigInt(row.quote_lamports);if(row.side==='buy')buy+=amount;else sell+=amount;knownEvents++;latestAt=Math.max(latestAt??0,row.first_seen_at);}else unknownEvents++;}
+   const result={buyLamports:buy.toString(),sellLamports:sell.toString(),knownEvents,unknownEvents,latestAt,complete:token!==undefined&&decisionAt>=retentionStartAt&&unknownEvents===0,retentionStartAt};
+   if(canCache){if(cache)this.economicFlowCacheBytes-=cache.bytes;const bytes=256+2*(mint.length+result.buyLamports.length+result.sellLamports.length);this.economicFlowCache.delete(mint);this.economicFlowCache.set(mint,{...result,decisionAt,counter,bytes});this.economicFlowCacheBytes+=bytes;
+    // This bounds only an expendable aggregate cache, never market identities,
+    // evidence, eligibility, or the ability to query any token again.
+    while(this.economicFlowCacheBytes>1024*1024){const first=this.economicFlowCache.keys().next().value;if(first===undefined)break;this.economicFlowCacheBytes-=this.economicFlowCache.get(first)!.bytes;this.economicFlowCache.delete(first);}
+   }return result;
+  });
  }
  /** Idempotent operational observations only; these are never ledger entries. */
  recordMetric(scope:string,metric:string,key:string,value:number,at:number):boolean{return this.write(()=>{need(name(scope)&&name(metric)&&name(key)&&Number.isFinite(value)&&value>=0&&integer(at),'MARKET_REGISTRY_METRIC');return this.statement('INSERT OR IGNORE INTO operating_metrics(scope,name,key,value,at) VALUES(?,?,?,?,?)').run(scope,metric,key,value,at).changes===1;});}
@@ -199,10 +242,16 @@ export class MarketRegistry {
  observeActivityBatch(inputs:ActivityInput[]):void{this.transaction(()=>{for(const input of inputs)this.observeActivity(input);});}
  observeFeed(feed:MarketFeedStatus):void{this.recordFeed(feed);}
  recordFeed(feed:MarketFeedStatus):void{this.write(()=>{need((FEEDS as readonly string[]).includes(feed.source)&&integer(feed.at),'MARKET_REGISTRY_FEED');const scope=SCOPES.includes(feed.scope)?feed.scope:feed.source==='pumpportal-new-token'?'CREATION_HINTS':feed.source==='pumpportal-migration'?'MIGRATION_HINTS':'SHARED_ACTIVITY_HINTS';this.statement('INSERT INTO market_feeds(source,connected,last_observed_at,scope,coverage_gaps,last_gap_at) VALUES(?,?,?,?,?,?) ON CONFLICT(source) DO UPDATE SET connected=excluded.connected,last_observed_at=MAX(last_observed_at,excluded.last_observed_at),scope=excluded.scope,coverage_gaps=coverage_gaps+CASE WHEN connected=1 AND excluded.connected=0 THEN 1 ELSE 0 END,last_gap_at=CASE WHEN connected=1 AND excluded.connected=0 THEN excluded.last_observed_at ELSE last_gap_at END').run(feed.source,feed.connected?1:0,feed.at,scope,feed.connected?0:1,feed.connected?null:feed.at);});}
+ /** First-observed unique-identity cohort and first local classification
+  * completions, not market activity messages or repeated screens. */
+ cohortCounts(startedAt:number,untilAt:number):{discoveredDistinct:number;lightweightArrivals:number;lightweightCompleted:number}{
+  need(integer(startedAt)&&integer(untilAt)&&startedAt<=untilAt,'MARKET_REGISTRY_COHORT_WINDOW');
+  return this.readTransaction(()=>{const discoveredDistinct=Number((this.statement('SELECT COUNT(*) n FROM market_tokens WHERE first_seen_at>=? AND first_seen_at<=?').get(startedAt,untilAt) as {n:number}).n),lightweightCompleted=Number((this.statement('SELECT COUNT(*) n FROM distinct_events WHERE kind=? AND at>=? AND at<=?').get('lightweight-screened',startedAt,untilAt) as {n:number}).n);return {discoveredDistinct,lightweightArrivals:discoveredDistinct,lightweightCompleted};});
+ }
  coverage(at:number){return this.coverageSnapshot(at);}
  coverageSnapshot(at:number){const hour=Math.floor(at/3600000)*3600000;const tokens=this.statement("SELECT COUNT(*) total,SUM(CASE WHEN screen_state='WITH_ACTIVITY' THEN 1 ELSE 0 END) with_activity,MAX(last_seen_at) updated_at FROM market_tokens").get() as {total:number;with_activity:number|null;updated_at:number|null};const queue=this.verificationStats(at);const feeds=(this.statement('SELECT source,connected,last_observed_at,scope,coverage_gaps FROM market_feeds ORDER BY source').all() as {source:string;connected:number;last_observed_at:number;scope:string;coverage_gaps:number}[]).map(f=>({source:f.source,connected:!!f.connected,lastObservedAt:f.last_observed_at,scope:f.scope,coverageGaps:f.coverage_gaps}));
   const active=this.aggregate({tracked:"SUM(CASE WHEN w.state NOT IN ('EXPIRED','PERMANENTLY_UNSUPPORTED') THEN 1 ELSE 0 END)",awaitingDeep:"SUM(CASE WHEN w.state IN ('WATCH','DEFERRED') AND w.verified_at IS NOT NULL THEN 1 ELSE 0 END)",deep:"SUM(CASE WHEN w.state IN ('DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING') THEN 1 ELSE 0 END)"});
   return {version:'poe-market-coverage-v1' as const,generatedAt:at,persistence:{state:this.storageAvailable?'sqlite-wal' as const:'unavailable' as const,createdAt:this.getMetadata<number>('createdAt')??null,updatedAt:this.getMetadata<number>('updatedAt')??this.getMetadata<number>('createdAt')??null},lifetime:{uniqueTokensDiscovered:tokens.total,lightweightScreened:this.distinctCount('lightweight-screened'),lightweightWithActivity:this.distinctCount('lightweight-with-activity'),lightweightUnavailable:tokens.total-(tokens.with_activity??0),deepAdmitted:this.distinctCount('deep-admitted'),verifiedAudited:this.distinctCount('verified-audit')},currentHour:{startedAt:hour,uniqueTokensDiscovered:Number((this.statement('SELECT COUNT(*) n FROM market_tokens WHERE first_seen_at>=? AND first_seen_at<=?').get(hour,at) as {n:number}).n)},active:{trackedIdentities:active.tracked??0,awaitingOrigin:Number((this.statement('SELECT COUNT(*) n FROM market_tokens t WHERE NOT EXISTS(SELECT 1 FROM origin_proofs o WHERE o.mint=t.mint AND o.available=1)').get() as {n:number}).n),awaitingLightweight:0,awaitingVerification:queue.pending,awaitingDeep:active.awaitingDeep??0,deepObserving:active.deep??0},lightweight:{activityHorizonMs:SHARED_ACTIVITY_HORIZON_MS,dedupRetentionMs:HINT_DEDUP_RETENTION_MS,hintDedupKeysPruned:this.getMetadata<number>('hintDedupKeysPruned')??0,staleActivityObservations:this.getMetadata<number>('staleActivityObservations')??0},resource:{registryTransactions:this.health().transactions,durableVerificationBacklog:queue.pending,oldestVerificationAt:queue.oldestReceivedAt,maximumVerificationWaitMs:queue.maxWaitMs,storageFailures:this.storageFailures,maximumWriteMs:this.writeMaximumMs,meanWriteMs:this.writes?this.writeTotalMs/this.writes:0},feeds,marketDenominator:null,wholeMarketCoveragePercent:null,limitations:['MARKET_DENOMINATOR_UNKNOWN','PROVIDER_HINTS_UNVERIFIED','PREMIGRATION_EXECUTION_NOT_SUPPORTED','SOURCE_OUTAGES_NOT_RECONSTRUCTED','SHARED_ACTIVITY_PARTIAL_WHEN_FEED_UNAVAILABLE','PREEXISTING_MARKET_BACKFILL_UNAVAILABLE','UNVERIFIED_ORIGIN_DISCOVERY_PENDING','SHARED_HINT_DEDUP_RETENTION_1H',...(!this.storageAvailable?['REGISTRY_STORAGE_UNAVAILABLE']:[])]};
  }
- close():void{this.statements.clear();this.db.close();}
+ close():void{if(this.readDepth>0)throw new MarketRegistryReadOnlyViolation('Closing the registry is forbidden inside a read snapshot');this.statements.clear();this.economicFlowCache.clear();this.economicFlowCacheBytes=0;this.db.close();}
 }

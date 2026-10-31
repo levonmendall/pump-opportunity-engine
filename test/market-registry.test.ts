@@ -121,3 +121,51 @@ test('canonical re-verification reactivates completed work and preserves queue c
   }finally{inspect.close();}
  }finally{r.close();rmSync(dir,{recursive:true,force:true});}
 });
+
+test('explicit read snapshots stay consistent while an independent WAL writer commits and acquire no writer lease',async()=>{
+ const {default:Database}=await import('better-sqlite3');const dir=mkdtempSync(join(tmpdir(),'poe-market-snapshot-'));const path=join(dir,'market.sqlite');let now=AT;const r=new MarketRegistry(path,{now:()=>now,concurrentIntake:true});const other=new Database(path);try{
+  r.setMetadata('snapshot-value','before');const baseline=r.health();const committed=r.getMetadata('updatedAt');now+=1000;
+  r.readTransaction(()=>{assert.equal(r.getMetadata('snapshot-value'),'before');other.prepare('UPDATE registry_metadata SET body=? WHERE key=?').run(JSON.stringify('after'),'snapshot-value');assert.equal(r.getMetadata('snapshot-value'),'before','one read scope keeps a consistent WAL snapshot');});
+  assert.equal(r.getMetadata('snapshot-value'),'after');other.exec('BEGIN IMMEDIATE');assert.equal(r.readTransaction(()=>r.getMetadata('snapshot-value')),'after','ordinary writer ownership does not block WAL read snapshots');other.exec('ROLLBACK');assert.equal(r.getMetadata('updatedAt'),committed);
+  assert.equal(r.health().transactions.writeCommits,baseline.transactions.writeCommits);assert.equal(r.health().transactions.writerLeaseReadOnlyCommits,baseline.transactions.writerLeaseReadOnlyCommits);assert.equal(r.health().transactions.readSnapshotCommits,baseline.transactions.readSnapshotCommits+2);assert.equal(r.health().storageFailures,0);
+ }finally{if(other.inTransaction)other.exec('ROLLBACK');other.close();r.close();rmSync(dir,{recursive:true,force:true});}
+});
+
+test('read snapshots reject every mutation path, restore write permission and never replay callbacks',async()=>{
+ const {MarketRegistryReadOnlyViolation}=await import('../src/market-registry.js');const r=new MarketRegistry(':memory:',{now:()=>AT,concurrentIntake:true});try{
+  let calls=0;assert.throws(()=>r.readTransaction(()=>{calls++;r.setMetadata('forbidden',true);}),MarketRegistryReadOnlyViolation);assert.equal(calls,1);assert.equal(r.getMetadata('forbidden'),undefined);assert.equal(r.health().available,true);
+  assert.throws(()=>r.readTransaction(()=>r.transaction(()=>r.putOrigin('forbidden',{proof:true}))),MarketRegistryReadOnlyViolation);assert.equal(r.getOrigin('forbidden'),undefined);assert.throws(()=>r.readTransaction(()=>r.close()),MarketRegistryReadOnlyViolation);
+  assert.throws(()=>r.readTransaction(()=>{(r as any).db.prepare('INSERT INTO registry_metadata(key,body) VALUES(?,?)').run('sqlite-guard','true');}),MarketRegistryReadOnlyViolation);assert.equal(r.getMetadata('sqlite-guard'),undefined,'SQLite query_only guards bypasses too');
+  r.transaction(()=>{r.setMetadata('outer-write','before');assert.throws(()=>r.readTransaction(()=>r.setMetadata('nested-forbidden',true)),MarketRegistryReadOnlyViolation);assert.throws(()=>r.readTransaction(()=>{(r as any).db.prepare('INSERT INTO registry_metadata(key,body) VALUES(?,?)').run('nested-sqlite-guard','true');}),MarketRegistryReadOnlyViolation);r.setMetadata('outer-write','after');});assert.equal(r.getMetadata('outer-write'),'after');assert.equal(r.getMetadata('nested-forbidden'),undefined);
+  r.setMetadata('normal-write',true);assert.equal(r.getMetadata('normal-write'),true);assert.equal(r.health().available,true);
+  let asyncCalled=false;assert.throws(()=>r.readTransaction(async()=>{asyncCalled=true;}),MarketRegistryReadOnlyViolation);assert.equal(asyncCalled,false);
+ }finally{r.close();}
+});
+
+
+test('new identity cohort counts are indexed unique first observations, not repeated market messages',()=>{
+ const r=new MarketRegistry(':memory:',{now:()=>AT+1000,concurrentIntake:true});try{
+  r.observeIdentity({mint:'before-cohort',receivedAt:AT-1,source:'pumpportal-new-token',kind:'creation'});r.observeIdentity({mint:'inside-cohort',receivedAt:AT+5,source:'pumpportal-new-token',kind:'creation'});r.observeActivity({mint:'inside-cohort',signature:'same-mint-activity',receivedAt:AT+6,source:'pumpapi-broad',kind:'activity',side:'buy',quoteLamports:'1000000000'});r.observeIdentity({mint:'after-cohort',receivedAt:AT+101,source:'pumpportal-new-token',kind:'creation'});
+  const before=r.health().transactions.writeCommits;assert.deepEqual(r.cohortCounts(AT,AT+100),{discoveredDistinct:1,lightweightArrivals:1,lightweightCompleted:1});assert.equal(r.health().transactions.writeCommits,before);assert.deepEqual(r.cohortCounts(AT+7,AT+100),{discoveredDistinct:0,lightweightArrivals:0,lightweightCompleted:0});
+ }finally{r.close();}
+});
+
+test('post-decision flow excludes late old hints in a mixed batch and keeps exact bigint quote totals',()=>{
+ let now=AT+1000;const r=new MarketRegistry(':memory:',{now:()=>now});try{
+  const hint=(signature:string,at:number,quoteLamports?:string,side:'buy'|'sell'='buy',quoteMint?:string)=>({mint:'decision-token',signature,receivedAt:at,source:'pumpapi-broad',kind:'activity',side,...(quoteLamports?{quoteLamports}:{}),...(quoteMint?{quoteMint}:{} )});
+  r.observeIdentity({mint:'decision-token',receivedAt:AT-100,source:'pumpportal-new-token',kind:'creation'});const baseline=r.economicFlowAfter('decision-token',AT);assert.equal(baseline.knownEvents,0);
+  r.observeActivityBatch([hint('late-old',AT-1,'9000000000000000000'),hint('at-decision',AT,'7000000000000000000'),hint('new-small',AT+1,'5'),hint('unknown-new',AT+2),hint('foreign-new',AT+3,'1000000000','buy','foreign-quote')]);
+  let result=r.economicFlowAfter('decision-token',AT);assert.equal(result.buyLamports,'5','large old hints cannot inflate true post-decision demand');assert.equal(result.sellLamports,'0');assert.equal(result.knownEvents,1);assert.equal(result.unknownEvents,2);assert.equal(result.latestAt,AT+1,'later unknown/foreign hints cannot imply later known economic progress');assert.equal(result.complete,false);
+  const cached=r.health().economicFlow;r.observeActivity({mint:'unrelated',signature:'other',receivedAt:AT+4,source:'pumpapi-broad',kind:'activity',side:'buy',quoteLamports:'100'});r.economicFlowAfter('decision-token',AT);assert.equal(r.health().economicFlow.coldQueries,cached.coldQueries);assert.equal(r.health().economicFlow.incrementalQueries,cached.incrementalQueries);assert.equal(r.health().economicFlow.hits,cached.hits+1);
+  r.observeActivityBatch([hint('new-huge-one',AT+4,'9000000000000000000'),hint('new-huge-two',AT+5,'9000000000000000000'),hint('new-sell',AT+6,'17','sell'),hint('late-old-later',AT-2,'9000000000000000000')]);result=r.economicFlowAfter('decision-token',AT);assert.equal(result.buyLamports,'18000000000000000005');assert.equal(result.sellLamports,'17');assert.equal(result.latestAt,AT+6);assert.equal(r.health().economicFlow.incrementalQueries,cached.incrementalQueries+1);
+  now=AT+3600001;assert.equal(r.economicFlowAfter('decision-token',AT).complete,false);
+ }finally{r.close();}
+});
+
+test('post-decision aggregates treat legacy NULL quote records as unknown and never cache rolled-back hint totals',async()=>{
+ const {default:Database}=await import('better-sqlite3');const dir=mkdtempSync(join(tmpdir(),'poe-market-flow-'));const path=join(dir,'market.sqlite');const r=new MarketRegistry(path,{now:()=>AT+1000});const other=new Database(path);try{
+  r.observeIdentity({mint:'token',receivedAt:AT,source:'pumpportal-new-token',kind:'creation'});other.prepare('INSERT INTO market_activity_seen(mint,signature,side,first_seen_at) VALUES(?,?,?,?)').run('token','legacy','buy',AT+1);let result=r.economicFlowAfter('token',AT);assert.equal(result.knownEvents,0);assert.equal(result.unknownEvents,1);assert.equal(result.buyLamports,'0');assert.equal(result.complete,false);
+  assert.throws(()=>r.transaction(()=>{r.observeActivity({mint:'token',signature:'rolled-back',receivedAt:AT+2,source:'pumpapi-broad',kind:'activity',side:'buy',quoteLamports:'999'});assert.equal(r.economicFlowAfter('token',AT).buyLamports,'999');throw Error('rollback');}),/rollback/);
+  const worker=new MarketRegistry(path,{now:()=>AT+1000});try{worker.observeActivity({mint:'token',signature:'real-next',receivedAt:AT+3,source:'pumpapi-broad',kind:'activity',side:'buy',quoteLamports:'7'});}finally{worker.close();}result=r.economicFlowAfter('token',AT);assert.equal(result.buyLamports,'7');assert.equal(result.unknownEvents,1);
+ }finally{other.close();r.close();rmSync(dir,{recursive:true,force:true});}
+});

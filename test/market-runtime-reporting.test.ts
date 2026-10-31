@@ -35,3 +35,9 @@ test('actual intake producer and SQLite batch ACK project pending messages as du
   const committed=projectIntakeWorkerReporting(intake.usage(),RUN,Date.now())!;assert.equal(committed.pending,0);assert.equal(committed.durableCommitted,1);assert.ok(committed.lastCommitAt);assert.ok(committed.worker!.registryWriteCommits!>=1);assert.equal(worker.stats().committed,1);
  }finally{await intake.close();rmSync(dir,{recursive:true,force:true});}
 });
+
+test('cheap allocation and physical subscription runway remain distinct, while old sources publish unknown',()=>{
+ const old=projectSourceDispatchReporting({engineOpen:true,deepSetupAllowed:false},RUN)!;assert.equal(old.allocation125Allowed,null);assert.equal(old.physicalSetup3000Allowed,null);
+ const fresh=projectSourceDispatchReporting({engineOpen:true,deepSetupAllowed:false,allocation125Allowed:true,physicalSetup3000Allowed:false},RUN)!;assert.equal(fresh.allocation125Allowed,true);assert.equal(fresh.physicalSetup3000Allowed,false);validateSourceDispatchReporting(fresh);
+ const olderWire=structuredClone(old);delete olderWire.allocation125Allowed;delete olderWire.physicalSetup3000Allowed;validateSourceDispatchReporting(olderWire);
+});

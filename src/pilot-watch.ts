@@ -67,7 +67,7 @@ export class PilotWatch {
   private readonly capacityAdmissions=new Map<string,number>();
   /** Row objects live only for one synchronous operation. The indexed registry
    * holds the unbounded identity history; queries never hydrate the whole table. */
-  private operationDepth=0;private registryIdentity='';private savedPersistentState='';private readonly originals=new Map<string,string>();
+  private operationDepth=0;private readOperationDepth=0;private registryIdentity='';private savedPersistentState='';private readonly originals=new Map<string,string>();
   private readonly deleted=new Set<string>();
   private persistentState(){return {counters:copy(this.counters),capacityProbeAdmissions:copy(this.capacityProbeAdmissions),entryAgePromotionCount:this.entryAgePromotionCount,observationAgePolicyVersion:this.checkpointObservationAgePolicy.version};}
   private flush(){if(!this.options.registry)return;for(const [signature,r] of this.rows){const body=JSON.stringify(r);if(this.originals.get(signature)!==body){this.options.registry.put(r);this.originals.set(signature,body);}}for(const signature of this.deleted)this.options.registry.delete(signature,this.clock(),'canonical identity alias merged');this.deleted.clear();}
@@ -75,6 +75,11 @@ export class PilotWatch {
     if(!this.options.registry)return run();if(this.operationDepth++>0){try{return run();}finally{this.operationDepth--;}}
     const prior=this.persistentState(),saved=this.savedPersistentState;try{return this.options.registry.transaction(()=>{const result=run();this.flush();const state=this.persistentState(),body=JSON.stringify(state);if(body!==this.savedPersistentState){this.options.registry!.setMetadata('pilot-watch-state',state);this.savedPersistentState=body;}return result;});}catch(error){this.counters=prior.counters;this.capacityProbeAdmissions=prior.capacityProbeAdmissions;this.entryAgePromotionCount=prior.entryAgePromotionCount;this.savedPersistentState=saved;throw error;}
     finally{this.operationDepth--;this.rows.clear();this.originals.clear();this.deleted.clear();}
+  }
+  private readOperation<T>(run:()=>T):T{
+    if(!this.options.registry)return run();this.readOperationDepth++;
+    if(this.operationDepth++>0){try{return run();}finally{this.operationDepth--;this.readOperationDepth--;}}
+    try{return this.options.registry.readTransaction(run);}finally{this.operationDepth--;this.readOperationDepth--;this.rows.clear();this.originals.clear();this.deleted.clear();}
   }
   private retain(r:WatchRow){const existing=this.rows.get(r.signature);if(existing)return existing;this.rows.set(r.signature,r);this.originals.set(r.signature,JSON.stringify(r));return r;}
   private stored(signature:string){const r=this.rows.get(signature)??this.options.registry?.get(signature);return r?this.retain(r):undefined;}
@@ -85,6 +90,16 @@ export class PilotWatch {
   private readySql(at:number){
     const age=this.observationAgePolicy===PERSISTENT_OBSERVABLE_MARKET_POLICY?'w.migration_at<=?':'w.migration_at<=? AND ?<w.migration_at+CASE WHEN w.older_research=1 THEN ? ELSE ? END';
     return {where:"w.mint IS NOT NULL AND w.verified_at IS NOT NULL AND w.pool IS NOT NULL AND w.state IN ('WATCH','DEFERRED') AND w.reobserve_ready=1 AND COALESCE(w.capacity_status,'')!='AWAITING_CAPACITY' AND w.defer_until<=? AND "+age,params:this.observationAgePolicy===PERSISTENT_OBSERVABLE_MARKET_POLICY?[at,at]:[at,at,at,this.observationAgePolicy.selectedOlderMaximumAgeMs,this.observationAgePolicy.recentMaximumAgeMs]};
+  }
+  private repairPredecisionReady(r:WatchRow,source:'checkpoint'|'durable-registry'){
+    const gate=r.reobservation,ready=gate?.ready;
+    if(!gate||!ready||!integer(gate.decisionAt)||gate.decisionAt>this.clock()||!integer(ready.at)||ready.at>=gate.decisionAt||!text(ready.reason)||!text(ready.evidence,512))return false;
+    const key='pilot-watch-predecision-ready:'+r.signature+':'+gate.decisionAt+':'+ready.at,receipt={at:this.clock(),source,signature:r.signature,mint:r.mint,originalGate:copy(gate),correction:'clear only predecision readiness from delayed intake; retain completed decision, evidence and financial history',financialWriterOpened:false};
+    if(!this.options.registry?.getMetadata(key)){this.options.registry?.setMetadata(key,receipt);this.emit('pilot-watch-predecision-readiness-corrected',receipt);}
+    gate.ready=null;return true;
+  }
+  private repairDurableReadiness(){
+    let after='';for(;;){const batch=this.query("w.signature>? AND w.reobserve_ready=1 AND w.last_decision_at IS NOT NULL AND json_extract(w.body,'$.reobservation.ready.at')<w.last_decision_at",[after],'w.signature',128);if(!batch.length)break;for(const row of batch)this.repairPredecisionReady(row,'durable-registry');after=batch.at(-1)!.signature;this.flush();this.rows.clear();this.originals.clear();if(batch.length<128)break;}
   }
   private recoverDurable(){
     // Only operational proofs need restart repair. Historical inactive rows are
@@ -103,9 +118,9 @@ export class PilotWatch {
       this.registryIdentity=options.registry.getMetadata<string>('pilot-watch-identity')??'';if(!this.registryIdentity){need(!(options.restored as WatchCheckpoint|undefined)?.registry,'PILOT_WATCH_DURABLE_HISTORY_UNAVAILABLE');this.registryIdentity=randomUUID();options.registry.setMetadata('pilot-watch-identity',this.registryIdentity);}
       const checkpoint=options.restored as WatchCheckpoint|undefined;need(!checkpoint?.registry||checkpoint.registry.id===this.registryIdentity,'PILOT_WATCH_REGISTRY_IDENTITY');
       const state=options.registry.getMetadata<ReturnType<PilotWatch['persistentState']>>('pilot-watch-state');
-      if(state){this.counters=copy(state.counters);this.capacityProbeAdmissions=copy(state.capacityProbeAdmissions);this.entryAgePromotionCount=state.entryAgePromotionCount;const previousPolicy=observationAgePolicyByVersion(state.observationAgePolicyVersion);if(previousPolicy.selectedOlderMaximumAgeMs>this.checkpointObservationAgePolicy.selectedOlderMaximumAgeMs)this.checkpointObservationAgePolicy=previousPolicy;this.savedPersistentState=JSON.stringify(state);this.operation(()=>this.recoverDurable());}
+      if(state){this.counters=copy(state.counters);this.capacityProbeAdmissions=copy(state.capacityProbeAdmissions);this.entryAgePromotionCount=state.entryAgePromotionCount;const previousPolicy=observationAgePolicyByVersion(state.observationAgePolicyVersion);if(previousPolicy.selectedOlderMaximumAgeMs>this.checkpointObservationAgePolicy.selectedOlderMaximumAgeMs)this.checkpointObservationAgePolicy=previousPolicy;this.savedPersistentState=JSON.stringify(state);this.operation(()=>{this.repairDurableReadiness();this.recoverDurable();});}
       else this.operation(()=>{if(options.restored!==undefined)this.restore(options.restored);});
-      for(const name of ['discover','verify','transition','resumeContinuousObservation','requestTechnicalReevaluation','technicalReevaluation','claimTechnicalReevaluation','finishTechnicalReevaluation','selectOlderResearch','deferCapacity','recordCapacityDemand','reassessCapacity','admitCapacity','deferVerification','noteActivity','noteEvaluation','noteRelevantEvidence','noteWindow','next','lookupIdentity','listIdentities','listIdentityPage','identitiesInStates','snapshot','export'] as const){const original=(this[name] as Function).bind(this);(this as any)[name]=(...args:unknown[])=>this.operation(()=>original(...args));}
+      for(const name of ['discover','verify','transition','resumeContinuousObservation','requestTechnicalReevaluation','technicalReevaluation','claimTechnicalReevaluation','finishTechnicalReevaluation','selectOlderResearch','deferCapacity','recordCapacityDemand','reassessCapacity','admitCapacity','deferVerification','noteActivity','noteEvaluation','noteRelevantEvidence','noteWindow','next','lookupIdentity','listIdentities','listIdentityPage','identitiesInStates','snapshot','export'] as const){const original=(this[name] as Function).bind(this);(this as any)[name]=(...args:unknown[])=>this.observationAgePolicy===PERSISTENT_OBSERVABLE_MARKET_POLICY&&['lookupIdentity','listIdentities','listIdentityPage','identitiesInStates','snapshot','export'].includes(name)?this.readOperation(()=>original(...args)):this.operation(()=>original(...args));}
     }else if(options.restored!==undefined)this.restore(options.restored);
   }
   private emit(kind:string,data:unknown){this.options.record(kind,data);}
@@ -118,6 +133,9 @@ export class PilotWatch {
   private olderDeepAvailable(r:WatchRow,at:number){return this.durable()||this.observationAgePolicy===PERSISTENT_OBSERVABLE_MARKET_POLICY||!this.older(r,at)||[...this.rows.values()].filter(other=>other!==r&&deep(other)&&this.older(other,at)).length<OBSERVATION_AGE_POLICY.maximumOlderDeep;}
   private freshProbe(r:WatchRow,at:number){const c=r.capacityCoverage,d=c?.lastDemand,probe=c?.probeAdmissions.at(-1);return !!d&&d.complete&&d.observedAt<=at&&at-d.observedAt<=30000&&probe!==undefined&&probe<=at&&at-probe<=30000;}
   private refreshProbeReadiness(at:number){
+    // Read projections never acquire a writer lease for opportunistic upkeep.
+    // next()/transition() retain the actual freshness/admission maintenance.
+    if(this.readOperationDepth>0)return;
     for(const r of (this.durable()?this.query("w.capacity_status='PROBE_READY' AND w.state IN ('WATCH','DEFERRED')",[], 'w.signature',32):this.rows.values()))if(r.capacityCoverage?.status==='PROBE_READY'&&['WATCH','DEFERRED'].includes(r.state)&&!this.freshProbe(r,at)){
       const c=r.capacityCoverage;c.status='AWAITING_CAPACITY';c.reassessAt=Math.max(c.reassessAt,at+5000);this.capacityAdmissions.delete(r.signature);
       this.transition(r.signature,'DEFERRED','capacity demand or readiness aged; fresh resource assessment required',at,{deferUntil:Math.max(r.deferUntil,c.reassessAt)});
@@ -295,15 +313,19 @@ export class PilotWatch {
   }
   private refreshReobservation(r:WatchRow,at:number){
     const gate=r.reobservation;if(!gate||gate.ready||!r.mint||!this.options.registry)return;
-    const current=this.options.registry.marketEvidence(r.mint),baseline=gate.baseline;if(!current||!baseline||current.fingerprint===baseline.fingerprint)return;
-    const buy=BigInt(current.buyLamports)-BigInt(baseline.buyLamports),sell=BigInt(current.sellLamports)-BigInt(baseline.sellLamports);if(buy<0n||sell<0n)return;
+    const current=this.options.registry.marketEvidence(r.mint),baseline=gate.baseline;if(!current||baseline&&current.fingerprint===baseline.fingerprint)return;
+    const fresh=this.options.registry.economicFlowAfter(r.mint,gate.decisionAt);
+    // Worker commit order is not market information time. Mixed batches must
+    // not let predecision volume subsidize a later negligible transaction.
+    if(fresh.knownEvents===0||fresh.latestAt===null||fresh.latestAt<=gate.decisionAt)return;
+    const buy=BigInt(fresh.buyLamports),sell=BigInt(fresh.sellLamports);
     // Actual measured execution friction is a size-relative information-value
     // reference, not a universal dollar threshold or a qualification filter.
     // Material selling can reveal absorption/reversal/liquidity changes too.
     const gross=buy+sell,reference=gate.minimumEconomicChangeLamports===null?null:BigInt(gate.minimumEconomicChangeLamports);
     const relevant=gate.kind==='technical-unavailable'?gross>0n:reference!==null?gross>0n&&gross>=reference:buy>sell;
-    if(!relevant)return;gate.ready={at,reason:gate.kind==='technical-unavailable'?'new signed economic source progress after technical unavailability':reference===null?'new positive measured capital pressure; execution-friction reference unavailable':'new measured capital flow covers prior actual quoted round-trip network cost',evidence:current.fingerprint};
-    this.emit('pilot-watch-reobservation-ready',{mint:r.mint,decisionAt:gate.decisionAt,decisionKind:gate.kind,deltaBuyLamports:buy.toString(),deltaSellLamports:sell.toString(),minimumEconomicChangeLamports:gate.minimumEconomicChangeLamports,...gate.ready,financialPermission:false});
+    if(!relevant)return;gate.ready={at:this.clock(),reason:gate.kind==='technical-unavailable'?'new signed economic source progress after technical unavailability':reference===null?'new positive measured capital pressure; execution-friction reference unavailable':'new measured capital flow covers prior actual quoted round-trip network cost',evidence:current.fingerprint};
+    this.emit('pilot-watch-reobservation-ready',{mint:r.mint,decisionAt:gate.decisionAt,decisionKind:gate.kind,deltaBuyLamports:buy.toString(),deltaSellLamports:sell.toString(),knownPostDecisionEvents:fresh.knownEvents,unknownPostDecisionEvents:fresh.unknownEvents,postDecisionHistoryComplete:fresh.complete,latestKnownReceivedAt:fresh.latestAt,minimumEconomicChangeLamports:gate.minimumEconomicChangeLamports,...gate.ready,financialPermission:false});
   }
   noteActivity(mint:string,at:number,evidence:string):boolean{
     this.at(at);need(at<=this.clock(),'PILOT_WATCH_ACTIVITY_FUTURE');need(text(evidence,256),'PILOT_WATCH_ACTIVITY_EVIDENCE');this.expire(at);const r=this.row(mint);if(!r||r.mint===null||r.state==='PERMANENTLY_UNSUPPORTED')return false;
@@ -325,11 +347,12 @@ export class PilotWatch {
       const where=ready.where+(notExcluded.length?' AND w.mint NOT IN ('+notExcluded.map(()=>'?').join(',')+')':'')+(options.requireOrigin?' AND EXISTS (SELECT 1 FROM origin_proofs o WHERE o.mint=w.mint AND o.available=1)':'');
       const params=[...ready.params,...notExcluded];
       const technical=this.query(where+" AND w.technical_state='WAITING' AND w.technical_not_before<=? AND w.technical_expires_at>?",[...params,at,at],'w.technical_not_before,w.technical_requested_at,w.signature',1)[0];if(technical)return copy(technical);
-      const activity="w.promotions>0 AND w.last_demoted_at IS NOT NULL AND w.last_activity_at>w.last_demoted_at AND w.last_activity_at<=? AND w.last_activity_at>=?";
-      const active={where:activity,params:[at,at-60000]},fresh={where:'w.promotions=0',params:[]},inactive={where:'w.promotions>0 AND NOT COALESCE(('+activity+'),0)',params:[at,at-60000]},phase=this.counters.promoted%4;
-      const order=phase===3?[inactive,active,fresh]:phase===1?[fresh,active,inactive]:[active,fresh,inactive];
+      // Every serviceable identity competes on the same measured shared-flow
+      // priority. Promotion phase/age cohorts never force an inactive turn over
+      // a stronger opportunity. These hints grant no financial qualification;
+      // FIFO breaks equal economic-hint priority and preserves ordinary fairness.
       const demandPriority="COALESCE((SELECT MAX(0,mt.activity_score)/(1.0+MAX(0,?-COALESCE(mt.last_activity_at,0))/60000.0) FROM market_tokens mt WHERE mt.mint=w.mint),0) DESC,";
-      for(const category of order){const selected=this.query(where+' AND ('+category.where+')',[...params,...category.params,at],demandPriority+"COALESCE(w.last_activity_at,w.migration_at,w.first_seen_at) DESC,w.waiting_since,w.first_seen_at,w.signature",1)[0];if(selected)return copy(selected);}return null;
+      const selected=this.query(where,[...params,at],demandPriority+'w.waiting_since,w.first_seen_at,w.signature',1)[0];return selected?copy(selected):null;
     }
     const ready=[...this.rows.values()].filter(r=>r.mint!==null&&!excluded.has(r.mint)&&['WATCH','DEFERRED'].includes(r.state)&&r.capacityCoverage?.status!=='AWAITING_CAPACITY'&&at>=r.deferUntil&&this.observable(r,at)&&this.olderDeepAvailable(r,at));
     const technical=ready.filter(r=>{const t=this.refreshTechnicalReevaluation(r,at);return t?.state==='WAITING'&&at>=t.notBefore;});
@@ -365,6 +388,27 @@ export class PilotWatch {
     need(!this.durable(),'PILOT_WATCH_PAGED_QUERY_REQUIRED');
     return [...this.rows.values()].map(r=>({mint:r.mint,pool:r.pool,signature:r.signature,migrationAt:r.migrationAt,verifiedAt:r.verifiedAt,state:r.state,olderResearch:r.olderResearch!==undefined}));
   }
+  allocationReadySince(mint:string,at=this.clock()):number|null{
+    this.at(at);need(this.durable(),'PILOT_WATCH_DURABLE_BACKLOG_REQUIRED');return this.readOperation(()=>{
+      const ready=this.readySql(at),where=ready.where+" AND w.mint=? AND EXISTS (SELECT 1 FROM origin_proofs o WHERE o.mint=w.mint AND o.available=1)",anchor="MAX(w.waiting_since,w.verified_at,w.migration_at,w.defer_until,COALESCE(json_extract(w.body,'$.reobservation.ready.at'),0),COALESCE((SELECT o.updated_at FROM origin_proofs o WHERE o.mint=w.mint AND o.available=1),0))";
+      const value=this.options.registry!.aggregate({since:'MAX('+anchor+')'},where,[...ready.params,mint]).since;return value===null?null:Math.min(at,value!);
+    });
+  }
+  /** Local allocation predicates only. Global provider/financial runtime gates
+   * remain separate; retained history and dormant records are not a queue. */
+  serviceableBacklog(at=this.clock()){
+    this.at(at);need(this.durable(),'PILOT_WATCH_DURABLE_BACKLOG_REQUIRED');
+    return this.readOperation(()=>{
+      const registry=this.options.registry!,ready=this.readySql(at),origin="EXISTS (SELECT 1 FROM origin_proofs o WHERE o.mint=w.mint AND o.available=1)",serviceable=ready.where+' AND '+origin;
+      const retained=registry.count(),eligibleNow=registry.count(ready.where,ready.params),serviceableNow=registry.count(serviceable,ready.params),activeDeep=registry.count("w.deep_since IS NOT NULL AND w.state IN ('DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING')");
+      const age=this.observationAgePolicy===PERSISTENT_OBSERVABLE_MARKET_POLICY?'w.migration_at<='+at:'w.migration_at<='+at+' AND '+at+'<w.migration_at+CASE WHEN w.older_research=1 THEN '+this.observationAgePolicy.selectedOlderMaximumAgeMs+' ELSE '+this.observationAgePolicy.recentMaximumAgeMs+' END';
+      const waiting="w.mint IS NOT NULL AND w.verified_at IS NOT NULL AND w.pool IS NOT NULL AND w.state IN ('WATCH','DEFERRED') AND "+age;
+      const verifiedAwaitingPrerequisites=registry.count(waiting+' AND NOT ('+serviceable+')',ready.params);
+      const since="MAX(w.waiting_since,w.verified_at,w.migration_at,w.defer_until,COALESCE(json_extract(w.body,'$.reobservation.ready.at'),0))",proofSince="MAX("+since+",COALESCE((SELECT o.updated_at FROM origin_proofs o WHERE o.mint=w.mint AND o.available=1),0))";
+      const summarize=(where:string,anchor:string)=>registry.valueSummary({expression:'MAX(0,?-'+anchor+')',where,params:[at,...ready.params]});
+      return {population:{retained,verifiedAwaitingPrerequisites,eligibleNow,serviceableNow,capacityWaiting:Math.max(0,serviceableNow-Math.max(0,this.maximumDeep-activeDeep)),activeDeep},waits:{eligibleQueue:summarize(ready.where,since),capacityQueue:summarize(serviceable,proofSince)}};
+    });
+  }
   snapshot(at=this.clock(),strategy:'baseline'|'adaptive-momentum-v2'|'liquidity-resilient-momentum-v3'|'liquidity-resilient-momentum-v3.1'='baseline'){
     this.at(at);this.expire(at);this.refreshProbeReadiness(at);if(this.durable())return this.durableSnapshot(at,strategy);const rows=[...this.rows.values()],baselineEligible=rows.filter(r=>this.entryEligible(r,at)),observable=rows.filter(r=>this.observable(r,at)),adaptive=strategy==='adaptive-momentum-v2'||strategy==='liquidity-resilient-momentum-v3'||strategy==='liquidity-resilient-momentum-v3.1',eligible=adaptive?observable:baselineEligible,waiting=eligible.filter(r=>['WATCH','DEFERRED'].includes(r.state)&&r.capacityCoverage?.status!=='AWAITING_CAPACITY'&&at>=r.deferUntil),waits=waiting.map(r=>Math.max(0,at-Math.max(r.waitingSince,r.migrationAt!+(adaptive?0:MIN_AGE),r.verifiedAt!))),covered=eligible.filter(r=>r.everHadWindow&&r.lastWindowAt!==null&&r.lastWindowAt<=at&&(adaptive?observationAgeEligible(r.migrationAt!,r.lastWindowAt,r.olderResearch!==undefined,this.observationAgePolicy):entryAgeEligible(r.migrationAt!,r.lastWindowAt)));
     return {rows:copy(rows),summary:{observationAgePolicy:this.observationAgePolicy,...copy(this.counters),known:rows.length,maximumIdentities:this.maximum,maximumOlderResearchIdentities:this.olderMaximum,minimumPrimaryIdentityCapacity:this.maximum-this.olderMaximum,observationEligibleKnown:observable.length,observationCapacityAwaiting:observable.filter(r=>r.state==='DEFERRED'&&r.capacityCoverage?.status==='AWAITING_CAPACITY').length,observationCapacityProbeReady:observable.filter(r=>['WATCH','DEFERRED'].includes(r.state)&&r.capacityCoverage?.status==='PROBE_READY').length,observationQueued:observable.filter(r=>['WATCH','DEFERRED'].includes(r.state)&&r.capacityCoverage?.status!=='AWAITING_CAPACITY'&&at>=r.deferUntil&&this.olderDeepAvailable(r,at)).length,ageCohorts:{preEntry:observable.filter(r=>observationAgeCohort(r.migrationAt!,at,r.olderResearch!==undefined,this.observationAgePolicy)==='pre-entry').length,entryEligible:baselineEligible.length,olderSelected:observable.filter(r=>this.older(r,at)).length},watch:rows.filter(r=>['WATCH','DEFERRED'].includes(r.state)).length,capacityAwaiting:eligible.filter(r=>r.state==='DEFERRED'&&r.capacityCoverage?.status==='AWAITING_CAPACITY').length,capacityProbeReady:eligible.filter(r=>['WATCH','DEFERRED'].includes(r.state)&&r.capacityCoverage?.status==='PROBE_READY').length,unverified:rows.filter(r=>r.verifiedAt===null).length,eligibleKnown:eligible.length,deepActive:rows.filter(deep).length,maximumDeep:this.maximumDeep,queued:waiting.length,waitMs:{mean:waits.length?waits.reduce((a,b)=>a+b,0)/waits.length:0,maximum:waits.length?Math.max(...waits):0},promotionWaitMs:{mean:this.entryAgePromotionCount?this.counters.promotionWaitTotalMs/this.entryAgePromotionCount:0,maximum:this.counters.promotionWaitMaximumMs,entryAgePromotions:this.entryAgePromotionCount},coverage:{denominator:adaptive?'currently observable verified identities retained for '+(strategy==='adaptive-momentum-v2'?'AdaptiveMomentumV2':strategy)+', including early and selected older cohorts; at least one audited window during the observation horizon':'currently entry-age-eligible verified identities retained in this bounded registry; at least one audited window during this eligibility horizon',eligibleKnown:eligible.length,atLeastOneValidWindow:covered.length,percent:eligible.length?covered.length*100/eligible.length:null,wholeMarketPercent:null},states:Object.fromEntries(STATES.map(s=>[s,rows.filter(r=>r.state===s).length]))}};
@@ -392,8 +436,9 @@ export class PilotWatch {
     if(checkpointPolicy.selectedOlderMaximumAgeMs>this.checkpointObservationAgePolicy.selectedOlderMaximumAgeMs)this.checkpointObservationAgePolicy=checkpointPolicy;
     if(checkpointPolicy!==this.observationAgePolicy)this.emit('pilot-watch-observation-policy-transition',{at:this.clock(),checkpointSelectionPolicy:checkpointPolicy.version,current:this.observationAgePolicy.version,freshFullWindowRequired:true,entryPermission:false,selectedCohortBiased:true});
     need(v.schemaVersion===1&&Array.isArray(v.rows)&&(this.durable()||v.rows.length<=this.maximum)&&v.counters&&typeof v.counters==='object'&&Object.keys(initialCounters()).every(k=>integer(v.counters[k as keyof Counters])),'PILOT_WATCH_CHECKPOINT');
-    this.counters=copy(v.counters);const mints=new Set<string>();for(const r of v.rows){
+    this.counters=copy(v.counters);const mints=new Set<string>();for(const sourceRow of v.rows){const r=copy(sourceRow);
       need(r&&text(r.signature,100)&&!this.rows.has(r.signature)&&(r.feedMint===null||text(r.feedMint,96))&&(r.mint===null||text(r.mint,96))&&(r.pool===null||text(r.pool,96))&&STATES.includes(r.state)&&text(r.reason)&&integer(r.firstSeenAt)&&integer(r.deferUntil)&&integer(r.waitingSince)&&[r.migrationAt,r.verifiedAt,r.lastActivityAt,r.lastDemotedAt,r.deepSince,r.lastWindowAt].every(n=>n===null||integer(n))&&[r.promotions,r.repromotions,r.demotions,r.completeWindows].every(integer)&&typeof r.everHadWindow==='boolean'&&(r.lastActivityEvidence===null||text(r.lastActivityEvidence,256))&&Array.isArray(r.history)&&r.history.length<=16&&r.history.every(h=>integer(h.at)&&STATES.includes(h.state)&&text(h.reason)),'PILOT_WATCH_CHECKPOINT_ROW');
+      this.repairPredecisionReady(r,'checkpoint');
       if(r.reobservation!==undefined){const g=r.reobservation;need(g&&['economic-rejection','technical-unavailable'].includes(g.kind)&&integer(g.decisionAt)&&g.decisionAt<=this.clock()&&integer(g.windowEndAt)&&g.windowEndAt<=g.decisionAt&&text(g.evidence,512)&&(g.minimumEconomicChangeLamports===null||/^(0|[1-9][0-9]{0,38})$/.test(g.minimumEconomicChangeLamports))&&(g.ready===null||integer(g.ready.at)&&g.ready.at>=g.decisionAt&&g.ready.at<=this.clock()&&text(g.ready.reason)&&text(g.ready.evidence,512))&&(g.baseline===null||g.baseline&&/^(0|[1-9][0-9]{0,38})$/.test(g.baseline.buyLamports)&&/^(0|[1-9][0-9]{0,38})$/.test(g.baseline.sellLamports)&&[g.baseline.buyHints,g.baseline.sellHints,g.baseline.activityHints].every(integer)&&text(g.baseline.fingerprint,512))&&(g.relevantEvidence===undefined||['audited-flow','pool-reserves','liquidity','source-recovery'].includes(g.relevantEvidence.kind)&&integer(g.relevantEvidence.at)&&g.relevantEvidence.at<=this.clock()&&text(g.relevantEvidence.fingerprint,512)),'PILOT_WATCH_CHECKPOINT_REOBSERVATION');}
       if(r.olderResearch!==undefined){const o=r.olderResearch;need(o&&typeof o==='object'&&!Array.isArray(o)&&Object.keys(o).sort().join(',')==='activityAt,evidence,selectedAt'&&integer(o.selectedAt)&&integer(o.activityAt)&&o.activityAt<=o.selectedAt&&o.selectedAt-o.activityAt<=OBSERVATION_AGE_POLICY.olderActivityMaximumAgeMs&&text(o.evidence,256)&&r.migrationAt!==null&&o.selectedAt>=r.migrationAt+MAX_AGE&&o.selectedAt<observationExpiryAt(r.migrationAt,true,checkpointPolicy)&&o.selectedAt<=this.clock(),'PILOT_WATCH_CHECKPOINT_OLDER_RESEARCH');}
       if(r.capacityCoverage!==undefined){const c=r.capacityCoverage;need(c&&typeof c==='object'&&!Array.isArray(c)&&Object.keys(c).sort().join(',')==='lastDemand,lostAt,probeAdmissions,reason,reassessAt,status'&&['AWAITING_CAPACITY','PROBE_READY','OBSERVING','VALID_WINDOW','OTHER_UNAVAILABLE'].includes(c.status)&&text(c.reason)&&integer(c.lostAt)&&integer(c.reassessAt)&&c.reassessAt>=c.lostAt&&(c.lastDemand===null||validDemand(c.lastDemand)&&c.lastDemand.observedAt<=this.clock())&&Array.isArray(c.probeAdmissions)&&c.probeAdmissions.length<=2&&c.probeAdmissions.every((at,i)=>integer(at)&&at<=this.clock()&&(i===0||at>c.probeAdmissions[i-1]!))&&r.verifiedAt!==null,'PILOT_WATCH_CHECKPOINT_CAPACITY');}

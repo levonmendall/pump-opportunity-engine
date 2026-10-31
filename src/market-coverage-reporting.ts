@@ -2,6 +2,7 @@
  * Registry lifetime begins when this store was created, not account inception.
  * Missing evidence stays unavailable; observed identities are not a market denominator. */
 import {projectIntakeWorkerReporting,projectSourceDispatchReporting,validateIntakeWorkerReporting,validateSourceDispatchReporting,type IntakeWorkerReporting,type SourceDispatchReporting} from './market-runtime-reporting.js';
+import {projectPipelineThroughputReporting,validatePipelineThroughputReporting,type PipelineThroughputReporting} from './pipeline-throughput-reporting.js';
 export const MARKET_COVERAGE_REPORTING_VERSION='poe-market-coverage-v1' as const;
 export const MARKET_COVERAGE_FEED_SOURCES=['pumpportal-new-token','pumpportal-migration','pumpapi-broad','confirmed-migration'] as const;
 export const MARKET_COVERAGE_FEED_SCOPES=['CREATION_HINTS','MIGRATION_HINTS','SHARED_ACTIVITY_HINTS','WATCHED_ACTIVITY_HINTS','UNKNOWN'] as const;
@@ -18,6 +19,7 @@ export type MarketCoverageReporting={
  financial:{scope:'current-source-instance';qualified:Count;entries:Count;exits:Count};
  feeds:{source:typeof MARKET_COVERAGE_FEED_SOURCES[number];connected:boolean|null;lastObservedAt:string|null;scope:typeof MARKET_COVERAGE_FEED_SCOPES[number];coverageGaps:Count}[];
  marketDenominator:null;wholeMarketCoveragePercent:null;limitations:typeof MARKET_COVERAGE_LIMITATIONS[number][];
+ pipeline?:PipelineThroughputReporting;
 };
 const INCEPTION=Date.parse('2026-10-26T22:07:36.212Z');
 const record=(v:unknown):Record<string,any>=>v&&typeof v==='object'&&!Array.isArray(v)?v as Record<string,any>:{};
@@ -51,7 +53,8 @@ export function projectMarketCoverageReporting(status:unknown,generated:number):
  for(const code of Array.isArray(m.limitations)?m.limitations:[])limitations.add((MARKET_COVERAGE_LIMITATIONS as readonly unknown[]).includes(code)?code:'OTHER_UNEXPORTED_LIMITATION');
  const hour=iso(h.startedAt,asOf),hourAt=hour===null?null:Date.parse(hour);
  const currentHour=hourAt!==null&&hourAt===Math.floor(asOf/3600000)*3600000?{startedAt:hour,uniqueTokensDiscovered:count(h.uniqueTokensDiscovered)}:{startedAt:null,uniqueTokensDiscovered:null};
- return validateMarketCoverageReporting({version:MARKET_COVERAGE_REPORTING_VERSION,generatedAt:new Date(asOf).toISOString(),persistence:{state:p.state==='sqlite-wal'?'sqlite-wal':'unavailable',createdAt:iso(p.createdAt,asOf),updatedAt:iso(p.updatedAt,asOf)},
+ const pipeline=projectPipelineThroughputReporting(m.pipeline,s.runId,asOf);
+ return validateMarketCoverageReporting({version:MARKET_COVERAGE_REPORTING_VERSION,generatedAt:new Date(asOf).toISOString(),persistence:{state:p.state==='sqlite-wal'?'sqlite-wal':'unavailable',createdAt:iso(p.createdAt,asOf),updatedAt:iso(p.updatedAt,asOf)},...(pipeline?{pipeline}:{}),
   lifetime:values(l,'uniqueTokensDiscovered lightweightScreened lightweightWithActivity lightweightUnavailable deepAdmitted verifiedAudited'),currentHour,
   active:values(a,'trackedIdentities awaitingLightweight awaitingOrigin awaitingVerification awaitingDeep deepObserving'),
   resource:{durableVerificationBacklog:count(r.durableVerificationBacklog),oldestVerificationAt:iso(r.oldestVerificationAt,asOf),maximumVerificationWaitMs:count(r.maximumVerificationWaitMs),storageFailures:count(r.storageFailures),maximumWriteMs:duration(r.maximumWriteMs),meanWriteMs:duration(r.meanWriteMs),registryTransactions:registryTransactions(r.registryTransactions,s.runId),intakeWorker:projectIntakeWorkerReporting(r.intakeWorker,s.runId,asOf),sourceDispatch:projectSourceDispatchReporting(r.sourceDispatch,s.runId)},
@@ -59,7 +62,7 @@ export function projectMarketCoverageReporting(status:unknown,generated:number):
  }catch{return undefined;}
 }
 export function validateMarketCoverageReporting(value:unknown,generated:number):MarketCoverageReporting {
- const m=exact(value,'version generatedAt persistence lifetime currentHour active resource financial feeds marketDenominator wholeMarketCoveragePercent limitations');
+ const m=exact(value,'version generatedAt persistence lifetime currentHour active resource financial feeds marketDenominator wholeMarketCoveragePercent limitations'+(Object.hasOwn(record(value),'pipeline')?' pipeline':''));
  need(m.version===MARKET_COVERAGE_REPORTING_VERSION&&m.marketDenominator===null&&m.wholeMarketCoveragePercent===null);
  const time=(v:unknown,nullable=false)=>{if(v===null&&nullable)return;const at=typeof v==='string'?Date.parse(v):NaN;need(Number.isSafeInteger(at)&&at>=INCEPTION&&at<=generated&&new Date(at).toISOString()===v);};
  const n=(v:unknown)=>need(v===null||count(v)!==null);
@@ -79,5 +82,6 @@ export function validateMarketCoverageReporting(value:unknown,generated:number):
  need(Array.isArray(m.limitations)&&m.limitations.length<=MARKET_COVERAGE_LIMITATIONS.length&&new Set(m.limitations).size===m.limitations.length&&m.limitations.includes('MARKET_DENOMINATOR_UNKNOWN'));for(const code of m.limitations)need((MARKET_COVERAGE_LIMITATIONS as readonly unknown[]).includes(code));
  // A retained observation cannot be newer than this projection's source facts.
  for(const at of [p.createdAt,p.updatedAt,r.oldestVerificationAt,...m.feeds.map((feed:any)=>feed.lastObservedAt)])need(at===null||Date.parse(at)<=asOf);
- need(Buffer.byteLength(JSON.stringify(m))<=6144);return m as MarketCoverageReporting;
+ if(Object.hasOwn(m,'pipeline'))validatePipelineThroughputReporting(m.pipeline,asOf);
+ need(Buffer.byteLength(JSON.stringify(m))<=10240);return m as MarketCoverageReporting;
 }

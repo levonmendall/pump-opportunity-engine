@@ -433,3 +433,24 @@ test('a physically unsettled history timeout has no no-invocation proof and reta
   assert.equal(pilotUninvokedHistoryRefusal(blocked)?.physicalSettled,false);assert.equal(f.client.usage().newUnits,1);assert.throws(()=>f.client.close(),/PHYSICAL_SLOT_OCCUPIED/);
  }finally{settle(new Response('late'));await turn();await turn();f.close();}
 });
+
+test('provider diagnostics attribute actual HTTP starts and429 response method without narrowing its restriction',async()=>{
+ let calls=0;const f=fixture({fetcher:(async(_url,init)=>{calls++;const b=JSON.parse(String(init?.body));return calls===1?new Response('denied',{status:429,headers:{'retry-after':'10'}}):new Response(JSON.stringify({jsonrpc:'2.0',id:b.id,result:123}));}) as typeof fetch});try{
+  await assert.rejects(f.client.call('getTransaction'),/HTTP_429/);await turn();const p=f.client.usage().providerResponses;
+  assert.equal(p.scope,'CURRENT_PILOT_RPC_INSTANCE');assert.equal(p.runId,'isolated-test');assert.equal(p.httpStarts,1);assert.equal(p.httpResponses,1);assert.equal(p.rateLimitedResponses,1);assert.equal(p.unavailableResponses,0);assert.deepEqual(p.byMethod,[{method:'getTransaction',httpStarts:1,httpResponses:1,rateLimitedResponses:1,unavailableResponses:0}]);assert.equal(p.lastRestriction!.method,'getTransaction');assert.equal(p.lastRestriction!.domain,'rpc');assert.equal(p.lastRestriction!.status,429);assert.equal(p.lastRestriction!.retryAfterMs,10000);assert.equal(p.lastRestriction!.cooldownUntil,215000);assert.ok(Number.isSafeInteger(p.lastRestriction!.physicalRequestId));assert.equal(p.methodSpecificProviderScopeKnown,false);assert.equal(p.extraProviderRequests,0);
+  await assert.rejects(f.client.call('getMultipleAccounts'),/COOLDOWN/);assert.equal(calls,1);assert.equal(f.client.usage().providerResponses.httpStarts,1);assert.equal(f.client.protectionProviderRestrictionUntil(),215000);
+  assert.ok(f.records.some(r=>r.kind==='pilot-rpc-unavailable'&&r.data.method==='getTransaction'&&r.data.retryAfterMs===10000));f.advance(15000);assert.equal(await f.client.call('getMultipleAccounts'),123);const after=f.client.usage().providerResponses;assert.equal(after.httpStarts,2);assert.equal(after.httpResponses,2);assert.equal(after.rateLimitedResponses,1);assert.equal(after.lastRestriction!.method,'getTransaction');assert.equal(after.byMethod.length,2);p.byMethod[0]!.httpStarts=999;assert.equal(f.client.usage().providerResponses.byMethod[0]!.httpStarts,1);
+ }finally{f.close();}
+});
+
+test('provider diagnostics retain history-domain503 attribution and effective delay without exposing raw headers',async()=>{
+ const f=fixture({historyRoute:'publicnode-history-only-v1',fetcher:(async()=>new Response('busy',{status:503,headers:{'retry-after':'20'}}))as typeof fetch});try{
+  await assert.rejects(f.client.call('getSignaturesForAddress',[HISTORY_POOL]),/HTTP_STATUS_503/);await turn();const p=f.client.usage().providerResponses;assert.equal(p.httpStarts,1);assert.equal(p.httpResponses,1);assert.equal(p.unavailableResponses,1);assert.equal(p.rateLimitedResponses,0);assert.equal(p.lastRestriction!.method,'getSignaturesForAddress');assert.equal(p.lastRestriction!.domain,'history');assert.equal(p.lastRestriction!.status,503);assert.equal(p.lastRestriction!.retryAfterMs,20000);assert.equal(p.lastRestriction!.cooldownUntil,225000);assert.equal(f.client.cooldownUntil(),0);assert.equal(p.methodSpecificProviderScopeKnown,false);assert.ok(!JSON.stringify(p).includes('retry-after'));
+ }finally{f.close();}
+});
+
+test('late provider headers remain method-attributed after timeout and persist the same actual restriction',async()=>{
+ let release!:(v:Response)=>void;const f=fixture({historyRoute:'publicnode-history-only-v1',fetcher:(async()=>new Promise<Response>(r=>{release=r;}))as typeof fetch});try{
+  await assert.rejects(f.client.call('getSignaturesForAddress',[HISTORY_POOL],undefined,{timeoutMs:5}),/PHYSICAL_TIMEOUT/);assert.equal(f.client.usage().inFlight,1);assert.equal(f.client.usage().providerResponses.httpResponses,0);release(new Response('late',{status:429,headers:{'retry-after':'10'}}));await turn();await turn();const p=f.client.usage().providerResponses;assert.equal(p.httpStarts,1);assert.equal(p.httpResponses,1);assert.equal(p.lastRestriction!.method,'getSignaturesForAddress');assert.equal(p.lastRestriction!.observedAfterLogicalCompletion,true);assert.equal(p.lastRestriction!.cooldownUntil,215000);assert.equal(f.client.cooldownUntil(),0);assert.equal(f.client.historyCooldownUntil(),215000);const saved=JSON.parse(readFileSync(join(f.directory,'run/status.json'),'utf8'));assert.deepEqual(saved.providerResponses,p);
+ }finally{f.close();}
+});

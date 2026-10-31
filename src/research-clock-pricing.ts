@@ -54,7 +54,11 @@ type ClockSummary=ReturnType<typeof decodeSupportedPoolAccounts>['summary']&Retu
 export type ResearchClockQuote=ReturnType<typeof positionSellFromState<ClockSummary>>;
 export type ResearchClockBuyQuote=ReturnType<typeof buyFromState<ClockSummary>>;
 export type ResearchClockBuyRequest={mint:PublicKey;buyLamports:bigint;minSlot?:number};
-export type ResearchClockObservationRequest={mint:PublicKey;minSlot?:number};
+/** Address-acquisition hints only. Every hinted account and the canonical pool
+ * are freshly read together, and the shared decoder must bind the actual vault
+ * addresses before any support is returned. These are never reserve evidence. */
+export type ResearchClockDependencyHints={baseVault:string;quoteVault:string};
+export type ResearchClockObservationRequest={mint:PublicKey;minSlot?:number;dependencyHints?:ResearchClockDependencyHints};
 export type ResearchClockObservationSupport={mint:string;pool:string;at:number;sourceSlot:number;evidence:string;summary:ClockSummary};
 export type ResearchClockObservationBatch={validations:Record<string,ResearchClockObservationSupport>;unavailable:Record<string,string>;context:ResearchClockQuoteBatch['context']};
 export type ResearchClockQuoteBatch={quotes:Record<string,ResearchClockQuote>;unavailable:Record<string,string>;context:{slot:number;requestedAt:string;receivedAt:string;marketClockUnixSeconds:number}|null};
@@ -73,13 +77,17 @@ function transientLinkReadRefusal(error:unknown):string|null{
 
 export class ResearchClockPositionPricer {
   private readonly cached=new Map<string,{first:Pool;slot:number}>();
+  // Optional address hints can go stale. Remember rejected fingerprints only
+  // for the real hot working set; a later ordinary refresh discovers links
+  // afresh instead of repeating the same bad hint or excluding the token.
+  private readonly rejectedDependencyHints=new Map<string,string>();
   // Bounded original bytes for unsigned construction only. No pricing path
   // consumes these as a fresh reserve/fee/Clock read.
   private readonly constructionBatches=new Map<string,PaperUnsignedMarketBatch>();
   constructionBatch(mint:string,slot:number|undefined,receivedAt:number):PaperUnsignedMarketBatch|null{const batch=this.constructionBatches.get(mint);return batch&&(slot===undefined||batch.slot===slot)&&Date.parse(batch.receivedAt)===receivedAt?structuredClone(batch):null;}
   private readonly holdingSlots=new Map<string,number>();private readonly observationSlots=new Map<string,number>();private readonly buySlots=new Map<string,number>();
   private heldActive=new Set<string>();private observationActive=new Set<string>();private buyActive=new Set<string>();private highestSlot=0;private busy=false;
-  private networkCalls=0;private linkHits=0;private invalidations=0;private retainedLinkReadFailures=0;
+  private networkCalls=0;private linkHits=0;private invalidations=0;private retainedLinkReadFailures=0;private dependencyHintPlans=0;private dependencyHintValidatedPools=0;private discoveryRequestsAvoidedByHints=0;private dependencyHintRejections=0;private dependencyHintFallbackReads=0;
   constructor(private readonly rpc:Rpc,private readonly rec:Rec){}
   invalidate(reason='explicit-research-invalidation'){
     this.cached.clear();this.constructionBatches.clear();this.invalidations++;
@@ -89,7 +97,7 @@ export class ResearchClockPositionPricer {
     this.cached.delete(mint);this.constructionBatches.delete(mint);this.invalidations++;
     this.rec.record('research-clock-cache-invalidation',{at:Date.now(),mint,reason});
   }
-  usage(){return {networkCalls:this.networkCalls,linkCacheHits:this.linkHits,invalidations:this.invalidations,retainedLinkReadFailures:this.retainedLinkReadFailures,highestVerifiedSlot:this.highestSlot,highestHoldingSlots:Object.fromEntries(this.holdingSlots),highestObservationSlots:Object.fromEntries(this.observationSlots),highestBuySlots:Object.fromEntries(this.buySlots),cachePoolCapacity:LINK_CACHE_CAPACITY,dependencyAccountCapacity:RESEARCH_CLOCK_RPC_ACCOUNT_CAPACITY,coherentPoolCapacity:RESEARCH_CLOCK_COHERENT_POOL_CAPACITY,capacityBasis:'Solana getMultipleAccounts100keys; four pool-specific and four common dependency accounts',cachedPoolSlot:this.cached.size===1?[...this.cached.values()][0]!.slot:null,cachedPoolSlots:Object.fromEntries([...this.cached].map(([mint,value])=>[mint,value.slot])),timeEvidence:'confirmed-bank-clock',liveValidation:'UNTESTED'};}
+  usage(){return {networkCalls:this.networkCalls,linkCacheHits:this.linkHits,dependencyHints:{plans:this.dependencyHintPlans,freshValidatedPools:this.dependencyHintValidatedPools,discoveryRequestsAvoided:this.discoveryRequestsAvoidedByHints,rejectedHints:this.dependencyHintRejections,ordinaryDiscoveryFallbackReads:this.dependencyHintFallbackReads,hotRejectedHints:this.rejectedDependencyHints.size,meaning:'Cold observation address hints only; each accepted pool/fee/mint/vault/Clock is freshly read and validated. Avoided requests count successful fully hinted cold cohorts, not tokens. Rejected hints receive only a later ordinarily admitted discovery read, never an inline retry.'},invalidations:this.invalidations,retainedLinkReadFailures:this.retainedLinkReadFailures,highestVerifiedSlot:this.highestSlot,highestHoldingSlots:Object.fromEntries(this.holdingSlots),highestObservationSlots:Object.fromEntries(this.observationSlots),highestBuySlots:Object.fromEntries(this.buySlots),cachePoolCapacity:LINK_CACHE_CAPACITY,dependencyAccountCapacity:RESEARCH_CLOCK_RPC_ACCOUNT_CAPACITY,coherentPoolCapacity:RESEARCH_CLOCK_COHERENT_POOL_CAPACITY,capacityBasis:'Solana getMultipleAccounts100keys; four pool-specific and four common dependency accounts',cachedPoolSlot:this.cached.size===1?[...this.cached.values()][0]!.slot:null,cachedPoolSlots:Object.fromEntries([...this.cached].map(([mint,value])=>[mint,value.slot])),timeEvidence:'confirmed-bank-clock',liveValidation:'UNTESTED'};}
   /** Compatibility API: one holding either yields one fresh quote or refuses. */
   async quote(request:PositionSellRequest,signal?:AbortSignal):Promise<ResearchClockQuote>{
     const name=request.mint.toBase58(),batch=await this.quoteMany([request],signal),quote=batch.quotes[name];
@@ -123,18 +131,19 @@ export class ResearchClockPositionPricer {
     return {quotes:result.quotes,unavailable:result.unavailable,context:result.context};
   }
   /** Current supported observation state needs no successful tiny hypothetical
-   * buy/sell. Initial missing links use one batched discovery; all pool/mint/
-   * vault/fee dependencies and Clock are then freshly read in one context. */
+   * buy/sell. Initial missing links use one batched discovery unless original
+   * creation vault addresses are supplied as non-authoritative hints. In both
+   * paths every pool/mint/vault/fee dependency and Clock is read afresh together. */
   async validateMany(requests:readonly ResearchClockObservationRequest[],signal?:AbortSignal,admission?:Admission):Promise<ResearchClockObservationBatch>{
     need(!this.busy,'RESEARCH_CLOCK_CONCURRENT_QUOTE');
     need(requests.length>0&&requests.length<=6,'OBSERVATION_BATCH_CAPACITY');
-    const selected=requests.map(r=>({mint:new PublicKey(r.mint),minSlot:r.minSlot??0}));
+    const selected=requests.map(r=>{const hint=r.dependencyHints;let dependencyHints:ResearchClockDependencyHints|undefined;if(hint){try{const baseVault=new PublicKey(hint.baseVault).toBase58(),quoteVault=new PublicKey(hint.quoteVault).toBase58();need(baseVault===hint.baseVault&&quoteVault===hint.quoteVault&&baseVault!==quoteVault,'RESEARCH_CLOCK_DEPENDENCY_HINTS');dependencyHints={baseVault,quoteVault};}catch{throw Error('RESEARCH_CLOCK_DEPENDENCY_HINTS');}}return {mint:new PublicKey(r.mint),minSlot:r.minSlot??0,...(dependencyHints?{dependencyHints}:{})};});
     const names=selected.map(r=>r.mint.toBase58());need(new Set(names).size===names.length,'DUPLICATE_OBSERVATION_MINT');
     for(const r of selected)need(Number.isSafeInteger(r.minSlot)&&r.minSlot>=0,'INVALID_MINIMUM_SLOT');
     const result=await this.readMany(selected,'observation',signal,admission);
     return {validations:result.validations,unavailable:result.unavailable,context:result.context};
   }
-  private async readMany(selected:readonly {mint:PublicKey;minSlot:number;units?:bigint;buyLamports?:bigint}[],purpose:'quote'|'observation'|'buy',signal?:AbortSignal,admission?:Admission){
+  private async readMany(selected:readonly {mint:PublicKey;minSlot:number;units?:bigint;buyLamports?:bigint;dependencyHints?:ResearchClockDependencyHints}[],purpose:'quote'|'observation'|'buy',signal?:AbortSignal,admission?:Admission){
     this.busy=true;let sourceReadAttempted=false;const names=selected.map(r=>r.mint.toBase58());
     const quotes:Record<string,ResearchClockQuote>={},buys:Record<string,ResearchClockBuyQuote>={},validations:Record<string,ResearchClockObservationSupport>={},unavailable:Record<string,string>={};
     try{
@@ -153,12 +162,17 @@ export class ResearchClockPositionPricer {
       this.heldActive=held;this.observationActive=observed;this.buyActive=buying;
       for(const mint of this.buySlots.keys())if(!buying.has(mint))this.buySlots.delete(mint);
       for(const mint of this.cached.keys())if(!active.has(mint))this.cached.delete(mint);
+      for(const mint of this.rejectedDependencyHints.keys())if(!active.has(mint))this.rejectedDependencyHints.delete(mint);
       for(const mint of this.constructionBatches.keys())if(!active.has(mint))this.constructionBatches.delete(mint);
       const slots=purpose==='quote'?this.holdingSlots:purpose==='buy'?this.buySlots:this.observationSlots;for(const mint of slots.keys())if(!names.includes(mint))slots.delete(mint);
       let floor=Math.max(this.highestSlot,...selected.map(r=>Math.max(r.minSlot,this.holdingSlots.get(r.mint.toBase58())??0,this.observationSlots.get(r.mint.toBase58())??0,this.buySlots.get(r.mint.toBase58())??0)));
-      const missing=selected.filter(r=>!this.cached.has(r.mint.toBase58()));
+      const fingerprint=(hint:ResearchClockDependencyHints)=>hint.baseVault+':'+hint.quoteVault;
+      const hinted=purpose==='observation'?selected.filter(r=>!this.cached.has(r.mint.toBase58())&&r.dependencyHints&&this.rejectedDependencyHints.get(r.mint.toBase58())!==fingerprint(r.dependencyHints)):[];
+      const missing=selected.filter(r=>!this.cached.has(r.mint.toBase58())&&!hinted.includes(r));
+      if(hinted.length){this.dependencyHintPlans++;this.rec.record('research-clock-dependency-hint-plan',{at:Date.now(),mints:hinted.map(r=>r.mint.toBase58()),separateDiscoveryReadPlanned:!!missing.length,pricingEvidence:false,freshUnionReadStillRequired:true});}
       const discovered=new Map<string,Pool>();
       if(missing.length){
+        if(missing.some(r=>r.dependencyHints&&this.rejectedDependencyHints.get(r.mint.toBase58())===fingerprint(r.dependencyHints))){this.dependencyHintFallbackReads++;this.rec.record('research-clock-dependency-hint-fallback',{at:Date.now(),mints:missing.filter(r=>r.dependencyHints&&this.rejectedDependencyHints.get(r.mint.toBase58())===fingerprint(r.dependencyHints)).map(r=>r.mint.toBase58()),ordinaryAdmissionRequired:true,inlineRetry:false,financialPermission:false});}
         const keys=missing.map(r=>canonicalPumpPoolPda(r.mint).toBase58());this.networkCalls++;sourceReadAttempted=true;
         const initial=await this.rpc.call<Batch>('getMultipleAccounts',[keys,{encoding:'base64',commitment:'confirmed',minContextSlot:floor}],signal,options);checkAdmission();
         checkedBatch(initial,missing.length,floor);floor=Math.max(floor,initial.context.slot);this.highestSlot=Math.max(this.highestSlot,initial.context.slot);
@@ -169,7 +183,7 @@ export class ResearchClockPositionPricer {
         }
       }
       const holdings=selected.flatMap(request=>{
-        const name=request.mint.toBase58(),cached=this.cached.get(name),first=cached?.first??discovered.get(name);
+        const name=request.mint.toBase58(),cached=this.cached.get(name),first=cached?.first??discovered.get(name)??(hinted.includes(request)&&request.dependencyHints?{poolBaseTokenAccount:new PublicKey(request.dependencyHints.baseVault),poolQuoteTokenAccount:new PublicKey(request.dependencyHints.quoteVault)}:undefined);
         if(!first)return [];
         if(cached)this.linkHits++;
         const key=canonicalPumpPoolPda(request.mint),addresses=[key,GLOBAL_CONFIG_PDA,PUMP_AMM_FEE_CONFIG_PDA,request.mint,NATIVE_MINT,first.poolBaseTokenAccount,first.poolQuoteTokenAccount].map(a=>a.toBase58());
@@ -192,19 +206,26 @@ export class ResearchClockPositionPricer {
       for(const h of holdings){
         signal?.throwIfAborted();let quote:ResearchClockQuote|undefined,buy:ResearchClockBuyQuote|undefined,support:ResearchClockObservationSupport|undefined;
         try{
+          // Check the freshly decoded pool's actual links before looking up
+          // hinted vault bytes: a stale hint can otherwise look like a missing
+          // vault and repeat forever. It only invalidates this optimization;
+          // the full decoder below still validates every accepted account.
+          const hintedPool=hinted.includes(h.request)?PUMP_AMM_SDK.decodePool(poolInfo(indexed.get(h.key.toBase58()))):undefined;
+          if(hintedPool)need(hintedPool.poolBaseTokenAccount.equals(h.first.poolBaseTokenAccount)&&hintedPool.poolQuoteTokenAccount.equals(h.first.poolQuoteTokenAccount),'POOL_LINKS_CHANGED');
           const state=decodeSupportedPoolAccounts(h.request.mint,h.key,h.first,h.addresses.map(a=>indexed.get(a)??null),batch.context,requestedAt,receivedAt);
           const summary:ClockSummary={...state.summary,...timing,validatedAt:new Date(Date.now()).toISOString(),researchOnly:true};
           if(purpose==='quote'){need(h.request.units!==undefined,'POSITION_SELL_SIZE_OUT_OF_RANGE');quote=positionSellFromState({...state,summary},h.request.units,{record(){}},signal);}else if(purpose==='buy'){need(h.request.buyLamports!==undefined,'INTEGRATION_SIZE_OUT_OF_RANGE');buy=buyFromState({...state,summary},h.request.buyLamports,{record(){}},signal);}else{const at=Date.now(),evidence='research-clock-observation-support:'+createHash('sha256').update(JSON.stringify({mint:h.name,summary,accounts:h.addresses.map(a=>indexed.get(a)),clock:indexed.get(SYSVAR_CLOCK_PUBKEY.toBase58())})).digest('hex');support={mint:h.name,pool:h.key.toBase58(),at,sourceSlot:batch.context.slot,evidence,summary};}
           // Only exact bytes validated by the shared decoder can seed future
           // address discovery. No cached reserve/fee/value becomes a fresh mark.
-          pendingCache.set(h.name,PUMP_AMM_SDK.decodePool(poolInfo(indexed.get(h.key.toBase58()))));
-        }catch(error){signal?.throwIfAborted();const reason=refusal(error);unavailable[h.name]=reason;this.invalidatePool(h.name,reason);continue;}
+          pendingCache.set(h.name,hintedPool??PUMP_AMM_SDK.decodePool(poolInfo(indexed.get(h.key.toBase58()))));
+        }catch(error){signal?.throwIfAborted();const reason=refusal(error);unavailable[h.name]=reason;if(reason==='POOL_LINKS_CHANGED'&&hinted.includes(h.request)&&h.request.dependencyHints){this.rejectedDependencyHints.set(h.name,fingerprint(h.request.dependencyHints));this.dependencyHintRejections++;this.rec.record('research-clock-dependency-hint-rejected',{at:Date.now(),mint:h.name,reason,nextOrdinaryRefreshUsesDiscovery:true,inlineRetry:false,financialPermission:false,marketAttractivenessUnknown:true});}this.invalidatePool(h.name,reason);continue;}
         fresh();if(quote){this.rec.record('research-clock-position-sell-quote',quote);fresh();quotes[h.name]=quote;}else if(buy){this.rec.record('research-clock-buy-quote',buy);fresh();buys[h.name]=buy;}else if(support){this.rec.record('research-clock-observation-support',support);fresh();validations[h.name]=support;}
       }
       // A slow recorder cannot make earlier per-pool results fresh. Nothing is
       // returned or cached if this common availability condition has expired.
       fresh();signal?.throwIfAborted();
-      for(const [mint,first] of pendingCache){this.cached.set(mint,{first,slot:batch.context.slot});const slots=purpose==='quote'?this.holdingSlots:purpose==='buy'?this.buySlots:this.observationSlots;slots.set(mint,Math.max(slots.get(mint)??0,batch.context.slot));}
+      if(hinted.length&&!missing.length&&pendingCache.size)this.discoveryRequestsAvoidedByHints++;
+      for(const [mint,first] of pendingCache){this.cached.set(mint,{first,slot:batch.context.slot});if(hinted.some(r=>r.mint.toBase58()===mint))this.dependencyHintValidatedPools++;const slots=purpose==='quote'?this.holdingSlots:purpose==='buy'?this.buySlots:this.observationSlots;slots.set(mint,Math.max(slots.get(mint)??0,batch.context.slot));}
       if(pendingCache.size)this.highestSlot=Math.max(this.highestSlot,batch.context.slot);
       for(const h of holdings)if(quotes[h.name]||buys[h.name])this.constructionBatches.set(h.name,{mint:h.name,slot:batch.context.slot,requestedAt,receivedAt,accounts:h.addresses.map(a=>structuredClone(indexed.get(a)??null))});
       return {quotes,buys,validations,unavailable,context:{slot:batch.context.slot,requestedAt,receivedAt,marketClockUnixSeconds:timing.marketClockUnixSeconds}};
