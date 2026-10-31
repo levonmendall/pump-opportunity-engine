@@ -29,6 +29,9 @@ test('exact reviewed candidate pause lineage is eligible only as an original aut
  history.decoded.push(pause(191908,1793484000000,'execution-recovery:'+account+':191907',temporary,'startup'));
  state.controls.changedAt=1793484000000;state.controls.reason=temporary;
  assert.equal(reviewedCandidateControlLineage(state,history),true,'a new authenticated startup is a temporary control, not a grant');
+ const restoreAt=1793484000005;history.decoded.push(pause(191909,restoreAt,'trader:restore-hard-pause:191908:'+restoreAt,reason,'restored'));
+ state.controls.changedAt=restoreAt;state.controls.reason=reason;
+ assert.equal(reviewedCandidateControlLineage(state,history),true,'another exact inherited startup/restore pair is not a new hard intent');
 });
 test('a changed account, sequence, financial obligation or later hard intent cannot inherit the exception',()=>{
  const badCases:[string,(s:LedgerState,h:any)=>void][]=[
