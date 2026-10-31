@@ -2,6 +2,8 @@
  * retained supported account bytes and real SDK pricing adapters, never a live
  * opportunity, provider, account file, funded signer or profitability claim. */
 import {test,type TestContext} from 'node:test';
+import {createHash} from 'node:crypto';
+import type {NativeAuditCertificate} from '../src/native-candidate-runner.js';
 import assert from 'node:assert/strict';
 import {mkdtempSync,mkdirSync,readFileSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
@@ -19,7 +21,7 @@ import {NativePaper,nativePaperDerivedEntryBlocker} from '../src/native-paper.js
 import {FlowWindow,type NormalizedTrade} from '../src/strategy.js';
 import {nativePaperFeaturesSha256} from '../src/native-paper-contract.js';
 import {decodeMigrationIdentity} from '../src/migration-identity.js';
-import {parseNativePaperArgs,nativePaperConfigurationSha256,resolveNativePaperStrategy} from '../src/run-native-paper.js';
+import {parseNativePaperArgs,nativePaperConfigurationSha256,resolveNativePaperStrategy,nativePaperCurrentQualificationProof} from '../src/run-native-paper.js';
 import {NATIVE_PAPER_DATA_CONTRACT_VERSION} from '../src/native-paper-contract.js';
 import type {PoolWireAccount} from '../src/pool.js';
 
@@ -37,21 +39,21 @@ async function fixture(t:TestContext,v3=true,v31=false){
   origin=rows.find(row=>row.kind==='migration-transaction').data;
  const decoded=decodeMigrationIdentity(origin,{signature:origin.transaction.signatures[0],commitment:'finalized',availableAt:at});assert.equal(decoded.ok,true);if(!decoded.ok)throw Error('retained fixture origin');
  const identity=decoded.identity,mint=proof.quote.mint as string,accounts=new Map<string,PoolWireAccount>(state.addresses.map((address:string,i:number)=>[address,structuredClone(state.value[i])])),calls:string[]=[],records:Array<{kind:string;data:any}>=[];
- let slot=state.context.slot+100,quoteMissing=false,audit=true,bridge!:NativePaper,market!:PilotMarket,recordHook:((kind:string)=>void)|undefined;
+ let frozenCertificate:NativeAuditCertificate|undefined;let slot=state.context.slot+100,quoteMissing=false,audit=true,bridge!:NativePaper,market!:PilotMarket,recordHook:((kind:string)=>void)|undefined;
  const reserve=(amount:bigint)=>{const address=state.addresses[6],wire=structuredClone(accounts.get(address)!),bytes=Buffer.from(wire.data[0],'base64');bytes.writeBigUInt64LE(amount,64);wire.lamports=Number(amount+bytes.readBigUInt64LE(113));wire.data[0]=bytes.toString('base64');accounts.set(address,wire);slot++;};reserve(20000000000n);
  const baseReserve=(amount:bigint)=>{const address=state.addresses[5],wire=structuredClone(accounts.get(address)!),bytes=Buffer.from(wire.data[0],'base64');bytes.writeBigUInt64LE(amount,64);wire.data[0]=bytes.toString('base64');accounts.set(address,wire);slot++;};
  const syntheticZeroVirtualAndFeeBuckets=()=>{const address=state.addresses[0],wire=structuredClone(accounts.get(address)!),bytes=Buffer.from(wire.data[0],'base64');assert.ok(bytes.length>=287);bytes.fill(0,245,261);bytes.fill(0,271,287);wire.data[0]=bytes.toString('base64');accounts.set(address,wire);slot++;};
  const window=new FlowWindow(mint,openedAt);
  const rpc={async call<T>(method:string,params:unknown[]=[]):Promise<T>{calls.push(method);assert.ok(['getMultipleAccounts','getMinimumBalanceForRentExemption','getBlockTime'].includes(method),'read-only fixture request only');if(quoteMissing&&method==='getMultipleAccounts')throw Error('OFFLINE unavailable pool quote');if(method==='getMinimumBalanceForRentExemption')return (1000000+Number(params[0]))as T;if(method==='getBlockTime')return Math.floor(at/1000)as T;const clock=Buffer.alloc(40);clock.writeBigUInt64LE(BigInt(slot));clock.writeBigInt64LE(BigInt(Math.floor(at/1000)),32);return {context:{slot},value:(params[0]as string[]).map(address=>address===SYSVAR_CLOCK_PUBKEY.toBase58()?{owner:'Sysvar1111111111111111111111111111111111111',lamports:1169280,executable:false,rentEpoch:0,data:[clock.toString('base64'),'base64']}:structuredClone(accounts.get(address)??null))}as T;}};
  const source={snapshot(name:string,when=at){return name!==mint?null:{scope:{mint,pool:identity.pool},dataContract:'confirmed-program-activity-v3-shadow',openedAt,connectionId:1,subscription:5,connected:true,sourceSupportFresh:true,hasQualityLoss:false,features:window.features(when)};},usage(){return {dataContract:'confirmed-program-activity-v3-shadow',connected:true,stopped:false,fatal:null,lastFreshSupportAt:at,lastBankClockAt:at-1000};}};
- const certificate=(name:string,when=at)=>{if(!audit||name!==mint)return null;const f=window.features(when);return {schemaVersion:1 as const,mint,pool:identity.pool,dataContract:'confirmed-program-activity-v3-shadow' as const,openedAt,connectionId:1,subscriptionId:5,windowStartAt:f.windowStartAt,windowEndAt:f.windowEndAt,auditAvailableAt:when,admittedAt:when,deadlineAt:f.windowEndAt+9999,notificationCompletenessVerified:true,executedFlowCompletenessVerified:true,featuresSha256:nativePaperFeaturesSha256(f)};};
+ const certificate=(name:string,when=at)=>{if(!audit||name!==mint)return null;if(frozenCertificate)return structuredClone(frozenCertificate);const f=window.features(when);return {schemaVersion:1 as const,mint,pool:identity.pool,dataContract:'confirmed-program-activity-v3-shadow' as const,openedAt,connectionId:1,subscriptionId:5,windowStartAt:f.windowStartAt,windowEndAt:f.windowEndAt,auditAvailableAt:when,admittedAt:when,deadlineAt:f.windowEndAt+9999,notificationCompletenessVerified:true,executedFlowCompletenessVerified:true,featuresSha256:nativePaperFeaturesSha256(f)};};
  const compose=(restoredPools?:ReturnType<NativePaper['poolsForRecovery']>)=>{
   market=new PilotMarket({rpc,inventory:()=>ledger.state(),price,now:()=>at,executionRealism:true,recorder:{record:(kind,data)=>{records.push({kind,data:structuredClone(data)});recordHook?.(kind);}},gas:{baseFeeLamports:'5000',priorityFeeLamports:'2000',evidence:'OFFLINE explicit realistic modeled fees'}});
   bridge=new NativePaper({ledger,market,binding:v31?LIQUIDITY_RESILIENT_V3_1_PILOT_BINDING:LIQUIDITY_RESILIENT_PILOT_BINDING,executionRealism:true,operatingFinancialReadiness:true,source:source as any,certificate,now:()=>at,record:(kind,data)=>{records.push({kind,data:structuredClone(data)});recordHook?.(kind);},admitNewRisk:()=>true,admitFinancialReadiness:()=>true,onTechnicalReevaluation:request=>records.push({kind:'OFFLINE technical-reevaluation-request',data:structuredClone(request)}),onEconomicRejection:request=>records.push({kind:'OFFLINE economic-rejection-complete',data:structuredClone(request)}),restoredPools});
  };
  compose();bridge.allocated(identity);bridge.opened({mint,at});
  t.after(()=>{if(!closed)ledger.close();Date.now=oldNow;rmSync(directory,{recursive:true,force:true});});
- return {mint,calls,records,price,reserve,baseReserve,syntheticZeroVirtualAndFeeBuckets,window,source,onRecord:(hook:(kind:string)=>void)=>{recordHook=hook;},get at(){return at;},set at(value:number){at=value;slot++;},get ledger(){return ledger;},get bridge(){return bridge;},get market(){return market;},set audit(value:boolean){audit=value;},set quoteMissing(value:boolean){quoteMissing=value;},
+ return {mint,calls,records,price,reserve,baseReserve,syntheticZeroVirtualAndFeeBuckets,window,source,freezeAuditCertificate(){const current=certificate(mint,at);assert.ok(current);frozenCertificate=current;},onRecord:(hook:(kind:string)=>void)=>{recordHook=hook;},get at(){return at;},set at(value:number){at=value;slot++;},get ledger(){return ledger;},get bridge(){return bridge;},get market(){return market;},set audit(value:boolean){audit=value;},set quoteMissing(value:boolean){quoteMissing=value;},
   warm(options?:{buyLamports?:string;inventory?:string;base?:string;raw?:string}){for(let n=0;n<6;n++){at=openedAt+n*10000+100;slot++;const trade:NormalizedTrade={mint,wallet:'OFFLINE independent actor-'+n,side:'buy',quoteLamports:options?.buyLamports??'500000000',tokenUnits:String(1000000-n*20000),receivedAt:at,commitment:'confirmed',slot,identity:{signature:'OFFLINE native trade-'+n,instructionIndex:0,eventIndex:0}};window.ingest(trade);bridge.trade({trade,evidence:{trader:trade.wallet,...(options?.inventory?{userBaseTokenAccount:'OFFLINE observed token account-'+n}:{}),eventBytesSha256:String(n).repeat(64),userBaseTokenReserveUnits:n===0?options?.inventory??'0':'0',reserveObservation:{baseReserveUnits:options?.base??'1000000000000',rawQuoteReserveLamports:options?.raw??'20000000000',virtualQuoteReserveLamports:'0'}}as any,validatedAt:at,dataContract:'confirmed-program-activity-v3-shadow',transferCrossCheck:'UNAVAILABLE'});}at=openedAt+60000;slot++;},
   restart(){const pools=bridge.poolsForRecovery();ledger.close();ledger=new PaperLedger(path,POE_OPERATING_ACCOUNT.accountId);compose(pools);},close(){ledger.close();closed=true;}};
 }
@@ -152,6 +154,21 @@ test('V3.1 completed actual-size economic rejection yields an explicit schedulin
  await f.bridge.candidate(f.mint,true);
  const decision=f.bridge.trader.decisions().at(-1)!,dispositions=f.records.filter(row=>row.kind==='OFFLINE economic-rejection-complete');
  assert.equal(decision.stage,'strategy-rejection');assert.equal(decision.reason,'v3.1-nonpositive-joint-conditional-economic-balance');assert.ok(decision.quote?.liquidityResilience,'a current real-SDK exact-size quote supports the economic decision');
- assert.equal(dispositions.length,1);assert.deepEqual(dispositions[0]!.data,{kind:'completed-economic-rejection',mint:f.mint,pool:decision.quote!.liquidityResilience!.pool,strategyVersion:LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION,windowEndAt:decision.features!.windowEndAt,openedAt:f.at-60000,decisionAt:decision.at,quoteAt:decision.quote!.at,quoteEvidence:decision.quote!.evidence,reason:decision.reason,at:f.at});
+ assert.equal(dispositions.length,1);assert.deepEqual(dispositions[0]!.data,{kind:'completed-economic-rejection',mint:f.mint,pool:decision.quote!.liquidityResilience!.pool,strategyVersion:LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION,windowEndAt:decision.features!.windowEndAt,openedAt:f.at-60000,decisionAt:decision.at,quoteAt:decision.quote!.at,quoteEvidence:decision.quote!.evidence,reobservationCostLamports:'14000',reason:decision.reason,at:f.at});
  assert.deepEqual(f.ledger.state().pending,{});assert.deepEqual(f.ledger.state().positions,{});assert.equal(f.ledger.state().lamports,'10000000000');assert.equal(f.ledger.state().controls.entriesEnabled,true);assert.deepEqual(f.ledger.state().paperEpoch,epoch);
+});
+
+
+test('V3.1 runtime handoff samples a fresh proof time after certificate observation and preserves deadline refusal',async t=>{
+ const f=await fixture(t,true,true);f.warm();const candidateAt=f.at,before=f.ledger.state(),calls=f.calls.length;
+ assert.equal(f.bridge.candidateDue(f.mint,candidateAt),true);f.at+=89;
+ // The installed runtime samples current certificates at this later handoff
+ // time. Its source feature read advances the same receive-time window.
+ f.source.snapshot(f.mint,f.at);
+ assert.throws(()=>f.bridge.qualificationProof(f.mint,candidateAt),(error:unknown)=>{
+  assert.ok(error instanceof Error);assert.equal(error.message,'information cannot be observed before it became available');
+  assert.equal(createHash('sha256').update('runtime failure; financial exposure retained: '+error.message.slice(0,160)).digest('hex'),'26b4961fb8013289f73801a1982ce0f4177e0dda738739ae8f0ab69eeb45346b');return true;
+ });
+ const proof=nativePaperCurrentQualificationProof(f.bridge,f.mint);assert.ok(proof);assert.equal(proof.throughAt,f.at);assert.equal(f.calls.length,calls,'proof repair adds no provider work');assert.deepEqual(f.ledger.state(),before,'proof repair cannot change financial history, controls or epoch');
+ f.freezeAuditCertificate();f.at=proof.deadlineAt+1;assert.equal(nativePaperCurrentQualificationProof(f.bridge,f.mint),null,'fresh time cannot revive an expired original audit certificate');assert.deepEqual(f.ledger.state(),before);
 });

@@ -37,7 +37,7 @@ test('query isolation cannot preempt a timed-out physical request that has not a
 });
 
 for(const status of ['429','503']as const)test(`actual HTTP${status} remains global even when an independent audit opts into timeout isolation`,async()=>{
- const f=setup(status);try{await assert.rejects(call(f),new RegExp(status));await turn();assert.equal(f.rpc.usage().queryTimeoutIsolation.isolatedTimeouts,0);assert.ok(f.rpc.cooldownUntil()>f.now());await assert.rejects(call(f,pools[1]),/COOLDOWN/);assert.equal(f.calls,1);assert.equal(f.rpc.usage().newUnits,1);assert.equal(f.rpc.cooldownUntil(),f.now()+15000,'Retry-After is honored for actual503 as well as429');}
+ const f=setup(status);try{await assert.rejects(call(f),new RegExp(status));await turn();assert.equal(f.rpc.usage().queryTimeoutIsolation.isolatedTimeouts,0);assert.ok(f.rpc.cooldownUntil()>f.now());await assert.rejects(call(f,pools[1]),/COOLDOWN/);assert.equal(f.calls,1);assert.equal(f.rpc.usage().newUnits,1);assert.equal(f.rpc.cooldownUntil(),f.now()+10000,'Retry-After is honored for actual503 as well as429');}
  finally{f.close();}
 });
 
@@ -50,6 +50,6 @@ for(const status of [429,502,503,504])test(`actual${status} arriving during late
  const directory=mkdtempSync(join(tmpdir(),'poe-late-query429-')),old=join(directory,'prior.json');let at=200000,resolveFetch!:(r:Response)=>void,calls=0;
  writeFileSync(old,JSON.stringify({schemaVersion:1,blockedReason:'RPC_HTTP_429',calls:1,bytes:0,lastObservedAt:2000,starts:[1000],pending:[]}));
  const rpc=new PilotRpc({directory:join(directory,'run'),runId:'late429',baselinePaths:[old],priorPhysicalSettled:true,now:()=>at,monotonic:()=>at,sleep:async ms=>{at+=ms;},fetcher:(async()=>{calls++;return new Promise<Response>(resolve=>{resolveFetch=resolve;});})as typeof fetch});
- try{await assert.rejects(rpc.call('getSignaturesForAddress',[pools[0]],undefined,options),/PHYSICAL_TIMEOUT/);assert.equal(rpc.usage().inFlight,1);assert.equal(rpc.cooldownUntil(),0);resolveFetch(new Response('',{status,headers:{'retry-after':'10'}}));await turn();await turn();assert.equal(rpc.usage().inFlight,0);assert.equal(rpc.cooldownUntil(),215000);assert.equal(JSON.parse(readFileSync(join(directory,'run/status.json'),'utf8')).cooldownUntil,215000);await assert.rejects(rpc.call('getMultipleAccounts'),/COOLDOWN/);assert.equal(calls,1);assert.equal(rpc.usage().newUnits,1);assert.equal(rpc.usage().uncertainResponseBytes,2*MIB);}
+ try{await assert.rejects(rpc.call('getSignaturesForAddress',[pools[0]],undefined,options),/PHYSICAL_TIMEOUT/);assert.equal(rpc.usage().inFlight,1);assert.equal(rpc.cooldownUntil(),0);resolveFetch(new Response('',{status,headers:{'retry-after':'10'}}));await turn();await turn();assert.equal(rpc.usage().inFlight,0);assert.equal(rpc.cooldownUntil(),210000);assert.equal(JSON.parse(readFileSync(join(directory,'run/status.json'),'utf8')).cooldownUntil,210000);await assert.rejects(rpc.call('getMultipleAccounts'),/COOLDOWN/);assert.equal(calls,1);assert.equal(rpc.usage().newUnits,1);assert.equal(rpc.usage().uncertainResponseBytes,2*MIB);}
  finally{rpc.close();rmSync(directory,{recursive:true,force:true});}
 });

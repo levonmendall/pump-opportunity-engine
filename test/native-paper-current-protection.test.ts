@@ -7,7 +7,7 @@ import {runNativePaper,NATIVE_PAPER_PROCESSING_RESERVE} from '../src/run-native-
 import {PILOT_TIMING} from '../src/pilot.js';
 
 test('actual completion accounting separates observed current-run maxima from retained historical failures',()=>{
- const source=runNativePaper.toString(),begin=source.search(/const\s+record\s*=/),rest=source.slice(begin),end=rest.search(/;\s*const\s+sourceInformationAdmission\s*=/);
+ const source=runNativePaper.toString(),begin=source.search(/const\s+record\s*=/),rest=source.slice(begin),end=rest.search(/;\s*const\s+candidateDiagnostic\s*=/);
  assert.ok(begin>=0&&end>0,'extract the actual complete record/completion closure');
  let at=10000;const positions:any={held:{mint:'held',units:'100',enteredAt:1000}},pauses:string[]=[],holder:any={};
  const context:any={observeSlotOutcome:()=>{},__name:(f:unknown)=>f,holder,Buffer,Date:{now:()=>at},Math,Number,Map,Object,PILOT_TIMING,NATIVE_PAPER_PROCESSING_RESERVE,MIB:1024*1024,

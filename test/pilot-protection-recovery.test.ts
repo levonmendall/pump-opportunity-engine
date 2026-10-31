@@ -53,7 +53,7 @@ test('essential exact165byte exit rent preparation has protected admission witho
 });
 
 for(const status of [429,502,503,504])test(`actual HTTP${status} and Retry-After restrict owned reads, without any automatic extra request`,async()=>{
- const f=fixture();try{f.plan({status,retryAfter:'10'});await assert.rejects(f.rpc.callProtection('getMultipleAccounts'),new RegExp(String(status)));assert.equal(f.calls,1);assert.ok(f.rpc.protectionProviderRestrictionUntil()>=f.now()+15000);await assert.rejects(f.rpc.callProtection('getMultipleAccounts'),/COOLDOWN/);assert.equal(f.calls,1);}
+ const f=fixture();try{f.plan({status,retryAfter:'10'});await assert.rejects(f.rpc.callProtection('getMultipleAccounts'),new RegExp(String(status)));assert.equal(f.calls,1);assert.ok(f.rpc.protectionProviderRestrictionUntil()>=f.now()+10000);await assert.rejects(f.rpc.callProtection('getMultipleAccounts'),/COOLDOWN/);assert.equal(f.calls,1);}
  finally{await f.close();}
 });
 
@@ -61,7 +61,7 @@ for(const status of [200,429,503])test(`late HTTP${status} Retry-After after log
  const f=fixture({timeoutAdvance:0});try{
   f.plan('unsettled');await assert.rejects(f.rpc.call('getMultipleAccounts',[],undefined,{timeoutMs:5}),/PHYSICAL_TIMEOUT/);assert.equal(f.rpc.usage().inFlight,1);
   await assert.rejects(f.rpc.callProtection('getMultipleAccounts'),/PHYSICAL_SLOT_OCCUPIED/);assert.equal(f.calls,1);f.release(status,'10');await turn();await turn();assert.equal(f.rpc.usage().inFlight,0);
-  assert.ok(f.rpc.protectionProviderRestrictionUntil()>=f.now()+15000);await assert.rejects(f.rpc.callProtection('getMultipleAccounts'),/COOLDOWN/);assert.equal(f.calls,1);
+  assert.ok(f.rpc.protectionProviderRestrictionUntil()>=f.now()+10000);await assert.rejects(f.rpc.callProtection('getMultipleAccounts'),/COOLDOWN/);assert.equal(f.calls,1);
  }finally{await f.close();}
 });
 

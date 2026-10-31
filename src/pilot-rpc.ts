@@ -52,11 +52,11 @@ const safe=(e:unknown)=>e instanceof Error&&/^(COMPONENT_[A-Z0-9_:-]{1,100}|PAPE
 const localAdmissionRefusal=(code:string)=>['COMPONENT_DISPATCH_EXPIRED','COMPONENT_ADMISSION_CLOSED'].includes(code);
 const candidateBatchFault=(code:string)=>['COMPONENT_HISTORY_BATCH_RESPONSE_SIZE','COMPONENT_HISTORY_BATCH_ENVELOPE','COMPONENT_HISTORY_BATCH_MALFORMED_JSON'].includes(code);
 const recoverable=(code:string)=>['COMPONENT_HTTP_429','COMPONENT_RPC_OVERLOAD','COMPONENT_RPC_ERROR_-32016','COMPONENT_HISTORY_BATCH_RESPONSE_SIZE','COMPONENT_HISTORY_BATCH_ENVELOPE','COMPONENT_HISTORY_BATCH_MALFORMED_JSON','COMPONENT_PHYSICAL_TIMEOUT','COMPONENT_HTTP_TRANSPORT','COMPONENT_WS_TRANSPORT','COMPONENT_ABORTED','COMPONENT_HTTP_STATUS_502','COMPONENT_HTTP_STATUS_503','COMPONENT_HTTP_STATUS_504'].includes(code);
-function retryAfter(value:unknown,at:number){
+function retryAfter(value:unknown,at:number,validHeaderPaddingMs:0|5000=5000){
   if(typeof value!=='string'||value.length>128)return at+65000;
   const n=/^\d+(?:\.\d+)?$/.test(value.trim())?Number(value)*1000:NaN;
   const t=Number.isFinite(n)?at+Math.ceil(n):Date.parse(value);
-  return Number.isSafeInteger(t)&&t>=at?Math.min(Number.MAX_SAFE_INTEGER,t+5000):at+65000;
+  return Number.isSafeInteger(t)&&t>=at?Math.min(Number.MAX_SAFE_INTEGER,t+validHeaderPaddingMs):at+65000;
 }
 
 export class PilotRpc{
@@ -258,13 +258,17 @@ export class PilotRpc{
     // received. Preserve even a200 response's explicit hint on its failure path;
     // successful-response and actual429/503 handling otherwise stay unchanged.
     if(h.retryAfter!==null&&h.retryAfter!==undefined){
-      this.pendingRetryAfter=retryAfter(h.retryAfter,h.at);const until=this.pendingRetryAfter;
+      // HTTP Retry-After already supplies the provider's earliest retry time.
+      // Preserve that full global-domain floor without adding an unmeasured
+      // five seconds. Unknown/malformed headers retain the65-second fallback;
+      // the separately managed WS-control grace remains unchanged.
+      this.pendingRetryAfter=retryAfter(h.retryAfter,h.at,0);const until=this.pendingRetryAfter;
       if(history){this.historyCooldown=Math.max(this.historyCooldown,until);this.historyCooldownMono=Math.max(this.historyCooldownMono,this.mono()+Math.max(0,until-this.now()));}else{this.cooldown=Math.max(this.cooldown,until);this.cooldownMono=Math.max(this.cooldownMono,this.mono()+Math.max(0,until-this.now()));this.providerRestriction=Math.max(this.providerRestriction,until);this.providerRestrictionMono=Math.max(this.providerRestrictionMono,this.mono()+Math.max(0,until-this.now()));}
       this.emit('pilot-rpc-explicit-retry-after',{at:h.at,status:h.status,domain:history?'history':'rpc',method:providerMethod(h.method),retryAfterMs:observedRetryAfterMs(h.retryAfter,h.at),physicalRequestId:h.id!==undefined&&int(h.id)?h.id:null,cooldownUntil:until,protectedFinancialReadsRemainRestricted:true,observedAfterLogicalCompletion:!this.active});if(!this.active)persistObservedRestriction=true;
     }
     const throttle=h.status===429,unavailable=[502,503,504].includes(h.status);
     if(!throttle&&!unavailable){if(persistObservedRestriction)this.persist();return;}
-    if(throttle||h.retryAfter!==null&&h.retryAfter!==undefined)this.pendingRetryAfter=retryAfter(h.retryAfter,h.at);
+    if(throttle||h.retryAfter!==null&&h.retryAfter!==undefined)this.pendingRetryAfter=retryAfter(h.retryAfter,h.at,0);
     // Headers can arrive during late physical settlement after perform() has
     // already returned its logical timeout. The original gate is still owned.
     // Actual throttle/overload must take effect before that slot can be reused.
