@@ -297,9 +297,16 @@ export class MarketRegistry {
  /** Trusted expression bindings precede WHERE bindings in query.params. */
  valueSummary(query:{expression:string;where?:string;params?:RegistryParameter[]}):RegistryMetricSummary {
   const source=`SELECT (${query.expression}) value FROM watch_rows w WHERE w.archived=0${query.where?` AND (${query.where})`:''}`;
-  const params=query.params??[];const row=this.statement(`SELECT COUNT(*) count,COALESCE(SUM(value),0) sum,AVG(value) mean,MAX(value) max FROM (${source})`).get(...params) as Omit<RegistryMetricSummary,'p50'|'p95'>;
-  const quantile=(p:number)=>row.count?Number((this.statement(`SELECT value FROM (${source}) ORDER BY value LIMIT 1 OFFSET ?`).get(...params,Math.max(0,Math.ceil(row.count*p)-1)) as {value:number}).value):null;
-  return {...row,p50:quantile(.5),p95:quantile(.95)};
+  // Evaluate the same current population once. Exact nearest-rank quantiles
+  // share its single ordered window; NULL sorting/counting and Number(NULL)
+  // retain the established public summary semantics. No cross-report cache.
+  const row=this.statement(`WITH sample AS MATERIALIZED (${source}),ranked AS (
+   SELECT value,ROW_NUMBER() OVER(ORDER BY value) position,COUNT(*) OVER() count,
+    SUM(value) OVER() total,AVG(value) OVER() mean,MAX(value) OVER() maximum FROM sample
+  ) SELECT COUNT(*) count,COALESCE(MAX(total),0) sum,MAX(mean) mean,MAX(maximum) max,
+   MAX(CASE WHEN position=(count+1)/2 THEN value END) p50,
+   MAX(CASE WHEN position=(count*95+99)/100 THEN value END) p95 FROM ranked`).get(...(query.params??[])) as RegistryMetricSummary;
+  return {...row,p50:row.count?Number(row.p50):null,p95:row.count?Number(row.p95):null};
  }
  nextWatchActivities(limit=16):{mint:string;at:number;evidence:'unverified-provider-activity-hint'}[]{
   need(integer(limit)&&limit>0,'MARKET_REGISTRY_ACTIVITY_BATCH');return (this.statement(`SELECT DISTINCT w.mint mint,t.last_activity_at at FROM watch_rows w JOIN market_tokens t ON t.mint=w.mint WHERE w.archived=0 AND w.state NOT IN ('HELD','ENTRY_PENDING','PERMANENTLY_UNSUPPORTED') AND t.last_activity_at>COALESCE(w.last_activity_at,-1) ORDER BY COALESCE(w.last_activity_at,0),w.signature LIMIT ?`).all(limit) as {mint:string;at:number}[]).map(r=>({...r,evidence:'unverified-provider-activity-hint' as const}));
