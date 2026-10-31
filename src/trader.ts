@@ -1,3 +1,4 @@
+import {createHash} from 'node:crypto';
 import {tradeDecisionContext,tradeEntryBasis} from './trade-outcome-reporting.js';
 import type {PaperExecutionLanding} from './execution-realism.js';
 import {assertPoeOperatingAccount} from './poe-operating-account.js';
@@ -56,6 +57,15 @@ export type TraderOptions={
   timeoutMs?:number;
 };
 export type TraderTickOptions={evaluateCandidates?:boolean;candidateMint?:string;reuseFreshContext?:boolean;maximumDueActions?:1|2|3};
+export type FinancialMaintenanceFailurePhase='unspecified'|'financial-context'|'financial-resume'|'operating-financial-permission'|'flat-reconcile-context'|'legacy-financial-permission'|'cash-maintenance-callback'|'audit-readiness-callback'|'runtime-failure';
+export type FinancialMaintenanceFailureDiagnostic={version:'financial-maintenance-failure-v1';at:number;phase:FinancialMaintenanceFailurePhase;attemptedStateRevision:number|null;errorSha256:string|null;sqliteCode:string|null;commitOutcome:'unknown';entriesRemainClosed:true};
+/** Retain the first failure without copying provider URLs, exception text or
+ * stacks into diagnostics. The fingerprint is evidence, never recovery proof. */
+function maintenanceFailureDiagnostic(at:number,phase:FinancialMaintenanceFailurePhase,error:unknown,attemptedStateRevision?:number):FinancialMaintenanceFailureDiagnostic{
+  let errorSha256:string|null=null,sqliteCode:string|null=null;
+  try{if(error!==undefined){const message=error instanceof Error?error.message:typeof error==='string'?error:typeof error;errorSha256=createHash('sha256').update(String(message).slice(0,4096)).digest('hex');const code=error&&typeof error==='object'?(error as {code?:unknown}).code:null;if(typeof code==='string'&&['SQLITE_BUSY','SQLITE_LOCKED','SQLITE_IOERR','SQLITE_FULL','SQLITE_CORRUPT','SQLITE_NOTADB','SQLITE_READONLY','SQLITE_CONSTRAINT'].includes(code))sqliteCode=code;}}catch{/* Even a malformed exception cannot prevent the financial latch. */}
+  return {version:'financial-maintenance-failure-v1',at,phase,attemptedStateRevision:Number.isSafeInteger(attemptedStateRevision)&&attemptedStateRevision!>=0?attemptedStateRevision!:null,errorSha256,sqliteCode,commitOutcome:'unknown',entriesRemainClosed:true};
+}
 export type AdaptiveHoldingDiagnosticsRow={state:'measured'|'fallback'|'unavailable';reason:string;quoteAt:number|null;evaluatedAt:number|null;measuredVolatilityBps:number|null;effectiveTrailingDistanceBps:number|null;priorQuoteCount:number|null;modeledTrailingBoundaryLamports:string|null;meaning:'MODELED_TRIGGER_NOT_GUARANTEED_FILL'};
 type Candidate=CandidateEvidence&{admittedAt:number;window:FlowWindow;active:boolean;everActivated:boolean;interrupted:boolean;evaluatedBucket:number;evidenceDeferredBucket:number;predictiveAssessedBucket:number;knownSlot:number|null;informationPending:boolean};
 type Decision={mint:string;at:number;stage:string;reason:string;ruleVersion:string;holdingPolicyVersion?:string;scoreBps?:number|null;adaptiveComponents?:unknown;strategyAssessments?:unknown;limitations?:readonly string[];features?:RuleDecision['features'];quote?:SizeQuote|null;permissionContext?:{mode:'candidate-evaluation';primaryKind:string;primaryReason:string;performanceFailure:false}};
@@ -90,6 +100,7 @@ export class PaperTrader{
   private outstanding:Promise<unknown>|undefined;
   private evidenceUnavailable=false;
   private financialUnavailable=false;
+  private firstMaintenanceFailure:FinancialMaintenanceFailureDiagnostic|null=null;
   private nonRecoverablePauseObserved=false;
   private newHardPauseObserved=false;
   private readonly technicalProtectionRecovery=new TechnicalProtectionRecoveryTracker();
@@ -146,7 +157,14 @@ export class PaperTrader{
    * tick does not imply that a timed-out physical adapter has settled. */
   entryReadinessSafety(){const execution=this.execution.readinessSafety();return {recoveryComplete:this.started&&execution.recoveryComplete,idle:!this.active&&!this.outstanding&&execution.idle,evidenceAvailable:!this.evidenceUnavailable,financialAvailable:!this.financialUnavailable,uncertainActions:Math.max(this.uncertainOrders.size,execution.uncertainActions),automaticRecoveryAllowed:!this.nonRecoverablePauseObserved,newHardPauseObserved:this.newHardPauseObserved};}
   refreshFlatContext(price:ExecutionContext['price']){const state=this.options.ledger.state();if(!this.entryReadinessSafety().idle||Object.keys(state.positions).length||Object.keys(state.pending).length)throw Error('cash context requires idle flat accounting');this.context={price:price?{...price}:null,marks:{}};this.contextInventory={};}
-  financialMaintenanceFailed(){this.financialUnavailable=true;this.pause('financial maintenance unavailable; preserve records and close entries');}
+  financialMaintenanceFailed(phase:FinancialMaintenanceFailurePhase='unspecified',error?:unknown,attemptedStateRevision?:number){
+    this.financialUnavailable=true;
+    const first=this.firstMaintenanceFailure===null;
+    if(first)this.firstMaintenanceFailure=maintenanceFailureDiagnostic(this.clock(),phase,error,attemptedStateRevision);
+    try{this.pause('financial maintenance unavailable; preserve records and close entries');}
+    finally{if(first)try{this.options.recorder.record('trader-financial-maintenance-failed',this.firstMaintenanceFailure);}catch{this.evidenceUnavailable=true;}}
+  }
+  financialMaintenanceFailureDiagnostics(){return this.firstMaintenanceFailure?{...this.firstMaintenanceFailure}:null;}
   recordFinancialReadiness(data:unknown){
     this.record('native-paper-financial-readiness-recovered',data);if(this.evidenceUnavailable)return false;
     if(data&&typeof data==='object'&&Object.hasOwn(data,'technicalProtectionRecovery')){

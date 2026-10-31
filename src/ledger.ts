@@ -99,8 +99,9 @@ export type InternalShutdownRecoveryProof={verified:true;accountId:string;incept
 export type DailyLossResetReceipt={accountId:string;inceptionAt:number;at:number;reason:string;revisionBefore:number;revisionAfter:number;previousDaily:LedgerState['daily'];nextDaily:LedgerState['daily'];controlsPreserved:true;entryPermissionGranted:false;orderCreated:false}&({reset:true;alreadyClear:false;currentEquityMicroUsd:string;price:UsdPrice}|{reset:false;alreadyClear:true;currentEquityMicroUsd:null;price:null});
 /** Provenance only. Neither this bounded read nor its digest grants permission
  * to enter, changes a stop, or substitutes for fresh financial/market evidence. */
-// v2 preserves accepted denied requests without claiming they granted control.
-const INTERNAL_SHUTDOWN_PROOF_POLICY=Object.freeze({version:'internal-native-shutdown-chain-v2',maximumRuns:128,maximumStops:128,maximumControlIntents:512,maximumControlBytes:1024*1024});
+// v3 also recognizes the authenticated explicit owner acknowledgement as a
+// closed boundary; its identity never becomes a successful readiness grant.
+const INTERNAL_SHUTDOWN_PROOF_POLICY=Object.freeze({version:'internal-native-shutdown-chain-v3',maximumRuns:128,maximumStops:128,maximumControlIntents:512,maximumControlBytes:1024*1024});
 /** Runtime resource admission is a transient operational condition, not owner
  * intent or financial uncertainty. Recovery still authenticates every control
  * row and requires fresh inventory, source, pricing and current admission. */
@@ -288,6 +289,160 @@ export function readV31DiagnosticControlRepair(db:Database.Database,state:Readon
  return r;
 }
 
+/** One explicit owner acknowledgement of the inspected historical incident.
+ * The reviewed runtime source is not a claim about the unknown original cause. */
+export const REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT=Object.freeze({
+ actionId:'owner-acknowledgement:maintenance:122331:140833',kind:'owner-reviewed-maintenance-acknowledgement',
+ authorization:'OWNER_ACKNOWLEDGE_REVIEWED_PAPER_MAINTENANCE_HISTORY_20261031',
+ accountId:'poe-3123e352-4581-455b-85db-acd7e825e99e',inceptionAt:1793052456212,epochId:'poe-paper-10sol-v3-20261030',
+ reviewedSourceCommit:'0d9c42d2a607e0c29220bc2370470926d1575334',firstMaintenancePauseRevision:122331,reviewedCutoffRevision:140833,
+ reviewedDeniedResumes:3674,reviewedPauseIntents:37,reviewedStopIntents:0,reviewedMaintenancePauses:16,
+ maintenanceReason:'financial maintenance unavailable; preserve records and close entries',
+ newReason:'execution startup: fresh reconciliation/readiness required',
+ cashLamports:'9915222622',realizedLamports:'-1815027578',executionCosts:'273000',lockedDepositCount:2,lockedDepositLamports:'3027680',
+} as const);
+type OperatingControlRow={revision:number;actionId:string;at:number;kind:string;detail:string;payloadHash:string;result:string};
+type OperatingControlAnchor={revision:number;actionId:string;at:number;kind:string;payloadHash:string;resultSha256:string};
+type ReviewedControlCounts={deniedResumes:number;pauseIntents:number;stopIntents:number};
+type OperatingControlHistory={anchor:OperatingControlRow|undefined;decoded:Array<{row:OperatingControlRow;payload:Record<string,any>;result:Record<string,any>;ordinary:boolean;restored:boolean;startup:boolean}>;controlPrefixSha256:string;reviewedPrefixSha256:string;reviewedCounts:ReviewedControlCounts};
+export type ReviewedMaintenanceAcknowledgementInput={expectedRevision:number;at:number;expectedSourceCommit:string;authorization:string};
+export type ReviewedMaintenanceAcknowledgementPlan={
+ accountId:string;inceptionAt:number;epochId:string;expectedSourceCommit:string;reviewedSourceCommit:string;
+ priorRevision:number;priorStateSha256:string;controlPrefixSha256:string;reviewedPrefixSha256:string;
+ anchor:OperatingControlAnchor;reviewedCutoffRevision:number;firstMaintenancePauseRevision:number;
+ reviewedCounts:ReviewedControlCounts&{maintenancePauses:number};lockedDeposits:{count:number;totalLamports:string;sha256:string};
+};
+export type ReviewedMaintenanceAcknowledgementReceipt={
+ kind:'POE_REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT';actionId:string;revisionBefore:number;revisionAfter:number;acknowledgedAt:number;
+ plan:ReviewedMaintenanceAcknowledgementPlan;historicalCauseKnown:false;historicalFailureDeclaredHarmless:false;
+ entryPermissionGranted:false;financialControlWrites:1;capitalWrites:0;balanceAndEpochPreserved:true;lockedDepositsPreserved:true;
+};
+const controlAnchor=(row:OperatingControlRow):OperatingControlAnchor=>({revision:row.revision,actionId:row.actionId,at:row.at,kind:row.kind,payloadHash:row.payloadHash,resultSha256:digest(JSON.parse(row.result))});
+
+function validateLedgerEpochAnchor(db:Database.Database,s:State):void{
+    const epoch=s.paperEpoch;if(!epoch)return;validatePaperEpoch(epoch,s);
+    const id='epoch:'+epoch.id,row=db.prepare('SELECT a.payload_hash payloadHash,a.result,j.revision,j.at,j.kind,j.detail FROM actions a JOIN journal j ON j.action_id=a.id WHERE a.id=?').get(id) as {payloadHash:string;result:string;revision:number;at:number;kind:string;detail:string}|undefined;
+    if(!row||row.kind!=='paper-epoch-transition'||row.at!==epoch.startedAt||row.revision!==epoch.transitionRevision||Buffer.byteLength(row.detail)>65536||Buffer.byteLength(row.result)>65536)throw Error('PAPER_EPOCH_HISTORY_UNAVAILABLE');
+    const payload=JSON.parse(row.detail),result=JSON.parse(row.result),v3=epoch.id===PAPER_V3_TEN_SOL_EPOCH_ID;
+    if(row.payloadHash!==digest({kind:row.kind,payload})||payload.authorization!==(v3?PAPER_V3_TEN_SOL_EPOCH_AUTHORIZATION:PAPER_TEN_SOL_EPOCH_AUTHORIZATION)||!isDeepStrictEqual(result.epoch,epoch)||!isDeepStrictEqual(payload.epoch,epoch)||paperEpochStateSha256(payload.previousState)!==epoch.priorStateSha256||payload.backup?.backupSha256!==epoch.backupSha256||payload.backup.stateSha256!==epoch.priorStateSha256||payload.backup.revision!==epoch.transitionRevision-1||payload.backup.accountId!==s.accountId||payload.backup.inceptionAt!==s.inceptionAt||Object.keys(epoch.archivedAssets.lockedDeposits).length>0&&payload.assetDisposition!==PAPER_EPOCH_ASSET_SEGREGATION||(!v3&&payload.previousState?.paperEpoch!==undefined)||payload.previousState?.accountId!==s.accountId||payload.previousState?.inceptionAt!==s.inceptionAt||epoch.archivedAssets.cashLamports!==payload.previousState.lamports||!isDeepStrictEqual(epoch.archivedAssets.lockedDeposits,Object.fromEntries(Object.entries(payload.previousState.lockedDeposits).filter(([,v])=>BigInt(v as string)>0n))))throw Error('PAPER_EPOCH_HISTORY_UNAVAILABLE');
+    if(v3){if(!isDeepStrictEqual(epoch.priorEpoch,payload.previousState.paperEpoch)||!isDeepStrictEqual(payload.riskPolicy,PAPER_V3_EQUITY_RISK_POLICY)||result.equityRisk?.version!==PAPER_V3_EQUITY_RISK_VERSION||result.equityRisk?.activatedAt!==epoch.startedAt||result.equityRisk?.activationRevision!==epoch.transitionRevision)throw Error('PAPER_V3_EPOCH_HISTORY_UNAVAILABLE');validateLedgerEpochAnchor(db,payload.previousState);}
+  }
+
+function readOperatingControlHistory(db:Database.Database,state:State,at:number,mode:'current'|'owner-acknowledgement-prefix'='current',collectReview=false):OperatingControlHistory|null{
+    try{
+      type Row={revision:number;actionId:string;at:number;kind:string;detail:string;payloadHash:string;result:string};
+      const object=(v:unknown):v is Record<string,any>=>!!v&&typeof v==='object'&&!Array.isArray(v);
+      const select="SELECT j.revision,j.action_id actionId,j.at,j.kind,CASE WHEN length(CAST(j.detail AS BLOB))<=65536 THEN j.detail END detail,a.payload_hash payloadHash,CASE WHEN length(CAST(a.result AS BLOB))<=65536 THEN a.result END result FROM journal j LEFT JOIN actions a ON a.id=j.action_id";
+      const read=(row:Row)=>{if(!Number.isSafeInteger(row.revision)||row.revision<1||row.revision>state.revision||!Number.isSafeInteger(row.at)||row.at<state.inceptionAt||row.at>at||!boundedText(row.actionId,160)||typeof row.detail!=='string'||typeof row.result!=='string')throw Error('malformed');const payload=JSON.parse(row.detail),result=JSON.parse(row.result);if(!object(payload)||payload.now!==row.at||!object(result)||row.payloadHash!==digest({kind:row.kind,payload}))throw Error('malformed');return {payload,result};};
+      // A denied request can legitimately reference an outdated/future revision:
+      // resume() authenticates its input before refusing that state mismatch.
+      // Only an actual permission grant must bind the immediately prior state.
+      const validateResume=(row:Row,enabled:boolean)=>{const {payload,result}=read(row),kind=runtimeReadinessKind(payload.readiness,row.at,payload.marks,enabled?row.revision-1:undefined,state.accountId,payload.price,isV3PaperRiskState(state));if(row.kind!=='resume'||Object.keys(payload).sort().join(',')!=='marks,now,price,readiness'||!kind||Object.keys(result).sort().join(',')!=='enabled,reason'||result.enabled!==enabled||enabled&&result.reason!==(kind==='financial'?'explicit verified operating financial readiness':'explicit verified runtime readiness')||!enabled&&result.reason!=='fresh reconciliation or next UTC-day loss reset required'&&!(kind==='financial'&&result.reason==='fresh reconciled inventory and authorized temporary recovery required'))throw Error('malformed');priceAt(payload.price,row.at);return {payload,result};};
+      // Only validation of an already appended owner's historical receipt may
+      // bound the prefix. Normal runtime reads still detect future corrupt rows.
+      const prefix=mode==='owner-acknowledgement-prefix',prefixClause=prefix?' AND j.revision<=?':'',prefixParameters=prefix?[state.revision]:[];
+      let anchor=db.prepare(select+" WHERE j.kind='resume' AND CASE WHEN length(CAST(a.result AS BLOB))<=65536 AND json_valid(a.result) THEN json_type(a.result,'$.enabled')='true' ELSE 0 END"+prefixClause+' ORDER BY j.revision DESC LIMIT 1').get(...prefixParameters)as Row|undefined;
+      if(state.paperEpoch&&(!anchor||anchor.revision<state.paperEpoch.transitionRevision)){validateLedgerEpochAnchor(db,state);anchor=db.prepare(select+' WHERE j.action_id=?').get('epoch:'+state.paperEpoch.id) as Row;}
+      const diagnosticRepair=readV31DiagnosticControlRepair(db,state,at);
+      if(diagnosticRepair&&diagnosticRepair.actionRevision>(anchor?.revision??0))anchor=db.prepare(select+' WHERE j.action_id=?').get(V31_DIAGNOSTIC_CONTROL_REPAIR.actionId)as Row;
+      const ack=REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT,ackRow=prefix?undefined:db.prepare('SELECT revision FROM journal WHERE action_id=?').get(ack.actionId)as{revision:number}|undefined;
+      const superseded=anchor?.kind==='resume'&&ackRow&&Number.isSafeInteger(ackRow.revision)&&ackRow.revision>ack.reviewedCutoffRevision&&anchor.revision>ackRow.revision;
+      // Authenticate a later real grant before allowing it to supersede the
+      // owner's older boundary. A corrupt latest grant never falls back.
+      if(superseded)validateResume(anchor!,true);
+      const acknowledgement=prefix||superseded?null:readReviewedMaintenanceAcknowledgement(db,state,at);
+      if(acknowledgement&&acknowledgement.revisionAfter>(anchor?.revision??0))anchor=db.prepare(select+' WHERE j.action_id=?').get(ack.actionId)as Row;
+      if(anchor?.kind===ack.kind){if(!acknowledgement||anchor.revision!==acknowledgement.revisionAfter)throw Error('malformed owner maintenance acknowledgement');}
+      else if(anchor?.kind===V31_DIAGNOSTIC_CONTROL_REPAIR.kind){if(!diagnosticRepair||anchor.revision!==diagnosticRepair.actionRevision)throw Error('malformed diagnostic repair');}
+      else if(anchor?.kind==='paper-epoch-transition')validateLedgerEpochAnchor(db,state);else if(anchor)validateResume(anchor,true);else{const inception=db.prepare("SELECT action_id actionId,at,kind,CASE WHEN length(CAST(detail AS BLOB))<=65536 THEN detail END detail FROM journal WHERE revision=0").get()as{actionId:string;at:number;kind:string;detail:string}|undefined;if(!inception||inception.actionId!=='inception'||inception.at!==state.inceptionAt||inception.kind!=='inception'||typeof inception.detail!=='string'||!isDeepStrictEqual(JSON.parse(inception.detail),{price:state.inceptionPrice,gasReserve:state.gasReserve,mode:state.mode}))throw Error('malformed inception');}
+      const boundary=anchor?.revision??0;
+      // A denied resume never changes control intent. Validate its complete
+      // original receipt, then discard it from the bounded intent projection.
+      // Repeated failed readiness checks must not exhaust that projection and
+      // permanently prevent a later valid recovery. No history is rewritten.
+      const rows=db.prepare(select+" WHERE j.revision>? AND j.kind IN ('pause','safe-stop','resume')"+prefixClause+' ORDER BY j.revision').iterate(boundary,...prefixParameters)as IterableIterator<Row>;
+      let previousAt=anchor?.at??state.inceptionAt,previousRevision=boundary;
+      const reviewedCounts:ReviewedControlCounts={deniedResumes:0,pauseIntents:0,stopIntents:0},whole=collectReview?createHash('sha256'):null,reviewed=collectReview?createHash('sha256'):null;
+      if(whole&&reviewed){const initial=JSON.stringify({version:'authenticated-operating-control-prefix-v1',anchor:anchor?controlAnchor(anchor):null})+'\n';whole.update(initial);reviewed.update(initial);}
+      const retainDigest=(row:Row)=>{if(!whole||!reviewed)return;const record=JSON.stringify(controlAnchor(row))+'\n';whole.update(record);if(row.revision<=ack.reviewedCutoffRevision){reviewed.update(record);if(row.kind==='resume')reviewedCounts.deniedResumes++;else if(row.kind==='pause')reviewedCounts.pauseIntents++;else reviewedCounts.stopIntents++;}};
+      const decoded:Array<{row:Row;payload:Record<string,any>;result:Record<string,any>;ordinary:boolean;restored:boolean;startup:boolean}>=[];let intentBytes=0;
+      for(const row of rows){if(row.revision<=previousRevision||row.at<previousAt)throw Error('malformed order');previousRevision=row.revision;previousAt=row.at;
+        if(row.kind==='resume'){validateResume(row,false);retainDigest(row);continue;}
+        const {payload,result}=read(row);
+        if(row.kind==='pause'){if(Object.keys(payload).sort().join(',')!=='now,reason'||!boundedText(payload.reason)||Object.keys(result).sort().join(',')!=='paused,pendingBuyCancellations'||result.paused!==true||!Array.isArray(result.pendingBuyCancellations)||!isV3PaperRiskState(state)&&result.pendingBuyCancellations.length>3||!result.pendingBuyCancellations.every((id:unknown)=>boundedText(id,100)))throw Error('malformed pause');}
+        else if(row.kind!=='safe-stop')throw Error('unknown control');
+        const ordinary=/^trader:pause:(\d+):(\d+)$/.exec(row.actionId),restored=/^trader:restore-hard-pause:(\d+):(\d+)$/.exec(row.actionId),startup=row.actionId===`execution-recovery:${state.accountId}:${row.revision-1}`,stamp=ordinary??restored;
+        if(stamp&&(Number(stamp[1])!==row.revision-1||!Number.isSafeInteger(Number(stamp[2]))||Number(stamp[2])<state.inceptionAt||Number(stamp[2])>at))throw Error('malformed action identity');
+        intentBytes+=Buffer.byteLength(row.detail)+Buffer.byteLength(row.result);if(decoded.length>=512||intentBytes>1024*1024)return null;
+        retainDigest(row);
+        decoded.push({row,payload,result,ordinary:!!ordinary,restored:!!restored,startup});
+      }
+      return {anchor,decoded,controlPrefixSha256:whole?.digest('hex')??'',reviewedPrefixSha256:reviewed?.digest('hex')??'',reviewedCounts};
+    }catch{return null;}
+  }
+
+function validateReviewedMaintenanceRequest(input:ReviewedMaintenanceAcknowledgementInput){
+ const c=REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT;
+ if(input.authorization!==c.authorization||typeof input.expectedSourceCommit!=='string'||!/^[a-f0-9]{40}$/.test(input.expectedSourceCommit)||!Number.isSafeInteger(input.expectedRevision)||input.expectedRevision<c.reviewedCutoffRevision||!Number.isSafeInteger(input.at)||input.at<c.inceptionAt||input.at>Date.now()+5000)throw Error('OWNER_MAINTENANCE_EXACT_AUTHORIZATION_REQUIRED');
+}
+function verifyMaintenanceLedgerHead(db:Database.Database,state:State,historicalPrefix=false){
+ const row=db.prepare('SELECT j.revision,j.at,j.kind,CASE WHEN length(CAST(j.detail AS BLOB))<=65536 THEN j.detail END detail,a.payload_hash payloadHash,CASE WHEN length(CAST(a.result AS BLOB))<=65536 THEN a.result END result FROM journal j LEFT JOIN actions a ON a.id=j.action_id'+(historicalPrefix?' WHERE j.revision<=?':'')+' ORDER BY j.revision DESC LIMIT 1').get(...(historicalPrefix?[state.revision]:[]))as{revision:number;at:number;kind:string;detail:string;payloadHash:string;result:string}|undefined;
+ if(!row||row.revision!==state.revision||row.at!==state.lastAt||typeof row.detail!=='string'||typeof row.result!=='string')throw Error('OWNER_MAINTENANCE_LEDGER_HEAD_INVALID');
+ const payload=JSON.parse(row.detail),result=JSON.parse(row.result);
+ if(!payload||typeof payload!=='object'||Array.isArray(payload)||!result||typeof result!=='object'||Array.isArray(result)||row.payloadHash!==digest({kind:row.kind,payload}))throw Error('OWNER_MAINTENANCE_LEDGER_HEAD_INVALID');
+}
+function reviewedMaintenancePlan(db:Database.Database,state:State,input:ReviewedMaintenanceAcknowledgementInput,historicalPrefix=false):ReviewedMaintenanceAcknowledgementPlan{
+ validateReviewedMaintenanceRequest(input);const c=REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT;
+ validateFinancialState(state,c.accountId,'PAPER');validateLedgerEpochAnchor(db,state);verifyMaintenanceLedgerHead(db,state,historicalPrefix);
+ const deposits=Object.values(state.lockedDeposits),total=deposits.reduce((sum,value)=>sum+amount(value),0n).toString();
+ if(state.accountId!==c.accountId||state.inceptionAt!==c.inceptionAt||state.mode!=='PAPER'||state.initialMicroUsd!=='1000000000'||state.paperEpoch?.id!==c.epochId||state.paperEpoch.version!==PAPER_V3_EPOCH_VERSION||!isV3PaperRiskState(state)||state.revision!==input.expectedRevision||input.at<state.lastAt||state.controls.entriesEnabled||state.controls.stopRequested||!state.daily.paused||state.daily.lossPaused||Object.keys(state.positions).length||Object.keys(state.pending).length||state.lamports!==c.cashLamports||state.realizedLamports!==c.realizedLamports||state.executionCosts!==c.executionCosts||deposits.length!==c.lockedDepositCount||total!==c.lockedDepositLamports)throw Error('OWNER_MAINTENANCE_EXACT_FLAT_CLOSURE_REQUIRED');
+ const history=readOperatingControlHistory(db,state,input.at,historicalPrefix?'owner-acknowledgement-prefix':'current',true);
+ if(!history?.anchor||history.anchor.revision>=c.firstMaintenancePauseRevision)throw Error('OWNER_MAINTENANCE_CONTROL_HISTORY_UNAVAILABLE');
+ const counts=history.reviewedCounts;
+ if(counts.deniedResumes!==c.reviewedDeniedResumes||counts.pauseIntents!==c.reviewedPauseIntents||counts.stopIntents!==c.reviewedStopIntents)throw Error('OWNER_MAINTENANCE_REVIEWED_PREFIX_MISMATCH');
+ let firstMaintenance:number|null=null,maintenancePauses=0,observedMaintenance=false,observedReporting=false,last:{at:number;reason:string}|null=null;
+ for(const {row,payload,result,ordinary,restored,startup}of history.decoded){
+  if(row.kind!=='pause'||result.pendingBuyCancellations.length)throw Error('OWNER_MAINTENANCE_UNREVIEWED_CONTROL_INTENT');
+  const reason=payload.reason;
+  if(reason===c.maintenanceReason){
+   if(row.revision>c.reviewedCutoffRevision||!(ordinary||restored&&observedMaintenance))throw Error('OWNER_MAINTENANCE_UNREVIEWED_HARD_INTENT');
+   if(firstMaintenance===null){if(!ordinary)throw Error('OWNER_MAINTENANCE_ORIGIN_REQUIRED');firstMaintenance=row.revision;}
+   observedMaintenance=true;maintenancePauses++;
+  }else if(restored){if(reason!==OPERATIONAL_REPORTING_ENTRY_PAUSE||!observedReporting)throw Error('OWNER_MAINTENANCE_UNREVIEWED_RESTORED_INTENT');}
+  else if(!(ordinary&&INTERNAL_SHUTDOWN_SOFT_PAUSES.has(reason)||startup&&reason===c.newReason))throw Error('OWNER_MAINTENANCE_UNREVIEWED_CONTROL_INTENT');
+  if(ordinary&&reason===OPERATIONAL_REPORTING_ENTRY_PAUSE)observedReporting=true;
+  last={at:row.at,reason};
+ }
+ if(firstMaintenance!==c.firstMaintenancePauseRevision||maintenancePauses!==c.reviewedMaintenancePauses||!last||last.at!==state.controls.changedAt||last.reason!==state.controls.reason||!INTERNAL_SHUTDOWN_SOFT_PAUSES.has(state.controls.reason))throw Error('OWNER_MAINTENANCE_REVIEWED_CONTROL_MISMATCH');
+ return {accountId:c.accountId,inceptionAt:c.inceptionAt,epochId:c.epochId,expectedSourceCommit:input.expectedSourceCommit,reviewedSourceCommit:c.reviewedSourceCommit,priorRevision:state.revision,priorStateSha256:digest(state),controlPrefixSha256:history.controlPrefixSha256,reviewedPrefixSha256:history.reviewedPrefixSha256,anchor:controlAnchor(history.anchor),reviewedCutoffRevision:c.reviewedCutoffRevision,firstMaintenancePauseRevision:c.firstMaintenancePauseRevision,reviewedCounts:{...counts,maintenancePauses},lockedDeposits:{count:deposits.length,totalLamports:total,sha256:digest(state.lockedDeposits)}};
+}
+/** Read-only first-application preview. It grants no permission and does not
+ * reserve a revision; apply must reproduce the entire plan under the writer. */
+export function inspectReviewedMaintenanceAcknowledgement(db:Database.Database,state:Readonly<LedgerState>,input:ReviewedMaintenanceAcknowledgementInput):ReviewedMaintenanceAcknowledgementPlan{
+ if(db.pragma('integrity_check',{simple:true})!=='ok')throw Error('OWNER_MAINTENANCE_SQLITE_INTEGRITY_UNAVAILABLE');
+ return reviewedMaintenancePlan(db,state,input);
+}
+function maintenanceAcknowledgementReceipt(plan:ReviewedMaintenanceAcknowledgementPlan,at:number):ReviewedMaintenanceAcknowledgementReceipt{
+ const c=REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT;
+ return {kind:'POE_REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT',actionId:c.actionId,revisionBefore:plan.priorRevision,revisionAfter:plan.priorRevision+1,acknowledgedAt:at,plan,historicalCauseKnown:false,historicalFailureDeclaredHarmless:false,entryPermissionGranted:false,financialControlWrites:1,capitalWrites:0,balanceAndEpochPreserved:true,lockedDepositsPreserved:true};
+}
+/** Historical receipt verification is not a new authorization. Its explicitly
+ * bounded original prefix excludes this acknowledgement and every later row;
+ * ordinary runtime history separately processes all later owner/hard intents. */
+export function readReviewedMaintenanceAcknowledgement(db:Database.Database,state:Readonly<LedgerState>,at:number):ReviewedMaintenanceAcknowledgementReceipt|null{
+ const c=REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT;
+ const row=db.prepare('SELECT j.revision,j.at,j.kind,CASE WHEN length(CAST(j.detail AS BLOB))<=65536 THEN j.detail END detail,a.payload_hash payloadHash,CASE WHEN length(CAST(a.result AS BLOB))<=65536 THEN a.result END result FROM journal j LEFT JOIN actions a ON a.id=j.action_id WHERE j.action_id=?').get(c.actionId)as{revision:number;at:number;kind:string;detail:string;payloadHash:string;result:string}|undefined;
+ if(!row){if(db.prepare('SELECT 1 FROM actions WHERE id=?').get(c.actionId))throw Error('OWNER_MAINTENANCE_ACKNOWLEDGEMENT_ORPHAN');return null;}
+ if(state.accountId!==c.accountId||state.inceptionAt!==c.inceptionAt||state.mode!=='PAPER'||state.paperEpoch?.id!==c.epochId||!Number.isSafeInteger(at)||row.kind!==c.kind||!Number.isSafeInteger(row.revision)||row.revision<=c.reviewedCutoffRevision||row.revision>state.revision||!Number.isSafeInteger(row.at)||row.at>at||typeof row.detail!=='string'||typeof row.result!=='string')throw Error('OWNER_MAINTENANCE_ACKNOWLEDGEMENT_INVALID');
+ validateFinancialState(state,c.accountId,'PAPER');validateLedgerEpochAnchor(db,state);verifyMaintenanceLedgerHead(db,state);
+ const payload=JSON.parse(row.detail),result=JSON.parse(row.result);
+ if(!payload||typeof payload!=='object'||Array.isArray(payload)||Object.keys(payload).sort().join(',')!=='authorization,expectedSourceCommit,now,plan,priorState'||payload.now!==row.at||payload.authorization!==c.authorization||!payload.priorState||payload.priorState.revision!==row.revision-1||row.payloadHash!==digest({kind:row.kind,payload}))throw Error('OWNER_MAINTENANCE_ACKNOWLEDGEMENT_INVALID');
+ const plan=reviewedMaintenancePlan(db,payload.priorState,{expectedRevision:row.revision-1,at:row.at,expectedSourceCommit:payload.expectedSourceCommit,authorization:payload.authorization},true),expected=maintenanceAcknowledgementReceipt(plan,row.at);
+ if(!isDeepStrictEqual(payload.plan,plan)||!isDeepStrictEqual(result,expected))throw Error('OWNER_MAINTENANCE_ACKNOWLEDGEMENT_INVALID');
+ if(state.revision===row.revision){const after=structuredClone(payload.priorState)as LedgerState;after.controls.reason=c.newReason;after.controls.changedAt=row.at;after.lastAt=row.at;after.revision++;if(!isDeepStrictEqual(state,after))throw Error('OWNER_MAINTENANCE_ACKNOWLEDGEMENT_STATE_MISMATCH');}
+ return expected;
+}
+
 export class PaperLedger {
   private readonly db: Database.Database;
   private readonly historicalClosedCycles=new Map<string,ClosedCycle|null>();
@@ -344,14 +499,7 @@ export class PaperLedger {
     if(s.paperEpoch?.id===PAPER_TEN_SOL_EPOCH_ID&&this.db.prepare('SELECT 1 FROM journal WHERE action_id=? LIMIT 1').get('epoch:'+PAPER_V3_TEN_SOL_EPOCH_ID))throw Error('PAPER_V3_EPOCH_STATE_REGRESSED');
     return s;
   }
-  private validateEpochAnchor(s:State){
-    const epoch=s.paperEpoch;if(!epoch)return;validatePaperEpoch(epoch,s);
-    const id='epoch:'+epoch.id,row=this.db.prepare('SELECT a.payload_hash payloadHash,a.result,j.revision,j.at,j.kind,j.detail FROM actions a JOIN journal j ON j.action_id=a.id WHERE a.id=?').get(id) as {payloadHash:string;result:string;revision:number;at:number;kind:string;detail:string}|undefined;
-    if(!row||row.kind!=='paper-epoch-transition'||row.at!==epoch.startedAt||row.revision!==epoch.transitionRevision||Buffer.byteLength(row.detail)>65536||Buffer.byteLength(row.result)>65536)throw Error('PAPER_EPOCH_HISTORY_UNAVAILABLE');
-    const payload=JSON.parse(row.detail),result=JSON.parse(row.result),v3=epoch.id===PAPER_V3_TEN_SOL_EPOCH_ID;
-    if(row.payloadHash!==digest({kind:row.kind,payload})||payload.authorization!==(v3?PAPER_V3_TEN_SOL_EPOCH_AUTHORIZATION:PAPER_TEN_SOL_EPOCH_AUTHORIZATION)||!isDeepStrictEqual(result.epoch,epoch)||!isDeepStrictEqual(payload.epoch,epoch)||paperEpochStateSha256(payload.previousState)!==epoch.priorStateSha256||payload.backup?.backupSha256!==epoch.backupSha256||payload.backup.stateSha256!==epoch.priorStateSha256||payload.backup.revision!==epoch.transitionRevision-1||payload.backup.accountId!==s.accountId||payload.backup.inceptionAt!==s.inceptionAt||Object.keys(epoch.archivedAssets.lockedDeposits).length>0&&payload.assetDisposition!==PAPER_EPOCH_ASSET_SEGREGATION||(!v3&&payload.previousState?.paperEpoch!==undefined)||payload.previousState?.accountId!==s.accountId||payload.previousState?.inceptionAt!==s.inceptionAt||epoch.archivedAssets.cashLamports!==payload.previousState.lamports||!isDeepStrictEqual(epoch.archivedAssets.lockedDeposits,Object.fromEntries(Object.entries(payload.previousState.lockedDeposits).filter(([,v])=>BigInt(v as string)>0n))))throw Error('PAPER_EPOCH_HISTORY_UNAVAILABLE');
-    if(v3){if(!isDeepStrictEqual(epoch.priorEpoch,payload.previousState.paperEpoch)||!isDeepStrictEqual(payload.riskPolicy,PAPER_V3_EQUITY_RISK_POLICY)||result.equityRisk?.version!==PAPER_V3_EQUITY_RISK_VERSION||result.equityRisk?.activatedAt!==epoch.startedAt||result.equityRisk?.activationRevision!==epoch.transitionRevision)throw Error('PAPER_V3_EPOCH_HISTORY_UNAVAILABLE');this.validateEpochAnchor(payload.previousState);}
-  }
+  private validateEpochAnchor(s:State){validateLedgerEpochAnchor(this.db,s);}
   private assertState(s: State) { validateFinancialState(s, this.accountId, this.mode,{allowUnavailableEntryPolicy:true}); }
   private apply<T>(id: string, kind: string, now: number, payload: unknown, fn: (s: State) => T): T {
     if (!id || id.length > 160 || !Number.isSafeInteger(now)) throw new Error('invalid action identity/time');
@@ -568,6 +716,27 @@ export class PaperLedger {
     return result;
   }
 
+  /** Explicit acknowledgement of the reviewed historical maintenance failure.
+   * The installer owns source/stop/backup approval; this sole writer rechecks
+   * the complete captured plan and appends a closed readiness boundary only. */
+  acknowledgeReviewedMaintenancePause(input:ReviewedMaintenanceAcknowledgementInput,expectedPlan:ReviewedMaintenanceAcknowledgementPlan){
+    validateReviewedMaintenanceRequest(input);const c=REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT,state=this.state();
+    const existing=readReviewedMaintenanceAcknowledgement(this.db,state,Math.max(input.at,state.lastAt));if(existing)return existing;
+    return this.db.transaction(()=>{
+      const prior=this.state(),plan=inspectReviewedMaintenanceAcknowledgement(this.db,prior,input);
+      if(!isDeepStrictEqual(plan,expectedPlan))throw Error('OWNER_MAINTENANCE_INSPECTED_PLAN_CHANGED');
+      const payload={now:input.at,authorization:c.authorization,expectedSourceCommit:input.expectedSourceCommit,plan,priorState:structuredClone(prior)};
+      const receipt=this.apply(c.actionId,c.kind,input.at,payload,current=>{
+        if(!isDeepStrictEqual(current,prior))throw Error('OWNER_MAINTENANCE_STATE_CHANGED');
+        current.controls.reason=c.newReason;current.controls.changedAt=input.at;
+        return maintenanceAcknowledgementReceipt(plan,input.at);
+      });
+      const after=this.state(),expected=structuredClone(prior)as LedgerState;expected.controls.reason=c.newReason;expected.controls.changedAt=input.at;expected.lastAt=input.at;expected.revision++;
+      if(!isDeepStrictEqual(after,expected)||!isDeepStrictEqual(readReviewedMaintenanceAcknowledgement(this.db,after,input.at),receipt))throw Error('OWNER_MAINTENANCE_POST_APPEND_PROOF_FAILED');
+      return receipt;
+    }).immediate();
+  }
+
   /** One explicit owner-authorized current-day risk reset, through the sole
    * financial writer. Stable id+reason identifies the authorization; changing
    * observational time/price on a retry returns its ORIGINAL durable receipt,
@@ -620,43 +789,7 @@ export class PaperLedger {
   /** One bounded, authenticated control history for both ordinary temporary
    * recovery and separately proved protection recovery. Later startup wording
    * cannot erase an earlier owner, unknown or malformed intent. */
-  private operatingControlHistory(state:State,at:number){
-    try{
-      type Row={revision:number;actionId:string;at:number;kind:string;detail:string;payloadHash:string;result:string};
-      const object=(v:unknown):v is Record<string,any>=>!!v&&typeof v==='object'&&!Array.isArray(v);
-      const select="SELECT j.revision,j.action_id actionId,j.at,j.kind,CASE WHEN length(CAST(j.detail AS BLOB))<=65536 THEN j.detail END detail,a.payload_hash payloadHash,CASE WHEN length(CAST(a.result AS BLOB))<=65536 THEN a.result END result FROM journal j LEFT JOIN actions a ON a.id=j.action_id";
-      const read=(row:Row)=>{if(!Number.isSafeInteger(row.revision)||row.revision<1||row.revision>state.revision||!Number.isSafeInteger(row.at)||row.at<state.inceptionAt||row.at>at||!boundedText(row.actionId,160)||typeof row.detail!=='string'||typeof row.result!=='string')throw Error('malformed');const payload=JSON.parse(row.detail),result=JSON.parse(row.result);if(!object(payload)||payload.now!==row.at||!object(result)||row.payloadHash!==digest({kind:row.kind,payload}))throw Error('malformed');return {payload,result};};
-      // A denied request can legitimately reference an outdated/future revision:
-      // resume() authenticates its input before refusing that state mismatch.
-      // Only an actual permission grant must bind the immediately prior state.
-      const validateResume=(row:Row,enabled:boolean)=>{const {payload,result}=read(row),kind=runtimeReadinessKind(payload.readiness,row.at,payload.marks,enabled?row.revision-1:undefined,state.accountId,payload.price,isV3PaperRiskState(state));if(row.kind!=='resume'||Object.keys(payload).sort().join(',')!=='marks,now,price,readiness'||!kind||Object.keys(result).sort().join(',')!=='enabled,reason'||result.enabled!==enabled||enabled&&result.reason!==(kind==='financial'?'explicit verified operating financial readiness':'explicit verified runtime readiness')||!enabled&&result.reason!=='fresh reconciliation or next UTC-day loss reset required'&&!(kind==='financial'&&result.reason==='fresh reconciled inventory and authorized temporary recovery required'))throw Error('malformed');priceAt(payload.price,row.at);return {payload,result};};
-      let anchor=this.db.prepare(select+" WHERE j.kind='resume' AND CASE WHEN length(CAST(a.result AS BLOB))<=65536 AND json_valid(a.result) THEN json_type(a.result,'$.enabled')='true' ELSE 0 END ORDER BY j.revision DESC LIMIT 1").get()as Row|undefined;
-      if(state.paperEpoch&&(!anchor||anchor.revision<state.paperEpoch.transitionRevision)){this.validateEpochAnchor(state);anchor=this.db.prepare(select+' WHERE j.action_id=?').get('epoch:'+state.paperEpoch.id) as Row;}
-      const diagnosticRepair=readV31DiagnosticControlRepair(this.db,state,at);
-      if(diagnosticRepair&&diagnosticRepair.actionRevision>(anchor?.revision??0))anchor=this.db.prepare(select+' WHERE j.action_id=?').get(V31_DIAGNOSTIC_CONTROL_REPAIR.actionId)as Row;
-      if(anchor?.kind===V31_DIAGNOSTIC_CONTROL_REPAIR.kind){if(!diagnosticRepair||anchor.revision!==diagnosticRepair.actionRevision)throw Error('malformed diagnostic repair');}
-      else if(anchor?.kind==='paper-epoch-transition')this.validateEpochAnchor(state);else if(anchor)validateResume(anchor,true);else{const inception=this.db.prepare("SELECT action_id actionId,at,kind,CASE WHEN length(CAST(detail AS BLOB))<=65536 THEN detail END detail FROM journal WHERE revision=0").get()as{actionId:string;at:number;kind:string;detail:string}|undefined;if(!inception||inception.actionId!=='inception'||inception.at!==state.inceptionAt||inception.kind!=='inception'||typeof inception.detail!=='string'||!isDeepStrictEqual(JSON.parse(inception.detail),{price:state.inceptionPrice,gasReserve:state.gasReserve,mode:state.mode}))throw Error('malformed inception');}
-      const boundary=anchor?.revision??0;
-      // A denied resume never changes control intent. Validate its complete
-      // original receipt, then discard it from the bounded intent projection.
-      // Repeated failed readiness checks must not exhaust that projection and
-      // permanently prevent a later valid recovery. No history is rewritten.
-      const rows=this.db.prepare(select+" WHERE j.revision>? AND j.kind IN ('pause','safe-stop','resume') ORDER BY j.revision").iterate(boundary)as IterableIterator<Row>;
-      let previousAt=anchor?.at??state.inceptionAt,previousRevision=boundary;
-      const decoded:Array<{row:Row;payload:Record<string,any>;result:Record<string,any>;ordinary:boolean;restored:boolean;startup:boolean}>=[];let intentBytes=0;
-      for(const row of rows){if(row.revision<=previousRevision||row.at<previousAt)throw Error('malformed order');previousRevision=row.revision;previousAt=row.at;
-        if(row.kind==='resume'){validateResume(row,false);continue;}
-        const {payload,result}=read(row);
-        if(row.kind==='pause'){if(Object.keys(payload).sort().join(',')!=='now,reason'||!boundedText(payload.reason)||Object.keys(result).sort().join(',')!=='paused,pendingBuyCancellations'||result.paused!==true||!Array.isArray(result.pendingBuyCancellations)||!isV3PaperRiskState(state)&&result.pendingBuyCancellations.length>3||!result.pendingBuyCancellations.every((id:unknown)=>boundedText(id,100)))throw Error('malformed pause');}
-        else if(row.kind!=='safe-stop')throw Error('unknown control');
-        const ordinary=/^trader:pause:(\d+):(\d+)$/.exec(row.actionId),restored=/^trader:restore-hard-pause:(\d+):(\d+)$/.exec(row.actionId),startup=row.actionId===`execution-recovery:${state.accountId}:${row.revision-1}`,stamp=ordinary??restored;
-        if(stamp&&(Number(stamp[1])!==row.revision-1||!Number.isSafeInteger(Number(stamp[2]))||Number(stamp[2])<state.inceptionAt||Number(stamp[2])>at))throw Error('malformed action identity');
-        intentBytes+=Buffer.byteLength(row.detail)+Buffer.byteLength(row.result);if(decoded.length>=512||intentBytes>1024*1024)return null;
-        decoded.push({row,payload,result,ordinary:!!ordinary,restored:!!restored,startup});
-      }
-      return {anchor,decoded};
-    }catch{return null;}
-  }
+  private operatingControlHistory(state:State,at:number){return readOperatingControlHistory(this.db,state,at);}
 
   /** Read-only control authority, never proof that actual protection recovered. */
   technicalProtectionRecoveryAuthority(at:number):TechnicalProtectionRecoveryAuthority{
@@ -679,7 +812,7 @@ export class PaperLedger {
   }
 
   private operatingTemporaryControlVerified(state:State,at:number){
-    const history=this.operatingControlHistory(state,at);if(!history)return false;let lastControl:{at:number;reason:string}|null=history.anchor?.kind===V31_DIAGNOSTIC_CONTROL_REPAIR.kind?{at:history.anchor.at,reason:V31_DIAGNOSTIC_CONTROL_REPAIR.newReason}:history.anchor?.kind==='paper-epoch-transition'?{at:history.anchor.at,reason:'execution startup: fresh reconciliation/readiness required'}:null;
+    const history=this.operatingControlHistory(state,at);if(!history)return false;let lastControl:{at:number;reason:string}|null=history.anchor?.kind===REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT.kind?{at:history.anchor.at,reason:REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT.newReason}:history.anchor?.kind===V31_DIAGNOSTIC_CONTROL_REPAIR.kind?{at:history.anchor.at,reason:V31_DIAGNOSTIC_CONTROL_REPAIR.newReason}:history.anchor?.kind==='paper-epoch-transition'?{at:history.anchor.at,reason:'execution startup: fresh reconciliation/readiness required'}:null;
     let observedRuntimeReportingPause=false;
     for(const {row,payload,ordinary,restored,startup}of history.decoded){if(row.kind==='safe-stop')return false;if(row.kind==='resume')continue;
       // Older releases restored this exact runtime overrun as a hard pause.
@@ -996,19 +1129,6 @@ export class PaperLedger {
       const select="SELECT j.revision,CASE WHEN length(j.action_id)<=160 THEN j.action_id END actionId,j.at,j.kind,CASE WHEN length(CAST(j.detail AS BLOB))<=65536 THEN j.detail END detail,CASE WHEN length(a.payload_hash)=64 THEN a.payload_hash END payloadHash,CASE WHEN length(CAST(a.result AS BLOB))<=65536 THEN a.result END result FROM journal j LEFT JOIN actions a ON a.id=j.action_id";
       // json_valid is explicit: malformed later resume results are not silently
       // treated as an enabled anchor; ordered validation below rejects them.
-      let anchor=this.db.prepare(select+" WHERE j.kind='resume' AND CASE WHEN length(CAST(a.result AS BLOB))<=65536 AND json_valid(a.result) THEN json_type(a.result,'$.enabled')='true' ELSE 0 END ORDER BY j.revision DESC LIMIT 1").get() as Row|undefined;
-      const inception=this.db.prepare('SELECT action_id actionId,at,kind,CASE WHEN length(CAST(detail AS BLOB))<=65536 THEN detail END detail FROM journal WHERE revision=0').get() as {actionId:string;at:number;kind:string;detail:string}|undefined;
-      if(!inception||inception.actionId!=='inception'||inception.at!==s.inceptionAt||inception.kind!=='inception'||typeof inception.detail!=='string')return no('INTERNAL_SHUTDOWN_INCEPTION');
-      const inceptionPayload=JSON.parse(inception.detail);
-      if(!isDeepStrictEqual(inceptionPayload,{price:s.inceptionPrice,gasReserve:s.gasReserve,mode:s.mode}))return no('INTERNAL_SHUTDOWN_INCEPTION');
-      const successfulResumeRevision=anchor?.revision??0;
-      if(s.paperEpoch&&(!anchor||anchor.revision<s.paperEpoch.transitionRevision)){this.validateEpochAnchor(s);anchor=this.db.prepare(select+' WHERE j.action_id=?').get('epoch:'+s.paperEpoch.id) as Row;}
-      const boundary=anchor?.revision??0;
-      if(!Number.isSafeInteger(boundary)||boundary<0||boundary>s.revision)return no('INTERNAL_SHUTDOWN_HISTORY_MALFORMED');
-      const size=this.db.prepare("SELECT count(*) count,coalesce(sum(length(CAST(j.detail AS BLOB))+coalesce(length(CAST(a.result AS BLOB)),0)),0) bytes FROM journal j LEFT JOIN actions a ON a.id=j.action_id WHERE j.revision>? AND j.kind IN ('pause','safe-stop','resume')").get(boundary) as {count:number;bytes:number};
-      if(size.count>p.maximumControlIntents||size.bytes>p.maximumControlBytes)return no('INTERNAL_SHUTDOWN_HISTORY_BOUND');
-      const rows=this.db.prepare(select+" WHERE j.revision>? AND j.kind IN ('pause','safe-stop','resume') ORDER BY j.revision ASC LIMIT ?").all(boundary,p.maximumControlIntents+1) as Row[];
-      if(rows.length!==size.count||rows.length>p.maximumControlIntents)return no('INTERNAL_SHUTDOWN_HISTORY_BOUND');
       const object=(v:unknown):v is Record<string,any>=>!!v&&typeof v==='object'&&!Array.isArray(v);
       const read=(r:Row)=>{
         if(!Number.isSafeInteger(r.revision)||r.revision<1||r.revision>s.revision||!Number.isSafeInteger(r.at)||r.at<s.inceptionAt||r.at>s.lastAt||!boundedText(r.actionId,160)||typeof r.detail!=='string'||Buffer.byteLength(r.detail)>65536||typeof r.result!=='string'||Buffer.byteLength(r.result)>65536||typeof r.payloadHash!=='string'||!/^[a-f0-9]{64}$/.test(r.payloadHash))throw Error('malformed');
@@ -1022,7 +1142,26 @@ export class PaperLedger {
         if(r.kind!=='resume'||Object.keys(payload).sort().join(',')!=='marks,now,price,readiness'||!object(payload.price)||!object(payload.marks)||!kind||Object.keys(result).sort().join(',')!=='enabled,reason'||result.enabled!==expectedEnabled||(expectedEnabled?result.reason!==validReason:!validReason))throw Error('malformed');
         priceAt(payload.price as UsdPrice,r.at);return {payload,result};
       };
-      if(anchor?.kind==='paper-epoch-transition')this.validateEpochAnchor(s);else if(anchor)resume(anchor,true);
+      let anchor=this.db.prepare(select+" WHERE j.kind='resume' AND CASE WHEN length(CAST(a.result AS BLOB))<=65536 AND json_valid(a.result) THEN json_type(a.result,'$.enabled')='true' ELSE 0 END ORDER BY j.revision DESC LIMIT 1").get() as Row|undefined;
+      const inception=this.db.prepare('SELECT action_id actionId,at,kind,CASE WHEN length(CAST(detail AS BLOB))<=65536 THEN detail END detail FROM journal WHERE revision=0').get() as {actionId:string;at:number;kind:string;detail:string}|undefined;
+      if(!inception||inception.actionId!=='inception'||inception.at!==s.inceptionAt||inception.kind!=='inception'||typeof inception.detail!=='string')return no('INTERNAL_SHUTDOWN_INCEPTION');
+      const inceptionPayload=JSON.parse(inception.detail);
+      if(!isDeepStrictEqual(inceptionPayload,{price:s.inceptionPrice,gasReserve:s.gasReserve,mode:s.mode}))return no('INTERNAL_SHUTDOWN_INCEPTION');
+      const successfulResumeRevision=anchor?.revision??0;
+      if(s.paperEpoch&&(!anchor||anchor.revision<s.paperEpoch.transitionRevision)){this.validateEpochAnchor(s);anchor=this.db.prepare(select+' WHERE j.action_id=?').get('epoch:'+s.paperEpoch.id) as Row;}
+      const acknowledgementRow=this.db.prepare('SELECT revision FROM journal WHERE action_id=?').get(REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT.actionId)as{revision:number}|undefined;
+      const acknowledgementSuperseded=anchor?.kind==='resume'&&acknowledgementRow&&Number.isSafeInteger(acknowledgementRow.revision)&&acknowledgementRow.revision>REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT.reviewedCutoffRevision&&anchor.revision>acknowledgementRow.revision;
+      if(acknowledgementSuperseded)resume(anchor!,true);
+      const maintenanceAcknowledgement=acknowledgementSuperseded?null:readReviewedMaintenanceAcknowledgement(this.db,s,at);
+      if(maintenanceAcknowledgement&&maintenanceAcknowledgement.revisionAfter>(anchor?.revision??0))anchor=this.db.prepare(select+' WHERE j.action_id=?').get(REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT.actionId)as Row;
+      const boundary=anchor?.revision??0;
+      if(!Number.isSafeInteger(boundary)||boundary<0||boundary>s.revision)return no('INTERNAL_SHUTDOWN_HISTORY_MALFORMED');
+      const size=this.db.prepare("SELECT count(*) count,coalesce(sum(length(CAST(j.detail AS BLOB))+coalesce(length(CAST(a.result AS BLOB)),0)),0) bytes FROM journal j LEFT JOIN actions a ON a.id=j.action_id WHERE j.revision>? AND j.kind IN ('pause','safe-stop','resume')").get(boundary) as {count:number;bytes:number};
+      if(size.count>p.maximumControlIntents||size.bytes>p.maximumControlBytes)return no('INTERNAL_SHUTDOWN_HISTORY_BOUND');
+      const rows=this.db.prepare(select+" WHERE j.revision>? AND j.kind IN ('pause','safe-stop','resume') ORDER BY j.revision ASC LIMIT ?").all(boundary,p.maximumControlIntents+1) as Row[];
+      if(rows.length!==size.count||rows.length>p.maximumControlIntents)return no('INTERNAL_SHUTDOWN_HISTORY_BOUND');
+      if(anchor?.kind===REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT.kind){if(!maintenanceAcknowledgement||anchor.revision!==maintenanceAcknowledgement.revisionAfter)return no('INTERNAL_SHUTDOWN_HISTORY_MALFORMED');}
+      else if(anchor?.kind==='paper-epoch-transition')this.validateEpochAnchor(s);else if(anchor)resume(anchor,true);
       let previousAt=anchor?.at??s.inceptionAt,previousRevision=boundary,internalStop=false,observedRuntimeReportingPause=false,lastControl:{at:number;reason:string}|null=null;
       const stops:Array<{revision:number;actionId:string;at:number}>=[],intents:Array<{revision:number;actionId:string;at:number;kind:string;payloadHash:string|null;resultSha256:string}>=[];
       for(const r of rows){

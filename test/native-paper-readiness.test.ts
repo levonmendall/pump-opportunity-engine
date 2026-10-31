@@ -2,13 +2,14 @@
  * No provider access, operating account, wallet, or real market claim. */
 import {test,type TestContext} from 'node:test';
 import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
 import {mkdtempSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {PublicKey} from '@solana/web3.js';
 import {PaperLedger,OPERATIONAL_REPORTING_ENTRY_PAUSE,type UsdPrice} from '../src/ledger.js';
 import {NativePaper,NATIVE_PAPER_FINANCIAL_READINESS_POLICY,NATIVE_PAPER_ENTRY_BLOCKERS,nativePaperDerivedEntryBlocker} from '../src/native-paper.js';
-import {NativePaperCashMaintenance,NativePaperReportingHealth,nativePaperBackupDue} from '../src/run-native-paper.js';
+import {NativePaperCashMaintenance,NativePaperReportingHealth,nativePaperBackupDue,nativePaperEssentialEvidence} from '../src/run-native-paper.js';
 import {FlowWindow,assessPredictiveBuying,type NormalizedTrade} from '../src/strategy.js';
 import {nativePaperFeaturesSha256} from '../src/native-paper-contract.js';
 import {PILOT_VERSION,PILOT_CONTRACT_SHA256} from '../src/pilot-contract.js';
@@ -57,6 +58,60 @@ test('unknown post-commit financial failure latches closed; later maintenance an
  const f=fixture(t),original=f.ledger.reconcile.bind(f.ledger);f.ledger.reconcile=((...args:Parameters<PaperLedger['reconcile']>)=>{original(...args);throw Error('OFFLINE post-commit uncertainty');})as PaperLedger['reconcile'];assert.equal(f.refresh().kind,'financial-unavailable');assert.equal(f.bridge.trader.entryReadinessSafety().financialAvailable,false);f.ledger.reconcile=original;const revision=f.ledger.state().revision;assert.equal(f.refresh().kind,'financial-unavailable');assert.equal(f.ledger.state().revision,revision);const restarted=f.make();assert.equal(restarted.maintainFlatFinancialReadiness(f.price).recovered,false);assert.equal(f.ledger.state().controls.entriesEnabled,false);assert.match(f.ledger.state().controls.reason,/financial maintenance unavailable/);
 });
 
+test('post-commit maintenance failure retains the first operation and safe fingerprint without declaring its outcome',t=>{
+ const f=fixture(t),original=f.ledger.reconcile.bind(f.ledger),prior=f.ledger.state(),message='OFFLINE uncertain commit https://provider.invalid/private?api-key=DO-NOT-EXPORT',error=Object.assign(Error(message),{code:'SQLITE_IOERR'});
+ f.ledger.reconcile=((...args:Parameters<PaperLedger['reconcile']>)=>{original(...args);throw error;})as PaperLedger['reconcile'];
+ assert.equal(f.refresh().kind,'financial-unavailable');
+ const diagnostic=f.bridge.trader.financialMaintenanceFailureDiagnostics();
+ assert.deepEqual(diagnostic,{version:'financial-maintenance-failure-v1',at:f.at,phase:'flat-reconcile-context',attemptedStateRevision:prior.revision,errorSha256:createHash('sha256').update(message).digest('hex'),sqliteCode:'SQLITE_IOERR',commitOutcome:'unknown',entriesRemainClosed:true});
+ assert.equal(f.ledger.state().lamports,prior.lamports);assert.equal(f.ledger.state().controls.entriesEnabled,false);assert.equal(f.bridge.trader.entryReadinessSafety().financialAvailable,false);
+ f.bridge.trader.financialMaintenanceFailed('runtime-failure',Error('OFFLINE secondary shutdown error'));
+ assert.deepEqual(f.bridge.trader.financialMaintenanceFailureDiagnostics(),diagnostic);
+ const failures=f.rows.filter(row=>row.kind==='trader-financial-maintenance-failed');assert.equal(failures.length,1);assert.equal(JSON.stringify(failures).includes('DO-NOT-EXPORT'),false);assert.equal(JSON.stringify(failures).includes('provider.invalid'),false);assert.equal(nativePaperEssentialEvidence(failures[0]!.kind,'source',false),true);
+});
+
+test('failed operating resume latches the primary failure before any fallible technical-proof reset',t=>{
+ const f=fixture(t,false,true);assert.equal(f.refresh().recovered,true);
+ f.ledger.pause('trader:pause:'+f.ledger.state().revision+':'+f.at,f.at,'PAPER protection unavailable; exposure retained');
+ const state=f.ledger.state(),primary=Error('OFFLINE operating permission write failed'),secondary=Error('OFFLINE technical reset read failed'),proofCalls:boolean[]=[];
+ const authority={verified:true as const,accountId:state.accountId,inceptionAt:state.inceptionAt,stateRevision:state.revision,controlChangedAt:state.controls.changedAt,controlReason:state.controls.reason,originRevision:state.revision,authoritySha256:'a'.repeat(64)};
+ // The technical authority/proof is supplied only to reach this error boundary.
+ // The actual readiness writer is forced to fail; no permission is fabricated.
+ t.mock.method(f.ledger,'technicalProtectionRecoveryAuthority',()=>authority);
+ t.mock.method(f.bridge.trader,'technicalProtectionRecoveryProof',(_authority:unknown,healthy:boolean)=>{
+  proofCalls.push(healthy);if(!healthy)throw secondary;
+  return {version:'paper-technical-protection-recovery-v1' as const,authoritySha256:authority.authoritySha256,originRevision:authority.originRevision,accountId:state.accountId,inceptionAt:state.inceptionAt,stateRevision:state.revision,controlChangedAt:state.controls.changedAt,controlReason:state.controls.reason,positionUnits:{},startedAt:f.at-60000,completedAt:f.at,completedEvaluations:60,maximumCompletedGapMs:1000,lastQuoteAt:f.at};
+ });
+ const resume=t.mock.method(f.ledger,'resume',()=>{throw primary;});
+ assert.deepEqual(f.bridge.maintainOperatingFinancialReadiness(f.price),{kind:'financial-unavailable',recovered:false});
+ assert.equal(resume.mock.callCount(),1);assert.deepEqual(proofCalls,[true]);
+ const safety=f.bridge.trader.entryReadinessSafety();assert.equal(safety.financialAvailable,false);assert.equal(safety.automaticRecoveryAllowed,false);assert.equal(safety.newHardPauseObserved,true);
+ assert.equal(f.ledger.state().controls.entriesEnabled,false);assert.equal(f.ledger.state().controls.reason,'financial maintenance unavailable; preserve records and close entries');assert.equal(f.ledger.state().lamports,state.lamports);
+ assert.equal(f.bridge.trader.financialMaintenanceFailureDiagnostics()?.errorSha256,createHash('sha256').update(primary.message).digest('hex'));
+ assert.deepEqual(f.bridge.operatingReadinessDiagnostics(),{at:f.at,stateRevision:state.revision,reasonCode:'OPERATING_READINESS_FINANCIAL_OPERATION_FAILED'});
+});
+
+test('failure-record write errors retain the maintenance latch and never mask an uncertain pause commit',t=>{
+ const f=fixture(t),original=f.ledger.pause.bind(f.ledger),pauseError=Error('OFFLINE pause committed before callback failure'),primary=Error('OFFLINE initial financial failure');
+ (f.bridge.trader as any).options.recorder.record=()=>{throw Error('OFFLINE diagnostic storage unavailable');};
+ f.ledger.pause=((...args:Parameters<PaperLedger['pause']>)=>{original(...args);throw pauseError;})as PaperLedger['pause'];
+ assert.throws(()=>f.bridge.trader.financialMaintenanceFailed('flat-reconcile-context',primary),error=>error===pauseError);
+ assert.equal(f.ledger.state().controls.reason,'financial maintenance unavailable; preserve records and close entries');assert.equal(f.ledger.state().controls.entriesEnabled,false);
+ const safety=f.bridge.trader.entryReadinessSafety();assert.equal(safety.financialAvailable,false);assert.equal(safety.evidenceAvailable,false);assert.equal(safety.automaticRecoveryAllowed,false);
+ assert.equal(f.bridge.trader.financialMaintenanceFailureDiagnostics()?.errorSha256,createHash('sha256').update(primary.message).digest('hex'));
+});
+
+test('readiness diagnostics expose the existing provenance refusal without another scan or state change',t=>{
+ const f=fixture(t,false,true);assert.equal(f.refresh().recovered,true);
+ f.at++;f.ledger.pause('trader:pause:'+f.ledger.state().revision+':'+f.at,f.at,'financial maintenance unavailable; preserve records and close entries');
+ f.at++;f.ledger.pause('execution-recovery:'+f.ledger.accountId+':'+f.ledger.state().revision,f.at,'execution startup: fresh reconciliation/readiness required');
+ const restarted=f.make(),before=f.ledger.state(),original=f.ledger.operatingFinancialRecoveryAllowed.bind(f.ledger);let scans=0;
+ f.ledger.operatingFinancialRecoveryAllowed=((...args:Parameters<PaperLedger['operatingFinancialRecoveryAllowed']>)=>{scans++;return original(...args);})as PaperLedger['operatingFinancialRecoveryAllowed'];
+ assert.equal(restarted.maintainOperatingFinancialReadiness(f.price).recovered,false);
+ for(let i=0;i<3;i++)assert.deepEqual(restarted.operatingReadinessDiagnostics(),{at:f.at,stateRevision:before.revision,reasonCode:'OPERATING_READINESS_CONTROL_PROVENANCE_UNAVAILABLE'});
+ assert.equal(scans,1);assert.deepEqual(f.ledger.state(),before);assert.deepEqual(f.calls,{context:0,preparation:0,quote:0,execution:0});
+});
+
 test('recorder failure after permission recovery closes controls and preserves the evidence latch',t=>{
  const f=fixture(t);f.recordFailure=true;assert.equal(f.refresh().recovered,false);assert.equal(f.projection().entriesEnabled,false);assert.equal(f.bridge.trader.entryReadinessSafety().evidenceAvailable,false);f.recordFailure=false;assert.equal(f.refresh().recovered,false);assert.deepEqual(f.ledger.state().pending,{});assert.equal(f.ledger.state().executionCosts,'0');
 });
@@ -88,7 +143,7 @@ test('cash maintenance continues during source waits, defers financial ownership
 });
 
 test('actual maintenance timer contains unexpected callback failure and keeps retry bounded',async t=>{
- t.mock.timers.enable({apis:['setInterval']});let at=1000,failures=0,calls=0;const maintenance=new NativePaperCashMaintenance({now:()=>at,busy:()=>false,lastReconciledAt:()=>0,refresh:()=>{calls++;throw Error('OFFLINE timer failure');}});const timer=maintenance.start(()=>{failures++;});t.after(()=>clearInterval(timer));t.mock.timers.tick(250);assert.equal(failures,1);assert.equal(calls,1);for(let i=0;i<3;i++){at+=250;t.mock.timers.tick(250);}assert.equal(calls,1);at+=250;t.mock.timers.tick(250);assert.equal(calls,2);assert.equal(failures,2);assert.equal(maintenance.usage().financialFailures,2);
+ t.mock.timers.enable({apis:['setInterval']});let at=1000,failures=0,calls=0;const error=Error('OFFLINE timer failure'),seen:unknown[]=[];const maintenance=new NativePaperCashMaintenance({now:()=>at,busy:()=>false,lastReconciledAt:()=>0,refresh:()=>{calls++;throw error;}});const timer=maintenance.start(cause=>{failures++;seen.push(cause);});t.after(()=>clearInterval(timer));t.mock.timers.tick(250);assert.equal(failures,1);assert.equal(calls,1);for(let i=0;i<3;i++){at+=250;t.mock.timers.tick(250);}assert.equal(calls,1);at+=250;t.mock.timers.tick(250);assert.equal(calls,2);assert.equal(failures,2);assert.equal(maintenance.usage().financialFailures,2);assert.deepEqual(seen,[error,error]);
 });
 
 test('old startup reconciliation and known FX-unavailable intervals are not maintenance deadline misses',t=>{
