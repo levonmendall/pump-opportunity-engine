@@ -362,14 +362,22 @@ export function reviewedCandidateControlLineage(state:State,history:OperatingCon
  if(!exact(0,c.sourcePauseRevision,c.sourcePauseAt,'trader:pause:190298:1793481124040',c.sourcePauseReason,'ordinary')
     ||!exact(1,c.startupRevision,c.startupAt,'execution-recovery:'+c.accountId+':190463','execution startup: fresh reconciliation/readiness required','startup')
     ||!exact(2,c.restoreRevision,c.restoreAt,'trader:restore-hard-pause:190464:1793481488425',c.sourcePauseReason,'restored'))return false;
+ let latestStartupRevision:number|null=null;
  for(const item of h.decoded.slice(3)){
-  // After this exact incident, permit only authenticated ordinary temporary
-  // pauses and routine execution-start recovery. No later hard intent may hide
-  // behind the old exception.
-  if(item.row.kind!=='pause'||!Array.isArray(item.result.pendingBuyCancellations)
-     ||item.result.pendingBuyCancellations.length!==0
-     ||!(item.ordinary&&INTERNAL_SHUTDOWN_SOFT_PAUSES.has(item.payload.reason)
-       ||item.startup&&item.payload.reason==='execution startup: fresh reconciliation/readiness required'))return false;
+  // Additional source restarts of this same authenticated inherited control
+  // may add a matching startup/restore pair. Do not treat a *new ordinary*
+  // hard pause or safe stop as a repeat of the original incident.
+  const {row,payload,result}=item;
+  if(row.kind!=='pause'||!Array.isArray(result.pendingBuyCancellations)||result.pendingBuyCancellations.length!==0)return false;
+  if(item.startup&&payload.reason==='execution startup: fresh reconciliation/readiness required'
+     &&row.actionId==='execution-recovery:'+c.accountId+':'+(row.revision-1)){
+    latestStartupRevision=row.revision;continue;
+  }
+  if(item.restored&&latestStartupRevision!==null&&row.revision===latestStartupRevision+1
+     &&row.actionId==='trader:restore-hard-pause:'+latestStartupRevision+':'+row.at
+     &&payload.reason===c.sourcePauseReason){latestStartupRevision=null;continue;}
+  if(item.ordinary&&INTERNAL_SHUTDOWN_SOFT_PAUSES.has(payload.reason)){latestStartupRevision=null;continue;}
+  return false;
  }
  const last=h.decoded.at(-1);
  return !!last&&last.row.at===state.controls.changedAt&&last.payload.reason===state.controls.reason;
