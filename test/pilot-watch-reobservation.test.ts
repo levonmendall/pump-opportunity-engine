@@ -58,6 +58,41 @@ test('technical unavailability remains distinct from economic rejection and requ
  }finally{f.registry.close();}
 });
 
+test('a pre-observation support refusal has no invented window and suppresses unchanged retries across a durable restart',()=>{
+ const directory=mkdtempSync(join(tmpdir(),'poe-preobservation-')),path=join(directory,'market.sqlite');let at=1000000000,registry=new MarketRegistry(path,{now:()=>at});const options={registry,maximumDeep:4,observationAgePolicy:PERSISTENT_OBSERVABLE_MARKET_POLICY.version,now:()=>at,record(){}};
+ try{
+  let watch=new PilotWatch(options);watch.discover({signature:'origin',feedMint:'token',receivedAt:at});watch.verify('origin',{mint:'token',pool:'pool',migrationAt:at-300000,verifiedAt:at});
+  watch.noteEvaluation('token',{kind:'technical-unavailable',windowEndAt:null,evidence:'NATIVE_OBSERVATION_POOL_MISSING: pool; no completed observation'},at);watch.transition('token','DEFERRED','pool not present in confirmed read',at);
+  for(let i=0;i<5;i++){at+=30000;assert.equal(watch.next(at,new Set()),null);}
+  assert.equal(watch.lookupIdentity('token')!.reobservation!.windowEndAt,null);assert.equal(watch.lookupIdentity('token')!.completeWindows,0);
+  const checkpoint=watch.export();registry.close();registry=new MarketRegistry(path,{now:()=>at});watch=new PilotWatch({...options,registry,restored:checkpoint});assert.equal(watch.next(at,new Set()),null);assert.equal(watch.lookupIdentity('token')!.state,'DEFERRED');
+  assert.throws(()=>watch.noteEvaluation('token',{kind:'economic-rejection',windowEndAt:null,evidence:'not a completed economic decision'},at),/PILOT_WATCH_EVALUATION/);
+  at++;registry.observeIdentity({mint:'token',pool:'pool',source:'shared-test',kind:'market-identity',signature:'fresh-pool-hint',at});assert.deepEqual(registry.nextPoolSourceProgress(at),[{mint:'token'}]);assert.equal(watch.notePoolHintProgress('token',at),true);assert.equal(watch.next(at,new Set())!.mint,'token');assert.equal(watch.lookupIdentity('token')!.completeWindows,0,'a matching pool hint grants scheduling only');
+  watch.noteEvaluation('token',{kind:'technical-unavailable',windowEndAt:null,evidence:'fresh canonical read still missing'},at);at++;registry.observeIdentity({mint:'token',pool:'pool',source:'shared-test',kind:'market-identity',signature:'fresh-pool-hint',at});assert.deepEqual(registry.nextPoolSourceProgress(at),[]);assert.equal(watch.notePoolHintProgress('token',at),false,'replayed hint last-seen time cannot reopen a later refusal');assert.equal(watch.next(at,new Set()),null);
+ }finally{registry.close();rmSync(directory,{recursive:true,force:true});}
+});
+
+test('post-refusal migration hints reopen only pre-observation scheduling, with original received time and replay protection',()=>{
+ const f=fixture();try{
+  f.seed('pool');f.watch.noteEvaluation('pool',{kind:'technical-unavailable',windowEndAt:null,evidence:'NATIVE_OBSERVATION_POOL_MISSING'},f.now());f.watch.transition('pool','DEFERRED','missing pool',f.now());const failureAt=f.now();f.advance();
+  assert.equal(f.watch.noteMigrationHint('pool',{signature:'old',receivedAt:failureAt},f.now()),false);assert.equal(f.watch.next(f.now(),new Set()),null);
+  assert.equal(f.watch.noteMigrationHint('pool',{signature:'new-migration',receivedAt:f.now()},f.now()),true);assert.equal(f.watch.next(f.now(),new Set())!.mint,'pool');assert.match(f.watch.lookupIdentity('pool')!.reobservation!.ready!.reason,/unverified migration hint/);assert.equal(f.watch.lookupIdentity('pool')!.completeWindows,0);
+  f.watch.noteEvaluation('pool',{kind:'technical-unavailable',windowEndAt:null,evidence:'NATIVE_OBSERVATION_POOL_MISSING after fresh read'},f.now());f.advance();assert.equal(f.watch.noteMigrationHint('pool',{signature:'new-migration',receivedAt:f.now()},f.now()),false,'same migration content cannot renew the next refusal');assert.equal(f.watch.next(f.now(),new Set()),null);
+  assert.equal(f.watch.noteRelevantEvidence('pool',{kind:'source-recovery',at:f.now(),fingerprint:'confirmed provider state recovered'},f.now()),true);assert.equal(f.watch.next(f.now(),new Set())!.mint,'pool');
+ }finally{f.registry.close();}
+});
+
+test('unrelated bonding-curve activity cannot reopen a missing canonical pool; a new matching-pool hint can',()=>{
+ const f=fixture();try{
+  f.seed('pool');f.activity('pool','before','buy','100');f.watch.noteEvaluation('pool',{kind:'technical-unavailable',windowEndAt:null,evidence:'NATIVE_OBSERVATION_POOL_MISSING'},f.now());f.watch.transition('pool','DEFERRED','missing pool',f.now());f.advance();
+  f.activity('pool','before','buy','100');f.activity('pool','unknown','unknown');assert.equal(f.watch.next(f.now(),new Set()),null);
+  f.activity('pool','new-capital','buy','100');assert.equal(f.watch.next(f.now(),new Set()),null,'new economics on an unrelated/unknown pool cannot prove canonical-pool progress');
+  f.registry.observeActivity({mint:'pool',pool:'pool-pool',signature:'canonical-pool-progress',source:'shared-test',at:f.now(),side:'buy',quoteLamports:'100'});f.watch.noteActivity('pool',f.now(),'new matching pool hint');assert.equal(f.watch.next(f.now(),new Set())!.mint,'pool');assert.equal(f.watch.lookupIdentity('pool')!.completeWindows,0);
+  f.watch.noteEvaluation('pool',{kind:'technical-unavailable',windowEndAt:null,evidence:'same pool still unavailable on fresh read'},f.now());f.advance();f.registry.observeActivity({mint:'pool',pool:'pool-pool',signature:'canonical-pool-progress',source:'shared-test',at:f.now(),side:'buy',quoteLamports:'100'});f.watch.noteActivity('pool',f.now(),'replayed matching pool hint');assert.equal(f.watch.next(f.now(),new Set()),null);
+  f.advance();f.registry.observeActivity({mint:'pool',pool:'pool-pool',signature:'canonical-pool-progress-2',source:'shared-test',at:f.now(),side:'buy',quoteLamports:'100'});assert.deepEqual(f.registry.nextPoolSourceProgress(f.now()),[{mint:'pool'}]);assert.equal(f.watch.notePoolHintProgress('pool',f.now()),true);assert.equal(f.watch.next(f.now(),new Set())!.mint,'pool','new matching activity can reopen after more than one canonical-pool refusal');
+ }finally{f.registry.close();}
+});
+
 test('a repeated completion callback cannot overwrite newly accumulated relevant change or introduce another retry allowance',()=>{
  const f=fixture();try{
   f.seed('token');const end=f.now()-1000,evidence='same complete decision';f.watch.noteEvaluation('token',{kind:'economic-rejection',windowEndAt:end,evidence,minimumEconomicChangeLamports:'10000'},f.now());f.watch.transition('token','DEFERRED','complete',f.now());f.advance();f.activity('token','new-buy','buy','20000');

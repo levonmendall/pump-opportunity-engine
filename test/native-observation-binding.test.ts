@@ -69,6 +69,12 @@ test('wrong pool program, canonical mint/index/creator/LP or vault links are alw
  const wrongKey=fixture();assert.throws(()=>decodeNativeObservationBinding(wrongKey.mint,name(56),[wrongKey.values[0]!,wrongKey.values[3]!],wrongKey.context,wrongKey.requestedAt,wrongKey.receivedAt,wrongKey.at),/BAD_POOL_IDENTITY/);
 });
 
+test('an absent canonical pool is distinguished from an existing wrong-owner pool without admitting either',()=>{
+ const f=fixture();assert.throws(()=>decodeNativeObservationBinding(f.mint,f.key,[null,f.values[3]!],f.context,f.requestedAt,f.receivedAt,f.at),/^Error: NATIVE_OBSERVATION_POOL_MISSING$/);
+ const wrong=fixture();wrong.values[0]!.owner=TOKEN_PROGRAM_ID.toBase58();assert.throws(wrong.observe,/^Error: BAD_POOL_OWNER$/);
+ assert.equal(Object.hasOwn(f.observe().summary,'financialQuote'),false);
+});
+
 test('unsupported transfer semantics and malformed or uninitialized mint layout are refused',()=>{
  for(const extension of [ExtensionType.TransferFeeConfig,ExtensionType.TransferHook,ExtensionType.PermanentDelegate,ExtensionType.NonTransferable]){
   const f=fixture();f.changeMint(bytes=>bytes.writeUInt16LE(extension,166));assert.throws(f.observe,/UNMODELED_BASE_EXTENSION/);

@@ -59,6 +59,16 @@ for(const fault of ['missing-pool','missing-mint','unsupported-mint','vault-link
  const result=await f.pricer.validateObservationMany(f.requests.slice(0,4));assert.equal(f.calls.length,1);assert.equal((f.calls[0]!.params[0]as string[]).length,9);assert.equal(result.validations[name],undefined);assert.ok(result.unavailable[name]);assert.equal(Object.keys(result.validations).length,3);assert.equal(Object.hasOwn(f.pricer.usage().cachedPoolSlots,name),false);
 });
 
+for(const absent of [true,false])test(`existing confirmed batch records a classified ${absent?'absent':'wrong-owner'} pool refusal without another request`,async t=>{
+ const f=fixture(t),request=f.requests[0]!,mint=request.mint.toBase58(),pool=canonicalPumpPoolPda(request.mint).toBase58();
+ if(absent)f.accounts.set(pool,null);else f.accounts.get(pool)!.owner=TOKEN_PROGRAM_ID.toBase58();
+ const result=await f.pricer.validateObservationMany([request]),reason=absent?'NATIVE_OBSERVATION_POOL_MISSING':'BAD_POOL_OWNER';
+ assert.equal(result.unavailable[mint],reason);assert.equal(result.validations[mint],undefined);assert.equal(f.calls.length,1);
+ const row=f.records.find(r=>r.kind==='research-clock-native-observation-unavailable')!.data;
+ assert.equal(row.reason,reason);assert.equal(row.poolAccountPresent,!absent);assert.equal(row.ownerIsPoolProgram,false);assert.equal(row.sourceSlot,f.context.slot);assert.match(row.accountFingerprint,/^[a-f0-9]{64}$/);assert.equal(row.financialPermission,false);
+ assert.equal(row.receivedAt,result.context!.receivedAt);assert.equal(Object.hasOwn(row,'accountData'),false);
+});
+
 test('historical dependency hints are unnecessary for passive binding and never determine the queried addresses',async t=>{
  const f=fixture(t),request={...f.requests[0]!,dependencyHints:{baseVault:'not-a-public-key',quoteVault:'also-not-a-public-key'}},result=await f.pricer.validateObservationMany([request]);assert.ok(result.validations[request.mint.toBase58()]);assert.equal(f.calls.length,1);assert.equal((f.calls[0]!.params[0]as string[]).length,3);assert.equal(f.pricer.usage().dependencyHints.plans,0);
 });

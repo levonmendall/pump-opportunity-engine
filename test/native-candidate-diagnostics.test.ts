@@ -38,3 +38,10 @@ test('noncanonical wire signatures retain their exact source-quality reason with
  const d=new NativeCandidateFailureDiagnostics(at-1000);d.observe({at,mint,kind:'quality-gap',reason:'NATIVE_FLOW_NONCANONICAL_SIGNATURE'});
  assert.equal(d.snapshot().recent[0]!.reasonCode,'NATIVE_FLOW_NONCANONICAL_SIGNATURE');assert.equal(d.snapshot().byReason.NATIVE_FLOW_NONCANONICAL_SIGNATURE,1);
 });
+
+test('missing pools and present wrong-owner accounts remain separate technical failures in reporting',()=>{
+ const d=new NativeCandidateFailureDiagnostics(at-1000);
+ for(const reason of ['NATIVE_OBSERVATION_POOL_MISSING','BAD_POOL_OWNER'])d.observe({at,mint,kind:'quality-gap',reason});
+ const snapshot=d.snapshot();assert.equal(snapshot.byReason.NATIVE_OBSERVATION_POOL_MISSING,1);assert.equal(snapshot.byReason.BAD_POOL_OWNER,1);assert.equal(snapshot.byReason.OTHER_UNEXPORTED_REASON??0,0);
+ const projected=projectOperatingIntelligence(source(snapshot));assert.match(projected.quality.limitations.join('\n'),/BAD_POOL_OWNER:1/);assert.match(projected.quality.limitations.join('\n'),/NATIVE_OBSERVATION_POOL_MISSING:1/);validateOperatingIntelligence(projected,new Date(at).toISOString());
+});

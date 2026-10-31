@@ -258,7 +258,12 @@ export class ResearchClockPositionPricer {
           // address discovery. No cached reserve/fee/value becomes a fresh mark.
           pendingCache.set(h.name,freshPool??PUMP_AMM_SDK.decodePool(poolInfo(indexed.get(h.key.toBase58()))));
           }
-        }catch(error){signal?.throwIfAborted();const reason=refusal(error);unavailable[h.name]=reason;if(reason==='POOL_LINKS_CHANGED'&&hinted.includes(h.request)&&h.request.dependencyHints){this.rejectedDependencyHints.set(h.name,fingerprint(h.request.dependencyHints));this.dependencyHintRejections++;this.rec.record('research-clock-dependency-hint-rejected',{at:Date.now(),mint:h.name,reason,nextOrdinaryRefreshUsesDiscovery:true,nextAddressPlan:'canonical-current-accounts',separateDiscoveryReadPlanned:false,inlineRetry:false,financialPermission:false,marketAttractivenessUnknown:true});}this.invalidatePool(h.name,reason);continue;}
+        }catch(error){signal?.throwIfAborted();const reason=refusal(error);unavailable[h.name]=reason;
+          if(purpose==='native-observation'&&(reason==='NATIVE_OBSERVATION_POOL_MISSING'||reason==='BAD_POOL_OWNER')){
+            const wire=indexed.get(h.key.toBase58())??null;
+            this.rec.record('research-clock-native-observation-unavailable',{mint:h.name,pool:h.key.toBase58(),reason,requestedAt,receivedAt,sourceSlot:batch.context.slot,poolAccountPresent:wire!==null,ownerIsPoolProgram:wire?.owner===PUMP_AMM_PROGRAM_ID.toBase58(),accountFingerprint:createHash('sha256').update(JSON.stringify(wire)).digest('hex'),source:'confirmed-account-batch',financialPermission:false});
+          }
+          if(reason==='POOL_LINKS_CHANGED'&&hinted.includes(h.request)&&h.request.dependencyHints){this.rejectedDependencyHints.set(h.name,fingerprint(h.request.dependencyHints));this.dependencyHintRejections++;this.rec.record('research-clock-dependency-hint-rejected',{at:Date.now(),mint:h.name,reason,nextOrdinaryRefreshUsesDiscovery:true,nextAddressPlan:'canonical-current-accounts',separateDiscoveryReadPlanned:false,inlineRetry:false,financialPermission:false,marketAttractivenessUnknown:true});}this.invalidatePool(h.name,reason);continue;}
         fresh();if(quote){this.rec.record('research-clock-position-sell-quote',quote);fresh();quotes[h.name]=quote;}else if(buy){this.rec.record('research-clock-buy-quote',buy);fresh();buys[h.name]=buy;}else if(support){this.rec.record('research-clock-observation-support',support);fresh();validations[h.name]=support;}else if(nativeSupport){this.rec.record('research-clock-native-observation-support',nativeSupport);fresh();nativeValidations[h.name]=nativeSupport;}
       }
       // A slow recorder cannot make earlier per-pool results fresh. Nothing is

@@ -48,7 +48,10 @@ export function decodeNativeObservationBinding(mint:PublicKey,key:PublicKey,valu
  need(integer(at)&&integer(context?.slot)&&integer(requested)&&integer(received)&&requested<=received&&received<=at&&at-received<=2000,'NATIVE_OBSERVATION_SOURCE_CONTEXT');
  need(Array.isArray(values)&&values.length===2,'NATIVE_OBSERVATION_ACCOUNT_COUNT');
  const [poolWire,mintWire]=values;
- need(poolWire?.owner===PUMP_AMM_PROGRAM_ID.toBase58(),'BAD_POOL_OWNER');
+ // An absent canonical account is an observed availability condition, not a
+ // claim that an existing account is owned by the wrong program.
+ need(poolWire!=null,'NATIVE_OBSERVATION_POOL_MISSING');
+ need(poolWire.owner===PUMP_AMM_PROGRAM_ID.toBase58(),'BAD_POOL_OWNER');
  need(mintWire&&(mintWire.owner===TOKEN_PROGRAM_ID.toBase58()||mintWire.owner===TOKEN_2022_PROGRAM_ID.toBase58()),'UNSUPPORTED_TOKEN_PROGRAM');
  const poolInfo=account(poolWire),mintInfo=account(mintWire),pool=PUMP_AMM_SDK.decodePool(poolInfo);
  assertCanonicalPumpPoolIdentity(pool,mint,key);

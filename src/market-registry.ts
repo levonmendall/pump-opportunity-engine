@@ -58,6 +58,7 @@ export class MarketRegistry {
    CREATE INDEX IF NOT EXISTS market_tokens_screen ON market_tokens(screen_state,mint);
    CREATE TABLE IF NOT EXISTS identity_provenance(mint TEXT NOT NULL,source TEXT NOT NULL,kind TEXT NOT NULL,pool TEXT NOT NULL DEFAULT '',signature TEXT NOT NULL DEFAULT '',first_seen_at INTEGER NOT NULL,last_seen_at INTEGER NOT NULL,PRIMARY KEY(mint,source,kind,pool,signature));
    CREATE INDEX IF NOT EXISTS identity_provenance_recent_kind ON identity_provenance(kind,last_seen_at DESC,mint);
+   CREATE INDEX IF NOT EXISTS identity_provenance_pool_progress ON identity_provenance(mint,pool,first_seen_at);
    CREATE TABLE IF NOT EXISTS watch_rows(signature TEXT PRIMARY KEY,mint TEXT,pool TEXT,migration_at INTEGER,verified_at INTEGER,first_seen_at INTEGER NOT NULL,state TEXT NOT NULL,last_activity_at INTEGER,last_demoted_at INTEGER,deep_since INTEGER,defer_until INTEGER NOT NULL,waiting_since INTEGER NOT NULL,promotions INTEGER NOT NULL,repromotions INTEGER NOT NULL,demotions INTEGER NOT NULL,complete_windows INTEGER NOT NULL,ever_had_window INTEGER NOT NULL,last_window_at INTEGER,older_research INTEGER NOT NULL,capacity_status TEXT,capacity_reassess_at INTEGER,technical_state TEXT,technical_expires_at INTEGER,technical_not_before INTEGER,technical_requested_at INTEGER,body TEXT NOT NULL,archived INTEGER NOT NULL DEFAULT 0,last_decision_kind TEXT,last_decision_at INTEGER,reobserve_ready INTEGER NOT NULL DEFAULT 1);
    CREATE INDEX IF NOT EXISTS watch_rows_mint ON watch_rows(mint,archived,verified_at);
    CREATE INDEX IF NOT EXISTS watch_rows_state ON watch_rows(archived,state,defer_until,waiting_since);
@@ -87,7 +88,7 @@ export class MarketRegistry {
   for(const [table,fields] of [['market_tokens',['last_signature','last_activity_source','last_activity_kind']],['verification_queue',['source','kind']]] as const){const columns=new Set((this.statement(`PRAGMA table_info(${table})`).all() as {name:string}[]).map(r=>r.name));for(const field of fields)if(!columns.has(field))this.db.exec(`ALTER TABLE ${table} ADD COLUMN ${field} TEXT`);}
   {const columns=new Set((this.statement('PRAGMA table_info(market_tokens)').all() as {name:string}[]).map(r=>r.name));if(!columns.has('last_economic_activity_at'))this.db.exec('ALTER TABLE market_tokens ADD COLUMN last_economic_activity_at INTEGER');}
   {const columns=new Set((this.statement('PRAGMA table_info(watch_rows)').all() as {name:string}[]).map(r=>r.name));for(const [column,definition] of [['last_decision_kind','TEXT'],['last_decision_at','INTEGER'],['reobserve_ready','INTEGER NOT NULL DEFAULT 1']])if(!columns.has(column!))this.db.exec(`ALTER TABLE watch_rows ADD COLUMN ${column} ${definition}`);this.db.exec('CREATE INDEX IF NOT EXISTS watch_rows_reobservation ON watch_rows(archived,state,reobserve_ready,defer_until,last_decision_at)');}
-  {const columns=new Set((this.statement('PRAGMA table_info(market_activity_seen)').all() as {name:string}[]).map(r=>r.name));for(const [column,definition] of [['quote_lamports','TEXT'],['activity_sequence','INTEGER']])if(!columns.has(column!))this.db.exec(`ALTER TABLE market_activity_seen ADD COLUMN ${column} ${definition}`);this.db.exec('CREATE INDEX IF NOT EXISTS market_activity_seen_mint_time ON market_activity_seen(mint,first_seen_at);CREATE INDEX IF NOT EXISTS market_activity_seen_mint_sequence ON market_activity_seen(mint,activity_sequence)');}
+  {const columns=new Set((this.statement('PRAGMA table_info(market_activity_seen)').all() as {name:string}[]).map(r=>r.name));for(const [column,definition] of [['quote_lamports','TEXT'],['activity_sequence','INTEGER'],['pool','TEXT']])if(!columns.has(column!))this.db.exec(`ALTER TABLE market_activity_seen ADD COLUMN ${column} ${definition}`);this.db.exec('CREATE INDEX IF NOT EXISTS market_activity_seen_mint_time ON market_activity_seen(mint,first_seen_at);CREATE INDEX IF NOT EXISTS market_activity_seen_mint_sequence ON market_activity_seen(mint,activity_sequence);CREATE INDEX IF NOT EXISTS market_activity_seen_pool_progress ON market_activity_seen(mint,pool,first_seen_at)');}
   if(this.getMetadata<number>('createdAt')===undefined)this.setMetadata('createdAt',this.clock());
  }
  private statement(sql:string):Database.Statement {let statement=this.statements.get(sql);if(!statement){statement=this.db.prepare(sql);this.statements.set(sql,statement);}return statement;}
@@ -196,7 +197,7 @@ export class MarketRegistry {
   const r=this.statement('SELECT last_activity_at,activity_score,buy_lamports,sell_lamports,activity_hints FROM market_tokens WHERE mint=?').get(input.mint) as {last_activity_at:number|null;activity_score:number;buy_lamports:string;sell_lamports:string;activity_hints:number};
   const amount=input.quoteLamports&&/^\d{1,20}$/.test(input.quoteLamports)&&BigInt(input.quoteLamports)<=18446744073709551615n?BigInt(input.quoteLamports):0n;
   const economic=!!input.signature&&amount>0n&&(side==='buy'||side==='sell')&&(input.quoteMint===undefined||input.quoteMint==='So11111111111111111111111111111111111111112');const buy=economic&&side==='buy'?amount:0n,sell=economic&&side==='sell'?amount:0n;
-  if(input.signature&&this.statement('INSERT OR IGNORE INTO market_activity_seen(mint,signature,side,first_seen_at,quote_lamports,activity_sequence) VALUES(?,?,?,?,?,?)').run(input.mint,input.signature,side,at,economic?amount.toString():null,r.activity_hints+1).changes===0)return false;
+  if(input.signature&&this.statement('INSERT OR IGNORE INTO market_activity_seen(mint,signature,side,first_seen_at,quote_lamports,activity_sequence,pool) VALUES(?,?,?,?,?,?,?)').run(input.mint,input.signature,side,at,economic?amount.toString():null,r.activity_hints+1,input.pool??null).changes===0)return false;
   this.economicTouchedMints.add(input.mint);
   // A decaying measured shared-stream demand priority, not a profit probability.
   const decay=Math.exp(-Math.max(0,at-(r.last_activity_at??at))/60000),sol=Number(amount)/1e9;
@@ -247,6 +248,18 @@ export class MarketRegistry {
  }
  nextWatchActivities(limit=16):{mint:string;at:number;evidence:'unverified-provider-activity-hint'}[]{
   need(integer(limit)&&limit>0,'MARKET_REGISTRY_ACTIVITY_BATCH');return (this.statement(`SELECT DISTINCT w.mint mint,t.last_activity_at at FROM watch_rows w JOIN market_tokens t ON t.mint=w.mint WHERE w.archived=0 AND w.state NOT IN ('HELD','ENTRY_PENDING','PERMANENTLY_UNSUPPORTED') AND t.last_activity_at>COALESCE(w.last_activity_at,-1) ORDER BY COALESCE(w.last_activity_at,0),w.signature LIMIT ?`).all(limit) as {mint:string;at:number}[]).map(r=>({...r,evidence:'unverified-provider-activity-hint' as const}));
+ }
+ /** First receipt of new content is source progress; repeated delivery time
+  * is not. A matching provider pool hint schedules another strict account
+  * check, never establishes that the account exists or is executable. */
+ canonicalPoolHintAfter(mint:string,pool:string,after:number,at=this.clock()):{at:number;fingerprint:string}|undefined{
+  need(name(mint)&&name(pool)&&integer(after)&&integer(at)&&after<=at,'MARKET_REGISTRY_POOL_HINT_PROGRESS');
+  const row=this.statement("SELECT source,kind,pool,signature,first_seen_at at FROM identity_provenance WHERE mint=? AND pool=? AND first_seen_at>? AND first_seen_at<=? UNION ALL SELECT 'shared-activity' source,'activity' kind,pool,signature,first_seen_at at FROM market_activity_seen WHERE mint=? AND pool=? AND first_seen_at>? AND first_seen_at<=? ORDER BY at,source,kind,signature LIMIT 1").get(mint,pool,after,at,mint,pool,after,at) as {source:string;kind:string;pool:string;signature:string;at:number}|undefined;
+  return row?{at:row.at,fingerprint:createHash('sha256').update(json([row.source,row.kind,row.pool,row.signature])).digest('hex')}:undefined;
+ }
+ nextPoolSourceProgress(at:number,limit=16):{mint:string}[]{
+  need(integer(at)&&integer(limit)&&limit>0,'MARKET_REGISTRY_POOL_HINT_PROGRESS');
+  return this.statement(`SELECT w.mint FROM watch_rows w WHERE w.archived=0 AND w.state IN ('WATCH','DEFERRED') AND w.reobserve_ready=0 AND w.last_decision_kind='technical-unavailable' AND json_extract(w.body,'$.reobservation.windowEndAt') IS NULL AND w.mint IS NOT NULL AND w.pool IS NOT NULL AND (EXISTS(SELECT 1 FROM identity_provenance p WHERE p.mint=w.mint AND p.pool=w.pool AND p.first_seen_at>w.last_decision_at AND p.first_seen_at<=?) OR EXISTS(SELECT 1 FROM market_activity_seen a WHERE a.mint=w.mint AND a.pool=w.pool AND a.first_seen_at>w.last_decision_at AND a.first_seen_at<=?)) ORDER BY w.last_decision_at,w.signature LIMIT ?`).all(at,at,limit) as {mint:string}[];
  }
  /** Current observation selects actual retained mint hints, without needing a
   * transaction signature or creation archive. The SDK still has to establish
