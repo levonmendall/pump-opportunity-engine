@@ -33,7 +33,7 @@ test('exact reviewed candidate pause lineage is eligible only as an original aut
 test('a changed account, sequence, financial obligation or later hard intent cannot inherit the exception',()=>{
  const badCases:[string,(s:LedgerState,h:any)=>void][]=[
  ['account',(s)=>{s.accountId='other';}],
- ['epoch',(s)=>{s.paperEpoch!.id='other';}],
+ ['epoch',(s)=>{(s.paperEpoch as any).id='other';}],
  ['stop',(s)=>{s.controls.stopRequested=true;}],
  ['owner already enabled',(s)=>{s.controls.entriesEnabled=true;}],
  ['held',(s)=>{(s.positions as any).held={};}],
