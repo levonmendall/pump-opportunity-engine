@@ -184,7 +184,7 @@ export function evaluateV31SizeFrontier(features:FlowFeatures,now:number,evidenc
  return chosen?output({buyInputLamports:chosen.row.buyInputLamports,expectedBaseUnits:chosen.row.expectedBaseUnits,buyCurveInputLamports:chosen.row.buyCurveInputLamports,proposedConsumedLamports:chosen.row.proposedConsumedLamports},'v3.1-highest-positive-joint-conditional-balance-among-tested-exact-sizes',chosen.assessment,rows):output(null,'v3.1-no-positive-tested-size-economic-balance; untested-sizes-not-certified',initial,rows);
 }
 export const deriveV31Consolidation=deriveV3Consolidation;
-/** Exits intentionally retain the already approved V3 holding protection. */
+/** V3.1 changes only the owner-authorized cost/trailing stop distances; other V3 holding protections remain. */
 export const evaluateLiquidityResilientExitV31=(input:V3ExitInput)=>evaluateLiquidityResilientExit(input,P.exit);
 export class V31AssessmentSeries{
  private readonly histories=new Map<string,{pool:string;windows:V3ConsolidationEvidence[]}>();private evictions=0;
