@@ -344,7 +344,7 @@ export const REVIEWED_CANDIDATE_CONTROL_INCIDENT=Object.freeze({
  restoreRevision:190465,
  restoreAt:1793481488425,
 } as const);
-function reviewedCandidateControlLineage(state:State,history:OperatingControlHistory|null):boolean {
+export function reviewedCandidateControlLineage(state:State,history:OperatingControlHistory|null):boolean {
  const c=REVIEWED_CANDIDATE_CONTROL_INCIDENT,h=history;
  if(!h||state.accountId!==c.accountId||state.inceptionAt!==c.inceptionAt||state.paperEpoch?.id!==c.epochId
    ||!isV3PaperRiskState(state)||state.mode!=='PAPER'||state.controls.entriesEnabled||state.controls.stopRequested
