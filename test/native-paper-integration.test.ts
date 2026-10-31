@@ -338,3 +338,23 @@ test('expired candidate authority cannot block a genuine full-position protectio
  entryAuthority=false;f.at=held.enteredAt+900000;assert.equal(f.engine.currentAuditCertificate(mint,f.at),null);const adapter=(f.bridge.trader as unknown as {options:{quote:PilotMarket['quote']}}).options.quote,scopeBefore=protectionScopes;assert.equal(await adapter({mint,side:'buy',inputUnits:'1'},new AbortController().signal),null);assert.equal(protectionScopes,scopeBefore);const calls=quotes.length;assert.equal(await adapter({mint,side:'sell',inputUnits:(BigInt(held.units)-1n).toString()},new AbortController().signal),null);assert.equal(quotes.length,calls,'false-size sell cannot acquire protection dispatch');assert.equal(protectionScopes,scopeBefore);
  await f.bridge.protection();assert.ok(quotes.some(q=>q.side==='sell'&&q.units===held.units&&q.phase==='protection'));assert.ok(quotes.filter(q=>q.side==='buy').every(q=>q.phase==='candidate'));const exit=Object.values(f.ledger.state().pending).find(o=>o.mint===mint&&o.side==='sell');assert.ok(exit,'existing holding obtains its legitimate exit decision despite expired candidate authority');assert.equal(phase,'candidate');assert.equal(f.ledger.state().executionCosts,'7000');assert.equal(f.ledger.state().positions[mint]!.units,held.units);
 });
+
+
+test('post-decision fair-watch exception is technical, not a financial hard pause',async t=>{
+ const f=fixture(t,true,true);await f.open();f.warm();await f.audit();
+ const mint=f.retained[0]!.proof.quote.mint as string,bridge=f.bridge,trader=bridge.trader as any;
+ (bridge as any).options.onEvaluationComplete=()=>{throw Error('OFFLINE watch completion failure');};
+ const realTick=trader.tick.bind(trader);
+ trader.tick=async(options:any)=>{
+  if(options?.evaluateCandidates===false)return realTick(options);
+  trader.funnel.evaluated++;
+  trader.recent.push({mint,at:f.at,stage:'risk-rejection',reason:'OFFLINE insufficient economic balance',ruleVersion:CONCURRENT_PILOTS[2].contract.version});
+  return {execution:[],nextDueAt:null};
+ };
+ const outcome=await bridge.candidate(mint,true);
+ assert.equal(outcome.kind,'evaluated');
+ const state=f.ledger.state();assert.equal(state.controls.entriesEnabled,true,'completed rejection must not create a hard financial stop');
+ assert.equal(state.controls.stopRequested,false);
+ assert.deepEqual(state.positions,{});assert.deepEqual(state.pending,{});
+ assert.ok(f.records.some(row=>row.kind==='native-paper-postdecision-watch-followup-unavailable'&&row.data.technicalOnly===true&&row.data.newFinancialOrderCreated===false));
+});
