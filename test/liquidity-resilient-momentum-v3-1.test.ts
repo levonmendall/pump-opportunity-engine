@@ -68,9 +68,16 @@ test('no positive tested size is an explicitly bounded economic result rather th
  const f=fixture({amounts:Array(6).fill(100n),gas:100000000n}),r=evaluateV31SizeFrontier(f.features,120000,{flow:f.flow,market:f.market});assert.equal(r.selected,null);assert.match(r.reason,/no-positive-tested-size/);assert.equal(r.isGlobalOptimumCertified,false);assert.ok(r.candidates.length>0);assert.equal(r.search.integerInputBits,BigInt(f.market.buyInputLamports).toString(2).length);
 });
 
-test('holding exits retain the existing V3 protection policy during entry optimization',()=>{
+test('V3.1 25-percent cost stop and minimum trail leave legacy V3 intact',()=>{
+ assert.equal(P.exit.stopLossBps,2500);assert.equal(P.exit.trailingMinimumBps,2500);
  const input:V3ExitInput={now:2000000,enteredAt:0,entryCostLamports:'100000000',heldBaseUnits:'1000',mark:{at:2000000,netLamports:'85000000',pricedBaseUnits:'1000',evidence:'OFFLINE actual full-position quote'}};
- assert.deepEqual(evaluateLiquidityResilientExitV31(input),evaluateLiquidityResilientExit(input));
+ assert.equal(evaluateLiquidityResilientExit(input).action,'request-exit','V3 historical 15% cost stop remains');
+ assert.equal(evaluateLiquidityResilientExit(input).trailingDistanceBps,1500,'V3 trailing minimum remains');
+ assert.equal(evaluateLiquidityResilientExitV31(input).action,'hold');
+ assert.equal(evaluateLiquidityResilientExitV31(input).trailingDistanceBps,2500);
+ assert.equal(evaluateLiquidityResilientExitV31({...input,mark:{...input.mark!,netLamports:'75000001'}}).action,'hold');
+ assert.match(evaluateLiquidityResilientExitV31({...input,mark:{...input.mark!,netLamports:'75000000'}}).reason,/protective-cost-stop/);
+ assert.equal(evaluateLiquidityResilientExitV31({...input,mark:null}).action,'quote-required');
 });
 
 test('series keeps decision-time boundaries and no minimum observation-window count is added',()=>{
