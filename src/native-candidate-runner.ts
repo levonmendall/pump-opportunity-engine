@@ -20,7 +20,7 @@ import {auditNativeFlowWindow,type NativeFlowAuditResult,type NativeAuditHistory
 import {NativeAuditSession} from './native-audit-session.js';
 import {chooseResearchWork,type ResearchJob} from './research-dispatch.js';
 import {pilotUninvokedHistoryRefusal,type PilotRpc,type PilotRpcCallOptions} from './pilot-rpc.js';
-import {NativeCandidateFailureDiagnostics,type NativeCandidateFailureKind} from './native-candidate-diagnostics.js';
+import {NativeCandidateFailureDiagnostics,nativeCandidateFailureReason,type NativeCandidateFailureKind} from './native-candidate-diagnostics.js';
 
 export const NATIVE_CANDIDATE_VERSION='native-candidate-only-v1';
 export const NATIVE_AUDIT_DISPATCH_DIAGNOSTICS=Object.freeze({version:'bounded-native-audit-dispatch-v1',maximumTransitionRecordsPerTarget:16,meaning:'Coalesced local eligibility/admission observations, not physical-start or provider-saturation claims. Actual physical starts and settlement remain separately recorded.'});
@@ -35,10 +35,14 @@ type Rpc=Pick<PilotRpc,'call'|'usage'|'cooldownUntil'>&Partial<Pick<PilotRpc,'ca
 type AuditDispatchReason='eligible'|'native-service-wait'|'native-service-dispatch'|'native-service-return'|'rpc-gate-wait'|'ceiling-backoff'|'ceiling-refresh'|'prepare-native-runway'|'scheduler-wait'|'scheduler-refusal'|'audit-selected'|'peer-selected'|'page-admission'|'page-response'|'page-refusal'|'page-deferred'|'page-not-exposed'|'work-exception';
 type AuditDispatchTrace={windowEndAt:number;deadlineAt:number;firstReadyAt:number;lastAt:number;lastState:{reason:AuditDispatchReason;nextAction:string;context:Record<string,unknown>};reasonCounts:Partial<Record<AuditDispatchReason,number>>;transitionRecords:number;omittedTransitions:number;stateKey:string;final:boolean};
 type Candidate={historyCache?:NativeAuditHistoryCache;identity:MigrationIdentity;allocatedAt:number;openedAt:number|null;lastFeatureEnd:number;lastAssessmentEnd:number;lastReadyWindowEnd:number;lastReadyObservedAt:number;lastExpiredWindowEnd:number;lastAuditFenceWarmingWindowEnd:number;auditFailures:number;nextAuditAt:number;lastAuditPageAt:number;auditPageRetryAt:number;readinessCheckedEnd:number;checkedAuditable:boolean;auditDispatch?:AuditDispatchTrace;auditSession?:{session:NativeAuditSession;windowEndAt:number;openedAt:number|null;connectionId:number|null|undefined;subscriptionId:number|null|undefined;deadlineAt:number}};
-export type NativeRunnerOptions={registry?:MarketRegistry;runId?:string;activeEvidence?:(mint:string,at:number)=>V3Evidence|null;activeStrategy?:'adaptive-momentum-v2'|'liquidity-resilient-momentum-v3'|'liquidity-resilient-momentum-v3.1';activeAssessment?:(mint:string,features:FlowFeatures,at:number)=>V3BuyingAssessment;observationAgePolicy?:ObservationAgePolicyVersion;rpc:Rpc;flow:Flow;record:(kind:string,data:unknown)=>void;now?:()=>number;maximumDeep?:number;restoredWatch?:unknown;resolve?:typeof resolvePilotMigration;audit?:typeof auditNativeFlowWindow;admissionOpen?:()=>boolean;sourceWorkAdmission?:(operationBoundMs:number)=>boolean;onCandidateAllocated?:(identity:MigrationIdentity)=>void;onCandidateRetired?:(mint:string,reason:string)=>void;onAuditAvailable?:(certificate:NativeAuditCertificate)=>void;financialOwnership?:(mint:string)=>'HELD'|'ENTRY_PENDING'|null};
+export type NativeMarketIntake={observeIdentity:(row:MarketIdentityHint)=>void;observeActivity:(row:MarketActivityHint)=>void;observeFeed:(row:MarketFeedStatus)=>void};
+export type NativeRunnerOptions={marketIntake?:NativeMarketIntake;registry?:MarketRegistry;runId?:string;activeEvidence?:(mint:string,at:number)=>V3Evidence|null;activeStrategy?:'adaptive-momentum-v2'|'liquidity-resilient-momentum-v3'|'liquidity-resilient-momentum-v3.1';activeAssessment?:(mint:string,features:FlowFeatures,at:number)=>V3BuyingAssessment;observationAgePolicy?:ObservationAgePolicyVersion;rpc:Rpc;flow:Flow;record:(kind:string,data:unknown)=>void;now?:()=>number;maximumDeep?:number;restoredWatch?:unknown;resolve?:typeof resolvePilotMigration;audit?:typeof auditNativeFlowWindow;admissionOpen?:()=>boolean;sourceWorkAdmission?:(operationBoundMs:number)=>boolean;onCandidateAllocated?:(identity:MigrationIdentity)=>void;onCandidateRetired?:(mint:string,reason:string)=>void;onAuditAvailable?:(certificate:NativeAuditCertificate)=>void;financialOwnership?:(mint:string)=>'HELD'|'ENTRY_PENDING'|null};
 function need(value:unknown,reason:string):asserts value{if(!value)throw Error(reason);}
 const safe=(error:unknown)=>error instanceof Error&&/^[A-Z][A-Z0-9_:-]{0,150}$/.test(error.message)?error.message:'NATIVE_CANDIDATE_OPERATION_UNAVAILABLE';
-const stable=(id:MigrationIdentity)=>{const {commitment:_c,availableAt:_a,...value}=id;return JSON.stringify(value);};
+const canonical=(value:unknown):unknown=>Array.isArray(value)?value.map(canonical):value&&typeof value==='object'?Object.fromEntries(Object.entries(value).sort(([a],[b])=>a.localeCompare(b)).map(([key,item])=>[key,canonical(item)])):value;
+// Request availability, RPC commitment and provider feed-hint role do not alter
+// canonical on-chain creation identity. Every chain role/context remains bound.
+const stable=(id:MigrationIdentity)=>{const {commitment:_c,availableAt:_a,feedHintRole:_hint,...value}=id;return JSON.stringify(canonical(value));};
 
 export const NATIVE_DEADLINE_POLICY=Object.freeze({version:'native-end-to-end-operation-admission-v2',pageOperationMs:2000,postValidationMs:125,discretionaryReadMs:1500,originWorkflowMs:20000,maximumOriginReads:6,uninvokedPageRetryMs:250,nativeOperationMs:1700,heartbeatOperationMs:1200});
 export type NativeDeadlineTarget={mint:string;eligibleAt:number;deadlineAt:number;ready:boolean;continuing:boolean;minimumPageWorkMs:number;prospective:boolean;historyReadyAt:number;serviceableBeforeDeadline:boolean};
@@ -49,7 +53,7 @@ type VerificationSession={seed:PilotMigrationSeed;startedAt:number;deadlineAt:nu
 export class NativeCandidateRunner{
  readonly dataContract:NativeFlowDataContract;readonly watch:PilotWatch;readonly observationAgePolicy:ObservationAgePolicy;private readonly now:()=>number;private readonly candidates=new Map<string,Candidate>();private readonly origins=new Map<string,MigrationIdentity>();private readonly originProofs=new Map<string,NativeOrigin>();private readonly registry:MarketRegistry;private readonly runScope:string;private readonly certificates=new Map<string,NativeAuditCertificate>();private readonly productivity:NativeSlotProductivity;private pendingAuditPhysical:{mint:string;windowEndAt:number}|null=null;
  private readonly cancelledAuditDiagnostics:Array<{mint:string;targetEndAt:number;deadlineAt:number;cancelledAt:number;session:NativeAuditSession}>=[];
- private verificationSession:VerificationSession|null=null;
+ private verificationSession:VerificationSession|null=null;private committedActivityPending=true;
  private readonly audit:typeof auditNativeFlowWindow;private readonly resolve:typeof resolvePilotMigration;
  private stopped=false;private working=false;private sourceAdmissionStopReason:string|null=null;private maximumSimultaneous=0;private lastDispatchAt=0;private lastOutcome:string|null=null;private nextCeilingRefreshAt=0;private lastAuditAt:number|null=null;private lastPredictiveAt:number|null=null;private lastAdmissionDeferralBucket=-1;
  private readonly activeDecisions:Array<{at:number;mint:string;stage:string;reason:string}>=[];
@@ -122,9 +126,14 @@ export class NativeCandidateRunner{
   const at=this.now();
   this.registry.transaction(()=>{const row=this.watch.discover(seed);if(row)this.queueProof(row,at);});this.counters.migrationHints++;
  }
- onMarketIdentity(row:MarketIdentityHint){this.registry.observeIdentity(row);}
- onMarketActivity(row:MarketActivityHint){this.registry.transaction(()=>{this.registry.observeActivity(row);this.onActivity({mint:row.mint,at:row.receivedAt,evidence:row.evidence});});}
- onMarketFeed(row:MarketFeedStatus){this.registry.observeFeed(row);}
+ onMarketIdentity(row:MarketIdentityHint){if(this.options.marketIntake){this.options.marketIntake.observeIdentity(row);return;}this.registry.observeIdentity(row);}
+ onMarketActivity(row:MarketActivityHint){if(this.options.marketIntake){this.options.marketIntake.observeActivity(row);return;}this.registry.transaction(()=>{this.registry.observeActivity(row);this.onActivity({mint:row.mint,at:row.receivedAt,evidence:row.evidence});});}
+ onMarketFeed(row:MarketFeedStatus){if(this.options.marketIntake){this.options.marketIntake.observeFeed(row);return;}this.registry.observeFeed(row);}
+ /** ACKs confirm the worker committed the global hints. Pending application is
+  * represented by the indexed database difference, not an in-memory universe
+  * of token identities. Lost ACKs/restarts therefore do not lose watch progress. */
+ onMarketActivityCommitted(rows:readonly {mint:string;at:number;evidence:string}[]){if(rows.length)this.committedActivityPending=true;}
+ private drainCommittedActivity(){if(!this.options.marketIntake||!this.committedActivityPending||!this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.postValidationMs))return;const began=performance.now();this.registry.transaction(()=>{const rows=this.registry.nextWatchActivities(16);if(!rows.length){this.committedActivityPending=false;return;}for(const row of rows){if(performance.now()-began>=5)break;this.onActivity(row);}});}
  /** Select one measured shared-stream opportunity only when the existing
   * origin-work dispatcher has actual spare runway. A trade signature is a
   * lookup hint: only the unchanged confirmed/finalized resolver may prove an
@@ -153,14 +162,28 @@ export class NativeCandidateRunner{
  private acceptIdentity(id:MigrationIdentity,seedSignature:string,at:number){this.watch.verify(seedSignature,{mint:id.baseMint,pool:id.pool,migrationAt:id.chainBlockTime*1000,verifiedAt:at});if(this.registry.markDistinct(this.runScope+':verified',id.signature,at))this.counters.verifiedOrigins++;}
  private storeOrigin(id:MigrationIdentity,origin:NativeOrigin){this.registry.putOrigin(id.baseMint,{...structuredClone(origin),identity:structuredClone(id)});if(this.candidates.has(id.baseMint)||this.options.financialOwnership?.(id.baseMint)){this.origins.set(id.baseMint,structuredClone(id));this.originProofs.set(id.baseMint,structuredClone(origin));}}
  private origin(mint:string):MigrationIdentity|undefined{
-  const hot=this.origins.get(mint);if(hot)return hot;const saved=this.registry.getOrigin<NativeOrigin&{identity?:MigrationIdentity}>(mint);if(!saved?.identity)return;
-  const id=saved.identity,row=this.watch.lookupIdentity(mint,this.now());
-  need(row&&id.baseMint===mint&&id.pool===row.pool&&id.chainBlockTime*1000===row.migrationAt&&id.classification==='SOL_IDENTITY_REQUIRES_CURRENT_SUPPORT','NATIVE_DURABLE_ORIGIN_IDENTITY_MISMATCH');
-  need(saved.originConfirmed.availableAt<=this.now()&&saved.originFinalized.availableAt<=this.now(),'NATIVE_DURABLE_ORIGIN_FUTURE');
-  // The production resolver's persisted proof is decoded again at cold hydration;
-  // metadata/availability never substitutes for genuine confirmed/finalized bytes.
-  if(this.resolve===resolvePilotMigration){const confirmed=decodeMigrationIdentity(saved.originConfirmed.transaction,{signature:saved.originConfirmed.signature,commitment:'confirmed',availableAt:saved.originConfirmed.availableAt}),finalized=decodeMigrationIdentity(saved.originFinalized.transaction,{signature:saved.originFinalized.signature,commitment:'finalized',availableAt:saved.originFinalized.availableAt});need(confirmed.ok&&finalized.ok&&stable(confirmed.identity)===stable(finalized.identity)&&stable(finalized.identity)===stable(id),'NATIVE_DURABLE_ORIGIN_PROOF_MISMATCH');}
-  this.origins.set(mint,id);this.originProofs.set(mint,{originConfirmed:saved.originConfirmed,originFinalized:saved.originFinalized,...(saved.olderSelection?{olderSelection:saved.olderSelection}:{})});return id;
+  const hot=this.origins.get(mint);if(hot)return hot;
+  try{
+   const saved=this.registry.getOrigin<NativeOrigin&{identity?:MigrationIdentity}>(mint),row=this.watch.lookupIdentity(mint,this.now());need(saved&&row&&saved.originConfirmed&&saved.originFinalized&&Number.isSafeInteger(saved.originConfirmed.availableAt)&&Number.isSafeInteger(saved.originFinalized.availableAt),'NATIVE_DURABLE_ORIGIN_BODY_UNAVAILABLE');
+   need(saved.originConfirmed.availableAt<=this.now()&&saved.originFinalized.availableAt<=this.now(),'NATIVE_DURABLE_ORIGIN_FUTURE');
+   let id=saved.identity;
+   if(this.resolve===resolvePilotMigration){
+    const confirmed=decodeMigrationIdentity(saved.originConfirmed.transaction,{signature:saved.originConfirmed.signature,commitment:'confirmed',availableAt:saved.originConfirmed.availableAt}),finalized=decodeMigrationIdentity(saved.originFinalized.transaction,{signature:saved.originFinalized.signature,commitment:'finalized',availableAt:saved.originFinalized.availableAt});
+    need(confirmed.ok&&finalized.ok&&stable(confirmed.identity)===stable(finalized.identity),'NATIVE_DURABLE_ORIGIN_PROOF_MISMATCH');
+    need(!id||stable(finalized.identity)===stable(id),'NATIVE_DURABLE_ORIGIN_IDENTITY_MISMATCH');
+    id=finalized.identity;
+    if(JSON.stringify(saved.identity)!==JSON.stringify(id)){
+     const priorIdentitySha256=createHash('sha256').update(JSON.stringify(saved.identity??null)).digest('hex'),proofSha256=createHash('sha256').update(JSON.stringify({originConfirmed:saved.originConfirmed,originFinalized:saved.originFinalized})).digest('hex'),key='origin-metadata-rehydration:'+mint+':'+priorIdentitySha256;
+     if(!this.registry.getMetadata(key)){const receipt={at:this.now(),mint,priorIdentitySha256,canonicalIdentitySha256:createHash('sha256').update(stable(id)).digest('hex'),proofSha256,correction:'derive canonical identity from unchanged strict confirmed/finalized creation bytes; request metadata and feed hint role excluded from chain comparison',originalProofUnchanged:true,financialWriterOpened:false};this.registry.setMetadata(key,receipt);this.record('native-origin-metadata-rehydrated',receipt);}
+    }
+   }
+   need(id&&id.baseMint===mint&&id.pool===row.pool&&id.chainBlockTime*1000===row.migrationAt&&id.classification==='SOL_IDENTITY_REQUIRES_CURRENT_SUPPORT','NATIVE_DURABLE_ORIGIN_IDENTITY_MISMATCH');
+   this.origins.set(mint,id);this.originProofs.set(mint,{originConfirmed:saved.originConfirmed,originFinalized:saved.originFinalized,...(saved.olderSelection?{olderSelection:saved.olderSelection}:{})});return id;
+  }catch(error){
+   const reason=error instanceof SyntaxError?'NATIVE_DURABLE_ORIGIN_BODY_UNAVAILABLE':safe(error);if(!reason.startsWith('NATIVE_DURABLE_ORIGIN_'))throw error;
+   const at=this.now(),row=this.watch.lookupIdentity(mint,at);this.registry.transaction(()=>{this.registry.archiveOrigin(mint,reason,at);if(row){this.watch.transition(mint,'DEFERRED','durable origin quarantined; canonical creation re-verification required',at);this.registry.requeueVerification({signature:row.signature,feedMint:mint,receivedAt:Math.min(row.firstSeenAt,at)},at,reason);}});
+   this.record('native-origin-proof-quarantined',{at,mint,reason,originalProofRetained:true,canonicalReverificationQueued:!!row,otherCandidatesContinue:true,financialPermission:false});return;
+  }
  }
  onFlowOpen(row:{mint:string;at:number}){this.certificates.delete(row.mint);const c=this.candidates.get(row.mint);if(c){this.productivity.opened(row.mint,row.at);this.finishAuditDispatch(c,'new-ack-generation',row.at);delete c.auditDispatch;delete c.historyCache;c.openedAt=row.at;c.lastFeatureEnd=0;c.lastAssessmentEnd=0;c.lastReadyWindowEnd=0;c.lastReadyObservedAt=0;c.lastExpiredWindowEnd=0;c.lastAuditFenceWarmingWindowEnd=0;c.auditPageRetryAt=0;c.readinessCheckedEnd=0;c.checkedAuditable=false;this.record('native-candidate-observation-open',{mint:row.mint,at:row.at,actualAcknowledgment:true,freshWindowRequired:true});}}
  onTrade(){this.counters.normalizedEvents++;}
@@ -232,7 +255,7 @@ export class NativeCandidateRunner{
   const maximum=this.options.maximumDeep??6;
   for(let i=this.candidates.size;i<maximum;i++){
    if(this.options.flow.usage().candidates+this.options.flow.usage().retiring>=maximum)break;
-   const excluded=new Set(this.candidates.keys());const row=this.watch.next(at,excluded,{requireOrigin:true});if(!row?.mint||!row.pool)break;const id=this.origin(row.mint);if(!id){this.record('native-durable-origin-unavailable',{mint:row.mint,at,awarenessRetained:true,deepAdmission:false});break;}
+   const excluded=new Set(this.candidates.keys());const row=this.watch.next(at,excluded,{requireOrigin:true});if(!row?.mint||!row.pool)break;const id=this.origin(row.mint);if(!id){this.record('native-durable-origin-unavailable',{mint:row.mint,at,awarenessRetained:true,deepAdmission:false,otherCandidatesContinue:true});continue;}
    const runway=observationRunway(id.chainBlockTime*1000,at,row.olderResearch!==undefined,this.observationAgePolicy);if(!runway.allowed){this.watch.transition(row.mint,'EXPIRED','remaining horizon cannot fit a complete required window',at);continue;}
    this.options.flow.addCandidate({mint:id.baseMint,pool:id.pool,minSlot:id.slot});this.candidates.set(id.baseMint,{identity:id,allocatedAt:at,openedAt:null,lastFeatureEnd:0,lastAssessmentEnd:0,lastReadyWindowEnd:0,lastReadyObservedAt:0,lastExpiredWindowEnd:0,lastAuditFenceWarmingWindowEnd:0,auditFailures:0,nextAuditAt:0,lastAuditPageAt:0,auditPageRetryAt:0,readinessCheckedEnd:0,checkedAuditable:false});this.productivity.allocated(id.baseMint,at,row.waitingSince,row.promotions);this.watch.transition(id.baseMint,'DEEP_OBSERVATION','fresh native confirmed pool observation allocated; no financial permission',at);this.registry.markStage(id.baseMint,'deep-admitted',at);this.maximumSimultaneous=Math.max(this.maximumSimultaneous,this.candidates.size);this.options.onCandidateAllocated?.(structuredClone(id));
   }
@@ -367,6 +390,7 @@ export class NativeCandidateRunner{
  async step(signal?:AbortSignal){
   if(!this.open()||this.working)return 'closed';this.working=true;
   try{
+   this.drainCommittedActivity();
    await this.drainCancelledAuditDiagnostics();
    const origin=this.verificationSession;if(origin){if(this.now()>=origin.deadlineAt){origin.controller.abort();origin.pending?.reject(Error('PILOT_MIGRATION_ABORTED'));origin.pending=null;await Promise.resolve();await Promise.resolve();origin.result??={ok:false,reason:'PILOT_MIGRATION_ELAPSED_CAP'};}this.finishVerification(origin);}
    const sourceFailure=this.options.flow.usage().fatal;if(sourceFailure){this.sourceAdmissionStopReason=sourceFailure;this.lastOutcome=sourceFailure;this.record('native-candidate-source-admissions-closed',{at:this.now(),reason:sourceFailure,financialWriterOpened:false,scope:'candidate-only research; financial position management is not owned by this runner'});return 'source-fatal';}
@@ -464,6 +488,7 @@ export class NativeCandidateRunner{
  checkpoint(){this.pruneProofCache(this.now());return {schemaVersion:1,observationAgePolicy:this.observationAgePolicy,generatedAt:this.now(),dataContract:this.dataContract,watch:this.watch.export(),origins:[...this.originProofs.values()].map(p=>structuredClone(p)),financialWriterOpened:false};}
  onPhysicalOperationStarted(input:{at:number;method:string;physicalId:string|number}){const current=this.pendingAuditPhysical;if(!current||input.method!=='getSignaturesForAddress')return false;return this.productivity.physicalStarted(current.mint,current.windowEndAt,input.at,String(input.physicalId));}
  onFinancialOutcome(input:{mint:string;kind:NativeSlotFinancialKind;at:number;key:string}){this.productivity.financial(input);}
+ sourceAdmissionStatus(at=this.now()){const flow=this.options.flow.usage(),ownerAdmissionOpen=this.options.admissionOpen?.()??true,lastOutcome=this.lastOutcome===null?null:this.lastOutcome.startsWith('audit:')?'AUDIT_DISPATCHED':this.lastOutcome.startsWith('verify:')?'ORIGIN_VERIFICATION_DISPATCHED':nativeCandidateFailureReason(this.lastOutcome).reasonCode;return {engineOpen:!this.stopped&&this.sourceAdmissionStopReason===null&&ownerAdmissionOpen,stopped:this.stopped,ownerAdmissionOpen,sourceWork125Allowed:this.sourceWorkAllowed(125),deepSetup6000Allowed:this.discretionaryAdmission(6000,at).admitted,lastOutcome,hasNativeFatal:!!flow.fatal};}
  slotProductivity(at=this.now()){return this.productivity.snapshot(at);}
  marketCoverage(at=this.now()){return this.registry.coverageSnapshot(at);}
  private watchStatus(at:number){const watch=this.watch.snapshot(at,this.options.activeStrategy);return {...watch,summary:{...watch.summary,auditDiagnostics:this.failureDiagnostics.snapshot()}};}

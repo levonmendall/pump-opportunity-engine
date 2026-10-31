@@ -161,3 +161,41 @@ test('flat technical recovery counts new cash reconciliations and original USD t
  f.at+=1000;f.price={...f.price!,at:f.at};f.bankClockAt=f.at;f.supportAt=f.at;assert.equal(f.refresh().recovered,true);assert.equal(f.projection().entriesEnabled,true);assert.equal(f.bridge.trader.entryReadinessSafety().newHardPauseObserved,false);
  const event=f.rows.filter(r=>r.kind==='native-paper-financial-readiness-recovered'&&r.data.technicalProtectionRecovery).at(-1)!.data;assert.deepEqual(event.positionUnits,{});assert.equal(event.technicalProtectionRecovery.lastQuoteAt,f.price!.at);assert.equal(event.candidateWindowClaimed,false);assert.equal(f.rows.filter(r=>r.kind==='trader-held-evaluation').length,0);assert.deepEqual(f.calls,{context:0,preparation:0,quote:0,execution:0});
 });
+
+test('runtime resource pauses recover only with fresh financial/source admission and survive an ordinary restart',async t=>{
+ for(const reason of ['resource pressure; new candidate risk closed','rolling resource or evidence pressure; exposure retained'])await t.test(reason,async st=>{
+  for(const gate of ['healthy','admission','connection','clock','usd','restart']as const)await st.test(gate,tt=>{
+   const f=fixture(tt,false,true);assert.equal(f.refresh().recovered,true);f.bridge.trader.pauseNewEntries(reason);const before=f.ledger.state();
+   assert.equal(before.controls.entriesEnabled,false);assert.equal(f.bridge.trader.entryReadinessSafety().automaticRecoveryAllowed,true);
+   if(gate==='admission')f.admission=false;if(gate==='connection')f.connected=false;if(gate==='clock')f.bankClockAt=f.base+29000;if(gate==='usd')f.price={...f.price!,at:f.at-10001};
+   const bridge=gate==='restart'?f.make():f.bridge,result=bridge.maintainFlatFinancialReadiness(f.price);
+   assert.equal(result.recovered,gate==='healthy'||gate==='restart');assert.equal(f.ledger.state().controls.entriesEnabled,gate==='healthy'||gate==='restart');
+   assert.equal(f.ledger.state().lamports,before.lamports);assert.equal(f.ledger.state().realizedLamports,before.realizedLamports);assert.deepEqual(f.ledger.state().pending,{});
+   assert.ok(f.ledger.exportJournal(100).some(row=>(row as any).kind==='pause'&&JSON.parse((row as any).detail).reason===reason));
+   assert.deepEqual(f.calls,{context:0,preparation:0,quote:0,execution:0});
+  });
+ });
+});
+
+test('resource wording cannot clear an owner action, unknown hard failure or safe stop across restart',async t=>{
+ for(const gate of ['owner','unknown','stop']as const)await t.test(gate,st=>{
+  const f=fixture(st,false,true);assert.equal(f.refresh().recovered,true);const reason='resource pressure; new candidate risk closed';
+  if(gate==='owner')f.ledger.pause('operator-pause:OFFLINE-copied-resource-wording',f.at,reason);
+  if(gate==='unknown')f.bridge.trader.pauseNewEntries('OFFLINE unknown hard financial failure');
+  if(gate==='stop')f.ledger.safeStop('operator-stop:OFFLINE-resource-stop',f.at);
+  f.bridge.trader.pauseNewEntries(reason);const before=f.ledger.state();assert.equal(f.refresh().recovered,false);
+  const restarted=f.make();assert.equal(restarted.maintainFlatFinancialReadiness(f.price).recovered,false);assert.equal(f.ledger.state().controls.entriesEnabled,false);
+  assert.equal(f.ledger.state().controls.stopRequested,before.controls.stopRequested);assert.equal(f.ledger.state().lamports,before.lamports);assert.deepEqual(f.ledger.state().pending,before.pending);
+ });
+});
+
+test('resource recovery preserves an unresolved protective exit and refuses cash-only permission',t=>{
+ const f=fixture(t,false,true);assert.equal(f.refresh().recovered,true);
+ f.ledger.order({id:'OFFLINE resource held setup',mint:f.mint,side:'buy',decidedAt:f.at,executeAt:f.at+1000,expiresAt:f.at+5000,gas:'7000',deposit:'0',maxSpend:'10000000',minReceive:'1000',decisionEvidence:'OFFLINE existing position setup'},f.price!,{});
+ f.at+=1000;f.price={...f.price!,at:f.at};assert.equal(f.ledger.attempt('OFFLINE resource held fill','OFFLINE resource held setup',f.at,{at:f.at,spendLamports:'10000000',receiveUnits:'1000',evidence:'OFFLINE actual-size fixture fill'},f.price).status,'filled');
+ const marks={[f.mint]:{at:f.at,netLamports:'10000000',pricedBaseUnits:'1000',evidence:'OFFLINE actual-size held liquidation'}};
+ f.ledger.reconcile('OFFLINE resource held reconcile',f.at,f.price!,marks);
+ f.ledger.order({id:'OFFLINE unresolved protective exit',mint:f.mint,side:'sell',decidedAt:f.at,executeAt:f.at+1000,expiresAt:f.at+5000,gas:'7000',deposit:'0',maxSpend:'0',minReceive:'1',decisionEvidence:'OFFLINE unresolved exact-size exit'},f.price!,marks);
+ f.bridge.trader.pauseNewEntries('resource pressure; new candidate risk closed');const before=f.ledger.state();
+ assert.equal(f.refresh().kind,'busy');assert.equal(f.bridge.maintainOperatingFinancialReadiness(f.price).kind,'busy');assert.deepEqual(f.ledger.state(),before);assert.ok(f.ledger.state().pending['OFFLINE unresolved protective exit']);
+});

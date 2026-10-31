@@ -6,6 +6,8 @@ import {createHash} from 'node:crypto';
 import type {WatchRow,WatchSeed,WatchIdentityMetadata} from './pilot-watch.js';
 import type {MarketIdentityHint,MarketActivityHint,MarketFeedStatus} from './market-discovery.js';
 
+export class MarketRegistryContention extends Error {readonly code='MARKET_REGISTRY_CONTENTION';readonly callbackStarted=false;constructor(readonly sqliteCode:string){super('Market registry writer lease unavailable before callback');this.name='MarketRegistryContention';}}
+export function isMarketRegistryContention(error:unknown):error is MarketRegistryContention {return error instanceof MarketRegistryContention;}
 export type RegistryParameter=string|number|bigint|null|Buffer;
 export type RegistryMetricSummary={count:number;sum:number;mean:number|null;max:number|null;p50:number|null;p95:number|null};
 export type MarketEvidence={buyLamports:string;sellLamports:string;buyHints:number;sellHints:number;activityHints:number;lastActivityAt:number|null;lastEconomicActivityAt:number|null;lastPrice:number|null;fingerprint:string};
@@ -31,10 +33,11 @@ export class MarketRegistry {
  private readonly db:Database.Database;
  private readonly statements=new Map<string,Database.Statement>();
  private readonly clock:()=>number;
- private transactionAttempts=0;private readOnlyCommits=0;private writeCommits=0;private failedTransactions=0;
+ private readonly concurrentIntake:boolean;
+ private contentionAttempts=0;private transactionAttempts=0;private readOnlyCommits=0;private writeCommits=0;private failedTransactions=0;
  private writes=0;private writeTotalMs=0;private writeMaximumMs=0;private storageFailures=0;private transactionDepth=0;private storageAvailable=true;private lastFailureAt:number|null=null;private lastSuccessfulWriteAt:number|null=null;
- constructor(path:string,options:{now?:()=>number}={}){
-  this.path=path;this.locator={version:'persistent-market-registry-v1',path};this.clock=options.now??Date.now;
+ constructor(path:string,options:{now?:()=>number;concurrentIntake?:boolean}={}){
+  this.path=path;this.locator={version:'persistent-market-registry-v1',path};this.clock=options.now??Date.now;this.concurrentIntake=options.concurrentIntake===true;
   if(path!==':memory:')mkdirSync(dirname(resolve(path)),{recursive:true});
   this.db=new Database(path);this.db.pragma('journal_mode = WAL');this.db.pragma('synchronous = FULL');this.db.pragma('busy_timeout = 25');this.db.pragma('foreign_keys = ON');
   this.db.exec(`
@@ -55,10 +58,14 @@ export class MarketRegistry {
    CREATE TABLE IF NOT EXISTS watch_history(id INTEGER PRIMARY KEY,signature TEXT NOT NULL,at INTEGER NOT NULL,state TEXT NOT NULL,reason TEXT NOT NULL,body TEXT NOT NULL);
    CREATE INDEX IF NOT EXISTS watch_history_signature ON watch_history(signature,at,id);
    CREATE TABLE IF NOT EXISTS verification_queue(signature TEXT PRIMARY KEY,feed_mint TEXT,received_at INTEGER NOT NULL,not_before INTEGER NOT NULL,priority REAL NOT NULL DEFAULT 0,state TEXT NOT NULL DEFAULT 'PENDING',attempts INTEGER NOT NULL DEFAULT 0,last_reason TEXT,finished_at INTEGER,source TEXT,kind TEXT);
+   CREATE TABLE IF NOT EXISTS verification_history(id INTEGER PRIMARY KEY,signature TEXT NOT NULL,at INTEGER NOT NULL,event TEXT NOT NULL,body TEXT NOT NULL);
+   CREATE INDEX IF NOT EXISTS verification_history_signature ON verification_history(signature,at,id);
    CREATE INDEX IF NOT EXISTS verification_due ON verification_queue(state,not_before,priority DESC,received_at,signature);
    CREATE INDEX IF NOT EXISTS verification_priority ON verification_queue(state,priority DESC,received_at,signature);
    CREATE INDEX IF NOT EXISTS verification_mint ON verification_queue(feed_mint,state);
    CREATE TABLE IF NOT EXISTS origin_proofs(mint TEXT PRIMARY KEY,body TEXT NOT NULL,available INTEGER NOT NULL DEFAULT 1,created_at INTEGER NOT NULL,updated_at INTEGER NOT NULL,archived_at INTEGER,archive_reason TEXT);
+   CREATE TABLE IF NOT EXISTS origin_proof_history(id INTEGER PRIMARY KEY,mint TEXT NOT NULL,archived_at INTEGER NOT NULL,reason TEXT NOT NULL,body TEXT NOT NULL,created_at INTEGER NOT NULL,updated_at INTEGER NOT NULL);
+   CREATE INDEX IF NOT EXISTS origin_proof_history_mint ON origin_proof_history(mint,archived_at,id);
    CREATE TABLE IF NOT EXISTS distinct_events(kind TEXT NOT NULL,key TEXT NOT NULL,at INTEGER NOT NULL,PRIMARY KEY(kind,key));
    CREATE INDEX IF NOT EXISTS distinct_events_time ON distinct_events(kind,at);
    CREATE TABLE IF NOT EXISTS market_activity_seen(mint TEXT NOT NULL,signature TEXT NOT NULL,side TEXT NOT NULL,first_seen_at INTEGER NOT NULL,PRIMARY KEY(mint,signature,side));
@@ -75,20 +82,20 @@ export class MarketRegistry {
  private statement(sql:string):Database.Statement {let statement=this.statements.get(sql);if(!statement){statement=this.db.prepare(sql);this.statements.set(sql,statement);}return statement;}
  private write<T>(fn:()=>T):T {
   if(this.transactionDepth>0)return fn();
-  this.transactionAttempts++;const start=performance.now();let committedAt:number|null=null,mutated=false,failed=false;
-  try{const result=this.db.transaction(()=>{this.transactionDepth++;try{
+  this.transactionAttempts++;const start=performance.now();let committedAt:number|null=null,mutated=false,failed=false,callbackStarted=false;
+  try{const transaction=this.db.transaction(()=>{callbackStarted=true;this.transactionDepth++;try{
    const before=Number((this.statement('SELECT total_changes() n').get() as {n:number}).n);
    const value=fn();const after=Number((this.statement('SELECT total_changes() n').get() as {n:number}).n);
    // Lookup/no-op watch operations are read transactions. Writing diagnostic
    // metadata here used to turn each global activity lookup into a FULL fsync.
    mutated=after!==before;if(mutated){committedAt=Math.max(this.clock(),this.getMetadata<number>('updatedAt')??0);
     this.statement('INSERT INTO registry_metadata(key,body) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET body=excluded.body').run('updatedAt',json(committedAt));}return value;
-  }finally{this.transactionDepth--;}})();if(mutated){this.writeCommits++;this.storageAvailable=true;this.lastSuccessfulWriteAt=committedAt;}else this.readOnlyCommits++;return result;
-  }catch(error){failed=true;this.failedTransactions++;if(typeof (error as {code?:unknown})?.code==='string'&&String((error as {code:string}).code).startsWith('SQLITE_')){this.storageFailures++;this.storageAvailable=false;this.lastFailureAt=this.clock();}throw error;
+  }finally{this.transactionDepth--;}});const result=this.concurrentIntake?transaction.immediate():transaction();if(mutated){this.writeCommits++;this.storageAvailable=true;this.lastSuccessfulWriteAt=committedAt;}else this.readOnlyCommits++;return result;
+  }catch(error){failed=true;this.failedTransactions++;const code=(error as {code?:unknown})?.code;if(this.concurrentIntake&&!callbackStarted&&typeof code==='string'&&/^(SQLITE_BUSY|SQLITE_LOCKED)(_|$)/.test(code)){this.contentionAttempts++;throw new MarketRegistryContention(code);}if(typeof (error as {code?:unknown})?.code==='string'&&String((error as {code:string}).code).startsWith('SQLITE_')){this.storageFailures++;this.storageAvailable=false;this.lastFailureAt=this.clock();}throw error;
   }finally{if(mutated||failed){const elapsed=performance.now()-start;this.writes++;this.writeTotalMs+=elapsed;this.writeMaximumMs=Math.max(this.writeMaximumMs,elapsed);}}
  }
  transaction<T>(fn:()=>T):T{return this.write(fn);}
- health(){return {transactions:{attempted:this.transactionAttempts,readOnlyCommits:this.readOnlyCommits,writeCommits:this.writeCommits,failed:this.failedTransactions,fsyncEligibleCommits:this.writeCommits},available:this.storageAvailable,lastFailureAt:this.lastFailureAt,lastSuccessfulWriteAt:this.lastSuccessfulWriteAt,storageFailures:this.storageFailures,maximumWriteMs:this.writeMaximumMs,meanWriteMs:this.writes?this.writeTotalMs/this.writes:0};}
+ health(){return {transactions:{contentionBeforeCallback:this.contentionAttempts,attempted:this.transactionAttempts,readOnlyCommits:this.readOnlyCommits,writeCommits:this.writeCommits,failed:this.failedTransactions,fsyncEligibleCommits:this.writeCommits},available:this.storageAvailable,lastFailureAt:this.lastFailureAt,lastSuccessfulWriteAt:this.lastSuccessfulWriteAt,storageFailures:this.storageFailures,maximumWriteMs:this.writeMaximumMs,meanWriteMs:this.writes?this.writeTotalMs/this.writes:0};}
  getMetadata<T>(key:string):T|undefined {const row=this.statement('SELECT body FROM registry_metadata WHERE key=?').get(key) as {body:string}|undefined;return row?JSON.parse(row.body) as T:undefined;}
  setMetadata(key:string,value:unknown):void{this.write(()=>{this.statement('INSERT INTO registry_metadata(key,body) VALUES(?,?) ON CONFLICT(key) DO UPDATE SET body=excluded.body').run(key,json(value));});}
  get(signature:string):WatchRow|undefined{return this.getBySignature(signature);}
@@ -114,6 +121,11 @@ export class MarketRegistry {
  aggregate(expressions:Record<string,string>,where?:string,params:RegistryParameter[]=[]):Record<string,number|null>{need(Object.keys(expressions).every(k=>/^[A-Za-z][A-Za-z0-9_]*$/.test(k)),'MARKET_REGISTRY_AGGREGATE_ALIAS');return this.statement(`SELECT ${Object.entries(expressions).map(([key,expr])=>`${expr} AS ${key}`).join(',')} FROM watch_rows w WHERE w.archived=0${where?` AND (${where})`:''}`).get(...params) as Record<string,number|null>;}
  listMetadata(q:{after?:string;limit?:number;where?:string;params?:RegistryParameter[]}={}):WatchIdentityMetadata[]{const params=[...(q.params??[])];const conditions=[q.where??'1'];if(q.after){conditions.push('w.signature>?');params.push(q.after);}return this.queryRows({where:conditions.join(' AND '),params,orderBy:'w.signature',limit:q.limit??256}).map(r=>({signature:r.signature,mint:r.mint,pool:r.pool,migrationAt:r.migrationAt,verifiedAt:r.verifiedAt,state:r.state,olderResearch:!!r.olderResearch}));}
  enqueueVerification(seed:WatchSeed,priority=0,provenance?:{source:string;kind:string}):boolean{return this.transaction(()=>{need(name(seed.signature)&&integer(seed.receivedAt),'MARKET_REGISTRY_VERIFICATION_SEED');const result=this.statement('INSERT OR IGNORE INTO verification_queue(signature,feed_mint,received_at,not_before,priority,source,kind) VALUES(?,?,?,?,?,?,?)').run(seed.signature,seed.feedMint??null,seed.receivedAt,seed.receivedAt,priority,provenance?.source??'pumpportal-migration',provenance?.kind??'migration');if(seed.feedMint)this.observeIdentity({mint:seed.feedMint,signature:seed.signature,at:seed.receivedAt,source:provenance?.source??'pumpportal-migration',kind:provenance?.kind??'migration'});return result.changes===1;});}
+ requeueVerification(seed:WatchSeed,notBefore=seed.receivedAt,reason='canonical creation re-verification required'):boolean{return this.transaction(()=>{
+  need(name(seed.signature)&&integer(seed.receivedAt)&&integer(notBefore)&&name(reason),'MARKET_REGISTRY_REVERIFICATION');const prior=this.statement('SELECT * FROM verification_queue WHERE signature=?').get(seed.signature) as Record<string,unknown>|undefined;
+  if(prior)this.statement('INSERT INTO verification_history(signature,at,event,body) VALUES(?,?,?,?)').run(seed.signature,this.clock(),'reverification-requeued-preserving-prior-state',json(prior));
+  this.statement(`INSERT INTO verification_queue(signature,feed_mint,received_at,not_before,priority,state,last_reason) VALUES(?,?,?,?,0,'PENDING',?) ON CONFLICT(signature) DO UPDATE SET feed_mint=COALESCE(excluded.feed_mint,verification_queue.feed_mint),received_at=MIN(verification_queue.received_at,excluded.received_at),not_before=excluded.not_before,state='PENDING',last_reason=excluded.last_reason,finished_at=NULL`).run(seed.signature,seed.feedMint??null,seed.receivedAt,notBefore,reason);return true;
+ });}
  removeVerification(signature:string,at=this.clock(),reason='verification completed'):void{this.write(()=>{this.statement("UPDATE verification_queue SET state='DONE',finished_at=?,last_reason=? WHERE signature=?").run(at,reason,signature);});}
  nextVerification(at:number):WatchSeed|undefined{const r=this.statement("SELECT signature,feed_mint,received_at FROM verification_queue WHERE state='PENDING' AND not_before<=? ORDER BY priority DESC,received_at,signature LIMIT 1").get(at) as {signature:string;feed_mint:string|null;received_at:number}|undefined;return r?{signature:r.signature,...(r.feed_mint?{feedMint:r.feed_mint}:{}),receivedAt:r.received_at}:undefined;}
  deferVerification(signature:string,until:number,reason='verification retry deferred'):void{this.write(()=>{this.statement("UPDATE verification_queue SET not_before=?,attempts=attempts+1,last_reason=? WHERE signature=? AND state='PENDING'").run(until,reason,signature);});}
@@ -122,7 +134,7 @@ export class MarketRegistry {
  putOrigin(mint:string,origin:unknown):void{this.write(()=>{const at=this.clock();this.statement('INSERT INTO origin_proofs(mint,body,created_at,updated_at) VALUES(?,?,?,?) ON CONFLICT(mint) DO UPDATE SET body=excluded.body,available=1,updated_at=excluded.updated_at,archived_at=NULL,archive_reason=NULL').run(mint,json(origin),at,at);});}
  getOrigin<T=unknown>(mint:string):T|undefined{const row=this.statement('SELECT body FROM origin_proofs WHERE mint=?').get(mint) as {body:string}|undefined;return row?JSON.parse(row.body) as T:undefined;}
  hasOrigin(mint:string):boolean{return !!this.statement('SELECT 1 FROM origin_proofs WHERE mint=? AND available=1').get(mint);}
- archiveOrigin(mint:string,reason:string,at=this.clock()):void{this.write(()=>{this.statement('UPDATE origin_proofs SET available=0,archived_at=?,archive_reason=? WHERE mint=?').run(at,reason,mint);});}
+ archiveOrigin(mint:string,reason:string,at=this.clock()):void{this.transaction(()=>{this.statement('INSERT INTO origin_proof_history(mint,archived_at,reason,body,created_at,updated_at) SELECT mint,?,?,body,created_at,updated_at FROM origin_proofs WHERE mint=? AND available=1').run(at,reason,mint);this.statement('UPDATE origin_proofs SET available=0,archived_at=?,archive_reason=? WHERE mint=? AND available=1').run(at,reason,mint);});}
  markDistinct(kind:string,key:string,at:number):boolean{return this.write(()=>this.statement('INSERT OR IGNORE INTO distinct_events(kind,key,at) VALUES(?,?,?)').run(kind,key,at).changes===1);}
  distinctCount(kind:string):number{return Number((this.statement('SELECT COUNT(*) n FROM distinct_events WHERE kind=?').get(kind) as {n:number}).n);}
  markStage(mint:string,stage:'lightweight-screened'|'deep-admitted'|'verified-audit'|'evaluated',at:number):boolean{return this.markDistinct(stage,mint,at);}
@@ -167,6 +179,9 @@ export class MarketRegistry {
   const params=query.params??[];const row=this.statement(`SELECT COUNT(*) count,COALESCE(SUM(value),0) sum,AVG(value) mean,MAX(value) max FROM (${source})`).get(...params) as Omit<RegistryMetricSummary,'p50'|'p95'>;
   const quantile=(p:number)=>row.count?Number((this.statement(`SELECT value FROM (${source}) ORDER BY value LIMIT 1 OFFSET ?`).get(...params,Math.max(0,Math.ceil(row.count*p)-1)) as {value:number}).value):null;
   return {...row,p50:quantile(.5),p95:quantile(.95)};
+ }
+ nextWatchActivities(limit=16):{mint:string;at:number;evidence:'unverified-provider-activity-hint'}[]{
+  need(integer(limit)&&limit>0,'MARKET_REGISTRY_ACTIVITY_BATCH');return (this.statement(`SELECT DISTINCT w.mint mint,t.last_activity_at at FROM watch_rows w JOIN market_tokens t ON t.mint=w.mint WHERE w.archived=0 AND w.state NOT IN ('HELD','ENTRY_PENDING','PERMANENTLY_UNSUPPORTED') AND t.last_activity_at>COALESCE(w.last_activity_at,-1) ORDER BY COALESCE(w.last_activity_at,0),w.signature LIMIT ?`).all(limit) as {mint:string;at:number}[]).map(r=>({...r,evidence:'unverified-provider-activity-hint' as const}));
  }
  nextOriginCandidate(at:number):{mint:string;signature:string;receivedAt:number;source:string;priority:number}|undefined {
   const row=this.statement(`SELECT t.mint,t.last_signature signature,t.last_activity_at receivedAt,t.last_activity_source source,t.activity_score priority FROM market_tokens t

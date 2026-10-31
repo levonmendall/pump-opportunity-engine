@@ -110,3 +110,14 @@ test('read-only watch transactions never mutate commit metadata or require a FUL
   r.observeIdentity({mint:'really-new',at:now,source:'pumpportal-new-token',kind:'creation'});assert.equal(r.getMetadata('updatedAt'),now);
  }finally{if(other.inTransaction)other.exec('ROLLBACK');other.close();r.close();rmSync(dir,{recursive:true,force:true});}
 });
+
+test('canonical re-verification reactivates completed work and preserves queue completion and original raw proof history',async()=>{
+ const {default:Database}=await import('better-sqlite3');const dir=mkdtempSync(join(tmpdir(),'poe-market-reverify-'));const path=join(dir,'market.sqlite');const r=new MarketRegistry(path,{now:()=>AT});try{
+  r.enqueueVerification({signature:'canonical',feedMint:'mint-canonical',receivedAt:AT-1000},7);r.removeVerification('canonical',AT-500,'previous independent origin verified');r.putOrigin('mint-canonical',{rawProof:'original-corrupt-source-bytes'});
+  r.transaction(()=>{r.archiveOrigin('mint-canonical','proof mismatch',AT);r.requeueVerification({signature:'canonical',feedMint:'mint-canonical',receivedAt:AT},AT+100,'proof mismatch');});assert.equal(r.hasOrigin('mint-canonical'),false);assert.equal(r.verificationCount(),1);assert.equal(r.nextVerification(AT+99),undefined);assert.equal(r.nextVerification(AT+100)?.receivedAt,AT-1000);
+  r.putOrigin('mint-canonical',{rawProof:'new independently verified bytes'});const inspect=new Database(path,{readonly:true});try{
+   const archived=inspect.prepare('SELECT body FROM origin_proof_history WHERE mint=?').get('mint-canonical') as {body:string};assert.deepEqual(JSON.parse(archived.body),{rawProof:'original-corrupt-source-bytes'});
+   const prior=inspect.prepare('SELECT body FROM verification_history WHERE signature=?').get('canonical') as {body:string};assert.equal(JSON.parse(prior.body).state,'DONE');assert.equal(JSON.parse(prior.body).last_reason,'previous independent origin verified');assert.equal((inspect.prepare('SELECT priority FROM verification_queue WHERE signature=?').get('canonical') as {priority:number}).priority,7);
+  }finally{inspect.close();}
+ }finally{r.close();rmSync(dir,{recursive:true,force:true});}
+});

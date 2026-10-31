@@ -93,7 +93,11 @@ export type DailyLossResetReceipt={accountId:string;inceptionAt:number;at:number
 /** Provenance only. Neither this bounded read nor its digest grants permission
  * to enter, changes a stop, or substitutes for fresh financial/market evidence. */
 const INTERNAL_SHUTDOWN_PROOF_POLICY=Object.freeze({version:'internal-native-shutdown-chain-v1',maximumRuns:128,maximumStops:128,maximumControlIntents:512,maximumControlBytes:1024*1024});
-const INTERNAL_SHUTDOWN_SOFT_PAUSES=new Set(['graceful native PAPER segment ended; exposure retained','native PAPER process closing; obligations retained','native PAPER routine checkpoint: fresh audited readiness required','execution startup: fresh reconciliation/readiness required','current equity or liquidation unavailable; entries closed','current financial reconciliation unavailable; exposure retained','entry preparation or reconciliation unavailable','consistent backup unavailable; exposure retained']);
+/** Runtime resource admission is a transient operational condition, not owner
+ * intent or financial uncertainty. Recovery still authenticates every control
+ * row and requires fresh inventory, source, pricing and current admission. */
+export const OPERATIONAL_RESOURCE_ENTRY_PAUSES=Object.freeze(['resource pressure; new candidate risk closed','rolling resource or evidence pressure; exposure retained'] as const);
+const INTERNAL_SHUTDOWN_SOFT_PAUSES=new Set<string>([...OPERATIONAL_RESOURCE_ENTRY_PAUSES,'graceful native PAPER segment ended; exposure retained','native PAPER process closing; obligations retained','native PAPER routine checkpoint: fresh audited readiness required','execution startup: fresh reconciliation/readiness required','current equity or liquidation unavailable; entries closed','current financial reconciliation unavailable; exposure retained','entry preparation or reconciliation unavailable','consistent backup unavailable; exposure retained']);
 const L = 1_000_000_000n;
 const INITIAL = 1_000_000_000n; // $1,000 in microUSD
 const MAX_PRICE_AGE = 10_000;

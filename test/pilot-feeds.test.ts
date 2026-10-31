@@ -12,10 +12,12 @@ const fixtureTx=JSON.parse(readFileSync('evidence/targeted-transaction-sample.js
 const scope={mint:'2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump',pool:'DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD',baseUnits:'138353716808147',minSlot:fixtureTx.transaction.slot,supportedPoolEvidence:'OFFLINE_FIXTURE_ONLY'};
 const selected=()=>({mint:scope.mint,poolId:scope.pool,pool:'pump-amm',signature:fixtureTx.signature,action:'sell',txSigner:'NOT_THE_VERIFIED_TRADER',quoteAmount:1});
 class Socket extends EventEmitter{
-  _socket=Object.assign(new EventEmitter(),{bytesRead:200});closed=false;readonly sent:string[]=[];
+  _socket=Object.assign(new EventEmitter(),{bytesRead:200});closed=false;paused=false;pauseCalls=0;resumeCalls=0;readonly pendingFrames:Array<{payload:unknown;bytes?:number}>=[];readonly sent:string[]=[];
   constructor(readonly endpoint:string){super();}
   send(data:string,callback?:(error?:Error)=>void){assert.equal(this.endpoint,'wss://pumpportal.fun/api/data');const method=JSON.parse(data).method;assert.ok(['subscribeMigration','subscribeNewToken'].includes(method));this.sent.push(data);callback?.();queueMicrotask(()=>this.frame({message:method==='subscribeMigration'?"Subscribed to 'migration' events.":'Successfully subscribed to token creation events.'}));}
-  frame(payload:unknown,bytes?:number){if(this.closed)return;const b=Buffer.from(typeof payload==='string'?payload:JSON.stringify(payload));this._socket.bytesRead+=bytes??b.length+4;this._socket.emit('data',b);this.emit('message',b);}
+  frame(payload:unknown,bytes?:number,alreadyDecoded=false){if(this.closed)return;if(this.paused&&!alreadyDecoded){this.pendingFrames.push({payload,bytes});return;}const b=Buffer.from(typeof payload==='string'?payload:JSON.stringify(payload));this._socket.bytesRead+=bytes??b.length+4;this._socket.emit('data',b);this.emit('message',b);}
+  pause(){this.paused=true;this.pauseCalls++;}
+  resume(){this.paused=false;this.resumeCalls++;while(!this.paused&&this.pendingFrames.length){const next=this.pendingFrames.shift()!;this.frame(next.payload,next.bytes);}}
   terminate(){if(this.closed)return;this.closed=true;queueMicrotask(()=>this.emit('close'));}
   drop(){this.closed=true;this.emit('close');}
 }
@@ -225,6 +227,49 @@ test('global activity reconnect local scheduling deferrals never become provider
  assert.equal(f.sockets.length,1,'native work keeps priority; local polling starts no sockets');assert.equal(f.operations.length,1);
  const blocked=f.feeds.usage().marketDiscovery.recovery.pumpapi!;assert.ok(blocked.localDeferrals>20);assert.equal(blocked.networkReconnects,1);assert.equal(blocked.providerBackoffLevel,1);assert.equal(blocked.lastLocalDeferralReason,'local-control-admission');
  nativeBusy=false;await f.advance(250);assert.equal(f.sockets.length,2,'first spare quarter-second opportunity is used rather than waiting60seconds');assert.equal(f.feeds.usage().pumpApiConnected,true);assert.equal(f.rpcCalls,0);assert.equal(f.trades.length,0);await f.feeds.stop();
+});
+
+test('worker byte backpressure pauses both existing shared transports and drains every buffered identity without new connections',async()=>{
+ const f=setup({persistent:true,marketIntake:true});await f.feeds.startDiscovery();await f.feeds.startWatchActivity();const discovery=f.sockets[0]!,broad=f.sockets[1]!,budgetBytes=32*1024*1024;
+ f.feeds.setMarketBackpressure({paused:true,pendingBytes:budgetBytes,budgetBytes});assert.equal(discovery.paused,true);assert.equal(broad.paused,true);
+ discovery.frame({txType:'create',mint:scope.mint,signature:fixtureTx.signature});broad.frame(selected());f.feeds.setMarketBackpressure({paused:true,pendingBytes:budgetBytes/2,budgetBytes});
+ assert.equal(discovery.pauseCalls,1);assert.equal(broad.pauseCalls,1);assert.equal(f.marketIdentities.length,0);assert.equal(f.marketActivities.length,0);
+ await f.advance(20000);assert.equal(discovery.closed,false);assert.equal(broad.closed,false,'intentional transport pause is not a provider liveness failure');
+ broad.frame({...selected(),signature:bs58.encode(Buffer.alloc(64,67))},undefined,true);assert.equal(f.marketActivities.length,1,'already decoded messages still reach the sink while reads are paused');
+ const paused=f.feeds.usage().marketDiscovery.backpressure;assert.equal(paused.currentPausedMs,20000);assert.equal(paused.framesProcessedWhilePaused,1);assert.equal(paused.transports.pumpapi!.framesProcessedWhilePaused,1);
+ f.feeds.setMarketBackpressure({paused:false,pendingBytes:0,budgetBytes});assert.equal(discovery.paused,false);assert.equal(broad.paused,false);assert.equal(f.marketIdentities.length,1);assert.equal(f.marketActivities.length,2);assert.equal(f.sockets.length,2);assert.equal(f.gaps.length,0);assert.equal(f.rpcCalls,0);assert.equal(f.trades.length,0);
+ const resumed=f.feeds.usage().marketDiscovery.backpressure;assert.equal(resumed.totalPausedMs,20000);assert.equal(resumed.transports.discovery!.totalPausedMs,20000);assert.equal(resumed.identityEvictions,0);assert.equal(resumed.nativeFinancialTransportAffected,false);await f.feeds.stop();
+});
+
+test('resuming a deliberately quiet paused transport preserves actual receipt timestamps and allows fresh read grace before genuine timeout',async()=>{
+ const f=setup({persistent:true,marketIntake:true});await f.feeds.startWatchActivity();const broad=f.sockets[0]!,lastTraffic=f.feeds.usage().lastAnyTrafficAt,budgetBytes=1024*1024;
+ f.feeds.setMarketBackpressure({paused:true,pendingBytes:budgetBytes,budgetBytes});await f.advance(20000);f.feeds.setMarketBackpressure({paused:false,pendingBytes:0,budgetBytes});
+ await f.advance(100);assert.equal(broad.closed,false);assert.equal(f.feeds.usage().lastAnyTrafficAt,lastTraffic,'local resume cannot invent a provider receipt');await f.advance(15000);assert.equal(broad.closed,true);assert.ok(f.gaps.some(row=>row.reason==='PILOT_PUMPAPI_NO_TRANSPORT_RECEIPT'));await f.feeds.stop();
+});
+
+test('worker pressure defers network setup until drain without provider failure escalation or extra sockets',async()=>{
+ const f=setup({persistent:true,marketIntake:true}),budgetBytes=1024*1024;f.feeds.setMarketBackpressure({paused:true,pendingBytes:budgetBytes,budgetBytes});await f.feeds.startWatchActivity();await f.advance(5000);
+ assert.equal(f.sockets.length,0);assert.equal(f.operations.length,0);assert.equal(f.feeds.usage().marketDiscovery.recovery.pumpapi!.providerBackoffLevel,0);assert.equal(f.feeds.usage().marketDiscovery.recovery.pumpapi!.lastLocalDeferralReason,'market-intake-byte-backpressure');
+ f.feeds.setMarketBackpressure({paused:false,pendingBytes:0,budgetBytes});await f.advance(250);assert.equal(f.sockets.length,1);assert.equal(f.feeds.usage().pumpApiConnected,true);await f.feeds.stop();
+});
+
+test('provider disconnect during local pressure remains a real gap and reconnects through the existing gate only after drain',async()=>{
+ const f=setup({persistent:true,marketIntake:true});await f.feeds.startWatchActivity();const first=f.sockets[0]!,budgetBytes=1024*1024;f.feeds.setMarketBackpressure({paused:true,pendingBytes:budgetBytes,budgetBytes});first.drop();await f.advance(10000);
+ assert.equal(f.sockets.length,1);assert.equal(f.feeds.usage().marketDiscovery.sources['pumpapi-broad']!.connected,false);assert.equal(f.feeds.usage().marketDiscovery.sources['pumpapi-broad']!.gaps,1);assert.equal(f.feeds.usage().marketDiscovery.sources['pumpapi-broad']!.currentOutageMs,10000);
+ f.feeds.setMarketBackpressure({paused:false,pendingBytes:0,budgetBytes});await f.advance(250);assert.equal(f.sockets.length,2);assert.equal(first.resumeCalls,0,'closed transports are never resumed');assert.equal(f.feeds.usage().pumpApiConnected,true);assert.equal(f.feeds.usage().marketDiscovery.sources['pumpapi-broad']!.observedOutageMs,10250);await f.feeds.stop();
+});
+
+test('synchronous queue pressure while a resumed transport drains can pause it again without losing subsequent frames',async()=>{
+ const f=setup({persistent:true,marketIntake:true});await f.feeds.startWatchActivity();const broad=f.sockets[0]!,budgetBytes=1024*1024;f.feeds.setMarketBackpressure({paused:true,pendingBytes:budgetBytes,budgetBytes});
+ for(let i=0;i<3;i++)broad.frame({...selected(),signature:bs58.encode(Buffer.alloc(64,70+i))});
+ f.feedOptions.onMarketActivity=row=>{f.marketActivities.push(row);if(f.marketActivities.length===1)f.feeds.setMarketBackpressure({paused:true,pendingBytes:budgetBytes,budgetBytes});};
+ f.feeds.setMarketBackpressure({paused:false,pendingBytes:0,budgetBytes});assert.equal(broad.paused,true);assert.equal(f.marketActivities.length,1);assert.equal(broad.pendingFrames.length,2);
+ f.feeds.setMarketBackpressure({paused:false,pendingBytes:0,budgetBytes});assert.equal(broad.paused,false);assert.equal(f.marketActivities.length,3);assert.equal(broad.pendingFrames.length,0);assert.equal(f.sockets.length,1);await f.feeds.stop();
+});
+
+test('pressure arriving during discovery setup allows required subscription acknowledgments before pausing shared reads',async()=>{
+ const f=setup({persistent:true,marketIntake:true}),budgetBytes=1024*1024;f.feedOptions.onMarketFeed=row=>{f.marketFeedStatuses.push(row);if(row.connected&&row.source==='pumpportal-migration')f.feeds.setMarketBackpressure({paused:true,pendingBytes:budgetBytes,budgetBytes});};
+ await f.feeds.startDiscovery();assert.equal(f.sockets.length,1);assert.equal(f.sockets[0]!.sent.length,2);assert.equal(f.sockets[0]!.paused,true);assert.equal(f.marketFeedStatuses.filter(row=>row.connected).length,2);await f.feeds.stop();
 });
 
 
