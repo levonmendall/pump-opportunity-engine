@@ -9,7 +9,7 @@ import {join} from 'node:path';
 import {PublicKey} from '@solana/web3.js';
 import {PaperLedger,OPERATIONAL_REPORTING_ENTRY_PAUSE,type UsdPrice} from '../src/ledger.js';
 import {NativePaper,NATIVE_PAPER_FINANCIAL_READINESS_POLICY,NATIVE_PAPER_ENTRY_BLOCKERS,nativePaperDerivedEntryBlocker} from '../src/native-paper.js';
-import {NativePaperCashMaintenance,NativePaperReportingHealth,nativePaperBackupDue,nativePaperEssentialEvidence} from '../src/run-native-paper.js';
+import {NativePaperCashMaintenance,NativePaperReportingHealth,NATIVE_PAPER_REPORT_BUDGET_MS,NATIVE_PAPER_FINANCIAL_REPORTING_POLICY,nativePaperBackupDue,nativePaperEssentialEvidence} from '../src/run-native-paper.js';
 import {FlowWindow,assessPredictiveBuying,type NormalizedTrade} from '../src/strategy.js';
 import {nativePaperFeaturesSha256} from '../src/native-paper-contract.js';
 import {PILOT_VERSION,PILOT_CONTRACT_SHA256} from '../src/pilot-contract.js';
@@ -256,16 +256,18 @@ test('resource recovery preserves an unresolved protective exit and refuses cash
  assert.equal(f.refresh().kind,'busy');assert.equal(f.bridge.maintainOperatingFinancialReadiness(f.price).kind,'busy');assert.deepEqual(f.ledger.state(),before);assert.ok(f.ledger.state().pending['OFFLINE unresolved protective exit']);
 });
 
-test('inherited reporting-overrun pause resumes only after a later successful bounded projection and fresh finance',t=>{
+test('inherited reporting-overrun pause requires completed valid publication and fresh finance rather than a latency veto',t=>{
  const f=fixture(t,false,true),health=new NativePaperReportingHealth(),refresh=()=>{f.admission=health.entryAllowed;return f.refresh();};
  assert.equal(refresh().recovered,false);health.observe(50,true);assert.equal(refresh().recovered,true);
  f.at++;f.ledger.pause('trader:pause:'+f.ledger.state().revision+':'+f.at,f.at,OPERATIONAL_REPORTING_ENTRY_PAUSE);
  f.at++;f.ledger.pause('execution-recovery:'+f.ledger.accountId+':'+f.ledger.state().revision,f.at,'execution startup: fresh reconciliation/readiness required');
  f.at++;f.ledger.pause('trader:restore-hard-pause:'+f.ledger.state().revision+':'+f.at,f.at,OPERATIONAL_REPORTING_ENTRY_PAUSE);
  const before=f.ledger.state(),restarted=f.make(),restartRefresh=()=>{f.admission=health.entryAllowed;return restarted.maintainFlatFinancialReadiness(f.price);};
- health.observe(251,true);assert.equal(restartRefresh().recovered,false);assert.equal(f.ledger.state().controls.entriesEnabled,false);
+ health.observe(251,false);assert.equal(restartRefresh().recovered,false);assert.equal(f.ledger.state().controls.entriesEnabled,false);
+ let clock=0;const completed:string[]=[];const elapsed=health.complete(()=>{assert.equal(health.entryAllowed,false);completed.push('projection','snapshot','status','checkpoint');clock=251;},()=>true,()=>clock);assert.equal(elapsed,251);assert.deepEqual(completed,['projection','snapshot','status','checkpoint']);assert.equal(health.entryAllowed,true,'a completed valid publication is usable even when slower than the performance budget');
+ f.connected=false;assert.equal(restartRefresh().recovered,false);assert.equal(f.ledger.state().controls.entriesEnabled,false);f.connected=true;
  health.observe(10,false);assert.equal(restartRefresh().recovered,false);health.observe(NaN,true);assert.equal(restartRefresh().recovered,false);
- health.observe(75,true);f.connected=false;assert.equal(restartRefresh().recovered,false);f.connected=true;assert.equal(restartRefresh().recovered,true);
+ health.complete(()=>{clock+=251;},()=>true,()=>clock);f.connected=false;assert.equal(restartRefresh().recovered,false);f.connected=true;assert.equal(restartRefresh().recovered,true);
  assert.equal(f.ledger.state().lamports,before.lamports);assert.equal(f.ledger.state().realizedLamports,before.realizedLamports);assert.deepEqual(f.ledger.state().positions,{});assert.deepEqual(f.ledger.state().pending,{});
  assert.equal(f.ledger.exportJournal(100).filter(row=>(row as any).kind==='pause'&&JSON.parse((row as any).detail).reason===OPERATIONAL_REPORTING_ENTRY_PAUSE).length,2,'both original and restored failure records remain');
  assert.deepEqual(f.calls,{context:0,preparation:0,quote:0,execution:0});
@@ -286,4 +288,36 @@ test('healthy reporting cannot launder owner wording, mixed hard controls or an 
   assert.equal(restarted.maintainFlatFinancialReadiness(f.price).recovered,false);assert.equal(f.ledger.state().controls.entriesEnabled,false);assert.equal(f.ledger.state().controls.stopRequested,before.controls.stopRequested);
   assert.equal(f.ledger.state().lamports,before.lamports);assert.deepEqual(f.ledger.state().positions,before.positions);assert.deepEqual(f.ledger.state().pending,before.pending);
  });
+});
+
+
+test('only a completed valid synchronous report opens reporting readiness; every failed publication stage closes it',async t=>{
+ for(const stage of ['projection','snapshot','status','checkpoint','projection-unavailable','async-publication','projection-predicate']as const)await t.test(stage,st=>{
+  const f=fixture(st,false,true),health=new NativePaperReportingHealth(),before=f.ledger.state();let clock=0,completed=false;health.observe(1,true);
+  const publish=()=>{assert.equal(health.entryAllowed,true,'the last completed view remains available to derive a synchronous replacement status');for(const phase of ['projection','snapshot','status','checkpoint']){if(stage===phase)throw Error('OFFLINE '+phase+' unavailable');if(phase==='projection')f.projection();}if(stage==='async-publication')return Promise.resolve();clock=463;completed=true;};
+  if(stage==='projection-unavailable')assert.equal(health.complete(publish,()=>false,()=>clock),463);
+  else assert.throws(()=>health.complete(publish,()=>{if(stage==='projection-predicate')throw Error('OFFLINE validity unavailable');return true;},()=>clock));
+  assert.equal(health.entryAllowed,false);f.admission=health.entryAllowed;assert.equal(f.refresh().recovered,false);assert.equal(f.ledger.state().controls.entriesEnabled,false);assert.equal(f.ledger.state().lamports,before.lamports);assert.deepEqual(f.ledger.state().positions,before.positions);assert.deepEqual(f.ledger.state().pending,before.pending);assert.deepEqual(f.calls,{context:0,preparation:0,quote:0,execution:0});
+  if(stage==='projection-unavailable'||stage==='projection-predicate')assert.equal(completed,true);
+ });
+});
+
+test('completed-report latency never substitutes for actual finance, source, certificate or owner permission',async t=>{
+ for(const gate of ['healthy','stale-price','absent-price','source','expired-certificate','absent-certificate','owner','hard-control','uncertainty','pending']as const)await t.test(gate,st=>{
+  const f=fixture(st,false,true),health=new NativePaperReportingHealth();let clock=0;const elapsed=health.complete(()=>{assert.equal(health.entryAllowed,false);f.projection();clock=468;},()=>true,()=>clock);assert.equal(elapsed,468);assert.equal(health.entryAllowed,true);f.admission=health.entryAllowed;
+  if(gate==='stale-price')f.price={...f.price!,at:f.at-10001};if(gate==='absent-price')f.price=null;if(gate==='source')f.connected=false;if(gate==='absent-certificate')f.certificateAvailable=false;
+  if(gate==='expired-certificate'){const options=(f.bridge as unknown as {options:{certificate:(mint:string,at:number)=>any}}).options,old=options.certificate;st.mock.method(options,'certificate',(mint:string,at:number)=>{const c=old(mint,at);return c?{...c,deadlineAt:at-1}:c;});}
+  if(gate==='owner')f.ledger.pause('operator-pause:OFFLINE-completed-report',f.at,'operator paused new entries');if(gate==='hard-control')f.bridge.trader.pauseNewEntries('OFFLINE financial control remains hard');if(gate==='uncertainty')f.bridge.trader.financialMaintenanceFailed('flat-reconcile-context',Error('OFFLINE financial uncertainty'));
+  if(gate==='pending'){assert.equal(f.refresh().recovered,true);f.ledger.order({id:'OFFLINE completed-report pending',mint:f.mint,side:'buy',decidedAt:f.at,executeAt:f.at+1000,expiresAt:f.at+5000,gas:'7000',deposit:'0',maxSpend:'10000000',minReceive:'1000',decisionEvidence:'OFFLINE retained obligation'},f.price!,{});assert.equal(Object.keys(f.ledger.state().pending).length,1);}
+  const before=f.ledger.state(),financialOnly=gate==='healthy'||gate==='expired-certificate'||gate==='absent-certificate';assert.equal(f.refresh().recovered,financialOnly);if(!financialOnly&&gate!=='pending')assert.equal(f.ledger.state().controls.entriesEnabled,false);if(gate==='pending')assert.equal(f.ledger.state().controls.entriesEnabled,before.controls.entriesEnabled);if(gate==='expired-certificate'||gate==='absent-certificate'||gate==='source')assert.equal(f.bridge.ready(f.mint),false,'completed reporting does not substitute for actual current candidate evidence');assert.equal(f.ledger.state().lamports,before.lamports);assert.deepEqual(f.ledger.state().positions,before.positions);assert.deepEqual(f.ledger.state().pending,before.pending);assert.deepEqual(f.calls,{context:0,preparation:0,quote:0,execution:0});
+ });
+});
+
+test('invalid report measurements fail closed while the unchanged 250ms budget remains performance admission',()=>{
+ assert.equal(NATIVE_PAPER_REPORT_BUDGET_MS,250);assert.equal(NATIVE_PAPER_FINANCIAL_REPORTING_POLICY,'validated-financial-publication-independent-report-timing-v3');
+ for(const elapsed of [NaN,Infinity,-Infinity,-1]){const health=new NativePaperReportingHealth();health.observe(1,true);assert.equal(health.entryAllowed,true);let clock=0;health.complete(()=>{clock=elapsed;},()=>true,()=>clock);assert.equal(health.entryAllowed,false);}
+});
+
+test('report clock failures close prior readiness and preserve the original publication failure',()=>{
+ for(const stage of ['start','end','publication-and-end']as const){const health=new NativePaperReportingHealth();health.observe(1,true);let reads=0,published=false;const clockError=Error('OFFLINE report clock unavailable'),publicationError=Error('OFFLINE publication failed');assert.throws(()=>health.complete(()=>{published=true;if(stage==='publication-and-end')throw publicationError;},()=>true,()=>{reads++;if(stage==='start'||reads===2)throw clockError;return 0;}),error=>error===(stage==='publication-and-end'?publicationError:clockError));assert.equal(health.entryAllowed,false);assert.equal(published,stage!=='start');}
 });
