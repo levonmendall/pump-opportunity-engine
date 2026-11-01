@@ -1,0 +1,81 @@
+name: Build reviewed POE registry financial boundary repair
+on:
+  push:
+    branches: [repair/poe-registry-financial-boundary-20261101]
+    paths: ['.github/workflows/poe-registry-financial-reviewed-build.yml']
+permissions:
+  contents: read
+concurrency:
+  group: poe-registry-financial-boundary-20261101
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: 1c8a81fc88a129ea901610efb27db0736dfd8dae
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+          cache: npm
+      - name: Install unchanged dependencies and retain prior attribution
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          mkdir -p /tmp/poe-registry-financial-validation
+          npm ci --include=dev
+          git rev-parse HEAD > /tmp/poe-registry-financial-validation/source-commit.txt
+          git diff 7aec04077bf560fa95078f2d811195ccc0ee13ed -- src test > /tmp/poe-registry-financial-validation/source.patch
+          printf '%s\n' '{"priorRun":41323024895,"result":"typecheck failed: assertion library narrowed mutable test array to never[]","correction":"assert copied array snapshots, preserving all exact comparisons","runtimeSourceChangedForCorrection":false,"assertionsRelaxed":false}' > /tmp/poe-registry-financial-validation/prior-validation.json
+      - name: Typecheck and compile
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run build 2>&1 | tee /tmp/poe-registry-financial-validation/typecheck.log
+          npm run compile 2>&1 | tee /tmp/poe-registry-financial-validation/compile.log
+      - name: Focused contention, real accounting, readiness and future hard-stop regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          node --import tsx --test --test-concurrency=1 test/registry-financial-boundary.test.ts test/native-paper.test.ts test/operating-financial-readiness.test.ts test/denied-readiness-recovery.test.ts test/reviewed-candidate-control-lineage.test.ts test/trader.test.ts test/native-control-recovery.test.ts test/execution.test.ts test/native-candidate-runner.test.ts test/market-registry-lifecycle.test.ts test/token-age-policy.test.ts 2>&1 | tee /tmp/poe-registry-financial-validation/focused.log
+      - name: Full offline regression suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          node --import tsx --test --test-concurrency=1 test/*.test.ts 2>&1 | tee /tmp/poe-registry-financial-validation/full.log
+      - name: Build exact clean executable only after complete success
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          test "$(git rev-parse HEAD)" = 1c8a81fc88a129ea901610efb27db0736dfd8dae
+          test -z "$(git status --porcelain -- src scripts package.json package-lock.json)"
+          node scripts/build-native-paper-ec2.mjs --output-directory /tmp/poe-native-paper-output-registry-financial
+          cp -a /tmp/poe-native-paper-output-registry-financial /tmp/poe-registry-financial-validation/bundle
+          python3 -B -I - <<'PY'
+          import hashlib,json,pathlib,re
+          p=pathlib.Path('/tmp/poe-registry-financial-validation');source=(p/'source-commit.txt').read_text().strip();meta=json.loads((p/'bundle/metadata.json').read_bytes())
+          assert meta['git']['commit']==source and meta['git']['workingTreeStatus']==''
+          log=(p/'full.log').read_text()
+          def metric(k):
+              rows=re.findall(r'(?m)^(?:# |ℹ )'+k+r'\s+(\d+)\s*$',log);assert len(rows)==1;return int(rows[0])
+          count=metric('tests');assert count>=3073 and metric('pass')==count and all(metric(k)==0 for k in ['fail','skipped','cancelled'])
+          receipt={'kind':'POE_REGISTRY_FINANCIAL_BOUNDARY_VALIDATED_BUILD','source':source,'base':'7aec04077bf560fa95078f2d811195ccc0ee13ed','bundleSha256':hashlib.sha256((p/'bundle/native-paper.mjs').read_bytes()).hexdigest(),'backupWorkerSha256':hashlib.sha256((p/'bundle/backup-worker.mjs').read_bytes()).hexdigest(),'testsPassed':count,'reviewedFailureRevision':212280,'diagnosticReportSha256':'5e900ce15313f25aa848cdf22e77eeb29f5bd3ca55cf9cd667e9b063fcb8cc95','financialReplay':False,'directEntryEnable':False,'futureHardFailureRecovery':False,'tokenAgeMaximumMs':86400000,'missingEvidenceWaitBonus':0,'fourSlotsPreserved':True,'liveTradingEnabled':False,'ec2Changed':False,'ownerReleaseApprovalRequired':True}
+          (p/'build-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt))
+          PY
+          sha256sum /tmp/poe-registry-financial-validation/bundle/* > /tmp/poe-registry-financial-validation/SHA256SUMS
+      - name: Retain source changes and all validation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: poe-registry-financial-reviewed-${{ github.run_id }}
+          path: /tmp/poe-registry-financial-validation/
+          retention-days: 30
+          if-no-files-found: error
