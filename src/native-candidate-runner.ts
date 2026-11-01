@@ -61,6 +61,7 @@ export class NativeCandidateRunner{
  private readonly cancelledAuditDiagnostics:Array<{mint:string;targetEndAt:number;deadlineAt:number;cancelledAt:number;session:NativeAuditSession}>=[];
  private verificationSession:VerificationSession|null=null;private committedActivityPending=true;private legacyObservationRepairPending=true;private primaryEconomicEvaluations=0;
  private readonly audit:typeof auditNativeFlowWindow;private readonly resolve:typeof resolvePilotMigration;
+ private registryHousekeepingDeferred=false;
  private stopped=false;private working=false;private sourceAdmissionStopReason:string|null=null;private maximumSimultaneous=0;private lastDispatchAt=0;private lastOutcome:string|null=null;private nextCeilingRefreshAt=0;private lastAuditAt:number|null=null;private lastPredictiveAt:number|null=null;private lastAdmissionDeferralBucket=-1;
  private readonly activeDecisions:Array<{at:number;mint:string;stage:string;reason:string}>=[];
  private readonly activeCounters={adaptivePredictiveAssessments:0,adaptivePredictiveNotRejected:0,adaptivePredictiveFailed:0,adaptivePredictiveUnavailable:0};
@@ -108,9 +109,11 @@ export class NativeCandidateRunner{
  private open(){return !this.stopped&&this.sourceAdmissionStopReason===null&&(this.options.admissionOpen?.()??true);}
  private sourceWorkAllowed(bound:number){return this.open()&&(this.options.sourceWorkAdmission?.(bound)??true);}
  private registryHousekeeping(phase:'native-activity'|'migration-delivery'|'pool-progress'|'committed-activity'|'allocation',work:()=>void){
+  if(this.registryHousekeepingDeferred)return;
   try{work();}catch(error){
    if(!isMarketRegistryContention(error))throw error;
-   this.record('native-candidate-housekeeping-deferred',{at:this.now(),phase,reason:'MARKET_REGISTRY_CONTENTION',sqliteCode:error.sqliteCode,callbackStarted:false,providerPermissionGranted:false,financialPermission:false});
+   this.registryHousekeepingDeferred=true;
+   this.record('native-candidate-registry-contention',{at:this.now(),phase,reason:'MARKET_REGISTRY_CONTENTION',sqliteCode:error.sqliteCode,callbackStarted:false,providerRequestStarted:false,financialExposure:false,optionalHousekeepingDeferred:true});
   }
  }
  private async serviceFlow(signal:AbortSignal|undefined,deadlineAt:number,policy:{allowSetup:boolean;allowRetirement:boolean}){
@@ -612,7 +615,7 @@ export class NativeCandidateRunner{
  }
  /** One scheduled unit of work. No independent request queue or provider budget. */
  async step(signal?:AbortSignal){
-  if(!this.open()||this.working)return 'closed';this.working=true;
+  if(!this.open()||this.working)return 'closed';this.working=true;this.registryHousekeepingDeferred=false;
   try{
    if(!this.drainGapRetirements()){this.lastOutcome='MARKET_REGISTRY_CONTENTION';return 'wait';}
    if(!this.reconcileObservationMembership()){this.lastOutcome='MARKET_REGISTRY_CONTENTION';return 'wait';}
