@@ -1,0 +1,86 @@
+name: POE final scheduling and verified 24h PAPER release
+on:
+  push:
+    branches: [repair/poe-scheduling-age24h-20261031]
+    paths: ['.github/workflows/poe-scheduling-age-final.yml']
+permissions:
+  contents: write
+concurrency:
+  group: poe-scheduling-age24h-final-validation
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Materialize reviewed final source edits on repair branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          test "$GITHUB_REF" = refs/heads/repair/poe-scheduling-age24h-20261031
+          mkdir -p /tmp/poe-age-final
+          python3 -B -I scripts/finalize-scheduling-age24h.py
+          git add -- src test docs
+          git config user.name 'POE repair validation'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Finalize economic-first scheduling, equal-ranked retries, fresh-candidate competition and race-safe host regression'
+          git push origin HEAD:refs/heads/repair/poe-scheduling-age24h-20261031
+          git rev-parse HEAD > /tmp/poe-age-final/source-commit.txt
+          git diff 34a397b00cfe6ca9796639e42376a5aa7c02872a -- src test docs > /tmp/poe-age-final/finalization.patch
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+          cache: npm
+      - name: Install unchanged pinned dependencies
+        run: npm ci --include=dev
+      - name: Typecheck and compile
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run build 2>&1 | tee /tmp/poe-age-final/typecheck.log
+          npm run compile 2>&1 | tee /tmp/poe-age-final/compile.log
+          node -e "const D=require('better-sqlite3');const d=new D(':memory:');console.log(JSON.stringify({node:process.version,sqlite:d.prepare('select sqlite_version() version').get().version}));d.close()" | tee /tmp/poe-age-final/toolchain.json
+      - name: Focused scheduling, creation-age, execution, lifecycle and host regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          node --import tsx --test --test-concurrency=1 test/token-age-policy.test.ts test/pilot-watch-opportunity-priority.test.ts test/native-candidate-runner.test.ts test/execution.test.ts test/market-registry-lifecycle.test.ts test/pilot-watch-persistent.test.ts test/native-observation-current-pool.test.ts test/native-slot-productivity.test.ts test/http-latency-component.test.ts 2>&1 | tee /tmp/poe-age-final/focused.log
+      - name: Full offline regression suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          node --import tsx --test --test-concurrency=1 test/*.test.ts 2>&1 | tee /tmp/poe-age-final/full.log
+      - name: Build exact clean immutable EC2 bundle only after tests pass
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          test "$(git rev-parse HEAD)" = "$(cat /tmp/poe-age-final/source-commit.txt)"
+          test -z "$(git status --porcelain -- src scripts package.json package-lock.json)"
+          node scripts/build-native-paper-ec2.mjs --output-directory /tmp/poe-native-paper-output-age-final
+          cp -a /tmp/poe-native-paper-output-age-final /tmp/poe-age-final/bundle
+          git archive --format=tar HEAD | gzip -n > /tmp/poe-age-final/source.tar.gz
+          sha256sum /tmp/poe-age-final/bundle/* /tmp/poe-age-final/source.tar.gz > /tmp/poe-age-final/SHA256SUMS
+          python3 -B -I - <<'PY'
+          import hashlib,json,pathlib,re
+          p=pathlib.Path('/tmp/poe-age-final');commit=(p/'source-commit.txt').read_text().strip();meta=json.loads((p/'bundle/metadata.json').read_text())
+          assert meta['git']['commit']==commit and meta['git']['workingTreeStatus']==''
+          log=(p/'full.log').read_text();assert re.search(r'fail\s+0\b',log) and re.search(r'cancelled\s+0\b',log)
+          receipt={'kind':'POE_FINAL_SCHEDULING_24H_VALIDATED_BUILD','source':commit,'base':'f8ab5d74c5f8c8e792ab0b099388a6f3ad68d2d2','bundleSha256':hashlib.sha256((p/'bundle/native-paper.mjs').read_bytes()).hexdigest(),'fairnessMaximumAdditive':0.05,'missingEvidenceWaitBonus':0,'tokenAgeMaximumMs':86400000,'tokenAgeBasis':'finalized-token-creation-not-migration','unknownAgeEligible':False,'fourSlotsPreserved':True,'liveTradingEnabled':False,'ec2Changed':False,'ownerReleaseApprovalRequired':True}
+          (p/'build-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt))
+          PY
+      - name: Retain exact source and validation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: poe-scheduling-age24h-final-${{ github.run_id }}
+          path: /tmp/poe-age-final/
+          retention-days: 14
+          if-no-files-found: error
