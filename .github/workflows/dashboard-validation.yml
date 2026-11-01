@@ -38,4 +38,5 @@ jobs:
           # Compiler subprocess fixtures share the hosted runner's CPU and memory.
           # Isolate test files without changing their assertions or timeouts.
           node --import tsx --test --test-concurrency=1 test/*.test.ts
+          node --test test/ai-team-dashboard.test.mjs test/reviewed-source-handover.test.mjs
 
