@@ -1,0 +1,79 @@
+name: Revalidate exact final POE scheduling and 24h source
+on:
+  push:
+    branches: [repair/poe-scheduling-age24h-20261031]
+    paths: ['.github/workflows/poe-scheduling-age-reviewed-build.yml']
+permissions:
+  contents: read
+concurrency:
+  group: poe-scheduling-age24h-final-validation
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ef6e40b3f31c4ac618a5f6ca50387060e114ad06
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+          cache: npm
+      - name: Install unchanged pinned dependencies and retain prior failure attribution
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          mkdir -p /tmp/poe-age-reviewed
+          npm ci --include=dev
+          git rev-parse HEAD > /tmp/poe-age-reviewed/source-commit.txt
+          printf '%s\n' '{"previousRun":41257390572,"source":"ef6e40b3f31c4ac618a5f6ca50387060e114ad06","tests":3044,"passed":3043,"failed":1,"failure":"backup.test.ts large artifact event-loop timing comparison: 387.761922ms versus 187.62491ms offline reference","sourceChangedForRetry":false,"testThresholdChanged":false,"testSkipped":false}' > /tmp/poe-age-reviewed/prior-validation.json
+      - name: Typecheck and compile exact source
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run build 2>&1 | tee /tmp/poe-age-reviewed/typecheck.log
+          npm run compile 2>&1 | tee /tmp/poe-age-reviewed/compile.log
+          node -e "const D=require('better-sqlite3');const d=new D(':memory:');console.log(JSON.stringify({node:process.version,sqlite:d.prepare('select sqlite_version() version').get().version}));d.close()" > /tmp/poe-age-reviewed/toolchain.json
+      - name: Recheck backup isolation and unchanged timing assertion
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          node --import tsx --test --test-concurrency=1 test/backup.test.ts 2>&1 | tee /tmp/poe-age-reviewed/backup.log
+      - name: Full offline regression suite without skips or threshold changes
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          node --import tsx --test --test-concurrency=1 test/*.test.ts 2>&1 | tee /tmp/poe-age-reviewed/full.log
+      - name: Build exact clean executable after full success
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          test "$(git rev-parse HEAD)" = ef6e40b3f31c4ac618a5f6ca50387060e114ad06
+          test -z "$(git status --porcelain -- src scripts package.json package-lock.json)"
+          node scripts/build-native-paper-ec2.mjs --output-directory /tmp/poe-native-paper-output-age-reviewed
+          cp -a /tmp/poe-native-paper-output-age-reviewed /tmp/poe-age-reviewed/bundle
+          git archive --format=tar HEAD | gzip -n > /tmp/poe-age-reviewed/source.tar.gz
+          sha256sum /tmp/poe-age-reviewed/bundle/* /tmp/poe-age-reviewed/source.tar.gz > /tmp/poe-age-reviewed/SHA256SUMS
+          python3 -B -I - <<'PY'
+          import hashlib,json,pathlib,re
+          p=pathlib.Path('/tmp/poe-age-reviewed');commit=(p/'source-commit.txt').read_text().strip();meta=json.loads((p/'bundle/metadata.json').read_text())
+          assert meta['git']['commit']==commit and meta['git']['workingTreeStatus']==''
+          log=(p/'full.log').read_text();assert re.search(r'fail\s+0\b',log) and re.search(r'cancelled\s+0\b',log)
+          receipt={'kind':'POE_FINAL_SCHEDULING_24H_VALIDATED_BUILD','source':commit,'base':'f8ab5d74c5f8c8e792ab0b099388a6f3ad68d2d2','bundleSha256':hashlib.sha256((p/'bundle/native-paper.mjs').read_bytes()).hexdigest(),'fairnessMaximumAdditive':0.05,'missingEvidenceWaitBonus':0,'tokenAgeMaximumMs':86400000,'tokenAgeBasis':'finalized-token-creation-not-migration','unknownAgeEligible':False,'fourSlotsPreserved':True,'liveTradingEnabled':False,'ec2Changed':False,'ownerReleaseApprovalRequired':True,'priorNonpassingRun':41257390572,'unchangedSourceRetested':True}
+          (p/'build-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt))
+          PY
+      - name: Retain exact reviewed source, executable and all results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: poe-scheduling-age24h-reviewed-${{ github.run_id }}
+          path: /tmp/poe-age-reviewed/
+          retention-days: 14
+          if-no-files-found: error
