@@ -53,7 +53,8 @@ function selectedSample(kind: 'vacant' | 'replacement' | 'pending' | 'acknowledg
 
 for (const kind of ['vacant', 'replacement', 'pending'] as const) test('current selected scope distinguishes ' + kind + ' without changing coverage or permission', () => {
   const s = selectedSample(kind), before = structuredClone(s), expected = kind === 'pending' ? 'awaiting-subscription' : 'idle';
-  const cache = new SnapshotCache(identity); cache.accept(s, T); const f = cache.status(T).operating!;
+  const cache = new SnapshotCache(identity); cache.accept(s, T); const status = cache.status(T);
+  assert.ok('operating' in status); const f = status.operating!;
   assert.equal(f.state, expected); assert.equal(f.market, expected); assert.equal(f.selectedCaptureState, expected); assert.equal(f.selectedCapture, false);
   assert.equal(f.selectedScope!.configuredSlots, 4); assert.equal(f.selectedScope!.acknowledgedSlots, 0);
   assert.equal(f.selectedScope!.assignedSlots, kind === 'pending' ? 1 : 0);
