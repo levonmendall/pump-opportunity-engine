@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:
-          ref: 1c8a81fc88a129ea901610efb27db0736dfd8dae
+          ref: 0044b552ef160bf43823d16578c63431b0bcfd9d
           fetch-depth: 0
           persist-credentials: false
       - uses: actions/setup-node@v4
@@ -31,7 +31,7 @@ jobs:
           npm ci --include=dev
           git rev-parse HEAD > /tmp/poe-registry-financial-validation/source-commit.txt
           git diff 7aec04077bf560fa95078f2d811195ccc0ee13ed -- src test > /tmp/poe-registry-financial-validation/source.patch
-          printf '%s\n' '{"priorRun":41323024895,"result":"typecheck failed: assertion library narrowed mutable test array to never[]","correction":"assert copied array snapshots, preserving all exact comparisons","runtimeSourceChangedForCorrection":false,"assertionsRelaxed":false}' > /tmp/poe-registry-financial-validation/prior-validation.json
+          printf '%s\n' '{"priorRuns":[{"run":41323024895,"result":"typecheck failed: assertion library narrowed mutable test array to never[]","correction":"assert copied array snapshots, preserving all exact comparisons"},{"run":41323340528,"result":"336 of 337 focused tests passed; isolated test account name did not satisfy existing explicit identity guard","correction":"use unique poe-offline-contention-fixture in disposable temporary directory"}],"runtimeSourceChangedForCorrections":false,"assertionsRelaxed":false}' > /tmp/poe-registry-financial-validation/prior-validation.json
       - name: Typecheck and compile
         shell: bash
         run: |
@@ -55,7 +55,7 @@ jobs:
         run: |
           set -euo pipefail
           umask 077
-          test "$(git rev-parse HEAD)" = 1c8a81fc88a129ea901610efb27db0736dfd8dae
+          test "$(git rev-parse HEAD)" = 0044b552ef160bf43823d16578c63431b0bcfd9d
           test -z "$(git status --porcelain -- src scripts package.json package-lock.json)"
           node scripts/build-native-paper-ec2.mjs --output-directory /tmp/poe-native-paper-output-registry-financial
           cp -a /tmp/poe-native-paper-output-registry-financial /tmp/poe-registry-financial-validation/bundle
