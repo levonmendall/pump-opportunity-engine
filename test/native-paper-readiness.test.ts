@@ -7,7 +7,7 @@ import {mkdtempSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {PublicKey} from '@solana/web3.js';
-import {PaperLedger,OPERATIONAL_REPORTING_ENTRY_PAUSE,type UsdPrice} from '../src/ledger.js';
+import {PaperLedger,OPERATIONAL_REPORTING_ENTRY_PAUSE,CANDIDATE_SOURCE_RECOVERY_PAUSE,type UsdPrice} from '../src/ledger.js';
 import {NativePaper,NATIVE_PAPER_FINANCIAL_READINESS_POLICY,NATIVE_PAPER_ENTRY_BLOCKERS,nativePaperDerivedEntryBlocker} from '../src/native-paper.js';
 import {NativePaperCashMaintenance,NativePaperReportingHealth,NATIVE_PAPER_REPORT_BUDGET_MS,NATIVE_PAPER_FINANCIAL_REPORTING_POLICY,nativePaperBackupDue,nativePaperEssentialEvidence} from '../src/run-native-paper.js';
 import {FlowWindow,assessPredictiveBuying,type NormalizedTrade} from '../src/strategy.js';
@@ -320,4 +320,41 @@ test('invalid report measurements fail closed while the unchanged 250ms budget r
 
 test('report clock failures close prior readiness and preserve the original publication failure',()=>{
  for(const stage of ['start','end','publication-and-end']as const){const health=new NativePaperReportingHealth();health.observe(1,true);let reads=0,published=false;const clockError=Error('OFFLINE report clock unavailable'),publicationError=Error('OFFLINE publication failed');assert.throws(()=>health.complete(()=>{published=true;if(stage==='publication-and-end')throw publicationError;},()=>true,()=>{reads++;if(stage==='start'||reads===2)throw clockError;return 0;}),error=>error===(stage==='publication-and-end'?publicationError:clockError));assert.equal(health.entryAllowed,false);assert.equal(published,stage!=='start');}
+});
+
+
+test('source-only quarantine resumes only after actual source and current financial readiness recover',t=>{
+ const f=fixture(t,false,true);assert.equal(f.refresh().recovered,true);
+ const before=f.ledger.state();f.connected=false;f.admission=false;
+ f.bridge.trader.pauseNewEntries(CANDIDATE_SOURCE_RECOVERY_PAUSE);
+ assert.equal(f.ledger.state().controls.entriesEnabled,false);
+ assert.equal(f.bridge.trader.entryReadinessSafety().newHardPauseObserved,false);
+ assert.equal(f.refresh().recovered,false);
+ f.connected=true;assert.equal(f.refresh().recovered,false,'source alone cannot reopen financial admission');
+ f.admission=true;f.bankClockAt=f.at-30001;f.supportAt=f.at-30001;
+ assert.equal(f.refresh().recovered,false,'expired original bank Clock cannot reopen entries');
+ f.bankClockAt=f.at;f.supportAt=f.at;assert.equal(f.refresh().recovered,true);
+ const after=f.ledger.state();assert.equal(after.lamports,before.lamports);assert.deepEqual(after.positions,before.positions);assert.deepEqual(after.pending,{});
+ assert.equal(after.executionCosts,before.executionCosts);assert.deepEqual(f.calls,{context:0,preparation:0,quote:0,execution:0});
+ assert.ok(f.rows.some(r=>r.kind==='native-paper-financial-readiness-recovered'&&r.data.financialPermissionOnly===true));
+});
+
+test('source quarantine never clears owner intent or a newly observed financial hard failure',async t=>{
+ for(const fault of ['owner','stop','financial'] as const)await t.test(fault,st=>{
+  const f=fixture(st,false,true);assert.equal(f.refresh().recovered,true);
+  if(fault==='owner')f.ledger.pause('operator-pause:OFFLINE-source-recovery',f.at,'operator paused new entries');
+  else if(fault==='stop')f.ledger.safeStop('owner-safe-stop:OFFLINE',f.at);
+  else f.bridge.trader.financialMaintenanceFailed('runtime-failure',Error('OFFLINE uncertain financial callback'));
+  const controls=f.ledger.state().controls;f.bridge.trader.pauseNewEntries(CANDIDATE_SOURCE_RECOVERY_PAUSE);
+  assert.deepEqual(f.ledger.state().controls,controls);assert.equal(f.refresh().recovered,false);
+  assert.equal(f.ledger.state().controls.entriesEnabled,false);assert.deepEqual(f.calls,{context:0,preparation:0,quote:0,execution:0});
+ });
+});
+
+test('a normal process restart retains typed source quarantine provenance without granting entries at startup',t=>{
+ const f=fixture(t,false,true);assert.equal(f.refresh().recovered,true);f.bridge.trader.pauseNewEntries(CANDIDATE_SOURCE_RECOVERY_PAUSE);
+ const bridge=f.make();assert.equal(f.ledger.state().controls.entriesEnabled,false);
+ assert.equal(bridge.trader.entryReadinessSafety().newHardPauseObserved,false);
+ assert.equal(bridge.maintainFlatFinancialReadiness(f.price).recovered,true);
+ assert.deepEqual(f.ledger.state().pending,{});assert.equal(f.ledger.state().executionCosts,'0');
 });

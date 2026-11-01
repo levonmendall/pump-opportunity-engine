@@ -1,3 +1,6 @@
+import {CANDIDATE_SOURCE_RECOVERY_PAUSE} from './candidate-source-recovery.js';
+import {REVIEWED_SOURCE_PAUSE,reviewedSourcePauseLineage} from './reviewed-source-pause.js';
+export {CANDIDATE_SOURCE_RECOVERY_PAUSE} from './candidate-source-recovery.js';
 import {REVIEWED_MARKET_CONTENTION,reviewedMarketContentionLineage,type ReviewedContentionHistory} from './reviewed-market-contention.js';
 import {tradeDecisionContext,entryTradeProvenance,withFailedExitGas,makeTradeOutcome,type TradeDecisionContext,type TradeEntryProvenance,type TradeOutcomeReport} from './trade-outcome-reporting.js';
 import {PAPER_EPOCH_VERSION,PAPER_V3_EPOCH_VERSION,PAPER_V3_TEN_SOL_EPOCH_ID,PAPER_V3_TEN_SOL_EPOCH_AUTHORIZATION,PAPER_EPOCH_ASSET_SEGREGATION,verifyArchivedEpochAssets,PAPER_TEN_SOL_EPOCH_ID,PAPER_TEN_SOL_EPOCH_AUTHORIZATION,validatePaperEpoch,requireEpochFlat,verifiedEpochBackup,paperEpochStateSha256,type PaperEpoch,type LegacyPaperEpoch,type V3PaperEpoch,type PaperEpochBackupReceipt} from './paper-epoch.js';
@@ -108,7 +111,7 @@ const INTERNAL_SHUTDOWN_PROOF_POLICY=Object.freeze({version:'internal-native-shu
  * row and requires fresh inventory, source, pricing and current admission. */
 export const OPERATIONAL_REPORTING_ENTRY_PAUSE='local reporting projection exceeded reserved budget; exposure retained' as const;
 export const OPERATIONAL_RESOURCE_ENTRY_PAUSES=Object.freeze(['resource pressure; new candidate risk closed','rolling resource or evidence pressure; exposure retained'] as const);
-const INTERNAL_SHUTDOWN_SOFT_PAUSES=new Set<string>([...OPERATIONAL_RESOURCE_ENTRY_PAUSES,OPERATIONAL_REPORTING_ENTRY_PAUSE,'graceful native PAPER segment ended; exposure retained','native PAPER process closing; obligations retained','native PAPER routine checkpoint: fresh audited readiness required','execution startup: fresh reconciliation/readiness required','current equity or liquidation unavailable; entries closed','current financial reconciliation unavailable; exposure retained','entry preparation or reconciliation unavailable','consistent backup unavailable; exposure retained']);
+const INTERNAL_SHUTDOWN_SOFT_PAUSES=new Set<string>([CANDIDATE_SOURCE_RECOVERY_PAUSE,...OPERATIONAL_RESOURCE_ENTRY_PAUSES,OPERATIONAL_REPORTING_ENTRY_PAUSE,'graceful native PAPER segment ended; exposure retained','native PAPER process closing; obligations retained','native PAPER routine checkpoint: fresh audited readiness required','execution startup: fresh reconciliation/readiness required','current equity or liquidation unavailable; entries closed','current financial reconciliation unavailable; exposure retained','entry preparation or reconciliation unavailable','consistent backup unavailable; exposure retained']);
 const L = 1_000_000_000n;
 const INITIAL = 1_000_000_000n; // $1,000 in microUSD
 const MAX_PRICE_AGE = 10_000;
@@ -556,6 +559,21 @@ export function readReviewedMaintenanceAcknowledgement(db:Database.Database,stat
 }
 
 export class PaperLedger {
+  private reviewedSourceClosureRevision:number=REVIEWED_SOURCE_PAUSE.anchorRevision;
+  private reviewedSourceControlVerified(s:State,h:OperatingControlHistory|null):boolean{
+    if(!h)return false;
+    const sha=(v:string)=>createHash('sha256').update(v).digest('hex');
+    const projected:ReviewedContentionHistory={anchor:h.anchor?{revision:h.anchor.revision,at:h.anchor.at,kind:h.anchor.kind,actionSha256:sha(h.anchor.actionId)}:null,controls:h.decoded.map(x=>({revision:x.row.revision,at:x.row.at,kind:x.row.kind,actionSha256:sha(x.row.actionId),detailSha256:sha(x.row.detail),reasonSha256:sha(String(x.payload.reason)),ordinary:x.ordinary,startup:x.startup,restored:x.restored,temporary:INTERNAL_SHUTDOWN_SOFT_PAUSES.has(x.payload.reason),paused:x.result.paused===true,cancellations:Array.isArray(x.result.pendingBuyCancellations)?x.result.pendingBuyCancellations.length:-1}))};
+    if(!reviewedSourcePauseLineage({...s,controls:{...s.controls,reasonSha256:sha(s.controls.reason)}},projected)||s.revision<this.reviewedSourceClosureRevision)return false;
+    const since=this.reviewedSourceClosureRevision;
+    const count=this.db.prepare('SELECT count(*) n FROM journal WHERE revision>? AND revision<=?').get(since,s.revision) as {n:number};
+    if(count.n!==s.revision-since||this.db.prepare("SELECT revision FROM journal WHERE revision>? AND revision<=? AND kind NOT IN ('reconcile','pause','resume') LIMIT 1").get(since,s.revision))return false;
+    this.reviewedSourceClosureRevision=s.revision;return true;
+  }
+  /** Read-only incident recognition; startup and all fresh readiness checks remain mandatory. */
+  reviewedSourceQuarantineRecoveryAllowed(at:number){
+    const s=this.state();return Number.isSafeInteger(at)&&at>=s.lastAt&&this.reviewedSourceControlVerified(s,this.operatingControlHistory(s,at));
+  }
   private reviewedMarketContentionEvidenceAccepted=false;
   private reviewedMarketClosureRevision:number=REVIEWED_MARKET_CONTENTION.attemptedRevision;
   /** Registers only the exact sanitized report generated by the owner. This
@@ -951,7 +969,7 @@ export class PaperLedger {
   }
 
   private operatingTemporaryControlVerified(state:State,at:number){
-    const history=this.operatingControlHistory(state,at);if(!history)return false;if(this.reviewedMarketControlVerified(state,history)||reviewedCandidateControlLineage(state,history))return true;let lastControl:{at:number;reason:string}|null=history.anchor?.kind===REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT.kind?{at:history.anchor.at,reason:REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT.newReason}:history.anchor?.kind===V31_DIAGNOSTIC_CONTROL_REPAIR.kind?{at:history.anchor.at,reason:V31_DIAGNOSTIC_CONTROL_REPAIR.newReason}:history.anchor?.kind==='paper-epoch-transition'?{at:history.anchor.at,reason:'execution startup: fresh reconciliation/readiness required'}:null;
+    const history=this.operatingControlHistory(state,at);if(!history)return false;if(this.reviewedMarketControlVerified(state,history)||this.reviewedSourceControlVerified(state,history)||reviewedCandidateControlLineage(state,history))return true;let lastControl:{at:number;reason:string}|null=history.anchor?.kind===REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT.kind?{at:history.anchor.at,reason:REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT.newReason}:history.anchor?.kind===V31_DIAGNOSTIC_CONTROL_REPAIR.kind?{at:history.anchor.at,reason:V31_DIAGNOSTIC_CONTROL_REPAIR.newReason}:history.anchor?.kind==='paper-epoch-transition'?{at:history.anchor.at,reason:'execution startup: fresh reconciliation/readiness required'}:null;
     let observedRuntimeReportingPause=false;
     for(const {row,payload,ordinary,restored,startup}of history.decoded){if(row.kind==='safe-stop')return false;if(row.kind==='resume')continue;
       // Older releases restored this exact runtime overrun as a hard pause.
