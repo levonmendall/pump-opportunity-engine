@@ -9,7 +9,7 @@ export const HANDOVER=Object.freeze({
  inceptionAt:'2026-10-26T22:07:36.212Z',
  strategy:'liquidity-resilient-momentum-v3.1',
  from:'bb145cc82b0f05560b03bbd9e53de0c9e360f48f',
- to:'602749c5ed7710b9106ae0aa92ff434dd43245af',
+ to:'905be6d92001351cc891d83fe11fa7b28fe98d4e',
 });
 const installed=new WeakSet();
 export function attachReviewedSourceHandover(cache){
