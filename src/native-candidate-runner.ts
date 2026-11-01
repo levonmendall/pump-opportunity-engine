@@ -275,12 +275,16 @@ export class NativeCandidateRunner{
  onTrade(){this.counters.normalizedEvents++;}
  onActivity(row:{mint:string;at:number;evidence:string}){const at=this.now(),known=this.watch.lookupIdentity(row.mint,at);if(known?.migrationAt!==null&&known?.migrationAt!==undefined&&at-known.migrationAt>=PROVISIONAL_RULE.maximumAgeMs&&!['HELD','ENTRY_PENDING','PERMANENTLY_UNSUPPORTED'].includes(known.state)&&(!known.olderResearch||known.state==='EXPIRED')){try{this.watch.selectOlderResearch(row.mint,{observedAt:row.at,evidence:row.evidence},at);}catch(error){this.record('native-older-observation-selection-refused',{mint:row.mint,at,reason:safe(error),entryPermission:false});}}this.watch.noteActivity(row.mint,row.at,row.evidence);const current=this.watch.lookupIdentity(row.mint,at);if(!this.currentPoolObservation&&current&&!['EXPIRED','PERMANENTLY_UNSUPPORTED'].includes(current.state)&&!this.hasOrigin(row.mint))this.queueProof(current,at);}
  private pruneProofCache(_at:number){for(const mint of this.origins.keys()){if(this.candidates.has(mint)||this.options.financialOwnership?.(mint))continue;this.origins.delete(mint);this.originProofs.delete(mint);}}
- onGap(row:{mint?:string;at:number;reason:string}){
+ onGap(row:{mint?:string;at:number;reason:string},options:{deferRegistryWrites?:boolean}={}){
   const mints=row.mint?[row.mint]:[...this.candidates.keys()],targets=mints.flatMap(mint=>{const candidate=this.candidates.get(mint);return candidate&&!this.pendingGapRetirements.some(p=>p.targets.some(t=>t.mint===mint&&t.candidate===candidate))?[{mint,candidate}]:[];});
   if(!targets.length){if(!mints.length){this.counters.qualityGaps++;this.noteFailure('quality-gap',undefined,row.reason,row.at);this.record('native-candidate-quality-gap',{...row,freshWindowRequired:true,financialExecutionAuthorized:false});}return;}
   // The flow has already suspended this generation. A busy intake writer must
   // not erase its one-shot retirement notification and strand the slot.
-  this.pendingGapRetirements.push({row:{...row},targets,contentionReported:false});this.drainGapRetirements();
+  for(const target of targets)this.certificates.delete(target.mint);
+  this.pendingGapRetirements.push({row:{...row},targets,contentionReported:false});
+  // The native scope is already unusable and financial gap handling remains
+  // immediate. The regular coordinator step owns the bounded SQLite mutation.
+  if(!options.deferRegistryWrites)this.drainGapRetirements();
  }
  private drainGapRetirements(){
   while(this.pendingGapRetirements.length){const pending=this.pendingGapRetirements[0]!,targets=pending.targets.filter(t=>this.candidates.get(t.mint)===t.candidate);
@@ -323,7 +327,7 @@ export class NativeCandidateRunner{
   });return true;}catch(error){if(!callbackStarted&&isMarketRegistryContention(error))return false;throw error;}
  }
  private observationMember(c:Candidate,at:number){
-  const mint=c.identity.baseMint;if(this.candidates.get(mint)!==c||this.retirementRequests.has(mint))return false;
+  const mint=c.identity.baseMint;if(this.candidates.get(mint)!==c||this.retirementRequests.has(mint)||this.pendingGapRetirements.some(p=>p.targets.some(t=>t.mint===mint&&t.candidate===c)))return false;
   if(this.options.enforceTokenAge24h&&!this.options.financialOwnership?.(mint)&&!this.registry.tokenAgeEligibility(mint,at).allowed)return false;
   const row=this.watch.lookupIdentity(mint,at);
   return !!row&&row.pool===c.identity.pool&&row.deepSince===c.allocatedAt&&['DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING'].includes(row.state)&&this.productivity.hasAssignment(mint,c.allocatedAt);

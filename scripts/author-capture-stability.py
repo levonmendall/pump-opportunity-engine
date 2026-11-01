@@ -109,7 +109,7 @@ test('actual disconnect during persistent idle grace still settles and keeps nor
 p=r/'test/native-candidate-runner.test.ts';p.write_text(p.read_text()+'''
 
 test('deferred socket gap invalidates its certificate and membership before any registry transaction',async()=>{
- const registry=new MarketRegistry(),f=fixture({registry,durableMarketPolicy:true,fairEconomicCompletions:true}),mint=f.seed(202);
+ const registry=new MarketRegistry(':memory:'),f=fixture({registry,durableMarketPolicy:true,fairEconomicCompletions:true}),mint=f.seed(202);
  try{
   await f.steps(3);const candidate=(f.runner as any).candidates.get(mint);assert.ok(candidate);
   (f.runner as any).certificates.set(mint,{mint,admittedAt:f.now,deadlineAt:f.now+1000});

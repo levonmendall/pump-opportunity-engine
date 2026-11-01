@@ -124,3 +124,11 @@ test('usable-certificate handoff remains optional and bound to the actual financ
  const raw=status() as any;raw.financialHandoff={version:'native-financial-handoff-v1',scope:'CURRENT_SOURCE_PROCESS',runId:raw.runId,startedAt:T-600000,generatedAt:T,seen:0,dispatched:0,financialEvaluations:0,expiredBeforeDispatch:0,invalidatedBeforeDispatch:0,blockedMsByReason:Object.fromEntries(['await-financial-dispatch','financial-or-source-admission','proof-retention','required-service-or-protection-runway','await-earlier-candidate'].map(reason=>[reason,0])),deferralTransitionsByReason:Object.fromEntries(['await-financial-dispatch','financial-or-source-admission','proof-retention','required-service-or-protection-runway','await-earlier-candidate'].map(reason=>[reason,0])),dispatchWait:{count:0,mean:null,max:null,p50UpperMs:null,p95UpperMs:null,histogramResolutionMs:100},active:[]};
  const i=projectOperatingIntelligence(raw);assert.ok(i.financialHandoff);validateOperatingIntelligence(i,iso(T));assert.equal(i.financialHandoff.seen,0);const bad=structuredClone(i);bad.financialHandoff!.runId='other-source';assert.throws(()=>validateOperatingIntelligence(bad,iso(T)),/HANDOFF_PROCESS_BINDING/);delete raw.financialHandoff;assert.equal(projectOperatingIntelligence(raw).financialHandoff,undefined);
 });
+
+
+test('idle transport is not reported as usable selected capture and legacy snapshots retain their semantics',()=>{
+ const s=status() as any;assert.equal(projectOperatingIntelligence(s).quality.captureConnected,true);
+ s.usage.native.selectedCaptureConnected=false;assert.equal(projectOperatingIntelligence(s).quality.captureConnected,false);
+ s.usage.native.selectedCaptureConnected=true;assert.equal(projectOperatingIntelligence(s).quality.captureConnected,true);
+ s.usage.native.selectedCaptureConnected=null;assert.equal(projectOperatingIntelligence(s).quality.captureConnected,null);
+});

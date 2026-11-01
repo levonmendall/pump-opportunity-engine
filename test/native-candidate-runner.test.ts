@@ -1019,3 +1019,31 @@ test('fresh shared-market candidates compete before a nonempty older watch queue
   assert.equal(f.added[0],fresh);assert.notEqual(f.added[0],older);assert.equal(f.rpcCalls.length,0,'local scheduling adds no provider lookup');
  }finally{await f.runner.stop();}
 });
+
+
+test('deferred socket gap invalidates its certificate and membership before any registry transaction',async()=>{
+ const registry=new MarketRegistry(':memory:'),f=fixture({registry,durableMarketPolicy:true,fairEconomicCompletions:true}),mint=f.seed(202);
+ try{
+  await f.steps(3);const candidate=(f.runner as any).candidates.get(mint);assert.ok(candidate);
+  (f.runner as any).certificates.set(mint,{mint,admittedAt:f.now,deadlineAt:f.now+1000});
+  const original=registry.transaction;let calls=0;registry.transaction=(()=>{calls++;throw Error('SOCKET_CALLBACK_MUST_NOT_WRITE');}) as typeof original;
+  try{
+   assert.doesNotThrow(()=>f.runner.onGap({mint,at:f.now,reason:'NATIVE_FLOW_PROCESSING_DEADLINE'},{deferRegistryWrites:true}));
+   assert.doesNotThrow(()=>f.runner.onGap({mint,at:f.now,reason:'NATIVE_FLOW_PROCESSING_DEADLINE'},{deferRegistryWrites:true}));
+   assert.equal(calls,0);assert.equal(f.runner.currentAuditCertificate(mint,f.now),null);
+   assert.equal((f.runner as any).observationMember(candidate,f.now),false);
+   assert.equal(f.removed.includes(mint),false,'logical retirement waits for its authoritative write, never fabricated settlement');
+  }finally{registry.transaction=original;}
+  await f.steps(1);assert.equal(f.removed.includes(mint),true);assert.equal(f.runner.status().counters.qualityGaps,1);
+ }finally{await f.runner.stop();registry.close();}
+});
+test('deferred socket gap survives a real refused writer lease and never regains admission while queued',async()=>{
+ const dir=mkdtempSync(join(tmpdir(),'poe-gap-callback-')),path=join(dir,'registry.sqlite'),registry=new MarketRegistry(path,{concurrentIntake:true}),locker=new Database(path),f=fixture({registry,durableMarketPolicy:true,fairEconomicCompletions:true}),mint=f.seed(203);
+ try{
+  await f.steps(3);const candidate=(f.runner as any).candidates.get(mint);assert.ok(candidate);locker.exec('BEGIN IMMEDIATE');
+  f.runner.onGap({mint,at:f.now,reason:'NATIVE_FLOW_PROCESSING_DEADLINE'},{deferRegistryWrites:true});
+  assert.equal(await f.runner.step(),'wait');assert.equal((f.runner as any).observationMember(candidate,f.now),false);
+  assert.equal(f.removed.length,0);locker.exec('ROLLBACK');await f.steps(2);assert.equal(f.removed.includes(mint),true);
+  assert.equal(f.runner.status().counters.qualityGaps,1);
+ }finally{if(locker.inTransaction)locker.exec('ROLLBACK');await f.runner.stop();locker.close();registry.close();rmSync(dir,{recursive:true,force:true});}
+});

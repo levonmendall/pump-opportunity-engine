@@ -1,3 +1,4 @@
+import {wsWire} from './ws-wire-fixture.js';
 /** Offline timing reproduction. Real coordinator/native adapter/RPC gate;
  * synthetic sockets, support and response timing. No market or financial claims. */
 import {test} from 'node:test';
@@ -23,9 +24,9 @@ class Socket extends EventEmitter {
  readonly controls:string[]=[];
  readyState:number=WebSocket.CONNECTING;
  open(){this.readyState=WebSocket.OPEN;this.emit('open');}
- frame(body:unknown){const data=Buffer.from(JSON.stringify(body));this._socket.bytesRead+=data.length+4;this._socket.emit('data',data);this.emit('message',data);}
+ frame(body:unknown){const data=Buffer.from(JSON.stringify(body));this._socket.bytesRead+=data.length+4;this._socket.emit('data',wsWire(data));this.emit('message',data);}
  send(data:string,callback?:()=>void){const request=JSON.parse(data);this.controls.push(request.method);callback?.();queueMicrotask(()=>this.frame({jsonrpc:'2.0',id:request.id,result:request.method==='logsSubscribe'?100:true}));}
- ping(payload:Buffer,_mask?:unknown,callback?:()=>void){this.controls.push('ping');this._sender.sendFrame([Buffer.from([0x89]),payload]);callback?.();queueMicrotask(()=>{this._socket.bytesRead+=payload.length+2;this._socket.emit('data',Buffer.alloc(0));this.emit('pong',payload);});}
+ ping(payload:Buffer,_mask?:unknown,callback?:()=>void){this.controls.push('ping');this._sender.sendFrame([Buffer.from([0x89]),payload]);callback?.();queueMicrotask(()=>{this._socket.bytesRead+=payload.length+2;this._socket.emit('data',wsWire(payload,10));this.emit('pong',payload);});}
  terminate(){if(this.readyState===WebSocket.CLOSED)return;this.readyState=WebSocket.CLOSED;queueMicrotask(()=>this.emit('close',1006));}
 }
 function fixture(){
