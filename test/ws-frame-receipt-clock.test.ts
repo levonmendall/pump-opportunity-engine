@@ -1,12 +1,12 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import WebSocket from 'ws';
+import {Receiver} from 'ws';
 import {WsFrameReceiptClock,WS_FRAME_RECEIPT_POLICY} from '../src/ws-frame-receipt-clock.js';
 import {WsReceiptClock} from '../src/ws-receipt-clock.js';
 import {wsWire} from './ws-wire-fixture.js';
 const turn=()=>new Promise<void>(r=>setImmediate(r));
 test('real pinned receiver: continuously queued fresh frames must not inherit the oldest batch timestamp',async()=>{
- const receiver=new (WebSocket as any).Receiver({isServer:false,allowSynchronousEvents:false,maxPayload:512*1024});
+ const receiver=new Receiver({isServer:false,allowSynchronousEvents:false,maxPayload:512*1024});
  const old=new WsReceiptClock(()=>receiver),clock=new WsFrameReceiptClock(),rows:Array<{old:number;fresh:number;at:number}>=[];let at=100;
  const write=()=>{const b=wsWire(Buffer.from(String(at)));old.chunk(at);clock.chunk(b,at);receiver.write(b);};
  const done=new Promise<void>((resolve,reject)=>{receiver.on('error',reject);receiver.on('message',()=>{
@@ -17,7 +17,7 @@ test('real pinned receiver: continuously queued fresh frames must not inherit th
  assert.ok(rows.every(r=>r.fresh===r.at),'new frames retain their actual individual byte receipt');assert.equal(clock.usage().pendingEvents,0);
 });
 test('real receiver: queued old frames remain old, including when newer bytes arrive',async()=>{
- const receiver=new (WebSocket as any).Receiver({isServer:false,allowSynchronousEvents:false,maxPayload:512*1024}),clock=new WsFrameReceiptClock(),rows:number[]=[];
+ const receiver=new Receiver({isServer:false,allowSynchronousEvents:false,maxPayload:512*1024}),clock=new WsFrameReceiptClock(),rows:number[]=[];
  let at=100;receiver.on('message',()=>rows.push(clock.take('message',at).receivedAt));
  const first=Buffer.concat([wsWire(Buffer.from('one')),wsWire(Buffer.from('two'))]);clock.chunk(first,at);receiver.write(first);
  at=7000;const next=wsWire(Buffer.from('new'));clock.chunk(next,at);receiver.write(next);for(let i=0;i<10;i++)await turn();
