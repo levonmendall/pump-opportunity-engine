@@ -1,0 +1,95 @@
+name: Validate final POE source-quarantine recovery
+on:
+  push:
+    branches: [repair/source-quarantine-recovery-20261101]
+    paths: ['.github/workflows/poe-source-quarantine-final.yml']
+permissions:
+  contents: write
+concurrency:
+  group: poe-source-quarantine-recovery-20261101
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Preserve callback signature and explicitly type invalid test input
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          mkdir -p /tmp/poe-source-quarantine
+          python3 -B -I - <<'PY'
+          import pathlib
+          def replace(path,a,b):
+              p=pathlib.Path(path);s=p.read_text();assert s.count(a)==1,(path,a);p.write_text(s.replace(a,b))
+          replace('src/run-native-paper.ts','onCandidateRetired:row=>financialSourceCallback(()=>currentBridge.retiredCandidate(row))','onCandidateRetired:(row,reason)=>financialSourceCallback(()=>currentBridge.retiredCandidate(row,reason))')
+          replace('test/candidate-source-recovery.test.ts',"f.state.paperEpoch!.id='other'","(f.state.paperEpoch! as any).id='other'")
+          replace('test/candidate-source-recovery.test.ts',"for(const method of ['allocated','retiredCandidate'])assert.ok(source.includes('financialSourceCallback(()=>currentBridge.'+method+'(row))'),method);","assert.ok(source.includes('financialSourceCallback(()=>currentBridge.allocated(row))'));\n assert.ok(source.includes('financialSourceCallback(()=>currentBridge.retiredCandidate(row,reason))'));")
+          PY
+          git diff --check
+          git add -- src/run-native-paper.ts test/candidate-source-recovery.test.ts
+          git config user.name 'POE repair validation'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Preserve retirement reason in source financial callback boundary'
+          git push origin HEAD:refs/heads/repair/source-quarantine-recovery-20261101
+          git rev-parse HEAD > /tmp/poe-source-quarantine/source-commit.txt
+          git diff bb145cc82b0f05560b03bbd9e53de0c9e360f48f -- src test > /tmp/poe-source-quarantine/source.patch
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+          cache: npm
+      - name: Install unchanged pinned dependencies
+        run: npm ci --include=dev
+      - name: Typecheck and compile exact source
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          npm run build 2>&1 | tee /tmp/poe-source-quarantine/typecheck.log
+          npm run compile 2>&1 | tee /tmp/poe-source-quarantine/compile.log
+      - name: Focused recovery and financial safety tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          node --import tsx --test --test-concurrency=1 test/candidate-source-recovery.test.ts test/native-paper-readiness.test.ts test/operating-financial-readiness.test.ts test/registry-financial-boundary.test.ts test/trader.test.ts 2>&1 | tee /tmp/poe-source-quarantine/focused.log
+      - name: Complete offline regression suite without exclusions
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          node --import tsx --test --test-concurrency=1 test/*.test.ts 2>&1 | tee /tmp/poe-source-quarantine/full.log
+      - name: Build exact clean PAPER runtime after full success
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          test "$(git rev-parse HEAD)" = "$(cat /tmp/poe-source-quarantine/source-commit.txt)"
+          test -z "$(git status --porcelain -- src scripts package.json package-lock.json)"
+          node scripts/build-native-paper-ec2.mjs --output-directory /tmp/poe-native-paper-output-source-quarantine
+          cp -a /tmp/poe-native-paper-output-source-quarantine /tmp/poe-source-quarantine/bundle
+          git archive HEAD src test scripts docs package.json package-lock.json tsconfig.json | gzip -n > /tmp/poe-source-quarantine/source.tar.gz
+          python3 -B -I - <<'PY'
+          import hashlib,json,pathlib,re
+          p=pathlib.Path('/tmp/poe-source-quarantine');source=(p/'source-commit.txt').read_text().strip();meta=json.loads((p/'bundle/metadata.json').read_bytes());log=(p/'full.log').read_text()
+          def metric(k):
+              rows=re.findall(r'(?m)^(?:# |ℹ )'+k+r'\s+(\d+)\s*$',log);assert len(rows)==1;return int(rows[0])
+          count=metric('tests');assert count>=3115 and metric('pass')==count and all(metric(k)==0 for k in ['fail','skipped','cancelled'])
+          assert meta['git']['commit']==source and meta['git']['workingTreeStatus']=='' and meta['financialMode']=='PAPER' and meta['liveTradingEnabled'] is False
+          receipt={'kind':'POE_SOURCE_QUARANTINE_VALIDATED_BUILD','source':source,'base':'bb145cc82b0f05560b03bbd9e53de0c9e360f48f','bundleSha256':hashlib.sha256((p/'bundle/native-paper.mjs').read_bytes()).hexdigest(),'testsPassed':count,'sourcePauseProvenanceRun':41342018302,'priorValidationRun':41343427832,'financialControlWrites':0,'freshReadinessChecksRetained':True,'strategyChanged':False,'marketCoverageReduced':False,'auditDeadlinesChanged':False,'tokenAgeMaximumMs':86400000,'deepSlots':4,'liveTradingEnabled':False,'ec2Changed':False,'ownerReleaseApprovalRequired':True}
+          (p/'build-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt))
+          PY
+          sha256sum /tmp/poe-source-quarantine/bundle/* > /tmp/poe-source-quarantine/SHA256SUMS
+      - name: Retain complete validation evidence
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: poe-source-quarantine-${{ github.run_id }}
+          path: /tmp/poe-source-quarantine/
+          retention-days: 30
+          if-no-files-found: error
