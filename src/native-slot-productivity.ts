@@ -25,8 +25,11 @@ export class NativeSlotProductivity{
   * configured slots, independent of discovered market identity count. */
  private mutate<T>(fn:()=>T):T {
   const before={slots:this.slots.map(slot=>({...slot})),durations:{...this.durations},counts:{...this.counts},failureCounts:{...this.failureCounts},serial:this.serial,verifiedEvidenceMs:this.verifiedEvidenceMs};
-  try{return this.options.registry.transaction(fn);}catch(error){for(let i=0;i<this.slots.length;i++)Object.assign(this.slots[i]!,before.slots[i]!);Object.assign(this.durations,before.durations);Object.assign(this.counts,before.counts);Object.assign(this.failureCounts,before.failureCounts);this.serial=before.serial;this.verifiedEvidenceMs=before.verifiedEvidenceMs;throw error;}
+  const restore=()=>{for(let i=0;i<this.slots.length;i++)Object.assign(this.slots[i]!,before.slots[i]!);Object.assign(this.durations,before.durations);Object.assign(this.counts,before.counts);Object.assign(this.failureCounts,before.failureCounts);this.serial=before.serial;this.verifiedEvidenceMs=before.verifiedEvidenceMs;};
+  try{return this.options.registry.transaction(()=>{this.options.registry.onRollback(restore);return fn();});}catch(error){restore();throw error;}
  }
+ assignedMints(){return this.slots.flatMap(slot=>slot.mint?[slot.mint]:[]); }
+ hasAssignment(mint:string,allocatedAt:number){const slot=this.live(mint);return !!slot&&slot.allocatedAt===allocatedAt;}
  private live(mint:string){return this.slots.find(slot=>slot.mint===mint);}
  private key(suffix:string){return this.options.sourceInstanceId+':slot-productivity:'+suffix;}
  private persist(){this.options.registry.setMetadata(this.key('latest'),{version:'native-slot-productivity-v1',startedAt:this.options.startedAt,counts:this.counts,failureCounts:this.failureCounts,stateMs:this.durations,slots:this.slots,serial:this.serial,verifiedEvidenceMs:this.verifiedEvidenceMs});}

@@ -1,3 +1,4 @@
+import {REVIEWED_MARKET_CONTENTION,reviewedMarketContentionLineage,type ReviewedContentionHistory} from './reviewed-market-contention.js';
 import {tradeDecisionContext,entryTradeProvenance,withFailedExitGas,makeTradeOutcome,type TradeDecisionContext,type TradeEntryProvenance,type TradeOutcomeReport} from './trade-outcome-reporting.js';
 import {PAPER_EPOCH_VERSION,PAPER_V3_EPOCH_VERSION,PAPER_V3_TEN_SOL_EPOCH_ID,PAPER_V3_TEN_SOL_EPOCH_AUTHORIZATION,PAPER_EPOCH_ASSET_SEGREGATION,verifyArchivedEpochAssets,PAPER_TEN_SOL_EPOCH_ID,PAPER_TEN_SOL_EPOCH_AUTHORIZATION,validatePaperEpoch,requireEpochFlat,verifiedEpochBackup,paperEpochStateSha256,type PaperEpoch,type LegacyPaperEpoch,type V3PaperEpoch,type PaperEpochBackupReceipt} from './paper-epoch.js';
 import Database from 'better-sqlite3';
@@ -320,7 +321,7 @@ export type ReviewedMaintenanceAcknowledgementReceipt={
 const controlAnchor=(row:OperatingControlRow):OperatingControlAnchor=>({revision:row.revision,actionId:row.actionId,at:row.at,kind:row.kind,payloadHash:row.payloadHash,resultSha256:digest(JSON.parse(row.result))});
 
 /**
- * One owner-reviewed, source-versioned exception to a historical *local
+ * Finite owner-reviewed, source-versioned exceptions to historical *local
  * candidate-processing* pause. It does not erase an action, grant entry,
  * acknowledge unknown newer hard intent, or classify all matching reason text
  * as temporary. The authenticated ledger has one such ordinary event in
@@ -336,6 +337,8 @@ export const REVIEWED_CANDIDATE_CONTROL_INCIDENT=Object.freeze({
  originSource:'983e90c0e053b27d3b93c37c91e8788e5d98c255',
  anchorRevision:190149,
  anchorAt:1793480966760,
+ anchorActionId:'native-paper-operating-financial-ready:190148:1793480966760',
+ sourcePauseActionId:'trader:pause:190298:1793481124040',
  sourcePauseRevision:190299,
  sourcePauseAt:1793481124040,
  sourcePauseReason:'native candidate financial evaluation unavailable',
@@ -344,12 +347,36 @@ export const REVIEWED_CANDIDATE_CONTROL_INCIDENT=Object.freeze({
  restoreRevision:190465,
  restoreAt:1793481488425,
 } as const);
-export function reviewedCandidateControlLineage(state:State,history:OperatingControlHistory|null):boolean {
- const c=REVIEWED_CANDIDATE_CONTROL_INCIDENT,h=history;
+/** Owner request 2026-11-01 UTC: recover this verified inherited incident.
+ * Source exception was not retained; this is an explicit incident review, not
+ * a declaration that the old error was harmless or all future errors transient.
+ * The +1 ms in sourcePauseActionId is present in the authenticated action.
+ * This proof grants no trade or financial permission by itself.
+ */
+export const REVIEWED_CANDIDATE_CONTROL_INCIDENT_20261101=Object.freeze({
+ accountId:'poe-3123e352-4581-455b-85db-acd7e825e99e',
+ inceptionAt:1793052456212,
+ epochId:'poe-paper-10sol-v3-20261030',
+ originSource:'f8ab5d74c5f8c8e792ab0b099388a6f3ad68d2d2',
+ anchorRevision:201388,
+ anchorAt:1793493697261,
+ anchorActionId:'native-paper-operating-financial-ready:201387:1793493697261',
+ sourcePauseRevision:202366,
+ sourcePauseAt:1793494775698,
+ sourcePauseActionId:'trader:pause:202365:1793494775699',
+ sourcePauseReason:'native candidate financial evaluation unavailable',
+ startupRevision:202420,
+ startupAt:1793495044518,
+ restoreRevision:202421,
+ restoreAt:1793495044523,
+} as const);
+type ReviewedCandidateIncident=typeof REVIEWED_CANDIDATE_CONTROL_INCIDENT|typeof REVIEWED_CANDIDATE_CONTROL_INCIDENT_20261101;
+function reviewedCandidateControlLineageFor(state:State,history:OperatingControlHistory|null,c:ReviewedCandidateIncident):boolean {
+ const h=history;
  if(!h||state.accountId!==c.accountId||state.inceptionAt!==c.inceptionAt||state.paperEpoch?.id!==c.epochId
    ||!isV3PaperRiskState(state)||state.mode!=='PAPER'||state.controls.entriesEnabled||state.controls.stopRequested
    ||Object.keys(state.positions).length||Object.keys(state.pending).length||state.daily.lossPaused
-   ||h.anchor?.kind!=='resume'||h.anchor.revision!==c.anchorRevision||h.anchor.at!==c.anchorAt
+   ||h.anchor?.kind!=='resume'||h.anchor.revision!==c.anchorRevision||h.anchor.at!==c.anchorAt||h.anchor.actionId!==c.anchorActionId
    ||h.decoded.length<3)return false;
  const exact=(index:number,revision:number,at:number,id:string,reason:string,kind:'ordinary'|'startup'|'restored')=>{
   const o=h.decoded[index];if(!o||o.row.kind!=='pause'||o.row.revision!==revision||o.row.at!==at
@@ -359,9 +386,9 @@ export function reviewedCandidateControlLineage(state:State,history:OperatingCon
      )return false;
   return kind==='ordinary'?o.ordinary&&!o.startup&&!o.restored:kind==='startup'?o.startup&&!o.ordinary&&!o.restored:o.restored&&!o.startup&&!o.ordinary;
  };
- if(!exact(0,c.sourcePauseRevision,c.sourcePauseAt,'trader:pause:190298:1793481124040',c.sourcePauseReason,'ordinary')
-    ||!exact(1,c.startupRevision,c.startupAt,'execution-recovery:'+c.accountId+':190463','execution startup: fresh reconciliation/readiness required','startup')
-    ||!exact(2,c.restoreRevision,c.restoreAt,'trader:restore-hard-pause:190464:1793481488425',c.sourcePauseReason,'restored'))return false;
+ if(!exact(0,c.sourcePauseRevision,c.sourcePauseAt,c.sourcePauseActionId,c.sourcePauseReason,'ordinary')
+    ||!exact(1,c.startupRevision,c.startupAt,'execution-recovery:'+c.accountId+':'+(c.startupRevision-1),'execution startup: fresh reconciliation/readiness required','startup')
+    ||!exact(2,c.restoreRevision,c.restoreAt,'trader:restore-hard-pause:'+c.startupRevision+':'+c.restoreAt,c.sourcePauseReason,'restored'))return false;
  let latestStartupRevision:number|null=null;
  for(const item of h.decoded.slice(3)){
   // Additional source restarts of this same authenticated inherited control
@@ -383,6 +410,10 @@ export function reviewedCandidateControlLineage(state:State,history:OperatingCon
  return !!last&&last.row.at===state.controls.changedAt&&last.payload.reason===state.controls.reason;
 }
 
+export function reviewedCandidateControlLineage(state:State,history:OperatingControlHistory|null):boolean {
+ return reviewedCandidateControlLineageFor(state,history,REVIEWED_CANDIDATE_CONTROL_INCIDENT)
+     ||reviewedCandidateControlLineageFor(state,history,REVIEWED_CANDIDATE_CONTROL_INCIDENT_20261101);
+}
 
 function validateLedgerEpochAnchor(db:Database.Database,s:State):void{
     const epoch=s.paperEpoch;if(!epoch)return;validatePaperEpoch(epoch,s);
@@ -525,6 +556,33 @@ export function readReviewedMaintenanceAcknowledgement(db:Database.Database,stat
 }
 
 export class PaperLedger {
+  private reviewedMarketContentionEvidenceAccepted=false;
+  private reviewedMarketClosureRevision:number=REVIEWED_MARKET_CONTENTION.attemptedRevision;
+  /** Registers only the exact sanitized report generated by the owner. This
+   * does not modify the ledger, clear a pause or enable entries. */
+  authorizeReviewedMarketContentionEvidence(reportSha256:string|null){
+    this.reviewedMarketContentionEvidenceAccepted=reportSha256===REVIEWED_MARKET_CONTENTION.reportSha256;
+    return this.reviewedMarketContentionEvidenceAccepted;
+  }
+  private reviewedMarketControlVerified(s:State,h:OperatingControlHistory|null):boolean{
+    if(!this.reviewedMarketContentionEvidenceAccepted||!h)return false;
+    const sha=(v:string)=>createHash('sha256').update(v).digest('hex');
+    const projected:ReviewedContentionHistory={anchor:h.anchor?{revision:h.anchor.revision,at:h.anchor.at,kind:h.anchor.kind,actionSha256:sha(h.anchor.actionId)}:null,controls:h.decoded.map(x=>({revision:x.row.revision,at:x.row.at,kind:x.row.kind,actionSha256:sha(x.row.actionId),detailSha256:sha(x.row.detail),reasonSha256:sha(String(x.payload.reason)),ordinary:x.ordinary,startup:x.startup,restored:x.restored,temporary:INTERNAL_SHUTDOWN_SOFT_PAUSES.has(x.payload.reason),paused:x.result.paused===true,cancellations:Array.isArray(x.result.pendingBuyCancellations)?x.result.pendingBuyCancellations.length:-1}))};
+    if(!reviewedMarketContentionLineage(s,projected,true,true)||s.revision<this.reviewedMarketClosureRevision)return false;
+    // Sole-writer immutable append history: scan the original closure once,
+    // then only new rows. Orders, attempts, cancellations, capital/epoch/risk
+    // mutations or missing revisions all refuse recovery. Denied resumes and
+    // every control intent were independently authenticated above.
+    const since=this.reviewedMarketClosureRevision;
+    const rows=this.db.prepare('SELECT count(*) n FROM journal WHERE revision>? AND revision<=?').get(since,s.revision) as {n:number};
+    if(rows.n!==s.revision-since||this.db.prepare("SELECT revision FROM journal WHERE revision>? AND revision<=? AND kind NOT IN ('reconcile','pause','resume') LIMIT 1").get(since,s.revision))return false;
+    this.reviewedMarketClosureRevision=s.revision;return true;
+  }
+  reviewedMarketContentionRecoveryAllowed(at:number){
+    if(!this.reviewedMarketContentionEvidenceAccepted)return false;
+    const s=this.state();return Number.isSafeInteger(at)&&at>=s.lastAt&&this.reviewedMarketControlVerified(s,this.operatingControlHistory(s,at));
+  }
+
   private readonly db: Database.Database;
   private readonly historicalClosedCycles=new Map<string,ClosedCycle|null>();
   private ownerFd: number | undefined;
@@ -893,7 +951,7 @@ export class PaperLedger {
   }
 
   private operatingTemporaryControlVerified(state:State,at:number){
-    const history=this.operatingControlHistory(state,at);if(!history)return false;if(reviewedCandidateControlLineage(state,history))return true;let lastControl:{at:number;reason:string}|null=history.anchor?.kind===REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT.kind?{at:history.anchor.at,reason:REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT.newReason}:history.anchor?.kind===V31_DIAGNOSTIC_CONTROL_REPAIR.kind?{at:history.anchor.at,reason:V31_DIAGNOSTIC_CONTROL_REPAIR.newReason}:history.anchor?.kind==='paper-epoch-transition'?{at:history.anchor.at,reason:'execution startup: fresh reconciliation/readiness required'}:null;
+    const history=this.operatingControlHistory(state,at);if(!history)return false;if(this.reviewedMarketControlVerified(state,history)||reviewedCandidateControlLineage(state,history))return true;let lastControl:{at:number;reason:string}|null=history.anchor?.kind===REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT.kind?{at:history.anchor.at,reason:REVIEWED_MAINTENANCE_ACKNOWLEDGEMENT.newReason}:history.anchor?.kind===V31_DIAGNOSTIC_CONTROL_REPAIR.kind?{at:history.anchor.at,reason:V31_DIAGNOSTIC_CONTROL_REPAIR.newReason}:history.anchor?.kind==='paper-epoch-transition'?{at:history.anchor.at,reason:'execution startup: fresh reconciliation/readiness required'}:null;
     let observedRuntimeReportingPause=false;
     for(const {row,payload,ordinary,restored,startup}of history.decoded){if(row.kind==='safe-stop')return false;if(row.kind==='resume')continue;
       // Older releases restored this exact runtime overrun as a hard pause.
@@ -909,7 +967,7 @@ export class PaperLedger {
 
   /** Preflight for the operating candidate path; no preparation or state
    * change may launder an owner intent behind temporary startup wording. */
-  operatingFinancialRecoveryAllowed(at:number){const state=this.state();return Number.isSafeInteger(at)&&at>=state.lastAt&&!state.controls.entriesEnabled&&!state.controls.stopRequested&&!dailyLossEntryBlocked(state)&&!Object.keys(state.pending).length&&this.operatingTemporaryControlVerified(state,at)&&(INTERNAL_SHUTDOWN_SOFT_PAUSES.has(state.controls.reason)||state.controls.reason===REVIEWED_CANDIDATE_CONTROL_INCIDENT.sourcePauseReason&&reviewedCandidateControlLineage(state,this.operatingControlHistory(state,at)));}
+  operatingFinancialRecoveryAllowed(at:number){if(this.reviewedMarketContentionRecoveryAllowed(at))return true;const state=this.state();return Number.isSafeInteger(at)&&at>=state.lastAt&&!state.controls.entriesEnabled&&!state.controls.stopRequested&&!dailyLossEntryBlocked(state)&&!Object.keys(state.pending).length&&this.operatingTemporaryControlVerified(state,at)&&(INTERNAL_SHUTDOWN_SOFT_PAUSES.has(state.controls.reason)||state.controls.reason===REVIEWED_CANDIDATE_CONTROL_INCIDENT.sourcePauseReason&&reviewedCandidateControlLineage(state,this.operatingControlHistory(state,at)));}
 
   resume(id: string, now: number, price: UsdPrice, marks: Record<string, Mark>, readiness: RuntimeReadiness) {
     const p = priceAt(price, now);

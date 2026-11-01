@@ -1,0 +1,55 @@
+test('slot lifecycle: a writer collision after selection cannot create a phantom fourth native scope',async()=>{
+ const dir=mkdtempSync(join(tmpdir(),'native-allocation-atomic-')),path=join(dir,'registry.sqlite'),registry=new MarketRegistry(path,{concurrentIntake:true,now:()=>baseAt}),locker=new Database(path),f=fixture({registry,durableMarketPolicy:true,fairEconomicCompletions:true,maximumDeep:4});
+ const next=f.runner.watch.next.bind(f.runner.watch);let locked=false;
+ try{
+  for(let n=1;n<=4;n++)f.seed(n);
+  f.runner.watch.next=((...args:Parameters<typeof next>)=>{const row=next(...args);if(row&&!locked){locker.exec('BEGIN IMMEDIATE');locked=true;}return row;})as typeof next;
+  assert.throws(()=>(f.runner as any).allocate(f.now),MarketRegistryContention);
+  assert.equal(f.states.size,0);assert.equal((f.runner as any).candidates.size,0);assert.equal(f.runner.slotProductivity().counts.allocations,0);assert.equal(f.runner.watch.snapshot().summary.deepActive,0);
+  locker.exec('ROLLBACK');f.runner.watch.next=next;await f.steps(10);
+  assert.equal(f.states.size,4);assert.equal(f.runner.status().candidates.length,4);assert.equal(f.runner.watch.snapshot().summary.deepActive,4);assert.equal(f.runner.slotProductivity().slots.filter(s=>s.mint!==null).length,4);assert.equal(new Set(f.added).size,4);
+ }finally{if(locker.inTransaction)locker.exec('ROLLBACK');f.runner.watch.next=next;await f.runner.stop();locker.close();registry.close();rmSync(dir,{recursive:true,force:true});}
+});
+
+test('slot lifecycle: outer rollback restores watch and productivity mirrors and starts no physical scope',async()=>{
+ const registry=new MarketRegistry(':memory:',{now:()=>baseAt}),f=fixture({registry,durableMarketPolicy:true,fairEconomicCompletions:true}),mint=f.seed(1),mark=registry.markStage.bind(registry),before=f.runner.watch.snapshot().summary.promoted;
+ try{
+  registry.markStage=(()=>{throw Error('OFFLINE lifecycle durable-stage failure');})as typeof registry.markStage;
+  assert.throws(()=>(f.runner as any).allocate(f.now),/OFFLINE lifecycle durable-stage failure/);
+  assert.equal(f.states.size,0);assert.equal((f.runner as any).candidates.size,0);assert.equal(f.runner.watch.lookupIdentity(mint)!.deepSince,null);assert.equal(f.runner.watch.snapshot().summary.promoted,before);assert.equal(f.runner.slotProductivity().counts.allocations,0);
+  registry.markStage=mark;await f.steps(2);assert.equal(f.states.size,1);assert.equal(f.runner.slotProductivity().counts.allocations,1);assert.equal(f.runner.watch.snapshot().summary.promoted,before+1);
+ }finally{registry.markStage=mark;await f.runner.stop();registry.close();}
+});
+
+test('slot lifecycle: deferred retirement preserves ownership until its durable commit and unsubscribe settlement',async()=>{
+ const dir=mkdtempSync(join(tmpdir(),'native-retirement-atomic-')),path=join(dir,'registry.sqlite'),registry=new MarketRegistry(path,{concurrentIntake:true,now:()=>baseAt}),locker=new Database(path),f=fixture({registry,durableMarketPolicy:true,fairEconomicCompletions:true});
+ try{
+  const mint=f.seed(1);await f.steps(2);const candidate=(f.runner as any).candidates.get(mint);locker.exec('BEGIN IMMEDIATE');
+  assert.equal((f.runner as any).retire(mint,'OFFLINE reviewed negative decision',f.now,0),false);
+  assert.equal((f.runner as any).candidates.get(mint),candidate);assert.equal(f.states.has(mint),true);assert.equal(f.runner.slotProductivity().slots[0]!.mint,mint);assert.equal(f.runner.currentAuditCertificate(mint),null);
+  f.advance(70000);assert.equal(await f.runner.step(),'wait');assert.equal(f.rpcCalls.length,0,'pending retirement cannot be audited repeatedly');
+  locker.exec('ROLLBACK');await f.steps(1);assert.equal(f.states.has(mint),false);assert.equal(f.flowActions.at(-1),'unsubscribe');assert.equal(f.runner.slotProductivity().slots[0]!.mint,null);
+  await f.steps(2);assert.equal(f.states.size,1);assert.notEqual((f.runner as any).candidates.get(mint),candidate);assert.equal(f.flow.snapshot(mint)!.warm,false,'replacement must warm a fresh window');
+ }finally{if(locker.inTransaction)locker.exec('ROLLBACK');await f.runner.stop();locker.close();registry.close();rmSync(dir,{recursive:true,force:true});}
+});
+
+test('slot lifecycle: stale WATCH membership is retired before another audit or certificate',async()=>{
+ const f=fixture({durableMarketPolicy:true,fairEconomicCompletions:true}),mint=f.seed(1);await f.steps(2);const generation=(f.runner as any).candidates.get(mint);
+ f.runner.watch.transition(mint,'DEFERRED','OFFLINE stale membership reproduction',f.now);f.advance(70000);f.refresh();
+ await f.steps(1);assert.equal(f.rpcCalls.length,0);assert.equal(f.runner.currentAuditCertificate(mint),null);assert.equal(f.states.has(mint),false);assert.ok(f.records.some(r=>r.kind==='native-candidate-membership-invalid'&&r.data.mint===mint));
+ await f.steps(4);assert.notEqual((f.runner as any).candidates.get(mint),generation);assert.equal(f.rpcCalls.length,0);assert.equal(f.records.some(r=>r.kind==='native-candidate-work-unavailable'&&r.data.reason==='PILOT_WATCH_WINDOW_REQUIRES_DEEP'),false);await f.runner.stop();
+});
+
+test('slot lifecycle: an ownerless native scope is retired without pretending the subscription settled',async()=>{
+ const f=fixture({durableMarketPolicy:true,fairEconomicCompletions:true});const mint=f.seed(1);await f.steps(2);
+ (f.flow as any).candidateMints=()=>[...f.states.keys()];(f.runner as any).candidates.delete(mint);
+ await f.steps(1);assert.equal(f.states.has(mint),false);assert.equal(f.runner.slotProductivity().slots[0]!.mint,null);assert.equal(f.runner.watch.lookupIdentity(mint)!.deepSince,null);assert.ok(f.records.some(r=>r.kind==='native-candidate-orphan-retired'&&r.data.physicalCapacityReleased===false));assert.equal(f.rpcCalls.length,0);await f.runner.stop();
+});
+
+test('slot lifecycle: failed native installation compensates durable admission without a phantom logical slot',async()=>{
+ const f=fixture({durableMarketPolicy:true,fairEconomicCompletions:true}),mint=f.seed(1),add=f.flow.addCandidate;
+ f.flow.addCandidate=()=>{throw Error('OFFLINE native installation refused');};
+ assert.throws(()=>(f.runner as any).allocate(f.now),/OFFLINE native installation refused/);
+ assert.equal(f.states.size,0);assert.equal(f.runner.status().candidates.length,0);assert.equal(f.runner.watch.lookupIdentity(mint)!.deepSince,null);assert.equal(f.runner.slotProductivity().slots[0]!.mint,null);
+ f.flow.addCandidate=add;await f.steps(3);assert.equal(f.states.size,1);assert.equal(f.runner.watch.snapshot().summary.deepActive,1);await f.runner.stop();
+});

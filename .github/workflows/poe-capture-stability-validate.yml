@@ -1,0 +1,96 @@
+name: Validate POE per-message receipt and capture stability repair
+on:
+  push:
+    branches: [repair/poe-capture-stability-20261101]
+    paths: ['.github/workflows/poe-capture-stability-validate.yml']
+permissions:
+  contents: write
+concurrency:
+  group: poe-capture-stability-20261101
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Materialize reviewable source and test edits on dedicated branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          test "$GITHUB_REF" = refs/heads/repair/poe-capture-stability-20261101
+          mkdir -p /tmp/poe-capture-stability
+          python3 -B -I - <<'PY'
+          from pathlib import Path
+          p=Path('scripts/author-capture-stability.py');s=p.read_text()
+          old='const registry=new MarketRegistry(),f=fixture'
+          assert s.count(old)==1
+          p.write_text(s.replace(old,"const registry=new MarketRegistry(':memory:'),f=fixture"))
+          PY
+          python3 -B -I scripts/author-capture-stability.py
+          git diff --check
+          git add -- src test scripts docs
+          git config user.name 'POE capture stability validation'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Repair per-message receipt provenance, lazy financial classification and bounded capture handover'
+          git push origin HEAD:refs/heads/repair/poe-capture-stability-20261101
+          git rev-parse HEAD > /tmp/poe-capture-stability/source-commit.txt
+          git diff 31efee2c44725722e7948165126e6296111f165c -- src test docs > /tmp/poe-capture-stability/source.patch
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+          cache: npm
+      - name: Install unchanged pinned dependencies
+        run: npm ci --include=dev
+      - name: Typecheck and compile
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run build 2>&1 | tee /tmp/poe-capture-stability/typecheck.log
+          npm run compile 2>&1 | tee /tmp/poe-capture-stability/compile.log
+          node -e "const D=require('better-sqlite3');const d=new D(':memory:');console.log(JSON.stringify({node:process.version,sqlite:d.prepare('select sqlite_version() version').get().version,ws:require('ws/package.json').version}));d.close()" > /tmp/poe-capture-stability/toolchain.json
+      - name: Focused real-receiver, retirement, observation and financial safety regressions
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          node --import tsx --test --test-concurrency=1 test/ws-frame-receipt-clock.test.ts test/native-evidence-classification.test.ts test/pilot-native-flow.test.ts test/native-flow-service-policy.test.ts test/native-candidate-runner.test.ts test/native-managed-cancel-settlement.test.ts test/native-settled-recovery.test.ts test/native-startup-integration.test.ts test/operating-intelligence.test.ts test/native-paper-service.test.ts test/token-age-policy.test.ts test/execution.test.ts test/native-control-recovery.test.ts test/native-paper-readiness.test.ts 2>&1 | tee /tmp/poe-capture-stability/focused.log
+      - name: Full offline regression suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          node --import tsx --test --test-concurrency=1 test/*.test.ts 2>&1 | tee /tmp/poe-capture-stability/full.log
+      - name: Build clean immutable executable after all regressions pass
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          test "$(git rev-parse HEAD)" = "$(cat /tmp/poe-capture-stability/source-commit.txt)"
+          test -z "$(git status --porcelain -- src scripts package.json package-lock.json)"
+          node scripts/build-native-paper-ec2.mjs --output-directory /tmp/poe-native-paper-output-capture-stability
+          cp -a /tmp/poe-native-paper-output-capture-stability /tmp/poe-capture-stability/bundle
+          python3 -B -I - <<'PY'
+          import hashlib,json,pathlib,re
+          p=pathlib.Path('/tmp/poe-capture-stability');source=(p/'source-commit.txt').read_text().strip();meta=json.loads((p/'bundle/metadata.json').read_bytes())
+          assert meta['git']['commit']==source and meta['git']['workingTreeStatus']==''
+          log=(p/'full.log').read_text()
+          def metric(k):
+              rows=re.findall(r'(?m)^(?:# |ℹ )'+k+r'\s+(\d+)\s*$',log);assert len(rows)==1;return int(rows[0])
+          count=metric('tests');assert count>=3063 and metric('pass')==count and all(metric(k)==0 for k in ['fail','skipped','cancelled'])
+          receipt={'kind':'POE_CAPTURE_STABILITY_VALIDATED_BUILD','source':source,'base':'31efee2c44725722e7948165126e6296111f165c','bundleSha256':hashlib.sha256((p/'bundle/native-paper.mjs').read_bytes()).hexdigest(),'testsPassed':count,'receiptPolicy':'ws-frame-first-byte-receipt-v1','receiptFreshnessMs':5000,'handlerProcessingLimitUnchanged':True,'persistentIdleGraceMs':15000,'gapInvalidationImmediate':True,'financialClassificationPreserved':True,'tokenAgeMaximumMs':86400000,'missingEvidenceWaitBonus':0,'fourSlotsPreserved':True,'liveTradingEnabled':False,'ec2Changed':False,'ownerReleaseApprovalRequired':True}
+          (p/'build-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt))
+          PY
+          sha256sum /tmp/poe-capture-stability/bundle/* > /tmp/poe-capture-stability/SHA256SUMS
+      - name: Retain exact source changes, test results and executable when available
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: poe-capture-stability-${{ github.run_id }}
+          path: /tmp/poe-capture-stability/
+          retention-days: 30
+          if-no-files-found: error

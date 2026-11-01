@@ -1,3 +1,4 @@
+import {wsWire} from './ws-wire-fixture.js';
 /** Isolated native-flow mechanics. Retained real logs retain their original
  * program clock/availability; explicitly changed bytes below are synthetic
  * correction/failure fixtures, never natural trading or financial results. */
@@ -35,9 +36,10 @@ class Socket extends EventEmitter {
   readyState:number=WebSocket.CONNECTING;autoClose=true;private subscription=100;
   constructor(readonly endpoint:string){super();}
   open(){this.readyState=WebSocket.OPEN;this.emit('open');}
-  frame(value:unknown,declaredBytes?:number){if(this.readyState!==WebSocket.OPEN)return;const raw=Buffer.from(typeof value==='string'?value:JSON.stringify(value));this._socket.bytesRead+=declaredBytes??raw.length+4;this._socket.emit('data',raw);this.emit('message',raw);}
+  frame(value:unknown,declaredBytes?:number){if(this.readyState!==WebSocket.OPEN)return;const raw=Buffer.from(typeof value==='string'?value:JSON.stringify(value));this._socket.bytesRead+=declaredBytes??raw.length+4;this._socket.emit('data',wsWire(raw));this.emit('message',raw);}
+  controlFrame(kind:'ping'|'pong',payload:Buffer){this._socket.bytesRead+=payload.length+2;this._socket.emit('data',wsWire(payload,kind==='ping'?9:10));this.emit(kind,payload);}
   send(data:string,callback?:(error?:Error)=>void){const request=JSON.parse(data);assert.equal(request.jsonrpc,'2.0');assert.ok(['logsSubscribe','logsUnsubscribe'].includes(request.method),'only filtered read-only logs management');this.sent.push(request);callback?.();queueMicrotask(()=>this.frame({jsonrpc:'2.0',id:request.id,result:request.method==='logsSubscribe'?++this.subscription:true}));}
-  ping(payload:Buffer,_mask?:unknown,callback?:(error?:Error)=>void){this.controls.push('ping');this._sender.sendFrame([Buffer.from([0x89]),payload]);callback?.();queueMicrotask(()=>{this._socket.bytesRead+=payload.length+2;this._socket.emit('data',Buffer.alloc(0));this.emit('pong',Buffer.from(payload));});}
+  ping(payload:Buffer,_mask?:unknown,callback?:(error?:Error)=>void){this.controls.push('ping');this._sender.sendFrame([Buffer.from([0x89]),payload]);callback?.();queueMicrotask(()=>{this._socket.bytesRead+=payload.length+2;this._socket.emit('data',wsWire(payload,10));this.emit('pong',Buffer.from(payload));});}
   pong(payload:Buffer,_mask?:unknown,callback?:(error?:Error)=>void){this.controls.push('pong');this._sender.sendFrame([Buffer.from([0x8a]),payload]);callback?.();}
   close(code=1000){this.controls.push('close');this._sender.sendFrame([Buffer.from([0x88])]);this.readyState=WebSocket.CLOSING;if(this.autoClose)queueMicrotask(()=>this.drop(code));}
   terminate(){if(this.readyState===WebSocket.CLOSED)return;this.readyState=WebSocket.CLOSING;if(this.autoClose)queueMicrotask(()=>this.drop(1006));}

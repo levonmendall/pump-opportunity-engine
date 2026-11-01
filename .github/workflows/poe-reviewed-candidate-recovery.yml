@@ -1,0 +1,89 @@
+name: Validate reviewed POE candidate pause recovery
+on:
+  push:
+    branches: [repair/poe-candidate-pause-recovery-20261101]
+    paths: ['.github/workflows/poe-reviewed-candidate-recovery.yml']
+permissions:
+  contents: write
+concurrency:
+  group: poe-reviewed-candidate-recovery-20261101
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Materialize reviewed source on dedicated recovery branch
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          test "$GITHUB_REF" = refs/heads/repair/poe-candidate-pause-recovery-20261101
+          git merge-base --is-ancestor ef6e40b3f31c4ac618a5f6ca50387060e114ad06 HEAD
+          mkdir -p /tmp/poe-reviewed-recovery
+          python3 -B -I scripts/author-reviewed-candidate-recovery.py
+          git diff --check
+          git add -- src test docs
+          git config user.name 'POE reviewed recovery validation'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Recover only reviewed 202366 candidate pause through fresh readiness and retain future failure diagnostics'
+          git push origin HEAD:refs/heads/repair/poe-candidate-pause-recovery-20261101
+          git rev-parse HEAD > /tmp/poe-reviewed-recovery/source-commit.txt
+          git diff ef6e40b3f31c4ac618a5f6ca50387060e114ad06 -- src test docs > /tmp/poe-reviewed-recovery/source.patch
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+          cache: npm
+      - name: Install unchanged dependencies
+        run: npm ci --include=dev
+      - name: Typecheck and compile
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run build 2>&1 | tee /tmp/poe-reviewed-recovery/typecheck.log
+          npm run compile 2>&1 | tee /tmp/poe-reviewed-recovery/compile.log
+      - name: Focused lineage, readiness, financial failure, age and execution tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          node --import tsx --test --test-concurrency=1 test/reviewed-candidate-control-lineage.test.ts test/trader.test.ts test/operating-financial-readiness.test.ts test/denied-readiness-recovery.test.ts test/native-control-recovery.test.ts test/token-age-policy.test.ts test/execution.test.ts test/native-paper-service.test.ts test/native-paper-readiness.test.ts 2>&1 | tee /tmp/poe-reviewed-recovery/focused.log
+      - name: Full offline regression suite
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          node --import tsx --test --test-concurrency=1 test/*.test.ts 2>&1 | tee /tmp/poe-reviewed-recovery/full.log
+      - name: Build clean immutable release after all tests pass
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          test "$(git rev-parse HEAD)" = "$(cat /tmp/poe-reviewed-recovery/source-commit.txt)"
+          test -z "$(git status --porcelain -- src scripts package.json package-lock.json)"
+          node scripts/build-native-paper-ec2.mjs --output-directory /tmp/poe-native-paper-output-reviewed-recovery
+          cp -a /tmp/poe-native-paper-output-reviewed-recovery /tmp/poe-reviewed-recovery/bundle
+          python3 -B -I - <<'PY'
+          import hashlib,json,pathlib,re
+          p=pathlib.Path('/tmp/poe-reviewed-recovery');source=(p/'source-commit.txt').read_text().strip();meta=json.loads((p/'bundle/metadata.json').read_bytes())
+          assert meta['git']['commit']==source and meta['git']['workingTreeStatus']==''
+          log=(p/'full.log').read_text()
+          def metric(k):
+              rows=re.findall(r'(?m)^(?:# |ℹ )'+k+r'\s+(\d+)\s*$',log);assert len(rows)==1;return int(rows[0])
+          count=metric('tests');assert count>=3048 and metric('pass')==count and all(metric(k)==0 for k in ['fail','skipped','cancelled'])
+          receipt={'kind':'POE_REVIEWED_CANDIDATE_RECOVERY_VALIDATED_BUILD','source':source,'base':'ef6e40b3f31c4ac618a5f6ca50387060e114ad06','bundleSha256':hashlib.sha256((p/'bundle/native-paper.mjs').read_bytes()).hexdigest(),'testsPassed':count,'reviewedPauseRevision':202366,'futureHardFailureRecovery':False,'tokenAgeMaximumMs':86400000,'missingEvidenceWaitBonus':0,'fourSlotsPreserved':True,'liveTradingEnabled':False,'ec2Changed':False,'ownerReleaseApprovalRequired':True}
+          (p/'build-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt))
+          PY
+          sha256sum /tmp/poe-reviewed-recovery/bundle/* > /tmp/poe-reviewed-recovery/SHA256SUMS
+      - name: Retain source patch, tests and exact executable
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: poe-reviewed-candidate-recovery-${{ github.run_id }}
+          path: /tmp/poe-reviewed-recovery/
+          retention-days: 30
+          if-no-files-found: error
