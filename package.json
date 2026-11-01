@@ -16,7 +16,8 @@
     "integration": "node --use-env-proxy --import tsx src/integration.ts",
     "account": "node --import tsx src/account.ts",
     "runtime": "node --use-env-proxy --import tsx src/runtime.ts",
-    "publisher": "node dist/src/snapshot-publisher.js"
+    "publisher": "node dist/src/snapshot-publisher.js",
+    "sale-reviews": "node --use-env-proxy dist/src/sale-review-companion.js"
   },
   "dependencies": {
     "@pump-fun/pump-swap-sdk": "2.2.0",

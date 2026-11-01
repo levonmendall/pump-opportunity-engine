@@ -93,7 +93,7 @@ test('no historical equity or a single current value does not fabricate a past t
 test('portfolio source and dashboard render path are tied to the same equity value, not unrelated P&L',()=>{
  assert.match(source,/equityHistory: cache\.equityHistory\(\)/);
  assert.match(source,/plot\(latestEquityHistory\?\.points\?\?\[\],latest\?\.financialEpoch\?\.activatedAt/);
- assert.match(source,/showSnapshot\(result\.snapshot,result\.receivedAt,result\.freshness,result\.equityHistory\?\?null\)/);
+ assert.match(source,/showSnapshot\(result\.snapshot,result\.receivedAt,result\.freshness,result\.equityHistory\?\?null,result\.saleReviews\?\?null\)/);
  assert.match(source,/Portfolio equity trajectory/);
  assert.match(source,/PORTFOLIO EQUITY · USD/);
  assert.match(source,/Actual portfolio equity in USD from the new release’s 10 SOL epoch/);
