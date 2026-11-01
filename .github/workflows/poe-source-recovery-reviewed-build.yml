@@ -1,0 +1,87 @@
+name: Verify exact source recovery on standard application runner
+on:
+  push:
+    branches: [repair/source-quarantine-recovery-20261101]
+    paths: ['.github/workflows/poe-source-recovery-reviewed-build.yml']
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: 905be6d92001351cc891d83fe11fa7b28fe98d4e
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+          cache: npm
+      - name: Record isolated test resources and preserve previous validation limitations
+        run: |
+          set -euo pipefail
+          umask 077
+          mkdir -p /tmp/poe-recovery-validation
+          test "$(git rev-parse HEAD)" = 905be6d92001351cc891d83fe11fa7b28fe98d4e
+          git rev-parse HEAD > /tmp/poe-recovery-validation/source-commit.txt
+          git diff bb145cc82b0f05560b03bbd9e53de0c9e360f48f -- src test > /tmp/poe-recovery-validation/source.patch
+          python3 -B -I - <<'PY'
+          import os,platform,json,pathlib
+          cpus=len(os.sched_getaffinity(0));assert cpus>=4
+          d={'cpuAffinityCount':cpus,'cpuCount':os.cpu_count(),'platform':platform.platform(),'meminfo':pathlib.Path('/proc/meminfo').read_text().splitlines()[:3],'productionHost':False,'financialDataRead':False}
+          pathlib.Path('/tmp/poe-recovery-validation/resources.json').write_text(json.dumps(d,indent=2)+'\n');print(json.dumps(d))
+          PY
+          printf '%s\n' 'Prior run 41343613222 retained: 3116/3117 passed, missing-process ESRCH fixture error corrected in 905be6d9 without weakening lease checks. Private-admin run 41344734824 retained: 3116/3117 passed, backup timer gap 760.498775ms vs two-copy baseline 200.188011ms; not accepted as full validation. No runtime source, backup assertion or timing threshold changed for this run. Baseline and candidate are rechecked on this same isolated runner before the entire suite.' > /tmp/poe-recovery-validation/prior-failures.txt
+      - name: Install unchanged pinned dependencies
+        run: npm ci --include=dev
+      - name: Typecheck and compile exact source
+        run: |
+          set -euo pipefail
+          umask 077
+          npm run build 2>&1 | tee /tmp/poe-recovery-validation/typecheck.log
+          npm run compile 2>&1 | tee /tmp/poe-recovery-validation/compile.log
+      - name: Compare unchanged backup assertions on baseline and candidate
+        run: |
+          set -euo pipefail
+          umask 077
+          test -z "$(git diff bb145cc82b0f05560b03bbd9e53de0c9e360f48f -- src/backup.ts src/backup-worker.ts test/backup.test.ts package-lock.json)"
+          git worktree add --detach /tmp/poe-recovery-backup-baseline bb145cc82b0f05560b03bbd9e53de0c9e360f48f
+          ln -s "$PWD/node_modules" /tmp/poe-recovery-backup-baseline/node_modules
+          (cd /tmp/poe-recovery-backup-baseline && node --import tsx --test --test-concurrency=1 test/backup.test.ts) 2>&1 | tee /tmp/poe-recovery-validation/baseline-backup.log
+          node --import tsx --test --test-concurrency=1 test/backup.test.ts 2>&1 | tee /tmp/poe-recovery-validation/candidate-backup.log
+          git worktree remove --force /tmp/poe-recovery-backup-baseline
+      - name: Complete offline suite without exclusions or relaxed assertions
+        run: |
+          set -euo pipefail
+          umask 077
+          node --import tsx --test --test-concurrency=1 test/*.test.ts 2>&1 | tee /tmp/poe-recovery-validation/full.log
+      - name: Build exact clean PAPER executable only after complete validation
+        env:
+          VALIDATION_RUN: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          umask 077
+          test -z "$(git status --porcelain)"
+          node scripts/build-native-paper-ec2.mjs --output-directory /tmp/poe-native-paper-output-source-recovery
+          cp -a /tmp/poe-native-paper-output-source-recovery /tmp/poe-recovery-validation/bundle
+          git archive HEAD src test scripts docs package.json package-lock.json tsconfig.json | gzip -n > /tmp/poe-recovery-validation/source.tar.gz
+          python3 -B -I - <<'PY'
+          import pathlib,json,hashlib,re,os
+          p=pathlib.Path('/tmp/poe-recovery-validation');s=(p/'source-commit.txt').read_text().strip();log=(p/'full.log').read_text();m=json.loads((p/'bundle/metadata.json').read_bytes())
+          def metric(k):
+              a=re.findall(r'(?m)^(?:# |ℹ )'+k+r'\s+(\d+)\s*$',log);assert len(a)==1;return int(a[0])
+          count=metric('tests');assert count==3117 and metric('pass')==count and all(metric(k)==0 for k in ['fail','skipped','cancelled'])
+          assert s=='905be6d92001351cc891d83fe11fa7b28fe98d4e' and m['git']['commit']==s and m['git']['workingTreeStatus']=='' and m['financialMode']=='PAPER' and m['liveTradingEnabled'] is False
+          receipt={'kind':'POE_SOURCE_QUARANTINE_VALIDATED_BUILD','source':s,'base':'bb145cc82b0f05560b03bbd9e53de0c9e360f48f','bundleSha256':hashlib.sha256((p/'bundle/native-paper.mjs').read_bytes()).hexdigest(),'testsPassed':count,'sourcePauseProvenanceRun':41342018302,'priorValidationRuns':[41343613222,41344734824],'validationRun':int(os.environ['VALIDATION_RUN']),'baselineBackupTestsPassed':True,'candidateBackupTestsPassed':True,'timingAssertionsUnchanged':True,'financialControlWrites':0,'freshReadinessChecksRetained':True,'strategyChanged':False,'marketCoverageReduced':False,'auditDeadlinesChanged':False,'tokenAgeMaximumMs':86400000,'deepSlots':4,'liveTradingEnabled':False,'ec2Changed':False,'ownerReleaseApprovalRequired':True}
+          (p/'build-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt))
+          PY
+      - name: Retain complete validation evidence, including failures
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: poe-reviewed-source-recovery-${{ github.run_id }}
+          path: /tmp/poe-recovery-validation/
+          retention-days: 30
+          if-no-files-found: error
