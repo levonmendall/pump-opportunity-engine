@@ -29,10 +29,10 @@ test('followups are FIFO, one attempt per turn, and abandoned across source gene
  let generation=1,blocked=true;const done:string[]=[],events:any[]=[];
  const q=new NativeRegistryFollowups(()=>generation,(kind,data)=>events.push({kind,data}),()=>100);
  q.submit('evaluation-complete','a',90,()=>{if(blocked)throw new MarketRegistryContention('SQLITE_LOCKED');done.push('a');});
- q.submit('economic-rejection','a',91,()=>done.push('b'));assert.deepEqual(done,[]);blocked=false;
- q.drain();assert.deepEqual(done,['a']);assert.equal(q.view().pending,1);q.drain();assert.deepEqual(done,['a','b']);
+ q.submit('economic-rejection','a',91,()=>done.push('b'));assert.deepEqual(done.slice(),[]);blocked=false;
+ q.drain();assert.deepEqual(done.slice(),['a']);assert.equal(q.view().pending,1);q.drain();assert.deepEqual(done.slice(),['a','b']);
  blocked=true;q.submit('technical-reevaluation','a',92,()=>{if(blocked)throw new MarketRegistryContention('SQLITE_BUSY');done.push('stale');});generation=2;blocked=false;q.drain();
- assert.deepEqual(done,['a','b']);assert.equal(q.view().generationDiscarded,1);assert.equal(q.pending(),false);
+ assert.deepEqual(done.slice(),['a','b']);assert.equal(q.view().generationDiscarded,1);assert.equal(q.pending(),false);
 });
 test('same-text errors, raw financial SQLite errors and post-callback errors are not silently retried',()=>{
  const after=new MarketRegistryContention('SQLITE_BUSY');Object.defineProperty(after,'callbackStarted',{value:true});
