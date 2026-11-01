@@ -58,7 +58,7 @@ test('changed identity, money, intent, exact rows or any new hard failure cannot
  for(const [name,mutate]of cases){const {state,history}=fixture();mutate(state,history);assert.equal(reviewedMarketContentionLineage(state,history,true,true),false,name);}
 });
 test('registering diagnostic evidence alone cannot change a disposable ledger or recover foreign history',t=>{
- const dir=mkdtempSync(join(tmpdir(),'poe-OFFLINE-contention-proof-')),ledger=new PaperLedger(join(dir,'fixture.sqlite'),'OFFLINE-contention-fixture');
+ const dir=mkdtempSync(join(tmpdir(),'poe-OFFLINE-contention-proof-')),ledger=new PaperLedger(join(dir,'fixture.sqlite'),'poe-offline-contention-fixture');
  t.after(()=>{ledger.close();rmSync(dir,{recursive:true,force:true});});const at=1793548000000;ledger.initialize({at,microUsdPerSol:'100000000',source:'OFFLINE'},at);const before=ledger.state();
  assert.equal(ledger.authorizeReviewedMarketContentionEvidence('wrong'),false);assert.equal(ledger.authorizeReviewedMarketContentionEvidence(p.reportSha256),true);assert.equal(ledger.reviewedMarketContentionRecoveryAllowed(at),false);assert.deepEqual(ledger.state(),before);assert.equal(ledger.state().controls.entriesEnabled,false);
 });
