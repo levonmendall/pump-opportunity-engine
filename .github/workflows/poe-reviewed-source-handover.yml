@@ -1,0 +1,71 @@
+name: Validate exact POE reporting handover
+on:
+  push:
+    branches: [repair/source-release-handover-20261101]
+    paths: ['.github/workflows/poe-reviewed-source-handover.yml']
+permissions:
+  contents: write
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Wire exact reviewed handover into existing dashboard wrapper
+        run: |
+          set -euo pipefail
+          umask 077
+          mkdir -p /tmp/poe-handover
+          python3 -B -I - <<'PY'
+          import pathlib
+          p=pathlib.Path('src/dashboard-ai.mjs');s=p.read_text()
+          old="import {fileURLToPath} from 'node:url';";assert s.count(old)==1
+          s=s.replace(old,old+"\nimport {attachReviewedSourceHandover} from './reviewed-source-handover.mjs';")
+          old='const {server,cache}=createDashboard(config);attachAiReporting';assert s.count(old)==1
+          s=s.replace(old,'const {server,cache}=createDashboard(config);attachReviewedSourceHandover(cache);attachAiReporting')
+          p.write_text(s)
+          PY
+          git diff --check
+          git add src/dashboard-ai.mjs
+          git config user.name 'POE reporting validation'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Keep authenticated reporting continuous through exact source-recovery upgrade'
+          git push origin HEAD:refs/heads/repair/source-release-handover-20261101
+          git rev-parse HEAD > /tmp/poe-handover/source-commit.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+          cache: npm
+      - name: Install unchanged dependencies
+        run: npm ci --include=dev
+      - name: Typecheck and compile
+        run: |
+          set -euo pipefail
+          umask 077
+          npm run build 2>&1 | tee /tmp/poe-handover/typecheck.log
+          npm run compile 2>&1 | tee /tmp/poe-handover/compile.log
+      - name: Exact handover and existing signed-channel regressions
+        run: |
+          set -euo pipefail
+          umask 077
+          node --test test/reviewed-source-handover.test.mjs test/ai-team-dashboard.test.mjs 2>&1 | tee /tmp/poe-handover/handover.log
+      - name: Existing reporting dashboard and financial-history regressions
+        run: |
+          set -euo pipefail
+          umask 077
+          node --import tsx --test --test-concurrency=1 test/reporting*.test.ts test/dashboard*.test.ts test/financial-epoch-reporting.test.ts test/lifetime-equity*.test.ts 2>&1 | tee /tmp/poe-handover/reporting.log
+      - name: Retain exact tested reporting source
+        run: |
+          set -euo pipefail
+          git diff 43d53bbd9d3f832c7b7ece72a7dd5d8c5ed88837 -- src test > /tmp/poe-handover/source.patch
+          git archive HEAD src test package.json package-lock.json | gzip -n > /tmp/poe-handover/source.tar.gz
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: poe-reviewed-handover-${{ github.run_id }}
+          path: /tmp/poe-handover/
+          retention-days: 14
+          if-no-files-found: error
