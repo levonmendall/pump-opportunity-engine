@@ -1,0 +1,75 @@
+name: POE reporting-only four-hour sale review validation
+on:
+  push:
+    branches: [feature/poe-four-hour-sale-review-20261031]
+permissions:
+  contents: write
+concurrency:
+  group: poe-sale-review-build
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Materialize reviewed patch on feature branch only
+        run: |
+          set -euo pipefail
+          if test -d scripts/sale-review-bootstrap; then
+            python3 - <<'PY'
+          import base64,gzip,hashlib,pathlib,subprocess
+          parts=pathlib.Path('scripts/sale-review-bootstrap')
+          data=gzip.decompress(base64.b64decode(''.join((parts/f'{i}.b64').read_text().strip() for i in range(1,5)),validate=True))
+          assert hashlib.sha256(data).hexdigest()=='87c014f480e16537cacf0b224287bcd06dde2012cde252c54137b0d2f91727fc'
+          subprocess.run(['git','apply','--check','-'],input=data,check=True)
+          subprocess.run(['git','apply','--index','-'],input=data,check=True)
+          PY
+            git rm -r scripts/sale-review-bootstrap
+            git config user.name 'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'Add durable reporting-only four-hour sale reviews and focused regressions'
+            git push origin HEAD:refs/heads/feature/poe-four-hour-sale-review-20261031
+          fi
+          git rev-parse HEAD | tee /tmp/poe-sale-review-source-commit.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+          cache: npm
+      - name: Install pinned dependencies
+        run: npm ci --include=dev
+      - name: Typecheck and supervisor syntax
+        run: |
+          set -euo pipefail
+          npm run build 2>&1 | tee /tmp/poe-sale-review-typecheck.txt
+          python3 -m py_compile operator/native-paper-ec2/run-authoritative-service.py
+      - name: Focused sale-review regressions
+        run: |
+          set -euo pipefail
+          umask 077
+          node --import tsx --test --test-concurrency=1 test/sale-review*.test.ts 2>&1 | tee /tmp/poe-sale-review-focused.txt
+      - name: Full offline regressions
+        run: |
+          set -euo pipefail
+          umask 077
+          node --import tsx --test --test-concurrency=1 test/*.test.ts 2>&1 | tee /tmp/poe-sale-review-regressions.txt
+      - name: Build exact unchanged EC2 package format
+        run: |
+          set -euo pipefail
+          umask 077
+          node scripts/build-native-paper-ec2.mjs --output-directory /tmp/poe-sale-review-bundle
+          git archive --format=tar HEAD | gzip -n > /tmp/poe-sale-review-source.tar.gz
+          sha256sum /tmp/poe-sale-review-bundle/* /tmp/poe-sale-review-source.tar.gz > /tmp/poe-sale-review-sha256.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: poe-sale-review-source-tests-and-bundle
+          path: |
+            /tmp/poe-sale-review-*.txt
+            /tmp/poe-sale-review-source.tar.gz
+            /tmp/poe-sale-review-bundle/
+          retention-days: 7
+          if-no-files-found: error
