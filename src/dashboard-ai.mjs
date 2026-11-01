@@ -1,6 +1,7 @@
 /** Reporting-only AI status channel. No ledger, service-control, or model API access. */
 import {createPublicKey, verify, createHash, timingSafeEqual} from 'node:crypto';
 import {fileURLToPath} from 'node:url';
+import {attachReviewedSourceHandover} from './reviewed-source-handover.mjs';
 export const ACCOUNT='poe-3123e352-4581-455b-85db-acd7e825e99e';
 const MAX=65536,TTL=15*60*1000;
 const equal=(a,b)=>timingSafeEqual(createHash('sha256').update(a).digest(),createHash('sha256').update(b).digest());
@@ -66,7 +67,7 @@ if(process.argv[1]&&fileURLToPath(import.meta.url)===process.argv[1]){
   if((process.env.POE_ACCOUNT_ID||process.env.POE_INCEPTION_AT)&&(process.env.POE_ACCOUNT_ID!==ACCOUNT||process.env.POE_INCEPTION_AT!==inception))throw Error('original POE identity required');
   const port=Number(process.env.PORT||10000);if(!Number.isSafeInteger(port)||port<1||port>65535)throw Error('invalid PORT');
   const config={accountId:process.env.POE_ACCOUNT_ID,inceptionAt:process.env.POE_INCEPTION_AT,release:process.env.POE_RUNTIME_RELEASE,strategy:process.env.POE_STRATEGY_VERSION,viewerUser:process.env.POE_VIEWER_USER||'',viewerPassword:process.env.POE_VIEWER_PASSWORD||'',publicViewer:process.env.POE_PUBLIC_VIEWER==='true',ingestionSecret:process.env.POE_INGEST_SECRET||''};
-  const {server,cache}=createDashboard(config);attachAiReporting(server,{...config,publicKey:process.env.POE_AI_REPORT_PUBLIC_KEY});
+  const {server,cache}=createDashboard(config);attachReviewedSourceHandover(cache);attachAiReporting(server,{...config,publicKey:process.env.POE_AI_REPORT_PUBLIC_KEY});
   if(cache.identity)restoreRenderReceiverHistory(cache);
   server.listen(port,'0.0.0.0',()=>process.stdout.write('poe-dashboard with separate signed AI status channel listening\n'));
 }
