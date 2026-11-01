@@ -1,3 +1,4 @@
+import {MarketRegistryContention} from '../src/market-registry.js';
 /** OFFLINE controlled-clock regression. Disposable fixture account only;
  * no provider requests, real account, quote, entry or execution. */
 import {test,type TestContext} from 'node:test';
@@ -78,4 +79,31 @@ test('pending buys occupy capacity without cancellation or unneeded candidate pr
 
 test('a free concurrent-stage slot still permits preparation and feature-only assessment without forcing a fill',async t=>{
  const f=capacityFixture(t,true);f.hold();const held=f.ledger.state().positions[f.heldMint];assert.ok(f.bridge.qualificationProof(f.candidateMint));assert.equal((await f.bridge.candidate(f.candidateMint,true)).kind,'evaluated');assert.equal(f.calls.preparation,1);assert.equal(f.calls.proof,1);assert.equal(f.calls.quote,1);assert.ok(f.calls.protection>=1);assert.deepEqual(f.ledger.state().positions[f.heldMint],held);assert.equal(f.ledger.state().positions[f.candidateMint],undefined);assert.deepEqual(f.ledger.state().pending,{});assert.ok(f.records.some(r=>r.kind==='trader-predictive-assessment'&&r.data.status==='not-rejected'));assert.equal(f.records.some(r=>r.kind==='native-paper-entry-unavailable'),false);
+});
+
+
+test('registry follow-up contention cannot become a financial failure or replay candidate pricing',async t=>{
+ const f=capacityFixture(t,true);f.hold();let blocked=true,followups=0;
+ (f.bridge as any).options.onTechnicalReevaluation=()=>{if(blocked)throw new MarketRegistryContention('SQLITE_BUSY');followups++;};
+ const before=f.ledger.state();assert.equal((await f.bridge.candidate(f.candidateMint,true)).kind,'evaluated');
+ assert.equal(f.bridge.schedulingFollowupDiagnostics().pending,1);
+ assert.equal(f.bridge.trader.entryReadinessSafety().newHardPauseObserved,false);
+ assert.deepEqual(f.ledger.state().positions,before.positions);assert.deepEqual(f.ledger.state().pending,before.pending);
+ const calls={...f.calls};assert.equal((await f.bridge.candidate(f.candidateMint,true)).kind,'scheduler-deferred');assert.deepEqual(f.calls,calls);
+ assert.equal(f.bridge.drainSchedulingFollowups(),false);assert.equal(followups,0);blocked=false;
+ assert.equal(f.bridge.drainSchedulingFollowups(),true);assert.equal(followups,1);assert.deepEqual(f.calls,calls,'only scheduling feedback replayed');
+ assert.equal(f.bridge.drainSchedulingFollowups(),false);assert.equal(followups,1);
+ assert.equal(f.bridge.trader.candidateEvaluationFailureDiagnostics(),null);
+});
+test('pre-evaluation capacity follow-up contention leaves existing pending orders unchanged',async t=>{
+ const f=capacityFixture(t);f.reserve();const before=f.ledger.state();let attempts=0;
+ (f.bridge as any).options.onEvaluationComplete=()=>{attempts++;throw new MarketRegistryContention('SQLITE_LOCKED');};
+ assert.equal((await f.bridge.candidate(f.candidateMint,true)).kind,'capacity-refused');assert.equal(attempts,1);
+ assert.deepEqual(f.ledger.state(),before);assert.equal(f.bridge.schedulingFollowupDiagnostics().pending,1);
+});
+test('unknown scheduler callback exceptions still reach the existing financial hard-failure path',async t=>{
+ const f=capacityFixture(t);f.reserve();(f.bridge as any).options.onEvaluationComplete=()=>{throw Error('OFFLINE unexpected scheduler callback');};
+ await assert.rejects(f.bridge.candidate(f.candidateMint,true),/unexpected scheduler callback/);
+ f.bridge.trader.candidateEvaluationFailed(Error('OFFLINE unexpected scheduler callback'),'candidate-evaluation',f.ledger.state().revision);
+ assert.equal(f.bridge.trader.entryReadinessSafety().newHardPauseObserved,true);assert.equal(f.ledger.state().controls.entriesEnabled,false);
 });

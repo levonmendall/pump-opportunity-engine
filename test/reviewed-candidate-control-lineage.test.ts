@@ -1,6 +1,6 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {REVIEWED_CANDIDATE_CONTROL_INCIDENT as c,reviewedCandidateControlLineage,type LedgerState} from '../src/ledger.js';
+import {REVIEWED_CANDIDATE_CONTROL_INCIDENT as c,REVIEWED_CANDIDATE_CONTROL_INCIDENT_20261101 as current,reviewedCandidateControlLineage,type LedgerState} from '../src/ledger.js';
 
 const account='poe-3123e352-4581-455b-85db-acd7e825e99e';
 const reason='native candidate financial evaluation unavailable';
@@ -53,4 +53,43 @@ test('a changed account, sequence, financial obligation or later hard intent can
  ['new safe stop',(s,h)=>{const at=1793484000000;h.decoded.push({...pause(191908,at,'owner-stop','safe stop requested','ordinary'),row:{...h.decoded[2].row,kind:'safe-stop',revision:191908,at}});s.controls.changedAt=at;s.controls.reason='safe stop requested';}]
  ];
  for(const [name,mutate] of badCases){const {state,history}=fixture();mutate(state,history);assert.equal(reviewedCandidateControlLineage(state,history),false,name);}
+});
+
+function currentFixture(){
+ const f=fixture();f.state.controls.changedAt=current.restoreAt;
+ f.history.anchor={...f.history.anchor,revision:current.anchorRevision,at:current.anchorAt,actionId:current.anchorActionId};
+ f.history.decoded=[
+  pause(current.sourcePauseRevision,current.sourcePauseAt,current.sourcePauseActionId,reason,'ordinary'),
+  pause(current.startupRevision,current.startupAt,'execution-recovery:'+account+':'+(current.startupRevision-1),temporary,'startup'),
+  pause(current.restoreRevision,current.restoreAt,'trader:restore-hard-pause:'+current.startupRevision+':'+current.restoreAt,reason,'restored')];
+ return f;
+}
+test('owner-reviewed November 1 incident allows readiness review, never directly arms or trades',()=>{
+ const {state,history}=currentFixture(),before=structuredClone(state);
+ assert.equal(current.originSource,'f8ab5d74c5f8c8e792ab0b099388a6f3ad68d2d2');
+ assert.equal(reviewedCandidateControlLineage(state,history),true);assert.deepEqual(state,before);
+ history.decoded.push(pause(203001,1793496000000,'execution-recovery:'+account+':203000',temporary,'startup'));
+ state.controls.reason=temporary;state.controls.changedAt=1793496000000;
+ assert.equal(reviewedCandidateControlLineage(state,history),true);
+ history.decoded.push(pause(203002,1793496000001,'trader:restore-hard-pause:203001:1793496000001',reason,'restored'));
+ state.controls.reason=reason;state.controls.changedAt=1793496000001;
+ assert.equal(reviewedCandidateControlLineage(state,history),true);
+});
+test('new incident requires its exact action, millisecond boundary and unchanged flat financial intent',()=>{
+ const cases:[string,(s:LedgerState,h:any)=>void][]=[
+ ['different account',s=>{s.accountId='other';}],['different inception',s=>{s.inceptionAt++;}],
+ ['different epoch',s=>{(s.paperEpoch as any).id='other';}],['funded mode',s=>{(s as any).mode='LIVE';}],
+ ['owner stop',s=>{s.controls.stopRequested=true;}],['enabled already',s=>{s.controls.entriesEnabled=true;}],
+ ['holding',s=>{(s.positions as any).held={};}],['pending',s=>{(s.pending as any).pending={};}],
+ ['loss stop',s=>{s.daily.lossPaused=true;}],['new anchor',(_s,h)=>{h.anchor.revision++;}],
+ ['anchor ID',(_s,h)=>{h.anchor.actionId='owner-resume';}],['pause time',(_s,h)=>{h.decoded[0].row.at++;}],
+ ['one ms action difference',(_s,h)=>{h.decoded[0].row.actionId='trader:pause:202365:1793494775698';}],
+ ['different reason',(_s,h)=>{h.decoded[0].payload.reason='owner paused new entries';}],
+ ['canceled pending buy',(_s,h)=>{h.decoded[0].result.pendingBuyCancellations.push('buy-1');}],
+ ['restore revision',(_s,h)=>{h.decoded[2].row.revision++;}],['current time',s=>{s.controls.changedAt++;}],
+ ['new same-text hard failure',(s,h)=>{const at=1793496000000;h.decoded.push(pause(203001,at,'trader:pause:203000:'+at,reason,'ordinary'));s.controls.changedAt=at;}],
+ ['new other hard failure',(s,h)=>{const at=1793496000000;h.decoded.push(pause(203001,at,'trader:pause:203000:'+at,'financial maintenance unavailable; preserve records and close entries','ordinary'));s.controls.changedAt=at;s.controls.reason='financial maintenance unavailable; preserve records and close entries';}],
+ ['safe stop',(s,h)=>{const at=1793496000000;h.decoded.push({...pause(203001,at,'owner-stop','safe stop requested','ordinary'),row:{...h.decoded[2].row,kind:'safe-stop',revision:203001,at}});s.controls.changedAt=at;s.controls.reason='safe stop requested';}]
+ ];
+ for(const [name,mutate]of cases){const f=currentFixture();mutate(f.state,f.history);assert.equal(reviewedCandidateControlLineage(f.state,f.history),false,name);}
 });

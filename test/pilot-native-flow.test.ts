@@ -1,3 +1,4 @@
+import {wsWire} from './ws-wire-fixture.js';
 /** Isolated native-flow mechanics. Retained real logs retain their original
  * program clock/availability; explicitly changed bytes below are synthetic
  * correction/failure fixtures, never natural trading or financial results. */
@@ -48,7 +49,7 @@ test('capture priority preserves requested support refresh and mandatory control
  const f=setup({maximumCandidates:4}),socket=await f.open(),mint=new PublicKey(Buffer.alloc(32,123)),pending={mint:mint.toBase58(),pool:canonicalPumpPoolPda(mint).toBase58(),minSlot:0};
  await f.flow.addCandidate(pending);await f.drive();assert.equal(f.flow.snapshot(pending.mint)!.connected,false);
  f.flow.requestSupportRefresh();assert.equal(f.flow.servicePlan().action,'support-refresh');await f.drive();
- socket.emit('ping',Buffer.from('OFFLINE owed ping'));assert.equal(f.flow.servicePlan().action,'peer-pong');await f.drive();assert.equal(socket.controls.at(-1),'pong');
+ socket.controlFrame('ping',Buffer.from('OFFLINE owed ping'));assert.equal(f.flow.servicePlan().action,'peer-pong');await f.drive();assert.equal(socket.controls.at(-1),'pong');
  const incomingMint=new PublicKey(Buffer.alloc(32,124));await f.flow.addCandidate({mint:incomingMint.toBase58(),pool:canonicalPumpPoolPda(incomingMint).toBase58(),minSlot:0});f.flow.requestHeartbeat();assert.equal(f.flow.servicePlan().action,'heartbeat');await f.drive();assert.equal(socket.controls.at(-1),'ping');
  await f.flow.removeCandidate(scope.mint,'OFFLINE retirement');assert.equal(f.flow.servicePlan().action,'unsubscribe');await f.drive();assert.equal(f.operations.at(-1)!.method,'logsUnsubscribe');assert.equal(f.flow.snapshot(pending.mint)!.connected,false);await f.drive();assert.equal(f.flow.snapshot(pending.mint)!.connected,true);await f.flow.stop();
 });
@@ -94,7 +95,7 @@ test('a retained HTTP cooldown never extends support validity or admits trades a
 });
 
 test('control cooldown retains an owed pong while independent support work can proceed',async()=>{
- const f=setup(),socket=await f.open(),until=f.now+2000;socket.emit('ping',Buffer.from('retained-provider-ping'));f.setControlFailure(new PilotRpcUnavailable('COOLDOWN',until));const before=f.operations.length;assert.equal((await f.flow.service()).kind,'deferred');assert.equal(f.operations.length,before);assert.equal(f.flow.usage().controlRetryAt,until);assert.equal(f.gaps.length,0);f.flow.requestSupportRefresh();assert.equal(f.flow.usage().nextServiceDomain,'rpc');assert.equal((await f.flow.service()).kind,'support');assert.equal(f.gaps.length,0);await f.advance(2000);f.setControlFailure(null);assert.equal((await f.flow.service()).kind,'pong');assert.equal(socket.controls.at(-1),'pong');assert.equal(f.flow.snapshot(scope.mint)!.hasQualityLoss,false);await f.flow.stop();
+ const f=setup(),socket=await f.open(),until=f.now+2000;socket.controlFrame('ping',Buffer.from('retained-provider-ping'));f.setControlFailure(new PilotRpcUnavailable('COOLDOWN',until));const before=f.operations.length;assert.equal((await f.flow.service()).kind,'deferred');assert.equal(f.operations.length,before);assert.equal(f.flow.usage().controlRetryAt,until);assert.equal(f.gaps.length,0);f.flow.requestSupportRefresh();assert.equal(f.flow.usage().nextServiceDomain,'rpc');assert.equal((await f.flow.service()).kind,'support');assert.equal(f.gaps.length,0);await f.advance(2000);f.setControlFailure(null);assert.equal((await f.flow.service()).kind,'pong');assert.equal(socket.controls.at(-1),'pong');assert.equal(f.flow.snapshot(scope.mint)!.hasQualityLoss,false);await f.flow.stop();
 });
 
 test('first-turn external HTTP cooldown cannot hide a simultaneously due native heartbeat behind support work',async()=>{
@@ -106,7 +107,7 @@ test('a cooldown refusal at its expiry remains a non-destructive admission refus
 });
 
 test('forbidden control recovery does not postpone the existing owed-pong deadline or send an unadmitted frame',async()=>{
- const f=setup(),socket=await f.open(),operations=f.operations.length;f.setControlCooldown(f.now+10000);socket.emit('ping',Buffer.from('cannot-send-during-real-control-cooldown'));await f.flow.service();assert.equal(f.operations.length,operations);await f.advance(3100);assert.equal(f.flow.usage().fatal,null);assert.equal(f.flow.usage().lastTransportIntegrityGap!.reason,'NATIVE_FLOW_PEER_PONG_DEADLINE');assert.equal(f.flow.usage().retryAt,f.now+2000);assert.equal(f.operations.length,operations);assert.equal(socket.controls.length,0);assert.equal(f.flow.snapshot(scope.mint)!.hasQualityLoss,true);await f.flow.stop();
+ const f=setup(),socket=await f.open(),operations=f.operations.length;f.setControlCooldown(f.now+10000);socket.controlFrame('ping',Buffer.from('cannot-send-during-real-control-cooldown'));await f.flow.service();assert.equal(f.operations.length,operations);await f.advance(3100);assert.equal(f.flow.usage().fatal,null);assert.equal(f.flow.usage().lastTransportIntegrityGap!.reason,'NATIVE_FLOW_PEER_PONG_DEADLINE');assert.equal(f.flow.usage().retryAt,f.now+2000);assert.equal(f.operations.length,operations);assert.equal(socket.controls.length,0);assert.equal(f.flow.snapshot(scope.mint)!.hasQualityLoss,true);await f.flow.stop();
 });
 
 test('six distinct candidates share one socket and filtered subscriptions; capacity refusal starts no seventh work',async()=>{
@@ -132,7 +133,7 @@ test('synthetic same transaction delivered after a second pool ACK admits its un
 });
 
 test('peer pongs and liveness pings require explicit service and use the same physical control gate',async()=>{
-  const f=setup(),socket=await f.open();let before=f.operations.length;socket.emit('ping',Buffer.from('provider-ping'));assert.equal(f.operations.length,before,'event handlers do not dispatch provider operations');await f.drive();assert.equal(f.operations.at(-1)!.method,'pong');assert.equal(socket.controls.at(-1),'pong');before=f.operations.length;await f.advance(10001);assert.equal(f.operations.length,before,'clock advancement does not launch background RPC');await f.drive();assert.equal(f.operations.at(-1)!.method,'ping');assert.equal(f.active,0);assert.equal(f.opens.length,1);await f.flow.stop();
+  const f=setup(),socket=await f.open();let before=f.operations.length;socket.controlFrame('ping',Buffer.from('provider-ping'));assert.equal(f.operations.length,before,'event handlers do not dispatch provider operations');await f.drive();assert.equal(f.operations.at(-1)!.method,'pong');assert.equal(socket.controls.at(-1),'pong');before=f.operations.length;await f.advance(10001);assert.equal(f.operations.length,before,'clock advancement does not launch background RPC');await f.drive();assert.equal(f.operations.at(-1)!.method,'ping');assert.equal(f.active,0);assert.equal(f.opens.length,1);await f.flow.stop();
 });
 
 test('a late old-connection protocol attempt cannot consume a new connection managed operation',async()=>{
@@ -469,11 +470,11 @@ test('a current unsubscribe ACK also proves a round trip without refreshing surv
 });
 
 test('continuous valid notifications and answering a peer PING do not postpone the outbound round-trip deadline',async()=>{
- const f=setup(),socket=await f.open(),proof=structuredClone(f.flow.usage().roundTripLiveness),support=structuredClone(f.flow.snapshot(scope.mint)!.supportContext);for(let i=0;i<4;i++){await f.advance(2000);f.notice(socket,{signature:bs58.encode(Buffer.alloc(64,213+i))});}socket.emit('ping',Buffer.from('peer-liveness'));assert.equal(f.flow.usage().nextServiceAction,'peer-pong');assert.equal((await f.flow.service()).kind,'pong');socket.emit('pong',Buffer.from('unsolicited-not-current-nonce'));assert.deepEqual(f.flow.usage().roundTripLiveness,proof);assert.deepEqual(f.flow.snapshot(scope.mint)!.supportContext,support);await f.advance(2001);assert.equal((await f.flow.service()).kind,'ping');assert.equal(socket.controls.filter(c=>c==='ping').length,1);assert.equal(f.flow.usage().roundTripLiveness.proofKind,'ping');await f.flow.stop();
+ const f=setup(),socket=await f.open(),proof=structuredClone(f.flow.usage().roundTripLiveness),support=structuredClone(f.flow.snapshot(scope.mint)!.supportContext);for(let i=0;i<4;i++){await f.advance(2000);f.notice(socket,{signature:bs58.encode(Buffer.alloc(64,213+i))});}socket.controlFrame('ping',Buffer.from('peer-liveness'));assert.equal(f.flow.usage().nextServiceAction,'peer-pong');assert.equal((await f.flow.service()).kind,'pong');socket.controlFrame('pong',Buffer.from('unsolicited-not-current-nonce'));assert.deepEqual(f.flow.usage().roundTripLiveness,proof);assert.deepEqual(f.flow.snapshot(scope.mint)!.supportContext,support);await f.advance(2001);assert.equal((await f.flow.service()).kind,'ping');assert.equal(socket.controls.filter(c=>c==='ping').length,1);assert.equal(f.flow.usage().roundTripLiveness.proofKind,'ping');await f.flow.stop();
 });
 
 test('ACK liveness uses conservative transport receipt rather than later handler or information-availability time',async()=>{
- const f=setup({maximumCandidates:2}),socket=await f.open();await f.advance(2000);const requestAt=f.now,mint=new PublicKey(Buffer.alloc(32,217)),peer={mint:mint.toBase58(),pool:canonicalPumpPoolPda(mint).toBase58(),minSlot:0};socket.send=(data,callback)=>{const request=JSON.parse(data),raw=Buffer.from(JSON.stringify({jsonrpc:'2.0',id:request.id,result:222}));callback?.();f.elapseWithoutTimers(250);socket._socket.bytesRead+=raw.length+4;socket._socket.emit('data',raw);f.elapseWithoutTimers(500);socket.emit('message',raw);};await f.open(peer);const proof=f.flow.usage().roundTripLiveness;assert.equal(proof.lastVerifiedAt,requestAt+250);assert.equal(proof.nextHeartbeatAt,requestAt+10250);assert.equal(f.flow.snapshot(peer.mint)!.openedAt,requestAt+750);assert.ok(proof.lastVerifiedAt!<f.flow.snapshot(peer.mint)!.openedAt!);assert.equal(f.controlBytes,socket._socket.bytesRead);await f.flow.stop();
+ const f=setup({maximumCandidates:2}),socket=await f.open();await f.advance(2000);const requestAt=f.now,mint=new PublicKey(Buffer.alloc(32,217)),peer={mint:mint.toBase58(),pool:canonicalPumpPoolPda(mint).toBase58(),minSlot:0};socket.send=(data,callback)=>{const request=JSON.parse(data),raw=Buffer.from(JSON.stringify({jsonrpc:'2.0',id:request.id,result:222}));callback?.();f.elapseWithoutTimers(250);socket._socket.bytesRead+=raw.length+4;socket._socket.emit('data',wsWire(raw));f.elapseWithoutTimers(500);socket.emit('message',raw);};await f.open(peer);const proof=f.flow.usage().roundTripLiveness;assert.equal(proof.lastVerifiedAt,requestAt+250);assert.equal(proof.nextHeartbeatAt,requestAt+10250);assert.equal(f.flow.snapshot(peer.mint)!.openedAt,requestAt+750);assert.ok(proof.lastVerifiedAt!<f.flow.snapshot(peer.mint)!.openedAt!);assert.equal(f.controlBytes,socket._socket.bytesRead);await f.flow.stop();
 });
 
 test('native service action exposes the actual upcoming HTTP refresh independently from heartbeat scheduling',async()=>{

@@ -1,0 +1,38 @@
+name: POE scheduling and 24-hour age repair validation
+on:
+  push:
+    branches: [repair/poe-scheduling-age24h-20261031]
+    paths: ['.github/workflows/poe-scheduling-age-validation.yml']
+permissions:
+  contents: read
+jobs:
+  validation-workspace:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+          cache: npm
+      - name: Install exact existing lockfile dependencies
+        run: |
+          set -euo pipefail
+          npm ci --include=dev
+          npm run build
+      - name: Package isolated offline validation dependencies
+        run: |
+          set -euo pipefail
+          umask 077
+          mkdir -p /tmp/poe-age-validation
+          cp "$(command -v node)" /tmp/poe-age-validation/node
+          tar -czf /tmp/poe-age-validation/node_modules.tar.gz node_modules
+          sha256sum package-lock.json /tmp/poe-age-validation/node /tmp/poe-age-validation/node_modules.tar.gz > /tmp/poe-age-validation/SHA256SUMS
+      - uses: actions/upload-artifact@v4
+        with:
+          name: poe-age-validation-offline-dependencies
+          path: /tmp/poe-age-validation/
+          retention-days: 2
+          if-no-files-found: error
