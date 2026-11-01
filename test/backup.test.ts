@@ -176,18 +176,23 @@ test('large artifact validation runs off the live event loop while the sole writ
     f.ledger.pause('fixture-write-during-worker-validation',AT+100_001);
     const result=await copying;
     await new Promise(resolve=>setTimeout(resolve,5));
+    t.diagnostic(JSON.stringify({disposableSourceBytes:lstatSync(f.path).size,synchronousTwoCopyValidationMs:synchronousMs,workerMaxTimerGapMs:maxGapMs,timerTicks:ticks,sourceSnapshot:result.sourceSnapshot}));
     assert.ok(result.revision>=100_000);assert.equal(f.ledger.state().revision,100_001);
     assert.equal(mainIntegrityChecks,0,'no artifact integrity scan may execute on the financial owner thread');
     assert.ok(ticks>10,'runtime timers must advance throughout artifact work');
     assert.ok(maxGapMs<Math.max(250,synchronousMs*2),`worker max timer gap ${maxGapMs}ms; offline two-copy validation ${synchronousMs}ms`);
-    t.diagnostic(JSON.stringify({disposableSourceBytes:lstatSync(f.path).size,synchronousTwoCopyValidationMs:synchronousMs,workerMaxTimerGapMs:maxGapMs,timerTicks:ticks}));
   }finally{clearInterval(timer);Database.prototype.pragma=pragma;}
 });
 
 test('compiled Node worker validates backups without a TypeScript preload', {timeout:30_000},async t=>{
   const f=setup(t),project=fileURLToPath(new URL('../',import.meta.url));
   const compiled=mkdtempSync(join(project,'.poe-backup-worker-compiled-fixture-'));t.after(()=>rmSync(compiled,{recursive:true,force:true}));
-  await promisify(execFile)(process.execPath,['node_modules/typescript/bin/tsc','--outDir',compiled,'--noEmit','false'],{cwd:project,timeout:20_000,maxBuffer:128*1024});
+  // Exercise the actual worker's complete imported source graph. Full-project
+  // typecheck/compile are separate CI gates; recompiling every unrelated test
+  // here does not add evidence about running a worker without a TS preload.
+  const configuration=join(compiled,'tsconfig.json');
+  writeFileSync(configuration,JSON.stringify({extends:join(project,'tsconfig.json'),compilerOptions:{rootDir:project,outDir:compiled,noEmit:false},include:[join(project,'src/backup.ts'),join(project,'src/backup-worker.ts')]},null,2),{mode:0o600});
+  await promisify(execFile)(process.execPath,['node_modules/typescript/bin/tsc','--project',configuration],{cwd:project,timeout:20_000,maxBuffer:128*1024});
   const {FinancialBackupStore:CompiledStore}=await import(pathToFileURL(join(compiled,'src/backup.js')).href);
   const store=new CompiledStore({...f.options,directory:join(f.dir,'compiled-backups')});
   assert.equal(await store.maintainPending(),null);const backup=await store.create(f.ledger);

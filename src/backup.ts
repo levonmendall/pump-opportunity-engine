@@ -1,51 +1,70 @@
 import Database from 'better-sqlite3';
+import {createHash} from 'node:crypto';
 import {isDeepStrictEqual} from 'node:util';
 import {validateReportingTradeCache,reportingFilledTrade} from './reporting.js';
-import {chmodSync,closeSync,constants,fsyncSync,lstatSync,mkdirSync,openSync,opendirSync,readSync,realpathSync,renameSync,statSync,statfsSync,unlinkSync,type Stats} from 'node:fs';
+import {chmodSync,closeSync,constants,fstatSync,fsyncSync,lstatSync,mkdirSync,openSync,opendirSync,readSync,realpathSync,renameSync,statSync,statfsSync,unlinkSync,type Stats} from 'node:fs';
 import {basename,dirname,join,resolve} from 'node:path';
-import {spawn,spawnSync} from 'node:child_process';
-import {Worker} from 'node:worker_threads';
+import {spawnSync} from 'node:child_process';
+import {isMainThread,Worker} from 'node:worker_threads';
 import {validateFinancialState,validateOperatingReportingHistory,REPORTING_OPERATING_HISTORY_KEY,type LedgerMode,type LedgerState,type PaperLedger,type ReportingHistory} from './ledger.js';
 import {validateOperatingCosts,type OperatingCostState} from './costs.js';
+import {copyReadonlyFinancialSnapshot,type ReadonlyFinancialSnapshotCopy} from './backup-source-snapshot.js';
 
 export type BackupIdentity={accountId:string;mode:LedgerMode;inceptionAt:number};
-export type FinancialBackup=BackupIdentity&{path:string;generation:string;revision:number;lastAt:number;snapshotSequence:string|null};
+export type FinancialBackup=BackupIdentity&{path:string;generation:string;revision:number;lastAt:number;snapshotSequence:string|null;sourceSnapshot?:ReadonlyFinancialSnapshotCopy};
 export type BackupSelection={backup:FinancialBackup|null;rejected:{file:string;reason:'invalid-backup'|'unrecognized-path'}[];pending:boolean};
 type Source=Pick<PaperLedger,'state'|'backup'>;
 export class BackupPreparationDeferred extends Error{constructor(){super('BACKUP_RUNTIME_PREPARATION_DEFERRED');}}
 export type BackupRuntimePreparation={admission:()=>boolean;measure:<T>(work:()=>T)=>T};
 type Options={directory:string;sourcePath:string;identity:BackupIdentity;maxBytes?:number;persistent?:boolean;minimumFreeBytes?:number};
-export type BackupArtifactTask={task:'prepare';minimumRevision:number}|{task:'finish'|'abort'|'recover'};
+export type BackupArtifactTask={task:'prepare';minimumRevision:number;expectedSource:{dev:number;ino:number}}|{task:'acquire'|'copy'|'finish'|'abort'|'recover'};
+export type BackupOperationLease={fd:number;dev:number;ino:number};
+export type BackupWorkerData={options:Options;operation:BackupOperationLease;cancellation:SharedArrayBuffer};
+export type BackupArtifactRequest={id:number;deadlineAtMonoNs:bigint;task:BackupArtifactTask};
 const PREFIX='poe-financial-',PENDING='poe-financial-pending.sqlite';
 const OPERATION_LOCK='.poe-backup.lock';
 const NAME=/^poe-financial-([0-9]{20})\.sqlite$/;
 
-/** One bounded worker per operation. Only artifact paths/identity cross threads. */
+/** One bounded worker per operation. The parent owns the original lease FD
+ * until every source-copy operation and the worker itself physically settle. */
 class ArtifactWorker{
   private readonly worker:Worker;
-  private failed=false;
-  constructor(options:Options){
+  private readonly cancellation=new Int32Array(new SharedArrayBuffer(4));
+  private readonly exited:Promise<void>;private closing:Promise<void>|null=null;
+  private failed=false;private active=false;private sequence=0;
+  constructor(options:Options,operation:BackupOperationLease){
     const source=import.meta.url.endsWith('.ts');
     // Register inside the source worker before resolving .js imports to .ts;
     // inheriting the parent's tsx preload alone does not register that thread.
     const register=source?'data:text/javascript,'+encodeURIComponent(`import {register} from ${JSON.stringify(import.meta.resolve('tsx/esm/api'))};register();`):'';
-    this.worker=new Worker(new URL(source?'./backup-worker.ts':'./backup-worker.js',import.meta.url),{workerData:options,execArgv:source?['--import',register]:[],env:{}});
+    this.worker=new Worker(new URL(source?'./backup-worker.ts':'./backup-worker.js',import.meta.url),{workerData:{options,operation,cancellation:this.cancellation.buffer} satisfies BackupWorkerData,execArgv:source?['--import',register]:[],env:{}});
     this.worker.on('error',()=>{this.failed=true;});
-    this.worker.on('exit',()=>{this.failed=true;});
+    this.exited=new Promise(resolve=>this.worker.once('exit',()=>{this.failed=true;resolve();}));
   }
   request(task:BackupArtifactTask):Promise<FinancialBackup|null>{
     if(this.failed)return Promise.reject(new Error('backup artifact worker unavailable; pending artifacts preserved'));
+    if(this.active)return Promise.reject(new Error('backup artifact request already active'));
+    this.active=true;const id=++this.sequence,deadlineAtMonoNs=process.hrtime.bigint()+30_000_000_000n;
     return new Promise((resolve,reject)=>{
-      const cleanup=()=>{clearTimeout(timer);this.worker.off('message',message);this.worker.off('error',error);this.worker.off('exit',exited);};
-      const error=()=>{cleanup();reject(new Error('backup artifact worker failed; pending artifacts preserved'));};
+      let done=false;
+      const cleanup=()=>{clearTimeout(timer);this.active=false;this.worker.off('message',message);this.worker.off('error',error);this.worker.off('exit',exited);};
+      const rejectAfterExit=(reason:string)=>{if(done)return;done=true;cleanup();void this.close().then(()=>reject(new Error(reason)),()=>reject(new Error(reason)));};
+      const error=()=>rejectAfterExit('backup artifact worker failed; pending artifacts preserved');
       const exited=()=>error();
-      const message=(reply:{ok:boolean;result?:FinancialBackup|null;error?:string})=>{cleanup();if(reply.ok)resolve(reply.result??null);else reject(new Error(reply.error??'backup artifact operation failed'));};
-      const timer=setTimeout(()=>{cleanup();this.failed=true;void this.worker.terminate();reject(new Error('backup artifact work exceeded 30s; pending artifacts preserved'));},30_000);
+      const message=(reply:{id:number;ok:boolean;result?:FinancialBackup|null;error?:string})=>{
+        if(done)return;if(!reply||reply.id!==id||typeof reply.ok!=='boolean'){rejectAfterExit('backup artifact reply scope mismatch; pending artifacts preserved');return;}
+        if(process.hrtime.bigint()>=deadlineAtMonoNs){rejectAfterExit('backup artifact work exceeded 30s; pending artifacts preserved');return;}
+        done=true;cleanup();if(reply.ok)resolve(reply.result??null);else reject(new Error(reply.error??'backup artifact operation failed'));
+      };
+      const timer=setTimeout(()=>rejectAfterExit('backup artifact work exceeded 30s; pending artifacts preserved'),30_000);
       this.worker.once('message',message);this.worker.once('error',error);this.worker.once('exit',exited);
-      this.worker.postMessage(task);
+      try{this.worker.postMessage({id,deadlineAtMonoNs,task} satisfies BackupArtifactRequest);}catch{rejectAfterExit('backup artifact worker failed; pending artifacts preserved');}
     });
   }
-  async close(){await this.worker.terminate();}
+  close(){
+    if(!this.closing){this.failed=true;Atomics.store(this.cancellation,0,1);this.closing=(async()=>{try{await this.worker.terminate();}finally{await this.exited;}})();}
+    return this.closing;
+  }
 }
 
 /** Two standalone completed SQLite backups and one bounded in-progress artifact.
@@ -57,7 +76,8 @@ export class FinancialBackupStore{
   private readonly sourcePath:string;
   private readonly maxBytes:number;
   private readonly persistent:boolean;private readonly minimumFreeBytes:number;
-  private staged:{path:string;own:Stats;completed:FinancialBackup[];minimumRevision:number;validated:boolean}|undefined;
+  private staged:{path:string;own:Stats;source:Stats;completed:FinancialBackup[];minimumRevision:number;validated:boolean;copy?:ReadonlyFinancialSnapshotCopy}|undefined;
+  private workerOperation:BackupOperationLease|undefined;private workerLeaseAcquired=false;private workerCancelled:(()=>boolean)|undefined;
   constructor(options:Options){
     this.directory=resolve(options.directory);
     const source=resolve(options.sourcePath);let sourceParent=dirname(source);
@@ -104,7 +124,7 @@ export class FinancialBackupStore{
     completed.sort((a,b)=>a.generation.localeCompare(b.generation));
     return {completed,unknown,pending};
   }
-  private inspect(path:string,generation:string,requireStandalone=true):FinancialBackup{
+  private inspect(path:string,generation:string,requireStandalone=true,expected?:ReadonlyFinancialSnapshotCopy):FinancialBackup{
     const file=this.privateFile(path);let source:Stats|undefined;
     try{source=statSync(this.sourcePath);}catch(error){if(!(error instanceof Error&&'code' in error&&['ENOENT','EACCES'].includes(String(error.code))))throw error;}
     if(source&&file.dev===source.dev&&file.ino===source.ino)throw new Error('source financial database cannot be a backup retention target');
@@ -122,6 +142,7 @@ export class FinancialBackupStore{
       if(!size||size.size>1_048_576)throw new Error('backup account absent or oversized');
       const row=db.prepare('SELECT body FROM financial_state WHERE singleton=1').get() as {body:string};
       const state=JSON.parse(row.body) as LedgerState;
+      if(expected&&(createHash('sha256').update(row.body).digest('hex')!==expected.stateSha256||state.revision!==expected.revision||state.lastAt!==expected.lastAt))throw new Error('backup differs from captured readonly financial snapshot');
       validateFinancialState(state,this.identity.accountId,this.identity.mode);
       if(state.inceptionAt!==this.identity.inceptionAt)throw new Error('backup inception identity mismatch');
       const costSize=db.prepare("SELECT length(CAST(value AS BLOB)) size FROM metadata WHERE key='operating_costs'").get() as {size:number}|undefined;
@@ -162,6 +183,7 @@ export class FinancialBackupStore{
       }
       const sequence=db.prepare("SELECT value FROM metadata WHERE key='snapshot_sequence'").get() as {value:string}|undefined;
       if(sequence&&!/^[1-9][0-9]{0,39}$/.test(sequence.value))throw new Error('backup sequence malformed');
+      if(expected&&(sequence?.value??null)!==expected.snapshotSequence)throw new Error('backup sequence differs from captured readonly financial snapshot');
       return {...this.identity,path,generation,revision:state.revision,lastAt:state.lastAt,snapshotSequence:sequence?.value??null};
     }finally{db.close();}
   }
@@ -190,28 +212,49 @@ export class FinancialBackupStore{
     chmodSync(path,0o600);
   }
   private syncDirectory(){const fd=openSync(this.directory,constants.O_RDONLY);try{fsyncSync(fd);}finally{closeSync(fd);}}
+  private validateOperationLease(operation:BackupOperationLease){
+    this.checkDirectory();const path=join(this.directory,OPERATION_LOCK),named=this.privateFile(path),held=fstatSync(operation.fd);
+    if(!held.isFile()||held.uid!==process.getuid?.()||(held.mode&0o777)!==0o600||held.nlink!==1||held.size>this.maxBytes||held.dev!==named.dev||held.ino!==named.ino||held.dev!==operation.dev||held.ino!==operation.ino)throw new Error('backup operation lease inode changed; nothing removed');
+  }
+  private openOperation():BackupOperationLease{
+    this.checkDirectory();const fd=openSync(join(this.directory,OPERATION_LOCK),constants.O_CREAT|constants.O_RDWR|constants.O_NOFOLLOW,0o600);
+    try{const held=fstatSync(fd),operation={fd,dev:held.dev,ino:held.ino};this.validateOperationLease(operation);return operation;}catch(error){closeSync(fd);throw error;}
+  }
   private acquireOperation(){
-    this.checkDirectory();const path=join(this.directory,OPERATION_LOCK);
-    const fd=openSync(path,constants.O_CREAT|constants.O_RDWR|constants.O_NOFOLLOW,0o600);
+    const operation=this.openOperation(),fd=operation.fd;
     try{
-      this.privateFile(path);
       const result=spawnSync('/usr/bin/flock',['-xn','3'],{stdio:['ignore','ignore','pipe',fd],timeout:5000});
       if(result.error||result.status!==0)throw new Error('backup operation already active or standard Linux flock unavailable');
+      this.validateOperationLease(operation);
       return fd;
     }catch(error){closeSync(fd);throw error;}
   }
-  /** Runtime backup startup must not synchronously wait up to five seconds
-   * for a local lock child. The same open-file-description lease is retained
-   * by this sole writer after flock exits; errors close it only after settlement. */
-  private async acquireOperationAsync(){
-    this.checkDirectory();const path=join(this.directory,OPERATION_LOCK),fd=openSync(path,constants.O_CREAT|constants.O_RDWR|constants.O_NOFOLLOW,0o600);
-    try{this.privateFile(path);await new Promise<void>((resolve,reject)=>{
-      const child=spawn('/usr/bin/flock',['-xn','3'],{stdio:['ignore','ignore','ignore',fd]});let failed=false;const timer=setTimeout(()=>{failed=true;child.kill('SIGKILL');},5000);
-      child.once('error',()=>{failed=true;});child.once('close',code=>{clearTimeout(timer);if(failed||code!==0)reject(Error('backup operation already active or standard Linux flock unavailable'));else resolve();});
-    });return fd;}catch(error){closeSync(fd);throw error;}
+  /** Worker borrows the original validated FD. Only its parent closes it. */
+  bindWorkerOperation(operation:BackupOperationLease,cancelled:()=>boolean){
+    if(isMainThread||this.workerOperation||!Number.isSafeInteger(operation.fd)||operation.fd<0)throw new Error('backup worker operation scope required');
+    this.validateOperationLease(operation);this.workerOperation={...operation};this.workerCancelled=cancelled;
+  }
+  private workerFence(){
+    if(this.workerCancelled?.())throw new Error('backup artifact request cancelled or expired; pending artifacts preserved');
+    if(this.workerOperation)this.validateOperationLease(this.workerOperation);
+  }
+  private acquireWorkerOperation(){
+    if(isMainThread||!this.workerOperation||this.workerLeaseAcquired)throw new Error('backup worker lease acquisition scope required');
+    this.workerFence();
+    // spawnSync stays entirely in this worker. Parent termination cannot claim
+    // settlement while its fixed nonblocking child is still in native work.
+    const result=spawnSync('/usr/bin/flock',['-xn','3'],{stdio:['ignore','ignore','ignore',this.workerOperation.fd],timeout:5000});
+    if(result.error||result.status!==0)throw new Error('backup operation already active or standard Linux flock unavailable');
+    this.workerFence();this.workerLeaseAcquired=true;
+  }
+  private stagedSourceCurrent(){
+    const staged=this.staged;if(!staged)return;const source=this.privateFile(this.sourcePath);
+    if(source.dev!==staged.source.dev||source.ino!==staged.source.ino)throw new Error('backup source inode changed; prior backups preserved');
   }
   private promote(valid:FinancialBackup,completed:FinancialBackup[]):FinancialBackup{
+    this.workerFence();this.stagedSourceCurrent();
     const completedFd=openSync(valid.path,constants.O_RDONLY|constants.O_NOFOLLOW);try{fsyncSync(completedFd);}finally{closeSync(completedFd);}
+    this.workerFence();this.stagedSourceCurrent();
     const newest=completed.at(-1);
     if(newest&&(valid.revision<newest.revision||newest.snapshotSequence!==null&&(valid.snapshotSequence===null||BigInt(valid.snapshotSequence)<BigInt(newest.snapshotSequence))))throw new Error('backup would regress durable history');
     const next=(BigInt(newest?.generation??'0')+1n).toString().padStart(20,'0');if(next.length>20)throw new Error('backup generation exhausted');
@@ -219,46 +262,66 @@ export class FinancialBackupStore{
     try{lstatSync(target);throw new Error('unexpected backup promotion target; nothing overwritten');}catch(error){if(!(error instanceof Error&&'code' in error&&error.code==='ENOENT'))throw error;}
     // The new staging copy is already validated. Remove at most one old verified
     // same-account copy before promotion, retaining another complete good backup.
-    if(completed.length===2){this.inspect(completed[0]!.path,completed[0]!.generation);unlinkSync(completed[0]!.path);this.syncDirectory();}
+    if(completed.length===2){this.inspect(completed[0]!.path,completed[0]!.generation);this.workerFence();this.stagedSourceCurrent();unlinkSync(completed[0]!.path);this.syncDirectory();}
+    this.workerFence();this.stagedSourceCurrent();
     renameSync(valid.path,target);this.syncDirectory();return {...valid,path:target,generation:next};
   }
   async create(source:Source,runtime?:BackupRuntimePreparation):Promise<FinancialBackup>{
-    const operation=await this.acquireOperationAsync();
+    const operation=this.openOperation();
     let worker:ArtifactWorker|undefined;
     try{
+      // The private canonical path is anchored before this operation's first
+      // yield. Its inode is never silently refreshed after worker preparation.
+      const anchoredSource=this.privateFile(this.sourcePath),expectedSource={dev:anchoredSource.dev,ino:anchoredSource.ino};
+      worker=this.artifactWorker(operation);await worker.request({task:'acquire'});
       if(runtime&&!runtime.admission())throw new BackupPreparationDeferred();
-      const prepare=()=>{const before=source.state();if(before.accountId!==this.identity.accountId||before.mode!==this.identity.mode||before.inceptionAt!==this.identity.inceptionAt)throw new Error('backup source identity mismatch');worker=this.artifactWorker();return before;};
-      const before=runtime?runtime.measure(prepare):prepare();await worker!.request({task:'prepare',minimumRevision:before.revision});
-      // The existing sole financial connection performs the SQLite backup API.
-      // The worker never opens the source database or receives financial state.
-      await source.backup(join(this.directory,PENDING));
-      const result=await worker!.request({task:'finish'});if(!result)throw new Error('backup completion missing');return result;
+      const prepare=()=>{const before=source.state();if(before.accountId!==this.identity.accountId||before.mode!==this.identity.mode||before.inceptionAt!==this.identity.inceptionAt)throw new Error('backup source identity mismatch');return before;};
+      const before=runtime?runtime.measure(prepare):prepare();await worker.request({task:'prepare',minimumRevision:before.revision,expectedSource});
+      if(runtime&&!runtime.admission())throw new BackupPreparationDeferred();
+      if(this.persistent)await worker.request({task:'copy'});
+      else await source.backup(join(this.directory,PENDING));
+      const result=await worker.request({task:'finish'});if(!result)throw new Error('backup completion missing');return result;
     }catch(error){
       try{await worker?.request({task:'abort'});}catch{/* A dead/timed-out worker leaves pending evidence for recovery. */}
       throw error;
-    }finally{try{await worker?.close();}finally{closeSync(operation);}}
+    }finally{try{await worker?.close();}finally{closeSync(operation.fd);}}
   }
-  private artifactWorker(){return new ArtifactWorker({directory:this.directory,sourcePath:this.sourcePath,identity:this.identity,maxBytes:this.persistent?undefined:this.maxBytes,persistent:this.persistent,minimumFreeBytes:this.minimumFreeBytes});}
+  private artifactWorker(operation:BackupOperationLease){return new ArtifactWorker({directory:this.directory,sourcePath:this.sourcePath,identity:this.identity,maxBytes:this.persistent?undefined:this.maxBytes,persistent:this.persistent,minimumFreeBytes:this.minimumFreeBytes},operation);}
   /** Runtime-safe pending maintenance; all SQLite artifact work runs off-thread. */
   async maintainPending():Promise<FinancialBackup|null>{
-    const operation=await this.acquireOperationAsync();let worker:ArtifactWorker|undefined;
-    try{worker=this.artifactWorker();return await worker.request({task:'recover'});}
-    finally{try{await worker?.close();}finally{closeSync(operation);}}
+    const operation=this.openOperation();let worker:ArtifactWorker|undefined;
+    try{worker=this.artifactWorker(operation);await worker.request({task:'acquire'});return await worker.request({task:'recover'});}
+    finally{try{await worker?.close();}finally{closeSync(operation.fd);}}
   }
   /** Internal worker entry. The parent holds the operation lease across phases. */
-  runArtifactTask(message:BackupArtifactTask):FinancialBackup|null{
+  async runArtifactTask(message:BackupArtifactTask):Promise<FinancialBackup|null>{
+    this.workerFence();
+    if(message.task==='acquire'){this.acquireWorkerOperation();return null;}
+    if(!this.workerLeaseAcquired)throw new Error('backup worker lease required');
     if(message.task==='recover')return this.recoverPendingOwned();
     if(message.task==='prepare'){
+      if(this.staged||!Number.isSafeInteger(message.minimumRevision)||message.minimumRevision<0)throw new Error('backup preparation scope required');
+      const source=this.privateFile(this.sourcePath);if(source.dev!==message.expectedSource.dev||source.ino!==message.expectedSource.ino)throw new Error('backup source inode changed; prior backups preserved');
       this.checkSourceSize();const {scan,completed}=this.ready();
       if(scan.pending)throw new Error('pending backup requires explicit recovery; nothing overwritten');
+      this.workerFence();const current=this.privateFile(this.sourcePath);if(current.dev!==source.dev||current.ino!==source.ino)throw new Error('backup source inode changed; prior backups preserved');
       const path=join(this.directory,PENDING),fd=openSync(path,constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);closeSync(fd);
-      this.staged={path,own:lstatSync(path),completed,minimumRevision:message.minimumRevision,validated:false};return null;
+      this.staged={path,own:lstatSync(path),source,completed,minimumRevision:message.minimumRevision,validated:false};return null;
     }
     const staged=this.staged;if(!staged)return null;
+    if(message.task==='copy'){
+      if(!this.persistent||staged.copy)throw new Error('persistent backup copy scope required');
+      this.stagedSourceCurrent();
+      staged.copy=await copyReadonlyFinancialSnapshot({sourcePath:this.sourcePath,pendingPath:staged.path,identity:this.identity,expectedSource:{dev:staged.source.dev,ino:staged.source.ino},expectedPending:{dev:staged.own.dev,ino:staged.own.ino},minimumRevision:staged.minimumRevision,minimumFreeBytes:this.minimumFreeBytes,cancelled:()=>this.workerCancelled?.()??false});
+      this.workerFence();this.stagedSourceCurrent();return null;
+    }
     if(message.task==='finish'){
-      this.privateFile(staged.path);this.normalize(staged.path);
-      const valid=this.inspect(staged.path,'0');if(valid.revision<staged.minimumRevision)throw new Error('backup predates source observation');
-      staged.validated=true;const result=this.promote(valid,staged.completed);this.staged=undefined;return result;
+      if(this.persistent&&!staged.copy)throw new Error('captured readonly backup snapshot required');
+      const pending=this.privateFile(staged.path);if(pending.dev!==staged.own.dev||pending.ino!==staged.own.ino)throw new Error('backup staging inode changed; nothing removed');
+      this.stagedSourceCurrent();this.normalize(staged.path);this.workerFence();
+      const valid=this.inspect(staged.path,'0',true,staged.copy);if(valid.revision<staged.minimumRevision)throw new Error('backup predates source observation');
+      this.workerFence();this.stagedSourceCurrent();
+      staged.validated=true;const result=this.promote(valid,staged.completed),sourceSnapshot=staged.copy?structuredClone(staged.copy):undefined;this.staged=undefined;return {...result,...(sourceSnapshot?{sourceSnapshot}:{})};
     }
     // Only this operation's incomplete inode is disposable; completed/foreign
     // files and a validated copy awaiting promotion are always preserved.

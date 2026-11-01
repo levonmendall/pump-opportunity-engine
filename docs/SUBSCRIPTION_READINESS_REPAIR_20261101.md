@@ -64,6 +64,48 @@ allowance. Invalid timing defers reporting; the original performance target and
 financial deadlines remain unchanged. This measured estimate is not a guarantee
 of the next report's execution time.
 
+## Persistent backup scheduling
+
+The complete regression run exposed a separate responsiveness concern in the
+existing backup path. A focused hosted trace preserved every original assertion
+and showed that the final native SQLite copy step executes synchronously on the
+financial owner's thread. The trace measured a 104.7 ms final step and a 107.1 ms
+timer gap. It did not reproduce or establish the cause of two earlier hosted
+gaps near 780 ms.
+
+Code review also found that the original runtime checked admission after taking
+the backup lease but did not check again after worker preparation or during the
+later source copy. A startup allowance could therefore expire before copying
+began, while held positions and pending orders still required service.
+
+Persistent backups now use an explicitly read-only WAL snapshot in the worker
+for source copying and final destination synchronization. The original ledger
+remains the only financial writer. The reader binds to the original file,
+account and captured revision; its read transaction closes before artifact
+normalization, full validation and promotion. Snapshot lifetime, additional WAL
+growth and remaining disk reserve are bounded and measured. These are
+cooperative resource bounds, not a guarantee that the operating system can
+interrupt an in-progress native I/O operation immediately.
+
+The parent retains the original backup operation descriptor until copying and
+worker shutdown physically settle. Worker acquisition uses that same descriptor.
+Runtime admission is checked again after preparation, and cancellation and
+request deadlines fence later worker phases and promotion. Existing financial
+freshness, protection, file ownership, history validation and retention checks
+remain in force. The ordinary nonpersistent/offline backup API remains available.
+
+The regression guard for the large persistent backup keeps its original timing
+assertion. Additional checks cover an advancing sole writer, a fixed copied
+snapshot, read-only enforcement, cleanup and checkpoint progress after release,
+refused source replacement, cancellation, and lease retention during failure.
+A real-worker termination test also checks that native SQLite cleanup releases
+a pinned source snapshot even when JavaScript cleanup does not run.
+
+The compiled-worker loading fixture compiles the worker's transitive source
+graph under the existing project compiler settings. Its original compilation
+and test timeouts remain unchanged. Complete project typechecking and compilation
+remain separate mandatory release gates.
+
 ## Preserved operating boundaries
 
 - Original PAPER account, history, positions and obligations.
