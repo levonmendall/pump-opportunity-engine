@@ -107,6 +107,12 @@ export class NativeCandidateRunner{
  private auditDispatchContext(at:number,usage:ReturnType<Rpc['usage']>,flow:ReturnType<Flow['usage']>){const rpc=usage.rpcDispatchWindow??usage.dispatchWindow,control=usage.controlDispatchWindow??usage.dispatchWindow;return {rpcReadyAt:rpc?.readyAt??null,historyReadyAt:(usage.historyDispatchWindow??rpc)?.readyAt??null,controlReadyAt:control?.readyAt??null,physicalBusy:rpc?.physicalBusy??null,actualPhysicalBusy:rpc&&'actualPhysicalBusy'in rpc?rpc.actualPhysicalBusy:null,inFlight:usage.inFlight,waitingOrOperating:usage.waitingOrOperating,rolling60SecondStarts:usage.chapterUsage?.rolling60SecondStarts??null,rolling10SecondStarts:usage.chapterUsage?.rolling10SecondStarts??null,startsPerMinuteLimit:usage.requestLimits?.maxStartsPerMinute??null,startsPer10SecondLimit:usage.requestLimits?.maxStartsPer10s??null,providerCooldownUntil:usage.cooldownUntil??null,historyCooldownUntil:usage.historyCooldownUntil??null,controlCooldownUntil:usage.controlCooldownUntil??null,nextNativeServiceAt:Number.isFinite(flow.nextServiceAt)?flow.nextServiceAt:null,nextNativeServiceDomain:flow.nextServiceDomain??null,nextNativeServiceAction:(flow as {nextServiceAction?:string|null}).nextServiceAction??null,nativeServiceSlackMs:Number.isFinite(flow.nextServiceAt)?flow.nextServiceAt-200-at:null,pageOperationBoundMs:NATIVE_CANDIDATE_AUDIT_PROFILE.operationBoundMs};}
  private open(){return !this.stopped&&this.sourceAdmissionStopReason===null&&(this.options.admissionOpen?.()??true);}
  private sourceWorkAllowed(bound:number){return this.open()&&(this.options.sourceWorkAdmission?.(bound)??true);}
+ private registryHousekeeping(phase:'native-activity'|'migration-delivery'|'pool-progress'|'committed-activity'|'allocation',work:()=>void){
+  try{work();}catch(error){
+   if(!isMarketRegistryContention(error))throw error;
+   this.record('native-candidate-housekeeping-deferred',{at:this.now(),phase,reason:'MARKET_REGISTRY_CONTENTION',sqliteCode:error.sqliteCode,callbackStarted:false,providerPermissionGranted:false,financialPermission:false});
+  }
+ }
  private async serviceFlow(signal:AbortSignal|undefined,deadlineAt:number,policy:{allowSetup:boolean;allowRetirement:boolean}){
   const plan=this.options.flow.servicePlan?.(policy),action=plan?.action??(this.options.flow.usage() as {nextServiceAction?:string|null}).nextServiceAction;
   const bound=action==='heartbeat'||action==='peer-pong'?NATIVE_DEADLINE_POLICY.heartbeatOperationMs:NATIVE_DEADLINE_POLICY.nativeOperationMs;
@@ -611,10 +617,10 @@ export class NativeCandidateRunner{
    if(!this.drainGapRetirements()){this.lastOutcome='MARKET_REGISTRY_CONTENTION';return 'wait';}
    if(!this.reconcileObservationMembership()){this.lastOutcome='MARKET_REGISTRY_CONTENTION';return 'wait';}
    this.reconcileFlowOpen();
-   this.drainNativeActivity();
-   this.drainMigrationDelivery();
-   this.drainPoolSourceProgress();
-   this.drainCommittedActivity();
+   this.registryHousekeeping('native-activity',()=>this.drainNativeActivity());
+   this.registryHousekeeping('migration-delivery',()=>this.drainMigrationDelivery());
+   this.registryHousekeeping('pool-progress',()=>this.drainPoolSourceProgress());
+   this.registryHousekeeping('committed-activity',()=>this.drainCommittedActivity());
    await this.drainCancelledAuditDiagnostics();
    const origin=this.verificationSession;if(origin){if(this.now()>=origin.deadlineAt){origin.controller.abort();origin.pending?.reject(Error('PILOT_MIGRATION_ABORTED'));origin.pending=null;await Promise.resolve();await Promise.resolve();origin.result??={ok:false,reason:'PILOT_MIGRATION_ELAPSED_CAP'};}this.finishVerification(origin);}
    const sourceFailure=this.options.flow.usage().fatal;if(sourceFailure){this.sourceAdmissionStopReason=sourceFailure;this.lastOutcome=sourceFailure;this.record('native-candidate-source-admissions-closed',{at:this.now(),reason:sourceFailure,financialWriterOpened:false,scope:'candidate-only research; financial position management is not owned by this runner'});return 'source-fatal';}
@@ -626,7 +632,7 @@ export class NativeCandidateRunner{
    // deadline. Keep replacement setup out of an already-ready audit batch.
    // Required retirement, current support refresh, heartbeat and recovery
    // continue through native service below; no existing observation is dropped.
-   if(!pendingAudits.length&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.postValidationMs)&&this.discretionaryAdmission(NATIVE_DEADLINE_POLICY.postValidationMs,at).admitted)this.allocate(at);
+   if(!pendingAudits.length&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.postValidationMs)&&this.discretionaryAdmission(NATIVE_DEADLINE_POLICY.postValidationMs,at).admitted)this.registryHousekeeping('allocation',()=>this.allocate(at));
    else if(this.candidates.size<(this.options.maximumDeep??6)&&this.lastAdmissionDeferralBucket!==Math.floor(at/PROVISIONAL_RULE.bucketMs)){this.lastAdmissionDeferralBucket=Math.floor(at/PROVISIONAL_RULE.bucketMs);this.record('native-deep-admission-deferred',{at,reason:'existing-ready-audit-batch-before-replacement-setup',readyMints:pendingAudits.map(c=>c.identity.baseMint),currentDeep:this.candidates.size,maximumDeep:this.options.maximumDeep??6,watchAwarenessRetained:true,requiredNativeServicePreserved:true,financialPermission:false});}
    const servicePolicy={allowSetup:pendingAudits.length===0&&this.discretionaryAdmission(3000,at).admitted,allowRetirement:pendingAudits.length===0};
    const servicePlan=this.options.flow.servicePlan?.(servicePolicy),observedFlow=this.options.flow.usage(),flow=servicePlan?{...observedFlow,nextServiceAt:servicePlan.at,nextServiceDomain:servicePlan.domain,nextServiceAction:servicePlan.action}:observedFlow;
@@ -655,10 +661,18 @@ export class NativeCandidateRunner{
    if(dispatchable.length&&auditDeadline-at>=NATIVE_CANDIDATE_AUDIT_PROFILE.operationBoundMs+125)jobs.push({id:'audit:'+dispatchable[0]!.identity.baseMint,kind:'enrichment',enqueuedAt:at,eligibleAt:at,deadlineAt:auditDeadline,operationBoundMs:NATIVE_CANDIDATE_AUDIT_PROFILE.operationBoundMs});
    const verification=this.discretionaryAdmission(NATIVE_DEADLINE_POLICY.discretionaryReadMs,at);
    if(!this.verificationSession&&!ready.length&&verification.admitted&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs)&&(!rpcGate||!rpcGate.physicalBusy&&rpcGate.readyAt<=at))this.enqueueActivityOrigin(at);
-   const creation=this.options.enforceTokenAge24h&&!ready.length&&verification.admitted&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs)?this.registry.nextTokenCreationRequest(at):undefined;
-   if(creation&&(!rpcGate||!rpcGate.physicalBusy&&rpcGate.readyAt<=at))jobs.push({id:'token-creation:'+creation.signature,kind:'reconnect',enqueuedAt:at,eligibleAt:at,deadlineAt:Math.min(at+2000,serviceDeadline,verification.latestStartAt===null?Infinity:verification.latestStartAt+NATIVE_DEADLINE_POLICY.discretionaryReadMs),operationBoundMs:NATIVE_DEADLINE_POLICY.discretionaryReadMs});
-   const seed=this.verificationSession?.seed??this.nextVerification(at);
-   if(seed&&!ready.length&&verification.admitted&&(!rpcGate||!rpcGate.physicalBusy&&rpcGate.readyAt<=at))jobs.push({id:'verify:'+seed.signature,kind:'reconnect',enqueuedAt:this.verificationSession?.startedAt??at,eligibleAt:at,deadlineAt:Math.min(at+2000,serviceDeadline,verification.latestStartAt===null?Infinity:verification.latestStartAt+NATIVE_DEADLINE_POLICY.discretionaryReadMs),operationBoundMs:NATIVE_DEADLINE_POLICY.discretionaryReadMs});
+   const lookupStartedAt=this.now();
+   const creation=this.options.enforceTokenAge24h&&!ready.length&&verification.admitted&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs)?this.registry.nextTokenCreationRequest(lookupStartedAt):undefined;
+   const seed=this.verificationSession?.seed??this.nextVerification(this.now());
+   // These are NEW discretionary requests, not an already-open audit window.
+   // Local selection can be slow; stamp their envelope only after it completes.
+   // Existing service/audit deadlines and physical cooldowns are never rebased.
+   at=this.now();const bootstrap=this.discretionaryAdmission(NATIVE_DEADLINE_POLICY.discretionaryReadMs,at),bootstrapUsage=this.options.rpc.usage(),bootstrapGate=bootstrapUsage.rpcDispatchWindow??bootstrapUsage.dispatchWindow;
+   const bootstrapAllowed=!ready.length&&!this.readyAudits(at).length&&bootstrap.admitted&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs)&&!bootstrapUsage.waitingOrOperating&&bootstrapUsage.inFlight===0&&(!bootstrapGate||!bootstrapGate.physicalBusy&&bootstrapGate.readyAt<=this.now());
+   const bootstrapDeadline=Math.min(at+2000,serviceDeadline,bootstrap.latestStartAt===null?Infinity:bootstrap.latestStartAt+NATIVE_DEADLINE_POLICY.discretionaryReadMs);
+   if(creation&&bootstrapAllowed)jobs.push({id:'token-creation:'+creation.signature,kind:'reconnect',enqueuedAt:at,eligibleAt:at,deadlineAt:bootstrapDeadline,operationBoundMs:NATIVE_DEADLINE_POLICY.discretionaryReadMs});
+   if(seed&&bootstrapAllowed)jobs.push({id:'verify:'+seed.signature,kind:'reconnect',enqueuedAt:this.verificationSession?.startedAt??at,eligibleAt:at,deadlineAt:bootstrapDeadline,operationBoundMs:NATIVE_DEADLINE_POLICY.discretionaryReadMs});
+   if(creation||seed)this.record('native-candidate-bootstrap-planned',{at,lookupStartedAt,lookupElapsedMs:Math.max(0,at-lookupStartedAt),kind:creation?'token-creation':'origin',admitted:bootstrapAllowed,deadlineAt:Number.isFinite(bootstrapDeadline)?bootstrapDeadline:null,providerRequestStarted:false,financialPermission:false});
    const fresh=this.options.rpc.usage(),dispatch=chooseResearchWork({now:this.now(),readyAt:(jobs.some(job=>job.id.startsWith('audit:'))?(fresh.historyDispatchWindow??fresh.rpcDispatchWindow??fresh.dispatchWindow):(fresh.rpcDispatchWindow??fresh.dispatchWindow))?.readyAt??this.now(),physicalBusy:fresh.waitingOrOperating||fresh.inFlight!==0,nextProtectionAt:null,otherStartSinceProtection:false,jobs});
    this.lastDispatchAt=this.now();if(dispatch.kind==='job'){this.traceAuditDispatch(ready,this.lastDispatchAt,dispatch.job.id.startsWith('audit:')?'audit-selected':'peer-selected',dispatch.job.id.startsWith('audit:')?'dispatch-audit-page':'dispatch-origin-verification',{...this.auditDispatchContext(this.lastDispatchAt,fresh,flow),selectedMint:dispatch.job.id.startsWith('audit:')?dispatchable[0]!.identity.baseMint:null,selectedJob:dispatch.job.id,jobDeadlineAt:dispatch.job.deadlineAt,latestStartAt:dispatch.latestStartAt});if(dispatch.job.id.startsWith('audit:')){const batched=await this.evaluateQuietBatch([...dispatchable,...ready.filter(c=>!dispatchable.includes(c))],dispatch.job.deadlineAt,signal);if(!batched&&this.candidates.get(dispatchable[0]!.identity.baseMint)===dispatchable[0])await this.evaluate(dispatchable[0]!,dispatch.job.deadlineAt,signal);}else if(dispatch.job.id.startsWith('token-creation:')&&creation)await this.verifyTokenCreation(creation,dispatch.job.deadlineAt,signal);else if(seed)await this.verify(seed,dispatch.job.deadlineAt,signal);this.lastOutcome=dispatch.job.id;return dispatch.job.id;}
    this.traceAuditDispatch(ready,this.lastDispatchAt,dispatch.kind==='refuse'?'scheduler-refusal':'scheduler-wait',dispatch.kind==='refuse'?'retain-refused-target':'await-next-dispatch',{...this.auditDispatchContext(this.lastDispatchAt,fresh,flow),dispatchReason:'reason'in dispatch?dispatch.reason:null,until:'until'in dispatch?dispatch.until:null,jobCount:jobs.length,auditDeadlineAt:Number.isFinite(auditDeadline)?auditDeadline:null});return dispatch.kind;
