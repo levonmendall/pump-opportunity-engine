@@ -38,18 +38,28 @@ function fixture(){
  const flow=new PilotNativeFlow({control:rpc,support:{async validateMany(requests:any[],signal?:AbortSignal,admission?:any){await rpc.call('getMultipleAccounts',[],signal,admission);return {validations:Object.fromEntries(requests.map(r=>{const key=r.mint.toBase58();return [key,{mint:key,pool:canonicalPumpPoolPda(r.mint).toBase58(),at,sourceSlot:10,evidence:'SYNTHETIC_CURRENT_SUPPORT',summary:{marketClockUnixSeconds:Math.floor(at/1000)}}];})),unavailable:{},context:null};}} as any,record:(kind,data)=>records.push({kind,data}),onTrade(){throw Error('NO_SYNTHETIC_TRADE_EXPECTED');},onGap(){},durationMs:120000},{now:()=>at,monotonic:()=>mono,setTimer(fn,ms){if(ms===100)watchdog=fn;return 1;},clearTimer(){},makeSocket(){const socket=new Socket();sockets.push(socket);queueMicrotask(()=>socket.open());return socket as unknown as WebSocket;}});
  runner=new NativeCandidateRunner({rpc,flow,now:()=>at,maximumDeep:1,activeStrategy:'liquidity-resilient-momentum-v3.1',observationAgePolicy:'persistent-observable-market-v1',record:(kind,data)=>records.push({kind,data})});
  // The coordinator owns selected scopes. Seed the ordinary unverified hint so
- // its first step performs the real atomic WATCH/productivity/native admission;
- // a manually added ownerless transport is correctly retired by reconciliation.
+ // its first step validates the pool outside the selected slots; the next step
+ // performs real atomic WATCH/productivity/native admission using that proof.
+ // A manually added ownerless transport is correctly retired by reconciliation.
  runner.onMigration({signature:'SYNTHETIC_SCOPE_HINT',feedMint:mint,receivedAt:at});
  return {rpc,flow,runner,directory,oldBytes,old,sockets,records,fetches,get at(){return at;},get mono(){return mono;},advance(ms:number){at+=ms;mono+=ms;},wallOnly(ms:number){at+=ms;},hang(){hang=true;},contextLagOnce(){contextOnce=true;},settle(status?:number){hang=false;settle(status===undefined?new Response('{}'):new Response(JSON.stringify({jsonrpc:'2.0',id:pendingId,result:123}),{status,headers:status===503?{'retry-after':'10'}:undefined}));},watchOne(){watchdog?.();},async close(){await runner.stop();rpc.close();assert.deepEqual(readFileSync(old),oldBytes);rmSync(directory,{recursive:true,force:true});}};
 }
 
+async function prepareBinding(f:ReturnType<typeof fixture>){
+ assert.equal(await f.runner.step(),'prepare:'+mint);
+ assert.equal(f.flow.usage().candidates,0,'passive binding does not own a selected slot');
+ assert.equal(f.runner.status().slotProductivity.counts.allocations,0);
+ assert.equal(f.runner.status().candidatePreparation.counters.poolReady,1);
+ assert.equal(f.fetches.filter(method=>method==='getMultipleAccounts').length,1);
+}
+
 test('settled timeout uncertainty does not deadlock native service behind the coordinator planning guard',async()=>{
  const f=fixture();try{
-  assert.equal(await f.runner.step(),'support');f.advance(250);
+  await prepareBinding(f);f.advance(250);
   assert.equal(await f.runner.step(),'connect');f.advance(250);
   assert.equal(await f.runner.step(),'subscribe');f.advance(250);
   assert.equal(f.flow.snapshot(mint)!.connected,true);
+  assert.equal(f.fetches.filter(method=>method==='getMultipleAccounts').length,1,'allocation adopts the original binding without another support request');
   f.hang();await assert.rejects(f.rpc.call('getSlot',[],undefined,{timeoutMs:5}),/PHYSICAL_TIMEOUT/);f.flow.requestHeartbeat();
   const until=f.rpc.cooldownUntil();assert.equal(until,f.at+2000);assert.equal(f.rpc.usage().inFlight,1);
   f.advance(3000);const unresolved=f.rpc.usage();assert.equal(unresolved.dispatchWindow!.physicalBusy,true);
@@ -68,7 +78,7 @@ test('settled timeout uncertainty does not deadlock native service behind the co
 
 test('settled chapter recovery preserves cooldown readiness, raw history, and held/pending priority',async()=>{
  const f=fixture();try{
-  assert.equal(await f.runner.step(),'support');f.advance(250);f.hang();await assert.rejects(f.rpc.call('getSlot',[],undefined,{timeoutMs:5}),/PHYSICAL_TIMEOUT/);
+  await prepareBinding(f);f.advance(250);f.hang();await assert.rejects(f.rpc.call('getSlot',[],undefined,{timeoutMs:5}),/PHYSICAL_TIMEOUT/);
   f.settle();await turn();await turn();const until=f.rpc.cooldownUntil(),units=f.rpc.usage().newUnits;
   const plan=()=>{const u=f.rpc.usage();return chooseProtectedResearchWork({now:f.at,readyAt:u.dispatchWindow!.readyAt,physicalBusy:u.dispatchWindow!.physicalBusy,nextProtectionAt:f.at,otherStartSinceProtection:false,lastUsableEvaluationAt:f.at,observingSince:f.at-1000,candidateWindowActive:true,recoveryActive:true,capacityAvailable:true,startSpacingMs:250,jobs:[]});};
   assert.equal(f.rpc.usage().dispatchWindow!.readyAt,until);assert.equal(f.rpc.usage().dispatchWindow!.physicalBusy,false);assert.equal(plan().decision.kind,'wait');
@@ -98,7 +108,7 @@ test('control cooldown is enforced at native admission without blocking unrelate
 
 test('native planner defers a settled context-floor cooldown without disconnecting healthy scopes',async()=>{
  const f=fixture();try{
-  assert.equal(await f.runner.step(),'support');f.advance(250);assert.equal(await f.runner.step(),'connect');f.advance(250);assert.equal(await f.runner.step(),'subscribe');f.advance(250);
+  await prepareBinding(f);f.advance(250);assert.equal(await f.runner.step(),'connect');f.advance(250);assert.equal(await f.runner.step(),'subscribe');f.advance(250);
   f.contextLagOnce();await assert.rejects(f.rpc.call('getSignaturesForAddress'),/COMPONENT_RPC_ERROR_-32016/);await turn();f.flow.requestHeartbeat();
   const before=f.rpc.usage(),gaps=f.flow.usage().gaps;assert.equal(before.inFlight,0);assert.equal(before.currentChapterUncertainResponseBytes,0);assert.equal(before.fatal,null);assert.equal(before.dispatchWindow!.readyAt,f.at+2000);
   assert.equal(await f.runner.step(),'wait');assert.equal(f.flow.snapshot(mint)!.connected,true);assert.equal(f.flow.usage().gaps,gaps);assert.equal(f.sockets[0]!.controls.filter(x=>x==='ping').length,0);
@@ -109,7 +119,7 @@ test('native planner defers a settled context-floor cooldown without disconnecti
 
 for(const lateStatus of [200,503])test(`real shared gate: failed support refresh retains fresh capture through lateHTTP${lateStatus} physical settlement`,async()=>{
  const f=fixture();try{
-  assert.equal(await f.runner.step(),'support');f.advance(250);assert.equal(await f.runner.step(),'connect');f.advance(250);assert.equal(await f.runner.step(),'subscribe');f.advance(250);f.advance(20569);
+  await prepareBinding(f);f.advance(250);assert.equal(await f.runner.step(),'connect');f.advance(250);assert.equal(await f.runner.step(),'subscribe');f.advance(250);f.advance(20569);
   const prior=f.flow.snapshot(mint)!,socket=f.sockets[0]!;f.flow.requestSupportRefresh();f.hang();assert.deepEqual(await f.flow.service(),{kind:'deferred',reason:'PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT'});f.advance(1249);
   assert.equal(f.rpc.usage().inFlight,1);assert.equal(f.flow.snapshot(mint)!.connected,true);assert.equal(f.flow.snapshot(mint)!.hasQualityLoss,false);assert.deepEqual(f.flow.snapshot(mint)!.supportContext,prior.supportContext);assert.equal(socket.readyState,WebSocket.OPEN);const count=f.rpc.usage().newUnits;
   f.advance(2500);f.flow.requestHeartbeat();assert.equal(await f.runner.step(),'wait');assert.equal(f.rpc.usage().newUnits,count);assert.equal(socket.controls.filter(x=>x==='ping').length,0);assert.equal(f.flow.usage().gaps,0);
@@ -123,6 +133,6 @@ for(const lateStatus of [200,503])test(`real shared gate: failed support refresh
 
 test('real shared gate: support can actually expire while its failed HTTP request remains physically unsettled',async()=>{
  const f=fixture();try{
-  await f.runner.step();f.advance(250);await f.runner.step();f.advance(250);await f.runner.step();f.advance(250);f.flow.requestSupportRefresh();f.hang();assert.equal((await f.flow.service()).kind,'deferred');assert.equal(f.rpc.usage().inFlight,1);f.advance(31000);f.watchOne();assert.equal(f.flow.snapshot(mint)!.sourceSupportFresh,false);assert.equal(f.flow.snapshot(mint)!.hasQualityLoss,true);assert.equal(f.flow.usage().gaps,1);const n=f.rpc.usage().newUnits;assert.equal(await f.runner.step(),'wait');assert.equal(f.rpc.usage().newUnits,n);assert.equal(f.sockets.length,1);assert.equal(f.sockets[0]!.readyState,WebSocket.OPEN);f.settle(200);await turn();await turn();assert.equal(f.rpc.usage().inFlight,0);assert.equal(f.rpc.usage().uncertainResponseBytes,2*MIB);
+  await prepareBinding(f);f.advance(250);assert.equal(await f.runner.step(),'connect');f.advance(250);assert.equal(await f.runner.step(),'subscribe');f.advance(250);f.flow.requestSupportRefresh();f.hang();assert.equal((await f.flow.service()).kind,'deferred');assert.equal(f.rpc.usage().inFlight,1);f.advance(31000);f.watchOne();assert.equal(f.flow.snapshot(mint)!.sourceSupportFresh,false);assert.equal(f.flow.snapshot(mint)!.hasQualityLoss,true);assert.equal(f.flow.usage().gaps,1);const n=f.rpc.usage().newUnits;assert.equal(await f.runner.step(),'wait');assert.equal(f.rpc.usage().newUnits,n);assert.equal(f.sockets.length,1);assert.equal(f.sockets[0]!.readyState,WebSocket.OPEN);f.settle(200);await turn();await turn();assert.equal(f.rpc.usage().inFlight,0);assert.equal(f.rpc.usage().uncertainResponseBytes,2*MIB);
  }finally{await f.close();}
 });
