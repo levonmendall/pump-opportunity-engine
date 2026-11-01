@@ -7,7 +7,7 @@ import {wsWire} from './ws-wire-fixture.js';
 const turn=()=>new Promise<void>(r=>setImmediate(r));
 test('real pinned receiver: continuously queued fresh frames must not inherit the oldest batch timestamp',async()=>{
  const receiver=new Receiver({isServer:false,allowSynchronousEvents:false,maxPayload:512*1024});
- const old=new WsReceiptClock(()=>receiver),clock=new WsFrameReceiptClock(),rows:Array<{old:number;fresh:number;at:number}>=[];let at=100;
+ const old=new WsReceiptClock(()=>receiver as any),clock=new WsFrameReceiptClock(),rows:Array<{old:number;fresh:number;at:number}>=[];let at=100;
  const write=()=>{const b=wsWire(Buffer.from(String(at)));old.chunk(at);clock.chunk(b,at);receiver.write(b);};
  const done=new Promise<void>((resolve,reject)=>{receiver.on('error',reject);receiver.on('message',()=>{
   rows.push({old:old.receivedAt(at),fresh:clock.take('message',at).receivedAt,at});
