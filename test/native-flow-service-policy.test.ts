@@ -36,7 +36,7 @@ test('retirement is eligible at the earliest admitted opportunity while physical
 });
 
 test('earliest retirement still yields to a hard peer PONG deadline',async()=>{
- const f=setup({maximumCandidates:2}),socket=await f.open(),retired=second();await f.open(retired);f.flow.removeCandidate(retired.mint,'OFFLINE_RETIRE_WITH_PEER_PING');socket.emit('ping',Buffer.from('OFFLINE_URGENT_RETIREMENT_PEER_PING'));
+ const f=setup({maximumCandidates:2}),socket=await f.open(),retired=second();await f.open(retired);f.flow.removeCandidate(retired.mint,'OFFLINE_RETIRE_WITH_PEER_PING');socket.controlFrame('ping',Buffer.from('OFFLINE_URGENT_RETIREMENT_PEER_PING'));
  assert.equal(f.flow.servicePlan(critical).action,'peer-pong');assert.equal((await f.flow.service(undefined,{},critical)).kind,'pong');assert.equal(f.flow.usage().retiring,1);assert.equal(f.flow.servicePlan(critical).action,'unsubscribe');assert.equal((await f.flow.service(undefined,{},critical)).kind,'unsubscribe');assert.equal(f.flow.snapshot(scope.mint)!.connected,true);await f.flow.stop();
 });
 
@@ -54,10 +54,35 @@ test('already ACKed capture can recover while new setup is disabled, retaining a
 });
 
 test('hard peer-PONG deadline precedes an already-late periodic heartbeat target',async()=>{
- const f=setup(),socket=await f.open();f.flow.requestHeartbeat();socket.emit('ping',Buffer.from('OFFLINE_URGENT_PEER_PING'));await f.advance(2500);assert.equal(f.flow.servicePlan(critical).action,'peer-pong');assert.equal((await f.flow.service(undefined,{},critical)).kind,'pong');assert.equal(socket.controls.at(-1),'pong');assert.equal(f.gaps.length,0);assert.equal(f.flow.servicePlan(critical).action,'heartbeat');assert.equal((await f.flow.service(undefined,{},critical)).kind,'ping');assert.equal(f.flow.snapshot(scope.mint)!.connected,true);await f.flow.stop();
+ const f=setup(),socket=await f.open();f.flow.requestHeartbeat();socket.controlFrame('ping',Buffer.from('OFFLINE_URGENT_PEER_PING'));await f.advance(2500);assert.equal(f.flow.servicePlan(critical).action,'peer-pong');assert.equal((await f.flow.service(undefined,{},critical)).kind,'pong');assert.equal(socket.controls.at(-1),'pong');assert.equal(f.gaps.length,0);assert.equal(f.flow.servicePlan(critical).action,'heartbeat');assert.equal((await f.flow.service(undefined,{},critical)).kind,'ping');assert.equal(f.flow.snapshot(scope.mint)!.connected,true);await f.flow.stop();
 });
 
 test('canonical origin vault hints reach fresh support as defensive address copies without becoming source evidence',async()=>{
  const f=setup(),dependencyHints={baseVault:'14f29EBGBB1mFMMBnnbwi6Ff9tpcytYtrMX52mQkqG55',quoteVault:'3p2311H7FLZxSdKPAfYisroj5YXvNtbQZDKsqWgPo1B6'};f.flow.addCandidate({...scope,dependencyHints});dependencyHints.baseVault=scope.mint;const snapshot=f.flow.snapshot(scope.mint)!;snapshot.scope.dependencyHints!.quoteVault=scope.mint;
  await f.flow.service();assert.deepEqual(f.supportCalls[0]![0].dependencyHints,{baseVault:'14f29EBGBB1mFMMBnnbwi6Ff9tpcytYtrMX52mQkqG55',quoteVault:'3p2311H7FLZxSdKPAfYisroj5YXvNtbQZDKsqWgPo1B6'});assert.equal(f.flow.snapshot(scope.mint)!.warm,false);assert.equal(f.flow.snapshot(scope.mint)!.auditVerified,false);await f.flow.stop();
+});
+
+
+test('persistent empty handover reuses one healthy transport but requires fresh pool support and ACK',async()=>{
+ const f=setup({persistent:true}),socket=await f.open(),priorOpen=f.flow.snapshot(scope.mint)!.openedAt;
+ f.flow.removeCandidate(scope.mint,'OFFLINE_HANDOVER');assert.equal((await f.flow.service()).kind,'unsubscribe');
+ assert.equal(f.flow.usage().connected,true);assert.equal(f.flow.usage().selectedCaptureConnected,false);
+ assert.equal((await f.flow.service()).kind,'idle');assert.equal(socket.controls.includes('close'),false);
+ await f.advance(1000);const replacement=second();await f.open(replacement);
+ assert.equal(f.sockets.length,1);assert.equal(f.flow.snapshot(replacement.mint)!.connected,true);
+ assert.equal(f.flow.snapshot(replacement.mint)!.warm,false);assert.ok(f.flow.snapshot(replacement.mint)!.openedAt!>priorOpen!);
+ assert.equal(f.flow.usage().selectedCaptureConnected,true);assert.equal(f.flow.snapshot(scope.mint),null);await f.flow.stop();
+});
+test('persistent idle transport services heartbeat then closes at bounded grace without claiming capture',async()=>{
+ const f=setup({persistent:true}),socket=await f.open();f.flow.removeCandidate(scope.mint,'OFFLINE_EMPTY');await f.flow.service();
+ const plan=f.flow.servicePlans().find(p=>p.action==='close')!;assert.equal(plan.at,f.now+NATIVE_SERVICE_POLICY.persistentIdleGraceMs);
+ assert.equal(f.flow.usage().selectedCaptureConnected,false);await f.advance(10000);assert.equal((await f.flow.service()).kind,'ping');
+ await f.advance(5000);assert.equal((await f.flow.service()).kind,'close');await settle();assert.equal(f.flow.usage().connected,false);
+ assert.equal(socket.controls.filter(x=>x==='close').length,1);const record=f.records.find(r=>r.kind==='native-flow-disconnected')!;
+ assert.equal(record.data.expected,true);assert.equal(record.data.reason,'NATIVE_FLOW_TRANSPORT_CLOSED');await f.flow.stop();
+});
+test('actual disconnect during persistent idle grace still settles and keeps normal failure backoff',async()=>{
+ const f=setup({persistent:true}),socket=await f.open();f.flow.removeCandidate(scope.mint,'OFFLINE_EMPTY');await f.flow.service();f.flow.servicePlans();
+ socket.drop(1006);await settle();assert.equal(f.flow.usage().connected,false);assert.equal(f.flow.usage().retryAt,f.now+2000);
+ assert.equal(f.records.find(r=>r.kind==='native-flow-disconnected')!.data.expected,false);await f.flow.stop();
 });

@@ -213,3 +213,18 @@ test('source expiry during a fresh entry quote makes held equity unavailable bef
   const execution=f.create({context:async()=>({...f.context(),sourceValidUntil:f.now()+1}),quote:async()=>{f.set(f.now()+2);return {at:f.now(),spendLamports:'480000000',receiveUnits:'1000',evidence:'DISPOSABLE fresh entry quote after old bank-source expired'};}});execution.recover();f.ready();execution.reserve(buy('next',f.now(),'other-mint'),f.context());f.set(AT+1100);const held=f.ledger.state().positions['fixture-mint'],cash=f.ledger.state().lamports;
   const result=await execution.runDue();assert.equal(result.results[0]!.status,'failed');assert.match(result.results[0]!.reason,/unknown liquidation marks/);assert.deepEqual(f.ledger.state().positions['fixture-mint'],held);assert.equal(f.ledger.state().positions['other-mint'],undefined);assert.equal(f.ledger.state().executionCosts,'10000');assert.equal(f.ledger.state().lamports,cash);assert.deepEqual(f.ledger.state().pending,{});
 });
+
+test('age scope blocks reservations and cancels only unfilled buys, without charging gas',async t=>{
+ const f=fixture(t);let allowed=false,quotes=0;const c=f.create({entryScope:()=>({allowed,reason:allowed?'TOKEN_AGE_WITHIN_24H':'TOKEN_AGE_EXCEEDS_24H',createdAt:0,ageMs:0,expiresAt:0}),quote:async()=>{quotes++;return null;}});
+ c.recover();f.ready();assert.throws(()=>c.reserve(buy('age'),f.context()),/TOKEN_AGE_SCOPE/);allowed=true;c.reserve(buy('age'),f.context());allowed=false;f.set(AT+500);
+ const result=(await c.runDue()).results[0]!;assert.equal(result.status,'canceled');assert.equal(result.reason,'PAPER_ENTRY_TOKEN_AGE_SCOPE');assert.equal(quotes,0);assert.deepEqual(f.ledger.state().pending,{});assert.equal(f.ledger.state().executionCosts,'0');assert.equal(f.ledger.state().inceptionAt,AT);
+});
+test('crossing the age cutoff during quote preparation cannot fill a pending entry',async t=>{
+ const f=fixture(t);let allowed=true;const c=f.create({entryScope:()=>({allowed,reason:allowed?'TOKEN_AGE_WITHIN_24H':'TOKEN_AGE_EXCEEDS_24H',createdAt:0,ageMs:0,expiresAt:0}),quote:async()=>{allowed=false;return {at:f.now(),spendLamports:'480000000',receiveUnits:'1000',evidence:'DISPOSABLE quote after cutoff'};}});
+ c.recover();f.ready();c.reserve(buy('age-crossing'),f.context());f.set(AT+500);assert.equal((await c.runDue()).results[0]!.status,'canceled');assert.deepEqual(f.ledger.state().positions,{});assert.equal(f.ledger.state().executionCosts,'0');
+});
+test('aged holdings retain their exit execution and no age callback can block their sale',async t=>{
+ const f=fixture(t);let allowed=true;const c=f.create({entryScope:()=>{if(!allowed)throw Error('age source unavailable');return {allowed:true,reason:'TOKEN_AGE_WITHIN_24H',createdAt:0,ageMs:0,expiresAt:0};}});
+ c.recover();f.ready();c.reserve(buy('before-age'),f.context());f.set(AT+500);assert.equal((await c.runDue()).results[0]!.status,'filled');allowed=false;
+ f.set(AT+600);c.reserve(sell('after-age'),f.context());f.set(AT+1100);assert.equal((await c.runDue()).results[0]!.status,'filled');assert.deepEqual(f.ledger.state().positions,{});
+});

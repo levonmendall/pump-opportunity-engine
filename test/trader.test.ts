@@ -322,3 +322,25 @@ test('an exit quote that ages while a due action is handled cannot reserve an ex
   assert.equal(engine.decisions().at(-1)!.stage,'execution-unavailable');assert.equal(f.ledger.state().executionCosts,'30000');assert.equal(f.ledger.state().inceptionAt,T);
   assert.equal(f.ledger.projection(f.now(),(await f.context({})).price!,before.marks).equityMicroUsd,null);
 });
+
+test('candidate failures retain a sanitized first diagnostic and still hard-close new entries',t=>{
+ const f=fixture(t);f.ready();const before=f.ledger.state();
+ f.trader.candidateEvaluationFailed(Object.assign(new Error('provider https://fixture.invalid/?secret=never-log-this'),{code:'SQLITE_BUSY'}),'candidate-evaluation',before.revision);
+ const d=f.trader.candidateEvaluationFailureDiagnostics();assert.ok(d);
+ assert.equal(d.version,'candidate-financial-evaluation-failure-v1');assert.equal(d.phase,'candidate-evaluation');
+ assert.equal(d.sqliteCode,'SQLITE_BUSY');assert.match(d.errorSha256!,/^[a-f0-9]{64}$/);assert.equal(d.attemptedStateRevision,before.revision);
+ assert.equal(d.commitOutcome,'unknown');assert.equal(f.ledger.state().controls.entriesEnabled,false);
+ assert.equal(f.trader.entryReadinessSafety().automaticRecoveryAllowed,false);assert.equal(f.trader.entryReadinessSafety().newHardPauseObserved,true);
+ assert.equal(f.ledger.state().lamports,before.lamports);assert.deepEqual(f.ledger.state().positions,before.positions);assert.deepEqual(f.ledger.state().pending,before.pending);
+ const events=f.records().filter(r=>r.kind==='trader-candidate-financial-evaluation-failed');assert.equal(events.length,1);
+ assert.ok(!JSON.stringify(events).includes('never-log-this'));assert.ok(!JSON.stringify(events).includes('https://'));
+ f.set(f.now()+1);f.trader.candidateEvaluationFailed(new Error('another failure'),'dispatch',before.revision);
+ assert.deepEqual(f.trader.candidateEvaluationFailureDiagnostics(),d,'retain actual first fingerprint');
+ assert.equal(f.records().filter(r=>r.kind==='trader-candidate-financial-evaluation-failed').length,1);
+});
+test('candidate diagnostic recorder failure cannot reopen or erase the hard safety latch',t=>{
+ const f=fixture(t);f.ready();f.recorder.record=()=>{throw Error('fixture evidence unavailable');};
+ f.trader.candidateEvaluationFailed(Object.assign(new Error('unknown'),{code:'SECRET_VALUE'}),'dispatch',f.ledger.state().revision);
+ assert.equal(f.ledger.state().controls.entriesEnabled,false);assert.equal(f.trader.entryReadinessSafety().evidenceAvailable,false);
+ assert.equal(f.trader.entryReadinessSafety().automaticRecoveryAllowed,false);assert.equal(f.trader.candidateEvaluationFailureDiagnostics()!.sqliteCode,null);
+});

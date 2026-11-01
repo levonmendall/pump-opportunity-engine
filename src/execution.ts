@@ -1,5 +1,6 @@
 import {performance} from 'node:perf_hooks';
 import {validatePaperExecutionPlan,validatePaperExecutionLanding,validatePaperProtectionExecutionFallback,paperProtectionFallbackEvidence,executionAttempt,type PaperExecutionPlan,type PaperExecutionLanding,type PaperExecutionAttempt,type PaperProtectionExecutionFallback} from './execution-realism.js';
+import type {TokenAgeDecision} from './token-age-policy.js';
 import {PaperLedger,type ExecutionQuote,type Mark,type Order,type OrderOutcome,type UsdPrice} from './ledger.js';
 
 export type ExecutionContext={price:UsdPrice|null;marks:Record<string,Mark>;/** Original bank-source expiry for every required holding; never a publishing heartbeat. */sourceValidUntil?:number};
@@ -8,6 +9,7 @@ export type ExecutionResult={orderId:string;status:OrderOutcome['status']|'uncer
 export type ExecutionBatch={results:ExecutionResult[];adapterBlocked:boolean;nextDueAt:number|null;/** Present only for an explicitly bounded drain. */servicedActions?:number};
 export type ExecutionRunOptions={maxActions?:1|2|3};
 export type ExecutionOptions={
+  entryScope?:(mint:string,at:number)=>TokenAgeDecision;
   ledger:PaperLedger;
   /** These adapters must honor AbortSignal. They may only read market/account context. */
   context:(signal:AbortSignal)=>Promise<ExecutionContext>;
@@ -66,6 +68,7 @@ export class PaperExecutionCoordinator{
     if(!this.recovered)throw new Error('execution recovery required');
     const now=this.clock();
     if(!Number.isSafeInteger(order.decidedAt)||order.decidedAt>now||!Number.isSafeInteger(order.expiresAt)||order.expiresAt<=now)throw new Error('current nonexpired decision required; future information is unavailable');
+    if(order.side==='buy'&&this.options.entryScope){let allowed=false;try{allowed=this.options.entryScope(order.mint,now).allowed===true;}catch{/* Unknown age cannot reserve capital. */}if(!allowed)throw Error('PAPER_ENTRY_TOKEN_AGE_SCOPE');}
     if(order.side==='buy'&&this.uncertain.size)throw new Error('financial uncertainty blocks new entries');
     if(order.side==='buy'&&this.outstanding)throw new Error('execution adapter unavailable for new entries');
     let prepared=order;
@@ -122,6 +125,7 @@ export class PaperExecutionCoordinator{
       // Known quarantined/backoff actions above retain their own future wake;
       // they cannot consume this admission and starve a different due exit.
       servicedActions++;
+      if(order.side==='buy'&&this.options.entryScope){let allowed=false;try{allowed=this.options.entryScope(order.mint,at).allowed;}catch{/* Unknown age is not permission. */}if(!allowed){try{this.options.ledger.cancelEntryOrders('execution-age-cancel:'+order.id,at,'PAPER_ENTRY_TOKEN_AGE_SCOPE',order.mint);results.push({orderId:order.id,status:'canceled',reason:'PAPER_ENTRY_TOKEN_AGE_SCOPE',at});}catch{this.uncertain.add(order.id);this.financialRetryAt.set(order.id,at+1000);results.push({orderId:order.id,status:'uncertain',reason:'age-scope cancellation unavailable; preserve action',at});}continue;}}
       let context:ExecutionContext={price:null,marks:{}},quote:ExecutionQuote|null=null;
       if(at<order.expiresAt){
         const deadline=performance.now()+Math.min(this.timeoutMs,order.expiresAt-at);
@@ -142,6 +146,7 @@ export class PaperExecutionCoordinator{
       if(Object.keys(this.options.ledger.state().positions).length&&context.sourceValidUntil!==undefined&&(!Number.isSafeInteger(context.sourceValidUntil)||context.sourceValidUntil<finalizedAt))context={...context,marks:{}};
       if(!this.options.ledger.state().pending[order.id]){this.uncertain.delete(order.id);this.financialRetryAt.delete(order.id);results.push({orderId:order.id,status:'canceled',reason:'financial owner canceled action during preparation',at:finalizedAt});continue;}
       try{
+        if(order.side==='buy'&&this.options.entryScope){let allowed=false;try{allowed=this.options.entryScope(order.mint,finalizedAt).allowed;}catch{/* Refuse a missing/invalid proof even after quote preparation. */}if(!allowed){this.options.ledger.cancelEntryOrders('execution-age-cancel:'+order.id,finalizedAt,'PAPER_ENTRY_TOKEN_AGE_SCOPE',order.mint);this.uncertain.delete(order.id);this.financialRetryAt.delete(order.id);results.push({orderId:order.id,status:'canceled',reason:'PAPER_ENTRY_TOKEN_AGE_SCOPE',at:finalizedAt});continue;}}
         const model=(order as Order&{executionModel?:PaperExecutionPlan}).executionModel;
         let modeledAttempt:PaperExecutionAttempt|undefined;
         if(model){const landing=(quote as (ExecutionQuote&{executionModel?:PaperExecutionLanding})|null)?.executionModel,landed=!!quote&&validatePaperExecutionLanding(landing,model,finalizedAt)&&landing.landingAt===quote.at;modeledAttempt=executionAttempt(model,landed,finalizedAt>=order.expiresAt);if(!landed)quote=null;}

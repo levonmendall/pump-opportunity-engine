@@ -320,7 +320,7 @@ export type ReviewedMaintenanceAcknowledgementReceipt={
 const controlAnchor=(row:OperatingControlRow):OperatingControlAnchor=>({revision:row.revision,actionId:row.actionId,at:row.at,kind:row.kind,payloadHash:row.payloadHash,resultSha256:digest(JSON.parse(row.result))});
 
 /**
- * One owner-reviewed, source-versioned exception to a historical *local
+ * Finite owner-reviewed, source-versioned exceptions to historical *local
  * candidate-processing* pause. It does not erase an action, grant entry,
  * acknowledge unknown newer hard intent, or classify all matching reason text
  * as temporary. The authenticated ledger has one such ordinary event in
@@ -336,6 +336,8 @@ export const REVIEWED_CANDIDATE_CONTROL_INCIDENT=Object.freeze({
  originSource:'983e90c0e053b27d3b93c37c91e8788e5d98c255',
  anchorRevision:190149,
  anchorAt:1793480966760,
+ anchorActionId:'native-paper-operating-financial-ready:190148:1793480966760',
+ sourcePauseActionId:'trader:pause:190298:1793481124040',
  sourcePauseRevision:190299,
  sourcePauseAt:1793481124040,
  sourcePauseReason:'native candidate financial evaluation unavailable',
@@ -344,12 +346,36 @@ export const REVIEWED_CANDIDATE_CONTROL_INCIDENT=Object.freeze({
  restoreRevision:190465,
  restoreAt:1793481488425,
 } as const);
-export function reviewedCandidateControlLineage(state:State,history:OperatingControlHistory|null):boolean {
- const c=REVIEWED_CANDIDATE_CONTROL_INCIDENT,h=history;
+/** Owner request 2026-11-01 UTC: recover this verified inherited incident.
+ * Source exception was not retained; this is an explicit incident review, not
+ * a declaration that the old error was harmless or all future errors transient.
+ * The +1 ms in sourcePauseActionId is present in the authenticated action.
+ * This proof grants no trade or financial permission by itself.
+ */
+export const REVIEWED_CANDIDATE_CONTROL_INCIDENT_20261101=Object.freeze({
+ accountId:'poe-3123e352-4581-455b-85db-acd7e825e99e',
+ inceptionAt:1793052456212,
+ epochId:'poe-paper-10sol-v3-20261030',
+ originSource:'f8ab5d74c5f8c8e792ab0b099388a6f3ad68d2d2',
+ anchorRevision:201388,
+ anchorAt:1793493697261,
+ anchorActionId:'native-paper-operating-financial-ready:201387:1793493697261',
+ sourcePauseRevision:202366,
+ sourcePauseAt:1793494775698,
+ sourcePauseActionId:'trader:pause:202365:1793494775699',
+ sourcePauseReason:'native candidate financial evaluation unavailable',
+ startupRevision:202420,
+ startupAt:1793495044518,
+ restoreRevision:202421,
+ restoreAt:1793495044523,
+} as const);
+type ReviewedCandidateIncident=typeof REVIEWED_CANDIDATE_CONTROL_INCIDENT|typeof REVIEWED_CANDIDATE_CONTROL_INCIDENT_20261101;
+function reviewedCandidateControlLineageFor(state:State,history:OperatingControlHistory|null,c:ReviewedCandidateIncident):boolean {
+ const h=history;
  if(!h||state.accountId!==c.accountId||state.inceptionAt!==c.inceptionAt||state.paperEpoch?.id!==c.epochId
    ||!isV3PaperRiskState(state)||state.mode!=='PAPER'||state.controls.entriesEnabled||state.controls.stopRequested
    ||Object.keys(state.positions).length||Object.keys(state.pending).length||state.daily.lossPaused
-   ||h.anchor?.kind!=='resume'||h.anchor.revision!==c.anchorRevision||h.anchor.at!==c.anchorAt
+   ||h.anchor?.kind!=='resume'||h.anchor.revision!==c.anchorRevision||h.anchor.at!==c.anchorAt||h.anchor.actionId!==c.anchorActionId
    ||h.decoded.length<3)return false;
  const exact=(index:number,revision:number,at:number,id:string,reason:string,kind:'ordinary'|'startup'|'restored')=>{
   const o=h.decoded[index];if(!o||o.row.kind!=='pause'||o.row.revision!==revision||o.row.at!==at
@@ -359,9 +385,9 @@ export function reviewedCandidateControlLineage(state:State,history:OperatingCon
      )return false;
   return kind==='ordinary'?o.ordinary&&!o.startup&&!o.restored:kind==='startup'?o.startup&&!o.ordinary&&!o.restored:o.restored&&!o.startup&&!o.ordinary;
  };
- if(!exact(0,c.sourcePauseRevision,c.sourcePauseAt,'trader:pause:190298:1793481124040',c.sourcePauseReason,'ordinary')
-    ||!exact(1,c.startupRevision,c.startupAt,'execution-recovery:'+c.accountId+':190463','execution startup: fresh reconciliation/readiness required','startup')
-    ||!exact(2,c.restoreRevision,c.restoreAt,'trader:restore-hard-pause:190464:1793481488425',c.sourcePauseReason,'restored'))return false;
+ if(!exact(0,c.sourcePauseRevision,c.sourcePauseAt,c.sourcePauseActionId,c.sourcePauseReason,'ordinary')
+    ||!exact(1,c.startupRevision,c.startupAt,'execution-recovery:'+c.accountId+':'+(c.startupRevision-1),'execution startup: fresh reconciliation/readiness required','startup')
+    ||!exact(2,c.restoreRevision,c.restoreAt,'trader:restore-hard-pause:'+c.startupRevision+':'+c.restoreAt,c.sourcePauseReason,'restored'))return false;
  let latestStartupRevision:number|null=null;
  for(const item of h.decoded.slice(3)){
   // Additional source restarts of this same authenticated inherited control
@@ -383,6 +409,10 @@ export function reviewedCandidateControlLineage(state:State,history:OperatingCon
  return !!last&&last.row.at===state.controls.changedAt&&last.payload.reason===state.controls.reason;
 }
 
+export function reviewedCandidateControlLineage(state:State,history:OperatingControlHistory|null):boolean {
+ return reviewedCandidateControlLineageFor(state,history,REVIEWED_CANDIDATE_CONTROL_INCIDENT)
+     ||reviewedCandidateControlLineageFor(state,history,REVIEWED_CANDIDATE_CONTROL_INCIDENT_20261101);
+}
 
 function validateLedgerEpochAnchor(db:Database.Database,s:State):void{
     const epoch=s.paperEpoch;if(!epoch)return;validatePaperEpoch(epoch,s);
