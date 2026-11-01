@@ -98,7 +98,7 @@ export class PilotWatch {
   private readySql(at:number){
     this.at(at);const persistent=this.observationAgePolicy===PERSISTENT_OBSERVABLE_MARKET_POLICY,age=persistent?'COALESCE(w.migration_at,0)<=?':'w.migration_at<=? AND ?<w.migration_at+CASE WHEN w.older_research=1 THEN ? ELSE ? END';
     const identity=persistent?"(w.verified_at IS NOT NULL OR json_extract(w.body,'$.observationIdentity.basis')='canonical-pool-hint')":"w.verified_at IS NOT NULL";
-    return {where:"w.mint IS NOT NULL AND w.pool IS NOT NULL AND "+identity+" AND w.state IN ('WATCH','DEFERRED') AND w.reobserve_ready=1 AND COALESCE(w.capacity_status,'')!='AWAITING_CAPACITY' AND w.defer_until<=? AND "+age+this.tokenAgeSql('?'),params:[...(persistent?[at,at]:[at,at,at,this.observationAgePolicy.selectedOlderMaximumAgeMs,this.observationAgePolicy.recentMaximumAgeMs]),...(this.options.enforceTokenAge24h?[at,at,at]:[])]};
+    return {where:"w.mint IS NOT NULL AND w.pool IS NOT NULL AND "+identity+" AND w.state IN ('WATCH','DEFERRED') AND w.reobserve_ready=1 AND COALESCE(w.capacity_status,'')!='AWAITING_CAPACITY' AND w.defer_until<=? AND (w.technical_state IS NULL OR w.technical_state!='WAITING' OR w.technical_not_before<=?) AND "+age+this.tokenAgeSql('?'),params:[...(persistent?[at,at,at]:[at,at,at,at,this.observationAgePolicy.selectedOlderMaximumAgeMs,this.observationAgePolicy.recentMaximumAgeMs]),...(this.options.enforceTokenAge24h?[at,at,at]:[])]};
   }
   private repairPredecisionReady(r:WatchRow,source:'checkpoint'|'durable-registry'){
     const gate=r.reobservation,ready=gate?.ready;
@@ -432,9 +432,10 @@ export class PilotWatch {
       const ready=this.readySql(at),notExcluded=[...excluded];
       const where=ready.where+(notExcluded.length?' AND w.mint NOT IN ('+notExcluded.map(()=>'?').join(',')+')':'')+(options.requireOrigin?' AND EXISTS (SELECT 1 FROM origin_proofs o WHERE o.mint=w.mint AND o.available=1)':'');
       const params=[...ready.params,...notExcluded];
-      const technical=this.query(where+" AND w.technical_state='WAITING' AND w.technical_not_before<=? AND w.technical_expires_at>?",[...params,at,at],'w.technical_not_before,w.technical_requested_at,w.signature',1)[0];if(technical)return copy(technical);
-      // Available broad-feed economics rank research only. Continuous wait
-      // credit prevents starvation; unchanged-pool and financial gates above
+      // Unowned technical retries compete on current economics, retaining their
+      // not-before and changed-evidence gates. Financial owners are separate.
+      // Current broad-feed economics and bounded additive waiting credit rank
+      // research only; unchanged-pool and financial gates above
       // remain prerequisites for every candidate, regardless of priority.
       this.flush();const selected=this.options.registry!.nextOpportunity({where,params},at,this.readyAnchorSql());if(!selected)return null;this.retain(selected.row);
       this.emit('pilot-watch-opportunity-priority',{at,mint:selected.row.mint,pool:selected.row.pool,...selected.hints,meaning:'Unverified scheduling hints; two-sided price stability is a limited activity proxy, not reserves, executable depth or causal price impact; no expected-profit, audit or execution claim'});return copy(selected.row);

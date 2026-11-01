@@ -89,9 +89,26 @@ test('SQL waiting bonus is bounded even after a full day with no recent evidence
  const f=fixture();try{
   f.seed('patient');f.setAt(AT+86400000);f.seed('fresh',AT+86400000);f.hint('fresh','prior',AT+86400000-90000,1);f.hint('fresh','recent',AT+86400000-1000,100);
   assert.equal(f.next()!.mint,'fresh');assert.equal(f.priority().waitChangedWinner,false);
-  assert.equal(f.watch.next(AT+86400000,new Set(['fresh']))!.mint,'patient');assert.equal(f.priority().fairnessBonus,0.05);assert.equal(f.priority().priority,0.55);
+  assert.equal(f.watch.next(AT+86400000,new Set(['fresh']))!.mint,'patient');assert.equal(f.priority().hasCurrentEconomicEvidence,false);assert.equal(f.priority().fairnessBonus,0);assert.equal(f.priority().priority,0.5);
  }finally{f.registry.close();}
 });
 test('equal-economic-evidence candidates receive bounded fairness, with auditable no-bonus leader',()=>{
- const f=fixture();try{f.seed('waiting');f.setAt(AT+60000);f.seed('new',AT+60000);assert.equal(f.next()!.mint,'waiting');assert.equal(f.priority().fairnessBonus,0.05);assert.equal(f.priority().economicLeaderMint,'waiting');assert.ok(Math.abs(f.priority().priority-f.priority().economicMerit-0.05)<1e-12);}finally{f.registry.close();}
+ const f=fixture();try{f.seed('waiting');f.setAt(AT+60000);f.seed('new',AT+60000);f.hint('waiting','recent',AT+59000,1);f.hint('new','recent',AT+59000,1);assert.equal(f.next()!.mint,'waiting');assert.equal(f.priority().fairnessBonus,0.05);assert.equal(f.priority().economicLeaderMint,'waiting');assert.ok(Math.abs(f.priority().priority-f.priority().economicMerit-0.05)<1e-12);}finally{f.registry.close();}
+});
+
+
+test('unowned technical retries do not bypass stronger current economic candidates',()=>{
+ const f=fixture();try{
+  f.seed('retry');f.watch.requestTechnicalReevaluation('retry',{reason:'entry-quote-unavailable',failedWindowEndAt:AT-10000},AT);
+  f.seed('strong');f.hint('strong','prior',AT-90000,1);f.hint('strong','recent',AT-1000,20);
+  assert.equal(f.next()!.mint,'strong');assert.equal(f.priority().hasCurrentEconomicEvidence,true);
+  assert.equal(f.watch.next(AT,new Set(['strong']))!.mint,'retry','retry remains eligible, not permanently rejected');
+ }finally{f.registry.close();}
+});
+test('technical retry not-before remains a scheduling prerequisite',()=>{
+ const f=fixture();try{
+  f.seed('retry');f.watch.requestTechnicalReevaluation('retry',{reason:'entry-quote-unavailable',failedWindowEndAt:AT-10000},AT);
+  const row=f.registry.lookup('retry')!;row.technicalReevaluation!.notBefore=AT+1000;f.registry.put(row);
+  assert.equal(f.next(),null);f.setAt(AT+1000);assert.equal(f.next()!.mint,'retry');
+ }finally{f.registry.close();}
 });

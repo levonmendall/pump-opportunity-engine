@@ -4,7 +4,7 @@ Owner request: remove the unbounded queue-wait scheduling bias and consider only
 
 ## Ranking
 
-The four existing broad-feed economic dimensions remain unchanged. Priority is now economic merit plus an additive waiting bonus of at most 0.05, saturating after 60 seconds of serviceable waiting. The 0.05 value is an explicit scheduling choice, not an optimized profitability claim. It cannot reverse a merit gap greater than 0.05. Missing dimensions remain neutral for exploration; waiting cannot multiply them without bound. Selection records include the bonus, no-bonus economic leader, leader merit and whether waiting changed the winner. Financial/technical retry ordering is otherwise unchanged.
+The four existing broad-feed economic dimensions remain unchanged. Priority is now economic merit plus an additive waiting bonus of at most 0.05, saturating after 60 seconds of serviceable waiting. The 0.05 value is an explicit scheduling choice, not an optimized profitability claim. It cannot reverse a merit gap greater than 0.05. Missing dimensions remain neutral for exploration. Candidates with recent measured economic flow rank before those without it; candidates without current evidence receive zero waiting bonus. Waiting cannot multiply missing data without bound. Selection records include the bonus, no-bonus economic leader, leader merit and whether waiting changed the winner. Unowned technical retries compete using the same economic ranking while keeping not-before and new-evidence gates. Holding and pending-order financial protection remain separate and higher priority. One newly evidenced, age-eligible identity can join competition before each vacant slot is selected, even when older watch rows remain queued.
 
 ## Age means token creation, not migration or discovery
 
@@ -19,3 +19,5 @@ The existing market-registry database receives two additive nonfinancial tables 
 ## Validation required before source switch
 
 Typecheck, focused policy/registry/watch/runner/execution tests, full offline suite, exact immutable bundle build and normal approved EC2 installation. Verify installed source, original account/history, new policy scope, creation-proof progress, four-slot lifecycle and holding exits. Host release approval remains independent; a repository commit or package build is not proof of deployment.
+
+The Linux parent-death regression reads /proc process state once and accepts ENOENT after confirmed lease release; it no longer fails if the kernel reaps a child between an existence check and the read. The actual child-death and inherited-lease assertions remain mandatory.

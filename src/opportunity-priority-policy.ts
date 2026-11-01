@@ -2,7 +2,9 @@
  * fairness bonus cannot multiply weak/missing evidence indefinitely. */
 export const OPPORTUNITY_PRIORITY_POLICY=Object.freeze({
  version:'shared-flow-opportunity-priority-v2',fairnessMaximum:0.05,
- fairnessSaturationMs:60_000,missingDimensionMerit:0.5,
+ fairnessSaturationMs:60_000,missingDimensionMerit:0.5,missingEvidenceWaitBonus:0,
+ currentEconomicEvidenceFirst:true,technicalRetryOrder:'same-economic-ranking',
+ freshCandidateCompetition:'before-each-vacant-slot',
  meaning:'current-economic-merit-plus-at-most-five-percentage-points-wait-credit',
 });
 export function observationFairnessBonus(serviceableWaitMs:number):number{

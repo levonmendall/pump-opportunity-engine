@@ -440,10 +440,13 @@ export class NativeCandidateRunner{
    if(performance.now()-began>=NATIVE_DEADLINE_POLICY.postValidationMs||!this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.postValidationMs)||!this.discretionaryAdmission(NATIVE_DEADLINE_POLICY.postValidationMs,this.now()).admitted)break;
    at=this.now();
    if(this.options.flow.usage().candidates+this.options.flow.usage().retiring>=maximum)break;
-   let row=this.watch.next(at,excluded,{requireOrigin:!this.currentPoolObservation});
-   if(!row&&this.currentPoolObservation&&this.prepareCurrentObservation(at))row=this.watch.next(at,excluded);
+   // One newly evidenced identity joins the same competition per vacant slot.
+   // A nonempty old queue must not prevent recent opportunities from competing.
+   if(this.currentPoolObservation)this.prepareCurrentObservation(at);
+   const row=this.watch.next(at,excluded,{requireOrigin:!this.currentPoolObservation});
    if(!row?.mint||!row.pool)break;excluded.add(row.mint);const id=this.observationIdentity(row);
    if(!id){this.record('native-observation-identity-unavailable',{mint:row.mint,at,awarenessRetained:true,deepAdmission:false,archivalCreationRequired:!this.currentPoolObservation,otherCandidatesContinue:true});continue;}
+   at=this.now(); // Recheck age after local selection work, before admission.
    if(!this.observationAllowed(row,at)){this.watch.transition(row.mint,'EXPIRED','remaining horizon cannot fit a complete required window',at);continue;}
    // Acquire the writer before any slot/transport mirror is changed. Hooks
    // restore watch/productivity mirrors if an outer transaction rolls back.

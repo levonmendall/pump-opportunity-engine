@@ -1008,3 +1008,14 @@ test('24h scope retries a not-finalized creation only after its persisted cooldo
   f.advance(61000);f.runner.onMigration({signature:sig(20006),feedMint:mint,receivedAt:f.now});f.runner.onMarketIdentity({mint,signature:sig(20006),receivedAt:f.now,source:'pumpportal-migration',kind:'migration',evidence:'unverified-provider-discovery-hint'});await f.steps(8);assert.equal(f.rpcCalls.length,2);assert.equal(f.added.length,0);
  }finally{await f.runner.stop();}
 });
+
+
+test('fresh shared-market candidates compete before a nonempty older watch queue is selected',async()=>{
+ const f=fixture({durableMarketPolicy:true,fairEconomicCompletions:true,maximumDeep:1});
+ try{
+  const older=f.seed(1),fresh=new PublicKey(Buffer.alloc(32,201)).toBase58();
+  f.runner.onMarketActivity({mint:fresh,signature:sig(20101),receivedAt:f.now,source:'pumpapi-broad',kind:'activity',side:'buy',quoteLamports:'20000000000',evidence:'unverified-provider-activity-hint'});
+  (f.runner as any).allocate(f.now);
+  assert.equal(f.added[0],fresh);assert.notEqual(f.added[0],older);assert.equal(f.rpcCalls.length,0,'local scheduling adds no provider lookup');
+ }finally{await f.runner.stop();}
+});
