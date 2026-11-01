@@ -1,3 +1,4 @@
+import {SaleReviewCache} from './sale-review.js';
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { timingSafeEqual, createHash } from 'node:crypto';
 import {restoreRenderReceiverHistory} from './render-history-bootstrap.js';
@@ -43,6 +44,7 @@ export function createDashboard(config: DashboardConfig) {
   const cache = new SnapshotCache(configured === 4 ? {
     accountId: config.accountId!, inceptionAt: config.inceptionAt!, release: config.release!, strategy: config.strategy!,
   } : null);
+  const saleReviews = new SaleReviewCache();
   const viewer = publicViewer ? null : 'Basic ' + Buffer.from(`${config.viewerUser}:${config.viewerPassword}`).toString('base64');
   const publisher = `Bearer ${config.ingestionSecret}`;
   if (process.env.POE_PILOT_INGEST_SECRET && equal(process.env.POE_PILOT_INGEST_SECRET, config.ingestionSecret)) throw new Error('pilot and original publishing credentials must differ');
@@ -52,6 +54,15 @@ export function createDashboard(config: DashboardConfig) {
     const path = req.url?.split('?')[0];
     if(path==='/api/pilot'){req.resume();send(res,410,{error:'retired-channel',message:'Use the original authoritative portfolio at /api/snapshot'});return;}
     if (path === '/healthz' && req.method === 'GET') { send(res, 200, { ok: true, service: 'poe-dashboard', dashboardRelease: process.env.RENDER_GIT_COMMIT ?? 'local-build', reportingSchema: 1, unifiedPortfolio: true }); return; }
+    if (path === '/api/sale-reviews' && req.method === 'POST') {
+      if (!equal(req.headers.authorization ?? '', publisher)) { req.resume(); send(res,401,{error:'unauthorized'}); return; }
+      if (!cache.identity) { req.resume(); send(res,503,{error:'source-not-configured'}); return; }
+      if (req.headers['content-type']?.split(';')[0] !== 'application/json' || req.headers['content-encoding']) { req.resume(); send(res,415,{error:'plain application/json required'}); return; }
+      if (Number(req.headers['content-length'] ?? 0)>65536) { req.resume(); send(res,413,{error:'payload limit'}); return; }
+      try { saleReviews.accept(await readBody(req),cache.identity.accountId,cache.identity.inceptionAt); send(res,200,{result:'accepted'}); }
+      catch { send(res,400,{error:'sale-review-report-invalid'}); }
+      return;
+    }
     if (path === '/api/snapshot' && req.method === 'POST') {
       if (!equal(req.headers.authorization ?? '', publisher)) { req.resume(); send(res, 401, { error: 'unauthorized' }); return; }
       if (cache.identity === null) { req.resume(); send(res, 503, { error: 'source-not-configured', message: 'Awaiting POE data' }); return; }
@@ -95,7 +106,7 @@ export function createDashboard(config: DashboardConfig) {
       const current = cache.read();
       if (!current) { send(res, 503, { state: 'waiting', message: 'Awaiting POE data' }); return; }
       if (path === '/api/export') res.setHeader('content-disposition', 'attachment; filename="poe-bounded-snapshot.json"');
-      send(res, 200, { ...current, freshness: cache.status(), equityHistory: cache.equityHistory() }); return;
+      send(res, 200, { ...current, freshness: cache.status(), equityHistory: cache.equityHistory(), saleReviews: saleReviews.forTrades(current.snapshot.trades) }); return;
     }
     if (path !== '/') { send(res, 404, { error: 'not found' }); return; }
     res.writeHead(200, {
@@ -353,7 +364,7 @@ function renderTradeOutcome(parent,trade){
  const stamp=value=>value===null||value===undefined?'Unknown':new Date(value).toISOString();
  const duration=(from,to)=>from===null||from===undefined||to===null||to===undefined||to<from?'Unknown':((to-from)/1000).toFixed(3)+' seconds';
  const fields=items=>{const list=add(detail,'dl');items.forEach(([key,value])=>{add(list,'dt',key);add(list,'dd',value);});};
- if(!report){add(detail,'summary','Historical explanation unavailable');add(detail,'p','Entry and exit decisions, timing stages and the full trade result were not captured in this historical receipt. Its original fill value, execution cost and identity are preserved above. Missing history is unknown.');return;}
+ if(!report){add(detail,'summary','Historical explanation unavailable');add(detail,'p','Entry and exit decisions, timing stages and the full trade result were not captured in this historical receipt. Its original fill value, execution cost and identity are preserved above. Missing history is unknown.');renderSaleReview(detail,trade);return;}
  const e=report.economics,closed=report.kind==='closed-position',entry=report.entry,exit=report.exit;
  const decisionMeaning=context=>{
   if(!context?.reason)return 'Unknown: the decision was not recorded.';
@@ -395,6 +406,24 @@ function renderTradeOutcome(parent,trade){
  add(detail,'p','These are recorded stages. Candidate admission is not discovery time. Missing stages stay unknown; these intervals do not isolate scheduling, provider or market causes.');
  if(closed){const observed=report.observation;add(detail,'h4','Observed exit opportunity');fields([['Best recorded net liquidation mark',sol(observed.bestObservedNetLamports)],['Best mark observed at',stamp(observed.bestObservedAt)],['Giveback below best recorded mark',sol(observed.givebackFromObservedNetLamports)]]);add(detail,'p','This is the best recorded full-position modeled liquidation mark, after the modeled exit fee. Sampling can miss highs; it does not establish an achievable fill or missed profit.');}
  add(detail,'p','The receipt explains recorded decisions and cash flows. It does not establish why the market moved or assign causal blame.');
+ renderSaleReview(detail,trade);
+}
+function renderSaleReview(detail,trade){
+ if(trade.side!=='sell')return;
+ const review=renderTradeOutcome.saleReviews?.get(trade.id),dueAt=Date.parse(trade.at)+14400000,now=Date.now();
+ const overdue=review?.status==='PENDING'&&now>review.dueAt+60000;
+ const status=overdue?'UNAVAILABLE':review?.status??(Number.isFinite(dueAt)&&now<dueAt?'PENDING':'UNAVAILABLE');
+ add(detail,'h4','4-hour sale review · '+status);
+ const list=add(detail,'dl'),field=(name,value)=>{add(list,'dt',name);add(list,'dd',value);};
+ const decimals=review?.price?.decimals??null;
+ const price=value=>{if(!value)return 'Unavailable';const n=Number(value.quoteLamports)/Number(value.baseUnits)/1e9*(decimals===null?1:10**decimals);return n.toPrecision(10)+(decimals===null?' SOL / token base unit':' SOL / token');};
+ field('Sale price',price(review?.salePrice));
+ field('Four-hour price',price(review?.price));
+ field('Change since sale',review?.changePercent===null||review?.changePercent===undefined?'Unavailable':review.changePercent+'%');
+ field('Scheduled checkpoint',Number.isFinite(review?.dueAt??dueAt)?new Date(review?.dueAt??dueAt).toISOString():'Unavailable');
+ field('Price observed at',review?.price?new Date(review.price.observedAt).toISOString():'Unavailable');
+ if(status==='UNAVAILABLE')field('Reason',overdue?'Checkpoint missed':review?.reason??'No recorded checkpoint price');
+ add(detail,'p','Price only: higher = BAD SALE; lower = GOOD SALE; equal = UNCHANGED. One checkpoint; no intervening analysis or strategy changes.');
 }
 function renderFunnel(f,intelligence=null,isObserver=false){
  const el=byId('funnel');el.replaceChildren();const outer=add(el,'div',undefined,'funnel-grid');
@@ -583,7 +612,8 @@ function plot(points,epochStartAt=null){
  root.append(makeSvg('text',{x:left,y:height-13,fill:'#9eacc4','font-size':10},new Date(from).toISOString().slice(5,16).replace('T',' ')+' UTC'));
  root.append(makeSvg('text',{x:right,y:height-13,'text-anchor':'end',fill:'#9eacc4','font-size':10},new Date(end).toISOString().slice(5,16).replace('T',' ')+' UTC'));
 }
-function showSnapshot(s,received,f,equityHistory=null){
+function showSnapshot(s,received,f,equityHistory=null,saleReviews=[]){
+ renderTradeOutcome.saleReviews=new Map(saleReviews.map(r=>[r.fillId,r]));
  latest=s;latestReceivedAt=received;readFailure=null;
  latestEquityHistory=equityHistory&&equityHistory.accountId===s.account.id&&equityHistory.source==='accepted-authoritative-portfolio-equity'?equityHistory:null;
  renderCards(s);
@@ -615,7 +645,7 @@ async function refresh(){
   if(!resp.ok)throw new Error(resp.status===503?'SOURCE_NOT_CONFIGURED':'REPORTING_HTTP_'+resp.status);
   const result=await resp.json();
   if(!result||!result.snapshot||!result.freshness)throw new Error('SNAPSHOT_UNAVAILABLE');
-  showSnapshot(result.snapshot,result.receivedAt,result.freshness,result.equityHistory??null);
+  showSnapshot(result.snapshot,result.receivedAt,result.freshness,result.equityHistory??null,result.saleReviews??[]);
  }catch(error){
   const reason=error instanceof Error?error.message:'REPORTING_UNAVAILABLE';
   readFailure=reason;

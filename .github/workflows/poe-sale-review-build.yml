@@ -1,0 +1,67 @@
+name: POE reporting-only four-hour sale review validation
+on:
+  push:
+    branches: [feature/poe-four-hour-sale-review-20261031]
+permissions:
+  contents: write
+concurrency:
+  group: poe-sale-review-build
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Preserve exact owner-approved age and slot-lifecycle source
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF}" = refs/heads/feature/poe-four-hour-sale-review-20261031
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if ! git merge-base --is-ancestor ef6e40b3f31c4ac618a5f6ca50387060e114ad06 HEAD; then
+            git merge --no-edit ef6e40b3f31c4ac618a5f6ca50387060e114ad06
+            git push origin HEAD:refs/heads/feature/poe-four-hour-sale-review-20261031
+          fi
+          git rev-parse HEAD | tee /tmp/poe-sale-review-source-commit.txt
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+          cache: npm
+      - name: Install pinned dependencies
+        run: npm ci --include=dev
+      - name: Typecheck and supervisor syntax
+        run: |
+          set -euo pipefail
+          npm run build 2>&1 | tee /tmp/poe-sale-review-typecheck.txt
+          python3 -m py_compile operator/native-paper-ec2/run-authoritative-service.py
+      - name: Focused sale-review regressions
+        run: |
+          set -euo pipefail
+          umask 077
+          node --import tsx --test --test-concurrency=1 test/sale-review*.test.ts 2>&1 | tee /tmp/poe-sale-review-focused.txt
+      - name: Full offline regressions
+        run: |
+          set -euo pipefail
+          umask 077
+          node --import tsx --test --test-concurrency=1 test/*.test.ts 2>&1 | tee /tmp/poe-sale-review-regressions.txt
+      - name: Build exact unchanged EC2 package format
+        run: |
+          set -euo pipefail
+          umask 077
+          node scripts/build-native-paper-ec2.mjs --output-directory /tmp/poe-native-paper-output-sale-review
+          git archive --format=tar HEAD | gzip -n > /tmp/poe-sale-review-source.tar.gz
+          sha256sum /tmp/poe-native-paper-output-sale-review/* /tmp/poe-sale-review-source.tar.gz > /tmp/poe-sale-review-sha256.txt
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: poe-sale-review-source-tests-and-bundle
+          path: |
+            /tmp/poe-sale-review-*.txt
+            /tmp/poe-sale-review-source.tar.gz
+            /tmp/poe-native-paper-output-sale-review/
+          retention-days: 7
+          if-no-files-found: error

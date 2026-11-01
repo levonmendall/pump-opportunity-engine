@@ -58,7 +58,12 @@ p=m.launch_probe([sys.executable,'-c','import time;time.sleep(60)'],out,[lease])
                         except BlockingIOError:time.sleep(.01)
                     else:self.fail('child retained lease after parent death')
                     path=pathlib.Path('/proc')/str(child)/'stat'
-                    self.assertTrue(not path.exists()or path.read_text().rsplit(')',1)[1].split()[0]=='Z')
+                    # Read once: the kernel may reap the child between exists()
+                    # and read_text(). Missing /proc state is successful exit,
+                    # not a reason to weaken the separate inherited-lease check.
+                    try:child_stat=path.read_text()
+                    except FileNotFoundError:child_stat=None
+                    self.assertTrue(child_stat is None or child_stat.rsplit(')',1)[1].split()[0]=='Z')
                 finally:os.close(fd)
             finally:
                 if p.poll()is None:p.kill();p.wait(timeout=2)
