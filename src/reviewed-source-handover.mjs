@@ -10,7 +10,7 @@ export const HANDOVER=Object.freeze({
  strategy:'liquidity-resilient-momentum-v3.1',
  from:'bb145cc82b0f05560b03bbd9e53de0c9e360f48f',
  via:'905be6d92001351cc891d83fe11fa7b28fe98d4e',
- to:'87480f7bc1d32d58e2bd756fa155901a2bf45792',
+ to:'06995e21eb6a6975377de8c970be230fc698c957',
 });
 const installed=new WeakSet();
 export function attachReviewedSourceHandover(cache){
