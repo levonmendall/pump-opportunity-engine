@@ -1,0 +1,89 @@
+name: Final POE slot-lifecycle regressions and release
+on:
+  push:
+    branches: [repair/poe-slot-lifecycle-20261031]
+    paths: ['.github/workflows/poe-slot-lifecycle-final.yml']
+permissions:
+  contents: write
+concurrency:
+  group: poe-slot-lifecycle-hosted-validation
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Complete reviewable integration fixture on repair branch only
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REF" = refs/heads/repair/poe-slot-lifecycle-20261031
+          python3 -B -I - <<'PY'
+          from pathlib import Path
+          p=Path('test/native-settled-recovery.test.ts');s=p.read_text()
+          old=" runner=new NativeCandidateRunner({rpc,flow,now:()=>at,record:(kind,data)=>records.push({kind,data})});\n flow.addCandidate({mint,pool:canonicalPumpPoolPda(new PublicKey(mint)).toBase58(),minSlot:0});"
+          new=""" runner=new NativeCandidateRunner({rpc,flow,now:()=>at,maximumDeep:1,activeStrategy:'liquidity-resilient-momentum-v3.1',observationAgePolicy:'persistent-observable-market-v1',record:(kind,data)=>records.push({kind,data})});
+           // The coordinator owns selected scopes. Seed the ordinary unverified hint so
+           // its first step performs the real atomic WATCH/productivity/native admission;
+           // a manually added ownerless transport is correctly retired by reconciliation.
+           runner.onMigration({signature:'SYNTHETIC_SCOPE_HINT',feedMint:mint,receivedAt:at});"""
+          if old in s:
+              assert s.count(old)==1
+              p.write_text(s.replace(old,new))
+          else:
+              assert new in s
+          PY
+          if ! git diff --quiet; then
+            git diff --check
+            git config user.name 'POE repair validation'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add test/native-settled-recovery.test.ts
+            git commit -m 'Exercise shared-gate recovery through actual coordinator-owned observation allocation'
+            git push origin HEAD:refs/heads/repair/poe-slot-lifecycle-20261031
+          fi
+          mkdir -p /tmp/poe-slot-final
+          git rev-parse HEAD > /tmp/poe-slot-final/source-commit.txt
+          git diff b60fcfc2803a8d5bdd782a6be342d89e44a85c2d -- src test > /tmp/poe-slot-final/source.patch
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+          cache: npm
+      - name: Install pinned dependencies
+        run: npm ci --include=dev
+      - name: Typecheck
+        shell: bash
+        run: set -o pipefail; npm run build 2>&1 | tee /tmp/poe-slot-final/typecheck.log
+      - name: Focused lifecycle and registry regressions
+        shell: bash
+        run: |
+          set -o pipefail
+          umask 077
+          node --import tsx --test --test-concurrency=1 test/native-candidate-runner.test.ts test/native-slot-productivity.test.ts test/pilot-watch.test.ts test/market-registry.test.ts test/market-registry-lifecycle.test.ts test/native-settled-recovery.test.ts 2>&1 | tee /tmp/poe-slot-final/focused.log
+      - name: Full offline regression suite using established validation settings
+        shell: bash
+        run: |
+          set -o pipefail
+          umask 077
+          # Match dashboard-validation.yml: private backup fixtures and isolated
+          # compiler subprocesses, without weakening assertions or timeouts.
+          node --import tsx --test --test-concurrency=1 test/*.test.ts 2>&1 | tee /tmp/poe-slot-final/full.log
+      - name: Build exact source-only EC2 bundle after all regressions pass
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          node scripts/build-native-paper-ec2.mjs --output-directory /tmp/poe-slot-final/bundle
+          git archive --format=tar HEAD | gzip -n > /tmp/poe-slot-final/source.tar.gz
+          sha256sum /tmp/poe-slot-final/bundle/* /tmp/poe-slot-final/source.tar.gz > /tmp/poe-slot-final/sha256.txt
+      - name: Preserve logs and immutable release outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: poe-slot-lifecycle-final-${{ github.run_id }}
+          path: /tmp/poe-slot-final/
+          retention-days: 14
+          if-no-files-found: error

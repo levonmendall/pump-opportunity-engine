@@ -1,7 +1,7 @@
 /** Candidate-only coordinator mechanics. Native/RPC contexts are explicitly
  * synthetic. One import test re-decodes retained actual creation bytes; injected
  * resolver fixtures below do not claim independent on-chain verification. */
-import{test}from'node:test';import assert from'node:assert/strict';import{readFileSync,mkdtempSync,writeFileSync,rmSync}from'node:fs';
+import{test}from'node:test';import{createHash}from'node:crypto';import{TOKEN_AGE_POLICY}from'../src/token-age-policy.js';import assert from'node:assert/strict';import{readFileSync,mkdtempSync,writeFileSync,rmSync}from'node:fs';
 import{tmpdir}from'node:os';import{join}from'node:path';
 import bs58 from'bs58';import{PublicKey}from'@solana/web3.js';
 import Database from'better-sqlite3';
@@ -74,7 +74,7 @@ test('ACK reconciliation cannot rewind an already recorded observation generatio
  await f.runner.step();assert.equal(f.runner.status().candidates[0]!.openedAt,recordedAck);await f.runner.stop();
 });
 
-function fixture(config:{scopedNotifications?:boolean;respectServicePolicy?:true;productionResolver?:true;durableMarketPolicy?:true;marketIntake?:NativeMarketIntake;registry?:MarketRegistry;fairEconomicCompletions?:true;shadow?:boolean;maximumDeep?:number;refuseVerification?:number;refuseReason?:string;missingAudit?:boolean;lateAudit?:boolean;responseDelayMs?:number;forcePredictiveFeatures?:boolean;auditRpcError?:string;firstAuditTimeout?:boolean;quietBatch?:boolean;batchErrorIndex?:number;batchMalformedIndex?:number;retireBatchIndex?:number;batchPhysicalFailure?:string;sourceWorkAdmission?:(bound:number)=>boolean}={}){
+function fixture(config:{enforceTokenAge24h?:true;creationTx?:unknown;scopedNotifications?:boolean;respectServicePolicy?:true;productionResolver?:true;durableMarketPolicy?:true;marketIntake?:NativeMarketIntake;registry?:MarketRegistry;fairEconomicCompletions?:true;shadow?:boolean;maximumDeep?:number;refuseVerification?:number;refuseReason?:string;missingAudit?:boolean;lateAudit?:boolean;responseDelayMs?:number;forcePredictiveFeatures?:boolean;auditRpcError?:string;firstAuditTimeout?:boolean;quietBatch?:boolean;batchErrorIndex?:number;batchMalformedIndex?:number;retireBatchIndex?:number;batchPhysicalFailure?:string;sourceWorkAdmission?:(bound:number)=>boolean}={}){
  let at=baseAt,allow=true,headroom=20000,stopped=false,supportRequested=false,heartbeatRequested=false,resolveCalls=0,auditCalls=0,physicalBusy=false,lastPhysicalStart=-Infinity,inFlight=0,maximumInFlight=0,syntheticId=100000;
  let batchCoolingMint:string|null=null;const batchCalls:Array<{at:number;pools:string[];logicalQueries:number}>=[];
  const states=new Map<string,State>(),retiring=new Set<string>(),records:Array<{kind:string;data:any}>=[],flowActions:string[]=[],rpcCalls:Array<{method:string;params:unknown[];at:number}>=[],added:string[]=[],removed:string[]=[],identities=new Map<string,MigrationIdentity>();
@@ -90,14 +90,14 @@ function fixture(config:{scopedNotifications?:boolean;respectServicePolicy?:true
    rows.push({signature:originalSignature,slot:original.slot,err:null,blockTime:original.blockTime,confirmationStatus:'finalized'});rows.sort((a,b)=>b.slot-a.slot);
    const before=(params[1] as any)?.before;if(before){const index=rows.findIndex(r=>r.signature===before);if(index>=0)rows=rows.slice(index+1);}return rows.slice(0,(params[1] as any).limit);};
  const rpc={async call<T>(method:string,params:unknown[]=[],signal?:AbortSignal,admission?:PilotRpcCallOptions):Promise<T>{
-  signal?.throwIfAborted();advanceTo(Math.max(at,lastPhysicalStart+250));assert.ok(admission?.admissionOpen?.());assert.ok(admission?.latestStartAt===undefined||at<=admission.latestStartAt);assert.equal(inFlight,0);assert.equal(method,'getSignaturesForAddress','candidate-only runner makes no financial quote or execution request');
+  signal?.throwIfAborted();advanceTo(Math.max(at,lastPhysicalStart+250));assert.ok(admission?.admissionOpen?.());assert.ok(admission?.latestStartAt===undefined||at<=admission.latestStartAt);assert.equal(inFlight,0);assert.ok(method==='getSignaturesForAddress'||config.enforceTokenAge24h&&method==='getTransaction','candidate-only runner makes no financial quote or execution request');
   inFlight++;maximumInFlight=Math.max(maximumInFlight,inFlight);lastPhysicalStart=at;rpcCalls.push({method,params:structuredClone(params),at});
-  try{if(config.firstAuditTimeout&&rpcCalls.length===1){assert.equal(admission?.queryTimeoutScope,'independent-history');advanceTo(at+1500);throw Error('PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT');}advanceTo(at+(config.responseDelayMs??25));if(config.auditRpcError)throw Error(config.auditRpcError);return historyPayload(params) as T;
+  try{if(method==='getTransaction'){assert.equal((params[1] as any).commitment,'finalized');return (config.creationTx??null) as T;}if(config.firstAuditTimeout&&rpcCalls.length===1){assert.equal(admission?.queryTimeoutScope,'independent-history');advanceTo(at+1500);throw Error('PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT');}advanceTo(at+(config.responseDelayMs??25));if(config.auditRpcError)throw Error(config.auditRpcError);return historyPayload(params) as T;
   }finally{inFlight--;}
  },callSignatureHistoryBatch:config.quietBatch?async<T>(requests:readonly {key:string;params:readonly unknown[]}[],signal?:AbortSignal,admission?:PilotRpcCallOptions)=>{signal?.throwIfAborted();advanceTo(Math.max(at,lastPhysicalStart+250));assert.ok(admission?.admissionOpen?.());assert.ok(admission?.latestStartAt===undefined||at<=admission.latestStartAt);assert.equal(inFlight,0);inFlight++;maximumInFlight=Math.max(maximumInFlight,inFlight);lastPhysicalStart=at;const requestedAt=at;batchCalls.push({at,pools:requests.map(r=>String(r.params[0])),logicalQueries:requests.length});try{const items=requests.map((r,i)=>config.batchErrorIndex===i?{key:r.key,id:'synthetic-batch:'+i,status:'rpc-error' as const,errorCode:-32602,requestedAt,responseReceivedAt:0,validatedAt:0}:{key:r.key,id:'synthetic-batch:'+i,status:'result' as const,result:(config.batchMalformedIndex===i?[{invalid:'SYNTHETIC_BAD_HISTORY_ROW'}]:historyPayload([...r.params])) as T,requestedAt,responseReceivedAt:0,validatedAt:0});advanceTo(at+(config.responseDelayMs??25));if(config.batchPhysicalFailure)throw Error(config.batchPhysicalFailure);if(config.retireBatchIndex!==undefined)runner.onGap({mint:requests[config.retireBatchIndex]!.key,at,reason:'SYNTHETIC_CONFIRMED_CORRECTION'});return {physicalRequestId:1000+batchCalls.length,requestedAt,responseReceivedAt:at,validatedAt:at,responseBytes:Math.min(500000,JSON.stringify(items).length),physicalHttpStarts:1 as const,logicalQueries:requests.length,overloaded:false,items:items.map(i=>({...i,responseReceivedAt:at,validatedAt:at}))};}finally{inFlight--;}}:undefined,historyQueryReadyAt:(pool:string)=>pool===batchCoolingMint?at+5000:at,usage(){const readyAt=Math.max(at,lastPhysicalStart+250);return {waitingOrOperating:physicalBusy||inFlight>0,inFlight:physicalBusy?1:inFlight,dispatchWindow:{readyAt,physicalBusy:physicalBusy||inFlight>0,waitMs:readyAt-at},cumulativeUnits:rpcCalls.length};},cooldownUntil(){return 0;}};
  const resolver=async(seed:any)=>{resolveCalls++;if(resolveCalls<=(config.refuseVerification??0))return {ok:false,reason:config.refuseReason??'PILOT_MIGRATION_LOOKUP_UNAVAILABLE'};const n=Number(seed.signature===originalSignature?1:[...seed.signature].reduce((sum,c)=>sum+c.charCodeAt(0),0)),mint=seed.feedMint??new PublicKey(Buffer.alloc(32,n%200+20)).toBase58(),identity={...structuredClone(originalIdentity),signature:seed.signature,baseMint:mint,pool:canonicalPumpPoolPda(new PublicKey(mint)).toBase58(),chainBlockTime:Math.floor((at-600000)/1000),availableAt:at,commitment:'finalized'} as MigrationIdentity;identities.set(mint,identity);return {ok:true,identity,evidence:'SYNTHETIC_RESOLVER_ONLY',proof:{source:'direct-confirmed-creation',seed,originConfirmed:{signature:seed.signature,commitment:'confirmed',availableAt:at,transaction:original},originFinalized:{signature:seed.signature,commitment:'finalized',availableAt:at,transaction:original}}};};
  const audit:typeof auditNativeFlowWindow=async options=>{auditCalls++;const result=await auditNativeFlowWindow(options);if(config.lateAudit){advanceTo(at+8000);return {...result,availableAt:at};}return result;};
- runner=new NativeCandidateRunner({...(config.durableMarketPolicy?{observationAgePolicy:'persistent-observable-market-v1' as const}:{}),marketIntake:config.marketIntake,registry:config.registry,flow:flow as any,rpc:rpc as any,record(kind,data){records.push({kind,data:structuredClone(data)});},now:()=>at,maximumDeep:config.maximumDeep??1,admissionOpen:()=>allow,sourceWorkAdmission:config.sourceWorkAdmission,...(config.fairEconomicCompletions?{activeStrategy:LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION,activeAssessment:(_mint:string,features:ReturnType<FlowWindow['features']>)=>({...assessLiquidityResilientBuyingV31(features,at),features,status:'not-rejected' as const,reason:'OFFLINE preliminary pass for coordinator-only primary completion coverage'}),financialOwnership:(mint:string)=>ownership.get(mint)??null}:{}),resolve:config.productionResolver?undefined:resolver as any,audit});
+ runner=new NativeCandidateRunner({...(config.enforceTokenAge24h?{enforceTokenAge24h:true as const}:{}),...(config.durableMarketPolicy?{observationAgePolicy:'persistent-observable-market-v1' as const}:{}),marketIntake:config.marketIntake,registry:config.registry,flow:flow as any,rpc:rpc as any,record(kind,data){records.push({kind,data:structuredClone(data)});},now:()=>at,maximumDeep:config.maximumDeep??1,admissionOpen:()=>allow,sourceWorkAdmission:config.sourceWorkAdmission,...(config.fairEconomicCompletions?{activeStrategy:LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION,activeAssessment:(_mint:string,features:ReturnType<FlowWindow['features']>)=>({...assessLiquidityResilientBuyingV31(features,at),features,status:'not-rejected' as const,reason:'OFFLINE preliminary pass for coordinator-only primary completion coverage'}),financialOwnership:(mint:string)=>ownership.get(mint)??null}:{}),resolve:config.productionResolver?undefined:resolver as any,audit});
  const importActual=()=>{const origin:NativeOrigin={originConfirmed:{signature:originalSignature,availableAt:at,transaction:structuredClone(original)},originFinalized:{signature:originalSignature,availableAt:at,transaction:structuredClone(original)}};runner.importOrigin(origin);return originalIdentity.baseMint;};
  const seed=(n:number)=>{const mint=new PublicKey(Buffer.alloc(32,n+20)).toBase58();runner.onMigration({signature:sig(n),feedMint:mint,receivedAt:at});return mint;};
  const steps=async(n:number)=>{for(let i=0;i<n;i++)await runner.step();};
@@ -832,7 +832,7 @@ test('real concurrent intake writer contention is reported as local deferral wit
  const dir=mkdtempSync(join(tmpdir(),'native-runner-contention-')),path=join(dir,'registry.sqlite'),registry=new MarketRegistry(path,{concurrentIntake:true,now:()=>baseAt}),locker=new Database(path);
  const f=fixture({registry,durableMarketPolicy:true,fairEconomicCompletions:true,marketIntake:{observeIdentity(){},observeActivity(){},observeFeed(){},observeMigration(seed){registry.enqueueMigrationDelivery(seed);}}});
  try{
-  const mint=f.seed(1);await f.steps(1);f.runner.onMarketActivityCommitted([{mint,at:f.now,evidence:'OFFLINE committed activity'}]);const before=registry.health().transactions.contentionBeforeCallback;
+  const mint=f.seed(1);await f.steps(1);f.advance(1);registry.observeActivity({mint,signature:sig(765),receivedAt:f.now,source:'pumpapi-broad',kind:'activity',side:'buy',quoteLamports:'1'});f.runner.onMarketActivityCommitted([{mint,at:f.now,evidence:'OFFLINE committed activity'}]);const before=registry.health().transactions.contentionBeforeCallback;
   locker.exec('BEGIN IMMEDIATE');assert.equal(await f.runner.step(),'wait');
   const event=f.records.find(r=>r.kind==='native-candidate-registry-contention');assert.ok(event);assert.equal(event.data.reason,'MARKET_REGISTRY_CONTENTION');assert.equal(event.data.sqliteCode,'SQLITE_BUSY');assert.equal(event.data.callbackStarted,false);assert.equal(event.data.providerRequestStarted,false);assert.equal(registry.health().transactions.contentionBeforeCallback,before+1);assert.equal(registry.health().storageFailures,0);assert.equal(registry.health().available,true);assert.equal(f.records.some(r=>r.kind==='native-candidate-work-unavailable'&&r.data.reason==='NATIVE_CANDIDATE_OPERATION_UNAVAILABLE'),false);assert.equal(f.rpcCalls.length,0);
   locker.exec('ROLLBACK');await f.steps(2);assert.ok(f.states.has(mint));
@@ -892,4 +892,130 @@ test('a typed contention thrown after the gap callback starts is propagated with
  try{
   (f.runner as any).noteFailure=()=>{calls++;throw failure;};assert.throws(()=>f.runner.onGap({mint,at:f.now,reason:'BAD_POOL_OWNER'}),error=>error===failure);assert.equal(calls,1);assert.equal(f.runner.status().counters.qualityGaps,1);(f.runner as any).noteFailure=original;await f.steps(2);assert.equal(f.runner.status().counters.qualityGaps,1,'a callback that started is never replayed as a refused lease');assert.equal(f.removed.includes(mint),false);assert.equal(f.records.some(r=>r.kind==='native-candidate-gap-retirement-deferred'),false);
  }finally{(f.runner as any).noteFailure=original;await f.runner.stop();registry.close();}
+});
+
+test('slot lifecycle: a writer collision after selection cannot create a phantom fourth native scope',async()=>{
+ const dir=mkdtempSync(join(tmpdir(),'native-allocation-atomic-')),path=join(dir,'registry.sqlite'),registry=new MarketRegistry(path,{concurrentIntake:true,now:()=>baseAt}),locker=new Database(path),f=fixture({registry,durableMarketPolicy:true,fairEconomicCompletions:true,maximumDeep:4});
+ const next=f.runner.watch.next.bind(f.runner.watch);let locked=false;
+ try{
+  for(let n=1;n<=4;n++)f.seed(n);
+  f.runner.watch.next=((...args:Parameters<typeof next>)=>{const row=next(...args);if(row&&!locked){locker.exec('BEGIN IMMEDIATE');locked=true;}return row;})as typeof next;
+  assert.throws(()=>(f.runner as any).allocate(f.now),MarketRegistryContention);
+  assert.equal(f.states.size,0);assert.equal((f.runner as any).candidates.size,0);assert.equal(f.runner.slotProductivity().counts.allocations,0);assert.equal(f.runner.watch.snapshot().summary.deepActive,0);
+  locker.exec('ROLLBACK');f.runner.watch.next=next;await f.steps(10);
+  assert.equal(f.states.size,4);assert.equal(f.runner.status().candidates.length,4);assert.equal(f.runner.watch.snapshot().summary.deepActive,4);assert.equal(f.runner.slotProductivity().slots.filter(s=>s.mint!==null).length,4);assert.equal(new Set(f.added).size,4);
+ }finally{if(locker.inTransaction)locker.exec('ROLLBACK');f.runner.watch.next=next;await f.runner.stop();locker.close();registry.close();rmSync(dir,{recursive:true,force:true});}
+});
+
+test('slot lifecycle: outer rollback restores watch and productivity mirrors and starts no physical scope',async()=>{
+ const registry=new MarketRegistry(':memory:',{now:()=>baseAt}),f=fixture({registry,durableMarketPolicy:true,fairEconomicCompletions:true}),mint=f.seed(1),mark=registry.markStage.bind(registry),before=f.runner.watch.snapshot().summary.promoted;
+ try{
+  registry.markStage=(()=>{throw Error('OFFLINE lifecycle durable-stage failure');})as typeof registry.markStage;
+  assert.throws(()=>(f.runner as any).allocate(f.now),/OFFLINE lifecycle durable-stage failure/);
+  assert.equal(f.states.size,0);assert.equal((f.runner as any).candidates.size,0);assert.equal(f.runner.watch.lookupIdentity(mint)!.deepSince,null);assert.equal(f.runner.watch.snapshot().summary.promoted,before);assert.equal(f.runner.slotProductivity().counts.allocations,0);
+  registry.markStage=mark;await f.steps(2);assert.equal(f.states.size,1);assert.equal(f.runner.slotProductivity().counts.allocations,1);assert.equal(f.runner.watch.snapshot().summary.promoted,before+1);
+ }finally{registry.markStage=mark;await f.runner.stop();registry.close();}
+});
+
+test('slot lifecycle: deferred retirement preserves ownership until its durable commit and unsubscribe settlement',async()=>{
+ const dir=mkdtempSync(join(tmpdir(),'native-retirement-atomic-')),path=join(dir,'registry.sqlite'),registry=new MarketRegistry(path,{concurrentIntake:true,now:()=>baseAt}),locker=new Database(path),f=fixture({registry,durableMarketPolicy:true,fairEconomicCompletions:true});
+ try{
+  const mint=f.seed(1);await f.steps(2);const candidate=(f.runner as any).candidates.get(mint);locker.exec('BEGIN IMMEDIATE');
+  assert.equal((f.runner as any).retire(mint,'OFFLINE reviewed negative decision',f.now,0),false);
+  assert.equal((f.runner as any).candidates.get(mint),candidate);assert.equal(f.states.has(mint),true);assert.equal(f.runner.slotProductivity().slots[0]!.mint,mint);assert.equal(f.runner.currentAuditCertificate(mint),null);
+  f.advance(70000);assert.equal(await f.runner.step(),'wait');assert.equal(f.rpcCalls.length,0,'pending retirement cannot be audited repeatedly');
+  locker.exec('ROLLBACK');await f.steps(1);assert.equal(f.states.has(mint),false);assert.equal(f.flowActions.at(-1),'unsubscribe');assert.equal(f.runner.slotProductivity().slots[0]!.mint,null);
+  await f.steps(2);assert.equal(f.states.size,1);assert.notEqual((f.runner as any).candidates.get(mint),candidate);assert.equal(f.flow.snapshot(mint)!.warm,false,'replacement must warm a fresh window');
+ }finally{if(locker.inTransaction)locker.exec('ROLLBACK');await f.runner.stop();locker.close();registry.close();rmSync(dir,{recursive:true,force:true});}
+});
+
+test('slot lifecycle: stale WATCH membership is retired before another audit or certificate',async()=>{
+ const f=fixture({durableMarketPolicy:true,fairEconomicCompletions:true}),mint=f.seed(1);await f.steps(2);const generation=(f.runner as any).candidates.get(mint);
+ f.runner.watch.transition(mint,'DEFERRED','OFFLINE stale membership reproduction',f.now);f.advance(70000);f.refresh();
+ await f.steps(1);assert.equal(f.rpcCalls.length,0);assert.equal(f.runner.currentAuditCertificate(mint),null);assert.equal(f.states.has(mint),false);assert.ok(f.records.some(r=>r.kind==='native-candidate-membership-invalid'&&r.data.mint===mint));
+ await f.steps(4);assert.notEqual((f.runner as any).candidates.get(mint),generation);assert.equal(f.rpcCalls.length,0);assert.equal(f.records.some(r=>r.kind==='native-candidate-work-unavailable'&&r.data.reason==='PILOT_WATCH_WINDOW_REQUIRES_DEEP'),false);await f.runner.stop();
+});
+
+test('slot lifecycle: an ownerless native scope is retired without pretending the subscription settled',async()=>{
+ const f=fixture({durableMarketPolicy:true,fairEconomicCompletions:true});const mint=f.seed(1);await f.steps(2);
+ (f.flow as any).candidateMints=()=>[...f.states.keys()];(f.runner as any).candidates.delete(mint);
+ await f.steps(1);assert.equal(f.states.has(mint),false);assert.equal(f.runner.slotProductivity().slots[0]!.mint,null);assert.equal(f.runner.watch.lookupIdentity(mint)!.deepSince,null);assert.ok(f.records.some(r=>r.kind==='native-candidate-orphan-retired'&&r.data.physicalCapacityReleased===false));assert.equal(f.rpcCalls.length,0);await f.runner.stop();
+});
+
+test('slot lifecycle: failed native installation compensates durable admission without a phantom logical slot',async()=>{
+ const f=fixture({durableMarketPolicy:true,fairEconomicCompletions:true}),mint=f.seed(1),add=f.flow.addCandidate;
+ f.flow.addCandidate=()=>{throw Error('OFFLINE native installation refused');};
+ assert.throws(()=>(f.runner as any).allocate(f.now),/OFFLINE native installation refused/);
+ assert.equal(f.states.size,0);assert.equal(f.runner.status().candidates.length,0);assert.equal(f.runner.watch.lookupIdentity(mint)!.deepSince,null);assert.equal(f.runner.slotProductivity().slots[0]!.mint,null);
+ f.flow.addCandidate=add;await f.steps(3);assert.equal(f.states.size,1);assert.equal(f.runner.watch.snapshot().summary.deepActive,1);await f.runner.stop();
+});
+
+
+test('slot lifecycle: retired pending-entry observation keeps the financial obligation without repeated cleanup writes',async()=>{
+ const f=fixture({durableMarketPolicy:true,fairEconomicCompletions:true}),mint=f.seed(1);await f.steps(2);
+ f.ownership.set(mint,'ENTRY_PENDING');f.runner.syncFinancialOwnership(new Set([mint]));
+ assert.equal((f.runner as any).retire(mint,'OFFLINE observation lost with pending financial action',f.now,0),true);
+ const row=f.runner.watch.lookupIdentity(mint)!;assert.equal(row.state,'ENTRY_PENDING');assert.equal(row.deepSince,null);assert.equal(f.runner.currentAuditCertificate(mint),null);
+ const before=f.records.filter(r=>r.kind==='native-candidate-orphan-retired').length;await f.steps(4);
+ assert.equal(f.records.filter(r=>r.kind==='native-candidate-orphan-retired').length,before);assert.equal(f.runner.watch.lookupIdentity(mint)!.state,'ENTRY_PENDING');assert.equal(f.states.has(mint),false);await f.runner.stop();
+});
+
+test('slot lifecycle: a deep-state change during an awaited audit cannot publish a current certificate',async()=>{
+ const f=fixture({durableMarketPolicy:true,fairEconomicCompletions:true,forcePredictiveFeatures:true,scopedNotifications:true}),mint=f.seed(1);await f.steps(2);const call=f.rpc.call.bind(f.rpc);let changed=false;
+ f.rpc.call=(async(...args:Parameters<typeof call>)=>{const result=await call(...args);if(!changed){changed=true;f.runner.watch.transition(mint,'DEFERRED','OFFLINE concurrent membership correction',f.now);}return result;}) as typeof f.rpc.call;
+ f.advance(70000);f.refresh();await f.steps(6);
+ assert.equal(changed,true);assert.equal(f.runner.currentAuditCertificate(mint),null);assert.equal(f.runner.status().counters.auditedWindows,0);
+ assert.equal(f.records.some(r=>r.kind==='native-candidate-work-unavailable'&&r.data.reason==='PILOT_WATCH_WINDOW_REQUIRES_DEEP'),false);await f.runner.stop();
+});
+
+// Age acquisition is separate from a migration hint and shares the existing RPC gate.
+function tokenCreationTransaction(mint:string,signature:string,createdAt:number){
+ const pump='6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P',token='TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',curve=PublicKey.findProgramAddressSync([Buffer.from('bonding-curve'),new PublicKey(mint).toBuffer()],new PublicKey(pump))[0].toBase58();
+ return {version:0,slot:1,blockTime:createdAt/1000,transaction:{signatures:[signature],message:{accountKeys:[pump,token,mint,originalIdentity.baseMint,curve],instructions:[{programIdIndex:0,accounts:[2,3,4],data:bs58.encode(createHash('sha256').update('global:create').digest().subarray(0,8))}]}},meta:{err:null,innerInstructions:[{index:0,instructions:[{programIdIndex:1,accounts:[2],data:bs58.encode(Buffer.from([20,...Buffer.alloc(34)])),stackHeight:2}]}]}};
+}
+test('24h scope verifies only a selected creation signature, waits for provider admission, then admits an actual fresh scope',async()=>{
+ const mint=new PublicKey(Buffer.alloc(32,21)).toBase58(),creationSignature=sig(20001),createdAt=Math.floor((baseAt-3600000)/1000)*1000,tx=tokenCreationTransaction(mint,creationSignature,createdAt);
+ const f=fixture({enforceTokenAge24h:true,durableMarketPolicy:true,fairEconomicCompletions:true,creationTx:tx});
+ try{
+  f.runner.onMarketIdentity({mint,signature:creationSignature,receivedAt:f.now,source:'pumpportal-new-token',kind:'creation',evidence:'unverified-provider-discovery-hint'});
+  await f.steps(3);assert.equal(f.rpcCalls.length,0,'creation notifications alone never trigger one RPC per launch');
+  assert.equal(f.seed(1),mint);f.runner.onMarketIdentity({mint,signature:sig(1),receivedAt:f.now,source:'pumpportal-migration',kind:'migration',evidence:'unverified-provider-discovery-hint'});f.setPhysicalBusy(true);await f.steps(3);assert.equal(f.rpcCalls.length,0);assert.equal(f.added.length,0);
+  f.setPhysicalBusy(false);await f.steps(8);assert.deepEqual(f.rpcCalls.map(c=>c.method),['getTransaction']);assert.equal(f.rpcCalls[0]!.params[0],creationSignature);assert.equal(f.added.length,1);assert.ok(f.states.has(mint));assert.equal(f.runner.status().tokenAgeScope!.within24h,1);
+  assert.equal(f.runner.status().candidates[0]!.migrationAt,null,'birth verification never invents migration time');
+ }finally{await f.runner.stop();}
+});
+test('24h scope retires an aging non-owned observation and cannot readmit it through a fresh migration hint',async()=>{
+ const mint=new PublicKey(Buffer.alloc(32,21)).toBase58(),signature=sig(20002),createdAt=Math.floor((baseAt-86400000+2000)/1000)*1000;
+ const f=fixture({enforceTokenAge24h:true,durableMarketPolicy:true,fairEconomicCompletions:true,creationTx:tokenCreationTransaction(mint,signature,createdAt)});
+ try{
+  f.runner.onMarketIdentity({mint,signature,receivedAt:f.now,source:'pumpportal-new-token',kind:'creation',evidence:'unverified-provider-discovery-hint'});f.seed(1);f.runner.onMarketIdentity({mint,signature:sig(1),receivedAt:f.now,source:'pumpportal-migration',kind:'migration',evidence:'unverified-provider-discovery-hint'});await f.steps(8);assert.equal(f.added.length,1);
+  f.advance(3000);await f.steps(4);assert.equal(f.states.has(mint),false);assert.equal(f.runner.status().tokenAgeScope!.within24h,0);
+  f.runner.onMigration({signature:sig(20003),feedMint:mint,receivedAt:f.now});await f.steps(4);assert.equal(f.added.length,1);assert.equal(f.runner.currentAuditCertificate(mint),null);
+ }finally{await f.runner.stop();}
+});
+test('24h scope keeps a pending financial owner intact across the age boundary',async()=>{
+ const mint=new PublicKey(Buffer.alloc(32,21)).toBase58(),signature=sig(20004),createdAt=Math.floor((baseAt-86400000+2000)/1000)*1000;
+ const f=fixture({enforceTokenAge24h:true,durableMarketPolicy:true,fairEconomicCompletions:true,creationTx:tokenCreationTransaction(mint,signature,createdAt)});
+ try{
+  f.runner.onMarketIdentity({mint,signature,receivedAt:f.now,source:'pumpportal-new-token',kind:'creation',evidence:'unverified-provider-discovery-hint'});f.seed(1);f.runner.onMarketIdentity({mint,signature:sig(1),receivedAt:f.now,source:'pumpportal-migration',kind:'migration',evidence:'unverified-provider-discovery-hint'});await f.steps(8);f.ownership.set(mint,'ENTRY_PENDING');f.runner.watch.transition(mint,'ENTRY_PENDING','fixture actual pending owner',f.now);
+  f.advance(3000);await f.steps(4);assert.equal(f.runner.watch.lookupIdentity(mint,f.now)!.state,'ENTRY_PENDING');assert.ok(f.states.has(mint),'age scope does not dispose financial obligations; the execution layer cancels only unfilled buys through its ledger');
+ }finally{await f.runner.stop();}
+});
+test('24h scope retries a not-finalized creation only after its persisted cooldown',async()=>{
+ const f=fixture({enforceTokenAge24h:true,durableMarketPolicy:true,fairEconomicCompletions:true}),mint=f.seed(1);
+ try{
+  f.runner.onMarketIdentity({mint,signature:sig(20005),receivedAt:f.now,source:'pumpportal-new-token',kind:'creation',evidence:'unverified-provider-discovery-hint'});f.runner.onMarketIdentity({mint,signature:sig(1),receivedAt:f.now,source:'pumpportal-migration',kind:'migration',evidence:'unverified-provider-discovery-hint'});await f.steps(8);assert.equal(f.rpcCalls.length,1);assert.equal(f.added.length,0);await f.steps(8);assert.equal(f.rpcCalls.length,1);
+  f.advance(61000);f.runner.onMigration({signature:sig(20006),feedMint:mint,receivedAt:f.now});f.runner.onMarketIdentity({mint,signature:sig(20006),receivedAt:f.now,source:'pumpportal-migration',kind:'migration',evidence:'unverified-provider-discovery-hint'});await f.steps(8);assert.equal(f.rpcCalls.length,2);assert.equal(f.added.length,0);
+ }finally{await f.runner.stop();}
+});
+
+
+test('fresh shared-market candidates compete before a nonempty older watch queue is selected',async()=>{
+ const f=fixture({durableMarketPolicy:true,fairEconomicCompletions:true,maximumDeep:1});
+ try{
+  const older=f.seed(1),fresh=new PublicKey(Buffer.alloc(32,201)).toBase58();
+  f.runner.onMarketActivity({mint:fresh,signature:sig(20101),receivedAt:f.now,source:'pumpapi-broad',kind:'activity',side:'buy',quoteLamports:'20000000000',evidence:'unverified-provider-activity-hint'});
+  (f.runner as any).allocate(f.now);
+  assert.equal(f.added[0],fresh);assert.notEqual(f.added[0],older);assert.equal(f.rpcCalls.length,0,'local scheduling adds no provider lookup');
+ }finally{await f.runner.stop();}
 });
