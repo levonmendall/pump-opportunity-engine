@@ -1,0 +1,38 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {once} from 'node:events';
+import {readFileSync} from 'node:fs';
+import {Script,createContext} from 'node:vm';
+import {createDashboard,type DashboardConfig} from '../src/dashboard.js';
+import type {ReportingIdentity,Snapshot} from '../src/reporting.js';
+import {pendingSaleReview,finishSaleReview,saleReviewTradeId,SALE_REVIEW_POLICY} from '../src/sale-review.js';
+const NOW=Date.now(),iso=(at:number)=>new Date(at).toISOString();
+const config:DashboardConfig&ReportingIdentity={accountId:'fixture-sale-review',inceptionAt:iso(NOW-48*60*60*1000),release:'fixture-release',strategy:'fixture-rule',viewerUser:'fixture-owner',viewerPassword:'fixture-viewer-password-unique',ingestionSecret:'fixture-ingestion-secret-unique'};
+const viewer='Basic '+Buffer.from(config.viewerUser+':'+config.viewerPassword).toString('base64'),machine='Bearer '+config.ingestionSecret;
+const pending=pendingSaleReview({accountId:config.accountId,actionId:'sell-fill',tradeId:saleReviewTradeId('sell-fill'),mint:'fixture-mint',soldAt:NOW-SALE_REVIEW_POLICY.horizonMs,salePrice:{quoteLamports:'100',baseUnits:'1000'}});
+const complete=finishSaleReview(pending,{mint:pending.mint,price:{quoteLamports:'140',baseUnits:'1000'},observedAt:NOW,sourceAt:NOW,decimals:6,source:'fixture price'},NOW);
+const batch=(reviews=[pending],sequence='1')=>({schemaVersion:1,accountId:config.accountId,inceptionAt:Date.parse(config.inceptionAt),sequence,generatedAt:NOW,reviews});
+async function serve(t:any){const app=createDashboard(config);app.server.listen(0,'127.0.0.1');await once(app.server,'listening');const address=app.server.address();assert.ok(address&&typeof address==='object');t.after(async()=>{app.server.closeAllConnections();await new Promise<void>(r=>app.server.close(()=>r()));});const url='http://127.0.0.1:'+address.port;const post=(path:string,body:unknown,authorization=machine)=>fetch(url+path,{method:'POST',headers:{authorization,'content-type':'application/json'},body:JSON.stringify(body)});return {...app,url,post};}
+function sample(sequence = '1', generated = NOW): Snapshot {
+  return {
+    project: 'pump-opportunity-engine', mode: 'PAPER', liveTrading: false, schemaVersion: 1,
+    account: { id: config.accountId, inceptionAt: config.inceptionAt, initialUsd: 1000 }, sequence,
+    source: { release: config.release, strategy: config.strategy },
+    times: { generatedAt: iso(generated), marketAt: iso(generated - 1000), reconciledAt: iso(generated - 2000), usefulProgressAt: iso(generated - 1000) },
+    status: { runtime: 'running', market: 'observing', entries: 'disabled', reconciled: true, blocker: 'Disposable reporting fixture only' },
+    balances: { cashSol: '10', reservedSol: '0.1', equitySol: '10', equityUsd: 1000, realizedUsd: 0, unrealizedUsd: 0, tradingPnlUsd: 0, economicPnlUsd: null, positionCostUsd: 0, markedExposureUsd: 0, drawdownUsd: 0, executionCostsUsd: 0, operatingCostsUsd: null, passiveSolEquityUsd: 1000, solPriceUsd: 100 },
+    costLabels: { execution: 'simulated', operating: 'unavailable' },
+    positions: [], trades: [], decisions: [], pnl: [],
+    history: { windowStartAt: null, downsampled: false, label: 'No fixture history; no implied flat line' },
+    funnel: { discovered: 12, supported: 5, sufficientlyObserved: 2, evaluated: 2, qualified: 0, attempted: 0, paperFilled: 0, exited: 0, reconciled: 0 },
+    metrics: { processingLagMs: null, eventLoopLagMs: null, providerEvents: 0, rpcRequests: 0, projectedDailyDataSol: null, budgetRemainingSol: null, budgetStatus: 'unavailable', coverage: 'Not measured', latency: 'Not measured' },
+  };
+}
+
+test('sale-review route requires independent machine authentication',async t=>{const app=await serve(t);for(const auth of ['',viewer,'Bearer wrong'])assert.equal((await app.post('/api/sale-reviews',batch(),auth)).status,401);assert.equal((await app.post('/api/sale-reviews',batch())).status,200);});
+test('authenticated reporting overlay reaches snapshot/export without changing financial data',async t=>{const app=await serve(t),s=sample();s.trades=[{id:pending.tradeId,mint:pending.mint,side:'sell',quantity:'1000',at:iso(pending.soldAt),valueUsd:0.00001,executionCostsUsd:0.0001,status:'PAPER filled',reason:'fixture'}];const original=JSON.stringify(s);assert.equal((await app.post('/api/snapshot',s)).status,200);assert.equal((await app.post('/api/sale-reviews',batch())).status,200);assert.equal((await app.post('/api/sale-reviews',batch([complete],'2'))).status,200);for(const path of ['/api/snapshot','/api/export']){const response=await fetch(app.url+path,{headers:{authorization:viewer}});assert.equal(response.status,200);const body=await response.json();assert.equal(body.saleReviews[pending.tradeId].status,'BAD SALE');assert.equal(body.saleReviews[pending.tradeId].changePercent,'40.000000');assert.equal(JSON.stringify(body.snapshot),original);assert.equal(body.snapshot.liveTrading,false);}assert.equal(JSON.stringify(app.cache.read()!.snapshot),original);});
+test('receiver rejects account mismatch, forged result, unknown fields and replay regression',async t=>{const app=await serve(t);for(const bad of [{...batch(),accountId:'another-account'},{...batch(),extra:'bad'},batch([{...complete,status:'GOOD SALE'} as any])])assert.equal((await app.post('/api/sale-reviews',bad)).status,400);assert.equal((await app.post('/api/sale-reviews',batch([complete],'2'))).status,200);assert.equal((await app.post('/api/sale-reviews',batch())).status,409);});
+test('browser forwards the independent overlay into the sale Explain renderer',()=>{const s=readFileSync(new URL('../src/dashboard.ts',import.meta.url),'utf8');assert.match(s,/result\.saleReviews\?\?null/);assert.match(s,/saleReview:saleReviews\?\.\[s\.trades\[index\]\.id\]/);assert.doesNotMatch(s,/saleReview:s\.saleReviews/);});
+function renderer(){const source=readFileSync(new URL('../src/dashboard.ts',import.meta.url),'utf8'),start=source.indexOf('function renderTradeOutcome('),end=source.indexOf('\nfunction renderFunnel(',start);class Element{children:Element[]=[];textContent='';open=false;append(n:Element){this.children.push(n);}addEventListener(){}constructor(readonly tag='div'){}}const add=(p:Element,tag:string,value?:unknown)=>{const n=new Element(tag);n.textContent=value===undefined?'':String(value);p.append(n);return n;};const render=new Script(source.slice(start,end)+'\nrenderTradeOutcome').runInContext(createContext({add,BigInt,Date,Set,String}));const text=(p:Element):string=>[p.textContent,...p.children.map(text)].join('\n');return {Element,render,text};}
+test('Explain displays verdict, prices, percentage and actual checkpoint observation time',()=>{const {Element,render,text}=renderer(),root=new Element();render(root,{id:pending.tradeId,side:'sell',saleReview:complete});const value=text(root);assert.match(value,/4-hour sale review/);assert.match(value,/BAD SALE/);assert.match(value,/40\.000000%/);assert.match(value,/0\.0001 SOL\/token/);assert.match(value,/0\.00014 SOL\/token/);assert.ok(value.includes(iso(NOW)));assert.match(value,/Historical explanation unavailable/);assert.match(value,/30 seconds/);});
+test('Explain handles pending and unavailable without zero or invented prices, and ignores buys',()=>{const {Element,render,text}=renderer();for(const r of [undefined,pending,{...pending,status:'UNAVAILABLE',reason:'PRICE_UNAVAILABLE'}]){const root=new Element();render(root,{id:pending.tradeId,side:'sell',saleReview:r});assert.match(text(root),/4-hour sale review/);assert.doesNotMatch(text(root),/GOOD SALE|BAD SALE|0 SOL\/token/);}const buy=new Element();render(buy,{id:'buy',side:'buy',saleReview:complete});assert.doesNotMatch(text(buy),/4-hour sale review/);});

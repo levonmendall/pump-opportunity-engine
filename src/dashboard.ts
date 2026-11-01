@@ -1,3 +1,4 @@
+import {SaleReviewReportingCache} from './sale-review-reporting.js';
 import { createServer, type IncomingMessage, type ServerResponse } from 'node:http';
 import { timingSafeEqual, createHash } from 'node:crypto';
 import {restoreRenderReceiverHistory} from './render-history-bootstrap.js';
@@ -43,6 +44,7 @@ export function createDashboard(config: DashboardConfig) {
   const cache = new SnapshotCache(configured === 4 ? {
     accountId: config.accountId!, inceptionAt: config.inceptionAt!, release: config.release!, strategy: config.strategy!,
   } : null);
+  const saleReviewCache = new SaleReviewReportingCache();
   const viewer = publicViewer ? null : 'Basic ' + Buffer.from(`${config.viewerUser}:${config.viewerPassword}`).toString('base64');
   const publisher = `Bearer ${config.ingestionSecret}`;
   if (process.env.POE_PILOT_INGEST_SECRET && equal(process.env.POE_PILOT_INGEST_SECRET, config.ingestionSecret)) throw new Error('pilot and original publishing credentials must differ');
@@ -51,7 +53,15 @@ export function createDashboard(config: DashboardConfig) {
     res.setHeader('x-frame-options', 'DENY');
     const path = req.url?.split('?')[0];
     if(path==='/api/pilot'){req.resume();send(res,410,{error:'retired-channel',message:'Use the original authoritative portfolio at /api/snapshot'});return;}
-    if (path === '/healthz' && req.method === 'GET') { send(res, 200, { ok: true, service: 'poe-dashboard', dashboardRelease: process.env.RENDER_GIT_COMMIT ?? 'local-build', reportingSchema: 1, unifiedPortfolio: true }); return; }
+    if (path === '/healthz' && req.method === 'GET') { send(res, 200, { ok: true, service: 'poe-dashboard', dashboardRelease: process.env.RENDER_GIT_COMMIT ?? 'local-build', reportingSchema: 1, unifiedPortfolio: true, saleReviewSchema: 1 }); return; }
+    if (path === '/api/sale-reviews' && req.method === 'POST') {
+      if (!equal(req.headers.authorization ?? '', publisher)) { req.resume(); send(res,401,{error:'unauthorized'}); return; }
+      if (cache.identity === null) { req.resume(); send(res,503,{error:'source-not-configured'}); return; }
+      if (req.headers['content-type']?.split(';')[0] !== 'application/json' || req.headers['content-encoding']) { req.resume(); send(res,415,{error:'plain application/json required'}); return; }
+      try { send(res,200,{result:saleReviewCache.accept(await readBody(req),cache.identity.accountId,Date.parse(cache.identity.inceptionAt))}); }
+      catch (error) { const message=error instanceof Error?error.message:''; send(res,/REGRESSION|CONFLICT/.test(message)?409:400,{error:'invalid-sale-review-report'}); }
+      return;
+    }
     if (path === '/api/snapshot' && req.method === 'POST') {
       if (!equal(req.headers.authorization ?? '', publisher)) { req.resume(); send(res, 401, { error: 'unauthorized' }); return; }
       if (cache.identity === null) { req.resume(); send(res, 503, { error: 'source-not-configured', message: 'Awaiting POE data' }); return; }
@@ -95,7 +105,7 @@ export function createDashboard(config: DashboardConfig) {
       const current = cache.read();
       if (!current) { send(res, 503, { state: 'waiting', message: 'Awaiting POE data' }); return; }
       if (path === '/api/export') res.setHeader('content-disposition', 'attachment; filename="poe-bounded-snapshot.json"');
-      send(res, 200, { ...current, freshness: cache.status(), equityHistory: cache.equityHistory() }); return;
+      send(res, 200, { ...current, freshness: cache.status(), equityHistory: cache.equityHistory(), saleReviews: saleReviewCache.forTrades(current.snapshot.trades) }); return;
     }
     if (path !== '/') { send(res, 404, { error: 'not found' }); return; }
     res.writeHead(200, {
@@ -353,7 +363,25 @@ function renderTradeOutcome(parent,trade){
  const stamp=value=>value===null||value===undefined?'Unknown':new Date(value).toISOString();
  const duration=(from,to)=>from===null||from===undefined||to===null||to===undefined||to<from?'Unknown':((to-from)/1000).toFixed(3)+' seconds';
  const fields=items=>{const list=add(detail,'dl');items.forEach(([key,value])=>{add(list,'dt',key);add(list,'dd',value);});};
- if(!report){add(detail,'summary','Historical explanation unavailable');add(detail,'p','Entry and exit decisions, timing stages and the full trade result were not captured in this historical receipt. Its original fill value, execution cost and identity are preserved above. Missing history is unknown.');return;}
+ const saleReview=()=>{
+  if(trade.side!=='sell')return;
+  const r=trade.saleReview;add(detail,'h4','4-hour sale review');
+  if(!r){add(detail,'p','UNAVAILABLE — no checkpoint report received.');return;}
+  const price=p=>{if(!p)return 'Unavailable';const decimals=r.decimals;
+   if(decimals===null)return p.quoteLamports+' lamports / '+p.baseUnits+' token base units';
+   const numerator=BigInt(p.quoteLamports)*(10n**BigInt(decimals)),denominator=BigInt(p.baseUnits)*1000000000n;
+   const scaled=numerator*1000000000000000000n/denominator;
+   if(scaled===0n)return numerator.toString()+' / '+denominator.toString()+' SOL/token';
+   const fraction=(scaled%1000000000000000000n).toString().padStart(18,'0').replace(/0+$/,'');
+   return (scaled/1000000000000000000n).toString()+(fraction?'.'+fraction:'')+' SOL/token';
+  };
+  add(detail,'p',r.status);
+  fields([['Sale price',price(r.salePrice)],['Four-hour price',price(r.fourHourPrice)],['Change since sale',r.changePercent===null?'Unavailable':r.changePercent+'%'],['Checkpoint due',stamp(r.dueAt)],['Price observed at',stamp(r.observedAt)],['Price source time',stamp(r.sourceAt)]]);
+  if(r.reason)add(detail,'p',r.reason.replace(/_/g,' '));
+  add(detail,'p','Price-only comparison at the four-hour checkpoint, allowing up to 30 seconds for collection. No strategy change or hypothetical fill is implied.');
+ };
+
+ if(!report){add(detail,'summary','Historical explanation unavailable');add(detail,'p','Entry and exit decisions, timing stages and the full trade result were not captured in this historical receipt. Its original fill value, execution cost and identity are preserved above. Missing history is unknown.');saleReview();return;}
  const e=report.economics,closed=report.kind==='closed-position',entry=report.entry,exit=report.exit;
  const decisionMeaning=context=>{
   if(!context?.reason)return 'Unknown: the decision was not recorded.';
@@ -395,6 +423,7 @@ function renderTradeOutcome(parent,trade){
  add(detail,'p','These are recorded stages. Candidate admission is not discovery time. Missing stages stay unknown; these intervals do not isolate scheduling, provider or market causes.');
  if(closed){const observed=report.observation;add(detail,'h4','Observed exit opportunity');fields([['Best recorded net liquidation mark',sol(observed.bestObservedNetLamports)],['Best mark observed at',stamp(observed.bestObservedAt)],['Giveback below best recorded mark',sol(observed.givebackFromObservedNetLamports)]]);add(detail,'p','This is the best recorded full-position modeled liquidation mark, after the modeled exit fee. Sampling can miss highs; it does not establish an achievable fill or missed profit.');}
  add(detail,'p','The receipt explains recorded decisions and cash flows. It does not establish why the market moved or assign causal blame.');
+ saleReview();
 }
 function renderFunnel(f,intelligence=null,isObserver=false){
  const el=byId('funnel');el.replaceChildren();const outer=add(el,'div',undefined,'funnel-grid');
@@ -583,14 +612,14 @@ function plot(points,epochStartAt=null){
  root.append(makeSvg('text',{x:left,y:height-13,fill:'#9eacc4','font-size':10},new Date(from).toISOString().slice(5,16).replace('T',' ')+' UTC'));
  root.append(makeSvg('text',{x:right,y:height-13,'text-anchor':'end',fill:'#9eacc4','font-size':10},new Date(end).toISOString().slice(5,16).replace('T',' ')+' UTC'));
 }
-function showSnapshot(s,received,f,equityHistory=null){
+function showSnapshot(s,received,f,equityHistory=null,saleReviews=null){
  latest=s;latestReceivedAt=received;readFailure=null;
  latestEquityHistory=equityHistory&&equityHistory.accountId===s.account.id&&equityHistory.source==='accepted-authoritative-portfolio-equity'?equityHistory:null;
  renderCards(s);
  put('positionsCount',s.positions.length+' REPORTED');
  put('tradesCount',s.trades.length+' REPORTED');
  renderTable('positions',['Token / quantity','Entry / net liquidation','Costs','Status'],s.positions.map(p=>[p.label+' · '+p.mint+' / '+p.quantity,money(p.entryCostUsd)+' / '+money(p.netLiquidationUsd),money(p.executionCostsUsd),p.status]),'NO OPEN POSITIONS','No positions in the current published window.',s.positions.map(p=>p.mint),0);
- renderTable('trades',['UTC / side','Token / quantity','Value / costs','Status / reason'],s.trades.map(t=>[t.at+' / '+t.side,t.mint+' / '+t.quantity,money(t.valueUsd)+' / '+money(t.executionCostsUsd),t.status+' · '+t.reason]),'NO PAPER TRADES','No trades in the current published window.',s.trades.map(t=>t.mint),1,(cell,index)=>renderTradeOutcome(cell,s.trades[index]));
+ renderTable('trades',['UTC / side','Token / quantity','Value / costs','Status / reason'],s.trades.map(t=>[t.at+' / '+t.side,t.mint+' / '+t.quantity,money(t.valueUsd)+' / '+money(t.executionCostsUsd),t.status+' · '+t.reason]),'NO PAPER TRADES','No trades in the current published window.',s.trades.map(t=>t.mint),1,(cell,index)=>renderTradeOutcome(cell,{...s.trades[index],saleReview:saleReviews?.[s.trades[index].id]}));
  renderCandidateIntelligence();renderMetrics(s.metrics,s.source,s.intelligence||null);plot(latestEquityHistory?.points??[],latest?.financialEpoch?.activatedAt??latestEquityHistory?.financialEpoch?.activatedAt??null);
  put('chartBasis','Actual portfolio equity in USD from the new release’s 10 SOL epoch. Earlier history is retained in exports and is not backfilled into this graph.');put('chartLegend','PORTFOLIO EQUITY · USD');
  const orders=s.intelligence?s.intelligence.pendingOrders:[];renderTable('orders',['Decision / side','Token / minimum receive','Reserved SOL','Execution / expiry'],orders.map(o=>[o.decidedAt+' / '+o.side,o.mint+' / '+o.quantityMinimum,o.reservedSol,o.executeAt+' / '+o.expiresAt]),s.intelligence?'NO PENDING ORDERS':'PENDING-ACTION DETAIL UNAVAILABLE',s.intelligence?'No unresolved orders or reservations were reported by this account.':'This source does not publish order-level details. Missing detail does not establish that no action is pending.');
@@ -615,7 +644,7 @@ async function refresh(){
   if(!resp.ok)throw new Error(resp.status===503?'SOURCE_NOT_CONFIGURED':'REPORTING_HTTP_'+resp.status);
   const result=await resp.json();
   if(!result||!result.snapshot||!result.freshness)throw new Error('SNAPSHOT_UNAVAILABLE');
-  showSnapshot(result.snapshot,result.receivedAt,result.freshness,result.equityHistory??null);
+  showSnapshot(result.snapshot,result.receivedAt,result.freshness,result.equityHistory??null,result.saleReviews??null);
  }catch(error){
   const reason=error instanceof Error?error.message:'REPORTING_UNAVAILABLE';
   readFailure=reason;
