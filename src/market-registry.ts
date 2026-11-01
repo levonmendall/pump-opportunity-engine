@@ -5,13 +5,15 @@ import {performance} from 'node:perf_hooks';
 import {createHash} from 'node:crypto';
 import type {WatchRow,WatchSeed,WatchIdentityMetadata} from './pilot-watch.js';
 import type {MarketIdentityHint,MarketActivityHint,MarketFeedStatus} from './market-discovery.js';
+import {OPPORTUNITY_PRIORITY_POLICY,observationFairnessBonus} from './opportunity-priority-policy.js';
+import {TOKEN_AGE_POLICY,validTokenCreationProof,tokenAgeDecision,type TokenCreationProof} from './token-age-policy.js';
 
 export class MarketRegistryContention extends Error {readonly code='MARKET_REGISTRY_CONTENTION';readonly callbackStarted=false;constructor(readonly sqliteCode:string){super('Market registry writer lease unavailable before callback');this.name='MarketRegistryContention';}}
 export function isMarketRegistryContention(error:unknown):error is MarketRegistryContention {return error instanceof MarketRegistryContention;}
 export class MarketRegistryReadOnlyViolation extends Error {readonly code='MARKET_REGISTRY_READ_ONLY_VIOLATION';constructor(message='Mutation is forbidden inside a market registry read snapshot'){super(message);this.name='MarketRegistryReadOnlyViolation';}}
 export type RegistryParameter=string|number|bigint|null|Buffer;
 export type RegistryMetricSummary={count:number;sum:number;mean:number|null;max:number|null;p50:number|null;p95:number|null};
-export type ObservationPriorityHints={version:'shared-flow-opportunity-priority-v1';horizonMs:number;recentNetSol:number|null;priorNetSol:number|null;netAccelerationSolPerMinute:number|null;priceReturnBps:number|null;priceDemandAgreement:number|null;priceMovePerGrossSol:number|null;twoSidedPriceStability:number|null;priceScope:{pool:string;source:string;firstAt:number;lastAt:number}|null;serviceableWaitMs:number;economicMerit:number;priority:number;directLiquidity:'unknown';financialPermission:false};
+export type ObservationPriorityHints={version:'shared-flow-opportunity-priority-v2';horizonMs:number;recentNetSol:number|null;priorNetSol:number|null;netAccelerationSolPerMinute:number|null;priceReturnBps:number|null;priceDemandAgreement:number|null;priceMovePerGrossSol:number|null;twoSidedPriceStability:number|null;priceScope:{pool:string;source:string;firstAt:number;lastAt:number}|null;serviceableWaitMs:number;economicMerit:number;priority:number;fairnessBonus:number;economicLeaderMint:string;economicLeaderMerit:number;waitChangedWinner:boolean;directLiquidity:'unknown';financialPermission:false};
 export type MarketEvidence={buyLamports:string;sellLamports:string;buyHints:number;sellHints:number;activityHints:number;lastActivityAt:number|null;lastEconomicActivityAt:number|null;lastPrice:number|null;fingerprint:string};
 export type EconomicFlowAfter={buyLamports:string;sellLamports:string;knownEvents:number;unknownEvents:number;latestAt:number|null;complete:boolean;retentionStartAt:number};
 type EconomicFlowCache=Omit<EconomicFlowAfter,'complete'|'retentionStartAt'>&{decisionAt:number;counter:number;bytes:number};
@@ -51,6 +53,9 @@ export class MarketRegistry {
   this.db=new Database(path);this.db.pragma('journal_mode = WAL');this.db.pragma('synchronous = FULL');this.db.pragma('busy_timeout = 25');this.db.pragma('foreign_keys = ON');
   this.db.exec(`
    CREATE TABLE IF NOT EXISTS registry_metadata(key TEXT PRIMARY KEY,body TEXT NOT NULL);
+   CREATE TABLE IF NOT EXISTS token_creations(mint TEXT PRIMARY KEY,created_at INTEGER NOT NULL,verified_at INTEGER NOT NULL,proof TEXT NOT NULL);
+   CREATE INDEX IF NOT EXISTS token_creations_age ON token_creations(created_at,mint);
+   CREATE TABLE IF NOT EXISTS token_creation_requests(mint TEXT NOT NULL,signature TEXT NOT NULL,next_attempt_at INTEGER NOT NULL,terminal INTEGER NOT NULL,last_reason TEXT NOT NULL,PRIMARY KEY(mint,signature));
    CREATE TABLE IF NOT EXISTS migration_deliveries(signature TEXT PRIMARY KEY,received_at INTEGER NOT NULL,body TEXT NOT NULL,state TEXT NOT NULL DEFAULT 'PENDING');
    CREATE INDEX IF NOT EXISTS migration_deliveries_order ON migration_deliveries(state,received_at,signature);
    CREATE TABLE IF NOT EXISTS market_tokens(mint TEXT PRIMARY KEY,first_seen_at INTEGER NOT NULL,last_seen_at INTEGER NOT NULL,last_activity_at INTEGER,activity_score REAL NOT NULL DEFAULT 0,screen_state TEXT NOT NULL DEFAULT 'UNAVAILABLE',activity_hints INTEGER NOT NULL DEFAULT 0,buy_hints INTEGER NOT NULL DEFAULT 0,sell_hints INTEGER NOT NULL DEFAULT 0,buy_lamports TEXT NOT NULL DEFAULT '0',sell_lamports TEXT NOT NULL DEFAULT '0',last_price REAL,screened_at INTEGER NOT NULL,last_signature TEXT,last_activity_source TEXT,last_activity_kind TEXT,last_economic_activity_at INTEGER);
@@ -216,9 +221,11 @@ export class MarketRegistry {
    FROM observed
   ),ranked AS (
    SELECT *,(${ordinal('recent_net')}+${ordinal('acceleration')}+${ordinal('price_agreement')}+${ordinal('price_stability')})/4.0 economic_merit FROM dimensions
-  ) SELECT *,(SELECT body FROM watch_rows w WHERE w.signature=ranked.signature) body,economic_merit*(1.0+serviceable_wait_ms/${SHARED_ACTIVITY_HORIZON_MS}.0) selection_priority FROM ranked
-   ORDER BY selection_priority DESC,waiting_since,first_seen_at,signature LIMIT 1`).get(at,...(q.params??[]),recent,recent,recent,recent,recent,recent,recent,prior,at,recent,at) as {body:string;recent_net:number|null;prior_net:number|null;acceleration:number|null;price_return:number|null;price_agreement:number|null;price_stability:number|null;recent_gross:number|null;pool:string;price_hint_source:string|null;price_first_at:number|null;price_last_at:number|null;serviceable_wait_ms:number;economic_merit:number;selection_priority:number}|undefined;
-  return row?{row:JSON.parse(row.body) as WatchRow,hints:{version:'shared-flow-opportunity-priority-v1',horizonMs:SHARED_ACTIVITY_HORIZON_MS,recentNetSol:row.recent_net,priorNetSol:row.prior_net,netAccelerationSolPerMinute:row.acceleration,priceReturnBps:row.price_return===null?null:row.price_return*10000,priceDemandAgreement:row.price_agreement,priceMovePerGrossSol:row.price_return===null||!row.recent_gross?null:Math.abs(row.price_return)/row.recent_gross,twoSidedPriceStability:row.price_stability,priceScope:row.price_return===null?null:{pool:row.pool,source:row.price_hint_source!,firstAt:row.price_first_at!,lastAt:row.price_last_at!},serviceableWaitMs:row.serviceable_wait_ms,economicMerit:row.economic_merit,priority:row.selection_priority,directLiquidity:'unknown',financialPermission:false}}:undefined;
+  ) SELECT *,(SELECT body FROM watch_rows w WHERE w.signature=ranked.signature) body,economic_merit+${OPPORTUNITY_PRIORITY_POLICY.fairnessMaximum}*MIN(1.0,serviceable_wait_ms/${OPPORTUNITY_PRIORITY_POLICY.fairnessSaturationMs}.0) selection_priority,
+    FIRST_VALUE(mint) OVER(ORDER BY economic_merit DESC,waiting_since,first_seen_at,signature) economic_leader_mint,
+    MAX(economic_merit) OVER() economic_leader_merit FROM ranked
+   ORDER BY selection_priority DESC,waiting_since,first_seen_at,signature LIMIT 1`).get(at,...(q.params??[]),recent,recent,recent,recent,recent,recent,recent,prior,at,recent,at) as {body:string;mint:string;recent_net:number|null;prior_net:number|null;acceleration:number|null;price_return:number|null;price_agreement:number|null;price_stability:number|null;recent_gross:number|null;pool:string;price_hint_source:string|null;price_first_at:number|null;price_last_at:number|null;serviceable_wait_ms:number;economic_merit:number;selection_priority:number;economic_leader_mint:string;economic_leader_merit:number}|undefined;
+  return row?{row:JSON.parse(row.body) as WatchRow,hints:{version:'shared-flow-opportunity-priority-v2',horizonMs:SHARED_ACTIVITY_HORIZON_MS,recentNetSol:row.recent_net,priorNetSol:row.prior_net,netAccelerationSolPerMinute:row.acceleration,priceReturnBps:row.price_return===null?null:row.price_return*10000,priceDemandAgreement:row.price_agreement,priceMovePerGrossSol:row.price_return===null||!row.recent_gross?null:Math.abs(row.price_return)/row.recent_gross,twoSidedPriceStability:row.price_stability,priceScope:row.price_return===null?null:{pool:row.pool,source:row.price_hint_source!,firstAt:row.price_first_at!,lastAt:row.price_last_at!},serviceableWaitMs:row.serviceable_wait_ms,economicMerit:row.economic_merit,priority:row.selection_priority,fairnessBonus:observationFairnessBonus(row.serviceable_wait_ms),economicLeaderMint:row.economic_leader_mint,economicLeaderMerit:row.economic_leader_merit,waitChangedWinner:row.mint!==row.economic_leader_mint,directLiquidity:'unknown',financialPermission:false}}:undefined;
  }
  count(where?:string,params:RegistryParameter[]=[]):number{return Number((this.statement(`SELECT COUNT(*) AS n FROM watch_rows w WHERE w.archived=0${where?` AND (${where})`:''}`).get(...params) as {n:number}).n);}
  aggregate(expressions:Record<string,string>,where?:string,params:RegistryParameter[]=[]):Record<string,number|null>{need(Object.keys(expressions).every(k=>/^[A-Za-z][A-Za-z0-9_]*$/.test(k)),'MARKET_REGISTRY_AGGREGATE_ALIAS');return this.statement(`SELECT ${Object.entries(expressions).map(([key,expr])=>`${expr} AS ${key}`).join(',')} FROM watch_rows w WHERE w.archived=0${where?` AND (${where})`:''}`).get(...params) as Record<string,number|null>;}
@@ -335,7 +342,7 @@ export class MarketRegistry {
  /** Current observation selects actual retained mint hints, without needing a
   * transaction signature or creation archive. The SDK still has to establish
   * the canonical pool's existence and supported account state. */
- nextObservationCandidate(at:number):{mint:string;signature:string;receivedAt:number;activityAt:number|null;source:string;priority:number}|undefined {
+ nextObservationCandidate(at:number,enforceTokenAge24h=false):{mint:string;signature:string;receivedAt:number;activityAt:number|null;source:string;priority:number}|undefined {
   need(integer(at),'MARKET_REGISTRY_OBSERVATION_TIME');
   return this.statement(`WITH hints AS (
    SELECT mint,last_activity_at received_at FROM market_tokens WHERE last_activity_at>=? AND last_activity_at<=? AND activity_hints>0
@@ -347,8 +354,33 @@ export class MarketRegistry {
    WHERE (t.last_activity_at IS NULL OR t.last_activity_at<=?)
    AND NOT EXISTS(SELECT 1 FROM watch_rows w WHERE w.mint=t.mint AND w.archived=0 AND (w.verified_at IS NOT NULL OR json_extract(w.body,'$.observationIdentity.basis')='canonical-pool-hint' OR w.state IN ('HELD','ENTRY_PENDING','PERMANENTLY_UNSUPPORTED')))
    AND NOT EXISTS(SELECT 1 FROM distinct_events d WHERE d.kind='native-current-hint-invalid' AND d.key=t.mint)
-   ORDER BY t.activity_score DESC,hints.received_at DESC,t.mint LIMIT 1`).get(at-SHARED_ACTIVITY_HORIZON_MS,at,at-SHARED_ACTIVITY_HORIZON_MS,at,at) as {mint:string;signature:string;receivedAt:number;activityAt:number|null;source:string;priority:number}|undefined;
+    ${enforceTokenAge24h?'AND EXISTS(SELECT 1 FROM token_creations c WHERE c.mint=t.mint AND c.created_at<=? AND c.created_at>=? AND c.verified_at<=?)':''}
+   ORDER BY t.activity_score DESC,hints.received_at DESC,t.mint LIMIT 1`).get(at-SHARED_ACTIVITY_HORIZON_MS,at,at-SHARED_ACTIVITY_HORIZON_MS,at,at,...(enforceTokenAge24h?[at,at-TOKEN_AGE_POLICY.maximumAgeMs,at]:[])) as {mint:string;signature:string;receivedAt:number;activityAt:number|null;source:string;priority:number}|undefined;
  }
+ tokenCreationProof(mint:string):TokenCreationProof|null{
+  const row=this.statement('SELECT created_at,verified_at,proof FROM token_creations WHERE mint=?').get(mint) as {created_at:number;verified_at:number;proof:string}|undefined;if(!row)return null;
+  const proof:unknown=JSON.parse(row.proof);need(validTokenCreationProof(proof)&&proof.mint===mint&&proof.createdAt===row.created_at&&proof.availableAt===row.verified_at,'TOKEN_CREATION_STORED_PROOF_INVALID');return proof;
+ }
+ tokenAgeEligibility(mint:string,at:number){return tokenAgeDecision(mint,at,this.tokenCreationProof(mint));}
+ putTokenCreationProof(proof:TokenCreationProof){this.transaction(()=>{
+  need(validTokenCreationProof(proof)&&proof.availableAt<=this.clock(),'TOKEN_CREATION_PROOF_INVALID');const old=this.tokenCreationProof(proof.mint);
+  need(!old||old.signature===proof.signature&&old.slot===proof.slot&&old.createdAt===proof.createdAt&&old.transactionSha256===proof.transactionSha256,'TOKEN_CREATION_PROOF_CONFLICT');
+  this.statement('INSERT OR IGNORE INTO token_creations(mint,created_at,verified_at,proof) VALUES(?,?,?,?)').run(proof.mint,proof.createdAt,proof.availableAt,json(proof));
+ });}
+ /** Only already observed creation signatures for currently active/migrated
+  * candidates are queried. No token-history scan or per-launch RPC fan-out. */
+ nextTokenCreationRequest(at:number):{mint:string;signature:string}|undefined{
+  need(integer(at),'TOKEN_CREATION_REQUEST_TIME');return this.statement(`SELECT p.mint,p.signature FROM identity_provenance p JOIN market_tokens t ON t.mint=p.mint
+   LEFT JOIN token_creation_requests r ON r.mint=p.mint AND r.signature=p.signature
+   WHERE p.kind='creation' AND p.source='pumpportal-new-token' AND p.signature!='' AND p.first_seen_at>=? AND p.first_seen_at<=?
+    AND NOT EXISTS(SELECT 1 FROM token_creations c WHERE c.mint=p.mint)
+    AND (r.mint IS NULL OR (r.terminal=0 AND r.next_attempt_at<=?))
+    AND (t.last_activity_at>=? OR EXISTS(SELECT 1 FROM identity_provenance m WHERE m.mint=p.mint AND m.kind='migration' AND m.last_seen_at>=?))
+    AND (EXISTS(SELECT 1 FROM watch_rows w WHERE w.mint=p.mint AND w.pool IS NOT NULL AND w.archived=0 AND w.state NOT IN ('HELD','ENTRY_PENDING','PERMANENTLY_UNSUPPORTED')) OR EXISTS(SELECT 1 FROM identity_provenance m WHERE m.mint=p.mint AND m.kind='migration'))
+   ORDER BY t.activity_score DESC,p.first_seen_at DESC,p.mint,p.signature LIMIT 1`).get(Math.max(0,at-TOKEN_AGE_POLICY.maximumAgeMs),at,at,at-SHARED_ACTIVITY_HORIZON_MS,at-SHARED_ACTIVITY_HORIZON_MS) as {mint:string;signature:string}|undefined;
+ }
+ deferTokenCreationRequest(request:{mint:string;signature:string},at:number,reason:string,terminal=false){this.write(()=>{need(name(request.mint)&&name(request.signature)&&integer(at)&&name(reason),'TOKEN_CREATION_REQUEST_INVALID');this.statement('INSERT INTO token_creation_requests(mint,signature,next_attempt_at,terminal,last_reason) VALUES(?,?,?,?,?) ON CONFLICT(mint,signature) DO UPDATE SET next_attempt_at=excluded.next_attempt_at,terminal=excluded.terminal,last_reason=excluded.last_reason').run(request.mint,request.signature,at+60000,terminal?1:0,reason);});}
+ tokenAgeSummary(at:number){need(integer(at),'TOKEN_CREATION_REPORT_TIME');const row=this.statement('SELECT COUNT(*) verified,SUM(CASE WHEN created_at<=? AND created_at>=? AND verified_at<=? THEN 1 ELSE 0 END) within24h FROM token_creations').get(at,at-TOKEN_AGE_POLICY.maximumAgeMs,at) as {verified:number;within24h:number|null};return {policy:TOKEN_AGE_POLICY.version,maximumAgeMs:TOKEN_AGE_POLICY.maximumAgeMs,verified:row.verified,within24h:row.within24h??0,unknownExcluded:true,creationNotMigration:true};}
  nextOriginCandidate(at:number):{mint:string;signature:string;receivedAt:number;source:string;priority:number}|undefined {
   const row=this.statement(`SELECT t.mint,t.last_signature signature,t.last_activity_at receivedAt,t.last_activity_source source,t.activity_score priority FROM market_tokens t
    WHERE t.activity_score>0 AND t.last_activity_at>=? AND t.last_activity_at<=? AND t.last_signature IS NOT NULL

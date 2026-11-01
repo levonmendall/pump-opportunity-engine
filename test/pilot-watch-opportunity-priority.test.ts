@@ -77,10 +77,21 @@ test('original event time and deduplication determine acceleration; replayed or 
  }finally{f.registry.close();}
 });
 
-test('continuous serviceable waiting credit prevents starvation without reopening unchanged pool refusals',()=>{
+test('bounded waiting credit cannot outrank strong current buying or reopen unchanged pool refusals',()=>{
  const f=fixture();try{
   f.seed('patient');f.seed('closed');f.watch.noteEvaluation('closed',{kind:'technical-unavailable',windowEndAt:null,evidence:'NATIVE_OBSERVATION_POOL_MISSING'},AT);f.watch.transition('closed','DEFERRED','same pool still absent',AT);
   f.setAt(AT+120000);f.seed('fresh',AT+120000);f.hint('fresh','prior',AT+30000,1);f.hint('fresh','recent',AT+119000,100);f.hint('closed','irrelevant',AT+119000,10000,undefined,{pool:'bonding-curve'});
-  assert.equal(f.next()!.mint,'patient');assert.equal(f.priority().serviceableWaitMs,120000);assert.equal(f.watch.next(AT+120000,new Set(['patient','fresh'])),null,'age or unrelated flow cannot bypass a closed pool-evidence gate');
+  assert.equal(f.next()!.mint,'fresh');assert.equal(f.priority().serviceableWaitMs,0);assert.equal(f.priority().fairnessBonus,0);assert.equal(f.priority().waitChangedWinner,false);assert.equal(f.watch.next(AT+120000,new Set(['patient','fresh'])),null,'age or unrelated flow cannot bypass a closed pool-evidence gate');
  }finally{f.registry.close();}
+});
+
+test('SQL waiting bonus is bounded even after a full day with no recent evidence',()=>{
+ const f=fixture();try{
+  f.seed('patient');f.setAt(AT+86400000);f.seed('fresh',AT+86400000);f.hint('fresh','prior',AT+86400000-90000,1);f.hint('fresh','recent',AT+86400000-1000,100);
+  assert.equal(f.next()!.mint,'fresh');assert.equal(f.priority().waitChangedWinner,false);
+  assert.equal(f.watch.next(AT+86400000,new Set(['fresh']))!.mint,'patient');assert.equal(f.priority().fairnessBonus,0.05);assert.equal(f.priority().priority,0.55);
+ }finally{f.registry.close();}
+});
+test('equal-economic-evidence candidates receive bounded fairness, with auditable no-bonus leader',()=>{
+ const f=fixture();try{f.seed('waiting');f.setAt(AT+60000);f.seed('new',AT+60000);assert.equal(f.next()!.mint,'waiting');assert.equal(f.priority().fairnessBonus,0.05);assert.equal(f.priority().economicLeaderMint,'waiting');assert.ok(Math.abs(f.priority().priority-f.priority().economicMerit-0.05)<1e-12);}finally{f.registry.close();}
 });
