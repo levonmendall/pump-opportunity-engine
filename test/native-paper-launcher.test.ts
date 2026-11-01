@@ -2,6 +2,7 @@
 import {test} from 'node:test';import assert from 'node:assert/strict';
 import {mkdtempSync,writeFileSync,rmSync,readFileSync} from 'node:fs';import {tmpdir} from 'node:os';import {join} from 'node:path';
 import {parseNativePaperArgs,runNativePaper,nativePaperReportingAdmission,nativePaperRequestOperationBound} from '../src/run-native-paper.js';
+import {NativePaperReportTimings,nativePaperReportAdmissionBound,NATIVE_PAPER_REPORT_ADMISSION_RESERVE_MS} from '../src/native-paper-reporting-timing.js';
 import {POE_OPERATING_ACCOUNT} from '../src/poe-operating-account.js';
 import {NATIVE_PAPER_DATA_CONTRACT_VERSION} from '../src/native-paper-contract.js';
 const args=['--resume','--directory','/does-not-exist','--input','/must-not-be-read','--paper-contract',NATIVE_PAPER_DATA_CONTRACT_VERSION];
@@ -44,6 +45,27 @@ test('COHERENT report and checkpoint service obey committed candidate latest-sta
  assert.equal(nativePaperReportingAdmission({...due,at:20001,candidateLatestStartAt:20010}).admitted,true,'small dispatch jitter within the advertised latest start is allowed');
  assert.equal(nativePaperReportingAdmission({...due,held:2,nextProtectionAt:20100,candidateLatestStartAt:25000}).reason,'next-protection-start-reserved');
  assert.equal(nativePaperReportingAdmission({...due,nextPendingAt:20100,candidateLatestStartAt:19999}).reason,'pending-financial-action-has-priority');
+});
+
+test('a measured 600ms report reserves actual work plus local headroom before pending, protection and candidate deadlines',()=>{
+ let elapsed=0;const phases=new NativePaperReportTimings(()=>elapsed);phases.measure('candidate-status',()=>{elapsed+=400;});phases.measure('financial-history',()=>{elapsed+=200;});
+ const budgetMs=nativePaperReportAdmissionBound({maximumCompletedMs:0,phases:phases.usage(),timingAvailable:phases.timingAvailable})!;
+ assert.equal(NATIVE_PAPER_REPORT_ADMISSION_RESERVE_MS,250);assert.equal(budgetMs,850,'startup phase measurements prime admission before a complete-report duration exists');
+ const due={at:20000,lastReportAt:0,held:1,nextProtectionAt:20300,nextPendingAt:null};assert.equal(nativePaperReportingAdmission(due).admitted,true,'the former 250ms declaration fits a 300ms gap');assert.equal(nativePaperReportingAdmission({...due,budgetMs}).reason,'next-protection-start-reserved');
+ assert.equal(nativePaperReportingAdmission({...due,held:0,nextProtectionAt:null,nextPendingAt:20300,budgetMs}).reason,'pending-financial-action-has-priority');
+ assert.equal(nativePaperReportingAdmission({...due,held:0,nextProtectionAt:null,candidateLatestStartAt:20300-budgetMs,budgetMs}).reason,'committed-candidate-deadline-reserved');
+ assert.equal(nativePaperReportingAdmission({...due,nextProtectionAt:21000,nextPendingAt:21500,candidateLatestStartAt:22000-budgetMs,budgetMs}).admitted,true);
+ const whole=nativePaperReportAdmissionBound({maximumCompletedMs:1200.25,phases:phases.usage(),timingAvailable:true})!;assert.equal(whole,1451);assert.equal(nativePaperReportingAdmission({...due,nextProtectionAt:21451,budgetMs:whole}).admitted,false,'an observed cost is never clipped to the former input ceiling');assert.equal(nativePaperReportingAdmission({...due,nextProtectionAt:22000,budgetMs:whole}).admitted,true);
+ assert.deepEqual(due,{at:20000,lastReportAt:0,held:1,nextProtectionAt:20300,nextPendingAt:null},'admission never advances a source clock or deadline');
+ const source=readFileSync(new URL('../src/run-native-paper.ts',import.meta.url),'utf8');assert.match(source,/discretionaryAdmission\(workBoundMs,at\)/);assert.match(source,/candidateLatestStartAt:candidate.latestStartAt,budgetMs:workBoundMs/);assert.match(source,/elapsed>NATIVE_PAPER_REPORT_BUDGET_MS/,'250ms remains the overrun target');
+});
+
+test('unavailable or invalid report timing defers work without replacing original clocks or bounds',()=>{
+ for(const maximumCompletedMs of [NaN,Infinity,-1,10000])assert.equal(nativePaperReportAdmissionBound({maximumCompletedMs,phases:[],timingAvailable:true}),null);
+ assert.equal(nativePaperReportAdmissionBound({maximumCompletedMs:600,phases:[],timingAvailable:false}),null);
+ let clock=10;const phases=new NativePaperReportTimings(()=>clock);assert.equal(phases.measure('candidate-status',()=>{clock=9;return 'valid result';}),'valid result');assert.equal(phases.timingAvailable,false);assert.equal(nativePaperReportAdmissionBound({maximumCompletedMs:0,phases:phases.usage(),timingAvailable:phases.timingAvailable}),null);
+ const due={at:20000,lastReportAt:0,held:0,nextProtectionAt:null,nextPendingAt:null,budgetMs:850};
+ for(const invalid of [{at:NaN},{lastReportAt:20001},{nextPendingAt:NaN},{nextProtectionAt:Infinity},{candidateLatestStartAt:NaN},{budgetMs:Infinity},{budgetMs:-1}]){const result=nativePaperReportingAdmission({...due,...invalid});assert.equal(result.admitted,false);assert.equal(result.reason,'report-timing-unavailable');}
 });
 
 

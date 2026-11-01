@@ -7,9 +7,10 @@ import {mkdtempSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
 import {PublicKey} from '@solana/web3.js';
-import {PaperLedger,OPERATIONAL_REPORTING_ENTRY_PAUSE,type UsdPrice} from '../src/ledger.js';
+import {PaperLedger,OPERATIONAL_REPORTING_ENTRY_PAUSE,CANDIDATE_SOURCE_RECOVERY_PAUSE,type UsdPrice} from '../src/ledger.js';
 import {NativePaper,NATIVE_PAPER_FINANCIAL_READINESS_POLICY,NATIVE_PAPER_ENTRY_BLOCKERS,nativePaperDerivedEntryBlocker} from '../src/native-paper.js';
 import {NativePaperCashMaintenance,NativePaperReportingHealth,NATIVE_PAPER_REPORT_BUDGET_MS,NATIVE_PAPER_FINANCIAL_REPORTING_POLICY,nativePaperBackupDue,nativePaperEssentialEvidence} from '../src/run-native-paper.js';
+import {NativePaperReportTimings,nativePaperReportingSample} from '../src/native-paper-reporting-timing.js';
 import {FlowWindow,assessPredictiveBuying,type NormalizedTrade} from '../src/strategy.js';
 import {nativePaperFeaturesSha256} from '../src/native-paper-contract.js';
 import {PILOT_VERSION,PILOT_CONTRACT_SHA256} from '../src/pilot-contract.js';
@@ -198,6 +199,40 @@ test('selected operating mode recovers financial permission without fabricating 
  const event=f.rows.find(r=>r.kind==='native-paper-financial-readiness-recovered')!.data;assert.equal(event.financialPermissionOnly,true);assert.equal(event.candidateWindowClaimed,false);assert.equal(event.entryQuoteClaimed,false);assert.equal(event.orderCreated,false);assert.equal(Object.hasOwn(event,'windowEndAt'),false);assert.equal(event.source.bankClockAt,f.base+60000);assert.equal(event.source.receivedAt,f.base+60000);assert.deepEqual(f.calls,{context:0,preparation:0,quote:0,execution:0});assert.deepEqual(f.ledger.state().pending,{});
 });
 
+test('operating cash refreshes remain reconciliations after permission is enabled and expose real scheduling misses',t=>{
+ const f=fixture(t,false,true);assert.equal(f.refresh().recovered,true);const controls=structuredClone(f.ledger.state().controls),before=f.bridge.trader.funnel.reconciled;
+ const maintenance=new NativePaperCashMaintenance({now:()=>f.at,monotonic:()=>f.at,cpu:()=>0,busy:()=>false,lastReconciledAt:()=>f.ledger.state().daily.reconciledAt,refresh:()=>f.refresh()});
+ for(const delta of [1000,1000,3001]){f.at+=delta;f.price={...f.price!,at:f.at};maintenance.run();assert.equal(f.ledger.state().daily.reconciledAt,f.at);assert.equal(f.projection().entriesEnabled,true);}
+ const metrics=maintenance.usage();assert.equal(metrics.reconciled,3);assert.equal(f.bridge.trader.funnel.reconciled-before,3);assert.equal(metrics.busyDeferrals,0);assert.equal(metrics.healthyMaintenanceArmed,true);assert.equal(metrics.deadlineMisses,1);assert.equal(metrics.maximumLatenessMs,2001);assert.equal(metrics.recoveries,0);
+ assert.deepEqual(f.ledger.state().controls,controls,'freshness maintenance cannot rewrite the existing permission');assert.deepEqual(f.calls,{context:0,preparation:0,quote:0,execution:0});
+});
+
+test('a denied operating permission does not erase a successful cash refresh or enable entries',t=>{
+ const f=fixture(t,false,true);f.admission=false;const before=f.ledger.state().controls;
+ assert.deepEqual(f.refresh(),{kind:'reconciled',recovered:false});assert.equal(f.ledger.state().daily.reconciledAt,f.at);assert.deepEqual(f.ledger.state().controls,before);assert.equal(f.projection().entriesEnabled,false);
+});
+
+test('report samples genuine financial state after slow candidate summaries and records the missed deadline',t=>{
+ const f=fixture(t,false,true);f.refresh();const controls=structuredClone(f.ledger.state().controls),originalPrice=structuredClone(f.price);
+ const maintenance=new NativePaperCashMaintenance({now:()=>f.at,monotonic:()=>f.at,cpu:()=>0,busy:()=>false,lastReconciledAt:()=>f.ledger.state().daily.reconciledAt,refresh:()=>f.refresh()}),timings=new NativePaperReportTimings(()=>f.at);
+ f.at+=1000;maintenance.run();
+ const sampled=nativePaperReportingSample({now:()=>f.at,timings,candidateStatus:()=>{f.at+=3001;return {observed:'OFFLINE slow registry summary'};},maintainCash:()=>maintenance.run(NATIVE_PAPER_REPORT_BUDGET_MS),financialSnapshot:at=>({at,state:f.ledger.state(),projection:f.ledger.projection(at,f.price!)})});
+ assert.equal(sampled.at,f.at);assert.equal(sampled.financial.state.daily.reconciledAt,sampled.at);assert.equal(sampled.financial.projection.entriesEnabled,true);assert.deepEqual(sampled.financial.state.controls,controls);assert.deepEqual(f.price,originalPrice,'a new reconciliation never changes the original USD observation time');
+ assert.equal(maintenance.usage().deadlineMisses,1,'the report does not erase the real scheduler miss');assert.equal(maintenance.usage().maximumLatenessMs,2001);assert.equal(timings.usage().find(row=>row.stage==='candidate-status')!.lastMs,3001);assert.equal(NATIVE_PAPER_FINANCIAL_READINESS_POLICY.maximumReconciliationAgeMs,2000);assert.deepEqual(f.calls,{context:0,preparation:0,quote:0,execution:0});
+});
+
+test('report sampling cannot bypass a busy financial owner or mask still-stale reconciliation',t=>{
+ const f=fixture(t,false,true);f.refresh();const before=f.ledger.state(),maintenance=new NativePaperCashMaintenance({now:()=>f.at,busy:()=>true,lastReconciledAt:()=>f.ledger.state().daily.reconciledAt,refresh:()=>{assert.fail('busy report must not invoke cash reconciliation');return f.refresh();}});
+ const result=nativePaperReportingSample({now:()=>f.at,timings:new NativePaperReportTimings(()=>f.at),candidateStatus:()=>{f.at+=3001;return null;},maintainCash:()=>maintenance.run(NATIVE_PAPER_REPORT_BUDGET_MS),financialSnapshot:at=>({state:f.ledger.state(),projection:f.ledger.projection(at,f.price!)})});
+ assert.equal(result.financial.state.revision,before.revision);assert.equal(result.financial.state.controls.entriesEnabled,true);assert.equal(result.financial.projection.entriesEnabled,false);assert.equal(f.blocker(),NATIVE_PAPER_ENTRY_BLOCKERS.reconciliationStale);assert.equal(maintenance.usage().busyDeferrals,1);
+});
+
+test('operating permission financial failure stays a maintenance failure after cash reconciliation',t=>{
+ const f=fixture(t,false,true);f.ledger.resume=(()=>{throw Error('OFFLINE uncertain permission commit');})as PaperLedger['resume'];
+ const maintenance=new NativePaperCashMaintenance({now:()=>f.at,monotonic:()=>f.at,cpu:()=>0,busy:()=>false,lastReconciledAt:()=>f.ledger.state().daily.reconciledAt,refresh:()=>f.refresh()});maintenance.run();
+ assert.equal(maintenance.usage().financialFailures,1);assert.equal(maintenance.usage().reconciled,0);assert.equal(maintenance.usage().healthyMaintenanceArmed,false);assert.equal(f.bridge.trader.entryReadinessSafety().financialAvailable,false);assert.equal(f.projection().entriesEnabled,false);
+});
+
 test('operating financial permission requires real connected source Clock and preserves owner and protection stops',async t=>{
  for(const gate of ['connection','clock','owner','protection']as const)await t.test(gate,st=>{
   const f=fixture(st,false,true);if(gate==='connection')f.connected=false;if(gate==='clock')f.bankClockAt=f.base+29000;if(gate==='owner')f.ledger.pause('OFFLINE actual owner',f.at,'operator paused new entries');if(gate==='protection')f.bridge.trader.pauseNewEntries('completed PAPER protection gap exceeded research boundary');
@@ -320,4 +355,41 @@ test('invalid report measurements fail closed while the unchanged 250ms budget r
 
 test('report clock failures close prior readiness and preserve the original publication failure',()=>{
  for(const stage of ['start','end','publication-and-end']as const){const health=new NativePaperReportingHealth();health.observe(1,true);let reads=0,published=false;const clockError=Error('OFFLINE report clock unavailable'),publicationError=Error('OFFLINE publication failed');assert.throws(()=>health.complete(()=>{published=true;if(stage==='publication-and-end')throw publicationError;},()=>true,()=>{reads++;if(stage==='start'||reads===2)throw clockError;return 0;}),error=>error===(stage==='publication-and-end'?publicationError:clockError));assert.equal(health.entryAllowed,false);assert.equal(published,stage!=='start');}
+});
+
+
+test('source-only quarantine resumes only after actual source and current financial readiness recover',t=>{
+ const f=fixture(t,false,true);assert.equal(f.refresh().recovered,true);
+ const before=f.ledger.state();f.connected=false;f.admission=false;
+ f.bridge.trader.pauseNewEntries(CANDIDATE_SOURCE_RECOVERY_PAUSE);
+ assert.equal(f.ledger.state().controls.entriesEnabled,false);
+ assert.equal(f.bridge.trader.entryReadinessSafety().newHardPauseObserved,false);
+ assert.equal(f.refresh().recovered,false);
+ f.connected=true;assert.equal(f.refresh().recovered,false,'source alone cannot reopen financial admission');
+ f.admission=true;f.bankClockAt=f.at-30001;f.supportAt=f.at-30001;
+ assert.equal(f.refresh().recovered,false,'expired original bank Clock cannot reopen entries');
+ f.bankClockAt=f.at;f.supportAt=f.at;assert.equal(f.refresh().recovered,true);
+ const after=f.ledger.state();assert.equal(after.lamports,before.lamports);assert.deepEqual(after.positions,before.positions);assert.deepEqual(after.pending,{});
+ assert.equal(after.executionCosts,before.executionCosts);assert.deepEqual(f.calls,{context:0,preparation:0,quote:0,execution:0});
+ assert.ok(f.rows.some(r=>r.kind==='native-paper-financial-readiness-recovered'&&r.data.financialPermissionOnly===true));
+});
+
+test('source quarantine never clears owner intent or a newly observed financial hard failure',async t=>{
+ for(const fault of ['owner','stop','financial'] as const)await t.test(fault,st=>{
+  const f=fixture(st,false,true);assert.equal(f.refresh().recovered,true);
+  if(fault==='owner')f.ledger.pause('operator-pause:OFFLINE-source-recovery',f.at,'operator paused new entries');
+  else if(fault==='stop')f.ledger.safeStop('owner-safe-stop:OFFLINE',f.at);
+  else f.bridge.trader.financialMaintenanceFailed('runtime-failure',Error('OFFLINE uncertain financial callback'));
+  const controls=f.ledger.state().controls;f.bridge.trader.pauseNewEntries(CANDIDATE_SOURCE_RECOVERY_PAUSE);
+  assert.deepEqual(f.ledger.state().controls,controls);assert.equal(f.refresh().recovered,false);
+  assert.equal(f.ledger.state().controls.entriesEnabled,false);assert.deepEqual(f.calls,{context:0,preparation:0,quote:0,execution:0});
+ });
+});
+
+test('a normal process restart retains typed source quarantine provenance without granting entries at startup',t=>{
+ const f=fixture(t,false,true);assert.equal(f.refresh().recovered,true);f.bridge.trader.pauseNewEntries(CANDIDATE_SOURCE_RECOVERY_PAUSE);
+ const bridge=f.make();assert.equal(f.ledger.state().controls.entriesEnabled,false);
+ assert.equal(bridge.trader.entryReadinessSafety().newHardPauseObserved,false);
+ assert.equal(bridge.maintainFlatFinancialReadiness(f.price).recovered,true);
+ assert.deepEqual(f.ledger.state().pending,{});assert.equal(f.ledger.state().executionCosts,'0');
 });

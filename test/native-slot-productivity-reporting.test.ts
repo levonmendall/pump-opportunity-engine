@@ -49,3 +49,19 @@ test('history-not-observed and deadline window failures stay distinct from verif
  const p=projectNativeSlotProductivityReporting({slotProductivity:value},T)!;assert.deepEqual(p.failureCounts,{historyNotObservedWindows:3,decisionDeadlineWindows:2,auditUnusableWindows:0,providerUnavailableWindows:0});assert.doesNotMatch(JSON.stringify(p),/DO_NOT_EXPORT/);validateNativeSlotProductivityReporting(p,T);
  const bad=structuredClone(p);bad.failureCounts!.providerUnavailableWindows=-1;assert.throws(()=>validateNativeSlotProductivityReporting(bad,T),/INVALID/);delete value.failureCounts;assert.equal(projectNativeSlotProductivityReporting({slotProductivity:value},T)!.failureCounts,undefined);
 });
+test('subscription send receipts remain optional and reject future or unallocated sends',()=>{
+ const legacy=projectNativeSlotProductivityReporting({slotProductivity:raw()},T)!;
+ assert.equal(Object.hasOwn(legacy.slots[0]!,'subscriptionSentAt'),false);
+ const value=raw();Object.assign(value.slots[0],{mint:'11111111111111111111111111111111',state:'SUBSCRIPTION_WAIT',allocatedAt:T-900,subscriptionSentAt:T-800});
+ const p=projectNativeSlotProductivityReporting({slotProductivity:value},T)!;assert.ok(p);
+ assert.equal(p.slots[0]!.subscriptionSentAt,iso(T-800));validateNativeSlotProductivityReporting(p,T);
+ for(const sent of [T+1,T-901,'untrusted']){const bad=structuredClone(value);bad.slots[0].subscriptionSentAt=sent;assert.equal(projectNativeSlotProductivityReporting({slotProductivity:bad},T),undefined);}
+ value.slots[0].subscriptionSentAt=null;assert.equal(projectNativeSlotProductivityReporting({slotProductivity:value},T)!.slots[0]!.subscriptionSentAt,null);
+ const unallocated=raw();unallocated.slots[0].subscriptionSentAt=T-800;assert.equal(projectNativeSlotProductivityReporting({slotProductivity:unallocated},T),undefined);
+});
+
+test('a resubscription can follow a retained ACK while unusable without rewriting the earlier receipt',()=>{
+ const value=raw();Object.assign(value.slots[0],{mint:'11111111111111111111111111111111',state:'UNUSABLE',allocatedAt:T-900,openedAt:T-800,subscriptionSentAt:T-500});
+ const p=projectNativeSlotProductivityReporting({slotProductivity:value},T)!;assert.ok(p);assert.equal(p.slots[0]!.openedAt,iso(T-800));assert.equal(p.slots[0]!.subscriptionSentAt,iso(T-500));
+ value.slots[0].state='EVIDENCE_WARMING';assert.equal(projectNativeSlotProductivityReporting({slotProductivity:value},T),undefined);
+});

@@ -1,0 +1,135 @@
+{
+  "scope": "OFFLINE_SYNTHETIC_DISPOSABLE_REGISTRY",
+  "rows": 60001,
+  "buildMs": 4523.587371,
+  "phases": [
+    {
+      "stage": "watch.snapshot-v3.1-before",
+      "cpuSamplesMs": [
+        428.025,
+        415.135,
+        456.475,
+        412.301
+      ],
+      "meanCpuMs": 427.984,
+      "samplesMs": [
+        428.0676709999998,
+        415.4669839999997,
+        455.92139899999984,
+        413.3667690000002
+      ],
+      "meanMs": 428.2057057499999,
+      "maxMs": 455.92139899999984
+    },
+    {
+      "stage": "watch.snapshot-v3.1-after",
+      "cpuSamplesMs": [
+        208.835,
+        498.42,
+        287.264,
+        278.737
+      ],
+      "meanCpuMs": 318.314,
+      "samplesMs": [
+        208.45854899999995,
+        498.7388979999996,
+        290.23029700000006,
+        278.8668779999998
+      ],
+      "meanMs": 319.07365549999986,
+      "maxMs": 498.7388979999996
+    },
+    {
+      "stage": "registry.coverageSnapshot",
+      "cpuSamplesMs": [
+        94.205,
+        79.011,
+        65.95,
+        81.079
+      ],
+      "meanCpuMs": 80.06125,
+      "samplesMs": [
+        92.54299899999933,
+        79.06762399999934,
+        66.26104799999848,
+        81.52649299999939
+      ],
+      "meanMs": 79.84954099999914,
+      "maxMs": 92.54299899999933
+    },
+    {
+      "stage": "watch.serviceableBacklog-before",
+      "cpuSamplesMs": [
+        467.78,
+        484.432,
+        476.608,
+        449.205
+      ],
+      "meanCpuMs": 469.50624999999997,
+      "samplesMs": [
+        468.34441700000025,
+        447.649856,
+        476.9301409999989,
+        448.94613800000116
+      ],
+      "meanMs": 460.4676380000001,
+      "maxMs": 476.9301409999989
+    },
+    {
+      "stage": "watch.serviceableBacklog-after",
+      "cpuSamplesMs": [
+        280.025,
+        288.86,
+        291.467,
+        294.214
+      ],
+      "meanCpuMs": 288.6415,
+      "samplesMs": [
+        280.32946099999936,
+        289.07579700000133,
+        291.4225719999995,
+        294.43958400000156
+      ],
+      "meanMs": 288.81685350000043,
+      "maxMs": 294.43958400000156
+    },
+    {
+      "stage": "registry.tokenAgeSummary",
+      "cpuSamplesMs": [
+        0.497,
+        0.014,
+        0.005,
+        0.006
+      ],
+      "meanCpuMs": 0.1305,
+      "samplesMs": [
+        0.5027959999988525,
+        0.015057999999044114,
+        0.006277999998928863,
+        0.00572699999975157
+      ],
+      "meanMs": 0.13246474999914426,
+      "maxMs": 0.5027959999988525
+    }
+  ],
+  "transactionsBefore": {
+    "readSnapshotCommits": 0,
+    "writerLeaseReadOnlyCommits": 0,
+    "contentionBeforeCallback": 0,
+    "attempted": 6,
+    "readOnlyCommits": 0,
+    "writeCommits": 6,
+    "failed": 0,
+    "fsyncEligibleCommits": 6
+  },
+  "transactionsAfter": {
+    "readSnapshotCommits": 16,
+    "writerLeaseReadOnlyCommits": 0,
+    "contentionBeforeCallback": 0,
+    "attempted": 22,
+    "readOnlyCommits": 16,
+    "writeCommits": 6,
+    "failed": 0,
+    "fsyncEligibleCommits": 6
+  }
+}

@@ -14,6 +14,14 @@ from unittest.mock import patch
 
 MODULE=pathlib.Path(__file__).resolve().parents[1]/'operator/native-paper-ec2/http-latency-run.py'
 spec=importlib.util.spec_from_file_location('latency_host',MODULE);m=importlib.util.module_from_spec(spec);spec.loader.exec_module(m)
+
+def read_child_stat(path):
+    # The child can disappear before open (ENOENT) or during read (ESRCH).
+    # Only these two process-disappearance conditions mean exited. Permission,
+    # I/O and other failures remain failures; the separate lease check stays.
+    try:return path.read_text()
+    except (FileNotFoundError,ProcessLookupError):return None
+
 class HostContract(unittest.TestCase):
     def fixture(self):
         return {'accountId':m.ACCOUNT_ID,'inceptionAt':m.INCEPTION,'mode':'paper','running':False,'liveTradingEnabled':False,'source':m.SOURCE.copy(),'runId':'native-paper-20261028210805129','positions':{},'pending':{},'runtimePid':99999999,'generatedAt':100000,'usage':{'rpc':{'cooldownUntil':0}}},{'physicalSettlementConfirmed':True,'positions':0,'pending':0,'financialHistoryPreserved':True}
@@ -36,6 +44,20 @@ class HostContract(unittest.TestCase):
         for k in ['physicalSettlementConfirmed','financialHistoryPreserved']:
             v=t.copy();v[k]=False
             with self.assertRaises(RuntimeError),patch.object(m.os,'kill',side_effect=ProcessLookupError):m.flat_stopped(s,v,now=160000)
+    def test_child_reaped_before_open(self):
+        with patch.object(pathlib.Path,'read_text',side_effect=FileNotFoundError):
+            self.assertIsNone(read_child_stat(pathlib.Path('/proc/fixture/stat')))
+    def test_child_reaped_during_read(self):
+        with patch.object(pathlib.Path,'read_text',side_effect=ProcessLookupError):
+            self.assertIsNone(read_child_stat(pathlib.Path('/proc/fixture/stat')))
+    def test_other_child_observation_failures_are_not_exit(self):
+        for error in [PermissionError,OSError]:
+            with patch.object(pathlib.Path,'read_text',side_effect=error):
+                with self.assertRaises(error):read_child_stat(pathlib.Path('/proc/fixture/stat'))
+    def test_existing_child_state_is_not_rewritten(self):
+        for state in ['123 (fixture) S 0','123 (fixture) Z 0']:
+            with patch.object(pathlib.Path,'read_text',return_value=state):
+                self.assertEqual(read_child_stat(pathlib.Path('/proc/fixture/stat')),state)
     def test_launcher_parent_death_closes_child_and_inherited_lease(self):
         with tempfile.TemporaryDirectory(prefix='poe-latency-launch-fixture-')as d:
             lock=pathlib.Path(d)/'lease';lock.write_bytes(b'');os.chmod(lock,0o600)
@@ -58,7 +80,8 @@ p=m.launch_probe([sys.executable,'-c','import time;time.sleep(60)'],out,[lease])
                         except BlockingIOError:time.sleep(.01)
                     else:self.fail('child retained lease after parent death')
                     path=pathlib.Path('/proc')/str(child)/'stat'
-                    self.assertTrue(not path.exists()or path.read_text().rsplit(')',1)[1].split()[0]=='Z')
+                    child_stat=read_child_stat(path)
+                    self.assertTrue(child_stat is None or child_stat.rsplit(')',1)[1].split()[0]=='Z')
                 finally:os.close(fd)
             finally:
                 if p.poll()is None:p.kill();p.wait(timeout=2)

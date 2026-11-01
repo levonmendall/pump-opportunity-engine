@@ -159,7 +159,13 @@ export function validateSnapshot(value: unknown, expected: ReportingIdentity, no
   for (const key of ['processingLagMs','eventLoopLagMs','projectedDailyDataSol','budgetRemainingSol']) nullable(m[key], v => number(v, true));
   for (const key of ['providerEvents','rpcRequests']) if (!Number.isSafeInteger(m[key]) || (m[key] as number) < 0) throw new Error('nonnegative usage counter required');
   oneOf(m.budgetStatus, ['available','degraded','unavailable']); text(m.coverage, 512); text(m.latency, 256);
-  if(hasIntelligence){if(expected.accountId!==ORIGINAL_POE_ACCOUNT||expected.inceptionAt!==ORIGINAL_POE_INCEPTION)throw Error('operating intelligence requires original account');const intelligence=validateOperatingIntelligence(s.intelligence,ts.generatedAt as string);if(intelligence.run.strategyVersion!==source.strategy)throw Error('operating strategy/source mismatch');const atoms=(v:string)=>{const [whole,part='']=v.split('.');return BigInt(whole!)*1000000000n+BigInt(part.padEnd(9,'0'));};if(intelligence.pendingOrders.reduce((n,o)=>n+atoms(o.reservedSol),0n)!==atoms(b.reservedSol as string))throw Error('operating reservation mismatch');if((s.positions as unknown[]).length>0&&intelligence.protection.state==='flat')throw Error('operating ownership mismatch');}
+  if(hasIntelligence){if(expected.accountId!==ORIGINAL_POE_ACCOUNT||expected.inceptionAt!==ORIGINAL_POE_INCEPTION)throw Error('operating intelligence requires original account');const intelligence=validateOperatingIntelligence(s.intelligence,ts.generatedAt as string);if(intelligence.run.strategyVersion!==source.strategy)throw Error('operating strategy/source mismatch');const atoms=(v:string)=>{const [whole,part='']=v.split('.');return BigInt(whole!)*1000000000n+BigInt(part.padEnd(9,'0'));};if(intelligence.pendingOrders.reduce((n,o)=>n+atoms(o.reservedSol),0n)!==atoms(b.reservedSol as string))throw Error('operating reservation mismatch');if((s.positions as unknown[]).length>0&&intelligence.protection.state==='flat')throw Error('operating ownership mismatch');
+    const readiness=intelligence.financialReadiness;
+    if(readiness){
+      if(readiness.permission.currentEntriesEnabled!==null&&readiness.permission.currentEntriesEnabled!==(status.entries==='enabled'))throw Error('financial readiness permission/source mismatch');
+      if(readiness.reconciliation.at!==null&&readiness.reconciliation.at!==ts.reconciledAt)throw Error('financial readiness reconciliation/source mismatch');
+    }
+  }
   if (Buffer.byteLength(JSON.stringify(s)) > MAX_SNAPSHOT_BYTES) throw new Error('snapshot payload limit');
   return s as Snapshot;
 }
@@ -243,17 +249,43 @@ export function operatingSnapshotFreshness(snapshot: Snapshot, receivedAt: strin
   const acknowledged = assigned.filter(slot => slot.openedAt !== null).length;
   const pending = assigned.filter(slot => slot.openedAt === null);
   const oldestPendingMs = scopeCurrent && pending.length ? Math.max(...pending.map(slot => sourceAt - Date.parse(slot.allocatedAt!))) : null;
+  // A local allocation is not a sent subscription. Legacy sources without a
+  // send receipt remain preparation-unknown rather than a provider ACK wait.
+  const sentPending = pending.filter(slot => typeof slot.subscriptionSentAt === 'string'
+    && Number.isSafeInteger(Date.parse(slot.subscriptionSentAt)) && Date.parse(slot.subscriptionSentAt) >= Date.parse(slot.allocatedAt!)
+    && Date.parse(slot.subscriptionSentAt) <= slotAt);
+  const oldestAcknowledgementMs = scopeCurrent && sentPending.length ? Math.max(...sentPending.map(slot => sourceAt - Date.parse(slot.subscriptionSentAt!))) : null;
+  const preparation = i.candidatePreparation;
+  const preparationCurrent = scopeCurrent && !!preparation && preparation.scope === 'CURRENT_SOURCE_INSTANCE'
+    && preparation.runId === i.run.id && preparation.sourceInstanceId === productivity.sourceInstanceId
+    && preparation.startedAt === productivity.startedAt && preparation.generatedAt === productivity.generatedAt;
+  const preparing = preparationCurrent && preparation.currentMint !== null
+    && ['awaiting-dispatch','validating-pool','awaiting-token-age','ready','provider-unavailable'].includes(preparation.state);
   const selectedCaptureState = selectedCapture === true ? 'connected'
     : selectedCapture === null ? 'unknown'
-    : scopeCurrent && assigned.length === 0 ? 'idle'
-    : scopeCurrent && acknowledged === 0 ? 'awaiting-subscription' : 'lost';
-  const noAcknowledgedSelection = selectedCaptureState === 'idle' || selectedCaptureState === 'awaiting-subscription';
-  const subscriptionDelayed = selectedCaptureState === 'awaiting-subscription' && oldestPendingMs !== null && oldestPendingMs > 90_000;
+    : scopeCurrent && assigned.length === 0 ? preparing ? 'preparing' : 'idle'
+    : scopeCurrent && acknowledged === 0 ? sentPending.length ? 'awaiting-subscription' : 'preparing' : 'lost';
+  const noAcknowledgedSelection = selectedCaptureState === 'idle' || selectedCaptureState === 'preparing' || selectedCaptureState === 'awaiting-subscription';
+  const subscriptionDelayed = selectedCaptureState === 'awaiting-subscription' && oldestAcknowledgementMs !== null && oldestAcknowledgementMs > 90_000;
+  const preparationDelayed = selectedCaptureState === 'preparing' && oldestPendingMs !== null && oldestPendingMs > 90_000;
+  // Track actual unsuccessful work across replacements. A quiet market, a
+  // strategy rejection, or the absence of fills alone cannot trigger this.
+  const progress = preparationCurrent ? preparation.progress : null;
+  const unproductiveMs = progress?.unproductiveSinceAt === null || !progress ? null : sourceAt - Date.parse(progress.unproductiveSinceAt);
+  const serviceableWaitMs = progress?.serviceableSinceAt === null || !progress ? null : sourceAt - Date.parse(progress.serviceableSinceAt);
+  const ongoingAttempts = !!progress && progress.lastAttemptAt !== null && sourceAt - Date.parse(progress.lastAttemptAt) <= 90_000;
+  const preparationUnavailable = preparationCurrent && preparation.state === 'provider-unavailable' && ongoingAttempts;
+  const preparationStalled = selectedCapture === false && !!progress && progress.attemptsSinceProgress >= 3
+    && (ongoingAttempts || pending.length > 0) && serviceableWaitMs !== null && serviceableWaitMs > 90_000;
   if (selectedCaptureState === 'lost') reasonCodes.push('SELECTED_CAPTURE_LOST');
   else if (selectedCaptureState === 'unknown') reasonCodes.push('SELECTED_CAPTURE_UNKNOWN');
   else if (selectedCaptureState === 'idle') reasonCodes.push('SELECTED_CAPTURE_IDLE');
+  else if (selectedCaptureState === 'preparing') reasonCodes.push('SELECTED_PREPARATION_PENDING');
   else if (selectedCaptureState === 'awaiting-subscription') reasonCodes.push('SELECTED_SUBSCRIPTION_PENDING');
   if (subscriptionDelayed) reasonCodes.push('SELECTED_SUBSCRIPTION_DELAYED');
+  if (preparationDelayed) reasonCodes.push('SELECTED_PREPARATION_DELAYED');
+  if (preparationStalled) reasonCodes.push('CANDIDATE_PREPARATION_NO_PROGRESS');
+  if (preparationUnavailable) reasonCodes.push('CANDIDATE_PREPARATION_UNAVAILABLE');
   if (discovery === false) reasonCodes.push('DISCOVERY_LOST');
   else if (discovery === null) reasonCodes.push('DISCOVERY_UNKNOWN');
   if (watch === false) reasonCodes.push('WATCH_LOST');
@@ -290,7 +322,7 @@ export function operatingSnapshotFreshness(snapshot: Snapshot, receivedAt: strin
   if (i.admission?.sourceRecoveryReasonCode || i.admission?.sourceRestartRequired === true) reasonCodes.push('SOURCE_RECOVERY');
   const sourceRecovery = !!i.admission?.sourceRecoveryReasonCode || i.admission?.sourceRestartRequired === true;
   const selectionBlocked = noAcknowledgedSelection && (discovery !== true || watch !== true || sourceRecovery
-    || i.admission?.evidenceRequiresCriticalRecovery === true || selectedCaptureRequired || subscriptionDelayed);
+    || i.admission?.evidenceRequiresCriticalRecovery === true || selectedCaptureRequired || subscriptionDelayed || preparationDelayed || preparationStalled || preparationUnavailable);
   const market = selectedCaptureState === 'connected' ? snapshot.status.market === 'warming' ? 'warming' : 'observing'
     : selectedCaptureState === 'lost' ? 'unavailable' : selectedCaptureState;
   const state = sourceStale || publisherStale ? 'stale'
@@ -303,7 +335,8 @@ export function operatingSnapshotFreshness(snapshot: Snapshot, receivedAt: strin
     kind: 'operating-source-v1', state, market,
     reporting: sourceStale ? 'source-stale' : publisherStale ? 'publisher-stale' : 'current',
     sourceAgeMs, receivedAgeMs, selectedCapture, selectedCaptureState, discovery, watch, entryRestriction,
-    selectedScope: scopeCurrent ? { asOf: productivity.generatedAt, configuredSlots: productivity.configuredSlots, assignedSlots: assigned.length, acknowledgedSlots: acknowledged, awaitingAcknowledgement: pending.length, oldestPendingMs } : null,
+    selectedScope: scopeCurrent ? { asOf: productivity.generatedAt, configuredSlots: productivity.configuredSlots, assignedSlots: assigned.length, acknowledgedSlots: acknowledged, awaitingAcknowledgement: sentPending.length, preparingSlots: pending.length - sentPending.length, oldestPendingMs, oldestAcknowledgementMs } : null,
+    candidatePreparation: preparationCurrent ? {state:preparation.state,currentMint:preparation.currentMint,counters:preparation.counters,lastOutcome:preparation.lastOutcome,progress:preparation.progress,unproductiveMs,serviceableWaitMs,stalled:preparationStalled} : null,
     financial: { usdValuation: usdAvailable ? 'available' : 'unavailable', reconciled: snapshot.status.reconciled, valuationAgeMs, reconciliationAgeMs },
     protection: { state: protection.state, completedAt: protection.lastCompletedAt, completedAgeAtSourceMs, boundaryMs: protection.completedEvaluationBoundaryMs },
     reasonCodes,
@@ -536,4 +569,3 @@ export class SnapshotPublisher {
   }
   async stop() { this.running = false; clearTimeout(this.timer); this.active?.abort(); await this.inflight; }
 }
-

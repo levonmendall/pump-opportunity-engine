@@ -1,3 +1,4 @@
+import {wsWire} from './ws-wire-fixture.js';
 /** Offline timing reproduction. Real coordinator/native adapter/RPC gate;
  * synthetic sockets, support and response timing. No market or financial claims. */
 import {test} from 'node:test';
@@ -23,9 +24,9 @@ class Socket extends EventEmitter {
  readonly controls:string[]=[];
  readyState:number=WebSocket.CONNECTING;
  open(){this.readyState=WebSocket.OPEN;this.emit('open');}
- frame(body:unknown){const data=Buffer.from(JSON.stringify(body));this._socket.bytesRead+=data.length+4;this._socket.emit('data',data);this.emit('message',data);}
+ frame(body:unknown){const data=Buffer.from(JSON.stringify(body));this._socket.bytesRead+=data.length+4;this._socket.emit('data',wsWire(data));this.emit('message',data);}
  send(data:string,callback?:()=>void){const request=JSON.parse(data);this.controls.push(request.method);callback?.();queueMicrotask(()=>this.frame({jsonrpc:'2.0',id:request.id,result:request.method==='logsSubscribe'?100:true}));}
- ping(payload:Buffer,_mask?:unknown,callback?:()=>void){this.controls.push('ping');this._sender.sendFrame([Buffer.from([0x89]),payload]);callback?.();queueMicrotask(()=>{this._socket.bytesRead+=payload.length+2;this._socket.emit('data',Buffer.alloc(0));this.emit('pong',payload);});}
+ ping(payload:Buffer,_mask?:unknown,callback?:()=>void){this.controls.push('ping');this._sender.sendFrame([Buffer.from([0x89]),payload]);callback?.();queueMicrotask(()=>{this._socket.bytesRead+=payload.length+2;this._socket.emit('data',wsWire(payload,10));this.emit('pong',payload);});}
  terminate(){if(this.readyState===WebSocket.CLOSED)return;this.readyState=WebSocket.CLOSED;queueMicrotask(()=>this.emit('close',1006));}
 }
 function fixture(){
@@ -35,8 +36,11 @@ function fixture(){
  const rpc=new PilotRpc({directory:join(directory,'rpc'),runId:'settled-timeout-recovery',baselinePaths:[old],priorPhysicalSettled:true,maxStartsPer10s:20,now:()=>at,monotonic:()=>mono,sleep:async ms=>{at+=ms;mono+=ms;},record:(kind,data)=>records.push({kind,data}),fetcher:(async(_url,init)=>{const request=JSON.parse(String(init?.body));fetches.push(request.method);if(hang){pendingId=request.id;return new Promise<Response>(r=>settle=r);}if(contextOnce){contextOnce=false;return new Response(JSON.stringify({jsonrpc:'2.0',id:request.id,error:{code:-32016,message:'synthetic minimum context not reached'}}));}return new Response(JSON.stringify({jsonrpc:'2.0',id:request.id,result:123}));}) as typeof fetch});
  let runner:NativeCandidateRunner;
  const flow=new PilotNativeFlow({control:rpc,support:{async validateMany(requests:any[],signal?:AbortSignal,admission?:any){await rpc.call('getMultipleAccounts',[],signal,admission);return {validations:Object.fromEntries(requests.map(r=>{const key=r.mint.toBase58();return [key,{mint:key,pool:canonicalPumpPoolPda(r.mint).toBase58(),at,sourceSlot:10,evidence:'SYNTHETIC_CURRENT_SUPPORT',summary:{marketClockUnixSeconds:Math.floor(at/1000)}}];})),unavailable:{},context:null};}} as any,record:(kind,data)=>records.push({kind,data}),onTrade(){throw Error('NO_SYNTHETIC_TRADE_EXPECTED');},onGap(){},durationMs:120000},{now:()=>at,monotonic:()=>mono,setTimer(fn,ms){if(ms===100)watchdog=fn;return 1;},clearTimer(){},makeSocket(){const socket=new Socket();sockets.push(socket);queueMicrotask(()=>socket.open());return socket as unknown as WebSocket;}});
- runner=new NativeCandidateRunner({rpc,flow,now:()=>at,record:(kind,data)=>records.push({kind,data})});
- flow.addCandidate({mint,pool:canonicalPumpPoolPda(new PublicKey(mint)).toBase58(),minSlot:0});
+ runner=new NativeCandidateRunner({rpc,flow,now:()=>at,maximumDeep:1,activeStrategy:'liquidity-resilient-momentum-v3.1',observationAgePolicy:'persistent-observable-market-v1',record:(kind,data)=>records.push({kind,data})});
+ // The coordinator owns selected scopes. Seed the ordinary unverified hint so
+ // its first step performs the real atomic WATCH/productivity/native admission;
+ // a manually added ownerless transport is correctly retired by reconciliation.
+ runner.onMigration({signature:'SYNTHETIC_SCOPE_HINT',feedMint:mint,receivedAt:at});
  return {rpc,flow,runner,directory,oldBytes,old,sockets,records,fetches,get at(){return at;},get mono(){return mono;},advance(ms:number){at+=ms;mono+=ms;},wallOnly(ms:number){at+=ms;},hang(){hang=true;},contextLagOnce(){contextOnce=true;},settle(status?:number){hang=false;settle(status===undefined?new Response('{}'):new Response(JSON.stringify({jsonrpc:'2.0',id:pendingId,result:123}),{status,headers:status===503?{'retry-after':'10'}:undefined}));},watchOne(){watchdog?.();},async close(){await runner.stop();rpc.close();assert.deepEqual(readFileSync(old),oldBytes);rmSync(directory,{recursive:true,force:true});}};
 }
 

@@ -1,3 +1,4 @@
+import {wsWire} from './ws-wire-fixture.js';
 /** Retained source60b9392 pool/creation bytes with synthetic provider responses,
  * advancing wall clock, real SDK validation, real shared gate and real native
  * adapter. This reproduces startup scheduling; it is not another market test. */
@@ -21,9 +22,9 @@ class Socket extends EventEmitter{
  readonly _receiver={writableLength:0,_state:0,_bufferedBytes:0,_fragmented:0};
  readonly _socket=Object.assign(new EventEmitter(),{bytesRead:200});readonly _sender={sendFrame:(_parts:Buffer[],cb?:()=>void)=>cb?.()};readyState:number=WebSocket.CONNECTING;readonly sent:any[]=[];
  open(){this.readyState=WebSocket.OPEN;this.emit('open');}
- frame(body:unknown){const raw=Buffer.from(JSON.stringify(body));this._socket.bytesRead+=raw.length+4;this._socket.emit('data',raw);this.emit('message',raw);}
+ frame(body:unknown){const raw=Buffer.from(JSON.stringify(body));this._socket.bytesRead+=raw.length+4;this._socket.emit('data',wsWire(raw));this.emit('message',raw);}
  send(data:string,callback?:(error?:Error)=>void){const row=JSON.parse(data);this.sent.push(row);callback?.();queueMicrotask(()=>this.frame({jsonrpc:'2.0',id:row.id,result:row.method==='logsSubscribe'?100+this.sent.length:true}));}
- ping(payload:Buffer,_mask?:unknown,callback?:(error?:Error)=>void){this._sender.sendFrame([Buffer.from([0x89]),payload]);callback?.();queueMicrotask(()=>this.emit('pong',payload));}
+ ping(payload:Buffer,_mask?:unknown,callback?:(error?:Error)=>void){this._sender.sendFrame([Buffer.from([0x89]),payload]);callback?.();queueMicrotask(()=>{this._socket.bytesRead+=payload.length+2;this._socket.emit('data',wsWire(payload,10));this.emit('pong',payload);});}
  pong(payload:Buffer,_mask?:unknown,callback?:(error?:Error)=>void){this._sender.sendFrame([Buffer.from([0x8a]),payload]);callback?.();}
  terminate(){if(this.readyState===WebSocket.CLOSED)return;this.readyState=WebSocket.CLOSED;queueMicrotask(()=>this.emit('close',1006));}
  close(){this._sender.sendFrame([Buffer.from([0x88])]);this.readyState=WebSocket.CLOSED;queueMicrotask(()=>this.emit('close',1000));}
