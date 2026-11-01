@@ -10,28 +10,20 @@ concurrency:
 jobs:
   validate:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.sha }}
           fetch-depth: 0
-      - name: Materialize reviewed patch on feature branch only
+      - name: Preserve exact owner-approved age and slot-lifecycle source
         run: |
           set -euo pipefail
-          if test -d scripts/sale-review-bootstrap; then
-            python3 - <<'PY'
-          import base64,gzip,hashlib,pathlib,subprocess
-          parts=pathlib.Path('scripts/sale-review-bootstrap')
-          data=gzip.decompress(base64.b64decode(''.join((parts/f'{i}.b64').read_text().strip() for i in range(1,5)),validate=True))
-          assert hashlib.sha256(data).hexdigest()=='87c014f480e16537cacf0b224287bcd06dde2012cde252c54137b0d2f91727fc'
-          subprocess.run(['git','apply','--check','-'],input=data,check=True)
-          subprocess.run(['git','apply','--index','-'],input=data,check=True)
-          PY
-            git rm -r scripts/sale-review-bootstrap
-            git config user.name 'github-actions[bot]'
-            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git commit -m 'Add durable reporting-only four-hour sale reviews and focused regressions'
+          test "${GITHUB_REF}" = refs/heads/feature/poe-four-hour-sale-review-20261031
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          if ! git merge-base --is-ancestor ef6e40b3f31c4ac618a5f6ca50387060e114ad06 HEAD; then
+            git merge --no-edit ef6e40b3f31c4ac618a5f6ca50387060e114ad06
             git push origin HEAD:refs/heads/feature/poe-four-hour-sale-review-20261031
           fi
           git rev-parse HEAD | tee /tmp/poe-sale-review-source-commit.txt
@@ -60,9 +52,9 @@ jobs:
         run: |
           set -euo pipefail
           umask 077
-          node scripts/build-native-paper-ec2.mjs --output-directory /tmp/poe-sale-review-bundle
+          node scripts/build-native-paper-ec2.mjs --output-directory /tmp/poe-native-paper-output-sale-review
           git archive --format=tar HEAD | gzip -n > /tmp/poe-sale-review-source.tar.gz
-          sha256sum /tmp/poe-sale-review-bundle/* /tmp/poe-sale-review-source.tar.gz > /tmp/poe-sale-review-sha256.txt
+          sha256sum /tmp/poe-native-paper-output-sale-review/* /tmp/poe-sale-review-source.tar.gz > /tmp/poe-sale-review-sha256.txt
       - uses: actions/upload-artifact@v4
         if: always()
         with:
@@ -70,6 +62,6 @@ jobs:
           path: |
             /tmp/poe-sale-review-*.txt
             /tmp/poe-sale-review-source.tar.gz
-            /tmp/poe-sale-review-bundle/
+            /tmp/poe-native-paper-output-sale-review/
           retention-days: 7
           if-no-files-found: error
