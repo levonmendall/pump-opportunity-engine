@@ -1,0 +1,27 @@
+name: Sale review live dashboard readback
+on:
+  push:
+    branches: [feature/four-hour-sale-review-install-20261101]
+    paths: [.github/workflows/sale-review-live-readback.yml]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 3
+    steps:
+      - name: Read live health, sale-review display, and unauthenticated rejection
+        shell: bash
+        run: |
+          node --input-type=module <<'JS'
+          const base='https://meme-machine-dashboard-staging.onrender.com';
+          const get=async(path)=>fetch(base+path,{signal:AbortSignal.timeout(15000),redirect:'error',headers:{'cache-control':'no-cache'}});
+          const h=await get('/healthz');if(!h.ok)throw Error('Health unavailable');const health=await h.json();
+          if(health.dashboardRelease!=='33a039415cfede8749570fa87631133d2b019f07'||health.saleReviewSchema!==1)throw Error('Expected dashboard release/capability absent');
+          const html=await get('/');if(!html.ok||(await html.text()).includes('4-hour sale review')===false)throw Error('Sale review display absent');
+          const denied=await fetch(base+'/api/sale-reviews',{method:'POST',headers:{'content-type':'application/json'},body:'{}',signal:AbortSignal.timeout(15000),redirect:'error'});
+          if(denied.status!==401)throw Error('Unauthenticated report not refused');await denied.body?.cancel();
+          const s=await get('/api/snapshot');if(!s.ok)throw Error('Original financial snapshot unavailable');const snapshot=await s.json();
+          if(!Object.hasOwn(snapshot,'saleReviews'))throw Error('Read-only sale-review overlay absent');
+          console.log(JSON.stringify({result:'POE_SALE_REVIEW_DASHBOARD_VERIFIED',dashboardRelease:health.dashboardRelease,saleReviewSchema:health.saleReviewSchema,explainDisplayPresent:true,unauthorizedReportRejected:true,originalSnapshotAvailable:true,reviewOverlayPresent:true,ec2CompanionInstalled:false,fourHourLiveCheckpointVerified:false}));
+          JS
