@@ -1,0 +1,93 @@
+name: Validate POE candidate admission bootstrap repair
+on:
+  push:
+    branches: [repair/poe-admission-bootstrap-20261101]
+    paths: ['.github/workflows/poe-admission-bootstrap-release.yml']
+permissions:
+  contents: write
+concurrency:
+  group: poe-admission-bootstrap-20261101
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+          cache: npm
+      - name: Install unchanged dependencies and add regressions
+        run: |
+          set -euo pipefail
+          umask 077
+          mkdir -p /tmp/poe-admission-bootstrap
+          npm ci --include=dev
+          python3 -B -I scripts/author-admission-bootstrap.py tests
+      - name: Reproduce failures on exact installed application source
+        run: |
+          set -uo pipefail
+          node --import tsx --test --test-concurrency=1 --test-name-pattern 'admission bootstrap:' test/native-candidate-runner.test.ts test/token-creation-request-plan.test.ts > /tmp/poe-admission-bootstrap/baseline-reproduction.log 2>&1
+          result=$?
+          test "$result" -ne 0
+          python3 -B -I - <<'PY'
+          import pathlib,re
+          log=pathlib.Path('/tmp/poe-admission-bootstrap/baseline-reproduction.log').read_text()
+          expected=['slow local creation lookup cannot consume an unstarted request envelope','pre-callback housekeeping contention does not starve creation verification','empty eligible universe never scans the economic-ranking windows']
+          for name in expected:assert re.search(r'(?:not ok|✖).*'+re.escape('admission bootstrap: '+name),log),name
+          print('REPRODUCED: lookup-envelope starvation, housekeeping starvation, empty-set ranking work')
+          PY
+      - name: Apply reviewed repair and commit exact tested source
+        run: |
+          set -euo pipefail
+          python3 -B -I scripts/author-admission-bootstrap.py repair
+          git diff --check
+          git add -- src test docs
+          git config user.name 'POE admission repair validation'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Prevent bootstrap starvation from local lookup delay and optional registry contention'
+          git push origin HEAD:refs/heads/repair/poe-admission-bootstrap-20261101
+          git rev-parse HEAD > /tmp/poe-admission-bootstrap/source-commit.txt
+          git diff 0044b552ef160bf43823d16578c63431b0bcfd9d -- src test docs > /tmp/poe-admission-bootstrap/source.patch
+      - name: Typecheck compile and focused admission safety regressions
+        run: |
+          set -euo pipefail
+          npm run build 2>&1 | tee /tmp/poe-admission-bootstrap/typecheck.log
+          npm run compile 2>&1 | tee /tmp/poe-admission-bootstrap/compile.log
+          node --import tsx --test --test-concurrency=1 test/native-candidate-runner.test.ts test/token-creation-request-plan.test.ts test/pilot-watch-opportunity-priority.test.ts test/market-registry.test.ts test/market-registry-intake-worker.test.ts test/token-age-policy.test.ts test/native-registry-financial-boundary.test.ts test/operating-financial-readiness.test.ts 2>&1 | tee /tmp/poe-admission-bootstrap/focused.log
+      - name: Full offline regression suite without exclusions
+        run: |
+          set -euo pipefail
+          node --import tsx --test --test-concurrency=1 test/*.test.ts 2>&1 | tee /tmp/poe-admission-bootstrap/full.log
+      - name: Build clean exact PAPER executable only after all tests pass
+        run: |
+          set -euo pipefail
+          umask 077
+          test "$(git rev-parse HEAD)" = "$(cat /tmp/poe-admission-bootstrap/source-commit.txt)"
+          test -z "$(git status --porcelain -- src scripts package.json package-lock.json)"
+          node scripts/build-native-paper-ec2.mjs --output-directory /tmp/poe-native-paper-output-admission-bootstrap
+          cp -a /tmp/poe-native-paper-output-admission-bootstrap /tmp/poe-admission-bootstrap/bundle
+          git archive HEAD src test scripts docs package.json package-lock.json tsconfig.json | gzip -n > /tmp/poe-admission-bootstrap/source.tar.gz
+          python3 -B -I - <<'PY'
+          import hashlib,json,pathlib,re
+          p=pathlib.Path('/tmp/poe-admission-bootstrap');source=(p/'source-commit.txt').read_text().strip();meta=json.loads((p/'bundle/metadata.json').read_bytes());log=(p/'full.log').read_text()
+          def metric(k):
+              rows=re.findall(r'(?m)^(?:# |ℹ )'+k+r'\s+(\d+)\s*$',log);assert len(rows)==1;return int(rows[0])
+          count=metric('tests');assert count>=3080 and metric('pass')==count and all(metric(k)==0 for k in ['fail','skipped','cancelled'])
+          assert meta['git']['commit']==source and meta['git']['workingTreeStatus']=='' and meta['financialMode']=='PAPER' and meta['liveTradingEnabled'] is False
+          receipt={'kind':'POE_ADMISSION_BOOTSTRAP_VALIDATED_BUILD','source':source,'base':'0044b552ef160bf43823d16578c63431b0bcfd9d','bundleSha256':hashlib.sha256((p/'bundle/native-paper.mjs').read_bytes()).hexdigest(),'testsPassed':count,'baselineDefectsReproduced':3,'financialControlWrites':0,'readinessRulesChanged':False,'auditDeadlinesChanged':False,'tokenAgeMaximumMs':86400000,'deepSlots':4,'liveTradingEnabled':False,'ec2Changed':False,'ownerReleaseApprovalRequired':True}
+          (p/'build-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt))
+          PY
+          sha256sum /tmp/poe-admission-bootstrap/bundle/* > /tmp/poe-admission-bootstrap/SHA256SUMS
+      - name: Retain red and green validation evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: poe-admission-bootstrap-${{ github.run_id }}
+          path: /tmp/poe-admission-bootstrap/
+          retention-days: 30
+          if-no-files-found: error
