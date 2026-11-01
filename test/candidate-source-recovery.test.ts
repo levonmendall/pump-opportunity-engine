@@ -30,7 +30,7 @@ const mutations:Array<[string,(f:ReturnType<typeof fixture>)=>void]>=[
  ['account',f=>{f.state.accountId='other';}],['inception',f=>{f.state.inceptionAt++;}],['mode',f=>{(f.state as any).mode='LIVE';}],
  ['cash',f=>{f.state.lamports='1';}],['deposit missing',f=>{delete f.state.lockedDeposits['OFFLINE-0'];}],['deposit amount',f=>{f.state.lockedDeposits['OFFLINE-0']='1';}],
  ['holding',f=>{(f.state.positions as any).x={};}],['pending',f=>{(f.state.pending as any).x={};}],['owner stop',f=>{f.state.controls.stopRequested=true;}],
- ['daily loss',f=>{f.state.daily.lossPaused=true;}],['already enabled',f=>{f.state.controls.entriesEnabled=true;}],['epoch',f=>{f.state.paperEpoch!.id='other';}],
+ ['daily loss',f=>{f.state.daily.lossPaused=true;}],['already enabled',f=>{f.state.controls.entriesEnabled=true;}],['epoch',f=>{(f.state.paperEpoch! as any).id='other';}],
  ['anchor revision',f=>{f.history.anchor!.revision++;}],['anchor time',f=>{f.history.anchor!.at++;}],['anchor identity',f=>{f.history.anchor!.actionSha256='0'.repeat(64);}],
  ['pause revision',f=>{f.history.controls[0]!.revision++;}],['pause time',f=>{f.history.controls[0]!.at++;}],['pause action',f=>{f.history.controls[0]!.actionSha256='0'.repeat(64);}],
  ['pause payload',f=>{f.history.controls[0]!.detailSha256='0'.repeat(64);}],['pause reason',f=>{f.history.controls[0]!.reasonSha256='0'.repeat(64);}],
@@ -50,6 +50,7 @@ test('source recovery path uses typed pause and contains every synchronous finan
  assert.ok(source.includes('currentBridge.trader.pauseNewEntries(CANDIDATE_SOURCE_RECOVERY_PAUSE)'));
  assert.equal(source.includes("pauseNewEntries(reason+'; exposure retained')"),false);
  for(const method of ['gap','trade','protocol','opened','currentPoolValidated'])assert.ok(source.includes('financialSourceCallback(()=>bridge?.'+method+'(row))'),method);
- for(const method of ['allocated','retiredCandidate'])assert.ok(source.includes('financialSourceCallback(()=>currentBridge.'+method+'(row))'),method);
+ assert.ok(source.includes('financialSourceCallback(()=>currentBridge.allocated(row))'));
+ assert.ok(source.includes('financialSourceCallback(()=>currentBridge.retiredCandidate(row,reason))'));
  assert.ok(source.includes("financialMaintenanceFailed('runtime-failure',error)"));
 });
