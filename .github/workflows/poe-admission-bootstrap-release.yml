@@ -31,8 +31,10 @@ jobs:
       - name: Reproduce failures on exact installed application source
         run: |
           set -uo pipefail
+          set +e
           node --import tsx --test --test-concurrency=1 --test-name-pattern 'admission bootstrap:' test/native-candidate-runner.test.ts test/token-creation-request-plan.test.ts > /tmp/poe-admission-bootstrap/baseline-reproduction.log 2>&1
           result=$?
+          set -e
           test "$result" -ne 0
           python3 -B -I - <<'PY'
           import pathlib,re
@@ -58,7 +60,7 @@ jobs:
           set -euo pipefail
           npm run build 2>&1 | tee /tmp/poe-admission-bootstrap/typecheck.log
           npm run compile 2>&1 | tee /tmp/poe-admission-bootstrap/compile.log
-          node --import tsx --test --test-concurrency=1 test/native-candidate-runner.test.ts test/token-creation-request-plan.test.ts test/pilot-watch-opportunity-priority.test.ts test/market-registry.test.ts test/market-registry-intake-worker.test.ts test/token-age-policy.test.ts test/native-registry-financial-boundary.test.ts test/operating-financial-readiness.test.ts 2>&1 | tee /tmp/poe-admission-bootstrap/focused.log
+          node --import tsx --test --test-concurrency=1 test/native-candidate-runner.test.ts test/token-creation-request-plan.test.ts test/pilot-watch-opportunity-priority.test.ts test/market-registry.test.ts test/market-registry-intake-worker.test.ts test/token-age-policy.test.ts test/registry-financial-boundary.test.ts test/operating-financial-readiness.test.ts 2>&1 | tee /tmp/poe-admission-bootstrap/focused.log
       - name: Full offline regression suite without exclusions
         run: |
           set -euo pipefail
