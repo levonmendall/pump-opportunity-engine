@@ -1,0 +1,115 @@
+name: POE bounded scheduling and verified 24h token-age release
+on:
+  push:
+    branches: [repair/poe-scheduling-age24h-20261031]
+    paths: ['.github/workflows/poe-scheduling-age-release.yml']
+permissions:
+  contents: write
+concurrency:
+  group: poe-scheduling-age24h-hosted-validation
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Apply exact locally reviewed edits on repair branch only
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          test "$GITHUB_REF" = refs/heads/repair/poe-scheduling-age24h-20261031
+          mkdir -p /tmp/poe-age-validation
+          python3 -B -I - <<'PY'
+          import base64,hashlib,json,pathlib,subprocess,zlib
+          root=pathlib.Path.cwd()
+          encoded=''.join((root/f'scripts/scheduling-age24h-edits/part{i}.b64').read_text().strip() for i in range(3))
+          assert len(encoded)==20160,'SOURCE_EDIT_TRANSPORT_LENGTH'
+          data=zlib.decompress(base64.b64decode(encoded,validate=True))
+          assert len(data)==48189 and hashlib.sha256(data).hexdigest()=='d34111b1809aeea7831e057f63a3e2ff8817bca4dc582a7e9e272ef999dfef61','SOURCE_EDIT_MANIFEST_HASH'
+          manifest=json.loads(data)
+          assert manifest['base']=='f8ab5d74c5f8c8e792ab0b099388a6f3ad68d2d2'
+          subprocess.run(['git','merge-base','--is-ancestor',manifest['base'],'HEAD'],check=True)
+          allowed={'src/execution.ts','src/market-registry.ts','src/native-candidate-runner.ts','src/native-paper.ts','src/pilot-watch.ts','src/run-native-paper.ts','src/trader.ts','test/execution.test.ts','test/native-candidate-runner.test.ts','test/pilot-watch-opportunity-priority.test.ts','src/opportunity-priority-policy.ts','src/token-age-policy.ts','test/token-age-policy.test.ts','docs/SCHEDULING_AND_TOKEN_AGE_REPAIR.md'}
+          assert len(manifest['files'])==14 and {r['path'] for r in manifest['files']}==allowed
+          sha=lambda s:hashlib.sha256(s.encode()).hexdigest()
+          outputs=[]
+          for row in manifest['files']:
+              path=root/row['path'];assert not path.is_symlink()
+              old=path.read_text() if path.exists() else ''
+              if sha(old)==row['after']:continue
+              assert (sha(old) if path.exists() else None)==row['before'],'BASE_SOURCE_MISMATCH:'+row['path']
+              last=0
+              for start,end,text in row['edits']:
+                  assert isinstance(start,int) and isinstance(end,int) and last<=start<=end<=len(old) and isinstance(text,str)
+                  last=end
+              new=old
+              for start,end,text in reversed(row['edits']):new=new[:start]+text+new[end:]
+              assert sha(new)==row['after'],'RESULT_SOURCE_MISMATCH:'+row['path']
+              outputs.append((path,new))
+          for path,new in outputs:path.parent.mkdir(parents=True,exist_ok=True);path.write_text(new)
+          subprocess.run(['git','diff','--check'],check=True)
+          subprocess.run(['git','add','--',*sorted(allowed)],check=True)
+          pathlib.Path('/tmp/poe-age-validation/source-edit-manifest.json').write_bytes(data)
+          print(json.dumps({'base':manifest['base'],'filesVerified':len(allowed),'manifestSha256':hashlib.sha256(data).hexdigest(),'ec2Access':False,'financialWrites':0}))
+          PY
+          if ! git diff --cached --quiet; then
+            git config user.name 'POE repair validation'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git commit -m 'Bound observation fairness and enforce verified token creation age at 24h for new PAPER risk'
+            git push origin HEAD:refs/heads/repair/poe-scheduling-age24h-20261031
+          fi
+          git rev-parse HEAD > /tmp/poe-age-validation/source-commit.txt
+          git diff f8ab5d74c5f8c8e792ab0b099388a6f3ad68d2d2 -- src test docs > /tmp/poe-age-validation/source.patch
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+          cache: npm
+      - name: Install unchanged pinned dependencies
+        run: npm ci --include=dev
+      - name: Typecheck
+        shell: bash
+        run: set -o pipefail; npm run build 2>&1 | tee /tmp/poe-age-validation/typecheck.log
+      - name: Focused age, scheduling, execution and lifecycle regressions
+        shell: bash
+        run: |
+          set -o pipefail
+          umask 077
+          node --import tsx --test --test-concurrency=1 test/token-age-policy.test.ts test/pilot-watch-opportunity-priority.test.ts test/native-candidate-runner.test.ts test/execution.test.ts test/market-registry-lifecycle.test.ts test/pilot-watch-persistent.test.ts test/native-observation-current-pool.test.ts test/native-slot-productivity.test.ts 2>&1 | tee /tmp/poe-age-validation/focused.log
+      - name: Full offline regression suite with established private-fixture settings
+        shell: bash
+        run: |
+          set -o pipefail
+          umask 077
+          node --import tsx --test --test-concurrency=1 test/*.test.ts 2>&1 | tee /tmp/poe-age-validation/full.log
+      - name: Build exact clean source after all regressions pass
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          test "$(git rev-parse HEAD)" = "$(cat /tmp/poe-age-validation/source-commit.txt)"
+          test -z "$(git status --porcelain -- src scripts package.json package-lock.json)"
+          node scripts/build-native-paper-ec2.mjs --output-directory /tmp/poe-native-paper-output-age24h
+          cp -a /tmp/poe-native-paper-output-age24h /tmp/poe-age-validation/bundle
+          git archive --format=tar HEAD | gzip -n > /tmp/poe-age-validation/source.tar.gz
+          sha256sum /tmp/poe-age-validation/bundle/* /tmp/poe-age-validation/source.tar.gz > /tmp/poe-age-validation/SHA256SUMS
+          python3 -B -I - <<'PY'
+          import hashlib,json,pathlib
+          p=pathlib.Path('/tmp/poe-age-validation');commit=(p/'source-commit.txt').read_text().strip();meta=json.loads((p/'bundle/metadata.json').read_text())
+          assert meta['git']['commit']==commit and meta['git']['workingTreeStatus']==''
+          receipt={'kind':'POE_SCHEDULING_24H_VALIDATED_BUILD','source':commit,'base':'f8ab5d74c5f8c8e792ab0b099388a6f3ad68d2d2','bundleSha256':hashlib.sha256((p/'bundle/native-paper.mjs').read_bytes()).hexdigest(),'fairnessMaximumAdditive':0.05,'tokenAgeMaximumMs':86400000,'tokenAgeBasis':'finalized-token-creation-not-migration','unknownAgeEligible':False,'fourSlotsPreserved':True,'liveTradingEnabled':False,'ec2Changed':False,'ownerReleaseApprovalRequired':True}
+          (p/'build-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
+          print(json.dumps(receipt))
+          PY
+      - name: Retain exact source, test logs and validated release outputs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: poe-scheduling-age24h-validation-${{ github.run_id }}
+          path: /tmp/poe-age-validation/
+          retention-days: 14
+          if-no-files-found: error
