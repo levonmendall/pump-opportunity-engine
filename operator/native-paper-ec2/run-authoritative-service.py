@@ -90,7 +90,7 @@ def publisher_args(node,release,manifest,once=False):
  return args
 def equity_args(node,release):
  secret=credential_path()
- return ['/usr/bin/flock','--nonblock','--conflict-exit-code','75','--no-fork',str(EQUITY/'companion.lock'),node,'--permission','--allow-addons','--allow-fs-read='+str(release),'--allow-fs-read='+str(EQUITY),'--allow-fs-write='+str(EQUITY),'--allow-fs-read='+str(ACCOUNT/'snapshot.json'),'--allow-fs-read='+str(secret),'--max-old-space-size=128','--disable-proto=throw',str(release/'lifetime-equity-publisher.mjs')]
+ return ['/usr/bin/flock','--nonblock','--conflict-exit-code','75','--no-fork',str(EQUITY/'companion.lock'),node,'--permission','--allow-addons','--allow-fs-read='+str(release),'--allow-fs-read='+str(EQUITY),'--allow-fs-write='+str(EQUITY),'--allow-fs-read='+str(LEDGER),'--allow-fs-read='+str(LEDGER)+'-wal','--allow-fs-read='+str(LEDGER)+'-shm','--allow-fs-read='+str(ACCOUNT/'snapshot.json'),'--allow-fs-read='+str(secret),'--max-old-space-size=128','--disable-proto=throw',str(release/'lifetime-equity-publisher.mjs')]
 def spawn(args,publisher=False,equity=False):
  parent=os.getpid()
  def prepare():
@@ -102,6 +102,7 @@ def spawn(args,publisher=False,equity=False):
  if publisher or equity:
   credential=credential_path();env['CREDENTIALS_DIRECTORY']=str(credential.parent);env['POE_PUBLISH_SECRET_FILE']=str(credential)
  if equity:
+  env['POE_SALE_REVIEWS_ENABLED']='1'
   env.update(POE_EQUITY_SOURCE_FILE=str(ACCOUNT/'snapshot.json'),POE_EQUITY_STORE_FILE=str(EQUITY/'equity.sqlite'),POE_EQUITY_CREDENTIAL_FILE=str(credential_path()))
   receipt=EQUITY/'bootstrap.json'
   if receipt.exists():
@@ -317,11 +318,11 @@ class Supervisor:
   if not self.publisher and mono>=self.next_publisher:
    self.publisher_began_mono=mono;self.publisher=spawn(publisher_args(str(NODE),RELEASES/self.manifest['source']['commit'],self.manifest),publisher=True);self.register('publisher',self.publisher);self.record('publisher-started',{'pid':self.publisher.pid,'financialSourceRestarted':False})
   if self.equity_enabled and not self.equity and mono>=self.next_equity:
-   try:self.equity=spawn(equity_args(str(NODE),RELEASES/self.manifest['source']['commit']),equity=True);self.register('equity',self.equity);self.record('equity-companion-started',{'pid':self.equity.pid,'financialSourceRestarted':False,'financialDatabaseOpened':False})
+   try:self.equity=spawn(equity_args(str(NODE),RELEASES/self.manifest['source']['commit']),equity=True);self.register('equity',self.equity);self.record('equity-companion-started',{'pid':self.equity.pid,'financialSourceRestarted':False,'financialDatabaseAccess':'read-only-sale-review','financialDatabaseWrites':False})
    except(OSError,ValueError,Guard):self.equity_failures+=1;self.next_equity=mono+recovery_delay(self.equity_failures);self.record('equity-companion-unavailable',{'financialManagementContinues':True,'failures':self.equity_failures})
   if now-self.last_marker>=15000:self.write_marker(now)
   health={'schemaVersion':1,'kind':'poe-persistent-paper-supervisor-health','generatedAt':now,'accountId':ACCOUNT_ID,'inceptionAt':INCEPTION,'source':self.manifest['source'],'sourcePid':self.source.pid if self.source else None,'publisherPid':self.publisher.pid if self.publisher else None,'sourceRunId':self.last_source.get('runId')if self.last_source else None,'lastSourceAt':self.last_source.get('generatedAt')if self.last_source else None,'lastAcceptedSourceAt':self.last_ack.get('sourceAtMs')if self.last_ack else None,'resource':self.resource,'sourceGroupUnsettled':self.source_group_unsettled,'recentRestarts':list(self.restart_history),'diagnostics':{k:v.status()for k,v in self.logs.items()},'outputErrors':self.output_errors,'continuousCoverageClaimed':False,'financialDatabaseRead':False,'lifetimeStopBudgets':None,'matchedSourceAcknowledgements':self.accepted_source_count}
-  health['equityCompanion']={'enabled':self.equity_enabled,'pid':self.equity.pid if self.equity else None,'restartFailures':self.equity_failures,'financialDatabaseOpened':False,'deliveryFreshnessVerified':False}
+  health['equityCompanion']={'enabled':self.equity_enabled,'pid':self.equity.pid if self.equity else None,'restartFailures':self.equity_failures,'financialDatabaseAccess':'read-only-sale-review','financialDatabaseWrites':False,'deliveryFreshnessVerified':False}
   if now-self.last_health>=5000:
    try:atomic(SERVICE/'health.json',health);self.last_health=now
    except(OSError,Guard):self.output_errors+=1

@@ -140,7 +140,15 @@ async function main() {
     sourceFile, storeFile, credentialFile, bootstrapFile, bootstrapSha256,
   });
   companion.start();
-  const stop = () => { companion.close(); process.exitCode = 0; };
+  // Independent, optional reporting loop. Its read-only ledger connection and
+  // separate store never enter the financial runtime or equity calculations.
+  const reviews = process.env.POE_SALE_REVIEWS_ENABLED === '1'
+    ? new (await import('./sale-review-companion.js')).SaleReviewCompanion({
+        ledgerFile:'/var/lib/poe/state/ledger.sqlite', equityStoreFile:storeFile,
+        secret:secretFromFile(credentialFile),
+      }) : null;
+  reviews?.start();
+  const stop = () => { companion.close(); void reviews?.stop(); process.exitCode = 0; };
   process.once('SIGINT', stop); process.once('SIGTERM', stop);
 }
 if (process.argv[1]?.endsWith('/lifetime-equity-publisher.js')||process.argv[1]?.endsWith('/lifetime-equity-publisher.mjs')) {
