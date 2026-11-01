@@ -182,7 +182,9 @@ export class MarketRegistry {
   * midranks include a neutral zero reference; their equal mean is an explicitly
   * uncalibrated scheduling heuristic, not a profit probability or entry rule. */
  nextOpportunity(q:RegistryQuery,at:number,readyAnchorSql:string):{row:WatchRow;hints:ObservationPriorityHints}|undefined{
-  need(integer(at),'MARKET_REGISTRY_OPPORTUNITY_TIME');const recent=at-SHARED_ACTIVITY_HORIZON_MS,prior=Math.max(0,at-2*SHARED_ACTIVITY_HORIZON_MS);
+  need(integer(at),'MARKET_REGISTRY_OPPORTUNITY_TIME');
+  if(!this.statement(`SELECT 1 FROM watch_rows w WHERE w.archived=0${q.where?` AND (${q.where})`:''} LIMIT 1`).get(...(q.params??[])))return undefined;
+  const recent=at-SHARED_ACTIVITY_HORIZON_MS,prior=Math.max(0,at-2*SHARED_ACTIVITY_HORIZON_MS);
   const ordinal=(field:string)=>`CASE WHEN ${field} IS NULL THEN 0.5 ELSE (RANK() OVER(ORDER BY ${field})-1-(COUNT(*) OVER()-COUNT(${field}) OVER())+COUNT(*) OVER(PARTITION BY ${field})/2.0+CASE WHEN ${field}>0 THEN 1.0 WHEN ${field}=0 THEN 0.5 ELSE 0 END)/(COUNT(${field}) OVER()+1.0) END`;
   const row=this.statement(`WITH eligible AS (
    SELECT w.signature,w.mint,w.pool,w.waiting_since,w.first_seen_at,MAX(0,?-(${readyAnchorSql})) serviceable_wait_ms FROM watch_rows w WHERE w.archived=0${q.where?` AND (${q.where})`:''}
@@ -370,14 +372,17 @@ export class MarketRegistry {
  /** Only already observed creation signatures for currently active/migrated
   * candidates are queried. No token-history scan or per-launch RPC fan-out. */
  nextTokenCreationRequest(at:number):{mint:string;signature:string}|undefined{
-  need(integer(at),'TOKEN_CREATION_REQUEST_TIME');return this.statement(`SELECT p.mint,p.signature FROM identity_provenance p JOIN market_tokens t ON t.mint=p.mint
+  need(integer(at),'TOKEN_CREATION_REQUEST_TIME');return this.statement(`WITH active AS MATERIALIZED (
+   SELECT mint FROM market_tokens WHERE last_activity_at>=? AND last_activity_at<=?
+   UNION SELECT mint FROM identity_provenance WHERE kind='migration' AND last_seen_at>=? AND last_seen_at<=?
+  ) SELECT p.mint,p.signature FROM active CROSS JOIN market_tokens t ON t.mint=active.mint
+   CROSS JOIN identity_provenance p ON p.mint=t.mint
    LEFT JOIN token_creation_requests r ON r.mint=p.mint AND r.signature=p.signature
    WHERE p.kind='creation' AND p.source='pumpportal-new-token' AND p.signature!='' AND p.first_seen_at>=? AND p.first_seen_at<=?
     AND NOT EXISTS(SELECT 1 FROM token_creations c WHERE c.mint=p.mint)
     AND (r.mint IS NULL OR (r.terminal=0 AND r.next_attempt_at<=?))
-    AND (t.last_activity_at>=? OR EXISTS(SELECT 1 FROM identity_provenance m WHERE m.mint=p.mint AND m.kind='migration' AND m.last_seen_at>=?))
     AND (EXISTS(SELECT 1 FROM watch_rows w WHERE w.mint=p.mint AND w.pool IS NOT NULL AND w.archived=0 AND w.state NOT IN ('HELD','ENTRY_PENDING','PERMANENTLY_UNSUPPORTED')) OR EXISTS(SELECT 1 FROM identity_provenance m WHERE m.mint=p.mint AND m.kind='migration'))
-   ORDER BY t.activity_score DESC,p.first_seen_at DESC,p.mint,p.signature LIMIT 1`).get(Math.max(0,at-TOKEN_AGE_POLICY.maximumAgeMs),at,at,at-SHARED_ACTIVITY_HORIZON_MS,at-SHARED_ACTIVITY_HORIZON_MS) as {mint:string;signature:string}|undefined;
+   ORDER BY t.activity_score DESC,p.first_seen_at DESC,p.mint,p.signature LIMIT 1`).get(at-SHARED_ACTIVITY_HORIZON_MS,at,at-SHARED_ACTIVITY_HORIZON_MS,at,Math.max(0,at-TOKEN_AGE_POLICY.maximumAgeMs),at,at) as {mint:string;signature:string}|undefined;
  }
  deferTokenCreationRequest(request:{mint:string;signature:string},at:number,reason:string,terminal=false){this.write(()=>{need(name(request.mint)&&name(request.signature)&&integer(at)&&name(reason),'TOKEN_CREATION_REQUEST_INVALID');this.statement('INSERT INTO token_creation_requests(mint,signature,next_attempt_at,terminal,last_reason) VALUES(?,?,?,?,?) ON CONFLICT(mint,signature) DO UPDATE SET next_attempt_at=excluded.next_attempt_at,terminal=excluded.terminal,last_reason=excluded.last_reason').run(request.mint,request.signature,at+60000,terminal?1:0,reason);});}
  tokenAgeSummary(at:number){need(integer(at),'TOKEN_CREATION_REPORT_TIME');const row=this.statement('SELECT COUNT(*) verified,SUM(CASE WHEN created_at<=? AND created_at>=? AND verified_at<=? THEN 1 ELSE 0 END) within24h FROM token_creations').get(at,at-TOKEN_AGE_POLICY.maximumAgeMs,at) as {verified:number;within24h:number|null};return {policy:TOKEN_AGE_POLICY.version,maximumAgeMs:TOKEN_AGE_POLICY.maximumAgeMs,verified:row.verified,within24h:row.within24h??0,unknownExcluded:true,creationNotMigration:true};}

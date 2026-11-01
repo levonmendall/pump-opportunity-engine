@@ -1047,3 +1047,55 @@ test('deferred socket gap survives a real refused writer lease and never regains
   assert.equal(f.runner.status().counters.qualityGaps,1);
  }finally{if(locker.inTransaction)locker.exec('ROLLBACK');await f.runner.stop();locker.close();registry.close();rmSync(dir,{recursive:true,force:true});}
 });
+
+
+// Synthetic scheduling latency, not measured provider latency. These exercise
+// the actual runner, actual SQLite registry and existing fake physical gate.
+function bootstrapFixture(){
+ const mint=new PublicKey(Buffer.alloc(32,21)).toBase58(),signature=sig(55001);
+ const f=fixture({enforceTokenAge24h:true,durableMarketPolicy:true,fairEconomicCompletions:true,creationTx:tokenCreationTransaction(mint,signature,Math.floor((baseAt-3600000)/1000)*1000)});
+ f.runner.onMarketIdentity({mint,signature,receivedAt:f.now,source:'pumpportal-new-token',kind:'creation',evidence:'unverified-provider-discovery-hint'});
+ assert.equal(f.seed(1),mint);
+ f.runner.onMarketIdentity({mint,signature:sig(1),receivedAt:f.now,source:'pumpportal-migration',kind:'migration',evidence:'unverified-provider-discovery-hint'});
+ return {...f,fixture:f,mint,signature,registry:(f.runner as any).registry as MarketRegistry};
+}
+test('admission bootstrap: slow local creation lookup cannot consume an unstarted request envelope',async()=>{
+ const b=bootstrapFixture(),f=b.fixture,lookup=b.registry.nextTokenCreationRequest.bind(b.registry);
+ b.registry.nextTokenCreationRequest=(at:number)=>{const row=lookup(at);f.advance(1600);return row;};
+ try{
+  await f.steps(5);
+  assert.deepEqual(f.rpcCalls.map(r=>r.method),['getTransaction'],'current admission is calculated AFTER local lookup, without changing physical timeout');
+  assert.ok(f.states.has(b.mint),'actual verified age can proceed to its own selected scope');
+  assert.equal(f.resolveCalls,0);assert.equal(f.maximumInFlight,1);
+ }finally{await f.runner.stop();}
+});
+test('admission bootstrap: pre-callback housekeeping contention does not starve creation verification',async()=>{
+ for(const phase of ['drainNativeActivity','drainMigrationDelivery','drainPoolSourceProgress','drainCommittedActivity','allocate']){
+  const b=bootstrapFixture(),f=b.fixture;
+  (f.runner as any)[phase]=()=>{throw new MarketRegistryContention('SQLITE_BUSY');};
+  try{await f.steps(2);assert.equal(f.rpcCalls.filter(r=>r.method==='getTransaction').length,1,phase);assert.equal(f.runner.status().financialWriterOpened,false);}
+  finally{await f.runner.stop();}
+ }
+});
+test('admission bootstrap: membership repair remains mandatory before any provider work',async()=>{
+ const b=bootstrapFixture(),f=b.fixture;(f.runner as any).reconcileObservationMembership=()=>false;
+ try{await f.steps(3);assert.equal(f.rpcCalls.length,0);assert.equal(f.added.length,0);}finally{await f.runner.stop();}
+});
+test('admission bootstrap: unknown maintenance failures are not treated as harmless contention',async()=>{
+ const b=bootstrapFixture(),f=b.fixture;
+ (f.runner as any).drainCommittedActivity=()=>{throw Object.assign(new Error('SQLITE_CORRUPT'),{code:'SQLITE_CORRUPT',callbackStarted:false});};
+ try{assert.equal(await f.runner.step(),'unavailable');assert.equal(f.rpcCalls.length,0);assert.equal(f.added.length,0);}finally{await f.runner.stop();}
+});
+test('admission bootstrap: current physical occupancy and source closure are rechecked after local selection',async()=>{
+ for(const close of [false,true]){
+  const b=bootstrapFixture(),f=b.fixture,lookup=b.registry.nextTokenCreationRequest.bind(b.registry);
+  b.registry.nextTokenCreationRequest=(at:number)=>{const row=lookup(at);f.advance(1600);if(close)f.setAllow(false);else f.setPhysicalBusy(true);return row;};
+  try{await f.steps(2);assert.equal(f.rpcCalls.length,0);assert.equal(f.added.length,0);}finally{await f.runner.stop();}
+ }
+});
+test('admission bootstrap: empty eligible universe never scans the economic-ranking windows',()=>{
+ const r=new MarketRegistry(':memory:',{now:()=>baseAt}),statement=(r as any).statement.bind(r);let rankedQueries=0;
+ (r as any).statement=(sql:string)=>{if(sql.includes('WITH eligible AS'))rankedQueries++;return statement(sql);};
+ try{assert.equal(r.nextOpportunity({where:'w.state=\'WATCH\''},baseAt,'w.waiting_since'),undefined);assert.equal(rankedQueries,0);}
+ finally{r.close();}
+});
