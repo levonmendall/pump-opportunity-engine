@@ -7,6 +7,8 @@ import { createDashboard } from '../src/dashboard.js';
 import { connectionReport } from '../src/dashboard-connectivity.js';
 import { projectOperatingIntelligence, ORIGINAL_POE_ACCOUNT, ORIGINAL_POE_INCEPTION } from '../src/operating-intelligence.js';
 import { operatingSnapshotFreshness, SnapshotCache, type Snapshot, type ReportingIdentity } from '../src/reporting.js';
+import { projectMarketCoverageReporting } from '../src/market-coverage-reporting.js';
+import { projectNativeSlotProductivityReporting, NATIVE_SLOT_STATES, NATIVE_SLOT_COUNTS, NATIVE_SLOT_WAITS } from '../src/native-slot-productivity-reporting.js';
 
 const T = Date.parse('2026-10-29T17:00:00.000Z');
 const iso = (at: number) => new Date(at).toISOString();
@@ -27,6 +29,122 @@ function sample(): Snapshot {
   };
 }
 const classify = (s: Snapshot, now = T, receivedAt = iso(T)) => operatingSnapshotFreshness(s, receivedAt, now)!;
+function selectedSample(kind: 'vacant' | 'replacement' | 'pending' | 'acknowledged' = 'vacant'): Snapshot {
+  const s = sample(), i = s.intelligence!, at = T - 1100, startedAt = T - 500000;
+  s.status.entries = 'enabled'; s.status.market = 'unavailable'; i.quality.captureConnected = false;
+  const occupied = kind === 'pending' || kind === 'acknowledged' ? 1 : 0;
+  i.candidates.deepMaximum = 4; i.candidates.deepActive = occupied;
+  const scope = { version: 'native-slot-productivity-v1', scope: 'CURRENT_SOURCE_INSTANCE', runId: i.run.id, sourceInstanceId: 'native-runner:' + i.run.id + ':fixture', startedAt, generatedAt: at, configuredSlots: 4 };
+  i.slotProductivity = projectNativeSlotProductivityReporting({ slotProductivity: {
+    ...scope, stateMs: Object.fromEntries(NATIVE_SLOT_STATES.map(state => [state, 0])),
+    slots: Array.from({ length: 4 }, (_, slot) => ({ slot, mint: slot === 0 && occupied ? '11111111111111111111111111111111' : null,
+      state: slot === 0 && occupied ? kind === 'pending' ? 'SUBSCRIPTION_WAIT' : 'EVIDENCE_WARMING' : kind === 'vacant' ? 'VACANT' : 'REPLACEMENT_WAIT',
+      sinceAt: at - 500, stateAgeMs: 500, allocatedAt: slot === 0 && occupied ? at - 500 : null, openedAt: slot === 0 && kind === 'acknowledged' ? at - 200 : null, windowEndAt: null })),
+    counts: Object.fromEntries(NATIVE_SLOT_COUNTS.map(key => [key, 0])), waits: Object.fromEntries(NATIVE_SLOT_WAITS.map(key => [key, { count: 0, sum: 0, mean: null, max: null, p50: null, p95: null }])),
+    percentileScope: 'ALL_ACTUAL_STARTS_IN_SOURCE_INSTANCE', limitations: [],
+  } }, T);
+  i.marketCoverage = projectMarketCoverageReporting({ runId: i.run.id, marketCoverage: { version: 'poe-market-coverage-v1', generatedAt: at,
+    pipeline: { ...scope, version: 'native-pipeline-throughput-v1', population: { activeDeep: occupied }, flow: {},
+      capacityWitness: { configuredSlots: 4, physicalOccupancy: occupied, sourceReady: true, providerReady: false, localReady: false } },
+  } }, T);
+  assert.ok(i.slotProductivity); assert.ok(i.marketCoverage?.pipeline);
+  return s;
+}
+
+for (const kind of ['vacant', 'replacement', 'pending'] as const) test('current selected scope distinguishes ' + kind + ' without changing coverage or permission', () => {
+  const s = selectedSample(kind), before = structuredClone(s), expected = kind === 'pending' ? 'awaiting-subscription' : 'idle';
+  const cache = new SnapshotCache(identity); cache.accept(s, T); const status = cache.status(T);
+  assert.ok('operating' in status); const f = status.operating!;
+  assert.equal(f.state, expected); assert.equal(f.market, expected); assert.equal(f.selectedCaptureState, expected); assert.equal(f.selectedCapture, false);
+  assert.equal(f.selectedScope!.configuredSlots, 4); assert.equal(f.selectedScope!.acknowledgedSlots, 0);
+  assert.equal(f.selectedScope!.assignedSlots, kind === 'pending' ? 1 : 0);
+  assert.equal(f.selectedScope!.oldestPendingMs, kind === 'pending' ? 1600 : null);
+  assert.equal(f.reasonCodes.includes('SELECTED_CAPTURE_LOST'), false); assert.equal(f.discovery, true); assert.equal(f.watch, true);
+  assert.deepEqual(s, before); assert.deepEqual(cache.read()!.snapshot, before);
+  assert.equal(s.status.market, 'unavailable'); assert.equal(s.status.entries, 'enabled'); assert.equal(s.mode, 'PAPER'); assert.equal(s.liveTrading, false);
+});
+
+test('retiring physical subscriptions do not turn empty or awaiting logical slots into capture loss', () => {
+  for (const kind of ['replacement', 'pending'] as const) {
+    const s = selectedSample(kind); s.intelligence!.marketCoverage!.pipeline!.capacityWitness!.physicalOccupancy = 4;
+    const f = classify(s); assert.equal(f.state, kind === 'pending' ? 'awaiting-subscription' : 'idle'); assert.equal(f.selectedCapture, false);
+    assert.equal(f.reasonCodes.includes('SELECTED_CAPTURE_LOST'), false);
+  }
+});
+
+test('a previously acknowledged assignment still reports actual loss amid empty slots or a new pending subscription', () => {
+  const s = selectedSample('acknowledged'), i = s.intelligence!;
+  let f = classify(s); assert.equal(f.state, 'unavailable'); assert.equal(f.selectedCaptureState, 'lost'); assert.ok(f.reasonCodes.includes('SELECTED_CAPTURE_LOST'));
+  i.slotProductivity!.slots[1] = { ...i.slotProductivity!.slots[0]!, slot: 1, mint: '22222222222222222222222222222222', state: 'SUBSCRIPTION_WAIT', openedAt: null };
+  i.candidates.deepActive = 2; i.marketCoverage!.pipeline!.population.activeDeep = 2; i.marketCoverage!.pipeline!.capacityWitness!.physicalOccupancy = 2;
+  f = classify(s); assert.equal(f.selectedScope!.acknowledgedSlots, 1); assert.equal(f.selectedScope!.awaitingAcknowledgement, 1);
+  assert.equal(f.state, 'unavailable'); assert.ok(f.reasonCodes.includes('SELECTED_CAPTURE_LOST'));
+  i.quality.captureConnected = true; assert.equal(classify(s).state, 'observing-with-zero-trades');
+  i.quality.captureConnected = null; assert.equal(classify(s).market, 'unknown');
+});
+
+const inconsistentScope: [string, (s: Snapshot) => void][] = [
+  ['missing slots', s => { delete s.intelligence!.slotProductivity; }],
+  ['missing pipeline', s => { delete s.intelligence!.marketCoverage!.pipeline; }],
+  ['wrong slot run', s => { s.intelligence!.slotProductivity!.runId = 'previous-run'; }],
+  ['wrong pipeline run', s => { s.intelligence!.marketCoverage!.pipeline!.runId = 'previous-run'; }],
+  ['wrong source instance', s => { s.intelligence!.slotProductivity!.sourceInstanceId += '-old'; }],
+  ['wrong embedded run identity', s => { s.intelligence!.slotProductivity!.sourceInstanceId = s.intelligence!.marketCoverage!.pipeline!.sourceInstanceId = 'native-runner:previous-run:fixture'; }],
+  ['different measurement time', s => { s.intelligence!.slotProductivity!.generatedAt = iso(T - 1200); }],
+  ['stale slot facts', s => { s.intelligence!.slotProductivity!.generatedAt = s.intelligence!.marketCoverage!.pipeline!.generatedAt = iso(T - 90001); }],
+  ['future slot facts', s => { s.intelligence!.slotProductivity!.generatedAt = s.intelligence!.marketCoverage!.pipeline!.generatedAt = iso(T + 1); }],
+  ['missing configured slot', s => { s.intelligence!.slotProductivity!.slots.pop(); }],
+  ['duplicate slot', s => { s.intelligence!.slotProductivity!.slots[1]!.slot = 0; }],
+  ['different configured capacity', s => { s.intelligence!.candidates.deepMaximum = 3; }],
+  ['unreported logical occupancy', s => { s.intelligence!.candidates.deepActive = null; }],
+  ['conflicting pipeline occupancy', s => { s.intelligence!.marketCoverage!.pipeline!.population.activeDeep = 2; }],
+  ['physical occupancy below assigned slots', s => { s.intelligence!.marketCoverage!.pipeline!.capacityWitness!.physicalOccupancy = 0; }],
+  ['physical occupancy exceeds capacity', s => { s.intelligence!.marketCoverage!.pipeline!.capacityWitness!.physicalOccupancy = 99; }],
+  ['vacant slot retains ACK', s => { s.intelligence!.slotProductivity!.slots[1]!.openedAt = iso(T - 1500); }],
+  ['pending slot retains window', s => { s.intelligence!.slotProductivity!.slots[0]!.windowEndAt = iso(T - 1200); }],
+  ['pending slot lacks allocation', s => { s.intelligence!.slotProductivity!.slots[0]!.allocatedAt = null; }],
+];
+for (const [label, mutate] of inconsistentScope) test('optional scope cannot suppress capture failure: ' + label, () => {
+  const s = selectedSample('pending'); mutate(s); const f = classify(s);
+  assert.equal(f.state, 'unavailable'); assert.equal(f.selectedScope, null); assert.ok(f.reasonCodes.includes('SELECTED_CAPTURE_LOST'));
+});
+
+test('subscription delay is measured at source generation and never misreported as losing an ACK', () => {
+  const s = selectedSample('pending'), slot = s.intelligence!.slotProductivity!.slots[0]!;
+  slot.allocatedAt = iso(T - 90000); assert.equal(classify(s).state, 'awaiting-subscription');
+  assert.equal(classify(s, T + 15000).reasonCodes.includes('SELECTED_SUBSCRIPTION_DELAYED'), false);
+  slot.allocatedAt = iso(T - 90001); const f = classify(s);
+  assert.equal(f.state, 'unavailable'); assert.equal(f.market, 'awaiting-subscription'); assert.ok(f.reasonCodes.includes('SELECTED_SUBSCRIPTION_DELAYED'));
+  assert.equal(f.reasonCodes.includes('SELECTED_CAPTURE_LOST'), false);
+});
+
+test('idle and pending do not hide feed failure, stale reporting, stopped runtime or financial warnings', () => {
+  for (const kind of ['vacant', 'pending'] as const) {
+    const s = selectedSample(kind), i = s.intelligence!;
+    for (const feed of ['discoveryConnected', 'watchConnected'] as const) for (const value of [false, null]) {
+      i.provider[feed] = value; assert.equal(classify(s).state, 'unavailable'); assert.notEqual(classify(s).selectedCaptureState, 'lost'); i.provider[feed] = true;
+    }
+    assert.equal(classify(s, T + 90001).state, 'stale'); assert.equal(classify(s, T, iso(T - 90001)).state, 'stale');
+    s.status.runtime = 'stopped'; assert.equal(classify(s).state, 'unavailable'); s.status.runtime = 'running';
+    s.status.entries = 'paused'; s.status.blocker = 'POE_ENTRY_RECONCILIATION_STALE'; s.status.reconciled = false; s.balances.equityUsd = null;
+    const f = classify(s); assert.equal(f.entryRestriction, 'POE_ENTRY_RECONCILIATION_STALE');
+    assert.ok(f.reasonCodes.includes('RECONCILIATION_NOT_CURRENT')); assert.ok(f.reasonCodes.includes('USD_VALUATION_UNAVAILABLE')); assert.equal(s.status.entries, 'paused');
+  }
+});
+
+test('financial obligations and active source recovery retain warnings while selected scope remains factual', () => {
+  const s = selectedSample('vacant'), i = s.intelligence!;
+  s.positions = [{ mint: 'fixture-mint', label: 'fixture', quantity: '1', enteredAt: iso(T - 30000), entryCostUsd: 1, netLiquidationUsd: null, executionCostsUsd: 0, status: 'unavailable' }];
+  let f = classify(s); assert.equal(f.selectedCaptureState, 'idle'); assert.equal(f.state, 'unavailable');
+  assert.ok(f.reasonCodes.includes('SELECTED_CAPTURE_REQUIRED')); assert.ok(f.reasonCodes.includes('PROTECTION_UNAVAILABLE'));
+  s.positions = []; i.pendingOrders = [{ id: 'pending-fixture', mint: 'fixture-mint', side: 'buy', decidedAt: iso(T - 500), executeAt: iso(T + 500), expiresAt: iso(T + 1000), reservedSol: '0', quantityMinimum: '1', reason: 'fixture' }];
+  assert.ok(classify(s).reasonCodes.includes('SELECTED_CAPTURE_REQUIRED')); i.pendingOrders = [];
+  i.admission = { financialProjectionReady: true, supervisedNewRiskAllowed: false, candidateResourceAdmissionAllowed: true, evidenceAdmissionAllowed: true, evidencePressureReasonCode: null, evidenceDiagnosticBytes: 0, evidenceDiagnosticLimitBytes: 100, evidenceRequiresCriticalRecovery: false, evidenceRefusedRecords: 0, sourceRecoveryGeneration: 1, sourceRecoveryFailures: 5, sourceRecoveryReasonCode: null, sourceRecoveryRetryAt: null, sourceRecoveryClosingSettled: false, sourceRestartRequired: false, proofPreparationState: 'complete' };
+  i.quality.qualityGaps = 100; i.provider.httpErrors = 100;
+  assert.equal(classify(s).state, 'idle', 'cumulative failures and closing-settled false are not current outages');
+  i.admission.sourceRestartRequired = true; f = classify(s); assert.equal(f.state, 'unavailable'); assert.ok(f.reasonCodes.includes('SOURCE_RECOVERY'));
+  i.admission.sourceRestartRequired = false; i.admission.evidenceRequiresCriticalRecovery = true; f = classify(s); assert.equal(f.state, 'unavailable'); assert.ok(f.reasonCodes.includes('EVIDENCE_PRESSURE'));
+});
 const currentEntryMessages = {
   POE_ENTRY_MANUAL_PAUSE: 'The owner paused new entries',
   POE_ENTRY_SAFE_STOP: 'A safe stop is active; existing obligations remain',
@@ -153,6 +271,30 @@ test('57 actual 16:51–17:06 observations separate 39 reconciliation-only false
   assert.equal(corrected, 39); assert.equal(trueLosses, 2);
 });
 
+const selectionReplay = JSON.parse(readFileSync(new URL('./fixtures/selected-capture-20261101.json', import.meta.url), 'utf8'));
+function selectionReplaySnapshot(row: any): Snapshot {
+  const s = selectedSample(), i = s.intelligence!;
+  assert.equal(row.positionCount, 0); s.source = row.source; s.sequence = row.sequence; s.times = row.times; s.status = row.status;
+  i.run = row.run; i.admission = row.admission; i.protection = row.protection; i.pendingOrders = row.pendingOrders;
+  Object.assign(i.candidates, row.candidates); i.quality.captureConnected = row.captureConnected;
+  i.provider.discoveryConnected = row.discoveryConnected; i.provider.watchConnected = row.watchConnected;
+  i.slotProductivity = row.slotProductivity; i.marketCoverage!.pipeline = row.pipeline; i.marketCoverage!.generatedAt = row.pipeline.generatedAt;
+  return s;
+}
+test('six deployed admission-repair observations preserve connected capture and correct two ACK waits plus empty-slot turnover', () => {
+  assert.equal(selectionReplay.rows.length, 6); let corrected = 0;
+  for (const row of selectionReplay.rows) {
+    const s = selectionReplaySnapshot(row), before = structuredClone(s), cache = new SnapshotCache({ ...identity, ...s.source });
+    cache.accept(s, row.observedAt); const f = operatingSnapshotFreshness(s, row.receivedAt, row.observedAt)!;
+    assert.equal(f.selectedCaptureState, row.expectedCaptureState); assert.equal(f.selectedCapture, row.captureConnected);
+    assert.equal(f.selectedScope!.configuredSlots, 4); assert.equal(f.reporting, 'current');
+    assert.equal(f.reasonCodes.includes('SELECTED_CAPTURE_LOST'), false); assert.notEqual(f.state, 'unavailable');
+    if (!row.captureConnected) { corrected++; assert.equal(f.selectedScope!.acknowledgedSlots, 0); }
+    assert.deepEqual(s, before); assert.deepEqual(cache.read()!.snapshot, before);
+  }
+  assert.equal(corrected, 3);
+});
+
 test('actual served browser uses shared classifier, preserves true disconnections/read failures/stops, and never makes financial timestamps source freshness', async t => {
   const app = createDashboard({ ...identity, viewerUser: '', viewerPassword: '', publicViewer: true, ingestionSecret: 'disposable-freshness-fixture-secret' });
   app.server.listen(0, '127.0.0.1'); await once(app.server, 'listening');
@@ -176,6 +318,21 @@ test('actual served browser uses shared classifier, preserves true disconnection
     else { assert.match(result[0]!, /SELECTED CAPTURE UNAVAILABLE/); assert.match(result[1]!, /Broad discovery continues/); assert.equal(result[3], 'warning'); }
   }
   now = T;
+  for (const kind of ['vacant', 'replacement', 'pending'] as const) {
+    const selected = selectedSample(kind), result = run(selected);
+    assert.equal(result[0], kind === 'pending' ? 'RUNNING · AWAITING SUBSCRIPTION' : 'RUNNING · NO SELECTED CANDIDATE');
+    assert.match(result[1]!, kind === 'pending' ? /awaiting subscription acknowledgement/ : /No candidate currently occupies/);
+    assert.equal(result[3], 'connected'); assert.doesNotMatch(result[1]!, /capture is disconnected|capture is unavailable/);
+    selected.intelligence!.provider.watchConnected = false; const failed = run(selected);
+    assert.match(failed[0]!, /SOURCE UNAVAILABLE/); assert.match(failed[1]!, /Lightweight watch activity is disconnected/); assert.equal(failed[3], 'warning');
+    selected.intelligence!.provider.watchConnected = true; selected.status.runtime = 'stopped'; assert.equal(run(selected)[0], 'STOPPED');
+  }
+  for (const row of selectionReplay.rows) {
+    now = row.observedAt; const s = selectionReplaySnapshot(row), result = run(s, row.receivedAt);
+    const expected = row.expectedCaptureState === 'connected' ? 'OBSERVING' : row.expectedCaptureState === 'idle' ? 'NO SELECTED CANDIDATE' : 'AWAITING SUBSCRIPTION';
+    assert.equal(result[0], 'RUNNING · ' + expected); assert.doesNotMatch(result[0]!, /UNAVAILABLE/);
+  }
+  now = T;
   for (const [code, message] of Object.entries(currentEntryMessages)) {
     const current = sample(); current.status.blocker = code;
     const result = run(current); assert.equal(result[0], 'RUNNING · OBSERVING');
@@ -193,3 +350,4 @@ test('actual served browser uses shared classifier, preserves true disconnection
   context.readFailure = null; now = T + 90001; result = run(s, iso(T)); assert.equal(result[0], 'STOPPED · STALE SOURCE SNAPSHOT');
   s.status.runtime = 'running'; assert.equal(run(s, iso(T))[0], 'STALE SOURCE SNAPSHOT');
 });
+

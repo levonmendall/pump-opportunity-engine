@@ -1,0 +1,1672 @@
+{
+  "provenance": {
+    "workflowRun": "https://github.com/levonmendall/meme-machine-admin/actions/runs/41336810979",
+    "sourceRelease": "bb145cc82b0f05560b03bbd9e53de0c9e360f48f",
+    "purpose": "Selected fields from six read-only production receiver observations; financial balances and token activity are not synthesized by this fixture."
+  },
+  "rows": [
+    {
+      "observedAt": 1793558518049,
+      "receivedAt": "2026-11-01T18:41:47.542Z",
+      "source": {
+        "release": "bb145cc82b0f05560b03bbd9e53de0c9e360f48f",
+        "strategy": "liquidity-resilient-momentum-v3.1"
+      },
+      "sequence": "25507",
+      "times": {
+        "generatedAt": "2026-11-01T18:41:42.237Z",
+        "marketAt": "2026-11-01T18:41:36.630Z",
+        "reconciledAt": "2026-11-01T18:41:40.373Z",
+        "usefulProgressAt": "2026-11-01T18:41:40.373Z"
+      },
+      "status": {
+        "blocker": "POE_ENTRY_MONITORING_UNAVAILABLE",
+        "entries": "paused",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "positionCount": 0,
+      "run": {
+        "configurationSha256": "2c4b685f286ed8cc79905af215f5e2757b5fe598eca9b8755f4210b35837a4d8",
+        "id": "native-paper-20261101182701177",
+        "mode": "persistent-paper",
+        "startedAt": "2026-11-01T18:27:01.177Z",
+        "strategyVersion": "liquidity-resilient-momentum-v3.1"
+      },
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 29096437,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "not-started",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": false
+      },
+      "protection": {
+        "breaches": 109,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "unavailableChecks": 900
+      },
+      "pendingOrders": [],
+      "candidates": {
+        "deepActive": 1,
+        "deepMaximum": 4
+      },
+      "captureConnected": true,
+      "discoveryConnected": true,
+      "watchConnected": true,
+      "slotProductivity": {
+        "configuredSlots": 4,
+        "counts": {
+          "allocations": 58,
+          "distinctAudited": 14,
+          "distinctPreliminaryEvaluated": 14,
+          "distinctPrimaryEvaluated": 0,
+          "entryFills": 0,
+          "exitFills": 0,
+          "qualified": 0,
+          "repromotions": 1,
+          "unattributedFinancialEvents": 0
+        },
+        "evidenceCoverage": {
+          "basis": "RETROSPECTIVE_UNION_OF_VERIFIED_WINDOWS_PER_ACTUAL_SLOT_ASSIGNMENT",
+          "occupiedSlotMs": 1669283,
+          "percent": 75.48150912697248,
+          "verifiedEvidenceMs": 1260000
+        },
+        "failureCounts": {
+          "auditUnusableWindows": 0,
+          "decisionDeadlineWindows": 1,
+          "historyNotObservedWindows": 0,
+          "providerUnavailableWindows": 0
+        },
+        "generatedAt": "2026-11-01T18:41:41.155Z",
+        "limitations": [
+          "FOUR_SLOTS_DO_NOT_IMPLY_PRODUCTIVE_WORK",
+          "PHYSICAL_START_REQUIRES_RECEIPT",
+          "PRELIMINARY_EVALUATION_NOT_FINANCIAL_QUALIFICATION",
+          "FINANCIAL_EVENTS_REQUIRE_ACTUAL_CALLBACK",
+          "NO_PER_SLOT_PROFIT_ATTRIBUTION",
+          "NO_WHOLE_MARKET_DENOMINATOR"
+        ],
+        "percentileScope": "ALL_ACTUAL_STARTS_IN_SOURCE_INSTANCE",
+        "runId": "native-paper-20261101182701177",
+        "scope": "CURRENT_SOURCE_INSTANCE",
+        "slots": [
+          {
+            "allocatedAt": null,
+            "mint": null,
+            "openedAt": null,
+            "sinceAt": "2026-11-01T18:41:36.716Z",
+            "slot": 0,
+            "state": "REPLACEMENT_WAIT",
+            "stateAgeMs": 4439,
+            "windowEndAt": null
+          },
+          {
+            "allocatedAt": "2026-11-01T18:33:33.757Z",
+            "mint": "GJgHi8KBkkCtSTc1Hh1d7iviwFR5QMzqGLgKRSZZFfZg",
+            "openedAt": "2026-11-01T18:33:38.942Z",
+            "sinceAt": "2026-11-01T18:41:40.296Z",
+            "slot": 1,
+            "state": "AUDIT_WAIT",
+            "stateAgeMs": 859,
+            "windowEndAt": "2026-11-01T18:41:40.000Z"
+          },
+          {
+            "allocatedAt": null,
+            "mint": null,
+            "openedAt": null,
+            "sinceAt": "2026-11-01T18:41:01.501Z",
+            "slot": 2,
+            "state": "REPLACEMENT_WAIT",
+            "stateAgeMs": 39654,
+            "windowEndAt": null
+          },
+          {
+            "allocatedAt": null,
+            "mint": null,
+            "openedAt": null,
+            "sinceAt": "2026-11-01T18:41:04.035Z",
+            "slot": 3,
+            "state": "REPLACEMENT_WAIT",
+            "stateAgeMs": 37120,
+            "windowEndAt": null
+          }
+        ],
+        "sourceInstanceId": "native-runner:native-paper-20261101182701177:417dfa49-c986-42ec-b679-def204e00055",
+        "startedAt": "2026-11-01T18:27:01.310Z",
+        "stateMs": {
+          "AUDIT_ACTIVE": 14234,
+          "AUDIT_READY": 1413,
+          "AUDIT_WAIT": 122276,
+          "EVIDENCE_WARMING": 1314129,
+          "PROVIDER_WAIT": 0,
+          "REPLACEMENT_WAIT": 655632,
+          "SUBSCRIPTION_WAIT": 203697,
+          "UNUSABLE": 13534,
+          "VACANT": 1194465
+        },
+        "version": "native-slot-productivity-v1",
+        "waits": {
+          "ackToWarm": {
+            "count": 14,
+            "max": 69410,
+            "mean": 64972.42857142857,
+            "p50": 64702,
+            "p95": 69410,
+            "sum": 909614
+          },
+          "allocationToAck": {
+            "count": 15,
+            "max": 18408,
+            "mean": 6583.333333333333,
+            "p50": 5185,
+            "p95": 18408,
+            "sum": 98750
+          },
+          "auditReadyToPhysicalStart": {
+            "count": 55,
+            "max": 5985,
+            "mean": 2130.3818181818183,
+            "p50": 2092,
+            "p95": 4671,
+            "sum": 117171
+          },
+          "queueToAllocation": {
+            "count": 58,
+            "max": 150673,
+            "mean": 17912.655172413793,
+            "p50": 1032,
+            "p95": 97473,
+            "sum": 1038934
+          },
+          "retirementToReplacement": {
+            "count": 54,
+            "max": 300324,
+            "mean": 10637.388888888889,
+            "p50": 2512,
+            "p95": 30083,
+            "sum": 574419
+          }
+        }
+      },
+      "pipeline": {
+        "capacityWitness": {
+          "configuredSlots": 4,
+          "localReady": true,
+          "physicalOccupancy": 1,
+          "potentialWaiting": 0,
+          "providerReady": false,
+          "sourceReady": true
+        },
+        "flow": {
+          "auditCompletions": 55,
+          "deepAdmissions": 58,
+          "discoveredDistinct": 1338,
+          "entryFills": 0,
+          "exitFills": 0,
+          "financialEvaluations": 0,
+          "lightweightArrivals": 1338,
+          "lightweightCompleted": 1338,
+          "qualified": 0,
+          "serviceableArrivals": null
+        },
+        "generatedAt": "2026-11-01T18:41:41.155Z",
+        "limitations": [
+          "RETAINED_NOT_QUEUE",
+          "LOCAL_SERVICEABILITY_REQUIRES_RUNTIME_PROVIDER_ADMISSION",
+          "SHARED_HINTS_NOT_QUALIFICATION",
+          "INTAKE_COUNTS_ARE_NEW_UNIQUE_IDENTITY_COHORT",
+          "SERVICEABLE_QUEUE_WAIT_IS_NOT_CAUSAL_CAPACITY_DELAY",
+          "OTHER_UNEXPORTED_LIMITATION",
+          "SERVICEABLE_ARRIVALS_UNAVAILABLE",
+          "CAPACITY_COUNT_WITHHELD_WHILE_RUNTIME_OR_PROVIDER_BLOCKED"
+        ],
+        "population": {
+          "activeDeep": 1,
+          "capacityWaiting": null,
+          "eligibleNow": 0,
+          "retained": 129688,
+          "serviceableNow": 0,
+          "verifiedAwaitingPrerequisites": 44157
+        },
+        "ratesPerMinute": {
+          "auditCompletions": 3.7506606277242014,
+          "deepAdmissions": 3.955242116509158,
+          "discoveredDistinct": 91.24334399809057,
+          "entryFills": 0,
+          "exitFills": 0,
+          "financialEvaluations": 0,
+          "lightweightArrivals": 91.24334399809057,
+          "lightweightCompleted": 91.24334399809057,
+          "qualified": 0,
+          "serviceableArrivals": null
+        },
+        "runId": "native-paper-20261101182701177",
+        "scope": "CURRENT_SOURCE_INSTANCE",
+        "sourceInstanceId": "native-runner:native-paper-20261101182701177:417dfa49-c986-42ec-b679-def204e00055",
+        "startedAt": "2026-11-01T18:27:01.310Z",
+        "version": "native-pipeline-throughput-v1",
+        "waits": {
+          "capacityQueue": {
+            "count": 0,
+            "max": null,
+            "mean": null,
+            "p50": null,
+            "p95": null
+          },
+          "eligibleQueue": {
+            "count": 0,
+            "max": null,
+            "mean": null,
+            "p50": null,
+            "p95": null
+          }
+        }
+      },
+      "expectedCaptureState": "connected"
+    },
+    {
+      "observedAt": 1793558548218,
+      "receivedAt": "2026-11-01T18:42:17.754Z",
+      "source": {
+        "release": "bb145cc82b0f05560b03bbd9e53de0c9e360f48f",
+        "strategy": "liquidity-resilient-momentum-v3.1"
+      },
+      "sequence": "25509",
+      "times": {
+        "generatedAt": "2026-11-01T18:42:15.743Z",
+        "marketAt": "2026-11-01T18:42:09.867Z",
+        "reconciledAt": "2026-11-01T18:42:14.550Z",
+        "usefulProgressAt": "2026-11-01T18:42:14.550Z"
+      },
+      "status": {
+        "blocker": null,
+        "entries": "enabled",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "positionCount": 0,
+      "run": {
+        "configurationSha256": "2c4b685f286ed8cc79905af215f5e2757b5fe598eca9b8755f4210b35837a4d8",
+        "id": "native-paper-20261101182701177",
+        "mode": "persistent-paper",
+        "startedAt": "2026-11-01T18:27:01.177Z",
+        "strategyVersion": "liquidity-resilient-momentum-v3.1"
+      },
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 23605387,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "complete",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "protection": {
+        "breaches": 109,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "unavailableChecks": 900
+      },
+      "pendingOrders": [],
+      "candidates": {
+        "deepActive": 1,
+        "deepMaximum": 4
+      },
+      "captureConnected": false,
+      "discoveryConnected": true,
+      "watchConnected": true,
+      "slotProductivity": {
+        "configuredSlots": 4,
+        "counts": {
+          "allocations": 62,
+          "distinctAudited": 14,
+          "distinctPreliminaryEvaluated": 14,
+          "distinctPrimaryEvaluated": 1,
+          "entryFills": 0,
+          "exitFills": 0,
+          "qualified": 0,
+          "repromotions": 1,
+          "unattributedFinancialEvents": 0
+        },
+        "evidenceCoverage": {
+          "basis": "RETROSPECTIVE_UNION_OF_VERIFIED_WINDOWS_PER_ACTUAL_SLOT_ASSIGNMENT",
+          "occupiedSlotMs": 1691883,
+          "percent": 75.65534969025636,
+          "verifiedEvidenceMs": 1280000
+        },
+        "failureCounts": {
+          "auditUnusableWindows": 0,
+          "decisionDeadlineWindows": 1,
+          "historyNotObservedWindows": 0,
+          "providerUnavailableWindows": 0
+        },
+        "generatedAt": "2026-11-01T18:42:14.674Z",
+        "limitations": [
+          "FOUR_SLOTS_DO_NOT_IMPLY_PRODUCTIVE_WORK",
+          "PHYSICAL_START_REQUIRES_RECEIPT",
+          "PRELIMINARY_EVALUATION_NOT_FINANCIAL_QUALIFICATION",
+          "FINANCIAL_EVENTS_REQUIRE_ACTUAL_CALLBACK",
+          "NO_PER_SLOT_PROFIT_ATTRIBUTION",
+          "NO_WHOLE_MARKET_DENOMINATOR"
+        ],
+        "percentileScope": "ALL_ACTUAL_STARTS_IN_SOURCE_INSTANCE",
+        "runId": "native-paper-20261101182701177",
+        "scope": "CURRENT_SOURCE_INSTANCE",
+        "slots": [
+          {
+            "allocatedAt": "2026-11-01T18:42:14.352Z",
+            "mint": "AxWFbquS8ttFwbbMizghkaTwSkDRygE4xUqKR3Anpump",
+            "openedAt": null,
+            "sinceAt": "2026-11-01T18:42:14.352Z",
+            "slot": 0,
+            "state": "SUBSCRIPTION_WAIT",
+            "stateAgeMs": 322,
+            "windowEndAt": null
+          },
+          {
+            "allocatedAt": null,
+            "mint": null,
+            "openedAt": null,
+            "sinceAt": "2026-11-01T18:41:57.746Z",
+            "slot": 1,
+            "state": "REPLACEMENT_WAIT",
+            "stateAgeMs": 16928,
+            "windowEndAt": null
+          },
+          {
+            "allocatedAt": null,
+            "mint": null,
+            "openedAt": null,
+            "sinceAt": "2026-11-01T18:41:01.501Z",
+            "slot": 2,
+            "state": "REPLACEMENT_WAIT",
+            "stateAgeMs": 73173,
+            "windowEndAt": null
+          },
+          {
+            "allocatedAt": null,
+            "mint": null,
+            "openedAt": null,
+            "sinceAt": "2026-11-01T18:41:04.035Z",
+            "slot": 3,
+            "state": "REPLACEMENT_WAIT",
+            "stateAgeMs": 70639,
+            "windowEndAt": null
+          }
+        ],
+        "sourceInstanceId": "native-runner:native-paper-20261101182701177:417dfa49-c986-42ec-b679-def204e00055",
+        "startedAt": "2026-11-01T18:27:01.310Z",
+        "stateMs": {
+          "AUDIT_ACTIVE": 14839,
+          "AUDIT_READY": 1419,
+          "AUDIT_WAIT": 125310,
+          "EVIDENCE_WARMING": 1327075,
+          "PROVIDER_WAIT": 0,
+          "REPLACEMENT_WAIT": 767108,
+          "SUBSCRIPTION_WAIT": 209480,
+          "UNUSABLE": 13760,
+          "VACANT": 1194465
+        },
+        "version": "native-slot-productivity-v1",
+        "waits": {
+          "ackToWarm": {
+            "count": 14,
+            "max": 69410,
+            "mean": 64972.42857142857,
+            "p50": 64702,
+            "p95": 69410,
+            "sum": 909614
+          },
+          "allocationToAck": {
+            "count": 15,
+            "max": 18408,
+            "mean": 6583.333333333333,
+            "p50": 5185,
+            "p95": 18408,
+            "sum": 98750
+          },
+          "auditReadyToPhysicalStart": {
+            "count": 57,
+            "max": 5985,
+            "mean": 2123.2982456140353,
+            "p50": 2092,
+            "p95": 4671,
+            "sum": 121028
+          },
+          "queueToAllocation": {
+            "count": 62,
+            "max": 150673,
+            "mean": 16897.290322580644,
+            "p50": 1032,
+            "p95": 86853,
+            "sum": 1047632
+          },
+          "retirementToReplacement": {
+            "count": 58,
+            "max": 300324,
+            "mean": 10454.620689655172,
+            "p50": 2528,
+            "p95": 30083,
+            "sum": 606368
+          }
+        }
+      },
+      "pipeline": {
+        "capacityWitness": {
+          "configuredSlots": 4,
+          "localReady": true,
+          "physicalOccupancy": 1,
+          "potentialWaiting": 0,
+          "providerReady": false,
+          "sourceReady": true
+        },
+        "flow": {
+          "auditCompletions": 57,
+          "deepAdmissions": 62,
+          "discoveredDistinct": 1384,
+          "entryFills": 0,
+          "exitFills": 0,
+          "financialEvaluations": 1,
+          "lightweightArrivals": 1384,
+          "lightweightCompleted": 1384,
+          "qualified": 0,
+          "serviceableArrivals": null
+        },
+        "generatedAt": "2026-11-01T18:42:14.674Z",
+        "limitations": [
+          "RETAINED_NOT_QUEUE",
+          "LOCAL_SERVICEABILITY_REQUIRES_RUNTIME_PROVIDER_ADMISSION",
+          "SHARED_HINTS_NOT_QUALIFICATION",
+          "INTAKE_COUNTS_ARE_NEW_UNIQUE_IDENTITY_COHORT",
+          "SERVICEABLE_QUEUE_WAIT_IS_NOT_CAUSAL_CAPACITY_DELAY",
+          "OTHER_UNEXPORTED_LIMITATION",
+          "SERVICEABLE_ARRIVALS_UNAVAILABLE",
+          "CAPACITY_COUNT_WITHHELD_WHILE_RUNTIME_OR_PROVIDER_BLOCKED"
+        ],
+        "population": {
+          "activeDeep": 1,
+          "capacityWaiting": null,
+          "eligibleNow": 0,
+          "retained": 129734,
+          "serviceableNow": 0,
+          "verifiedAwaitingPrerequisites": 44184
+        },
+        "ratesPerMinute": {
+          "auditCompletions": 3.744399823071634,
+          "deepAdmissions": 4.072855947902479,
+          "discoveredDistinct": 90.91665535317792,
+          "entryFills": 0,
+          "exitFills": 0,
+          "financialEvaluations": 0.06569122496616901,
+          "lightweightArrivals": 90.91665535317792,
+          "lightweightCompleted": 90.91665535317792,
+          "qualified": 0,
+          "serviceableArrivals": null
+        },
+        "runId": "native-paper-20261101182701177",
+        "scope": "CURRENT_SOURCE_INSTANCE",
+        "sourceInstanceId": "native-runner:native-paper-20261101182701177:417dfa49-c986-42ec-b679-def204e00055",
+        "startedAt": "2026-11-01T18:27:01.310Z",
+        "version": "native-pipeline-throughput-v1",
+        "waits": {
+          "capacityQueue": {
+            "count": 0,
+            "max": null,
+            "mean": null,
+            "p50": null,
+            "p95": null
+          },
+          "eligibleQueue": {
+            "count": 0,
+            "max": null,
+            "mean": null,
+            "p50": null,
+            "p95": null
+          }
+        }
+      },
+      "expectedCaptureState": "awaiting-subscription"
+    },
+    {
+      "observedAt": 1793558587419,
+      "receivedAt": "2026-11-01T18:43:03.004Z",
+      "source": {
+        "release": "bb145cc82b0f05560b03bbd9e53de0c9e360f48f",
+        "strategy": "liquidity-resilient-momentum-v3.1"
+      },
+      "sequence": "25511",
+      "times": {
+        "generatedAt": "2026-11-01T18:42:49.167Z",
+        "marketAt": "2026-11-01T18:42:43.883Z",
+        "reconciledAt": "2026-11-01T18:42:48.067Z",
+        "usefulProgressAt": "2026-11-01T18:42:48.067Z"
+      },
+      "status": {
+        "blocker": null,
+        "entries": "enabled",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "positionCount": 0,
+      "run": {
+        "configurationSha256": "2c4b685f286ed8cc79905af215f5e2757b5fe598eca9b8755f4210b35837a4d8",
+        "id": "native-paper-20261101182701177",
+        "mode": "persistent-paper",
+        "startedAt": "2026-11-01T18:27:01.177Z",
+        "strategyVersion": "liquidity-resilient-momentum-v3.1"
+      },
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 23904505,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "complete",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "protection": {
+        "breaches": 109,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "unavailableChecks": 900
+      },
+      "pendingOrders": [],
+      "candidates": {
+        "deepActive": 1,
+        "deepMaximum": 4
+      },
+      "captureConnected": false,
+      "discoveryConnected": true,
+      "watchConnected": true,
+      "slotProductivity": {
+        "configuredSlots": 4,
+        "counts": {
+          "allocations": 71,
+          "distinctAudited": 14,
+          "distinctPreliminaryEvaluated": 14,
+          "distinctPrimaryEvaluated": 1,
+          "entryFills": 0,
+          "exitFills": 0,
+          "qualified": 0,
+          "repromotions": 1,
+          "unattributedFinancialEvents": 0
+        },
+        "evidenceCoverage": {
+          "basis": "RETROSPECTIVE_UNION_OF_VERIFIED_WINDOWS_PER_ACTUAL_SLOT_ASSIGNMENT",
+          "occupiedSlotMs": 1705127,
+          "percent": 75.06772222831496,
+          "verifiedEvidenceMs": 1280000
+        },
+        "failureCounts": {
+          "auditUnusableWindows": 0,
+          "decisionDeadlineWindows": 1,
+          "historyNotObservedWindows": 0,
+          "providerUnavailableWindows": 0
+        },
+        "generatedAt": "2026-11-01T18:42:48.089Z",
+        "limitations": [
+          "FOUR_SLOTS_DO_NOT_IMPLY_PRODUCTIVE_WORK",
+          "PHYSICAL_START_REQUIRES_RECEIPT",
+          "PRELIMINARY_EVALUATION_NOT_FINANCIAL_QUALIFICATION",
+          "FINANCIAL_EVENTS_REQUIRE_ACTUAL_CALLBACK",
+          "NO_PER_SLOT_PROFIT_ATTRIBUTION",
+          "NO_WHOLE_MARKET_DENOMINATOR"
+        ],
+        "percentileScope": "ALL_ACTUAL_STARTS_IN_SOURCE_INSTANCE",
+        "runId": "native-paper-20261101182701177",
+        "scope": "CURRENT_SOURCE_INSTANCE",
+        "slots": [
+          {
+            "allocatedAt": "2026-11-01T18:42:47.900Z",
+            "mint": "3FCudH6RRGV9iynxqz9raiFPEC2fy4nLWg9b52kZpump",
+            "openedAt": null,
+            "sinceAt": "2026-11-01T18:42:47.900Z",
+            "slot": 0,
+            "state": "SUBSCRIPTION_WAIT",
+            "stateAgeMs": 189,
+            "windowEndAt": null
+          },
+          {
+            "allocatedAt": null,
+            "mint": null,
+            "openedAt": null,
+            "sinceAt": "2026-11-01T18:41:57.746Z",
+            "slot": 1,
+            "state": "REPLACEMENT_WAIT",
+            "stateAgeMs": 50343,
+            "windowEndAt": null
+          },
+          {
+            "allocatedAt": null,
+            "mint": null,
+            "openedAt": null,
+            "sinceAt": "2026-11-01T18:41:01.501Z",
+            "slot": 2,
+            "state": "REPLACEMENT_WAIT",
+            "stateAgeMs": 106588,
+            "windowEndAt": null
+          },
+          {
+            "allocatedAt": null,
+            "mint": null,
+            "openedAt": null,
+            "sinceAt": "2026-11-01T18:41:04.035Z",
+            "slot": 3,
+            "state": "REPLACEMENT_WAIT",
+            "stateAgeMs": 104054,
+            "windowEndAt": null
+          }
+        ],
+        "sourceInstanceId": "native-runner:native-paper-20261101182701177:417dfa49-c986-42ec-b679-def204e00055",
+        "startedAt": "2026-11-01T18:27:01.310Z",
+        "stateMs": {
+          "AUDIT_ACTIVE": 14839,
+          "AUDIT_READY": 1419,
+          "AUDIT_WAIT": 125310,
+          "EVIDENCE_WARMING": 1327075,
+          "PROVIDER_WAIT": 0,
+          "REPLACEMENT_WAIT": 887524,
+          "SUBSCRIPTION_WAIT": 219745,
+          "UNUSABLE": 16739,
+          "VACANT": 1194465
+        },
+        "version": "native-slot-productivity-v1",
+        "waits": {
+          "ackToWarm": {
+            "count": 14,
+            "max": 69410,
+            "mean": 64972.42857142857,
+            "p50": 64702,
+            "p95": 69410,
+            "sum": 909614
+          },
+          "allocationToAck": {
+            "count": 15,
+            "max": 18408,
+            "mean": 6583.333333333333,
+            "p50": 5185,
+            "p95": 18408,
+            "sum": 98750
+          },
+          "auditReadyToPhysicalStart": {
+            "count": 57,
+            "max": 5985,
+            "mean": 2123.2982456140353,
+            "p50": 2092,
+            "p95": 4671,
+            "sum": 121028
+          },
+          "queueToAllocation": {
+            "count": 71,
+            "max": 150673,
+            "mean": 14880.971830985916,
+            "p50": 1026,
+            "p95": 86853,
+            "sum": 1056549
+          },
+          "retirementToReplacement": {
+            "count": 67,
+            "max": 300324,
+            "mean": 9351.328358208955,
+            "p50": 2439,
+            "p95": 27614,
+            "sum": 626539
+          }
+        }
+      },
+      "pipeline": {
+        "capacityWitness": {
+          "configuredSlots": 4,
+          "localReady": false,
+          "physicalOccupancy": 1,
+          "potentialWaiting": 0,
+          "providerReady": false,
+          "sourceReady": true
+        },
+        "flow": {
+          "auditCompletions": 57,
+          "deepAdmissions": 71,
+          "discoveredDistinct": 1439,
+          "entryFills": 0,
+          "exitFills": 0,
+          "financialEvaluations": 1,
+          "lightweightArrivals": 1439,
+          "lightweightCompleted": 1439,
+          "qualified": 0,
+          "serviceableArrivals": null
+        },
+        "generatedAt": "2026-11-01T18:42:48.089Z",
+        "limitations": [
+          "RETAINED_NOT_QUEUE",
+          "LOCAL_SERVICEABILITY_REQUIRES_RUNTIME_PROVIDER_ADMISSION",
+          "SHARED_HINTS_NOT_QUALIFICATION",
+          "INTAKE_COUNTS_ARE_NEW_UNIQUE_IDENTITY_COHORT",
+          "SERVICEABLE_QUEUE_WAIT_IS_NOT_CAUSAL_CAPACITY_DELAY",
+          "OTHER_UNEXPORTED_LIMITATION",
+          "SERVICEABLE_ARRIVALS_UNAVAILABLE",
+          "CAPACITY_COUNT_WITHHELD_WHILE_RUNTIME_OR_PROVIDER_BLOCKED"
+        ],
+        "population": {
+          "activeDeep": 1,
+          "capacityWaiting": null,
+          "eligibleNow": 0,
+          "retained": 129789,
+          "serviceableNow": 0,
+          "verifiedAwaitingPrerequisites": 44210
+        },
+        "ratesPerMinute": {
+          "auditCompletions": 3.612247419936437,
+          "deepAdmissions": 4.499466084482228,
+          "discoveredDistinct": 91.19340416295672,
+          "entryFills": 0,
+          "exitFills": 0,
+          "financialEvaluations": 0.06337276175327082,
+          "lightweightArrivals": 91.19340416295672,
+          "lightweightCompleted": 91.19340416295672,
+          "qualified": 0,
+          "serviceableArrivals": null
+        },
+        "runId": "native-paper-20261101182701177",
+        "scope": "CURRENT_SOURCE_INSTANCE",
+        "sourceInstanceId": "native-runner:native-paper-20261101182701177:417dfa49-c986-42ec-b679-def204e00055",
+        "startedAt": "2026-11-01T18:27:01.310Z",
+        "version": "native-pipeline-throughput-v1",
+        "waits": {
+          "capacityQueue": {
+            "count": 0,
+            "max": null,
+            "mean": null,
+            "p50": null,
+            "p95": null
+          },
+          "eligibleQueue": {
+            "count": 0,
+            "max": null,
+            "mean": null,
+            "p50": null,
+            "p95": null
+          }
+        }
+      },
+      "expectedCaptureState": "awaiting-subscription"
+    },
+    {
+      "observedAt": 1793558617585,
+      "receivedAt": "2026-11-01T18:43:33.328Z",
+      "source": {
+        "release": "bb145cc82b0f05560b03bbd9e53de0c9e360f48f",
+        "strategy": "liquidity-resilient-momentum-v3.1"
+      },
+      "sequence": "25513",
+      "times": {
+        "generatedAt": "2026-11-01T18:43:21.930Z",
+        "marketAt": "2026-11-01T18:43:17.774Z",
+        "reconciledAt": "2026-11-01T18:43:20.046Z",
+        "usefulProgressAt": "2026-11-01T18:43:20.046Z"
+      },
+      "status": {
+        "blocker": null,
+        "entries": "enabled",
+        "market": "unavailable",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "positionCount": 0,
+      "run": {
+        "configurationSha256": "2c4b685f286ed8cc79905af215f5e2757b5fe598eca9b8755f4210b35837a4d8",
+        "id": "native-paper-20261101182701177",
+        "mode": "persistent-paper",
+        "startedAt": "2026-11-01T18:27:01.177Z",
+        "strategyVersion": "liquidity-resilient-momentum-v3.1"
+      },
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 24122056,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "complete",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "protection": {
+        "breaches": 109,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "unavailableChecks": 900
+      },
+      "pendingOrders": [],
+      "candidates": {
+        "deepActive": 0,
+        "deepMaximum": 4
+      },
+      "captureConnected": false,
+      "discoveryConnected": true,
+      "watchConnected": true,
+      "slotProductivity": {
+        "configuredSlots": 4,
+        "counts": {
+          "allocations": 75,
+          "distinctAudited": 14,
+          "distinctPreliminaryEvaluated": 14,
+          "distinctPrimaryEvaluated": 1,
+          "entryFills": 0,
+          "exitFills": 0,
+          "qualified": 0,
+          "repromotions": 1,
+          "unattributedFinancialEvents": 0
+        },
+        "evidenceCoverage": {
+          "basis": "RETROSPECTIVE_UNION_OF_VERIFIED_WINDOWS_PER_ACTUAL_SLOT_ASSIGNMENT",
+          "occupiedSlotMs": 1713796,
+          "percent": 74.68800253939209,
+          "verifiedEvidenceMs": 1280000
+        },
+        "failureCounts": {
+          "auditUnusableWindows": 0,
+          "decisionDeadlineWindows": 1,
+          "historyNotObservedWindows": 0,
+          "providerUnavailableWindows": 0
+        },
+        "generatedAt": "2026-11-01T18:43:20.856Z",
+        "limitations": [
+          "FOUR_SLOTS_DO_NOT_IMPLY_PRODUCTIVE_WORK",
+          "PHYSICAL_START_REQUIRES_RECEIPT",
+          "PRELIMINARY_EVALUATION_NOT_FINANCIAL_QUALIFICATION",
+          "FINANCIAL_EVENTS_REQUIRE_ACTUAL_CALLBACK",
+          "NO_PER_SLOT_PROFIT_ATTRIBUTION",
+          "NO_WHOLE_MARKET_DENOMINATOR"
+        ],
+        "percentileScope": "ALL_ACTUAL_STARTS_IN_SOURCE_INSTANCE",
+        "runId": "native-paper-20261101182701177",
+        "scope": "CURRENT_SOURCE_INSTANCE",
+        "slots": [
+          {
+            "allocatedAt": null,
+            "mint": null,
+            "openedAt": null,
+            "sinceAt": "2026-11-01T18:43:20.178Z",
+            "slot": 0,
+            "state": "REPLACEMENT_WAIT",
+            "stateAgeMs": 678,
+            "windowEndAt": null
+          },
+          {
+            "allocatedAt": null,
+            "mint": null,
+            "openedAt": null,
+            "sinceAt": "2026-11-01T18:41:57.746Z",
+            "slot": 1,
+            "state": "REPLACEMENT_WAIT",
+            "stateAgeMs": 83110,
+            "windowEndAt": null
+          },
+          {
+            "allocatedAt": null,
+            "mint": null,
+            "openedAt": null,
+            "sinceAt": "2026-11-01T18:41:01.501Z",
+            "slot": 2,
+            "state": "REPLACEMENT_WAIT",
+            "stateAgeMs": 139355,
+            "windowEndAt": null
+          },
+          {
+            "allocatedAt": null,
+            "mint": null,
+            "openedAt": null,
+            "sinceAt": "2026-11-01T18:41:04.035Z",
+            "slot": 3,
+            "state": "REPLACEMENT_WAIT",
+            "stateAgeMs": 136821,
+            "windowEndAt": null
+          }
+        ],
+        "sourceInstanceId": "native-runner:native-paper-20261101182701177:417dfa49-c986-42ec-b679-def204e00055",
+        "startedAt": "2026-11-01T18:27:01.310Z",
+        "stateMs": {
+          "AUDIT_ACTIVE": 14839,
+          "AUDIT_READY": 1419,
+          "AUDIT_WAIT": 125310,
+          "EVIDENCE_WARMING": 1327075,
+          "PROVIDER_WAIT": 0,
+          "REPLACEMENT_WAIT": 1009923,
+          "SUBSCRIPTION_WAIT": 228072,
+          "UNUSABLE": 17081,
+          "VACANT": 1194465
+        },
+        "version": "native-slot-productivity-v1",
+        "waits": {
+          "ackToWarm": {
+            "count": 14,
+            "max": 69410,
+            "mean": 64972.42857142857,
+            "p50": 64702,
+            "p95": 69410,
+            "sum": 909614
+          },
+          "allocationToAck": {
+            "count": 15,
+            "max": 18408,
+            "mean": 6583.333333333333,
+            "p50": 5185,
+            "p95": 18408,
+            "sum": 98750
+          },
+          "auditReadyToPhysicalStart": {
+            "count": 57,
+            "max": 5985,
+            "mean": 2123.2982456140353,
+            "p50": 2092,
+            "p95": 4671,
+            "sum": 121028
+          },
+          "queueToAllocation": {
+            "count": 75,
+            "max": 150673,
+            "mean": 14139.866666666667,
+            "p50": 1022,
+            "p95": 86853,
+            "sum": 1060490
+          },
+          "retirementToReplacement": {
+            "count": 71,
+            "max": 300324,
+            "mean": 9154.352112676057,
+            "p50": 2399,
+            "p95": 27614,
+            "sum": 649959
+          }
+        }
+      },
+      "pipeline": {
+        "capacityWitness": {
+          "configuredSlots": 4,
+          "localReady": true,
+          "physicalOccupancy": 0,
+          "potentialWaiting": 0,
+          "providerReady": false,
+          "sourceReady": true
+        },
+        "flow": {
+          "auditCompletions": 57,
+          "deepAdmissions": 75,
+          "discoveredDistinct": 1491,
+          "entryFills": 0,
+          "exitFills": 0,
+          "financialEvaluations": 1,
+          "lightweightArrivals": 1491,
+          "lightweightCompleted": 1491,
+          "qualified": 0,
+          "serviceableArrivals": null
+        },
+        "generatedAt": "2026-11-01T18:43:20.856Z",
+        "limitations": [
+          "RETAINED_NOT_QUEUE",
+          "LOCAL_SERVICEABILITY_REQUIRES_RUNTIME_PROVIDER_ADMISSION",
+          "SHARED_HINTS_NOT_QUALIFICATION",
+          "INTAKE_COUNTS_ARE_NEW_UNIQUE_IDENTITY_COHORT",
+          "SERVICEABLE_QUEUE_WAIT_IS_NOT_CAUSAL_CAPACITY_DELAY",
+          "OTHER_UNEXPORTED_LIMITATION",
+          "SERVICEABLE_ARRIVALS_UNAVAILABLE",
+          "CAPACITY_COUNT_WITHHELD_WHILE_RUNTIME_OR_PROVIDER_BLOCKED"
+        ],
+        "population": {
+          "activeDeep": 0,
+          "capacityWaiting": null,
+          "eligibleNow": 0,
+          "retained": 129841,
+          "serviceableNow": 0,
+          "verifiedAwaitingPrerequisites": 44242
+        },
+        "ratesPerMinute": {
+          "auditCompletions": 3.49141336905056,
+          "deepAdmissions": 4.593964959277053,
+          "discoveredDistinct": 91.32802339042782,
+          "entryFills": 0,
+          "exitFills": 0,
+          "financialEvaluations": 0.06125286612369404,
+          "lightweightArrivals": 91.32802339042782,
+          "lightweightCompleted": 91.32802339042782,
+          "qualified": 0,
+          "serviceableArrivals": null
+        },
+        "runId": "native-paper-20261101182701177",
+        "scope": "CURRENT_SOURCE_INSTANCE",
+        "sourceInstanceId": "native-runner:native-paper-20261101182701177:417dfa49-c986-42ec-b679-def204e00055",
+        "startedAt": "2026-11-01T18:27:01.310Z",
+        "version": "native-pipeline-throughput-v1",
+        "waits": {
+          "capacityQueue": {
+            "count": 0,
+            "max": null,
+            "mean": null,
+            "p50": null,
+            "p95": null
+          },
+          "eligibleQueue": {
+            "count": 0,
+            "max": null,
+            "mean": null,
+            "p50": null,
+            "p95": null
+          }
+        }
+      },
+      "expectedCaptureState": "idle"
+    },
+    {
+      "observedAt": 1793558736005,
+      "receivedAt": "2026-11-01T18:45:34.176Z",
+      "source": {
+        "release": "bb145cc82b0f05560b03bbd9e53de0c9e360f48f",
+        "strategy": "liquidity-resilient-momentum-v3.1"
+      },
+      "sequence": "25521",
+      "times": {
+        "generatedAt": "2026-11-01T18:45:32.536Z",
+        "marketAt": "2026-11-01T18:45:27.287Z",
+        "reconciledAt": "2026-11-01T18:45:31.432Z",
+        "usefulProgressAt": "2026-11-01T18:45:31.432Z"
+      },
+      "status": {
+        "blocker": null,
+        "entries": "enabled",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "positionCount": 0,
+      "run": {
+        "configurationSha256": "2c4b685f286ed8cc79905af215f5e2757b5fe598eca9b8755f4210b35837a4d8",
+        "id": "native-paper-20261101182701177",
+        "mode": "persistent-paper",
+        "startedAt": "2026-11-01T18:27:01.177Z",
+        "strategyVersion": "liquidity-resilient-momentum-v3.1"
+      },
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 16997566,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "complete",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "protection": {
+        "breaches": 109,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "unavailableChecks": 900
+      },
+      "pendingOrders": [],
+      "candidates": {
+        "deepActive": 1,
+        "deepMaximum": 4
+      },
+      "captureConnected": true,
+      "discoveryConnected": true,
+      "watchConnected": true,
+      "slotProductivity": {
+        "configuredSlots": 4,
+        "counts": {
+          "allocations": 83,
+          "distinctAudited": 14,
+          "distinctPreliminaryEvaluated": 14,
+          "distinctPrimaryEvaluated": 1,
+          "entryFills": 0,
+          "exitFills": 0,
+          "qualified": 0,
+          "repromotions": 1,
+          "unattributedFinancialEvents": 0
+        },
+        "evidenceCoverage": {
+          "basis": "RETROSPECTIVE_UNION_OF_VERIFIED_WINDOWS_PER_ACTUAL_SLOT_ASSIGNMENT",
+          "occupiedSlotMs": 1735066,
+          "percent": 73.77240981034727,
+          "verifiedEvidenceMs": 1280000
+        },
+        "failureCounts": {
+          "auditUnusableWindows": 0,
+          "decisionDeadlineWindows": 1,
+          "historyNotObservedWindows": 0,
+          "providerUnavailableWindows": 0
+        },
+        "generatedAt": "2026-11-01T18:45:31.457Z",
+        "limitations": [
+          "FOUR_SLOTS_DO_NOT_IMPLY_PRODUCTIVE_WORK",
+          "PHYSICAL_START_REQUIRES_RECEIPT",
+          "PRELIMINARY_EVALUATION_NOT_FINANCIAL_QUALIFICATION",
+          "FINANCIAL_EVENTS_REQUIRE_ACTUAL_CALLBACK",
+          "NO_PER_SLOT_PROFIT_ATTRIBUTION",
+          "NO_WHOLE_MARKET_DENOMINATOR"
+        ],
+        "percentileScope": "ALL_ACTUAL_STARTS_IN_SOURCE_INSTANCE",
+        "runId": "native-paper-20261101182701177",
+        "scope": "CURRENT_SOURCE_INSTANCE",
+        "slots": [
+          {
+            "allocatedAt": "2026-11-01T18:45:12.659Z",
+            "mint": "LhqZu9ES4TUKMKWn22mFWohq6Ysczcvyw33vts4pump",
+            "openedAt": "2026-11-01T18:45:14.787Z",
+            "sinceAt": "2026-11-01T18:45:14.787Z",
+            "slot": 0,
+            "state": "EVIDENCE_WARMING",
+            "stateAgeMs": 16670,
+            "windowEndAt": null
+          },
+          {
+            "allocatedAt": null,
+            "mint": null,
+            "openedAt": null,
+            "sinceAt": "2026-11-01T18:45:27.317Z",
+            "slot": 1,
+            "state": "REPLACEMENT_WAIT",
+            "stateAgeMs": 4140,
+            "windowEndAt": null
+          },
+          {
+            "allocatedAt": null,
+            "mint": null,
+            "openedAt": null,
+            "sinceAt": "2026-11-01T18:41:01.501Z",
+            "slot": 2,
+            "state": "REPLACEMENT_WAIT",
+            "stateAgeMs": 269956,
+            "windowEndAt": null
+          },
+          {
+            "allocatedAt": null,
+            "mint": null,
+            "openedAt": null,
+            "sinceAt": "2026-11-01T18:41:04.035Z",
+            "slot": 3,
+            "state": "REPLACEMENT_WAIT",
+            "stateAgeMs": 267422,
+            "windowEndAt": null
+          }
+        ],
+        "sourceInstanceId": "native-runner:native-paper-20261101182701177:417dfa49-c986-42ec-b679-def204e00055",
+        "startedAt": "2026-11-01T18:27:01.310Z",
+        "stateMs": {
+          "AUDIT_ACTIVE": 14839,
+          "AUDIT_READY": 1419,
+          "AUDIT_WAIT": 125310,
+          "EVIDENCE_WARMING": 1343745,
+          "PROVIDER_WAIT": 0,
+          "REPLACEMENT_WAIT": 1511057,
+          "SUBSCRIPTION_WAIT": 232204,
+          "UNUSABLE": 17549,
+          "VACANT": 1194465
+        },
+        "version": "native-slot-productivity-v1",
+        "waits": {
+          "ackToWarm": {
+            "count": 14,
+            "max": 69410,
+            "mean": 64972.42857142857,
+            "p50": 64702,
+            "p95": 69410,
+            "sum": 909614
+          },
+          "allocationToAck": {
+            "count": 16,
+            "max": 18408,
+            "mean": 6304.875,
+            "p50": 2128,
+            "p95": 18408,
+            "sum": 100878
+          },
+          "auditReadyToPhysicalStart": {
+            "count": 57,
+            "max": 5985,
+            "mean": 2123.2982456140353,
+            "p50": 2092,
+            "p95": 4671,
+            "sum": 121028
+          },
+          "queueToAllocation": {
+            "count": 83,
+            "max": 150673,
+            "mean": 12874.734939759037,
+            "p50": 1016,
+            "p95": 80984,
+            "sum": 1068603
+          },
+          "retirementToReplacement": {
+            "count": 79,
+            "max": 300324,
+            "mean": 12272.645569620254,
+            "p50": 2451,
+            "p95": 43222,
+            "sum": 969539
+          }
+        }
+      },
+      "pipeline": {
+        "capacityWitness": {
+          "configuredSlots": 4,
+          "localReady": false,
+          "physicalOccupancy": 1,
+          "potentialWaiting": 0,
+          "providerReady": false,
+          "sourceReady": true
+        },
+        "flow": {
+          "auditCompletions": 57,
+          "deepAdmissions": 83,
+          "discoveredDistinct": 1685,
+          "entryFills": 0,
+          "exitFills": 0,
+          "financialEvaluations": 1,
+          "lightweightArrivals": 1685,
+          "lightweightCompleted": 1685,
+          "qualified": 0,
+          "serviceableArrivals": null
+        },
+        "generatedAt": "2026-11-01T18:45:31.457Z",
+        "limitations": [
+          "RETAINED_NOT_QUEUE",
+          "LOCAL_SERVICEABILITY_REQUIRES_RUNTIME_PROVIDER_ADMISSION",
+          "SHARED_HINTS_NOT_QUALIFICATION",
+          "INTAKE_COUNTS_ARE_NEW_UNIQUE_IDENTITY_COHORT",
+          "SERVICEABLE_QUEUE_WAIT_IS_NOT_CAUSAL_CAPACITY_DELAY",
+          "OTHER_UNEXPORTED_LIMITATION",
+          "SERVICEABLE_ARRIVALS_UNAVAILABLE",
+          "CAPACITY_COUNT_WITHHELD_WHILE_RUNTIME_OR_PROVIDER_BLOCKED"
+        ],
+        "population": {
+          "activeDeep": 1,
+          "capacityWaiting": null,
+          "eligibleNow": 0,
+          "retained": 130035,
+          "serviceableNow": 0,
+          "verifiedAwaitingPrerequisites": 44412
+        },
+        "ratesPerMinute": {
+          "auditCompletions": 3.0806731000489123,
+          "deepAdmissions": 4.485892408843153,
+          "discoveredDistinct": 91.06902058916522,
+          "entryFills": 0,
+          "exitFills": 0,
+          "financialEvaluations": 0.05404689649208618,
+          "lightweightArrivals": 91.06902058916522,
+          "lightweightCompleted": 91.06902058916522,
+          "qualified": 0,
+          "serviceableArrivals": null
+        },
+        "runId": "native-paper-20261101182701177",
+        "scope": "CURRENT_SOURCE_INSTANCE",
+        "sourceInstanceId": "native-runner:native-paper-20261101182701177:417dfa49-c986-42ec-b679-def204e00055",
+        "startedAt": "2026-11-01T18:27:01.310Z",
+        "version": "native-pipeline-throughput-v1",
+        "waits": {
+          "capacityQueue": {
+            "count": 0,
+            "max": null,
+            "mean": null,
+            "p50": null,
+            "p95": null
+          },
+          "eligibleQueue": {
+            "count": 0,
+            "max": null,
+            "mean": null,
+            "p50": null,
+            "p95": null
+          }
+        }
+      },
+      "expectedCaptureState": "connected"
+    },
+    {
+      "observedAt": 1793558766189,
+      "receivedAt": "2026-11-01T18:46:04.431Z",
+      "source": {
+        "release": "bb145cc82b0f05560b03bbd9e53de0c9e360f48f",
+        "strategy": "liquidity-resilient-momentum-v3.1"
+      },
+      "sequence": "25522",
+      "times": {
+        "generatedAt": "2026-11-01T18:45:48.941Z",
+        "marketAt": "2026-11-01T18:45:44.759Z",
+        "reconciledAt": "2026-11-01T18:45:47.121Z",
+        "usefulProgressAt": "2026-11-01T18:45:47.121Z"
+      },
+      "status": {
+        "blocker": null,
+        "entries": "enabled",
+        "market": "observing",
+        "reconciled": true,
+        "runtime": "running"
+      },
+      "positionCount": 0,
+      "run": {
+        "configurationSha256": "2c4b685f286ed8cc79905af215f5e2757b5fe598eca9b8755f4210b35837a4d8",
+        "id": "native-paper-20261101182701177",
+        "mode": "persistent-paper",
+        "startedAt": "2026-11-01T18:27:01.177Z",
+        "strategyVersion": "liquidity-resilient-momentum-v3.1"
+      },
+      "admission": {
+        "candidateResourceAdmissionAllowed": true,
+        "evidenceAdmissionAllowed": true,
+        "evidenceDiagnosticBytes": 17899115,
+        "evidenceDiagnosticLimitBytes": 134217728,
+        "evidencePressureReasonCode": null,
+        "evidenceRefusedRecords": 0,
+        "evidenceRequiresCriticalRecovery": false,
+        "financialProjectionReady": true,
+        "proofPreparationState": "complete",
+        "sourceRecoveryClosingSettled": false,
+        "sourceRecoveryFailures": 0,
+        "sourceRecoveryGeneration": 0,
+        "sourceRecoveryReasonCode": null,
+        "sourceRecoveryRetryAt": null,
+        "sourceRestartRequired": false,
+        "supervisedNewRiskAllowed": true
+      },
+      "protection": {
+        "breaches": 109,
+        "completedEvaluationBoundaryMs": 4000,
+        "lastCompletedAt": null,
+        "maximumCompletedGapMs": null,
+        "maximumQuoteAgeAtUseMs": null,
+        "state": "flat",
+        "targetCadenceMs": 2000,
+        "unavailableChecks": 900
+      },
+      "pendingOrders": [],
+      "candidates": {
+        "deepActive": 1,
+        "deepMaximum": 4
+      },
+      "captureConnected": true,
+      "discoveryConnected": true,
+      "watchConnected": true,
+      "slotProductivity": {
+        "configuredSlots": 4,
+        "counts": {
+          "allocations": 84,
+          "distinctAudited": 14,
+          "distinctPreliminaryEvaluated": 14,
+          "distinctPrimaryEvaluated": 1,
+          "entryFills": 0,
+          "exitFills": 0,
+          "qualified": 0,
+          "repromotions": 1,
+          "unattributedFinancialEvents": 0
+        },
+        "evidenceCoverage": {
+          "basis": "RETROSPECTIVE_UNION_OF_VERIFIED_WINDOWS_PER_ACTUAL_SLOT_ASSIGNMENT",
+          "occupiedSlotMs": 1751840,
+          "percent": 73.0660334277103,
+          "verifiedEvidenceMs": 1280000
+        },
+        "failureCounts": {
+          "auditUnusableWindows": 0,
+          "decisionDeadlineWindows": 1,
+          "historyNotObservedWindows": 0,
+          "providerUnavailableWindows": 0
+        },
+        "generatedAt": "2026-11-01T18:45:47.856Z",
+        "limitations": [
+          "FOUR_SLOTS_DO_NOT_IMPLY_PRODUCTIVE_WORK",
+          "PHYSICAL_START_REQUIRES_RECEIPT",
+          "PRELIMINARY_EVALUATION_NOT_FINANCIAL_QUALIFICATION",
+          "FINANCIAL_EVENTS_REQUIRE_ACTUAL_CALLBACK",
+          "NO_PER_SLOT_PROFIT_ATTRIBUTION",
+          "NO_WHOLE_MARKET_DENOMINATOR"
+        ],
+        "percentileScope": "ALL_ACTUAL_STARTS_IN_SOURCE_INSTANCE",
+        "runId": "native-paper-20261101182701177",
+        "scope": "CURRENT_SOURCE_INSTANCE",
+        "slots": [
+          {
+            "allocatedAt": "2026-11-01T18:45:12.659Z",
+            "mint": "LhqZu9ES4TUKMKWn22mFWohq6Ysczcvyw33vts4pump",
+            "openedAt": "2026-11-01T18:45:14.787Z",
+            "sinceAt": "2026-11-01T18:45:14.787Z",
+            "slot": 0,
+            "state": "EVIDENCE_WARMING",
+            "stateAgeMs": 33069,
+            "windowEndAt": null
+          },
+          {
+            "allocatedAt": null,
+            "mint": null,
+            "openedAt": null,
+            "sinceAt": "2026-11-01T18:45:37.841Z",
+            "slot": 1,
+            "state": "REPLACEMENT_WAIT",
+            "stateAgeMs": 10015,
+            "windowEndAt": null
+          },
+          {
+            "allocatedAt": null,
+            "mint": null,
+            "openedAt": null,
+            "sinceAt": "2026-11-01T18:41:01.501Z",
+            "slot": 2,
+            "state": "REPLACEMENT_WAIT",
+            "stateAgeMs": 286355,
+            "windowEndAt": null
+          },
+          {
+            "allocatedAt": null,
+            "mint": null,
+            "openedAt": null,
+            "sinceAt": "2026-11-01T18:41:04.035Z",
+            "slot": 3,
+            "state": "REPLACEMENT_WAIT",
+            "stateAgeMs": 283821,
+            "windowEndAt": null
+          }
+        ],
+        "sourceInstanceId": "native-runner:native-paper-20261101182701177:417dfa49-c986-42ec-b679-def204e00055",
+        "startedAt": "2026-11-01T18:27:01.310Z",
+        "stateMs": {
+          "AUDIT_ACTIVE": 14839,
+          "AUDIT_READY": 1419,
+          "AUDIT_WAIT": 125310,
+          "EVIDENCE_WARMING": 1360144,
+          "PROVIDER_WAIT": 0,
+          "REPLACEMENT_WAIT": 1559879,
+          "SUBSCRIPTION_WAIT": 232515,
+          "UNUSABLE": 17613,
+          "VACANT": 1194465
+        },
+        "version": "native-slot-productivity-v1",
+        "waits": {
+          "ackToWarm": {
+            "count": 14,
+            "max": 69410,
+            "mean": 64972.42857142857,
+            "p50": 64702,
+            "p95": 69410,
+            "sum": 909614
+          },
+          "allocationToAck": {
+            "count": 16,
+            "max": 18408,
+            "mean": 6304.875,
+            "p50": 2128,
+            "p95": 18408,
+            "sum": 100878
+          },
+          "auditReadyToPhysicalStart": {
+            "count": 57,
+            "max": 5985,
+            "mean": 2123.2982456140353,
+            "p50": 2092,
+            "p95": 4671,
+            "sum": 121028
+          },
+          "queueToAllocation": {
+            "count": 84,
+            "max": 150673,
+            "mean": 12733.357142857143,
+            "p50": 1015,
+            "p95": 80984,
+            "sum": 1069602
+          },
+          "retirementToReplacement": {
+            "count": 80,
+            "max": 300324,
+            "mean": 12246.1,
+            "p50": 2451,
+            "p95": 40859,
+            "sum": 979688
+          }
+        }
+      },
+      "pipeline": {
+        "capacityWitness": {
+          "configuredSlots": 4,
+          "localReady": true,
+          "physicalOccupancy": 1,
+          "potentialWaiting": 0,
+          "providerReady": false,
+          "sourceReady": true
+        },
+        "flow": {
+          "auditCompletions": 57,
+          "deepAdmissions": 84,
+          "discoveredDistinct": 1705,
+          "entryFills": 0,
+          "exitFills": 0,
+          "financialEvaluations": 1,
+          "lightweightArrivals": 1705,
+          "lightweightCompleted": 1705,
+          "qualified": 0,
+          "serviceableArrivals": null
+        },
+        "generatedAt": "2026-11-01T18:45:47.856Z",
+        "limitations": [
+          "RETAINED_NOT_QUEUE",
+          "LOCAL_SERVICEABILITY_REQUIRES_RUNTIME_PROVIDER_ADMISSION",
+          "SHARED_HINTS_NOT_QUALIFICATION",
+          "INTAKE_COUNTS_ARE_NEW_UNIQUE_IDENTITY_COHORT",
+          "SERVICEABLE_QUEUE_WAIT_IS_NOT_CAUSAL_CAPACITY_DELAY",
+          "OTHER_UNEXPORTED_LIMITATION",
+          "SERVICEABLE_ARRIVALS_UNAVAILABLE",
+          "CAPACITY_COUNT_WITHHELD_WHILE_RUNTIME_OR_PROVIDER_BLOCKED"
+        ],
+        "population": {
+          "activeDeep": 1,
+          "capacityWaiting": null,
+          "eligibleNow": 0,
+          "retained": 130055,
+          "serviceableNow": 0,
+          "verifiedAwaitingPrerequisites": 44427
+        },
+        "ratesPerMinute": {
+          "auditCompletions": 3.035828097565479,
+          "deepAdmissions": 4.47385193325439,
+          "discoveredDistinct": 90.8085422166516,
+          "entryFills": 0,
+          "exitFills": 0,
+          "financialEvaluations": 0.05326014206255226,
+          "lightweightArrivals": 90.8085422166516,
+          "lightweightCompleted": 90.8085422166516,
+          "qualified": 0,
+          "serviceableArrivals": null
+        },
+        "runId": "native-paper-20261101182701177",
+        "scope": "CURRENT_SOURCE_INSTANCE",
+        "sourceInstanceId": "native-runner:native-paper-20261101182701177:417dfa49-c986-42ec-b679-def204e00055",
+        "startedAt": "2026-11-01T18:27:01.310Z",
+        "version": "native-pipeline-throughput-v1",
+        "waits": {
+          "capacityQueue": {
+            "count": 0,
+            "max": null,
+            "mean": null,
+            "p50": null,
+            "p95": null
+          },
+          "eligibleQueue": {
+            "count": 0,
+            "max": null,
+            "mean": null,
+            "p50": null,
+            "p95": null
+          }
+        }
+      },
+      "expectedCaptureState": "connected"
+    }
+  ]
+}
+

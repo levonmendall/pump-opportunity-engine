@@ -209,8 +209,51 @@ export function operatingSnapshotFreshness(snapshot: Snapshot, receivedAt: strin
   const selectedCapture = i.quality.captureConnected;
   const discovery = i.provider.discoveryConnected;
   const watch = i.provider.watchConnected;
-  if (selectedCapture === false) reasonCodes.push('SELECTED_CAPTURE_LOST');
-  else if (selectedCapture === null) reasonCodes.push('SELECTED_CAPTURE_UNKNOWN');
+  // A false capture boolean also means no selected subscription has an ACK yet.
+  // Only complete, contemporaneous facts from this source instance can explain
+  // that absence. Never manufacture connected capture or financial permission.
+  const productivity = i.slotProductivity, pipeline = i.marketCoverage?.pipeline;
+  const slots = productivity?.slots ?? [], assigned = slots.filter(slot => slot.mint !== null);
+  const slotAt = productivity ? Date.parse(productivity.generatedAt) : NaN;
+  const sourceAt = Date.parse(snapshot.times.generatedAt);
+  const scopeCurrent = !!productivity && !!pipeline
+    && productivity.scope === 'CURRENT_SOURCE_INSTANCE' && pipeline.scope === 'CURRENT_SOURCE_INSTANCE'
+    && productivity.runId === i.run.id && pipeline.runId === i.run.id
+    && productivity.sourceInstanceId === pipeline.sourceInstanceId
+    && productivity.sourceInstanceId.startsWith('native-runner:' + i.run.id + ':')
+    && productivity.startedAt >= i.run.startedAt && productivity.startedAt === pipeline.startedAt
+    && productivity.generatedAt === pipeline.generatedAt && slotAt <= sourceAt && sourceAt - slotAt <= 90_000
+    && productivity.configuredSlots === i.candidates.deepMaximum && slots.length === productivity.configuredSlots
+    && new Set(slots.map(slot => slot.slot)).size === slots.length
+    && slots.every(slot => Number.isSafeInteger(slot.slot) && slot.slot >= 0 && slot.slot < productivity.configuredSlots)
+    && new Set(assigned.map(slot => slot.mint)).size === assigned.length
+    && assigned.length === i.candidates.deepActive && assigned.length === pipeline.population.activeDeep
+    // Retiring subscriptions can still be physically occupied until unsubscribe
+    // ACK, even after their logical slot has been released for replacement.
+    && (!pipeline.capacityWitness || pipeline.capacityWitness.configuredSlots === productivity.configuredSlots
+      && pipeline.capacityWitness.physicalOccupancy !== null && pipeline.capacityWitness.physicalOccupancy >= assigned.length
+      && pipeline.capacityWitness.physicalOccupancy <= productivity.configuredSlots)
+    && slots.every(slot => slot.mint === null
+      ? (slot.state === 'VACANT' || slot.state === 'REPLACEMENT_WAIT') && slot.allocatedAt === null && slot.openedAt === null && slot.windowEndAt === null
+      : slot.state !== 'VACANT' && slot.state !== 'REPLACEMENT_WAIT' && slot.allocatedAt !== null
+        && Date.parse(slot.allocatedAt) >= Date.parse(productivity.startedAt) && Date.parse(slot.allocatedAt) <= slotAt
+        && (slot.openedAt === null
+          ? slot.state === 'SUBSCRIPTION_WAIT' && slot.windowEndAt === null
+          : slot.state !== 'SUBSCRIPTION_WAIT' && Date.parse(slot.openedAt) >= Date.parse(slot.allocatedAt) && Date.parse(slot.openedAt) <= slotAt));
+  const acknowledged = assigned.filter(slot => slot.openedAt !== null).length;
+  const pending = assigned.filter(slot => slot.openedAt === null);
+  const oldestPendingMs = scopeCurrent && pending.length ? Math.max(...pending.map(slot => sourceAt - Date.parse(slot.allocatedAt!))) : null;
+  const selectedCaptureState = selectedCapture === true ? 'connected'
+    : selectedCapture === null ? 'unknown'
+    : scopeCurrent && assigned.length === 0 ? 'idle'
+    : scopeCurrent && acknowledged === 0 ? 'awaiting-subscription' : 'lost';
+  const noAcknowledgedSelection = selectedCaptureState === 'idle' || selectedCaptureState === 'awaiting-subscription';
+  const subscriptionDelayed = selectedCaptureState === 'awaiting-subscription' && oldestPendingMs !== null && oldestPendingMs > 90_000;
+  if (selectedCaptureState === 'lost') reasonCodes.push('SELECTED_CAPTURE_LOST');
+  else if (selectedCaptureState === 'unknown') reasonCodes.push('SELECTED_CAPTURE_UNKNOWN');
+  else if (selectedCaptureState === 'idle') reasonCodes.push('SELECTED_CAPTURE_IDLE');
+  else if (selectedCaptureState === 'awaiting-subscription') reasonCodes.push('SELECTED_SUBSCRIPTION_PENDING');
+  if (subscriptionDelayed) reasonCodes.push('SELECTED_SUBSCRIPTION_DELAYED');
   if (discovery === false) reasonCodes.push('DISCOVERY_LOST');
   else if (discovery === null) reasonCodes.push('DISCOVERY_UNKNOWN');
   if (watch === false) reasonCodes.push('WATCH_LOST');
@@ -237,22 +280,30 @@ export function operatingSnapshotFreshness(snapshot: Snapshot, receivedAt: strin
   // Protection is assessed at source generation, never extrapolated from a 15s browser poll.
   const completedAgeAtSourceMs = protection.lastCompletedAt === null ? null : Math.max(0, Date.parse(snapshot.times.generatedAt) - Date.parse(protection.lastCompletedAt));
   const held = snapshot.positions.length > 0 || protection.state !== 'flat';
+  const selectedCaptureRequired = noAcknowledgedSelection && (held || i.pendingOrders.length > 0);
+  if (selectedCaptureRequired) reasonCodes.push('SELECTED_CAPTURE_REQUIRED');
   if (held && (protection.state === 'unavailable' || protection.state === 'flat' || completedAgeAtSourceMs === null)) reasonCodes.push('PROTECTION_UNAVAILABLE');
   else if (held && protection.state === 'degraded') reasonCodes.push('PROTECTION_DEGRADED');
   if (held && completedAgeAtSourceMs !== null && protection.completedEvaluationBoundaryMs !== null && completedAgeAtSourceMs > protection.completedEvaluationBoundaryMs) reasonCodes.push('PROTECTION_OVERDUE');
   if (i.admission?.evidenceAdmissionAllowed === false || i.admission?.evidenceRequiresCriticalRecovery === true) reasonCodes.push('EVIDENCE_PRESSURE');
   if (i.admission?.candidateResourceAdmissionAllowed === false || i.resources.state === 'pressure') reasonCodes.push('RESOURCE_PRESSURE');
   if (i.admission?.sourceRecoveryReasonCode || i.admission?.sourceRestartRequired === true) reasonCodes.push('SOURCE_RECOVERY');
-  const market = selectedCapture === true ? snapshot.status.market === 'warming' ? 'warming' : 'observing' : selectedCapture === false ? 'unavailable' : 'unknown';
+  const sourceRecovery = !!i.admission?.sourceRecoveryReasonCode || i.admission?.sourceRestartRequired === true;
+  const selectionBlocked = noAcknowledgedSelection && (discovery !== true || watch !== true || sourceRecovery
+    || i.admission?.evidenceRequiresCriticalRecovery === true || selectedCaptureRequired || subscriptionDelayed);
+  const market = selectedCaptureState === 'connected' ? snapshot.status.market === 'warming' ? 'warming' : 'observing'
+    : selectedCaptureState === 'lost' ? 'unavailable' : selectedCaptureState;
   const state = sourceStale || publisherStale ? 'stale'
-    : snapshot.status.runtime !== 'running' || selectedCapture !== true ? 'unavailable'
+    : snapshot.status.runtime !== 'running' || selectedCaptureState === 'lost' || selectedCaptureState === 'unknown' || selectionBlocked ? 'unavailable'
+    : noAcknowledgedSelection ? selectedCaptureState
     : market === 'warming' ? 'warming'
     : snapshot.status.entries === 'paused' ? 'entry-paused'
     : snapshot.funnel.paperFilled === 0 ? 'observing-with-zero-trades' : 'fresh';
   return {
     kind: 'operating-source-v1', state, market,
     reporting: sourceStale ? 'source-stale' : publisherStale ? 'publisher-stale' : 'current',
-    sourceAgeMs, receivedAgeMs, selectedCapture, discovery, watch, entryRestriction,
+    sourceAgeMs, receivedAgeMs, selectedCapture, selectedCaptureState, discovery, watch, entryRestriction,
+    selectedScope: scopeCurrent ? { asOf: productivity.generatedAt, configuredSlots: productivity.configuredSlots, assignedSlots: assigned.length, acknowledgedSlots: acknowledged, awaitingAcknowledgement: pending.length, oldestPendingMs } : null,
     financial: { usdValuation: usdAvailable ? 'available' : 'unavailable', reconciled: snapshot.status.reconciled, valuationAgeMs, reconciliationAgeMs },
     protection: { state: protection.state, completedAt: protection.lastCompletedAt, completedAgeAtSourceMs, boundaryMs: protection.completedEvaluationBoundaryMs },
     reasonCodes,
@@ -485,3 +536,4 @@ export class SnapshotPublisher {
   }
   async stop() { this.running = false; clearTimeout(this.timer); this.active?.abort(); await this.inflight; }
 }
+

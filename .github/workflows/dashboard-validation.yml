@@ -30,9 +30,12 @@ jobs:
         run: npm ci --include=dev
       - name: Typecheck
         run: npm run build
+      - name: Compile dashboard executable
+        run: npm run compile
       - name: Offline regressions
         run: |
           umask 077
           # Compiler subprocess fixtures share the hosted runner's CPU and memory.
           # Isolate test files without changing their assertions or timeouts.
           node --import tsx --test --test-concurrency=1 test/*.test.ts
+
