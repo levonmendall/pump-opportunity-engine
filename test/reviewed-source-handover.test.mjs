@@ -42,6 +42,25 @@ test('unconfigured, unrelated and already newer receivers do not gain an alterna
  for(const id of [null,{...identity(),accountId:'other'},{...identity(),release:p.to},{...identity(),release:'c'.repeat(40)}])assert.equal(attachReviewedSourceHandover(new SnapshotCache(id)),false);
  const c=fixture();assert.equal(attachReviewedSourceHandover(c),true);
 });
+test('existing source can advance through the installed recovery and exact new repair, never backward',()=>{
+ const c=fixture();c.accept(sample('1',p.from,T-2000),T);
+ assert.equal(c.accept(sample('2',p.via,T-1000),T),'accepted');assert.equal(c.identity.release,p.via);
+ assert.throws(()=>c.accept(sample('3',p.from),T),/source version/);
+ assert.equal(c.accept(sample('3',p.to),T),'accepted');assert.equal(c.identity.release,p.to);
+ assert.throws(()=>c.accept(sample('4',p.via),T),/source version/);
+});
+test('a receiver configured at the installed recovery accepts only the exact newer repair',()=>{
+ const c=new SnapshotCache({...identity(),release:p.via});assert.equal(attachReviewedSourceHandover(c),true);
+ c.accept(sample('8',p.via,T-1000),T);
+ const bad=sample('9',p.to);bad.account.id='wrong-account';assert.throws(()=>c.accept(bad,T));assert.equal(c.identity.release,p.via);
+ assert.throws(()=>c.accept(sample('8',p.to),T));assert.equal(c.identity.release,p.via);
+ assert.equal(c.accept(sample('9',p.to),T),'accepted');assert.equal(c.identity.release,p.to);
+});
+test('an invalid intermediate report never changes the source or retained snapshot',()=>{
+ const c=fixture();c.accept(sample('1'),T);const before=c.read();const bad=sample('2',p.via);bad.liveTrading=true;
+ assert.throws(()=>c.accept(bad,T));assert.equal(c.identity.release,p.from);assert.deepEqual(c.read(),before);
+ assert.equal(c.accept(sample('2',p.to),T),'accepted');
+});
 test('existing HTTP authentication still runs before any transition',async t=>{
  const secret='offline-independent-ingestion-secret';const app=createDashboard({...identity(),viewerUser:'',viewerPassword:'',publicViewer:true,ingestionSecret:secret});
  attachReviewedSourceHandover(app.cache);app.server.listen(0,'127.0.0.1');await once(app.server,'listening');
