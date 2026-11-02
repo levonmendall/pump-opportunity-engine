@@ -44,13 +44,15 @@ test('unconfigured, unrelated and already newer receivers do not gain an alterna
  const c=fixture();assert.equal(attachReviewedSourceHandover(c),true);
 });
 test('existing source can advance through the installed recovery and exact new repair, never backward',()=>{
- const c=fixture();c.accept(sample('1',p.from,T-2000),T);
- assert.equal(c.accept(sample('2',p.via,T-1000),T),'accepted');assert.equal(c.identity.release,p.via);
+ const c=fixture();c.accept(sample('1',p.from,T-3000),T);
+ assert.equal(c.accept(sample('2',p.via,T-2000),T),'accepted');assert.equal(c.identity.release,p.via);
  assert.throws(()=>c.accept(sample('3',p.from),T),/source version/);
- assert.equal(c.accept(sample('3',p.previous,T-500),T),'accepted');assert.equal(c.identity.release,p.previous);
+ assert.equal(c.accept(sample('3',p.previous,T-1000),T),'accepted');assert.equal(c.identity.release,p.previous);
  assert.throws(()=>c.accept(sample('4',p.via),T),/source version/);
- assert.equal(c.accept(sample('4',p.to),T),'accepted');assert.equal(c.identity.release,p.to);
- for(const old of [p.from,p.via,p.previous])assert.throws(()=>c.accept(sample('5',old),T),/source version/);
+ assert.equal(c.accept(sample('4',p.current,T-500),T),'accepted');assert.equal(c.identity.release,p.current);
+ assert.throws(()=>c.accept(sample('5',p.previous),T),/source version/);
+ assert.equal(c.accept(sample('5',p.to),T),'accepted');assert.equal(c.identity.release,p.to);
+ for(const old of [p.from,p.via,p.previous,p.current])assert.throws(()=>c.accept(sample('6',old),T),/source version/);
 });
 test('a receiver configured at the installed recovery accepts only the exact newer repair',()=>{
  const c=new SnapshotCache({...identity(),release:p.via});assert.equal(attachReviewedSourceHandover(c),true);
@@ -63,16 +65,17 @@ test('retained startup identity can skip a reviewed intermediate and accept curr
  const c=fixture();c.accept(sample('30',p.from,T-120000),T);const before=c.equityHistory();
  assert.equal(c.accept(sample('31',p.previous,T-1000),T),'accepted');assert.equal(c.identity.release,p.previous);
  assert.equal(c.read().snapshot.account.id,p.accountId);assert.equal(c.read().snapshot.account.inceptionAt,p.inceptionAt);assert.ok(c.equityHistory().points.some(x=>x.at===before.points[0].at));
- assert.equal(c.accept(sample('32',p.to),T),'accepted');assert.equal(c.identity.release,p.to);assert.equal(c.read().snapshot.sequence,'32');
- assert.throws(()=>c.accept(sample('33',p.previous),T),/source version/);
+ assert.equal(c.accept(sample('32',p.current,T-500),T),'accepted');assert.equal(c.identity.release,p.current);
+ assert.equal(c.accept(sample('33',p.to),T),'accepted');assert.equal(c.identity.release,p.to);assert.equal(c.read().snapshot.sequence,'33');
+ for(const old of [p.previous,p.current])assert.throws(()=>c.accept(sample('34',old),T),/source version/);
 });
-test('a receiver configured at the current installed source validates the exact repair before switching',()=>{
- const c=new SnapshotCache({...identity(),release:p.previous});assert.equal(attachReviewedSourceHandover(c),true);c.accept(sample('40',p.previous,T-1000),T);const before=c.read();
- const invalid=sample('41',p.to);invalid.account.inceptionAt='2026-10-27T22:07:36.212Z';assert.throws(()=>c.accept(invalid,T));assert.equal(c.identity.release,p.previous);assert.deepEqual(c.read(),before);
- assert.throws(()=>c.accept(sample('40',p.to),T));assert.equal(c.identity.release,p.previous);assert.deepEqual(c.read(),before);
+for(const installed of [p.previous,p.current])test('a receiver configured at '+installed.slice(0,8)+' validates the exact repair before switching',()=>{
+ const c=new SnapshotCache({...identity(),release:installed});assert.equal(attachReviewedSourceHandover(c),true);c.accept(sample('40',installed,T-1000),T);const before=c.read();
+ const invalid=sample('41',p.to);invalid.account.inceptionAt='2026-10-27T22:07:36.212Z';assert.throws(()=>c.accept(invalid,T));assert.equal(c.identity.release,installed);assert.deepEqual(c.read(),before);
+ assert.throws(()=>c.accept(sample('40',p.to),T));assert.equal(c.identity.release,installed);assert.deepEqual(c.read(),before);
  assert.equal(c.accept(sample('41',p.to),T),'accepted');assert.equal(c.identity.release,p.to);
 });
-for(const intermediate of [p.via,p.previous])test('an invalid intermediate '+intermediate.slice(0,8)+' report never changes the source or retained snapshot',()=>{
+for(const intermediate of [p.via,p.previous,p.current])test('an invalid intermediate '+intermediate.slice(0,8)+' report never changes the source or retained snapshot',()=>{
  const c=fixture();c.accept(sample('1'),T);const before=c.read();const bad=sample('2',intermediate);bad.liveTrading=true;
  assert.throws(()=>c.accept(bad,T));assert.equal(c.identity.release,p.from);assert.deepEqual(c.read(),before);
  assert.equal(c.accept(sample('2',p.to),T),'accepted');
