@@ -12,7 +12,7 @@ import {resolvePilotMigration,type PilotMigrationSeed,type PilotMigrationResult,
 import {decodeMigrationIdentity,type MigrationIdentity} from './migration-identity.js';
 import {canonicalObservationPool,assertNativeObservationIdentity,nativeObservationIdentityFromMigration,nativeCurrentPoolIdentityProof,type NativeObservationIdentity} from './native-observation-identity.js';
 import type {ResearchClockNativeObservationSupport} from './research-clock-pricing.js';
-import {preparedObservationFresh,type NativeCandidatePreparationState} from './native-observation-preparation.js';
+import {preparedObservationFresh,type NativeCandidatePreparationState,type NativeObservationPreparationResult} from './native-observation-preparation.js';
 import {assessPredictiveBuying,PROVISIONAL_RULE,type FlowFeatures} from './strategy.js';
 import {assessAdaptiveBuying,ADAPTIVE_MOMENTUM_V2_VERSION} from './adaptive-momentum-v2.js';
 import {LIQUIDITY_RESILIENT_MOMENTUM_V3_VERSION,assessLiquidityResilientBuying,type V3BuyingAssessment,type V3Evidence} from './liquidity-resilient-momentum-v3.js';
@@ -59,10 +59,16 @@ export type NativeDeadlineTarget={mint:string;eligibleAt:number;deadlineAt:numbe
 export type NativeDeadlineView={at:number;targets:NativeDeadlineTarget[];readyCount:number;nextEligibleAt:number|null;earliestDeadlineAt:number|null;discretionaryUntil:number|null;minimumReadyWorkMs:number;unavailableReadyCount:number;conservativeReadyEnvelopeFits:boolean;requiredNativeAt:number|null;requiredNativeAction:string|null;meaning:string};
 type VerificationRead={method:string;params:unknown[];signal?:AbortSignal;resolve:(value:unknown)=>void;reject:(error:unknown)=>void};
 type VerificationSession={seed:PilotMigrationSeed;startedAt:number;deadlineAt:number;controller:AbortController;pending:VerificationRead|null;result:PilotMigrationResult|null;reads:number;done:Promise<void>};
+type PendingPreparation={identity:NativeObservationIdentity;completedAt:number;result:NativeObservationPreparationResult;contentionReported:boolean};
+type PreparationCommit={kind:'discard';reason:string}|{kind:'ready';ageReady:boolean}|{kind:'refusal';reason:string;state:NativeCandidatePreparationState;counter:'poolAbsent'|'poolUnsupported'|'providerUnavailable'|null};
 
 export class NativeCandidateRunner{
  readonly dataContract:NativeFlowDataContract;readonly currentPoolObservation:boolean;readonly watch:PilotWatch;readonly observationAgePolicy:ObservationAgePolicy;private readonly now:()=>number;private readonly candidates=new Map<string,Candidate>();private readonly origins=new Map<string,MigrationIdentity>();private readonly originProofs=new Map<string,NativeOrigin>();private readonly registry:MarketRegistry;private readonly runScope:string;private readonly certificates=new Map<string,NativeAuditCertificate>();private readonly productivity:NativeSlotProductivity;private pendingAuditPhysical:{mint:string;windowEndAt:number}|null=null;
  private readonly preparedObservations=new Map<string,ResearchClockNativeObservationSupport>();
+ // One scheduled preparation can finish while intake owns the SQLite writer.
+ // Keep only that completed result, in this source instance, until its atomic
+ // persistence succeeds. It supplies neither a slot nor a fresh timestamp.
+ private pendingPreparation:PendingPreparation|null=null;
  private readonly preparationStartedAt:number;
  private preparationState:NativeCandidatePreparationState='idle';private preparationMint:string|null=null;
  private readonly preparationCounters={attempts:0,poolReady:0,poolAbsent:0,poolUnsupported:0,providerUnavailable:0,allocationsFromPrepared:0};
@@ -94,7 +100,7 @@ export class NativeCandidateRunner{
  private freshPrepared(at:number){for(const [mint,support]of this.preparedObservations)if(!preparedObservationFresh(support,at)||this.candidates.has(mint))this.preparedObservations.delete(mint);return [...this.preparedObservations.keys()];}
  private preparationMadeProgress(kind:'ack'|'audit',at:number){if(kind==='ack')this.preparationProgress.lastAcknowledgedAt=at;else this.preparationProgress.lastAuditedAt=at;this.preparationProgress.unproductiveSinceAt=null;this.preparationProgress.serviceableSinceAt=null;this.preparationProgress.attemptsSinceProgress=0;}
  private nextPreparation(at:number):WatchRow|null{
-  if(!this.preparationEnabled()||this.candidates.size>=(this.options.maximumDeep??6)||this.options.flow.usage().candidates+this.options.flow.usage().retiring>=(this.options.maximumDeep??6))return null;
+  if(this.pendingPreparation||!this.preparationEnabled()||this.candidates.size>=(this.options.maximumDeep??6)||this.options.flow.usage().candidates+this.options.flow.usage().retiring>=(this.options.maximumDeep??6))return null;
   this.prepareCurrentObservation(at);return this.watch.next(at,new Set([...this.candidates.keys(),...this.freshPrepared(at)]),{preparation:true});
  }
  private async prepareObservation(row:WatchRow,deadlineAt:number,signal?:AbortSignal){
@@ -104,25 +110,53 @@ export class NativeCandidateRunner{
   const identity=this.observationIdentity(row);if(!identity)return;
   this.preparationMint=mint;this.preparationState='validating-pool';this.preparationCounters.attempts++;this.preparationProgress.lastAttemptAt=at;this.preparationProgress.unproductiveSinceAt??=at;this.preparationProgress.attemptsSinceProgress++;
   const result=await prepare.call(this.options.flow,{mint,pool,...(identity.minimumSlot===undefined?{}:{minSlot:identity.minimumSlot}),...(identity.dependencyHints?{dependencyHints:{...identity.dependencyHints}}:{})},signal,{...this.admission(deadlineAt),operationBoundMs:bound,admissionOpen:()=>this.sourceWorkAllowed(bound)&&this.now()<deadlineAt});
-  this.preparationState='awaiting-dispatch';const availableAt=this.now();if(this.options.financialOwnership?.(mint)||['HELD','ENTRY_PENDING'].includes(this.watch.lookupIdentity(mint,availableAt)?.state??'')){this.preparationState='idle';this.preparationMint=null;return;}
-  if(result.status==='ready'&&preparedObservationFresh(result.support,availableAt,mint,pool,identity.minimumSlot??0)){
-   this.registry.putObservationPreparation({mint,pool,checkedAt:availableAt,state:'pool-ready',reason:'NATIVE_OBSERVATION_POOL_READY',sourceSlot:result.support.sourceSlot});
-   this.preparationCounters.poolReady++;this.freshPrepared(availableAt);this.preparedObservations.set(mint,result.support);
+  this.preparationState='awaiting-dispatch';if(!this.open()||signal?.aborted){this.preparationState='idle';this.preparationMint=null;return;}
+  this.pendingPreparation={identity,completedAt:this.now(),result,contentionReported:false};this.drainPreparedObservation();
+ }
+ /** Retry only a result whose writer transaction never began. A callback or
+  * storage failure is not replayable. Mandatory native work continues while a
+  * busy writer delays this local handoff; no additional preparation is sent. */
+ private drainPreparedObservation():boolean{
+  const pending=this.pendingPreparation;if(!pending)return true;
+  const at=this.now(),bound=NATIVE_DEADLINE_POLICY.postValidationMs;
+  if(!this.sourceWorkAllowed(bound)||!this.discretionaryAdmission(bound,at).admitted)return false;
+  const {identity,result,completedAt}=pending,mint=identity.baseMint,pool=identity.pool;let committed:PreparationCommit|null,callbackStarted=false;
+  try{committed=this.registry.transaction<PreparationCommit|null>(()=>{
+   callbackStarted=true;
+   const commitAt=this.now();if(!this.sourceWorkAllowed(bound)||!this.discretionaryAdmission(bound,commitAt).admitted)return null;
+   const row=this.watch.lookupIdentity(mint,commitAt),current=row&&this.observationIdentity(row);
+   if(this.options.financialOwnership?.(mint)||this.candidates.has(mint)||!row||['HELD','ENTRY_PENDING','DEEP_OBSERVATION','EXPIRED','PERMANENTLY_UNSUPPORTED'].includes(row.state)||!current||current.baseMint!==mint||current.pool!==pool)return {kind:'discard',reason:'NATIVE_FLOW_PREPARATION_SCOPE_CHANGED'};
+   const minimumSlot=Math.max(identity.minimumSlot??0,current.minimumSlot??0);
+   if(result.status==='ready'){
+    if(!preparedObservationFresh(result.support,commitAt,mint,pool,minimumSlot))return {kind:'discard',reason:'NATIVE_FLOW_PREPARATION_STALE'};
+    this.registry.putObservationPreparation({mint,pool,checkedAt:completedAt,state:'pool-ready',reason:'NATIVE_OBSERVATION_POOL_READY',sourceSlot:result.support.sourceSlot});
+    return {kind:'ready',ageReady:!this.options.enforceTokenAge24h||this.registry.tokenAgeEligibility(mint,commitAt).allowed};
+   }
+   if(minimumSlot>(identity.minimumSlot??0))return {kind:'discard',reason:'NATIVE_FLOW_PREPARATION_SCOPE_CHANGED'};
+   const normalized=result.reason.toUpperCase(),reason=/^[A-Z][A-Z0-9_:-]{0,119}$/.test(normalized)?normalized:'NATIVE_OBSERVATION_PREPARATION_UNAVAILABLE',absent=reason==='NATIVE_OBSERVATION_POOL_MISSING',unsupported=PREPARATION_UNSUPPORTED_BINDINGS.has(reason)||reason.startsWith('UNMODELED_BASE_EXTENSION:'),expected=absent||unsupported,deferred=result.status==='deferred'||PREPARATION_LOCAL_DEFERRALS.has(reason)||/ADMISSION_CLOSED|DISPATCH_EXPIRED|PHYSICAL_SLOT_OCCUPIED|DISPATCH_BUSY|ABORTED/.test(reason);
+   this.registry.putObservationPreparation({mint,pool,checkedAt:completedAt,state:absent?'pool-absent':unsupported?'pool-unsupported':deferred?'awaiting-dispatch':'provider-unavailable',reason});
+   // The refusal happened at response completion, not at the later commit.
+   // New pool/migration hints received while SQLite was busy remain newer.
+   if(expected){this.watch.noteEvaluation(mint,{kind:'technical-unavailable',windowEndAt:null,evidence:JSON.stringify({reason,pool,supportRefusedAt:completedAt,completedWindow:false})},completedAt);this.watch.transition(mint,'DEFERRED','current venue awaits new canonical pool or migration evidence',commitAt);}
+   else this.watch.transition(mint,'DEFERRED','candidate preparation awaits provider or dispatch recovery',commitAt,{deferUntil:Math.max(completedAt+1000,result.retryAt??0)});
+   return {kind:'refusal',reason,state:expected?'awaiting-market-evidence':deferred?'awaiting-dispatch':'provider-unavailable',counter:absent?'poolAbsent':unsupported?'poolUnsupported':!deferred?'providerUnavailable':null};
+  });}catch(error){
+   if(!callbackStarted&&isMarketRegistryContention(error)){this.preparationState='awaiting-dispatch';if(!pending.contentionReported){pending.contentionReported=true;this.record('native-candidate-registry-contention',{at:this.now(),phase:'preparation-result',reason:'MARKET_REGISTRY_CONTENTION',sqliteCode:error.sqliteCode,callbackStarted:false,newProviderRequestStarted:false,completedPreparationRetained:true,checkedAt:completedAt,financialExposure:false});}return false;}
+   this.pendingPreparation=null;throw error;
+  }
+  if(committed===null)return false;this.pendingPreparation=null;
+  if(committed.kind==='discard'){this.preparedObservations.delete(mint);this.preparationState='idle';this.preparationMint=null;this.record('native-candidate-preparation-discarded',{at:this.now(),mint,pool,checkedAt:completedAt,reason:committed.reason,deepSlotAllocated:false,financialPermission:false});return true;}
+  if(committed.kind==='ready'&&result.status==='ready'){
+   this.preparationCounters.poolReady++;this.freshPrepared(this.now());this.preparedObservations.set(mint,result.support);
    // Only a configured-slot-sized reusable proof cache is held in memory. All
    // identities and preparation outcomes remain in the durable watch registry.
    while(this.preparedObservations.size>(this.options.maximumDeep??6))this.preparedObservations.delete(this.preparedObservations.keys().next().value!);
-   const ageReady=!this.options.enforceTokenAge24h||this.registry.tokenAgeEligibility(mint,availableAt).allowed;
-   this.preparationState=ageReady?'ready':'awaiting-token-age';this.preparationOutcome={mint,pool,at:availableAt,stage:'pool-validation',reason:'NATIVE_OBSERVATION_POOL_READY'};
-  }else{
-   const raw=result.status==='ready'?'NATIVE_FLOW_PREPARATION_STALE':result.reason,normalized=raw.toUpperCase(),reason=/^[A-Z][A-Z0-9_:-]{0,119}$/.test(normalized)?normalized:'NATIVE_OBSERVATION_PREPARATION_UNAVAILABLE',absent=reason==='NATIVE_OBSERVATION_POOL_MISSING',unsupported=PREPARATION_UNSUPPORTED_BINDINGS.has(reason)||reason.startsWith('UNMODELED_BASE_EXTENSION:'),expected=absent||unsupported,deferred=result.status==='deferred'||PREPARATION_LOCAL_DEFERRALS.has(reason)||/ADMISSION_CLOSED|DISPATCH_EXPIRED|PHYSICAL_SLOT_OCCUPIED|DISPATCH_BUSY|ABORTED/.test(reason);
-   this.registry.transaction(()=>{this.registry.putObservationPreparation({mint,pool,checkedAt:availableAt,state:absent?'pool-absent':unsupported?'pool-unsupported':deferred?'awaiting-dispatch':'provider-unavailable',reason});
-    if(expected){this.watch.noteEvaluation(mint,{kind:'technical-unavailable',windowEndAt:null,evidence:JSON.stringify({reason,pool,supportRefusedAt:availableAt,completedWindow:false})},availableAt);this.watch.transition(mint,'DEFERRED','current venue awaits new canonical pool or migration evidence',availableAt);}
-    else this.watch.transition(mint,'DEFERRED','candidate preparation awaits provider or dispatch recovery',availableAt,{deferUntil:Math.max(availableAt+1000,result.status==='ready'?0:result.retryAt??0)});
-   });
-   if(absent)this.preparationCounters.poolAbsent++;else if(unsupported)this.preparationCounters.poolUnsupported++;else if(!deferred)this.preparationCounters.providerUnavailable++;
-   this.preparedObservations.delete(mint);this.preparationState=expected?'awaiting-market-evidence':deferred?'awaiting-dispatch':'provider-unavailable';this.preparationOutcome={mint,pool,at:availableAt,reason,stage:'pool-validation'};
+   this.preparationState=committed.ageReady?'ready':'awaiting-token-age';this.preparationOutcome={mint,pool,at:completedAt,stage:'pool-validation',reason:'NATIVE_OBSERVATION_POOL_READY'};
+  }else if(committed.kind==='refusal'){
+   if(committed.counter)this.preparationCounters[committed.counter]++;
+   this.preparedObservations.delete(mint);this.preparationState=committed.state;this.preparationOutcome={mint,pool,at:completedAt,reason:committed.reason,stage:'pool-validation'};
   }
-  this.record('native-candidate-preparation',{...this.preparationOutcome,state:this.preparationState,deepSlotAllocated:false,subscriptionRequestSent:false,financialPermission:false});
+  this.record('native-candidate-preparation',{...this.preparationOutcome,state:this.preparationState,deepSlotAllocated:false,subscriptionRequestSent:false,financialPermission:false});return true;
  }
  private preparationStatus(at:number){return {version:'native-candidate-preparation-v1' as const,scope:'CURRENT_SOURCE_INSTANCE' as const,sourceInstanceId:this.runScope,runId:this.options.runId??null,startedAt:this.preparationStartedAt,generatedAt:at,state:this.preparationState,currentMint:this.preparationMint,counters:{...this.preparationCounters},lastOutcome:this.preparationOutcome?{...this.preparationOutcome}:null,progress:{...this.preparationProgress}};}
  private record(kind:string,data:unknown){this.options.record(kind,data);}
@@ -670,6 +704,9 @@ export class NativeCandidateRunner{
    if(!this.drainGapRetirements()){this.lastOutcome='MARKET_REGISTRY_CONTENTION';return 'wait';}
    if(!this.reconcileObservationMembership()){this.lastOutcome='MARKET_REGISTRY_CONTENTION';return 'wait';}
    this.reconcileFlowOpen();
+   // Give a completed provider result the next writer opportunity before
+   // optional intake bookkeeping. A busy writer must not stop native service.
+   if(!this.drainPreparedObservation())this.registryHousekeepingDeferred=true;
    this.registryHousekeeping('native-activity',()=>this.drainNativeActivity());
    this.registryHousekeeping('migration-delivery',()=>this.drainMigrationDelivery());
    this.registryHousekeeping('pool-progress',()=>this.drainPoolSourceProgress());
@@ -816,5 +853,5 @@ export class NativeCandidateRunner{
   const at=this.now(),watch=this.watchStatus(at),productivity=this.slotProductivity(at);
   return {...(this.options.enforceTokenAge24h?{tokenAgeScope:this.registry.tokenAgeSummary(at)}:{}),version:NATIVE_CANDIDATE_VERSION,mode:'candidate-evaluation',experimental:true,authoritative:false,running:!this.stopped,generatedAt:at,strategyVersion:PROVISIONAL_RULE.version,dataContract:this.dataContract,auditProfile:NATIVE_CANDIDATE_AUDIT_PROFILE,auditDispatchDiagnostics:NATIVE_AUDIT_DISPATCH_DIAGNOSTICS,observationAgePolicy:this.observationAgePolicy,financialExecutionAuthorized:false,financialWriterOpened:false,liveTradingEnabled:false,watch,counters:{...this.counters,...(this.options.activeStrategy?this.activeCounters:{})},...(this.options.activeStrategy?{activeStrategyVersion:this.options.activeStrategy===LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION?LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION:this.options.activeStrategy===LIQUIDITY_RESILIENT_MOMENTUM_V3_VERSION?LIQUIDITY_RESILIENT_MOMENTUM_V3_VERSION:ADAPTIVE_MOMENTUM_V2_VERSION,baselineStrategyVersion:PROVISIONAL_RULE.version,activeDecisions:this.activeDecisions.map(d=>({...d}))}:{}),maximumSimultaneousCandidates:this.maximumSimultaneous,verificationQueue:this.registry.verificationCount(),verificationBacklog:this.registry.verificationStats(at),marketCoverage:this.marketCoverageWithProductivity(at,productivity),slotProductivity:productivity,candidatePreparation:this.preparationStatus(at),lastDispatchAt:this.lastDispatchAt,lastOutcome:this.lastOutcome,admissionsClosedReason:this.sourceAdmissionStopReason,decisions:this.decisions.map(d=>({...d})),lastAuditAt:this.lastAuditAt,lastPredictiveAt:this.lastPredictiveAt,candidates:[...this.candidates.values()].map(c=>({mint:c.identity.baseMint,pool:c.identity.pool,migrationAt:c.identity.migrationAt,migrationVerified:c.identity.migrationVerified,identityBasis:c.identity.identityBasis,allocatedAt:c.allocatedAt,openedAt:c.openedAt,lastAssessmentEnd:c.lastAssessmentEnd,auditDispatch:this.auditDispatchSummary(c),auditSession:c.auditSession?{windowEndAt:c.auditSession.windowEndAt,deadlineAt:c.auditSession.deadlineAt,retryAt:c.auditPageRetryAt||null,pendingPage:c.auditSession.session.pending()?.page??null}:null,snapshot:this.options.flow.snapshot(c.identity.baseMint,at)})),flow:this.options.flow.usage(),rpc:this.options.rpc.usage(),economicResults:'unavailable; no financial writer or execution'};
  }
- async stop(reason='bounded candidate-only research interval ended'){this.stopped=true;this.nativeActivityHints.clear();const verification=this.verificationSession;if(verification){verification.controller.abort();verification.pending?.reject(Error('PILOT_MIGRATION_ABORTED'));verification.pending=null;await Promise.resolve();await Promise.resolve();verification.result??={ok:false,reason:'PILOT_MIGRATION_ABORTED'};this.finishVerification(verification);}for(const mint of [...this.candidates.keys()])this.retire(mint,reason,this.now(),0);try{await this.drainCancelledAuditDiagnostics();}finally{await this.options.flow.stop(reason);}this.record('native-candidate-runner-stopped',{at:this.now(),reason,financialWriterOpened:false,flow:this.options.flow.usage()});}
+ async stop(reason='bounded candidate-only research interval ended'){this.stopped=true;this.pendingPreparation=null;this.preparedObservations.clear();this.nativeActivityHints.clear();const verification=this.verificationSession;if(verification){verification.controller.abort();verification.pending?.reject(Error('PILOT_MIGRATION_ABORTED'));verification.pending=null;await Promise.resolve();await Promise.resolve();verification.result??={ok:false,reason:'PILOT_MIGRATION_ABORTED'};this.finishVerification(verification);}for(const mint of [...this.candidates.keys()])this.retire(mint,reason,this.now(),0);try{await this.drainCancelledAuditDiagnostics();}finally{await this.options.flow.stop(reason);}this.record('native-candidate-runner-stopped',{at:this.now(),reason,financialWriterOpened:false,flow:this.options.flow.usage()});}
 }

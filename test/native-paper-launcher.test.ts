@@ -49,23 +49,68 @@ test('COHERENT report and checkpoint service obey committed candidate latest-sta
 
 test('a measured 600ms report reserves actual work plus local headroom before pending, protection and candidate deadlines',()=>{
  let elapsed=0;const phases=new NativePaperReportTimings(()=>elapsed);phases.measure('candidate-status',()=>{elapsed+=400;});phases.measure('financial-history',()=>{elapsed+=200;});
- const budgetMs=nativePaperReportAdmissionBound({maximumCompletedMs:0,phases:phases.usage(),timingAvailable:phases.timingAvailable})!;
+ const budgetMs=nativePaperReportAdmissionBound({maximumCompletedMs:0,hasCompletedReport:false,phases:phases.usage(),timingAvailable:phases.timingAvailable})!;
  assert.equal(NATIVE_PAPER_REPORT_ADMISSION_RESERVE_MS,250);assert.equal(budgetMs,850,'startup phase measurements prime admission before a complete-report duration exists');
  const due={at:20000,lastReportAt:0,held:1,nextProtectionAt:20300,nextPendingAt:null};assert.equal(nativePaperReportingAdmission(due).admitted,true,'the former 250ms declaration fits a 300ms gap');assert.equal(nativePaperReportingAdmission({...due,budgetMs}).reason,'next-protection-start-reserved');
  assert.equal(nativePaperReportingAdmission({...due,held:0,nextProtectionAt:null,nextPendingAt:20300,budgetMs}).reason,'pending-financial-action-has-priority');
  assert.equal(nativePaperReportingAdmission({...due,held:0,nextProtectionAt:null,candidateLatestStartAt:20300-budgetMs,budgetMs}).reason,'committed-candidate-deadline-reserved');
  assert.equal(nativePaperReportingAdmission({...due,nextProtectionAt:21000,nextPendingAt:21500,candidateLatestStartAt:22000-budgetMs,budgetMs}).admitted,true);
- const whole=nativePaperReportAdmissionBound({maximumCompletedMs:1200.25,phases:phases.usage(),timingAvailable:true})!;assert.equal(whole,1451);assert.equal(nativePaperReportingAdmission({...due,nextProtectionAt:21451,budgetMs:whole}).admitted,false,'an observed cost is never clipped to the former input ceiling');assert.equal(nativePaperReportingAdmission({...due,nextProtectionAt:22000,budgetMs:whole}).admitted,true);
+ const whole=nativePaperReportAdmissionBound({maximumCompletedMs:1200.25,hasCompletedReport:true,phases:phases.usage(),timingAvailable:true})!;assert.equal(whole,1451);assert.equal(nativePaperReportingAdmission({...due,nextProtectionAt:21451,budgetMs:whole}).admitted,false,'an observed cost is never clipped to the former input ceiling');assert.equal(nativePaperReportingAdmission({...due,nextProtectionAt:22000,budgetMs:whole}).admitted,true);
  assert.deepEqual(due,{at:20000,lastReportAt:0,held:1,nextProtectionAt:20300,nextPendingAt:null},'admission never advances a source clock or deadline');
  const source=readFileSync(new URL('../src/run-native-paper.ts',import.meta.url),'utf8');assert.match(source,/discretionaryAdmission\(workBoundMs,at\)/);assert.match(source,/candidateLatestStartAt:candidate.latestStartAt,budgetMs:workBoundMs/);assert.match(source,/elapsed>NATIVE_PAPER_REPORT_BUDGET_MS/,'250ms remains the overrun target');
 });
 
 test('unavailable or invalid report timing defers work without replacing original clocks or bounds',()=>{
- for(const maximumCompletedMs of [NaN,Infinity,-1,10000])assert.equal(nativePaperReportAdmissionBound({maximumCompletedMs,phases:[],timingAvailable:true}),null);
- assert.equal(nativePaperReportAdmissionBound({maximumCompletedMs:600,phases:[],timingAvailable:false}),null);
- let clock=10;const phases=new NativePaperReportTimings(()=>clock);assert.equal(phases.measure('candidate-status',()=>{clock=9;return 'valid result';}),'valid result');assert.equal(phases.timingAvailable,false);assert.equal(nativePaperReportAdmissionBound({maximumCompletedMs:0,phases:phases.usage(),timingAvailable:phases.timingAvailable}),null);
+ for(const maximumCompletedMs of [NaN,Infinity,-1,10000])assert.equal(nativePaperReportAdmissionBound({maximumCompletedMs,hasCompletedReport:true,phases:[],timingAvailable:true}),null);
+ assert.equal(nativePaperReportAdmissionBound({maximumCompletedMs:600,hasCompletedReport:true,phases:[],timingAvailable:false}),null);
+ let clock=10;const phases=new NativePaperReportTimings(()=>clock);assert.equal(phases.measure('candidate-status',()=>{clock=9;return 'valid result';}),'valid result');assert.equal(phases.timingAvailable,false);assert.equal(nativePaperReportAdmissionBound({maximumCompletedMs:0,hasCompletedReport:false,phases:phases.usage(),timingAvailable:phases.timingAvailable}),null);
  const due={at:20000,lastReportAt:0,held:0,nextProtectionAt:null,nextPendingAt:null,budgetMs:850};
  for(const invalid of [{at:NaN},{lastReportAt:20001},{nextPendingAt:NaN},{nextProtectionAt:Infinity},{candidateLatestStartAt:NaN},{budgetMs:Infinity},{budgetMs:-1}]){const result=nativePaperReportingAdmission({...due,...invalid});assert.equal(result.admitted,false);assert.equal(result.reason,'report-timing-unavailable');}
+});
+
+test('complete report timing replaces incompatible lifetime phase maxima and restores a real candidate reporting opportunity',()=>{
+ let clock=0;const timings=new NativePaperReportTimings(()=>clock);
+ timings.measure('candidate-status',()=>{clock+=4155.935;});
+ timings.measure('publication-checkpoint',()=>{clock+=4000;});
+ const phases=timings.usage(),original=structuredClone(phases);
+ const startup=nativePaperReportAdmissionBound({maximumCompletedMs:0,hasCompletedReport:false,phases,timingAvailable:true})!;
+ assert.equal(startup,8406,'phase measurements remain the conservative bootstrap before a complete scheduled report exists');
+ const due={at:20000,lastReportAt:0,held:0,nextProtectionAt:null,nextPendingAt:null};
+ const candidateRunwayMs=8375;
+ assert.equal(nativePaperReportingAdmission({...due,budgetMs:startup,candidateLatestStartAt:due.at+candidateRunwayMs-startup}).reason,'committed-candidate-deadline-reserved','the former sum can consume every offered candidate heartbeat gap');
+ const measured=nativePaperReportAdmissionBound({maximumCompletedMs:1307.997,hasCompletedReport:true,phases,timingAvailable:true})!;
+ assert.equal(measured,1558,'the actual whole-report maximum includes all phases without adding maxima from different publications');
+ assert.equal(nativePaperReportingAdmission({...due,budgetMs:measured,candidateLatestStartAt:due.at+candidateRunwayMs-measured}).admitted,true);
+ assert.equal(nativePaperReportingAdmission({...due,budgetMs:measured,nextPendingAt:due.at+measured}).reason,'pending-financial-action-has-priority');
+ assert.equal(nativePaperReportingAdmission({...due,budgetMs:measured,held:1,nextProtectionAt:due.at+measured}).reason,'next-protection-start-reserved');
+ assert.deepEqual(phases,original,'lifetime phase maxima remain available as diagnostics');
+ assert.deepEqual(timings.usage(),original);
+});
+
+test('phase maxima above the scheduler limit cannot latch out a measured affordable report or hide genuinely oversized complete work',()=>{
+ let clock=0;const timings=new NativePaperReportTimings(()=>clock);
+ timings.measure('candidate-status',()=>{clock+=6000;});timings.measure('publication-checkpoint',()=>{clock+=5000;});
+ const phases=timings.usage();
+ assert.equal(nativePaperReportAdmissionBound({maximumCompletedMs:0,hasCompletedReport:false,phases,timingAvailable:true}),null,'an unmeasured bootstrap cannot bypass the existing scheduler maximum');
+ assert.equal(nativePaperReportAdmissionBound({maximumCompletedMs:1307.997,hasCompletedReport:true,phases,timingAvailable:true}),1558,'a known complete-report observation is not replaced by the sum of lifetime phase maxima');
+ assert.equal(nativePaperReportAdmissionBound({maximumCompletedMs:9750,hasCompletedReport:true,phases,timingAvailable:true}),10000);
+ assert.equal(nativePaperReportAdmissionBound({maximumCompletedMs:9750.001,hasCompletedReport:true,phases,timingAvailable:true}),null,'actual work plus reserve is never clipped to10s');
+ assert.equal(nativePaperReportAdmissionBound({maximumCompletedMs:1307.997,hasCompletedReport:true,phases,timingAvailable:false}),null,'invalid clocks remain unavailable');
+ assert.equal(nativePaperReportAdmissionBound({maximumCompletedMs:1307.997,hasCompletedReport:true,phases:phases.map(phase=>({...phase,maximumMs:Number.MAX_VALUE})),timingAvailable:true}),null,'overflowing phase measurements remain invalid');
+});
+
+test('an explicit scheduled report completion distinguishes a valid zero duration from startup phase bootstrap',()=>{
+ let clock=0;const timings=new NativePaperReportTimings(()=>clock);
+ timings.measure('candidate-status',()=>{clock+=8000;});
+ const input={maximumCompletedMs:0,phases:timings.usage(),timingAvailable:true};
+ assert.equal(nativePaperReportAdmissionBound({...input,hasCompletedReport:false}),8250);
+ assert.equal(nativePaperReportAdmissionBound({...input,hasCompletedReport:true}),500,'a measured zero duration retains the250ms floor and250ms reserve, rather than reusing startup phases');
+ assert.equal(nativePaperReportAdmissionBound({...input,maximumCompletedMs:1,hasCompletedReport:false}),null,'a nonzero complete-report maximum without a completion marker is inconsistent');
+ const source=readFileSync(new URL('../src/run-native-paper.ts',import.meta.url),'utf8');
+ assert.equal((source.match(/nativePaperReportAdmissionBound\(\{maximumCompletedMs:reportingMaximumMs,hasCompletedReport:reportingLastCompletedAt!==null,/g)??[]).length,2,'admission and its diagnostics share the actual scheduled-completion marker');
+ assert.match(source,/reportingLastCompletedAt:number\|null=null/);
+ const scheduled=source.slice(source.indexOf('const maybeReport='));
+ assert.ok(scheduled.indexOf('reportingHealth.complete(')>=0&&scheduled.indexOf('reportingLastCompletedAt=Date.now()')>scheduled.indexOf('reportingHealth.complete('),'the completion marker is recorded after the scheduled report physically returns');
 });
 
 

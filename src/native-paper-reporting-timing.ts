@@ -6,12 +6,19 @@ export type NativePaperReportPhaseTiming={stage:NativePaperReportPhase;count:num
 export const NATIVE_PAPER_REPORT_ADMISSION_RESERVE_MS=250;
 /** An observed work estimate for admission, never a promised completion time.
  * Retain the 250ms performance target, add the existing local reserve, and
- * respect the source scheduler's existing 10s maximum discretionary bound. */
-export function nativePaperReportAdmissionBound(input:{maximumCompletedMs:number;phases:readonly NativePaperReportPhaseTiming[];timingAvailable:boolean}):number|null {
- if(input.timingAvailable!==true||!Number.isFinite(input.maximumCompletedMs)||input.maximumCompletedMs<0||!Array.isArray(input.phases)||input.phases.length>NATIVE_PAPER_REPORT_PHASES.length)return null;
+ * respect the source scheduler's existing 10s maximum discretionary bound.
+ * Phase maxima bootstrap admission until a complete scheduled report has been
+ * measured. They can come from different reports, including startup, so their
+ * sum must not replace an available whole-report maximum. Lifetime phase
+ * diagnostics remain unchanged. A genuinely oversized whole report still
+ * fails closed; this estimate never clips work to fit a deadline. */
+export function nativePaperReportAdmissionBound(input:{maximumCompletedMs:number;hasCompletedReport:boolean;phases:readonly NativePaperReportPhaseTiming[];timingAvailable:boolean}):number|null {
+ if(input.timingAvailable!==true||typeof input.hasCompletedReport!=='boolean'||!Number.isFinite(input.maximumCompletedMs)||input.maximumCompletedMs<0||!input.hasCompletedReport&&input.maximumCompletedMs!==0||!Array.isArray(input.phases)||input.phases.length>NATIVE_PAPER_REPORT_PHASES.length)return null;
  let phaseMaximumMs=0;const seen=new Set<string>();
  for(const phase of input.phases){if(!phase||!(NATIVE_PAPER_REPORT_PHASES as readonly string[]).includes(phase.stage)||seen.has(phase.stage)||!Number.isFinite(phase.maximumMs)||phase.maximumMs<0||!Number.isSafeInteger(phase.count)||phase.count<=0)return null;seen.add(phase.stage);phaseMaximumMs+=phase.maximumMs;}
- const estimate=Math.max(250,Math.ceil(input.maximumCompletedMs),Math.ceil(phaseMaximumMs)),bound=estimate+NATIVE_PAPER_REPORT_ADMISSION_RESERVE_MS;
+ if(!Number.isFinite(phaseMaximumMs))return null;
+ const observed=input.hasCompletedReport?input.maximumCompletedMs:phaseMaximumMs;
+ const estimate=Math.max(250,Math.ceil(observed)),bound=estimate+NATIVE_PAPER_REPORT_ADMISSION_RESERVE_MS;
  return Number.isSafeInteger(bound)&&bound>0&&bound<=10000?bound:null;
 }
 export class NativePaperReportTimings {
