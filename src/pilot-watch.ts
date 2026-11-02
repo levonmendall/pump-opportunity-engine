@@ -492,7 +492,7 @@ export class PilotWatch {
       const counts=registry.aggregate({retained:'COUNT(*)',activeDeep:"SUM(CASE WHEN w.deep_since IS NOT NULL AND w.state IN ('DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING') THEN 1 ELSE 0 END)",verifiedAwaitingPrerequisites:'SUM(CASE WHEN '+waiting+' AND NOT ('+serviceable+') THEN 1 ELSE 0 END)'},undefined,ready.params,'watch_rows_report_summary_v1');
       const retained=counts.retained??0,activeDeep=counts.activeDeep??0,verifiedAwaitingPrerequisites=counts.verifiedAwaitingPrerequisites??0;
       const since=this.readyAnchorSql(),serviceableSince=options.requireOrigin?"MAX("+since+",COALESCE((SELECT o.updated_at FROM origin_proofs o WHERE o.mint=w.mint AND o.available=1),0))":since;
-      const summarize=(where:string,anchor:string)=>registry.valueSummary({expression:'MAX(0,?-'+anchor+')',where,params:[at,...ready.params],index:'watch_rows_report_summary_v1'});
+      const summarize=(where:string,anchor:string)=>registry.valueSummary({expression:'MAX(0,?-'+anchor+')',where,params:[at,...ready.params],index:'watch_rows_report_summary_v1',...(this.options.enforceTokenAge24h?{tokenAgeAt:at}:{})});
       // Both queues have exactly the same predicates/anchor in current-pool
       // observation. Reuse this transaction's fresh result, not an older report;
       // independent value objects preserve the two reporting aliases.
@@ -514,9 +514,8 @@ export class PilotWatch {
     const waiting="w.state IN ('WATCH','DEFERRED') AND w.reobserve_ready=1 AND COALESCE(w.capacity_status,'')!='AWAITING_CAPACITY' AND w.defer_until<="+inspectionAt;
     const count=(condition:string)=>'SUM(CASE WHEN '+condition+' THEN 1 ELSE 0 END)',wait='MAX(0,'+inspectionAt+'-MAX(w.waiting_since,COALESCE(w.migration_at,0)+'+(adaptive?0:MIN_AGE)+",COALESCE(w.verified_at,json_extract(w.body,'$.observationIdentity.availableAt'),w.first_seen_at)))";
     const covered='w.ever_had_window=1 AND w.last_window_at IS NOT NULL AND w.last_window_at<='+inspectionAt+(adaptive?" AND w.last_window_at>=COALESCE(w.migration_at,json_extract(w.body,'$.observationIdentity.availableAt'),w.first_seen_at)":' AND w.last_window_at>=w.migration_at+'+MIN_AGE+' AND w.last_window_at<w.migration_at+'+MAX_AGE);
-    const aggregate=(expressions:Record<string,string>,where?:string)=>{const parameters:number[]=[],bind=(expression:string)=>expression.replaceAll(inspectionAt,()=>{parameters.push(at);return '?';}),bound=Object.fromEntries(Object.entries(expressions).map(([key,expression])=>[key,bind(expression)])),predicate=where===undefined?undefined:bind(where);return this.options.registry!.aggregate(bound,predicate,parameters,'watch_rows_report_summary_v1');};
-    const common:Record<string,string>={unchangedEconomic:count("w.last_decision_kind='economic-rejection' AND w.reobserve_ready=0 AND w.state IN ('WATCH','DEFERRED')"),unchangedTechnical:count("w.last_decision_kind='technical-unavailable' AND w.reobserve_ready=0 AND w.state IN ('WATCH','DEFERRED')"),known:'COUNT(*)',watch:count("w.state IN ('WATCH','DEFERRED')"),unverified:count('w.verified_at IS NULL'),deep:count("w.deep_since IS NOT NULL AND w.state IN ('DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING')")};
-    for(const state of STATES)common['state_'+state]=count("w.state='"+state+"'");
+    const aggregate=(expressions:Record<string,string>,where?:string,tokenAgeAt?:number)=>{const parameters:number[]=[],bind=(expression:string)=>expression.replaceAll(inspectionAt,()=>{parameters.push(at);return '?';}),bound=Object.fromEntries(Object.entries(expressions).map(([key,expression])=>[key,bind(expression)])),predicate=where===undefined?undefined:bind(where);return this.options.registry!.aggregate(bound,predicate,parameters,'watch_rows_report_summary_v1',tokenAgeAt);};
+    const common=this.options.registry!.watchReportingPopulation(),tokenAgeAt=this.options.enforceTokenAge24h?at:undefined;
     const observation={observable:'COUNT(*)',observationQueued:count(waiting),preEntry:count(inspectionAt+'<w.migration_at+'+MIN_AGE),older:count(inspectionAt+'>=w.migration_at+'+MAX_AGE),observationAwaiting:count("w.state='DEFERRED' AND w.capacity_status='AWAITING_CAPACITY'"),observationProbe:count("w.state IN ('WATCH','DEFERRED') AND w.capacity_status='PROBE_READY'")};
     const selected={eligible:'COUNT(*)',queued:count(waiting),covered:count(covered),waitTotal:'SUM(CASE WHEN '+waiting+' THEN '+wait+' ELSE 0 END)',waitMaximum:'MAX(CASE WHEN '+waiting+' THEN '+wait+' ELSE 0 END)',awaiting:count("w.state='DEFERRED' AND w.capacity_status='AWAITING_CAPACITY'"),probe:count("w.state IN ('WATCH','DEFERRED') AND w.capacity_status='PROBE_READY'")};
     // Evaluate each expensive identity/age predicate once as the WHERE of its
@@ -524,7 +523,7 @@ export class PilotWatch {
     // aggregate, including rows which could contribute to none of those sums.
     // Every group reads the same readOperation snapshot; no rows are capped or
     // hydrated and no population is retained between reports.
-    const raw={...aggregate(common),...(adaptive?aggregate({...observation,...selected},observable):{...aggregate(observation,observable),...aggregate(selected,baseline)})};
+    const raw={...common,...(adaptive?aggregate({...observation,...selected},observable,tokenAgeAt):{...aggregate(observation,observable,tokenAgeAt),...aggregate(selected,baseline)})};
     raw.baseline=adaptive?aggregate({baseline:'COUNT(*)'},baseline).baseline??0:raw.eligible??0;
     const n=(key:string)=>raw[key]??0;
     // A bounded report page is explicitly a projection. Counts above cover the

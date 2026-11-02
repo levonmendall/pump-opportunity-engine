@@ -29,3 +29,12 @@ test('merged native PAPER decisions retain only the latest50 actual timestamps',
 test('missing native engine remains unknown rather than borrowing WATCH zeroes or financial events',()=>{
  const input=fixture(),p=nativePaperObservationReporting({...input,engine:undefined});assert.equal(p.feeds.normalizedTrades,null);assert.equal(p.feeds.frames,null);assert.equal(p.feeds.totalSocketBytes,null);assert.equal(p.watch,null);assert.equal(p.independentPredictive,null);assert.equal(p.observationAgePolicy,null);assert.deepEqual(p.decisions,[]);
 });
+
+test('active V3.1 reports its actual audited decisions without presenting the retired research baseline as a zero result',()=>{
+ const input=fixture();Object.assign(input.engine!,{baselineAssessmentEnabled:false,activeStrategyVersion:'liquidity-resilient-momentum-v3.1',activeDecisions:[{at:T-100,mint:'SYNTHETIC_V31',stage:'adaptive-predictive-failed',reason:'completed V3.1 economic rejection'}],decisions:[]});
+ Object.assign(input.engine!.counters,{adaptivePredictiveAssessments:4,adaptivePredictiveFailed:2,adaptivePredictiveNotRejected:2,adaptivePredictiveUnavailable:0});
+ const report=nativePaperObservationReporting(input);
+ assert.equal(report.baselinePredictive,null);assert.deepEqual(report.baselineDecisions,[]);
+ assert.equal(report.independentPredictive!.assessments,4);assert.equal(report.independentPredictive!.failed,2);
+ assert.deepEqual(report.decisions,input.engine!.activeDecisions);
+});

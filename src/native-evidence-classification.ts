@@ -3,6 +3,14 @@
 export function nativePaperCandidatePreparationEvidence(kind:string,work:string){
  return work==='candidate'&&(kind==='trader-quote'||kind==='trader-pilot-entry-deposit'||/^(?:research-clock-|pool-state|price-|sdk-|rent-)/.test(kind)||kind==='pilot-entry-cost-preparation'||kind==='rpc-market-quote');
 }
+/** Raw examples explain accepted shapes or an already rejected window. They
+ * supply no trade amounts, audit completeness or financial permission: those
+ * records remain independently required. Capacity omission of a literal
+ * supplementary sample must not close an otherwise complete candidate. */
+export function nativePaperSupplementaryEvidence(kind:string,data:unknown){
+ return (kind==='native-flow-raw-representative'||kind==='native-flow-raw-refusal')
+  &&(data as {supplementaryOnly?:unknown}|null)?.supplementaryOnly===true;
+}
 export function nativePaperEssentialEvidence(kind:string,work:string,owned:boolean,data?:unknown){
  if(kind==='native-paper-entry-proof-pinned'&&(data as {provisional?:unknown}|null)?.provisional===true)return false;
  if(kind==='native-opportunity-evaluation'||kind==='pilot-entry-local-reprice')return false;

@@ -764,6 +764,20 @@ test('a completed economic rejection releases unchanged observation even when no
  assert.equal(f.runner.finishEconomicRejection(economicRejection(f,mint)),true);assert.equal(f.states.has(mint),false);assert.equal(f.runner.currentAuditCertificate(mint,f.now),null);f.advance(61000);await f.steps(6);assert.equal(f.states.has(mint),false,'unchanged completed-negative economics cannot readmit merely because time passed');await f.runner.stop();
 });
 
+test('active V3.1 keeps the audited decision and certificate without the unused baseline or unaudited feature records',async()=>{
+ const f=fixture({maximumDeep:1,durableMarketPolicy:true,fairEconomicCompletions:true,forcePredictiveFeatures:true}),mint=f.seed(1);
+ try{
+  await f.steps(8);f.advance(70000);f.refresh();await f.steps(5);
+  const status=f.runner.status();assert.equal(status.baselineAssessmentEnabled,false);assert.equal(status.counters.auditedWindows,1);
+  assert.equal(status.counters.predictiveAssessments,0);assert.equal(status.counters.adaptivePredictiveAssessments,1);assert.deepEqual(status.decisions,[]);
+  assert.ok(f.runner.currentAuditCertificate(mint,f.now),'the same complete independent audit still authorizes a fresh financial evaluation');
+  assert.equal(f.records.some(r=>r.kind==='native-predictive-assessment'||r.kind==='native-candidate-feature-view'),false);
+  const active=f.records.find(r=>r.kind==='native-active-strategy-assessment');assert.ok(active);assert.equal(active.data.baselineStatus,null);
+  assert.ok(f.records.some(r=>r.kind==='native-candidate-window-audit'&&r.data.result.status==='verified'));
+  assert.ok(f.records.some(r=>r.kind==='native-opportunity-evaluation'&&r.data.decision.kind==='preliminary-pass'));
+ }finally{await f.runner.stop();}
+});
+
 test('a completed preliminary economic rejection waits for meaningful new content without a fixed thirty-second veto',async()=>{
  const f=fixture({maximumDeep:1,durableMarketPolicy:true,fairEconomicCompletions:true,forcePredictiveFeatures:true}),mint=f.seed(1);(f.runner as any).options.activeAssessment=(_mint:string,features:any,at:number)=>({...assessLiquidityResilientBuyingV31(features,at),features,status:'failed',reason:'OFFLINE verified preliminary economic rejection'});await f.steps(8);f.advance(70000);f.refresh();
  try{
