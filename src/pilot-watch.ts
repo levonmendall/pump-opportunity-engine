@@ -437,7 +437,7 @@ export class PilotWatch {
       // Current broad-feed economics and bounded additive waiting credit rank
       // research only; unchanged-pool and financial gates above
       // remain prerequisites for every candidate, regardless of priority.
-      this.flush();const selected=this.options.registry!.nextOpportunity({where,params},at,this.readyAnchorSql());if(!selected)return null;this.retain(selected.row);
+      this.flush();const selected=this.options.registry!.nextOpportunity({where,params},at,this.readyAnchorSql(),options.preparation===true&&this.options.enforceTokenAge24h===true);if(!selected)return null;this.retain(selected.row);
       this.emit('pilot-watch-opportunity-priority',{at,mint:selected.row.mint,pool:selected.row.pool,...selected.hints,meaning:'Unverified scheduling hints; two-sided price stability is a limited activity proxy, not reserves, executable depth or causal price impact; no expected-profit, audit or execution claim'});return copy(selected.row);
     }
     const ready=[...this.rows.values()].filter(r=>r.mint!==null&&!excluded.has(r.mint)&&['WATCH','DEFERRED'].includes(r.state)&&r.capacityCoverage?.status!=='AWAITING_CAPACITY'&&at>=r.deferUntil&&this.observable(r,at)&&this.olderDeepAvailable(r,at));

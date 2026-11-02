@@ -39,9 +39,14 @@ function fixture(options:{path?:string;concurrentIntake?:boolean;enforceAge?:boo
  };
  const rpc={async call(method:string){requests.push(method);events.push(method);return options.transaction??null;},usage(){return {inFlight:0,waitingOrOperating:false,dispatchWindow:{physicalBusy:false,readyAt:at}};},cooldownUntil(){return 0;}};
  runner=new NativeCandidateRunner({registry,runId:'preparation-test',flow:flow as any,rpc:rpc as any,maximumDeep:4,now:()=>at,...(options.enforceAge===false?{}:{enforceTokenAge24h:true as const}),observationAgePolicy:PERSISTENT_OBSERVABLE_MARKET_POLICY.version,activeStrategy:LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION,sourceWorkAdmission:options.sourceWorkAdmission,financialOwnership:options.financialOwnership,onCandidateAllocated:id=>events.push('bridge:'+id.baseMint),record:(kind,data)=>records.push({kind,data})});
- const seed=(n:number,knownAge=true)=>{const m=mint(n);runner.onMarketIdentity({mint:m,source:'pumpportal-new-token',kind:'creation',venue:'pump',signature:signature(n),receivedAt:at,evidence:'unverified-provider-discovery-hint'});runner.onMigration({signature:signature(n+80),feedMint:m,receivedAt:at});runner.onMarketActivity({mint:m,source:'pumpapi-broad',kind:'activity',venue:'pump',signature:signature(n+100),side:'buy',quoteLamports:'1000',receivedAt:at,evidence:'unverified-provider-activity-hint'});if(knownAge)registry.putTokenCreationProof(proof(n,at));return m;};
+ const seed=(n:number,knownAge=true,creationHint=true)=>{const m=mint(n);if(creationHint)runner.onMarketIdentity({mint:m,source:'pumpportal-new-token',kind:'creation',venue:'pump',signature:signature(n),receivedAt:at,evidence:'unverified-provider-discovery-hint'});runner.onMigration({signature:signature(n+80),feedMint:m,receivedAt:at});runner.onMarketActivity({mint:m,source:'pumpapi-broad',kind:'activity',venue:'pump',signature:signature(n+100),side:'buy',quoteLamports:'1000',receivedAt:at,evidence:'unverified-provider-activity-hint'});if(knownAge)registry.putTokenCreationProof(proof(n,at));return m;};
  return {runner,registry,flow,states,preparedCalls,adopted,requests,events,records,seed,support,get now(){return at;},get heartbeats(){return heartbeats;},requireHeartbeat:()=>{heartbeat=true;},advance:(ms:number)=>{at+=ms;},refuse:(reason:string|null,until?:number)=>{refusal=reason;retryAt=until;},steps:async(n=1)=>{for(let i=0;i<n;i++)await runner.step();},close:async()=>{await runner.stop();registry.close();}};
 }
+
+function economicHint(f:ReturnType<typeof fixture>,n:number,quoteLamports='20000000000'){
+ f.runner.onMarketActivity({mint:mint(n),pool:pool(mint(n)),source:'pumpapi-broad',kind:'activity',venue:'pump-amm',signature:signature(n+140),side:'buy',quoteLamports,receivedAt:f.now,evidence:'unverified-provider-activity-hint'});
+}
+const preparationPriority=(f:ReturnType<typeof fixture>)=>f.records.filter(r=>r.kind==='pilot-watch-opportunity-priority').at(-1)!.data;
 
 /** A real second WAL writer takes the lock only after the provider result is
  * complete. This targets result persistence, not pre-dispatch bookkeeping. */
@@ -74,6 +79,75 @@ test('accepted binding precedes immutable birth verification and is reused witho
   const status=f.runner.status();assert.equal(status.candidatePreparation.counters.allocationsFromPrepared,1);assert.equal(status.slotProductivity.slots[0]!.subscriptionSentAt,null);assert.equal(status.slotProductivity.slots[0]!.openedAt,null);assert.equal(status.candidatePreparation.startedAt,status.slotProductivity.startedAt);assert.equal(status.candidatePreparation.sourceInstanceId,status.slotProductivity.sourceInstanceId);
   f.advance(20);f.runner.onSubscriptionSent({mint:m,at:f.now});assert.equal(f.runner.status().slotProductivity.slots[0]!.subscriptionSentAt,f.now);assert.equal(f.runner.status().slotProductivity.slots[0]!.openedAt,null);
   f.advance(20);f.runner.onFlowOpen({mint:m,at:f.now});assert.equal(f.runner.status().candidatePreparation.progress.attemptsSinceProgress,0);assert.equal(f.runner.status().candidatePreparation.progress.unproductiveSinceAt,null);assert.equal(f.runner.status().candidatePreparation.progress.serviceableSinceAt,null);
+ }finally{await f.close();}
+});
+
+test('a stream without creation-proof routes cannot starve an age-verified preparation',async()=>{
+ const f=fixture();try{const known=f.seed(11),unknown:string[]=[];
+  for(let n=20;n<60;n++){
+   f.advance(1000);unknown.push(f.seed(n,false,false));economicHint(f,n);await f.steps();
+   assert.ok(f.states.size<=1,'unknown age never becomes observation admission');
+  }
+  assert.equal(f.preparedCalls[0],known,'a usable candidate precedes stronger hints without any current birth-proof route');
+  assert.equal(f.states.has(known),true);assert.ok(unknown.every(m=>!f.states.has(m)));
+  assert.equal(f.runner.status().candidatePreparation.counters.allocationsFromPrepared,1);
+  assert.equal(f.registry.count(),41,'all market identities remain retained');assert.equal(f.requests.length,0);
+  assert.ok(f.preparedCalls.some(m=>unknown.includes(m)),'unknown candidates retain fallback passive preparation');
+ }finally{await f.close();}
+});
+
+test('queryable unknown age still competes on economics and must verify birth before allocation',async()=>{
+ const f=fixture({transaction:creation(63)});try{const known=f.seed(62),unknown=f.seed(63,false);economicHint(f,63);
+  await f.steps();assert.deepEqual(f.preparedCalls,[unknown]);assert.equal(preparationPriority(f).preparationAgeRoute,'creation-request-available');assert.equal(f.states.size,0);
+  await f.steps();assert.deepEqual(f.requests,['getTransaction']);assert.equal(f.states.size,0,'the age response is not an allocation');
+  await f.steps();assert.equal(f.states.has(unknown),true);assert.equal(f.preparedCalls.filter(m=>m===unknown).length,1);assert.equal(f.preparedCalls[1],known);
+ }finally{await f.close();}
+});
+
+test('stronger age-verified candidates retain economic priority within productive preparation',async()=>{
+ const f=fixture();try{const weak=f.seed(64),strong=f.seed(65),unreachable=f.seed(66,false,false);economicHint(f,65);economicHint(f,66,'200000000000');
+  await f.steps();assert.deepEqual(f.preparedCalls,[strong]);const priority=preparationPriority(f);assert.equal(priority.preparationAgeRoute,'verified-token-age');assert.equal(priority.economicLeaderMint,strong);assert.equal(priority.waitChangedWinner,false);
+  assert.equal(f.registry.count(),3);assert.equal(f.runner.watch.lookupIdentity(weak)!.state,'WATCH');assert.equal(f.runner.watch.lookupIdentity(unreachable)!.state,'WATCH');
+ }finally{await f.close();}
+});
+
+test('retained unknown preparation can progress when its missing creation signature arrives',async()=>{
+ const f=fixture({transaction:creation(68)});try{const known=f.seed(67),unknown=f.seed(68,false,false);economicHint(f,68);
+  await f.steps(2);assert.equal(f.states.has(known),true);assert.equal(f.states.has(unknown),false);assert.equal(f.preparedCalls.filter(m=>m===unknown).length,1);assert.equal(f.registry.nextTokenCreationRequest(f.now,true),undefined);
+  const preparedAt=f.registry.observationPreparation(unknown)!.checkedAt;f.advance(10);
+  f.runner.onMarketIdentity({mint:unknown,source:'pumpportal-new-token',kind:'creation',signature:signature(68),receivedAt:f.now,evidence:'unverified-provider-discovery-hint'});
+  await f.steps();assert.deepEqual(f.requests,['getTransaction']);assert.equal(f.states.has(unknown),false);
+  await f.steps();assert.equal(f.states.has(unknown),true);assert.equal(f.preparedCalls.filter(m=>m===unknown).length,1);assert.equal(f.adopted.find(v=>v.mint===unknown)!.at,preparedAt);assert.equal(f.registry.tokenCreationProof(unknown)!.createdAt,AT-3600000);
+ }finally{await f.close();}
+});
+
+for(const scenario of ['available','age-boundary','old-signature','future-signature','empty-signature','wrong-source','retry-not-due','retry-due','terminal','inactive','migration-active'] as const)test('preparation age route matches the actual creation dispatcher: '+scenario,async()=>{
+ const f=fixture();try{const known=f.seed(70),unknown=f.seed(71,false,false);economicHint(f,71);
+  const request={mint:unknown,signature:signature(71)};
+  f.registry.observeIdentity({mint:unknown,source:scenario==='wrong-source'?'pumpapi-broad':'pumpportal-new-token',kind:'creation',signature:scenario==='empty-signature'?'':request.signature,at:f.now+(scenario==='old-signature'?-TOKEN_AGE_POLICY.maximumAgeMs-1:scenario==='age-boundary'?-TOKEN_AGE_POLICY.maximumAgeMs:scenario==='future-signature'?1:0)});
+  if(scenario==='retry-not-due'||scenario==='retry-due'||scenario==='terminal')f.registry.deferTokenCreationRequest(request,f.now+(scenario==='retry-not-due'?0:-60000),'OFFLINE_REQUEST_RETRY',scenario==='terminal');
+  if(scenario==='inactive'||scenario==='migration-active'){f.advance(60001);if(scenario==='migration-active')f.registry.observeIdentity({mint:unknown,source:'pumpportal-migration',kind:'migration',signature:signature(240),at:f.now});}
+  const selected=f.runner.watch.next(f.now,new Set(),{preparation:true});
+  assert.equal(f.runner.watch.next(f.now,new Set([known]),{preparation:true})!.mint,unknown,'unreachable identities remain fallback candidates');const route=preparationPriority(f).preparationAgeRoute;
+  f.registry.putObservationPreparation({mint:unknown,pool:pool(unknown),checkedAt:f.now,state:'pool-ready',reason:'OFFLINE_POOL_READY'});
+  const actual=f.registry.nextTokenCreationRequest(f.now,true),available=['available','age-boundary','retry-due','migration-active'].includes(scenario);
+  assert.deepEqual(actual,available?request:undefined);assert.equal(route,available?'creation-request-available':'creation-request-unavailable');
+  if(!available)assert.equal(selected!.mint,known,'deferred or unavailable proof routes cannot outrank valid age');
+ }finally{await f.close();}
+});
+
+test('preparation reachability adds indexed mint lookups to one existing ranking query',async t=>{
+ const f=fixture();try{f.seed(72);f.seed(73,false);economicHint(f,73);const db=(f.registry as any).db;
+  const token=db.prepare('INSERT INTO market_tokens(mint,first_seen_at,last_seen_at,screened_at) VALUES(?,?,?,?)'),hint=db.prepare('INSERT INTO identity_provenance(mint,source,kind,signature,first_seen_at,last_seen_at) VALUES(?,?,?,?,?,?)');
+  db.transaction(()=>{for(let i=0;i<5000;i++){const m='offline-history-'+i;token.run(m,AT-172800000,AT-172800000,AT-172800000);hint.run(m,'pumpportal-new-token','creation','old-signature-'+i,AT-172800000,AT-172800000);}})();
+  let sql='',params:unknown[]=[],rankedQueries=0;const statement=(f.registry as any).statement.bind(f.registry);
+  (f.registry as any).statement=(text:string)=>{const s=statement(text);if(text.startsWith('WITH eligible AS'))return {get(...values:unknown[]){sql=text;params=values;rankedQueries++;return s.get(...values);}};return s;};
+  f.runner.watch.next(f.now,new Set(),{preparation:true});assert.equal(rankedQueries,1);
+  const details:string[]=db.prepare('EXPLAIN QUERY PLAN '+sql).all(...params).map((row:any)=>row.detail as string),plan=details.join('\n');
+  for(const alias of ['preparation_age','existing_age','preparation_token','preparation_migration','preparation_birth','preparation_retry']){assert.match(plan,new RegExp('SEARCH '+alias+' USING .*\\(mint=\\?'));assert.doesNotMatch(plan,new RegExp('SCAN '+alias+'(?:\\s|$)'));}
+  assert.match(plan,/SEARCH preparation_birth USING .*\(mint=\? AND source=\? AND kind=\?\)/);
+  assert.match(plan,/SEARCH preparation_retry USING .*\(mint=\? AND signature=\?\)/);
+  t.diagnostic(JSON.stringify({rankedQueries,reachabilityLookups:details.filter(row=>/preparation_|existing_age/.test(row)),historicalCreationRows:5000}));
  }finally{await f.close();}
 });
 
