@@ -172,7 +172,7 @@ test('the exact installed sustained runtime remains accepted until the reviewed 
 });
 
 test('the exact installed efficiency runtime remains accepted until the reviewed publication source passes every check',()=>{
- assert.equal(p.efficiency,'92d83ba59d542fa2dfb20bca4444b704666f9c05');assert.equal(p.to,'1efbd4eabd570f2be5c7e241ad33759ca2b4e4f8','bind the exact publication and observation repair source');assert.notEqual(p.to,p.efficiency);
+ assert.equal(p.efficiency,'92d83ba59d542fa2dfb20bca4444b704666f9c05');assert.equal(p.to,'c71f8e68bc27bae44c18b02025991182137a4fac','bind the exact publication and observation repair source');assert.notEqual(p.to,p.efficiency);
  const c=new SnapshotCache({...identity(),release:p.efficiency});assert.equal(attachReviewedSourceHandover(c),true);
  const prior={...sample('90',p.efficiency,T-120000),financialEpoch:v3Epoch()};c.accept(prior,T);const before=c.read(),history=c.equityHistory();
  for(const mutate of [s=>{s.account.id='other';},s=>{s.source.strategy='other';},s=>{s.sequence='89';},s=>{delete s.financialEpoch;},s=>{s.financialEpoch.backupSha256='f'.repeat(64);}]){
