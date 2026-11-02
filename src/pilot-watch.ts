@@ -34,7 +34,7 @@ export type WatchRow={
 export type WatchIdentityMetadata=Pick<WatchRow,'mint'|'pool'|'signature'|'migrationAt'|'verifiedAt'|'state'>&{olderResearch:boolean};
 type Counters={discovered:number;duplicates:number;verified:number;promoted:number;repromoted:number;demoted:number;expired:number;capacityExclusions:number;structuralExclusions:number;completeWindows:number;evicted:number;activityHints:number;promotionWaitTotalMs:number;promotionWaitMaximumMs:number};
 export type WatchCheckpoint={schemaVersion:1;registry?:{version:'persistent-market-registry-v1';id:string};observationAgePolicyVersion?:ObservationAgePolicyVersion;rows:WatchRow[];counters:Counters;capacityProbeAdmissions?:Array<{mint:string;at:number}>;entryAgePromotionCount?:number};
-type Options={enforceTokenAge24h?:true;registry?:MarketRegistry;observationAgePolicy?:ObservationAgePolicyVersion;maximumIdentities?:number;maximumOlderResearch?:number;maximumDeep:number;now?:()=>number;record:(kind:string,data:unknown)=>void;restored?:unknown};
+type Options={pumpswapOnly?:true;enforceTokenAge24h?:true;registry?:MarketRegistry;observationAgePolicy?:ObservationAgePolicyVersion;maximumIdentities?:number;maximumOlderResearch?:number;maximumDeep:number;now?:()=>number;record:(kind:string,data:unknown)=>void;restored?:unknown};
 const STATES:WatchState[]=['DISCOVERED','VERIFYING','WATCH','DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING','HELD','DEFERRED','EXPIRED','PERMANENTLY_UNSUPPORTED'];
 const MIN_AGE=300000,MAX_AGE=7200000,UNVERIFIED_RETENTION=MAX_AGE+MIN_AGE;
 const AGE_ONLY_EXPIRY_REASONS=new Set(['existing entry-age horizon elapsed','existing observation-age horizon elapsed','existing entry-age eligibility expired','existing observation-age eligibility expired','remaining horizon cannot fit a complete required window']);
@@ -97,7 +97,7 @@ export class PilotWatch {
   private tokenAgeSql(at:string){return this.options.enforceTokenAge24h?` AND EXISTS(SELECT 1 FROM token_creations age WHERE age.mint=w.mint AND age.created_at<=${at} AND age.created_at>=${at}-${TOKEN_AGE_POLICY.maximumAgeMs} AND age.verified_at<=${at})`:'';}
   private readySql(at:number,preparation=false){
     this.at(at);const persistent=this.observationAgePolicy===PERSISTENT_OBSERVABLE_MARKET_POLICY,age=persistent?'COALESCE(w.migration_at,0)<=?':'w.migration_at<=? AND ?<w.migration_at+CASE WHEN w.older_research=1 THEN ? ELSE ? END';
-    const identity=persistent?"(w.verified_at IS NOT NULL OR json_extract(w.body,'$.observationIdentity.basis')='canonical-pool-hint')":"w.verified_at IS NOT NULL";
+    const identity=(persistent?"(w.verified_at IS NOT NULL OR json_extract(w.body,'$.observationIdentity.basis')='canonical-pool-hint')":"w.verified_at IS NOT NULL")+(this.options.pumpswapOnly?' AND EXISTS(SELECT 1 FROM pumpswap_hint_tokens swap WHERE swap.mint=w.mint)':'');
     return {where:"w.mint IS NOT NULL AND w.pool IS NOT NULL AND "+identity+" AND w.state IN ('WATCH','DEFERRED') AND w.reobserve_ready=1 AND COALESCE(w.capacity_status,'')!='AWAITING_CAPACITY' AND w.defer_until<=? AND (w.technical_state IS NULL OR w.technical_state!='WAITING' OR w.technical_not_before<=?) AND "+age+(preparation&&this.options.enforceTokenAge24h?` AND NOT EXISTS(SELECT 1 FROM token_creations age WHERE age.mint=w.mint AND (age.created_at>? OR age.created_at<? OR age.verified_at>?))`:this.tokenAgeSql('?')),params:[...(persistent?[at,at,at]:[at,at,at,at,this.observationAgePolicy.selectedOlderMaximumAgeMs,this.observationAgePolicy.recentMaximumAgeMs]),...(this.options.enforceTokenAge24h?(preparation?[at,at-TOKEN_AGE_POLICY.maximumAgeMs,at]:[at,at,at]):[])]};
   }
   private repairPredecisionReady(r:WatchRow,source:'checkpoint'|'durable-registry'){
@@ -121,6 +121,7 @@ export class PilotWatch {
 
   constructor(private readonly options:Options){
     need(!options.enforceTokenAge24h||!!options.registry,'TOKEN_AGE_DURABLE_REGISTRY_REQUIRED');
+    need(!options.pumpswapOnly||!!options.registry,'PUMPSWAP_SCOPE_DURABLE_REGISTRY_REQUIRED');
     this.observationAgePolicy=observationAgePolicyByVersion(options.observationAgePolicy);this.checkpointObservationAgePolicy=this.observationAgePolicy;
     this.maximum=options.maximumIdentities??OBSERVATION_AGE_POLICY.totalWatchCapacity;this.olderMaximum=Math.min(options.maximumOlderResearch??OBSERVATION_AGE_POLICY.olderWatchCapacity,Math.max(0,this.maximum-1));this.maximumDeep=options.maximumDeep;this.clock=options.now??Date.now;
     need(integer(this.maximumDeep)&&this.maximumDeep>=1&&this.maximumDeep<=20&&(this.durable()||integer(this.maximum)&&this.maximum>=1&&this.maximum<=512&&this.maximumDeep<=this.maximum&&integer(this.olderMaximum)&&this.olderMaximum<=OBSERVATION_AGE_POLICY.olderWatchCapacity),'PILOT_WATCH_LIMITS');

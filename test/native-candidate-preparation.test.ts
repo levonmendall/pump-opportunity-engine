@@ -26,7 +26,7 @@ const pool=(m:string)=>canonicalPumpPoolPda(new PublicKey(m)).toBase58();
 const TOKEN='TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',PUMP='6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P';
 function proof(n:number,at=AT,createdAt=AT-3600000):TokenCreationProof{return {version:TOKEN_AGE_POLICY.version,mint:mint(n),signature:signature(n),slot:100,createdAt,availableAt:at,commitment:'finalized',instruction:'create',transactionSha256:'a'.repeat(64)};}
 function creation(n:number){const m=mint(n),curve=PublicKey.findProgramAddressSync([Buffer.from('bonding-curve'),new PublicKey(m).toBuffer()],new PublicKey(PUMP))[0].toBase58();return {version:0,slot:100,blockTime:(AT-3600000)/1000,transaction:{signatures:[signature(n)],message:{accountKeys:[PUMP,TOKEN,m,mint(201),curve],instructions:[{programIdIndex:0,accounts:[2,3,4],data:bs58.encode(Buffer.concat([createHash('sha256').update('global:create').digest().subarray(0,8),Buffer.alloc(50)]))}]}},meta:{err:null,innerInstructions:[{index:0,instructions:[{programIdIndex:1,accounts:[2],data:bs58.encode(Buffer.from([20,...Buffer.alloc(34)])),stackHeight:2}]}]}};}
-function fixture(options:{path?:string;concurrentIntake?:boolean;enforceAge?:boolean;sourceWorkAdmission?:(bound:number)=>boolean;financialOwnership?:(mint:string)=>'HELD'|'ENTRY_PENDING'|null;transaction?:unknown}={}){
+function fixture(options:{pumpswapOnly?:true;history?:unknown;rpcResponse?:(method:string,params:unknown[])=>unknown;path?:string;concurrentIntake?:boolean;enforceAge?:boolean;sourceWorkAdmission?:(bound:number)=>boolean;financialOwnership?:(mint:string)=>'HELD'|'ENTRY_PENDING'|null;transaction?:unknown}={}){
  let at=AT,runner:NativeCandidateRunner,refusal:string|null=null,retryAt:number|undefined,stopped=false,heartbeat=false,heartbeats=0;
  const registry=new MarketRegistry(options.path??':memory:',{now:()=>at,concurrentIntake:options.concurrentIntake}),states=new Map<string,{mint:string;pool:string;minSlot?:number}>(),preparedCalls:string[]=[],adopted:ResearchClockNativeObservationSupport[]=[],requests:string[]=[],events:string[]=[],records:Array<{kind:string;data:any}>=[];
  const support=(m:string)=>({mint:m,pool:pool(m),at,sourceSlot:100,evidence:'OFFLINE_CANONICAL_POOL_BINDING',summary:{marketClockUnixSeconds:Math.floor(at/1000),tokenProgram:TOKEN}} as ResearchClockNativeObservationSupport);
@@ -37,9 +37,9 @@ function fixture(options:{path?:string;concurrentIntake?:boolean;enforceAge?:boo
   snapshot(m:string){const scope=states.get(m);return scope?{scope,openedAt:null,subscription:null,connectionId:null,connected:false,sourceSupportFresh:true,suspended:false,hasQualityLoss:false,features:null,warm:false}:null;},notificationLedger(){return [];},requestSupportRefresh(){},requestHeartbeat(){},async service(){if(heartbeat){heartbeat=false;heartbeats++;return {kind:'heartbeat'};}return {kind:'idle'};},
   usage(){return {candidates:states.size,retiring:0,connected:false,nextServiceAt:heartbeat?at:Infinity,nextServiceDomain:heartbeat?'control':null,nextServiceAction:heartbeat?'heartbeat':null,nextRequiredServiceAt:heartbeat?at:Infinity,nativeServiceDeadlines:heartbeat?[{action:'heartbeat',deadlineAt:at+2000}]:[],physicalTransportsSettled:stopped,fatal:null};},async stop(){stopped=true;states.clear();},
  };
- const rpc={async call(method:string){requests.push(method);events.push(method);return options.transaction??null;},usage(){return {inFlight:0,waitingOrOperating:false,dispatchWindow:{physicalBusy:false,readyAt:at}};},cooldownUntil(){return 0;}};
- runner=new NativeCandidateRunner({registry,runId:'preparation-test',flow:flow as any,rpc:rpc as any,maximumDeep:4,now:()=>at,...(options.enforceAge===false?{}:{enforceTokenAge24h:true as const}),observationAgePolicy:PERSISTENT_OBSERVABLE_MARKET_POLICY.version,activeStrategy:LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION,sourceWorkAdmission:options.sourceWorkAdmission,financialOwnership:options.financialOwnership,onCandidateAllocated:id=>events.push('bridge:'+id.baseMint),record:(kind,data)=>records.push({kind,data})});
- const seed=(n:number,knownAge=true,creationHint=true)=>{const m=mint(n);if(creationHint)runner.onMarketIdentity({mint:m,source:'pumpportal-new-token',kind:'creation',venue:'pump',signature:signature(n),receivedAt:at,evidence:'unverified-provider-discovery-hint'});runner.onMigration({signature:signature(n+80),feedMint:m,receivedAt:at});runner.onMarketActivity({mint:m,source:'pumpapi-broad',kind:'activity',venue:'pump',signature:signature(n+100),side:'buy',quoteLamports:'1000',receivedAt:at,evidence:'unverified-provider-activity-hint'});if(knownAge)registry.putTokenCreationProof(proof(n,at));return m;};
+ const rpc={async call(method:string,params:unknown[]){requests.push(method);events.push(method);if(options.rpcResponse)return options.rpcResponse(method,params);return method==='getSignaturesForAddress'?options.history??null:options.transaction??null;},usage(){return {inFlight:0,waitingOrOperating:false,dispatchWindow:{physicalBusy:false,readyAt:at}};},cooldownUntil(){return 0;}};
+ runner=new NativeCandidateRunner({pumpswapOnly:options.pumpswapOnly,registry,runId:'preparation-test',flow:flow as any,rpc:rpc as any,maximumDeep:4,now:()=>at,...(options.enforceAge===false?{}:{enforceTokenAge24h:true as const}),observationAgePolicy:PERSISTENT_OBSERVABLE_MARKET_POLICY.version,activeStrategy:LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION,sourceWorkAdmission:options.sourceWorkAdmission,financialOwnership:options.financialOwnership,onCandidateAllocated:id=>events.push('bridge:'+id.baseMint),record:(kind,data)=>records.push({kind,data})});
+ const seed=(n:number,knownAge=true,creationHint=true)=>{const m=mint(n);if(creationHint)runner.onMarketIdentity({mint:m,source:'pumpportal-new-token',kind:'creation',venue:'pump',signature:signature(n),receivedAt:at,evidence:'unverified-provider-discovery-hint'});if(options.pumpswapOnly)runner.onMarketIdentity({mint:m,source:'pumpportal-migration',kind:'migration',signature:signature(n+80),receivedAt:at,evidence:'unverified-provider-discovery-hint'});runner.onMigration({signature:signature(n+80),feedMint:m,receivedAt:at});runner.onMarketActivity({mint:m,source:'pumpapi-broad',kind:'activity',venue:'pump',signature:signature(n+100),side:'buy',quoteLamports:'1000',receivedAt:at,evidence:'unverified-provider-activity-hint'});if(knownAge)registry.putTokenCreationProof(proof(n,at));return m;};
  return {runner,registry,flow,states,preparedCalls,adopted,requests,events,records,seed,support,get now(){return at;},get heartbeats(){return heartbeats;},requireHeartbeat:()=>{heartbeat=true;},advance:(ms:number)=>{at+=ms;},refuse:(reason:string|null,until?:number)=>{refusal=reason;retryAt=until;},steps:async(n=1)=>{for(let i=0;i<n;i++)await runner.step();},close:async()=>{await runner.stop();registry.close();}};
 }
 
@@ -62,6 +62,95 @@ test('absent current pools consume no deep slot, no ACK wait, and no finalized b
   assert.deepEqual(f.preparedCalls,[m]);assert.equal(f.states.size,0);assert.deepEqual(f.requests,[]);const status=f.runner.status();
   assert.equal(status.slotProductivity.counts.allocations,0);assert.equal(status.candidatePreparation.counters.poolAbsent,1);assert.equal(status.candidatePreparation.state,'awaiting-market-evidence');assert.equal(status.candidatePreparation.progress.serviceableSinceAt,null);assert.equal(status.counters.qualityGaps,0);
   assert.equal(f.runner.watch.lookupIdentity(m,f.now)!.reobservation!.windowEndAt,null);assert.equal(f.registry.count(),1);
+ }finally{await f.close();}
+});
+
+test('PumpSwap-only runner performs no durable or provider work for pre-migration token hints',async()=>{
+ const f=fixture({pumpswapOnly:true});try{
+  f.runner.onMarketIdentity({mint:mint(1),source:'pumpportal-new-token',kind:'creation',venue:'pump',signature:signature(1),receivedAt:f.now,evidence:'unverified-provider-discovery-hint'});
+  f.runner.onMarketActivity({mint:mint(1),source:'pumpapi-broad',kind:'activity',venue:'pump',signature:signature(2),side:'buy',quoteLamports:'1000000000',receivedAt:f.now,evidence:'unverified-provider-activity-hint'});
+  await f.steps(4);assert.equal(f.registry.count(),0);assert.equal(f.registry.marketEvidence(mint(1)),undefined);assert.deepEqual(f.requests,[]);assert.deepEqual(f.preparedCalls,[]);assert.equal(f.states.size,0);
+ }finally{await f.close();}
+});
+
+test('migration-only intake discovers and verifies creation after pool validation, before allocating a deep slot',async()=>{
+ const f=fixture({pumpswapOnly:true,transaction:creation(3),history:[{signature:signature(83),slot:110,blockTime:AT/1000,err:null},{signature:signature(3),slot:100,blockTime:(AT-3600000)/1000,err:null}]});try{
+  const m=f.seed(3,false,false);await f.steps();assert.deepEqual(f.events,['prepare:'+m]);assert.equal(f.states.size,0);
+  await f.steps();assert.deepEqual(f.requests,['getSignaturesForAddress']);assert.equal(f.registry.tokenCreationProof(m),null,'signature history itself cannot establish token age');assert.equal(f.states.size,0);
+  await f.steps();assert.deepEqual(f.requests,['getSignaturesForAddress','getTransaction']);assert.equal(f.registry.tokenCreationProof(m)!.createdAt,AT-3600000);assert.equal(f.states.size,0);
+  await f.steps();assert.equal(f.states.size,1);assert.equal(f.states.has(m),true);assert.equal(f.adopted.length,1);assert.equal(f.preparedCalls.length,1);assert.equal(f.runner.status().slotProductivity.slots.length,4);
+ }finally{await f.close();}
+});
+
+for(const reason of ['NATIVE_OBSERVATION_POOL_MISSING','BAD_POOL_OWNER'])test('PumpSwap migration hints with invalid or absent pools never start historical age acquisition: '+reason,async()=>{
+ const f=fixture({pumpswapOnly:true,history:[]});try{f.seed(4,false,false);f.refuse(reason);await f.steps(8);assert.equal(f.preparedCalls.length,1);assert.deepEqual(f.requests,[]);assert.equal(f.states.size,0);}finally{await f.close();}
+});
+
+test('legacy pre-migration watch identities remain retained but cannot consume PumpSwap preparation',async()=>{
+ const f=fixture({pumpswapOnly:true});try{
+  const m=mint(5);f.registry.observeActivity({mint:m,source:'pumpapi-broad',kind:'activity',venue:'pump',signature:signature(5),side:'buy',quoteLamports:'1000000000',receivedAt:f.now,evidence:'unverified-provider-activity-hint'});
+  f.registry.putTokenCreationProof(proof(5));f.runner.watch.observeIdentity(signature(5),{mint:m,pool:pool(m),availableAt:f.now,evidence:'OFFLINE_LEGACY_PRE_MIGRATION_HINT'});
+  await f.steps(4);assert.equal(f.registry.count(),1);assert.deepEqual(f.preparedCalls,[]);assert.equal(f.states.size,0);
+  economicHint(f,5);await f.steps(2);assert.deepEqual(f.preparedCalls,[m]);assert.equal(f.states.has(m),true,'fresh PumpSwap activity reopens the retained identity without losing it');
+ }finally{await f.close();}
+});
+
+test('history acquisition yields between pages so an age-ready PumpSwap candidate can prepare and occupy a slot',async()=>{
+ const full=Array.from({length:1000},(_,i)=>{const bytes=Buffer.alloc(64,33);bytes.writeUInt32BE(i);return {signature:bs58.encode(bytes),slot:2000-i,blockTime:AT/1000-10,err:null};});
+ const f=fixture({pumpswapOnly:true,history:full});try{
+  const unknown=f.seed(6,false,false);await f.steps(2);assert.deepEqual(f.requests,['getSignaturesForAddress']);assert.equal(f.registry.tokenCreationProof(unknown),null);
+  const known=f.seed(7);await f.steps();assert.deepEqual(f.preparedCalls,[unknown,known]);assert.deepEqual(f.requests,['getSignaturesForAddress'],'a second history page cannot starve available preparation');
+  await f.steps();assert.equal(f.states.has(known),true);assert.equal(f.states.has(unknown),false);
+ }finally{await f.close();}
+});
+
+test('history turns rotate between prepared unknown-age mints before activity priority and resist new-arrival starvation',async()=>{
+ const f=fixture({pumpswapOnly:true});try{
+  const strong=f.seed(10,false,false),other=f.seed(11,false,false);economicHint(f,10,'200000000000');
+  for(const m of [strong,other])f.registry.putObservationPreparation({mint:m,pool:pool(m),checkedAt:f.now,state:'pool-ready',reason:'OFFLINE_CANONICAL_POOL_VALIDATED'});
+  const first=f.registry.nextTokenCreationHistoryRequest(f.now)!;assert.equal(first.mint,strong,'activity breaks ties for equally waiting unseen candidates');
+  f.registry.deferTokenCreationHistory(first,f.now,'TOKEN_CREATION_HISTORY_PENDING');
+  f.registry.applyTokenCreationHistoryPage(first,{kind:'continue',before:signature(200),beforeSlot:200,oldestCandidate:signature(200),oldestCandidateSlot:200},f.now);
+  const second=f.registry.nextTokenCreationHistoryRequest(f.now)!;assert.equal(second.mint,other,'even equal response timestamps cannot let the high-volume mint monopolize pages');
+  f.registry.deferTokenCreationHistory(second,f.now,'TOKEN_CREATION_HISTORY_PENDING');
+  f.registry.applyTokenCreationHistoryPage(second,{kind:'continue',before:signature(201),beforeSlot:201,oldestCandidate:signature(201),oldestCandidateSlot:201},f.now);
+  const resume=f.registry.nextTokenCreationHistoryRequest(f.now)!;assert.equal(resume.mint,strong);assert.equal(resume.before,signature(200),'the previously yielded cursor resumes');
+  for(let n=12;n<15;n++){f.advance(1);const fresh=f.seed(n,false,false);economicHint(f,n,'2000000000000');f.registry.putObservationPreparation({mint:fresh,pool:pool(fresh),checkedAt:f.now,state:'pool-ready',reason:'OFFLINE_CANONICAL_POOL_VALIDATED'});assert.equal(f.registry.nextTokenCreationHistoryRequest(f.now)!.mint,strong,'newly prepared arrivals cannot precede the older waiting turn');}
+  f.registry.deferTokenCreationHistory(resume,f.now,'TOKEN_CREATION_HISTORY_PENDING');
+  f.registry.applyTokenCreationHistoryPage(resume,{kind:'continue',before:signature(199),beforeSlot:199,oldestCandidate:signature(199),oldestCandidateSlot:199},f.now);
+  assert.equal(f.registry.nextTokenCreationHistoryRequest(f.now)!.mint,other,'the other existing cursor also retains its place ahead of new arrivals');
+ }finally{await f.close();}
+});
+
+test('PumpSwap creation-history cursor survives restart and its signature still requires an independent create proof',async()=>{
+ const directory=mkdtempSync(join(tmpdir(),'poe-pumpswap-age-')),path=join(directory,'registry.sqlite');
+ const full=Array.from({length:1000},(_,i)=>{const bytes=Buffer.alloc(64,39);bytes.writeUInt32BE(i);return {signature:i===999?signature(8):bs58.encode(bytes),slot:1099-i,blockTime:(AT-3600000)/1000,err:null};});
+ let f=fixture({path,pumpswapOnly:true,history:full});try{
+  const m=f.seed(8,false,false);await f.steps(2);const request=f.registry.nextTokenCreationHistoryRequest(f.now)!;
+  assert.equal(request.before,signature(8));assert.equal(request.beforeSlot,100);assert.equal(request.oldestCandidate,signature(8));assert.equal(f.registry.tokenCreationProof(m),null);
+  await f.close();f=fixture({path,pumpswapOnly:true,history:[],transaction:creation(8)});
+  assert.deepEqual(f.registry.nextTokenCreationHistoryRequest(f.now),request);
+  await f.steps();assert.deepEqual(f.requests,['getSignaturesForAddress']);assert.equal(f.registry.tokenCreationProof(m),null);
+  assert.equal(f.registry.nextTokenCreationRequest(f.now,true)!.signature,signature(8));
+  await f.steps();assert.equal(f.registry.tokenCreationProof(m)!.createdAt,AT-3600000);assert.deepEqual(f.requests,['getSignaturesForAddress','getTransaction']);
+  assert.equal(f.registry.applyTokenCreationHistoryPage(request,{kind:'candidate',signature:signature(9),slot:101},f.now),false,'a delayed page cannot replace immutable verified birth');
+ }finally{await f.close();rmSync(directory,{recursive:true,force:true});}
+});
+
+test('a successful pre-creation transfer cannot strand the later genuine Pump create transaction',async()=>{
+ const transfer=signature(209),m=mint(9),history=[{signature:signature(89),slot:110,blockTime:AT/1000,err:null},{signature:signature(9),slot:100,blockTime:(AT-3600000)/1000,err:null},{signature:transfer,slot:99,blockTime:(AT-7200000)/1000,err:null}];
+ const bounds:unknown[]=[];
+ const f=fixture({pumpswapOnly:true,rpcResponse:(method,params)=>{
+  if(method==='getSignaturesForAddress'){const boundsForCall=params[1] as {until?:string};bounds.push(boundsForCall);return boundsForCall.until===transfer?history.slice(0,2):history;}
+  if(params[0]===transfer)return {version:0,slot:99,blockTime:(AT-7200000)/1000,transaction:{signatures:[transfer],message:{accountKeys:[m,TOKEN],instructions:[]}},meta:{err:null,innerInstructions:[]}};
+  assert.equal(params[0],signature(9));return creation(9);
+ }});try{
+  f.seed(9,false,false);await f.steps();const first=f.registry.nextTokenCreationHistoryRequest(f.now)!;
+  await f.steps(2);assert.equal(f.registry.tokenCreationProof(m),null);assert.equal(f.states.size,0);
+  const next=f.registry.nextTokenCreationHistoryRequest(f.now)!;assert.equal(next.until,transfer);assert.equal(next.untilSlot,99);assert.equal(next.before,null);
+  assert.equal(f.registry.applyTokenCreationHistoryPage(first,{kind:'candidate',signature:transfer,slot:99},f.now),false,'a delayed prior interval cannot restore the rejected candidate');
+  await f.steps(3);assert.deepEqual(f.requests,['getSignaturesForAddress','getTransaction','getSignaturesForAddress','getTransaction']);assert.equal(bounds.length,2);assert.equal((bounds[1] as any).until,transfer);
+  assert.equal(f.registry.tokenCreationProof(m)!.signature,signature(9));assert.equal(f.registry.tokenCreationProof(m)!.createdAt,AT-3600000);assert.equal(f.states.has(m),true);
  }finally{await f.close();}
 });
 

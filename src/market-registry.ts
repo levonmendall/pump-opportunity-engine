@@ -7,6 +7,7 @@ import type {WatchRow,WatchSeed,WatchIdentityMetadata} from './pilot-watch.js';
 import type {MarketIdentityHint,MarketActivityHint,MarketFeedStatus} from './market-discovery.js';
 import {OPPORTUNITY_PRIORITY_POLICY,observationFairnessBonus} from './opportunity-priority-policy.js';
 import {TOKEN_AGE_POLICY,validTokenCreationProof,tokenAgeDecision,type TokenCreationProof} from './token-age-policy.js';
+import {TOKEN_CREATION_HISTORY_POLICY,type TokenCreationHistoryRequest,type TokenCreationHistoryPage} from './token-creation-history.js';
 
 export class MarketRegistryContention extends Error {readonly code='MARKET_REGISTRY_CONTENTION';readonly callbackStarted=false;constructor(readonly sqliteCode:string){super('Market registry writer lease unavailable before callback');this.name='MarketRegistryContention';}}
 export function isMarketRegistryContention(error:unknown):error is MarketRegistryContention {return error instanceof MarketRegistryContention;}
@@ -69,6 +70,7 @@ export class MarketRegistry {
   this.db=new Database(path);this.db.pragma('journal_mode = WAL');this.db.pragma('synchronous = FULL');this.db.pragma('busy_timeout = 25');this.db.pragma('foreign_keys = ON');
   this.db.exec(`
    CREATE TABLE IF NOT EXISTS registry_metadata(key TEXT PRIMARY KEY,body TEXT NOT NULL);
+   CREATE TABLE IF NOT EXISTS pumpswap_hint_tokens(mint TEXT PRIMARY KEY,first_seen_at INTEGER NOT NULL);
    CREATE TABLE IF NOT EXISTS observation_preparations(mint TEXT PRIMARY KEY,pool TEXT NOT NULL,checked_at INTEGER NOT NULL,state TEXT NOT NULL,reason TEXT NOT NULL,source_slot INTEGER);
    CREATE INDEX IF NOT EXISTS observation_preparations_state ON observation_preparations(state,mint);
    CREATE TABLE IF NOT EXISTS market_venue_hints(mint TEXT NOT NULL,source TEXT NOT NULL,venue TEXT NOT NULL,pool TEXT NOT NULL DEFAULT '',first_seen_at INTEGER NOT NULL,last_seen_at INTEGER NOT NULL,PRIMARY KEY(mint,source,venue,pool));
@@ -76,6 +78,7 @@ export class MarketRegistry {
    CREATE TABLE IF NOT EXISTS token_creations(mint TEXT PRIMARY KEY,created_at INTEGER NOT NULL,verified_at INTEGER NOT NULL,proof TEXT NOT NULL);
    CREATE INDEX IF NOT EXISTS token_creations_age ON token_creations(created_at,mint);
    CREATE TABLE IF NOT EXISTS token_creation_requests(mint TEXT NOT NULL,signature TEXT NOT NULL,next_attempt_at INTEGER NOT NULL,terminal INTEGER NOT NULL,last_reason TEXT NOT NULL,PRIMARY KEY(mint,signature));
+   CREATE TABLE IF NOT EXISTS token_creation_history(mint TEXT PRIMARY KEY,before_signature TEXT,before_slot INTEGER,until_signature TEXT,until_slot INTEGER,oldest_candidate TEXT,oldest_candidate_slot INTEGER,next_attempt_at INTEGER NOT NULL,turns INTEGER NOT NULL DEFAULT 0,terminal INTEGER NOT NULL,last_reason TEXT NOT NULL);
    CREATE TABLE IF NOT EXISTS migration_deliveries(signature TEXT PRIMARY KEY,received_at INTEGER NOT NULL,body TEXT NOT NULL,state TEXT NOT NULL DEFAULT 'PENDING');
    CREATE INDEX IF NOT EXISTS migration_deliveries_order ON migration_deliveries(state,received_at,signature);
    CREATE TABLE IF NOT EXISTS market_tokens(mint TEXT PRIMARY KEY,first_seen_at INTEGER NOT NULL,last_seen_at INTEGER NOT NULL,last_activity_at INTEGER,activity_score REAL NOT NULL DEFAULT 0,screen_state TEXT NOT NULL DEFAULT 'UNAVAILABLE',activity_hints INTEGER NOT NULL DEFAULT 0,buy_hints INTEGER NOT NULL DEFAULT 0,sell_hints INTEGER NOT NULL DEFAULT 0,buy_lamports TEXT NOT NULL DEFAULT '0',sell_lamports TEXT NOT NULL DEFAULT '0',last_price REAL,screened_at INTEGER NOT NULL,last_signature TEXT,last_activity_source TEXT,last_activity_kind TEXT,last_economic_activity_at INTEGER);
@@ -118,6 +121,7 @@ export class MarketRegistry {
   `);
   for(const [table,fields] of [['market_tokens',['last_signature','last_activity_source','last_activity_kind']],['verification_queue',['source','kind']]] as const){const columns=new Set((this.statement(`PRAGMA table_info(${table})`).all() as {name:string}[]).map(r=>r.name));for(const field of fields)if(!columns.has(field))this.db.exec(`ALTER TABLE ${table} ADD COLUMN ${field} TEXT`);}
   {const columns=new Set((this.statement('PRAGMA table_info(market_tokens)').all() as {name:string}[]).map(r=>r.name));if(!columns.has('last_economic_activity_at'))this.db.exec('ALTER TABLE market_tokens ADD COLUMN last_economic_activity_at INTEGER');}
+  {const columns=new Set((this.statement('PRAGMA table_info(token_creation_history)').all() as {name:string}[]).map(r=>r.name));for(const [column,definition] of [['until_signature','TEXT'],['until_slot','INTEGER'],['turns','INTEGER NOT NULL DEFAULT 0']])if(!columns.has(column!))this.db.exec(`ALTER TABLE token_creation_history ADD COLUMN ${column} ${definition}`);}
   {const columns=new Set((this.statement('PRAGMA table_info(watch_rows)').all() as {name:string}[]).map(r=>r.name));for(const [column,definition] of [['last_decision_kind','TEXT'],['last_decision_at','INTEGER'],['reobserve_ready','INTEGER NOT NULL DEFAULT 1']])if(!columns.has(column!))this.db.exec(`ALTER TABLE watch_rows ADD COLUMN ${column} ${definition}`);this.db.exec('CREATE INDEX IF NOT EXISTS watch_rows_reobservation ON watch_rows(archived,state,reobserve_ready,defer_until,last_decision_at)');}
   {const columns=new Set((this.statement('PRAGMA table_info(market_activity_seen)').all() as {name:string}[]).map(r=>r.name));for(const [column,definition] of [['quote_lamports','TEXT'],['activity_sequence','INTEGER'],['pool','TEXT'],['sol_ui_price','REAL'],['hint_source','TEXT']])if(!columns.has(column!))this.db.exec(`ALTER TABLE market_activity_seen ADD COLUMN ${column} ${definition}`);this.db.exec('CREATE INDEX IF NOT EXISTS market_activity_seen_mint_time ON market_activity_seen(mint,first_seen_at);CREATE INDEX IF NOT EXISTS market_activity_seen_mint_sequence ON market_activity_seen(mint,activity_sequence);CREATE INDEX IF NOT EXISTS market_activity_seen_pool_progress ON market_activity_seen(mint,pool,first_seen_at)');}
   // Reporting reads the full current population from compact scalar/expression
@@ -132,6 +136,15 @@ export class MarketRegistry {
    CREATE INDEX IF NOT EXISTS watch_rows_opportunity_v1 ON watch_rows(state,reobserve_ready,defer_until,mint,pool,signature,waiting_since,first_seen_at,verified_at,migration_at,technical_state,technical_not_before,capacity_status,older_research,json_extract(body,'$.observationIdentity.basis'),json_extract(body,'$.observationIdentity.availableAt'),json_extract(body,'$.reobservation.ready.at')) WHERE archived=0;
   `);
   if(this.getMetadata<number>('createdAt')===undefined)this.setMetadata('createdAt',this.clock());
+  // One-time classification of retained nonfinancial hints. A canonical address
+  // derived from a launch is deliberately insufficient: require actual venue,
+  // migration, or successfully checked pool evidence. No financial rows change.
+  if(this.getMetadata('pumpswap-hint-routing-v1')===undefined)this.transaction(()=>{
+   this.statement("INSERT OR IGNORE INTO pumpswap_hint_tokens SELECT mint,MIN(first_seen_at) FROM identity_provenance WHERE kind='migration' GROUP BY mint").run();
+   this.statement("INSERT OR IGNORE INTO pumpswap_hint_tokens SELECT mint,MIN(first_seen_at) FROM market_venue_hints WHERE venue='pump-amm' GROUP BY mint").run();
+   this.statement("INSERT OR IGNORE INTO pumpswap_hint_tokens SELECT mint,checked_at FROM observation_preparations WHERE state='pool-ready'").run();
+   this.setMetadata('pumpswap-hint-routing-v1',{at:this.clock(),meaning:'routing hints only; current pool validation remains mandatory'});
+  });
  }
  private statement(sql:string):Database.Statement {let statement=this.statements.get(sql);if(!statement){statement=this.db.prepare(sql);this.statements.set(sql,statement);}return statement;}
  private reportingIndex(index?:RegistryReportingIndex):string {if(index===undefined)return '';need(index==='watch_rows_report_summary_v1'||index==='watch_rows_report_page_v1','MARKET_REGISTRY_REPORT_INDEX');return ' INDEXED BY '+index;}
@@ -241,7 +254,7 @@ export class MarketRegistry {
      AND (preparation_token.last_activity_at>=? AND preparation_token.last_activity_at<=?
       OR EXISTS(SELECT 1 FROM identity_provenance preparation_migration INDEXED BY identity_provenance_pool_progress WHERE preparation_migration.mint=w.mint AND preparation_migration.kind='migration' AND preparation_migration.last_seen_at>=? AND preparation_migration.last_seen_at<=?))
      AND EXISTS(SELECT 1 FROM identity_provenance preparation_birth LEFT JOIN token_creation_requests preparation_retry ON preparation_retry.mint=preparation_birth.mint AND preparation_retry.signature=preparation_birth.signature
-      WHERE preparation_birth.mint=w.mint AND preparation_birth.kind='creation' AND preparation_birth.source='pumpportal-new-token' AND preparation_birth.signature!=''
+      WHERE preparation_birth.mint=w.mint AND preparation_birth.kind='creation' AND preparation_birth.source IN ('pumpportal-new-token','finalized-mint-history') AND preparation_birth.signature!=''
        AND preparation_birth.first_seen_at>=? AND preparation_birth.first_seen_at<=?
        AND (preparation_retry.mint IS NULL OR (preparation_retry.terminal=0 AND preparation_retry.next_attempt_at<=?)))) THEN 1 ELSE 0 END`:'0';
   const ageParams=preparationWithTokenAge?[at,Math.max(0,at-TOKEN_AGE_POLICY.maximumAgeMs),at,recent,at,recent,at,Math.max(0,at-TOKEN_AGE_POLICY.maximumAgeMs),at,at]:[];
@@ -356,6 +369,7 @@ export class MarketRegistry {
   this.statement('UPDATE market_tokens SET first_seen_at=MIN(first_seen_at,?),last_seen_at=MAX(last_seen_at,?),screened_at=MAX(screened_at,?) WHERE mint=?').run(at,at,at,mint);
   this.statement('INSERT INTO identity_provenance(mint,source,kind,pool,signature,first_seen_at,last_seen_at) VALUES(?,?,?,?,?,?,?) ON CONFLICT(mint,source,kind,pool,signature) DO UPDATE SET last_seen_at=MAX(last_seen_at,excluded.last_seen_at)').run(mint,input.source,input.kind??'activity',input.pool??'',input.kind==='activity'?'':input.signature??'',at,at);
   if(input.venue!==undefined){need(name(input.venue),'MARKET_REGISTRY_VENUE_HINT');this.statement('INSERT INTO market_venue_hints(mint,source,venue,pool,first_seen_at,last_seen_at) VALUES(?,?,?,?,?,?) ON CONFLICT(mint,source,venue,pool) DO UPDATE SET last_seen_at=MAX(last_seen_at,excluded.last_seen_at)').run(mint,input.source,input.venue,input.pool??'',at,at);}
+  if(input.kind==='migration'||input.venue==='pump-amm')this.statement('INSERT OR IGNORE INTO pumpswap_hint_tokens(mint,first_seen_at) VALUES(?,?)').run(mint,at);
   this.markDistinct('lightweight-screened',mint,at);return inserted;
  });}
  /** Shared activity is an unverified prioritization hint, never an independent
@@ -446,7 +460,7 @@ export class MarketRegistry {
  /** Current observation selects actual retained mint hints, without needing a
   * transaction signature or creation archive. The SDK still has to establish
   * the canonical pool's existence and supported account state. */
- nextObservationCandidate(at:number,enforceTokenAge24h=false):{mint:string;signature:string;receivedAt:number;activityAt:number|null;source:string;priority:number}|undefined {
+ nextObservationCandidate(at:number,enforceTokenAge24h=false,pumpswapOnly=false):{mint:string;signature:string;receivedAt:number;activityAt:number|null;source:string;priority:number}|undefined {
   need(integer(at),'MARKET_REGISTRY_OBSERVATION_TIME');
   return this.statement(`WITH hints AS (
    SELECT mint,last_activity_at received_at FROM market_tokens WHERE last_activity_at>=? AND last_activity_at<=? AND activity_hints>0
@@ -456,6 +470,7 @@ export class MarketRegistry {
    COALESCE((SELECT w.signature FROM watch_rows w WHERE w.archived=0 AND w.mint=t.mint ORDER BY w.first_seen_at,w.signature LIMIT 1),(SELECT w.signature FROM verification_queue q JOIN watch_rows w ON w.signature=q.signature WHERE q.feed_mint=t.mint AND w.archived=0 ORDER BY q.received_at,q.signature LIMIT 1),t.last_signature,'current-pool:'||t.mint) signature,
    hints.received_at receivedAt,t.last_activity_at activityAt,COALESCE(t.last_activity_source,'retained-market-identity') source,t.activity_score priority FROM hints JOIN market_tokens t ON t.mint=hints.mint
    WHERE (t.last_activity_at IS NULL OR t.last_activity_at<=?)
+    ${pumpswapOnly?'AND EXISTS(SELECT 1 FROM pumpswap_hint_tokens swap WHERE swap.mint=t.mint)':''}
    AND NOT EXISTS(SELECT 1 FROM watch_rows w WHERE w.mint=t.mint AND w.archived=0 AND (w.verified_at IS NOT NULL OR json_extract(w.body,'$.observationIdentity.basis')='canonical-pool-hint' OR w.state IN ('HELD','ENTRY_PENDING','PERMANENTLY_UNSUPPORTED')))
    AND NOT EXISTS(SELECT 1 FROM distinct_events d WHERE d.kind='native-current-hint-invalid' AND d.key=t.mint)
     ${enforceTokenAge24h?'AND EXISTS(SELECT 1 FROM token_creations c WHERE c.mint=t.mint AND c.created_at<=? AND c.created_at>=? AND c.verified_at<=?)':''}
@@ -464,7 +479,7 @@ export class MarketRegistry {
  /** Durable routing hints remain explicitly unverified; they never replace
   * current canonical account validation, token age, or execution adapters. */
  venueHints(mint:string){return (this.statement('SELECT source,venue,pool,first_seen_at firstSeenAt,last_seen_at lastSeenAt FROM market_venue_hints WHERE mint=? ORDER BY last_seen_at DESC,source,venue,pool').all(mint) as Array<{source:string;venue:string;pool:string;firstSeenAt:number;lastSeenAt:number}>).map(row=>({...row,verified:false as const}));}
- putObservationPreparation(row:ObservationPreparation){this.write(()=>{need(name(row.mint)&&name(row.pool)&&integer(row.checkedAt)&&['pool-ready','pool-absent','pool-unsupported','provider-unavailable','awaiting-dispatch'].includes(row.state)&&name(row.reason)&&(row.sourceSlot===undefined||integer(row.sourceSlot)),'MARKET_OBSERVATION_PREPARATION');this.statement('INSERT INTO observation_preparations(mint,pool,checked_at,state,reason,source_slot) VALUES(?,?,?,?,?,?) ON CONFLICT(mint) DO UPDATE SET pool=excluded.pool,checked_at=excluded.checked_at,state=excluded.state,reason=excluded.reason,source_slot=excluded.source_slot').run(row.mint,row.pool,row.checkedAt,row.state,row.reason,row.sourceSlot??null);});}
+ putObservationPreparation(row:ObservationPreparation){this.write(()=>{need(name(row.mint)&&name(row.pool)&&integer(row.checkedAt)&&['pool-ready','pool-absent','pool-unsupported','provider-unavailable','awaiting-dispatch'].includes(row.state)&&name(row.reason)&&(row.sourceSlot===undefined||integer(row.sourceSlot)),'MARKET_OBSERVATION_PREPARATION');this.statement('INSERT INTO observation_preparations(mint,pool,checked_at,state,reason,source_slot) VALUES(?,?,?,?,?,?) ON CONFLICT(mint) DO UPDATE SET pool=excluded.pool,checked_at=excluded.checked_at,state=excluded.state,reason=excluded.reason,source_slot=excluded.source_slot').run(row.mint,row.pool,row.checkedAt,row.state,row.reason,row.sourceSlot??null);if(row.state==='pool-ready')this.statement('INSERT OR IGNORE INTO pumpswap_hint_tokens(mint,first_seen_at) VALUES(?,?)').run(row.mint,row.checkedAt);});}
  observationPreparation(mint:string):ObservationPreparation|undefined {const row=this.statement('SELECT mint,pool,checked_at checkedAt,state,reason,source_slot sourceSlot FROM observation_preparations WHERE mint=?').get(mint) as ObservationPreparation|undefined;return row?{...row,...(row.sourceSlot===null?{sourceSlot:undefined}:{})}:undefined;}
  tokenCreationProof(mint:string):TokenCreationProof|null{
   const row=this.statement('SELECT created_at,verified_at,proof FROM token_creations WHERE mint=?').get(mint) as {created_at:number;verified_at:number;proof:string}|undefined;if(!row)return null;
@@ -488,7 +503,7 @@ export class MarketRegistry {
   ) SELECT p.mint,p.signature FROM active CROSS JOIN market_tokens t ON t.mint=active.mint
    CROSS JOIN identity_provenance p ON p.mint=t.mint
    LEFT JOIN token_creation_requests r ON r.mint=p.mint AND r.signature=p.signature
-   WHERE p.kind='creation' AND p.source='pumpportal-new-token' AND p.signature!='' AND p.first_seen_at>=? AND p.first_seen_at<=?
+    WHERE p.kind='creation' AND p.source IN ('pumpportal-new-token','finalized-mint-history') AND p.signature!='' AND p.first_seen_at>=? AND p.first_seen_at<=?
     AND NOT EXISTS(SELECT 1 FROM token_creations c WHERE c.mint=p.mint)
     AND (r.mint IS NULL OR (r.terminal=0 AND r.next_attempt_at<=?))
     ${requirePreparedPool?"AND EXISTS(SELECT 1 FROM observation_preparations prepared WHERE prepared.mint=p.mint AND prepared.state='pool-ready')":''}
@@ -496,6 +511,49 @@ export class MarketRegistry {
    ORDER BY t.activity_score DESC,p.first_seen_at DESC,p.mint,p.signature LIMIT 1`).get(at-SHARED_ACTIVITY_HORIZON_MS,at,at-SHARED_ACTIVITY_HORIZON_MS,at,Math.max(0,at-TOKEN_AGE_POLICY.maximumAgeMs),at,at) as {mint:string;signature:string}|undefined;
  }
  deferTokenCreationRequest(request:{mint:string;signature:string},at:number,reason:string,terminal=false){this.write(()=>{need(name(request.mint)&&name(request.signature)&&integer(at)&&name(reason),'TOKEN_CREATION_REQUEST_INVALID');this.statement('INSERT INTO token_creation_requests(mint,signature,next_attempt_at,terminal,last_reason) VALUES(?,?,?,?,?) ON CONFLICT(mint,signature) DO UPDATE SET next_attempt_at=excluded.next_attempt_at,terminal=excluded.terminal,last_reason=excluded.last_reason').run(request.mint,request.signature,at+60000,terminal?1:0,reason);});}
+ /** Migration-only discovery no longer records every launch. Discover the
+  * missing birth signature cooperatively, only after an existing supported
+  * PumpSwap pool and recent activity/migration make that work useful. Oldest
+  * ready turn precedes activity score; per-mint turns settle millisecond ties.
+  * Unseen candidates enter at their real pool-check time, so continuing new
+  * arrivals cannot jump ahead of an already waiting history cursor. */
+ nextTokenCreationHistoryRequest(at:number):TokenCreationHistoryRequest|undefined {
+  need(integer(at),'TOKEN_CREATION_HISTORY_TIME');return this.statement(`SELECT p.mint,h.before_signature before,h.before_slot beforeSlot,h.until_signature until,h.until_slot untilSlot,h.oldest_candidate oldestCandidate,h.oldest_candidate_slot oldestCandidateSlot
+   FROM observation_preparations p JOIN market_tokens t ON t.mint=p.mint LEFT JOIN token_creation_history h ON h.mint=p.mint
+   WHERE p.state='pool-ready' AND NOT EXISTS(SELECT 1 FROM token_creations age WHERE age.mint=p.mint)
+    AND (h.mint IS NULL OR h.terminal=0 AND h.next_attempt_at<=?)
+    AND (t.last_activity_at>=? AND t.last_activity_at<=? OR EXISTS(SELECT 1 FROM identity_provenance migration WHERE migration.mint=p.mint AND migration.kind='migration' AND migration.last_seen_at>=? AND migration.last_seen_at<=?))
+    AND NOT EXISTS(SELECT 1 FROM identity_provenance birth LEFT JOIN token_creation_requests request ON request.mint=birth.mint AND request.signature=birth.signature WHERE birth.mint=p.mint AND birth.kind='creation' AND birth.source IN ('pumpportal-new-token','finalized-mint-history') AND birth.signature!='' AND (request.mint IS NULL OR request.terminal=0))
+    AND EXISTS(SELECT 1 FROM watch_rows w WHERE w.mint=p.mint AND w.pool=p.pool AND w.archived=0 AND w.state NOT IN ('HELD','ENTRY_PENDING','PERMANENTLY_UNSUPPORTED'))
+   ORDER BY COALESCE(h.next_attempt_at,p.checked_at),COALESCE(h.turns,0),t.activity_score DESC,p.checked_at,p.mint LIMIT 1`).get(at,at-SHARED_ACTIVITY_HORIZON_MS,at,at-SHARED_ACTIVITY_HORIZON_MS,at) as TokenCreationHistoryRequest|undefined;
+ }
+ deferTokenCreationHistory(request:TokenCreationHistoryRequest,at:number,reason:string):void {
+  this.write(()=>{need(name(request.mint)&&integer(at)&&name(reason),'TOKEN_CREATION_HISTORY_REQUEST_INVALID');this.statement(`INSERT INTO token_creation_history(mint,before_signature,before_slot,until_signature,until_slot,oldest_candidate,oldest_candidate_slot,next_attempt_at,turns,terminal,last_reason) VALUES(?,?,?,?,?,?,?,?,1,0,?) ON CONFLICT(mint) DO UPDATE SET next_attempt_at=excluded.next_attempt_at,turns=token_creation_history.turns+1,last_reason=excluded.last_reason`).run(request.mint,request.before,request.beforeSlot,request.until,request.untilSlot,request.oldestCandidate,request.oldestCandidateSlot,at+TOKEN_CREATION_HISTORY_POLICY.retryMs,reason);});
+ }
+ applyTokenCreationHistoryPage(request:TokenCreationHistoryRequest,result:TokenCreationHistoryPage,at:number):boolean {
+  return this.transaction(()=>{
+   need(integer(at),'TOKEN_CREATION_HISTORY_TIME');const current=this.statement('SELECT before_signature before,before_slot beforeSlot,until_signature until,until_slot untilSlot FROM token_creation_history WHERE mint=?').get(request.mint) as Pick<TokenCreationHistoryRequest,'before'|'beforeSlot'|'until'|'untilSlot'>|undefined;
+   if(!current||current.before!==request.before||current.beforeSlot!==request.beforeSlot||current.until!==request.until||current.untilSlot!==request.untilSlot||this.tokenCreationProof(request.mint)!==null||this.observationPreparation(request.mint)?.state!=='pool-ready')return false;
+   if(result.kind==='continue')this.statement('UPDATE token_creation_history SET before_signature=?,before_slot=?,oldest_candidate=?,oldest_candidate_slot=?,next_attempt_at=?,terminal=0,last_reason=? WHERE mint=?').run(result.before,result.beforeSlot,result.oldestCandidate,result.oldestCandidateSlot,at,'TOKEN_CREATION_HISTORY_CONTINUE',request.mint);
+   else if(result.kind==='candidate'){
+    this.observeIdentity({mint:request.mint,signature:result.signature,at,source:'finalized-mint-history',kind:'creation'});
+    this.statement('UPDATE token_creation_history SET oldest_candidate=?,oldest_candidate_slot=?,next_attempt_at=?,terminal=1,last_reason=? WHERE mint=?').run(result.signature,result.slot,at,'TOKEN_CREATION_SIGNATURE_REQUIRES_FINALIZED_CREATE_PROOF',request.mint);
+   }else this.statement('UPDATE token_creation_history SET next_attempt_at=?,terminal=?,last_reason=? WHERE mint=?').run(at+TOKEN_CREATION_HISTORY_POLICY.retryMs,result.terminal?1:0,result.reason,request.mint);
+   return true;
+  });
+ }
+ /** An earlier address reference can be a transfer, not mint creation. Move
+  * the exclusive lower bound past a rejected history candidate and search the
+  * newer interval; no raw pages or arbitrary oldest-signature assumption. */
+ advanceTokenCreationHistory(request:{mint:string;signature:string},at:number):boolean {
+  return this.transaction(()=>{
+   need(name(request.mint)&&name(request.signature)&&integer(at),'TOKEN_CREATION_HISTORY_REQUEST_INVALID');
+   if(this.tokenCreationProof(request.mint)!==null)return false;
+   return this.statement(`UPDATE token_creation_history SET until_signature=oldest_candidate,until_slot=oldest_candidate_slot,before_signature=NULL,before_slot=NULL,oldest_candidate=NULL,oldest_candidate_slot=NULL,next_attempt_at=?,terminal=0,last_reason='TOKEN_CREATION_HISTORY_CANDIDATE_REJECTED_CONTINUE'
+    WHERE mint=? AND oldest_candidate=? AND oldest_candidate_slot IS NOT NULL AND terminal=1 AND last_reason='TOKEN_CREATION_SIGNATURE_REQUIRES_FINALIZED_CREATE_PROOF'
+    AND EXISTS(SELECT 1 FROM token_creation_requests request WHERE request.mint=token_creation_history.mint AND request.signature=token_creation_history.oldest_candidate AND request.terminal=1)`).run(at,request.mint,request.signature).changes===1;
+  });
+ }
  tokenAgeSummary(at:number){need(integer(at),'TOKEN_CREATION_REPORT_TIME');const row=this.statement('SELECT COUNT(*) verified,SUM(CASE WHEN created_at<=? AND created_at>=? AND verified_at<=? THEN 1 ELSE 0 END) within24h FROM token_creations').get(at,at-TOKEN_AGE_POLICY.maximumAgeMs,at) as {verified:number;within24h:number|null};return {policy:TOKEN_AGE_POLICY.version,maximumAgeMs:TOKEN_AGE_POLICY.maximumAgeMs,verified:row.verified,within24h:row.within24h??0,unknownExcluded:true,creationNotMigration:true};}
  nextOriginCandidate(at:number):{mint:string;signature:string;receivedAt:number;source:string;priority:number}|undefined {
   const row=this.statement(`SELECT t.mint,t.last_signature signature,t.last_activity_at receivedAt,t.last_activity_source source,t.activity_score priority FROM market_tokens t

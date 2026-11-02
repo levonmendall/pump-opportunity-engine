@@ -5,7 +5,7 @@ import {performance} from 'node:perf_hooks';
 import {MarketRegistry,isMarketRegistryContention} from './market-registry.js';
 import {NativeSlotProductivity,type NativeSlotFinancialKind} from './native-slot-productivity.js';
 import {NativeActivityHintQueue,type NativeActivityHint} from './native-activity-hint-queue.js';
-import type {MarketIdentityHint,MarketActivityHint,MarketFeedStatus} from './market-discovery.js';
+import {pumpSwapIntakeHint,type MarketIdentityHint,type MarketActivityHint,type MarketFeedStatus} from './market-discovery.js';
 import {nativePaperFeaturesSha256} from './native-paper-contract.js';
 import {PilotWatch,type WatchRow,type TechnicalReevaluationReason} from './pilot-watch.js';
 import {resolvePilotMigration,type PilotMigrationSeed,type PilotMigrationResult,type PilotMigrationRpc} from './pilot-discovery.js';
@@ -18,6 +18,7 @@ import {assessAdaptiveBuying,ADAPTIVE_MOMENTUM_V2_VERSION} from './adaptive-mome
 import {LIQUIDITY_RESILIENT_MOMENTUM_V3_VERSION,assessLiquidityResilientBuying,type V3BuyingAssessment,type V3Evidence} from './liquidity-resilient-momentum-v3.js';
 import {LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION,assessLiquidityResilientBuyingV31} from './liquidity-resilient-momentum-v3-1.js';
 import {decodeTokenCreationProof} from './token-age-policy.js';
+import {TOKEN_CREATION_HISTORY_POLICY,selectTokenCreationHistoryPage,type TokenCreationHistoryRequest} from './token-creation-history.js';
 import {PERSISTENT_OBSERVABLE_MARKET_POLICY,entryAgeEligible,observationAgeEligible,observationAgeCohort,observationRunway,observationExpiryAt,observationAgePolicyByVersion,type ObservationAgePolicyVersion,type ObservationAgePolicy} from './observation-age.js';
 import {CONFIRMED_PROGRAM_EVENTS_V2} from './program-log-mapping.js';
 import {nativeFlowDataContract,type NativeFlowDataContract,type PilotNativeFlow} from './pilot-native-flow.js';
@@ -41,7 +42,7 @@ type AuditDispatchReason='eligible'|'native-service-wait'|'native-service-dispat
 type AuditDispatchTrace={windowEndAt:number;deadlineAt:number;firstReadyAt:number;lastAt:number;lastState:{reason:AuditDispatchReason;nextAction:string;context:Record<string,unknown>};reasonCounts:Partial<Record<AuditDispatchReason,number>>;transitionRecords:number;omittedTransitions:number;stateKey:string;final:boolean};
 type Candidate={historyCache?:NativeAuditHistoryCache;identity:NativeObservationIdentity;allocatedAt:number;openedAt:number|null;lastFeatureEnd:number;lastAssessmentEnd:number;lastReadyWindowEnd:number;lastReadyObservedAt:number;lastExpiredWindowEnd:number;lastAuditFenceWarmingWindowEnd:number;auditFailures:number;nextAuditAt:number;lastAuditPageAt:number;auditPageRetryAt:number;readinessCheckedEnd:number;checkedAuditable:boolean;auditDispatch?:AuditDispatchTrace;auditSession?:{session:NativeAuditSession;windowEndAt:number;openedAt:number|null;connectionId:number|null|undefined;subscriptionId:number|null|undefined;deadlineAt:number}};
 export type NativeMarketIntake={observeIdentity:(row:MarketIdentityHint)=>void;observeActivity:(row:MarketActivityHint)=>void;observeFeed:(row:MarketFeedStatus)=>void;observeMigration:(seed:PilotMigrationSeed)=>void};
-export type NativeRunnerOptions={enforceTokenAge24h?:true;marketIntake?:NativeMarketIntake;registry?:MarketRegistry;runId?:string;activeEvidence?:(mint:string,at:number)=>V3Evidence|null;activeStrategy?:'adaptive-momentum-v2'|'liquidity-resilient-momentum-v3'|'liquidity-resilient-momentum-v3.1';activeAssessment?:(mint:string,features:FlowFeatures,at:number)=>V3BuyingAssessment;observationAgePolicy?:ObservationAgePolicyVersion;rpc:Rpc;flow:Flow;record:(kind:string,data:unknown)=>void;now?:()=>number;maximumDeep?:number;restoredWatch?:unknown;resolve?:typeof resolvePilotMigration;audit?:typeof auditNativeFlowWindow;admissionOpen?:()=>boolean;sourceWorkAdmission?:(operationBoundMs:number)=>boolean;sourceWorkCheckpoint?:()=>Promise<void>;onCandidateAllocated?:(identity:NativeObservationIdentity)=>void;onCandidateRetired?:(mint:string,reason:string)=>void;onAuditAvailable?:(certificate:NativeAuditCertificate)=>void;financialOwnership?:(mint:string)=>'HELD'|'ENTRY_PENDING'|null};
+export type NativeRunnerOptions={pumpswapOnly?:true;enforceTokenAge24h?:true;marketIntake?:NativeMarketIntake;registry?:MarketRegistry;runId?:string;activeEvidence?:(mint:string,at:number)=>V3Evidence|null;activeStrategy?:'adaptive-momentum-v2'|'liquidity-resilient-momentum-v3'|'liquidity-resilient-momentum-v3.1';activeAssessment?:(mint:string,features:FlowFeatures,at:number)=>V3BuyingAssessment;observationAgePolicy?:ObservationAgePolicyVersion;rpc:Rpc;flow:Flow;record:(kind:string,data:unknown)=>void;now?:()=>number;maximumDeep?:number;restoredWatch?:unknown;resolve?:typeof resolvePilotMigration;audit?:typeof auditNativeFlowWindow;admissionOpen?:()=>boolean;sourceWorkAdmission?:(operationBoundMs:number)=>boolean;sourceWorkCheckpoint?:()=>Promise<void>;onCandidateAllocated?:(identity:NativeObservationIdentity)=>void;onCandidateRetired?:(mint:string,reason:string)=>void;onAuditAvailable?:(certificate:NativeAuditCertificate)=>void;financialOwnership?:(mint:string)=>'HELD'|'ENTRY_PENDING'|null};
 function need(value:unknown,reason:string):asserts value{if(!value)throw Error(reason);}
 const safe=(error:unknown)=>error instanceof Error&&/^[A-Z][A-Z0-9_:-]{0,150}$/.test(error.message)?error.message:'NATIVE_CANDIDATE_OPERATION_UNAVAILABLE';
 const PRE_OBSERVATION_POOL_REFUSALS=new Set(['NATIVE_OBSERVATION_POOL_MISSING','BAD_POOL_OWNER']);
@@ -65,6 +66,7 @@ type PreparationCommit={kind:'discard';reason:string}|{kind:'ready';ageReady:boo
 export class NativeCandidateRunner{
  readonly dataContract:NativeFlowDataContract;readonly currentPoolObservation:boolean;readonly watch:PilotWatch;readonly observationAgePolicy:ObservationAgePolicy;private readonly now:()=>number;private readonly candidates=new Map<string,Candidate>();private readonly origins=new Map<string,MigrationIdentity>();private readonly originProofs=new Map<string,NativeOrigin>();private readonly registry:MarketRegistry;private readonly runScope:string;private readonly certificates=new Map<string,NativeAuditCertificate>();private readonly productivity:NativeSlotProductivity;private pendingAuditPhysical:{mint:string;windowEndAt:number}|null=null;
  private readonly preparedObservations=new Map<string,ResearchClockNativeObservationSupport>();
+ private creationHistoryYieldToPreparation=false;
  // One scheduled preparation can finish while intake owns the SQLite writer.
  // Keep only that completed result, in this source instance, until its atomic
  // persistence succeeds. It supplies neither a slot nor a fresh timestamp.
@@ -95,7 +97,7 @@ export class NativeCandidateRunner{
   this.dataContract=nativeFlowDataContract(options.flow.usage().dataContract);this.now=options.now??Date.now;this.registry=options.registry??new MarketRegistry(':memory:',{now:this.now});this.runScope='native-runner:'+(options.runId??randomUUID())+':'+randomUUID();this.preparationStartedAt=this.now();this.productivity=new NativeSlotProductivity({registry:this.registry,sourceInstanceId:this.runScope,runId:options.runId,startedAt:this.preparationStartedAt,maximumSlots:options.maximumDeep??6,record:options.record});this.failureDiagnostics=new NativeCandidateFailureDiagnostics(this.now());this.audit=options.audit??auditNativeFlowWindow;this.resolve=options.resolve??resolvePilotMigration;this.observationAgePolicy=observationAgePolicyByVersion(options.observationAgePolicy);this.currentPoolObservation=options.activeStrategy===LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION&&this.observationAgePolicy===PERSISTENT_OBSERVABLE_MARKET_POLICY;
   const restored=options.restoredWatch===undefined?undefined:structuredClone(options.restoredWatch) as any;
   if(restored&&Array.isArray(restored.rows))for(const row of restored.rows)if(row.capacityCoverage){options.record('native-watch-source-contract-transition',{at:this.now(),mint:row.mint,priorCoverage:row.capacityCoverage,priorContract:'selected-hints-with-per-transaction-enrichment',newContract:this.dataContract,reason:'old transaction-count-to-RPC estimate does not describe native transport; current support, subscription and independent audit still required',freshFullWindowRequired:true,financialPermission:false});delete row.capacityCoverage;}
-  this.watch=new PilotWatch({...(options.enforceTokenAge24h?{enforceTokenAge24h:true as const}:{}),registry:this.registry,observationAgePolicy:this.observationAgePolicy.version,maximumDeep:options.maximumDeep??6,now:this.now,record:options.record,restored});
+  this.watch=new PilotWatch({...(options.pumpswapOnly?{pumpswapOnly:true as const}:{}),...(options.enforceTokenAge24h?{enforceTokenAge24h:true as const}:{}),registry:this.registry,observationAgePolicy:this.observationAgePolicy.version,maximumDeep:options.maximumDeep??6,now:this.now,record:options.record,restored});
   // Legacy checkpoint rows are migrated once; durable watch/queue state is already indexed.
   if(restored&&Array.isArray(restored.rows))for(const row of restored.rows as WatchRow[])if(!['EXPIRED','PERMANENTLY_UNSUPPORTED'].includes(row.state))this.queueProof(row,this.now());
   if(this.currentPoolObservation){this.releaseArchiveDeferrals(this.now());this.record('native-current-pool-observation-policy',{at:this.now(),archivalCreationRequired:false,automaticOriginRequests:false,historicalAgeMayBeUnknown:true,currentSupportedAccountsRequired:true,actualAckAndIndependentAuditRequired:true,financialPermission:false});}
@@ -113,6 +115,7 @@ export class NativeCandidateRunner{
   const at=this.now(),bound=NATIVE_DEADLINE_POLICY.nativeOperationMs;if(!this.sourceWorkAllowed(bound)||!this.discretionaryAdmission(bound,at).admitted||deadlineAt-at<bound){this.preparationState='awaiting-dispatch';return;}
   const identity=this.observationIdentity(row);if(!identity)return;
   this.preparationMint=mint;this.preparationState='validating-pool';this.preparationCounters.attempts++;this.preparationProgress.lastAttemptAt=at;this.preparationProgress.unproductiveSinceAt??=at;this.preparationProgress.attemptsSinceProgress++;
+  this.creationHistoryYieldToPreparation=false;
   const result=await prepare.call(this.options.flow,{mint,pool,...(identity.minimumSlot===undefined?{}:{minSlot:identity.minimumSlot}),...(identity.dependencyHints?{dependencyHints:{...identity.dependencyHints}}:{})},signal,{...this.admission(deadlineAt),operationBoundMs:bound,admissionOpen:()=>this.sourceWorkAllowed(bound)&&this.now()<deadlineAt});
   this.preparationState='awaiting-dispatch';if(!this.open()||signal?.aborted){this.preparationState='idle';this.preparationMint=null;return;}
   this.pendingPreparation={identity,completedAt:this.now(),result,contentionReported:false};this.drainPreparedObservation();
@@ -210,12 +213,13 @@ export class NativeCandidateRunner{
   if(!admitted)this.lastOutcome='NATIVE_SOURCE_WORK_CHECKPOINT_DEFERRED';
   return admitted;
  }
- private async serviceFlow(signal:AbortSignal|undefined,deadlineAt:number,policy:{allowSetup:boolean;allowRetirement:boolean}){
+ private async serviceFlow(signal:AbortSignal|undefined,deadlineAt:number,policy:{allowSetup:boolean;allowRetirement:boolean},callerAdmission?:()=>boolean){
   if(this.options.sourceWorkCheckpoint&&!await this.sourceCheckpoint(signal))return {kind:'deferred',reason:'NATIVE_SOURCE_FINANCIAL_RUNWAY'};
+  if(callerAdmission&&!callerAdmission())return {kind:'deferred',reason:'NATIVE_FINANCIAL_RUNWAY_CHANGED'};
   const plan=this.options.flow.servicePlan?.(policy),action=plan?.action??(this.options.flow.usage() as {nextServiceAction?:string|null}).nextServiceAction;
   const bound=plan?.operationBoundMs??(action==='heartbeat'||action==='peer-pong'?NATIVE_DEADLINE_POLICY.heartbeatOperationMs:NATIVE_DEADLINE_POLICY.nativeOperationMs);
   if(!this.sourceWorkAllowed(bound)){this.traceAuditDispatch(this.readyAudits(this.now()),this.now(),'native-service-wait','await-financial-operation-runway',{operationBoundMs:bound,action:action??null});return {kind:'deferred',reason:'NATIVE_SOURCE_FINANCIAL_RUNWAY'};}
-  return this.options.flow.service(signal,{...this.admission(deadlineAt),operationBoundMs:bound,admissionOpen:()=>this.sourceWorkAllowed(bound)&&this.now()<deadlineAt},policy);
+  return this.options.flow.service(signal,{...this.admission(deadlineAt),operationBoundMs:bound,admissionOpen:()=>this.sourceWorkAllowed(bound)&&this.now()<deadlineAt&&(callerAdmission?.()??true)},policy);
  }
  /** Discovery capture is independent of discretionary provider/entry admission.
   * The durable queue is awareness, not permission to start RPC work. */
@@ -270,11 +274,11 @@ export class NativeCandidateRunner{
   const began=performance.now(),rows=this.registry.queryRows({where:"w.mint IS NOT NULL AND (w.capacity_status IS NOT NULL OR (w.state='DEFERRED' AND (json_extract(w.body,'$.reason') LIKE 'known origin proof unavailable:%' OR json_extract(w.body,'$.reason')='durable origin quarantined; canonical creation re-verification required' OR (w.verified_at IS NULL AND EXISTS(SELECT 1 FROM verification_queue q WHERE q.signature=w.signature AND q.state='PENDING' AND q.attempts>0 AND q.last_reason=json_extract(w.body,'$.reason') AND q.not_before=w.defer_until)))))",orderBy:'w.signature',limit:128});if(!rows.length){this.legacyObservationRepairPending=false;return;}this.registry.transaction(()=>{for(const row of rows){if(performance.now()-began>=NATIVE_DEADLINE_POLICY.postValidationMs)break;if(row.mint){this.watch.releaseArchiveDeferral(row.mint,at);this.watch.releaseLegacyCapacityGate(row.mint,at);}}});
  }
  private prepareCurrentObservation(at:number){
-  if(!this.currentPoolObservation)return false;const hint=this.registry.nextObservationCandidate(at);if(!hint)return false;
+  if(!this.currentPoolObservation)return false;const hint=this.registry.nextObservationCandidate(at,false,this.options.pumpswapOnly===true);if(!hint)return false;
   const row=this.observeCurrentHint(hint);if(!row)return false;if(hint.activityAt!==null)this.watch.noteActivity(hint.mint,hint.activityAt,'unverified-provider-activity-hint');this.record('native-current-observation-selected',{at,mint:hint.mint,pool:row.pool,source:hint.source,historyKnown:row.migrationAt!==null,archivalCreationRequired:false,currentSupportedAccountsRequired:true,providerRequestStarted:false,financialPermission:false});return true;
  }
- onMarketIdentity(row:MarketIdentityHint){if(this.options.marketIntake){this.options.marketIntake.observeIdentity(row);return;}this.registry.observeIdentity(row);}
- onMarketActivity(row:MarketActivityHint){if(this.options.marketIntake){this.options.marketIntake.observeActivity(row);return;}this.registry.transaction(()=>{this.registry.observeActivity(row);this.onActivity({mint:row.mint,at:row.receivedAt,evidence:row.evidence});});}
+ onMarketIdentity(row:MarketIdentityHint){if(this.options.pumpswapOnly&&!pumpSwapIntakeHint(row))return;if(this.options.marketIntake){this.options.marketIntake.observeIdentity(row);return;}this.registry.observeIdentity(row);}
+ onMarketActivity(row:MarketActivityHint){if(this.options.pumpswapOnly&&!pumpSwapIntakeHint(row))return;if(this.options.marketIntake){this.options.marketIntake.observeActivity(row);return;}this.registry.transaction(()=>{this.registry.observeActivity(row);this.onActivity({mint:row.mint,at:row.receivedAt,evidence:row.evidence});});}
  onMarketFeed(row:MarketFeedStatus){if(this.options.marketIntake){this.options.marketIntake.observeFeed(row);return;}this.registry.observeFeed(row);}
  /** ACKs confirm the worker committed the global hints. Pending application is
   * represented by the indexed database difference, not an in-memory universe
@@ -531,6 +535,46 @@ export class NativeCandidateRunner{
   const bindingDeadline=completionDeadlineAt===null?'current-certificate':nativeServiceLatestAt!==null&&nativeServiceLatestAt<=current!.deadlineAt?'required-native-service':'original-certificate',admitted=matches&&sourceOpen&&latest!==null&&at<=latest;
   return {admitted,latestStartAt:latest,certificateLatestStartAt:matches?current!.deadlineAt-NATIVE_DEADLINE_POLICY.postValidationMs-boundMs:null,nativeLatestStartAt:nativeServiceLatestAt===null?null:nativeServiceLatestAt-NATIVE_DEADLINE_POLICY.postValidationMs-boundMs,view,reason:!matches?'current-audit-certificate-required':!sourceOpen?'source-admission-closed':admitted?'completed-certificate-financial-priority':bindingDeadline==='required-native-service'?'required-native-service-deadline':'original-certificate-deadline',bindingDeadline,certificateDeadlineAt,nativeServiceLatestAt,completionDeadlineAt,requestedOperationMs:boundMs,postValidationMs:NATIVE_DEADLINE_POLICY.postValidationMs,remainingCertificateMs:certificateDeadlineAt===null?null:certificateDeadlineAt-at,peerAuditReservationsDeferred:view.readyCount};
  }
+ /** One native maintenance opportunity for an already completed certificate.
+  * The caller retains financial/protection ownership and independently charges
+  * this source work. No candidate step, audit, setup or retirement runs here.
+  * Attempted means a service invocation, never a claimed physical request. */
+ async serviceFinancialRunway(certificate:NativeAuditCertificate,quoteOperationBoundMs:number,signal?:AbortSignal):Promise<{attempted:boolean;admitted:boolean;action:string|null;result:string;reason:string}>{
+  const retained={...certificate},before=this.financialAdmission(retained,quoteOperationBoundMs),refuse=(reason:string,result='deferred',action:string|null=null)=>({attempted:false,admitted:false,action,result,reason});
+  if(signal?.aborted)return refuse('financial-runway-aborted','aborted');
+  if(!before.admitted&&before.reason!=='required-native-service-deadline')return refuse(before.reason);
+  if(this.working)return refuse('native-runner-busy','busy');
+  const physicalIdle=()=>{const rpc=this.options.rpc.usage(),flow=this.options.flow.usage();return rpc.inFlight===0&&rpc.waitingOrOperating===false&&flow.sharedOperationActive===false&&flow.nativePhysicalOperations===0;};
+  if(!physicalIdle())return refuse('native-physical-work-unsettled','busy');
+  if(before.admitted)return {attempted:false,admitted:true,action:null,result:'not-needed',reason:before.reason};
+  if(!this.options.flow.servicePlan)return refuse('native-service-plan-unavailable');
+  const policy={allowSetup:false,allowRetirement:false},flow=this.options.flow.usage(),originalDeadlines=flow.nativeServiceDeadlines??[],requested=before.view.requiredNativeAction;
+  const allowed=(action:string|null|undefined)=>action==='heartbeat'||action==='support-refresh'||action==='peer-pong';
+  if(!allowed(requested))return refuse('native-service-action-unavailable','deferred',requested);
+  const originalDeadline=(action:string|null)=>Math.min(...originalDeadlines.filter(row=>row.action===action&&Number.isFinite(row.deadlineAt)).map(row=>row.deadlineAt));
+  const boundFor=(action:string|null,declared?:number)=>declared??(action==='heartbeat'||action==='peer-pong'?NATIVE_DEADLINE_POLICY.heartbeatOperationMs:NATIVE_DEADLINE_POLICY.nativeOperationMs);
+  const quoteLatestStartAt=before.certificateLatestStartAt!,requestedBound=boundFor(requested),requestedDeadline=originalDeadline(requested),initialCutoff=Math.min(quoteLatestStartAt,requestedDeadline);
+  if(!Number.isFinite(requestedDeadline)||!Number.isFinite(initialCutoff)||this.now()+requestedBound>initialCutoff)return refuse('original-certificate-or-native-service-runway','deferred',requested);
+  if(!this.sourceWorkAllowed(requestedBound))return refuse('source-financial-runway-unavailable','deferred',requested);
+  this.working=true;
+  try{
+   // Preserve the actual hard deadline before advancing an optional early due
+   // time; the financial reservation is not the native operation's deadline.
+   if(requested==='heartbeat')this.options.flow.requestHeartbeat();else if(requested==='support-refresh')this.options.flow.requestSupportRefresh();
+   const selected=this.options.flow.servicePlan(policy),action=selected.action;
+   if(!selected.required||!allowed(action)||selected.at>this.now()||selected.domain===null)return refuse('native-service-action-unavailable','deferred',action);
+   const bound=boundFor(action,selected.operationBoundMs),nativeDeadline=originalDeadline(action),cutoff=Math.min(quoteLatestStartAt,nativeDeadline),rpc=this.options.rpc.usage(),gate=selected.domain==='control'?rpc.controlDispatchWindow??rpc.dispatchWindow:rpc.rpcDispatchWindow??rpc.dispatchWindow;
+   if(!Number.isSafeInteger(bound)||bound<=0||!Number.isFinite(nativeDeadline)||!Number.isFinite(cutoff)||Math.max(this.now(),gate?.readyAt??this.now())+bound>cutoff||gate?.physicalBusy)return refuse('original-certificate-or-native-service-runway','deferred',action);
+   const current=()=>{
+    if(signal?.aborted||this.now()+bound>cutoff)return false;
+    const admission=this.financialAdmission(retained,quoteOperationBoundMs),plan=this.options.flow.servicePlan!(policy);
+    return admission.certificateLatestStartAt===quoteLatestStartAt&&admission.reason!=='source-admission-closed'&&plan.required&&allowed(plan.action)&&plan.action===action&&plan.domain===selected.domain&&boundFor(plan.action,plan.operationBoundMs)===bound&&plan.at<=this.now();
+   };
+   if(!current()||!physicalIdle())return refuse('financial-runway-changed','deferred',action);
+   const serviced=await this.serviceFlow(signal,cutoff,policy,current),after=this.financialAdmission(retained,quoteOperationBoundMs),settled=physicalIdle(),admitted=!signal?.aborted&&settled&&after.admitted;
+   return {attempted:true,admitted,action,result:serviced.kind,reason:signal?.aborted?'financial-runway-aborted':!settled?'native-physical-work-unsettled':after.reason};
+  }finally{this.working=false;}
+ }
  private observationIdentity(row:WatchRow):NativeObservationIdentity|undefined{
   if(!row.mint||!row.pool)return;
   const origin=this.currentPoolObservation?undefined:this.origin(row.mint);
@@ -767,14 +811,23 @@ export class NativeCandidateRunner{
    // HTTP audit/origin work obeys its own cooldown while the same physical
    // gate still admits valid WebSocket liveness/retirement controls above.
    if(!(pendingAudits.length&&usage.historyRoute&&!rpcGate?.physicalBusy&&usage.inFlight===0&&!usage.waitingOrOperating)&&rpcGate&&(rpcGate.physicalBusy||rpcGate.readyAt>at)){this.traceAuditDispatch(pendingAudits,at,'rpc-gate-wait',this.auditGateWaitAction(usage,rpcGate,'await-shared-pacing-or-http-cooldown'),this.auditDispatchContext(at,usage,flow));this.lastOutcome='native-rpc-shared-pacing';return 'wait';}
-   const jobs:ResearchJob[]=[],serviceDeadline=servicePlan?Math.min(...(observedFlow as typeof observedFlow&{nativeServiceDeadlines?:Array<{deadlineAt:number}>}).nativeServiceDeadlines?.map(v=>v.deadlineAt-1500)??[Infinity]):flow.nextServiceAt-200;
+   // A support refresh can become due before the heartbeat whose hard deadline
+   // actually limits this page. Advance that limiting obligation, not merely
+   // the next scheduled service; unrelated refreshes cannot buy audit runway.
+   const nativeDeadlines=servicePlan?(observedFlow as typeof observedFlow&{nativeServiceDeadlines?:Array<{deadlineAt:number;action?:string|null;domain?:'rpc'|'control'|null}>}).nativeServiceDeadlines:undefined;
+   const limitingNative=nativeDeadlines?.slice().sort((a,b)=>a.deadlineAt-b.deadlineAt)[0];
+   const jobs:ResearchJob[]=[],serviceDeadline=servicePlan?(limitingNative?.deadlineAt??Infinity)-1500:flow.nextServiceAt-200;
    const ready=this.readyAudits(at),dispatchable=ready.filter(c=>c.auditPageRetryAt<=at&&(this.options.rpc.historyQueryReadyAt?.(c.identity.pool,at)??at)<=at);
    if(pendingAudits.length&&!dispatchable.length){const local=ready.filter(c=>c.auditPageRetryAt>at),provider=ready.filter(c=>(this.options.rpc.historyQueryReadyAt?.(c.identity.pool,at)??at)>at);this.traceAuditDispatch(pendingAudits,at,'rpc-gate-wait',provider.length?'await-history-provider-or-query-cooldown':'await-local-uninvoked-page-retry',{...this.auditDispatchContext(at,usage,flow),localRetryDeferredCount:local.length,providerOrQueryBlockedCount:provider.length,earliestLocalRetryAt:local.length?Math.min(...local.map(c=>c.auditPageRetryAt)):null});}
    if(ready.length&&ready.some(c=>{if(c.auditSession)return false;const v=this.options.flow.snapshot(c.identity.baseMint,at);const needsCeiling=!v?.supportContext||v.supportContext.bankClockAt<(v.features?.windowEndAt??Infinity);return needsCeiling&&!this.notificationAuditFences(c,v,undefined,at);})){if(rpcGate&&(rpcGate.physicalBusy||rpcGate.readyAt>at)){this.traceAuditDispatch(ready,at,'rpc-gate-wait','await-primary-support-ceiling',this.auditDispatchContext(at,usage,flow));return 'wait';}if(at<this.nextCeilingRefreshAt){this.traceAuditDispatch(ready,at,'ceiling-backoff','await-bounded-ceiling-refresh',{...this.auditDispatchContext(at,usage,flow),nextCeilingRefreshAt:this.nextCeilingRefreshAt});return 'audit-ceiling-warming';}this.traceAuditDispatch(ready,at,'ceiling-refresh','refresh-confirmed-bank-ceiling',this.auditDispatchContext(at,usage,flow));this.nextCeilingRefreshAt=at+1500;this.options.flow.requestSupportRefresh();this.record('native-shared-audit-ceiling-requested',{at,mints:ready.map(c=>c.identity.baseMint),meaning:'coherent fresh confirmed SDK/Clock context; not a block timestamp or trade'});await this.serviceFlow(signal,at+3000,servicePolicy);return 'audit-ceiling-support';}
    if(ready.length&&serviceDeadline-at<NATIVE_CANDIDATE_AUDIT_PROFILE.operationBoundMs+125){
-    const action=(flow as {nextServiceAction?:string|null}).nextServiceAction??null,nextAction=flow.nextServiceDomain==='rpc'?'request-early-support-refresh':flow.nextServiceDomain==='control'&&action==='heartbeat'?'request-early-heartbeat':'await-native-service-action';
-    if(nextAction==='request-early-heartbeat'&&gate&&(gate.physicalBusy||gate.readyAt>at)){this.traceAuditDispatch(ready,at,'native-service-wait','await-control-runway-gate',this.auditDispatchContext(at,usage,flow));return 'gate-wait';}
-    this.traceAuditDispatch(ready,at,'prepare-native-runway',nextAction,this.auditDispatchContext(at,usage,flow));
+    const action=limitingNative?limitingNative.action??null:(flow as {nextServiceAction?:string|null}).nextServiceAction??null;
+    const domain=limitingNative?limitingNative.domain??(action==='support-refresh'?'rpc':action===null?null:'control'):flow.nextServiceDomain;
+    const nextAction=domain==='rpc'&&action==='support-refresh'?'request-early-support-refresh':domain==='control'&&action==='heartbeat'?'request-early-heartbeat':'await-native-service-action';
+    const runwayGate=domain==='control'?(usage.controlDispatchWindow??usage.dispatchWindow):rpcGate;
+    const runwayContext={...this.auditDispatchContext(at,usage,flow),limitingNativeServiceAction:action,limitingNativeServiceDomain:domain,limitingNativeServiceDeadlineAt:Number.isFinite(limitingNative?.deadlineAt)?limitingNative!.deadlineAt:null};
+    if(nextAction!=='await-native-service-action'&&runwayGate&&(runwayGate.physicalBusy||runwayGate.readyAt>at)){this.traceAuditDispatch(ready,at,'native-service-wait',domain==='control'?'await-control-runway-gate':'await-primary-support-runway-gate',runwayContext);return 'gate-wait';}
+    this.traceAuditDispatch(ready,at,'prepare-native-runway',nextAction,runwayContext);
     if(nextAction==='await-native-service-action')return 'audit-preparation-wait';
     if(nextAction==='request-early-support-refresh')this.options.flow.requestSupportRefresh();else this.options.flow.requestHeartbeat();
     const serviced=await this.serviceFlow(signal,at+2000,servicePolicy);return 'audit-preparation-'+serviced.kind;
@@ -785,8 +838,10 @@ export class NativeCandidateRunner{
    if(!this.verificationSession&&!ready.length&&verification.admitted&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs)&&(!rpcGate||!rpcGate.physicalBusy&&rpcGate.readyAt<=at))this.enqueueActivityOrigin(at);
    const lookupStartedAt=this.now();
    const creation=this.options.enforceTokenAge24h&&!ready.length&&verification.admitted&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs)?this.registry.nextTokenCreationRequest(lookupStartedAt,this.preparationEnabled()):undefined;
+   let creationHistory=this.options.pumpswapOnly&&this.options.enforceTokenAge24h&&!creation&&!ready.length&&verification.admitted&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs)?this.registry.nextTokenCreationHistoryRequest(this.now()):undefined;
    if(this.options.sourceWorkCheckpoint&&!await this.sourceCheckpoint(signal))return 'wait';
-   const preparing=!creation&&!ready.length&&verification.admitted&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.nativeOperationMs)?this.nextPreparation(this.now()):null;
+   const preparing=!creation&&(!creationHistory||this.creationHistoryYieldToPreparation)&&!ready.length&&verification.admitted&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.nativeOperationMs)?this.nextPreparation(this.now()):null;
+   if(preparing)creationHistory=undefined;
    if(this.options.sourceWorkCheckpoint&&!await this.sourceCheckpoint(signal))return 'wait';
    const seed=this.verificationSession?.seed??this.nextVerification(this.now());
    if(this.options.sourceWorkCheckpoint&&!await this.sourceCheckpoint(signal))return 'wait';
@@ -797,14 +852,28 @@ export class NativeCandidateRunner{
    const bootstrapAllowed=!ready.length&&!this.readyAudits(at).length&&bootstrap.admitted&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs)&&!bootstrapUsage.waitingOrOperating&&bootstrapUsage.inFlight===0&&(!bootstrapGate||!bootstrapGate.physicalBusy&&bootstrapGate.readyAt<=this.now());
    const bootstrapDeadline=Math.min(at+2000,serviceDeadline,bootstrap.latestStartAt===null?Infinity:bootstrap.latestStartAt+NATIVE_DEADLINE_POLICY.discretionaryReadMs);
    if(creation&&bootstrapAllowed)jobs.push({id:'token-creation:'+creation.signature,kind:'reconnect',enqueuedAt:at,eligibleAt:at,deadlineAt:bootstrapDeadline,operationBoundMs:NATIVE_DEADLINE_POLICY.discretionaryReadMs});
+   if(creationHistory&&bootstrapAllowed)jobs.push({id:'token-creation-history:'+creationHistory.mint,kind:'reconnect',enqueuedAt:at,eligibleAt:at,deadlineAt:bootstrapDeadline,operationBoundMs:NATIVE_DEADLINE_POLICY.discretionaryReadMs});
    if(preparing&&bootstrapAllowed&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.nativeOperationMs)&&this.discretionaryAdmission(NATIVE_DEADLINE_POLICY.nativeOperationMs,at).admitted)jobs.push({id:'prepare:'+preparing.mint,kind:'reconnect',enqueuedAt:at,eligibleAt:at,deadlineAt:bootstrapDeadline,operationBoundMs:NATIVE_DEADLINE_POLICY.nativeOperationMs});
    if(seed&&bootstrapAllowed)jobs.push({id:'verify:'+seed.signature,kind:'reconnect',enqueuedAt:this.verificationSession?.startedAt??at,eligibleAt:at,deadlineAt:bootstrapDeadline,operationBoundMs:NATIVE_DEADLINE_POLICY.discretionaryReadMs});
    if(creation||seed)this.record('native-candidate-bootstrap-planned',{at,lookupStartedAt,lookupElapsedMs:Math.max(0,at-lookupStartedAt),kind:creation?'token-creation':'origin',admitted:bootstrapAllowed,deadlineAt:Number.isFinite(bootstrapDeadline)?bootstrapDeadline:null,providerRequestStarted:false,financialPermission:false});
    const fresh=this.options.rpc.usage(),dispatch=chooseResearchWork({now:this.now(),readyAt:(jobs.some(job=>job.id.startsWith('audit:'))?(fresh.historyDispatchWindow??fresh.rpcDispatchWindow??fresh.dispatchWindow):(fresh.rpcDispatchWindow??fresh.dispatchWindow))?.readyAt??this.now(),physicalBusy:fresh.waitingOrOperating||fresh.inFlight!==0,nextProtectionAt:null,otherStartSinceProtection:false,jobs});
-   this.lastDispatchAt=this.now();if(dispatch.kind==='job'){this.traceAuditDispatch(ready,this.lastDispatchAt,dispatch.job.id.startsWith('audit:')?'audit-selected':'peer-selected',dispatch.job.id.startsWith('audit:')?'dispatch-audit-page':'dispatch-origin-verification',{...this.auditDispatchContext(this.lastDispatchAt,fresh,flow),selectedMint:dispatch.job.id.startsWith('audit:')?dispatchable[0]!.identity.baseMint:null,selectedJob:dispatch.job.id,jobDeadlineAt:dispatch.job.deadlineAt,latestStartAt:dispatch.latestStartAt});if(dispatch.job.id.startsWith('audit:')){const batched=await this.evaluateQuietBatch([...dispatchable,...ready.filter(c=>!dispatchable.includes(c))],dispatch.job.deadlineAt,signal);if(!batched&&this.candidates.get(dispatchable[0]!.identity.baseMint)===dispatchable[0])await this.evaluate(dispatchable[0]!,dispatch.job.deadlineAt,signal);}else if(dispatch.job.id.startsWith('prepare:')&&preparing)await this.prepareObservation(preparing,dispatch.job.deadlineAt,signal);else if(dispatch.job.id.startsWith('token-creation:')&&creation)await this.verifyTokenCreation(creation,dispatch.job.deadlineAt,signal);else if(seed)await this.verify(seed,dispatch.job.deadlineAt,signal);this.lastOutcome=dispatch.job.id;return dispatch.job.id;}
+   this.lastDispatchAt=this.now();if(dispatch.kind==='job'){this.traceAuditDispatch(ready,this.lastDispatchAt,dispatch.job.id.startsWith('audit:')?'audit-selected':'peer-selected',dispatch.job.id.startsWith('audit:')?'dispatch-audit-page':'dispatch-origin-verification',{...this.auditDispatchContext(this.lastDispatchAt,fresh,flow),selectedMint:dispatch.job.id.startsWith('audit:')?dispatchable[0]!.identity.baseMint:null,selectedJob:dispatch.job.id,jobDeadlineAt:dispatch.job.deadlineAt,latestStartAt:dispatch.latestStartAt});if(dispatch.job.id.startsWith('audit:')){const batched=await this.evaluateQuietBatch([...dispatchable,...ready.filter(c=>!dispatchable.includes(c))],dispatch.job.deadlineAt,signal);if(!batched&&this.candidates.get(dispatchable[0]!.identity.baseMint)===dispatchable[0])await this.evaluate(dispatchable[0]!,dispatch.job.deadlineAt,signal);}else if(dispatch.job.id.startsWith('prepare:')&&preparing)await this.prepareObservation(preparing,dispatch.job.deadlineAt,signal);else if(dispatch.job.id.startsWith('token-creation:')&&creation)await this.verifyTokenCreation(creation,dispatch.job.deadlineAt,signal);else if(dispatch.job.id.startsWith('token-creation-history:')&&creationHistory)await this.discoverTokenCreation(creationHistory,dispatch.job.deadlineAt,signal);else if(seed)await this.verify(seed,dispatch.job.deadlineAt,signal);this.lastOutcome=dispatch.job.id;return dispatch.job.id;}
    this.traceAuditDispatch(ready,this.lastDispatchAt,dispatch.kind==='refuse'?'scheduler-refusal':'scheduler-wait',dispatch.kind==='refuse'?'retain-refused-target':'await-next-dispatch',{...this.auditDispatchContext(this.lastDispatchAt,fresh,flow),dispatchReason:'reason'in dispatch?dispatch.reason:null,until:'until'in dispatch?dispatch.until:null,jobCount:jobs.length,auditDeadlineAt:Number.isFinite(auditDeadline)?auditDeadline:null});return dispatch.kind;
   }catch(error){if(isMarketRegistryContention(error)){this.lastOutcome='MARKET_REGISTRY_CONTENTION';this.record('native-candidate-registry-contention',{at:this.now(),reason:this.lastOutcome,sqliteCode:error.sqliteCode,callbackStarted:false,providerRequestStarted:false,financialExposure:false});return 'wait';}this.lastOutcome=safe(error);this.traceAuditDispatch([...this.candidates.values()],this.now(),'work-exception','retain-and-recheck-target',{reason:this.lastOutcome,physicalSettlementClaimed:false});this.record('native-candidate-work-unavailable',{at:this.now(),reason:this.lastOutcome,providerCooldownUntil:this.options.rpc.cooldownUntil(),financialExposure:false});return 'unavailable';}
   finally{this.working=false;}
+ }
+ private async discoverTokenCreation(request:TokenCreationHistoryRequest,deadlineAt:number,signal?:AbortSignal){
+  if(!this.options.pumpswapOnly||!this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs))return;
+  const at=this.now();this.preparationState='awaiting-token-age';this.preparationMint=request.mint;
+  // Discovery starts only after a real supported PumpSwap pool was validated.
+  // A restart retains the cursor, and each turn admits one existing-budget RPC.
+  this.registry.deferTokenCreationHistory(request,at,'TOKEN_CREATION_HISTORY_PENDING');
+  this.creationHistoryYieldToPreparation=true;
+  try{
+   const rows=await this.options.rpc.call<unknown>('getSignaturesForAddress',[request.mint,{commitment:'finalized',limit:TOKEN_CREATION_HISTORY_POLICY.pageLimit,...(request.before?{before:request.before}:{}),...(request.until?{until:request.until}:{})}],signal,this.admission(deadlineAt));
+   const availableAt=this.now(),result=selectTokenCreationHistoryPage(rows,request,availableAt),applied=this.registry.applyTokenCreationHistoryPage(request,result,availableAt);
+   this.record('native-token-creation-history',{at:availableAt,mint:request.mint,outcome:result.kind,reason:result.kind==='unavailable'?result.reason:null,applied,rows:Array.isArray(rows)?rows.length:null,policy:TOKEN_CREATION_HISTORY_POLICY.version,financialPermission:false});
+  }catch(error){this.record('native-token-creation-history',{at:this.now(),mint:request.mint,outcome:'unavailable',reason:safe(error),policy:TOKEN_CREATION_HISTORY_POLICY.version,financialPermission:false});}
  }
  private async verifyTokenCreation(request:{mint:string;signature:string},deadlineAt:number,signal?:AbortSignal){
   const at=this.now();if(!this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs))return;
@@ -815,7 +884,7 @@ export class NativeCandidateRunner{
    const tx=await this.options.rpc.call<unknown>('getTransaction',[request.signature,{encoding:'json',commitment:'finalized',maxSupportedTransactionVersion:1}],signal,this.admission(deadlineAt));
    const availableAt=this.now(),proof=decodeTokenCreationProof(tx,{...request,availableAt,commitment:'finalized'});
    if(proof){this.registry.putTokenCreationProof(proof);if(this.preparationEnabled()){const age=this.registry.tokenAgeEligibility(request.mint,availableAt);this.preparationState=age.allowed?'ready':'awaiting-market-evidence';const pool=this.registry.observationPreparation(request.mint)?.pool;if(pool)this.preparationOutcome={mint:request.mint,pool,at:availableAt,reason:age.reason,stage:'token-age'};}this.record('native-token-creation-verified',{at:availableAt,...proof,financialPermission:false});}
-   else{this.registry.deferTokenCreationRequest(request,availableAt,tx===null?'TOKEN_CREATION_NOT_FINALIZED':'TOKEN_CREATION_PROOF_INVALID',tx!==null);this.record('native-token-creation-unavailable',{at:availableAt,mint:request.mint,reason:tx===null?'TOKEN_CREATION_NOT_FINALIZED':'TOKEN_CREATION_PROOF_INVALID',financialPermission:false});}
+   else{const historyContinues=this.registry.transaction(()=>{this.registry.deferTokenCreationRequest(request,availableAt,tx===null?'TOKEN_CREATION_NOT_FINALIZED':'TOKEN_CREATION_PROOF_INVALID',tx!==null);return tx!==null&&this.options.pumpswapOnly?this.registry.advanceTokenCreationHistory(request,availableAt):false;});this.record('native-token-creation-unavailable',{at:availableAt,mint:request.mint,reason:tx===null?'TOKEN_CREATION_NOT_FINALIZED':'TOKEN_CREATION_PROOF_INVALID',historyContinues,financialPermission:false});}
   }catch(error){this.record('native-token-creation-unavailable',{at:this.now(),mint:request.mint,reason:safe(error),financialPermission:false});}
  }
  /** Exact current source certificate; no later audit, stale generation or

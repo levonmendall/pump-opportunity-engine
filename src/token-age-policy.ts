@@ -8,7 +8,7 @@ export const TOKEN_AGE_POLICY=Object.freeze({
  version:'finalized-pump-token-creation-24h-v1',maximumAgeMs:86_400_000,
  basis:'successful-finalized-Pump-create-with-child-mint-initialization',
  boundary:'inclusive-at-exactly-24-hours',unknown:'ineligible-until-verified',
- acquisition:'one-selected-creation-signature; no-history-scan; existing-provider-budget',
+ acquisition:'retained creation signature or cooperative finalized mint-history after PumpSwap pool validation; one request per turn within existing provider budget',
  existingPositions:'unchanged-exit-policy; never-force-liquidate-on-age',
 });
 export type TokenCreationProof={

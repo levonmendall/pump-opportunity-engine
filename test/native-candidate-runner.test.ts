@@ -293,6 +293,23 @@ for(const blocker of ['support-refresh','heartbeat']as const)test(`absolute ${bl
  const preparation=f.records.find(row=>row.kind==='native-audit-dispatch-state'&&row.data.reason==='prepare-native-runway');assert.equal(preparation?.data.nextAction,blocker==='support-refresh'?'request-early-support-refresh':'request-early-heartbeat');assert.equal(preparation?.data.context.nextNativeServiceAction,blocker);await f.runner.stop();
 });
 
+for(const controlBlocked of [false,true])test(`audit runway advances the limiting heartbeat even when an earlier support refresh is selected; control gate blocked=${controlBlocked}`,async()=>{
+ const f=fixture();f.importActual();await f.runner.step();f.advance(70000);f.refresh();
+ const supportDueAt=f.now+1000,supportDeadlineAt=f.now+15000;let heartbeatDeadlineAt=f.now+3000,supportRequests=0,heartbeatRequests=0,heartbeatRequested=false,supportRequested=false;
+ const usage=f.flow.usage.bind(f.flow),rpcUsage=f.rpc.usage.bind(f.rpc),controlReadyAt=f.now+(controlBlocked?800:0);
+ const plans=()=>[{at:supportDueAt,domain:'rpc' as const,action:'support-refresh' as const,required:true,deadlineAt:supportDeadlineAt},{at:heartbeatRequested?f.now:heartbeatDeadlineAt,domain:'control' as const,action:'heartbeat' as const,required:true,deadlineAt:heartbeatDeadlineAt}];
+ (f.flow as any).servicePlan=()=>plans().sort((a,b)=>a.at-b.at)[0]!;
+ f.flow.usage=()=>({...usage(),nativeServiceDeadlines:plans()})as any;
+ f.rpc.usage=()=>({...rpcUsage(),rpcDispatchWindow:{readyAt:f.now,physicalBusy:false},controlDispatchWindow:{readyAt:controlReadyAt,physicalBusy:false}})as any;
+ f.flow.requestSupportRefresh=()=>{supportRequests++;supportRequested=true;};f.flow.requestHeartbeat=()=>{heartbeatRequests++;heartbeatRequested=true;};
+ f.flow.service=async()=>{if(supportRequested){supportRequested=false;return {kind:'support'};}assert.equal(heartbeatRequested,true);heartbeatRequested=false;heartbeatDeadlineAt=f.now+10000;return {kind:'ping'};};
+ const first=await f.runner.step();assert.equal(first,controlBlocked?'gate-wait':'audit-preparation-ping');assert.equal(f.auditCalls,0);assert.equal(supportRequests,0);assert.equal(heartbeatRequests,controlBlocked?0:1);
+ if(controlBlocked){f.advance(800);assert.equal(await f.runner.step(),'audit-preparation-ping');}
+ assert.equal(supportDeadlineAt,baseAt+70000+15000,'the independent support expiry is unchanged');
+ await f.runner.step();assert.equal(f.auditCalls,1);assert.equal(f.runner.status().counters.auditedWindows,1);assert.equal(supportRequests,0);assert.equal(heartbeatRequests,1);
+ const preparation=f.records.find(row=>row.kind==='native-audit-dispatch-state'&&row.data.reason==='prepare-native-runway');assert.equal(preparation?.data.nextAction,'request-early-heartbeat');assert.equal(preparation?.data.context.limitingNativeServiceAction,'heartbeat');assert.equal(preparation?.data.context.nextNativeServiceAction,'support-refresh');await f.runner.stop();
+});
+
 for(const action of ['peer-pong','unsubscribe']as const)test(`future ${action} runway blocker waits for its own service without inventing a heartbeat`,async()=>{
  const f=fixture();f.importActual();await f.runner.step();f.advance(70000);f.refresh();let dueAt=f.now+1000,supportRequests=0,heartbeatRequests=0,services=0;
  const usage=f.flow.usage.bind(f.flow);f.flow.requestSupportRefresh=()=>{supportRequests++;};f.flow.requestHeartbeat=()=>{heartbeatRequests++;};f.flow.usage=()=>({...usage(),nextServiceAt:dueAt,nextServiceDomain:'control' as const,nextServiceAction:action})as any;
@@ -523,6 +540,80 @@ async function completedFinancialFixture(maximumDeep=4){
  for(let n=0;n<12&&!f.runner.certifiedCandidateMints(f.now).length;n++)await f.runner.step();
  const mint=f.runner.certifiedCandidateMints(f.now)[0];assert.ok(mint);const certificate=f.runner.currentAuditCertificate(mint,f.now);assert.ok(certificate);return {f,mint,certificate};
 }
+
+async function financialRunwayFixture(primary:'heartbeat'|'support-refresh'='heartbeat'){
+ const ready=await completedFinancialFixture(1),{f}=ready,usage=f.flow.usage.bind(f.flow),service=f.flow.service.bind(f.flow),heartbeat=f.flow.requestHeartbeat.bind(f.flow),support=f.flow.requestSupportRefresh.bind(f.flow);
+ let heartbeatAt=f.now+(primary==='heartbeat'?2500:20000),supportDeadline=f.now+(primary==='support-refresh'?2500:20000),supportAt=f.now+(primary==='support-refresh'?1000:15000),peerDeadline:number|null=null,overrideAction:string|null=null,nativeBusy=false,serviceCalls=0,beforePhysical:(()=>void)|undefined,afterService:(()=>void)|undefined;const requested:string[]=[];
+ const plans=()=>[{at:heartbeatAt,deadlineAt:heartbeatAt,action:'heartbeat',domain:'control',required:true},{at:supportAt,deadlineAt:supportDeadline,action:'support-refresh',domain:'rpc',required:true},...(peerDeadline===null?[]:[{at:f.now,deadlineAt:peerDeadline,action:'peer-pong',domain:'control',required:true}])];
+ const selected=()=>{if(overrideAction)return {at:f.now,deadlineAt:f.now+2000,action:overrideAction,domain:overrideAction==='cleanup-proof'?'rpc':'control',required:true};const due=plans().filter(p=>p.at<=f.now);return due.find(p=>p.action==='peer-pong')??due.sort((a,b)=>a.deadlineAt-b.deadlineAt)[0]??plans().sort((a,b)=>a.at-b.at)[0]!;};
+ (f.flow as any).servicePlan=selected;f.flow.usage=()=>({...usage(),nativeServiceDeadlines:plans(),sharedOperationActive:nativeBusy,nativePhysicalOperations:nativeBusy?1:0});
+ f.flow.requestHeartbeat=()=>{requested.push('heartbeat');heartbeatAt=f.now;heartbeat();};f.flow.requestSupportRefresh=()=>{requested.push('support-refresh');supportAt=f.now;support();};
+ f.flow.service=async(signal,admission,policy)=>{serviceCalls++;assert.deepEqual(policy,{allowSetup:false,allowRetirement:false});const plan=selected();beforePhysical?.();signal?.throwIfAborted();if(!admission?.admissionOpen?.())return {kind:'deferred'};f.advance(25);let result:{kind:string};if(plan.action==='peer-pong'){peerDeadline=null;f.flowActions.push('pong');result={kind:'pong'};}else{result=await service(signal,admission,policy);if(result.kind==='ping')heartbeatAt=f.now+10000;if(result.kind==='support'){supportAt=f.now+15000;supportDeadline=f.now+20000;}}afterService?.();return result;};
+ return {...ready,requested,get serviceCalls(){return serviceCalls;},peerPong(deadline=f.now+2800){peerDeadline=deadline;},setOverride(action:string|null){overrideAction=action;},setNativeBusy(value:boolean){nativeBusy=value;},setHeartbeatDeadline(value:number){heartbeatAt=value;},beforePhysical(callback:()=>void){beforePhysical=callback;},afterService(callback:()=>void){afterService=callback;}};
+}
+
+for(const action of ['heartbeat','support-refresh']as const)test(`financial runway service completes one ${action} under its original hard deadline without consuming peer work`,async()=>{
+ const h=await financialRunwayFixture(action),{f,mint,certificate}=h;try{
+  const original=structuredClone(certificate),calls=f.rpcCalls.length,audits=f.auditCalls,added=f.added.length,removed=f.removed.length,quoteCutoff=certificate.deadlineAt-1200-125;
+  assert.equal(f.runner.financialAdmission(certificate,1200).reason,'required-native-service-deadline');
+  const result=await f.runner.serviceFinancialRunway(certificate,1200);
+  assert.deepEqual(result,{attempted:true,admitted:true,action,result:action==='heartbeat'?'ping':'support',reason:'completed-certificate-financial-priority'});assert.equal(h.serviceCalls,1);assert.deepEqual(h.requested,[action]);
+  assert.deepEqual(f.runner.currentAuditCertificate(mint),original);assert.equal(f.runner.financialAdmission(certificate,1200).certificateLatestStartAt,quoteCutoff);assert.ok(f.now<quoteCutoff);
+  assert.deepEqual([f.rpcCalls.length,f.auditCalls,f.added.length,f.removed.length],[calls,audits,added,removed]);assert.equal(f.runner.status().financialWriterOpened,false);
+ }finally{await f.runner.stop();}
+});
+
+test('financial runway service allows one actual due peer pong and refuses to loop into a remaining heartbeat',async()=>{
+ const h=await financialRunwayFixture(),{f,certificate}=h;try{
+  h.peerPong();const result=await f.runner.serviceFinancialRunway(certificate,1200);
+  assert.equal(result.attempted,true);assert.equal(result.action,'peer-pong');assert.equal(result.result,'pong');assert.equal(result.admitted,false);assert.equal(result.reason,'required-native-service-deadline');assert.equal(h.serviceCalls,1);assert.deepEqual(h.requested,['heartbeat']);assert.equal(f.flowActions.at(-1),'pong');assert.equal(f.runner.currentAuditCertificate(certificate.mint)?.deadlineAt,certificate.deadlineAt);
+ }finally{await f.runner.stop();}
+});
+
+test('financial runway service preserves original certificate time and refuses stale, forged, aborted and unsettled work',async()=>{
+ for(const fault of ['certificate-room','native-deadline','forged','generation','source','aborted','http-busy','native-busy','protection']as const){
+  const h=await financialRunwayFixture(),{f,mint,certificate}=h;const abort=new AbortController();try{
+   if(fault==='certificate-room'){f.advance(certificate.deadlineAt-f.now-2200);h.setHeartbeatDeadline(f.now+2500);}
+   if(fault==='native-deadline')h.setHeartbeatDeadline(f.now+500);
+   if(fault==='generation')f.states.get(mint)!.openedAt!++;
+   if(fault==='source')f.setAllow(false);if(fault==='aborted')abort.abort();if(fault==='http-busy')f.setPhysicalBusy(true);if(fault==='native-busy')h.setNativeBusy(true);if(fault==='protection')(f.runner as any).options.sourceWorkAdmission=()=>false;
+   const supplied=fault==='forged'?{...certificate,deadlineAt:certificate.deadlineAt+1000}:certificate,result=await f.runner.serviceFinancialRunway(supplied,1200,abort.signal);
+   assert.equal(result.admitted,false,fault);assert.equal(result.attempted,false,fault);assert.equal(h.serviceCalls,0,fault);assert.deepEqual(h.requested,[],fault);
+  }finally{f.setPhysicalBusy(false);h.setNativeBusy(false);await f.runner.stop();}
+ }
+});
+
+test('financial runway service rechecks certificate and allowed action after the source checkpoint',async()=>{
+ for(const fault of ['generation','bucket','source','aborted','cleanup-proof','unsubscribe','subscribe']as const){
+  const h=await financialRunwayFixture(),{f,mint,certificate}=h,abort=new AbortController();try{
+   (f.runner as any).options.sourceWorkCheckpoint=async()=>{if(fault==='generation')f.states.get(mint)!.openedAt!++;else if(fault==='bucket')f.advance(10000-f.now%10000);else if(fault==='source')f.setAllow(false);else if(fault==='aborted')abort.abort();else h.setOverride(fault);};
+   const result=await f.runner.serviceFinancialRunway(certificate,1200,abort.signal);
+   assert.equal(result.admitted,false,fault);assert.equal(h.serviceCalls,0,fault);assert.equal(result.result,'deferred',fault);assert.equal((f.runner as any).working,false);
+  }finally{await f.runner.stop();}
+ }
+});
+
+test('financial runway service rechecks identity and action at physical admission and requires actual settlement afterward',async()=>{
+ for(const fault of ['dispatch-generation','dispatch-retirement','after-generation','http-unsettled','native-unsettled','after-abort']as const){
+  const h=await financialRunwayFixture(),{f,mint,certificate}=h,abort=new AbortController();try{
+   if(fault==='dispatch-generation')h.beforePhysical(()=>{f.states.get(mint)!.openedAt!++;});
+   if(fault==='dispatch-retirement')h.beforePhysical(()=>h.setOverride('unsubscribe'));
+   if(fault==='after-generation')h.afterService(()=>{f.states.get(mint)!.openedAt!++;});
+   if(fault==='http-unsettled')h.afterService(()=>f.setPhysicalBusy(true));if(fault==='native-unsettled')h.afterService(()=>h.setNativeBusy(true));if(fault==='after-abort')h.afterService(()=>abort.abort());
+   const previous=f.flowActions.length,result=await f.runner.serviceFinancialRunway(certificate,1200,abort.signal);
+   assert.equal(result.admitted,false,fault);assert.equal(result.attempted,true,fault);assert.equal(h.serviceCalls,1,fault);
+   if(fault.startsWith('dispatch-'))assert.equal(f.flowActions.length,previous,fault);
+  }finally{f.setPhysicalBusy(false);h.setNativeBusy(false);await f.runner.stop();}
+ }
+});
+
+test('financial runway service does no maintenance for already available quote runway and cannot silently wait through pacing beyond the hard deadline',async()=>{
+ const h=await financialRunwayFixture(),{f,certificate}=h;try{
+  h.setHeartbeatDeadline(f.now+10000);assert.deepEqual(await f.runner.serviceFinancialRunway(certificate,1200),{attempted:false,admitted:true,action:null,result:'not-needed',reason:'completed-certificate-financial-priority'});assert.equal(h.serviceCalls,0);
+  h.setHeartbeatDeadline(f.now+2500);const usage=f.rpc.usage.bind(f.rpc);f.rpc.usage=()=>({...usage(),controlDispatchWindow:{readyAt:f.now+1500,physicalBusy:false}} as any);
+  const result=await f.runner.serviceFinancialRunway(certificate,1200);assert.equal(result.admitted,false);assert.equal(result.attempted,false);assert.equal(h.serviceCalls,0);
+ }finally{await f.runner.stop();}
+});
 
 test('a completed exact certificate has request-level financial runway before speculative peer audit reservations',async t=>{
  const {f,mint,certificate}=await completedFinancialFixture();try{

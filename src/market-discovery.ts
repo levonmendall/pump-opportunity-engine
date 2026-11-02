@@ -17,3 +17,10 @@ export type MarketActivityHint=Omit<MarketIdentityHint,'evidence'>&{
   evidence:'unverified-provider-activity-hint';
 };
 export type MarketFeedStatus={source:MarketFeedSource;at:number;connected:boolean;scope:string;gapReason?:string};
+
+/** Routing only: provider venue/migration hints authorize bounded verification,
+ * never trading. Creation/curve traffic cannot enter the PumpSwap work queue. */
+export const PUMPSWAP_INTAKE_POLICY=Object.freeze({version:'pumpswap-after-migration-only-v1',venue:'pump-amm',creationSubscription:false,preMigrationPersistence:false,sharedTransport:'client-filtered; provider sends all venues'});
+export function pumpSwapIntakeHint(row:Pick<MarketIdentityHint,'source'|'kind'|'venue'>):boolean {
+ return row.source==='pumpportal-migration'&&row.kind==='migration'||row.source==='pumpapi-broad'&&row.venue===PUMPSWAP_INTAKE_POLICY.venue;
+}
