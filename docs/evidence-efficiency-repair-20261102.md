@@ -46,6 +46,16 @@ Reports that already require verified token age begin with the indexed token-cre
 
 The existing complete-publication timer remains authoritative for the 250 ms target. It includes candidate status, cash maintenance, financial projection/history/trades/portfolio and publication/checkpoint work. Network delivery remains in the existing separate publisher. Post-deployment acceptance must measure complete publication, fresh source age and delivery health, not infer success from this benchmark.
 
+### Prevent diagnostic history from blocking the entire publication
+
+Read-only EC2 inspection in admin workflow run `41510497549` found a fresh local sequence 30602 with a ready financial projection and a 91,045-byte snapshot, while the publisher had stopped accepting source files after receiver sequence 30505. The whole file was below its 128 KiB limit, but the nested operating-intelligence projection had grown to 33,387 bytes, above its separate 32 KiB limit. The last accepted intelligence was already 32,655 bytes. The installed publisher bundle reproduces `OPERATING_INTELLIGENCE_BYTES` when a schema-valid decision row takes that accepted projection over the nested limit.
+
+`boundOperatingIntelligence` now applies the existing joint UTF-8 byte budget to the public recent-decision view. It retains the maximal contiguous suffix of complete newest rows that fits after all other facts and a disclosure. It never removes current financial/source facts, pending orders, counters, timestamps, or existing warning text. The disclosure uses the existing limitation-note schema; if all ten notes are present it appends only where the original 512-character bound permits. Under-budget publications remain unchanged. The budget is computed afresh per publication and does not cache a stale view.
+
+These recent public rows support dashboard explanations and an offline historical audit helper; they are not required trading inputs or complete durable history. The repair abbreviates that view rather than deleting source decision evidence, outer financial decisions, or account history. If the protected core or disclosure cannot fit, the source returns the original projection without a new exception; the existing publisher still refuses it. Neither the 32 KiB nested limit nor the 128 KiB source-file limit is increased, and diagnostic pressure does not introduce a new financial-process termination path.
+
+Seven targeted regressions cover escaped multibyte text, the maximal newest suffix, immutable source/protected facts, disclosure with ten existing notes, irreducible protected-core refusal, unavailable disclosure space, and recomputation on the next publication. This is a producer repair; it does not itself prove fresh receiver delivery after deployment.
+
 ## Completed local validation
 
 - Direct candidate-runner regression: 165/165 tests, including preservation of the audited V3.1 decision/certificate with no unused baseline or unaudited feature event.

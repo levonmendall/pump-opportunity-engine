@@ -12,6 +12,8 @@ const candidateFailureCodes=new Set<string>(NATIVE_CANDIDATE_FAILURE_CODES);
 export const ORIGINAL_POE_ACCOUNT='poe-3123e352-4581-455b-85db-acd7e825e99e';
 export const ORIGINAL_POE_INCEPTION='2026-10-26T22:07:36.212Z';
 export const OPERATING_INTELLIGENCE_VERSION='poe-operating-intelligence-v1';
+const OPERATING_INTELLIGENCE_MAX_BYTES=32*1024;
+const RECENT_DECISIONS_LIMITATION='Public recent decisions are abbreviated to fit the existing 32 KiB report limit; source decision evidence and totals are unchanged.';
 type Count=number|null;
 const EVIDENCE_PRESSURE_CODES=['FILESYSTEM_RESERVE','RECORD_BOUND','YOUNG_DIAGNOSTIC_CAPACITY','YOUNG_SEGMENT_CAPACITY','DIAGNOSTIC_HEADROOM','DIAGNOSTIC_SEGMENT_HEADROOM','INTERRUPTED_ESSENTIAL_PROOF','CHECKPOINT_UNAVAILABLE','RECORD_IO_OR_INTEGRITY_FAILURE','FILESYSTEM_UNAVAILABLE','RETENTION_IO_OR_INTEGRITY_FAILURE','RECOVERY_CHECKPOINT_UNAVAILABLE','OTHER_UNEXPORTED_REASON'] as const;
 const RECOVERY_REASON_CODES=['ROLLING_RESOURCE_OR_EVIDENCE_PRESSURE','CANDIDATE_PROVIDER_FAILURE','CANDIDATE_STEP_UNAVAILABLE','OTHER_UNEXPORTED_REASON'] as const;
@@ -125,6 +127,33 @@ function protectionRpcNotes(rpc:Record<string,any>,sourceStart:number,at:number,
  if(last||entryNote)notes.push([last,entryNote].filter(Boolean).join(' '));
  return notes;
 }
+/** The recent public decision list is a display view, not a trading input or
+ * durable audit. Its row limit alone does not bound the combined diagnostics.
+ * Keep a contiguous newest suffix within the existing receiver byte limit;
+ * never remove current financial/source facts, pending orders or warnings.
+ * If the protected facts or disclosure cannot fit, preserve the original for
+ * the existing publisher validation to refuse. Reporting pressure must not
+ * throw here and terminate the financial source process. */
+export function boundOperatingIntelligence(value:OperatingIntelligence):OperatingIntelligence{
+ if(Buffer.byteLength(JSON.stringify(value))<=OPERATING_INTELLIGENCE_MAX_BYTES)return value;
+ const limitations=[...value.quality.limitations];
+ if(limitations.length<10)limitations.push(RECENT_DECISIONS_LIMITATION);
+ else{
+  const index=limitations.findIndex(note=>note.length+1+RECENT_DECISIONS_LIMITATION.length<=512);
+  if(index<0)return value;
+  limitations[index]+=' '+RECENT_DECISIONS_LIMITATION;
+ }
+ const result:OperatingIntelligence={...value,quality:{...value.quality,limitations},decisions:[]};
+ let bytes=Buffer.byteLength(JSON.stringify(result)),first=value.decisions.length;
+ if(bytes>OPERATING_INTELLIGENCE_MAX_BYTES)return value;
+ for(let index=value.decisions.length-1;index>=0;index--){
+  const added=Buffer.byteLength(JSON.stringify(value.decisions[index]))+(first<value.decisions.length?1:0);
+  if(bytes+added>OPERATING_INTELLIGENCE_MAX_BYTES)break;
+  bytes+=added;first=index;
+ }
+ result.decisions=value.decisions.slice(first);
+ return result;
+}
 /** Null is an unavailable fact, never a manufactured zero. */
 export function projectOperatingIntelligence(value:unknown):OperatingIntelligence{
  const s=rec(value),at=count(s.generatedAt),start=count(s.startedAt);
@@ -193,7 +222,7 @@ export function projectOperatingIntelligence(value:unknown):OperatingIntelligenc
  const marketCoverage=projectMarketCoverageReporting(s,at);
  const slotProductivity=projectNativeSlotProductivityReporting(s,at);
  const providerResponses=projectProviderHttpReporting(rpc.providerResponses,at);
- return {version:OPERATING_INTELLIGENCE_VERSION,...(admission?{admission}:{}),...(financialPolicy?{financialPolicy}:{}),...(financialHandoff?{financialHandoff}:{}),...(financialReadiness?{financialReadiness}:{}),...(candidatePreparation?{candidatePreparation}:{}),...(marketCoverage?{marketCoverage}:{}),...(slotProductivity?{slotProductivity}:{}),
+ return boundOperatingIntelligence({version:OPERATING_INTELLIGENCE_VERSION,...(admission?{admission}:{}),...(financialPolicy?{financialPolicy}:{}),...(financialHandoff?{financialHandoff}:{}),...(financialReadiness?{financialReadiness}:{}),...(candidatePreparation?{candidatePreparation}:{}),...(marketCoverage?{marketCoverage}:{}),...(slotProductivity?{slotProductivity}:{}),
   run:{id:runId,startedAt:new Date(start).toISOString(),mode:s.persistent===true||s.service===true||s.operatingMode==='service'?'persistent-paper':s.running===false?'maintenance':'bounded-verification',configurationSha256,strategyVersion},
   candidates:{migrationsReceived:count(f.discovered),verifiedOrigins:count(f.verifiedMigrationOrigins),known:count(w.known),watch:count(first(w.watch,w.watchCandidates)),eligible:count(first(w.eligibleKnown,w.eligible)),deepActive:count(first(w.deepActive,w.deep)),deepMaximum:count(first(w.maximumDeep,w.maximumDeepCandidates)),queued:count(w.queued),promoted:count(w.promoted),repromoted:count(w.repromoted),demoted:count(w.demoted),completeWindows:count(w.completeWindows),auditedWindows:count(f.usableWindows),uniqueEvaluated:count(first(p.uniqueTokens,w.uniqueEvaluatedTokens)),uniqueAudited:count(first(p.uniqueAuditedTokens,w.uniqueAuditedTokens)),predictiveAssessments:count(first(p.assessments,w.predictiveAssessments)),predictivePasses:count(first(p.passed,w.predictivePasses)),predictiveFailures:count(first(p.failed,w.predictiveFailures)),predictiveUnavailable:count(first(p.unavailable,w.predictiveUnavailable)),waitMeanMs:meanMilliseconds(rec(w.waitMs).mean),waitMaximumMs:count(rec(w.waitMs).maximum),olderSelected:count(rec(w.ageCohorts).olderSelected)},
   quality:{captureConnected:boolean(Object.hasOwn(native,'selectedCaptureConnected')?native.selectedCaptureConnected:native.connected),qualityGaps:count(refusals['native-quality-gaps']),auditUnavailable:count(refusals['independent-audit-unavailable']),auditUnusable:count(refusals['independent-audit-unusable']),decisionDeadlineMisses:count(refusals['predictive-window-deadline-missed']),enrichmentDeadlineFailures:count(w.enrichmentDeadlineFailures),incompleteExclusions:count(w.incompleteDataExclusions),capacityExclusions:count(w.capacityExclusions),structuralExclusions:count(w.structuralExclusions),limitations},
@@ -201,7 +230,7 @@ export function projectOperatingIntelligence(value:unknown):OperatingIntelligenc
   resources:{sampleAt:time(first(resource.sampleAt,resource.at)),cpuOneCoreFraction:finite(first(resource.cpuOneCoreFraction,resource.cpuFraction)),rssBytes:count(first(resource.rssBytes,u.maximumRss)),availableMemoryBytes:count(resource.availableMemoryBytes),availableDiskBytes:count(resource.availableDiskBytes),eventLoopLagMs:finite(u.eventLoopDelayP95Ms),state:['normal','pressure','recovering'].includes(resource.state)?resource.state:'unavailable'},
   protection:{state:protectionState,targetCadenceMs:count(timing.targetMs),completedEvaluationBoundaryMs:count(timing.experimentalCompletedEvaluationLimitMs),lastCompletedAt:lastProtectedAt,maximumCompletedGapMs:lastProtectedAt?finite(timing.maximumCompletedGapMs):null,maximumQuoteAgeAtUseMs:lastProtectedAt?finite(timing.maximumQuoteAgeAtUseMs):null,breaches,unavailableChecks:unavailable},
   times:{marketNotificationAt:time(times.lastMarketNotificationAt),freshSupportAt:time(times.lastFreshSupportAt),bankClockAt:time(times.lastBankClockAt),auditAt:time(times.lastAuditAt),predictiveAt:time(times.lastPredictiveAt),reconciliationAt:time(times.financialReconciliationAt)},decisions,
-  refusals:Object.entries(refusals).slice(0,30).flatMap(([reason,n])=>bounded(reason,256)&&count(n)!==null?[{reason,count:n as number}]:[]),pendingOrders};
+  refusals:Object.entries(refusals).slice(0,30).flatMap(([reason,n])=>bounded(reason,256)&&count(n)!==null?[{reason,count:n as number}]:[]),pendingOrders});
 }
 function exact(v:unknown,keys:string[]):Record<string,any>{const o=rec(v);if(Object.getPrototypeOf(v)!==Object.prototype||Object.keys(o).sort().join('|')!==[...keys].sort().join('|'))throw Error('OPERATING_INTELLIGENCE_FIELDS');return o;}
 export function validateOperatingIntelligence(value:unknown,generatedAt:string):OperatingIntelligence{
@@ -241,5 +270,5 @@ export function validateOperatingIntelligence(value:unknown,generatedAt:string):
  for(const raw of s.decisions){const d=exact(raw,['id','mint','at','stage','reason']);text(d.id,128);text(d.mint,96);t(d.at,false);text(d.stage,80);text(d.reason,512);}
  for(const raw of s.refusals){const d=exact(raw,['reason','count']);text(d.reason,256);if(count(d.count)===null)throw Error('OPERATING_REFUSAL_COUNT');}
  for(const raw of s.pendingOrders){const o=exact(raw,'id mint side decidedAt executeAt expiresAt reservedSol quantityMinimum reason'.split(' '));text(o.id,128);text(o.mint,96);text(o.reason,512);if(!['buy','sell'].includes(o.side)||typeof o.reservedSol!=='string'||!/^(0|[1-9]\d{0,20})(\.\d{1,9})?$/.test(o.reservedSol)||typeof o.quantityMinimum!=='string'||!/^(0|[1-9]\d{0,38})$/.test(o.quantityMinimum))throw Error('OPERATING_ORDER_AMOUNT');t(o.decidedAt,false);t(o.executeAt,false,true);t(o.expiresAt,false,true);if(Date.parse(o.executeAt)<Date.parse(o.decidedAt)+500||Date.parse(o.expiresAt)<=Date.parse(o.executeAt)||Date.parse(o.expiresAt)>Date.parse(o.decidedAt)+30000)throw Error('OPERATING_ORDER_TIME');}
- if(Buffer.byteLength(JSON.stringify(s))>32*1024)throw Error('OPERATING_INTELLIGENCE_BYTES');return s as OperatingIntelligence;
+ if(Buffer.byteLength(JSON.stringify(s))>OPERATING_INTELLIGENCE_MAX_BYTES)throw Error('OPERATING_INTELLIGENCE_BYTES');return s as OperatingIntelligence;
 }
