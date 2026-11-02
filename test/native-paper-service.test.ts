@@ -94,9 +94,9 @@ test('restart run-index rotation preserves the last referenced current-market re
 });
 
 
-test('only explicit supplementary representatives and local phase metrics may omit capacity diagnostics',()=>{
- assert.equal(nativePaperRequiredEvidence('native-paper-local-phase',{elapsedMs:2}),false);assert.equal(nativePaperRequiredEvidence('native-flow-raw-representative',{supplementaryOnly:true}),false);
- for(const [kind,data]of [['native-flow-raw-representative',{}],['native-flow-raw-representative',{supplementaryOnly:'true'}],['native-flow-validated-packet',{supplementaryOnly:true}],['native-flow-raw-refusal',{supplementaryOnly:true}],['native-paper-local-phase-overrun',{}],['trader-quote',{}],['native-paper-entry-proof-pinned',{}]]as const)assert.equal(nativePaperRequiredEvidence(kind,data),true,kind);
+test('only explicit supplementary raw samples and local phase metrics may omit capacity diagnostics',()=>{
+ assert.equal(nativePaperRequiredEvidence('native-paper-local-phase',{elapsedMs:2}),false);for(const kind of ['native-flow-raw-representative','native-flow-raw-refusal']){assert.equal(nativePaperRequiredEvidence(kind,{supplementaryOnly:true}),false);assert.equal(nativePaperRequiredEvidence(kind,{supplementaryOnly:true},true),true,'essential financial evidence always wins');}
+ for(const [kind,data]of [['native-flow-raw-representative',{}],['native-flow-raw-representative',{supplementaryOnly:'true'}],['native-flow-validated-packet',{supplementaryOnly:true}],['native-flow-raw-refusal',{}],['native-flow-raw-refusal',{supplementaryOnly:'true'}],['native-flow-gap',{supplementaryOnly:true}],['native-independent-audit',{supplementaryOnly:true}],['trader-execution',{supplementaryOnly:true}],['native-paper-local-phase-overrun',{}],['trader-quote',{}],['native-paper-entry-proof-pinned',{}]]as const)assert.equal(nativePaperRequiredEvidence(kind,data),true,kind);
  assert.equal(nativePaperRequiredEvidence('native-paper-local-phase',{},true),true,'financial essential evidence remains required even if labeled with an optional diagnostic kind');
 });
 

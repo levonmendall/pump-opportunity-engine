@@ -56,6 +56,10 @@ export class MarketRegistry {
  // Reporting may run inside an unresolved transaction. Retain its genuine
  // prior settled counters; live health still includes the active attempt.
  private reportingTransactionBaseline:RegistryTransactionCounters|null=null;
+ // These summaries live only inside one synchronous SQLite read snapshot.
+ // They are discarded before any later publication or write can observe them.
+ private reportingPopulation:Record<string,number>|null=null;
+ private reportingVerification:Map<number,{pending:number;ready:number;oldestReceivedAt:number|null;maxWaitMs:number}>|null=null;
  private writes=0;private writeTotalMs=0;private writeMaximumMs=0;private storageFailures=0;private transactionDepth=0;private storageAvailable=true;private lastFailureAt:number|null=null;private lastSuccessfulWriteAt:number|null=null;
  constructor(path:string,options:{now?:()=>number;concurrentIntake?:boolean;writerTurn?:SharedArrayBuffer;writerRole?:'main'|'intake'}={}){
   this.path=path;this.locator={version:'persistent-market-registry-v1',path};this.clock=options.now??Date.now;this.concurrentIntake=options.concurrentIntake===true;this.writerRole=options.writerRole??'main';
@@ -175,7 +179,7 @@ export class MarketRegistry {
   if(fn.constructor.name==='AsyncFunction')throw new MarketRegistryReadOnlyViolation('Read snapshot callbacks must be synchronous');
   if(this.readDepth>0)return fn();
   const priorQueryOnly=Number(this.db.pragma('query_only',{simple:true}));
-  const run=()=>{this.readDepth++;try{const result=fn();if(result&&typeof (result as {then?:unknown}).then==='function')throw new MarketRegistryReadOnlyViolation('Read snapshot callbacks must be synchronous');return result;}catch(error){const code=(error as {code?:unknown})?.code;if(typeof code==='string'&&/^SQLITE_READONLY(?:_|$)/.test(code))throw new MarketRegistryReadOnlyViolation();throw error;}finally{this.readDepth--;}};
+  const run=()=>{const priorPopulation=this.reportingPopulation,priorVerification=this.reportingVerification;this.reportingPopulation=null;this.reportingVerification=new Map();this.readDepth++;try{const result=fn();if(result&&typeof (result as {then?:unknown}).then==='function')throw new MarketRegistryReadOnlyViolation('Read snapshot callbacks must be synchronous');return result;}catch(error){const code=(error as {code?:unknown})?.code;if(typeof code==='string'&&/^SQLITE_READONLY(?:_|$)/.test(code))throw new MarketRegistryReadOnlyViolation();throw error;}finally{this.readDepth--;this.reportingPopulation=priorPopulation;this.reportingVerification=priorVerification;}};
   this.db.pragma('query_only = ON');
   try{
    if(this.transactionDepth>0)return run();
@@ -301,7 +305,32 @@ export class MarketRegistry {
   return row?{row:JSON.parse(row.body) as WatchRow,hints:{version:'shared-flow-opportunity-priority-v2',horizonMs:SHARED_ACTIVITY_HORIZON_MS,recentNetSol:row.recent_net,priorNetSol:row.prior_net,netAccelerationSolPerMinute:row.acceleration,priceReturnBps:row.price_return===null?null:row.price_return*10000,priceDemandAgreement:row.price_agreement,priceMovePerGrossSol:row.price_return===null||!row.recent_gross?null:Math.abs(row.price_return)/row.recent_gross,twoSidedPriceStability:row.price_stability,priceScope:row.price_return===null?null:{pool:row.pool,source:row.price_hint_source!,firstAt:row.price_first_at!,lastAt:row.price_last_at!},serviceableWaitMs:row.serviceable_wait_ms,economicMerit:row.economic_merit,priority:row.selection_priority,hasCurrentEconomicEvidence:row.current_evidence===1,fairnessBonus:row.current_evidence===1?observationFairnessBonus(row.serviceable_wait_ms):0,economicLeaderMint:row.economic_leader_mint,economicLeaderMerit:row.economic_leader_merit,waitChangedWinner:row.mint!==row.economic_leader_mint,...(preparationWithTokenAge?{preparationAgeRoute:row.preparation_age_route===2?'verified-token-age' as const:row.preparation_age_route===1?'creation-request-available' as const:'creation-request-unavailable' as const}:{}),directLiquidity:'unknown',financialPermission:false}}:undefined;
  }
  count(where?:string,params:RegistryParameter[]=[]):number{return Number((this.statement(`SELECT COUNT(*) AS n FROM watch_rows w WHERE w.archived=0${where?` AND (${where})`:''}`).get(...params) as {n:number}).n);}
- aggregate(expressions:Record<string,string>,where?:string,params:RegistryParameter[]=[],index?:RegistryReportingIndex):Record<string,number|null>{need(Object.keys(expressions).every(k=>/^[A-Za-z][A-Za-z0-9_]*$/.test(k)),'MARKET_REGISTRY_AGGREGATE_ALIAS');return this.statement(`SELECT ${Object.entries(expressions).map(([key,expr])=>`${expr} AS ${key}`).join(',')} FROM watch_rows w${this.reportingIndex(index)} WHERE w.archived=0${where?` AND (${where})`:''}`).get(...params) as Record<string,number|null>;}
+ private reportingRows(index?:RegistryReportingIndex,tokenAgeAt?:number){
+  if(tokenAgeAt===undefined)return {from:`watch_rows w${this.reportingIndex(index)}`,where:'w.archived=0',bindings:[] as unknown[]};
+  need(integer(tokenAgeAt),'MARKET_REGISTRY_REPORT_AGE');
+  // A reporting population already requiring verified age can start with that
+  // exact indexed population. Do not probe a creation row for every historical
+  // watch identity. CROSS JOIN retains this small-to-large indexed lookup order.
+  return {from:'token_creations report_age INDEXED BY token_creations_age CROSS JOIN watch_rows w INDEXED BY watch_rows_mint',where:'report_age.created_at<=@poeReportAt AND report_age.created_at>=@poeReportFloor AND report_age.verified_at<=@poeReportAt AND w.mint=report_age.mint AND w.archived=0',bindings:[{poeReportAt:tokenAgeAt,poeReportFloor:tokenAgeAt-TOKEN_AGE_POLICY.maximumAgeMs}] as unknown[]};
+ }
+ aggregate(expressions:Record<string,string>,where?:string,params:RegistryParameter[]=[],index?:RegistryReportingIndex,tokenAgeAt?:number):Record<string,number|null>{need(Object.keys(expressions).every(k=>/^[A-Za-z][A-Za-z0-9_]*$/.test(k)),'MARKET_REGISTRY_AGGREGATE_ALIAS');const source=this.reportingRows(index,tokenAgeAt);return this.statement(`SELECT ${Object.entries(expressions).map(([key,expr])=>`${expr} AS ${key}`).join(',')} FROM ${source.from} WHERE ${source.where}${where?` AND (${where})`:''}`).get(...source.bindings,...params) as Record<string,number|null>;}
+ /** Complete reporting-only state counts, shared only by one WAL snapshot. */
+ watchReportingPopulation():Record<string,number>{
+  return this.readTransaction(()=>{
+   if(this.reportingPopulation)return {...this.reportingPopulation};
+   const groups=this.statement(`SELECT w.state,COUNT(*) n,SUM(w.verified_at IS NULL) unverified,SUM(w.deep_since IS NOT NULL) assigned,
+    SUM(w.last_decision_kind='economic-rejection' AND w.reobserve_ready=0) unchangedEconomic,
+    SUM(w.last_decision_kind='technical-unavailable' AND w.reobserve_ready=0) unchangedTechnical
+    FROM watch_rows w INDEXED BY watch_rows_report_summary_v1 WHERE w.archived=0 GROUP BY w.state`).all() as Array<{state:string;n:number;unverified:number;assigned:number;unchangedEconomic:number|null;unchangedTechnical:number|null}>;
+   const result:Record<string,number>={known:0,watch:0,unverified:0,deep:0,unchangedEconomic:0,unchangedTechnical:0,tracked:0,awaitingDeep:0,deepObserving:0};
+   for(const row of groups){result['state_'+row.state]=row.n;result.known!+=row.n;result.unverified!+=row.unverified;
+    if(!['EXPIRED','PERMANENTLY_UNSUPPORTED'].includes(row.state))result.tracked!+=row.n;
+    if(['WATCH','DEFERRED'].includes(row.state)){result.watch!+=row.n;result.awaitingDeep!+=row.n-row.unverified;result.unchangedEconomic!+=row.unchangedEconomic??0;result.unchangedTechnical!+=row.unchangedTechnical??0;}
+    if(['DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING'].includes(row.state)){result.deep!+=row.assigned;result.deepObserving!+=row.n;}
+   }
+   this.reportingPopulation=result;return {...result};
+  });
+ }
 
  listMetadata(q:{after?:string;limit?:number;where?:string;params?:RegistryParameter[]}={}):WatchIdentityMetadata[]{const params=[...(q.params??[])];const conditions=[q.where??'1'];if(q.after){conditions.push('w.signature>?');params.push(q.after);}return this.queryRows({where:conditions.join(' AND '),params,orderBy:'w.signature',limit:q.limit??256}).map(r=>({signature:r.signature,mint:r.mint,pool:r.pool,migrationAt:r.migrationAt,verifiedAt:r.verifiedAt,state:r.state,olderResearch:!!r.olderResearch}));}
  enqueueVerification(seed:WatchSeed,priority=0,provenance?:{source:string;kind:string}):boolean{return this.transaction(()=>{need(name(seed.signature)&&integer(seed.receivedAt),'MARKET_REGISTRY_VERIFICATION_SEED');const result=this.statement('INSERT OR IGNORE INTO verification_queue(signature,feed_mint,received_at,not_before,priority,source,kind) VALUES(?,?,?,?,?,?,?)').run(seed.signature,seed.feedMint??null,seed.receivedAt,seed.receivedAt,priority,provenance?.source??'pumpportal-migration',provenance?.kind??'migration');if(seed.feedMint)this.observeIdentity({mint:seed.feedMint,signature:seed.signature,at:seed.receivedAt,source:provenance?.source??'pumpportal-migration',kind:provenance?.kind??'migration'});return result.changes===1;});}
@@ -314,7 +343,7 @@ export class MarketRegistry {
  nextVerification(at:number):WatchSeed|undefined{const r=this.statement("SELECT signature,feed_mint,received_at FROM verification_queue WHERE state='PENDING' AND not_before<=? ORDER BY priority DESC,received_at,signature LIMIT 1").get(at) as {signature:string;feed_mint:string|null;received_at:number}|undefined;return r?{signature:r.signature,...(r.feed_mint?{feedMint:r.feed_mint}:{}),receivedAt:r.received_at}:undefined;}
  deferVerification(signature:string,until:number,reason='verification retry deferred'):void{this.write(()=>{this.statement("UPDATE verification_queue SET not_before=?,attempts=attempts+1,last_reason=? WHERE signature=? AND state='PENDING'").run(until,reason,signature);});}
  verificationCount():number{return Number((this.statement("SELECT COUNT(*) n FROM verification_queue WHERE state='PENDING'").get() as {n:number}).n);}
- verificationStats(at:number){const r=this.statement("SELECT COUNT(*) pending,SUM(CASE WHEN not_before<=? THEN 1 ELSE 0 END) ready,MIN(received_at) oldestReceivedAt FROM verification_queue WHERE state='PENDING'").get(at) as {pending:number;ready:number|null;oldestReceivedAt:number|null};return {...r,ready:r.ready??0,maxWaitMs:r.oldestReceivedAt===null?0:Math.max(0,at-r.oldestReceivedAt)};}
+ verificationStats(at:number){const retained=this.reportingVerification?.get(at);if(retained)return {...retained};const r=this.statement("SELECT COUNT(*) pending,SUM(CASE WHEN not_before<=? THEN 1 ELSE 0 END) ready,MIN(received_at) oldestReceivedAt FROM verification_queue WHERE state='PENDING'").get(at) as {pending:number;ready:number|null;oldestReceivedAt:number|null};const value={...r,ready:r.ready??0,maxWaitMs:r.oldestReceivedAt===null?0:Math.max(0,at-r.oldestReceivedAt)};this.reportingVerification?.set(at,value);return {...value};}
  putOrigin(mint:string,origin:unknown):void{this.write(()=>{const at=this.clock();this.statement('INSERT INTO origin_proofs(mint,body,created_at,updated_at) VALUES(?,?,?,?) ON CONFLICT(mint) DO UPDATE SET body=excluded.body,available=1,updated_at=excluded.updated_at,archived_at=NULL,archive_reason=NULL').run(mint,json(origin),at,at);});}
  getOrigin<T=unknown>(mint:string):T|undefined{const row=this.statement('SELECT body FROM origin_proofs WHERE mint=?').get(mint) as {body:string}|undefined;return row?JSON.parse(row.body) as T:undefined;}
  hasOrigin(mint:string):boolean{return !!this.statement('SELECT 1 FROM origin_proofs WHERE mint=? AND available=1').get(mint);}
@@ -386,8 +415,8 @@ export class MarketRegistry {
   return {...row,p50:quantile(.5),p95:quantile(.95)};
  }
  /** Trusted expression bindings precede WHERE bindings in query.params. */
- valueSummary(query:{expression:string;where?:string;params?:RegistryParameter[];index?:RegistryReportingIndex}):RegistryMetricSummary {
-  const source=`SELECT (${query.expression}) value FROM watch_rows w${this.reportingIndex(query.index)} WHERE w.archived=0${query.where?` AND (${query.where})`:''}`;
+ valueSummary(query:{expression:string;where?:string;params?:RegistryParameter[];index?:RegistryReportingIndex;tokenAgeAt?:number}):RegistryMetricSummary {
+  const rows=this.reportingRows(query.index,query.tokenAgeAt),source=`SELECT (${query.expression}) value FROM ${rows.from} WHERE ${rows.where}${query.where?` AND (${query.where})`:''}`;
   // Evaluate the same current population once. Exact nearest-rank quantiles
   // share its single ordered window; NULL sorting/counting and Number(NULL)
   // retain the established public summary semantics. No cross-report cache.
@@ -396,7 +425,7 @@ export class MarketRegistry {
     SUM(value) OVER() total,AVG(value) OVER() mean,MAX(value) OVER() maximum FROM sample
   ) SELECT COUNT(*) count,COALESCE(MAX(total),0) sum,MAX(mean) mean,MAX(maximum) max,
    MAX(CASE WHEN position=(count+1)/2 THEN value END) p50,
-   MAX(CASE WHEN position=(count*95+99)/100 THEN value END) p95 FROM ranked`).get(...(query.params??[])) as RegistryMetricSummary;
+   MAX(CASE WHEN position=(count*95+99)/100 THEN value END) p95 FROM ranked`).get(...rows.bindings,...(query.params??[])) as RegistryMetricSummary;
   return {...row,p50:row.count?Number(row.p50):null,p95:row.count?Number(row.p95):null};
  }
  nextWatchActivities(limit=16):{mint:string;at:number;evidence:'unverified-provider-activity-hint'}[]{
@@ -572,7 +601,7 @@ export class MarketRegistry {
  }
  coverage(at:number){return this.coverageSnapshot(at);}
  coverageSnapshot(at:number){const registryTransactions={...(this.reportingTransactionBaseline??this.transactionCounters())};return this.readTransaction(()=>{const hour=Math.floor(at/3600000)*3600000;const tokens=this.statement("SELECT (SELECT COUNT(*) FROM market_tokens) total,(SELECT COUNT(*) FROM market_tokens WHERE screen_state='WITH_ACTIVITY') with_activity").get() as {total:number;with_activity:number};const queue=this.verificationStats(at);const feeds=(this.statement('SELECT source,connected,last_observed_at,scope,coverage_gaps FROM market_feeds ORDER BY source').all() as {source:string;connected:number;last_observed_at:number;scope:string;coverage_gaps:number}[]).map(f=>({source:f.source,connected:!!f.connected,lastObservedAt:f.last_observed_at,scope:f.scope,coverageGaps:f.coverage_gaps}));
-  const active=this.aggregate({tracked:"SUM(CASE WHEN w.state NOT IN ('EXPIRED','PERMANENTLY_UNSUPPORTED') THEN 1 ELSE 0 END)",awaitingDeep:"SUM(CASE WHEN w.state IN ('WATCH','DEFERRED') AND w.verified_at IS NOT NULL THEN 1 ELSE 0 END)",deep:"SUM(CASE WHEN w.state IN ('DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING') THEN 1 ELSE 0 END)"},undefined,[],'watch_rows_report_summary_v1');
+  const population=this.watchReportingPopulation(),active={tracked:population.tracked,awaitingDeep:population.awaitingDeep,deep:population.deepObserving};
   // Count the available proof population against the mint index. Historical
   // orphan proofs cannot subtract identities which the registry never saw.
   const withOrigin=Number((this.statement('SELECT COUNT(*) n FROM origin_proofs o WHERE o.available=1 AND EXISTS(SELECT 1 FROM market_tokens t WHERE t.mint=o.mint)').get() as {n:number}).n);

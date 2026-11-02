@@ -1,6 +1,14 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {nativePaperEssentialEvidence,nativePaperEssentialEvidenceLazy,nativePaperCandidatePreparationEvidence} from '../src/native-evidence-classification.js';
+import {nativePaperEssentialEvidence,nativePaperEssentialEvidenceLazy,nativePaperCandidatePreparationEvidence,nativePaperSupplementaryEvidence} from '../src/native-evidence-classification.js';
+
+test('only explicit raw examples are supplementary, never selected events, refusal identity, audits or finance',()=>{
+ for(const kind of ['native-flow-raw-representative','native-flow-raw-refusal']){
+  assert.equal(nativePaperSupplementaryEvidence(kind,{supplementaryOnly:true}),true);
+  for(const data of [undefined,null,{},false,{supplementaryOnly:false},{supplementaryOnly:'true'},{supplementaryOnly:1}])assert.equal(nativePaperSupplementaryEvidence(kind,data),false);
+ }
+ for(const kind of ['native-flow-validated-events','native-flow-information-available','native-flow-notification','native-flow-refusal','native-flow-noncanonical-notification-refused','native-flow-protocol-pool-effect','native-candidate-window-audit','native-candidate-quality-gap','trader-execution','native-paper-entry-proof-pinned','paper-execution-plan','unknown'])assert.equal(nativePaperSupplementaryEvidence(kind,{supplementaryOnly:true}),false,kind);
+});
 
 test('provisional preparation can expire while financial and legacy evidence stays permanent',()=>{
  assert.equal(nativePaperEssentialEvidence('native-paper-entry-proof-pinned','idle',false,{provisional:true}),false);
