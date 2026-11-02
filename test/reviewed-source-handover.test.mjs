@@ -157,7 +157,7 @@ for(const installed of [p.selection,p.retention])test('installed '+installed.sli
 
 
 test('the exact installed sustained runtime remains accepted until the reviewed efficiency source passes every check',()=>{
- assert.equal(p.sustained,'1ffbda5445ea31ec0cfed2591669ace928c7f278');assert.match(p.to,/^[a-f0-9]{40}$/,'bind the actual reviewed runtime source before publishing');assert.notEqual(p.to,p.sustained);
+ assert.equal(p.sustained,'1ffbda5445ea31ec0cfed2591669ace928c7f278');assert.equal(p.to,'92d83ba59d542fa2dfb20bca4444b704666f9c05','bind the reviewed efficiency and publication-budget source');assert.notEqual(p.to,p.sustained);
  const c=new SnapshotCache({...identity(),release:p.sustained});assert.equal(attachReviewedSourceHandover(c),true);
  const prior={...sample('90',p.sustained,T-120000),financialEpoch:v3Epoch()};c.accept(prior,T);const before=c.read(),history=c.equityHistory();
  for(const mutate of [s=>{s.account.id='other';},s=>{s.source.strategy='other';},s=>{s.sequence='89';},s=>{delete s.financialEpoch;},s=>{s.financialEpoch.backupSha256='f'.repeat(64);}]){
