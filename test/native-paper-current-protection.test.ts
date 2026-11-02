@@ -12,7 +12,7 @@ test('actual completion accounting separates observed current-run maxima from re
  assert.ok(begin>=0&&end>0,'extract the actual complete record/completion closure');
  let at=10000;const positions:any={held:{mint:'held',units:'100',enteredAt:1000}},pauses:string[]=[],holder:any={};
  const context:any={financialHandoff:new NativeFinancialHandoff('offline-completion-accounting',10000,4),observeSlotOutcome:()=>{},__name:(f:unknown)=>f,holder,Buffer,Date:{now:()=>at},Math,Number,Map,Object,PILOT_TIMING,NATIVE_PAPER_PROCESSING_RESERVE,MIB:1024*1024,
-  need:(value:unknown,reason:string)=>{if(!value)throw Error(reason);},service:false,recording:[],providerStats:{httpTimeouts:0,httpErrors:0,throttles:0},eventBytes:0,segmentBytes:0,
+  need:(value:unknown,reason:string)=>{if(!value)throw Error(reason);},service:false,failureEvidence:undefined,recording:[],providerStats:{httpTimeouts:0,httpErrors:0,throttles:0},eventBytes:0,segmentBytes:0,
   recorder:{record(){}},ledger:{state:()=>({positions})},bridge:{trader:{pauseNewEntries:(reason:string)=>pauses.push(reason)}},completed:new Map(),startedAt:10000,
   maxCompletedGap:89426,maxQuoteAge:70,currentRunMaximumCompletedGapMs:null,currentRunMaximumQuoteAgeAtUseMs:null,protectionBreaches:72,unavailableChecks:233,
   protectionEpoch:null,firstCompletedProtectionAt:null,lastCompleted:null,lastCompletedProtectionAt:null,

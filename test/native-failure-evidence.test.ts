@@ -95,7 +95,8 @@ test('same or newer run and foreign account cannot be reused or overwritten',asy
 test('symlink, hardlink, wrong mode and foreign file block only optional capture and remain untouched',async t=>{
  const f=fixture(t);await f.writer.close();const valid=readFileSync(f.path),victim=join(f.root,'victim');writeFileSync(victim,'ORIGINAL');
  for(const kind of ['symlink','hardlink','mode','foreign']){
-  unlinkSync(f.path);if(kind==='symlink')symlinkSync(victim,f.path);else if(kind==='hardlink')linkSync(victim,f.path);else writeFileSync(f.path,kind==='foreign'?'UNRECOGNIZED':valid,{mode:kind==='mode'?0o644:0o600});
+  unlinkSync(f.path);if(kind==='symlink')symlinkSync(victim,f.path);else if(kind==='hardlink')linkSync(victim,f.path);else writeFileSync(f.path,kind==='foreign'?'UNRECOGNIZED':valid,{mode:0o600});
+  if(kind==='mode'){chmodSync(f.path,0o644);assert.equal(lstatSync(f.path).mode&0o777,0o644,'unsafe-mode fixture must remain unsafe under umask 077');}
   const before=readFileSync(f.path),blocked=new NativeFailureEvidence({...f.input,identity:id(START+10),now:()=>START+10});assert.doesNotThrow(()=>blocked.observe('native-flow-raw-refusal',packet(START+10)));await blocked.flush();assert.equal(blocked.usage().available,false);await blocked.close();assert.deepEqual(readFileSync(f.path),before);assert.equal(readFileSync(victim,'utf8'),'ORIGINAL');
  }
 });
