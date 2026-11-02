@@ -1,6 +1,19 @@
 import {test} from 'node:test';
 import assert from 'node:assert/strict';
-import {nativePaperEssentialEvidence,nativePaperEssentialEvidenceLazy} from '../src/native-evidence-classification.js';
+import {nativePaperEssentialEvidence,nativePaperEssentialEvidenceLazy,nativePaperCandidatePreparationEvidence} from '../src/native-evidence-classification.js';
+
+test('provisional preparation can expire while financial and legacy evidence stays permanent',()=>{
+ assert.equal(nativePaperEssentialEvidence('native-paper-entry-proof-pinned','idle',false,{provisional:true}),false);
+ assert.equal(nativePaperEssentialEvidence('native-paper-entry-proof-pinned','idle',false,{}),true);
+ for(const kind of ['trader-quote','trader-pilot-entry-deposit','sdk-state','pool-state','rent-context','pilot-entry-cost-preparation']){
+  assert.equal(nativePaperCandidatePreparationEvidence(kind,'candidate'),true);
+  assert.equal(nativePaperCandidatePreparationEvidence(kind,'protection'),false);
+ }
+ for(const kind of ['trader-execution','paper-execution-failed','native-paper-entry-permission','trader-financial-maintenance-failed']){
+  assert.equal(nativePaperCandidatePreparationEvidence(kind,'candidate'),false);
+  assert.equal(nativePaperEssentialEvidence(kind,'candidate',false),true);
+ }
+});
 const kinds=['native-flow-notification','native-flow-validated-events','native-flow-refusal','native-candidate-quality-gap','native-opportunity-evaluation','pilot-entry-local-reprice','trader-input','trader-predictive-assessment','trader-candidate-evidence-deferred','trader-quote-deferred','trader-context','trader-context-reuse','trader-held-evaluation','trader-decision','paper-unsigned-pumpswap','paper-execution-failed','native-paper-protection-dispatch-yield','trader-candidate-financial-evaluation-failed','trader-financial-maintenance-failed','trader-config','trader-execution','trader-quote','trader-pilot-execution-attempt','trader-pilot-entry-deposit','research-clock-response','pool-state','price-response','sdk-state','rent-context','pilot-entry-cost-preparation','rpc-market-quote','native-paper-start','native-paper-stop','native-paper-recovery','native-paper-entry-proof-pinned','other-unknown'];
 test('lazy ownership exactly preserves every evidence classification and reads current state only when needed',()=>{
  for(const work of ['idle','candidate','pending','protection'])for(const kind of kinds)for(const owned of [false,true])for(const stage of ['qualified','exit-reserved','rejected',undefined]){

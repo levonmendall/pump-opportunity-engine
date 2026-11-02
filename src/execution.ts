@@ -10,6 +10,9 @@ export type ExecutionBatch={results:ExecutionResult[];adapterBlocked:boolean;nex
 export type ExecutionRunOptions={maxActions?:1|2|3};
 export type ExecutionOptions={
   entryScope?:(mint:string,at:number)=>TokenAgeDecision;
+  /** Persist the exact entry evidence before the first durable order can exist.
+   * Synchronous, no provider work; a failure leaves the financial writer untouched. */
+  beforeEntryReservation?:(order:Readonly<Omit<Order,'reserved'|'allocation'>>)=>void;
   ledger:PaperLedger;
   /** These adapters must honor AbortSignal. They may only read market/account context. */
   context:(signal:AbortSignal)=>Promise<ExecutionContext>;
@@ -73,6 +76,7 @@ export class PaperExecutionCoordinator{
     if(order.side==='buy'&&this.outstanding)throw new Error('execution adapter unavailable for new entries');
     let prepared=order;
     if(this.options.executionPlan){const plan=this.options.executionPlan(Object.freeze({...order}));if(validatePaperProtectionExecutionFallback(plan)){const held=this.options.ledger.state().positions[order.mint];if(order.side!=='sell'||plan.mint!==order.mint||plan.units!==held?.units||plan.sourceEvidence!==order.decisionEvidence||plan.at>now||now-plan.at>2000)throw Error('PAPER execution preparation unavailable');prepared={...order,decisionEvidence:paperProtectionFallbackEvidence(plan,order.id)};}else{if(!plan||!validatePaperExecutionPlan(plan)||plan.plannedAt!==order.decidedAt)throw Error('PAPER execution preparation unavailable');prepared={...order,executeAt:plan.executeAt,expiresAt:plan.expiresAt,temporaryRentLamports:plan.temporaryQuoteRentLamports,executionModel:plan} as typeof prepared;}}
+    if(prepared.side==='buy')this.options.beforeEntryReservation?.(Object.freeze({...prepared}));
     return this.options.ledger.order(prepared,context.price??UNKNOWN_PRICE,context.marks);
   }
   readinessSafety(){return {recoveryComplete:this.recovered,idle:!this.active&&!this.outstanding,uncertainActions:this.uncertain.size};}
