@@ -17,6 +17,7 @@ import {PILOT_VERSION,PILOT_CONTRACT_SHA256} from '../src/pilot-contract.js';
 const scope=(n:number)=>{const bytes=Buffer.alloc(32);bytes.writeUInt32LE(n,0);const mint=new PublicKey(bytes);return {mint:mint.toBase58(),pool:canonicalPumpPoolPda(mint).toBase58(),baseUnits:'1',minSlot:1,supportedPoolEvidence:'SYNTHETIC capacity identity only'};};
 const signature=(n:number)=>bs58.encode(Buffer.alloc(64,n));
 class Socket extends EventEmitter{
+ get readyState(){return this.closed?WebSocket.CLOSED:WebSocket.OPEN;}
  _socket=Object.assign(new EventEmitter(),{bytesRead:200});closed=false;
  frame(payload:unknown){if(this.closed)return;const b=Buffer.from(typeof payload==='string'?payload:JSON.stringify(payload));this._socket.bytesRead+=b.length+4;this._socket.emit('data',b);this.emit('message',b);}
  send(_data:string,callback?:(e?:Error)=>void){callback?.();queueMicrotask(()=>this.frame({message:"Subscribed to 'migration' events."}));}

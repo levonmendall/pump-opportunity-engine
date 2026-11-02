@@ -172,6 +172,38 @@ test('current V3.1 uses strict actual-generation notification fences without a r
  const opened=f.records.find(row=>row.kind==='native-candidate-audit-session-open')!;assert.equal(opened.data.fenceKind,'current-generation-notifications');const audit=f.records.find(row=>row.kind==='native-candidate-window-audit')!.data.result;assert.equal(audit.anchorKind,'notification');assert.equal(audit.contextFences,null);assert.ok(audit.requiredSignatures.length>0);assert.equal(audit.executedFlowCompletenessVerified,true);assert.equal(f.rpcCalls[0]!.method,'getSignaturesForAddress');assert.equal((f.rpcCalls[0]!.params[1] as any).before,audit.anchor.signature);await f.runner.stop();
 });
 
+for(const missingInterior of [false,true])test(`an ahead-of-stream bank ceiling cannot replace actual window boundaries${missingInterior?' or excuse a missing interior success':''}`,async()=>{
+ const f=fixture({durableMarketPolicy:true,fairEconomicCompletions:true,forcePredictiveFeatures:true,scopedNotifications:true}),mint=f.seed(1);await f.steps(2);f.advance(70000);f.refresh();
+ const state=f.states.get(mint)!,features=f.flow.snapshot(mint)!.features!,end=features.windowEndAt,start=features.windowStartAt,captured=structuredClone(state.notes),anchor=captured.at(-1)!;
+ assert.ok(anchor.receivedAt>=end&&anchor.availableAt>=end);state.upper!.slot=anchor.slot+100;
+ const required=captured.filter(n=>n.availableAt>=start&&n.availableAt<end),interiorSlot=required[Math.floor(required.length/2)]!.slot+1,call=f.rpc.call.bind(f.rpc);
+ const independentRow=(id:number,slot:number)=>({signature:sig(id),slot,err:null,blockTime:null,confirmationStatus:'confirmed'});
+ // SYNTHETIC provider lag: independently known later slots have not reached
+ // selected capture yet. The actual post-window cursor excludes only that
+ // future suffix; any unobserved success inside the fixed census must refuse.
+ f.rpc.call=(async(...args:Parameters<typeof call>)=>{const payload=await call(...args) as any[],before=(args[1]![1] as any).before;
+  const extra=[...(before?[]:[independentRow(8000001,anchor.slot+50)]),...(missingInterior?[independentRow(8000002,interiorSlot)]:[])];return [...payload,...extra].sort((a,b)=>b.slot-a.slot);
+ }) as typeof f.rpc.call;
+ await f.steps(2);const audit=f.records.find(row=>row.kind==='native-candidate-window-audit')!.data.result;
+ assert.equal(audit.status,missingInterior?'unusable':'verified','only missing success inside the original availability-window census may invalidate this fixture');
+ assert.equal(audit.anchorKind,'notification');assert.equal(audit.contextFences,null);assert.equal(audit.anchor.signature,anchor.signature);assert.equal(audit.strictInteriorSlots.upper,anchor.slot);assert.ok(audit.strictInteriorSlots.upper<state.upper!.slot);
+ assert.deepEqual(audit.target,{startAt:start,endAt:end});assert.deepEqual(audit.requiredSignatures,required.map(n=>n.signature));assert.ok(required.every(n=>n.slot>audit.strictInteriorSlots.lower&&n.slot<audit.strictInteriorSlots.upper));
+ assert.deepEqual(f.rpcCalls.map(c=>c.method),['getSignaturesForAddress']);assert.equal((f.rpcCalls[0]!.params[1] as any).before,anchor.signature);assert.equal((f.rpcCalls[0]!.params[1] as any).minContextSlot,anchor.slot);assert.equal(audit.historyRangeCovered,true);
+ if(missingInterior){assert.equal(audit.status,'unusable');assert.equal(audit.reason,'NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED');assert.deepEqual(audit.missingSuccessfulNotifications.map((n:any)=>n.signature),[sig(8000002)]);assert.equal(f.runner.status().counters.auditedWindows,0);assert.equal(f.runner.currentAuditCertificate(mint),null);}
+ else{assert.equal(audit.status,'verified');assert.equal(audit.executedFlowCompletenessVerified,true);assert.equal(f.runner.status().counters.auditedWindows,1);const current=f.flow.snapshot(mint)!.features!;for(const key of ['windowStartAt','windowEndAt','tradeCount','buyLamports','sellLamports','netBuyLamports','firstPrice','lastPrice'] as const)assert.deepEqual(current[key],features[key],'original target features are unchanged');}
+ await f.runner.stop();
+});
+
+for(const boundary of ['wrong-generation','pre-window-receipt','target-slot-boundary'] as const)test(`an already-fresh bank ceiling remains the fallback for ${boundary} capture`,async()=>{
+ const f=fixture({durableMarketPolicy:true,fairEconomicCompletions:true,forcePredictiveFeatures:true,scopedNotifications:true}),mint=f.seed(1);await f.steps(2);f.advance(70000);f.refresh();
+ const state=f.states.get(mint)!,end=Math.floor(f.now/10000)*10000;
+ if(boundary==='wrong-generation')for(const note of state.notes)if(note.receivedAt>=end)note.connectionId=2;
+ if(boundary==='pre-window-receipt')for(const note of state.notes)if(note.receivedAt>=end)note.receivedAt=end-1;
+ if(boundary==='target-slot-boundary')state.notes.find(note=>note.availableAt>=end-60000&&note.availableAt<end)!.slot=state.notes.at(-1)!.slot;
+ await f.steps(2);const opened=f.records.find(row=>row.kind==='native-candidate-audit-session-open')!;assert.equal(opened.data.fenceKind,'confirmed-bank-context');assert.equal(f.flowActions.filter(action=>action==='support').length,0);assert.equal(f.auditCalls,1);
+ const audit=f.records.find(row=>row.kind==='native-candidate-window-audit')!.data.result;assert.equal(audit.anchorKind,'confirmed-bank-context');assert.equal(audit.contextFences.upper.slot,state.upper!.slot);await f.runner.stop();
+});
+
 for(const boundary of ['wrong-generation','ambiguous-slot','quiet','legacy'] as const)test(`bank Clock refresh remains the audit fallback for ${boundary} notification boundaries`,async()=>{
  const f=fixture({...(boundary!=='legacy'?{durableMarketPolicy:true as const}:{}),fairEconomicCompletions:true,forcePredictiveFeatures:boundary!=='quiet',scopedNotifications:true}),mint=f.seed(1);await f.steps(8);f.advance(50000);f.refresh();f.advance(20000);const state=f.states.get(mint)!,end=Math.floor(f.now/10000)*10000;
  if(boundary==='wrong-generation')for(const note of state.notes)if(note.receivedAt>=end)note.connectionId=2;
