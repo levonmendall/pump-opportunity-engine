@@ -14,6 +14,7 @@ import type {ComponentKind} from '../src/component-budget.js';
 
 const flush=async()=>{for(let i=0;i<64;i++)await Promise.resolve();};
 class Socket extends EventEmitter{
+  get readyState(){return this.closed?WebSocket.CLOSED:this.terminateRequested?WebSocket.CLOSING:WebSocket.OPEN;}
   readonly _socket=Object.assign(new EventEmitter(),{bytesRead:200});
   readonly sent:string[]=[];closed=false;terminateRequested=false;delayClose=false;automaticAck=true;
   constructor(readonly endpoint:string){super();}

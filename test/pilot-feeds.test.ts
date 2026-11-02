@@ -12,6 +12,7 @@ const fixtureTx=JSON.parse(readFileSync('evidence/targeted-transaction-sample.js
 const scope={mint:'2suCpXe3HaSqCZ2Bb4dgmRrJjuDDRqwYDUTEJ3Kypump',pool:'DtcDNMjNQjkqS2qBrB3xbHbQWy3jwYXq6BYLFhKQ2MVD',baseUnits:'138353716808147',minSlot:fixtureTx.transaction.slot,supportedPoolEvidence:'OFFLINE_FIXTURE_ONLY'};
 const selected=()=>({mint:scope.mint,poolId:scope.pool,pool:'pump-amm',signature:fixtureTx.signature,action:'sell',txSigner:'NOT_THE_VERIFIED_TRADER',quoteAmount:1});
 class Socket extends EventEmitter{
+  get readyState(){return this.closed?WebSocket.CLOSED:WebSocket.OPEN;}
   _socket=Object.assign(new EventEmitter(),{bytesRead:200});closed=false;paused=false;pauseCalls=0;resumeCalls=0;readonly pendingFrames:Array<{payload:unknown;bytes?:number}>=[];readonly sent:string[]=[];
   constructor(readonly endpoint:string){super();}
   send(data:string,callback?:(error?:Error)=>void){assert.equal(this.endpoint,'wss://pumpportal.fun/api/data');const method=JSON.parse(data).method;assert.ok(['subscribeMigration','subscribeNewToken'].includes(method));this.sent.push(data);callback?.();queueMicrotask(()=>this.frame({message:method==='subscribeMigration'?"Subscribed to 'migration' events.":'Successfully subscribed to token creation events.'}));}

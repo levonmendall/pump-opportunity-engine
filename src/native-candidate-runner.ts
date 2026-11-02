@@ -589,7 +589,15 @@ export class NativeCandidateRunner{
  private async beginAudit(c:Candidate,signal?:AbortSignal){
   const mint=c.identity.baseMint,at=this.now(),view=this.options.flow.snapshot(mint,at);if(!view?.warm||!view.features)return;
   const end=view.features.windowEndAt;c.nextAuditAt=end+PROVISIONAL_RULE.bucketMs;
-  const ledger=this.options.flow.notificationLedger(mint),lowerContext=this.lowerAuditContext(c,view,ledger),bankCeilingReady=!!view.supportContext&&view.supportContext.bankClockAt>=end,notificationFences=lowerContext&&bankCeilingReady?null:this.notificationAuditFences(c,view,ledger,at);
+  // The declared window uses actual application availability. A fresh bank
+  // Clock can lead the selected notification stream: preferring that larger
+  // slot ceiling would demand packets which have not arrived after the target
+  // window yet. Choose the existing strict, current-generation notification
+  // boundaries before requesting history whenever both are available. The
+  // selector includes every target signature and requires a later-slot packet
+  // received after the window; it cannot shorten a completed audit around a
+  // missing row. Quiet or ambiguous capture still needs the bank-context path.
+  const ledger=this.options.flow.notificationLedger(mint),lowerContext=this.lowerAuditContext(c,view,ledger),bankCeilingReady=!!view.supportContext&&view.supportContext.bankClockAt>=end,notificationFences=this.notificationAuditFences(c,view,ledger,at);
   if(!notificationFences&&!lowerContext){this.auditFenceWarming(c,view,at);return;}
   const deadlineAt=end+NATIVE_CANDIDATE_AUDIT_PROFILE.maximumAuditSpanMs;
   const generation=Number.isSafeInteger(view.connectionId)&&Number.isSafeInteger(view.subscription)&&c.openedAt!==null?{mint,pool:c.identity.pool,openedAt:c.openedAt,connectionId:view.connectionId!,subscriptionId:view.subscription!}:null;

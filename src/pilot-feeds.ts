@@ -307,7 +307,7 @@ export class PilotFeeds {
     finally{counter.processingMs+=performance.now()-started;}
   }
   private message(leg:Leg,c:Connection,raw:WebSocket.RawData){
-    if(c.closed||leg.connection!==c||!this.live())return;if(this.marketPressure.paused){this.marketPressure.framesProcessedWhilePaused++;this.marketPressure.framesByFeedWhilePaused[leg.name]++;}const receivedAt=this.now(),b=Array.isArray(raw)?Buffer.concat(raw):Buffer.from(raw as ArrayBuffer);this.frames++;this.sample(leg,c);need(b.length<=65536,'PILOT_FEED_PAYLOAD_LIMIT');if(!leg.desired||c.closeReason)return;
+    if(c.closed||leg.connection!==c||!this.live())return;if(this.marketPressure.paused){this.marketPressure.framesProcessedWhilePaused++;this.marketPressure.framesByFeedWhilePaused[leg.name]++;}const receivedAt=this.now(),b=Array.isArray(raw)?Buffer.concat(raw):Buffer.from(raw as ArrayBuffer);this.frames++;this.sample(leg,c);need(b.length<=65536,'PILOT_FEED_PAYLOAD_LIMIT');if(!leg.desired||c.closeReason||c.socket.readyState!==WebSocket.OPEN)return;
     if(leg.name==='discovery'){
       let p:any;try{p=JSON.parse(b.toString());}catch{this.discoveryMalformedFrames++;return;}if(p?.message==="Subscribed to 'migration' events."){c.ack?.('subscribeMigration');return;}if(p?.message==="Successfully subscribed to token creation events."){c.ack?.('subscribeNewToken');return;}
       if(p?.txType==='create'){if(this.options.onMarketIdentity)this.observeMarket(p,'pumpportal-new-token',receivedAt);return;}if(p?.txType!=='migrate')return;
