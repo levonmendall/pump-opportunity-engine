@@ -1,6 +1,6 @@
 /** Fixed, nonsecret local retention projection. No financial files, provider,
  * dashboard schema changes or writes outside the existing public directory. */
-import {constants,closeSync,fchmodSync,fstatSync,fsyncSync,lstatSync,openSync,readFileSync,realpathSync,renameSync,unlinkSync,writeFileSync,type Stats} from 'node:fs';
+import {constants,closeSync,fchmodSync,fstatSync,lstatSync,openSync,readFileSync,realpathSync,renameSync,unlinkSync,writeFileSync,type Stats} from 'node:fs';
 import {basename,dirname,isAbsolute,join,resolve} from 'node:path';
 import {randomUUID} from 'node:crypto';
 
@@ -68,6 +68,9 @@ function boundedPublicJson(path:string,owner:number,maximum:number):Record<strin
 
 /** Publish beside the existing status, never create a public directory or
  * modify status.json. Production ownership is the existing poe-runtime UID988.
+ * This replaceable current read model never authorizes retention/deletion and
+ * is not recovery history. Atomic replacement supplies complete current bytes;
+ * it needs no file/directory durability barriers on the financial event loop.
  * Failures return false and never publish a partial report. */
 export function writePoeStorageRetentionReport(input:PoeStorageRetentionReportInput):boolean{
  let directory:number|undefined,temp:string|undefined;
@@ -89,9 +92,9 @@ export function writePoeStorageRetentionReport(input:PoeStorageRetentionReportIn
   need(Buffer.byteLength(body)<=STORAGE_RETENTION_REPORT_MAX_BYTES);
   temp=join(anchor,'.runtime-storage-retention-'+randomUUID()+'.pending');
   const fd=openSync(temp,constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);
-  try{writeFileSync(fd,body);fchmodSync(fd,0o644);fsyncSync(fd);}finally{closeSync(fd);}
+  try{writeFileSync(fd,body);fchmodSync(fd,0o644);}finally{closeSync(fd);}
   const named=lstatSync(parent);need(!named.isSymbolicLink()&&named.dev===before.dev&&named.ino===before.ino&&named.uid===owner&&(named.mode&0o777)===0o755);
-  renameSync(temp,target);temp=undefined;fsyncSync(directory);return true;
+  renameSync(temp,target);temp=undefined;return true;
  }catch{return false;}
  finally{if(temp)try{unlinkSync(temp);}catch{/* Only this invocation's private staging name. */}if(directory!==undefined)closeSync(directory);}
 }

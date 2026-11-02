@@ -87,3 +87,27 @@ test('invalid identity or future publication cannot replace a valid report',t=>{
 test('same account can publish a new release after the existing public status advances',t=>{
  const f=fixture(t);assert.equal(writePoeStorageRetentionReport(f.input),true);const next='b'.repeat(40);writeFileSync(f.publicStatusPath,JSON.stringify({...f.status,release:next}));assert.equal(writePoeStorageRetentionReport({...f.input,source:next}),true);assert.equal(JSON.parse(readFileSync(f.target,'utf8')).source,next);
 });
+
+test('current retention publication needs no durability barrier and retains fresh complete output',t=>{
+ const f=fixture(t),publicBefore=readFileSync(f.publicStatusPath);let syncCalls=0;
+ t.mock.method(fs,'fsyncSync',()=>{syncCalls++;throw Error('OFFLINE_DURABILITY_BARRIER_UNAVAILABLE');});syncBuiltinESMExports();
+ try{
+  assert.equal(writePoeStorageRetentionReport(f.input),true);
+  const actual=JSON.parse(readFileSync(f.target,'utf8'));
+  assert.deepEqual(actual,projectPoeStorageRetentionReport(f.input));assert.equal(actual.generatedAt,f.input.generatedAt);assert.equal(syncCalls,0);
+  assert.equal(lstatSync(f.target).mode&0o777,0o644);assert.deepEqual(readFileSync(f.publicStatusPath),publicBefore);
+ }finally{t.mock.restoreAll();syncBuiltinESMExports();}
+});
+
+test('partial staging writes and failed rename preserve the previous report and remove only private staging bytes',t=>{
+ const f=fixture(t);assert.equal(writePoeStorageRetentionReport(f.input),true);const previous=readFileSync(f.target),publicBefore=readFileSync(f.publicStatusPath);
+ const next={...f.input,generatedAt:f.input.generatedAt+1,financial:{...(f.input.financial as object),financialOrdersIndexed:26}};
+ const write=fs.writeFileSync;
+ t.mock.method(fs,'writeFileSync',((...args:Parameters<typeof fs.writeFileSync>)=>{write(args[0],'partial',{encoding:'utf8'});throw Error('OFFLINE_PARTIAL_WRITE');}) as typeof fs.writeFileSync);syncBuiltinESMExports();
+ try{assert.equal(writePoeStorageRetentionReport(next),false);}finally{t.mock.restoreAll();syncBuiltinESMExports();}
+ assert.deepEqual(readFileSync(f.target),previous);assert.deepEqual(readFileSync(f.publicStatusPath),publicBefore);assert.deepEqual(readdirSync(f.publicDirectory).sort(),[STORAGE_RETENTION_REPORT_FILE,'status.json'].sort());
+ t.mock.method(fs,'renameSync',()=>{throw Error('OFFLINE_RENAME_UNAVAILABLE');});syncBuiltinESMExports();
+ try{assert.equal(writePoeStorageRetentionReport(next),false);}finally{t.mock.restoreAll();syncBuiltinESMExports();}
+ assert.deepEqual(readFileSync(f.target),previous);assert.deepEqual(readFileSync(f.publicStatusPath),publicBefore);assert.deepEqual(readdirSync(f.publicDirectory).sort(),[STORAGE_RETENTION_REPORT_FILE,'status.json'].sort());
+ assert.equal(writePoeStorageRetentionReport(next),true,'ordinary later publication recovers without caching the failed report');assert.equal(JSON.parse(readFileSync(f.target,'utf8')).financial.ordersIndexed,26);
+});

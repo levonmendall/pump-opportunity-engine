@@ -53,6 +53,10 @@ const idlBefore="const require=createRequire(import.meta.url),idlBytes=readFileS
 const idlAfter='const idlBytes=Buffer.from('+JSON.stringify(idlBytes.toString('base64'))+",'base64')";
 const fullIdlBefore="const require=createRequire(import.meta.url);\nconst idl=JSON.parse(readFileSync(join(dirname(require.resolve('@pump-fun/pump-swap-sdk')),'../src/idl/pump_amm.json'),'utf8')) as Idl;";
 const fullIdlAfter='const idl=JSON.parse(Buffer.from('+JSON.stringify(idlBytes.toString('base64'))+",'base64').toString('utf8')) as Idl;";
+// The narrowly verified cleanup proof becomes reachable from the native flow.
+// Bind its identical pinned IDL bytes; preserve every proof check unchanged.
+const cleanupIdlBefore="const require=createRequire(import.meta.url),idl=JSON.parse(readFileSync(join(dirname(require.resolve('@pump-fun/pump-swap-sdk')),'../src/idl/pump_amm.json'),'utf8')) as Idl,coder=new BorshCoder(idl);";
+const cleanupIdlAfter='const idl=JSON.parse(Buffer.from('+JSON.stringify(idlBytes.toString('base64'))+",'base64').toString('utf8')) as Idl,coder=new BorshCoder(idl);";
 const plugin={name:'exact-reviewed-runtime-resolution',setup(build){
   build.onLoad({filter:/[\\/]better-sqlite3[\\/]lib[\\/]binding\.js$/},args=>{
     need(realpathSync(args.path)===realpathSync(sqliteBinding),'UNREVIEWED_SQLITE_BINDING_PATH');const original=readFileSync(args.path),expected=hash(addonBytes);
@@ -72,10 +76,10 @@ const plugin={name:'exact-reviewed-runtime-resolution',setup(build){
     return {path:args.path,namespace:'poe-optional-unavailable'};
   });
   build.onLoad({filter:/.*/,namespace:'poe-optional-unavailable'},args=>({contents:optionalFallbacks.get('poe-optional-unavailable:'+args.path).contents,loader:'js'}));
-  build.onLoad({filter:/[\\/]src[\\/](?:sdk|paper-unsigned-pumpswap|program-log-mapping|migration-identity|pumpapi-mapping)\.ts$/},async args=>{
-    if(!['src/sdk.ts','src/paper-unsigned-pumpswap.ts','src/program-log-mapping.ts','src/migration-identity.ts','src/pumpapi-mapping.ts'].some(path=>args.path===join(root,path)))return;
+  build.onLoad({filter:/[\\/]src[\\/](?:sdk|paper-unsigned-pumpswap|program-log-mapping|migration-identity|pumpapi-mapping|protocol-pool-effects)\.ts$/},async args=>{
+    if(!['src/sdk.ts','src/paper-unsigned-pumpswap.ts','src/program-log-mapping.ts','src/migration-identity.ts','src/pumpapi-mapping.ts','src/protocol-pool-effects.ts'].some(path=>args.path===join(root,path)))return;
     const source=readFileSync(args.path,'utf8'),isSdk=basename(args.path)==='sdk.ts',isUnsignedSdk=basename(args.path)==='paper-unsigned-pumpswap.ts';
-    const isFull=['migration-identity.ts','pumpapi-mapping.ts'].includes(basename(args.path)),before=isSdk?sdkBefore:isUnsignedSdk?unsignedSdkBefore:isFull?fullIdlBefore:idlBefore,after=isSdk?sdkAfter:isUnsignedSdk?unsignedSdkAfter:isFull?fullIdlAfter:idlAfter;
+    const isFull=['migration-identity.ts','pumpapi-mapping.ts'].includes(basename(args.path)),isCleanup=basename(args.path)==='protocol-pool-effects.ts',before=isSdk?sdkBefore:isUnsignedSdk?unsignedSdkBefore:isCleanup?cleanupIdlBefore:isFull?fullIdlBefore:idlBefore,after=isSdk?sdkAfter:isUnsignedSdk?unsignedSdkAfter:isCleanup?cleanupIdlAfter:isFull?fullIdlAfter:idlAfter;
     need(source.split(before).length===2,'BUNDLE_NARROW_TRANSFORM_NO_LONGER_MATCHES:'+relative(root,args.path));
     const contents=source.replace(before,after);
     const sourceSha256=hash(source),transformedSha256=hash(contents);

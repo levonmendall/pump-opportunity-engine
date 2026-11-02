@@ -1,0 +1,171 @@
+/** Optional, bounded current-run failure evidence. This is never a trading
+ * permission, completeness proof, or financial durability requirement. */
+import {constants,type Stats} from 'node:fs';
+import {open,lstat,realpath,rename,unlink,type FileHandle} from 'node:fs/promises';
+import {createHash} from 'node:crypto';
+import {isAbsolute,join,resolve} from 'node:path';
+
+export const NATIVE_FAILURE_EVIDENCE_POLICY=Object.freeze({
+ version:'poe-current-native-failure-evidence-v1',file:'native-failure-evidence.json',
+ pendingFile:'native-failure-evidence.pending.json',maximumRawSamples:8,
+ maximumRawBytes:512*1024,maximumTransportSamples:24,
+ maximumDetailBytes:64*1024,maximumDetailRecordBytes:4096,maximumFileBytes:640*1024,
+});
+const P=NATIVE_FAILURE_EVIDENCE_POLICY;
+export type NativeFailureIdentity={accountId:string;inceptionAt:number;configurationSha256:string;source:{commit:string;sha256:string};runId:string;startedAt:number};
+type Data=Record<string,unknown>;
+type Stored={kind:string;eventAt:number;eventTimeBasis:'ORIGINAL_PACKET_RECEIPT'|'PRODUCER_EVENT_TIMESTAMP';capturedAt:number;data:Data;retainedEventSha256:string;sourceFieldsOmitted:number};
+type Stamp=Pick<Stats,'dev'|'ino'|'uid'|'gid'|'mode'|'nlink'|'size'|'mtimeMs'|'ctimeMs'>;
+const integer=(value:unknown):value is number=>typeof value==='number'&&Number.isSafeInteger(value)&&value>=0;
+const sha=(value:unknown):value is string=>typeof value==='string'&&/^[a-f0-9]{64}$/.test(value);
+const object=(value:unknown):value is Data=>value!==null&&typeof value==='object'&&!Array.isArray(value);
+const encode=(value:unknown)=>JSON.stringify(value);
+const digest=(raw:string|Buffer)=>createHash('sha256').update(raw).digest('hex');
+function need(value:unknown,code:string):asserts value{if(!value)throw Error(code);}
+const same=(a:Stamp,b:Stamp)=>['dev','ino','uid','gid','mode','nlink','size','mtimeMs','ctimeMs'].every(k=>a[k as keyof Stamp]===b[k as keyof Stamp]);
+const identityValid=(v:unknown):v is NativeFailureIdentity=>object(v)&&typeof v.accountId==='string'&&/^poe-[a-f0-9-]{36}$/.test(v.accountId)&&integer(v.inceptionAt)&&sha(v.configurationSha256)&&object(v.source)&&typeof v.source.commit==='string'&&/^[a-f0-9]{40}$/.test(v.source.commit)&&sha(v.source.sha256)&&integer(v.startedAt)&&typeof v.runId==='string'&&v.runId==='native-paper-'+new Date(v.startedAt).toISOString().replace(/[^0-9]/g,'');
+const TRANSPORT=new Set(['native-flow-transport-integrity-gap','native-flow-protocol-refused','native-flow-control-refused','native-flow-suppressed-library-control','native-flow-disconnected','native-flow-raw-refusal-unavailable','pilot-data-control-unavailable']);
+const DETAIL=new Set(['native-flow-refusal','native-flow-noncanonical-notification-refused']);
+const NUMBERS=new Set(('at receivedAt availableAt slot connection connectionId subscription subscriptionId operationId opcode selectedScopes retryAt handlerStartedAt handlerElapsedMs receiptAgeAtHandlerMs requestStartedAt writeCallbackAt abortRequestedAt matchingPongReceiptAt matchingPongHandledAt unmatchedPongs unadmittedMatchingPongs rpcErrorCode socketState validationElapsedMs requiredEventRetentionMs supplementaryRawRetentionMs admissionAndCallbacksMs maximumProcessingMs maximumReceiptAgeMs rawPayloadBytes messages frames pendingEvents maximumPendingEvents maximumHandlerQueueMs maximumMessageSpanMs conservativeRoundTripAt transportReceiptLowerBoundAt nextHeartbeatAt previousDueAt handledAt controlCooldownUntil reservationsRetained').split(' '));
+const FLAGS=new Set(('success duplicate correction defaultSignature selectedInformationAdmitted financialQualification requiresFreshWindow supportFresh candidateStillRegistered cancelled transportClosing transportClosed physicalSettlementClaimed writeCallbackSucceeded transportSettled expected physicalFrameSent originalSenderInvoked windowUsable partialMessage failed safeNonnegativeInteger retiredSubscriptionMatch activeSubscriptionMatch booleanResult physicalSettled publicRpcCooldownUnchanged').split(' '));
+const HASHES=new Set(['rawHash','signatureSha256']);
+const KEYS=new Set(['signature','mint','pool','subscriptionMint','subscriptionPool']);
+const TEXT:Record<string,Set<string>>={method:new Set(['logsSubscribe','logsUnsubscribe','ping','pong','PING','PONG']),classification:new Set(['noncanonical-signature','unusable']),kind:new Set(['upgrade','logsSubscribe','logsUnsubscribe','ping']),resultType:new Set(['null','array','undefined','boolean','number','string','object','function','symbol','bigint'])};
+const NESTED=new Set(['processingStages','receiptTiming','acknowledgement']);
+const base58=(v:unknown)=>typeof v==='string'&&v.length<=88&&/^[1-9A-HJ-NP-Za-km-z]+$/.test(v);
+function typed(input:Data,depth=0):{data:Data;omitted:number}{
+ const data:Data={};let omitted=0;
+ for(const [key,value]of Object.entries(input)){
+  if(key==='receivedAt'&&!integer(value))omitted++;
+  else if(NUMBERS.has(key)&&(value===null||typeof value==='number'&&Number.isFinite(value)&&Math.abs(value)<=Number.MAX_SAFE_INTEGER))data[key]=value;
+  else if(FLAGS.has(key)&&(value===null||typeof value==='boolean'))data[key]=value;
+  else if(HASHES.has(key)&&sha(value))data[key]=value;
+  else if(KEYS.has(key)&&base58(value))data[key]=value;
+  else if(TEXT[key]?.has(String(value)))data[key]=value;
+  else if((key==='reason'||key==='code')&&typeof value==='string'){
+   if(/^[A-Z][A-Z0-9_]{0,159}$/.test(value))data[key]=value;
+   else{data[key]='OTHER_UNEXPORTED_REASON';data[key+'Sha256']=digest(value);omitted++;}
+  }else if(NESTED.has(key)&&depth<1&&object(value)){
+   const nested=typed(value,depth+1);data[key]=nested.data;omitted+=nested.omitted;
+  }else omitted++;
+ }
+ return {data,omitted};
+}
+
+/** The caller already holds the native-engine single-writer lease. Only these
+ * two fixed files belong to this helper; no directory scan or historical import. */
+export class NativeFailureEvidence {
+ private identity:NativeFailureIdentity|null=null;
+ private directory='';private directoryHandle:FileHandle|null=null;private directoryStamp:Stamp|null=null;
+ private targetStamp:Stamp|null=null;private initialized=false;private task:Promise<void>|null=null;
+ private revision=1;private publishedRevision=0;private closing=false;private closed=false;
+ private failure:string|null=null;private previousRunDiscarded=false;
+ private raw:string[]=[];private details:string[]=[];private transport:string[]=[];
+ private rawBytes=0;private detailBytes=0;private rawKeys=new Set<string>();private transportKeys=new Set<string>();
+ private lastDetail:Stored|null=null;
+ private counts={rawSamplesOmitted:0,rawDuplicates:0,detailRecordsOmitted:0,transportSamplesOmitted:0,transportDuplicates:0,malformedSelectedEvents:0,ioFailures:0};
+ constructor(input:{directory:string;identity:NativeFailureIdentity;now?:()=>number}){
+  this.now=input.now??Date.now;
+  try{need(isAbsolute(input.directory)&&resolve(input.directory)===input.directory,'DIRECTORY_IDENTITY');need(identityValid(input.identity),'SOURCE_RUN_IDENTITY');this.directory=input.directory;const id=input.identity;this.identity={accountId:id.accountId,inceptionAt:id.inceptionAt,configurationSha256:id.configurationSha256,source:{commit:id.source.commit,sha256:id.source.sha256},runId:id.runId,startedAt:id.startedAt};this.schedule();}
+  catch{this.failure='INVALID_IDENTITY';}
+ }
+ private readonly now:()=>number;
+ private path(file:string){need(this.directoryHandle!==null,'DIRECTORY_UNAVAILABLE');return '/proc/self/fd/'+this.directoryHandle!.fd+'/'+file;}
+ private privateFile(s:Stats){need(s.isFile()&&s.uid===process.getuid?.()&&(s.mode&0o777)===0o600&&s.nlink===1&&s.size>0&&s.size<=P.maximumFileBytes,'PRIVATE_FILE');}
+ private async named(file:string){try{return await lstat(this.path(file));}catch(error){if((error as NodeJS.ErrnoException).code==='ENOENT')return null;throw error;}}
+ private async readExisting(file:string):Promise<{stamp:Stats;value:Data}|null>{
+  let fd:FileHandle;try{fd=await open(this.path(file),constants.O_RDONLY|constants.O_NOFOLLOW|constants.O_NONBLOCK);}catch(error){if((error as NodeJS.ErrnoException).code==='ENOENT')return null;throw error;}
+  try{
+   const before=await fd.stat();this.privateFile(before);const raw=Buffer.alloc(before.size+1);let offset=0;
+   while(offset<raw.length){const read=await fd.read(raw,offset,raw.length-offset,offset);if(!read.bytesRead)break;offset+=read.bytesRead;}
+   const named=await this.named(file);need(offset===before.size&&same(before,await fd.stat())&&named&&same(before,named),'CHANGED_FILE');
+   const value:unknown=JSON.parse(raw.subarray(0,offset).toString());need(object(value)&&value.kind===P.version&&value.schemaVersion===1&&identityValid(value.identity),'OWNED_SNAPSHOT');
+   need((value as Data).financialWrites===0&&(value as Data).tradingAuthority===false,'OWNED_DIAGNOSTIC');
+   return {stamp:before,value:value as Data};
+  }finally{await fd.close();}
+ }
+ private async initialize(){
+  need(await realpath(this.directory)===this.directory,'CANONICAL_DIRECTORY');
+  this.directoryHandle=await open(this.directory,constants.O_RDONLY|constants.O_DIRECTORY|constants.O_NOFOLLOW);
+  const stat=await this.directoryHandle.stat();need(stat.isDirectory()&&stat.uid===process.getuid?.()&&(stat.mode&0o077)===0,'PRIVATE_DIRECTORY');this.directoryStamp=stat;
+  const previous=await this.readExisting(P.file),pending=await this.readExisting(P.pendingFile);
+  for(const row of [previous,pending])if(row){const id=row.value.identity as NativeFailureIdentity;need(id.accountId===this.identity!.accountId&&id.inceptionAt===this.identity!.inceptionAt&&id.startedAt<this.identity!.startedAt,'OLDER_OWNED_RUN_REQUIRED');}
+  this.targetStamp=previous?.stamp??null;this.previousRunDiscarded=previous!==null;
+  // A complete, verified older temporary belongs to this exact namespace.
+  // Unknown/partial temporary files refuse optional capture and remain untouched.
+  if(pending){const named=await this.named(P.pendingFile);need(named&&same(named,pending.stamp),'CHANGED_PENDING');await unlink(this.path(P.pendingFile));}
+  this.initialized=true;
+ }
+ private async targetUnchanged(){
+  const namedDirectory=await lstat(this.directory);need(this.directoryStamp&&namedDirectory.isDirectory()&&namedDirectory.dev===this.directoryStamp.dev&&namedDirectory.ino===this.directoryStamp.ino&&namedDirectory.uid===this.directoryStamp.uid&&(namedDirectory.mode&0o077)===0,'CHANGED_DIRECTORY');
+  const current=await this.named(P.file);need(this.targetStamp?current&&same(this.targetStamp,current):current===null,'CHANGED_TARGET');
+ }
+ private serialize(){
+  const records=[...this.raw,...this.details,...this.transport].join(',');
+  const header={schemaVersion:1,kind:P.version,identity:this.identity,capturedAt:this.now(),revision:this.revision,closed:this.closing,previousRunEvidenceImported:false,previousRunDiscarded:this.previousRunDiscarded,
+   policy:P,rawSamples:this.raw.length,rawSampleBytes:this.rawBytes,detailRecordBytes:this.detailBytes,counts:{...this.counts},
+   completeness:'BOUNDED_FAILURE_SAMPLES_ONLY; COUNTERS_AS_OF_THIS_WRITE; NOT_A_COMPLETE_CENSUS',durability:'ATOMIC_BUFFERED_WRITE_WITHOUT_FSYNC',financialWrites:0,tradingAuthority:false};
+  const raw=encode(header).slice(0,-1)+',"records":['+records+']}\n';need(Buffer.byteLength(raw)<=P.maximumFileBytes,'FILE_BOUND');return raw;
+ }
+ private async publish(raw:string){
+  await this.targetUnchanged();const path=this.path(P.pendingFile);let fd:FileHandle|null=null,owned:Stamp|null=null;
+  try{
+   fd=await open(path,constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);owned=await fd.stat();
+   need(owned.uid===process.getuid?.()&&(owned.mode&0o777)===0o600&&owned.nlink===1,'PENDING_PRIVATE_FILE');await fd.writeFile(raw);
+   const written=await fd.stat();this.privateFile(written);need(written.size===Buffer.byteLength(raw),'WRITE_BOUND');await fd.close();fd=null;
+   const pending=await this.named(P.pendingFile);need(pending&&same(written,pending),'CHANGED_PENDING');await this.targetUnchanged();
+   await rename(path,this.path(P.file));const published=await this.named(P.file);need(published&&published.dev===written.dev&&published.ino===written.ino&&published.size===written.size,'PUBLISHED_FILE');this.privateFile(published!);this.targetStamp=published;
+  }finally{
+   if(fd)await fd.close();
+   if(owned){const pending=await this.named(P.pendingFile);if(pending&&pending.dev===owned.dev&&pending.ino===owned.ino)await unlink(path);}
+  }
+ }
+ private schedule(){
+  if(this.task||this.failure||this.closed)return;
+  this.task=Promise.resolve().then(async()=>{
+   if(!this.initialized)await this.initialize();
+   while(this.publishedRevision<this.revision){const revision=this.revision;await this.publish(this.serialize());this.publishedRevision=revision;}
+  }).catch(()=>{this.counts.ioFailures++;this.failure='OPTIONAL_FAILURE_EVIDENCE_UNAVAILABLE';}).finally(()=>{this.task=null;if(!this.failure&&!this.closed&&this.publishedRevision<this.revision)this.schedule();});
+ }
+ private stored(kind:string,data:Data,omitted=0):Stored{
+  const at=data.receivedAt??data.at;need(integer(at)&&at>=this.identity!.startedAt&&at<=this.now()+5000,'EVENT_TIME');
+  return {kind,eventAt:at as number,eventTimeBasis:integer(data.receivedAt)?'ORIGINAL_PACKET_RECEIPT':'PRODUCER_EVENT_TIMESTAMP',capturedAt:this.now(),data,retainedEventSha256:digest(encode({kind,data})),sourceFieldsOmitted:omitted};
+ }
+ private count(key:Exclude<keyof NativeFailureEvidence['counts'],'ioFailures'>){
+  this.counts[key]++;
+  // Surface the first omission without converting repeated identical failures
+  // into a write loop. Later counters are included in the next sample or close.
+  if(this.counts[key]===1){this.revision++;this.schedule();}
+ }
+ /** Only already-emitted bounded samples and typed failures enter this path.
+  * Successful packet events, ordinary reports and controls do no work here. */
+ observe(kind:string,value:unknown):void{
+  if(this.closed||this.closing||this.failure||!this.identity||kind!=='native-flow-raw-refusal'&&!DETAIL.has(kind)&&!TRANSPORT.has(kind))return;
+  try{
+   need(object(value),'EVENT_OBJECT');
+   if(DETAIL.has(kind)){const projected=typed(value);this.lastDetail=this.stored(kind,projected.data,projected.omitted);return;}
+   if(kind==='native-flow-raw-refusal'){
+    need(value.supplementaryOnly===true&&Array.isArray(value.logs)&&value.logs.every(v=>typeof v==='string')&&integer(value.slot)&&integer(value.receivedAt)&&typeof value.reason==='string','EXPLICIT_RAW_REFUSAL');
+    const envelope=encode({kind,data:value}),bytes=Buffer.byteLength(envelope),key=digest(envelope);
+    if(this.rawKeys.has(key)){this.count('rawDuplicates');return;}
+    if(this.raw.length>=P.maximumRawSamples||this.rawBytes+bytes>P.maximumRawBytes){this.count('rawSamplesOmitted');return;}
+    const data=JSON.parse(envelope).data as Data,record=this.stored(kind,data),detail=this.lastDetail;
+    if(detail&&detail.data.slot===data.slot&&detail.data.receivedAt===data.receivedAt&&detail.data.reason===data.reason&&(data.signature?detail.data.signature===data.signature:data.rawHash===detail.data.rawHash)){
+     const text=encode(detail);if(Buffer.byteLength(text)<=P.maximumDetailRecordBytes&&this.detailBytes+Buffer.byteLength(text)<=P.maximumDetailBytes){this.details.push(text);this.detailBytes+=Buffer.byteLength(text);}else this.count('detailRecordsOmitted');
+    }else this.count('detailRecordsOmitted');
+    this.raw.push(encode(record));this.rawBytes+=bytes;this.rawKeys.add(key);
+   }else{
+    if(kind==='native-flow-disconnected'&&value.expected===true)return;
+    const projected=typed(value),record=this.stored(kind,projected.data,projected.omitted),text=encode(record),bytes=Buffer.byteLength(text);
+    const key=encode([kind,record.data.reasonSha256??record.data.reason??record.data.codeSha256??record.data.code??null,record.data.connectionId??record.data.connection??null,record.data.mint??record.data.subscriptionMint??null,record.data.pool??record.data.subscriptionPool??null]);
+    if(this.transportKeys.has(key)){this.count('transportDuplicates');return;}
+    if(this.transport.length>=P.maximumTransportSamples||bytes>P.maximumDetailRecordBytes||this.detailBytes+bytes>P.maximumDetailBytes){this.count('transportSamplesOmitted');return;}
+    this.transport.push(text);this.detailBytes+=bytes;this.transportKeys.add(key);
+   }
+   this.revision++;this.schedule();
+  }catch{this.count('malformedSelectedEvents');}
+ }
+ usage(){return {available:this.failure===null,reason:this.failure,rawSamples:this.raw.length,rawSampleBytes:this.rawBytes,transportSamples:this.transport.length,packetDetails:this.details.length,detailRecordBytes:this.detailBytes,revision:this.revision,publishedRevision:this.publishedRevision,pending:this.task!==null,...this.counts,financialWrites:0,tradingAuthority:false};}
+ async flush(){do{this.schedule();if(this.task)await this.task;}while(this.task||!this.failure&&!this.closed&&this.publishedRevision<this.revision);}
+ async close(){if(this.closed)return;this.closing=true;this.revision++;await this.flush();this.closed=true;try{await this.directoryHandle?.close();}catch{this.counts.ioFailures++;this.failure='OPTIONAL_FAILURE_EVIDENCE_UNAVAILABLE';}this.directoryHandle=null;}
+}

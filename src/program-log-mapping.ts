@@ -13,6 +13,7 @@ import {getAssociatedTokenAddressSync,NATIVE_MINT,TOKEN_PROGRAM_ID,TOKEN_2022_PR
 import {canonicalPumpPoolPda,PUMP_AMM_PROGRAM_ID,PUMP_PROGRAM_ID} from './sdk.js';
 import type {MappedTradeEvidence} from './pumpapi-mapping.js';
 import type {NormalizedTrade} from './strategy.js';
+import {verifyBoostVaultCleanupTransaction,type VerifiedBoostVaultCleanup} from './protocol-pool-effects.js';
 
 export const CONFIRMED_PROGRAM_EVENTS_V2='confirmed-program-events-v2' as const;
 const require=createRequire(import.meta.url),idlBytes=readFileSync(join(dirname(require.resolve('@pump-fun/pump-swap-sdk')),'../src/idl/pump_amm.json')),idl=JSON.parse(idlBytes.toString('utf8')) as Idl,coder=new BorshCoder(idl),PROGRAM=PUMP_AMM_PROGRAM_ID.toBase58();
@@ -56,10 +57,15 @@ export type ProtocolPoolEffect={
  events:Array<{name:'BuyEvent'|'BoostBuyAndBurnEvent';logArrayIndex:number;eventBase64:string;eventBytesSha256:string}>;
  slot:number;commitment:'confirmed'|'finalized';receivedAt:number|null;availableAt:number;programClockTimestamp:string;chainBlockTime:null;
  rawNotificationSha256:string;transferCrossCheck:'UNAVAILABLE';compiledInstructionIdentity:null;transactionCompleteness:'NOT_ESTABLISHED';fingerprint:string;
+ /** Present only after the existing compiled verifier checks this exact packet.
+  * This narrow proof does not change ordinary log-only trade semantics. */
+ compiledCleanup?:VerifiedBoostVaultCleanup;
 };
 export type ProgramLogActivity={dataContract:typeof CONFIRMED_PROGRAM_ACTIVITY_V3_SHADOW;trades:ProgramLogEvidence[];protocolEffects:ProtocolPoolEffect[];protocolFramesObserved:number;baselineFeatureSemantics:'V2_WITHOUT_PROTOCOL_FRAMES'|'UNAVAILABLE_PROTOCOL_EFFECT_SHADOW';financialQualificationAllowed:false};
 type FrameEvent={name:string;data:any;encoded:string;logIndex:number};
 type ProtocolChild={program:string;labels:string[];selfEventFrame:boolean;eventCount:number;childCalls:number;children?:ProtocolChild[]};
+export type ProgramLogCleanupRequest={signature:string;slot:number;mint:string;pool:string;rawNotificationSha256:string;programClockTimestamp:string;affectedMints:string[]};
+type CleanupParse={mode:'recognize'|'verify';transaction?:unknown;requests:ProgramLogCleanupRequest[]};
 
 /** Actual SDK2.2.0 first-pool/nonterminal buy leg, not an alias of legacy Buy.
  * Whole quote input enters the SOL vault; protocol fee is split between the
@@ -96,10 +102,11 @@ function multiHopPoolBuyFrame(frame:Frame){
  * additionally requires the actual base-mint owner from current support.
  * Existing Token2022/Burn fixtures remain compatible without that optional
  * binding; any explicit owner must match. Neither shape asserts SPL checks. */
-function protocolEffect(frame:Frame,input:ProgramLogInput,scopes:ReadonlyMap<string,ProgramLogScope>,path:string[],rawHash:string):ProtocolPoolEffect|null{
+function protocolEffect(frame:Frame,input:ProgramLogInput,scopes:ReadonlyMap<string,ProgramLogScope>,path:string[],rawHash:string,cleanup?:CleanupParse):ProtocolPoolEffect|null{
  need(path.length===1,'PROTOCOL_ROUTED_FRAME_UNSUPPORTED');
  need(frame.eventCount===2&&frame.protocolEvents.length===2&&frame.protocolEvents[0]!.name==='BuyEvent'&&frame.protocolEvents[1]!.name==='BoostBuyAndBurnEvent','PROTOCOL_EVENT_PAIR');
- need(frame.childCalls===4&&frame.protocolChildren.length===4&&frame.eventCredits===0,'PROTOCOL_CHILD_SHAPE');
+ const cleanupShape=cleanup!==undefined&&frame.childCalls===5&&frame.protocolChildren.length===5;
+ need((frame.childCalls===4&&frame.protocolChildren.length===4||cleanupShape)&&frame.eventCredits===0,'PROTOCOL_CHILD_SHAPE');
  const buy=frame.protocolEvents[0]!,boost=frame.protocolEvents[1]!,e=buy.data,b=boost.data,pool=key(b.pool),mint=key(b.mint),scope=scopes.get(pool);
  need(canonicalPumpPoolPda(new PublicKey(mint)).toBase58()===pool&&key(e.pool)===pool,'PROTOCOL_CANONICAL_POOL');
  if(scope)need(scope.mint===mint,'PROTOCOL_SCOPE_MINT');
@@ -110,7 +117,7 @@ function protocolEffect(frame:Frame,input:ProgramLogInput,scopes:ReadonlyMap<str
  const token2022Burn=burn.program===TOKEN_2022_PROGRAM_ID.toBase58()&&JSON.stringify(burn.labels)==='["Burn"]';
  const supportedClassicBurn=scope?.baseTokenProgram===TOKEN_PROGRAM_ID.toBase58()&&burn.program===TOKEN_PROGRAM_ID.toBase58()&&burn.labels.length===0;
  need((token2022Burn||supportedClassicBurn)&&!burn.selfEventFrame&&burn.eventCount===0&&burn.childCalls===0,'PROTOCOL_BASE_BURN_FRAME');
- need(children.slice(2).every(c=>c.program===PROGRAM&&c.selfEventFrame&&c.labels.length===0&&c.eventCount===0&&c.childCalls===0),'PROTOCOL_EVENT_CPI_FRAME');
+ need(children.slice(2,4).every(c=>c.program===PROGRAM&&c.selfEventFrame&&c.labels.length===0&&c.eventCount===0&&c.childCalls===0),'PROTOCOL_EVENT_CPI_FRAME');
  const actor=PublicKey.findProgramAddressSync([Buffer.from('boost_vault'),new PublicKey(pool).toBuffer()],PUMP_AMM_PROGRAM_ID)[0];
  const vault=getAssociatedTokenAddressSync(NATIVE_MINT,actor,true,TOKEN_PROGRAM_ID).toBase58();
  need(key(e.user)===actor.toBase58()&&key(e.user_quote_token_account)===vault&&key(e.user_base_token_account)===PublicKey.default.toBase58()&&decimal(e.user_base_token_reserves)==='0','PROTOCOL_ACTOR_ROLE');
@@ -125,10 +132,23 @@ function protocolEffect(frame:Frame,input:ProgramLogInput,scopes:ReadonlyMap<str
  need(BigInt(reserves.baseBefore)-BigInt(reserves.baseAfter)===BigInt(base)&&BigInt(reserves.quoteAfter)-BigInt(reserves.quoteBefore)===BigInt(quote)&&BigInt(reserves.boostQuoteBefore)-BigInt(reserves.boostQuoteAfter)===BigInt(quote),'PROTOCOL_RESERVE_AGREEMENT');
  need(decimal(e.virtual_quote_reserves)===decimal(b.virtual_quote_reserves),'PROTOCOL_VIRTUAL_RESERVES');
  key(b.authority); // program-authored role only; no compiled signer assertion.
+ let compiledCleanup:VerifiedBoostVaultCleanup|undefined;
+ if(cleanupShape){
+  const last=children[4]!;
+  // Recognition can request proof; it cannot emit admitted economic evidence.
+  // The supported compiled verifier intentionally covers Token2022 base only.
+  need(scope?.baseTokenProgram===TOKEN_2022_PROGRAM_ID.toBase58()&&token2022Burn&&reserves.boostQuoteAfter==='0'&&last.program===TOKEN_PROGRAM_ID.toBase58()&&last.labels.length===0&&!last.selfEventFrame&&last.eventCount===0&&last.childCalls===0,'PROTOCOL_CLEANUP_PROOF_SCOPE');
+  need(cleanup!.requests.length===0,'PROTOCOL_CLEANUP_MULTIPLE_UNSUPPORTED');
+  cleanup!.requests.push({signature:input.signature,slot:input.slot,mint,pool,rawNotificationSha256:rawHash,programClockTimestamp:timestamp,affectedMints:[]});
+  if(cleanup!.mode==='verify'){
+   compiledCleanup=verifyBoostVaultCleanupTransaction(cleanup!.transaction,{signature:input.signature,slot:input.slot,mint,pool,logs:input.logs as string[]});
+   need(compiledCleanup.rawNotificationSha256===rawHash,'PROTOCOL_CLEANUP_PACKET_BINDING');
+  }
+ }
  if(!scope)return null;
  const identity={namespace:'solana-program-log-protocol-v1' as const,signature:input.signature,program:PROGRAM,logArrayIndex:boost.logIndex};
  const events=frame.protocolEvents.map(row=>({name:row.name as 'BuyEvent'|'BoostBuyAndBurnEvent',logArrayIndex:row.logIndex,eventBase64:row.encoded,eventBytesSha256:digest(Buffer.from(row.encoded,'base64'))}));
- const content={identity,frameOrdinal:frame.ordinal,pool,mint,quoteMint:NATIVE_MINT.toBase58(),actor:{address:actor.toBase58(),role:'protocol-boost-vault-pda' as const,externalBuyer:false as const},instructionAuthority:key(b.authority),quoteLamportsIn:quote,baseUnitsBurned:base,minimumBaseUnitsBurned:minimum,fees,reserves,events,slot:input.slot,programClockTimestamp:timestamp};
+ const content={identity,frameOrdinal:frame.ordinal,pool,mint,quoteMint:NATIVE_MINT.toBase58(),actor:{address:actor.toBase58(),role:'protocol-boost-vault-pda' as const,externalBuyer:false as const},instructionAuthority:key(b.authority),quoteLamportsIn:quote,baseUnitsBurned:base,minimumBaseUnitsBurned:minimum,fees,reserves,events,slot:input.slot,programClockTimestamp:timestamp,...(compiledCleanup?{compiledCleanup}:{})};
  return {...content,version:CONFIRMED_PROGRAM_ACTIVITY_V3_SHADOW,kind:'PROTOCOL_POOL_EFFECT',effect:'boost-buy-and-burn',normalizedForStrategy:false,identityKey:[identity.namespace,input.signature,PROGRAM,boost.logIndex,frame.ordinal].join(':'),pairedBuyLogIndex:buy.logIndex,framePath:[...path],invocationDepth:1,instructionLabel:'BoostBuyAndBurn',ordinaryUserBaseUnitsReceived:null,commitment:input.commitment,receivedAt:input.receivedAt??null,availableAt:input.availableAt,chainBlockTime:null,rawNotificationSha256:rawHash,transferCrossCheck:'UNAVAILABLE',compiledInstructionIdentity:null,transactionCompleteness:'NOT_ESTABLISHED',fingerprint:digest(JSON.stringify(content))};
 }
 
@@ -141,7 +161,18 @@ export function parseProgramLogEvidence(input:ProgramLogInput,scopes:readonly Pr
 /** Explicit shadow contract only. No caller can accidentally enable this by
  * changing a strategy threshold or passing an unknown option. */
 export function parseProgramLogActivity(input:ProgramLogInput,scopes:readonly ProgramLogScope[],options:{dataContract:typeof CONFIRMED_PROGRAM_ACTIVITY_V3_SHADOW}):ProgramLogActivity{need(options&&Object.keys(options).length===1&&options.dataContract===CONFIRMED_PROGRAM_ACTIVITY_V3_SHADOW,'PROTOCOL_EXPLICIT_OPT_IN_REQUIRED');return parseProgramActivity(input,scopes,true);}
-function parseProgramActivity(input:ProgramLogInput,scopes:readonly ProgramLogScope[],protocolOptIn:boolean):ProgramLogActivity{
+/** Pure bounded recognition only. No effects or trades escape this function. */
+export function recognizeProgramLogCleanup(input:ProgramLogInput,scopes:readonly ProgramLogScope[]):ProgramLogCleanupRequest|null{
+ const cleanup:CleanupParse={mode:'recognize',requests:[]},activity=parseProgramActivity(input,scopes,true,cleanup),request=cleanup.requests[0];
+ return request?{...request,affectedMints:[...new Set([...activity.trades,...activity.protocolEffects].map(e=>e.mint))]}:null;
+}
+/** The full transaction, never a caller-asserted proof object, is revalidated
+ * against this notification before the additional child can be accepted. */
+export function parseProgramLogActivityWithCleanup(input:ProgramLogInput,scopes:readonly ProgramLogScope[],transaction:unknown):ProgramLogActivity{
+ const cleanup:CleanupParse={mode:'verify',transaction,requests:[]},activity=parseProgramActivity(input,scopes,true,cleanup);
+ need(cleanup.requests.length===1,'PROTOCOL_CLEANUP_NOT_REQUIRED');return activity;
+}
+function parseProgramActivity(input:ProgramLogInput,scopes:readonly ProgramLogScope[],protocolOptIn:boolean,cleanup?:CleanupParse):ProgramLogActivity{
  need(input.err===null,'TRANSACTION_NOT_SUCCESSFUL');need(input.commitment==='confirmed'||input.commitment==='finalized','REQUEST_COMMITMENT');need(integer(input.slot)&&integer(input.availableAt),'AVAILABILITY');
  need(input.receivedAt===undefined||integer(input.receivedAt)&&input.receivedAt<=input.availableAt,'RECEIPT_AVAILABILITY');
  need(canonicalTransactionSignature(input.signature),'SIGNATURE');
@@ -155,7 +186,7 @@ function parseProgramActivity(input:ProgramLogInput,scopes:readonly ProgramLogSc
    if(invoke[1]===PROGRAM&&parent?.program===PROGRAM&&parent.eventCredits>0){parent.eventCredits--;selfEventFrame=true;}else if(parent?.program===PROGRAM)parent.eventCredits=0;
    stack.push({protocolEvents:[],protocolChildren:[],otherLabels:[],program:invoke[1]!,label:null,root:rootOrdinal,ordinal:++frameOrdinal,eventCredits:0,eventCount:0,swapEvents:0,childSwapEvents:0,selfEventFrame,childCalls:0,multiHopOwnBuy:false});continue;}
   if(end){const frame=stack.at(-1);need(frame&&frame.program===end[1],'INVOCATION_END');need(end[2]==='success','FAILED_INVOCATION_UNSUPPORTED');
-   if(frame.program===PROGRAM){if(frame.selfEventFrame)need(frame.label===null&&frame.eventCount===0&&frame.childCalls===0,'EVENT_SELF_CPI_SHAPE');else{need(frame.label!==null,'AMM_FRAME_LABEL_MISSING');if(frame.label==='BoostBuyAndBurn'&&protocolOptIn){const effect=protocolEffect(frame,input,scopeMap,stack.map(f=>f.program),rawNotificationSha256);protocolFramesObserved++;if(effect)protocolEffects.push(effect);}else{need(frame.label!=='BoostBuyAndBurn','UNSUPPORTED_PROTOCOL_BUY_AND_BURN');const swap=SWAPS[frame.label];need(swap||NON_SWAPS.has(frame.label)||frame.label==='MultiHopSwap','UNKNOWN_AMM_FRAME');if(swap)need(frame.swapEvents===1,'SWAP_FRAME_EVENT_COUNT');if(frame.label==='MultiHopSwap'){if(frame.multiHopOwnBuy)multiHopPoolBuyFrame(frame);else need(frame.childSwapEvents>0,'EMPTY_SWAP_WRAPPER');}}}}
+   if(frame.program===PROGRAM){if(frame.selfEventFrame)need(frame.label===null&&frame.eventCount===0&&frame.childCalls===0,'EVENT_SELF_CPI_SHAPE');else{need(frame.label!==null,'AMM_FRAME_LABEL_MISSING');if(frame.label==='BoostBuyAndBurn'&&protocolOptIn){const effect=protocolEffect(frame,input,scopeMap,stack.map(f=>f.program),rawNotificationSha256,cleanup);protocolFramesObserved++;if(effect)protocolEffects.push(effect);}else{need(frame.label!=='BoostBuyAndBurn','UNSUPPORTED_PROTOCOL_BUY_AND_BURN');const swap=SWAPS[frame.label];need(swap||NON_SWAPS.has(frame.label)||frame.label==='MultiHopSwap','UNKNOWN_AMM_FRAME');if(swap)need(frame.swapEvents===1,'SWAP_FRAME_EVENT_COUNT');if(frame.label==='MultiHopSwap'){if(frame.multiHopOwnBuy)multiHopPoolBuyFrame(frame);else need(frame.childSwapEvents>0,'EMPTY_SWAP_WRAPPER');}}}}
    stack.pop();const protocolParent=stack.at(-1);if(protocolParent&&(protocolOptIn&&protocolParent.label==='BoostBuyAndBurn'||protocolParent.label==='MultiHopSwap'||protocolParent.otherLabels.includes('MultiHopCurveSwap')))protocolParent.protocolChildren.push({program:frame.program,labels:[...frame.otherLabels],selfEventFrame:frame.selfEventFrame,eventCount:frame.eventCount,childCalls:frame.childCalls,...(frame.protocolChildren.length?{children:frame.protocolChildren}:{} )});if(frame.swapEvents||frame.childSwapEvents){const parent=stack.at(-1);if(parent)parent.childSwapEvents+=frame.swapEvents+frame.childSwapEvents;}continue;}
   const frame=stack.at(-1);if(frame?.program!==PROGRAM){if(frame&&(protocolOptIn&&stack.at(-2)?.label==='BoostBuyAndBurn'||stack.at(-2)?.label==='MultiHopSwap'||stack.at(-2)?.otherLabels.includes('MultiHopCurveSwap'))&&line.startsWith('Program log: Instruction: '))frame.otherLabels.push(line.slice('Program log: Instruction: '.length));continue;}
   if(line.startsWith('Program log: Instruction: ')){need(!frame.selfEventFrame&&frame.label===null,'DUPLICATE_INSTRUCTION_LABEL');frame.label=line.slice('Program log: Instruction: '.length);continue;}

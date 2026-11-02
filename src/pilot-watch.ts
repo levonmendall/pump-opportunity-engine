@@ -489,8 +489,18 @@ export class PilotWatch {
       const sameEligibility=serviceable===ready.where;
       const age=this.observationAgePolicy===PERSISTENT_OBSERVABLE_MARKET_POLICY?'COALESCE(w.migration_at,0)<='+at:'w.migration_at<='+at+' AND '+at+'<w.migration_at+CASE WHEN w.older_research=1 THEN '+this.observationAgePolicy.selectedOlderMaximumAgeMs+' ELSE '+this.observationAgePolicy.recentMaximumAgeMs+' END';
       const waiting=this.observationIdentitySql()+" AND w.state IN ('WATCH','DEFERRED') AND "+age;
-      const counts=registry.aggregate({retained:'COUNT(*)',activeDeep:"SUM(CASE WHEN w.deep_since IS NOT NULL AND w.state IN ('DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING') THEN 1 ELSE 0 END)",verifiedAwaitingPrerequisites:'SUM(CASE WHEN '+waiting+' AND NOT ('+serviceable+') THEN 1 ELSE 0 END)'},undefined,ready.params,'watch_rows_report_summary_v1');
-      const retained=counts.retained??0,activeDeep=counts.activeDeep??0,verifiedAwaitingPrerequisites=counts.verifiedAwaitingPrerequisites??0;
+      const population=registry.watchReportingPopulation(),retained=population.known??0,activeDeep=population.deep??0;
+      // With verified token age required, only that exact current indexed
+      // population can satisfy serviceability (or leave it SQL NULL). Count the
+      // cheap waiting population once, then subtract those exceptions; do not
+      // probe age/origin prerequisites for every retained historical identity.
+      // IS NOT FALSE deliberately includes NULL: NOT(serviceable) excluded
+      // unknown prerequisites in the original CASE expression too. Every count
+      // shares this readOperation snapshot, including the common state totals.
+      const verifiedAwaitingPrerequisites=this.options.enforceTokenAge24h?
+        (registry.aggregate({waiting:'COUNT(*)'},waiting,[],'watch_rows_report_summary_v1').waiting??0)-
+        (registry.aggregate({notAwaiting:'COUNT(*)'},'('+waiting+') AND (('+serviceable+') IS NOT FALSE)',ready.params,'watch_rows_report_summary_v1',at).notAwaiting??0):
+        registry.aggregate({awaiting:'SUM(CASE WHEN '+waiting+' AND NOT ('+serviceable+') THEN 1 ELSE 0 END)'},undefined,ready.params,'watch_rows_report_summary_v1').awaiting??0;
       const since=this.readyAnchorSql(),serviceableSince=options.requireOrigin?"MAX("+since+",COALESCE((SELECT o.updated_at FROM origin_proofs o WHERE o.mint=w.mint AND o.available=1),0))":since;
       const summarize=(where:string,anchor:string)=>registry.valueSummary({expression:'MAX(0,?-'+anchor+')',where,params:[at,...ready.params],index:'watch_rows_report_summary_v1',...(this.options.enforceTokenAge24h?{tokenAgeAt:at}:{})});
       // Both queues have exactly the same predicates/anchor in current-pool
