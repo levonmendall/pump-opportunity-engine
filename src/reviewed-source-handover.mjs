@@ -22,7 +22,7 @@ export const HANDOVER=Object.freeze({
  sustained:'1ffbda5445ea31ec0cfed2591669ace928c7f278',
  efficiency:'92d83ba59d542fa2dfb20bca4444b704666f9c05',
  publication:'c71f8e68bc27bae44c18b02025991182137a4fac',
- to:'34b48bd1edda94330a708b435abd9f9eda25e217',
+ to:'24ed291d9da85f9661b3dec06d26d0a9332b97b5',
 });
 const installed=new WeakSet();
 export function attachReviewedSourceHandover(cache){

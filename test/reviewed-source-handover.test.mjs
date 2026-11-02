@@ -187,7 +187,7 @@ test('the exact installed efficiency runtime remains accepted until the reviewed
 });
 
 test('the exact installed publication runtime advances only to the reviewed PumpSwap decision repair',()=>{
- assert.equal(p.publication,'c71f8e68bc27bae44c18b02025991182137a4fac');assert.equal(p.to,'34b48bd1edda94330a708b435abd9f9eda25e217','bind the exact PumpSwap decision repair source');assert.notEqual(p.to,p.publication);
+ assert.equal(p.publication,'c71f8e68bc27bae44c18b02025991182137a4fac');assert.equal(p.to,'24ed291d9da85f9661b3dec06d26d0a9332b97b5','bind the exact PumpSwap decision repair source');assert.notEqual(p.to,p.publication);
  const c=new SnapshotCache({...identity(),release:p.publication});assert.equal(attachReviewedSourceHandover(c),true);
  const prior={...sample('90',p.publication,T-120000),financialEpoch:v3Epoch()};c.accept(prior,T);const before=c.read(),history=c.equityHistory();
  for(const mutate of [s=>{s.account.id='other';},s=>{s.source.strategy='other';},s=>{s.sequence='89';},s=>{delete s.financialEpoch;},s=>{s.financialEpoch.backupSha256='f'.repeat(64);}]){
