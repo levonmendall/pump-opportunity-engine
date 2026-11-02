@@ -63,6 +63,16 @@ test('qualification proof work is async and unavailable until settled; expired o
  resolve();await turn();assert.equal(preparation.ready(proof),true);assert.equal(preparation.ready({...proof,proofId:'other'}),false);at=201;assert.equal(preparation.ready(proof),false);
  const failed={...proof,proofId:'failure',deadlineAt:300};assert.equal(preparation.prepare(failed,async()=>{throw Error('offline retention refusal');}),false);await turn();assert.equal(preparation.ready(failed),false);assert.equal(preparation.usage()?.state,'failed');
 });
+test('completed preparations release their unused references on replacement or expiry, without releasing active copies',async()=>{
+ let at=100,settle!:()=>void;const released:string[]=[],pending=new Promise<void>(resolve=>settle=resolve);
+ const preparation=new NativePaperProofPreparation(()=>at,id=>{released.push(id);});
+ const proof={proofId:'one',mint:'fixture',startAt:1,throughAt:100,windowEndAt:90,featuresSha256:'a'.repeat(64),certificateAt:95,deadlineAt:200};
+ preparation.prepare(proof,async()=>pending);at=201;preparation.maintenance();assert.deepEqual(released,[]);
+ settle();await turn();preparation.maintenance();preparation.maintenance();assert.deepEqual(released,['one']);
+ at=250;const next={...proof,proofId:'two',deadlineAt:400};preparation.prepare(next,async()=>{});await turn();
+ preparation.prepare({...next,proofId:'three'},async()=>{});assert.deepEqual(released,['one','two']);await turn();
+ assert.equal(preparation.ready({...next,proofId:'three'}),true);
+});
 test('rolling unqualified inputs are not permanently pinned, while actual financial and owned protection evidence are retained',()=>{
  assert.equal(nativePaperEssentialEvidence('trader-input','candidate',false),false);assert.equal(nativePaperEssentialEvidence('trader-context','protection',false),false);assert.equal(nativePaperEssentialEvidence('trader-context','protection',true),true);assert.equal(nativePaperEssentialEvidence('trader-decision','candidate',false,{stage:'strategy-rejection'}),false);assert.equal(nativePaperEssentialEvidence('trader-decision','candidate',false,{stage:'qualified'}),true);assert.equal(nativePaperEssentialEvidence('trader-execution','pending',true),true);assert.equal(nativePaperEssentialEvidence('pool-state','source',false),false);assert.equal(nativePaperEssentialEvidence('pool-state','protection',true),true);
 });

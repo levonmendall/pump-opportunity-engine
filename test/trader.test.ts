@@ -27,6 +27,17 @@ function fixture(t:TestContext,settings:{verified?:boolean;paper?:boolean}={}){
   return {directory,path,evidence,ledger,trader,options,ready,admit,warm,quoteCalls,context,quote,ledgers,recorders,recorder,now:()=>now,set:(at:number)=>{now=at;},stopNet:()=>{exitNet=400_000_000n;},unavailable:()=>{available=false;},usd:(value:string)=>{usd=value;},noUsd:()=>{usdUnavailable=true;},unknownMarks:()=>{missingMarks=true;},records:():Recorded[]=>readFileSync(evidence,'utf8').trim().split('\n').map(s=>JSON.parse(s))};
 }
 
+test('a stale provisional entry proof defers only the candidate before any order or financial pause',async t=>{
+  const f=fixture(t);let checked=0;
+  const trader=new PaperTrader({...f.options(),beforeEntryReservation:()=>{checked++;throw Error('PAPER execution preparation unavailable');}});
+  trader.start();f.admit(trader);f.warm(trader);f.ready();
+  const costs=f.ledger.state().executionCosts;
+  await trader.tick();
+  assert.equal(checked,1);assert.deepEqual(f.ledger.state().pending,{});assert.equal(f.ledger.state().executionCosts,costs);
+  assert.equal(f.ledger.state().controls.entriesEnabled,true);assert.equal(trader.decisions().at(-1)?.reason,'PAPER execution preparation unavailable');
+  assert.equal(trader.funnel.reserved,0);
+});
+
 test('normalized flow completes one disposable delayed lifecycle, and feed loss does not disable supported RPC exits',async t=>{
   const f=fixture(t);f.admit();f.warm();f.ready();assert.equal(f.quoteCalls.length,0);assert.equal(f.trader.funnel.paperFilled,0);
   const reserved=await f.trader.tick();assert.equal(reserved.nextDueAt,T+61_000);assert.equal(f.trader.funnel.reserved,1);assert.equal(f.quoteCalls.length,1);assert.deepEqual(f.ledger.state().positions,{});

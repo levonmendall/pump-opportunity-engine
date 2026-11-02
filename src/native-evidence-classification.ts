@@ -1,4 +1,10 @@
+/** Candidate preparation is retained with its provisional proof. Financial
+ * outcomes and account-control evidence remain in the permanent essential chain. */
+export function nativePaperCandidatePreparationEvidence(kind:string,work:string){
+ return work==='candidate'&&(kind==='trader-quote'||kind==='trader-pilot-entry-deposit'||/^(?:research-clock-|pool-state|price-|sdk-|rent-)/.test(kind)||kind==='pilot-entry-cost-preparation'||kind==='rpc-market-quote');
+}
 export function nativePaperEssentialEvidence(kind:string,work:string,owned:boolean,data?:unknown){
+ if(kind==='native-paper-entry-proof-pinned'&&(data as {provisional?:unknown}|null)?.provisional===true)return false;
  if(kind==='native-opportunity-evaluation'||kind==='pilot-entry-local-reprice')return false;
  if(kind==='trader-input'||kind==='trader-predictive-assessment'||kind==='trader-candidate-evidence-deferred'||kind==='trader-quote-deferred')return false;
  if(kind==='trader-context'||kind==='trader-context-reuse'||kind==='trader-held-evaluation')return owned;
