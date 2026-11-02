@@ -94,6 +94,8 @@ for(const intermediate of [p.via,p.previous,p.current,p.preparation,p.discovery]
 test('the installed discovery repair advances without changing the V3 financial epoch or retained equity',()=>{
  const c=new SnapshotCache({...identity(),release:p.discovery});assert.equal(attachReviewedSourceHandover(c),true);
  const prior={...sample('50',p.discovery,T-120000),financialEpoch:v3Epoch()};c.accept(prior,T);const before=c.equityHistory();
+ const superseded={...sample('51','e38d0a70051ff5228130c94dc8e4e7f203a43504'),financialEpoch:structuredClone(prior.financialEpoch)},retained=c.read();
+ assert.throws(()=>c.accept(superseded,T),/source version/);assert.equal(c.identity.release,p.discovery);assert.deepEqual(c.read(),retained);assert.deepEqual(c.equityHistory(),before);
  const next={...sample('51',p.to),financialEpoch:structuredClone(prior.financialEpoch)},saved=structuredClone(next);
  assert.equal(c.accept(next,T),'accepted');assert.equal(c.identity.release,p.to);
  assert.deepEqual(c.read().snapshot,saved);assert.deepEqual(next,saved);assert.deepEqual(c.read().snapshot.account,prior.account);

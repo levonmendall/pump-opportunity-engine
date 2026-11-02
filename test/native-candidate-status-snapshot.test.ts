@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import {MarketRegistry} from '../src/market-registry.js';
 import {NativeCandidateRunner, type NativeRunnerOptions} from '../src/native-candidate-runner.js';
 import {PERSISTENT_OBSERVABLE_MARKET_POLICY} from '../src/observation-age.js';
+import {projectMarketCoverageReporting,validateMarketCoverageReporting} from '../src/market-coverage-reporting.js';
 
 const START=Date.parse('2026-10-31T00:00:00.000Z');
 const WAITS=['queueToAllocation','allocationToAck','ackToWarm','auditReadyToPhysicalStart','retirementToReplacement'] as const;
@@ -81,4 +82,14 @@ test('later publications and standalone APIs observe new metrics and financial c
  assert.deepEqual(second.slotProductivity,runner.slotProductivity());
  assert.deepEqual(second.marketCoverage.pipeline,runner.pipelineThroughput());
  assert.deepEqual(second.marketCoverage.pipeline,runner.marketCoverage().pipeline);
+});
+
+test('actual candidate status inside an outer read keeps coverage counters valid through public projection',t=>{
+ const {runner,registry}=fixture(t),before=registry.health().transactions;
+ const status=registry.readTransaction(()=>registry.readTransaction(()=>runner.status()));
+ assert.deepEqual(status.marketCoverage.resource.registryTransactions,before);
+ const projected=projectMarketCoverageReporting({runId:'offline-status-snapshot',marketCoverage:status.marketCoverage},START)!;
+ validateMarketCoverageReporting(projected,START);assert.ok(projected.resource.registryTransactions);
+ assert.equal(projected.resource.registryTransactions.attempted,before.attempted);assert.equal(projected.resource.registryTransactions.readOnlyCommits,before.readOnlyCommits);assert.equal(projected.resource.registryTransactions.writeCommits,before.writeCommits);
+ const settled=registry.health().transactions;assert.equal(settled.attempted,before.attempted+1);assert.equal(settled.readOnlyCommits,before.readOnlyCommits+1);assert.equal(settled.writeCommits,before.writeCommits);
 });
