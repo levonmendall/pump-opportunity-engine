@@ -144,7 +144,7 @@ test('the installed selection runtime advances to exact retention source with or
 });
 
 for(const installed of [p.selection,p.retention])test('installed '+installed.slice(0,8)+' advances to exact combined repair with original epoch and equity intact',()=>{
- assert.equal(p.selection,'23650d160f0f42a07424002e11f83d54fce2b2db');assert.equal(p.retention,'13b2cb5f1404a17c29b5ecfe688540d728c8724b');assert.equal(p.to,'07fc4f879f4bed4f8406e8805c88c8695dbcff1a');
+ assert.equal(p.selection,'23650d160f0f42a07424002e11f83d54fce2b2db');assert.equal(p.retention,'13b2cb5f1404a17c29b5ecfe688540d728c8724b');assert.equal(p.to,'1ffbda5445ea31ec0cfed2591669ace928c7f278');
  const c=new SnapshotCache({...identity(),release:installed});assert.equal(attachReviewedSourceHandover(c),true);
  const prior={...sample('80',installed,T-120000),financialEpoch:v3Epoch()};c.accept(prior,T);const before=c.equityHistory(),retained=c.read();
  const malformed={...sample('81',p.to),financialEpoch:structuredClone(prior.financialEpoch)};malformed.financialEpoch.backupSha256='e'.repeat(64);
