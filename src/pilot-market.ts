@@ -46,6 +46,10 @@ export type PilotMarketOptions={
   /** Runs only between entry-cost preparation reads, before another physical
    * request starts. Never called from an active trader decision/entry quote. */
   beforeEntryPreparationRead?:(input:{method:string;signal:AbortSignal})=>Promise<void>;
+  /** Wraps a final quote read outside its provider accounting span. The
+   * launcher may complete one required native maintenance turn after a local
+   * uninvoked refusal; this grants no quote, financial or retry authority. */
+  withEntryQuoteRead?:<T>(input:{method:string;signal:AbortSignal},read:()=>Promise<T>)=>Promise<T>;
 };
 function need(value:unknown,reason:string):asserts value {if(!value)throw Error(reason);}
 const integer=(value:string)=>{need(typeof value==='string'&&/^(0|[1-9][0-9]{0,19})$/.test(value),'PILOT_MARKET_AMOUNT');return BigInt(value);};
@@ -111,7 +115,7 @@ export class PilotMarket {
         finally{this.protectionYield=false;}
         signal.throwIfAborted();
       }
-      return options.rpc.call<T>(method,params,signal);
+      return this.preparing?options.rpc.call<T>(method,params,signal):this.entryQuoteRead<T>(method,params,signal);
     }};
     this.pricer=new ResearchClockPositionPricer(this.preparationRpc,options.recorder);
     // Discretionary reads cannot retain the held pricer's busy lock or raise
@@ -143,6 +147,11 @@ export class PilotMarket {
    * an existing financial order's retained cost basis or construction. */
   invalidateEntryPreparation(mint:string){if(!this.pools.has(mint)&&!this.preparationLayouts.has(mint))return;this.preparationEpochs.set(mint,(this.preparationEpochs.get(mint)??0)+1);this.preparationLayouts.delete(mint);this.preparationRents.clear();this.entryRepriceSources.delete(mint);}
   private clock(){const at=this.now();need(Number.isSafeInteger(at)&&at>=0,'PILOT_MARKET_CLOCK');return at;}
+  private entryQuoteRead<T>(method:string,params:unknown[],signal?:AbortSignal):Promise<T>{
+    if(!this.options.withEntryQuoteRead)return this.options.rpc.call<T>(method,params,signal);
+    need(signal,'PILOT_MARKET_ENTRY_QUOTE_SIGNAL_REQUIRED');signal.throwIfAborted();
+    return this.options.withEntryQuoteRead({method,signal},()=>this.options.rpc.call<T>(method,params,signal));
+  }
   private locked(mint:string){const value=this.options.inventory().lockedDeposits[mint]??'0';integer(value);return value;}
   private freshPlan(mint:string){
     const plan=this.plans.get(mint),at=this.clock();
@@ -320,7 +329,7 @@ export class PilotMarket {
       currentCosts();
       for(const [role,exists,bytes]of [['base',accountPlan.baseExists,plan.accountLengths.base],['quote',accountPlan.quoteExists,plan.accountLengths.quote]]as const){
         if(exists)continue;need(Number.isSafeInteger(bytes)&&bytes>=165&&bytes<=10240,'PILOT_MARKET_ACCOUNT_LENGTH');
-        if(rents[bytes]===undefined){need(!reusePreparation,'PILOT_MARKET_RENT_UNAVAILABLE');const requestedAt=this.clock(),rent=await this.options.rpc.call<number>('getMinimumBalanceForRentExemption',[bytes,{commitment:'confirmed'}],signal),receivedAt=this.clock();need(Number.isSafeInteger(rent)&&rent>0,'PILOT_MARKET_RENT_UNAVAILABLE');rents[bytes]=BigInt(rent).toString();rentObservationsByBytes[bytes]={requestedAt,receivedAt};}
+        if(rents[bytes]===undefined){need(!reusePreparation,'PILOT_MARKET_RENT_UNAVAILABLE');const requestedAt=this.clock(),rent=await this.entryQuoteRead<number>('getMinimumBalanceForRentExemption',[bytes,{commitment:'confirmed'}],signal),receivedAt=this.clock();need(Number.isSafeInteger(rent)&&rent>0,'PILOT_MARKET_RENT_UNAVAILABLE');rents[bytes]=BigInt(rent).toString();rentObservationsByBytes[bytes]={requestedAt,receivedAt};}
         need(integer(rents[bytes]!)>0n,'PILOT_MARKET_RENT_UNAVAILABLE');
         if(!this.options.executionRealism||role==='base')required+=integer(rents[bytes]!);
       }

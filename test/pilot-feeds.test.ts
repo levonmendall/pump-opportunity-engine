@@ -22,11 +22,11 @@ class Socket extends EventEmitter{
   terminate(){if(this.closed)return;this.closed=true;queueMicrotask(()=>this.emit('close'));}
   drop(){this.closed=true;this.emit('close');}
 }
-function setup(config:{persistent?:boolean;maximumRecordedBytes?:number;watchOnly?:boolean;marketIntake?:boolean;marketSinkFailure?:boolean;maximumCandidates?:1|2|3;responses?:Record<string,unknown>;onGap?:(gap:{mint?:string;reason:string;at:number},feeds:PilotFeeds)=>void;validationDelay?:number;afterRecordDelay?:number;durationMs?:number;hangOpen?:boolean;admitControl?:PilotFeedsOptions['admitControl'];maxPumpApiBytes?:number;closeBeforeSubscribe?:boolean;refuseUpgrade?:boolean;upgradeStatus?:number;upgradeRetryAfter?:string;chargeFailure?:boolean}={}){
+function setup(config:{pumpswapOnly?:true;persistent?:boolean;maximumRecordedBytes?:number;watchOnly?:boolean;marketIntake?:boolean;marketSinkFailure?:boolean;maximumCandidates?:1|2|3;responses?:Record<string,unknown>;onGap?:(gap:{mint?:string;reason:string;at:number},feeds:PilotFeeds)=>void;validationDelay?:number;afterRecordDelay?:number;durationMs?:number;hangOpen?:boolean;admitControl?:PilotFeedsOptions['admitControl'];maxPumpApiBytes?:number;closeBeforeSubscribe?:boolean;refuseUpgrade?:boolean;upgradeStatus?:number;upgradeRetryAfter?:string;chargeFailure?:boolean}={}){
   let at=Date.parse(fixtureTx.fetchedAt),mono=0,sequence=0,active=0,controlBytes=0,rpcCalls=0;const timers=new Map<number,{at:number;callback:()=>void}>(),sockets:Socket[]=[],operations:ComponentKind[]=[],records:Array<{kind:string;data:any}>=[],trades:any[]=[],migrations:any[]=[],watchHints:any[]=[],marketIdentities:any[]=[],marketActivities:any[]=[],marketFeedStatuses:any[]=[],gaps:any[]=[],opens:any[]=[],hints:any[]=[];
   const advance=async(ms:number)=>{const end=mono+ms;while(true){const next=[...timers].filter(([,v])=>v.at<=end).sort((a,b)=>a[1].at-b[1].at)[0];if(!next)break;const delta=next[1].at-mono;at+=delta;mono=next[1].at;timers.delete(next[0]);next[1].callback();for(let i=0;i<8;i++)await Promise.resolve();}at+=end-mono;mono=end;for(let i=0;i<8;i++)await Promise.resolve();};
   const control:PilotFeedControl={async operateData<T>(kind:ComponentKind,work:(op:ComponentOperation)=>Promise<T>,signal?:AbortSignal){assert.equal(active,0,'one physical control operation');operations.push(kind);active++;if(config.closeBeforeSubscribe&&kind.method==='subscribeMigration')sockets[0]!.drop();try{return await work({id:operations.length,signal:signal??new AbortController().signal,chargeHttp(){},completeResponse(){}});}finally{active--; }},accountControlBytes(n){if(config.chargeFailure)throw Error('COMPONENT_STORAGE_UNAVAILABLE');controlBytes+=n;},noteThrottle(){return at+15000;}};
-  const feedOptions:PilotFeedsOptions={persistent:config.persistent,maximumRecordedBytes:config.maximumRecordedBytes,control,amountConvention:'user',maximumCandidates:config.maximumCandidates,durationMs:config.durationMs??300000,maxPumpApiBytes:config.maxPumpApiBytes,admitControl:config.admitControl,record(kind,data){records.push({kind,data});if(kind==='research-enrichment-validation-prepared'){at+=config.validationDelay??0;mono+=config.validationDelay??0;}if(kind==='research-normalized-trade'){at+=config.afterRecordDelay??0;mono+=config.afterRecordDelay??0;}},onMigration:s=>migrations.push(s),...(config.watchOnly?{watchedIdentities:()=>[{mint:scope.mint,pool:scope.pool}],onWatchActivity:(row:unknown)=>watchHints.push(row)}:{}),onFlowOpen:(mint,at)=>opens.push({mint,at}),onHint:(mint,at)=>hints.push({mint,at}),onTrade:t=>trades.push(t),onGap:g=>{gaps.push(g);config.onGap?.(g,feeds);}};
+  const feedOptions:PilotFeedsOptions={pumpswapOnly:config.pumpswapOnly,persistent:config.persistent,maximumRecordedBytes:config.maximumRecordedBytes,control,amountConvention:'user',maximumCandidates:config.maximumCandidates,durationMs:config.durationMs??300000,maxPumpApiBytes:config.maxPumpApiBytes,admitControl:config.admitControl,record(kind,data){records.push({kind,data});if(kind==='research-enrichment-validation-prepared'){at+=config.validationDelay??0;mono+=config.validationDelay??0;}if(kind==='research-normalized-trade'){at+=config.afterRecordDelay??0;mono+=config.afterRecordDelay??0;}},onMigration:s=>migrations.push(s),...(config.watchOnly?{watchedIdentities:()=>[{mint:scope.mint,pool:scope.pool}],onWatchActivity:(row:unknown)=>watchHints.push(row)}:{}),onFlowOpen:(mint,at)=>opens.push({mint,at}),onHint:(mint,at)=>hints.push({mint,at}),onTrade:t=>trades.push(t),onGap:g=>{gaps.push(g);config.onGap?.(g,feeds);}};
   if(config.marketIntake){feedOptions.onMarketIdentity=row=>{if(config.marketSinkFailure)throw Error('FIXTURE_SINK_FULL');marketIdentities.push(row);};feedOptions.onMarketActivity=row=>{if(config.marketSinkFailure)throw Error('FIXTURE_SINK_FULL');marketActivities.push(row);};feedOptions.onMarketFeed=row=>marketFeedStatuses.push(row);}
   const feeds=new PilotFeeds(feedOptions,
     {now:()=>at,monotonic:()=>mono,setTimer(callback,ms){const id=++sequence;timers.set(id,{at:mono+ms,callback});return id;},clearTimer(id){timers.delete(id as number);},makeSocket(endpoint,options){assert.equal(options.maxPayload,65536);assert.equal(options.followRedirects,false);const socket=new Socket(endpoint);sockets.push(socket);if(config.refuseUpgrade||config.upgradeStatus!==undefined)queueMicrotask(()=>socket.emit('unexpected-response',{}, {socket:{bytesRead:200},statusCode:config.upgradeStatus??429,headers:{'retry-after':config.upgradeRetryAfter??(config.refuseUpgrade?'10':undefined)},destroy(){}}));else if(!config.hangOpen)queueMicrotask(()=>socket.emit('open'));return socket as unknown as WebSocket;}});
@@ -336,6 +336,29 @@ test('global discovery receives creation and migration on one existing socket wi
  assert.deepEqual(f.marketFeedStatuses.filter(row=>row.connected).map(row=>row.source),['pumpportal-migration','pumpportal-new-token']);
  socket.drop();assert.equal(f.feeds.usage().marketDiscovery.sources['pumpportal-new-token']!.connected,false);await f.advance(2000);
  assert.equal(f.sockets.length,2);assert.equal(f.sockets[1]!.sent.length,2);assert.equal(f.feeds.usage().marketDiscovery.sources['pumpportal-new-token']!.gaps,1);await f.feeds.stop();
+});
+
+test('PumpSwap-only operation subscribes only to migrations and discards other venues before market admission',async()=>{
+ const f=setup({pumpswapOnly:true,persistent:true,marketIntake:true});await f.feeds.startDiscovery();await f.feeds.startWatchActivity();
+ const discovery=f.sockets[0]!,broad=f.sockets[1]!;
+ assert.deepEqual(discovery.sent.map(value=>JSON.parse(value).method),['subscribeMigration']);
+ discovery.frame({txType:'create',signature:fixtureTx.signature,mint:scope.mint,pool:'pump'});
+ for(const venue of ['pump','raydium','bonk',undefined])broad.frame({...selected(),pool:venue,description:'pump-amm'});
+ broad.frame('unrelated transport bytes');
+ assert.equal(f.marketIdentities.length,0);assert.equal(f.marketActivities.length,0);assert.equal(f.migrations.length,0);
+ discovery.frame({txType:'migrate',signature:fixtureTx.signature,mint:scope.mint});
+ assert.equal(f.marketIdentities.length,1);assert.equal(f.migrations.length,1);
+ broad.frame(selected());
+ broad.frame(JSON.stringify(selected()).replace('pump-amm','pump-\\u0061mm'));
+ assert.equal(f.marketActivities.length,2,'literal and escaped PumpSwap venue identifiers are both retained');
+ assert.ok(f.marketActivities.every(row=>row.venue==='pump-amm'));
+ assert.equal(f.rpcCalls,0);assert.equal(f.trades.length,0);assert.equal(broad.sent.length,0);
+ assert.equal(f.feeds.usage().marketDiscovery.sources['pumpportal-new-token']!.connected,false);
+ assert.equal(f.feeds.usage().marketDiscovery.sources['pumpportal-new-token']!.enabled,false);
+ assert.equal(f.feeds.usage().marketDiscovery.admissionPolicy!.creationSubscription,false);
+ discovery.drop();await f.advance(2000);
+ assert.deepEqual(f.sockets.at(-1)!.sent.map(value=>JSON.parse(value).method),['subscribeMigration']);
+ await f.feeds.stop();
 });
 
 test('broad shared activity discovers every observed mint beyond old working-set limits without per-token RPC or retained feed identities',async()=>{
