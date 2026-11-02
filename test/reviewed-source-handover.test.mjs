@@ -29,6 +29,7 @@ test('old source continues unchanged until exact target accepted; history and ge
 });
 for(const [name,mutate]of[
  ['wrong account',s=>{s.account.id='other';}],['wrong strategy',s=>{s.source.strategy='other';}],
+ ['wrong financial inception',s=>{s.account.inceptionAt='2026-10-27T22:07:36.212Z';}],
  ['funded mode',s=>{s.liveTrading=true;}],['unbounded field',s=>{s.additional='not allowed';}],
  ['future snapshot',s=>{s.times.generatedAt=iso(T+30001);}],['unknown release',s=>{s.source.release='a'.repeat(40);}],
  ['sequence conflict',s=>{s.sequence='1';}],['sequence regression',s=>{s.sequence='1';}],
@@ -46,8 +47,10 @@ test('existing source can advance through the installed recovery and exact new r
  const c=fixture();c.accept(sample('1',p.from,T-2000),T);
  assert.equal(c.accept(sample('2',p.via,T-1000),T),'accepted');assert.equal(c.identity.release,p.via);
  assert.throws(()=>c.accept(sample('3',p.from),T),/source version/);
- assert.equal(c.accept(sample('3',p.to),T),'accepted');assert.equal(c.identity.release,p.to);
+ assert.equal(c.accept(sample('3',p.previous,T-500),T),'accepted');assert.equal(c.identity.release,p.previous);
  assert.throws(()=>c.accept(sample('4',p.via),T),/source version/);
+ assert.equal(c.accept(sample('4',p.to),T),'accepted');assert.equal(c.identity.release,p.to);
+ for(const old of [p.from,p.via,p.previous])assert.throws(()=>c.accept(sample('5',old),T),/source version/);
 });
 test('a receiver configured at the installed recovery accepts only the exact newer repair',()=>{
  const c=new SnapshotCache({...identity(),release:p.via});assert.equal(attachReviewedSourceHandover(c),true);
@@ -56,8 +59,21 @@ test('a receiver configured at the installed recovery accepts only the exact new
  assert.throws(()=>c.accept(sample('8',p.to),T));assert.equal(c.identity.release,p.via);
  assert.equal(c.accept(sample('9',p.to),T),'accepted');assert.equal(c.identity.release,p.to);
 });
-test('an invalid intermediate report never changes the source or retained snapshot',()=>{
- const c=fixture();c.accept(sample('1'),T);const before=c.read();const bad=sample('2',p.via);bad.liveTrading=true;
+test('retained startup identity can skip a reviewed intermediate and accept current source before the exact repair',()=>{
+ const c=fixture();c.accept(sample('30',p.from,T-120000),T);const before=c.equityHistory();
+ assert.equal(c.accept(sample('31',p.previous,T-1000),T),'accepted');assert.equal(c.identity.release,p.previous);
+ assert.equal(c.read().snapshot.account.id,p.accountId);assert.equal(c.read().snapshot.account.inceptionAt,p.inceptionAt);assert.ok(c.equityHistory().points.some(x=>x.at===before.points[0].at));
+ assert.equal(c.accept(sample('32',p.to),T),'accepted');assert.equal(c.identity.release,p.to);assert.equal(c.read().snapshot.sequence,'32');
+ assert.throws(()=>c.accept(sample('33',p.previous),T),/source version/);
+});
+test('a receiver configured at the current installed source validates the exact repair before switching',()=>{
+ const c=new SnapshotCache({...identity(),release:p.previous});assert.equal(attachReviewedSourceHandover(c),true);c.accept(sample('40',p.previous,T-1000),T);const before=c.read();
+ const invalid=sample('41',p.to);invalid.account.inceptionAt='2026-10-27T22:07:36.212Z';assert.throws(()=>c.accept(invalid,T));assert.equal(c.identity.release,p.previous);assert.deepEqual(c.read(),before);
+ assert.throws(()=>c.accept(sample('40',p.to),T));assert.equal(c.identity.release,p.previous);assert.deepEqual(c.read(),before);
+ assert.equal(c.accept(sample('41',p.to),T),'accepted');assert.equal(c.identity.release,p.to);
+});
+for(const intermediate of [p.via,p.previous])test('an invalid intermediate '+intermediate.slice(0,8)+' report never changes the source or retained snapshot',()=>{
+ const c=fixture();c.accept(sample('1'),T);const before=c.read();const bad=sample('2',intermediate);bad.liveTrading=true;
  assert.throws(()=>c.accept(bad,T));assert.equal(c.identity.release,p.from);assert.deepEqual(c.read(),before);
  assert.equal(c.accept(sample('2',p.to),T),'accepted');
 });

@@ -8,13 +8,16 @@ export const HANDOVER=Object.freeze({
  accountId:'poe-3123e352-4581-455b-85db-acd7e825e99e',
  inceptionAt:'2026-10-26T22:07:36.212Z',
  strategy:'liquidity-resilient-momentum-v3.1',
+ // A restart may still use the original configured identity. Accepting a
+ // newer report does not rewrite that configuration, so retain its anchor.
  from:'bb145cc82b0f05560b03bbd9e53de0c9e360f48f',
  via:'905be6d92001351cc891d83fe11fa7b28fe98d4e',
- to:'06995e21eb6a6975377de8c970be230fc698c957',
+ previous:'06995e21eb6a6975377de8c970be230fc698c957',
+ to:'02077d8c24a77befd8f8de93e09dccf3fdbc1a70',
 });
 const installed=new WeakSet();
 export function attachReviewedSourceHandover(cache){
- const identity=cache.identity,p=HANDOVER,route=[p.from,p.via,p.to];
+ const identity=cache.identity,p=HANDOVER,route=[p.from,p.via,p.previous,p.to];
  if(!identity||identity.accountId!==p.accountId||identity.inceptionAt!==p.inceptionAt||identity.strategy!==p.strategy||!route.slice(0,-1).includes(identity.release))return false;
  if(installed.has(cache))return true;
  const original=cache.accept.bind(cache);
