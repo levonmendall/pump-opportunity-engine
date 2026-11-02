@@ -21,14 +21,14 @@ class Socket extends EventEmitter{
   terminate(){if(this.closed)return;this.closed=true;queueMicrotask(()=>this.emit('close'));}
   drop(){this.closed=true;this.emit('close');}
 }
-function setup(config:{persistent?:boolean;maximumRecordedBytes?:number;watchOnly?:boolean;marketIntake?:boolean;marketSinkFailure?:boolean;maximumCandidates?:1|2|3;responses?:Record<string,unknown>;onGap?:(gap:{mint?:string;reason:string;at:number},feeds:PilotFeeds)=>void;validationDelay?:number;afterRecordDelay?:number;durationMs?:number;hangOpen?:boolean;admitControl?:PilotFeedsOptions['admitControl'];maxPumpApiBytes?:number;closeBeforeSubscribe?:boolean;refuseUpgrade?:boolean;chargeFailure?:boolean}={}){
+function setup(config:{persistent?:boolean;maximumRecordedBytes?:number;watchOnly?:boolean;marketIntake?:boolean;marketSinkFailure?:boolean;maximumCandidates?:1|2|3;responses?:Record<string,unknown>;onGap?:(gap:{mint?:string;reason:string;at:number},feeds:PilotFeeds)=>void;validationDelay?:number;afterRecordDelay?:number;durationMs?:number;hangOpen?:boolean;admitControl?:PilotFeedsOptions['admitControl'];maxPumpApiBytes?:number;closeBeforeSubscribe?:boolean;refuseUpgrade?:boolean;upgradeStatus?:number;upgradeRetryAfter?:string;chargeFailure?:boolean}={}){
   let at=Date.parse(fixtureTx.fetchedAt),mono=0,sequence=0,active=0,controlBytes=0,rpcCalls=0;const timers=new Map<number,{at:number;callback:()=>void}>(),sockets:Socket[]=[],operations:ComponentKind[]=[],records:Array<{kind:string;data:any}>=[],trades:any[]=[],migrations:any[]=[],watchHints:any[]=[],marketIdentities:any[]=[],marketActivities:any[]=[],marketFeedStatuses:any[]=[],gaps:any[]=[],opens:any[]=[],hints:any[]=[];
   const advance=async(ms:number)=>{const end=mono+ms;while(true){const next=[...timers].filter(([,v])=>v.at<=end).sort((a,b)=>a[1].at-b[1].at)[0];if(!next)break;const delta=next[1].at-mono;at+=delta;mono=next[1].at;timers.delete(next[0]);next[1].callback();for(let i=0;i<8;i++)await Promise.resolve();}at+=end-mono;mono=end;for(let i=0;i<8;i++)await Promise.resolve();};
   const control:PilotFeedControl={async operateData<T>(kind:ComponentKind,work:(op:ComponentOperation)=>Promise<T>,signal?:AbortSignal){assert.equal(active,0,'one physical control operation');operations.push(kind);active++;if(config.closeBeforeSubscribe&&kind.method==='subscribeMigration')sockets[0]!.drop();try{return await work({id:operations.length,signal:signal??new AbortController().signal,chargeHttp(){},completeResponse(){}});}finally{active--; }},accountControlBytes(n){if(config.chargeFailure)throw Error('COMPONENT_STORAGE_UNAVAILABLE');controlBytes+=n;},noteThrottle(){return at+15000;}};
   const feedOptions:PilotFeedsOptions={persistent:config.persistent,maximumRecordedBytes:config.maximumRecordedBytes,control,amountConvention:'user',maximumCandidates:config.maximumCandidates,durationMs:config.durationMs??300000,maxPumpApiBytes:config.maxPumpApiBytes,admitControl:config.admitControl,record(kind,data){records.push({kind,data});if(kind==='research-enrichment-validation-prepared'){at+=config.validationDelay??0;mono+=config.validationDelay??0;}if(kind==='research-normalized-trade'){at+=config.afterRecordDelay??0;mono+=config.afterRecordDelay??0;}},onMigration:s=>migrations.push(s),...(config.watchOnly?{watchedIdentities:()=>[{mint:scope.mint,pool:scope.pool}],onWatchActivity:(row:unknown)=>watchHints.push(row)}:{}),onFlowOpen:(mint,at)=>opens.push({mint,at}),onHint:(mint,at)=>hints.push({mint,at}),onTrade:t=>trades.push(t),onGap:g=>{gaps.push(g);config.onGap?.(g,feeds);}};
   if(config.marketIntake){feedOptions.onMarketIdentity=row=>{if(config.marketSinkFailure)throw Error('FIXTURE_SINK_FULL');marketIdentities.push(row);};feedOptions.onMarketActivity=row=>{if(config.marketSinkFailure)throw Error('FIXTURE_SINK_FULL');marketActivities.push(row);};feedOptions.onMarketFeed=row=>marketFeedStatuses.push(row);}
   const feeds=new PilotFeeds(feedOptions,
-    {now:()=>at,monotonic:()=>mono,setTimer(callback,ms){const id=++sequence;timers.set(id,{at:mono+ms,callback});return id;},clearTimer(id){timers.delete(id as number);},makeSocket(endpoint,options){assert.equal(options.maxPayload,65536);assert.equal(options.followRedirects,false);const socket=new Socket(endpoint);sockets.push(socket);if(config.refuseUpgrade)queueMicrotask(()=>socket.emit('unexpected-response',{}, {socket:{bytesRead:200},statusCode:429,headers:{'retry-after':'10'},destroy(){}}));else if(!config.hangOpen)queueMicrotask(()=>socket.emit('open'));return socket as unknown as WebSocket;}});
+    {now:()=>at,monotonic:()=>mono,setTimer(callback,ms){const id=++sequence;timers.set(id,{at:mono+ms,callback});return id;},clearTimer(id){timers.delete(id as number);},makeSocket(endpoint,options){assert.equal(options.maxPayload,65536);assert.equal(options.followRedirects,false);const socket=new Socket(endpoint);sockets.push(socket);if(config.refuseUpgrade||config.upgradeStatus!==undefined)queueMicrotask(()=>socket.emit('unexpected-response',{}, {socket:{bytesRead:200},statusCode:config.upgradeStatus??429,headers:{'retry-after':config.upgradeRetryAfter??(config.refuseUpgrade?'10':undefined)},destroy(){}}));else if(!config.hangOpen)queueMicrotask(()=>socket.emit('open'));return socket as unknown as WebSocket;}});
   const rpc={async call<T>(method:string,params:unknown[]){rpcCalls++;assert.equal(method,'getTransaction');assert.ok(params[0]===fixtureTx.signature||Object.hasOwn(config.responses??{},String(params[0])));at+=10;mono+=10;return (config.responses?.[String(params[0])]??fixtureTx.transaction) as T;}};
   return {feeds,feedOptions,control,rpc,advance,sockets,operations,records,trades,migrations,watchHints,marketIdentities,marketActivities,marketFeedStatuses,gaps,opens,hints,get now(){return at;},get rpcCalls(){return rpcCalls;},get controlBytes(){return controlBytes;},get active(){return active;}};
 }
@@ -71,6 +71,38 @@ test('a connection closing during subscription pacing rejects without leaving an
 test('upgrade-refusal accounting failure stays inside the handler, while feed429 retains only its own reconnect deadline',async()=>{
   const failed=setup({refuseUpgrade:true,chargeFailure:true});await assert.rejects(failed.feeds.selectCandidate(scope));assert.equal(failed.active,0);assert.equal(failed.feeds.usage().physicalTransportsSettled,true);assert.ok(failed.gaps.some(g=>g.reason==='COMPONENT_STORAGE_UNAVAILABLE'));await failed.feeds.stop();
   const limited=setup({refuseUpgrade:true});await assert.rejects(limited.feeds.selectCandidate(scope),/COMPONENT_HTTP_429/);assert.equal(limited.feeds.usage().candidateRetryAt,limited.now+15000);await limited.advance(5000);await assert.rejects(limited.feeds.selectCandidate(scope),/RECONNECT_BACKOFF/);assert.equal(limited.sockets.length,1);await limited.feeds.stop();
+});
+
+for(const status of [500,502,503,504])test(`transient upgrade HTTP${status} restores both broad feeds through existing network backoff and fresh ACKs`,async()=>{
+  const config={persistent:true,marketIntake:true,upgradeStatus:status as number|undefined,admitControl:():{}|false=>f.active===0?{}:false},f=setup(config);
+  try{
+    await assert.rejects(f.feeds.startDiscovery(),/COMPONENT_WS_TRANSPORT/);
+    await assert.rejects(f.feeds.startWatchActivity(),/COMPONENT_WS_TRANSPORT/);
+    const failed=f.feeds.usage();assert.equal(failed.physicalTransportsSettled,true);assert.equal(f.sockets.length,2);
+    for(const leg of Object.values(failed.marketDiscovery.recovery)){assert.equal(leg.desired,true);assert.equal(leg.networkReconnects,1);assert.equal(leg.providerBackoffLevel,1);assert.equal(leg.localDeferrals,0);assert.equal(leg.providerNotBefore,0);}
+    const retries=f.records.filter(r=>r.kind==='pilot-feed-reconnect-scheduled');assert.equal(retries.length,2);assert.ok(retries.every(r=>r.data.delayMs===2000&&r.data.reason===`PILOT_FEED_UPGRADE_HTTP_${status}`&&r.data.physicalAttemptStarted===true));
+    config.upgradeStatus=undefined;await f.advance(1999);assert.equal(f.sockets.length,2);assert.ok(Object.values(f.feeds.usage().marketDiscovery.sources).every(s=>!s.connected));
+    await f.advance(1);await f.advance(250);assert.equal(f.sockets.length,4);assert.ok(Object.values(f.feeds.usage().marketDiscovery.sources).every(s=>s.connected));assert.deepEqual(f.sockets[2]!.sent.map(s=>JSON.parse(s).method),['subscribeMigration','subscribeNewToken']);
+  }finally{await f.feeds.stop();}
+});
+
+for(const status of [401,403])test(`upgrade HTTP${status} remains terminal even when a later provider response would be healthy`,async()=>{
+  const config={persistent:true,marketIntake:true,upgradeStatus:status as number|undefined},f=setup(config);
+  try{
+    await assert.rejects(f.feeds.startDiscovery());await assert.rejects(f.feeds.startWatchActivity());
+    for(const leg of Object.values(f.feeds.usage().marketDiscovery.recovery)){assert.equal(leg.desired,false);assert.equal(leg.retryTimerPending,false);assert.equal(leg.networkReconnects,0);}
+    config.upgradeStatus=undefined;await f.advance(65000);assert.equal(f.sockets.length,2);assert.ok(Object.values(f.feeds.usage().marketDiscovery.sources).every(s=>!s.connected));
+  }finally{await f.feeds.stop();}
+});
+
+for(const status of [429,503])test(`upgrade HTTP${status} explicit Retry-After remains a lower bound for both broad feeds`,async()=>{
+  const config={persistent:true,marketIntake:true,upgradeStatus:status as number|undefined,upgradeRetryAfter:'10',admitControl:():{}|false=>f.active===0?{}:false},f=setup(config);
+  try{
+    await assert.rejects(f.feeds.startDiscovery());await assert.rejects(f.feeds.startWatchActivity());
+    const until=f.now+15000;for(const leg of Object.values(f.feeds.usage().marketDiscovery.recovery))assert.equal(leg.providerNotBefore,until);
+    config.upgradeStatus=undefined;await f.advance(14999);assert.equal(f.sockets.length,2);await f.advance(1);await f.advance(250);assert.equal(f.sockets.length,4);assert.ok(Object.values(f.feeds.usage().marketDiscovery.sources).every(s=>s.connected));
+    assert.ok(f.records.filter(r=>r.kind==='pilot-feed-reconnect-scheduled').every(r=>r.data.delayMs===15000&&r.data.physicalAttemptStarted===true));
+  }finally{await f.feeds.stop();}
 });
 
 test('current feature projection advances without adding duplicate quiet feature history',async()=>{

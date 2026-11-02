@@ -43,16 +43,18 @@ test('unconfigured, unrelated and already newer receivers do not gain an alterna
  for(const id of [null,{...identity(),accountId:'other'},{...identity(),release:p.to},{...identity(),release:'c'.repeat(40)}])assert.equal(attachReviewedSourceHandover(new SnapshotCache(id)),false);
  const c=fixture();assert.equal(attachReviewedSourceHandover(c),true);
 });
-test('existing source can advance through the installed recovery and exact new repair, never backward',()=>{
- const c=fixture();c.accept(sample('1',p.from,T-3000),T);
- assert.equal(c.accept(sample('2',p.via,T-2000),T),'accepted');assert.equal(c.identity.release,p.via);
+test('existing source can advance through every installed recovery and exact feed repair, never backward',()=>{
+ const c=fixture();c.accept(sample('1',p.from,T-4000),T);
+ assert.equal(c.accept(sample('2',p.via,T-3000),T),'accepted');assert.equal(c.identity.release,p.via);
  assert.throws(()=>c.accept(sample('3',p.from),T),/source version/);
- assert.equal(c.accept(sample('3',p.previous,T-1000),T),'accepted');assert.equal(c.identity.release,p.previous);
+ assert.equal(c.accept(sample('3',p.previous,T-2000),T),'accepted');assert.equal(c.identity.release,p.previous);
  assert.throws(()=>c.accept(sample('4',p.via),T),/source version/);
- assert.equal(c.accept(sample('4',p.current,T-500),T),'accepted');assert.equal(c.identity.release,p.current);
+ assert.equal(c.accept(sample('4',p.current,T-1000),T),'accepted');assert.equal(c.identity.release,p.current);
  assert.throws(()=>c.accept(sample('5',p.previous),T),/source version/);
- assert.equal(c.accept(sample('5',p.to),T),'accepted');assert.equal(c.identity.release,p.to);
- for(const old of [p.from,p.via,p.previous,p.current])assert.throws(()=>c.accept(sample('6',old),T),/source version/);
+ assert.equal(c.accept(sample('5',p.preparation,T-500),T),'accepted');assert.equal(c.identity.release,p.preparation);
+ assert.throws(()=>c.accept(sample('6',p.current),T),/source version/);
+ assert.equal(c.accept(sample('6',p.to),T),'accepted');assert.equal(c.identity.release,p.to);
+ for(const old of [p.from,p.via,p.previous,p.current,p.preparation])assert.throws(()=>c.accept(sample('7',old),T),/source version/);
 });
 test('a receiver configured at the installed recovery accepts only the exact newer repair',()=>{
  const c=new SnapshotCache({...identity(),release:p.via});assert.equal(attachReviewedSourceHandover(c),true);
@@ -65,27 +67,28 @@ test('retained startup identity can skip a reviewed intermediate and accept curr
  const c=fixture();c.accept(sample('30',p.from,T-120000),T);const before=c.equityHistory();
  assert.equal(c.accept(sample('31',p.previous,T-1000),T),'accepted');assert.equal(c.identity.release,p.previous);
  assert.equal(c.read().snapshot.account.id,p.accountId);assert.equal(c.read().snapshot.account.inceptionAt,p.inceptionAt);assert.ok(c.equityHistory().points.some(x=>x.at===before.points[0].at));
- assert.equal(c.accept(sample('32',p.current,T-500),T),'accepted');assert.equal(c.identity.release,p.current);
- assert.equal(c.accept(sample('33',p.to),T),'accepted');assert.equal(c.identity.release,p.to);assert.equal(c.read().snapshot.sequence,'33');
- for(const old of [p.previous,p.current])assert.throws(()=>c.accept(sample('34',old),T),/source version/);
+ assert.equal(c.accept(sample('32',p.current,T-750),T),'accepted');assert.equal(c.identity.release,p.current);
+ assert.equal(c.accept(sample('33',p.preparation,T-500),T),'accepted');assert.equal(c.identity.release,p.preparation);
+ assert.equal(c.accept(sample('34',p.to),T),'accepted');assert.equal(c.identity.release,p.to);assert.equal(c.read().snapshot.sequence,'34');
+ for(const old of [p.previous,p.current,p.preparation])assert.throws(()=>c.accept(sample('35',old),T),/source version/);
 });
-for(const installed of [p.previous,p.current])test('a receiver configured at '+installed.slice(0,8)+' validates the exact repair before switching',()=>{
+for(const installed of [p.previous,p.current,p.preparation])test('a receiver configured at '+installed.slice(0,8)+' validates the exact repair before switching',()=>{
  const c=new SnapshotCache({...identity(),release:installed});assert.equal(attachReviewedSourceHandover(c),true);c.accept(sample('40',installed,T-1000),T);const before=c.read();
  const invalid=sample('41',p.to);invalid.account.inceptionAt='2026-10-27T22:07:36.212Z';assert.throws(()=>c.accept(invalid,T));assert.equal(c.identity.release,installed);assert.deepEqual(c.read(),before);
  assert.throws(()=>c.accept(sample('40',p.to),T));assert.equal(c.identity.release,installed);assert.deepEqual(c.read(),before);
  assert.equal(c.accept(sample('41',p.to),T),'accepted');assert.equal(c.identity.release,p.to);
 });
-for(const intermediate of [p.via,p.previous,p.current])test('an invalid intermediate '+intermediate.slice(0,8)+' report never changes the source or retained snapshot',()=>{
+for(const intermediate of [p.via,p.previous,p.current,p.preparation])test('an invalid intermediate '+intermediate.slice(0,8)+' report never changes the source or retained snapshot',()=>{
  const c=fixture();c.accept(sample('1'),T);const before=c.read();const bad=sample('2',intermediate);bad.liveTrading=true;
  assert.throws(()=>c.accept(bad,T));assert.equal(c.identity.release,p.from);assert.deepEqual(c.read(),before);
  assert.equal(c.accept(sample('2',p.to),T),'accepted');
 });
-test('existing HTTP authentication still runs before any transition',async t=>{
- const secret='offline-independent-ingestion-secret';const app=createDashboard({...identity(),viewerUser:'',viewerPassword:'',publicViewer:true,ingestionSecret:secret});
+for(const installed of [p.from,p.preparation])test('existing HTTP authentication runs before forward transition from '+installed.slice(0,8),async t=>{
+ const secret='offline-independent-ingestion-secret';const app=createDashboard({...identity(),release:installed,viewerUser:'',viewerPassword:'',publicViewer:true,ingestionSecret:secret});
  attachReviewedSourceHandover(app.cache);app.server.listen(0,'127.0.0.1');await once(app.server,'listening');
  t.after(async()=>{app.server.closeAllConnections();await new Promise(r=>app.server.close(r));});
  const url='http://127.0.0.1:'+app.server.address().port+'/api/snapshot';
  const post=authorization=>fetch(url,{method:'POST',headers:{'content-type':'application/json',authorization},body:JSON.stringify(sample('1',p.to))});
- assert.equal((await post('Bearer wrong')).status,401);assert.equal(app.cache.identity.release,p.from);assert.equal(app.cache.read(),null);
+ assert.equal((await post('Bearer wrong')).status,401);assert.equal(app.cache.identity.release,installed);assert.equal(app.cache.read(),null);
  assert.equal((await post('Bearer '+secret)).status,200);assert.equal(app.cache.identity.release,p.to);assert.equal(app.cache.read().snapshot.source.release,p.to);
 });

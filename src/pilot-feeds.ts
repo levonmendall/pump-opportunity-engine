@@ -15,7 +15,7 @@ import {PUMPAPI_STREAM} from './pumpapi-probe.js';
 import type {MappedTradeEvidence} from './pumpapi-mapping.js';
 import type {NormalizedTrade} from './strategy.js';
 import type {ComponentKind,ComponentOperation} from './component-budget.js';
-import type {PilotRpcCallOptions} from './pilot-rpc.js';
+import {PilotRpcUnavailable,type PilotRpcCallOptions} from './pilot-rpc.js';
 import {canonicalTransactionSignature} from './transaction-signature.js';
 import type {MarketIdentityHint,MarketActivityHint,MarketFeedSource,MarketFeedStatus} from './market-discovery.js';
 
@@ -48,7 +48,7 @@ export type PilotFeedsOptions={
   admitControl?:()=>PilotRpcCallOptions|false;
 };
 type Connection={socket:WebSocket;seen:number;closed:boolean;opened:boolean;expectedClose:boolean;closeReason:string|null;lastTrafficMono:number;closedPromise:Promise<void>;resolveClosed:()=>void;ack?:(method:string)=>void;upgradeReject?:(e:Error)=>void;subscriptionReject?:(e:Error)=>void;marketReady?:boolean;marketPausedAtMono?:number;resumeGraceUntilMono?:number};
-type Leg={name:FeedName;desired:boolean;connected:boolean;connecting:boolean;attempts:number;failures:number;reconnects:number;notBefore:number;timer?:unknown;connection?:Connection;localDeferrals?:number;lastLocalDeferralAt?:number;lastLocalDeferralReason?:string};
+type Leg={name:FeedName;desired:boolean;connected:boolean;connecting:boolean;attempts:number;failures:number;reconnects:number;notBefore:number;timer?:unknown;connection?:Connection;localDeferrals?:number;lastLocalDeferralAt?:number;lastLocalDeferralReason?:string;lastLocalDeferralRecordAt?:number};
 type FeatureRow=ReturnType<ActivePipeline['snapshot']>['featureRows'][number];
 type Candidate={generation:number;scope:ActiveScope;pipeline:ActivePipeline;controller:AbortController;selectedMono:number;suspended:boolean;pending:Set<string>;normalized:number;mintBytes:Buffer;poolBytes:Buffer;latestFeature:FeatureRow|null};
 export type PilotFeedDependencies={makeSocket?:(endpoint:string,options:WebSocket.ClientOptions)=>WebSocket;now?:()=>number;monotonic?:()=>number;setTimer?:(callback:()=>void,ms:number)=>unknown;clearTimer?:(timer:unknown)=>void};
@@ -172,16 +172,23 @@ export class PilotFeeds {
     }catch(e){for(const {c}of selected)if(this.current(c)&&!c.suspended&&this.legs.pumpapi.connected)c.pipeline.failHint('pilot-confirmed-enrichment-unavailable',this.now());throw e;}
     finally{this.enriching=false;}
   }
-  private reconnect(leg:Leg){
+  private reconnect(leg:Leg,reason:string,physicalAttemptStarted:boolean){
     if(!this.live()||!leg.desired||leg.timer!==undefined)return;if(!this.options.persistent&&(leg.attempts>=9||leg.reconnects>=8)){leg.desired=false;if(leg.name==='pumpapi')this.invalidateAll('PILOT_PUMPAPI_RECONNECT_LIMIT');else this.gap('PILOT_DISCOVERY_RECONNECT_LIMIT');return;}
-    const delay=Math.max(BACKOFF[Math.min(leg.failures++,BACKOFF.length-1)]!,leg.notBefore-this.now());leg.reconnects++;try{this.record('pilot-feed-reconnect-scheduled',{feed:leg.name,at:this.now(),delayMs:delay,desiredSubscriptions:leg.name==='discovery'?this.discoverySubscriptions():[],requiresFreshCandidateWindow:leg.name==='pumpapi'});}catch{leg.desired=false;this.gap('PILOT_FEED_EVIDENCE_CAP',leg.name==='pumpapi'?this.candidate?.scope.mint:undefined);return;}leg.timer=this.timer(()=>{leg.timer=undefined;void this.connect(leg).catch(()=>{});},delay);
+    const delay=Math.max(BACKOFF[Math.min(leg.failures++,BACKOFF.length-1)]!,leg.notBefore-this.now());leg.reconnects++;try{this.record('pilot-feed-reconnect-scheduled',{feed:leg.name,at:this.now(),delayMs:delay,reason,physicalAttemptStarted,desiredSubscriptions:leg.name==='discovery'?this.discoverySubscriptions():[],requiresFreshCandidateWindow:leg.name==='pumpapi'});}catch{leg.desired=false;this.gap('PILOT_FEED_EVIDENCE_CAP',leg.name==='pumpapi'?this.candidate?.scope.mint:undefined);return;}leg.timer=this.timer(()=>{leg.timer=undefined;void this.connect(leg).catch(()=>{});},delay);
   }
   /** A refused local scheduling opportunity is not a provider failure. Keep
    * checking for spare shared-gate runway without growing network backoff or
    * opening a second transport. Actual provider cooldowns remain unchanged. */
   private deferConnect(leg:Leg,reason:string,readyAt=this.now()+250){
     if(!this.live()||!leg.desired||leg.timer!==undefined)return;
-    leg.localDeferrals=(leg.localDeferrals??0)+1;leg.lastLocalDeferralAt=this.now();leg.lastLocalDeferralReason=reason;
+    const at=this.now();
+    leg.localDeferrals=(leg.localDeferrals??0)+1;leg.lastLocalDeferralAt=at;leg.lastLocalDeferralReason=reason;
+    // Source-local diagnostics are coalesced; repeated scheduling refusals do
+    // not manufacture provider failures, attempted sockets or quality gaps.
+    if(leg.lastLocalDeferralRecordAt===undefined||at-leg.lastLocalDeferralRecordAt>=5000){
+      try{this.record('pilot-feed-local-deferred',{feed:leg.name,at,reason:reason.toUpperCase().replaceAll('-','_'),delayMs:Math.max(1,readyAt-at),physicalAttemptStarted:false,localDeferrals:leg.localDeferrals});leg.lastLocalDeferralRecordAt=at;}
+      catch{leg.desired=false;this.gap('PILOT_FEED_EVIDENCE_CAP',leg.name==='pumpapi'?this.candidate?.scope.mint:undefined);return;}
+    }
     leg.timer=this.timer(()=>{leg.timer=undefined;void this.connect(leg).catch(()=>{});},Math.max(1,readyAt-this.now()));
   }
   /** Pause only these shared discovery transports. Native audited flow and
@@ -310,23 +317,58 @@ export class PilotFeeds {
 
   private async connect(leg:Leg){
     if(!this.live()||!leg.desired||leg.connecting||leg.connected)return;if(this.marketPressure.paused){this.deferConnect(leg,'market-intake-byte-backpressure');return;}if(this.now()<leg.notBefore){this.deferConnect(leg,'provider-cooldown',leg.notBefore);return;}const admission=this.options.admitControl?.()??{};if(admission===false){this.deferConnect(leg,'local-control-admission');return;}if(leg.connection&&!leg.connection.closed){this.deferConnect(leg,'prior-transport-unsettled');return;}leg.connecting=true;
+    // A local subscription refusal can follow a real completed upgrade. Such
+    // replacements still consume the original finite research attempt limit;
+    // prephysical scheduling deferrals do not consume a transport attempt.
+    if(!this.options.persistent&&leg.attempts>=9){leg.connecting=false;leg.desired=false;if(leg.name==='pumpapi')this.invalidateAll('PILOT_PUMPAPI_RECONNECT_LIMIT');else this.gap('PILOT_DISCOVERY_RECONNECT_LIMIT');return;}
+    let physicalAttemptStarted=false;
     try{
       await this.options.control.operateData({transport:'ws-upgrade',method:'upgrade'},async op=>new Promise<void>((resolve,reject)=>{
+        physicalAttemptStarted=true;
         const endpoint=leg.name==='discovery'?DISCOVERY:PUMPAPI_STREAM,config:WebSocket.ClientOptions={agent:process.env.HTTPS_PROXY?new HttpsProxyAgent(process.env.HTTPS_PROXY):undefined,maxPayload:65536,perMessageDeflate:false,followRedirects:false,handshakeTimeout:1200},ws=this.dependencies.makeSocket?.(endpoint,config)??new WebSocket(endpoint,config);let resolveClosed!:()=>void;const closedPromise=new Promise<void>(r=>{resolveClosed=r;}),c:Connection={socket:ws,seen:0,closed:false,opened:false,expectedClose:false,closeReason:null,lastTrafficMono:this.mono(),closedPromise,resolveClosed,upgradeReject:reject};leg.connection=c;leg.attempts++;
         const abort=()=>this.closeLeg(leg,'PILOT_FEED_OPERATION_ABORTED',false);op.signal.addEventListener('abort',abort,{once:true});
         ws.on('open',()=>{try{this.sample(leg,c,true);need(this.live()&&leg.desired&&!c.closeReason,'PILOT_FEED_OPEN_UNAVAILABLE');const rawSocket=(ws as unknown as {_socket?:{prependListener?:(name:string,cb:()=>void)=>void}})._socket;need(rawSocket?.prependListener,'PILOT_FEED_PREPARSE_COUNTER_REQUIRED');rawSocket!.prependListener!('data',()=>{try{this.sample(leg,c);}catch(e){this.closeLeg(leg,safe(e),false);}});c.opened=true;leg.connected=true;leg.failures=0;if(leg.name==='pumpapi'){const selected=this.activeCandidates();need(selected.length>0||this.watchActivityDesired,'PILOT_NO_CANDIDATE');const at=this.now();for(const old of selected){const fresh=this.makeCandidate(old.scope,old.selectedMono);old.controller.abort();this.candidates.set(old.scope.mint,fresh);fresh.pipeline.open(at);this.options.onFlowOpen?.(fresh.scope.mint,at);}}if(leg.name==='pumpapi'){c.marketReady=true;this.marketFeed('pumpapi-broad',true);this.applyMarketBackpressure(leg);}this.record('pilot-feed-open',{feed:leg.name,at:this.now(),endpoint,connection:leg.attempts,dataOnly:true,paidSubscriptions:0});op.signal.removeEventListener('abort',abort);c.upgradeReject=undefined;op.completeResponse();resolve();}catch(e){this.closeLeg(leg,safe(e),false);}});
         ws.on('message',raw=>{try{this.message(leg,c,raw);}catch(e){if(leg.name==='pumpapi')this.invalidateAll(safe(e));else{if(safe(e)!=='PILOT_MARKET_DISCOVERY_SINK_UNAVAILABLE')leg.desired=false;this.gap(safe(e));}this.closeLeg(leg,safe(e),false);}});
-        ws.on('unexpected-response',(_req,response)=>{let reason=response.statusCode===429?'COMPONENT_HTTP_429':'PILOT_FEED_UPGRADE_REFUSED';try{this.sample(leg,c,true,response.socket?.bytesRead);if(response.statusCode===429){const until=this.options.control.noteThrottle(String(response.headers['retry-after']??'')||null,this.now());need(Number.isSafeInteger(until)&&until>=this.now(),'PILOT_FEED_COOLDOWN_INVALID');leg.notBefore=Math.max(leg.notBefore,until);}else leg.desired=false;}catch(e){reason=safe(e);leg.desired=false;if(leg.name==='pumpapi')this.invalidateAll(reason);else this.gap(reason);}finally{c.closeReason=reason;response.destroy();ws.terminate();}});
+        ws.on('unexpected-response',(_req,response)=>{
+          const status=response.statusCode,transient=status!==undefined&&[500,502,503,504].includes(status);
+          let reason=status===429?'COMPONENT_HTTP_429':transient?'PILOT_FEED_UPGRADE_HTTP_'+status:'PILOT_FEED_UPGRADE_REFUSED';
+          try{
+            this.sample(leg,c,true,response.socket?.bytesRead);
+            const retryAfter=String(response.headers['retry-after']??'')||null;
+            if(status===429||transient&&retryAfter!==null){const until=this.options.control.noteThrottle(retryAfter,this.now());need(Number.isSafeInteger(until)&&until>=this.now(),'PILOT_FEED_COOLDOWN_INVALID');leg.notBefore=Math.max(leg.notBefore,until);}
+            // A temporary server failure retains normal bounded reconnect
+            // backoff. Authentication, redirects and other refusals stay shut.
+            if(status!==429&&!transient)leg.desired=false;
+          }catch(e){reason=safe(e);leg.desired=false;if(leg.name==='pumpapi')this.invalidateAll(reason);else this.gap(reason);}
+          finally{c.closeReason=reason;response.destroy();ws.terminate();}
+        });
         ws.on('error',()=>{c.closeReason??='COMPONENT_WS_TRANSPORT';ws.terminate();});
-        ws.on('close',()=>{if(c.closed)return;try{this.sample(leg,c);}catch{c.closeReason??='PILOT_FEED_SOCKET_COUNTER';}this.settleMarketPause(leg,c);c.closed=true;leg.connected=false;for(const source of leg.name==='pumpapi'?['pumpapi-broad'] as const:this.discoverySubscriptions().map(method=>method==='subscribeMigration'?'pumpportal-migration':'pumpportal-new-token') as MarketFeedSource[])this.marketFeed(source,false,c.expectedClose?undefined:c.closeReason??'COMPONENT_WS_TRANSPORT');op.signal.removeEventListener('abort',abort);c.resolveClosed();const reason=c.closeReason??'COMPONENT_WS_TRANSPORT',controlReason=reason.startsWith('COMPONENT_')?reason:c.expectedClose?'COMPONENT_ABORTED':!c.opened?'COMPONENT_WS_TRANSPORT':reason,error=Error(controlReason);c.upgradeReject?.(error);c.subscriptionReject?.(error);if(!c.expectedClose&&this.live()&&leg.desired){if(leg.name==='pumpapi'){this.invalidateAll(reason);if(this.watchActivityDesired&&leg.desired)this.reconnect(leg);}else{this.gap(reason);this.reconnect(leg);}}});
+        ws.on('close',()=>{if(c.closed)return;try{this.sample(leg,c);}catch{c.closeReason??='PILOT_FEED_SOCKET_COUNTER';}this.settleMarketPause(leg,c);c.closed=true;leg.connected=false;for(const source of leg.name==='pumpapi'?['pumpapi-broad'] as const:this.discoverySubscriptions().map(method=>method==='subscribeMigration'?'pumpportal-migration':'pumpportal-new-token') as MarketFeedSource[])this.marketFeed(source,false,c.expectedClose?undefined:c.closeReason??'COMPONENT_WS_TRANSPORT');op.signal.removeEventListener('abort',abort);c.resolveClosed();const reason=c.closeReason??'COMPONENT_WS_TRANSPORT',controlReason=reason.startsWith('COMPONENT_')?reason:c.expectedClose?'COMPONENT_ABORTED':!c.opened?'COMPONENT_WS_TRANSPORT':reason,error=Error(controlReason);c.upgradeReject?.(error);c.subscriptionReject?.(error);if(!c.expectedClose&&this.live()&&leg.desired){if(leg.name==='pumpapi'){this.invalidateAll(reason);if(this.watchActivityDesired&&leg.desired)this.reconnect(leg,reason,true);}else{this.gap(reason);this.reconnect(leg,reason,true);}}});
       }),this.controller.signal,{timeoutMs:1500,...admission});
       if(leg.name==='discovery'){
         const c=leg.connection!;for(const method of this.discoverySubscriptions()){
-          await this.options.control.operateData({transport:'ws',method},async op=>new Promise<void>((resolve,reject)=>{if(c.closed||!this.live()||!leg.desired){reject(Error('COMPONENT_WS_TRANSPORT'));return;}c.subscriptionReject=reject;const abort=()=>this.closeLeg(leg,'COMPONENT_WS_TRANSPORT',false);op.signal.addEventListener('abort',abort,{once:true});c.ack=ackMethod=>{if(ackMethod!==method)return;c.ack=undefined;c.subscriptionReject=undefined;op.signal.removeEventListener('abort',abort);op.completeResponse();this.marketFeed(method==='subscribeMigration'?'pumpportal-migration':'pumpportal-new-token',true);resolve();};try{c.socket.send(dataMessage(method),e=>{if(e)this.closeLeg(leg,'COMPONENT_WS_TRANSPORT',false);});}catch{this.closeLeg(leg,'COMPONENT_WS_TRANSPORT',false);}}),this.controller.signal,{timeoutMs:1500,...admission});
+          physicalAttemptStarted=false;
+          await this.options.control.operateData({transport:'ws',method},async op=>new Promise<void>((resolve,reject)=>{physicalAttemptStarted=true;if(c.closed||!this.live()||!leg.desired){reject(Error('COMPONENT_WS_TRANSPORT'));return;}c.subscriptionReject=reject;const abort=()=>this.closeLeg(leg,'COMPONENT_WS_TRANSPORT',false);op.signal.addEventListener('abort',abort,{once:true});c.ack=ackMethod=>{if(ackMethod!==method)return;c.ack=undefined;c.subscriptionReject=undefined;op.signal.removeEventListener('abort',abort);op.completeResponse();this.marketFeed(method==='subscribeMigration'?'pumpportal-migration':'pumpportal-new-token',true);resolve();};try{c.socket.send(dataMessage(method),e=>{if(e)this.closeLeg(leg,'COMPONENT_WS_TRANSPORT',false);});}catch{this.closeLeg(leg,'COMPONENT_WS_TRANSPORT',false);}}),this.controller.signal,{timeoutMs:1500,...admission});
         }
         c.marketReady=true;this.applyMarketBackpressure(leg);
       }
-    }catch(e){this.firstFailure??=safe(e);this.closeLeg(leg,safe(e),false);this.reconnect(leg);throw e;}
+    }catch(e){
+      // Only the actual shared gate's recognized, uninvoked refusals may use
+      // local deferral. A matching error after transport entry stays a failure.
+      const transportAlreadyFailed=leg.connection!==undefined&&!leg.connection.closed&&!leg.connection.expectedClose&&leg.connection.closeReason!==null;
+      const local=e instanceof PilotRpcUnavailable&&!physicalAttemptStarted&&!transportAlreadyFailed&&['PHYSICAL_SLOT_OCCUPIED','COMPONENT_ADMISSION_CLOSED','COMPONENT_DISPATCH_EXPIRED','COOLDOWN'].includes(e.code);
+      if(local&&(e.code!=='COOLDOWN'||Number.isSafeInteger(e.retryAt)&&e.retryAt!>0)){
+        if(e.code==='COOLDOWN')leg.notBefore=Math.max(leg.notBefore,e.retryAt!);
+        // An upgrade may already be open when a later subscription is refused.
+        // Close it deliberately, then require physical close and all fresh ACKs
+        // on replacement; its refusal does not charge provider failure backoff.
+        if(leg.connection?.opened&&!leg.connection.closed)for(const source of leg.name==='pumpapi'?['pumpapi-broad'] as const:this.discoverySubscriptions().map(method=>method==='subscribeMigration'?'pumpportal-migration':'pumpportal-new-token') as MarketFeedSource[])if(this.marketSources[source].connected)this.marketFeed(source,false);
+        this.closeLeg(leg,safe(e),true);
+        this.deferConnect(leg,safe(e),Math.max(this.now()+250,leg.notBefore));return;
+      }
+      const reason=transportAlreadyFailed?leg.connection!.closeReason!:safe(e);
+      this.firstFailure??=reason;this.closeLeg(leg,reason,false);this.reconnect(leg,reason,physicalAttemptStarted||transportAlreadyFailed);throw e;
+    }
     finally{leg.connecting=false;}
   }
   private async waitClosed(c:Connection){if(c.closed)return;let id:unknown;try{await Promise.race([c.closedPromise,new Promise<never>((_r,reject)=>{id=this.timer(()=>reject(Error('PILOT_FEED_TRANSPORT_UNSETTLED')),2500);})]);}finally{if(id!==undefined)this.cancel(id);}}
