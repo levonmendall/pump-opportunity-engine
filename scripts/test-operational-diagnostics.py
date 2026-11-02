@@ -338,6 +338,18 @@ class ReadOnlyDiagnostics(unittest.TestCase):
         self.assertNotIn('PRIVATE',json.dumps(result))
         self.assertNotIn('arbitrary-private',json.dumps(result))
 
+    def test_backup_failure_diagnostic_retains_bounded_cause_without_private_messages(self):
+        source={'version':'financial-backup-failure-v1','stage':'artifact-prepare',
+                'reasonCode':'OTHER_BACKUP_FAILURE','sha256':'b'*64,
+                'code':'SQLITE_CORRUPT','success':False,
+                'error':'https://secret.invalid/?token=PRIVATE','path':'/private/financial.sqlite'}
+        self.assertEqual(diag.public_fields(source),{key:source[key] for key in
+            ('version','stage','reasonCode','sha256','code','success')})
+        refused=diag.public_fields({'sha256':'https://secret.invalid','code':'https://secret.invalid','success':'PRIVATE'})
+        self.assertNotIn('sha256',refused)
+        self.assertNotIn('success',refused)
+        self.assertEqual(refused['code'],{'sha256':diag.digest(b'https://secret.invalid'),'redacted':True})
+
     def test_audit_gap_projection_keeps_typed_signatures_fences_and_generation(self):
         signature='1'*64
         mint='1'*32

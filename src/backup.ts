@@ -15,6 +15,41 @@ export type FinancialBackup=BackupIdentity&{path:string;generation:string;revisi
 export type BackupSelection={backup:FinancialBackup|null;rejected:{file:string;reason:'invalid-backup'|'unrecognized-path'}[];pending:boolean};
 type Source=Pick<PaperLedger,'state'|'backup'>;
 export class BackupPreparationDeferred extends Error{constructor(){super('BACKUP_RUNTIME_PREPARATION_DEFERRED');}}
+export type BackupFailurePhase='operation-open'|'source-anchor'|'worker-acquire'|'runtime-preparation'|'artifact-prepare'|'source-copy'|'artifact-finish'|'pending-recovery'|'unknown';
+/** Preserve the real failed phase without granting different recovery authority.
+ * The cause remains internal; operational projections use the bounded helper. */
+export class BackupOperationError extends Error{
+  constructor(readonly phase:BackupFailurePhase,cause:unknown){super(cause instanceof Error?cause.message:'backup operation failed',{cause});}
+}
+const SNAPSHOT_FAILURE_CODES=new Set(['BACKUP_SNAPSHOT_RESERVE_REQUIRED','BACKUP_SNAPSHOT_POLICY_LIMIT_REQUIRED','BACKUP_SNAPSHOT_DISTINCT_BOUND_FILES_REQUIRED','BACKUP_SNAPSHOT_EXPECTED_IDENTITY_REQUIRED','BACKUP_SNAPSHOT_MONOTONIC_CLOCK_REQUIRED','BACKUP_SNAPSHOT_LIFETIME_EXCEEDED','BACKUP_SNAPSHOT_CANCELLATION_STATE_REQUIRED','BACKUP_SNAPSHOT_CANCELLED','BACKUP_SNAPSHOT_DISK_MEASUREMENT_REQUIRED','BACKUP_SNAPSHOT_FILE_IDENTITY_REQUIRED','BACKUP_SNAPSHOT_PRIVATE_DIRECTORY_REQUIRED','BACKUP_SNAPSHOT_CANONICAL_PATH_REQUIRED','BACKUP_SNAPSHOT_PRIVATE_SIDECAR_REQUIRED','BACKUP_SNAPSHOT_WAL_GROWTH_EXCEEDED','BACKUP_SNAPSHOT_COPY_SIZE_REQUIRED','BACKUP_SNAPSHOT_DISK_RESERVE_REQUIRED','BACKUP_SNAPSHOT_EMPTY_OWNED_PENDING_REQUIRED','BACKUP_SNAPSHOT_READONLY_CONNECTION_REQUIRED','BACKUP_SNAPSHOT_READONLY_WAL_REQUIRED','BACKUP_SNAPSHOT_BOUNDED_STATE_REQUIRED','BACKUP_SNAPSHOT_ACCOUNT_REVISION_REQUIRED','BACKUP_SNAPSHOT_JOURNAL_HEAD_REQUIRED','BACKUP_SNAPSHOT_SEQUENCE_REQUIRED','BACKUP_SNAPSHOT_FIXED_PAGE_COUNT_REQUIRED','BACKUP_SNAPSHOT_COPY_INCOMPLETE','BACKUP_SNAPSHOT_CAPTURE_REQUIRED']);
+const BACKUP_FAILURE_MESSAGES=new Map([
+  ['backup artifact work exceeded 30s; pending artifacts preserved','BACKUP_WORKER_DEADLINE_EXCEEDED'],
+  ['backup artifact request cancelled or expired; pending artifacts preserved','BACKUP_WORKER_CANCELLED_OR_EXPIRED'],
+  ['backup artifact worker failed; pending artifacts preserved','BACKUP_WORKER_FAILED'],
+  ['backup artifact worker unavailable; pending artifacts preserved','BACKUP_WORKER_UNAVAILABLE'],
+  ['backup operation already active or standard Linux flock unavailable','BACKUP_OPERATION_LEASE_UNAVAILABLE'],
+  ['backup operation lease inode changed; nothing removed','BACKUP_OPERATION_LEASE_CHANGED'],
+  ['backup source inode changed; prior backups preserved','BACKUP_SOURCE_INODE_CHANGED'],
+  ['backup source identity mismatch','BACKUP_SOURCE_ACCOUNT_MISMATCH'],
+  ['private bounded regular backup/source file required','BACKUP_PRIVATE_FILE_REQUIRED'],
+  ['private canonical owner-held backup directory required','BACKUP_PRIVATE_DIRECTORY_REQUIRED'],
+  ['backup disk headroom unavailable; financial source and prior backups retained','BACKUP_DISK_HEADROOM_UNAVAILABLE'],
+  ['backup integrity failure','BACKUP_ARTIFACT_INTEGRITY_FAILED'],
+  ['backup differs from captured readonly financial snapshot','BACKUP_CAPTURED_STATE_MISMATCH'],
+  ['backup sequence differs from captured readonly financial snapshot','BACKUP_CAPTURED_SEQUENCE_MISMATCH'],
+  ['backup would regress durable history','BACKUP_HISTORY_REGRESSION'],
+  ['pending backup requires explicit recovery; nothing overwritten','BACKUP_PENDING_RECOVERY_REQUIRED'],
+]);
+const BACKUP_SQLITE_CODES=new Set(['SQLITE_BUSY','SQLITE_LOCKED','SQLITE_IOERR','SQLITE_CORRUPT','SQLITE_NOTADB','SQLITE_FULL','SQLITE_READONLY','SQLITE_CANTOPEN']);
+/** No arbitrary error text, file path, provider URL or credential is exported. */
+export function backupFailureDiagnostic(error:unknown){
+  const cause=error instanceof BackupOperationError?error.cause:error,message=cause instanceof Error?cause.message:'NON_ERROR_BACKUP_FAILURE';
+  const rawCode=cause instanceof Error&&'code'in cause&&typeof cause.code==='string'?cause.code:null;
+  return {version:'financial-backup-failure-v1',phase:error instanceof BackupOperationError?error.phase:'unknown' as BackupFailurePhase,
+    code:error instanceof BackupPreparationDeferred?'BACKUP_RUNTIME_PREPARATION_DEFERRED':SNAPSHOT_FAILURE_CODES.has(message)?message:BACKUP_FAILURE_MESSAGES.get(message)??'OTHER_BACKUP_FAILURE',
+    errorSha256:createHash('sha256').update(message).digest('hex'),sqliteCode:rawCode!==null&&BACKUP_SQLITE_CODES.has(rawCode)?rawCode:null,
+    financialFailure:!(error instanceof BackupPreparationDeferred)};
+}
 export type BackupRuntimePreparation={admission:()=>boolean;measure:<T>(work:()=>T)=>T};
 type Options={directory:string;sourcePath:string;identity:BackupIdentity;maxBytes?:number;persistent?:boolean;minimumFreeBytes?:number};
 export type BackupArtifactTask={task:'prepare';minimumRevision:number;expectedSource:{dev:number;ino:number}}|{task:'acquire'|'copy'|'finish'|'abort'|'recover'};
@@ -51,10 +86,10 @@ class ArtifactWorker{
       const rejectAfterExit=(reason:string)=>{if(done)return;done=true;cleanup();void this.close().then(()=>reject(new Error(reason)),()=>reject(new Error(reason)));};
       const error=()=>rejectAfterExit('backup artifact worker failed; pending artifacts preserved');
       const exited=()=>error();
-      const message=(reply:{id:number;ok:boolean;result?:FinancialBackup|null;error?:string})=>{
+      const message=(reply:{id:number;ok:boolean;result?:FinancialBackup|null;error?:string;sqliteCode?:string|null})=>{
         if(done)return;if(!reply||reply.id!==id||typeof reply.ok!=='boolean'){rejectAfterExit('backup artifact reply scope mismatch; pending artifacts preserved');return;}
         if(process.hrtime.bigint()>=deadlineAtMonoNs){rejectAfterExit('backup artifact work exceeded 30s; pending artifacts preserved');return;}
-        done=true;cleanup();if(reply.ok)resolve(reply.result??null);else reject(new Error(reply.error??'backup artifact operation failed'));
+        done=true;cleanup();if(reply.ok)resolve(reply.result??null);else{const failure=new Error(reply.error??'backup artifact operation failed');if(typeof reply.sqliteCode==='string'&&BACKUP_SQLITE_CODES.has(reply.sqliteCode))Object.assign(failure,{code:reply.sqliteCode});reject(failure);}
       };
       const timer=setTimeout(()=>rejectAfterExit('backup artifact work exceeded 30s; pending artifacts preserved'),30_000);
       this.worker.once('message',message);this.worker.once('error',error);this.worker.once('exit',exited);
@@ -267,31 +302,37 @@ export class FinancialBackupStore{
     renameSync(valid.path,target);this.syncDirectory();return {...valid,path:target,generation:next};
   }
   async create(source:Source,runtime?:BackupRuntimePreparation):Promise<FinancialBackup>{
-    const operation=this.openOperation();
-    let worker:ArtifactWorker|undefined;
+    let phase:BackupFailurePhase='operation-open',operation:BackupOperationLease|undefined,worker:ArtifactWorker|undefined;
     try{
+      operation=this.openOperation();phase='source-anchor';
       // The private canonical path is anchored before this operation's first
       // yield. Its inode is never silently refreshed after worker preparation.
       const anchoredSource=this.privateFile(this.sourcePath),expectedSource={dev:anchoredSource.dev,ino:anchoredSource.ino};
-      worker=this.artifactWorker(operation);await worker.request({task:'acquire'});
+      phase='worker-acquire';worker=this.artifactWorker(operation);await worker.request({task:'acquire'});
+      phase='runtime-preparation';
       if(runtime&&!runtime.admission())throw new BackupPreparationDeferred();
       const prepare=()=>{const before=source.state();if(before.accountId!==this.identity.accountId||before.mode!==this.identity.mode||before.inceptionAt!==this.identity.inceptionAt)throw new Error('backup source identity mismatch');return before;};
-      const before=runtime?runtime.measure(prepare):prepare();await worker.request({task:'prepare',minimumRevision:before.revision,expectedSource});
+      const before=runtime?runtime.measure(prepare):prepare();phase='artifact-prepare';await worker.request({task:'prepare',minimumRevision:before.revision,expectedSource});
+      phase='runtime-preparation';
       if(runtime&&!runtime.admission())throw new BackupPreparationDeferred();
+      phase='source-copy';
       if(this.persistent)await worker.request({task:'copy'});
       else await source.backup(join(this.directory,PENDING));
+      phase='artifact-finish';
       const result=await worker.request({task:'finish'});if(!result)throw new Error('backup completion missing');return result;
     }catch(error){
+      const failure=error instanceof BackupPreparationDeferred?error:new BackupOperationError(phase,error);
       try{await worker?.request({task:'abort'});}catch{/* A dead/timed-out worker leaves pending evidence for recovery. */}
-      throw error;
-    }finally{try{await worker?.close();}finally{closeSync(operation.fd);}}
+      throw failure;
+    }finally{try{await worker?.close();}finally{if(operation)closeSync(operation.fd);}}
   }
   private artifactWorker(operation:BackupOperationLease){return new ArtifactWorker({directory:this.directory,sourcePath:this.sourcePath,identity:this.identity,maxBytes:this.persistent?undefined:this.maxBytes,persistent:this.persistent,minimumFreeBytes:this.minimumFreeBytes},operation);}
   /** Runtime-safe pending maintenance; all SQLite artifact work runs off-thread. */
   async maintainPending():Promise<FinancialBackup|null>{
-    const operation=this.openOperation();let worker:ArtifactWorker|undefined;
-    try{worker=this.artifactWorker(operation);await worker.request({task:'acquire'});return await worker.request({task:'recover'});}
-    finally{try{await worker?.close();}finally{closeSync(operation.fd);}}
+    let phase:BackupFailurePhase='operation-open',operation:BackupOperationLease|undefined,worker:ArtifactWorker|undefined;
+    try{operation=this.openOperation();phase='worker-acquire';worker=this.artifactWorker(operation);await worker.request({task:'acquire'});phase='pending-recovery';return await worker.request({task:'recover'});}
+    catch(error){throw new BackupOperationError(phase,error);}
+    finally{try{await worker?.close();}finally{if(operation)closeSync(operation.fd);}}
   }
   /** Internal worker entry. The parent holds the operation lease across phases. */
   async runArtifactTask(message:BackupArtifactTask):Promise<FinancialBackup|null>{
