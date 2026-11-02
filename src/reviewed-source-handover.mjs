@@ -18,11 +18,12 @@ export const HANDOVER=Object.freeze({
  discovery:'d4855729ef163b7db3cdfc294cdfef14759fc0d6',
  cadence:'985b9730d4f7f049f4872fd38ce568a4145cd3bf',
  selection:'23650d160f0f42a07424002e11f83d54fce2b2db',
- to:'13b2cb5f1404a17c29b5ecfe688540d728c8724b',
+ retention:'13b2cb5f1404a17c29b5ecfe688540d728c8724b',
+ to:'07fc4f879f4bed4f8406e8805c88c8695dbcff1a',
 });
 const installed=new WeakSet();
 export function attachReviewedSourceHandover(cache){
- const identity=cache.identity,p=HANDOVER,route=[p.from,p.via,p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.to];
+ const identity=cache.identity,p=HANDOVER,route=[p.from,p.via,p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.to];
  if(!identity||identity.accountId!==p.accountId||identity.inceptionAt!==p.inceptionAt||identity.strategy!==p.strategy||!route.slice(0,-1).includes(identity.release))return false;
  if(installed.has(cache))return true;
  const original=cache.accept.bind(cache);
