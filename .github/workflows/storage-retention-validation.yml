@@ -24,6 +24,7 @@ jobs:
       - name: Install the unchanged pinned dependencies
         run: |
           set -euo pipefail
+          umask 077
           npm ci --include=dev
           mkdir -m 700 /tmp/poe-storage-retention-validation
           git rev-parse HEAD > /tmp/poe-storage-retention-validation/source-commit.txt
@@ -31,11 +32,13 @@ jobs:
       - name: Typecheck and compile
         run: |
           set -euo pipefail
+          umask 077
           npm run build 2>&1 | tee /tmp/poe-storage-retention-validation/typecheck.log
           npm run compile 2>&1 | tee /tmp/poe-storage-retention-validation/compile.log
       - name: Complete application regression and reporting tests
         run: |
           set -euo pipefail
+          umask 077
           node --import tsx --test --test-concurrency=1 test/*.test.ts 2>&1 | tee /tmp/poe-storage-retention-validation/full.log
           node --test test/ai-team-dashboard.test.mjs test/reviewed-source-handover.test.mjs 2>&1 | tee /tmp/poe-storage-retention-validation/reporting.log
       - name: Build and verify the exact PAPER runtime
@@ -43,6 +46,7 @@ jobs:
           VALIDATION_RUN: ${{ github.run_id }}
         run: |
           set -euo pipefail
+          umask 077
           test "$(git rev-parse HEAD)" = "$TARGET_SOURCE"
           git status --porcelain > /tmp/poe-storage-retention-validation/worktree-status.txt
           test ! -s /tmp/poe-storage-retention-validation/worktree-status.txt
