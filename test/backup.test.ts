@@ -240,11 +240,21 @@ test('a crash-left complete pending copy requires explicit validation/recovery; 
 });
 
 test('standard backup operation lease prevents concurrent create/recovery without touching active staging',async t=>{
-  const f=setup(t);let release!:()=>void;const waiting=new Promise<void>(resolve=>{release=resolve;});
-  const first=f.store.create({state:()=>f.ledger.state(),async backup(path){await waiting;await f.ledger.backup(path);}});
-  const other=new FinancialBackupStore(f.options);
-  await assert.rejects(other.create(f.ledger),/operation already active/);await assert.rejects(other.maintainPending(),/operation already active/);assert.throws(()=>other.recoverPending(),/operation already active/);
-  release();await first;assert.equal(other.latest().backup?.revision,0);
+  const f=setup(t);let release!:()=>void,entered!:()=>void;const waiting=new Promise<void>(resolve=>{release=resolve;}),copyEntered=new Promise<void>(resolve=>{entered=resolve;});
+  const first=f.store.create({state:()=>f.ledger.state(),async backup(path){entered();await waiting;await f.ledger.backup(path);}});
+  let other!:FinancialBackupStore;
+  try{
+    // Worker startup and flock acquisition are asynchronous. Invocation order
+    // alone gives neither caller ownership; the copy callback proves that the
+    // first operation holds the real lease and has created its staging inode.
+    await Promise.race([copyEntered,first.then(()=>{throw new Error('fixture backup completed before the ownership barrier');})]);
+    other=new FinancialBackupStore(f.options);const pending=join(f.store.directory,'poe-financial-pending.sqlite');
+    const staging=()=>{const stat=lstatSync(pending);return {dev:stat.dev,ino:stat.ino,size:stat.size,sha256:hash(pending)};},before=staging();
+    await assert.rejects(other.create(f.ledger),/operation already active/);assert.deepEqual(staging(),before);
+    await assert.rejects(other.maintainPending(),/operation already active/);assert.deepEqual(staging(),before);
+    assert.throws(()=>other.recoverPending(),/operation already active/);assert.deepEqual(staging(),before);
+  }finally{release();await first;}
+  assert.equal(other.latest().backup?.revision,0);assert.equal(other.latest().pending,false);
 });
 
 test('unsafe backup directories and symlink targets are refused without deleting source',async t=>{
