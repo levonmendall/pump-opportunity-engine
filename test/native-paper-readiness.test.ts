@@ -147,6 +147,37 @@ test('actual maintenance timer contains unexpected callback failure and keeps re
  t.mock.timers.enable({apis:['setInterval']});let at=1000,failures=0,calls=0;const error=Error('OFFLINE timer failure'),seen:unknown[]=[];const maintenance=new NativePaperCashMaintenance({now:()=>at,busy:()=>false,lastReconciledAt:()=>0,refresh:()=>{calls++;throw error;}});const timer=maintenance.start(cause=>{failures++;seen.push(cause);});t.after(()=>clearInterval(timer));t.mock.timers.tick(250);assert.equal(failures,1);assert.equal(calls,1);for(let i=0;i<3;i++){at+=250;t.mock.timers.tick(250);}assert.equal(calls,1);at+=250;t.mock.timers.tick(250);assert.equal(calls,2);assert.equal(failures,2);assert.equal(maintenance.usage().financialFailures,2);assert.deepEqual(seen,[error,error]);
 });
 
+test('healthy cash is reconciled before admitted local work can outlive its remaining freshness even inside the normal timer interval',t=>{
+ const f=fixture(t,false,true);f.refresh();const originalPrice=structuredClone(f.price),controls=structuredClone(f.ledger.state().controls);
+ const maintenance=new NativePaperCashMaintenance({now:()=>f.at,monotonic:()=>f.at,cpu:()=>0,busy:()=>false,lastReconciledAt:()=>f.ledger.state().daily.reconciledAt,refresh:()=>f.refresh()});
+ f.at+=1000;maintenance.run();assert.equal(maintenance.usage().reconciled,1);
+ f.at+=750;const before=f.ledger.state().revision;maintenance.run(1500);
+ assert.equal(maintenance.usage().reconciled,2,'normal timer pacing must not suppress a needed healthy pre-work reconciliation');
+ assert.equal(f.ledger.state().daily.reconciledAt,f.at);assert.ok(f.ledger.state().revision>before);
+ f.at+=1500;assert.equal(f.projection().entriesEnabled,true,'the admitted local work fits the genuinely renewed financial freshness interval');
+ assert.equal(maintenance.usage().deadlineMisses,0);assert.deepEqual(f.ledger.state().controls,controls);assert.deepEqual(f.price,originalPrice);
+ assert.deepEqual(f.calls,{context:0,preparation:0,quote:0,execution:0});assert.deepEqual(f.ledger.state().pending,{});
+});
+
+test('proactive cash maintenance preserves financial ownership and does not write when the remaining interval already covers local work',t=>{
+ const f=fixture(t,false,true);f.refresh();let busy=false;
+ const maintenance=new NativePaperCashMaintenance({now:()=>f.at,busy:()=>busy,lastReconciledAt:()=>f.ledger.state().daily.reconciledAt,refresh:()=>f.refresh()});
+ f.at+=1000;maintenance.run();const before=structuredClone(f.ledger.state());
+ f.at+=100;maintenance.run(250);assert.deepEqual(f.ledger.state(),before,'short work does not trigger redundant reconciliation');
+ f.at+=650;busy=true;maintenance.run(1500);assert.deepEqual(f.ledger.state(),before,'known long work cannot override another financial owner');
+ assert.equal(maintenance.usage().busyDeferrals,1);assert.equal(maintenance.usage().reconciled,1);
+});
+
+test('known local work cannot bypass retry pacing after unavailable or failed cash maintenance',async t=>{
+ for(const outcome of ['unavailable','financial-unavailable']as const)await t.test(outcome,()=>{
+  let at=1000,last=0,calls=0,fail=false;
+  const maintenance=new NativePaperCashMaintenance({now:()=>at,busy:()=>false,lastReconciledAt:()=>last,refresh:()=>{calls++;if(fail)return {kind:outcome,recovered:false};last=at;return {kind:'reconciled' as const,recovered:false};}});
+  maintenance.run();fail=true;at+=750;maintenance.run(1500);assert.equal(calls,2);assert.equal(maintenance.usage().healthyMaintenanceArmed,false);
+  for(let i=0;i<3;i++){at+=250;maintenance.run(1500);assert.equal(calls,2,'failed or unavailable refresh keeps its existing retry interval');}
+  at+=250;maintenance.run(1500);assert.equal(calls,3);
+ });
+});
+
 test('old startup reconciliation and known FX-unavailable intervals are not maintenance deadline misses',t=>{
  const f=fixture(t);f.refresh();f.at+=600000;f.price={...f.price!,at:f.at};const maintenance=new NativePaperCashMaintenance({now:()=>f.at,busy:()=>false,lastReconciledAt:()=>f.ledger.state().daily.reconciledAt,refresh:()=>f.refresh()});maintenance.run();assert.equal(maintenance.usage().deadlineMisses,0);assert.equal(maintenance.usage().maximumLatenessMs,0);assert.equal(maintenance.usage().healthyMaintenanceArmed,true);f.price=null;for(let i=0;i<3;i++){f.at+=5000;maintenance.run();}assert.equal(maintenance.usage().unavailable,3);assert.equal(maintenance.usage().deadlineMisses,0);assert.equal(maintenance.usage().healthyMaintenanceArmed,false);f.price={at:f.at,microUsdPerSol:'100000000',source:'OFFLINE recovered FX'};f.at+=1000;maintenance.run();assert.equal(maintenance.usage().deadlineMisses,0);assert.equal(maintenance.usage().healthyMaintenanceArmed,true);f.at+=3000;maintenance.run();assert.equal(maintenance.usage().deadlineMisses,1,'a genuinely late healthy subsequent refresh is an operational miss');
 });

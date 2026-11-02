@@ -9,7 +9,7 @@ import {spawnSync} from 'node:child_process';
 import {Worker} from 'node:worker_threads';
 import Database from 'better-sqlite3';
 import {DisposableLedger} from '../src/ledger.js';
-import {FinancialBackupStore,BackupPreparationDeferred,type BackupArtifactTask,type BackupArtifactRequest,type BackupOperationLease,type FinancialBackup} from '../src/backup.js';
+import {FinancialBackupStore,BackupPreparationDeferred,BackupOperationError,backupFailureDiagnostic,type BackupArtifactTask,type BackupArtifactRequest,type BackupOperationLease,type FinancialBackup} from '../src/backup.js';
 
 const AT=Date.parse('2026-11-01T21:00:00Z'),PENDING='poe-financial-pending.sqlite',LOCK='.poe-backup.lock';
 function deferred(){let resolve!:()=>void;const promise=new Promise<void>(done=>{resolve=done;});return {promise,resolve};}
@@ -51,7 +51,27 @@ test('the captured snapshot remains exact while the authoritative writer advance
 for(const change of ['financial-revision','reporting-sequence'])test('finish refuses replacement contents that differ from captured '+change,async t=>{
  const f=fixture(t),good=await f.store.create(f.ledger),goodHash=hash(good.path);
  observeWorker(f.store,async(task,run)=>{const result=await run();if(task.task==='copy'){if(change==='financial-revision')f.ledger.pause('new-valid-snapshot',AT+1);else f.ledger.nextSnapshotSequence();await f.ledger.backup(join(f.store.directory,PENDING));}return result;});
- await assert.rejects(f.store.create(f.ledger),/differs from captured readonly financial snapshot/);assert.equal(hash(good.path),goodHash);assert.equal(f.store.latest().backup?.path,good.path);assert.equal(existsSync(join(f.store.directory,PENDING)),false);assert.equal(lockStatus(f.store.directory),0);
+ await assert.rejects(f.store.create(f.ledger),(error:unknown)=>{assert.ok(error instanceof BackupOperationError);assert.match(error.message,/differs from captured readonly financial snapshot/);const diagnostic=backupFailureDiagnostic(error);assert.equal(diagnostic.phase,'artifact-finish');assert.equal(diagnostic.code,change==='financial-revision'?'BACKUP_CAPTURED_STATE_MISMATCH':'BACKUP_CAPTURED_SEQUENCE_MISMATCH');assert.equal(diagnostic.financialFailure,true);return true;});assert.equal(hash(good.path),goodHash);assert.equal(f.store.latest().backup?.path,good.path);assert.equal(existsSync(join(f.store.directory,PENDING)),false);assert.equal(lockStatus(f.store.directory),0);
+});
+
+test('a real failed copy retains its phase and sanitized cause while preserving source and prior backup',async t=>{
+ const f=fixture(t,false),good=await f.store.create(f.ledger),goodHash=hash(good.path),before=f.ledger.state();
+ const cause=Object.assign(Error('DISPOSABLE copy failed /private/account.sqlite https://provider.invalid/?key=DO_NOT_EXPORT'),{code:'SQLITE_BUSY'});let failure:unknown;
+ try{await f.store.create({state:()=>f.ledger.state(),backup:async()=>{throw cause;}});assert.fail('an unsuccessful copy cannot return a verified artifact');}catch(error){failure=error;}
+ assert.ok(failure instanceof BackupOperationError);assert.equal(failure.cause,cause);
+ const diagnostic=backupFailureDiagnostic(failure);
+ assert.deepEqual(diagnostic,{version:'financial-backup-failure-v1',phase:'source-copy',code:'OTHER_BACKUP_FAILURE',errorSha256:createHash('sha256').update(cause.message).digest('hex'),sqliteCode:'SQLITE_BUSY',financialFailure:true});
+ assert.equal(JSON.stringify(diagnostic).includes('DO_NOT_EXPORT'),false);assert.equal(JSON.stringify(diagnostic).includes('/private/'),false);assert.equal(JSON.stringify(diagnostic).includes('provider.invalid'),false);
+ assert.deepEqual(f.ledger.state(),before);assert.equal(hash(good.path),goodHash);assert.equal(f.store.latest().backup?.path,good.path);assert.equal(existsSync(join(f.store.directory,PENDING)),false);assert.equal(lockStatus(f.store.directory),0);
+ const deferred=backupFailureDiagnostic(new BackupPreparationDeferred());assert.equal(deferred.code,'BACKUP_RUNTIME_PREPARATION_DEFERRED');assert.equal(deferred.financialFailure,false,'failure diagnostics do not relabel an unstarted deferral');
+});
+
+test('actual worker SQLite corruption retains a bounded diagnostic and never invalidates or removes a different verified generation',async t=>{
+ const f=fixture(t),first=await f.store.create(f.ledger),second=await f.store.create(f.ledger),before=f.ledger.state(),goodHash=hash(second.path);
+ const original=readFileSync(first.path);assert.ok(original.length>4096);writeFileSync(first.path,original.subarray(0,4096));
+ const damagedHash=hash(first.path);
+ await assert.rejects(f.store.create(f.ledger),(error:unknown)=>{assert.ok(error instanceof BackupOperationError);const diagnostic=backupFailureDiagnostic(error);assert.equal(diagnostic.phase,'artifact-prepare');assert.equal(diagnostic.sqliteCode,'SQLITE_CORRUPT');assert.equal(diagnostic.financialFailure,true);assert.equal(JSON.stringify(diagnostic).includes('DO_NOT_EXPORT'),false);return true;});
+ assert.deepEqual(f.ledger.state(),before);assert.equal(hash(first.path),damagedHash,'corrupt evidence is retained for review');assert.equal(hash(second.path),goodHash);assert.equal(f.store.latest().backup?.path,second.path);assert.equal(existsSync(join(f.store.directory,PENDING)),false);assert.equal(lockStatus(f.store.directory),0);
 });
 
 for(const after of ['acquire','prepare'])test('immutable source inode anchor rejects a same-account path replacement after '+after,async t=>{

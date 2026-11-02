@@ -1,5 +1,5 @@
 import {parentPort,workerData} from 'node:worker_threads';
-import {FinancialBackupStore,type BackupArtifactRequest,type BackupWorkerData} from './backup.js';
+import {FinancialBackupStore,backupFailureDiagnostic,type BackupArtifactRequest,type BackupWorkerData} from './backup.js';
 
 if(!parentPort)throw new Error('backup artifact worker requires a parent');
 const data=workerData as BackupWorkerData,port=parentPort,store=new FinancialBackupStore(data.options),cancellation=new Int32Array(data.cancellation);
@@ -15,7 +15,7 @@ port.on('message',(request:BackupArtifactRequest)=>{
   queue=queue.then(async()=>{
     deadlineAtMonoNs=request.deadlineAtMonoNs;
     try{const result=await store.runArtifactTask(request.task);if(Atomics.load(cancellation,0)!==0||process.hrtime.bigint()>=request.deadlineAtMonoNs)throw new Error('backup artifact request cancelled or expired; pending artifacts preserved');port.postMessage({id:request.id,ok:true,result});}
-    catch(error){port.postMessage({id:request.id,ok:false,error:error instanceof Error?error.message:'backup artifact operation failed'});}
+    catch(error){port.postMessage({id:request.id,ok:false,error:error instanceof Error?error.message:'backup artifact operation failed',sqliteCode:backupFailureDiagnostic(error).sqliteCode});}
     finally{deadlineAtMonoNs=null;}
   });
 });
