@@ -21,6 +21,7 @@ import type {MarketIdentityHint,MarketActivityHint,MarketFeedSource,MarketFeedSt
 
 const MIB=1024*1024,DISCOVERY='wss://pumpportal.fun/api/data',BACKOFF=[2000,5000,10000,20000,40000,60000],CANDIDATE_MS=180000;
 export const PILOT_FEED_MAXIMUM_RECORDED_BYTES=16*MIB;
+export const PILOT_FEED_CONTROL_TURN_BOUND_MS=2000;
 type FeedName='discovery'|'pumpapi';
 export type PilotFeedControl={operateData<T>(kind:ComponentKind,work:(op:ComponentOperation)=>Promise<T>,signal?:AbortSignal,options?:PilotRpcCallOptions):Promise<T>;accountControlBytes(bytes:number):void;noteThrottle(retryAfter:string|null,at?:number):number};
 export type PilotFeedRpc={call<T>(method:string,params:unknown[],signal?:AbortSignal,options?:PilotRpcCallOptions):Promise<T>};
@@ -45,10 +46,10 @@ export type PilotFeedsOptions={
   onTrade:(row:{evidence:MappedTradeEvidence&{rpcAvailableAt:number};trade:NormalizedTrade;validatedAt:number})=>void;
   onGap:(gap:{mint?:string;reason:string;at:number})=>void;
   /** The holdings scheduler may postpone low-priority socket controls. */
-  admitControl?:()=>PilotRpcCallOptions|false;
+  admitControl?:(planningBoundMs?:number)=>PilotRpcCallOptions|false;
 };
 type Connection={socket:WebSocket;seen:number;closed:boolean;opened:boolean;expectedClose:boolean;closeReason:string|null;lastTrafficMono:number;closedPromise:Promise<void>;resolveClosed:()=>void;ack?:(method:string)=>void;upgradeReject?:(e:Error)=>void;subscriptionReject?:(e:Error)=>void;marketReady?:boolean;marketPausedAtMono?:number;resumeGraceUntilMono?:number};
-type Leg={name:FeedName;desired:boolean;connected:boolean;connecting:boolean;attempts:number;failures:number;reconnects:number;notBefore:number;timer?:unknown;connection?:Connection;localDeferrals?:number;lastLocalDeferralAt?:number;lastLocalDeferralReason?:string;lastLocalDeferralRecordAt?:number};
+type Leg={name:FeedName;desired:boolean;connected:boolean;connecting:boolean;attempts:number;failures:number;reconnects:number;notBefore:number;timer?:unknown;retry?:{kind:'local'|'network';at:number;mono:number};connection?:Connection;localDeferrals?:number;lastLocalDeferralAt?:number;lastLocalDeferralReason?:string;lastLocalDeferralRecordAt?:number};
 type FeatureRow=ReturnType<ActivePipeline['snapshot']>['featureRows'][number];
 type Candidate={generation:number;scope:ActiveScope;pipeline:ActivePipeline;controller:AbortController;selectedMono:number;suspended:boolean;pending:Set<string>;normalized:number;mintBytes:Buffer;poolBytes:Buffer;latestFeature:FeatureRow|null};
 export type PilotFeedDependencies={makeSocket?:(endpoint:string,options:WebSocket.ClientOptions)=>WebSocket;now?:()=>number;monotonic?:()=>number;setTimer?:(callback:()=>void,ms:number)=>unknown;clearTimer?:(timer:unknown)=>void};
@@ -76,6 +77,7 @@ export class PilotFeeds {
   private current(c:Candidate){return this.candidates.get(c.scope.mint)===c;}
   private activeCandidates(){return [...this.candidates.values()].filter(c=>!c.suspended);}
   private readonly legs:Record<FeedName,Leg>={discovery:{name:'discovery',desired:false,connected:false,connecting:false,attempts:0,failures:0,reconnects:0,notBefore:0},pumpapi:{name:'pumpapi',desired:false,connected:false,connecting:false,attempts:0,failures:0,reconnects:0,notBefore:0}};
+  private reconnectTurnActive=false;private reconnectCursor=0;
   private readonly rollingPump=new PersistentDataWindow(128*MIB);private readonly rollingDiscovery=new PersistentDataWindow(2*MIB);private pumpBytes=0;private discoveryBytes=0;private controlBytes=0;private frames=0;private irrelevant=0;private selectedFrames=0;private recordedBytes=0;private trades=0;private gaps=0;private rawParses=0;private firstFailure:string|null=null;private lastAnyTrafficAt:number|null=null;private candidateRetryAt=0;private readonly migrationSeen=new Map<string,number>();
   constructor(private readonly options:PilotFeedsOptions,private readonly dependencies:PilotFeedDependencies={}){
     this.now=dependencies.now??Date.now;this.mono=dependencies.monotonic??(()=>performance.now());this.timer=dependencies.setTimer??((cb,ms)=>setTimeout(cb,ms));this.cancel=dependencies.clearTimer??(id=>clearTimeout(id as ReturnType<typeof setTimeout>));this.startedAt=this.now();this.startedMono=this.mono();
@@ -174,7 +176,7 @@ export class PilotFeeds {
   }
   private reconnect(leg:Leg,reason:string,physicalAttemptStarted:boolean){
     if(!this.live()||!leg.desired||leg.timer!==undefined)return;if(!this.options.persistent&&(leg.attempts>=9||leg.reconnects>=8)){leg.desired=false;if(leg.name==='pumpapi')this.invalidateAll('PILOT_PUMPAPI_RECONNECT_LIMIT');else this.gap('PILOT_DISCOVERY_RECONNECT_LIMIT');return;}
-    const delay=Math.max(BACKOFF[Math.min(leg.failures++,BACKOFF.length-1)]!,leg.notBefore-this.now());leg.reconnects++;try{this.record('pilot-feed-reconnect-scheduled',{feed:leg.name,at:this.now(),delayMs:delay,reason,physicalAttemptStarted,desiredSubscriptions:leg.name==='discovery'?this.discoverySubscriptions():[],requiresFreshCandidateWindow:leg.name==='pumpapi'});}catch{leg.desired=false;this.gap('PILOT_FEED_EVIDENCE_CAP',leg.name==='pumpapi'?this.candidate?.scope.mint:undefined);return;}leg.timer=this.timer(()=>{leg.timer=undefined;void this.connect(leg).catch(()=>{});},delay);
+    const delay=Math.max(BACKOFF[Math.min(leg.failures++,BACKOFF.length-1)]!,leg.notBefore-this.now());leg.reconnects++;try{this.record('pilot-feed-reconnect-scheduled',{feed:leg.name,at:this.now(),delayMs:delay,reason,physicalAttemptStarted,desiredSubscriptions:leg.name==='discovery'?this.discoverySubscriptions():[],requiresFreshCandidateWindow:leg.name==='pumpapi'});}catch{leg.desired=false;this.gap('PILOT_FEED_EVIDENCE_CAP',leg.name==='pumpapi'?this.candidate?.scope.mint:undefined);return;}this.scheduleRetry(leg,'network',this.now()+delay);
   }
   /** A refused local scheduling opportunity is not a provider failure. Keep
    * checking for spare shared-gate runway without growing network backoff or
@@ -189,7 +191,28 @@ export class PilotFeeds {
       try{this.record('pilot-feed-local-deferred',{feed:leg.name,at,reason:reason.toUpperCase().replaceAll('-','_'),delayMs:Math.max(1,readyAt-at),physicalAttemptStarted:false,localDeferrals:leg.localDeferrals});leg.lastLocalDeferralRecordAt=at;}
       catch{leg.desired=false;this.gap('PILOT_FEED_EVIDENCE_CAP',leg.name==='pumpapi'?this.candidate?.scope.mint:undefined);return;}
     }
-    leg.timer=this.timer(()=>{leg.timer=undefined;void this.connect(leg).catch(()=>{});},Math.max(1,readyAt-this.now()));
+    this.scheduleRetry(leg,'local',readyAt);
+  }
+  private clearRetry(leg:Leg){if(leg.timer!==undefined)this.cancel(leg.timer);leg.timer=undefined;leg.retry=undefined;}
+  private scheduleRetry(leg:Leg,kind:'local'|'network',at:number){const delay=Math.max(1,at-this.now());leg.retry={kind,at,mono:this.mono()+delay};leg.timer=this.timer(()=>{leg.timer=undefined;leg.retry=undefined;void this.connect(leg).catch(()=>{});},delay);}
+  /** The owning scheduler offers a settled boundary before new discretionary
+   * preparation. A local polling delay is not provider backoff: timers alone
+   * can repeatedly wake only after CPU selection has occupied the shared gate.
+   * One leg is claimed synchronously; every upgrade/ACK still uses that same
+   * gate and its dynamic admission callback. Timers remain the fallback. */
+  async servicePendingReconnect():Promise<boolean>{
+    if(this.reconnectTurnActive||!this.live()||this.marketPressure.paused)return false;
+    const legs=[this.legs.discovery,this.legs.pumpapi],at=this.now();
+    for(let offset=0;offset<legs.length;offset++){
+      const index=(this.reconnectCursor+offset)%legs.length,leg=legs[index]!;
+      if(!leg.retry||!leg.desired||leg.connected||leg.connecting||leg.notBefore>at||leg.retry.kind==='network'&&(leg.retry.at>at||leg.retry.mono>this.mono())||leg.connection&&!leg.connection.closed)continue;
+      const admission=this.options.admitControl?.(PILOT_FEED_CONTROL_TURN_BOUND_MS)??{};if(admission===false)return false;
+      this.reconnectTurnActive=true;this.reconnectCursor=(index+1)%legs.length;this.clearRetry(leg);const before=leg.attempts;
+      try{await this.connect(leg,admission);}catch{/* connect retains the exact failure, backoff and physical settlement rules. */}
+      finally{this.reconnectTurnActive=false;}
+      return leg.attempts>before;
+    }
+    return false;
   }
   /** Pause only these shared discovery transports. Native audited flow and
    * financial protection sockets are owned elsewhere and remain untouched.
@@ -315,8 +338,8 @@ export class PilotFeeds {
     }
   }
 
-  private async connect(leg:Leg){
-    if(!this.live()||!leg.desired||leg.connecting||leg.connected)return;if(this.marketPressure.paused){this.deferConnect(leg,'market-intake-byte-backpressure');return;}if(this.now()<leg.notBefore){this.deferConnect(leg,'provider-cooldown',leg.notBefore);return;}const admission=this.options.admitControl?.()??{};if(admission===false){this.deferConnect(leg,'local-control-admission');return;}if(leg.connection&&!leg.connection.closed){this.deferConnect(leg,'prior-transport-unsettled');return;}leg.connecting=true;
+  private async connect(leg:Leg,cooperativeAdmission?:PilotRpcCallOptions){
+    if(!this.live()||!leg.desired||leg.connecting||leg.connected)return;if(this.marketPressure.paused){this.deferConnect(leg,'market-intake-byte-backpressure');return;}if(this.now()<leg.notBefore){this.deferConnect(leg,'provider-cooldown',leg.notBefore);return;}const admission=cooperativeAdmission??this.options.admitControl?.()??{};if(admission===false){this.deferConnect(leg,'local-control-admission');return;}if(leg.connection&&!leg.connection.closed){this.deferConnect(leg,'prior-transport-unsettled');return;}leg.connecting=true;
     // A local subscription refusal can follow a real completed upgrade. Such
     // replacements still consume the original finite research attempt limit;
     // prephysical scheduling deferrals do not consume a transport attempt.
