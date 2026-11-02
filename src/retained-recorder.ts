@@ -1,11 +1,14 @@
 import { spawnSync } from 'node:child_process';
-/** Bounded service diagnostics. Financial/qualification proof is never evicted.
+/** Bounded service diagnostics. Financial and legacy proof is never evicted.
+ * Explicitly provisional preparation copies expire after their lifecycle ends.
  * Only this class's versioned private namespace is eligible for retention. */
 import { constants, openSync, closeSync, writeSync, readFileSync, lstatSync, fstatSync, fsyncSync, renameSync, mkdirSync, realpathSync, statfsSync, unlinkSync, createReadStream } from 'node:fs';
 import { open as openAsync } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 import { createHash, randomUUID, type Hash } from 'node:crypto';
 import { performance } from 'node:perf_hooks';
+import { setImmediate as yieldEventLoop } from 'node:timers/promises';
+import { ProvisionalProofRetention } from './provisional-proof-retention.js';
 const MIB = 1024 * 1024, VERSION = 'poe-owned-rotating-evidence-v1', ZERO = '0'.repeat(64), MAX_STATE = 1024 * 1024;
 const encode = (v: unknown) => JSON.stringify(v, (_k, x) => typeof x === 'bigint' ? x.toString() : x);
 const digest = (b: string | Buffer) => createHash('sha256').update(b).digest('hex');
@@ -77,6 +80,8 @@ type State = {
     totalRecordedBytes: number;
     retiredBytes: number;
     protectedBytes: number;
+    retiredProofBytes: number;
+    retiredProofs: number;
     refusedRecords: number;
     refusedBytes: number;
     optionalOmittedRecords: number;
@@ -145,6 +150,7 @@ export class BoundedRotatingRecorder {
     private readonly pinTasks = new Set<Promise<EvidencePinResult>>();
     private availableBytes = Infinity;
     private diskCheckedMono = -Infinity;
+    private proofRetention!: ProvisionalProofRetention;
     constructor(options: BoundedRecorderOptions) {
         this.directory = resolve(options.directory);
         this.now = options.now ?? Date.now;
@@ -222,6 +228,8 @@ export class BoundedRotatingRecorder {
                 this.state.refusalIntervalsCoalesced ??= 0;
                 this.state.optionalOmittedRecords ??= 0;
                 this.state.optionalOmittedBytes ??= 0;
+                this.state.retiredProofBytes ??= 0;
+                this.state.retiredProofs ??= 0;
                 this.validateState();
                 for (const m of this.state.diagnostics)
                     this.retentionStarted.set(m.file, this.mono());
@@ -238,9 +246,10 @@ export class BoundedRotatingRecorder {
                 const names = requireDirectoryNames(this.directory).filter(n => !['owner-namespace.txt', 'writer.lock'].includes(n) && !/^checkpoint-[0-9]+-[a-f0-9-]+\.pending$/.test(n));
                 need(names.length === 0, 'FOREIGN_DIRECTORY');
                 const at = this.time();
-                this.state = { version: VERSION, startedAt: at, policy, nextDiagnostic: 1, nextEssential: 1, diagnosticHead: ZERO, essentialHead: ZERO, activeDiagnostic: null, activeEssential: null, diagnostics: [], receiptAnchor: { throughSequence: 0, sha256: ZERO }, receipts: [], totalRecordedBytes: 0, retiredBytes: 0, protectedBytes: 0, refusedRecords: 0, refusedBytes: 0, optionalOmittedRecords: 0, optionalOmittedBytes: 0, nextReceipt: 1, lastAt: at, evictedThroughAt: 0, requiresCriticalRecovery: false, refusalIntervals: [], refusalOpen: false, refusalIntervalsCoalesced: 0 };
+                this.state = { version: VERSION, startedAt: at, policy, nextDiagnostic: 1, nextEssential: 1, diagnosticHead: ZERO, essentialHead: ZERO, activeDiagnostic: null, activeEssential: null, diagnostics: [], receiptAnchor: { throughSequence: 0, sha256: ZERO }, receipts: [], totalRecordedBytes: 0, retiredBytes: 0, protectedBytes: 0, retiredProofBytes: 0, retiredProofs: 0, refusedRecords: 0, refusedBytes: 0, optionalOmittedRecords: 0, optionalOmittedBytes: 0, nextReceipt: 1, lastAt: at, evictedThroughAt: 0, requiresCriticalRecovery: false, refusalIntervals: [], refusalOpen: false, refusalIntervalsCoalesced: 0 };
                 this.receipt('created', { policy, financialFilesRead: false, protectedProofNeverEvicted: true });
             }
+            this.proofRetention = new ProvisionalProofRetention('/proc/self/fd/' + this.directoryFd, () => this.time());
             this.refreshDisk(true);
             // Legacy retained bytes have unknown per-record purpose. Preserve
             // every one and reserve fresh capture room; never fake their age.
@@ -287,7 +296,7 @@ export class BoundedRotatingRecorder {
         need(integer(m.invalidCommittedPrefix.expectedBytes) && sha(m.invalidCommittedPrefix.expectedSha256), 'COMMITTED_PREFIX_FAILURE_STATE'); need(new RegExp('^' + kind + '-[0-9]{12}\\.ndjson$').test(m.file) && integer(m.sequence) && integer(m.startedAt) && integer(m.endedAt) && integer(m.bytes) && m.bytes <= this.state.policy.segmentBytes && integer(m.records) && sha(m.previousSha256) && sha(m.lastRecordHash) && sha(m.prefixSha256), 'SEGMENT_STATE'); }
     private validateState() {
         const s = this.state;
-        for (const k of ['startedAt', 'nextDiagnostic', 'nextEssential', 'totalRecordedBytes', 'retiredBytes', 'protectedBytes', 'refusedRecords', 'refusedBytes', 'optionalOmittedRecords', 'optionalOmittedBytes', 'nextReceipt', 'lastAt', 'evictedThroughAt'] as const)
+        for (const k of ['startedAt', 'nextDiagnostic', 'nextEssential', 'totalRecordedBytes', 'retiredBytes', 'protectedBytes', 'retiredProofBytes', 'retiredProofs', 'refusedRecords', 'refusedBytes', 'optionalOmittedRecords', 'optionalOmittedBytes', 'nextReceipt', 'lastAt', 'evictedThroughAt'] as const)
             need(integer(s[k]), 'STATE_COUNTER');
         need(typeof s.requiresCriticalRecovery === 'boolean' && typeof s.refusalOpen === 'boolean' && integer(s.refusalIntervalsCoalesced) && Array.isArray(s.refusalIntervals) && s.refusalIntervals.length <= 128, 'CRITICAL_RECOVERY_STATE');
         for (const r of s.refusalIntervals)
@@ -627,7 +636,7 @@ export class BoundedRotatingRecorder {
             this.fatal = 'FILESYSTEM_UNAVAILABLE';
         }
         const bytes = this.retainedBytes(), pressure = this.fatal ?? (this.availableBytes < 2 * this.reserve ? 'FILESYSTEM_RESERVE' : bytes > this.effectiveDiagnosticBytes - this.state.policy.segmentBytes ? 'DIAGNOSTIC_HEADROOM' : this.state.diagnostics.length >= 511 ? 'DIAGNOSTIC_SEGMENT_HEADROOM' : this.pressure);
-        return { version: VERSION, candidateAdmissionAllowed: !this.closed && !this.closing && !this.state.requiresCriticalRecovery && !pressure, pressureReason: this.state.requiresCriticalRecovery ? 'INTERRUPTED_ESSENTIAL_PROOF' : pressure, requiresCriticalRecovery: this.state.requiresCriticalRecovery, diagnosticBytes: bytes, diagnosticLimitBytes: this.effectiveDiagnosticBytes, baseDiagnosticLimitBytes: this.state.policy.diagnosticBytes, maximumDiagnosticBytes: this.maximumDiagnosticBytes, continuousRotation: this.continuousRotation, capacityDiskFraction: this.capacityDiskFraction, diagnosticSegments: this.state.diagnostics.length + (this.diagnostic ? 1 : 0), maximumDiagnosticSegments: 512, minRetentionMs: this.state.policy.minRetentionMs, retiredBytes: this.state.retiredBytes, totalRecordedBytes: this.state.totalRecordedBytes, protectedBytes: this.state.protectedBytes, protectedBytesMeaning: 'Tracked completed raw proof, essential records and manifests; interrupted copies may add unaccounted bytes. Actual filesystem headroom is authoritative.', refusedRecords: this.state.refusedRecords, refusedBytes: this.state.refusedBytes, optionalOmittedRecords: this.state.optionalOmittedRecords, optionalOmittedBytes: this.state.optionalOmittedBytes, optionalOmissionsMeaning: 'Capacity omissions of explicitly optional diagnostics only; never trading-flow completeness or financial evidence.', refusalIntervals: this.state.refusalIntervals.map(r => ({ ...r })), refusalIntervalsCoalesced: this.state.refusalIntervalsCoalesced, availableDiskBytes: this.availableBytes, minimumDiskReserveBytes: this.reserve, pinOperations: this.pinTasks.size, protectedProofNeverEvicted: true, financialFilesRead: false, receiptAnchor: { ...this.state.receiptAnchor }, receiptHead: this.state.receipts.at(-1)?.sha256 ?? this.state.receiptAnchor.sha256, retainedReceipts: this.state.receipts.length };
+        return { version: VERSION, candidateAdmissionAllowed: !this.closed && !this.closing && !this.state.requiresCriticalRecovery && !pressure, pressureReason: this.state.requiresCriticalRecovery ? 'INTERRUPTED_ESSENTIAL_PROOF' : pressure, requiresCriticalRecovery: this.state.requiresCriticalRecovery, diagnosticBytes: bytes, diagnosticLimitBytes: this.effectiveDiagnosticBytes, baseDiagnosticLimitBytes: this.state.policy.diagnosticBytes, maximumDiagnosticBytes: this.maximumDiagnosticBytes, continuousRotation: this.continuousRotation, capacityDiskFraction: this.capacityDiskFraction, diagnosticSegments: this.state.diagnostics.length + (this.diagnostic ? 1 : 0), maximumDiagnosticSegments: 512, minRetentionMs: this.state.policy.minRetentionMs, retiredBytes: this.state.retiredBytes, totalRecordedBytes: this.state.totalRecordedBytes, protectedBytes: this.state.protectedBytes, provisionalProofRetention: { ...this.proofRetention.usage(), retiredBytes: this.state.retiredProofBytes, retiredProofs: this.state.retiredProofs }, protectedBytesMeaning: 'Tracked completed raw proof, essential records and manifests; interrupted copies may add unaccounted bytes. Actual filesystem headroom is authoritative.', refusedRecords: this.state.refusedRecords, refusedBytes: this.state.refusedBytes, optionalOmittedRecords: this.state.optionalOmittedRecords, optionalOmittedBytes: this.state.optionalOmittedBytes, optionalOmissionsMeaning: 'Capacity omissions of explicitly optional diagnostics only; never trading-flow completeness or financial evidence.', refusalIntervals: this.state.refusalIntervals.map(r => ({ ...r })), refusalIntervalsCoalesced: this.state.refusalIntervalsCoalesced, availableDiskBytes: this.availableBytes, minimumDiskReserveBytes: this.reserve, pinOperations: this.pinTasks.size, protectedProofNeverEvicted: true, financialFilesRead: false, receiptAnchor: { ...this.state.receiptAnchor }, receiptHead: this.state.receipts.at(-1)?.sha256 ?? this.state.receiptAnchor.sha256, retainedReceipts: this.state.receipts.length };
     }
     async maintenance() {
         if (this.maintenanceTask)
@@ -658,6 +667,21 @@ export class BoundedRotatingRecorder {
                 this.state.refusalIntervals = this.state.refusalIntervals.filter(r => r.toAt >= this.state.evictedThroughAt);
                 this.retentionStarted.delete(m.file);
                 this.save();
+            }
+            const proofMaintenanceStarted = this.mono();
+            for (let chunk = 0; chunk < 8; chunk++) {
+                const retiredProof = await this.proofRetention.sweep(name => this.pinById.has(name.slice('proof-'.length)));
+                if (retiredProof) {
+                    this.state.retiredProofBytes += retiredProof.bytes;
+                    this.state.retiredProofs++;
+                    this.state.protectedBytes = Math.max(0, this.state.protectedBytes - retiredProof.accountedBytes);
+                    this.receipt('provisional-proof-retired', { ...retiredProof, tradeLinkedProofsPreserved: true, legacyProofsPreserved: true });
+                }
+                if (chunk === 7 || this.mono() - proofMaintenanceStarted >= 10) break;
+                // Two unlinks per chunk, with control returned to financial
+                // work between chunks. The elapsed budget is best effort:
+                // an individual filesystem operation may itself take longer.
+                await yieldEventLoop();
             }
             this.refreshDisk(true);
             this.rebalanceCapacity(0, false);
@@ -727,7 +751,45 @@ export class BoundedRotatingRecorder {
     }
     private trackPin(id: string, fromAt: number, toAt: number, task: Promise<EvidencePinResult>) { this.pinTasks.add(task); this.pinById.set(id, { fromAt, toAt, task }); void task.then(() => { this.pinTasks.delete(task); this.pinById.delete(id); }, () => { this.pinTasks.delete(task); this.pinById.delete(id); }); return task; }
     pinRecent(proofId: string) { return this.pinRange(proofId, Math.max(this.state.startedAt, this.time() - this.state.policy.minRetentionMs), this.time()); }
-    pinRange(proofId: string, fromAt: number, toAt: number): Promise<EvidencePinResult> {
+    /** Newly prepared evidence expires after its qualification deadline plus
+     * the abandoned-work grace, unless durably protected before an attempt. */
+    pinProvisionalRange(proofId: string, fromAt: number, toAt: number, deadlineAt: number): Promise<EvidencePinResult> {
+        need(integer(deadlineAt) && deadlineAt >= toAt, 'PROVISIONAL_DEADLINE');
+        return this.pinRange(proofId, fromAt, toAt, { deadlineAt });
+    }
+    protectProof(proofId: string, financialReference: string): boolean {
+        if (this.closed || this.closing || this.pinById.has(digest(proofId))) return false;
+        try {
+            const reference = this.proofRetention.protect(proofId, financialReference);
+            return this.record('qualification-proof-financial-reference', { proofId, financialReference, ...reference, at: this.time(), permanent: true }, { essential: true });
+        } catch { return false; }
+    }
+    releaseUnusedProof(proofId: string): boolean {
+        if (this.closed || this.closing || this.pinById.has(digest(proofId))) return false;
+        try { return this.proofRetention.releaseUnused(proofId); } catch { return false; }
+    }
+    appendProvisionalEvidence(proofId: string, kind: string, data: unknown): boolean {
+        if (this.closed || this.closing) return false;
+        try {
+            this.refreshDisk();
+            const requiredBytes = Buffer.byteLength(encode({ proofId, kind, data })) + 1024;
+            if (this.availableBytes < requiredBytes + this.pendingPinBytes + 2 * this.reserve) return false;
+            const bytes = this.proofRetention.appendEvidence(proofId, kind, data);
+            if (bytes === null) return false;
+            this.state.protectedBytes += bytes;
+            this.state.totalRecordedBytes += bytes;
+            this.save();
+            return true;
+        } catch { return false; }
+    }
+    private recordPinReference(kind: string, data: unknown, provisional: boolean) {
+        const recorded = this.record(kind, data, { essential: !provisional, required: !provisional });
+        // The provisional manifest is already fsynced. Its operational trace
+        // may rotate or be omitted for capacity; real I/O failures still refuse
+        // the pin. Financial promotion supplies the permanent essential link.
+        need(recorded || provisional && this.lastOutcome.kind === 'optional-capacity-omitted', 'PIN_REFERENCE_NOT_DURABLE');
+    }
+    pinRange(proofId: string, fromAt: number, toAt: number, provisional?: { deadlineAt: number }): Promise<EvidencePinResult> {
         need(typeof proofId === 'string' && proofId.length > 0 && proofId.length <= 256 && !/[\u0000-\u001f]/.test(proofId) && integer(fromAt) && integer(toAt) && fromAt <= toAt && toAt <= this.time(), 'PIN_RANGE');
         const failed = (reason: string): EvidencePinResult => ({ complete: false, proofId, files: [], bytes: 0, manifestSha256: null, reason });
         if (this.closed || this.closing)
@@ -736,10 +798,15 @@ export class BoundedRotatingRecorder {
             return Promise.resolve(failed('RECORDER_INTEGRITY_UNAVAILABLE'));
         const id = digest(proofId), pending = this.pinById.get(id);
         if (pending)
-            return pending.fromAt === fromAt && pending.toAt === toAt ? pending.task : Promise.resolve(failed('PROOF_ID_CONFLICT'));
+            return pending.fromAt === fromAt && pending.toAt === toAt ? pending.task.then(result => {
+                if (!result.complete || provisional) return result;
+                try { return this.proofRetention.protect(proofId, 'legacy-permanent-pin-api') ? result : failed('PROOF_PROTECTION_NOT_DURABLE'); }
+                catch { return failed('PROOF_PROTECTION_NOT_DURABLE'); }
+            }) : Promise.resolve(failed('PROOF_ID_CONFLICT'));
         if (this.pinTasks.size >= 3)
             return Promise.resolve(failed('PIN_CAPACITY'));
         const prefix = 'proof-' + id, dir = this.path(prefix);
+        try { this.proofRetention.assertUsable(proofId); } catch { return Promise.resolve(failed('PROOF_RETENTION_UNAVAILABLE')); }
         let existing: Buffer | null = null;
         try {
             this.privateProofDirectory(dir);
@@ -759,6 +826,7 @@ export class BoundedRotatingRecorder {
             const raw = existing, refusedBeforeRevalidation = this.state.refusedRecords;
             const verify = async () => {
                 try {
+                    if (!provisional) need(this.proofRetention.protect(proofId, 'legacy-permanent-pin-api'), 'PROOF_PROTECTION_NOT_DURABLE');
                     const old = JSON.parse(raw.toString());
                     need(old.version === VERSION && old.proofId === proofId && old.fromAt === fromAt && old.toAt === toAt && old.complete === true && Array.isArray(old.files) && old.files.length <= 514 && integer(old.bytes) && old.bytes <= this.maximumDiagnosticBytes && old.bytes === old.files.reduce((n: number, m: Meta) => n + m.bytes, 0), 'PROOF_ID_CONFLICT');
                     if (old.optionalDiagnostics !== undefined)
@@ -775,7 +843,7 @@ export class BoundedRotatingRecorder {
                     const revalidationFailure = this.requiredProofFailure(fromAt, toAt, refusedBeforeRevalidation);
                     if (revalidationFailure)
                         return failed(revalidationFailure);
-                    need(this.record('qualification-proof-revalidated', { proofId, fromAt, toAt, manifestSha256: digest(raw), fullBytesRetained: true }, { essential: true }), 'PIN_REFERENCE_NOT_DURABLE');
+                    this.recordPinReference('qualification-proof-revalidated', { proofId, fromAt, toAt, manifestSha256: digest(raw), fullBytesRetained: true }, !!provisional);
                     return { complete: true, proofId, files: old.files.map((m: Meta) => join(prefix, m.file)), bytes: old.bytes, manifestSha256: digest(raw) };
                 }
                 catch {
@@ -805,6 +873,7 @@ export class BoundedRotatingRecorder {
                 reserved = true;
                 try {
                     mkdirSync(dir, { mode: 0o700 });
+                    if (provisional) this.proofRetention.createProvisional(proofId, provisional.deadlineAt, selected.map(m => m.file));
                 }
                 catch (e) {
                     if ((e as NodeJS.ErrnoException).code !== 'EEXIST')
@@ -860,7 +929,8 @@ export class BoundedRotatingRecorder {
                     closeSync(d);
                 }
                 this.state.protectedBytes += bytes + raw.length;
-                need(this.record('qualification-proof-pinned', { proofId, fromAt, toAt, files, bytes, manifestSha256: digest(raw), fullBytesRetained: true }, { essential: true }), 'PIN_REFERENCE_NOT_DURABLE');
+                if (!provisional) need(this.proofRetention.protect(proofId, 'legacy-permanent-pin-api'), 'PROOF_PROTECTION_NOT_DURABLE');
+                this.recordPinReference('qualification-proof-pinned', { proofId, fromAt, toAt, files, bytes, manifestSha256: digest(raw), fullBytesRetained: true }, !!provisional);
                 this.receipt('qualification-proof-pinned', { proofId, fromAt, toAt, files, bytes, manifestSha256: digest(raw), fullBytesRetained: true });
                 return { complete: true, proofId, files, bytes, manifestSha256: digest(raw) };
             }
@@ -912,6 +982,7 @@ export class BoundedRotatingRecorder {
         this.seal('essential');
         this.receipt('closed', { protectedProofNeverEvicted: true });
         this.closed = true;
+        this.proofRetention.close();
         closeSync(this.directoryFd);
         if (this.writerFd !== null) {
             closeSync(this.writerFd);

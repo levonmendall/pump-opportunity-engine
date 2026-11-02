@@ -1225,6 +1225,21 @@ export class PaperLedger {
     if (!Number.isSafeInteger(limit) || limit < 1 || limit > 1000) throw new Error('bounded export required');
     return this.db.prepare('SELECT * FROM journal ORDER BY revision DESC LIMIT ?').all(limit);
   }
+  /** Read-only indexed traversal of ALL durable order references, independent of
+   * the reporting window. Retention may not prune until this initial walk ends.
+   * A caller must also protect new reservations synchronously after the walk. */
+  retentionOrderReferences(after='order:',limit=128):{after:string;complete:boolean;mints:string[];orders:number}{
+    if(typeof after!=='string'||!after.startsWith('order:')||after.length>160||!Number.isSafeInteger(limit)||limit<1||limit>128)throw Error('RETENTION_ORDER_REFERENCE_BOUND');
+    const rows=this.db.prepare("SELECT action_id,kind,CASE WHEN length(CAST(detail AS BLOB))<=65536 THEN detail END detail FROM journal WHERE action_id>? AND action_id<'order;' ORDER BY action_id LIMIT ?").all(after,limit+1) as {action_id:string;kind:string;detail:string|null}[];
+    const page=rows.slice(0,limit),mints=new Set<string>();
+    for(const row of page){
+      if(row.kind!=='order'||typeof row.detail!=='string')throw Error('RETENTION_ORDER_REFERENCE_INVALID');
+      const payload=JSON.parse(row.detail),mint=payload?.input?.mint,id=payload?.input?.id;
+      if(typeof mint!=='string'||!mint||mint.length>256||typeof id!=='string'||row.action_id!=='order:'+id)throw Error('RETENTION_ORDER_REFERENCE_INVALID');
+      mints.add(mint);
+    }
+    return {after:page.at(-1)?.action_id??after,complete:rows.length<=limit,mints:[...mints],orders:page.length};
+  }
   /** Replaceable max50 filled-trade projection, verified by indexed durable actions. */
   getReportingTrades():ReportingTradeCache {
     const state=this.state(),size=this.db.prepare("SELECT length(CAST(value AS BLOB)) size FROM metadata WHERE key='reporting_trades'").get() as {size:number}|undefined;
