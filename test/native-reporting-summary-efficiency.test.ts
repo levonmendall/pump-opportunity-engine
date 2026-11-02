@@ -66,3 +66,35 @@ test('grouped population report matches original full-population SQL for all sta
   }finally{registry.close();}
  }
 });
+
+test('age-indexed prerequisite counts preserve unknown SQL gates, exact age boundaries and origin requirements',()=>{
+ const registry=new MarketRegistry(':memory:',{now:()=>AT}),watch=new PilotWatch({registry,maximumDeep:4,enforceTokenAge24h:true,observationAgePolicy:PERSISTENT_OBSERVABLE_MARKET_POLICY.version,now:()=>AT,record:()=>{}}),db=(registry as any).db;
+ try{
+  const base=watch.discover({signature:'OFFLINE-base',receivedAt:AT-1000})!;
+  const cases=[
+   {id:'ready',created:AT-1000,verified:AT,unknown:false,origin:true},
+   {id:'unknown-with-age',created:AT-1000,verified:AT,unknown:true,origin:true},
+   {id:'unknown-without-age',created:null,verified:AT,unknown:true,origin:false},
+   {id:'age-lower-bound',created:AT-86400000,verified:AT,unknown:false,origin:false},
+   {id:'age-before-bound',created:AT-86400001,verified:AT,unknown:false,origin:true},
+   {id:'creation-in-future',created:AT+1,verified:AT,unknown:false,origin:false},
+   {id:'verification-in-future',created:AT-1000,verified:AT+1,unknown:false,origin:false},
+   {id:'unknown-with-age-no-origin',created:AT,verified:AT,unknown:true,origin:false}
+  ];
+  registry.transaction(()=>{for(const c of cases){
+   registry.put({...base,signature:c.id,mint:c.id,pool:'pool-'+c.id,state:'WATCH',migrationAt:AT-1000,verifiedAt:AT,waitingSince:AT-1000});
+   if(c.created!==null)db.prepare('INSERT INTO token_creations(mint,created_at,verified_at,proof) VALUES(?,?,?,?)').run(c.id,c.created,c.verified,'{}');
+   // A missing not-before value is SQL unknown, not a false prerequisite.
+   if(c.unknown)db.prepare("UPDATE watch_rows SET technical_state='WAITING',technical_not_before=NULL WHERE signature=?").run(c.id);
+   if(c.origin)registry.putOrigin(c.id,{fixture:true});
+  }});
+  const withoutOrigin=watch.serviceableBacklog(AT),withOrigin=watch.serviceableBacklog(AT,{requireOrigin:true});
+  assert.deepEqual(withoutOrigin,legacyServiceableBacklog.call(watch,AT));
+  assert.deepEqual(withOrigin,legacyServiceableBacklog.call(watch,AT,{requireOrigin:true}));
+  assert.equal(withoutOrigin.population.eligibleNow,2);
+  assert.equal(withoutOrigin.population.verifiedAwaitingPrerequisites,4,'age failure makes a row awaiting; an otherwise unknown prerequisite does not');
+  assert.equal(withOrigin.population.serviceableNow,1);
+  assert.equal(withOrigin.population.verifiedAwaitingPrerequisites,6,'missing origin makes serviceability false even when another gate is unknown');
+  assert.deepEqual(watch.serviceableBacklog(AT+1),legacyServiceableBacklog.call(watch,AT+1),'a new report reevaluates inclusive age and verification boundaries');
+ }finally{registry.close();}
+});

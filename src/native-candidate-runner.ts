@@ -213,7 +213,7 @@ export class NativeCandidateRunner{
  private async serviceFlow(signal:AbortSignal|undefined,deadlineAt:number,policy:{allowSetup:boolean;allowRetirement:boolean}){
   if(this.options.sourceWorkCheckpoint&&!await this.sourceCheckpoint(signal))return {kind:'deferred',reason:'NATIVE_SOURCE_FINANCIAL_RUNWAY'};
   const plan=this.options.flow.servicePlan?.(policy),action=plan?.action??(this.options.flow.usage() as {nextServiceAction?:string|null}).nextServiceAction;
-  const bound=action==='heartbeat'||action==='peer-pong'?NATIVE_DEADLINE_POLICY.heartbeatOperationMs:NATIVE_DEADLINE_POLICY.nativeOperationMs;
+  const bound=plan?.operationBoundMs??(action==='heartbeat'||action==='peer-pong'?NATIVE_DEADLINE_POLICY.heartbeatOperationMs:NATIVE_DEADLINE_POLICY.nativeOperationMs);
   if(!this.sourceWorkAllowed(bound)){this.traceAuditDispatch(this.readyAudits(this.now()),this.now(),'native-service-wait','await-financial-operation-runway',{operationBoundMs:bound,action:action??null});return {kind:'deferred',reason:'NATIVE_SOURCE_FINANCIAL_RUNWAY'};}
   return this.options.flow.service(signal,{...this.admission(deadlineAt),operationBoundMs:bound,admissionOpen:()=>this.sourceWorkAllowed(bound)&&this.now()<deadlineAt},policy);
  }
@@ -504,7 +504,7 @@ export class NativeCandidateRunner{
   }
   targets.sort((a,b)=>a.deadlineAt-b.deadlineAt||a.mint.localeCompare(b.mint));
   const flow=this.options.flow.usage() as ReturnType<Flow['usage']>&{nextRequiredServiceAt?:number;nextRequiredServiceDeadlineAt?:number;nextRequiredServiceAction?:string|null;nativeServiceDeadlines?:Array<{deadlineAt:number;action:string|null}>};
-  const obligations=flow.nativeServiceDeadlines?.map(v=>({action:v.action,deadlineAt:v.deadlineAt>at?v.deadlineAt:v.action==='support-refresh'?Infinity:at+1500})).sort((a,b)=>a.deadlineAt-b.deadlineAt),deadline=obligations===undefined?flow.nextRequiredServiceDeadlineAt:obligations[0]?.deadlineAt??Infinity,native=deadline===undefined?(flow.nextRequiredServiceAt??flow.nextServiceAt):deadline-1500,requiredNativeAt=Number.isFinite(native)?native:null,ready=targets.filter(t=>t.ready),minimumReadyWorkMs=ready.reduce((n,t)=>n+t.minimumPageWorkMs,0),earliest=targets[0]?.deadlineAt??null;
+  const obligations=flow.nativeServiceDeadlines?.map(v=>({action:v.action,deadlineAt:v.deadlineAt>at||v.action==='cleanup-proof'?v.deadlineAt:v.action==='support-refresh'?Infinity:at+1500})).sort((a,b)=>a.deadlineAt-b.deadlineAt),deadline=obligations===undefined?flow.nextRequiredServiceDeadlineAt:obligations[0]?.deadlineAt??Infinity,native=deadline===undefined?(flow.nextRequiredServiceAt??flow.nextServiceAt):deadline-1500,requiredNativeAt=Number.isFinite(native)?native:null,ready=targets.filter(t=>t.ready),minimumReadyWorkMs=ready.reduce((n,t)=>n+t.minimumPageWorkMs,0),earliest=targets[0]?.deadlineAt??null;
   // Reserve one declared page opportunity per committed peer, not a promise
   // that unknown additional history pages or an outage can fit this envelope.
   const serviceable=targets.filter(t=>t.serviceableBeforeDeadline),unavailableReadyCount=ready.filter(t=>!t.serviceableBeforeDeadline).length;

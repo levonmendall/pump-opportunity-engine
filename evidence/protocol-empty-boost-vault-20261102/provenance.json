@@ -1,0 +1,23 @@
+{
+  "kind": "EXACT_HASH_MATCHED_HISTORICAL_PROTOCOL_REFUSAL_REPLAY",
+  "source": "92d83ba59d542fa2dfb20bca4444b704666f9c05",
+  "sourceRunId": "native-paper-20261102210335048",
+  "acceptanceRun": 41526191289,
+  "originalRefusal": {
+    "signature": "AgwL4f7JZZCGLoK6nusurmf46Mb9jTg3aguxtzEspgE51kUq2PDu1nfiy8kfDG9oNGtuQUsBfRvVJFqYpaiswn4",
+    "slot": 464643415,
+    "receivedAt": 1793654267437,
+    "availableAt": 1793654267448,
+    "reason": "LOG_NATIVE_PROTOCOL_CHILD_SHAPE",
+    "rawHash": "afecd011162a3104228373a3aefdfa2984dac5d814f4769b5b4b86965e4053a8",
+    "recordedAt": 1793654267451,
+    "metadataLineSha256": "99530f004acff36e14b99b8792e2e96ed243c3cb64fc491dd909cd49db5273a9",
+    "rawRecordLineSha256": "a0622b3e93182661a5b8d6893a0815ef84f45c614b79526456364d9836cdc504"
+  },
+  "responseSha256": "0206674f754b36d325d9ccd49444622606303e8f06edfcbcdbaf9d20b86babaa",
+  "retrievalReceiptSha256": "078bc799183ee57b0a9d6e01eaa51bf36a0e16dee44b0654b55386564af983a9",
+  "acceptanceArtifactSha256": "04351159d4c11ae7d29b9c72fbe746121bd76139056ba00d3be572349e2aa562",
+  "historicalDiagnosisOnly": true,
+  "originalDecisionTimeEvidenceChanged": false,
+  "financialQualificationAuthorized": false
+}
