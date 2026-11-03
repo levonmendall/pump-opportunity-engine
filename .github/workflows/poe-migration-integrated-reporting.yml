@@ -1,0 +1,62 @@
+name: Validate integrated migration-age reporting handover
+on:
+  push:
+    branches: [repair/poe-migration-age-1m-24h-20261103]
+    paths: [.github/workflows/poe-migration-integrated-reporting.yml]
+permissions:
+  contents: write
+jobs:
+  reporting:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Preserve the installed route and bind the final target only
+        run: |
+          set -euo pipefail
+          umask 077
+          mkdir -p /tmp/poe-integrated-reporting
+          git merge-base --is-ancestor 356083fd8f0e69297c8470d4493077a175d2bad1 HEAD
+          python3 -B -I - <<'PY'
+          import pathlib,subprocess
+          old='12a54646e87a3cd0d81d6846a254d76d7947bd21';new='356083fd8f0e69297c8470d4493077a175d2bad1'
+          for name in ['src/reviewed-source-handover.mjs','test/reviewed-source-handover.test.mjs']:
+              p=pathlib.Path(name);s=p.read_text();assert s.count(old)==1,'EXACT_PREVIOUS_REPORTING_TARGET_REQUIRED:'+name
+              assert 'c46d6f301535c80027bc31b29a15681b216df62e' in s,'SCHEDULING_ROUTE_MUST_REMAIN'
+              p.write_text(s.replace(old,new))
+          PY
+          git diff --check
+          git add src/reviewed-source-handover.mjs test/reviewed-source-handover.test.mjs
+          git config user.name 'POE integrated reporting binding'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Accept integrated migration-age reports without resetting account or financial history'
+          git push origin HEAD:refs/heads/repair/poe-migration-age-1m-24h-20261103
+          git rev-parse HEAD > /tmp/poe-integrated-reporting/source-commit.txt
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.19.0'
+          check-latest: false
+          cache: npm
+      - name: Verify reporting, authentication and retained financial history
+        run: |
+          set -euo pipefail
+          umask 077
+          npm ci --include=dev
+          npm run build 2>&1 | tee /tmp/poe-integrated-reporting/typecheck.log
+          npm run compile 2>&1 | tee /tmp/poe-integrated-reporting/compile.log
+          node --test test/ai-team-dashboard.test.mjs test/reviewed-source-handover.test.mjs 2>&1 | tee /tmp/poe-integrated-reporting/handover.log
+          node --import tsx --test --test-concurrency=1 test/reporting*.test.ts test/dashboard*.test.ts test/financial-epoch-reporting.test.ts test/lifetime-equity*.test.ts 2>&1 | tee /tmp/poe-integrated-reporting/reporting.log
+          git diff 356083fd8f0e69297c8470d4493077a175d2bad1 -- src test > /tmp/poe-integrated-reporting/reporting.patch
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: poe-migration-integrated-reporting-${{ github.run_id }}
+          path: /tmp/poe-integrated-reporting/
+          retention-days: 14
+          if-no-files-found: error
