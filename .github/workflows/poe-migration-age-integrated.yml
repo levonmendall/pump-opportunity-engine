@@ -1,0 +1,121 @@
+name: Validate integrated migration-age and scheduling release
+on:
+  push:
+    branches: [repair/poe-migration-age-1m-24h-20261103]
+    paths: [.github/workflows/poe-migration-age-integrated.yml]
+permissions:
+  contents: write
+concurrency:
+  group: poe-migration-age-integrated-publication
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Preserve both reviewed changes; refuse overlapping edits rather than discard either
+        run: |
+          set -euo pipefail
+          umask 077
+          mkdir -p /tmp/poe-migration-integrated
+          git config user.name 'POE reviewed integrated source'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          python3 -B -I - <<'PY'
+          import difflib,json,pathlib,re,subprocess
+          BASE='f1dcd4bf8b8dab39eecd089d0a739dc111ccd0dd';OTHER='e758539154b39384e2ddba9dad1e4a9681709141'
+          out=pathlib.Path('/tmp/poe-migration-integrated')
+          def get(ref,path):return subprocess.check_output(['git','show',ref+':'+path]).decode()
+          subprocess.run(['git','merge','--no-commit','--no-ff',OTHER],check=False)
+          conflicts=subprocess.check_output(['git','diff','--name-only','--diff-filter=U']).decode().splitlines()
+          assert set(conflicts)<={'src/native-candidate-runner.ts','src/run-native-paper.ts','src/native-paper.ts','src/reviewed-source-handover.mjs','test/reviewed-source-handover.test.mjs'},conflicts
+          (out/'conflicts.json').write_text(json.dumps(conflicts))
+          for path in conflicts:
+              before=get(BASE,path);ours=get('HEAD',path);theirs=get(OTHER,path)
+              for tag,text in [('base',before),('ours',ours),('theirs',theirs)]:
+                  p=out/'merge-inputs'/tag/path;p.parent.mkdir(parents=True,exist_ok=True);p.write_text(text)
+              if path.endswith('reviewed-source-handover.mjs') or path.endswith('reviewed-source-handover.test.mjs'):continue
+              # Merge only nonoverlapping lexical edits against their common base.
+              tokenize=lambda s:re.findall(r'\w+|\s+|[^\w\s]',s)
+              base=tokenize(before);edits=[]
+              for side,text in [('ours',ours),('theirs',theirs)]:
+                  new=tokenize(text)
+                  for tag,a,b,c,d in difflib.SequenceMatcher(None,base,new,autojunk=False).get_opcodes():
+                      if tag!='equal':edits.append((a,b,new[c:d],side))
+              unique=[]
+              for e in sorted(edits,key=lambda x:(x[0],x[1],x[3])):
+                  if any(e[:3]==p[:3] for p in unique):continue
+                  for p in unique:
+                      overlap=max(e[0],p[0])<min(e[1],p[1]) or e[0]==e[1] and p[0]<e[0]<p[1] or p[0]==p[1] and e[0]<p[0]<e[1] or e[0]==e[1]==p[0]==p[1]
+                      if overlap:
+                          (out/'overlap.json').write_text(json.dumps({'path':path,'left':p,'right':e,'context':base[max(0,e[0]-20):e[1]+20]},indent=2));raise AssertionError('OVERLAPPING_SOURCE_EDIT:'+path)
+                  unique.append(e)
+              for a,b,text,side in sorted(unique,key=lambda e:(e[0],e[1]),reverse=True):base[a:b]=text
+              pathlib.Path(path).write_text(''.join(base));subprocess.run(['git','add',path],check=True)
+          # Retain all A6 authentication/history tests, then add migration as the next exact source.
+          path='src/reviewed-source-handover.mjs';s=get(OTHER,path)
+          assert s.count(" to:'c46d6f301535c80027bc31b29a15681b216df62e',")==1
+          s=s.replace(" to:'c46d6f301535c80027bc31b29a15681b216df62e',"," scheduling:'c46d6f301535c80027bc31b29a15681b216df62e',\n to:'12a54646e87a3cd0d81d6846a254d76d7947bd21',")
+          s=s.replace('p.proofTimeout,p.to]','p.proofTimeout,p.scheduling,p.to]');pathlib.Path(path).write_text(s)
+          path='test/reviewed-source-handover.test.mjs';s=get(OTHER,path)
+          matches=list(re.finditer(r"(?m)^test\('",s));assert matches
+          at=matches[-1].start();prior=s[at:]
+          assert "c46d6f301535c80027bc31b29a15681b216df62e" in prior
+          s=s[:at].replace('p.ageQualified,p.proofTimeout]','p.ageQualified,p.proofTimeout,p.scheduling]')+prior.replace('p.to','p.scheduling')
+          new=prior.replace('p.proofTimeout','p.scheduling').replace("'acb50ffee8c374b3f67ee10da0780ec69a62ba03'","'c46d6f301535c80027bc31b29a15681b216df62e'")
+          new=re.sub(r"^test\('[^']*'","test('the reviewed scheduler source advances to migration-age scope without changing the account'",new,count=1)
+          new=new.replace("assert.equal(p.to,'c46d6f301535c80027bc31b29a15681b216df62e'","assert.equal(p.to,'12a54646e87a3cd0d81d6846a254d76d7947bd21'")
+          pathlib.Path(path).write_text(s+'\n'+new)
+          subprocess.run(['git','add','src/reviewed-source-handover.mjs',path],check=True)
+          assert not subprocess.check_output(['git','diff','--name-only','--diff-filter=U']).strip()
+          subprocess.run(['git','diff','--check','--cached'],check=True)
+          subprocess.run(['git','commit','-m','Preserve completed-decision scheduling while restoring PumpSwap migration age'],check=True)
+          subprocess.run(['git','push','origin','HEAD:refs/heads/repair/poe-migration-age-1m-24h-20261103'],check=True)
+          source=subprocess.check_output(['git','rev-parse','HEAD']).decode().strip();(out/'source-commit.txt').write_text(source+'\n');print('EXACT_INTEGRATED_SOURCE='+source)
+          (out/'source.patch').write_bytes(subprocess.check_output(['git','diff',BASE,'HEAD','--','src','test']))
+          PY
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.19.0'
+          check-latest: false
+          cache: npm
+      - name: Compile and run every application and reporting regression
+        run: |
+          set -euo pipefail
+          umask 077
+          npm ci --include=dev
+          npm run build 2>&1 | tee /tmp/poe-migration-integrated/typecheck.log
+          npm run compile 2>&1 | tee /tmp/poe-migration-integrated/compile.log
+          node --import tsx --test --test-concurrency=1 test/*.test.ts 2>&1 | tee /tmp/poe-migration-integrated/full.log
+          node --test test/ai-team-dashboard.test.mjs test/reviewed-source-handover.test.mjs 2>&1 | tee /tmp/poe-migration-integrated/ai-reporting.log
+      - name: Build exact integrated PAPER executable and smoke test
+        run: |
+          set -euo pipefail
+          umask 077
+          test -z "$(git status --porcelain)"
+          node scripts/build-native-paper-ec2.mjs --output-directory /tmp/poe-migration-integrated-bundle
+          cp -a /tmp/poe-migration-integrated-bundle /tmp/poe-migration-integrated/bundle
+          git archive HEAD src test scripts docs package.json package-lock.json tsconfig.json | gzip -n > /tmp/poe-migration-integrated/source.tar.gz
+          python3 -B -I - <<'PY'
+          import pathlib,hashlib,json,re,os
+          p=pathlib.Path('/tmp/poe-migration-integrated');source=(p/'source-commit.txt').read_text().strip();log=(p/'full.log').read_text();meta=json.loads((p/'bundle/metadata.json').read_bytes())
+          def metric(key):
+              rows=re.findall(r'(?m)^(?:# |ℹ )'+key+r'\s+(\d+)\s*$',log);assert len(rows)==1;return int(rows[0])
+          tests=metric('tests');assert tests>=3749 and metric('pass')==tests and all(metric(k)==0 for k in ['fail','skipped','cancelled'])
+          assert meta['git']['commit']==source and meta['git']['workingTreeStatus']=='' and meta['financialMode']=='PAPER' and meta['liveTradingEnabled'] is False
+          assert meta['smoke']['exitStatus']==0 and meta['smoke']['networkDisabled'] and meta['smoke']['disposableFinancialFixture'] and meta['smoke']['readonlyPersistentBackup']
+          result={'kind':'POE_MIGRATION_AGE_VALIDATED_BUILD','source':source,'base':'acb50ffee8c374b3f67ee10da0780ec69a62ba03','bundleSha256':hashlib.sha256((p/'bundle/native-paper.mjs').read_bytes()).hexdigest(),'testsPassed':tests,'validationRun':int(os.environ['GITHUB_RUN_ID']),'buildRun':int(os.environ['GITHUB_RUN_ID']),'fullLogSha256':hashlib.sha256((p/'full.log').read_bytes()).hexdigest(),'financialControlWrites':0,'ec2Changed':False,'ageBasis':'verified-pumpswap-migration','minimumAgeMs':60000,'maximumAgeMs':86400000,'deepSlots':4,'liveTrading':False}
+          (p/'build-receipt.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: poe-migration-integrated-validation-${{ github.run_id }}
+          path: /tmp/poe-migration-integrated/
+          retention-days: 14
+          if-no-files-found: error
