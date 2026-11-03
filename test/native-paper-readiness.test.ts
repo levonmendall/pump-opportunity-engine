@@ -113,6 +113,17 @@ test('readiness diagnostics expose the existing provenance refusal without anoth
  assert.equal(scans,1);assert.deepEqual(f.ledger.state(),before);assert.deepEqual(f.calls,{context:0,preparation:0,quote:0,execution:0});
 });
 
+test('technical recovery reports its actual authenticated-control refusal without a second history traversal',t=>{
+ const f=fixture(t,false,true);assert.equal(f.refresh().recovered,true);
+ f.at++;f.ledger.pause('owner-explicit-pause',f.at,'operator paused new entries');
+ f.at++;f.ledger.pause('trader:pause:'+f.ledger.state().revision+':'+f.at,f.at,'PAPER protection currently overdue; candidate admissions closed');
+ const restarted=f.make(),before=f.ledger.state(),read=f.ledger.technicalProtectionRecoveryAuthority.bind(f.ledger);let scans=0;
+ f.ledger.technicalProtectionRecoveryAuthority=at=>{scans++;return read(at);};
+ assert.deepEqual(restarted.maintainOperatingFinancialReadiness(f.price),{kind:'not-ready',recovered:false,reasonCode:'TECHNICAL_PROTECTION_OWNER_OR_UNKNOWN_CONTROL'});
+ for(let i=0;i<3;i++)assert.deepEqual(restarted.operatingReadinessDiagnostics(),{at:f.at,stateRevision:before.revision,reasonCode:'TECHNICAL_PROTECTION_OWNER_OR_UNKNOWN_CONTROL'});
+ assert.equal(scans,1);assert.deepEqual(f.ledger.state(),before);assert.deepEqual(f.calls,{context:0,preparation:0,quote:0,execution:0});
+});
+
 test('recorder failure after permission recovery closes controls and preserves the evidence latch',t=>{
  const f=fixture(t);f.recordFailure=true;assert.equal(f.refresh().recovered,false);assert.equal(f.projection().entriesEnabled,false);assert.equal(f.bridge.trader.entryReadinessSafety().evidenceAvailable,false);f.recordFailure=false;assert.equal(f.refresh().recovered,false);assert.deepEqual(f.ledger.state().pending,{});assert.equal(f.ledger.state().executionCosts,'0');
 });
