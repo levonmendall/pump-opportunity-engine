@@ -29,6 +29,24 @@ test('older finalized evidence stops the bounded acquisition horizon without inv
  assert.equal(selectTokenCreationHistoryPage([{...old,blockTime:(AT-TOKEN_CREATION_HISTORY_POLICY.maximumHorizonMs)/1000}],request,AT).kind,'candidate','the existing inclusive 24-hour boundary remains intact');
 });
 
+test('an older address reference cannot suppress a possible young creation or a carried candidate',()=>{
+ const old={...row(1),blockTime:(AT-TOKEN_CREATION_HISTORY_POLICY.maximumHorizonMs)/1000-1};
+ assert.deepEqual(selectTokenCreationHistoryPage([row(4),row(3),old],request,AT),{kind:'candidate',signature:signature(3),slot:3});
+ const carried={...request,before:signature(5),beforeSlot:5,oldestCandidate:signature(6),oldestCandidateSlot:6};
+ assert.deepEqual(selectTokenCreationHistoryPage([old],carried,AT),{kind:'candidate',signature:signature(6),slot:6});
+ assert.deepEqual(selectTokenCreationHistoryPage([{...row(4),err:{InstructionError:[0,'Custom']}},old],request,AT),{kind:'unavailable',reason:'TOKEN_CREATION_HISTORY_PRECEDES_24H',terminal:true});
+});
+
+test('a null-time candidate before the older boundary still requires independent creation decoding',()=>{
+ const old={...row(1),blockTime:(AT-TOKEN_CREATION_HISTORY_POLICY.maximumHorizonMs)/1000-1};
+ assert.deepEqual(selectTokenCreationHistoryPage([{...row(2),blockTime:null},old],request,AT),{kind:'candidate',signature:signature(2),slot:2});
+});
+
+test('malformed rows after the older boundary invalidate the whole page before candidate selection',()=>{
+ const old={...row(2),blockTime:(AT-TOKEN_CREATION_HISTORY_POLICY.maximumHorizonMs)/1000-1};
+ for(const malformed of [{...row(1),signature:'bad'},row(5),{...row(1),blockTime:AT/1000+1},old])assert.deepEqual(selectTokenCreationHistoryPage([row(3),old,malformed],request,AT),{kind:'unavailable',reason:'TOKEN_CREATION_HISTORY_MALFORMED',terminal:false});
+});
+
 test('malformed, repeated and out-of-order history cannot create a birth request',()=>{
  for(const rows of [null,{},[row(1),row(2)],[row(1),row(1)],[{...row(1),signature:'bad'}],[{...row(1),blockTime:undefined}],[{...row(1),blockTime:AT/1000+1}],[{...row(1),slot:-1}],Array.from({length:1001},(_,n)=>row(2000-n))])assert.deepEqual(selectTokenCreationHistoryPage(rows,request,AT),{kind:'unavailable',reason:'TOKEN_CREATION_HISTORY_MALFORMED',terminal:false});
  const continuation={...request,before:signature(9),beforeSlot:9};

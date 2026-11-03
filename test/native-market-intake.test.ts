@@ -2,14 +2,14 @@ import {test} from 'node:test';
 import assert from 'node:assert/strict';
 import {EventEmitter} from 'node:events';
 import {NativeMarketIntake} from '../src/native-market-intake.js';
-import type {MarketIdentityHint,MarketActivityHint} from '../src/market-discovery.js';
+import type {MarketIdentityHint,MarketActivityHint,PumpSwapQualificationHint} from '../src/market-discovery.js';
 
 class MockWorker extends EventEmitter {
  readonly sent:any[]=[];terminations=0;
  postMessage(value:unknown){this.sent.push(structuredClone(value));}
  async terminate(){this.terminations++;return 0;}
  ready(){this.emit('message',{kind:'ready',stats:{fixture:true}});}
- ack(ids:number[],activities:unknown[]=[]){this.emit('message',{kind:'committed',ids,activities,committedAt:1001,stats:{fixture:true}});}
+ ack(ids:number[],activities:unknown[]=[],excluded:Array<{id:number;reason:string}>=[]){this.emit('message',{kind:'committed',ids,activities,excluded,committedAt:1001,stats:{fixture:true}});}
  intake(){return this.sent.filter(row=>row.kind==='intake');}
 }
 const flush=()=>new Promise<void>(resolve=>setImmediate(resolve));
@@ -90,5 +90,40 @@ test('shutdown rejects new intake, drains remaining ACKs, sends stop only when f
 test('migration handoff retains the exact seed until its durable worker ACK',async()=>{
  const f=fixture(100000);try{
   const seed={signature:'migration-handoff',feedMint:'migration-mint',receivedAt:1000};f.intake.observeMigration(seed);seed.feedMint='external-change';f.current().ready();await until(()=>f.current().intake().length===1);const sent=f.current().intake()[0];assert.equal(sent.operation,'migration');assert.deepEqual(sent.value,{signature:'migration-handoff',feedMint:'migration-mint',receivedAt:1000});assert.equal(f.intake.usage().durableCommitted,0);f.current().ack([sent.id]);assert.equal(f.intake.usage().durableCommitted,1);assert.equal(f.intake.usage().pending,0);
+ }finally{await f.close();}
+});
+
+const qualification=(receivedAt:number):PumpSwapQualificationHint=>({mint:'qualification-mint',receivedAt,signature:'qualification-'+receivedAt,source:'pumpapi-broad',kind:'activity',venue:'pump-amm'});
+
+test('qualification coalesces only unsent receipts and owns at most one immutable in-flight message plus its freshest successor',async()=>{
+ const f=fixture(100000);try{
+  for(let i=0;i<100;i++)f.intake.observeQualification({...qualification(1000+i),price:123,quoteLamports:'999',rawProviderPayload:'not qualification evidence'} as PumpSwapQualificationHint);
+  assert.equal(f.intake.usage().received,1);assert.equal(f.intake.usage().pending,1);assert.equal(f.intake.usage().qualification.hintsCoalesced,99);
+  const worker=f.current();worker.ready();await until(()=>worker.intake().length===1);const first=worker.intake()[0];assert.equal(first.operation,'qualification');assert.deepEqual(first.value,qualification(1099),'qualification retains only minimal identity and real receipt fields');
+  for(let i=0;i<100;i++)f.intake.observeQualification(qualification(1100+i));
+  f.intake.observeQualification(qualification(900));await flush();assert.equal(worker.intake().length,1,'successor cannot overtake the unacknowledged ID');assert.equal(f.intake.usage().pending,2);assert.equal(f.intake.usage().qualification.inFlight,1);
+  worker.ack([first.id+1]);assert.equal(f.intake.usage().pending,2,'an unsent coalesced message cannot be acknowledged');
+  worker.ack([first.id],[{mint:'qualification-mint',at:1099,evidence:'unverified-provider-activity-hint'}]);assert.equal(f.committed.length,0,'qualification cannot manufacture a market activity callback');
+  await until(()=>worker.intake().length===2);const second=worker.intake()[1];assert.notEqual(second.id,first.id);assert.equal(second.value.receivedAt,1199);assert.deepEqual(worker.intake()[0],first,'in-flight receipt never changes');
+  worker.ack([second.id]);const u=f.intake.usage();assert.equal(u.pendingBytes,0);assert.equal(u.processedAcknowledged,2);assert.equal(u.durableCommitted,2);assert.equal(u.qualification.durableCommitted,2);assert.equal(u.qualification.hintsReceived,201);assert.equal(u.qualification.hintsCoalesced,199);assert.equal(u.qualification.pendingMints,0);assert.equal(u.qualification.inFlight,0);
+ }finally{await f.close();}
+});
+
+test('qualification restart replays the exact outstanding ID before its coalesced successor without accepting obsolete ACKs',async t=>{
+ t.mock.timers.enable({apis:['setTimeout']});const f=fixture(100000);try{
+  f.intake.observeQualification(qualification(1000));const first=f.current();first.ready();await until(()=>first.intake().length===1);const original=first.intake()[0];f.intake.observeQualification(qualification(1100));f.intake.observeQualification(qualification(1200));await flush();
+  first.emit('error',Error('qualification commit ACK lost'));assert.equal(f.intake.usage().pending,2);first.ack([original.id]);assert.equal(f.intake.usage().pending,2);
+  t.mock.timers.tick(500);const replacement=f.current();replacement.ready();await until(()=>replacement.intake().length===1);assert.deepEqual(replacement.intake()[0],original);assert.equal(f.intake.usage().qualification.inFlight,1);
+  replacement.ack([original.id]);await until(()=>replacement.intake().length===2);const successor=replacement.intake()[1];assert.equal(successor.id,original.id+1);assert.equal(successor.value.receivedAt,1200);replacement.ack([successor.id]);assert.equal(f.intake.usage().pending,0);assert.equal(f.intake.usage().qualification.durableCommitted,2);assert.equal(f.committed.length,0);
+ }finally{if(f.workers.length===1)t.mock.timers.tick(500);await f.close();t.mock.timers.reset();}
+});
+
+test('excluded ACKs release owned messages while distinguishing processed exclusions from durable market intake',async()=>{
+ const f=fixture(100000);try{
+  f.intake.observeActivity(activity(1));f.intake.observeActivity(activity(2));f.current().ready();await until(()=>f.current().intake().length===2);const [first,second]=f.current().intake();
+  f.current().ack([first.id],[{mint:'mint-1',at:1000,evidence:'unverified-provider-activity-hint'}],[{id:first.id,reason:'TOKEN_AGE_EXCEEDS_24H'}]);
+  assert.equal(f.intake.usage().processedAcknowledged,1);assert.equal(f.intake.usage().durableCommitted,0);assert.equal(f.intake.usage().ageExcluded,1);assert.equal(f.committed.length,0);
+  f.current().ack([first.id],[],[{id:first.id,reason:'TOKEN_AGE_EXCEEDS_24H'}]);assert.equal(f.intake.usage().ageExcluded,1);
+  f.current().ack([second.id],[],[{id:second.id,reason:'PUMPSWAP_VENUE_REQUIRED'}]);assert.equal(f.intake.usage().pending,0);assert.equal(f.intake.usage().pendingBytes,0);assert.equal(f.intake.usage().processedAcknowledged,2);assert.equal(f.intake.usage().durableCommitted,0);assert.equal(f.intake.usage().venueExcluded,1);
  }finally{await f.close();}
 });
