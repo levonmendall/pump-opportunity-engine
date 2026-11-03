@@ -34,7 +34,7 @@ export type WatchRow={
 export type WatchIdentityMetadata=Pick<WatchRow,'mint'|'pool'|'signature'|'migrationAt'|'verifiedAt'|'state'>&{olderResearch:boolean};
 type Counters={discovered:number;duplicates:number;verified:number;promoted:number;repromoted:number;demoted:number;expired:number;capacityExclusions:number;structuralExclusions:number;completeWindows:number;evicted:number;activityHints:number;promotionWaitTotalMs:number;promotionWaitMaximumMs:number};
 export type WatchCheckpoint={schemaVersion:1;registry?:{version:'persistent-market-registry-v1';id:string};observationAgePolicyVersion?:ObservationAgePolicyVersion;rows:WatchRow[];counters:Counters;capacityProbeAdmissions?:Array<{mint:string;at:number}>;entryAgePromotionCount?:number};
-type Options={pumpswapOnly?:true;enforceTokenAge24h?:true;registry?:MarketRegistry;observationAgePolicy?:ObservationAgePolicyVersion;maximumIdentities?:number;maximumOlderResearch?:number;maximumDeep:number;now?:()=>number;record:(kind:string,data:unknown)=>void;restored?:unknown};
+type Options={pumpswapOnly?:true;enforceTokenAge24h?:true;readonly tokenAgeEligibility?:(mint:string,at:number)=>boolean;registry?:MarketRegistry;observationAgePolicy?:ObservationAgePolicyVersion;maximumIdentities?:number;maximumOlderResearch?:number;maximumDeep:number;now?:()=>number;record:(kind:string,data:unknown)=>void;restored?:unknown};
 const STATES:WatchState[]=['DISCOVERED','VERIFYING','WATCH','DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING','HELD','DEFERRED','EXPIRED','PERMANENTLY_UNSUPPORTED'];
 const MIN_AGE=300000,MAX_AGE=7200000,UNVERIFIED_RETENTION=MAX_AGE+MIN_AGE;
 const AGE_ONLY_EXPIRY_REASONS=new Set(['existing entry-age horizon elapsed','existing observation-age horizon elapsed','existing entry-age eligibility expired','existing observation-age eligibility expired','remaining horizon cannot fit a complete required window']);
@@ -152,7 +152,13 @@ export class PilotWatch {
   private identityAt(r:WatchRow){return r.verifiedAt??r.observationIdentity?.availableAt??r.firstSeenAt;}
   private cohort(r:WatchRow,at:number){return r.migrationAt===null?'unknown-migration-age':observationAgeCohort(r.migrationAt,at,r.olderResearch!==undefined,this.observationAgePolicy);}
   private entryEligible(r:WatchRow,at:number){return !['EXPIRED','PERMANENTLY_UNSUPPORTED'].includes(r.state)&&this.verified(r)&&entryAgeEligible(r.migrationAt!,at);}
-  private observable(r:WatchRow,at:number){return (!this.options.enforceTokenAge24h||!!r.mint&&this.options.registry!.tokenAgeEligibility(r.mint,at).allowed)&&!['EXPIRED','PERMANENTLY_UNSUPPORTED'].includes(r.state)&&this.identified(r)&&this.identityAt(r)<=at&&(r.migrationAt===null?this.observationAgePolicy===PERSISTENT_OBSERVABLE_MARKET_POLICY:observationAgeEligible(r.migrationAt,at,r.olderResearch!==undefined,this.observationAgePolicy));}
+  private observable(r:WatchRow,at:number){
+    // Front-gated runtimes supply the already-validated upstream age decision.
+    // Deep transitions only check its clock expiry; they do not reread a proof.
+    // Standalone callers retain the existing durable eligibility check.
+    const ageAllowed=!this.options.enforceTokenAge24h||!!r.mint&&(this.options.tokenAgeEligibility?this.options.tokenAgeEligibility(r.mint,at):this.options.registry!.tokenAgeEligibility(r.mint,at).allowed);
+    return ageAllowed&&!['EXPIRED','PERMANENTLY_UNSUPPORTED'].includes(r.state)&&this.identified(r)&&this.identityAt(r)<=at&&(r.migrationAt===null?this.observationAgePolicy===PERSISTENT_OBSERVABLE_MARKET_POLICY:observationAgeEligible(r.migrationAt,at,r.olderResearch!==undefined,this.observationAgePolicy));
+  }
   private older(r:WatchRow,at:number){return this.verified(r)&&r.olderResearch!==undefined&&at-r.migrationAt!>=MAX_AGE;}
   private olderDeepAvailable(r:WatchRow,at:number){return this.durable()||this.observationAgePolicy===PERSISTENT_OBSERVABLE_MARKET_POLICY||!this.older(r,at)||[...this.rows.values()].filter(other=>other!==r&&deep(other)&&this.older(other,at)).length<OBSERVATION_AGE_POLICY.maximumOlderDeep;}
   private freshProbe(r:WatchRow,at:number){const c=r.capacityCoverage,d=c?.lastDemand,probe=c?.probeAdmissions.at(-1);return !!d&&d.complete&&d.observedAt<=at&&at-d.observedAt<=30000&&probe!==undefined&&probe<=at&&at-probe<=30000;}
@@ -498,8 +504,9 @@ export class PilotWatch {
       // IS NOT FALSE deliberately includes NULL: NOT(serviceable) excluded
       // unknown prerequisites in the original CASE expression too. Every count
       // shares this readOperation snapshot, including the common state totals.
+      const waitingIndex=this.observationAgePolicy===PERSISTENT_OBSERVABLE_MARKET_POLICY?'watch_rows_report_waiting_v2':'watch_rows_report_summary_v1';
       const verifiedAwaitingPrerequisites=this.options.enforceTokenAge24h?
-        (registry.aggregate({waiting:'COUNT(*)'},waiting,[],'watch_rows_report_summary_v1').waiting??0)-
+        (registry.aggregate({waiting:'COUNT(*)'},waiting,[],waitingIndex).waiting??0)-
         (registry.aggregate({notAwaiting:'COUNT(*)'},'('+waiting+') AND (('+serviceable+') IS NOT FALSE)',ready.params,'watch_rows_report_summary_v1',at).notAwaiting??0):
         registry.aggregate({awaiting:'SUM(CASE WHEN '+waiting+' AND NOT ('+serviceable+') THEN 1 ELSE 0 END)'},undefined,ready.params,'watch_rows_report_summary_v1').awaiting??0;
       const since=this.readyAnchorSql(),serviceableSince=options.requireOrigin?"MAX("+since+",COALESCE((SELECT o.updated_at FROM origin_proofs o WHERE o.mint=w.mint AND o.available=1),0))":since;
@@ -521,11 +528,11 @@ export class PilotWatch {
   private durableSnapshot(at:number,strategy:'baseline'|'adaptive-momentum-v2'|'liquidity-resilient-momentum-v3'|'liquidity-resilient-momentum-v3.1'){
     this.flush();const inspectionAt='@inspectionAt';const adaptive=strategy!=='baseline',age=this.observationAgePolicy===PERSISTENT_OBSERVABLE_MARKET_POLICY?'COALESCE(w.migration_at,0)<='+inspectionAt:'w.migration_at<='+inspectionAt+' AND '+inspectionAt+'<w.migration_at+CASE WHEN w.older_research=1 THEN '+this.observationAgePolicy.selectedOlderMaximumAgeMs+' ELSE '+this.observationAgePolicy.recentMaximumAgeMs+' END';
     const verified="w.migration_at IS NOT NULL AND w.verified_at IS NOT NULL AND w.mint IS NOT NULL AND w.pool IS NOT NULL AND w.state NOT IN ('EXPIRED','PERMANENTLY_UNSUPPORTED')";
-    const observable='('+this.observationIdentitySql()+" AND w.state NOT IN ('EXPIRED','PERMANENTLY_UNSUPPORTED') AND "+age+this.tokenAgeSql(inspectionAt)+')',baseline='('+verified+' AND w.migration_at+'+MIN_AGE+'<='+inspectionAt+' AND '+inspectionAt+'<w.migration_at+'+MAX_AGE+')';
+    const observable='('+this.observationIdentitySql()+" AND w.state NOT IN ('EXPIRED','PERMANENTLY_UNSUPPORTED') AND "+age+this.tokenAgeSql(inspectionAt)+')',baseline='('+verified+' AND w.migration_at<='+inspectionAt+'-'+MIN_AGE+' AND w.migration_at>'+inspectionAt+'-'+MAX_AGE+')';
     const waiting="w.state IN ('WATCH','DEFERRED') AND w.reobserve_ready=1 AND COALESCE(w.capacity_status,'')!='AWAITING_CAPACITY' AND w.defer_until<="+inspectionAt;
     const count=(condition:string)=>'SUM(CASE WHEN '+condition+' THEN 1 ELSE 0 END)',wait='MAX(0,'+inspectionAt+'-MAX(w.waiting_since,COALESCE(w.migration_at,0)+'+(adaptive?0:MIN_AGE)+",COALESCE(w.verified_at,json_extract(w.body,'$.observationIdentity.availableAt'),w.first_seen_at)))";
     const covered='w.ever_had_window=1 AND w.last_window_at IS NOT NULL AND w.last_window_at<='+inspectionAt+(adaptive?" AND w.last_window_at>=COALESCE(w.migration_at,json_extract(w.body,'$.observationIdentity.availableAt'),w.first_seen_at)":' AND w.last_window_at>=w.migration_at+'+MIN_AGE+' AND w.last_window_at<w.migration_at+'+MAX_AGE);
-    const aggregate=(expressions:Record<string,string>,where?:string,tokenAgeAt?:number)=>{const parameters:number[]=[],bind=(expression:string)=>expression.replaceAll(inspectionAt,()=>{parameters.push(at);return '?';}),bound=Object.fromEntries(Object.entries(expressions).map(([key,expression])=>[key,bind(expression)])),predicate=where===undefined?undefined:bind(where);return this.options.registry!.aggregate(bound,predicate,parameters,'watch_rows_report_summary_v1',tokenAgeAt);};
+    const aggregate=(expressions:Record<string,string>,where?:string,tokenAgeAt?:number,index:RegistryReportingIndex='watch_rows_report_summary_v1')=>{const parameters:number[]=[],bind=(expression:string)=>expression.replaceAll(inspectionAt,()=>{parameters.push(at);return '?';}),bound=Object.fromEntries(Object.entries(expressions).map(([key,expression])=>[key,bind(expression)])),predicate=where===undefined?undefined:bind(where);return this.options.registry!.aggregate(bound,predicate,parameters,index,tokenAgeAt);};
     const common=this.options.registry!.watchReportingPopulation(),tokenAgeAt=this.options.enforceTokenAge24h?at:undefined;
     const observation={observable:'COUNT(*)',observationQueued:count(waiting),preEntry:count(inspectionAt+'<w.migration_at+'+MIN_AGE),older:count(inspectionAt+'>=w.migration_at+'+MAX_AGE),observationAwaiting:count("w.state='DEFERRED' AND w.capacity_status='AWAITING_CAPACITY'"),observationProbe:count("w.state IN ('WATCH','DEFERRED') AND w.capacity_status='PROBE_READY'")};
     const selected={eligible:'COUNT(*)',queued:count(waiting),covered:count(covered),waitTotal:'SUM(CASE WHEN '+waiting+' THEN '+wait+' ELSE 0 END)',waitMaximum:'MAX(CASE WHEN '+waiting+' THEN '+wait+' ELSE 0 END)',awaiting:count("w.state='DEFERRED' AND w.capacity_status='AWAITING_CAPACITY'"),probe:count("w.state IN ('WATCH','DEFERRED') AND w.capacity_status='PROBE_READY'")};
@@ -535,7 +542,7 @@ export class PilotWatch {
     // Every group reads the same readOperation snapshot; no rows are capped or
     // hydrated and no population is retained between reports.
     const raw={...common,...(adaptive?aggregate({...observation,...selected},observable,tokenAgeAt):{...aggregate(observation,observable,tokenAgeAt),...aggregate(selected,baseline)})};
-    raw.baseline=adaptive?aggregate({baseline:'COUNT(*)'},baseline).baseline??0:raw.eligible??0;
+    raw.baseline=adaptive?aggregate({baseline:'COUNT(*)'},baseline,undefined,'watch_rows_report_entry_age_v2').baseline??0:raw.eligible??0;
     const n=(key:string)=>raw[key]??0;
     // A bounded report page is explicitly a projection. Counts above cover the
     // complete indexed registry and are never inferred from this page.

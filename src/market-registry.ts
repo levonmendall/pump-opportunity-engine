@@ -23,7 +23,7 @@ export type PumpSwapQualificationHint={mint:string;receivedAt:number;source:'pum
 export type PumpSwapQualificationRecord={mint:string;firstSeenAt:number;lastSeenAt:number;source:PumpSwapQualificationHint['source'];kind:PumpSwapQualificationHint['kind'];signature:string|null};
 type EconomicFlowCache=Omit<EconomicFlowAfter,'complete'|'retentionStartAt'>&{decisionAt:number;counter:number;bytes:number};
 type RegistryTransactionCounters={readSnapshotCommits:number;writerLeaseReadOnlyCommits:number;contentionBeforeCallback:number;attempted:number;readOnlyCommits:number;writeCommits:number;failed:number;fsyncEligibleCommits:number};
-export type RegistryReportingIndex='watch_rows_report_summary_v1'|'watch_rows_report_page_v1';
+export type RegistryReportingIndex='watch_rows_report_summary_v1'|'watch_rows_report_page_v1'|'watch_rows_report_entry_age_v2'|'watch_rows_report_waiting_v2';
 export type RegistryQuery={where?:string;params?:RegistryParameter[];orderBy?:string;limit?:number;offset?:number;index?:RegistryReportingIndex;tokenAgeAt?:number};
 type IdentityInput=Omit<MarketIdentityHint,'receivedAt'|'evidence'|'source'|'kind'>&{receivedAt?:number;at?:number;source:string;kind?:string;evidence?:string};
 type ActivityInput=Omit<MarketActivityHint,'receivedAt'|'evidence'|'source'|'kind'>&{receivedAt?:number;at?:number;source:string;kind?:string;evidence?:string};
@@ -143,6 +143,9 @@ export class MarketRegistry {
   this.db.exec(`
    CREATE INDEX IF NOT EXISTS watch_rows_report_summary_v1 ON watch_rows(state,mint,pool,migration_at,verified_at,deep_since,last_decision_kind,reobserve_ready,capacity_status,defer_until,technical_state,technical_not_before,waiting_since,first_seen_at,ever_had_window,last_window_at,older_research,json_extract(body,'$.observationIdentity.basis'),json_extract(body,'$.observationIdentity.availableAt'),json_extract(body,'$.reobservation.ready.at')) WHERE archived=0;
    CREATE INDEX IF NOT EXISTS watch_rows_report_page_v1 ON watch_rows(CASE WHEN state IN ('HELD','ENTRY_PENDING','DEEP_OBSERVATION','QUALIFIED') THEN 0 ELSE 1 END,COALESCE(last_activity_at,first_seen_at) DESC,signature) WHERE archived=0;
+   CREATE INDEX IF NOT EXISTS watch_rows_report_population_v2 ON watch_rows(state,last_decision_kind,reobserve_ready,verified_at,deep_since) WHERE archived=0;
+   CREATE INDEX IF NOT EXISTS watch_rows_report_entry_age_v2 ON watch_rows(migration_at) WHERE archived=0 AND migration_at IS NOT NULL AND verified_at IS NOT NULL AND mint IS NOT NULL AND pool IS NOT NULL AND state NOT IN ('EXPIRED','PERMANENTLY_UNSUPPORTED');
+   CREATE INDEX IF NOT EXISTS watch_rows_report_waiting_v2 ON watch_rows(COALESCE(migration_at,0)) WHERE archived=0 AND mint IS NOT NULL AND pool IS NOT NULL AND ((migration_at IS NOT NULL AND verified_at IS NOT NULL) OR json_extract(body,'$.observationIdentity.basis')='canonical-pool-hint') AND state IN ('WATCH','DEFERRED');
    CREATE INDEX IF NOT EXISTS watch_rows_opportunity_v1 ON watch_rows(state,reobserve_ready,defer_until,mint,pool,signature,waiting_since,first_seen_at,verified_at,migration_at,technical_state,technical_not_before,capacity_status,older_research,json_extract(body,'$.observationIdentity.basis'),json_extract(body,'$.observationIdentity.availableAt'),json_extract(body,'$.reobservation.ready.at')) WHERE archived=0;
    CREATE INDEX IF NOT EXISTS watch_rows_current_scope_v1 ON watch_rows(mint,first_seen_at,signature,verified_at,state,json_extract(body,'$.observationIdentity.basis')) WHERE archived=0;
    CREATE INDEX IF NOT EXISTS market_tokens_activity_hints_v1 ON market_tokens(last_activity_at,mint) WHERE activity_hints>0;
@@ -213,7 +216,7 @@ export class MarketRegistry {
   }).immediate();
  }
  private statement(sql:string):Database.Statement {let statement=this.statements.get(sql);if(!statement){statement=this.db.prepare(sql);this.statements.set(sql,statement);}return statement;}
- private reportingIndex(index?:RegistryReportingIndex):string {if(index===undefined)return '';need(index==='watch_rows_report_summary_v1'||index==='watch_rows_report_page_v1','MARKET_REGISTRY_REPORT_INDEX');return ' INDEXED BY '+index;}
+ private reportingIndex(index?:RegistryReportingIndex):string {if(index===undefined)return '';need(index==='watch_rows_report_summary_v1'||index==='watch_rows_report_page_v1'||index==='watch_rows_report_entry_age_v2'||index==='watch_rows_report_waiting_v2','MARKET_REGISTRY_REPORT_INDEX');return ' INDEXED BY '+index;}
  /** Shared scheduling hint only; SQLite remains the exclusive writer authority.
   * A worker yields between commits, never while a transaction is open. A main
   * request expires after one second so a paused/dead parent cannot stop intake. */
@@ -403,16 +406,24 @@ export class MarketRegistry {
  watchReportingPopulation():Record<string,number>{
   return this.readTransaction(()=>{
    if(this.reportingPopulation)return {...this.reportingPopulation};
-   const groups=this.statement(`SELECT w.state,COUNT(*) n,SUM(w.verified_at IS NULL) unverified,SUM(w.deep_since IS NOT NULL) assigned,
-    SUM(w.last_decision_kind='economic-rejection' AND w.reobserve_ready=0) unchangedEconomic,
-    SUM(w.last_decision_kind='technical-unavailable' AND w.reobserve_ready=0) unchangedTechnical
-    FROM watch_rows w INDEXED BY watch_rows_report_summary_v1 WHERE w.archived=0 GROUP BY w.state`).all() as Array<{state:string;n:number;unverified:number;assigned:number;unchangedEconomic:number|null;unchangedTechnical:number|null}>;
+   // Only the complete state/verification totals need a population scan. The
+   // narrow covering index also lets deep and dormant counts seek their own
+   // states without evaluating several SUM predicates for every old identity.
+   // All three queries remain inside this same current WAL snapshot.
+   const groups=this.statement(`SELECT w.state,COUNT(*) n,COUNT(w.verified_at) verified
+    FROM watch_rows w INDEXED BY watch_rows_report_population_v2 WHERE w.archived=0 GROUP BY w.state`).all() as Array<{state:string;n:number;verified:number}>;
    const result:Record<string,number>={known:0,watch:0,unverified:0,deep:0,unchangedEconomic:0,unchangedTechnical:0,tracked:0,awaitingDeep:0,deepObserving:0};
-   for(const row of groups){result['state_'+row.state]=row.n;result.known!+=row.n;result.unverified!+=row.unverified;
+   for(const row of groups){result['state_'+row.state]=row.n;result.known!+=row.n;result.unverified!+=row.n-row.verified;
     if(!['EXPIRED','PERMANENTLY_UNSUPPORTED'].includes(row.state))result.tracked!+=row.n;
-    if(['WATCH','DEFERRED'].includes(row.state)){result.watch!+=row.n;result.awaitingDeep!+=row.n-row.unverified;result.unchangedEconomic!+=row.unchangedEconomic??0;result.unchangedTechnical!+=row.unchangedTechnical??0;}
-    if(['DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING'].includes(row.state)){result.deep!+=row.assigned;result.deepObserving!+=row.n;}
+    if(['WATCH','DEFERRED'].includes(row.state)){result.watch!+=row.n;result.awaitingDeep!+=row.verified;}
+    if(['DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING'].includes(row.state))result.deepObserving!+=row.n;
    }
+   result.deep=(this.statement(`SELECT COUNT(w.deep_since) assigned FROM watch_rows w INDEXED BY watch_rows_report_population_v2
+    WHERE w.archived=0 AND w.state IN ('DEEP_OBSERVATION','QUALIFIED','ENTRY_PENDING')`).get() as {assigned:number}).assigned;
+   const dormant=this.statement(`SELECT w.state,w.last_decision_kind,COUNT(*) n FROM watch_rows w INDEXED BY watch_rows_report_population_v2
+    WHERE w.archived=0 AND w.state IN ('WATCH','DEFERRED') AND w.reobserve_ready=0 AND w.last_decision_kind IN ('economic-rejection','technical-unavailable')
+    GROUP BY w.state,w.last_decision_kind`).all() as Array<{state:string;last_decision_kind:'economic-rejection'|'technical-unavailable';n:number}>;
+   for(const row of dormant)result[row.last_decision_kind==='economic-rejection'?'unchangedEconomic':'unchangedTechnical']!+=row.n;
    this.reportingPopulation=result;return {...result};
   });
  }
@@ -575,7 +586,16 @@ export class MarketRegistry {
  pumpSwapQualificationHint(mint:string):PumpSwapQualificationRecord|undefined{
   return this.statement('SELECT mint,first_seen_at firstSeenAt,last_seen_at lastSeenAt,source,kind,signature FROM pumpswap_qualification_hints_v1 WHERE mint=?').get(mint) as PumpSwapQualificationRecord|undefined;
  }
- private qualificationExclusion(excludedMints?:ReadonlySet<string>){const params=[...(excludedMints??[])];need(params.every(name),'PUMPSWAP_QUALIFICATION_EXCLUSIONS');return {where:params.length?' AND q.mint NOT IN ('+params.map(()=>'?').join(',')+')':'',params};}
+ private qualificationExclusion(excludedMints?:ReadonlySet<string>){
+  const params=[...(excludedMints??[])];need(params.every(name),'PUMPSWAP_QUALIFICATION_EXCLUSIONS');
+  // Qualification belongs upstream of deep observation and financial work,
+  // including after restart when the caller's in-memory exclusions are empty.
+  // A covering mint lookup also sees any protected alias of the same token.
+  // promoted_at remains an admission receipt, not a permanent ban on repairing
+  // missing proof for a now-inactive identity with a fresh real venue receipt.
+  const active=" AND NOT EXISTS(SELECT 1 FROM watch_rows scope INDEXED BY watch_rows_current_scope_v1 WHERE scope.mint=q.mint AND scope.archived=0 AND scope.state IN ('DEEP_OBSERVATION','QUALIFIED','HELD','ENTRY_PENDING'))";
+  return {where:active+(params.length?' AND q.mint NOT IN ('+params.map(()=>'?').join(',')+')':''),params};
+ }
  /** Pool qualification is preliminary work in the existing request budget.
   * Negative account results require a genuinely newer venue receipt; provider
   * or dispatch failures keep the existing one-minute retry interval. */
