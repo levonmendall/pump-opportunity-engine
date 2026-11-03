@@ -26,12 +26,11 @@ export const HANDOVER=Object.freeze({
  ageQualified:'8913a9107989ce334b03e6167a2b4fc10d6fb7f6',
  proofTimeout:'acb50ffee8c374b3f67ee10da0780ec69a62ba03',
  scheduling:'c46d6f301535c80027bc31b29a15681b216df62e',
- migrationAge:'356083fd8f0e69297c8470d4493077a175d2bad1',
- to:'3851bd22cf55bc85e5772d06e72f06ead1ae30ef',
+ to:'356083fd8f0e69297c8470d4493077a175d2bad1',
 });
 const installed=new WeakSet();
 export function attachReviewedSourceHandover(cache){
- const identity=cache.identity,p=HANDOVER,route=[p.from,p.via,p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling,p.migrationAge,p.to];
+ const identity=cache.identity,p=HANDOVER,route=[p.from,p.via,p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling,p.to];
  if(!identity||identity.accountId!==p.accountId||identity.inceptionAt!==p.inceptionAt||identity.strategy!==p.strategy||!route.slice(0,-1).includes(identity.release))return false;
  if(installed.has(cache))return true;
  const original=cache.accept.bind(cache);
