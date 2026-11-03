@@ -20,7 +20,9 @@ Administrator diagnostic run `41735650069` authenticated a current-process
 sample with SHA256
 `95c8645e1ab48de7f2e211b2277c61bfe003592400009911a9d03e4b65e37988`.
 Its selected diagnostic prefixes contain five source-owned `getTransaction`
-physical timeouts between `23:00:26.057Z` and `23:00:49.388Z`.
+timeout/cooldown-report sequences reported between `23:00:26.057Z` and
+`23:00:49.388Z`. Those endpoints are the cooldown-report timestamps; the
+corresponding timeout callbacks span `23:00:26.051Z` through `23:00:49.379Z`.
 All five used the original 1,200 ms physical timeout. Timer callback lateness
 was at most 0.368 ms; each timeout was followed by primary-RPC cooldown and
 subsequent real physical settlement with an incomplete response.
@@ -37,15 +39,20 @@ One complete retained example is caller request
 | Physical settlement observed | 23:00:46.009 |
 | Resulting primary cooldown ended | 23:00:47.992 |
 
-The timeout retained the physical request and 2 MiB response reservation until
-settlement. A timeout is not a successful response or a refunded request.
+The physical request remained in flight until actual settlement; its incomplete
+response retained the 2 MiB uncertainty reservation afterward. A timeout is not
+a successful response or a refunded request.
 
 Migration-specific diagnostic run `41735955272` authenticated sample SHA256
 `6ef835adc2244307f99e53dd3f7050492f41c4c16949111eac4f673ae41ddbfe`.
 It additionally retains three `native-migration-age-unavailable` events with
-`PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT`, original seed identities, and matching
-primary-RPC timeout/cooldown sequences. This establishes the upstream migration
-verification caller, rather than inferring it from the aggregate method count.
+`PILOT_RPC_COMPONENT_PHYSICAL_TIMEOUT` and original seed identities. The exact
+source emits these events only for a live, matching migration verification
+session, establishing that these failures belong to upstream migration work.
+The export does not retain the explicit seed-signature-to-request-ID field.
+The associated primary-RPC timeout/cooldown sequences are identified by unique
+sequential chronology and source semantics; this is not an exported direct
+signature-to-transport join or an inference from aggregate method counts.
 
 ## Source path
 
