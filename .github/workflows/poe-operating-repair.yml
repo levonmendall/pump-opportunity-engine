@@ -2,6 +2,12 @@ name: Validate and package coordinated PAPER operating repair
 on:
   push:
     branches: [repair/poe-operating-system-20261103]
+    # The exact runtime artifact precedes its reporting-only source handover.
+    # The existing PR release gate still validates the later reporting commit.
+    paths-ignore:
+      - src/reviewed-source-handover.mjs
+      - test/reviewed-source-handover.test.mjs
+      - docs/**
 permissions:
   contents: read
 jobs:
@@ -35,8 +41,8 @@ jobs:
           umask 077
           npm run build 2>&1 | tee /tmp/poe-throughput-validation/typecheck.log
           npm run compile 2>&1 | tee /tmp/poe-throughput-validation/compile.log
-          node --import tsx --test --test-concurrency=2 test/*.test.ts 2>&1 | tee /tmp/poe-throughput-validation/full.log
-          npm run test:ai-reporting 2>&1 | tee /tmp/poe-throughput-validation/ai-reporting.log
+          node --import tsx --test --test-concurrency=1 test/*.test.ts 2>&1 | tee /tmp/poe-throughput-validation/full.log
+          node --test test/ai-team-dashboard.test.mjs test/reviewed-source-handover.test.mjs 2>&1 | tee /tmp/poe-throughput-validation/ai-reporting.log
           POE_FULL_PUBLICATION_BENCHMARK=1 node --import tsx --test test/native-paper-full-publication.test.ts 2>&1 | tee /tmp/poe-throughput-validation/full-publication-benchmark.log
           test -z "$(git status --porcelain)"
       - name: Build exact source and run isolated PAPER package smoke checks

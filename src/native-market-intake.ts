@@ -2,6 +2,7 @@ import {performance} from 'node:perf_hooks';
 import type {WatchSeed} from './pilot-watch.js';
 import type {MarketIdentityHint,MarketActivityHint,MarketFeedStatus,PumpSwapQualificationHint} from './market-discovery.js';
 import type {MarketRegistryCommittedActivity,MarketRegistryIntakeMessage} from './market-registry-intake-worker.js';
+import {MARKET_REGISTRY_REPORTING_VERSION,MARKET_REGISTRY_REPORTING_POLICY,marketRegistryReportingScopeKey,validMarketRegistryReportingRequest,type MarketRegistryReportingScope,type MarketRegistryReportingRequest,type MarketRegistryReportingResult,type MarketRegistryReportingView} from './market-registry-reporting.js';
 
 export const NATIVE_MARKET_INTAKE_POLICY=Object.freeze({version:'off-thread-full-durable-market-intake-v1',pendingBytesBudget:32*1024*1024,sendQuantumMs:5,workerComputeMs:10,writerYieldMs:3,workerOldGenerationMiB:256,closeTimeoutMs:30000});
 type Handle={postMessage:(value:unknown)=>void;on:(event:string,listener:(value:any)=>void)=>unknown;terminate:()=>Promise<number>};
@@ -18,17 +19,29 @@ export class NativeMarketIntake {
  private serial=0;private bytes=0;private received=0;private committed=0;private restarts=0;private failures=0;private retryAt:number|null=null;private reasonCode:string|null=null;private lastCommitAt:number|null=null;private workerStats:unknown=null;
  private processedAcknowledged=0;private ageExcluded=0;private venueExcluded=0;private qualificationHintsReceived=0;private qualificationHintsCoalesced=0;private qualificationCommitted=0;
  private sendTimer:ReturnType<typeof setImmediate>|null=null;private retryTimer:ReturnType<typeof setTimeout>|null=null;private closeResolve:(()=>void)|null=null;private pressureState:string|null=null;
+ private reportingSerial=0;private reportingNextAt=0;private reportingFailures=0;private reportingReason:string|null=null;
+ private reportingPending:{request:MarketRegistryReportingRequest;workerGeneration:number}|null=null;
+ private reportingCached:{result:MarketRegistryReportingResult;scopeKey:string;workerGeneration:number}|null=null;
  constructor(private readonly options:Options){this.now=options.now??Date.now;this.budget=options.budgetBytes??NATIVE_MARKET_INTAKE_POLICY.pendingBytesBudget;if(!Number.isSafeInteger(this.budget)||this.budget<1)throw Error('MARKET_INTAKE_BYTE_BUDGET');this.start();}
  private pressure(){const paused=!this.ready||this.bytes>=this.budget;const key=paused+':'+this.bytes;if(key!==this.pressureState){this.pressureState=key;this.options.onPressure({paused,pendingBytes:this.bytes,budgetBytes:this.budget});}}
  private start(){if(this.closed)return;this.workerGeneration++;const generation=this.workerGeneration;
   try{const worker=this.options.createWorker();this.worker=worker;worker.on('message',value=>{if(this.worker===worker)this.message(value);});worker.on('error',()=>{if(this.worker===worker)this.failed('WORKER_ERROR');});worker.on('exit',code=>{if(this.worker===worker&&!this.closed)this.failed(code===0?'WORKER_EXIT_BEFORE_DRAIN':'WORKER_EXIT');});}
   catch{this.failed('WORKER_START_FAILED');}this.options.record?.('native-market-intake-worker-start',{at:this.now(),generation,financialWriterOpened:false});this.pressure();
  }
- private failed(reasonCode:string){if(this.closed)return;const prior=this.worker;this.worker=null;this.ready=false;if(this.sendTimer)clearImmediate(this.sendTimer);this.sendTimer=null;this.failures++;this.reasonCode=reasonCode;for(const row of this.pending.values())row.sent=false;this.qualificationSent.clear();void prior?.terminate().catch(()=>{});this.pressure();
+ private failed(reasonCode:string){if(this.closed)return;const prior=this.worker;this.worker=null;this.ready=false;if(this.sendTimer)clearImmediate(this.sendTimer);this.sendTimer=null;this.failures++;this.reasonCode=reasonCode;if(this.reportingPending)this.reportingFailures++;this.reportingPending=null;this.reportingReason='WORKER_UNAVAILABLE';for(const row of this.pending.values())row.sent=false;this.qualificationSent.clear();void prior?.terminate().catch(()=>{});this.pressure();
   this.options.record?.('native-market-intake-worker-unavailable',{at:this.now(),reasonCode,pending:this.pending.size,pendingBytes:this.bytes,unacknowledgedTailRetained:true,financialManagerContinues:true});
   if(this.stopping){this.closeResolve?.();return;}if(!this.retryTimer){const delay=Math.min(30000,500*2**Math.min(6,this.failures-1));this.retryAt=this.now()+delay;this.retryTimer=setTimeout(()=>{this.retryTimer=null;this.restarts++;this.start();},delay);}
  }
  private message(value:any){
+  if(value?.kind==='reporting-result'){
+   const pending=this.reportingPending;if(!pending||pending.workerGeneration!==this.workerGeneration||value.id!==pending.request.id)return;
+   this.reportingPending=null;const at=this.now(),snapshot=value.snapshot,code=typeof value.reasonCode==='string'&&/^REPORTING_[A-Z_]{1,64}$/.test(value.reasonCode)?value.reasonCode:null;
+   if(!Number.isFinite(value.durationMs)||value.durationMs<0||value.durationMs>Number.MAX_SAFE_INTEGER||value.requestedAt!==pending.request.requestedAt||![value.observedAt,value.completedAt].every(n=>Number.isSafeInteger(n)&&n>=value.requestedAt&&n<=at)||value.completedAt<value.observedAt||snapshot&&(snapshot.version!==MARKET_REGISTRY_REPORTING_VERSION||snapshot.sourceInstanceId!==pending.request.scope.sourceInstanceId||snapshot.observedAt!==value.observedAt||snapshot.coverage?.generatedAt!==value.observedAt)){
+    this.reportingFailures++;this.reportingReason='REPORTING_RESULT_INVALID';return;
+   }
+   if(!snapshot||code){this.reportingFailures++;this.reportingReason=code??'REPORTING_READ_UNAVAILABLE';return;}
+   this.reportingCached={result:value,scopeKey:marketRegistryReportingScopeKey(pending.request.scope),workerGeneration:this.workerGeneration};this.reportingReason=null;return;
+  }
   if(value?.kind==='ready'){this.ready=true;this.reasonCode=null;this.retryAt=null;this.workerStats=value.stats;this.pressure();this.scheduleSend();return;}
   if(value?.kind==='committed'&&Array.isArray(value.ids)){
    const excluded=new Map<number,string>((Array.isArray(value.excluded)?value.excluded:[]).map((row:{id:number;reason:string})=>[row.id,row.reason]));let applied=0;const activityReceipts=new Set<string>();
@@ -41,7 +54,7 @@ export class NativeMarketIntake {
    this.scheduleSend();this.maybeStop();return;
   }
   if(value?.kind==='failure'){this.workerStats=value.stats;this.failed(typeof value.reasonCode==='string'&&/^[A-Z0-9_]+$/.test(value.reasonCode)?value.reasonCode:'WORKER_FAILURE');return;}
-  if(value?.kind==='closed'){if(this.pending.size){this.failed('WORKER_CLOSED_WITH_UNACKNOWLEDGED_INTAKE');return;}this.closed=true;this.ready=false;this.worker=null;this.closeResolve?.();}
+  if(value?.kind==='closed'){if(this.pending.size){this.failed('WORKER_CLOSED_WITH_UNACKNOWLEDGED_INTAKE');return;}this.closed=true;this.ready=false;this.worker=null;this.reportingPending=null;this.reportingReason='WORKER_UNAVAILABLE';this.closeResolve?.();}
  }
  private enqueue(operation:'identity'|'activity'|'feed'|'migration'|'qualification',value:MarketIdentityHint|MarketActivityHint|MarketFeedStatus|WatchSeed|PumpSwapQualificationHint){if(this.stopping||this.closed)throw Error('MARKET_INTAKE_CLOSED');const message={kind:'intake',id:++this.serial,operation,value:structuredClone(value)} as MarketRegistryIntakeMessage;const bytes=Buffer.byteLength(JSON.stringify(message));this.pending.set(message.id,{message,bytes,queuedAt:this.now(),sent:false});if(message.operation==='qualification')this.qualificationPending.set(message.value.mint,message.id);this.bytes+=bytes;this.received++;this.pressure();this.scheduleSend();}
  observeIdentity(value:MarketIdentityHint){this.enqueue('identity',value);}
@@ -63,6 +76,26 @@ export class NativeMarketIntake {
  private scheduleSend(){if(this.sendTimer||!this.ready||!this.worker||this.closed)return;this.sendTimer=setImmediate(()=>{this.sendTimer=null;if(!this.ready||!this.worker||this.closed)return;const start=performance.now();for(const row of this.pending.values()){if(row.sent||row.message.operation==='qualification'&&this.qualificationSent.has(row.message.value.mint))continue;try{this.worker!.postMessage(row.message);row.sent=true;if(row.message.operation==='qualification')this.qualificationSent.set(row.message.value.mint,row.message.id);}catch{this.failed('WORKER_SEND_FAILED');return;}if(performance.now()-start>=NATIVE_MARKET_INTAKE_POLICY.sendQuantumMs){this.scheduleSend();return;}}this.maybeStop();});}
  private maybeStop(){if(this.stopping&&this.ready&&this.worker&&this.pending.size===0)this.worker.postMessage({kind:'stop'});}
  available(){return this.ready&&!this.closed&&!this.stopping;}
+ /** Coalesced optional reporting only. Pending intake remains exclusively
+  * governed by its original durable IDs/ACKs, byte pressure and recovery. */
+ registryReporting(scope:MarketRegistryReportingScope,at=this.now()):MarketRegistryReportingView {
+  const key=marketRegistryReportingScopeKey(scope);
+  if(this.reportingPending&&at-this.reportingPending.request.requestedAt>=MARKET_REGISTRY_REPORTING_POLICY.requestTimeoutMs){
+   // This releases only an optional diagnostic expectation. The worker/IPC
+   // generation, intake IDs, durable ACKs and any physical work are untouched.
+   this.reportingPending=null;this.reportingFailures++;this.reportingReason='REPORTING_REQUEST_TIMEOUT';this.reportingNextAt=at+MARKET_REGISTRY_REPORTING_POLICY.refreshMs;
+  }
+  if(this.ready&&!this.closed&&!this.stopping&&this.pending.size===0&&!this.reportingPending&&at>=this.reportingNextAt){
+   const request:MarketRegistryReportingRequest={kind:'reporting',id:++this.reportingSerial,requestedAt:at,scope:structuredClone(scope)};
+   if(validMarketRegistryReportingRequest(request)){
+    this.reportingPending={request,workerGeneration:this.workerGeneration};this.reportingNextAt=at+MARKET_REGISTRY_REPORTING_POLICY.refreshMs;
+    try{this.worker!.postMessage(request);}catch{this.reportingPending=null;this.reportingFailures++;this.reportingReason='REPORTING_SEND_FAILED';}
+   }else{this.reportingFailures++;this.reportingReason='REPORTING_REQUEST_INVALID';}
+  }
+  const cached=this.reportingCached?.scopeKey===key&&this.reportingCached.result.observedAt<=at?this.reportingCached:null,snapshot=cached?.result.snapshot??null,ageMs=snapshot?at-snapshot.observedAt:null;
+  const current=!!snapshot&&cached!.workerGeneration===this.workerGeneration&&this.ready&&!this.closed&&!this.stopping&&this.reportingReason===null&&ageMs!<=MARKET_REGISTRY_REPORTING_POLICY.staleMs;
+  return {health:{mode:'DETACHED_WORKER',sampledAt:at,state:snapshot?current?'FRESH':'STALE':'UNAVAILABLE',sourceInstanceId:scope.sourceInstanceId,workerGeneration:this.workerGeneration,sampleWorkerGeneration:cached?.workerGeneration??null,requestedAt:cached?.result.requestedAt??this.reportingPending?.request.requestedAt??null,observedAt:snapshot?.observedAt??null,completedAt:cached?.result.completedAt??null,durationMs:cached?.result.durationMs??null,ageMs,pending:this.reportingPending!==null,failures:this.reportingFailures,reasonCode:current?null:this.reportingReason??(!this.ready||this.closed||this.stopping?'WORKER_UNAVAILABLE':this.pending.size>0?'REPORTING_INTAKE_PRIORITY':snapshot?'REPORTING_SAMPLE_STALE':this.reportingPending?'REPORTING_PENDING':'REPORTING_NOT_REQUESTED')},snapshot};
+ }
  usage(){const oldest=this.pending.values().next().value as Pending|undefined;return {version:NATIVE_MARKET_INTAKE_POLICY.version,state:this.closed?'closed':this.ready?'ready':'recovering',received:this.received,processedAcknowledged:this.processedAcknowledged,durableCommitted:this.committed,ageExcluded:this.ageExcluded,venueExcluded:this.venueExcluded,qualification:{hintsReceived:this.qualificationHintsReceived,hintsCoalesced:this.qualificationHintsCoalesced,durableCommitted:this.qualificationCommitted,pendingMints:this.qualificationPending.size,inFlight:this.qualificationSent.size,marketActivity:false},pending:this.pending.size,pendingBytes:this.bytes,pendingBytesBudget:this.budget,oldestPendingAt:oldest?.queuedAt??null,maximumPendingAgeMs:oldest?Math.max(0,this.now()-oldest.queuedAt):0,lastCommitAt:this.lastCommitAt,workerGeneration:this.workerGeneration,restarts:this.restarts,failures:this.failures,retryAt:this.retryAt,reasonCode:this.reasonCode,worker:this.workerStats,inFlightTailMeaning:'UNACKNOWLEDGED_NETWORK_INTAKE_IS_NOT_YET_DURABLE',financialWriterOpened:false};}
- async close(){if(this.closed)return;this.stopping=true;if(this.retryTimer)clearTimeout(this.retryTimer);this.retryTimer=null;if(!this.worker&&!this.pending.size){this.closed=true;this.ready=false;return;}let timer:ReturnType<typeof setTimeout>|null=null;await new Promise<void>(resolve=>{this.closeResolve=resolve;timer=setTimeout(resolve,NATIVE_MARKET_INTAKE_POLICY.closeTimeoutMs);if(!this.worker)this.start();this.scheduleSend();this.maybeStop();});if(timer)clearTimeout(timer);if(this.sendTimer)clearImmediate(this.sendTimer);this.sendTimer=null;const worker=this.worker;this.worker=null;this.closed=true;this.ready=false;if(this.pending.size)this.options.record?.('native-market-intake-undrained-shutdown',{at:this.now(),pending:this.pending.size,pendingBytes:this.bytes,durableCommitted:this.committed,coverageComplete:false,financialHistoryPreserved:true});await worker?.terminate().catch(()=>{});}
+ async close(){if(this.closed)return;this.stopping=true;this.reportingPending=null;this.reportingReason='WORKER_UNAVAILABLE';if(this.retryTimer)clearTimeout(this.retryTimer);this.retryTimer=null;if(!this.worker&&!this.pending.size){this.closed=true;this.ready=false;return;}let timer:ReturnType<typeof setTimeout>|null=null;await new Promise<void>(resolve=>{this.closeResolve=resolve;timer=setTimeout(resolve,NATIVE_MARKET_INTAKE_POLICY.closeTimeoutMs);if(!this.worker)this.start();this.scheduleSend();this.maybeStop();});if(timer)clearTimeout(timer);if(this.sendTimer)clearImmediate(this.sendTimer);this.sendTimer=null;const worker=this.worker;this.worker=null;this.closed=true;this.ready=false;if(this.pending.size)this.options.record?.('native-market-intake-undrained-shutdown',{at:this.now(),pending:this.pending.size,pendingBytes:this.bytes,durableCommitted:this.committed,coverageComplete:false,financialHistoryPreserved:true});await worker?.terminate().catch(()=>{});}
 }

@@ -357,7 +357,7 @@ test('known structural outside-family seed is excluded once without converting i
 });
 
 test('SYNTHETIC migration churn retains queued identities without capacity eviction and reaches newer identities',async()=>{
- const f=fixture();for(let i=1;i<=300;i++)f.seed(i);await f.steps(400);const s=f.runner.status(),latest=f.runner.watch.lookupIdentity(sig(300),f.now);assert.ok(latest);assert.notEqual(latest.verifiedAt,null,'latest retained identity must not remain unqueued behind an arbitrary capacity');assert.ok(s.verificationQueue<=s.watch.summary.unverified,'unreachable/terminal verification seeds do not consume queue capacity');assert.equal(f.rpcCalls.length,0,'synthetic resolver churn is not provider capacity evidence');await f.runner.stop();
+ const f=fixture();for(let i=1;i<=300;i++)f.seed(i);await f.steps(400);const s=f.runner.status(),latest=f.runner.watch.lookupIdentity(sig(300),f.now);assert.ok(latest);assert.notEqual(latest.verifiedAt,null,'latest retained identity must not remain unqueued behind an arbitrary capacity');assert.ok(s.verificationQueue!==null&&s.watch.summary.unverified!==null);assert.ok(s.verificationQueue<=s.watch.summary.unverified,'unreachable/terminal verification seeds do not consume queue capacity');assert.equal(f.rpcCalls.length,0,'synthetic resolver churn is not provider capacity evidence');await f.runner.stop();
 });
 
 for(const jitterMs of [50,100])test(`SYNTHETIC six strong scopes retain every rolling predictive decision with ${jitterMs} ms step jitter and 200 ms audit responses`,async()=>{

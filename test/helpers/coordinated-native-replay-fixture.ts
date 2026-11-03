@@ -1,8 +1,8 @@
 /** OFFLINE fixture adapted from native-paper-integration and
  * liquidity-resilient-native-runtime. Retained SDK account bytes are replayed
  * in a synthetic common bank with declared 20 SOL reserves, Clock, USD and flow.
- * The holding bootstrap decodes a retimed captured origin; all four candidate
- * identities use an explicitly injected scheduling resolver. This does not
+ * The holding bootstrap decodes a retimed captured origin; candidate
+ * identities and eligibility use explicit offline scheduling inputs. This does not
  * verify their natural migration age, live qualification or profitability.
  * The original account identity is used only inside a temporary disposable DB.
  */
@@ -26,12 +26,18 @@ import type { ResearchClockObservationSupport } from '../../src/research-clock-p
 import type { NativeNotification } from '../../src/pilot-native-flow.js';
 import { canonicalPumpPoolPda, PUMP_AMM_PROGRAM_ID } from '../../src/sdk.js';
 import { decodeMigrationIdentity } from '../../src/migration-identity.js';
+import { coordinatedPhysicalFlowFixture } from './coordinated-physical-flow-fixture.js';
+import type { PilotRpc } from '../../src/pilot-rpc.js';
+import Database from 'better-sqlite3';
+import { MarketRegistry } from '../../src/market-registry.js';
 const sig = (n: number) => { const b = Buffer.alloc(64); b.writeUInt32LE(n); return bs58.encode(b); };
 export async function coordinatedNativeReplayFixture(t: TestContext, capacity = true, technicalReevaluation = false, readiness: {
     sourceAdmission?: () => boolean;
     sourceInformationAdmission?: () => boolean;
     sourceWorkAdmission?: (bound: number) => boolean;
     maximumDeep?: number;
+    physicalLifecycle?: boolean;
+    retireEconomicRejection?: boolean;
     reusePreparedEntryRent?: boolean;
     beforeEntryPreparationRead?: (input: {
         method: string;
@@ -72,6 +78,9 @@ export async function coordinatedNativeReplayFixture(t: TestContext, capacity = 
     let started = at;
     const end = at + 1800000, dir = mkdtempSync(join(tmpdir(), 'poe-OFFLINE-native-paper-')), db = join(dir, 'fixture.sqlite'), account = POE_OPERATING_ACCOUNT.accountId;
     let ledger = new PaperLedger(db, account), closed = false;
+    const sourceRegistry = readiness.physicalLifecycle ? new MarketRegistry(join(dir, 'OFFLINE-source-registry.sqlite'), { now: () => at, concurrentIntake: true }) : undefined;
+    const registryContender = sourceRegistry ? new Database(sourceRegistry.path) : undefined;
+    let registryWriteHeld = false;
     const price = (): UsdPrice => ({ microUsdPerSol: '1000000000', at, source: 'OFFLINE synthetic USD1000/SOL' });
     ledger.initialize({ ...price(), at: POE_OPERATING_ACCOUNT.inceptionAt }, POE_OPERATING_ACCOUNT.inceptionAt);
     ledger.activateEquityRiskPolicy(at);
@@ -100,13 +109,15 @@ export async function coordinatedNativeReplayFixture(t: TestContext, capacity = 
         window: FlowWindow | null;
         openedAt: number | null;
         subscription: number;
+        connection: number;
         pool: string;
         notes: NativeNotification[];
         supportSlot: number;
     }>();
     let engine: NativeCandidateRunner, bridge: NativePaper, market: PilotMarket, subscription = 40, syntheticSequence = 700000;
     const record = (kind: string, data: unknown) => { records.push({ kind, data: structuredClone(data) }); readiness.afterRecord?.(kind, data); };
-    const flow = { dataContract: 'confirmed-program-activity-v3-shadow', addCandidate(scope: any) { states.set(scope.mint, { window: null, openedAt: null, subscription: ++subscription, pool: scope.pool, notes: [], supportSlot: slot }); }, removeCandidate(mint: string) { states.delete(mint); }, snapshot(mint: string, when = at) { const s = states.get(mint); if (!s)
+    let physical: ReturnType<typeof coordinatedPhysicalFlowFixture> | undefined;
+    let flow: any = { dataContract: 'confirmed-program-activity-v3-shadow', addCandidate(scope: any) { states.set(scope.mint, { window: null, openedAt: null, subscription: ++subscription, connection: 1, pool: scope.pool, notes: [], supportSlot: slot }); }, removeCandidate(mint: string) { states.delete(mint); }, snapshot(mint: string, when = at) { const s = states.get(mint); if (!s)
             return null; const features = s.window?.features(when) ?? null, lower = s.openedAt === null ? null : { slot: s.supportSlot, availableAt: s.openedAt, bankClockAt: Math.floor(s.openedAt / 1000) * 1000 }, upper = s.openedAt === null ? null : { slot: slot + 1, availableAt: at, bankClockAt: Math.floor(at / 1000) * 1000 }; return { scope: { mint, pool: s.pool }, dataContract: 'confirmed-program-activity-v3-shadow', openedAt: s.openedAt, connectionId: 1, subscription: s.openedAt === null ? null : s.subscription, connected: s.openedAt !== null, sourceSupportFresh: true, hasQualityLoss: false, warm: features?.sufficientlyObserved === true, features, supportContext: upper, openingSupportContext: lower, supportContexts: [...(lower ? [lower] : []), ...(upper ? [upper] : [])], strictV2Unavailable: false }; }, notificationLedger(mint: string) { return structuredClone(states.get(mint)?.notes ?? []); }, requestSupportRefresh() { }, requestHeartbeat() { }, async service() { for (const [mint, s] of states)
             if (s.openedAt === null) {
                 const support: ResearchClockObservationSupport = { mint, pool: s.pool, at, sourceSlot: s.supportSlot, evidence: 'OFFLINE synthetic current pool validation before ACK', summary: {} as ResearchClockObservationSupport['summary'] };
@@ -118,25 +129,73 @@ export async function coordinatedNativeReplayFixture(t: TestContext, capacity = 
                 bridge.opened({ mint, at });
                 return { kind: 'subscribe' };
             } return { kind: 'idle' }; }, usage() { return { dataContract: 'confirmed-program-activity-v3-shadow', connected: [...states.values()].some(s => s.openedAt !== null), stopped: false, lastBankClockAt: Math.floor(at / 1000) * 1000, lastFreshSupportAt: at, candidates: states.size, retiring: 0, nextServiceAt: [...states.values()].some(s => s.openedAt === null) ? at : at + 20000, fatal: sourceFatal, physicalTransportsSettled: states.size === 0 }; }, async stop() { states.clear(); } };
+    let bootstrapControlSequence = 0;
     const wireRpc = { async call<T>(method: string, params: unknown[] = []): Promise<T> { assert.ok(['getMultipleAccounts', 'getBlockTime', 'getMinimumBalanceForRentExemption', 'getSignaturesForAddress'].includes(method)); assert.ok(calls.length < 500, 'finite offline request trace'); calls.push({ method, at, accounts: method === 'getMultipleAccounts' ? (params[0] as string[]).length : 0 }); if (outage)
             throw Error('OFFLINE_PRICING_OUTAGE'); if (method === 'getBlockTime')
             return Math.floor(at / 1000) as T; if (method === 'getMinimumBalanceForRentExemption')
             return (1000000 + Number(params[0])) as T; if (method === 'getSignaturesForAddress') {
             const s = [...states.values()].find(s => s.pool === params[0])!;
-            return [...s.notes].reverse().map(n => ({ signature: n.signature, slot: n.slot, err: null, blockTime: Math.floor(n.availableAt / 1000), confirmationStatus: 'confirmed' })).concat([{ signature: sig(1), slot: s.supportSlot - 1, err: null, blockTime: Math.floor(started / 1000), confirmationStatus: 'confirmed' }]) as T;
-        } const b = Buffer.alloc(40); b.writeBigUInt64LE(BigInt(slot)); b.writeBigInt64LE(BigInt(Math.floor(at / 1000)), 32); return { context: { slot }, value: (params[0] as string[]).map(a => a === SYSVAR_CLOCK_PUBKEY.toBase58() ? { owner: 'Sysvar1111111111111111111111111111111111111', data: [b.toString('base64'), 'base64'], lamports: 1169280, executable: false, rentEpoch: 0 } : structuredClone(accounts.get(a) ?? null)) } as T; }, usage() { return { inFlight: 0, waitingOrOperating: false, cumulativeUnits: calls.length, dispatchWindow: { readyAt: at, physicalBusy: false } }; }, cooldownUntil() { return 0; } };
+            const rows = [...s.notes].reverse().map(n => ({ signature: n.signature, slot: n.slot, err: null, blockTime: Math.floor(n.availableAt / 1000), confirmationStatus: 'confirmed' })).concat([{ signature: sig(1), slot: s.supportSlot - 1, err: null, blockTime: Math.floor(started / 1000), confirmationStatus: 'confirmed' }]);
+            const options = params[1] as { before?: string; limit?: number } | undefined;
+            const cursor = options?.before ? rows.findIndex(row => row.signature === options.before) : -1;
+            assert.ok(!options?.before || cursor >= 0, 'offline history cursor belongs to the retained exact pool history');
+            return rows.slice(cursor + 1, cursor + 1 + (options?.limit ?? 1000)) as T;
+        } const b = Buffer.alloc(40); b.writeBigUInt64LE(BigInt(slot)); b.writeBigInt64LE(BigInt(Math.floor(at / 1000)), 32); return { context: { slot }, value: (params[0] as string[]).map(a => a === SYSVAR_CLOCK_PUBKEY.toBase58() ? { owner: 'Sysvar1111111111111111111111111111111111111', data: [b.toString('base64'), 'base64'], lamports: 1169280, executable: false, rentEpoch: 0 } : structuredClone(accounts.get(a) ?? null)) } as T; }, usage() { return { inFlight: 0, waitingOrOperating: false, cumulativeUnits: calls.length, dispatchWindow: { readyAt: at, physicalBusy: false } }; }, cooldownUntil() { return 0; }, controlCooldownUntil() { return 0; }, async operateData<T>(_kind: unknown, work: Parameters<PilotRpc['operateData']>[1], signal?: AbortSignal) { return await work({ id: ++bootstrapControlSequence, signal: signal ?? new AbortController().signal, chargeHttp() { throw Error('OFFLINE unexpected HTTP through control'); }, completeResponse() {} }) as T; }, accountControlBytes(_bytes: number) {}, noteThrottle(_value: string | null, when = at) { return when + 65000; } };
     let routed: any = wireRpc;
     const rpc = { call: <T>(method: string, params: unknown[] = [], signal?: AbortSignal, options?: unknown) => routed.call(method, params, signal, options) as Promise<T>, usage: () => routed.usage(), cooldownUntil: () => routed.cooldownUntil() };
+    if (readiness.physicalLifecycle) {
+        physical = coordinatedPhysicalFlowFixture({ now: () => at, slot: () => slot, rpc: () => routed, callbacks: {
+            record,
+            onCurrentPoolValidated(support) {
+                const state = states.get(support.mint);
+                if (state && state.openedAt === null) state.supportSlot = support.sourceSlot;
+                engine?.onCurrentPoolValidated(support);
+                bridge?.currentPoolValidated(support);
+            },
+            onSubscriptionSent: row => engine?.onSubscriptionSent(row),
+            onFlowOpen(row) {
+                const state = states.get(row.mint)!;
+                state.openedAt = row.at; state.window = new FlowWindow(row.mint, row.at);
+                state.subscription = row.subscription; state.connection = row.connection;
+                engine.onFlowOpen(row); bridge.opened(row);
+            },
+            onGap(row) { bridge?.gap(row); engine?.onGap(row, { deferRegistryWrites: true }); }
+        } });
+        const native = physical.flow;
+        flow = {
+            dataContract: native.dataContract,
+            addCandidate(scope: Parameters<typeof native.addCandidate>[0]) {
+                native.addCandidate(scope);
+                states.set(scope.mint, { window: null, openedAt: null, subscription: 0, connection: 0, pool: scope.pool, notes: [], supportSlot: slot });
+            },
+            removeCandidate(mint: string, reason?: string) { native.removeCandidate(mint, reason); states.delete(mint); },
+            snapshot(mint: string, when = at) {
+                const snapshot = native.snapshot(mint, when), state = states.get(mint);
+                if (!snapshot || !state) return null;
+                const features = state.window?.features(when) ?? null;
+                // ACK, freshness, support contexts and quality loss are actual
+                // native state. Only the declared economic flow is synthetic.
+                return { ...snapshot, features, warm: snapshot.connected && snapshot.sourceSupportFresh && !snapshot.hasQualityLoss && features?.sufficientlyObserved === true };
+            },
+            notificationLedger: (mint: string) => structuredClone(states.get(mint)?.notes ?? []),
+            captureState: native.captureState.bind(native), candidateMints: native.candidateMints.bind(native),
+            prepareObservation: native.prepareObservation.bind(native), adoptPreparedObservation: native.adoptPreparedObservation.bind(native),
+            requestSupportRefresh: native.requestSupportRefresh.bind(native), requestHeartbeat: native.requestHeartbeat.bind(native),
+            service: native.service.bind(native), servicePlan: native.servicePlan.bind(native), usage: native.usage.bind(native),
+            async stop() { await native.stop(); states.clear(); }
+        };
+    }
     let binding: PilotBinding = LIQUIDITY_RESILIENT_V3_1_PILOT_BINDING;
     const compose = (restoredPools?: ReturnType<NativePaper['poolsForRecovery']>) => { market = new PilotMarket({ executionRealism: true, ...(readiness.reusePreparedEntryRent ? { reusePreparedEntryRent: true as const } : {}), ...(readiness.beforeEntryPreparationRead ? { beforeEntryPreparationRead: readiness.beforeEntryPreparationRead } : {}), rpc, inventory: () => ledger.state(), price, now: () => at, recorder: { record }, gas: { baseFeeLamports: '5000', priorityFeeLamports: '2000', evidence: 'OFFLINE explicit7000 modeled gas' } }); const executionQuote = market.executionQuote; Object.defineProperty(market, 'executionQuote', { value: (...args: Parameters<typeof executionQuote>) => executionUnavailable ? Promise.resolve(null) : executionQuote(...args) }); const prepare = market.prepareEntryCosts.bind(market); market.prepareEntryCosts = async (...args) => { if (preparationFailure)
-        throw Error('OFFLINE temporary preparation unavailable'); const result = await prepare(...args); readiness.afterPreparation?.(); return result; }; bridge = new NativePaper({ executionRealism: true, withProtectionWork: readiness.withProtectionWork, withFinancialExecutionWork: readiness.withFinancialExecutionWork, operatingFinancialReadiness: readiness.operatingFinancialReadiness, ...(technicalReevaluation ? { onTechnicalReevaluation: (request: any) => engine.requestTechnicalReevaluation(request.mint, request.reason, request.failedWindowEndAt, request.at, request.claimedOnly), onEvaluationComplete: (mint: string, when: number) => engine.finishTechnicalReevaluation(mint, when) } : {}), ledger, market, binding, source: flow as any, certificate: (mint, when) => engine?.currentAuditCertificate(mint, when) ?? null, record, now: () => at, admitNewRisk: () => capacity && (readiness.riskAdmission?.() ?? true) && end - at >= 910000 && 1500 - calls.length >= 490 && !Object.keys(ledger.state().pending).length, admitFinancialReadiness: when => readiness.financialAdmission?.(when) ?? readiness.financialReady !== false, internalShutdownRecovery: when => ledger.internalShutdownRecoveryProof(readiness.knownRunIds ?? [], when), restoredPools }); return market; };
+        throw Error('OFFLINE temporary preparation unavailable'); const result = await prepare(...args); readiness.afterPreparation?.(); return result; }; bridge = new NativePaper({ executionRealism: true, withProtectionWork: readiness.withProtectionWork, withFinancialExecutionWork: readiness.withFinancialExecutionWork, operatingFinancialReadiness: readiness.operatingFinancialReadiness, ...(readiness.retireEconomicRejection ? { onEconomicRejection: request => { assert.equal(engine.finishEconomicRejection(request), true, 'the exact real decision authorizes its own retirement'); } } : {}), ...(technicalReevaluation ? { onTechnicalReevaluation: (request: any) => engine.requestTechnicalReevaluation(request.mint, request.reason, request.failedWindowEndAt, request.at, request.claimedOnly), onEvaluationComplete: (mint: string, when: number) => engine.finishTechnicalReevaluation(mint, when) } : {}), ledger, market, binding, source: flow as any, certificate: (mint, when) => engine?.currentAuditCertificate(mint, when) ?? null, record, now: () => at, admitNewRisk: () => capacity && (readiness.riskAdmission?.() ?? true) && end - at >= 910000 && 1500 - calls.length >= 490 && !Object.keys(ledger.state().pending).length, admitFinancialReadiness: when => readiness.financialAdmission?.(when) ?? readiness.financialReady !== false, internalShutdownRecovery: when => ledger.internalShutdownRecoveryProof(readiness.knownRunIds ?? [], when), restoredPools }); return market; };
     readiness.beforeInitialCompose?.(ledger, at);
     compose();
-    engine = new NativeCandidateRunner({ flow: flow as any, rpc: rpc as any, record, now: () => at, activeStrategy: 'liquidity-resilient-momentum-v3.1', activeAssessment: (mint, features, when) => bridge.candidateAssessment(mint, features, when), activeEvidence: (mint, when) => bridge.candidateEvidence(mint, when), maximumDeep: readiness.maximumDeep ?? 4, admissionOpen: readiness.sourceAdmission, sourceInformationAdmission: readiness.sourceInformationAdmission, sourceWorkAdmission: readiness.sourceWorkAdmission, resolve: async (seed) => { const source = retained[0]!.origin, signature = source.transaction.signatures[0], decoded = decodeMigrationIdentity(source, { signature, commitment: 'finalized', availableAt: at }); assert.ok(decoded.ok); const mint = seed.feedMint!; return { ok: true, identity: { ...decoded.identity, signature: seed.signature, baseMint: mint, pool: canonicalPumpPoolPda(new PublicKey(mint)).toBase58(), chainBlockTime: Math.floor((started - 600000) / 1000), availableAt: at }, evidence: 'OFFLINE_SYNTHETIC_IDENTITY_FOR_COORDINATED_SCHEDULING_ONLY', proof: { source: 'direct-confirmed-creation', seed, originConfirmed: { signature: seed.signature, availableAt: at, transaction: source, commitment: 'confirmed' }, originFinalized: { signature: seed.signature, availableAt: at, transaction: source, commitment: 'finalized' } } } as any; }, onCandidateAllocated: id => bridge.allocated(id), onCandidateRetired: (mint, reason) => bridge.retiredCandidate(mint, reason), onAuditAvailable: readiness.auditReadiness ? certificate => { assert.ok(records.some(r => r.kind === 'native-predictive-assessment' && r.data.mint === certificate.mint && r.data.windowEndAt === certificate.windowEndAt), 'mandatory assessment evidence precedes financial readiness'); const before = calls.length, result = bridge.maintainFlatFinancialReadiness(price(), readiness.financialReady !== false, certificate.mint); auditReadiness.push({ mint: certificate.mint, recovered: result.recovered, extraRpc: calls.length - before }); } : undefined, financialOwnership: mint => bridge.ownership(mint) });
+    engine = new NativeCandidateRunner({ registry: sourceRegistry, flow: flow as any, rpc: rpc as any, record, now: () => at, activeStrategy: 'liquidity-resilient-momentum-v3.1', ...(readiness.physicalLifecycle ? { observationAgePolicy: 'persistent-observable-market-v1' as const } : {}), activeAssessment: (mint, features, when) => bridge.candidateAssessment(mint, features, when), activeEvidence: (mint, when) => bridge.candidateEvidence(mint, when), maximumDeep: readiness.maximumDeep ?? 4, admissionOpen: readiness.sourceAdmission, sourceInformationAdmission: readiness.sourceInformationAdmission, sourceWorkAdmission: readiness.sourceWorkAdmission, resolve: async (seed) => { const source = retained[0]!.origin, signature = source.transaction.signatures[0], decoded = decodeMigrationIdentity(source, { signature, commitment: 'finalized', availableAt: at }); assert.ok(decoded.ok); const mint = seed.feedMint!; return { ok: true, identity: { ...decoded.identity, signature: seed.signature, baseMint: mint, pool: canonicalPumpPoolPda(new PublicKey(mint)).toBase58(), chainBlockTime: Math.floor((started - 600000) / 1000), availableAt: at }, evidence: 'OFFLINE_SYNTHETIC_IDENTITY_FOR_COORDINATED_SCHEDULING_ONLY', proof: { source: 'direct-confirmed-creation', seed, originConfirmed: { signature: seed.signature, availableAt: at, transaction: source, commitment: 'confirmed' }, originFinalized: { signature: seed.signature, availableAt: at, transaction: source, commitment: 'finalized' } } } as any; }, onCandidateAllocated: id => bridge.allocated(id), onCandidateRetired: (mint, reason) => bridge.retiredCandidate(mint, reason), onAuditAvailable: readiness.auditReadiness ? certificate => { assert.ok(records.some(r => r.kind === 'native-predictive-assessment' && r.data.mint === certificate.mint && r.data.windowEndAt === certificate.windowEndAt), 'mandatory assessment evidence precedes financial readiness'); const before = calls.length, result = bridge.maintainFlatFinancialReadiness(price(), readiness.financialReady !== false, certificate.mint); auditReadiness.push({ mint: certificate.mint, recovered: result.recovered, extraRpc: calls.length - before }); } : undefined, financialOwnership: mint => bridge.ownership(mint) });
     // Retiming is explicit and confined to in-memory disposable fixture copies;
     // original captured chain timestamps/files are never rewritten or called live.
     for (const [index, r] of retained.entries()) {
         if (index > 0) {
+            if (readiness.initialSingle) continue;
             engine.onMigration({ signature: sig(500000 + index), feedMint: r.proof.quote.mint, receivedAt: at });
             continue;
         }
@@ -145,30 +204,33 @@ export async function coordinatedNativeReplayFixture(t: TestContext, capacity = 
         const signature = transaction.transaction.signatures[0];
         engine.importOrigin({ originConfirmed: { signature, availableAt: at, transaction }, originFinalized: { signature, availableAt: at, transaction } });
     }
-    t.after(() => { if (!closed)
+    t.after(() => { if (registryWriteHeld) registryContender!.exec('ROLLBACK'); registryContender?.close(); sourceRegistry?.close(); if (!closed)
         ledger.close(); Date.now = originalNow; rmSync(dir, { recursive: true, force: true }); });
-    return { retained, records, calls, engine, flow, price, dir, wireRpc, states, get market() { return market; }, seedPeer(n: number) { const mint = new PublicKey(Buffer.alloc(32, 150 + n)).toBase58(); engine.onMigration({ signature: sig(600000 + n), feedMint: mint, receivedAt: at }); return mint; }, emitAll(bucket: number) { for (const [mint, state] of states) {
+    return { retained, records, calls, engine, flow, physical, price, dir, wireRpc, states,
+        holdRegistryWriter() { assert.ok(registryContender); assert.equal(registryWriteHeld, false); registryContender.exec('BEGIN IMMEDIATE'); registryWriteHeld = true; },
+        releaseRegistryWriter() { assert.ok(registryContender); assert.equal(registryWriteHeld, true); registryContender.exec('ROLLBACK'); registryWriteHeld = false; }, get market() { return market; }, seedRetainedTarget() { const mint = retained[1]!.proof.quote.mint as string; engine.onMigration({ signature: sig(500001), feedMint: mint, receivedAt: at }); return mint; }, seedPeer(n: number) { const mint = new PublicKey(Buffer.alloc(32, 150 + n)).toBase58(); engine.onMigration({ signature: sig(600000 + n), feedMint: mint, receivedAt: at }); return mint; }, emitAll(bucket: number) { for (const [mint, state] of states) {
             if (!state.window)
                 continue;
             slot++;
             const trade: NormalizedTrade = { identity: { kind: 'program-log', signature: sig(++syntheticSequence), program: PUMP_AMM_PROGRAM_ID.toBase58(), logIndex: 3, frameOrdinal: 0 }, mint, wallet: bs58.encode(Buffer.alloc(32, 80 + bucket % 6)), side: 'buy', quoteLamports: '1000000', tokenUnits: String(1000000 - bucket % 6 * 20000), receivedAt: at, commitment: 'confirmed', slot };
             state.window.ingest(trade);
-            state.notes.push({ subscriptionMint: mint, subscriptionPool: state.pool, subscriptionId: state.subscription, connectionId: 1, signature: trade.identity.signature, slot, receivedAt: at, availableAt: at, success: true, rawHash: 'a'.repeat(64), parsedEvents: 1, eventsAccepted: 1, duplicate: false, correction: false, classification: 'program-event', reason: null, chainBlockTime: null });
+            state.notes.push({ subscriptionMint: mint, subscriptionPool: state.pool, subscriptionId: state.subscription, connectionId: state.connection, signature: trade.identity.signature, slot, receivedAt: at, availableAt: at, success: true, rawHash: 'a'.repeat(64), parsedEvents: 1, eventsAccepted: 1, duplicate: false, correction: false, classification: 'program-event', reason: null, chainBlockTime: null });
             engine.onTrade();
             bridge.trade({ trade, evidence: { trader: trade.wallet, eventBytesSha256: 'a'.repeat(64), userBaseTokenReserveUnits: '0', reserveObservation: { baseReserveUnits: '1000000000000', rawQuoteReserveLamports: '20000000000', virtualQuoteReserveLamports: '0' } } as any, validatedAt: at, dataContract: 'confirmed-program-activity-v3-shadow', transferCrossCheck: 'UNAVAILABLE' });
-        } }, route: (rpc: any) => { routed = rpc; }, get bridge() { return bridge; }, get ledger() { return ledger; }, get at() { return at; }, set at(value: number) { at = value; slot++; }, async open() { for (let n = 0; n < 5; n++)
-            await engine.step(); assert.equal(states.size, 2); assert.ok([...states.values()].every(s => s.openedAt === started)); }, warm() { for (let n = 0; n < 6; n++) {
+        } }, route: (rpc: any) => { routed = rpc; }, get bridge() { return bridge; }, get ledger() { return ledger; }, get at() { return at; }, set at(value: number) { at = value; slot++; physical?.advanceTimers(); }, async open() { for (let n = 0; n < (physical ? 40 : 5); n++)
+            await engine.step(); assert.equal(states.size, readiness.initialSingle ? 1 : 2, JSON.stringify({ candidates: engine.status().candidates.map(c => ({ mint: c.mint, openedAt: c.openedAt })), preparation: engine.status().candidatePreparation, last: records.slice(-8) })); assert.ok([...states.values()].every(s => s.openedAt === started)); }, async warm() { for (let n = 0; n < 6; n++) {
             at = started + n * 10000 + 100;
+            if (physical) { physical.advanceTimers(); for (let i = 0; i < 6; i++) if ((await flow.service()).kind === 'idle') break; }
             for (const [mint, s] of states) {
                 if (readiness.quiet)
                     continue;
                 slot++;
                 const trade: NormalizedTrade = { identity: { kind: 'program-log', signature: sig(1000 + n * 10 + s.subscription), program: PUMP_AMM_PROGRAM_ID.toBase58(), logIndex: 3, frameOrdinal: 0 }, mint, wallet: bs58.encode(Buffer.alloc(32, 80 + n)), side: 'buy', quoteLamports: '500000000', tokenUnits: String(1000000 - n * 20000), receivedAt: at, commitment: 'confirmed', slot };
                 s.window!.ingest(trade);
-                s.notes.push({ subscriptionMint: mint, subscriptionPool: s.pool, subscriptionId: s.subscription, connectionId: 1, signature: trade.identity.signature, slot, receivedAt: at, availableAt: at, success: true, rawHash: 'a'.repeat(64), parsedEvents: 1, eventsAccepted: 1, duplicate: false, correction: false, classification: 'program-event', reason: null, chainBlockTime: null });
+                s.notes.push({ subscriptionMint: mint, subscriptionPool: s.pool, subscriptionId: s.subscription, connectionId: s.connection, signature: trade.identity.signature, slot, receivedAt: at, availableAt: at, success: true, rawHash: 'a'.repeat(64), parsedEvents: 1, eventsAccepted: 1, duplicate: false, correction: false, classification: 'program-event', reason: null, chainBlockTime: null });
                 engine.onTrade();
                 bridge.trade({ trade, evidence: { trader: trade.wallet, eventBytesSha256: 'a'.repeat(64), userBaseTokenReserveUnits: '0', reserveObservation: { baseReserveUnits: '1000000000000', rawQuoteReserveLamports: '20000000000', virtualQuoteReserveLamports: '0' } } as any, validatedAt: at, dataContract: 'confirmed-program-activity-v3-shadow', transferCrossCheck: 'UNAVAILABLE' });
             }
-        } at = started + 60000; slot++; }, async audit() { for (let n = 0; n < 8 && engine.status().counters.auditedWindows < 2; n++)
-            await engine.step(); assert.equal(engine.status().counters.auditedWindows, 2); assert.equal(engine.certifiedCandidateMints().length, readiness.quiet ? 0 : 2); } };
+        } at = started + 60000; slot++; if (physical) { physical.advanceTimers(); flow.requestSupportRefresh(); for (let i = 0; i < 6; i++) if ((await flow.service()).kind === 'idle') break; } }, async audit() { for (let n = 0; n < (physical ? 30 : 8) && engine.status().counters.auditedWindows < (readiness.initialSingle ? 1 : 2); n++)
+            await engine.step(); assert.equal(engine.status().counters.auditedWindows, readiness.initialSingle ? 1 : 2); assert.equal(engine.certifiedCandidateMints().length, readiness.quiet ? 0 : readiness.initialSingle ? 1 : 2); } };
 }
