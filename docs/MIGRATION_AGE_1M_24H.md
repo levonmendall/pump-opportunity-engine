@@ -34,6 +34,15 @@ not receive an unconditional priority over them. Observation and financial
 ownership still exclude a mint from upstream recovery. Completed results survive
 pre-callback registry contention without repeating the provider read.
 
+The 20-second workflow deadline stops incomplete requests; it does not discard
+an already completed page or verified origin waiting for a SQLite writer. Commit
+retries retain the exact original checkpoint, confirmed/finalized receipts and
+proof availability times. A source stop, explicit cancellation, ownership change
+or superseding direct seed still rejects that result. Focused offline tests hold
+a real second SQLite writer across the deadline for both a history page and a
+verified origin, then confirm commit without another provider read. The same
+tests cover those four invalidations and an unfinished workflow's request cutoff.
+
 Only matching independently decoded confirmed and finalized canonical migration
 transactions produce a proof. Timestamp hints, history pagination, checkpoint
 receipt time and current pool support cannot supply or refresh the migration

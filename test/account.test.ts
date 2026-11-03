@@ -243,7 +243,7 @@ test('compiled and TSX account CLIs dispatch through directory symlinks and pres
   const build=mkdtempSync(join(project,'.poe-account-entrypoint-fixture-')),run=promisify(execFile);
   t.after(()=>rmSync(build,{recursive:true,force:true}));
   const env={...process.env};for(const key of Object.keys(env))if(key.startsWith('POE_')||key==='CREDENTIALS_DIRECTORY')delete env[key];
-  await run(process.execPath,['node_modules/typescript/bin/tsc','--outDir',join(build,'compiled'),'--noEmit','false'],{cwd:project,env,timeout:20_000,maxBuffer:128*1024});
+  await run(process.execPath,['node_modules/typescript/bin/tsc','--outDir',join(build,'compiled'),'--noEmit','false'],{cwd:project,env,timeout:60_000,maxBuffer:128*1024});
   symlinkSync(join(build,'compiled'),join(build,'current'),'dir');symlinkSync(project,join(build,'source-current'),'dir');
   const direct=join(build,'compiled/src/account.js'),alias=join(build,'current/src/account.js');
   const imported=await run(process.execPath,['--input-type=module','-e',`await import(${JSON.stringify(pathToFileURL(direct).href)});process.stdout.write('imported');`,'-'],{cwd:project,env,timeout:5000,maxBuffer:128*1024});

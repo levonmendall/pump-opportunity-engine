@@ -5,6 +5,7 @@ import type {MarketRegistry} from './market-registry.js';
 export const NATIVE_SLOT_STATES=['VACANT','SUBSCRIPTION_WAIT','EVIDENCE_WARMING','AUDIT_READY','AUDIT_WAIT','AUDIT_ACTIVE','PROVIDER_WAIT','UNUSABLE','REPLACEMENT_WAIT'] as const;
 export type NativeSlotState=typeof NATIVE_SLOT_STATES[number];
 export type NativeSlotFinancialKind='primary-evaluated'|'qualified'|'entry-fill'|'exit-fill';
+export type NativeSlotFinancialAssignment=Readonly<{slot:number;assignment:number;allocatedAt:number}>;
 export const NATIVE_SLOT_LIMITATIONS=['FOUR_SLOTS_DO_NOT_IMPLY_PRODUCTIVE_WORK','PHYSICAL_START_REQUIRES_RECEIPT','PRELIMINARY_EVALUATION_NOT_FINANCIAL_QUALIFICATION','FINANCIAL_EVENTS_REQUIRE_ACTUAL_CALLBACK','NO_PER_SLOT_PROFIT_ATTRIBUTION','NO_WHOLE_MARKET_DENOMINATOR'] as const;
 type Slot={slot:number;mint:string|null;state:NativeSlotState;sinceAt:number;allocatedAt:number|null;subscriptionSentAt:number|null;openedAt:number|null;windowEndAt:number|null;readyAt:number|null;firstPhysicalAt:number|null;retiredAt:number|null;warmAt:number|null;assignment:number;lastVerifiedCoverageEnd:number|null};
 type Options={registry:MarketRegistry;sourceInstanceId:string;runId?:string;startedAt:number;maximumSlots:number;record?:(kind:string,data:unknown)=>void};
@@ -80,8 +81,11 @@ export class NativeSlotProductivity{
  unusable(mint:string,at:number,reason:string){const slot=this.live(mint);if(slot&&slot.state!=='UNUSABLE')this.mutate(()=>this.move(slot,'UNUSABLE',at,reason));}
  retired(mint:string,at:number,reason:string){const slot=this.live(mint);if(!slot)return;this.mutate(()=>{this.move(slot,'REPLACEMENT_WAIT',at,reason);slot.mint=null;slot.retiredAt=at;slot.allocatedAt=null;slot.subscriptionSentAt=null;slot.openedAt=null;slot.windowEndAt=null;slot.readyAt=null;slot.firstPhysicalAt=null;slot.warmAt=null;this.persist();});}
  failed(mint:string,windowEndAt:number,at:number,kind:string,reason:string){if(!validTime(windowEndAt)||windowEndAt===0||windowEndAt>at)return;const names:Array<keyof typeof this.failureCounts>=[];if(reason==='NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED')names.push('historyNotObservedWindows');if(kind==='decision-expired')names.push('decisionDeadlineWindows');if(kind==='audit-unusable')names.push('auditUnusableWindows');if(/PHYSICAL_TIMEOUT|HTTP_429|HTTP_STATUS_50[234]|HTTP_TRANSPORT|RPC_OVERLOAD/.test(reason))names.push('providerUnavailableWindows');if(!names.length)return;this.mutate(()=>{for(const name of names)if(this.distinct('failure:'+name,mint+':'+windowEndAt,at))this.failureCounts[name]++;this.persist();});}
- financial(input:{mint:string;kind:NativeSlotFinancialKind;at:number;key:string}){
-  if(!validTime(input.at)||input.at<this.options.startedAt)return;const assignment=this.options.registry.getMetadata<{slot:number;assignment:number;allocatedAt:number}>(this.key('assignment:'+input.mint));
+ /** Capture a current assignment without touching SQLite in a financial
+  * callback. A later retirement/reallocation cannot reattribute its receipt. */
+ financialAssignment(mint:string,at:number):NativeSlotFinancialAssignment|undefined{const slot=this.live(mint);return slot&&slot.allocatedAt!==null&&slot.allocatedAt<=at?{slot:slot.slot,assignment:slot.assignment,allocatedAt:slot.allocatedAt}:undefined;}
+ financial(input:{mint:string;kind:NativeSlotFinancialKind;at:number;key:string},capturedAssignment?:NativeSlotFinancialAssignment){
+  if(!validTime(input.at)||input.at<this.options.startedAt)return;const saved=capturedAssignment??this.options.registry.getMetadata<NativeSlotFinancialAssignment>(this.key('assignment:'+input.mint)),assignment=saved&&saved.allocatedAt<=input.at?saved:undefined;
   this.mutate(()=>{if(!this.distinct('financial:'+input.kind,input.mint+':'+input.key,input.at))return;
    if(!assignment){this.counts.unattributedFinancialEvents++;this.persist();return;}
    if(input.kind==='primary-evaluated'){if(this.distinct('primary-evaluated',input.mint,input.at))this.counts.distinctPrimaryEvaluated++;}else if(input.kind==='qualified')this.counts.qualified++;else if(input.kind==='entry-fill')this.counts.entryFills++;else this.counts.exitFills++;

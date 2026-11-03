@@ -41,3 +41,27 @@ test('received preparation reports reject undeclared claims and chronological co
  const bad=structuredClone(p);bad.progress.lastAuditedAt=new Date(T-500).toISOString();
  assert.throws(()=>validateCandidatePreparationReporting(bad,T),/CANDIDATE_PREPARATION/);
 });
+
+test('current preparation readiness keeps original support expiry and source observation time',()=>{
+ const source={...raw(),state:'ready',freshPreparedCount:2,stalePreparedCount:1,preparedSupportExpiresAt:T+1000,readinessReason:'FRESH_SUPPORT_AWAITING_ALLOCATION'},before=structuredClone(source);
+ const p=projectCandidatePreparationReporting({candidatePreparation:source},T+500)!;
+ assert.equal(p.freshPreparedCount,2);assert.equal(p.stalePreparedCount,1);
+ assert.equal(p.generatedAt,new Date(T).toISOString(),'publication does not renew preparation receipt time');
+ assert.equal(p.preparedSupportExpiresAt,new Date(T+1000).toISOString());
+ assert.equal(p.readinessReason,'FRESH_SUPPORT_AWAITING_ALLOCATION');assert.deepEqual(source,before);
+ assert.deepEqual(validateCandidatePreparationReporting(p,T+500),p);
+ const expired=projectCandidatePreparationReporting({candidatePreparation:{...source,generatedAt:T+1000,state:'awaiting-dispatch',freshPreparedCount:0,stalePreparedCount:3,preparedSupportExpiresAt:null,readinessReason:'PREPARED_SUPPORT_EXPIRED'}},T+1000)!;
+ assert.equal(expired.freshPreparedCount,0);assert.equal(expired.preparedSupportExpiresAt,null);assert.equal(expired.counters.poolReady,1,'a prior successful pool validation is not current allocation readiness');
+ const legacy=projectCandidatePreparationReporting({candidatePreparation:raw()},T)!;assert.equal(Object.hasOwn(legacy,'freshPreparedCount'),false,'older sources do not invent zero fresh preparation');
+});
+
+test('malformed optional readiness cannot erase preparation history or cross a source generation',()=>{
+ const valid={...raw(),freshPreparedCount:1,stalePreparedCount:0,preparedSupportExpiresAt:T+1,readinessReason:'FRESH_SUPPORT_AWAITING_ALLOCATION'};
+ for(const mutate of [(r:any)=>r.freshPreparedCount=-1,(r:any)=>r.preparedSupportExpiresAt=T,(r:any)=>r.preparedSupportExpiresAt=T+30001,(r:any)=>r.readinessReason='PRIVATE provider text',(r:any)=>delete r.stalePreparedCount,(r:any)=>r.freshPreparedCount=0]){
+  const source=structuredClone(valid);mutate(source);const p=projectCandidatePreparationReporting({candidatePreparation:source},T)!;assert.ok(p);assert.deepEqual(p.counters,valid.counters);assert.equal(Object.hasOwn(p,'readinessReason'),false);
+ }
+ const projected=projectCandidatePreparationReporting({candidatePreparation:valid},T)!;
+ assert.throws(()=>validateCandidatePreparationReporting({...projected,preparedSupportExpiresAt:new Date(T).toISOString()},T),/CANDIDATE_PREPARATION/);
+ const partial={...projected};delete partial.stalePreparedCount;assert.throws(()=>validateCandidatePreparationReporting(partial,T),/CANDIDATE_PREPARATION/);
+ assert.equal(projectCandidatePreparationReporting({candidatePreparation:{...valid,runId:'other-generation'}},T),undefined,'optional readiness never relaxes the original source binding');
+});

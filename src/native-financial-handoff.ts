@@ -1,4 +1,5 @@
 import {REQUEST_TIMING_VERSION,REQUEST_TIMING_METHODS,REQUEST_ADMISSION_REASONS,REQUEST_TIMING_STAGES} from './financial-handoff-reporting.js';
+import {nativePaperFeaturesSha256} from './native-paper-contract.js';
 /** Diagnostic ownership of currently usable audit certificates only. This
  * never authorizes a financial action or extends an evidence deadline. */
 export const NATIVE_FINANCIAL_HANDOFF_VERSION='native-financial-handoff-v1' as const;
@@ -6,7 +7,7 @@ export const HANDOFF_REASONS=['await-financial-dispatch','financial-or-source-ad
 export type HandoffReason=typeof HANDOFF_REASONS[number];
 export type HandoffCertificate={mint:string;windowEndAt:number;deadlineAt:number;admittedAt:number;openedAt:number;featuresSha256:string};
 type HandoffBlocker={blockingPrerequisite:string;operation:string;requiredMs:number;availableMs:number;observedAt:number};
-type Active=HandoffCertificate&{key:string;firstSeenAt:number;state:'waiting'|'dispatched';reason:HandoffReason}&Partial<HandoffBlocker>;
+type Active=HandoffCertificate&{key:string;firstSeenAt:number;state:'waiting'|'dispatched';reason:HandoffReason;dispatchedAt?:number;economicDecisionObserved?:true}&Partial<HandoffBlocker>;
 const identity=(c:HandoffCertificate)=>[c.mint,c.windowEndAt,c.openedAt,c.featuresSha256].join(':');
 const uint=(n:number)=>Number.isSafeInteger(n)&&n>=0;
 const rec=(v:unknown):Record<string,any>=>v&&typeof v==='object'&&!Array.isArray(v)?v as Record<string,any>:{};
@@ -30,6 +31,18 @@ export class NativeFinancialHandoff {
  private physicalTiming=new Map<string,{at:number;method:string|null;transport:string|null}>();
  private methodTiming=new Map<string,{method:string;transport:string;starts:number;settled:number;responses:number;queue:TimingSummary;pacing:TimingSummary;physical:TimingSummary}>();
  constructor(readonly runId:string,readonly startedAt:number,private maximumActive:number,private record:(kind:string,value:unknown)=>void=()=>{}){this.at=startedAt;}
+ /** Receipt of the actual matching decision, before optional registry writes.
+  * A callback return, a local refusal or a preliminary assessment supplies no
+  * such receipt. No record emission, provider call or financial mutation here. */
+ observeEconomicDecision(kind:string,value:unknown){
+  if(kind!=='native-opportunity-evaluation')return false;
+  const d=rec(value),features=rec(d.features),decision=rec(d.decision);
+  if(d.version!=='poe-opportunity-evaluation-v1'||d.stage!=='execution-economics'||d.technicalFailure!==false||decision.kind==='missing-data'||typeof decision.qualified!=='boolean'||!uint(d.at)||d.at<this.startedAt||d.runId!==undefined&&d.runId!==this.runId||typeof d.mint!=='string'||!uint(features.windowEndAt))return false;
+  const row=[...this.active.values()].find(r=>r.state==='dispatched'&&r.mint===d.mint&&r.windowEndAt===features.windowEndAt&&r.dispatchedAt!==undefined&&r.dispatchedAt<=d.at&&d.at<=r.deadlineAt);
+  if(!row||row.economicDecisionObserved)return false;
+  try{if(nativePaperFeaturesSha256(features)!==row.featuresSha256)return false;}catch{return false;}
+  row.economicDecisionObserved=true;this.economicDecisions++;return true;
+ }
  /** In-memory diagnostics only. Never emits through record(), changes trading
   * state or confuses a local refusal with a physically settled request. */
  observeTiming(kind:string,value:unknown){
@@ -78,18 +91,20 @@ export class NativeFinancialHandoff {
  }
  dispatch(c:HandoffCertificate,at:number){
   if(!this.advance(at))return;const row=this.active.get(identity(c));if(!row||row.state!=='waiting'||at>row.deadlineAt)return;
-  row.state='dispatched';this.dispatched++;const wait=at-row.admittedAt;this.waits.count++;this.waits.sum+=wait;this.waits.max=Math.max(this.waits.max,wait);const bin=Math.min(100,Math.ceil(wait/100));this.waits.bins[bin]=(this.waits.bins[bin]??0)+1;
+  row.state='dispatched';row.dispatchedAt=at;this.dispatched++;const wait=at-row.admittedAt;this.waits.count++;this.waits.sum+=wait;this.waits.max=Math.max(this.waits.max,wait);const bin=Math.min(100,Math.ceil(wait/100));this.waits.bins[bin]=(this.waits.bins[bin]??0)+1;
   this.record('native-paper-certificate-handoff',{at,mint:row.mint,windowEndAt:row.windowEndAt,deadlineAt:row.deadlineAt,stage:'financial-dispatch',waitMs:wait,financialPermission:false});
  }
  complete(c:HandoffCertificate,at:number,evaluations:number,economicDecisions=0){
   if(!this.advance(at))return;const row=this.active.get(identity(c));if(!row||row.state!=='dispatched')return;
   if(uint(evaluations))this.financialEvaluations+=evaluations;
-  if(uint(economicDecisions))this.economicDecisions+=economicDecisions;
-  this.active.delete(row.key);this.record('native-paper-certificate-handoff',{at,mint:row.mint,windowEndAt:row.windowEndAt,deadlineAt:row.deadlineAt,stage:'financial-dispatch-completed',financialEvaluations:uint(evaluations)?evaluations:0,economicDecisions:uint(economicDecisions)?economicDecisions:0,financialPermission:false});
+  // Older callers may supply a separately observed counter delta. A matching
+  // direct receipt is already counted and wins over that optional projection.
+  const observed=row.economicDecisionObserved?1:uint(economicDecisions)?economicDecisions:0;if(!row.economicDecisionObserved)this.economicDecisions+=observed;
+  this.active.delete(row.key);this.record('native-paper-certificate-handoff',{at,mint:row.mint,windowEndAt:row.windowEndAt,deadlineAt:row.deadlineAt,stage:'financial-dispatch-completed',financialEvaluations:uint(evaluations)?evaluations:0,economicDecisions:observed,financialPermission:false});
  }
  usage(at:number){
   const blocked={...this.blockedMsByReason};if(uint(at)&&at>=this.at)for(const row of this.active.values())if(row.state==='waiting')blocked[row.reason]+=Math.max(0,Math.min(at,row.deadlineAt)-this.at);
   const quantile=(p:number)=>{if(!this.waits.count)return null;let sum=0;const goal=Math.ceil(this.waits.count*p);for(let i=0;i<this.waits.bins.length;i++){sum+=this.waits.bins[i]!;if(sum>=goal)return i*100;}return null;};
-  return {version:NATIVE_FINANCIAL_HANDOFF_VERSION,scope:'CURRENT_SOURCE_PROCESS' as const,runId:this.runId,startedAt:this.startedAt,generatedAt:at,seen:this.seen,dispatched:this.dispatched,financialEvaluations:this.financialEvaluations,economicDecisions:this.economicDecisions,expiredBeforeDispatch:this.expiredBeforeDispatch,invalidatedBeforeDispatch:this.invalidatedBeforeDispatch,blockedMsByReason:blocked,deferralTransitionsByReason:{...this.deferralTransitionsByReason},dispatchWait:{count:this.waits.count,mean:this.waits.count?this.waits.sum/this.waits.count:null,max:this.waits.count?this.waits.max:null,p50UpperMs:quantile(.5),p95UpperMs:quantile(.95),histogramResolutionMs:100},active:[...this.active.values()].map(({key,...row})=>row),requestTiming:{version:REQUEST_TIMING_VERSION,runId:this.runId,startedAt:this.startedAt,generatedAt:at,...this.timingCounts,refusals:this.timingRefusals.map(row=>({...row})),methods:[...this.methodTiming.values()].map(m=>({...m,queue:{...m.queue},pacing:{...m.pacing},physical:{...m.physical}}))}};
+  return {version:NATIVE_FINANCIAL_HANDOFF_VERSION,scope:'CURRENT_SOURCE_PROCESS' as const,runId:this.runId,startedAt:this.startedAt,generatedAt:at,seen:this.seen,dispatched:this.dispatched,financialEvaluations:this.financialEvaluations,economicDecisions:this.economicDecisions,expiredBeforeDispatch:this.expiredBeforeDispatch,invalidatedBeforeDispatch:this.invalidatedBeforeDispatch,blockedMsByReason:blocked,deferralTransitionsByReason:{...this.deferralTransitionsByReason},dispatchWait:{count:this.waits.count,mean:this.waits.count?this.waits.sum/this.waits.count:null,max:this.waits.count?this.waits.max:null,p50UpperMs:quantile(.5),p95UpperMs:quantile(.95),histogramResolutionMs:100},active:[...this.active.values()].map(({key,dispatchedAt,economicDecisionObserved,...row})=>row),requestTiming:{version:REQUEST_TIMING_VERSION,runId:this.runId,startedAt:this.startedAt,generatedAt:at,...this.timingCounts,refusals:this.timingRefusals.map(row=>({...row})),methods:[...this.methodTiming.values()].map(m=>({...m,queue:{...m.queue},pacing:{...m.pacing},physical:{...m.physical}}))}};
  }
 }

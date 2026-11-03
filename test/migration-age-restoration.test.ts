@@ -188,3 +188,42 @@ test('runner discards a late migration page when ownership changes or a direct s
   }finally{await f.close();t.mock.restoreAll();}
  }
 });
+
+for(const completed of ['history-page','verified-origin'] as const)test(`completed migration ${completed} survives a writer lease beyond the workflow request deadline`,async t=>{
+ const source=resumableOriginFixture(),dir=mkdtempSync(join(tmpdir(),'poe-migration-completed-deadline-')),path=join(dir,'market.sqlite');let lock:Database.Database|undefined,held=false;
+ const f=fixture({path,concurrentIntake:true,rpcResponse:(method,params)=>{const value=source.respond(method,params),selected=completed==='history-page'?method==='getSignaturesForAddress':method==='getTransaction'&&(params[1] as any).commitment==='finalized';if(selected&&!held){lock!.exec('BEGIN IMMEDIATE');held=true;}return value;}});lock=new Database(path);t.mock.method(Date,'now',()=>f.now);
+ try{
+  activity(f,source.id.baseMint,source.seedSignature);for(let i=0;i<30&&!held;i++){await f.steps();f.advance(10);}assert.equal(held,true);
+  const seed={signature:source.seedSignature,feedMint:source.id.baseMint,receivedAt:AT},session=(f.runner as any).verificationSession,originalResult=structuredClone(session.result),reads=f.requestCalls.length;
+  assert.ok(originalResult);assert.equal(originalResult.ok,completed==='verified-origin');assert.equal(session.controller.signal.aborted,false);
+  f.advance(session.deadlineAt-f.now+1);await f.steps();
+  assert.ok((f.runner as any).verificationSession===session,'an already complete result is retained while its commit is still blocked');assert.equal(session.controller.signal.aborted,false,'the elapsed request budget does not cancel completed evidence');assert.deepEqual(session.result,originalResult);assert.equal(f.requestCalls.length,reads);
+  lock.exec('ROLLBACK');await f.steps();assert.equal(f.requestCalls.length,reads,'commit retry does not request the same page or proof again');
+  if(completed==='history-page'){assert.deepEqual(f.registry.migrationAgeRecovery(seed),originalResult.recovery);assert.equal(f.registry.migrationAgeProof(source.id.baseMint),null);}
+  else{const expected=decodeMigrationAgeProof(originalResult.proof,f.now)!;assert.deepEqual(f.registry.migrationAgeProof(source.id.baseMint),expected);assert.equal(expected.migrationAt,source.o.tx.blockTime*1000);assert.ok(expected.availableAt<session.deadlineAt);assert.equal(f.registry.marketAgeEligibility(source.id.baseMint,expected.migrationAt+86_400_000).allowed,true);assert.equal(f.registry.marketAgeEligibility(source.id.baseMint,expected.migrationAt+86_400_001).allowed,false);}
+ }finally{if(lock.inTransaction)lock.exec('ROLLBACK');lock.close();await f.close();rmSync(dir,{recursive:true,force:true});}
+});
+
+for(const changed of ['source-stop','aborted','seed','ownership'] as const)test(`completed migration proof still refuses ${changed} after a delayed commit`,async t=>{
+ const source=resumableOriginFixture(),dir=mkdtempSync(join(tmpdir(),'poe-migration-completed-invalid-')),path=join(dir,'market.sqlite');let lock:Database.Database|undefined,held=false,owner:'HELD'|null=null;
+ const f=fixture({path,concurrentIntake:true,financialOwnership:()=>owner,rpcResponse:(method,params)=>{const value=source.respond(method,params);if(method==='getTransaction'&&(params[1] as any).commitment==='finalized'&&!held){lock!.exec('BEGIN IMMEDIATE');held=true;}return value;}});lock=new Database(path);t.mock.method(Date,'now',()=>f.now);
+ try{
+  activity(f,source.id.baseMint,source.seedSignature);for(let i=0;i<30&&!held;i++){await f.steps();f.advance(10);}assert.equal(held,true);
+  const session=(f.runner as any).verificationSession,reads=f.requestCalls.length;assert.equal(session.result?.ok,true);f.advance(session.deadlineAt-f.now+1);lock.exec('ROLLBACK');
+  if(changed==='source-stop')(f.runner as any).sourceAdmissionStopReason='OFFLINE_SOURCE_STOP';
+  if(changed==='aborted')session.controller.abort();
+  if(changed==='ownership')owner='HELD';
+  if(changed==='seed')f.registry.observePumpSwapQualificationHint({mint:source.id.baseMint,signature:source.id.signature,receivedAt:f.now,source:'pumpportal-migration',kind:'migration'});
+  (f.runner as any).finishVerification(session);assert.equal(f.requestCalls.length,reads);assert.equal(f.registry.migrationAgeProof(source.id.baseMint),null);assert.equal(f.states.size,0);
+  const expected=changed==='seed'?'MIGRATION_REQUEST_SUPERSEDED':changed==='ownership'?'MIGRATION_OWNERSHIP_CHANGED':'MIGRATION_SOURCE_CHANGED';assert.ok(f.records.some(row=>row.kind==='native-migration-age-result-discarded'&&row.data.reason===expected));
+ }finally{if(lock.inTransaction)lock.exec('ROLLBACK');lock.close();await f.close();rmSync(dir,{recursive:true,force:true});}
+});
+
+test('an incomplete migration workflow still stops further requests at its original deadline',async t=>{
+ const source=resumableOriginFixture(),f=fixture({rpcResponse:source.respond});t.mock.method(Date,'now',()=>f.now);
+ try{
+  activity(f,source.id.baseMint,source.seedSignature);for(let i=0;i<10&&!f.requestCalls.length;i++){await f.steps();f.advance(10);}
+  const session=(f.runner as any).verificationSession,reads=f.requestCalls.length;assert.equal(reads,1);assert.equal(session.result,null);assert.ok(session.pending);f.advance(session.deadlineAt-f.now);
+  await f.steps();assert.equal(session.controller.signal.aborted,true);assert.equal(f.requestCalls.length,reads);assert.equal(f.registry.migrationAgeProof(source.id.baseMint),null);assert.equal(f.states.size,0);
+ }finally{await f.close();}
+});

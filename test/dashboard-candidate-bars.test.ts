@@ -30,6 +30,16 @@ class FakeElement{
   return null;
  }
 }
+
+test('preparation metrics distinguish fresh support from historical ready counts at the original source time',()=>{
+ const root=new FakeElement(),start=dashboardSource.indexOf('function renderMetrics('),through=dashboardSource.indexOf('// Display only the durable',start);
+ const add=(parent:FakeElement,_tag:string,value?:unknown,klass?:string)=>{const child=new FakeElement();child.className=klass??'';child.textContent=value===undefined?'':String(value);parent.children.push(child);return child;};
+ const context=createContext({byId:()=>root,add,Number,Math});new Script(dashboardSource.slice(start,through)).runInContext(context);
+ const preparation={version:'native-candidate-preparation-v1',generatedAt:'2026-11-03T15:00:00.000Z',state:'awaiting-dispatch',currentMint:null,counters:{attempts:5,poolReady:4,poolAbsent:1,poolUnsupported:0,providerUnavailable:0,allocationsFromPrepared:1},progress:{lastAcknowledgedAt:null,lastAuditedAt:null,serviceableSinceAt:null,attemptsSinceProgress:1},lastOutcome:null,freshPreparedCount:0,stalePreparedCount:3,preparedSupportExpiresAt:null,readinessReason:'PREPARED_SUPPORT_EXPIRED'};
+ (context as unknown as {renderMetrics:(m:unknown,s:unknown,i:unknown)=>void}).renderMetrics({}, {}, {candidatePreparation:preparation,candidates:{},quality:{limitations:[]},provider:{},resources:{cpuOneCoreFraction:null},protection:{},times:{},run:{}});
+ const facts=new Map<string,string>();const walk=(node:FakeElement)=>{if(node.className==='metric')facts.set(node.children[0]!.textContent,node.children[1]!.textContent);node.children.forEach(walk);};walk(root);
+ assert.equal(facts.get('Preparation attempts / pool ready'),'5 / 4');assert.equal(facts.get('Fresh / stale or consumed support'),'0 / 3');assert.equal(facts.get('Readiness'),'Retained support is no longer eligible for allocation');assert.equal(facts.get('Earliest original support expiry'),'Unavailable');assert.equal(facts.get('Observed at'),preparation.generatedAt);
+});
 function draw(f:Record<string,unknown>,intelligence:unknown=null,isObserver=false){
  const root=new FakeElement();
  const add=(parent:FakeElement,_tag:string,value?:unknown,klass?:string)=>{

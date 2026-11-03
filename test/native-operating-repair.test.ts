@@ -16,7 +16,7 @@ test('observed held-account short-window refusal uses remaining physical work in
 
 test('preparation plan counts cold quote dependencies and rejects expiry during the actual decision sequence',()=>{
  const cold=nativePaperRemainingEntryWork({at:100000,owned:true,preparation:{remainingReads:3,quoteReads:2,expiresAt:null,ready:false}});
- assert.equal(cold.maximumAccountedStarts,6,'preparation installs the links used by the ensuing actual-size quote');assert.equal(cold.prepared,false);
+ assert.equal(cold.maximumAccountedStarts,6,'preparation installs the links used by the ensuing actual-size quote');assert.equal(cold.prepared,false);assert.equal(cold.preparationWorkMs,5100);assert.equal(cold.remainingSequenceMs,7750,'the first preparation turn must leave time for every remaining preparation read and final decision');
  const evicted=nativePaperRemainingEntryWork({at:100000,owned:true,preparation:{remainingReads:0,quoteReads:2,expiresAt:110000,ready:true}});assert.equal(evicted.maximumAccountedStarts,4);assert.equal(evicted.decisionWorkMs,3850);
  assert.equal(nativePaperRemainingEntryWork({at:100000,owned:true,preparation:{remainingReads:0,quoteReads:1,expiresAt:102649,ready:true}}).prepared,false);
  assert.equal(nativePaperRemainingEntryWork({at:100000,owned:true,preparation:{remainingReads:0,quoteReads:1,expiresAt:102650,ready:true}}).prepared,true,'exact remaining-work boundary is inclusive; no timestamp is renewed');

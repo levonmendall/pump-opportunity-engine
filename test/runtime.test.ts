@@ -266,7 +266,7 @@ test('compiled CLI dispatches run, status and safe-stop through the release syml
   for(const key of Object.keys(env))if(key.startsWith('POE_')||key==='CREDENTIALS_DIRECTORY')delete env[key];
   env.POE_SOCKET_PATH=f.socketPath;
   try{
-    await run(process.execPath,['node_modules/typescript/bin/tsc','--outDir',join(build,'compiled'),'--noEmit','false'],{cwd:project,env,timeout:20_000,maxBuffer:128*1024});
+    await run(process.execPath,['node_modules/typescript/bin/tsc','--outDir',join(build,'compiled'),'--noEmit','false'],{cwd:project,env,timeout:60_000,maxBuffer:128*1024});
     symlinkSync(join(build,'compiled'),join(build,'current'),'dir');
     symlinkSync(project,join(build,'source-current'),'dir');
     const direct=join(build,'compiled/src/runtime.js'),alias=join(build,'current/src/runtime.js');

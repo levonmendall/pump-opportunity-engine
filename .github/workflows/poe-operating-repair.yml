@@ -37,6 +37,7 @@ jobs:
           npm run compile 2>&1 | tee /tmp/poe-throughput-validation/compile.log
           node --import tsx --test --test-concurrency=2 test/*.test.ts 2>&1 | tee /tmp/poe-throughput-validation/full.log
           npm run test:ai-reporting 2>&1 | tee /tmp/poe-throughput-validation/ai-reporting.log
+          POE_FULL_PUBLICATION_BENCHMARK=1 node --import tsx --test test/native-paper-full-publication.test.ts 2>&1 | tee /tmp/poe-throughput-validation/full-publication-benchmark.log
           test -z "$(git status --porcelain)"
       - name: Build exact source and run isolated PAPER package smoke checks
         run: |

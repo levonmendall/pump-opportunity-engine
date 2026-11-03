@@ -1262,3 +1262,70 @@ test('source waiting diagnostics use the actual pending-order deadline and owner
  options.financialWorkAdmissionView=()=>null;assert.equal(f.runner.sourceAdmissionStatus().waitingOperation.requestedOperationMs,null,'unknown final work never masquerades as a fixed setup duration');
  (f.runner as any).hasPendingFinancialEvaluation=pending;await f.runner.stop();
 });
+
+test('a completed same-generation missing-history witness still retires when logical session completion misses its deadline',async()=>{
+ const f=fixture({missingAudit:true,lateAudit:true,fairEconomicCompletions:true}),mint=f.importActual();
+ try{
+  await f.runner.step();f.advance(70000);f.refresh();await f.runner.step();
+  const record=f.records.find(r=>r.kind==='native-candidate-window-audit')!;assert.equal(record.data.result.status,'unusable');assert.equal(record.data.result.reason,'NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED');assert.equal(record.data.result.missingSuccessfulNotifications[0].signature,sig(9999));
+  assert.equal(f.runner.status().counters.auditUnusable,1,'diagnostic lateness must not erase a proven gap in this unchanged generation');assert.equal(f.runner.status().counters.qualityGaps,1);assert.equal(f.removed.filter(row=>row===mint).length,1);assert.equal(f.runner.status().counters.auditedWindows,0);assert.equal(f.runner.currentAuditCertificate(mint),null);
+ }finally{await f.runner.stop();}
+});
+
+for(const changed of ['candidate','openedAt','connectionId','subscriptionId'] as const)test(`a completed unusable result from an old ${changed} cannot clear the current certificate`,async()=>{
+ // Coordinator-only replay: start from a real helper-produced certificate,
+ // then deliver an independently completed old session with one stale binding.
+ const f=fixture({fairEconomicCompletions:true}),mint=f.importActual();
+ try{
+  await f.runner.step();f.advance(70000);f.refresh();await f.runner.step();const certificate=f.runner.currentAuditCertificate(mint)!;assert.ok(certificate);
+  const runner=f.runner as any,current=runner.candidates.get(mint),result=structuredClone(f.records.find(r=>r.kind==='native-candidate-window-audit')!.data.result);
+  Object.assign(result,{status:'unusable',complete:false,reason:'NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED',notificationCompletenessVerified:false,executedFlowCompletenessVerified:false});
+  const active={windowEndAt:certificate.windowEndAt,openedAt:certificate.openedAt,connectionId:certificate.connectionId,subscriptionId:certificate.subscriptionId,deadlineAt:certificate.deadlineAt,session:{pending:()=>null,advance:async()=>{},result:()=>result,error:()=>null,diagnosticResult:()=>result}};
+  const candidate=changed==='candidate'?{...current}:current;if(changed!=='candidate')active[changed]--;
+  candidate.auditSession=active;const requests=f.rpcCalls.length;await runner.finishAudit(candidate);
+  assert.deepEqual(f.runner.currentAuditCertificate(mint),certificate,'old-result diagnostics cannot revoke a different admitted generation');assert.equal(f.removed.length,0);assert.equal(f.runner.status().counters.qualityGaps,0);assert.equal(f.rpcCalls.length,requests);
+ }finally{await f.runner.stop();}
+});
+
+for(const preliminaryFailed of [false,true])test(`audit-ready financial callback runs after the market writer lease and before ${preliminaryFailed?'weak-window retirement':'continuing observation'}`,async()=>{
+ const dir=mkdtempSync(join(tmpdir(),'native-audit-callback-boundary-')),path=join(dir,'registry.sqlite'),registry=new MarketRegistry(path,{concurrentIntake:true,now:()=>baseAt}),otherWriter=new Database(path),f=fixture({registry,fairEconomicCompletions:true});let callbacks=0;
+ try{
+  const options=(f.runner as any).options,assess=options.activeAssessment;if(preliminaryFailed)options.activeAssessment=(...args:unknown[])=>({...assess(...args),status:'failed',reason:'SYNTHETIC weak audited window'});
+  options.onAuditAvailable=(certificate:any)=>{callbacks++;assert.deepEqual(f.runner.currentAuditCertificate(certificate.mint),certificate,'the ordinary current certificate check remains available during cash-only readiness');assert.equal((registry as any).db.inTransaction,false);otherWriter.exec('BEGIN IMMEDIATE');otherWriter.exec('ROLLBACK');};
+  const mint=f.importActual();await f.runner.step();f.advance(70000);f.refresh();await f.runner.step();assert.equal(callbacks,1);assert.equal(f.runner.status().counters.auditedWindows,1);assert.equal(f.removed.includes(mint),preliminaryFailed);if(preliminaryFailed)assert.equal(f.runner.currentAuditCertificate(mint),null);
+ }finally{if(otherWriter.inTransaction)otherWriter.exec('ROLLBACK');await f.runner.stop();otherWriter.close();registry.close();rmSync(dir,{recursive:true,force:true});}
+});
+
+test('an actual new ACK invalidates the prior generation history cache before another audit can reuse it',async()=>{
+ const f=fixture({fairEconomicCompletions:true}),mint=f.importActual();
+ try{await f.runner.step();f.advance(70000);f.refresh();await f.runner.step();const candidate=(f.runner as any).candidates.get(mint);assert.ok(candidate.historyCache?.rows.length);const requests=f.rpcCalls.length;f.advance(1);const state=f.states.get(mint)!;state.openedAt=f.now;state.window=new FlowWindow(mint,f.now);f.runner.onFlowOpen({mint,at:f.now});assert.equal(candidate.historyCache,undefined);assert.equal(f.runner.currentAuditCertificate(mint),null);assert.equal(f.rpcCalls.length,requests);}
+ finally{await f.runner.stop();}
+});
+
+for(const closed of ['dispatch-capacity','source-information','source-fatal','generation','deadline','legacy-admission'] as const)test(`a completed history response preserves information validity separately from ${closed}`,async()=>{
+ const f=fixture({fairEconomicCompletions:true}),mint=f.importActual(),options=(f.runner as any).options;let informationOpen=true;
+ if(closed!=='legacy-admission')options.sourceInformationAdmission=()=>informationOpen;
+ const call=f.rpc.call.bind(f.rpc);
+ f.rpc.call=async<T>(method:string,params:unknown[]=[],signal?:AbortSignal,admission?:PilotRpcCallOptions):Promise<T>=>{
+  const result=await call<T>(method,params,signal,admission);if(method==='getSignaturesForAddress'){
+   f.setAllow(false);
+   if(closed==='source-information')informationOpen=false;
+   if(closed==='source-fatal'){const usage=f.flow.usage;f.flow.usage=()=>({...usage(),fatal:'SYNTHETIC_FATAL_SOURCE'});}
+   if(closed==='generation'){const snapshot=f.flow.snapshot;f.flow.snapshot=(...args)=>{const view=snapshot(...args);return view?{...view,connectionId:2}:view;};}
+   if(closed==='deadline')f.advance(11000);
+  }return result;
+ };
+ try{
+  await f.runner.step();f.advance(70000);f.refresh();await f.runner.step();assert.equal(f.rpcCalls.length,1);assert.equal(f.runner.sourceAdmissionStatus().ownerAdmissionOpen,false);
+  if(closed==='dispatch-capacity'){
+   const certificate=f.runner.currentAuditCertificate(mint);assert.ok(certificate,'a successful admitted physical read does not need permission for another read before its evidence can be checked');assert.equal(f.runner.status().counters.auditedWindows,1);assert.ok((f.runner as any).candidates.get(mint).historyCache?.rows.length,'finalized evidence retains the original generation cache even after discretionary starts are exhausted');
+   const requests=f.rpcCalls.length;await f.runner.step();assert.equal(f.rpcCalls.length,requests,'the information gate grants no additional physical start');
+  }else{assert.equal(f.runner.status().counters.auditedWindows,0);assert.equal(f.runner.currentAuditCertificate(mint),null);}
+ }finally{await f.runner.stop();}
+});
+
+test('an open source-information gate never authorizes a history dispatch when discretionary admission is closed',async()=>{
+ const f=fixture({fairEconomicCompletions:true});(f.runner as any).options.sourceInformationAdmission=()=>true;
+ try{f.importActual();await f.runner.step();f.advance(70000);f.refresh();f.setAllow(false);await f.runner.step();assert.equal(f.rpcCalls.length,0);assert.equal(f.runner.status().counters.auditedWindows,0);}
+ finally{await f.runner.stop();}
+});
