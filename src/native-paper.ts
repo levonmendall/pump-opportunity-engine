@@ -267,7 +267,7 @@ export class NativePaper {
   if(Object.keys(state.pending).length||!safety.idle||this.options.market.retirementReady?.()===false){refuse('OPERATING_READINESS_FINANCIAL_WORK_ACTIVE');return {kind:'busy' as const,recovered:false};}
   if(!recover||state.controls.entriesEnabled)return refuse('OPERATING_READINESS_NOT_REQUIRED');
   const technicalAllowed=technicalAuthority?.verified===true;
-  if(state.controls.stopRequested||(!safety.automaticRecoveryAllowed||safety.newHardPauseObserved||!NATIVE_PAPER_FINANCIAL_READINESS_POLICY.recoverablePauseReasons.includes(state.controls.reason as never))&&!technicalAllowed)return refuse('OPERATING_READINESS_OWNER_OR_HARD_CONTROL');
+  if(state.controls.stopRequested||(!safety.automaticRecoveryAllowed||safety.newHardPauseObserved||!NATIVE_PAPER_FINANCIAL_READINESS_POLICY.recoverablePauseReasons.includes(state.controls.reason as never))&&!technicalAllowed)return refuse(!state.controls.stopRequested&&technicalAuthority&&!technicalAuthority.verified?technicalAuthority.reason:'OPERATING_READINESS_OWNER_OR_HARD_CONTROL');
   if(!technicalAllowed&&!this.options.ledger.operatingFinancialRecoveryAllowed(at))return refuse('OPERATING_READINESS_CONTROL_PROVENANCE_UNAVAILABLE');
   if(dailyLossEntryBlocked(state))return refuse('OPERATING_READINESS_DAILY_LOSS');
   if(!safety.recoveryComplete||!safety.evidenceAvailable||!safety.financialAvailable||safety.uncertainActions)return refuse('OPERATING_READINESS_FINANCIAL_OR_EVIDENCE_UNAVAILABLE');

@@ -57,6 +57,21 @@ test('old handoff frames remain valid without the additive request timing diagno
  const raw=new NativeFinancialHandoff(RUN,T,4).usage(T) as any;delete raw.requestTiming;const wire=projectFinancialHandoffReporting(raw,T)!;assert.equal(wire.requestTiming,undefined);validateFinancialHandoffReporting(wire,T);
 });
 
+test('an unbounded flat-service protection cutoff cannot hide an actual local refusal and its real deadline',()=>{
+ const handoff=new NativeFinancialHandoff(RUN,T,4),at=T+10,cutoff=Number.MAX_SAFE_INTEGER-5000-2125;
+ const context={...plan(1),owner:'source',certificateDeadlineAt:null,callerLatestStartAt:T+9,protectionLatestStartAt:cutoff};
+ handoff.observeTiming('native-paper-request-plan',context);
+ handoff.observeTiming('native-paper-request-admission-refused',{...context,at,requestedAt:T,reason:'caller-admission-closed',bindingDeadlineAt:T+9,remainingCertificateMs:null});
+ handoff.observeTiming('component-local-admission-refused',{at,enqueuedAt:T,callerRequestId:id(1),kind:HTTP,code:'COMPONENT_ADMISSION_CLOSED',stage:'before-pacing',latestStartAt:T+9,remainingStartMs:-1,requestedOperationMs:2125});
+ const raw=handoff.usage(at),wire=projectFinancialHandoffReporting(raw,at)!;
+ assert.ok(wire.requestTiming,'the non-calendar limit is an optional unbounded diagnostic');
+ assert.equal(wire.requestTiming.gateRefusals,1);assert.equal(wire.requestTiming.componentRefusals,1);assert.equal(wire.requestTiming.physicalStarts,0);
+ for(const refusal of wire.requestTiming.refusals){assert.equal(refusal.protectionLatestStartAt,null);assert.equal(refusal.bindingDeadlineAt,new Date(T+9).toISOString());assert.equal(refusal.at,new Date(at).toISOString());assert.equal(refusal.reason,'caller-admission-closed');assert.equal(refusal.transportStarted,false);}
+ assert.equal(raw.requestTiming.refusals[0]!.protectionLatestStartAt,cutoff,'original raw diagnostic is preserved');
+ const corrupt=structuredClone(raw.requestTiming);corrupt.refusals[0]!.certificateDeadlineAt=cutoff;
+ assert.equal(projectRequestTimingReporting(corrupt,at,RUN),undefined,'a non-calendar candidate deadline remains invalid');
+});
+
 test('legacy sixteen active handoffs retain all method summaries and eight richly attributed refusals within32KiB',()=>{
  const handoff=new NativeFinancialHandoff(RUN,T,16);handoff.observe(T,Array.from('123456789ABCDEFG',c=>({mint:'1'.repeat(43)+c,windowEndAt:T-1000,deadlineAt:T+9999,admittedAt:T,openedAt:T-61000,featuresSha256:'a'.repeat(64)})));
  REQUEST_TIMING_METHODS.forEach((method,n)=>{const transport=n<8?'http':method==='upgrade'?'ws-upgrade':'ws',kind={method,transport};handoff.observeTiming('component-physical-start',{id:n,at:T+n*2,kind,enqueuedAt:T+n*2,pacingWaitMs:0});handoff.observeTiming('component-physical-settled',{id:n,at:T+n*2+1,kind,transportStarted:true,physicalSettlementObserved:true,responseComplete:true});});

@@ -1,5 +1,6 @@
 import {CANDIDATE_SOURCE_RECOVERY_PAUSE} from './candidate-source-recovery.js';
 import {REVIEWED_SOURCE_PAUSE,reviewedSourcePauseLineage} from './reviewed-source-pause.js';
+import {isReviewedManualCloseControlRestoration} from './manual-close-control-provenance.js';
 export {CANDIDATE_SOURCE_RECOVERY_PAUSE} from './candidate-source-recovery.js';
 import {REVIEWED_MARKET_CONTENTION,reviewedMarketContentionLineage,type ReviewedContentionHistory} from './reviewed-market-contention.js';
 import {tradeDecisionContext,entryTradeProvenance,withFailedExitGas,makeTradeOutcome,type TradeDecisionContext,type TradeEntryProvenance,type TradeOutcomeReport} from './trade-outcome-reporting.js';
@@ -955,12 +956,18 @@ export class PaperLedger {
     if(state.controls.entriesEnabled||state.controls.stopRequested||dailyLossEntryBlocked(state)||Object.keys(state.pending).length||!TECHNICAL_PROTECTION_PAUSE_REASONS.includes(state.controls.reason as never))return no('TECHNICAL_PROTECTION_CONTROL_NOT_ELIGIBLE');
     const history=this.operatingControlHistory(state,at);if(!history||!history.anchor)return no('TECHNICAL_PROTECTION_CONTROL_HISTORY_UNAVAILABLE');
     let originRevision:number|null=null,lastControl:{at:number;reason:string}|null=null;
+    let priorPause:typeof history.decoded[number]|null=null,previousControl:typeof history.decoded[number]|null=null;
     const intents:Array<{revision:number;actionId:string;at:number;kind:string;payloadHash:string;resultSha256:string}>=[];
-    for(const {row,payload,result,ordinary,restored,startup}of history.decoded){intents.push({revision:row.revision,actionId:row.actionId,at:row.at,kind:row.kind,payloadHash:row.payloadHash,resultSha256:digest(result)});
+    for(const item of history.decoded){const {row,payload,result,ordinary,restored,startup}=item;intents.push({revision:row.revision,actionId:row.actionId,at:row.at,kind:row.kind,payloadHash:row.payloadHash,resultSha256:digest(result)});
       if(row.kind==='safe-stop')return no('TECHNICAL_PROTECTION_STOP_INTENT_PRESENT');if(row.kind==='resume')continue;
       if(ordinary&&TECHNICAL_PROTECTION_PAUSE_REASONS.includes(payload.reason as never))originRevision=row.revision;
-      else if(restored){if(originRevision===null||payload.reason!==state.controls.reason)return no('TECHNICAL_PROTECTION_UNPROVEN_RESTORE');}
+      // A restoration preserves the preceding authenticated pause across startup.
+      // Its reason is historical: a later genuine technical failure may differ.
+      // Merely matching the final current reason cannot prove that earlier intent.
+      else if(restored||isReviewedManualCloseControlRestoration({state,anchor:history.anchor,originalPause:priorPause?.row??null,previousControl:previousControl?.row??null,row})){if(!priorPause||payload.reason!==priorPause.payload.reason||!TECHNICAL_PROTECTION_PAUSE_REASONS.includes(payload.reason as never)&&payload.reason!==OPERATIONAL_REPORTING_ENTRY_PAUSE)return no('TECHNICAL_PROTECTION_UNPROVEN_RESTORE');}
       else if(!(ordinary&&INTERNAL_SHUTDOWN_SOFT_PAUSES.has(payload.reason)||startup&&payload.reason==='execution startup: fresh reconciliation/readiness required'))return no('TECHNICAL_PROTECTION_OWNER_OR_UNKNOWN_CONTROL');
+      if(!startup)priorPause=item;
+      previousControl=item;
       lastControl={at:row.at,reason:payload.reason};
     }
     if(originRevision===null||!lastControl||lastControl.at!==state.controls.changedAt||lastControl.reason!==state.controls.reason)return no('TECHNICAL_PROTECTION_CURRENT_CONTROL_MISMATCH');
