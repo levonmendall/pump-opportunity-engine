@@ -251,7 +251,7 @@ test('the exact installed proof-timeout runtime advances only to the reviewed he
 });
 
 test('the reviewed scheduler source advances to migration-age scope without changing the account',()=>{
- assert.equal(p.scheduling,'c46d6f301535c80027bc31b29a15681b216df62e','retain the exact installed A5 source');assert.equal(p.to,'12a54646e87a3cd0d81d6846a254d76d7947bd21','bind the exact reviewed A6 application source');assert.match(p.to,/^[a-f0-9]{40}$/);assert.notEqual(p.to,p.scheduling);
+ assert.equal(p.scheduling,'c46d6f301535c80027bc31b29a15681b216df62e','retain the exact installed A5 source');assert.equal(p.to,'356083fd8f0e69297c8470d4493077a175d2bad1','bind the exact reviewed A6 application source');assert.match(p.to,/^[a-f0-9]{40}$/);assert.notEqual(p.to,p.scheduling);
  const c=new SnapshotCache({...identity(),release:p.scheduling});assert.equal(attachReviewedSourceHandover(c),true);
  const prior={...sample('90',p.scheduling,T-120000),financialEpoch:v3Epoch()};c.accept(prior,T);const before=c.read(),history=c.equityHistory();
  for(const mutate of [s=>{s.account.id='other';},s=>{s.source.strategy='other';},s=>{s.sequence='89';},s=>{delete s.financialEpoch;},s=>{s.financialEpoch.backupSha256='f'.repeat(64);}]){
