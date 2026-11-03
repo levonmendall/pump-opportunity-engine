@@ -131,6 +131,23 @@ test('one-to-four prepared mints use exact indexed lookups with exclusions and a
  }finally{f.registry.close();}
 });
 
+test('ordinary age-qualified selection seeks current proofs before retained unknown WatchRows and keeps exact ranking parity',()=>{
+ const f=fixture(true);try{
+  f.registry.transaction(()=>{for(let i=0;i<4096;i++)f.seed(i);});
+  const raw=internal(f.registry),statement=raw.statement.bind(f.registry),plans:Array<{sql:string;steps:string[]}>=[];
+  raw.statement=sql=>{const s=statement(sql);if(!sql.includes('FROM token_creations selection_age'))return s;return new Proxy(s,{get(target,key){const value=Reflect.get(target,key);if(typeof value!=='function')return value;if(key!=='get')return value.bind(target);return(...params:RegistryParameter[])=>{plans.push({sql,steps:(raw.db.prepare('EXPLAIN QUERY PLAN '+sql).all(...params) as {detail:string}[]).map(r=>r.detail)});return value.apply(target,params);};}});};
+  assert.equal(f.next(),null,'a zero-young population needs no historical WatchRow scan');
+  f.age(4090,AT-TOKEN_AGE_POLICY.maximumAgeMs);f.age(4091);f.age(4092,AT-TOKEN_AGE_POLICY.maximumAgeMs-1000);f.age(4093,AT-1000,AT+1);
+  f.hint(0,'unknown-high-merit',AT-1000,'999999999999999');f.hint(4090,'young-small',AT-1000,'1000000000');f.hint(4091,'young-large',AT-1000,'2000000000');f.hint(4092,'expired-high-merit',AT-1000,'999999999999999');
+  assert.equal(f.next()!.mint,mint(4091));assert.equal(f.next(AT,new Set([mint(4091)]))!.mint,mint(4090));
+  assert.equal(f.next(AT+1,new Set([mint(4091)]))!.mint,mint(4093),'the exact24h mint expires and the previously future proof becomes available');
+  assert.equal(f.next(AT+1,new Set([mint(4091),mint(4093)])),null);
+  assert.ok(plans.some(p=>p.sql.startsWith('WITH eligible AS MATERIALIZED')));assert.ok(plans.some(p=>p.sql.startsWith('SELECT 1')));
+  for(const plan of plans){assert.ok(plan.steps.some(d=>d.includes('SEARCH selection_age USING INDEX token_creations_age (created_at>? AND created_at<?)')));assert.ok(plan.steps.some(d=>d.includes('SEARCH w USING INDEX watch_rows_mint (mint=? AND archived=?)')));assert.ok(!plan.steps.some(d=>d.includes('watch_rows_opportunity_v1')),'neither existence nor ranking scans retained non-target rows');}
+  assert.equal(f.registry.count(),4097);assert.equal(f.parityCalls(),5);
+ }finally{f.registry.close();}
+});
+
 test('new selection index preserves stored rows and history, and rollback immediately restores the former winner',()=>{
  const dir=mkdtempSync(join(tmpdir(),'poe-OFFLINE-selection-upgrade-')),path=join(dir,'market.sqlite');let f=fixture(true,path);
  try{

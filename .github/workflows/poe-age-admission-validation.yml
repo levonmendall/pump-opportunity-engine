@@ -11,7 +11,7 @@ jobs:
     timeout-minutes: 35
     env:
       PYTHONDONTWRITEBYTECODE: '1'
-      TARGET_SOURCE: 560d61b03fef422bd063ae58a7c22b7946a1f8d9
+      TARGET_SOURCE: 8913a9107989ce334b03e6167a2b4fc10d6fb7f6
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
         with:

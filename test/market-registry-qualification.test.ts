@@ -157,3 +157,16 @@ test('qualification selectors seek current queue states, never the legacy prepar
   assert.equal((f.db.prepare('SELECT COUNT(*) n FROM observation_preparations').get() as {n:number}).n,10001,'retained evidence remains intact');
  }finally{f.registry.close();}
 });
+
+test('nonfinancial owned-mint exclusions let the next qualifier progress at every preliminary stage',()=>{
+ const f=fixture();try{
+  f.hint(1,AT-1);f.hint(2,AT);const excluded=new Set([mint(1)]),all=new Set([mint(1),mint(2)]);
+  assert.equal(f.registry.nextPumpSwapQualification(AT)!.mint,mint(1));assert.equal(f.registry.nextPumpSwapQualification(AT,excluded)!.mint,mint(2));assert.equal(f.registry.nextPumpSwapQualification(AT,all),undefined);
+  f.prepare(1,AT-1);f.prepare(2,AT);assert.equal(f.registry.nextTokenCreationHistoryRequest(AT,true)!.mint,mint(1));assert.equal(f.registry.nextTokenCreationHistoryRequest(AT,true,excluded)!.mint,mint(2));assert.equal(f.registry.nextTokenCreationHistoryRequest(AT,true,all),undefined);
+  for(const n of [1,2]){const request=f.registry.nextTokenCreationHistoryRequest(AT,true,new Set([mint(3-n)]))!;f.registry.deferTokenCreationHistory(request,AT,'TOKEN_CREATION_HISTORY_PENDING');assert.equal(f.registry.applyTokenCreationHistoryPage(request,{kind:'candidate',signature:signature(n),slot:n+1},AT),true);}
+  assert.equal(f.registry.nextTokenCreationRequest(AT,true,true)!.mint,mint(1));assert.equal(f.registry.nextTokenCreationRequest(AT,true,true,excluded)!.mint,mint(2));assert.equal(f.registry.nextTokenCreationRequest(AT,true,true,all),undefined);
+  for(const n of [1,2])f.registry.putTokenCreationProof(proof(n));
+  assert.equal(f.registry.nextQualifiedPumpSwapIdentity(AT)!.mint,mint(1));assert.equal(f.registry.nextQualifiedPumpSwapIdentity(AT,excluded)!.mint,mint(2));assert.equal(f.registry.nextQualifiedPumpSwapIdentity(AT,all),undefined);
+  assert.equal(f.registry.pumpSwapQualificationHint(mint(1))!.lastSeenAt,AT-1,'temporary ownership never deletes or rejuvenates a queue record');assert.equal(f.registry.nextQualifiedPumpSwapIdentity(AT,new Set())!.mint,mint(1),'releasing ownership restores the original fair order');
+ }finally{f.registry.close();}
+});
