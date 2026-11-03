@@ -1,0 +1,87 @@
+name: Validate and package authorized one-use PAPER close
+on:
+  push:
+    branches: [operator/manual-paper-close-20261103]
+    paths:
+      - operator/manual-close/**
+      - scripts/build-manual-paper-close.mjs
+      - test/manual-paper-close.test.ts
+      - .github/workflows/poe-manual-paper-close.yml
+permissions:
+  contents: read
+jobs:
+  validate-package:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.19.0'
+          check-latest: false
+          cache: npm
+      - name: Verify isolated source and install immutable dependencies
+        run: |
+          set -euo pipefail
+          umask 077
+          mkdir -p /tmp/poe-manual-close-validation
+          git rev-parse HEAD > /tmp/poe-manual-close-validation/source-commit.txt
+          git rev-parse HEAD^{tree} > /tmp/poe-manual-close-validation/source-tree.txt
+          git diff --name-only c92a2b95b1c175bf67b65cbe072c9e5f5080303d HEAD > /tmp/poe-manual-close-validation/changed-paths.txt
+          python3 -B -I - <<'PY'
+          import pathlib
+          actual=set(pathlib.Path('/tmp/poe-manual-close-validation/changed-paths.txt').read_text().splitlines())
+          assert actual=={'.github/workflows/poe-manual-paper-close.yml','operator/manual-close/README.md','operator/manual-close/manual-close.ts','operator/manual-close/manual-close-cli.ts','scripts/build-manual-paper-close.mjs','test/manual-paper-close.test.ts'}
+          PY
+          npm ci --include=dev 2>&1 | tee /tmp/poe-manual-close-validation/dependencies.log
+          test -z "$(git status --porcelain)"
+      - name: Compile and run focused normal-execution and recovery regressions
+        run: |
+          set -euo pipefail
+          umask 077
+          npm run build 2>&1 | tee /tmp/poe-manual-close-validation/typecheck.log
+          node --import tsx --test test/manual-paper-close.test.ts 2>&1 | tee /tmp/poe-manual-close-validation/tests.log
+          test -z "$(git status --porcelain)"
+      - name: Build pinned operator closure with network-denied SQLite smoke
+        run: |
+          set -euo pipefail
+          umask 077
+          node scripts/build-manual-paper-close.mjs --output-directory /tmp/poe-manual-close-output-hosted 2>&1 | tee /tmp/poe-manual-close-validation/package.log
+          cp -a /tmp/poe-manual-close-output-hosted /tmp/poe-manual-close-validation/bundle
+          python3 -B -I - <<'PY'
+          import hashlib,json,os,pathlib,re
+          p=pathlib.Path('/tmp/poe-manual-close-validation')
+          sha=lambda path:hashlib.sha256(path.read_bytes()).hexdigest()
+          source=(p/'source-commit.txt').read_text().strip()
+          assert source==os.environ['GITHUB_SHA']
+          logs=(p/'tests.log').read_text()
+          counts={key:int(re.findall(r'(?m)^(?:# |ℹ )'+key+r'\s+(\d+)\s*$',logs)[-1]) for key in ['tests','pass','fail','skipped','cancelled']}
+          assert counts=={'tests':13,'pass':13,'fail':0,'skipped':0,'cancelled':0}
+          meta=json.loads((p/'bundle/metadata.json').read_bytes())
+          assert meta['sourceCommit']==source and meta['installedSource']=='356083fd8f0e69297c8470d4493077a175d2bad1' and meta['executionSource']=='c92a2b95b1c175bf67b65cbe072c9e5f5080303d'
+          assert meta['executionTree']=='6cd3fcb8c1bf14c260048ce8757b87ea74c4fcf7'
+          assert meta['financialMode']=='PAPER' and meta['liveTradingEnabled'] is False and meta['sourceModulesChanged'] is False
+          assert len(meta['unchangedFinancialModules'])==9 and all(r['byteIdentical'] for r in meta['unchangedFinancialModules'])
+          assert len(meta['pilotMarket']['unchangedExitMethods'])==4 and all(r['byteIdentical'] for r in meta['pilotMarket']['unchangedExitMethods'])
+          assert meta['smoke']['importSafe'] and meta['smoke']['networkDenied'] and meta['smoke']['pinnedAddonLoaded'] and meta['smoke']['financialAccountOpened'] is False
+          assert {f.name for f in (p/'bundle').iterdir()}=={'manual-close.mjs','better_sqlite3.node','metadata.json'}
+          files=[{'file':f.name,'bytes':f.stat().st_size,'sha256':sha(f)} for f in sorted((p/'bundle').iterdir())]
+          assert meta['bundle']['sha256']==sha(p/'bundle/manual-close.mjs')
+          assert meta['addon']['sha256']==sha(p/'bundle/better_sqlite3.node')=='6fd4292c6c5f352436cd85c9e1cb286978efa43c20ae350973f83414ced9991d'
+          receipt={'kind':'POE_OWNER_CLOSE_VALIDATED_BUILD','source':source,'sourceTree':(p/'source-tree.txt').read_text().strip(),'installedSource':meta['installedSource'],'executionSource':meta['executionSource'],'workflowRun':int(os.environ['GITHUB_RUN_ID']),'runAttempt':int(os.environ['GITHUB_RUN_ATTEMPT']),'tests':counts,'testsLogSha256':sha(p/'tests.log'),'typecheckLogSha256':sha(p/'typecheck.log'),'files':files,'financialMode':'PAPER','hostMutation':False,'accountOpened':False,'liveTrading':False,'deploymentAuthorizedByThisArtifact':False}
+          (p/'build-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
+          print(json.dumps(receipt))
+          PY
+          test -z "$(git status --porcelain)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: poe-manual-paper-close-${{ github.run_id }}
+          path: /tmp/poe-manual-close-validation/
+          retention-days: 14
+          if-no-files-found: error
