@@ -10,7 +10,7 @@ import {PublicKey} from '@solana/web3.js';
 import Database from 'better-sqlite3';
 import bs58 from 'bs58';
 import {MarketRegistry,MarketRegistryContention} from '../src/market-registry.js';
-import {NativeCandidateRunner} from '../src/native-candidate-runner.js';
+import {NativeCandidateRunner,type NativeMarketIntake} from '../src/native-candidate-runner.js';
 import {PERSISTENT_OBSERVABLE_MARKET_POLICY} from '../src/observation-age.js';
 import {LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION} from '../src/liquidity-resilient-momentum-v3-1.js';
 import {canonicalPumpPoolPda} from '../src/sdk.js';
@@ -26,7 +26,7 @@ const pool=(m:string)=>canonicalPumpPoolPda(new PublicKey(m)).toBase58();
 const TOKEN='TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',PUMP='6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P';
 function proof(n:number,at=AT,createdAt=AT-3600000):TokenCreationProof{return {version:TOKEN_AGE_POLICY.version,mint:mint(n),signature:signature(n),slot:100,createdAt,availableAt:at,commitment:'finalized',instruction:'create',transactionSha256:'a'.repeat(64)};}
 function creation(n:number){const m=mint(n),curve=PublicKey.findProgramAddressSync([Buffer.from('bonding-curve'),new PublicKey(m).toBuffer()],new PublicKey(PUMP))[0].toBase58();return {version:0,slot:100,blockTime:(AT-3600000)/1000,transaction:{signatures:[signature(n)],message:{accountKeys:[PUMP,TOKEN,m,mint(201),curve],instructions:[{programIdIndex:0,accounts:[2,3,4],data:bs58.encode(Buffer.concat([createHash('sha256').update('global:create').digest().subarray(0,8),Buffer.alloc(50)]))}]}},meta:{err:null,innerInstructions:[{index:0,instructions:[{programIdIndex:1,accounts:[2],data:bs58.encode(Buffer.from([20,...Buffer.alloc(34)])),stackHeight:2}]}]}};}
-function fixture(options:{pumpswapOnly?:true;history?:unknown;rpcResponse?:(method:string,params:unknown[])=>unknown;path?:string;concurrentIntake?:boolean;enforceAge?:boolean;sourceWorkAdmission?:(bound:number)=>boolean;financialOwnership?:(mint:string)=>'HELD'|'ENTRY_PENDING'|null;transaction?:unknown}={}){
+function fixture(options:{pumpswapOnly?:true;marketIntake?:NativeMarketIntake;history?:unknown;rpcResponse?:(method:string,params:unknown[])=>unknown;path?:string;concurrentIntake?:boolean;enforceAge?:boolean;sourceWorkAdmission?:(bound:number)=>boolean;financialOwnership?:(mint:string)=>'HELD'|'ENTRY_PENDING'|null;transaction?:unknown}={}){
  let at=AT,runner:NativeCandidateRunner,refusal:string|null=null,retryAt:number|undefined,stopped=false,heartbeat=false,heartbeats=0;
  const registry=new MarketRegistry(options.path??':memory:',{now:()=>at,concurrentIntake:options.concurrentIntake}),states=new Map<string,{mint:string;pool:string;minSlot?:number}>(),preparedCalls:string[]=[],adopted:ResearchClockNativeObservationSupport[]=[],requests:string[]=[],events:string[]=[],records:Array<{kind:string;data:any}>=[];
  const support=(m:string)=>({mint:m,pool:pool(m),at,sourceSlot:100,evidence:'OFFLINE_CANONICAL_POOL_BINDING',summary:{marketClockUnixSeconds:Math.floor(at/1000),tokenProgram:TOKEN}} as ResearchClockNativeObservationSupport);
@@ -38,7 +38,7 @@ function fixture(options:{pumpswapOnly?:true;history?:unknown;rpcResponse?:(meth
   usage(){return {candidates:states.size,retiring:0,connected:false,nextServiceAt:heartbeat?at:Infinity,nextServiceDomain:heartbeat?'control':null,nextServiceAction:heartbeat?'heartbeat':null,nextRequiredServiceAt:heartbeat?at:Infinity,nativeServiceDeadlines:heartbeat?[{action:'heartbeat',deadlineAt:at+2000}]:[],physicalTransportsSettled:stopped,fatal:null};},async stop(){stopped=true;states.clear();},
  };
  const rpc={async call(method:string,params:unknown[]){requests.push(method);events.push(method);if(options.rpcResponse)return options.rpcResponse(method,params);return method==='getSignaturesForAddress'?options.history??null:options.transaction??null;},usage(){return {inFlight:0,waitingOrOperating:false,dispatchWindow:{physicalBusy:false,readyAt:at}};},cooldownUntil(){return 0;}};
- runner=new NativeCandidateRunner({pumpswapOnly:options.pumpswapOnly,registry,runId:'preparation-test',flow:flow as any,rpc:rpc as any,maximumDeep:4,now:()=>at,...(options.enforceAge===false?{}:{enforceTokenAge24h:true as const}),observationAgePolicy:PERSISTENT_OBSERVABLE_MARKET_POLICY.version,activeStrategy:LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION,sourceWorkAdmission:options.sourceWorkAdmission,financialOwnership:options.financialOwnership,onCandidateAllocated:id=>events.push('bridge:'+id.baseMint),record:(kind,data)=>records.push({kind,data})});
+ runner=new NativeCandidateRunner({pumpswapOnly:options.pumpswapOnly,marketIntake:options.marketIntake,registry,runId:'preparation-test',flow:flow as any,rpc:rpc as any,maximumDeep:4,now:()=>at,...(options.enforceAge===false?{}:{enforceTokenAge24h:true as const}),observationAgePolicy:PERSISTENT_OBSERVABLE_MARKET_POLICY.version,activeStrategy:LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION,sourceWorkAdmission:options.sourceWorkAdmission,financialOwnership:options.financialOwnership,onCandidateAllocated:id=>events.push('bridge:'+id.baseMint),record:(kind,data)=>records.push({kind,data})});
  const seed=(n:number,knownAge=true,creationHint=true)=>{const m=mint(n);if(knownAge)registry.putTokenCreationProof(proof(n,at));if(creationHint)runner.onMarketIdentity({mint:m,source:'pumpportal-new-token',kind:'creation',venue:'pump',signature:signature(n),receivedAt:at,evidence:'unverified-provider-discovery-hint'});if(options.pumpswapOnly)runner.onMarketIdentity({mint:m,source:'pumpportal-migration',kind:'migration',signature:signature(n+80),receivedAt:at,evidence:'unverified-provider-discovery-hint'});runner.onMigration({signature:signature(n+80),feedMint:m,receivedAt:at});runner.onMarketActivity({mint:m,source:'pumpapi-broad',kind:'activity',venue:'pump',signature:signature(n+100),side:'buy',quoteLamports:'1000',receivedAt:at,evidence:'unverified-provider-activity-hint'});return m;};
  return {runner,registry,flow,rpc,states,preparedCalls,adopted,requests,events,records,seed,support,get now(){return at;},get heartbeats(){return heartbeats;},requireHeartbeat:()=>{heartbeat=true;},advance:(ms:number)=>{at+=ms;},refuse:(reason:string|null,until?:number)=>{refusal=reason;retryAt=until;},steps:async(n=1)=>{for(let i=0;i<n;i++)await runner.step();},close:async()=>{await runner.stop();registry.close();}};
 }
@@ -585,5 +585,56 @@ test('failed constructor initialization leaves no obsolete proof listener',async
   const listeners=(f.registry as any).tokenCreationProofListeners as Set<unknown>,before=listeners.size;
   assert.throws(()=>new NativeCandidateRunner({...((f.runner as any).options),record:()=>{throw Error('OFFLINE_CONSTRUCTOR_FAILURE');}}),/OFFLINE_CONSTRUCTOR_FAILURE/);
   assert.equal(listeners.size,before);
+ }finally{await f.close();}
+});
+
+test('a flood of unknown PumpSwap feed hints performs zero financial ownership reads',async()=>{
+ let reads=0;const owners=new Map<string,'HELD'|'ENTRY_PENDING'>([[mint(43),'HELD'],[mint(44),'ENTRY_PENDING']]),received:string[]=[],marketIntake:NativeMarketIntake={observeIdentity(){},observeActivity(){},observeFeed(){},observeMigration(){},observeQualification:hint=>{received.push(hint.mint);}};
+ const f=fixture({pumpswapOnly:true,marketIntake,financialOwnership:m=>{reads++;return owners.get(m)??null;}});try{
+  f.runner.syncFinancialOwnership(new Set(owners.keys()));assert.equal(reads,2);reads=0;
+  for(let i=0;i<1000;i++)for(const n of [43,44,45,46]){
+   const row={mint:mint(n),source:'pumpapi-broad' as const,kind:'activity' as const,venue:'pump-amm',receivedAt:f.now};
+   assert.equal(f.runner.admitMarketHint(row),false);f.runner.onMarketActivity({...row,side:'buy',quoteLamports:'999999999999',evidence:'unverified-provider-activity-hint'});
+  }
+  assert.equal(reads,0);assert.equal(received.length,4000);assert.deepEqual(new Set(received),new Set([mint(45),mint(46)]));assert.equal(f.registry.count(),0);assert.equal(f.states.size,0);
+  owners.delete(mint(43));f.runner.syncFinancialOwnership(new Set());assert.equal(reads,2,'previous hints are rechecked even when current financial inputs omit a resolved mint');reads=0;
+  assert.equal(f.runner.admitMarketHint({mint:mint(43),source:'pumpapi-broad',kind:'activity',venue:'pump-amm',receivedAt:f.now}),false);assert.equal(received.at(-1),mint(43));assert.equal(reads,0);
+ }finally{await f.close();}
+});
+
+for(const stage of ['pool','history','proof','promotion'] as const)test('a mirrored financial owner cannot block another mint at qualification stage: '+stage,async()=>{
+ const held=mint(47),other=mint(48),lookups:Array<{method:string;params:unknown[]}>=[];let owned=false;
+ const f=fixture({pumpswapOnly:true,financialOwnership:m=>owned&&m===held?'HELD':null,rpcResponse:(method,params)=>{lookups.push({method,params});return method==='getSignaturesForAddress'?[]:null;}});
+ try{
+  for(const n of [47,48])economicHint(f,n);
+  if(stage!=='pool')for(const n of [47,48])f.registry.putObservationPreparation({mint:mint(n),pool:pool(mint(n)),checkedAt:AT,state:'pool-ready',reason:'OFFLINE_QUALIFIER_CANONICAL_POOL'});
+  if(stage==='proof')for(const n of [47,48]){
+   const request={mint:mint(n),before:null,beforeSlot:null,until:null,untilSlot:null,oldestCandidate:null,oldestCandidateSlot:null};f.registry.deferTokenCreationHistory(request,AT,'TOKEN_CREATION_HISTORY_PENDING');assert.equal(f.registry.applyTokenCreationHistoryPage(request,{kind:'candidate',signature:signature(n),slot:100},AT),true);
+  }
+  if(stage==='promotion')for(const n of [47,48])f.registry.putTokenCreationProof(proof(n));
+  owned=true;f.runner.syncFinancialOwnership(new Set([held]));await f.steps();
+  assert.equal(f.runner.watch.lookupIdentity(held,f.now),undefined);assert.equal(f.states.has(held),false);assert.equal(f.preparedCalls.includes(held),false);
+  if(stage==='pool')assert.deepEqual(f.preparedCalls,[other]);
+  else if(stage==='history')assert.deepEqual(lookups.map(r=>[r.method,r.params[0]]),[['getSignaturesForAddress',other]]);
+  else if(stage==='proof')assert.deepEqual(lookups.map(r=>[r.method,r.params[0]]),[['getTransaction',signature(48)]]);
+  else {assert.equal(f.registry.count(),1);assert.ok(f.runner.watch.lookupIdentity(other,f.now));assert.deepEqual(f.preparedCalls,[other]);}
+ }finally{await f.close();}
+});
+
+test('a newly acquired owner missing from the hint mirror is still blocked before provider dispatch',async()=>{
+ const held=mint(49),other=mint(50);let owned=false;
+ const f=fixture({pumpswapOnly:true,financialOwnership:m=>owned&&m===held?'ENTRY_PENDING':null});try{
+  economicHint(f,49);f.advance(1);economicHint(f,50);owned=true;
+  await f.steps();assert.deepEqual(f.preparedCalls,[]);assert.deepEqual(f.requests,[]);
+  await f.steps();assert.deepEqual(f.preparedCalls,[other]);assert.equal(f.states.size,0);assert.equal(f.registry.count(),0);
+  owned=false;f.runner.syncFinancialOwnership(new Set());await f.steps(2);assert.ok(f.preparedCalls.some(m=>m===held),'authoritative release permits qualification on a later scheduler turn');
+ }finally{await f.close();}
+});
+
+test('native activity hints use the ownership mirror while mandatory membership checks remain authoritative',async()=>{
+ let reads=0;const f=fixture({pumpswapOnly:true,financialOwnership:()=>{reads++;return null;}});try{
+  const m=f.seed(51);await f.steps(2);assert.equal(f.states.has(m),true);reads=0;
+  for(let i=0;i<1000;i++)f.runner.onNativeActivity({mint:m,at:f.now,evidence:'OFFLINE_NATIVE_ACTIVITY'});
+  assert.equal(reads,0);await f.steps();assert.ok(reads>0,'the actual source turn independently rechecks financial ownership');
  }finally{await f.close();}
 });

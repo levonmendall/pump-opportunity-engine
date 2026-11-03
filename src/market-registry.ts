@@ -24,7 +24,7 @@ export type PumpSwapQualificationRecord={mint:string;firstSeenAt:number;lastSeen
 type EconomicFlowCache=Omit<EconomicFlowAfter,'complete'|'retentionStartAt'>&{decisionAt:number;counter:number;bytes:number};
 type RegistryTransactionCounters={readSnapshotCommits:number;writerLeaseReadOnlyCommits:number;contentionBeforeCallback:number;attempted:number;readOnlyCommits:number;writeCommits:number;failed:number;fsyncEligibleCommits:number};
 export type RegistryReportingIndex='watch_rows_report_summary_v1'|'watch_rows_report_page_v1';
-export type RegistryQuery={where?:string;params?:RegistryParameter[];orderBy?:string;limit?:number;offset?:number;index?:RegistryReportingIndex};
+export type RegistryQuery={where?:string;params?:RegistryParameter[];orderBy?:string;limit?:number;offset?:number;index?:RegistryReportingIndex;tokenAgeAt?:number};
 type IdentityInput=Omit<MarketIdentityHint,'receivedAt'|'evidence'|'source'|'kind'>&{receivedAt?:number;at?:number;source:string;kind?:string;evidence?:string};
 type ActivityInput=Omit<MarketActivityHint,'receivedAt'|'evidence'|'source'|'kind'>&{receivedAt?:number;at?:number;source:string;kind?:string;evidence?:string};
 const json=(v:unknown)=>JSON.stringify(v,(_key,value)=>typeof value==='bigint'?value.toString():value);
@@ -301,11 +301,17 @@ export class MarketRegistry {
   * midranks include a neutral zero reference; their equal mean is an explicitly
   * uncalibrated scheduling heuristic, not a profit probability or entry rule. */
  nextOpportunity(q:RegistryQuery,at:number,readyAnchorSql:string,preparationWithTokenAge=false,preparedMintLookup=false):{row:WatchRow;hints:ObservationPriorityHints}|undefined{
-  need(integer(at),'MARKET_REGISTRY_OPPORTUNITY_TIME');
+  need(integer(at)&&(q.tokenAgeAt===undefined||q.tokenAgeAt===at),'MARKET_REGISTRY_OPPORTUNITY_TIME');
   // A prepared slot set is already bounded by the caller. Keep its exact mint
   // lookup instead of scanning the global population's defer-time range.
-  const index=preparedMintLookup?'watch_rows_mint':'watch_rows_opportunity_v1';
-  if(!this.statement(`SELECT 1 FROM watch_rows w INDEXED BY ${index} WHERE w.archived=0${q.where?` AND (${q.where})`:''} LIMIT 1`).get(...(q.params??[])))return undefined;
+  // Ordinary age-qualified preparation starts from the current proof set;
+  // retained unknown/expired WatchRows do not participate in its scan. Keep
+  // every original caller predicate and all downstream ranking unchanged.
+  const ageScoped=q.tokenAgeAt!==undefined&&!preparationWithTokenAge&&!preparedMintLookup,index=preparedMintLookup||ageScoped?'watch_rows_mint':'watch_rows_opportunity_v1';
+  const from=ageScoped?'token_creations selection_age INDEXED BY token_creations_age CROSS JOIN watch_rows w INDEXED BY watch_rows_mint ON w.mint=selection_age.mint':`watch_rows w INDEXED BY ${index}`;
+  const scope=ageScoped?'selection_age.created_at<=? AND selection_age.created_at>=? AND selection_age.verified_at<=? AND ':'';
+  const scopeParams=ageScoped?[at,at-TOKEN_AGE_POLICY.maximumAgeMs,at]:[];
+  if(!this.statement(`SELECT 1 FROM ${from} WHERE ${scope}w.archived=0${q.where?` AND (${q.where})`:''} LIMIT 1`).get(...scopeParams,...(q.params??[])))return undefined;
   const recent=at-SHARED_ACTIVITY_HORIZON_MS,prior=Math.max(0,at-2*SHARED_ACTIVITY_HORIZON_MS);
   // Preparation precedes immutable age verification. Prefer candidates that
   // already have valid age or can request its proof now, before work with no
@@ -329,7 +335,7 @@ export class MarketRegistry {
   // exactly RANK()-1-nullCount = count(smaller values); NULL stays neutral.
   // The wide candidate records no longer pass through each dimension's sort.
   const row=this.statement(`WITH eligible AS MATERIALIZED (
-   SELECT w.signature,w.mint,w.pool,w.waiting_since,w.first_seen_at,MAX(0,?-(${readyAnchorSql})) serviceable_wait_ms,${ageRoute} preparation_age_route FROM watch_rows w INDEXED BY ${index} WHERE w.archived=0${q.where?` AND (${q.where})`:''}
+   SELECT w.signature,w.mint,w.pool,w.waiting_since,w.first_seen_at,MAX(0,?-(${readyAnchorSql})) serviceable_wait_ms,${ageRoute} preparation_age_route FROM ${from} WHERE ${scope}w.archived=0${q.where?` AND (${q.where})`:''}
   ),scoped_flow AS (
    SELECT a.mint,a.pool,a.hint_source,SUM(CASE WHEN a.first_seen_at>? AND a.quote_lamports IS NOT NULL THEN 1 ELSE 0 END) recent_known,
     SUM(CASE WHEN a.first_seen_at>? AND a.quote_lamports IS NOT NULL AND a.side='buy' THEN 1 ELSE 0 END) recent_buys,
@@ -380,7 +386,7 @@ export class MarketRegistry {
   ),selection AS (
    SELECT *,economic_merit+CASE WHEN current_evidence=1 THEN ${OPPORTUNITY_PRIORITY_POLICY.fairnessMaximum}*MIN(1.0,serviceable_wait_ms/${OPPORTUNITY_PRIORITY_POLICY.fairnessSaturationMs}.0) ELSE 0 END selection_priority FROM ranked
    ORDER BY (preparation_age_route>0) DESC,current_evidence DESC,selection_priority DESC,waiting_since,first_seen_at,signature LIMIT 1
-  ) SELECT selection.*,selected.body,leader.mint economic_leader_mint,leader.economic_merit economic_leader_merit FROM selection CROSS JOIN leader JOIN watch_rows selected ON selected.signature=selection.signature`).get(at,...ageParams,...(q.params??[]),recent,recent,recent,recent,recent,recent,recent,prior,at,recent,at) as {body:string;mint:string;preparation_age_route:number;recent_net:number|null;prior_net:number|null;acceleration:number|null;price_return:number|null;price_agreement:number|null;price_stability:number|null;recent_gross:number|null;pool:string;price_hint_source:string|null;price_first_at:number|null;price_last_at:number|null;serviceable_wait_ms:number;economic_merit:number;selection_priority:number;current_evidence:number;economic_leader_mint:string;economic_leader_merit:number}|undefined;
+  ) SELECT selection.*,selected.body,leader.mint economic_leader_mint,leader.economic_merit economic_leader_merit FROM selection CROSS JOIN leader JOIN watch_rows selected ON selected.signature=selection.signature`).get(at,...ageParams,...scopeParams,...(q.params??[]),recent,recent,recent,recent,recent,recent,recent,prior,at,recent,at) as {body:string;mint:string;preparation_age_route:number;recent_net:number|null;prior_net:number|null;acceleration:number|null;price_return:number|null;price_agreement:number|null;price_stability:number|null;recent_gross:number|null;pool:string;price_hint_source:string|null;price_first_at:number|null;price_last_at:number|null;serviceable_wait_ms:number;economic_merit:number;selection_priority:number;current_evidence:number;economic_leader_mint:string;economic_leader_merit:number}|undefined;
   return row?{row:JSON.parse(row.body) as WatchRow,hints:{version:'shared-flow-opportunity-priority-v2',horizonMs:SHARED_ACTIVITY_HORIZON_MS,recentNetSol:row.recent_net,priorNetSol:row.prior_net,netAccelerationSolPerMinute:row.acceleration,priceReturnBps:row.price_return===null?null:row.price_return*10000,priceDemandAgreement:row.price_agreement,priceMovePerGrossSol:row.price_return===null||!row.recent_gross?null:Math.abs(row.price_return)/row.recent_gross,twoSidedPriceStability:row.price_stability,priceScope:row.price_return===null?null:{pool:row.pool,source:row.price_hint_source!,firstAt:row.price_first_at!,lastAt:row.price_last_at!},serviceableWaitMs:row.serviceable_wait_ms,economicMerit:row.economic_merit,priority:row.selection_priority,hasCurrentEconomicEvidence:row.current_evidence===1,fairnessBonus:row.current_evidence===1?observationFairnessBonus(row.serviceable_wait_ms):0,economicLeaderMint:row.economic_leader_mint,economicLeaderMerit:row.economic_leader_merit,waitChangedWinner:row.mint!==row.economic_leader_mint,...(preparationWithTokenAge?{preparationAgeRoute:row.preparation_age_route===2?'verified-token-age' as const:row.preparation_age_route===1?'creation-request-available' as const:'creation-request-unavailable' as const}:{}),directLiquidity:'unknown',financialPermission:false}}:undefined;
  }
  count(where?:string,params:RegistryParameter[]=[]):number{return Number((this.statement(`SELECT COUNT(*) AS n FROM watch_rows w WHERE w.archived=0${where?` AND (${where})`:''}`).get(...params) as {n:number}).n);}
@@ -569,25 +575,26 @@ export class MarketRegistry {
  pumpSwapQualificationHint(mint:string):PumpSwapQualificationRecord|undefined{
   return this.statement('SELECT mint,first_seen_at firstSeenAt,last_seen_at lastSeenAt,source,kind,signature FROM pumpswap_qualification_hints_v1 WHERE mint=?').get(mint) as PumpSwapQualificationRecord|undefined;
  }
+ private qualificationExclusion(excludedMints?:ReadonlySet<string>){const params=[...(excludedMints??[])];need(params.every(name),'PUMPSWAP_QUALIFICATION_EXCLUSIONS');return {where:params.length?' AND q.mint NOT IN ('+params.map(()=>'?').join(',')+')':'',params};}
  /** Pool qualification is preliminary work in the existing request budget.
   * Negative account results require a genuinely newer venue receipt; provider
   * or dispatch failures keep the existing one-minute retry interval. */
- nextPumpSwapQualification(at:number):PumpSwapQualificationRecord|undefined{
-  need(integer(at),'PUMPSWAP_QUALIFICATION_TIME');return this.statement(`SELECT q.mint,q.first_seen_at firstSeenAt,q.last_seen_at lastSeenAt,q.source,q.kind,q.signature
+ nextPumpSwapQualification(at:number,excludedMints?:ReadonlySet<string>):PumpSwapQualificationRecord|undefined{
+  need(integer(at),'PUMPSWAP_QUALIFICATION_TIME');const excluded=this.qualificationExclusion(excludedMints);return this.statement(`SELECT q.mint,q.first_seen_at firstSeenAt,q.last_seen_at lastSeenAt,q.source,q.kind,q.signature
    FROM pumpswap_qualification_hints_v1 q INDEXED BY pumpswap_qualification_recent_v1
    WHERE q.pool_state IN ('unprepared','pool-absent','pool-unsupported','provider-unavailable','awaiting-dispatch') AND q.last_seen_at>=? AND q.last_seen_at<=?
     AND NOT EXISTS(SELECT 1 FROM token_creations age WHERE age.mint=q.mint)
-    AND (q.pool_state='unprepared' OR q.pool_state IN ('pool-absent','pool-unsupported') AND q.last_seen_at>q.pool_checked_at OR q.pool_state IN ('provider-unavailable','awaiting-dispatch') AND q.pool_checked_at<=?)
-   ORDER BY COALESCE(q.pool_checked_at,q.first_seen_at),q.first_seen_at,q.mint LIMIT 1`).get(Math.max(0,at-SHARED_ACTIVITY_HORIZON_MS),at,at-60_000) as PumpSwapQualificationRecord|undefined;
+    AND (q.pool_state='unprepared' OR q.pool_state IN ('pool-absent','pool-unsupported') AND q.last_seen_at>q.pool_checked_at OR q.pool_state IN ('provider-unavailable','awaiting-dispatch') AND q.pool_checked_at<=?)${excluded.where}
+   ORDER BY COALESCE(q.pool_checked_at,q.first_seen_at),q.first_seen_at,q.mint LIMIT 1`).get(Math.max(0,at-SHARED_ACTIVITY_HORIZON_MS),at,at-60_000,...excluded.params) as PumpSwapQualificationRecord|undefined;
  }
  /** Once birth is proven, a fresh real venue receipt may introduce a minimal
   * ordinary identity. Prior unqualified price/volume/trades are never replayed. */
- nextQualifiedPumpSwapIdentity(at:number):PumpSwapQualificationRecord|undefined{
-  need(integer(at),'PUMPSWAP_QUALIFICATION_TIME');return this.statement(`SELECT q.mint,q.first_seen_at firstSeenAt,q.last_seen_at lastSeenAt,q.source,q.kind,q.signature
+ nextQualifiedPumpSwapIdentity(at:number,excludedMints?:ReadonlySet<string>):PumpSwapQualificationRecord|undefined{
+  need(integer(at),'PUMPSWAP_QUALIFICATION_TIME');const excluded=this.qualificationExclusion(excludedMints);return this.statement(`SELECT q.mint,q.first_seen_at firstSeenAt,q.last_seen_at lastSeenAt,q.source,q.kind,q.signature
    FROM token_creations age INDEXED BY token_creations_age CROSS JOIN pumpswap_qualification_hints_v1 q ON q.mint=age.mint
    WHERE age.created_at>=? AND age.created_at<=? AND age.verified_at<=? AND q.promoted_at IS NULL AND q.pool_state='pool-ready' AND q.last_seen_at>=? AND q.last_seen_at<=?
-    AND EXISTS(SELECT 1 FROM observation_preparations p WHERE p.mint=q.mint AND p.state='pool-ready' AND p.checked_at=q.pool_checked_at)
-   ORDER BY q.first_seen_at,q.mint LIMIT 1`).get(Math.max(0,at-TOKEN_AGE_POLICY.maximumAgeMs),at,at,Math.max(0,at-SHARED_ACTIVITY_HORIZON_MS),at) as PumpSwapQualificationRecord|undefined;
+    AND EXISTS(SELECT 1 FROM observation_preparations p WHERE p.mint=q.mint AND p.state='pool-ready' AND p.checked_at=q.pool_checked_at)${excluded.where}
+   ORDER BY q.first_seen_at,q.mint LIMIT 1`).get(Math.max(0,at-TOKEN_AGE_POLICY.maximumAgeMs),at,at,Math.max(0,at-SHARED_ACTIVITY_HORIZON_MS),at,...excluded.params) as PumpSwapQualificationRecord|undefined;
  }
  markPumpSwapQualificationPromoted(mint:string,at:number):boolean{return this.transaction(()=>{
   need(name(mint)&&integer(at),'PUMPSWAP_QUALIFICATION_TIME');if(!this.tokenAgeEligibility(mint,at).allowed)return false;
@@ -622,12 +629,12 @@ export class MarketRegistry {
  });}
  /** Only already observed creation signatures for currently active/migrated
   * candidates are queried. No token-history scan or per-launch RPC fan-out. */
- nextTokenCreationRequest(at:number,requirePreparedPool=false,qualificationOnly=false):{mint:string;signature:string}|undefined{
+ nextTokenCreationRequest(at:number,requirePreparedPool=false,qualificationOnly=false,excludedMints?:ReadonlySet<string>):{mint:string;signature:string}|undefined{
   need(integer(at),'TOKEN_CREATION_REQUEST_TIME');
-  if(qualificationOnly)return this.statement(`WITH qualified AS MATERIALIZED (
+  if(qualificationOnly){const excluded=this.qualificationExclusion(excludedMints);return this.statement(`WITH qualified AS MATERIALIZED (
    SELECT q.mint,q.first_seen_at,q.birth_signature,q.birth_seen_at FROM pumpswap_qualification_hints_v1 q INDEXED BY pumpswap_qualification_recent_v1
     CROSS JOIN observation_preparations p ON p.mint=q.mint
-   WHERE q.pool_state='pool-ready' AND q.last_seen_at>=? AND q.last_seen_at<=? AND p.state='pool-ready' AND p.checked_at=q.pool_checked_at
+   WHERE q.pool_state='pool-ready' AND q.last_seen_at>=? AND q.last_seen_at<=? AND p.state='pool-ready' AND p.checked_at=q.pool_checked_at${excluded.where}
     AND NOT EXISTS(SELECT 1 FROM token_creations age WHERE age.mint=q.mint)
   ), births AS (
    SELECT mint,birth_signature signature,birth_seen_at received_at,first_seen_at qualification_at FROM qualified WHERE birth_signature IS NOT NULL
@@ -637,7 +644,7 @@ export class MarketRegistry {
    WHERE birth.kind='creation' AND birth.source IN ('pumpportal-new-token','finalized-mint-history') AND birth.signature!=''
   ) SELECT birth.mint,birth.signature FROM births birth LEFT JOIN token_creation_requests r ON r.mint=birth.mint AND r.signature=birth.signature
    WHERE birth.received_at>=? AND birth.received_at<=? AND (r.mint IS NULL OR r.terminal=0 AND r.next_attempt_at<=?)
-   ORDER BY COALESCE(r.next_attempt_at,birth.qualification_at),birth.qualification_at,birth.received_at DESC,birth.mint,birth.signature LIMIT 1`).get(Math.max(0,at-SHARED_ACTIVITY_HORIZON_MS),at,Math.max(0,at-TOKEN_AGE_POLICY.maximumAgeMs),at,at) as {mint:string;signature:string}|undefined;
+   ORDER BY COALESCE(r.next_attempt_at,birth.qualification_at),birth.qualification_at,birth.received_at DESC,birth.mint,birth.signature LIMIT 1`).get(Math.max(0,at-SHARED_ACTIVITY_HORIZON_MS),at,...excluded.params,Math.max(0,at-TOKEN_AGE_POLICY.maximumAgeMs),at,at) as {mint:string;signature:string}|undefined;}
   return this.statement(`WITH active AS MATERIALIZED (
    ${requirePreparedPool?`SELECT prepared.mint FROM observation_preparations prepared WHERE prepared.state='pool-ready' AND
     (EXISTS(SELECT 1 FROM market_tokens t WHERE t.mint=prepared.mint AND t.last_activity_at>=? AND t.last_activity_at<=?)
@@ -665,16 +672,16 @@ export class MarketRegistry {
   * ready turn precedes activity score; per-mint turns settle millisecond ties.
   * Unseen candidates enter at their real pool-check time, so continuing new
   * arrivals cannot jump ahead of an already waiting history cursor. */
- nextTokenCreationHistoryRequest(at:number,qualificationOnly=false):TokenCreationHistoryRequest|undefined {
+ nextTokenCreationHistoryRequest(at:number,qualificationOnly=false,excludedMints?:ReadonlySet<string>):TokenCreationHistoryRequest|undefined {
   need(integer(at),'TOKEN_CREATION_HISTORY_TIME');
-  if(qualificationOnly)return this.statement(`SELECT p.mint,h.before_signature before,h.before_slot beforeSlot,h.until_signature until,h.until_slot untilSlot,h.oldest_candidate oldestCandidate,h.oldest_candidate_slot oldestCandidateSlot
+  if(qualificationOnly){const excluded=this.qualificationExclusion(excludedMints);return this.statement(`SELECT p.mint,h.before_signature before,h.before_slot beforeSlot,h.until_signature until,h.until_slot untilSlot,h.oldest_candidate oldestCandidate,h.oldest_candidate_slot oldestCandidateSlot
    FROM pumpswap_qualification_hints_v1 q INDEXED BY pumpswap_qualification_recent_v1 CROSS JOIN observation_preparations p ON p.mint=q.mint LEFT JOIN token_creation_history h ON h.mint=q.mint
-   WHERE q.pool_state='pool-ready' AND q.last_seen_at>=? AND q.last_seen_at<=? AND p.state='pool-ready' AND p.checked_at=q.pool_checked_at
+   WHERE q.pool_state='pool-ready' AND q.last_seen_at>=? AND q.last_seen_at<=? AND p.state='pool-ready' AND p.checked_at=q.pool_checked_at${excluded.where}
     AND NOT EXISTS(SELECT 1 FROM token_creations age WHERE age.mint=q.mint)
     AND (h.mint IS NULL OR h.terminal=0 AND h.next_attempt_at<=?)
     AND NOT (q.birth_signature IS NOT NULL AND q.birth_seen_at>=? AND q.birth_seen_at<=? AND NOT EXISTS(SELECT 1 FROM token_creation_requests r WHERE r.mint=q.mint AND r.signature=q.birth_signature AND r.terminal=1))
     AND NOT EXISTS(SELECT 1 FROM identity_provenance birth LEFT JOIN token_creation_requests r ON r.mint=birth.mint AND r.signature=birth.signature WHERE birth.mint=q.mint AND birth.kind='creation' AND birth.source IN ('pumpportal-new-token','finalized-mint-history') AND birth.signature!='' AND birth.first_seen_at>=? AND birth.first_seen_at<=? AND (r.mint IS NULL OR r.terminal=0))
-   ORDER BY COALESCE(h.next_attempt_at,q.pool_checked_at),COALESCE(h.turns,0),q.first_seen_at,q.mint LIMIT 1`).get(Math.max(0,at-SHARED_ACTIVITY_HORIZON_MS),at,at,Math.max(0,at-TOKEN_AGE_POLICY.maximumAgeMs),at,Math.max(0,at-TOKEN_AGE_POLICY.maximumAgeMs),at) as TokenCreationHistoryRequest|undefined;
+   ORDER BY COALESCE(h.next_attempt_at,q.pool_checked_at),COALESCE(h.turns,0),q.first_seen_at,q.mint LIMIT 1`).get(Math.max(0,at-SHARED_ACTIVITY_HORIZON_MS),at,...excluded.params,at,Math.max(0,at-TOKEN_AGE_POLICY.maximumAgeMs),at,Math.max(0,at-TOKEN_AGE_POLICY.maximumAgeMs),at) as TokenCreationHistoryRequest|undefined;}
   return this.statement(`SELECT p.mint,h.before_signature before,h.before_slot beforeSlot,h.until_signature until,h.until_slot untilSlot,h.oldest_candidate oldestCandidate,h.oldest_candidate_slot oldestCandidateSlot
    FROM observation_preparations p JOIN market_tokens t ON t.mint=p.mint LEFT JOIN token_creation_history h ON h.mint=p.mint
    WHERE p.state='pool-ready' AND NOT EXISTS(SELECT 1 FROM token_creations age WHERE age.mint=p.mint)
