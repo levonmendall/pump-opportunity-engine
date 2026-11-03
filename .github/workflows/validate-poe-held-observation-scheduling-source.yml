@@ -1,0 +1,79 @@
+name: Validate POE prepared observation scheduling
+on:
+  push:
+    branches: [verify/poe-held-observation-scheduling-source-20261103]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      TARGET_SOURCE: c46d6f301535c80027bc31b29a15681b216df62e
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ env.TARGET_SOURCE }}
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+          cache: npm
+      - name: Install the unchanged pinned dependencies
+        run: |
+          set -euo pipefail
+          umask 077
+          npm ci --include=dev
+          mkdir -m 700 /tmp/poe-held-observation-scheduling-validation
+          git rev-parse HEAD > /tmp/poe-held-observation-scheduling-validation/source-commit.txt
+          git diff acb50ffee8c374b3f67ee10da0780ec69a62ba03 -- src test scripts package.json package-lock.json > /tmp/poe-held-observation-scheduling-validation/source.patch
+      - name: Typecheck and compile
+        run: |
+          set -euo pipefail
+          umask 077
+          npm run build 2>&1 | tee /tmp/poe-held-observation-scheduling-validation/typecheck.log
+          npm run compile 2>&1 | tee /tmp/poe-held-observation-scheduling-validation/compile.log
+      - name: Complete application regression and reporting tests
+        run: |
+          set -euo pipefail
+          umask 077
+          node --import tsx --test --test-concurrency=1 test/*.test.ts 2>&1 | tee /tmp/poe-held-observation-scheduling-validation/full.log
+          node --test test/ai-team-dashboard.test.mjs test/reviewed-source-handover.test.mjs 2>&1 | tee /tmp/poe-held-observation-scheduling-validation/reporting.log
+      - name: Build and verify the exact PAPER runtime
+        env:
+          VALIDATION_RUN: ${{ github.run_id }}
+        run: |
+          set -euo pipefail
+          umask 077
+          test "$(git rev-parse HEAD)" = "$TARGET_SOURCE"
+          git status --porcelain > /tmp/poe-held-observation-scheduling-validation/worktree-status.txt
+          test ! -s /tmp/poe-held-observation-scheduling-validation/worktree-status.txt
+          node scripts/build-native-paper-ec2.mjs --output-directory /tmp/poe-native-paper-output-held-observation-scheduling
+          cp -a /tmp/poe-native-paper-output-held-observation-scheduling /tmp/poe-held-observation-scheduling-validation/bundle
+          git archive HEAD src test scripts docs package.json package-lock.json tsconfig.json | gzip -n > /tmp/poe-held-observation-scheduling-validation/source.tar.gz
+          python3 -B -I - <<'PY'
+          import hashlib,json,os,pathlib,re
+          p=pathlib.Path('/tmp/poe-held-observation-scheduling-validation');log=(p/'full.log').read_bytes();meta=json.loads((p/'bundle/metadata.json').read_bytes())
+          def metric(key):
+              rows=re.findall(r'(?m)^(?:# |ℹ )'+key+r'\s+(\d+)\s*$',log.decode())
+              assert len(rows)==1,'COMPLETE_TEST_SUMMARY_REQUIRED:'+key
+              return int(rows[0])
+          count=metric('tests')
+          assert count>=3701 and metric('pass')==count and all(metric(k)==0 for k in ('fail','skipped','cancelled'))
+          source=os.environ['TARGET_SOURCE'];assert (p/'source-commit.txt').read_text().strip()==source
+          assert meta['git']['commit']==source and meta['git']['workingTreeStatus']==''
+          assert meta['financialMode']=='PAPER' and meta['liveTradingEnabled'] is False
+          assert meta['smoke']['exitStatus']==0 and meta['smoke']['networkDisabled'] and meta['smoke']['readonlyPersistentBackup']
+          receipt={'kind':'POE_HELD_OBSERVATION_SCHEDULING_VALIDATED_BUILD','source':source,'base':'acb50ffee8c374b3f67ee10da0780ec69a62ba03','bundleSha256':hashlib.sha256((p/'bundle/native-paper.mjs').read_bytes()).hexdigest(),'testsPassed':count,'validationRun':int(os.environ['VALIDATION_RUN']),'buildRun':int(os.environ['VALIDATION_RUN']),'fullLogSha256':hashlib.sha256(log).hexdigest(),'financialWrites':0,'ec2Changed':False,'strategyChanged':False,'marketScope':'verified-pumpswap-actual-creation-age-at-most-24h','liveTradingEnabled':False}
+          (p/'build-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt,sort_keys=True))
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: poe-held-observation-scheduling-validation-${{ github.run_id }}
+          path: /tmp/poe-held-observation-scheduling-validation/
+          retention-days: 14
+          if-no-files-found: error
