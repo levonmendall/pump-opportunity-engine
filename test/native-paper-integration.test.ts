@@ -165,6 +165,83 @@ function runtimeFinancialAdmission(f:ReturnType<typeof fixture>,rpc:PilotRpc){
  return {...holder,reportingHealth,context};
 }
 
+for(const scoped of [false,true])test(`actual migration request routing ${scoped?'preserves':'reproduces interrupted'} sixty-second technical recovery`,async t=>{
+ let financialAdmission=(_at:number)=>false;
+ const f=fixture(t,true,false,{operatingFinancialReadiness:true,financialAdmission:at=>financialAdmission(at)});
+ await f.open();
+ const priorPath=join(f.dir,'migration-recovery-prior.json');
+ writeFileSync(priorPath,JSON.stringify({schemaVersion:1,blockedReason:'RPC_HTTP_429',calls:1,bytes:0,lastObservedAt:f.at-120000,starts:[f.at-121000],pending:[]}));
+ const prior=readFileSync(priorPath),events:Array<{kind:string;data:any}>=[];
+ let physical=0,failedQueries=0;
+ const rpc=new PilotRpc({directory:join(f.dir,'migration-recovery-rpc'),runId:'offline-migration-recovery-'+String(scoped),baselinePaths:[priorPath],priorPhysicalSettled:true,...nativePaperRpcConfiguration(true),now:()=>f.at,monotonic:()=>f.at,sleep:async ms=>{f.at+=ms;},fetcher:(async(_url,init)=>{
+  physical++;const q=JSON.parse(String(init?.body));
+  if(q.method==='getTransaction')return new Promise<Response>((_resolve,reject)=>{
+   init!.signal!.addEventListener('abort',()=>{
+    // The fast wall timer keeps this offline regression bounded; the common
+    // synthetic operating clock advances by the observed physical budget.
+    f.at+=1200;reject(Error('OFFLINE settled migration query deadline'));
+   },{once:true});
+  });
+  const result=await f.wireRpc.call(q.method,q.params);
+  return new Response(JSON.stringify({jsonrpc:'2.0',id:q.id,result}));
+ })as typeof fetch,record:(kind,data)=>events.push({kind,data})});
+ const actual=runtimeFinancialAdmission(f,rpc);financialAdmission=actual.financial;actual.reportingHealth.observe(1,true);
+ const owner=new NativePaperWorkState();owner.set('source');
+ const lowerView=(bound=1500)=>pilotLowerPriorityAdmission({now:f.at,endAt:Number.MAX_SAFE_INTEGER,held:0,lastUsable:null,nextPendingAt:f.bridge.trader.nextDueAt(),operationBoundMs:bound});
+ const sourceAdmission=()=>nativePaperSourceWorkAdmission({informationOpen:true,owned:false,entryWork:false,persistent:true,usage:rpc.usage()});
+ const holder:any={},context:any={__name:(value:unknown)=>value,NativeProtectionDispatch,record(kind:string,data:unknown){events.push({kind,data});},runId:'offline-migration-actual-router',requestSequence:0,entryCertificate:null,sourceEntryPreparation:null,candidateDiagnostic:(work:()=>unknown,fallback:unknown)=>{try{return work();}catch{return fallback;}},lastProtectionStart:0,holder,currentLedger:f.ledger,workOwner:owner,currentRpc:rpc,service:true,Date:{now:()=>f.at},endAt:Number.MAX_SAFE_INTEGER,stopped:false,lastCompleted:null,entryAdmission:new NativePaperEntryAdmission(),entryToken:null,manifest:{controlCooldownUntil:0},PilotRpcUnavailable,nativePaperRequestOperationBound,NativePaperReportingHealth,nativePaperFinancialProviderAvailable,nativePaperProtectionReadDeadline,nativePaperSourceWorkAdmission,lowerView,sourceAdmission,sourceInformationAdmission:()=>true,optionalAdmission:(bound:number)=>sourceAdmission()&&lowerView(bound).admitted,engine:f.engine,bridge:f.bridge};
+ const launcher=runNativePaper.toString(),begin=launcher.search(/const\s+requestOptions\s*=/),rest=launcher.slice(begin),end=rest.search(/;\s*const\s+market\s*=/);
+ assert.ok(begin>=0&&end>0,'the production request-options and scheduled adapter must be exercised');
+ runInNewContext(rest.slice(0,end)+';holder.scheduled=scheduled;',context,{timeout:1000});
+ f.route(holder.scheduled);
+ const settle=async()=>{await new Promise<void>(resolve=>setImmediate(resolve));await new Promise<void>(resolve=>setImmediate(resolve));};
+ try{
+  assert.equal(f.bridge.maintainFlatFinancialReadiness(f.price()).recovered,true);
+  f.bridge.trader.pauseNewEntries('completed PAPER protection gap exceeded research boundary');
+  const stopped=f.ledger.state(),began=f.at,until=began+75000;
+  let nextQuery=began,firstRecoveredAt:number|null=null,admissionRefusals=0,reconciliations=0;
+  while(f.at<until){
+   f.at+=1000;
+   if(f.at>=nextQuery){
+    nextQuery=f.at+8000;
+    const signature=sig(800000+failedQueries++),before=rpc.usage().newUnits;
+    assert.equal(holder.scheduled.migrationOriginProofReadyAt(signature,f.at),f.at,'the actual scheduled adapter forwards the query-ready clock');
+    await assert.rejects(holder.scheduled.call('getTransaction',[signature,{encoding:'json',commitment:'confirmed',maxSupportedTransactionVersion:1}],undefined,{timeoutMs:5,operationBoundMs:1500,...(scoped?{queryTimeoutScope:'migration-origin-proof'}:{})}),/COMPONENT_PHYSICAL_TIMEOUT/);
+    await settle();assert.equal(rpc.usage().inFlight,0);assert.equal(rpc.usage().newUnits,before+1,'a failed physical query remains charged exactly once');
+   }
+   const previousRevision=f.ledger.state().revision,result=f.bridge.maintainFlatFinancialReadiness(f.price());
+   assert.equal(result.kind,'reconciled');assert.ok(f.ledger.state().revision>previousRevision,'each counted cash observation is durably committed');
+   assert.equal(f.ledger.state().daily.reconciledAt,f.at);reconciliations++;
+   if(f.bridge.operatingReadinessDiagnostics().reasonCode==='OPERATING_READINESS_CURRENT_ADMISSION_UNAVAILABLE')admissionRefusals++;
+   if(result.recovered&&firstRecoveredAt===null)firstRecoveredAt=f.at;
+   if(f.at-began<60000)assert.equal(f.ledger.state().controls.entriesEnabled,false,'no fresh quote or callback can shorten the original recovery interval');
+   // Actual healthy non-proof reads continue through the same physical router
+   // whenever its real admission opens; no outage or response is fabricated.
+   if(rpc.available())await holder.scheduled.call('getBlockTime',[1]);
+  }
+  const after=f.ledger.state(),recoveries=f.records.filter(row=>row.kind==='native-paper-financial-readiness-recovered'&&row.data.technicalProtectionRecovery);
+  assert.ok(failedQueries>=8);assert.ok(reconciliations>=50);assert.equal(after.controls.entriesEnabled,scoped);
+  assert.equal(rpc.usage().migrationOriginProofTimeoutIsolation.isolatedTimeouts,scoped?failedQueries:0);
+  assert.equal(events.filter(row=>row.kind==='component-physical-timeout').length,failedQueries);
+  assert.equal(physical,rpc.usage().providerResponses.httpStarts);assert.equal(physical,rpc.usage().newUnits);
+  if(scoped){
+   assert.equal(admissionRefusals,0);assert.equal(recoveries.length,1);assert.ok(firstRecoveredAt!==null);
+   const proof=recoveries[0]!.data.technicalProtectionRecovery;
+   assert.ok(proof.completedAt-proof.startedAt>=60000);assert.ok(proof.completedEvaluations>=16);
+   assert.ok(proof.maximumCompletedGapMs<=4000);assert.ok(proof.completedAt-proof.lastQuoteAt<=2000);
+   assert.equal(proof.lastQuoteAt,proof.completedAt,'flat recovery retains the actual fresh USD observation time');
+   assert.deepEqual(recoveries[0]!.data.positionUnits,{});assert.equal(recoveries[0]!.data.candidateWindowClaimed,false);assert.equal(recoveries[0]!.data.orderCreated,false);
+  }else{
+   assert.ok(admissionRefusals>=failedQueries);assert.equal(firstRecoveredAt,null);assert.equal(recoveries.length,0);
+  }
+  assert.equal(after.accountId,stopped.accountId);assert.equal(after.inceptionAt,stopped.inceptionAt);assert.equal(after.lamports,stopped.lamports);assert.equal(after.executionCosts,stopped.executionCosts);
+  assert.deepEqual(after.positions,{});assert.deepEqual(after.pending,{});assert.deepEqual(readFileSync(priorPath),prior);
+  assert.equal(f.records.filter(row=>row.kind==='trader-held-evaluation').length,0,'cash reconciliation is never reported as held-position protection');
+  assert.ok(f.ledger.exportJournal(1000).some((row:any)=>row.kind==='pause'&&row.detail.includes('completed PAPER protection gap')));
+  t.diagnostic(JSON.stringify({scope:'OFFLINE actual launcher routing, PilotRpc, native readiness and durable disposable cash reconciliation; synthetic timing and injected query failures',scoped,failedQueries,reconciliations,admissionRefusals,firstRecoveredAt,elapsedMs:f.at-began,providerRequests:0}));
+ }finally{await settle();rpc.close();}
+});
+
 for(const scenario of ['occupied-rpc','report-in-progress']as const)test(`actual runtime financial permission recovers during ${scenario} while actual entry waits for independent execution readiness`,async t=>{
  let financialAdmission=(_at:number)=>false,riskAdmission=()=>false;
  const f=fixture(t,true,false,{operatingFinancialReadiness:true,financialAdmission:at=>financialAdmission(at),riskAdmission:()=>riskAdmission()});
