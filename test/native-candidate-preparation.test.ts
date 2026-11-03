@@ -10,7 +10,8 @@ import {PublicKey} from '@solana/web3.js';
 import Database from 'better-sqlite3';
 import bs58 from 'bs58';
 import {MarketRegistry,MarketRegistryContention} from '../src/market-registry.js';
-import {NativeCandidateRunner,type NativeMarketIntake} from '../src/native-candidate-runner.js';
+import {NativeCandidateRunner,NATIVE_DEADLINE_POLICY,type NativeMarketIntake,type NativeAuditCertificate} from '../src/native-candidate-runner.js';
+import {PilotNativeFlow} from '../src/pilot-native-flow.js';
 import {PERSISTENT_OBSERVABLE_MARKET_POLICY} from '../src/observation-age.js';
 import {LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION} from '../src/liquidity-resilient-momentum-v3-1.js';
 import {canonicalPumpPoolPda} from '../src/sdk.js';
@@ -18,6 +19,10 @@ import {TOKEN_AGE_POLICY,type TokenCreationProof} from '../src/token-age-policy.
 import type {ResearchClockNativeObservationSupport} from '../src/research-clock-pricing.js';
 import type {NativeObservationPreparationResult} from '../src/native-observation-preparation.js';
 import {projectCandidatePreparationReporting} from '../src/candidate-preparation-reporting.js';
+import {pilotLowerPriorityAdmission} from '../src/pilot.js';
+import {FlowWindow} from '../src/strategy.js';
+import {nativePaperFeaturesSha256} from '../src/native-paper-contract.js';
+import {nativePaperManagementReserve,nativePaperSourceWorkAdmission} from '../src/run-native-paper.js';
 
 const AT=Date.parse('2026-11-01T21:00:00Z');
 const mint=(n:number)=>new PublicKey(Buffer.alloc(32,n)).toBase58();
@@ -26,7 +31,7 @@ const pool=(m:string)=>canonicalPumpPoolPda(new PublicKey(m)).toBase58();
 const TOKEN='TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',PUMP='6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P';
 function proof(n:number,at=AT,createdAt=AT-3600000):TokenCreationProof{return {version:TOKEN_AGE_POLICY.version,mint:mint(n),signature:signature(n),slot:100,createdAt,availableAt:at,commitment:'finalized',instruction:'create',transactionSha256:'a'.repeat(64)};}
 function creation(n:number){const m=mint(n),curve=PublicKey.findProgramAddressSync([Buffer.from('bonding-curve'),new PublicKey(m).toBuffer()],new PublicKey(PUMP))[0].toBase58();return {version:0,slot:100,blockTime:(AT-3600000)/1000,transaction:{signatures:[signature(n)],message:{accountKeys:[PUMP,TOKEN,m,mint(201),curve],instructions:[{programIdIndex:0,accounts:[2,3,4],data:bs58.encode(Buffer.concat([createHash('sha256').update('global:create').digest().subarray(0,8),Buffer.alloc(50)]))}]}},meta:{err:null,innerInstructions:[{index:0,instructions:[{programIdIndex:1,accounts:[2],data:bs58.encode(Buffer.from([20,...Buffer.alloc(34)])),stackHeight:2}]}]}};}
-function fixture(options:{proofReadyAt?:(signature:string,at:number)=>number;pumpswapOnly?:true;marketIntake?:NativeMarketIntake;history?:unknown;rpcResponse?:(method:string,params:unknown[])=>unknown;path?:string;concurrentIntake?:boolean;enforceAge?:boolean;sourceWorkAdmission?:(bound:number)=>boolean;financialOwnership?:(mint:string)=>'HELD'|'ENTRY_PENDING'|null;transaction?:unknown}={}){
+function fixture(options:{financialEvaluationPending?:(mint:string,at:number)=>boolean;proofReadyAt?:(signature:string,at:number)=>number;pumpswapOnly?:true;marketIntake?:NativeMarketIntake;history?:unknown;rpcResponse?:(method:string,params:unknown[])=>unknown;path?:string;concurrentIntake?:boolean;enforceAge?:boolean;sourceWorkAdmission?:(bound:number)=>boolean;financialOwnership?:(mint:string)=>'HELD'|'ENTRY_PENDING'|null;transaction?:unknown}={}){
  let at=AT,runner:NativeCandidateRunner,refusal:string|null=null,retryAt:number|undefined,stopped=false,heartbeat=false,heartbeats=0;
  const registry=new MarketRegistry(options.path??':memory:',{now:()=>at,concurrentIntake:options.concurrentIntake}),states=new Map<string,{mint:string;pool:string;minSlot?:number}>(),preparedCalls:string[]=[],adopted:ResearchClockNativeObservationSupport[]=[],requests:string[]=[],requestCalls:Array<{method:string;params:unknown[];options:Record<string,unknown>}>=[],events:string[]=[],records:Array<{kind:string;data:any}>=[];
  const support=(m:string)=>({mint:m,pool:pool(m),at,sourceSlot:100,evidence:'OFFLINE_CANONICAL_POOL_BINDING',summary:{marketClockUnixSeconds:Math.floor(at/1000),tokenProgram:TOKEN}} as ResearchClockNativeObservationSupport);
@@ -38,7 +43,7 @@ function fixture(options:{proofReadyAt?:(signature:string,at:number)=>number;pum
   usage(){return {candidates:states.size,retiring:0,connected:false,nextServiceAt:heartbeat?at:Infinity,nextServiceDomain:heartbeat?'control':null,nextServiceAction:heartbeat?'heartbeat':null,nextRequiredServiceAt:heartbeat?at:Infinity,nativeServiceDeadlines:heartbeat?[{action:'heartbeat',deadlineAt:at+2000}]:[],physicalTransportsSettled:stopped,fatal:null};},async stop(){stopped=true;states.clear();},
  };
  const rpc={tokenCreationProofReadyAt(signature:string,planningAt=at){return options.proofReadyAt?.(signature,planningAt)??planningAt;},async call(method:string,params:unknown[],_signal?:AbortSignal,callOptions:Record<string,unknown>={}){requests.push(method);requestCalls.push({method,params,options:callOptions});events.push(method);if(options.rpcResponse)return options.rpcResponse(method,params);return method==='getSignaturesForAddress'?options.history??null:options.transaction??null;},usage(){return {inFlight:0,waitingOrOperating:false,dispatchWindow:{physicalBusy:false,readyAt:at}};},cooldownUntil(){return 0;}};
- runner=new NativeCandidateRunner({pumpswapOnly:options.pumpswapOnly,marketIntake:options.marketIntake,registry,runId:'preparation-test',flow:flow as any,rpc:rpc as any,maximumDeep:4,now:()=>at,...(options.enforceAge===false?{}:{enforceTokenAge24h:true as const}),observationAgePolicy:PERSISTENT_OBSERVABLE_MARKET_POLICY.version,activeStrategy:LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION,sourceWorkAdmission:options.sourceWorkAdmission,financialOwnership:options.financialOwnership,onCandidateAllocated:id=>events.push('bridge:'+id.baseMint),record:(kind,data)=>records.push({kind,data})});
+ runner=new NativeCandidateRunner({pumpswapOnly:options.pumpswapOnly,marketIntake:options.marketIntake,registry,runId:'preparation-test',flow:flow as any,rpc:rpc as any,maximumDeep:4,now:()=>at,...(options.enforceAge===false?{}:{enforceTokenAge24h:true as const}),observationAgePolicy:PERSISTENT_OBSERVABLE_MARKET_POLICY.version,activeStrategy:LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION,sourceWorkAdmission:options.sourceWorkAdmission,financialOwnership:options.financialOwnership,financialEvaluationPending:options.financialEvaluationPending,onCandidateAllocated:id=>events.push('bridge:'+id.baseMint),record:(kind,data)=>records.push({kind,data})});
  const seed=(n:number,knownAge=true,creationHint=true)=>{const m=mint(n);if(knownAge)registry.putTokenCreationProof(proof(n,at));if(creationHint)runner.onMarketIdentity({mint:m,source:'pumpportal-new-token',kind:'creation',venue:'pump',signature:signature(n),receivedAt:at,evidence:'unverified-provider-discovery-hint'});if(options.pumpswapOnly)runner.onMarketIdentity({mint:m,source:'pumpportal-migration',kind:'migration',signature:signature(n+80),receivedAt:at,evidence:'unverified-provider-discovery-hint'});runner.onMigration({signature:signature(n+80),feedMint:m,receivedAt:at});runner.onMarketActivity({mint:m,source:'pumpapi-broad',kind:'activity',venue:'pump',signature:signature(n+100),side:'buy',quoteLamports:'1000',receivedAt:at,evidence:'unverified-provider-activity-hint'});return m;};
  return {runner,registry,flow,rpc,states,preparedCalls,adopted,requests,requestCalls,events,records,seed,support,get now(){return at;},get heartbeats(){return heartbeats;},requireHeartbeat:()=>{heartbeat=true;},advance:(ms:number)=>{at+=ms;},refuse:(reason:string|null,until?:number)=>{refusal=reason;retryAt=until;},steps:async(n=1)=>{for(let i=0;i<n;i++)await runner.step();},close:async()=>{await runner.stop();registry.close();}};
 }
@@ -46,6 +51,210 @@ function fixture(options:{proofReadyAt?:(signature:string,at:number)=>number;pum
 function economicHint(f:ReturnType<typeof fixture>,n:number,quoteLamports='20000000000'){
  f.runner.onMarketActivity({mint:mint(n),pool:pool(mint(n)),source:'pumpapi-broad',kind:'activity',venue:'pump-amm',signature:signature(n+140),side:'buy',quoteLamports,receivedAt:f.now,evidence:'unverified-provider-activity-hint'});
 }
+
+/** Synthetic completed audit over a real closed-window feature object. This
+ * fixture exercises current certificate/generation checks, not live auditing. */
+function certifiedGeneration(f:ReturnType<typeof fixture>,mints:readonly string[],certified:readonly string[]=mints){
+ const openedAt=f.now,windows=new Map(mints.map(m=>[m,new FlowWindow(m,openedAt)])),snapshot=f.flow.snapshot.bind(f.flow);
+ for(const m of mints){assert.ok(f.states.has(m));f.runner.onFlowOpen({mint:m,at:openedAt});}
+ Object.assign(f.flow,{snapshot:(m:string,at=f.now)=>{const base=snapshot(m),window=windows.get(m);if(!base||!window)return base;const features=window.features(at),opening={slot:100,availableAt:openedAt,bankClockAt:openedAt},upper={slot:200,availableAt:at,bankClockAt:at};return {...base,openedAt,subscription:1,connectionId:1,connected:true,warm:features.sufficientlyObserved,features,supportContext:upper,openingSupportContext:opening,supportContexts:[opening,upper]};}});
+ f.advance(64000);
+ const certificates=new Map<string,NativeAuditCertificate>();
+ for(const m of certified){
+  const features=windows.get(m)!.features(f.now),c=(f.runner as any).candidates.get(m);
+  const certificate:NativeAuditCertificate={schemaVersion:1,mint:m,pool:pool(m),dataContract:f.runner.dataContract,openedAt,connectionId:1,subscriptionId:1,windowStartAt:features.windowStartAt,windowEndAt:features.windowEndAt,auditAvailableAt:f.now,admittedAt:f.now,deadlineAt:features.windowEndAt+9999,notificationCompletenessVerified:true,executedFlowCompletenessVerified:true,featuresSha256:nativePaperFeaturesSha256(features)};
+  (f.runner as any).certificates.set(m,certificate);c.lastAssessmentEnd=features.windowEndAt;c.nextAuditAt=features.windowEndAt+10000;c.lastReadyWindowEnd=features.windowEndAt;c.lastReadyObservedAt=f.now;
+  assert.deepEqual(f.runner.currentAuditCertificate(m,f.now),certificate);certificates.set(m,certificate);
+ }
+ return certificates;
+}
+
+function pendingBirthLookup(f:ReturnType<typeof fixture>,n:number,kind:'proof'|'history'='proof'){
+ const m=f.seed(n,false,false);f.registry.putObservationPreparation({mint:m,pool:pool(m),checkedAt:f.now,state:'pool-ready',reason:'OFFLINE_QUALIFIER_CANONICAL_POOL'});
+ const request={mint:m,before:null,beforeSlot:null,until:null,untilSlot:null,oldestCandidate:null,oldestCandidateSlot:null};
+ if(kind==='proof'){f.registry.deferTokenCreationHistory(request,f.now,'TOKEN_CREATION_HISTORY_PENDING');assert.equal(f.registry.applyTokenCreationHistoryPage(request,{kind:'candidate',signature:signature(n),slot:100},f.now),true);}
+ return {mint:m,proof:{mint:m,signature:signature(n)},history:request};
+}
+
+test('certified financial priority lets the unchanged nine-start envelope recover before certificate expiry',async()=>{
+ let f:ReturnType<typeof fixture>,financialDue=false,lastUsable=AT,starts:number[]=[];
+ f=fixture({pumpswapOnly:true,financialEvaluationPending:()=>financialDue,sourceWorkAdmission:bound=>pilotLowerPriorityAdmission({now:f?.now??AT,endAt:AT+3600000,held:1,lastUsable,nextPendingAt:null,operationBoundMs:bound}).admitted,rpcResponse:()=>{starts.push(f.now);return null;}});try{
+  const m=f.seed(100);await f.steps(2);const certificate=certifiedGeneration(f,[m]).get(m)!;lastUsable=f.now-400;const start=f.now;financialDue=true;
+  const protectedStarts=Array.from({length:30},(_,i)=>start-58500+i*2000),ordinary=[start-9500,start-3000,start-2000];
+  const usage=()=>{const all=[...protectedStarts,...ordinary,...starts];return {chapter:0,newUnits:0,maximumNewUnits:1500,newAccountedResponseBytes:0,maximumNewResponseBytes:268435456,requestLimits:{maxStartsPerMinute:90,maxStartsPer10s:20},chapterUsage:{rolling60SecondStarts:all.filter(at=>at>f.now-60000).length,rolling10SecondStarts:all.filter(at=>at>f.now-10000).length},protectionRecovery:{rolling60SecondStarts:30,rolling10SecondStarts:5}};};
+  const pending=pendingBirthLookup(f,101);assert.equal(certificate.deadlineAt-start,5999);assert.equal(nativePaperManagementReserve(usage(),true,true,9).entryAllowed,false);
+  assert.equal(nativePaperSourceWorkAdmission({informationOpen:true,owned:true,entryWork:false,discretionarySetup:true,usage:usage(),persistent:true}),true,'the ordinary setup budget alone would admit a competing start');
+  await f.steps();assert.deepEqual(f.requests,[],'a current financial certificate takes priority over optional birth proof');assert.equal(f.registry.tokenCreationRequestPending(pending.proof,f.now),false,'waiting does not record a birth attempt');
+  f.advance(501);assert.equal(nativePaperManagementReserve(usage(),true,true,9).entryAllowed,true,'the old start ages out while all nine entry starts and four protected starts remain reserved');assert.ok(f.runner.currentAuditCertificate(m,f.now));
+  starts=[start];assert.equal(nativePaperManagementReserve(usage(),true,true,9).entryAllowed,false,'one otherwise legal optional start would erase the recovered headroom');starts=[];
+  financialDue=false;await f.steps();assert.deepEqual(f.requests,['getTransaction'],'ordinary qualification resumes after the financial owner releases priority');assert.equal(f.registry.tokenCreationProof(pending.mint),null);
+ }finally{await f.close();}
+});
+
+for(const kind of ['allocation','preparation','qualification','proof','history'] as const)test('certified financial priority defers new '+kind+' work and releases it after the decision',async()=>{
+ let due=false;const f=fixture({pumpswapOnly:true,financialEvaluationPending:()=>due});try{
+  const current=f.seed(102);await f.steps(2);certifiedGeneration(f,[current]);
+  const target=kind==='proof'||kind==='history'?pendingBirthLookup(f,103,kind).mint:f.seed(103,kind!=='qualification');
+  if(kind==='allocation')await (f.runner as any).prepareObservation(f.runner.watch.lookupIdentity(target,f.now),f.now+2000);
+  const prepared=f.preparedCalls.length,requests=f.requests.length;due=true;await f.steps();assert.equal(f.states.size,1);assert.equal(f.preparedCalls.length,prepared);assert.equal(f.requests.length,requests);assert.equal(f.runner.pipelineThroughput().capacityWitness.localReady,false,'capacity reporting includes the current financial scheduling priority');
+  if(kind==='allocation'){const deferred=f.records.findLast(row=>row.kind==='native-deep-admission-deferred')!.data;assert.equal(deferred.reason,'certified-financial-decision-before-replacement-setup');assert.deepEqual(deferred.readyMints,[],'the diagnostic must not attribute financial priority to ready audits');}
+  due=false;await f.steps(2);if(kind==='allocation'||kind==='preparation')assert.equal(f.states.has(target),true);else if(kind==='qualification')assert.ok(f.preparedCalls.includes(target));else assert.ok(f.requests.length>requests);
+ }finally{await f.close();}
+});
+
+for(const reason of ['expired','generation-mismatch','retry-awaiting-newer-window','retry-claimed','owner-permission-closed'] as const)test('certified financial priority does not retain '+reason+' work',async()=>{
+ let callbacks=0;const f=fixture({pumpswapOnly:true,financialEvaluationPending:()=>{callbacks++;return reason!=='owner-permission-closed';}});try{
+  const m=f.seed(104);await f.steps(2);const certificate=certifiedGeneration(f,[m]).get(m)!,pending=pendingBirthLookup(f,105);
+  if(reason==='expired')f.advance(certificate.deadlineAt-f.now+1);
+  if(reason==='generation-mismatch')(f.runner as any).certificates.set(m,{...certificate,connectionId:2});
+  if(reason==='retry-awaiting-newer-window'||reason==='retry-claimed'){assert.equal(f.runner.watch.requestTechnicalReevaluation(m,{reason:'entry-quote-unavailable',failedWindowEndAt:certificate.windowEndAt-(reason==='retry-claimed'?10000:0)},f.now),true);if(reason==='retry-claimed')assert.equal(f.runner.watch.claimTechnicalReevaluation(m,certificate.windowEndAt,f.now),true);assert.ok(f.runner.currentAuditCertificate(m,f.now),'the existing retry policy is separate from certificate validity');}
+  assert.equal(f.runner.hasPendingFinancialEvaluation(),false);assert.equal(callbacks,reason==='owner-permission-closed'?1:0,'invalid or retry-blocked scopes never reach the financial callback');
+  await (f.runner as any).verifyTokenCreation(pending.proof,f.now+2000);assert.deepEqual(f.requests,['getTransaction']);assert.equal(f.registry.tokenCreationProof(pending.mint),null);
+ }finally{await f.close();}
+});
+
+test('certified financial priority validates deep metadata without any birth lookup',async()=>{
+ const f=fixture({pumpswapOnly:true,financialEvaluationPending:()=>true});try{
+  const m=f.seed(106);await f.steps(2);certifiedGeneration(f,[m]);pendingBirthLookup(f,107);
+  const proof=f.registry.tokenCreationProof,eligibility=f.registry.tokenAgeEligibility;let lookups=0;
+  f.registry.tokenCreationProof=()=>{lookups++;throw Error('OFFLINE_DEEP_BIRTH_LOOKUP');};f.registry.tokenAgeEligibility=()=>{lookups++;throw Error('OFFLINE_DEEP_AGE_LOOKUP');};
+  assert.equal(f.runner.hasPendingFinancialEvaluation(),true);await f.steps();assert.equal(lookups,0);assert.deepEqual(f.requests,[]);
+  f.registry.tokenCreationProof=proof;f.registry.tokenAgeEligibility=eligibility;
+ }finally{await f.close();}
+});
+
+for(const kind of ['proof','history'] as const)test('certified financial priority rechecks '+kind+' selection before recording an attempt',async()=>{
+ let due=false;const f=fixture({pumpswapOnly:true,financialEvaluationPending:()=>due});try{
+  const m=f.seed(108);await f.steps(2);certifiedGeneration(f,[m]);const pending=pendingBirthLookup(f,109,kind);let selected=false;
+  if(kind==='proof'){const next=f.registry.nextTokenCreationRequest.bind(f.registry);f.registry.nextTokenCreationRequest=(...args)=>{const request=next(...args);if(request){selected=true;due=true;}return request;};}
+  else{const next=f.registry.nextTokenCreationHistoryRequest.bind(f.registry);f.registry.nextTokenCreationHistoryRequest=(...args)=>{const request=next(...args);if(request){selected=true;due=true;}return request;};}
+  await f.steps();assert.equal(selected,true);assert.deepEqual(f.requests,[]);assert.equal(f.registry.tokenCreationRequestPending(pending.proof,f.now),false);assert.equal(f.registry.tokenCreationHistoryPending(pending.history,f.now),false);
+ }finally{await f.close();}
+});
+
+for(const kind of ['proof','history'] as const)test('certified financial priority rechecks '+kind+' scope before its durable pending marker',async()=>{
+ let due=false;const f=fixture({pumpswapOnly:true,financialEvaluationPending:()=>due});try{
+  const m=f.seed(110);await f.steps(2);certifiedGeneration(f,[m]);const pending=pendingBirthLookup(f,111,kind),scope=(f.runner as any).tokenCreationScope.bind(f.runner);
+  (f.runner as any).tokenCreationScope=(mint:string)=>{const result=scope(mint);due=true;return result;};
+  if(kind==='proof')await (f.runner as any).verifyTokenCreation(pending.proof,f.now+2000);else await (f.runner as any).discoverTokenCreation(pending.history,f.now+2000);
+  assert.deepEqual(f.requests,[]);assert.equal(f.registry.tokenCreationRequestPending(pending.proof,f.now),false);assert.equal(f.registry.tokenCreationHistoryPending(pending.history,f.now),false);
+ }finally{await f.close();}
+});
+
+for(const kind of ['proof','history'] as const)test('certified financial priority remains closed at actual '+kind+' transport admission',async()=>{
+ let due=false;const f=fixture({pumpswapOnly:true,financialEvaluationPending:()=>due});try{
+  const m=f.seed(112);await f.steps(2);certifiedGeneration(f,[m]);const pending=pendingBirthLookup(f,113,kind);let checked=false;
+  f.rpc.call=async(_method,_params,_signal,options={})=>{due=true;checked=true;assert.equal((options.admissionOpen as ()=>boolean)(),false);throw Error('PILOT_RPC_COMPONENT_ADMISSION_CLOSED');};
+  if(kind==='proof')await (f.runner as any).verifyTokenCreation(pending.proof,f.now+2000);else await (f.runner as any).discoverTokenCreation(pending.history,f.now+2000);
+  assert.equal(checked,true);assert.deepEqual(f.requests,[]);assert.equal(f.registry.tokenCreationProof(pending.mint),null,'late priority does not turn an uninvoked attempt into birth evidence');
+ }finally{await f.close();}
+});
+
+test('certified financial priority rechecks a selected prepared allocation before changing slot ownership',async()=>{
+ let due=false;const f=fixture({pumpswapOnly:true,financialEvaluationPending:()=>due});try{
+  const m=f.seed(114);await f.steps(2);certifiedGeneration(f,[m]);const target=f.seed(115);await (f.runner as any).prepareObservation(f.runner.watch.lookupIdentity(target,f.now),f.now+2000);
+  const next=f.runner.watch.next.bind(f.runner.watch);let selected=false;
+  f.runner.watch.next=(...args)=>{const row=next(...args);if(args[2]?.preparedMints&&row?.mint===target){selected=true;due=true;}return row;};
+  await f.steps();assert.equal(selected,true);assert.equal(f.states.has(target),false);assert.equal(f.adopted.some(row=>row.mint===target),false);
+ }finally{await f.close();}
+});
+
+test('certified financial priority preserves required heartbeat and support service but defers new setup',async()=>{
+ let due=false;const f=fixture({pumpswapOnly:true,financialEvaluationPending:()=>due});try{
+  const m=f.seed(116);await f.steps(2);certifiedGeneration(f,[m]);due=true;const actions:string[]=[];
+  for(const action of ['heartbeat','support-refresh'] as const){
+   Object.assign(f.flow,{servicePlan:(policy:{allowSetup:boolean;allowRetirement:boolean})=>{assert.equal(policy.allowSetup,false);assert.equal(policy.allowRetirement,true);return {at:f.now,domain:action==='heartbeat'?'control':'rpc',action,required:true,deadlineAt:f.now+2000};},service:async(_signal:unknown,admission:{admissionOpen:()=>boolean},policy:{allowSetup:boolean})=>{assert.equal(policy.allowSetup,false);assert.equal(admission.admissionOpen(),true);actions.push(action);return {kind:action};}});
+   await f.steps();
+  }
+  assert.deepEqual(actions,['heartbeat','support-refresh']);assert.ok(f.runner.currentAuditCertificate(m,f.now));assert.deepEqual(f.requests,[]);
+ }finally{await f.close();}
+});
+
+test('certified financial priority rechecks optional native setup at physical admission',async()=>{
+ let due=false;const f=fixture({pumpswapOnly:true,financialEvaluationPending:()=>due});try{
+  const m=f.seed(122);await f.steps(2);certifiedGeneration(f,[m]);let admitted:boolean|null=null;
+  Object.assign(f.flow,{servicePlan:()=>({at:f.now,domain:'control',action:'subscribe',required:false,deadlineAt:Infinity}),service:async(_signal:unknown,admission:{admissionOpen:()=>boolean},policy:{allowSetup:boolean})=>{assert.equal(policy.allowSetup,true);due=true;admitted=admission.admissionOpen();return {kind:'deferred'};}});
+  await (f.runner as any).serviceFlow(undefined,f.now+3000,{allowSetup:true,allowRetirement:true});assert.equal(admitted,false);assert.deepEqual(f.requests,[]);
+ }finally{await f.close();}
+});
+
+test('required native dispatch cannot reselect optional support across a prepared handover deadline',async()=>{
+ for(const allowRetirement of [true,false]){
+  const start=AT;let at=start,supportCalls=0,pings=0;const selected:Array<{action:string;required:boolean;allowSetup:boolean;allowRetirement:boolean;selectedMints:string[]}>=[];
+  const prepared={scope:{mint:mint(130),pool:pool(mint(130))},support:{verifiedAt:start-1},supportDueAt:start+1,supportSourceExpiresAt:start+30000,subscription:null,gap:false,openedAt:null,suspended:false};
+  const unprepared={scope:{mint:mint(131),pool:pool(mint(131))},support:null,supportDueAt:start,supportSourceExpiresAt:0,subscription:null,gap:false,openedAt:null,suspended:false};
+  // The real selector and service body operate on an empty connected handover.
+  // Only clock, support-provider I/O and protocol I/O are synthetic here.
+  const flow=Object.create(PilotNativeFlow.prototype) as any;
+  Object.assign(flow,{candidates:new Map<string,typeof prepared|typeof unprepared>([[prepared.scope.mint,prepared],[unprepared.scope.mint,unprepared]]),retiring:new Map(),pendingCleanups:new Map(),peerPings:[],subscriptions:new Map(),retryAt:0,nextHeartbeatAt:start,connection:{opened:true,closed:false,socket:{readyState:1}},abort:new AbortController(),active:false,physicalOperations:0,stopped:false,fatal:null,memoryPressure:false,now:()=>at,live:()=>true,supportReadyAt:()=>0,controlReadyAt:()=>0,supportFresh:(candidate:{support:unknown})=>!!candidate.support,installSupport:()=>{},record:(kind:string,data:typeof selected[number])=>{if(kind==='native-flow-service-selected')selected.push(data);},options:{persistent:true,support:{validateMany:async(scopes:Array<{mint:PublicKey}>,_signal:AbortSignal,admission:{admissionOpen:()=>boolean})=>{assert.equal(admission.admissionOpen(),true);supportCalls++;return {validations:Object.fromEntries(scopes.map(scope=>[scope.mint.toBase58(),{}])),unavailable:{}};}}},protocol:async(method:string,_signal:AbortSignal,admission:{operationBoundMs:number;admissionOpen:()=>boolean})=>{assert.equal(method,'ping');assert.equal(admission.operationBoundMs,NATIVE_DEADLINE_POLICY.heartbeatOperationMs);assert.equal(admission.admissionOpen(),true);pings++;}});
+  const runner=Object.create(NativeCandidateRunner.prototype) as any;
+  Object.assign(runner,{options:{flow,financialEvaluationPending:()=>at>=start+2},now:()=>at,hasPendingFinancialEvaluation:()=>runner.options.financialEvaluationPending(),sourceWorkAllowed:()=>{at=start+2;return true;},admission:(deadlineAt:number)=>({latestStartAt:deadlineAt}),readyAudits:()=>[],traceAuditDispatch:()=>{}});
+  const policy={allowSetup:true,allowRetirement},initial=flow.servicePlan(policy);assert.equal(initial.action,'heartbeat');assert.equal(initial.required,true);
+  const result=await runner.serviceFlow(undefined,start+10000,policy);
+  assert.equal(at,start+2);assert.equal(runner.hasPendingFinancialEvaluation(),true);assert.equal(supportCalls,0,'a required heartbeat cannot lend its exemption to optional unACKed support');assert.equal(pings,1);assert.equal(result.kind,'ping');
+  assert.equal(selected.length,1);assert.equal(selected[0]!.action,'heartbeat');assert.equal(selected[0]!.required,true);assert.equal(selected[0]!.allowSetup,false);assert.equal(selected[0]!.allowRetirement,allowRetirement);assert.deepEqual(selected[0]!.selectedMints,[]);
+ }
+});
+
+for(const pendingAtDispatch of [false,true])test(`mixed support batch without due required work ${pendingAtDispatch?'defers when financial priority appears':'preserves optional progress when financial priority remains absent'}`,async()=>{
+ const at=AT;let pending=false,supportCalls=0;const selected:Array<{action:string;allowSetup:boolean;allowRetirement:boolean;selectedMints:string[]}>=[];
+ const established={scope:{mint:mint(132),pool:pool(mint(132))},support:{verifiedAt:at-1},supportDueAt:at+20000,supportSourceExpiresAt:at+30000,subscription:17,gap:false,openedAt:at-60000,suspended:false};
+ const unacknowledged={scope:{mint:mint(133),pool:pool(mint(133))},support:{verifiedAt:at-1000},supportDueAt:at,supportSourceExpiresAt:at+10000,subscription:null,gap:false,openedAt:null,suspended:false};
+ // Exercise the real batch classifier: one unACKed scope makes support due,
+ // while a different, still-fresh established scope marks the batch required.
+ const flow=Object.create(PilotNativeFlow.prototype) as any;
+ Object.assign(flow,{candidates:new Map<string,typeof established|typeof unacknowledged>([[established.scope.mint,established],[unacknowledged.scope.mint,unacknowledged]]),retiring:new Map(),pendingCleanups:new Map(),peerPings:[],subscriptions:new Map([[17,established]]),retryAt:0,nextHeartbeatAt:at+15000,connection:{opened:true,closed:false,socket:{readyState:1}},abort:new AbortController(),active:false,physicalOperations:0,stopped:false,fatal:null,memoryPressure:false,now:()=>at,live:()=>true,supportReadyAt:()=>0,controlReadyAt:()=>0,supportFresh:(candidate:{support:unknown})=>!!candidate.support,installSupport:()=>{},record:(kind:string,data:typeof selected[number])=>{if(kind==='native-flow-service-selected')selected.push(data);},options:{persistent:true,support:{validateMany:async(scopes:Array<{mint:PublicKey}>,_signal:AbortSignal,admission:{admissionOpen:()=>boolean})=>{assert.equal(admission.admissionOpen(),true);supportCalls++;return {validations:Object.fromEntries(scopes.map(scope=>[scope.mint.toBase58(),{}])),unavailable:{}};}}}});
+ const runner=Object.create(NativeCandidateRunner.prototype) as any;
+ Object.assign(runner,{options:{flow,financialEvaluationPending:()=>pending},now:()=>at,hasPendingFinancialEvaluation:()=>runner.options.financialEvaluationPending(),sourceWorkAllowed:()=>{pending=pendingAtDispatch;return true;},admission:(deadlineAt:number)=>({latestStartAt:deadlineAt}),readyAudits:()=>[],traceAuditDispatch:()=>{}});
+ const policy={allowSetup:true,allowRetirement:false},initial=flow.servicePlan(policy),requiredOnly=flow.servicePlan({...policy,allowSetup:false});
+ assert.equal(initial.action,'support-refresh');assert.equal(initial.at,at);assert.equal(initial.required,true);assert.equal(requiredOnly.at,at+15000);assert.equal(requiredOnly.action,'heartbeat');
+ const result=await runner.serviceFlow(undefined,at+10000,policy);
+ assert.equal(result.kind,pendingAtDispatch?'deferred':'support');assert.equal(supportCalls,pendingAtDispatch?0:1);assert.equal(selected.length,pendingAtDispatch?0:1);
+ if(!pendingAtDispatch){assert.equal(selected[0]!.action,'support-refresh');assert.equal(selected[0]!.allowSetup,true);assert.equal(selected[0]!.allowRetirement,false);assert.deepEqual(selected[0]!.selectedMints,[established.scope.mint,unacknowledged.scope.mint]);}
+});
+
+test('certified financial priority rechecks pool preparation at physical admission',async()=>{
+ let due=false;const f=fixture({pumpswapOnly:true,financialEvaluationPending:()=>due});try{
+  const m=f.seed(123);await f.steps(2);certifiedGeneration(f,[m]);const target=f.seed(124);let admitted:boolean|null=null;
+  f.flow.prepareObservation=async(_scope,_signal,admission)=>{due=true;admitted=admission!.admissionOpen!();return {status:'unavailable',reason:'PILOT_RPC_COMPONENT_ADMISSION_CLOSED'};};
+  await (f.runner as any).prepareObservation(f.runner.watch.lookupIdentity(target,f.now),f.now+2000);assert.equal(admitted,false);assert.equal(f.states.has(target),false);assert.deepEqual(f.requests,[]);
+ }finally{await f.close();}
+});
+
+test('certified financial priority defers a new origin resolver before any attempt or provider request',async()=>{
+ const f=fixture({pumpswapOnly:true,financialEvaluationPending:()=>true});try{
+  const m=f.seed(125);await f.steps(2);certifiedGeneration(f,[m]);const before=(f.runner as any).counters.verificationAttempts;
+  await (f.runner as any).verify({signature:signature(126),feedMint:mint(126),receivedAt:f.now},f.now+2000);assert.equal((f.runner as any).verificationSession,null);assert.equal((f.runner as any).counters.verificationAttempts,before);assert.deepEqual(f.requests,[]);
+ }finally{await f.close();}
+});
+
+test('certified financial priority preserves existing ready audit work',async()=>{
+ let due=false;const f=fixture({pumpswapOnly:true,financialEvaluationPending:()=>due});try{
+  const first=f.seed(117),peer=f.seed(118);await f.steps(3);certifiedGeneration(f,[first,peer],[first]);due=true;const pending=pendingBirthLookup(f,119),evaluated:string[]=[];
+  (f.runner as any).evaluate=async(candidate:{identity:{baseMint:string}})=>{evaluated.push(candidate.identity.baseMint);};
+  await f.steps();assert.deepEqual(evaluated,[peer]);assert.deepEqual(f.requests,[]);assert.equal(f.registry.tokenCreationRequestPending(pending.proof,f.now),false);assert.ok(f.runner.currentAuditCertificate(first,f.now));
+ }finally{await f.close();}
+});
+
+test('certified financial priority commits an already completed preparation without allocating or replaying it',async()=>{
+ let due=false;const f=fixture({pumpswapOnly:true,financialEvaluationPending:()=>due});try{
+  const m=f.seed(120);await f.steps(2);certifiedGeneration(f,[m]);const target=f.seed(121),prepare=f.flow.prepareObservation.bind(f.flow);let release!:()=>void,started!:()=>void;
+  const held=new Promise<void>(resolve=>{release=resolve;}),began=new Promise<void>(resolve=>{started=resolve;});f.flow.prepareObservation=async(...args)=>{const result=await prepare(...args);started();await held;return result;};
+  const step=f.runner.step();await began;due=true;release();await step;
+  assert.equal(f.registry.observationPreparation(target)?.state,'pool-ready');assert.equal((f.runner as any).pendingPreparation,null);assert.equal(f.states.has(target),false);const calls=f.preparedCalls.length;await f.steps();assert.equal(f.preparedCalls.length,calls);assert.equal(f.states.has(target),false);
+ }finally{await f.close();}
+});
+
+for(const kind of ['proof','history'] as const)test('certified financial priority preserves an already invoked '+kind+' result for commit',async()=>{
+ let due=false;const n=128;const f=fixture({pumpswapOnly:true,financialEvaluationPending:()=>due,transaction:creation(n),history:[{signature:signature(n),slot:100,blockTime:(AT-3600000)/1000,err:null}]});try{
+  const m=f.seed(127);await f.steps(2);certifiedGeneration(f,[m]);const target=pendingBirthLookup(f,n,kind),call=f.rpc.call.bind(f.rpc);let release!:()=>void,started!:()=>void;
+  const held=new Promise<void>(resolve=>{release=resolve;}),began=new Promise<void>(resolve=>{started=resolve;});f.rpc.call=async(...args)=>{const value=await call(...args);started();await held;return value;};
+  const step=f.runner.step();await began;due=true;release();await step;
+  assert.equal((f.runner as any).pendingTokenCreation,null);assert.equal(f.states.has(target.mint),false);assert.equal(f.requests.length,1);
+  if(kind==='proof')assert.equal(f.registry.tokenCreationProof(target.mint)!.createdAt,AT-3600000);else assert.deepEqual(f.registry.nextTokenCreationRequest(f.now,true,true),target.proof);
+  await f.steps();assert.equal(f.requests.length,1,'financial priority prevents another optional read but never discards the completed result');
+ }finally{await f.close();}
+});
 
 test('deep age boundary uses the immutable market-admission interval without another age lookup',async()=>{
  const f=fixture({pumpswapOnly:true});try{
@@ -333,7 +542,85 @@ test('a stale cached binding is refreshed after birth is known; old timestamps a
 });
 
 test('actual setup runway is required even when cheap allocation bookkeeping would fit',async()=>{
- let allowSetup=false;const f=fixture({sourceWorkAdmission:bound=>bound<3000||allowSetup});try{f.seed(6);await f.steps(4);assert.equal(f.preparedCalls.length,1);assert.equal(f.states.size,0);assert.equal(f.runner.status().slotProductivity.counts.allocations,0);allowSetup=true;await f.steps();assert.equal(f.states.size,1);assert.equal(f.preparedCalls.length,1);
+ let allowSetup=true;const f=fixture({sourceWorkAdmission:bound=>bound<1700||allowSetup});try{f.seed(6);await f.steps();allowSetup=false;await f.steps(3);assert.equal(f.preparedCalls.length,1);assert.equal(f.states.size,0);assert.equal(f.runner.status().slotProductivity.counts.allocations,0);allowSetup=true;await f.steps();assert.equal(f.states.size,1);assert.equal(f.preparedCalls.length,1);
+ }finally{await f.close();}
+});
+
+test('prepared held-slot allocation uses the existing atomic native operation envelope',async()=>{
+ let f:ReturnType<typeof fixture>;const lastUsable=AT;
+ const admission=(bound:number)=>pilotLowerPriorityAdmission({now:f?.now??AT,endAt:AT+3600000,held:1,lastUsable,nextPendingAt:null,operationBoundMs:bound});
+ f=fixture({pumpswapOnly:true,sourceWorkAdmission:bound=>admission(bound).admitted});try{
+  const m=f.seed(80);assert.equal(admission(3000).admitted,false,'a combined setup envelope cannot fit beside held protection');assert.equal(admission(1700).admitted,true);
+  await f.steps();assert.deepEqual(f.preparedCalls,[m]);assert.equal(f.states.size,0);
+  await f.steps();assert.equal(f.states.has(m),true);assert.deepEqual(f.preparedCalls,[m],'fresh prepared support is adopted without another account request');assert.equal(f.adopted[0]!.at,AT);
+  assert.equal((f.runner as any).candidates.get(m).openedAt,null,'allocation and support adoption never invent a subscription ACK');assert.deepEqual(f.requests,[]);
+ }finally{await f.close();}
+});
+
+test('prepared held-slot allocation closes after 826 ms and reopens only after protection completes',async()=>{
+ let f:ReturnType<typeof fixture>,lastUsable=AT;
+ const admission=(bound:number)=>pilotLowerPriorityAdmission({now:f?.now??AT,endAt:AT+3600000,held:1,lastUsable,nextPendingAt:null,operationBoundMs:bound});
+ f=fixture({pumpswapOnly:true,sourceWorkAdmission:bound=>admission(bound).admitted});try{
+  const m=f.seed(81);await f.steps();assert.deepEqual(f.preparedCalls,[m]);
+  f.advance(825);assert.equal(admission(1700).admitted,true);f.advance(1);assert.equal(admission(1700).admitted,false);assert.equal(admission(125).admitted,true);
+  await f.steps();assert.equal(f.states.size,0);assert.equal(f.adopted.length,0);assert.deepEqual(f.preparedCalls,[m]);
+  lastUsable=f.now;assert.equal(admission(1700).admitted,true);await f.steps();assert.equal(f.states.has(m),true);assert.equal(f.adopted[0]!.at,AT,'protection completion must not refresh the original pool evidence');assert.deepEqual(f.requests,[]);
+ }finally{await f.close();}
+});
+
+test('prepared held-slot allocation rechecks protection after delayed candidate selection',async()=>{
+ let f:ReturnType<typeof fixture>,lastUsable=AT;
+ const admission=(bound:number)=>pilotLowerPriorityAdmission({now:f?.now??AT,endAt:AT+3600000,held:1,lastUsable,nextPendingAt:null,operationBoundMs:bound});
+ f=fixture({pumpswapOnly:true,sourceWorkAdmission:bound=>admission(bound).admitted});try{
+  const m=f.seed(82);await f.steps();const next=f.runner.watch.next.bind(f.runner.watch);let selected=false;
+  f.runner.watch.next=(...args:Parameters<typeof next>)=>{const row=next(...args);if(args[2]?.preparedMints&&!selected){assert.equal(row?.mint,m);selected=true;f.advance(826);}return row;};
+  await f.steps();assert.equal(selected,true,'selection begins only while the real held envelope is feasible');assert.equal(f.states.size,0);assert.equal(f.adopted.length,0);assert.equal(admission(1700).admitted,false);
+  f.runner.watch.next=next;lastUsable=f.now;await f.steps();assert.equal(f.states.has(m),true);assert.deepEqual(f.preparedCalls,[m]);assert.equal(f.adopted[0]!.at,AT);
+ }finally{await f.close();}
+});
+
+test('prepared held-slot capacity witness uses the atomic envelope without granting provider or financial readiness',async()=>{
+ let f:ReturnType<typeof fixture>,lastUsable=AT;
+ const admission=(bound:number)=>pilotLowerPriorityAdmission({now:f?.now??AT,endAt:AT+3600000,held:1,lastUsable,nextPendingAt:null,operationBoundMs:bound});
+ f=fixture({pumpswapOnly:true,sourceWorkAdmission:bound=>admission(bound).admitted});try{
+  f.seed(90);await f.steps();assert.equal(f.preparedCalls.length,1);assert.equal(f.states.size,0);
+  assert.equal(f.runner.pipelineThroughput().capacityWitness.localReady,true);assert.equal(f.runner.sourceAdmissionStatus().physicalSetup3000Allowed,false,'the existing literal diagnostic still measures a 3000 ms envelope');
+  f.advance(825);assert.equal(f.runner.pipelineThroughput().capacityWitness.localReady,true);f.advance(1);assert.equal(f.runner.pipelineThroughput().capacityWitness.localReady,false);
+  lastUsable=f.now;f.rpc.usage=()=>({inFlight:1,waitingOrOperating:true,dispatchWindow:{physicalBusy:true,readyAt:f.now}});
+  const pipeline=f.runner.pipelineThroughput();assert.equal(pipeline.capacityWitness.localReady,true);assert.equal(pipeline.capacityWitness.providerReady,false);assert.equal(pipeline.population.capacityWaiting,null);assert.equal(pipeline.capacityWitness.physicalOccupancy,0);assert.equal(pipeline.flow.entryFills,0);assert.equal(f.adopted.length,0);assert.deepEqual(f.requests,[]);
+ }finally{await f.close();}
+});
+
+for(const lookup of ['proof','history'] as const)test('age-qualified vacant-slot preparation precedes continuously available optional '+lookup+' lookups',async()=>{
+ const f=fixture({pumpswapOnly:true});try{
+  const known=f.seed(83),unknowns:string[]=[];
+  for(let n=84;n<89;n++){
+   const m=f.seed(n,false,false);unknowns.push(m);f.registry.putObservationPreparation({mint:m,pool:pool(m),checkedAt:f.now,state:'pool-ready',reason:'OFFLINE_QUALIFIER_CANONICAL_POOL'});
+   if(lookup==='proof'){
+    const request={mint:m,before:null,beforeSlot:null,until:null,untilSlot:null,oldestCandidate:null,oldestCandidateSlot:null};f.registry.deferTokenCreationHistory(request,f.now,'TOKEN_CREATION_HISTORY_PENDING');assert.equal(f.registry.applyTokenCreationHistoryPage(request,{kind:'candidate',signature:signature(n),slot:100},f.now),true);
+   }
+  }
+  const next=()=>lookup==='proof'?f.registry.nextTokenCreationRequest(f.now,true,true):f.registry.nextTokenCreationHistoryRequest(f.now,true);
+  assert.ok(next(),'upstream qualification has pending physical work');
+  await f.steps();assert.deepEqual(f.preparedCalls,[known],'an age-qualified vacancy gets the first preparation opportunity');assert.deepEqual(f.requests,[],'optional birth lookups cannot precede ready-market preparation');assert.equal(f.states.size,0);
+  await f.steps();assert.equal(f.states.has(known),true);assert.equal(f.states.size,1);assert.equal(f.requests[0],lookup==='proof'?'getTransaction':'getSignaturesForAddress','upstream qualification resumes after the candidate is allocated');assert.ok(next(),'more unknown-age work remains available');
+  for(const m of unknowns){assert.equal(f.registry.tokenCreationProof(m),null);assert.equal(f.states.has(m),false);assert.equal(f.runner.watch.lookupIdentity(m),undefined,'unknown tokens still have no ordinary observation row');}
+ }finally{await f.close();}
+});
+
+for(const prepared of [true,false])test('native setup policy retains the '+(prepared?'prepared atomic':'legacy cold')+' service envelope',async()=>{
+ const f=fixture();try{
+  if(!prepared){delete (f.flow as any).prepareObservation;delete (f.flow as any).adoptPreparedObservation;}
+  const m=f.seed(89);await f.steps(2);assert.equal(f.states.has(m),true);
+  const usage=f.flow.usage.bind(f.flow),requiredAt=f.now+4000,policies:Array<{allowSetup:boolean;allowRetirement:boolean}>=[];let starts=0;
+  Object.assign(f.flow,{
+   usage:()=>({...usage(),connected:true,nextServiceAt:f.now,nextServiceDomain:'control',nextServiceAction:'subscribe',nativeServiceDeadlines:[{action:'heartbeat',deadlineAt:requiredAt}]}),
+   servicePlan:(policy:{allowSetup:boolean;allowRetirement:boolean})=>{policies.push({...policy});return policy.allowSetup?{at:f.now,domain:'control',action:'subscribe',required:false,deadlineAt:Infinity}:{at:requiredAt,domain:'control',action:'heartbeat',required:true,deadlineAt:requiredAt};},
+   service:async(_signal:AbortSignal|undefined,admission:{operationBoundMs:number;admissionOpen:()=>boolean},policy:{allowSetup:boolean;allowRetirement:boolean})=>{assert.equal(policy.allowSetup,true);assert.equal(policy.allowRetirement,true);assert.equal(admission.operationBoundMs,1700);assert.equal(admission.admissionOpen(),true);starts++;return {kind:'subscribe'};},
+  });
+  assert.equal(f.runner.discretionaryAdmission(1700).admitted,true);assert.equal(f.runner.discretionaryAdmission(3000).admitted,false);
+  await f.steps();assert.ok(policies.length>0);assert.ok(policies.every(policy=>policy.allowSetup===prepared&&policy.allowRetirement));assert.equal(starts,prepared?1:0);
+  assert.equal((f.runner as any).candidates.get(m).openedAt,null,'service selection itself is not evidence of an ACK');
  }finally{await f.close();}
 });
 
