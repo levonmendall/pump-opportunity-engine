@@ -11,6 +11,15 @@ test('source-instance slot facts remain separate from retained account and candi
  const value=raw();value.counts.distinctPrimaryEvaluated=2;value.counts.qualified=1;value.counts.entryFills=0;const s=status(value),before=structuredClone(s),i=projectOperatingIntelligence(s),p=i.slotProductivity!;
  validateOperatingIntelligence(i,iso(T));assert.deepEqual(s,before);assert.equal(p.scope,'CURRENT_SOURCE_INSTANCE');assert.equal(p.startedAt,iso(T-1000));assert.equal(i.run.startedAt,iso(T-10000));assert.equal(p.configuredSlots,4);assert.equal(p.stateMs.VACANT,4000);assert.equal(p.counts.distinctPrimaryEvaluated,2);assert.equal(p.counts.entryFills,0);assert.equal(i.candidates.predictiveAssessments,null);
 });
+
+test('new allocation classifications preserve source-instance and process-run scope, while older sources remain unknown',()=>{
+ const value=raw();Object.assign(value.counts,{allocations:9,repromotions:7,firstTimeObservations:4,currentRunRevisits:5,previousRunObservedFirstAllocations:2});
+ value.allocationProvenance={scope:'CURRENT_SOURCE_PROCESS',runId:value.runId,startedAt:T-9000,generatedAt:T,allocations:20,firstTimeObservations:7,currentRunRevisits:13,previousRunObservedFirstAllocations:2};
+ const projected=projectNativeSlotProductivityReporting({slotProductivity:value},T)!;assert.ok(projected);assert.equal(projected.counts.currentRunRevisits,5);assert.equal(projected.allocationProvenance!.currentRunRevisits,13);assert.equal(projected.counts.previousRunObservedFirstAllocations,2);validateNativeSlotProductivityReporting(projected,T);
+ const old=projectNativeSlotProductivityReporting({slotProductivity:raw()},T)!;assert.equal(old.counts.currentRunRevisits,null);assert.equal(old.allocationProvenance,undefined);for(const key of ['firstTimeObservations','currentRunRevisits','previousRunObservedFirstAllocations'] as const)delete old.counts[key];validateNativeSlotProductivityReporting(old,T);
+ for(const change of [(r:any)=>r.counts.currentRunRevisits=4,(r:any)=>r.counts.previousRunObservedFirstAllocations=5,(r:any)=>r.allocationProvenance.runId='other-run',(r:any)=>r.allocationProvenance.currentRunRevisits=12]){const bad=structuredClone(projected);change(bad);assert.throws(()=>validateNativeSlotProductivityReporting(bad,T),/INVALID/);}
+ value.allocationProvenance.runId='different-process';assert.equal(projectNativeSlotProductivityReporting({slotProductivity:value},T)!.allocationProvenance,undefined,'bad optional process provenance must not hide the source-instance statistics');
+});
 test('no observed transition has null duration statistics rather than a fictional zero-latency success',()=>{
  const value=raw();value.waits.queueToAllocation={count:2,sum:4.5,mean:2.25,max:3,p50:1.5,p95:3};const p=projectNativeSlotProductivityReporting({slotProductivity:value},T)!;
  assert.equal(p.waits.queueToAllocation.mean,2.25);assert.equal(p.waits.queueToAllocation.p95,3);assert.deepEqual(p.waits.auditReadyToPhysicalStart,{count:0,sum:0,mean:null,max:null,p50:null,p95:null});

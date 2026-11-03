@@ -8,8 +8,9 @@ export type NativeSlotFinancialKind='primary-evaluated'|'qualified'|'entry-fill'
 export const NATIVE_SLOT_LIMITATIONS=['FOUR_SLOTS_DO_NOT_IMPLY_PRODUCTIVE_WORK','PHYSICAL_START_REQUIRES_RECEIPT','PRELIMINARY_EVALUATION_NOT_FINANCIAL_QUALIFICATION','FINANCIAL_EVENTS_REQUIRE_ACTUAL_CALLBACK','NO_PER_SLOT_PROFIT_ATTRIBUTION','NO_WHOLE_MARKET_DENOMINATOR'] as const;
 type Slot={slot:number;mint:string|null;state:NativeSlotState;sinceAt:number;allocatedAt:number|null;subscriptionSentAt:number|null;openedAt:number|null;windowEndAt:number|null;readyAt:number|null;firstPhysicalAt:number|null;retiredAt:number|null;warmAt:number|null;assignment:number;lastVerifiedCoverageEnd:number|null};
 type Options={registry:MarketRegistry;sourceInstanceId:string;runId?:string;startedAt:number;maximumSlots:number;record?:(kind:string,data:unknown)=>void};
+type AllocationProvenance={scope:'CURRENT_SOURCE_PROCESS';runId:string;startedAt:number;allocations:number;firstTimeObservations:number;currentRunRevisits:number;previousRunObservedFirstAllocations:number};
 const waits=['queueToAllocation','allocationToAck','ackToWarm','auditReadyToPhysicalStart','retirementToReplacement'] as const;
-const zeroCounts=()=>({allocations:0,repromotions:0,distinctAudited:0,distinctPreliminaryEvaluated:0,distinctPrimaryEvaluated:0,qualified:0,entryFills:0,exitFills:0,unattributedFinancialEvents:0});
+const zeroCounts=()=>({allocations:0,repromotions:0,firstTimeObservations:0,currentRunRevisits:0,previousRunObservedFirstAllocations:0,distinctAudited:0,distinctPreliminaryEvaluated:0,distinctPrimaryEvaluated:0,qualified:0,entryFills:0,exitFills:0,unattributedFinancialEvents:0});
 const validTime=(v:number)=>Number.isSafeInteger(v)&&v>=0;
 
 export class NativeSlotProductivity{
@@ -19,6 +20,7 @@ export class NativeSlotProductivity{
  constructor(private readonly options:Options){
   if(!validTime(options.startedAt)||!Number.isSafeInteger(options.maximumSlots)||options.maximumSlots<1||options.maximumSlots>20)throw Error('NATIVE_SLOT_PRODUCTIVITY_OPTIONS');
   this.slots=Array.from({length:options.maximumSlots},(_,slot)=>({slot,mint:null,state:'VACANT',sinceAt:options.startedAt,allocatedAt:null,subscriptionSentAt:null,openedAt:null,windowEndAt:null,readyAt:null,firstPhysicalAt:null,retiredAt:null,warmAt:null,assignment:0,lastVerifiedCoverageEnd:null}));this.persist();
+  const key=this.processAllocationKey();if(key&&this.options.registry.getMetadata(key)===undefined)this.options.registry.setMetadata(key,{scope:'CURRENT_SOURCE_PROCESS',runId:options.runId!,startedAt:options.startedAt,allocations:0,firstTimeObservations:0,currentRunRevisits:0,previousRunObservedFirstAllocations:0} satisfies AllocationProvenance);
  }
  /** A refused/rolled-back nonfinancial write must not consume an in-memory
   * transition or add elapsed time a second time. The snapshot is bounded by
@@ -35,17 +37,28 @@ export class NativeSlotProductivity{
  private persist(){this.options.registry.setMetadata(this.key('latest'),{version:'native-slot-productivity-v1',startedAt:this.options.startedAt,counts:this.counts,failureCounts:this.failureCounts,stateMs:this.durations,slots:this.slots,serial:this.serial,verifiedEvidenceMs:this.verifiedEvidenceMs});}
  private sample(name:typeof waits[number],key:string,value:number,at:number){if(Number.isFinite(value)&&value>=0)this.options.registry.recordMetric(this.key('metrics'),name,key,value,at);}
  private distinct(name:string,key:string,at:number){return this.options.registry.markDistinct(this.key(name),key,at);}
+ private processAllocationKey(){return this.options.runId?this.options.runId+':allocation-provenance':null;}
+ /** Same-process source recovery must not call an already observed token a
+  * new run arrival. These small totals and mint markers share the allocation
+  * transaction, including rollback; no unbounded in-memory identity set. */
+ private processAllocation(mint:string,at:number,priorPromotions:number){
+  const key=this.processAllocationKey();if(!key)return null;
+  const previous=this.options.registry.getMetadata<AllocationProvenance>(key)!;
+  const firstInRun=this.options.registry.markDistinct(key+':mint',mint,at),previousRunObserved=firstInRun&&priorPromotions>0;
+  const next={...previous,allocations:previous.allocations+1,firstTimeObservations:previous.firstTimeObservations+(firstInRun?1:0),currentRunRevisits:previous.currentRunRevisits+(firstInRun?0:1),previousRunObservedFirstAllocations:previous.previousRunObservedFirstAllocations+(previousRunObserved?1:0)};
+  this.options.registry.setMetadata(key,next);return {firstInRun,previousRunObserved,returningWithinRun:!firstInRun};
+ }
  private move(slot:Slot,state:NativeSlotState,at:number,reason:string){
   if(!validTime(at)||at<slot.sinceAt||slot.state===state)return;
   const previous=slot.state,elapsed=at-slot.sinceAt;this.durations[previous]+=elapsed;
   this.options.registry.recordMetric(this.key('metrics'),'state:'+previous,String(++this.serial)+':'+slot.slot+':'+(slot.mint??'vacant')+':'+previous+'>'+state,elapsed,at);
   slot.state=state;slot.sinceAt=at;this.persist();this.options.record?.('native-slot-productivity-transition',{at,sourceInstanceId:this.options.sourceInstanceId,slot:slot.slot,mint:slot.mint,previous,state,elapsedMs:elapsed,reason,financialPermission:false});
  }
- allocated(mint:string,at:number,waitingSince:number,priorPromotions:number){
+ allocated(mint:string,at:number,waitingSince:number,priorPromotions:number,revisitReason:string|null=null){
   if(this.live(mint))return;const slot=this.slots.find(row=>row.mint===null);if(!slot)throw Error('NATIVE_SLOT_PRODUCTIVITY_CAPACITY');
   this.mutate(()=>{if(slot.retiredAt!==null)this.sample('retirementToReplacement',String(slot.assignment),at-slot.retiredAt,at);
    slot.mint=mint;slot.allocatedAt=at;slot.subscriptionSentAt=null;slot.openedAt=null;slot.windowEndAt=null;slot.readyAt=null;slot.firstPhysicalAt=null;slot.warmAt=null;slot.lastVerifiedCoverageEnd=null;slot.assignment=++this.serial;
-   this.counts.allocations++;if(priorPromotions>0)this.counts.repromotions++;
+   this.counts.allocations++;if(priorPromotions>0)this.counts.repromotions++;const firstInSource=this.distinct('allocated',mint,at);if(firstInSource){this.counts.firstTimeObservations++;if(priorPromotions>0)this.counts.previousRunObservedFirstAllocations++;}else this.counts.currentRunRevisits++;const process=this.processAllocation(mint,at,priorPromotions);this.options.record?.('native-slot-allocation-provenance',{at,mint,sourceInstanceId:this.options.sourceInstanceId,runId:this.options.runId??null,scope:process?'CURRENT_SOURCE_PROCESS':'CURRENT_SOURCE_INSTANCE',firstInSource,...(process??{firstInRun:firstInSource,previousRunObserved:firstInSource&&priorPromotions>0,returningWithinRun:!firstInSource}),revisitReason,waitingSince,allocation:slot.assignment,financialPermission:false});
    this.sample('queueToAllocation',String(slot.assignment),Math.max(0,at-waitingSince),at);
    this.options.registry.setMetadata(this.key('assignment:'+mint),{slot:slot.slot,assignment:slot.assignment,allocatedAt:at});this.move(slot,'SUBSCRIPTION_WAIT',at,'actual-deep-allocation');this.persist();
   });
@@ -76,6 +89,7 @@ export class NativeSlotProductivity{
   });
  }
  snapshot(at:number){const stateMs={...this.durations};for(const slot of this.slots)stateMs[slot.state]+=Math.max(0,at-slot.sinceAt);
-  const occupiedSlotMs=Object.entries(stateMs).reduce((sum,[state,value])=>sum+(state==='VACANT'||state==='REPLACEMENT_WAIT'?0:value),0);return {version:'native-slot-productivity-v1' as const,scope:'CURRENT_SOURCE_INSTANCE' as const,sourceInstanceId:this.options.sourceInstanceId,runId:this.options.runId??null,startedAt:this.options.startedAt,generatedAt:at,configuredSlots:this.options.maximumSlots,stateMs,slots:this.slots.map(({slot,mint,state,sinceAt,allocatedAt,subscriptionSentAt,openedAt,windowEndAt})=>({slot,mint,state,sinceAt,stateAgeMs:Math.max(0,at-sinceAt),allocatedAt,subscriptionSentAt,openedAt,windowEndAt})),counts:{...this.counts},failureCounts:{...this.failureCounts},waits:Object.fromEntries(waits.map(name=>[name,this.options.registry.metricSummary(this.key('metrics'),name)])) as Record<typeof waits[number],ReturnType<MarketRegistry['metricSummary']>>,percentileScope:'ALL_ACTUAL_STARTS_IN_SOURCE_INSTANCE' as const,evidenceCoverage:{verifiedEvidenceMs:this.verifiedEvidenceMs,occupiedSlotMs,percent:occupiedSlotMs?this.verifiedEvidenceMs*100/occupiedSlotMs:null,basis:'RETROSPECTIVE_UNION_OF_VERIFIED_WINDOWS_PER_ACTUAL_SLOT_ASSIGNMENT' as const},limitations:[...NATIVE_SLOT_LIMITATIONS]};
+  const processKey=this.processAllocationKey(),allocationProvenance=processKey?this.options.registry.getMetadata<AllocationProvenance>(processKey):undefined;
+  const occupiedSlotMs=Object.entries(stateMs).reduce((sum,[state,value])=>sum+(state==='VACANT'||state==='REPLACEMENT_WAIT'?0:value),0);return {version:'native-slot-productivity-v1' as const,scope:'CURRENT_SOURCE_INSTANCE' as const,sourceInstanceId:this.options.sourceInstanceId,runId:this.options.runId??null,startedAt:this.options.startedAt,generatedAt:at,configuredSlots:this.options.maximumSlots,stateMs,slots:this.slots.map(({slot,mint,state,sinceAt,allocatedAt,subscriptionSentAt,openedAt,windowEndAt})=>({slot,mint,state,sinceAt,stateAgeMs:Math.max(0,at-sinceAt),allocatedAt,subscriptionSentAt,openedAt,windowEndAt})),counts:{...this.counts},...(allocationProvenance?{allocationProvenance:{...allocationProvenance,generatedAt:at}}:{}),failureCounts:{...this.failureCounts},waits:Object.fromEntries(waits.map(name=>[name,this.options.registry.metricSummary(this.key('metrics'),name)])) as Record<typeof waits[number],ReturnType<MarketRegistry['metricSummary']>>,percentileScope:'ALL_ACTUAL_STARTS_IN_SOURCE_INSTANCE' as const,evidenceCoverage:{verifiedEvidenceMs:this.verifiedEvidenceMs,occupiedSlotMs,percent:occupiedSlotMs?this.verifiedEvidenceMs*100/occupiedSlotMs:null,basis:'RETROSPECTIVE_UNION_OF_VERIFIED_WINDOWS_PER_ACTUAL_SLOT_ASSIGNMENT' as const},limitations:[...NATIVE_SLOT_LIMITATIONS]};
  }
 }

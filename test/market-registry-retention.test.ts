@@ -9,6 +9,8 @@ import {PublicKey} from '@solana/web3.js';
 import bs58 from 'bs58';
 import {CANDIDATE_RETENTION_POLICY,MarketRegistry} from '../src/market-registry.js';
 import {TOKEN_AGE_POLICY,type TokenCreationProof} from '../src/token-age-policy.js';
+import {MIGRATION_AGE_POLICY,type MigrationAgeProof} from '../src/migration-age-policy.js';
+import {canonicalObservationPool} from '../src/native-observation-identity.js';
 import type {WatchRow} from '../src/pilot-watch.js';
 
 const DAY=86_400_000,NOW=Date.parse('2026-11-05T00:00:00Z'),OLD=NOW-3*DAY;
@@ -32,7 +34,7 @@ test('expired nontrade history is replaced atomically by exact digest tombstones
   assert.equal(historyCount(r,1),0);assert.equal(r.get(signature(1)),undefined);
   const retained=db(r).prepare('SELECT signature,archived,body FROM watch_rows WHERE signature=?').get(signature(1)) as {signature:string;archived:number;body:string};
   assert.equal(retained.signature,signature(1));assert.equal(retained.archived,1);assert.ok(Buffer.byteLength(retained.body)<2000);assert.equal(JSON.parse(retained.body).lastActivityEvidence,null);
-  for(const old of before){const actual=db(r).prepare('SELECT * FROM watch_history_retirements WHERE id=?').get(old.id) as Record<string,unknown>;assert.deepEqual(actual,{id:old.id,signature:old.signature,at:old.at,state:old.state,reason:old.reason,body_sha256:digest(old.body),retired_at:NOW,mint:mint(1),created_at:OLD,policy:CANDIDATE_RETENTION_POLICY.version,financial_history_complete:1,obligations_absent:1});}
+  for(const old of before){const actual=db(r).prepare('SELECT * FROM watch_history_retirements WHERE id=?').get(old.id) as Record<string,unknown>;assert.deepEqual(actual,{id:old.id,signature:old.signature,at:old.at,state:old.state,reason:old.reason,body_sha256:digest(old.body),retired_at:NOW,mint:mint(1),created_at:OLD,policy:CANDIDATE_RETENTION_POLICY.version,financial_history_complete:1,obligations_absent:1,age_basis:'token-creation'});}
   assert.equal(r.coverageSnapshot(NOW).lifetime.uniqueTokensDiscovered,countBefore);assert.deepEqual(r.tokenCreationProof(mint(1)),proof(1));assert.equal(r.tokenAgeEligibility(mint(1),NOW).allowed,false);assert.deepEqual(r.getOrigin(mint(1)),{proof:'original'});
   assert.ok(db(r).prepare('SELECT 1 FROM verification_queue WHERE signature=?').get(signature(1)));
   assert.equal(r.retentionStatus().retiredHistoryRows,3);
@@ -102,7 +104,7 @@ test('the retained maximum history row prevents ID reuse by the legacy insert st
 test('a tombstone conflict rolls back every deletion and its metrics',()=>{
  const r=new MarketRegistry(':memory:',{now:()=>NOW});try{
   seed(r,1,3);r.put(row(99));const history=db(r).prepare('SELECT * FROM watch_history ORDER BY id').all() as {id:number;signature:string;at:number;state:string;reason:string;body:string}[];
-  const second=history[1]!;db(r).prepare('INSERT INTO watch_history_retirements VALUES(?,?,?,?,?,?,?,?,?,?,1,1)').run(second.id,second.signature,second.at,second.state,second.reason,'0'.repeat(64),NOW,mint(1),OLD,CANDIDATE_RETENTION_POLICY.version);
+  const second=history[1]!;db(r).prepare('INSERT INTO watch_history_retirements(id,signature,at,state,reason,body_sha256,retired_at,mint,created_at,policy,financial_history_complete,obligations_absent) VALUES(?,?,?,?,?,?,?,?,?,?,1,1)').run(second.id,second.signature,second.at,second.state,second.reason,'0'.repeat(64),NOW,mint(1),OLD,CANDIDATE_RETENTION_POLICY.version);
   assert.throws(()=>r.retireExpiredCandidates(input()),/UNIQUE/);assert.deepEqual(db(r).prepare('SELECT * FROM watch_history ORDER BY id').all(),history);assert.equal(r.retentionStatus().retiredHistoryRows,0);assert.equal(r.getMetadata('candidateRetention'),undefined);
  }finally{r.close();}
 });
@@ -118,4 +120,41 @@ test('future timestamps, excessive batches and read snapshots cannot authorize a
  const r=new MarketRegistry(':memory:',{now:()=>NOW});try{
   seed(r,1);assert.throws(()=>r.retireExpiredCandidates({...input(),at:NOW+1}),/RETENTION_INPUT/);assert.throws(()=>r.retireExpiredCandidates(input(new Set(),129)),/RETENTION_INPUT/);assert.throws(()=>r.readTransaction(()=>r.retireExpiredCandidates(input())),/forbidden/);assert.equal(historyCount(r,1),3);
  }finally{r.close();}
+});
+
+const migrationProof=(n:number,migrationAt=OLD):MigrationAgeProof=>({version:MIGRATION_AGE_POLICY.version,mint:mint(n),pool:canonicalObservationPool(mint(n)),signature:signature(n),slot:n+1,migrationAt,availableAt:Math.max(migrationAt,NOW-2*DAY),confirmedTransactionSha256:'b'.repeat(64),finalizedTransactionSha256:'c'.repeat(64)});
+function seedMigration(r:MarketRegistry,n:number,count=3,change:Partial<WatchRow>={}){const p=migrationProof(n);r.putMigrationAgeProof(p);for(let i=0;i<count;i++)r.put({...row(n),pool:p.pool,migrationAt:p.migrationAt,...change,reason:'migration-history-'+i,history:[{at:NOW-2*DAY+i,state:change.state??'EXPIRED',reason:'migration-history-'+i}]});}
+
+test('migration-mode retirement uses actual migration proof, retaining fresh migrations regardless of mint creation age',()=>{
+ const r=new MarketRegistry(':memory:',{now:()=>NOW,migrationAge:true});try{
+  seed(r,1); // Creation proof alone is not the configured migration-age basis.
+  seed(r,2);r.putMigrationAgeProof(migrationProof(2,NOW-3600000));
+  seedMigration(r,3);r.putMigrationAgeProof(migrationProof(4,NOW-2*DAY));r.put(row(4));r.put(row(99));
+  const before1=db(r).prepare('SELECT * FROM watch_history WHERE signature=?').all(signature(1)),before2=db(r).prepare('SELECT * FROM watch_history WHERE signature=?').all(signature(2));
+  const result=r.retireExpiredCandidates(input());
+  assert.equal(result.ageBasis,'pumpswap-migration');assert.equal(result.retiredHistoryRows,3);assert.equal(result.compactedWatchRows,1);
+  assert.deepEqual(db(r).prepare('SELECT * FROM watch_history WHERE signature=?').all(signature(1)),before1);
+  assert.deepEqual(db(r).prepare('SELECT * FROM watch_history WHERE signature=?').all(signature(2)),before2);
+  assert.equal(historyCount(r,4),1,'the exact 48h retention boundary is not yet old enough');
+  assert.equal(r.marketAgeEligibility(mint(2),NOW).allowed,true);assert.deepEqual(r.migrationAgeProof(mint(3)),migrationProof(3));
+  const retained=db(r).prepare('SELECT body FROM watch_rows WHERE signature=?').get(signature(3)) as {body:string};
+  assert.deepEqual(JSON.parse(retained.body).retention,{policy:CANDIDATE_RETENTION_POLICY.version,ageBasis:'pumpswap-migration',ageAt:OLD,migrationAt:OLD,retiredAt:NOW});
+  for(const tombstone of db(r).prepare('SELECT age_basis,created_at FROM watch_history_retirements').all() as {age_basis:string;created_at:number}[])assert.deepEqual(tombstone,{age_basis:'pumpswap-migration',created_at:OLD});
+ }finally{r.close();}
+});
+
+test('migration retention preserves financial dependencies, immutable proofs and recovery request state across restart',()=>{
+ const dir=mkdtempSync(join(tmpdir(),'poe-migration-retention-')),path=join(dir,'registry.sqlite');let r=new MarketRegistry(path,{now:()=>NOW,migrationAge:true});try{
+  seedMigration(r,1,7);seedMigration(r,2,2,{state:'HELD'});seedMigration(r,3,2,{state:'ENTRY_PENDING'});seedMigration(r,4,2);seedMigration(r,5,2);r.put(row(99));
+  r.observePumpSwapQualificationHint({mint:mint(1),signature:signature(1),receivedAt:NOW,source:'pumpportal-migration',kind:'migration'});
+  r.putObservationPreparation({mint:mint(5),pool:canonicalObservationPool(mint(5)),checkedAt:NOW,state:'awaiting-dispatch',reason:'OFFLINE unresolved preparation'});
+  const requests=db(r).prepare('SELECT * FROM pumpswap_migration_requests_v1').all(),proofs=db(r).prepare('SELECT * FROM pumpswap_migration_ages_v1 ORDER BY mint').all();
+  // A retained creation cursor must not skip older migration coordinates.
+  r.setMetadata('candidateRetention',{last:{at:NOW-1,cursor:{createdAt:NOW-2*DAY,mint:'zz'}},retiredHistoryRows:0,compactedWatchRows:0,retiredBodyBytes:0});
+  let retired=0;for(let pass=0;pass<12;pass++){const result=r.retireExpiredCandidates(input(new Set([mint(4)]),2));retired+=result.retiredHistoryRows;assert.ok(result.retiredHistoryRows+result.compactedWatchRows<=2);if(pass===2){r.close();r=new MarketRegistry(path,{now:()=>NOW,migrationAge:true});}}
+  assert.equal(retired,7);assert.equal(historyCount(r,1),0);for(const n of [2,3,4,5])assert.equal(historyCount(r,n),2);
+  assert.deepEqual(db(r).prepare('SELECT * FROM pumpswap_migration_requests_v1').all(),requests);
+  assert.deepEqual(db(r).prepare('SELECT * FROM pumpswap_migration_ages_v1 ORDER BY mint').all(),proofs);
+  assert.equal(r.retentionStatus().last?.ageBasis,'pumpswap-migration');assert.equal(r.marketAgeEligibility(mint(1),NOW).allowed,false);
+ }finally{r.close();rmSync(dir,{recursive:true,force:true});}
 });

@@ -20,7 +20,7 @@ function fixture(){
   ownership:()=>null,
  };
  const context:any={__name:(value:unknown)=>value,holder,Date:{now:()=>at},service:true,proofPreparation:preparation,
-  riskCapacity:()=>risk,certifiedAdmission:(current:NativeAuditCertificate)=>admitted&&current===certificate&&at<=certificate.deadlineAt,
+  sourceInformationAdmission:()=>admitted,engine:{currentAuditCertificate:()=>admitted&&at<=certificate.deadlineAt?certificate:null},riskCapacity:()=>risk,certifiedAdmission:(current:NativeAuditCertificate)=>admitted&&current===certificate&&at<=certificate.deadlineAt,
   nativePaperCurrentQualificationProof:(owner:any,mint:string)=>nativePaperCurrentQualificationProof(owner,mint,()=>at),currentBridge:bridge,
   serviceRecorder:{pinProvisionalRange:async(id:string,start:number,through:number,deadline:number)=>{pinCalls++;events.push({kind:'pin-start',at,id,start,through,deadline});await pinPending;return {complete:true,proofId:id,manifestSha256:'b'.repeat(64),bytes:1234};}},
   need:(condition:unknown,reason:string)=>{if(!condition)throw Error(reason);},hash:(value:string)=>value,record:(kind:string,data:any)=>events.push({kind,data}),
@@ -59,9 +59,9 @@ test('eager peer audits cannot replace a pending or completed still-current proo
  f.resolvePin();await turn();assert.equal(f.prepare(peer,true),false);assert.equal(f.preparation.usage()?.proofId,original.proofId);assert.equal(f.pinCalls,1);
 });
 
-for(const reason of ['source-refused','risk-refused','no-qualifying-proof','different-mint','different-window','different-hash','different-certificate','different-deadline','expired']as const)test(`early proof work stays refused for ${reason}`,async()=>{
+for(const reason of ['source-refused','no-qualifying-proof','different-mint','different-window','different-hash','different-certificate','different-deadline','expired']as const)test(`early proof work stays refused for ${reason}`,async()=>{
  const f=fixture();
- if(reason==='source-refused')f.admitted=false;else if(reason==='risk-refused')f.risk=false;else if(reason==='no-qualifying-proof')f.proof=null;
+ if(reason==='source-refused')f.admitted=false;else if(reason==='no-qualifying-proof')f.proof=null;
  else if(reason==='different-mint')f.proof={...f.proof!,mint:'OFFLINE_WRONG_MINT'};
  else if(reason==='different-window')f.proof={...f.proof!,windowEndAt:f.proof!.windowEndAt+1};
  else if(reason==='different-hash')f.proof={...f.proof!,featuresSha256:'c'.repeat(64)};
@@ -69,4 +69,8 @@ for(const reason of ['source-refused','risk-refused','no-qualifying-proof','diff
  else if(reason==='different-deadline')f.proof={...f.proof!,deadlineAt:f.proof!.deadlineAt+1};
  else f.at=f.certificate.deadlineAt+1;
  f.auditAvailable(f.certificate);await turn();assert.equal(f.pinCalls,0);assert.equal(f.preparation.usage(),null);
+});
+
+test('provider entry headroom does not delay nonfinancial proof retention',async()=>{
+ const f=fixture();f.risk=false;f.auditAvailable(f.certificate);await turn();assert.equal(f.pinCalls,1);f.resolvePin();await turn();assert.equal(f.preparation.ready(f.proof!),true);assert.equal(f.context.riskCapacity(),false,'proof retention grants no entry permission');
 });

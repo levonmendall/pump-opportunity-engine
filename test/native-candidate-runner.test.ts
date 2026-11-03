@@ -74,7 +74,7 @@ test('ACK reconciliation cannot rewind an already recorded observation generatio
  await f.runner.step();assert.equal(f.runner.status().candidates[0]!.openedAt,recordedAck);await f.runner.stop();
 });
 
-function fixture(config:{enforceTokenAge24h?:true;creationTx?:unknown;scopedNotifications?:boolean;respectServicePolicy?:true;productionResolver?:true;durableMarketPolicy?:true;marketIntake?:NativeMarketIntake;registry?:MarketRegistry;fairEconomicCompletions?:true;shadow?:boolean;maximumDeep?:number;refuseVerification?:number;refuseReason?:string;missingAudit?:boolean;lateAudit?:boolean;responseDelayMs?:number;forcePredictiveFeatures?:boolean;auditRpcError?:string;firstAuditTimeout?:boolean;quietBatch?:boolean;batchErrorIndex?:number;batchMalformedIndex?:number;retireBatchIndex?:number;batchPhysicalFailure?:string;sourceWorkAdmission?:(bound:number)=>boolean}={}){
+function fixture(config:{enforceTokenAge24h?:true;creationTx?:unknown;scopedNotifications?:boolean;respectServicePolicy?:true;productionResolver?:true;durableMarketPolicy?:true;marketIntake?:NativeMarketIntake;registry?:MarketRegistry;fairEconomicCompletions?:true;shadow?:boolean;maximumDeep?:number;refuseVerification?:number;refuseReason?:string;missingAudit?:boolean;lateAudit?:boolean;responseDelayMs?:number;forcePredictiveFeatures?:boolean;auditRpcError?:string;firstAuditTimeout?:boolean;quietBatch?:boolean;batchErrorIndex?:number;batchMalformedIndex?:number;retireBatchIndex?:number;batchPhysicalFailure?:string;sourceWorkAdmission?:(bound:number)=>boolean;afterAuditResult?:()=>void}={}){
  let at=baseAt,allow=true,headroom=20000,stopped=false,supportRequested=false,heartbeatRequested=false,resolveCalls=0,auditCalls=0,physicalBusy=false,lastPhysicalStart=-Infinity,inFlight=0,maximumInFlight=0,syntheticId=100000;
  let batchCoolingMint:string|null=null;const batchCalls:Array<{at:number;pools:string[];logicalQueries:number}>=[];
  const states=new Map<string,State>(),retiring=new Set<string>(),records:Array<{kind:string;data:any}>=[],flowActions:string[]=[],rpcCalls:Array<{method:string;params:unknown[];at:number}>=[],added:string[]=[],removed:string[]=[],identities=new Map<string,MigrationIdentity>();
@@ -96,7 +96,7 @@ function fixture(config:{enforceTokenAge24h?:true;creationTx?:unknown;scopedNoti
   }finally{inFlight--;}
  },callSignatureHistoryBatch:config.quietBatch?async<T>(requests:readonly {key:string;params:readonly unknown[]}[],signal?:AbortSignal,admission?:PilotRpcCallOptions)=>{signal?.throwIfAborted();advanceTo(Math.max(at,lastPhysicalStart+250));assert.ok(admission?.admissionOpen?.());assert.ok(admission?.latestStartAt===undefined||at<=admission.latestStartAt);assert.equal(inFlight,0);inFlight++;maximumInFlight=Math.max(maximumInFlight,inFlight);lastPhysicalStart=at;const requestedAt=at;batchCalls.push({at,pools:requests.map(r=>String(r.params[0])),logicalQueries:requests.length});try{const items=requests.map((r,i)=>config.batchErrorIndex===i?{key:r.key,id:'synthetic-batch:'+i,status:'rpc-error' as const,errorCode:-32602,requestedAt,responseReceivedAt:0,validatedAt:0}:{key:r.key,id:'synthetic-batch:'+i,status:'result' as const,result:(config.batchMalformedIndex===i?[{invalid:'SYNTHETIC_BAD_HISTORY_ROW'}]:historyPayload([...r.params])) as T,requestedAt,responseReceivedAt:0,validatedAt:0});advanceTo(at+(config.responseDelayMs??25));if(config.batchPhysicalFailure)throw Error(config.batchPhysicalFailure);if(config.retireBatchIndex!==undefined)runner.onGap({mint:requests[config.retireBatchIndex]!.key,at,reason:'SYNTHETIC_CONFIRMED_CORRECTION'});return {physicalRequestId:1000+batchCalls.length,requestedAt,responseReceivedAt:at,validatedAt:at,responseBytes:Math.min(500000,JSON.stringify(items).length),physicalHttpStarts:1 as const,logicalQueries:requests.length,overloaded:false,items:items.map(i=>({...i,responseReceivedAt:at,validatedAt:at}))};}finally{inFlight--;}}:undefined,historyQueryReadyAt:(pool:string)=>pool===batchCoolingMint?at+5000:at,usage(){const readyAt=Math.max(at,lastPhysicalStart+250);return {waitingOrOperating:physicalBusy||inFlight>0,inFlight:physicalBusy?1:inFlight,dispatchWindow:{readyAt,physicalBusy:physicalBusy||inFlight>0,waitMs:readyAt-at},cumulativeUnits:rpcCalls.length};},cooldownUntil(){return 0;}};
  const resolver=async(seed:any)=>{resolveCalls++;if(resolveCalls<=(config.refuseVerification??0))return {ok:false,reason:config.refuseReason??'PILOT_MIGRATION_LOOKUP_UNAVAILABLE'};const n=Number(seed.signature===originalSignature?1:[...seed.signature].reduce((sum,c)=>sum+c.charCodeAt(0),0)),mint=seed.feedMint??new PublicKey(Buffer.alloc(32,n%200+20)).toBase58(),identity={...structuredClone(originalIdentity),signature:seed.signature,baseMint:mint,pool:canonicalPumpPoolPda(new PublicKey(mint)).toBase58(),chainBlockTime:Math.floor((at-600000)/1000),availableAt:at,commitment:'finalized'} as MigrationIdentity;identities.set(mint,identity);return {ok:true,identity,evidence:'SYNTHETIC_RESOLVER_ONLY',proof:{source:'direct-confirmed-creation',seed,originConfirmed:{signature:seed.signature,commitment:'confirmed',availableAt:at,transaction:original},originFinalized:{signature:seed.signature,commitment:'finalized',availableAt:at,transaction:original}}};};
- const audit:typeof auditNativeFlowWindow=async options=>{auditCalls++;const result=await auditNativeFlowWindow(options);if(config.lateAudit){advanceTo(at+8000);return {...result,availableAt:at};}return result;};
+ const audit:typeof auditNativeFlowWindow=async options=>{auditCalls++;const result=await auditNativeFlowWindow(options);config.afterAuditResult?.();if(config.lateAudit){advanceTo(at+8000);return {...result,availableAt:at};}return result;};
  runner=new NativeCandidateRunner({...(config.enforceTokenAge24h?{enforceTokenAge24h:true as const}:{}),...(config.durableMarketPolicy?{observationAgePolicy:'persistent-observable-market-v1' as const}:{}),marketIntake:config.marketIntake,registry:config.registry,flow:flow as any,rpc:rpc as any,record(kind,data){records.push({kind,data:structuredClone(data)});},now:()=>at,maximumDeep:config.maximumDeep??1,admissionOpen:()=>allow,sourceWorkAdmission:config.sourceWorkAdmission,...(config.fairEconomicCompletions?{activeStrategy:LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION,activeAssessment:(_mint:string,features:ReturnType<FlowWindow['features']>)=>({...assessLiquidityResilientBuyingV31(features,at),features,status:'not-rejected' as const,reason:'OFFLINE preliminary pass for coordinator-only primary completion coverage'}),financialOwnership:(mint:string)=>ownership.get(mint)??null}:{}),resolve:config.productionResolver?undefined:resolver as any,audit});
  const importActual=()=>{const origin:NativeOrigin={originConfirmed:{signature:originalSignature,availableAt:at,transaction:structuredClone(original)},originFinalized:{signature:originalSignature,availableAt:at,transaction:structuredClone(original)}};runner.importOrigin(origin);return originalIdentity.baseMint;};
  const seed=(n:number)=>{const mint=new PublicKey(Buffer.alloc(32,n+20)).toBase58();runner.onMigration({signature:sig(n),feedMint:mint,receivedAt:at});return mint;};
@@ -253,7 +253,7 @@ test('a ready audit keeps its physical page turns while retirement resumes at th
  }finally{await f.runner.stop();}
 });
 
-for(const jitterMs of [50,100])test(`SYNTHETIC six ready rejection audits finish before replacement support/setup with ${jitterMs} ms jitter`,async()=>{
+for(const jitterMs of [50,100])test(`SYNTHETIC six ready audits retain original deadlines while feasible replacement work shares turns with ${jitterMs} ms jitter`,async()=>{
  const f=fixture({maximumDeep:6,responseDelayMs:700}),mints=Array.from({length:7},(_,i)=>f.seed(i+1));await f.steps(30);assert.equal(f.added.length,6);assert.equal(f.resolveCalls,7,'the waiting identity already has its immutable origin proof');
  // The actual forward trace refilled a rejected scope immediately, putting
  // unsubscribe/two support reads/subscribe ahead of remaining ready audits.
@@ -264,11 +264,11 @@ for(const jitterMs of [50,100])test(`SYNTHETIC six ready rejection audits finish
  f.advance(70000);const target=Math.floor(f.now/10000)*10000;
  for(let i=0;i<100&&f.runner.status().counters.predictiveAssessments<6;i++){
   await f.runner.step();f.advance(jitterMs);
-  if(f.runner.status().counters.predictiveAssessments<6){assert.equal(f.added.length,6,'a vacancy must not create discretionary setup while the existing batch still needs auditing');assert.equal(setupReads,0);}
+  assert.ok(f.added.length<=7);assert.ok(f.runner.status().candidates.length<=6,'logical allocation never exceeds physical observation capacity');
  }
  const rows=f.records.filter(r=>r.kind==='native-predictive-assessment'&&r.data.windowEndAt===target);assert.equal(rows.length,6);assert.deepEqual(new Set(rows.map(r=>r.data.mint)),new Set(mints.slice(0,6)));assert.ok(rows.every(r=>r.data.at<target+10000));assert.equal(f.runner.status().counters.decisionDeadlineMisses,0);assert.equal(f.runner.status().counters.auditUnavailable,0);assert.equal(f.maximumInFlight,1);assert.ok(f.records.some(r=>r.kind==='native-deep-admission-deferred'));
  for(let i=0;i<15&&f.states.get(mints[6]!)?.openedAt==null;i++){await f.runner.step();f.advance(jitterMs);}
- assert.equal(setupReads,2,'waiting candidate setup resumes after the current batch settles');assert.equal(f.added.length,7);assert.notEqual(f.states.get(mints[6]!)?.openedAt,null);assert.equal(f.runner.status().financialWriterOpened,false);await f.runner.stop();
+ assert.equal(setupReads,2,'each replacement support operation runs only in an admitted turn');assert.equal(f.added.length,7);assert.notEqual(f.states.get(mints[6]!)?.openedAt,null);assert.equal(f.runner.status().financialWriterOpened,false);await f.runner.stop();
 });
 
 test('verification refusal retains its exact seed and respects the watch retry time instead of disappearing',async()=>{
@@ -1235,4 +1235,30 @@ test('admission bootstrap: empty eligible universe never scans the economic-rank
  (r as any).statement=(sql:string)=>{if(sql.includes('WITH eligible AS'))rankedQueries++;return statement(sql);};
  try{assert.equal(r.nextOpportunity({where:'w.state=\'WATCH\''},baseAt,'w.waiting_since'),undefined);assert.equal(rankedQueries,0);}
  finally{r.close();}
+});
+
+for(const missing of [true,false])test(`a completed ${missing?'unusable':'verified'} audit survives a real pre-callback registry refusal without re-fetching history`,async()=>{
+ const dir=mkdtempSync(join(tmpdir(),'native-audit-result-contention-')),path=join(dir,'registry.sqlite'),registry=new MarketRegistry(path,{concurrentIntake:true,now:()=>baseAt}),locker=new Database(path);let locked=false;
+ const f=fixture({registry,missingAudit:missing,fairEconomicCompletions:true,afterAuditResult(){if(!locked){locker.exec('BEGIN IMMEDIATE');locked=true;}}});
+ try{
+  const mint=f.importActual();await f.runner.step();f.advance(70000);f.refresh();await f.runner.step();assert.equal(locked,true);
+  assert.ok((f.runner as any).candidates.get(mint)?.auditSession,'the completed logical result is retained');assert.equal(f.runner.currentAuditCertificate(mint),null);assert.equal((f.runner as any).counters.auditUnusable,0);assert.equal((f.runner as any).counters.auditedWindows,0);
+  const requests=f.rpcCalls.length,at=f.now;assert.equal(f.records.filter(r=>r.kind==='native-candidate-audit-result-deferred').length,1);await f.runner.step();assert.equal(f.rpcCalls.length,requests);
+  locker.exec('ROLLBACK');f.advance(missing?11000:1);f.refresh();await f.runner.step();const status=f.runner.status();
+  assert.equal(f.rpcCalls.length,requests,'a retained result needs no duplicate physical history');assert.equal(registry.health().storageFailures,0);
+  if(missing){assert.equal(status.counters.auditUnusable,1);assert.equal(status.counters.qualityGaps,1);assert.equal(f.removed.filter(m=>m===mint).length,1);assert.equal(status.counters.auditedWindows,0);assert.equal(f.runner.currentAuditCertificate(mint),null);}
+  else{assert.equal(status.counters.auditedWindows,1);assert.ok(f.runner.currentAuditCertificate(mint));assert.equal(f.records.filter(r=>r.kind==='native-candidate-window-audit').length,1);assert.ok(f.runner.currentAuditCertificate(mint)!.auditAvailableAt<=at,'original audit availability is not refreshed at commit');}
+ }finally{if(locker.inTransaction)locker.exec('ROLLBACK');await f.runner.stop();locker.close();registry.close();rmSync(dir,{recursive:true,force:true});}
+});
+
+
+test('source waiting diagnostics use the actual pending-order deadline and owner financial work',async()=>{
+ const f=fixture({fairEconomicCompletions:true}),options=(f.runner as any).options;
+ options.sourceWorkAdmission=()=>false;options.sourceWorkAdmissionView=()=>({admitted:false,latestStartAt:f.now-1,reason:'higher-priority-completion-envelope-reserved',bindingBlocker:'PENDING_ORDER'});
+ assert.equal(f.runner.sourceAdmissionStatus().waitingOperation.bindingBlocker,'PENDING_ORDER');
+ const pending=(f.runner as any).hasPendingFinancialEvaluation;(f.runner as any).hasPendingFinancialEvaluation=()=>true;
+ const ownerView={observedAt:f.now-10,operation:'ACTUAL_SIZE_QUOTE',requestedOperationMs:2400,availableMs:2300,deadlineAt:f.now+2290,bindingBlocker:'NATIVE_SERVICE_DEADLINE',sourceAllowed:true,deadlineAllowed:false,providerReadyAt:f.now,physicalBusy:false};options.financialWorkAdmissionView=()=>ownerView;
+ assert.deepEqual(f.runner.sourceAdmissionStatus().waitingOperation,ownerView,'financial deadline evidence keeps its own original observation clock and actual operation bound');
+ options.financialWorkAdmissionView=()=>null;assert.equal(f.runner.sourceAdmissionStatus().waitingOperation.requestedOperationMs,null,'unknown final work never masquerades as a fixed setup duration');
+ (f.runner as any).hasPendingFinancialEvaluation=pending;await f.runner.stop();
 });

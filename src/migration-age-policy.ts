@@ -9,7 +9,7 @@ import {canonicalObservationPool} from './native-observation-identity.js';
 export const MIGRATION_AGE_POLICY=Object.freeze({
  version:'verified-pumpswap-migration-1m-24h-v1',minimumAgeMs:60_000,maximumAgeMs:86_400_000,
  basis:'verified-canonical-PumpSwap-migration-block-time',boundary:'inclusive-at-1-minute-and-24-hours',
- unknown:'ineligible-until-verified',acquisition:'migration signature; bounded canonical pool-origin fallback; no mint-creation-history reads',
+ unknown:'ineligible-until-verified',acquisition:'migration signature; resumable canonical pool-origin history within existing provider budget; no mint-creation-history reads',
  existingPositions:'unchanged-exit-policy; never-force-liquidate-on-age',
 } as const);
 export type MigrationAgeProof=Readonly<{

@@ -144,3 +144,47 @@ test('pending financial ownership is not retired by migration expiry',async()=>{
   assert.equal(f.runner.watch.lookupIdentity(mint(31),f.now)!.state,'ENTRY_PENDING');assert.ok(f.states.has(mint(31)));assert.equal(f.registry.marketAgeEligibility(mint(31),f.now).allowed,false,'only unfilled buys lose age permission');
  }finally{await f.close();}
 });
+
+function resumableOriginFixture(){
+ const o=origin(),id=decodeMigrationIdentity(o.tx,{signature:o.tx.transaction.signatures[0],commitment:'finalized',availableAt:AT});assert.ok(id.ok);
+ const seedSignature=signature(191),seedTx=structuredClone(o.tx);seedTx.transaction.signatures[0]=seedSignature;seedTx.meta.innerInstructions=[];seedTx.slot+=2000;seedTx.blockTime++;
+ const page=Array.from({length:1000},(_,i)=>{const bytes=Buffer.alloc(64,11);bytes.writeUInt32LE(i+1000);return {signature:bs58.encode(bytes),slot:o.tx.slot+1500-i,blockTime:o.tx.blockTime+1,err:null};});
+ const originRow={signature:id.identity.signature,slot:o.tx.slot,blockTime:o.tx.blockTime,err:null};
+ const respond=(method:string,params:unknown[])=>method==='getSignaturesForAddress'?(params[1] as any).before?[originRow]:page:params[0]===seedSignature?seedTx:o.tx;
+ return {o,id:id.identity,seedSignature,page,respond};
+}
+
+test('runner schedules durable migration pages before preparation and deep admission, with one physical read per step',async t=>{
+ const source=resumableOriginFixture(),f=fixture({rpcResponse:source.respond});t.mock.method(Date,'now',()=>f.now);
+ try{
+  f.registry.nextTokenCreationRequest=()=>{throw Error('MINT_CREATION_FORBIDDEN');};f.registry.nextTokenCreationHistoryRequest=()=>{throw Error('MINT_HISTORY_FORBIDDEN');};
+  activity(f,source.id.baseMint,source.seedSignature);
+  for(let i=0;i<40&&!f.states.has(source.id.baseMint);i++){const before=f.requestCalls.length;await f.steps();assert.ok(f.requestCalls.length-before<=1,'each runner step owns at most one physical migration read');f.advance(10);}
+  assert.ok(f.states.has(source.id.baseMint));assert.equal(f.registry.migrationAgeProof(source.id.baseMint)!.migrationAt,source.o.tx.blockTime*1000);
+  assert.deepEqual(f.requestCalls.map(row=>row.method),['getTransaction','getSignaturesForAddress','getSignaturesForAddress','getTransaction','getTransaction']);
+  assert.equal((f.requestCalls[2]!.params[1] as any).before,source.page.at(-1)!.signature);assert.ok(f.requestCalls.filter(row=>row.method==='getSignaturesForAddress').every(row=>row.params[0]===source.id.pool));
+  assert.ok(f.records.some(row=>row.kind==='native-migration-age-progress'&&row.data.historyPages===2));assert.equal(f.runner.status().maximumSimultaneousCandidates,1);assert.equal(f.registry.migrationAgeSummary(f.now).recovery.checkpoints,0);
+ }finally{await f.close();}
+});
+
+test('runner retains a completed migration page across pre-callback writer contention without another read',async t=>{
+ const source=resumableOriginFixture(),dir=mkdtempSync(join(tmpdir(),'poe-migration-runner-lease-')),path=join(dir,'market.sqlite');let lock:Database.Database|undefined,held=false;
+ const f=fixture({path,concurrentIntake:true,rpcResponse:(method,params)=>{const value=source.respond(method,params);if(method==='getSignaturesForAddress'&&!held){lock!.exec('BEGIN IMMEDIATE');held=true;}return value;}});lock=new Database(path);t.mock.method(Date,'now',()=>f.now);
+ try{
+  activity(f,source.id.baseMint,source.seedSignature);for(let i=0;i<10&&!held;i++){await f.steps();f.advance(10);}assert.equal(held,true);
+  const seed={signature:source.seedSignature,feedMint:source.id.baseMint,receivedAt:AT};assert.equal(f.registry.migrationAgeRecovery(seed),null);const reads=f.requestCalls.length;lock.exec('ROLLBACK');
+  await f.steps();assert.equal(f.requestCalls.length,reads);assert.equal(f.registry.migrationAgeRecovery(seed)!.historyPages,1);assert.equal(f.states.size,0);
+ }finally{if(lock.inTransaction)lock.exec('ROLLBACK');lock.close();await f.close();rmSync(dir,{recursive:true,force:true});}
+});
+
+test('runner discards a late migration page when ownership changes or a direct seed supersedes it',async t=>{
+ for(const change of ['ownership','seed'] as const){
+  const source=resumableOriginFixture();let owner:'HELD'|null=null,changed=false,f:ReturnType<typeof fixture>;
+  f=fixture({financialOwnership:()=>owner,rpcResponse:(method,params)=>{const value=source.respond(method,params);if(method==='getSignaturesForAddress'&&!changed){changed=true;if(change==='ownership')owner='HELD';else migrationHint(f,source.id.baseMint,source.id.signature);}return value;}});t.mock.method(Date,'now',()=>f.now);
+  try{
+   activity(f,source.id.baseMint,source.seedSignature);for(let i=0;i<10&&!changed;i++){await f.steps();f.advance(10);}assert.equal(changed,true);await f.steps();
+   const seed={signature:source.seedSignature,feedMint:source.id.baseMint,receivedAt:AT};assert.equal(f.registry.migrationAgeRecovery(seed),null);assert.equal(f.registry.migrationAgeProof(source.id.baseMint),null);assert.equal(f.states.size,0);
+   assert.ok(f.records.some(row=>row.kind==='native-migration-age-result-discarded'&&row.data.reason===(change==='ownership'?'MIGRATION_OWNERSHIP_CHANGED':'MIGRATION_REQUEST_SUPERSEDED')));
+  }finally{await f.close();t.mock.restoreAll();}
+ }
+});

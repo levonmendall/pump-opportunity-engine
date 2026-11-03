@@ -88,6 +88,7 @@ export class PilotMarket {
   private active=false;
   private holdingActive=false;
   private preparing=false;
+  private preparationReadsRemaining:number|null=null;
   private protectionYield=false;
   private prepared=0;
   private entryEstimates=0;
@@ -108,6 +109,10 @@ export class PilotMarket {
     need(Number.isSafeInteger(options.timeoutMs??3000)&&(options.timeoutMs??3000)>0&&(options.timeoutMs??3000)<=3000,'PILOT_MARKET_BOUNDED_TIMEOUT_REQUIRED');
     this.preparationRpc={call:async<T>(method:string,params:unknown[]=[],signal?:AbortSignal)=>{
       signal?.throwIfAborted();
+      if(this.preparing&&this.preparationReadsRemaining!==null){
+        if(this.preparationReadsRemaining===0)throw Error('PILOT_MARKET_PREPARATION_YIELD');
+        this.preparationReadsRemaining--;
+      }
       if(this.preparing&&this.options.beforeEntryPreparationRead){
         need(signal,'PILOT_MARKET_PREPARATION_SIGNAL_REQUIRED');
         this.protectionYield=true;
@@ -139,13 +144,14 @@ export class PilotMarket {
   unregisterPool(mint:string){
     need(!this.active&&!this.holdingActive,'PILOT_MARKET_READ_IN_FLIGHT');
     const removed=this.held.unregisterPool(mint);if(!removed)return false;
-    this.generation++;this.pools.delete(mint);this.plans.delete(mint);this.preparationLayouts.delete(mint);this.preparationEpochs.delete(mint);this.preparationRents.clear();this.floors.delete(mint);this.entrySnapshots.delete(mint);this.entryRepriceSources.delete(mint);return true;
+    this.clearPreparation(mint);this.pools.delete(mint);this.plans.delete(mint);this.preparationEpochs.delete(mint);this.floors.delete(mint);this.entrySnapshots.delete(mint);this.entryRepriceSources.delete(mint);return true;
   }
   minimumSlot(mint:string,slot:number){this.held.minimumSlot(mint,slot);this.floors.set(mint,Math.max(this.floors.get(mint)??0,slot));}
   invalidate(reason:string){this.generation++;this.preparationEpochs.clear();this.preparationLayouts.clear();this.preparationRents.clear();this.plans.clear();this.entrySnapshots.clear();this.entryRepriceSources.clear();this.constructions.clear();this.legacyProtectionQuotes.clear();this.quoteRentsByEvidence.clear();this.quoteRentSnapshot=null;this.pricer.invalidate(reason);this.held.invalidate(reason);}
   /** A candidate capture reset revokes discretionary stable-stage reuse, not
    * an existing financial order's retained cost basis or construction. */
-  invalidateEntryPreparation(mint:string){if(!this.pools.has(mint)&&!this.preparationLayouts.has(mint))return;this.preparationEpochs.set(mint,(this.preparationEpochs.get(mint)??0)+1);this.preparationLayouts.delete(mint);this.preparationRents.clear();this.entryRepriceSources.delete(mint);}
+  private clearPreparation(mint:string){const layout=this.preparationLayouts.get(mint);if(layout){const key=hash({mint,pool:layout.pool,tokenProgram:layout.tokenProgram,generation:layout.generation,preparationEpoch:layout.preparationEpoch,lengths:layout.lengths});for(const bytes of new Set(Object.values(layout.lengths)))this.preparationRents.delete(key+':'+bytes);}this.preparationLayouts.delete(mint);}
+  invalidateEntryPreparation(mint:string){if(!this.pools.has(mint)&&!this.preparationLayouts.has(mint))return;this.clearPreparation(mint);this.preparationEpochs.set(mint,(this.preparationEpochs.get(mint)??0)+1);this.entryRepriceSources.delete(mint);}
   private clock(){const at=this.now();need(Number.isSafeInteger(at)&&at>=0,'PILOT_MARKET_CLOCK');return at;}
   private entryQuoteRead<T>(method:string,params:unknown[],signal?:AbortSignal):Promise<T>{
     if(!this.options.withEntryQuoteRead)return this.options.rpc.call<T>(method,params,signal);
@@ -235,6 +241,32 @@ export class PilotMarket {
       timer=setTimeout(()=>controller.abort(),maximumMs);if(combined.aborted)listener();
     })]);}
     finally{clearTimeout(timer);if(listener)combined.removeEventListener('abort',listener);controller.abort();}
+  }
+  /** A current work plan, never a quote. Reuse is bound to the original pool,
+   * generation, inventory and receipt times. The quote count includes a cold
+   * dependency read when another preparation has evicted this pool's links. */
+  entryPreparationStatus(mint:string,at=this.clock()){
+    const pool=this.pools.get(mint),layout=this.preparationLayouts.get(mint),epoch=this.preparationEpochs.get(mint)??0;
+    const canonical=pool?(('pool'in pool?pool.pool:undefined)??canonicalPumpPoolPda(new PublicKey(mint)).toBase58()):null;
+    const layoutFresh=!!layout&&layout.pool===canonical&&layout.generation===this.generation&&layout.preparationEpoch===epoch&&layout.at<=at&&at-layout.at<=PILOT_ENTRY_PREPARATION_POLICY.stableReuseMaxAgeMs;
+    const quoteReads=this.pricer.usage().cachedPoolSlots[mint]===undefined?2:1;
+    if(!pool||!layoutFresh)return {mint,observedAt:at,state:!pool?'unregistered' as const:'layout-required' as const,remainingReads:3,quoteReads,expiresAt:null as number|null,ready:false};
+    const locked=this.locked(mint),exists=integer(locked)>0n,lengths=layout.lengths;
+    const needed=[...new Set([!exists?lengths.base:null,this.options.executionRealism||!exists?lengths.quote:null].filter((n):n is number=>n!==null))];
+    const key=hash({mint,pool:layout.pool,tokenProgram:layout.tokenProgram,generation:this.generation,preparationEpoch:epoch,lengths});
+    let remainingReads=0,expiresAt=layout.at+PILOT_ENTRY_PREPARATION_POLICY.stableReuseMaxAgeMs;
+    for(const bytes of needed){const rent=this.preparationRents.get(key+':'+bytes);if(!rent||rent.receivedAt>at||at-rent.receivedAt>PILOT_ENTRY_PREPARATION_POLICY.stableReuseMaxAgeMs)remainingReads++;else expiresAt=Math.min(expiresAt,rent.receivedAt+PILOT_ENTRY_PREPARATION_POLICY.stableReuseMaxAgeMs);}
+    return {mint,observedAt:at,state:remainingReads?'rent-required' as const:'ready' as const,remainingReads,quoteReads,expiresAt,ready:remainingReads===0};
+  }
+  /** One physical preparation opportunity per source turn. A deliberate yield
+   * keeps validated partial stages; it does not discard capture, invent a price
+   * or turn a technical deferral into an economic rejection. */
+  async prepareEntryCostTurn(mint:string,signal:AbortSignal,maximumMs=1700){
+    need(!this.active&&!this.holdingActive&&this.preparationReadsRemaining===null,'PILOT_MARKET_PREPARATION_UNAVAILABLE');
+    this.preparationReadsRemaining=1;
+    try{const plan=await this.prepareEntryCosts(mint,signal,{maximumMs});return {status:'ready' as const,plan,work:this.entryPreparationStatus(mint)};}
+    catch(error){if(error instanceof Error&&error.message==='PILOT_MARKET_PREPARATION_YIELD')return {status:'deferred' as const,reason:error.message,work:this.entryPreparationStatus(mint)};throw error;}
+    finally{this.preparationReadsRemaining=null;}
   }
   private async prepareEntryCostsOperation(mint:string,signal:AbortSignal):Promise<PilotEntryCosts>{
     const generation=this.generation,preparationEpoch=this.preparationEpochs.get(mint)??0,epochCurrent=()=>preparationEpoch===(this.preparationEpochs.get(mint)??0);
