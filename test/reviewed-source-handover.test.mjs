@@ -65,7 +65,7 @@ test('existing source can advance through every installed recovery and exact fee
  assert.equal(c.accept(sample('8',p.ageQualified,T-50),T),'accepted');assert.equal(c.identity.release,p.ageQualified);
  assert.throws(()=>c.accept(sample('9',p.decisions),T),/source version/);
  assert.equal(c.accept(sample('9',p.to),T),'accepted');assert.equal(c.identity.release,p.to);
- for(const old of [p.from,p.via,p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofIsolated])assert.throws(()=>c.accept(sample('9',old),T),/source version/);
+ for(const old of [p.from,p.via,p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling])assert.throws(()=>c.accept(sample('9',old),T),/source version/);
 });
 test('a receiver configured at the installed recovery accepts only the exact newer repair',()=>{
  const c=new SnapshotCache({...identity(),release:p.via});assert.equal(attachReviewedSourceHandover(c),true);
@@ -84,15 +84,15 @@ test('retained startup identity can skip a reviewed intermediate and accept curr
  assert.equal(c.accept(sample('35',p.cadence,T-125),T),'accepted');assert.equal(c.identity.release,p.cadence);
  assert.equal(c.accept(sample('36',p.ageQualified,T-50),T),'accepted');assert.equal(c.identity.release,p.ageQualified);
  assert.equal(c.accept(sample('37',p.to),T),'accepted');assert.equal(c.identity.release,p.to);assert.equal(c.read().snapshot.sequence,'37');
- for(const old of [p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofIsolated])assert.throws(()=>c.accept(sample('37',old),T),/source version/);
+ for(const old of [p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling])assert.throws(()=>c.accept(sample('37',old),T),/source version/);
 });
-for(const installed of [p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofIsolated])test('a receiver configured at '+installed.slice(0,8)+' validates the exact repair before switching',()=>{
+for(const installed of [p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling])test('a receiver configured at '+installed.slice(0,8)+' validates the exact repair before switching',()=>{
  const c=new SnapshotCache({...identity(),release:installed});assert.equal(attachReviewedSourceHandover(c),true);c.accept(sample('40',installed,T-1000),T);const before=c.read();
  const invalid=sample('41',p.to);invalid.account.inceptionAt='2026-10-27T22:07:36.212Z';assert.throws(()=>c.accept(invalid,T));assert.equal(c.identity.release,installed);assert.deepEqual(c.read(),before);
  assert.throws(()=>c.accept(sample('40',p.to),T));assert.equal(c.identity.release,installed);assert.deepEqual(c.read(),before);
  assert.equal(c.accept(sample('41',p.to),T),'accepted');assert.equal(c.identity.release,p.to);
 });
-for(const intermediate of [p.via,p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofIsolated])test('an invalid intermediate '+intermediate.slice(0,8)+' report never changes the source or retained snapshot',()=>{
+for(const intermediate of [p.via,p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling])test('an invalid intermediate '+intermediate.slice(0,8)+' report never changes the source or retained snapshot',()=>{
  const c=fixture();c.accept(sample('1'),T);const before=c.read();const bad=sample('2',intermediate);bad.liveTrading=true;
  assert.throws(()=>c.accept(bad,T));assert.equal(c.identity.release,p.from);assert.deepEqual(c.read(),before);
  assert.equal(c.accept(sample('2',p.to),T),'accepted');
@@ -125,7 +125,7 @@ for(const [name,mutate]of[
  const valid={...sample('62',p.to),financialEpoch:structuredClone(prior.financialEpoch)};
  assert.equal(c.accept(valid,T),'accepted');assert.equal(c.identity.release,p.to);assert.deepEqual(c.read().snapshot.financialEpoch,prior.financialEpoch);
 });
-for(const installed of [p.from,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofIsolated])test('existing HTTP authentication runs before forward transition from '+installed.slice(0,8),async t=>{
+for(const installed of [p.from,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling])test('existing HTTP authentication runs before forward transition from '+installed.slice(0,8),async t=>{
  const secret='offline-independent-ingestion-secret';const app=createDashboard({...identity(),release:installed,viewerUser:'',viewerPassword:'',publicViewer:true,ingestionSecret:secret});
  attachReviewedSourceHandover(app.cache);app.server.listen(0,'127.0.0.1');await once(app.server,'listening');
  t.after(async()=>{app.server.closeAllConnections();await new Promise(r=>app.server.close(r));});
@@ -221,31 +221,46 @@ test('the exact installed PumpSwap runtime advances only to the reviewed age-qua
 
 
 test('the exact installed age-qualified runtime advances only to the reviewed qualification and reporting repair',()=>{
- assert.equal(p.ageQualified,'8913a9107989ce334b03e6167a2b4fc10d6fb7f6','retain the exact installed A4 source');assert.equal(p.proofIsolated,'acb50ffee8c374b3f67ee10da0780ec69a62ba03','bind the exact reviewed A5 application source');assert.match(p.proofIsolated,/^[a-f0-9]{40}$/);assert.notEqual(p.proofIsolated,p.ageQualified);
+ assert.equal(p.ageQualified,'8913a9107989ce334b03e6167a2b4fc10d6fb7f6','retain the exact installed A4 source');assert.equal(p.proofTimeout,'acb50ffee8c374b3f67ee10da0780ec69a62ba03','bind the exact reviewed A5 application source');assert.match(p.proofTimeout,/^[a-f0-9]{40}$/);assert.notEqual(p.proofTimeout,p.ageQualified);
  const c=new SnapshotCache({...identity(),release:p.ageQualified});assert.equal(attachReviewedSourceHandover(c),true);
  const prior={...sample('90',p.ageQualified,T-120000),financialEpoch:v3Epoch()};c.accept(prior,T);const before=c.read(),history=c.equityHistory();
  for(const mutate of [s=>{s.account.id='other';},s=>{s.source.strategy='other';},s=>{s.sequence='89';},s=>{delete s.financialEpoch;},s=>{s.financialEpoch.backupSha256='f'.repeat(64);}]){
-  const invalid={...sample('91',p.proofIsolated),financialEpoch:structuredClone(prior.financialEpoch)};mutate(invalid);
+  const invalid={...sample('91',p.proofTimeout),financialEpoch:structuredClone(prior.financialEpoch)};mutate(invalid);
   assert.throws(()=>c.accept(invalid,T));assert.equal(c.identity.release,p.ageQualified);assert.deepEqual(c.read(),before);assert.deepEqual(c.equityHistory(),history);
  }
  assert.equal(c.accept(prior,T),'duplicate');
- const next={...sample('92',p.proofIsolated),financialEpoch:structuredClone(prior.financialEpoch)},saved=structuredClone(next);
- assert.equal(c.accept(next,T),'accepted');assert.equal(c.identity.release,p.proofIsolated);assert.deepEqual(c.read().snapshot,saved);assert.deepEqual(next,saved);
+ const next={...sample('92',p.proofTimeout),financialEpoch:structuredClone(prior.financialEpoch)},saved=structuredClone(next);
+ assert.equal(c.accept(next,T),'accepted');assert.equal(c.identity.release,p.proofTimeout);assert.deepEqual(c.read().snapshot,saved);assert.deepEqual(next,saved);
  assert.deepEqual(c.equityHistory().financialEpoch,history.financialEpoch);for(const point of history.points)assert.deepEqual(c.equityHistory().points.find(value=>value.at===point.at),point);
  assert.equal(c.accept(next,T),'duplicate');for(const release of [p.decisions,p.ageQualified])assert.throws(()=>c.accept({...next,sequence:'93',source:{...next.source,release}},T),/source version/);
 });
 
-test('the exact installed runtime advances to migration age without changing account, epoch or history',()=>{
- assert.equal(p.proofIsolated,'acb50ffee8c374b3f67ee10da0780ec69a62ba03','retain the exact installed A5 source');assert.equal(p.to,'12a54646e87a3cd0d81d6846a254d76d7947bd21','bind the exact migration-age source');assert.match(p.to,/^[a-f0-9]{40}$/);assert.notEqual(p.to,p.proofIsolated);
- const c=new SnapshotCache({...identity(),release:p.proofIsolated});assert.equal(attachReviewedSourceHandover(c),true);
- const prior={...sample('90',p.proofIsolated,T-120000),financialEpoch:v3Epoch()};c.accept(prior,T);const before=c.read(),history=c.equityHistory();
+test('the exact installed proof-timeout runtime advances only to the reviewed held-observation scheduling repair',()=>{
+ assert.equal(p.proofTimeout,'acb50ffee8c374b3f67ee10da0780ec69a62ba03','retain the exact installed A5 source');assert.equal(p.scheduling,'c46d6f301535c80027bc31b29a15681b216df62e','bind the exact reviewed A6 application source');assert.match(p.scheduling,/^[a-f0-9]{40}$/);assert.notEqual(p.scheduling,p.proofTimeout);
+ const c=new SnapshotCache({...identity(),release:p.proofTimeout});assert.equal(attachReviewedSourceHandover(c),true);
+ const prior={...sample('90',p.proofTimeout,T-120000),financialEpoch:v3Epoch()};c.accept(prior,T);const before=c.read(),history=c.equityHistory();
+ for(const mutate of [s=>{s.account.id='other';},s=>{s.source.strategy='other';},s=>{s.sequence='89';},s=>{delete s.financialEpoch;},s=>{s.financialEpoch.backupSha256='f'.repeat(64);}]){
+  const invalid={...sample('91',p.scheduling),financialEpoch:structuredClone(prior.financialEpoch)};mutate(invalid);
+  assert.throws(()=>c.accept(invalid,T));assert.equal(c.identity.release,p.proofTimeout);assert.deepEqual(c.read(),before);assert.deepEqual(c.equityHistory(),history);
+ }
+ assert.equal(c.accept(prior,T),'duplicate');
+ const next={...sample('92',p.scheduling),financialEpoch:structuredClone(prior.financialEpoch)},saved=structuredClone(next);
+ assert.equal(c.accept(next,T),'accepted');assert.equal(c.identity.release,p.scheduling);assert.deepEqual(c.read().snapshot,saved);assert.deepEqual(next,saved);
+ assert.deepEqual(c.equityHistory().financialEpoch,history.financialEpoch);for(const point of history.points)assert.deepEqual(c.equityHistory().points.find(value=>value.at===point.at),point);
+ assert.equal(c.accept(next,T),'duplicate');for(const release of [p.decisions,p.ageQualified,p.proofTimeout])assert.throws(()=>c.accept({...next,sequence:'93',source:{...next.source,release}},T),/source version/);
+});
+
+test('the reviewed scheduler source advances to migration-age scope without changing the account',()=>{
+ assert.equal(p.scheduling,'c46d6f301535c80027bc31b29a15681b216df62e','retain the exact installed A5 source');assert.equal(p.to,'12a54646e87a3cd0d81d6846a254d76d7947bd21','bind the exact reviewed A6 application source');assert.match(p.to,/^[a-f0-9]{40}$/);assert.notEqual(p.to,p.scheduling);
+ const c=new SnapshotCache({...identity(),release:p.scheduling});assert.equal(attachReviewedSourceHandover(c),true);
+ const prior={...sample('90',p.scheduling,T-120000),financialEpoch:v3Epoch()};c.accept(prior,T);const before=c.read(),history=c.equityHistory();
  for(const mutate of [s=>{s.account.id='other';},s=>{s.source.strategy='other';},s=>{s.sequence='89';},s=>{delete s.financialEpoch;},s=>{s.financialEpoch.backupSha256='f'.repeat(64);}]){
   const invalid={...sample('91',p.to),financialEpoch:structuredClone(prior.financialEpoch)};mutate(invalid);
-  assert.throws(()=>c.accept(invalid,T));assert.equal(c.identity.release,p.proofIsolated);assert.deepEqual(c.read(),before);assert.deepEqual(c.equityHistory(),history);
+  assert.throws(()=>c.accept(invalid,T));assert.equal(c.identity.release,p.scheduling);assert.deepEqual(c.read(),before);assert.deepEqual(c.equityHistory(),history);
  }
  assert.equal(c.accept(prior,T),'duplicate');
  const next={...sample('92',p.to),financialEpoch:structuredClone(prior.financialEpoch)},saved=structuredClone(next);
  assert.equal(c.accept(next,T),'accepted');assert.equal(c.identity.release,p.to);assert.deepEqual(c.read().snapshot,saved);assert.deepEqual(next,saved);
  assert.deepEqual(c.equityHistory().financialEpoch,history.financialEpoch);for(const point of history.points)assert.deepEqual(c.equityHistory().points.find(value=>value.at===point.at),point);
- assert.equal(c.accept(next,T),'duplicate');for(const release of [p.decisions,p.proofIsolated])assert.throws(()=>c.accept({...next,sequence:'93',source:{...next.source,release}},T),/source version/);
+ assert.equal(c.accept(next,T),'duplicate');for(const release of [p.decisions,p.ageQualified,p.scheduling])assert.throws(()=>c.accept({...next,sequence:'93',source:{...next.source,release}},T),/source version/);
 });

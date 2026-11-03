@@ -45,7 +45,7 @@ type AuditDispatchReason='eligible'|'native-service-wait'|'native-service-dispat
 type AuditDispatchTrace={windowEndAt:number;deadlineAt:number;firstReadyAt:number;lastAt:number;lastState:{reason:AuditDispatchReason;nextAction:string;context:Record<string,unknown>};reasonCounts:Partial<Record<AuditDispatchReason,number>>;transitionRecords:number;omittedTransitions:number;stateKey:string;final:boolean};
 type Candidate={readonly marketAgeAtAdmission:MarketTokenAgeScope|null;historyCache?:NativeAuditHistoryCache;identity:NativeObservationIdentity;allocatedAt:number;openedAt:number|null;lastFeatureEnd:number;lastAssessmentEnd:number;lastReadyWindowEnd:number;lastReadyObservedAt:number;lastExpiredWindowEnd:number;lastAuditFenceWarmingWindowEnd:number;auditFailures:number;nextAuditAt:number;lastAuditPageAt:number;auditPageRetryAt:number;readinessCheckedEnd:number;checkedAuditable:boolean;auditDispatch?:AuditDispatchTrace;auditSession?:{session:NativeAuditSession;windowEndAt:number;openedAt:number|null;connectionId:number|null|undefined;subscriptionId:number|null|undefined;deadlineAt:number}};
 export type NativeMarketIntake={observeIdentity:(row:MarketIdentityHint)=>void;observeActivity:(row:MarketActivityHint)=>void;observeFeed:(row:MarketFeedStatus)=>void;observeMigration:(seed:PilotMigrationSeed)=>void;observeQualification?:(row:PumpSwapQualificationHint)=>void};
-export type NativeRunnerOptions={pumpswapOnly?:true;enforceTokenAge24h?:true;enforceMigrationAge?:true;marketIntake?:NativeMarketIntake;registry?:MarketRegistry;runId?:string;activeEvidence?:(mint:string,at:number)=>V3Evidence|null;activeStrategy?:'adaptive-momentum-v2'|'liquidity-resilient-momentum-v3'|'liquidity-resilient-momentum-v3.1';activeAssessment?:(mint:string,features:FlowFeatures,at:number)=>V3BuyingAssessment;observationAgePolicy?:ObservationAgePolicyVersion;rpc:Rpc;flow:Flow;record:(kind:string,data:unknown)=>void;now?:()=>number;maximumDeep?:number;restoredWatch?:unknown;resolve?:typeof resolvePilotMigration;audit?:typeof auditNativeFlowWindow;admissionOpen?:()=>boolean;sourceWorkAdmission?:(operationBoundMs:number)=>boolean;sourceWorkCheckpoint?:()=>Promise<void>;onCandidateAllocated?:(identity:NativeObservationIdentity)=>void;onCandidateRetired?:(mint:string,reason:string)=>void;onAuditAvailable?:(certificate:NativeAuditCertificate)=>void;financialOwnership?:(mint:string)=>'HELD'|'ENTRY_PENDING'|null};
+export type NativeRunnerOptions={pumpswapOnly?:true;enforceTokenAge24h?:true;enforceMigrationAge?:true;marketIntake?:NativeMarketIntake;registry?:MarketRegistry;runId?:string;activeEvidence?:(mint:string,at:number)=>V3Evidence|null;activeStrategy?:'adaptive-momentum-v2'|'liquidity-resilient-momentum-v3'|'liquidity-resilient-momentum-v3.1';activeAssessment?:(mint:string,features:FlowFeatures,at:number)=>V3BuyingAssessment;observationAgePolicy?:ObservationAgePolicyVersion;rpc:Rpc;flow:Flow;record:(kind:string,data:unknown)=>void;now?:()=>number;maximumDeep?:number;restoredWatch?:unknown;resolve?:typeof resolvePilotMigration;audit?:typeof auditNativeFlowWindow;admissionOpen?:()=>boolean;sourceWorkAdmission?:(operationBoundMs:number)=>boolean;sourceWorkCheckpoint?:()=>Promise<void>;onCandidateAllocated?:(identity:NativeObservationIdentity)=>void;onCandidateRetired?:(mint:string,reason:string)=>void;onAuditAvailable?:(certificate:NativeAuditCertificate)=>void;financialOwnership?:(mint:string)=>'HELD'|'ENTRY_PENDING'|null;financialEvaluationPending?:(mint:string,at:number)=>boolean};
 function need(value:unknown,reason:string):asserts value{if(!value)throw Error(reason);}
 const safe=(error:unknown)=>error instanceof Error&&/^[A-Z][A-Z0-9_:-]{0,150}$/.test(error.message)?error.message:'NATIVE_CANDIDATE_OPERATION_UNAVAILABLE';
 const PRE_OBSERVATION_POOL_REFUSALS=new Set(['NATIVE_OBSERVATION_POOL_MISSING','BAD_POOL_OWNER']);
@@ -142,7 +142,7 @@ export class NativeCandidateRunner{
  private freshPrepared(at:number){for(const [mint,support]of this.preparedObservations)if(!preparedObservationFresh(support,at)||this.candidates.has(mint))this.preparedObservations.delete(mint);return [...this.preparedObservations.keys()];}
  private preparationMadeProgress(kind:'ack'|'audit',at:number){if(kind==='ack')this.preparationProgress.lastAcknowledgedAt=at;else this.preparationProgress.lastAuditedAt=at;this.preparationProgress.unproductiveSinceAt=null;this.preparationProgress.serviceableSinceAt=null;this.preparationProgress.attemptsSinceProgress=0;}
  private nextPreparation(at:number):WatchRow|null{
-  if(this.pendingPreparation||this.pendingTokenCreation||!this.preparationEnabled()||this.candidates.size>=(this.options.maximumDeep??6)||this.options.flow.usage().candidates+this.options.flow.usage().retiring>=(this.options.maximumDeep??6))return null;
+  if(this.hasPendingFinancialEvaluation(at)||this.pendingPreparation||this.pendingTokenCreation||!this.preparationEnabled()||this.candidates.size>=(this.options.maximumDeep??6)||this.options.flow.usage().candidates+this.options.flow.usage().retiring>=(this.options.maximumDeep??6))return null;
   this.prepareCurrentObservation(at);return this.watch.next(at,new Set([...this.candidates.keys(),...this.financialOwnerHints,...this.freshPrepared(at)]),{preparation:!this.qualificationEnabled()});
  }
  private async prepareObservation(row:WatchRow,deadlineAt:number,signal?:AbortSignal){
@@ -150,7 +150,7 @@ export class NativeCandidateRunner{
   await this.prepareIdentity(identity,deadlineAt,signal);
  }
  private nextQualification(at:number):PumpSwapQualificationRecord|undefined{
-  if(!this.qualificationEnabled()||!this.preparationEnabled()||this.pendingPreparation||this.pendingTokenCreation)return;
+  if(this.hasPendingFinancialEvaluation(at)||!this.qualificationEnabled()||!this.preparationEnabled()||this.pendingPreparation||this.pendingTokenCreation)return;
   return this.registry.nextPumpSwapQualification(at,this.qualificationExclusions());
  }
  private async prepareQualification(hint:PumpSwapQualificationRecord,deadlineAt:number,signal?:AbortSignal){
@@ -161,10 +161,10 @@ export class NativeCandidateRunner{
  private async prepareIdentity(identity:NativeObservationIdentity,deadlineAt:number,signal?:AbortSignal,qualification?:{firstSeenAt:number}){
   const mint=identity.baseMint,pool=identity.pool,prepare=this.options.flow.prepareObservation;if(!prepare)return;
   if(this.financialOwner(mint)||this.observationOwnsMint(mint))return;
-  const at=this.now(),bound=NATIVE_DEADLINE_POLICY.nativeOperationMs;if(!this.sourceWorkAllowed(bound)||!this.discretionaryAdmission(bound,at).admitted||deadlineAt-at<bound){this.preparationState='awaiting-dispatch';return;}
+  const at=this.now(),bound=NATIVE_DEADLINE_POLICY.nativeOperationMs;if(this.hasPendingFinancialEvaluation(at)||!this.sourceWorkAllowed(bound)||!this.discretionaryAdmission(bound,at).admitted||deadlineAt-at<bound){this.preparationState='awaiting-dispatch';return;}
   this.preparationMint=mint;this.preparationQualificationOnly=qualification!==undefined;this.preparationState='validating-pool';this.preparationCounters.attempts++;this.preparationProgress.lastAttemptAt=at;this.preparationProgress.unproductiveSinceAt??=at;this.preparationProgress.attemptsSinceProgress++;
   this.creationHistoryYieldToPreparation=false;
-  const result=await prepare.call(this.options.flow,{mint,pool,...(identity.minimumSlot===undefined?{}:{minSlot:identity.minimumSlot}),...(identity.dependencyHints?{dependencyHints:{...identity.dependencyHints}}:{})},signal,{...this.admission(deadlineAt),operationBoundMs:bound,admissionOpen:()=>this.sourceWorkAllowed(bound)&&this.now()<deadlineAt});
+  const result=await prepare.call(this.options.flow,{mint,pool,...(identity.minimumSlot===undefined?{}:{minSlot:identity.minimumSlot}),...(identity.dependencyHints?{dependencyHints:{...identity.dependencyHints}}:{})},signal,{...this.admission(deadlineAt),operationBoundMs:bound,admissionOpen:()=>!this.hasPendingFinancialEvaluation()&&this.sourceWorkAllowed(bound)&&this.now()<deadlineAt});
   this.preparationState='awaiting-dispatch';if(!this.open()||signal?.aborted){this.preparationState='idle';this.preparationMint=null;return;}
   this.pendingPreparation={identity,completedAt:this.now(),result,contentionReported:false,...(qualification?{qualification}:{})};this.drainPreparedObservation();
  }
@@ -252,6 +252,13 @@ export class NativeCandidateRunner{
  private auditDispatchContext(at:number,usage:ReturnType<Rpc['usage']>,flow:ReturnType<Flow['usage']>){const rpc=usage.rpcDispatchWindow??usage.dispatchWindow,control=usage.controlDispatchWindow??usage.dispatchWindow;return {rpcReadyAt:rpc?.readyAt??null,historyReadyAt:(usage.historyDispatchWindow??rpc)?.readyAt??null,controlReadyAt:control?.readyAt??null,physicalBusy:rpc?.physicalBusy??null,actualPhysicalBusy:rpc&&'actualPhysicalBusy'in rpc?rpc.actualPhysicalBusy:null,inFlight:usage.inFlight,waitingOrOperating:usage.waitingOrOperating,rolling60SecondStarts:usage.chapterUsage?.rolling60SecondStarts??null,rolling10SecondStarts:usage.chapterUsage?.rolling10SecondStarts??null,startsPerMinuteLimit:usage.requestLimits?.maxStartsPerMinute??null,startsPer10SecondLimit:usage.requestLimits?.maxStartsPer10s??null,providerCooldownUntil:usage.cooldownUntil??null,historyCooldownUntil:usage.historyCooldownUntil??null,controlCooldownUntil:usage.controlCooldownUntil??null,nextNativeServiceAt:Number.isFinite(flow.nextServiceAt)?flow.nextServiceAt:null,nextNativeServiceDomain:flow.nextServiceDomain??null,nextNativeServiceAction:(flow as {nextServiceAction?:string|null}).nextServiceAction??null,nativeServiceSlackMs:Number.isFinite(flow.nextServiceAt)?flow.nextServiceAt-200-at:null,pageOperationBoundMs:NATIVE_CANDIDATE_AUDIT_PROFILE.operationBoundMs};}
  private open(){return !this.stopped&&this.sourceAdmissionStopReason===null&&(this.options.admissionOpen?.()??true);}
  private sourceWorkAllowed(bound:number){return this.open()&&(this.options.sourceWorkAdmission?.(bound)??true);}
+ /** Scheduling priority only. The financial owner may identify due work only
+  * after this runner verifies its current certificate and retry ordering.
+  * No age lookup, financial permission, or extended deadline is created. */
+ hasPendingFinancialEvaluation(at=this.now()){
+  if(!this.options.financialEvaluationPending)return false;
+  return this.candidateEvaluationOrder(this.certifiedCandidateMints(at),at).some(mint=>this.options.financialEvaluationPending!(mint,at));
+ }
  private registryHousekeeping(phase:'native-activity'|'migration-delivery'|'pool-progress'|'committed-activity'|'allocation'|'qualification-promotion',work:()=>void){
   if(this.registryHousekeepingDeferred)return;
   try{work();}catch(error){
@@ -273,10 +280,24 @@ export class NativeCandidateRunner{
  private async serviceFlow(signal:AbortSignal|undefined,deadlineAt:number,policy:{allowSetup:boolean;allowRetirement:boolean},callerAdmission?:()=>boolean){
   if(this.options.sourceWorkCheckpoint&&!await this.sourceCheckpoint(signal))return {kind:'deferred',reason:'NATIVE_SOURCE_FINANCIAL_RUNWAY'};
   if(callerAdmission&&!callerAdmission())return {kind:'deferred',reason:'NATIVE_FINANCIAL_RUNWAY_CHANGED'};
-  const plan=this.options.flow.servicePlan?.(policy),action=plan?.action??(this.options.flow.usage() as {nextServiceAction?:string|null}).nextServiceAction;
+  let currentPolicy=this.hasPendingFinancialEvaluation()?{...policy,allowSetup:false}:policy;
+  let plan=this.options.flow.servicePlan?.(currentPolicy),action=plan?.action??(this.options.flow.usage() as {nextServiceAction?:string|null}).nextServiceAction;
+  let required=currentPolicy.allowSetup===false||plan?.required===true||['heartbeat','peer-pong','unsubscribe','close','cleanup-proof'].includes(action??'');
+  // service() selects again at actual dispatch. With financial priority enabled,
+  // a required plan may bypass waiting only while that selection excludes new
+  // setup. Preserve legacy selection when no priority callback is configured.
+  // Recompute the existing operation bound under the same restricted policy.
+  if(this.options.financialEvaluationPending&&required&&currentPolicy.allowSetup){
+   const requiredPolicy={...currentPolicy,allowSetup:false},requiredPlan=this.options.flow.servicePlan?.(requiredPolicy);
+   // A mixed support batch can be due only for a new scope even though a fresh
+   // established scope marks the batch required. Without due required work,
+   // keep optional progress but require the financial guard at dispatch.
+   if(!requiredPlan||requiredPlan.at<=this.now()){currentPolicy=requiredPolicy;plan=requiredPlan;action=plan?.action??(this.options.flow.usage() as {nextServiceAction?:string|null}).nextServiceAction;}
+   else required=false;
+  }
   const bound=plan?.operationBoundMs??(action==='heartbeat'||action==='peer-pong'?NATIVE_DEADLINE_POLICY.heartbeatOperationMs:NATIVE_DEADLINE_POLICY.nativeOperationMs);
   if(!this.sourceWorkAllowed(bound)){this.traceAuditDispatch(this.readyAudits(this.now()),this.now(),'native-service-wait','await-financial-operation-runway',{operationBoundMs:bound,action:action??null});return {kind:'deferred',reason:'NATIVE_SOURCE_FINANCIAL_RUNWAY'};}
-  return this.options.flow.service(signal,{...this.admission(deadlineAt),operationBoundMs:bound,admissionOpen:()=>this.sourceWorkAllowed(bound)&&this.now()<deadlineAt&&(callerAdmission?.()??true)},policy);
+  return this.options.flow.service(signal,{...this.admission(deadlineAt),operationBoundMs:bound,admissionOpen:()=>(required||!this.hasPendingFinancialEvaluation())&&this.sourceWorkAllowed(bound)&&this.now()<deadlineAt&&(callerAdmission?.()??true)},currentPolicy);
  }
  /** Discovery capture is independent of discretionary provider/entry admission.
   * The durable queue is awareness, not permission to start RPC work. */
@@ -581,6 +602,7 @@ export class NativeCandidateRunner{
   * its original transaction/request timestamps and unchanged six-read/20s cap.
   * Each step admits at most one physical read then returns to shared dispatch. */
  private async verify(seed:PilotMigrationSeed,deadlineAt:number,signal?:AbortSignal){
+  if(this.hasPendingFinancialEvaluation())return;
   let session=this.verificationSession;
   if(!session&&this.options.enforceMigrationAge&&seed.feedMint){
    if(this.observationOwnsMint(seed.feedMint)||this.financialOwner(seed.feedMint))return;
@@ -596,9 +618,9 @@ export class NativeCandidateRunner{
   }
   if(this.now()>=session.deadlineAt){session.controller.abort();session.pending?.reject(Error('PILOT_MIGRATION_ABORTED'));session.pending=null;await session.done;}
   if(this.finishVerification(session))return;
-  const read=session.pending;if(!read||!this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs))return;session.pending=null;session.reads++;const at=this.now(),cutoff=Math.min(deadlineAt,session.deadlineAt),view=this.deadlineView(at);
+  const read=session.pending;if(!read||this.hasPendingFinancialEvaluation()||!this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs))return;session.pending=null;session.reads++;const at=this.now(),cutoff=Math.min(deadlineAt,session.deadlineAt),view=this.deadlineView(at);
   this.record('native-origin-read-dispatch',{at,signature:session.seed.signature,read:session.reads,method:read.method,workflowDeadlineAt:session.deadlineAt,physicalLatestStartAt:cutoff-1200,committedTargets:view.targets.length,partialProofAdmitted:false});
-  try{const value=await this.options.rpc.call(read.method,read.params,read.signal,{...this.admission(cutoff),timeoutMs:1200,operationBoundMs:NATIVE_DEADLINE_POLICY.discretionaryReadMs,admissionOpen:()=>this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs)&&this.now()<cutoff&&this.discretionaryAdmission(1200,this.now()).admitted});read.resolve(value);}catch(error){read.reject(error);}
+  try{const value=await this.options.rpc.call(read.method,read.params,read.signal,{...this.admission(cutoff),timeoutMs:1200,operationBoundMs:NATIVE_DEADLINE_POLICY.discretionaryReadMs,admissionOpen:()=>!this.hasPendingFinancialEvaluation()&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs)&&this.now()<cutoff&&this.discretionaryAdmission(1200,this.now()).admitted});read.resolve(value);}catch(error){read.reject(error);}
   await Promise.resolve();await Promise.resolve();await Promise.resolve();this.finishVerification(session);
  }
  /** A bounded shared deadline view, also used by the outer PAPER loop. Future
@@ -706,7 +728,10 @@ export class NativeCandidateRunner{
  }
  private observationAllowed(row:WatchRow,at:number){if(this.options.enforceTokenAge24h&&(!row.mint||!this.tokenAgeAllowed(row.mint,at)))return false;return row.migrationAt===null?this.currentPoolObservation:observationRunway(row.migrationAt,at,row.olderResearch!==undefined,this.observationAgePolicy).allowed;}
  private allocate(at:number){
-  const preparedMode=this.preparationEnabled(),preparedMints=preparedMode?this.freshPrepared(at):undefined;if(preparedMode&&(!preparedMints?.length||!this.sourceWorkAllowed(3000)||!this.discretionaryAdmission(3000,at).admitted))return;
+  if(this.hasPendingFinancialEvaluation(at))return;
+  // Fresh support is already available. Allocation is local bookkeeping;
+  // upgrade and subscribe each retain their own bounded service turn and ACK.
+  const preparedMode=this.preparationEnabled(),preparedMints=preparedMode?this.freshPrepared(at):undefined;if(preparedMode&&(!preparedMints?.length||!this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.nativeOperationMs)||!this.discretionaryAdmission(NATIVE_DEADLINE_POLICY.nativeOperationMs,at).admitted))return;
   const began=performance.now(),maximum=this.options.maximumDeep??6,excluded=new Set([...this.candidates.keys(),...this.financialOwnerHints]);
   if(this.currentPoolObservation)this.releaseArchiveDeferrals(at);
   for(let i=this.candidates.size;i<maximum;i++){
@@ -720,7 +745,8 @@ export class NativeCandidateRunner{
    if(!row?.mint||!row.pool)break;excluded.add(row.mint);const id=this.observationIdentity(row);
    if(!id){this.record('native-observation-identity-unavailable',{mint:row.mint,at,awarenessRetained:true,deepAdmission:false,archivalCreationRequired:!this.currentPoolObservation,otherCandidatesContinue:true});continue;}
    at=this.now(); // Recheck age after local selection work, before admission.
-   const prepared=preparedMode?this.preparedObservations.get(id.baseMint):undefined;if(preparedMode&&(!preparedObservationFresh(prepared,at,id.baseMint,id.pool,id.minimumSlot??0)||!this.sourceWorkAllowed(3000)||!this.discretionaryAdmission(3000,at).admitted))continue;
+   if(this.hasPendingFinancialEvaluation(at))break;
+   const prepared=preparedMode?this.preparedObservations.get(id.baseMint):undefined;if(preparedMode&&(!preparedObservationFresh(prepared,at,id.baseMint,id.pool,id.minimumSlot??0)||!this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.nativeOperationMs)||!this.discretionaryAdmission(NATIVE_DEADLINE_POLICY.nativeOperationMs,at).admitted))continue;
    const marketAgeAtAdmission=this.tokenAgeBeforeAdmission(id.baseMint);
    if(this.options.enforceTokenAge24h&&!this.admittedAgeAllowed(marketAgeAtAdmission,at)||!this.observationAllowed(row,at)){this.watch.transition(row.mint,'EXPIRED','remaining horizon cannot fit a complete required window',at);continue;}
    // Acquire the writer before any slot/transport mirror is changed. Hooks
@@ -920,9 +946,9 @@ export class NativeCandidateRunner{
    // deadline. Keep replacement setup out of an already-ready audit batch.
    // Required retirement, current support refresh, heartbeat and recovery
    // continue through native service below; no existing observation is dropped.
-   if(!pendingAudits.length&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.postValidationMs)&&this.discretionaryAdmission(NATIVE_DEADLINE_POLICY.postValidationMs,at).admitted)this.registryHousekeeping('allocation',()=>this.allocate(at));
-   else if(this.candidates.size<(this.options.maximumDeep??6)&&this.lastAdmissionDeferralBucket!==Math.floor(at/PROVISIONAL_RULE.bucketMs)){this.lastAdmissionDeferralBucket=Math.floor(at/PROVISIONAL_RULE.bucketMs);this.record('native-deep-admission-deferred',{at,reason:'existing-ready-audit-batch-before-replacement-setup',readyMints:pendingAudits.map(c=>c.identity.baseMint),currentDeep:this.candidates.size,maximumDeep:this.options.maximumDeep??6,watchAwarenessRetained:true,requiredNativeServicePreserved:true,financialPermission:false});}
-   const servicePolicy={allowSetup:pendingAudits.length===0&&this.discretionaryAdmission(3000,at).admitted,allowRetirement:pendingAudits.length===0};
+   if(!pendingAudits.length&&!this.hasPendingFinancialEvaluation(at)&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.postValidationMs)&&this.discretionaryAdmission(NATIVE_DEADLINE_POLICY.postValidationMs,at).admitted)this.registryHousekeeping('allocation',()=>this.allocate(at));
+   else if(this.candidates.size<(this.options.maximumDeep??6)&&this.lastAdmissionDeferralBucket!==Math.floor(at/PROVISIONAL_RULE.bucketMs)){this.lastAdmissionDeferralBucket=Math.floor(at/PROVISIONAL_RULE.bucketMs);this.record('native-deep-admission-deferred',{at,reason:pendingAudits.length?'existing-ready-audit-batch-before-replacement-setup':this.hasPendingFinancialEvaluation(at)?'certified-financial-decision-before-replacement-setup':'source-or-deadline-runway-before-replacement-setup',readyMints:pendingAudits.map(c=>c.identity.baseMint),currentDeep:this.candidates.size,maximumDeep:this.options.maximumDeep??6,watchAwarenessRetained:true,requiredNativeServicePreserved:true,financialPermission:false});}
+   const servicePolicy={allowSetup:pendingAudits.length===0&&!this.hasPendingFinancialEvaluation(at)&&this.discretionaryAdmission(this.preparationEnabled()?NATIVE_DEADLINE_POLICY.nativeOperationMs:3000,at).admitted,allowRetirement:pendingAudits.length===0};
    const servicePlan=this.options.flow.servicePlan?.(servicePolicy),observedFlow=this.options.flow.usage(),flow=servicePlan?{...observedFlow,nextServiceAt:servicePlan.at,nextServiceDomain:servicePlan.domain,nextServiceAction:servicePlan.action}:observedFlow;
    const usage=this.options.rpc.usage(),rpcGate=usage.rpcDispatchWindow??usage.dispatchWindow,gate=flow.nextServiceDomain==='control'?(usage.controlDispatchWindow??usage.dispatchWindow):rpcGate;at=this.now();
    // Immediate native readiness is stamped by usage(), after variable local
@@ -956,24 +982,29 @@ export class NativeCandidateRunner{
    }
    const auditDeadline=Math.min(Math.floor(at/PROVISIONAL_RULE.bucketMs)*PROVISIONAL_RULE.bucketMs+PROVISIONAL_RULE.bucketMs-1,serviceDeadline);
    if(dispatchable.length&&auditDeadline-at>=NATIVE_CANDIDATE_AUDIT_PROFILE.operationBoundMs+125)jobs.push({id:'audit:'+dispatchable[0]!.identity.baseMint,kind:'enrichment',enqueuedAt:at,eligibleAt:at,deadlineAt:auditDeadline,operationBoundMs:NATIVE_CANDIDATE_AUDIT_PROFILE.operationBoundMs});
-   const verification=this.discretionaryAdmission(NATIVE_DEADLINE_POLICY.discretionaryReadMs,at);
-   if(!this.verificationSession&&!ready.length&&verification.admitted&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs)&&(!rpcGate||!rpcGate.physicalBusy&&rpcGate.readyAt<=at))this.enqueueActivityOrigin(at);
-   const lookupStartedAt=this.now(),qualificationExcluded=this.qualificationExclusions();
-   let creation=!this.options.enforceMigrationAge&&this.options.enforceTokenAge24h&&!this.pendingTokenCreation&&!this.pendingPreparation&&!ready.length&&verification.admitted&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs)?this.registry.nextTokenCreationRequest(lookupStartedAt,this.preparationEnabled(),this.qualificationEnabled(),qualificationExcluded):undefined;
+   const verification=this.discretionaryAdmission(NATIVE_DEADLINE_POLICY.discretionaryReadMs,at),discretionaryOpen=!this.hasPendingFinancialEvaluation(at);
+   if(discretionaryOpen&&!this.verificationSession&&!ready.length&&verification.admitted&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs)&&(!rpcGate||!rpcGate.physicalBusy&&rpcGate.readyAt<=at))this.enqueueActivityOrigin(at);
+   const qualificationExcluded=this.qualificationExclusions();
+   // A vacant slot's already age-qualified candidate precedes optional birth
+   // discovery. Unknown-age qualification still owns a separate minimal queue;
+   // existing ready audits and every physical admission guard remain first.
+   let preparing=discretionaryOpen&&this.qualificationEnabled()&&!ready.length&&verification.admitted&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.nativeOperationMs)&&this.discretionaryAdmission(NATIVE_DEADLINE_POLICY.nativeOperationMs,this.now()).admitted?this.nextPreparation(this.now()):null;
+   const lookupStartedAt=this.now();
+   let creation=!this.options.enforceMigrationAge&&discretionaryOpen&&!preparing&&this.options.enforceTokenAge24h&&!this.pendingTokenCreation&&!this.pendingPreparation&&!ready.length&&verification.admitted&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs)?this.registry.nextTokenCreationRequest(lookupStartedAt,this.preparationEnabled(),this.qualificationEnabled(),qualificationExcluded):undefined;
    if(creation&&(this.options.rpc.tokenCreationProofReadyAt?.(creation.signature,lookupStartedAt)??lookupStartedAt)>lookupStartedAt)creation=undefined;
-   let creationHistory=!this.options.enforceMigrationAge&&this.options.pumpswapOnly&&this.options.enforceTokenAge24h&&!this.pendingTokenCreation&&!this.pendingPreparation&&!creation&&!ready.length&&verification.admitted&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs)?this.registry.nextTokenCreationHistoryRequest(this.now(),this.qualificationEnabled(),qualificationExcluded):undefined;
+   let creationHistory=!this.options.enforceMigrationAge&&discretionaryOpen&&!preparing&&this.options.pumpswapOnly&&this.options.enforceTokenAge24h&&!this.pendingTokenCreation&&!this.pendingPreparation&&!creation&&!ready.length&&verification.admitted&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs)?this.registry.nextTokenCreationHistoryRequest(this.now(),this.qualificationEnabled(),qualificationExcluded):undefined;
    if(this.options.sourceWorkCheckpoint&&!await this.sourceCheckpoint(signal))return 'wait';
-   const preparing=!creation&&(!creationHistory||this.creationHistoryYieldToPreparation)&&!ready.length&&verification.admitted&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.nativeOperationMs)?this.nextPreparation(this.now()):null;
-   const qualifying=!creation&&!preparing&&(!creationHistory||this.creationHistoryYieldToPreparation)&&!ready.length&&verification.admitted&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.nativeOperationMs)?this.nextQualification(this.now()):undefined;
+   if(!this.qualificationEnabled())preparing=discretionaryOpen&&!creation&&(!creationHistory||this.creationHistoryYieldToPreparation)&&!ready.length&&verification.admitted&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.nativeOperationMs)?this.nextPreparation(this.now()):null;
+   const qualifying=discretionaryOpen&&!creation&&!preparing&&(!creationHistory||this.creationHistoryYieldToPreparation)&&!ready.length&&verification.admitted&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.nativeOperationMs)?this.nextQualification(this.now()):undefined;
    if(preparing||qualifying)creationHistory=undefined;
    if(this.options.sourceWorkCheckpoint&&!await this.sourceCheckpoint(signal))return 'wait';
-   const seed=this.verificationSession?.seed??this.nextVerification(this.now());
+   const seed=discretionaryOpen?(this.verificationSession?.seed??this.nextVerification(this.now())):undefined;
    if(this.options.sourceWorkCheckpoint&&!await this.sourceCheckpoint(signal))return 'wait';
    // These are NEW discretionary requests, not an already-open audit window.
    // Local selection can be slow; stamp their envelope only after it completes.
    // Existing service/audit deadlines and physical cooldowns are never rebased.
    at=this.now();const bootstrap=this.discretionaryAdmission(NATIVE_DEADLINE_POLICY.discretionaryReadMs,at),bootstrapUsage=this.options.rpc.usage(),bootstrapGate=bootstrapUsage.rpcDispatchWindow??bootstrapUsage.dispatchWindow;
-   const bootstrapAllowed=!ready.length&&!this.readyAudits(at).length&&bootstrap.admitted&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs)&&!bootstrapUsage.waitingOrOperating&&bootstrapUsage.inFlight===0&&(!bootstrapGate||!bootstrapGate.physicalBusy&&bootstrapGate.readyAt<=this.now());
+   const bootstrapAllowed=!ready.length&&!this.readyAudits(at).length&&!this.hasPendingFinancialEvaluation(at)&&bootstrap.admitted&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs)&&!bootstrapUsage.waitingOrOperating&&bootstrapUsage.inFlight===0&&(!bootstrapGate||!bootstrapGate.physicalBusy&&bootstrapGate.readyAt<=this.now());
    const bootstrapDeadline=Math.min(at+2000,serviceDeadline,bootstrap.latestStartAt===null?Infinity:bootstrap.latestStartAt+NATIVE_DEADLINE_POLICY.discretionaryReadMs);
    if(creation&&bootstrapAllowed)jobs.push({id:'token-creation:'+creation.signature,kind:'reconnect',enqueuedAt:at,eligibleAt:at,deadlineAt:bootstrapDeadline,operationBoundMs:NATIVE_DEADLINE_POLICY.discretionaryReadMs});
    if(creationHistory&&bootstrapAllowed)jobs.push({id:'token-creation-history:'+creationHistory.mint,kind:'reconnect',enqueuedAt:at,eligibleAt:at,deadlineAt:bootstrapDeadline,operationBoundMs:NATIVE_DEADLINE_POLICY.discretionaryReadMs});
@@ -1064,28 +1095,30 @@ export class NativeCandidateRunner{
   need(this.pendingTokenCreation===null,'NATIVE_TOKEN_CREATION_RESULT_ALREADY_PENDING');this.pendingTokenCreation=pending;this.drainTokenCreation();
  }
  private async discoverTokenCreation(request:TokenCreationHistoryRequest,deadlineAt:number,signal?:AbortSignal){
-  if(this.pendingTokenCreation||!this.options.pumpswapOnly||!this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs))return;
+  if(this.hasPendingFinancialEvaluation()||this.pendingTokenCreation||!this.options.pumpswapOnly||!this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs))return;
   const scope=this.tokenCreationScope(request.mint);if(scope===undefined)return;
+  if(this.hasPendingFinancialEvaluation())return;
   const at=this.now();this.preparationState='awaiting-token-age';this.preparationMint=request.mint;this.preparationQualificationOnly=scope?.qualificationFirstSeenAt!==undefined;
   // Discovery starts only after a real supported PumpSwap pool was validated.
   // A restart retains the cursor, and each turn admits one existing-budget RPC.
   this.registry.deferTokenCreationHistory(request,at,'TOKEN_CREATION_HISTORY_PENDING');
   this.creationHistoryYieldToPreparation=true;
   try{
-   const rows=await this.options.rpc.call<unknown>('getSignaturesForAddress',[request.mint,{commitment:'finalized',limit:TOKEN_CREATION_HISTORY_POLICY.pageLimit,...(request.before?{before:request.before}:{}),...(request.until?{until:request.until}:{})}],signal,this.admission(deadlineAt));
+   const rows=await this.options.rpc.call<unknown>('getSignaturesForAddress',[request.mint,{commitment:'finalized',limit:TOKEN_CREATION_HISTORY_POLICY.pageLimit,...(request.before?{before:request.before}:{}),...(request.until?{until:request.until}:{})}],signal,{...this.admission(deadlineAt),admissionOpen:()=>!this.hasPendingFinancialEvaluation()&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs)&&this.now()<deadlineAt});
    const availableAt=this.now(),result=selectTokenCreationHistoryPage(rows,request,availableAt);
    this.retainTokenCreation({kind:'history',sourceInstance:this.runScope,startedAt:at,completedAt:availableAt,scope,signal,contentionReported:false,request:{...request},result,rows:Array.isArray(rows)?rows.length:null});
   }catch(error){this.record('native-token-creation-history',{at:this.now(),mint:request.mint,outcome:'unavailable',reason:safe(error),policy:TOKEN_CREATION_HISTORY_POLICY.version,financialPermission:false});}
  }
  private async verifyTokenCreation(request:{mint:string;signature:string},deadlineAt:number,signal?:AbortSignal){
-  const at=this.now();if(this.pendingTokenCreation||!this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs))return;
+  const at=this.now();if(this.hasPendingFinancialEvaluation(at)||this.pendingTokenCreation||!this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs))return;
   if((this.options.rpc.tokenCreationProofReadyAt?.(request.signature,at)??at)>at)return;
   const scope=this.tokenCreationScope(request.mint);if(scope===undefined)return;
+  if(this.hasPendingFinancialEvaluation())return;
   if(this.preparationEnabled()){this.preparationState='awaiting-token-age';this.preparationMint=request.mint;this.preparationQualificationOnly=scope?.qualificationFirstSeenAt!==undefined;}
   // Persist the cooldown before dispatch; process death cannot create a hot retry loop.
   this.registry.deferTokenCreationRequest(request,at,'TOKEN_CREATION_REQUEST_PENDING');
   try{
-   const tx=await this.options.rpc.call<unknown>('getTransaction',[request.signature,{encoding:'json',commitment:'finalized',maxSupportedTransactionVersion:1}],signal,{...this.admission(deadlineAt),queryTimeoutScope:'token-creation-proof'});
+   const tx=await this.options.rpc.call<unknown>('getTransaction',[request.signature,{encoding:'json',commitment:'finalized',maxSupportedTransactionVersion:1}],signal,{...this.admission(deadlineAt),queryTimeoutScope:'token-creation-proof',admissionOpen:()=>!this.hasPendingFinancialEvaluation()&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs)&&this.now()<deadlineAt});
    const availableAt=this.now(),proof=decodeTokenCreationProof(tx,{...request,availableAt,commitment:'finalized'});
    this.retainTokenCreation({kind:'proof',sourceInstance:this.runScope,startedAt:at,completedAt:availableAt,scope,signal,contentionReported:false,request:{...request},proof,terminal:tx!==null});
   }catch(error){this.record('native-token-creation-unavailable',{at:this.now(),mint:request.mint,reason:safe(error),financialPermission:false});}
@@ -1149,7 +1182,8 @@ export class NativeCandidateRunner{
   const backlog=this.watch.serviceableBacklog(at,{requireOrigin:!this.currentPoolObservation}),usage=this.options.rpc.usage(),providerCooldownUntil=this.options.rpc.cooldownUntil(),providerObservedAt=this.now(),rpcWindow=usage.rpcDispatchWindow??usage.dispatchWindow,controlWindow=usage.controlDispatchWindow??usage.dispatchWindow,flow=this.options.flow.usage(),maximum=this.options.maximumDeep??6,physicalOccupancy=flow.candidates+flow.retiring;
   // Dispatch readiness is sampled after backlog work and floors readyAt at its
   // own current clock. Compare at that observation, preserving source timestamps.
-  const sourceReady=this.open()&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.postValidationMs),providerReady=!usage.closed&&!usage.fatal&&providerCooldownUntil<=providerObservedAt&&!usage.waitingOrOperating&&usage.inFlight===0&&rpcWindow?.physicalBusy===false&&controlWindow?.physicalBusy===false&&rpcWindow.readyAt<=providerObservedAt&&controlWindow.readyAt<=providerObservedAt,localReady=this.discretionaryAdmission(3000,at).admitted&&this.sourceWorkAllowed(3000);
+  const setupBound=this.preparationEnabled()?NATIVE_DEADLINE_POLICY.nativeOperationMs:3000;
+  const sourceReady=this.open()&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.postValidationMs),providerReady=!usage.closed&&!usage.fatal&&providerCooldownUntil<=providerObservedAt&&!usage.waitingOrOperating&&usage.inFlight===0&&rpcWindow?.physicalBusy===false&&controlWindow?.physicalBusy===false&&rpcWindow.readyAt<=providerObservedAt&&controlWindow.readyAt<=providerObservedAt,localReady=!this.hasPendingFinancialEvaluation(at)&&this.discretionaryAdmission(setupBound,at).admitted&&this.sourceWorkAllowed(setupBound);
   const potentialWaiting=Math.max(0,backlog.population.serviceableNow-Math.max(0,maximum-physicalOccupancy));
   return {version:'native-pipeline-throughput-v1' as const,sourceInstanceId:this.runScope,startedAt:productivity.startedAt,generatedAt:at,population:{...backlog.population,retained:retainedMarketIdentities??this.registry.cohortCounts(0,at).discoveredDistinct,capacityWaiting:sourceReady&&providerReady&&localReady?potentialWaiting:null},capacityWitness:{potentialWaiting,sourceReady,providerReady,localReady,physicalOccupancy,configuredSlots:maximum},waits:backlog.waits,flow:{...this.registry.cohortCounts(productivity.startedAt,at),serviceableArrivals:null,deepAdmissions:productivity.counts.allocations,auditCompletions:this.counters.auditedWindows,financialEvaluations:this.primaryEconomicEvaluations,qualified:productivity.counts.qualified,entryFills:productivity.counts.entryFills,exitFills:productivity.counts.exitFills},limitations:['RETAINED_NOT_QUEUE','LOCAL_SERVICEABILITY_REQUIRES_RUNTIME_PROVIDER_ADMISSION','SHARED_HINTS_NOT_QUALIFICATION','INTAKE_COUNTS_ARE_NEW_UNIQUE_IDENTITY_COHORT','SERVICEABLE_QUEUE_WAIT_IS_NOT_CAUSAL_CAPACITY_DELAY',this.currentPoolObservation?'CURRENT_POOL_SUPPORT_REQUIRED_ARCHIVE_OPTIONAL':'ORIGIN_PROOF_REVALIDATED_AT_ADMISSION','SERVICEABLE_ARRIVALS_UNAVAILABLE','CAPACITY_COUNT_WITHHELD_WHILE_RUNTIME_OR_PROVIDER_BLOCKED']};
  }

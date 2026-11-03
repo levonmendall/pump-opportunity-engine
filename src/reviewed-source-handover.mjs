@@ -24,12 +24,13 @@ export const HANDOVER=Object.freeze({
  publication:'c71f8e68bc27bae44c18b02025991182137a4fac',
  decisions:'24ed291d9da85f9661b3dec06d26d0a9332b97b5',
  ageQualified:'8913a9107989ce334b03e6167a2b4fc10d6fb7f6',
- proofIsolated:'acb50ffee8c374b3f67ee10da0780ec69a62ba03',
+ proofTimeout:'acb50ffee8c374b3f67ee10da0780ec69a62ba03',
+ scheduling:'c46d6f301535c80027bc31b29a15681b216df62e',
  to:'12a54646e87a3cd0d81d6846a254d76d7947bd21',
 });
 const installed=new WeakSet();
 export function attachReviewedSourceHandover(cache){
- const identity=cache.identity,p=HANDOVER,route=[p.from,p.via,p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofIsolated,p.to];
+ const identity=cache.identity,p=HANDOVER,route=[p.from,p.via,p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling,p.to];
  if(!identity||identity.accountId!==p.accountId||identity.inceptionAt!==p.inceptionAt||identity.strategy!==p.strategy||!route.slice(0,-1).includes(identity.release))return false;
  if(installed.has(cache))return true;
  const original=cache.accept.bind(cache);
