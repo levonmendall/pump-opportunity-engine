@@ -126,7 +126,7 @@ for(const [name,mutate]of[
  const valid={...sample('62',p.to),financialEpoch:structuredClone(prior.financialEpoch)};
  assert.equal(c.accept(valid,T),'accepted');assert.equal(c.identity.release,p.to);assert.deepEqual(c.read().snapshot.financialEpoch,prior.financialEpoch);
 });
-for(const installed of [p.from,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling,p.migrationAge])test('existing HTTP authentication runs before forward transition from '+installed.slice(0,8),async t=>{
+for(const installed of [p.from,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling,p.migrationAge,p.coordinatedRepair])test('existing HTTP authentication runs before forward transition from '+installed.slice(0,8),async t=>{
  const secret='offline-independent-ingestion-secret';const app=createDashboard({...identity(),release:installed,viewerUser:'',viewerPassword:'',publicViewer:true,ingestionSecret:secret});
  attachReviewedSourceHandover(app.cache);app.server.listen(0,'127.0.0.1');await once(app.server,'listening');
  t.after(async()=>{app.server.closeAllConnections();await new Promise(r=>app.server.close(r));});
@@ -266,9 +266,24 @@ test('the reviewed scheduler source advances to migration-age scope without chan
  assert.equal(c.accept(next,T),'duplicate');for(const release of [p.decisions,p.ageQualified,p.scheduling])assert.throws(()=>c.accept({...next,sequence:'93',source:{...next.source,release}},T),/source version/);
 });
 
+test('installed H2 reporting advances to the exact recovery source while preserving account and lifetime history',()=>{
+ assert.equal(p.coordinatedRepair,'c92a2b95b1c175bf67b65cbe072c9e5f5080303d');assert.equal(p.to,'69a8c2f8c0d79370a422c1d4cfa6fd60830087e6');
+ const c=new SnapshotCache({...identity(),release:p.coordinatedRepair});assert.equal(attachReviewedSourceHandover(c),true);
+ const prior={...sample('9007199254740992',p.coordinatedRepair,T-120000),financialEpoch:v3Epoch()};c.accept(prior,T);const before=c.read(),history=c.equityHistory();
+ for(const mutate of [s=>{s.account.id='other';},s=>{s.source.strategy='other';},s=>{s.sequence=prior.sequence;},s=>{delete s.financialEpoch;},s=>{s.financialEpoch.backupSha256='f'.repeat(64);},s=>{s.liveTrading=true;},s=>{s.source.release='a'.repeat(40);}]){
+  const invalid={...sample('9007199254740993',p.to),financialEpoch:structuredClone(prior.financialEpoch)};mutate(invalid);
+  assert.throws(()=>c.accept(invalid,T));assert.equal(c.identity.release,p.coordinatedRepair);assert.deepEqual(c.read(),before);assert.deepEqual(c.equityHistory(),history);
+ }
+ assert.equal(c.accept(prior,T),'duplicate');const next={...sample('9007199254740993',p.to),financialEpoch:structuredClone(prior.financialEpoch)},saved=structuredClone(next);
+ assert.equal(c.accept(next,T),'accepted');assert.equal(c.identity.release,p.to);assert.deepEqual(c.read().snapshot,saved);assert.deepEqual(next,saved);assert.deepEqual(c.read().snapshot.account,prior.account);assert.deepEqual(c.equityHistory().financialEpoch,history.financialEpoch);
+ for(const point of history.points)assert.deepEqual(c.equityHistory().points.find(value=>value.at===point.at),point);
+ assert.equal(c.accept(next,T),'duplicate');assert.throws(()=>c.accept({...next,sequence:'9007199254740994',source:{...next.source,release:p.coordinatedRepair}},T),/source version/);
+});
+
 test('the installed migration-age source advances only to the exact published operating repair without changing original history',()=>{
  assert.equal(p.migrationAge,'356083fd8f0e69297c8470d4493077a175d2bad1','retain the exact installed migration-age source');
- assert.equal(p.to,'c92a2b95b1c175bf67b65cbe072c9e5f5080303d','bind the exact published runtime H, not its local development commit or this reporting commit');
+ assert.equal(p.coordinatedRepair,'c92a2b95b1c175bf67b65cbe072c9e5f5080303d','retain the exact installed H2 source');
+ assert.equal(p.to,'69a8c2f8c0d79370a422c1d4cfa6fd60830087e6','bind the exact published recovery runtime, independently of this reporting commit');
  const c=new SnapshotCache({...identity(),release:p.migrationAge});assert.equal(attachReviewedSourceHandover(c),true);
  const prior={...sample('9007199254740992',p.migrationAge,T-120000),financialEpoch:v3Epoch()};c.accept(prior,T);const before=c.read(),history=c.equityHistory();
  for(const mutate of [
