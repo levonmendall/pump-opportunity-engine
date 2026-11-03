@@ -6,6 +6,8 @@ import WebSocket from 'ws';
 import {nativeCandidateWatchControlAdmission} from '../src/run-native-candidates.js';
 import bs58 from 'bs58';
 import {PilotFeeds,type PilotFeedControl,type PilotFeedsOptions} from '../src/pilot-feeds.js';
+import {PumpSwapTokenAgeAdmission} from '../src/market-age-admission.js';
+import {TOKEN_AGE_POLICY} from '../src/token-age-policy.js';
 import type {ComponentKind,ComponentOperation} from '../src/component-budget.js';
 
 const fixtureTx=JSON.parse(readFileSync('evidence/targeted-transaction-sample.json','utf8'));
@@ -359,6 +361,39 @@ test('PumpSwap-only operation subscribes only to migrations and discards other v
  discovery.drop();await f.advance(2000);
  assert.deepEqual(f.sockets.at(-1)!.sent.map(value=>JSON.parse(value).method),['subscribeMigration']);
  await f.feeds.stop();
+});
+
+test('verified birth age gates broad activity, separate migration callbacks and legacy selected paths before enrichment',async()=>{
+ const f=setup({pumpswapOnly:true,persistent:true,marketIntake:true,watchOnly:true});
+ const gate=new PumpSwapTokenAgeAdmission(),qualificationHints:unknown[]=[];
+ f.feedOptions.admitMarketIdentity=row=>{if(gate.decision(row.mint,f.now)==='unknown')qualificationHints.push({mint:row.mint,receivedAt:row.receivedAt});return gate.decision(row.mint,f.now)==='eligible';};
+ await f.feeds.startDiscovery();await f.feeds.startWatchActivity();await f.feeds.addCandidate(scope);
+ const discovery=f.sockets[0]!,broad=f.sockets[1]!;
+ discovery.frame({txType:'migrate',signature:fixtureTx.signature,mint:scope.mint});broad.frame(selected());
+ assert.equal(qualificationHints.length,2);assert.equal(f.marketIdentities.length,0);assert.equal(f.marketActivities.length,0);assert.equal(f.migrations.length,0);
+ assert.equal(f.watchHints.length,0);assert.equal(f.hints.length,0);assert.equal(f.feeds.usage().selectedFrames,0);assert.equal(f.rpcCalls,0);
+ assert.equal(f.records.some(row=>row.kind==='pilot-migration-hint'||row.kind==='pilot-selected-pumpapi-payload'),false);
+ broad.frame({...selected(),pool:'pump',description:'pump-amm'});assert.equal(qualificationHints.length,2,'pre-migration traffic cannot enter age qualification');
+ const createdAt=Math.floor(f.now/1000)*1000-TOKEN_AGE_POLICY.maximumAgeMs+2000;
+ gate.observeProof({version:TOKEN_AGE_POLICY.version,mint:scope.mint,signature:fixtureTx.signature,slot:fixtureTx.transaction.slot,createdAt,availableAt:f.now,commitment:'finalized',instruction:'create',transactionSha256:'a'.repeat(64)});
+ assert.equal(f.marketActivities.length,0,'qualification does not replay prior unqualified economics');
+ discovery.frame({txType:'migrate',signature:fixtureTx.signature,mint:scope.mint});broad.frame(selected());
+ assert.equal(f.marketIdentities.length,1);assert.equal(f.migrations.length,1);assert.equal(f.marketActivities.length,1);assert.equal(f.watchHints.length,1);assert.equal(f.feeds.usage().selectedFrames,1);
+ const activities=f.marketActivities.length,migrations=f.migrations.length,selectedFrames=f.feeds.usage().selectedFrames;
+ await f.advance(createdAt+TOKEN_AGE_POLICY.maximumAgeMs-f.now+1);
+ discovery.frame({txType:'migrate',signature:bs58.encode(Buffer.alloc(64,43)),mint:scope.mint});broad.frame({...selected(),signature:bs58.encode(Buffer.alloc(64,44))});
+ assert.equal(f.marketActivities.length,activities);assert.equal(f.migrations.length,migrations);assert.equal(f.feeds.usage().selectedFrames,selectedFrames);
+ assert.equal(f.feeds.usage().marketDiscovery.ageAdmission.enabled,true);
+ assert.equal(f.feeds.usage().marketDiscovery.sources['pumpapi-broad']!.ageUnqualifiedFrames,2);
+ assert.equal(f.feeds.usage().marketDiscovery.sources['pumpportal-migration']!.ageUnqualifiedFrames,2);
+ assert.equal(f.rpcCalls,0);await f.feeds.stop();
+});
+
+test('an age gate also blocks migration callbacks when no ordinary identity sink is configured',async()=>{
+ const f=setup({pumpswapOnly:true,persistent:true});let qualifications=0;
+ f.feedOptions.admitMarketIdentity=()=>{qualifications++;return false;};await f.feeds.startDiscovery();
+ f.sockets[0]!.frame({txType:'migrate',signature:fixtureTx.signature,mint:scope.mint});
+ assert.equal(qualifications,1);assert.equal(f.migrations.length,0);assert.equal(f.rpcCalls,0);await f.feeds.stop();
 });
 
 test('broad shared activity discovers every observed mint beyond old working-set limits without per-token RPC or retained feed identities',async()=>{

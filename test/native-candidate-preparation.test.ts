@@ -39,8 +39,8 @@ function fixture(options:{pumpswapOnly?:true;history?:unknown;rpcResponse?:(meth
  };
  const rpc={async call(method:string,params:unknown[]){requests.push(method);events.push(method);if(options.rpcResponse)return options.rpcResponse(method,params);return method==='getSignaturesForAddress'?options.history??null:options.transaction??null;},usage(){return {inFlight:0,waitingOrOperating:false,dispatchWindow:{physicalBusy:false,readyAt:at}};},cooldownUntil(){return 0;}};
  runner=new NativeCandidateRunner({pumpswapOnly:options.pumpswapOnly,registry,runId:'preparation-test',flow:flow as any,rpc:rpc as any,maximumDeep:4,now:()=>at,...(options.enforceAge===false?{}:{enforceTokenAge24h:true as const}),observationAgePolicy:PERSISTENT_OBSERVABLE_MARKET_POLICY.version,activeStrategy:LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION,sourceWorkAdmission:options.sourceWorkAdmission,financialOwnership:options.financialOwnership,onCandidateAllocated:id=>events.push('bridge:'+id.baseMint),record:(kind,data)=>records.push({kind,data})});
- const seed=(n:number,knownAge=true,creationHint=true)=>{const m=mint(n);if(creationHint)runner.onMarketIdentity({mint:m,source:'pumpportal-new-token',kind:'creation',venue:'pump',signature:signature(n),receivedAt:at,evidence:'unverified-provider-discovery-hint'});if(options.pumpswapOnly)runner.onMarketIdentity({mint:m,source:'pumpportal-migration',kind:'migration',signature:signature(n+80),receivedAt:at,evidence:'unverified-provider-discovery-hint'});runner.onMigration({signature:signature(n+80),feedMint:m,receivedAt:at});runner.onMarketActivity({mint:m,source:'pumpapi-broad',kind:'activity',venue:'pump',signature:signature(n+100),side:'buy',quoteLamports:'1000',receivedAt:at,evidence:'unverified-provider-activity-hint'});if(knownAge)registry.putTokenCreationProof(proof(n,at));return m;};
- return {runner,registry,flow,states,preparedCalls,adopted,requests,events,records,seed,support,get now(){return at;},get heartbeats(){return heartbeats;},requireHeartbeat:()=>{heartbeat=true;},advance:(ms:number)=>{at+=ms;},refuse:(reason:string|null,until?:number)=>{refusal=reason;retryAt=until;},steps:async(n=1)=>{for(let i=0;i<n;i++)await runner.step();},close:async()=>{await runner.stop();registry.close();}};
+ const seed=(n:number,knownAge=true,creationHint=true)=>{const m=mint(n);if(knownAge)registry.putTokenCreationProof(proof(n,at));if(creationHint)runner.onMarketIdentity({mint:m,source:'pumpportal-new-token',kind:'creation',venue:'pump',signature:signature(n),receivedAt:at,evidence:'unverified-provider-discovery-hint'});if(options.pumpswapOnly)runner.onMarketIdentity({mint:m,source:'pumpportal-migration',kind:'migration',signature:signature(n+80),receivedAt:at,evidence:'unverified-provider-discovery-hint'});runner.onMigration({signature:signature(n+80),feedMint:m,receivedAt:at});runner.onMarketActivity({mint:m,source:'pumpapi-broad',kind:'activity',venue:'pump',signature:signature(n+100),side:'buy',quoteLamports:'1000',receivedAt:at,evidence:'unverified-provider-activity-hint'});return m;};
+ return {runner,registry,flow,rpc,states,preparedCalls,adopted,requests,events,records,seed,support,get now(){return at;},get heartbeats(){return heartbeats;},requireHeartbeat:()=>{heartbeat=true;},advance:(ms:number)=>{at+=ms;},refuse:(reason:string|null,until?:number)=>{refusal=reason;retryAt=until;},steps:async(n=1)=>{for(let i=0;i<n;i++)await runner.step();},close:async()=>{await runner.stop();registry.close();}};
 }
 
 function economicHint(f:ReturnType<typeof fixture>,n:number,quoteLamports='20000000000'){
@@ -55,6 +55,13 @@ function lockAfterPreparation(f:ReturnType<typeof fixture>){
  f.flow.prepareObservation=async(...args)=>{const result=await prepare(...args);writer.exec('BEGIN IMMEDIATE');locked=true;f.flow.prepareObservation=prepare;return result;};
  const release=()=>{if(locked){writer.exec('ROLLBACK');locked=false;}};
  return {release,close:()=>{release();writer.close();f.flow.prepareObservation=prepare;}};
+}
+
+function lockAfterCreationRead(f:ReturnType<typeof fixture>){
+ const writer=new Database(f.registry.path),call=f.rpc.call.bind(f.rpc);let locked=false;
+ f.rpc.call=async(...args)=>{const result=await call(...args);writer.exec('BEGIN IMMEDIATE');locked=true;f.rpc.call=call;return result;};
+ const release=()=>{if(locked){writer.exec('ROLLBACK');locked=false;}};
+ return {release,close:()=>{release();writer.close();f.rpc.call=call;}};
 }
 
 test('absent current pools consume no deep slot, no ACK wait, and no finalized birth lookup',async()=>{
@@ -108,17 +115,17 @@ test('history turns rotate between prepared unknown-age mints before activity pr
  const f=fixture({pumpswapOnly:true});try{
   const strong=f.seed(10,false,false),other=f.seed(11,false,false);economicHint(f,10,'200000000000');
   for(const m of [strong,other])f.registry.putObservationPreparation({mint:m,pool:pool(m),checkedAt:f.now,state:'pool-ready',reason:'OFFLINE_CANONICAL_POOL_VALIDATED'});
-  const first=f.registry.nextTokenCreationHistoryRequest(f.now)!;assert.equal(first.mint,strong,'activity breaks ties for equally waiting unseen candidates');
+  const first=f.registry.nextTokenCreationHistoryRequest(f.now,true)!;assert.equal(first.mint,strong,'minimal hints break ties without admitting unknown-age economic activity');
   f.registry.deferTokenCreationHistory(first,f.now,'TOKEN_CREATION_HISTORY_PENDING');
   f.registry.applyTokenCreationHistoryPage(first,{kind:'continue',before:signature(200),beforeSlot:200,oldestCandidate:signature(200),oldestCandidateSlot:200},f.now);
-  const second=f.registry.nextTokenCreationHistoryRequest(f.now)!;assert.equal(second.mint,other,'even equal response timestamps cannot let the high-volume mint monopolize pages');
+  const second=f.registry.nextTokenCreationHistoryRequest(f.now,true)!;assert.equal(second.mint,other,'even equal response timestamps cannot let the high-volume mint monopolize pages');
   f.registry.deferTokenCreationHistory(second,f.now,'TOKEN_CREATION_HISTORY_PENDING');
   f.registry.applyTokenCreationHistoryPage(second,{kind:'continue',before:signature(201),beforeSlot:201,oldestCandidate:signature(201),oldestCandidateSlot:201},f.now);
-  const resume=f.registry.nextTokenCreationHistoryRequest(f.now)!;assert.equal(resume.mint,strong);assert.equal(resume.before,signature(200),'the previously yielded cursor resumes');
-  for(let n=12;n<15;n++){f.advance(1);const fresh=f.seed(n,false,false);economicHint(f,n,'2000000000000');f.registry.putObservationPreparation({mint:fresh,pool:pool(fresh),checkedAt:f.now,state:'pool-ready',reason:'OFFLINE_CANONICAL_POOL_VALIDATED'});assert.equal(f.registry.nextTokenCreationHistoryRequest(f.now)!.mint,strong,'newly prepared arrivals cannot precede the older waiting turn');}
+  const resume=f.registry.nextTokenCreationHistoryRequest(f.now,true)!;assert.equal(resume.mint,strong);assert.equal(resume.before,signature(200),'the previously yielded cursor resumes');
+  for(let n=12;n<15;n++){f.advance(1);const fresh=f.seed(n,false,false);economicHint(f,n,'2000000000000');f.registry.putObservationPreparation({mint:fresh,pool:pool(fresh),checkedAt:f.now,state:'pool-ready',reason:'OFFLINE_CANONICAL_POOL_VALIDATED'});assert.equal(f.registry.nextTokenCreationHistoryRequest(f.now,true)!.mint,strong,'newly prepared arrivals cannot precede the older waiting turn');}
   f.registry.deferTokenCreationHistory(resume,f.now,'TOKEN_CREATION_HISTORY_PENDING');
   f.registry.applyTokenCreationHistoryPage(resume,{kind:'continue',before:signature(199),beforeSlot:199,oldestCandidate:signature(199),oldestCandidateSlot:199},f.now);
-  assert.equal(f.registry.nextTokenCreationHistoryRequest(f.now)!.mint,other,'the other existing cursor also retains its place ahead of new arrivals');
+  assert.equal(f.registry.nextTokenCreationHistoryRequest(f.now,true)!.mint,other,'the other existing cursor also retains its place ahead of new arrivals');
  }finally{await f.close();}
 });
 
@@ -126,12 +133,12 @@ test('PumpSwap creation-history cursor survives restart and its signature still 
  const directory=mkdtempSync(join(tmpdir(),'poe-pumpswap-age-')),path=join(directory,'registry.sqlite');
  const full=Array.from({length:1000},(_,i)=>{const bytes=Buffer.alloc(64,39);bytes.writeUInt32BE(i);return {signature:i===999?signature(8):bs58.encode(bytes),slot:1099-i,blockTime:(AT-3600000)/1000,err:null};});
  let f=fixture({path,pumpswapOnly:true,history:full});try{
-  const m=f.seed(8,false,false);await f.steps(2);const request=f.registry.nextTokenCreationHistoryRequest(f.now)!;
+  const m=f.seed(8,false,false);await f.steps(2);const request=f.registry.nextTokenCreationHistoryRequest(f.now,true)!;
   assert.equal(request.before,signature(8));assert.equal(request.beforeSlot,100);assert.equal(request.oldestCandidate,signature(8));assert.equal(f.registry.tokenCreationProof(m),null);
   await f.close();f=fixture({path,pumpswapOnly:true,history:[],transaction:creation(8)});
-  assert.deepEqual(f.registry.nextTokenCreationHistoryRequest(f.now),request);
+  assert.deepEqual(f.registry.nextTokenCreationHistoryRequest(f.now,true),request);
   await f.steps();assert.deepEqual(f.requests,['getSignaturesForAddress']);assert.equal(f.registry.tokenCreationProof(m),null);
-  assert.equal(f.registry.nextTokenCreationRequest(f.now,true)!.signature,signature(8));
+  assert.equal(f.registry.nextTokenCreationRequest(f.now,true,true)!.signature,signature(8));
   await f.steps();assert.equal(f.registry.tokenCreationProof(m)!.createdAt,AT-3600000);assert.deepEqual(f.requests,['getSignaturesForAddress','getTransaction']);
   assert.equal(f.registry.applyTokenCreationHistoryPage(request,{kind:'candidate',signature:signature(9),slot:101},f.now),false,'a delayed page cannot replace immutable verified birth');
  }finally{await f.close();rmSync(directory,{recursive:true,force:true});}
@@ -145,9 +152,9 @@ test('a successful pre-creation transfer cannot strand the later genuine Pump cr
   if(params[0]===transfer)return {version:0,slot:99,blockTime:(AT-7200000)/1000,transaction:{signatures:[transfer],message:{accountKeys:[m,TOKEN],instructions:[]}},meta:{err:null,innerInstructions:[]}};
   assert.equal(params[0],signature(9));return creation(9);
  }});try{
-  f.seed(9,false,false);await f.steps();const first=f.registry.nextTokenCreationHistoryRequest(f.now)!;
+  f.seed(9,false,false);await f.steps();const first=f.registry.nextTokenCreationHistoryRequest(f.now,true)!;
   await f.steps(2);assert.equal(f.registry.tokenCreationProof(m),null);assert.equal(f.states.size,0);
-  const next=f.registry.nextTokenCreationHistoryRequest(f.now)!;assert.equal(next.until,transfer);assert.equal(next.untilSlot,99);assert.equal(next.before,null);
+  const next=f.registry.nextTokenCreationHistoryRequest(f.now,true)!;assert.equal(next.until,transfer);assert.equal(next.untilSlot,99);assert.equal(next.before,null);
   assert.equal(f.registry.applyTokenCreationHistoryPage(first,{kind:'candidate',signature:transfer,slot:99},f.now),false,'a delayed prior interval cannot restore the rejected candidate');
   await f.steps(3);assert.deepEqual(f.requests,['getSignaturesForAddress','getTransaction','getSignaturesForAddress','getTransaction']);assert.equal(bounds.length,2);assert.equal((bounds[1] as any).until,transfer);
   assert.equal(f.registry.tokenCreationProof(m)!.signature,signature(9));assert.equal(f.registry.tokenCreationProof(m)!.createdAt,AT-3600000);assert.equal(f.states.has(m),true);
@@ -364,4 +371,219 @@ test('a preparation result returning after source stop cannot create a pending h
  const f=fixture();let release!:()=>void;const returned=new Promise<void>(resolve=>{release=resolve;});try{const m=f.seed(30),prepare=f.flow.prepareObservation;f.flow.prepareObservation=async(...args)=>{const result=await prepare(...args);await returned;return result;};const step=f.runner.step();await Promise.resolve();assert.equal(f.preparedCalls.length,1);await f.runner.stop('offline source generation ended');release();await step;
   assert.equal(f.registry.observationPreparation(m),undefined);assert.equal(f.runner.status().candidatePreparation.counters.poolReady,0);assert.equal(f.states.size,0);assert.equal(f.adopted.length,0);assert.equal(await f.runner.step(),'closed');
  }finally{release();await f.close();}
+});
+
+function creationCommitFixture(kind:'proof'|'history',options:NonNullable<Parameters<typeof fixture>[0]>={}){
+ const n=kind==='proof'?31:32,dir=mkdtempSync(join(tmpdir(),'poe-creation-commit-'));
+ const f=fixture({path:join(dir,'market.sqlite'),concurrentIntake:true,pumpswapOnly:true,transaction:creation(n),history:[{signature:signature(n),slot:100,blockTime:(AT-3600000)/1000,err:null}],...options});
+ const m=f.seed(n,false,false);
+ if(kind==='proof')f.registry.observeIdentity({mint:m,source:'pumpportal-new-token',kind:'creation',signature:signature(n),at:f.now});
+ const lock=lockAfterCreationRead(f);
+ return {f,lock,m,n,close:async()=>{lock.close();await f.close();rmSync(dir,{recursive:true,force:true});}};
+}
+
+test('completed creation proof survives a busy writer once with original availability and required heartbeat service',async()=>{
+ const c=creationCommitFixture('proof'),{f,lock,m}=c;
+ try{await f.steps(2);assert.deepEqual(f.requests,['getTransaction']);assert.equal(f.registry.tokenCreationProof(m),null);
+  f.requireHeartbeat();assert.equal(await f.runner.step(),'heartbeat');assert.equal(f.heartbeats,1);await f.steps(2);
+  assert.deepEqual(f.requests,['getTransaction']);assert.equal(f.preparedCalls.length,1);
+  assert.equal(f.records.filter(r=>r.kind==='native-candidate-registry-contention'&&r.data.completedCreationResultRetained).length,1);
+  lock.release();f.advance(500);await f.steps(2);
+  const stored=f.registry.tokenCreationProof(m)!;assert.equal(stored.availableAt,AT);assert.equal(stored.createdAt,AT-3600000);assert.equal(stored.signature,signature(c.n));
+  const verified=f.records.filter(r=>r.kind==='native-token-creation-verified');assert.equal(verified.length,1);assert.equal(verified[0]!.data.at,AT);assert.equal(verified[0]!.data.persistedAt,AT+500);
+  assert.deepEqual(f.requests,['getTransaction']);assert.equal(f.states.has(m),true);assert.equal((f.runner as any).pendingTokenCreation,null);
+ }finally{await c.close();}
+});
+
+test('completed history candidate commits the original hint locally before a separate finalized creation read',async()=>{
+ let network=true;const c=creationCommitFixture('history',{sourceWorkAdmission:bound=>network||bound<=125}),{f,lock,m}=c;
+ try{await f.steps(2);await f.steps(2);assert.deepEqual(f.requests,['getSignaturesForAddress']);assert.equal(f.registry.nextTokenCreationRequest(f.now,true,true),undefined);
+  assert.ok(JSON.stringify((f.runner as any).pendingTokenCreation).length<2048,'only compact classification/cursor metadata is retained');
+  lock.release();network=false;f.advance(700);await f.steps();
+  assert.deepEqual(f.requests,['getSignaturesForAddress']);assert.deepEqual(f.registry.nextTokenCreationRequest(f.now,true,true),{mint:m,signature:signature(c.n)});assert.equal(f.registry.tokenCreationProof(m),null);
+  const history=f.records.filter(r=>r.kind==='native-token-creation-history');assert.equal(history.length,1);assert.equal(history[0]!.data.at,AT);assert.equal(history[0]!.data.persistedAt,AT+700);assert.equal(history[0]!.data.applied,true);
+  network=true;await f.steps(2);assert.deepEqual(f.requests,['getSignaturesForAddress','getTransaction']);assert.equal(f.states.has(m),true);
+ }finally{await c.close();}
+});
+
+test('a full history page retains only the original compact cursor through writer contention',async()=>{
+ const rows=Array.from({length:1000},(_,i)=>{const bytes=Buffer.alloc(64,33);bytes.writeUInt32BE(i);return {signature:bs58.encode(bytes),slot:2000-i,blockTime:AT/1000-10,err:null};});
+ let network=true;const c=creationCommitFixture('history',{history:rows,sourceWorkAdmission:bound=>network||bound<=125}),{f,lock,m}=c;
+ try{await f.steps(2);const pending=(f.runner as any).pendingTokenCreation;assert.equal(pending.rows,1000);assert.ok(JSON.stringify(pending).length<2048);assert.equal(pending.result.before,rows.at(-1)!.signature);assert.equal(Array.isArray(pending.result),false);
+  lock.release();network=false;f.advance(750);await f.steps();const next=f.registry.nextTokenCreationHistoryRequest(f.now,true)!;
+  assert.equal(next.mint,m);assert.equal(next.before,rows.at(-1)!.signature);assert.equal(next.beforeSlot,1001);assert.equal(next.oldestCandidate,rows.at(-1)!.signature);assert.equal(next.until,null);assert.equal(f.registry.tokenCreationProof(m),null);assert.deepEqual(f.requests,['getSignaturesForAddress']);
+  const event=f.records.find(r=>r.kind==='native-token-creation-history')!.data;assert.equal(event.at,AT);assert.equal(event.persistedAt,AT+750);assert.equal(event.outcome,'continue');
+ }finally{await c.close();}
+});
+
+for(const kind of ['proof','history'] as const)test(kind+' result cannot commit after its prepared pool generation changes',async()=>{
+ let network=true;const c=creationCommitFixture(kind,{sourceWorkAdmission:bound=>network||bound<=125}),{f,lock,m}=c;
+ try{await f.steps(2);lock.release();network=false;f.advance(1);f.registry.putObservationPreparation({mint:m,pool:pool(mint(90)),checkedAt:f.now,state:'pool-ready',reason:'OFFLINE_CHANGED_POOL_SCOPE'});await f.steps(2);
+  assert.equal(f.registry.tokenCreationProof(m),null);assert.equal(f.requests.length,1);assert.equal(f.states.size,0);assert.equal((f.runner as any).pendingTokenCreation,null);
+  assert.ok(f.records.some(r=>r.kind==='native-token-creation-result-discarded'&&r.data.reason==='NATIVE_TOKEN_CREATION_POOL_CHANGED'));
+ }finally{await c.close();}
+});
+
+test('a superseded history cursor discards the old completed page without overwriting the new cursor',async()=>{
+ let network=true;const c=creationCommitFixture('history',{sourceWorkAdmission:bound=>network||bound<=125}),{f,lock,m}=c;
+ try{await f.steps();const request=f.registry.nextTokenCreationHistoryRequest(f.now,true)!;await f.steps();lock.release();network=false;f.advance(1);
+  assert.equal(f.registry.applyTokenCreationHistoryPage(request,{kind:'continue',before:signature(91),beforeSlot:90,oldestCandidate:signature(91),oldestCandidateSlot:90},f.now),true);
+  await f.steps(2);const next=f.registry.nextTokenCreationHistoryRequest(f.now,true)!;assert.equal(next.before,signature(91));assert.equal(next.oldestCandidate,signature(91));assert.equal(next.mint,m);assert.equal(f.registry.nextTokenCreationRequest(f.now,true,true),undefined);assert.equal(f.requests.length,1);
+  assert.ok(f.records.some(r=>r.kind==='native-token-creation-result-discarded'&&r.data.reason==='NATIVE_TOKEN_CREATION_REQUEST_CHANGED'));
+ }finally{await c.close();}
+});
+
+test('a superseded direct request discards its completed proof before persistence',async()=>{
+ let network=true;const c=creationCommitFixture('proof',{sourceWorkAdmission:bound=>network||bound<=125}),{f,lock,m}=c;
+ try{await f.steps(2);lock.release();network=false;f.advance(1);f.registry.deferTokenCreationRequest({mint:m,signature:signature(c.n)},f.now,'OFFLINE_SUPERSEDED_ATTEMPT',true);await f.steps(2);
+  assert.equal(f.registry.tokenCreationProof(m),null);assert.equal(f.requests.length,1);assert.ok(f.records.some(r=>r.kind==='native-token-creation-result-discarded'&&r.data.reason==='NATIVE_TOKEN_CREATION_REQUEST_CHANGED'));
+ }finally{await c.close();}
+});
+
+for(const owner of ['HELD','ENTRY_PENDING'] as const)test(owner+' ownership discards a completed age result without touching the financial watch owner',async()=>{
+ let owned=false;const c=creationCommitFixture('proof',{financialOwnership:()=>owned?owner:null}),{f,lock,m}=c;
+ try{await f.steps(2);lock.release();owned=true;f.runner.watch.observeIdentity('financial-owner:'+m,{mint:m,pool:pool(m),availableAt:f.now,evidence:'OFFLINE_RESTORED_FINANCIAL_OWNER'});f.runner.watch.transition(m,owner,'financial ownership changed during age persistence',f.now);await f.steps(2);
+  assert.equal(f.registry.tokenCreationProof(m),null);assert.equal(f.runner.watch.lookupIdentity(m,f.now)!.state,owner);assert.equal(f.requests.length,1);assert.equal(f.states.size,0);assert.ok(f.records.some(r=>r.kind==='native-token-creation-result-discarded'&&r.data.reason==='NATIVE_TOKEN_CREATION_FINANCIAL_OWNERSHIP_CHANGED'));
+ }finally{await c.close();}
+});
+
+test('age-result persistence waits for source financial runway and preserves the original proof age',async()=>{
+ let admitted=true;const c=creationCommitFixture('proof',{sourceWorkAdmission:()=>admitted}),{f,lock,m}=c;
+ try{await f.steps(2);lock.release();admitted=false;f.advance(60001);await f.steps(2);assert.equal(f.registry.tokenCreationProof(m),null);assert.equal(f.requests.length,1);
+  admitted=true;f.advance(86400000);await f.steps();const proof=f.registry.tokenCreationProof(m)!;assert.equal(proof.availableAt,AT);assert.equal(proof.createdAt,AT-3600000);assert.equal(f.registry.tokenAgeEligibility(m,f.now).reason,'TOKEN_AGE_EXCEEDS_24H');assert.equal(f.states.size,0);assert.equal(f.requests.length,1);
+ }finally{await c.close();}
+});
+
+for(const kind of ['proof','history'] as const)test(kind+' callback errors are discarded rather than replayed as pre-callback contention',async()=>{
+ const c=creationCommitFixture(kind),{f,lock,m}=c;
+ try{await f.steps(2);lock.release();let writes=0;
+  const method=kind==='proof'?'putTokenCreationProof':'applyTokenCreationHistoryPage',original=(f.registry[method] as Function).bind(f.registry);
+  (f.registry as any)[method]=()=>{writes++;throw new MarketRegistryContention('SQLITE_BUSY');};await f.steps();(f.registry as any)[method]=original;await f.steps(2);
+  assert.equal(writes,1);assert.equal(f.registry.tokenCreationProof(m),null);assert.equal(f.requests.length,1);assert.equal((f.runner as any).pendingTokenCreation,null);assert.ok(f.records.some(r=>r.kind==='native-token-creation-result-discarded'&&r.data.reason==='NATIVE_TOKEN_CREATION_COMMIT_FAILED'));
+ }finally{await c.close();}
+});
+
+test('an aborted age request cannot persist its retained result on a later source turn',async()=>{
+ const c=creationCommitFixture('proof'),{f,lock,m}=c,controller=new AbortController();
+ try{await f.steps();await f.runner.step(controller.signal);lock.release();controller.abort();await f.steps(2);assert.equal(f.registry.tokenCreationProof(m),null);assert.equal(f.requests.length,1);assert.equal((f.runner as any).pendingTokenCreation,null);assert.ok(f.records.some(r=>r.kind==='native-token-creation-result-discarded'&&r.data.reason==='NATIVE_TOKEN_CREATION_SOURCE_CHANGED'));
+ }finally{await c.close();}
+});
+
+test('source shutdown discards a pending age result without a later registry write',async()=>{
+ const c=creationCommitFixture('proof'),{f,lock,m}=c;
+ try{await f.steps(2);lock.release();await f.runner.stop('offline source generation ended');assert.equal(await f.runner.step(),'closed');assert.equal(f.registry.tokenCreationProof(m),null);assert.equal(f.requests.length,1);assert.equal((f.runner as any).pendingTokenCreation,null);assert.ok(f.records.some(r=>r.kind==='native-token-creation-result-discarded'&&r.data.reason==='NATIVE_TOKEN_CREATION_SOURCE_CHANGED'));
+ }finally{await c.close();}
+});
+
+test('an age response returning after source shutdown never creates a pending result',async()=>{
+ let release!:()=>void;const wait=new Promise<void>(resolve=>{release=resolve;});const f=fixture({transaction:creation(33),rpcResponse:async()=>{await wait;return creation(33);}});
+ try{const m=f.seed(33,false);await f.steps();const step=f.runner.step();await Promise.resolve();await f.runner.stop('offline source generation ended');release();await step;assert.equal(f.registry.tokenCreationProof(m),null);assert.equal((f.runner as any).pendingTokenCreation,null);assert.equal(f.requests.length,1);assert.ok(f.records.some(r=>r.kind==='native-token-creation-result-discarded'&&r.data.reason==='NATIVE_TOKEN_CREATION_SOURCE_CHANGED'));
+ }finally{release();await f.close();}
+});
+
+for(const kind of ['proof','history'] as const)for(const afterCommit of [false,true])test(kind+' result is never replayed after '+(afterCommit?'an after-commit notification failure':'a callback write is rolled back'),async()=>{
+ let network=true;const c=creationCommitFixture(kind,{sourceWorkAdmission:bound=>network||bound<=125}),{f,lock,m}=c;
+ try{await f.steps(2);lock.release();network=false;let writes=0;
+  const method=kind==='proof'?'putTokenCreationProof':'applyTokenCreationHistoryPage',original=(f.registry[method] as Function).bind(f.registry);
+  (f.registry as any)[method]=(...args:unknown[])=>{writes++;const result=original(...args);if(afterCommit)f.registry.afterCommit(()=>{throw Error('OFFLINE_AFTER_COMMIT_FAILURE');});else throw Error('OFFLINE_AFTER_WRITE_ROLLBACK');return result;};
+  await f.steps();(f.registry as any)[method]=original;await f.steps(2);
+  assert.equal(writes,1);assert.equal(f.requests.length,1);assert.equal((f.runner as any).pendingTokenCreation,null);
+  if(kind==='proof'){assert.equal(f.registry.tokenCreationProof(m)!==null,afterCommit);if(afterCommit)assert.equal(f.registry.tokenCreationProof(m)!.availableAt,AT);}
+  else assert.equal(f.registry.nextTokenCreationRequest(f.now,true,true)!==undefined,afterCommit);
+  const discarded=f.records.find(r=>r.kind==='native-token-creation-result-discarded'&&r.data.reason==='NATIVE_TOKEN_CREATION_COMMIT_FAILED');assert.equal(discarded?.data.callbackStarted,true);
+  assert.equal(f.records.filter(r=>r.kind==='native-token-creation-verified'||r.kind==='native-token-creation-history').length,0,'a failed persistence notification is not reported as a successful commit');
+ }finally{await c.close();}
+});
+
+test('a genuine young Pump create remains discoverable when the mint address also has an older unrelated reference',async()=>{
+ const n=34,history=[{signature:signature(134),slot:200,blockTime:AT/1000-5,err:null},{signature:signature(n),slot:100,blockTime:(AT-3600000)/1000,err:null},{signature:signature(234),slot:50,blockTime:AT/1000-86401,err:null}];
+ const f=fixture({pumpswapOnly:true,history,transaction:creation(n)});
+ try{const m=f.seed(n,false,false);await f.steps();assert.deepEqual(f.requests,[],'the existing canonical PumpSwap pool must validate first');await f.steps();assert.deepEqual(f.requests,['getSignaturesForAddress']);assert.equal(f.registry.tokenCreationProof(m),null,'signature history is not a birth proof');
+  assert.deepEqual(f.registry.nextTokenCreationRequest(f.now,true,true),{mint:m,signature:signature(n)});await f.steps();const proof=f.registry.tokenCreationProof(m)!;assert.equal(proof.instruction,'create');assert.equal(proof.createdAt,AT-3600000);assert.equal(proof.signature,signature(n));assert.notEqual(proof.createdAt,AT,'migration receipt is not token birth');assert.equal(f.states.size,0);
+  await f.steps();assert.equal(f.states.has(m),true);assert.deepEqual(f.requests,['getSignaturesForAddress','getTransaction']);assert.equal(f.runner.status().candidatePreparation.counters.allocationsFromPrepared,1);
+ }finally{await f.close();}
+});
+
+test('history with only an older successful address reference still cannot authorize a young token',async()=>{
+ const n=35,f=fixture({pumpswapOnly:true,history:[{signature:signature(n),slot:100,blockTime:AT/1000-86401,err:null}],transaction:creation(n)});
+ try{const m=f.seed(n,false,false);await f.steps(4);assert.deepEqual(f.requests,['getSignaturesForAddress']);assert.equal(f.registry.tokenCreationProof(m),null);assert.equal(f.states.size,0);assert.ok(f.records.some(r=>r.kind==='native-token-creation-history'&&r.data.reason==='TOKEN_CREATION_HISTORY_PRECEDES_24H'));
+ }finally{await f.close();}
+});
+
+test('unknown PumpSwap economics stays outside broad observation until actual creation proof commits',async()=>{
+ const n=36,m=mint(n),f=fixture({pumpswapOnly:true,history:[{signature:signature(n),slot:100,blockTime:(AT-3600000)/1000,err:null}],transaction:creation(n)});
+ try{
+  economicHint(f,n,'999000000000');
+  assert.equal(f.registry.marketEvidence(m),undefined);assert.equal(f.registry.count(),0);assert.equal(f.runner.watch.lookupIdentity(m,f.now),undefined);
+  const hint=f.registry.pumpSwapQualificationHint(m)!;assert.equal(hint.lastSeenAt,AT);assert.equal('quoteLamports'in hint,false);assert.equal('price'in hint,false);
+  await f.steps();assert.deepEqual(f.preparedCalls,[m]);assert.equal(f.registry.marketEvidence(m),undefined);assert.equal(f.registry.count(),0);assert.equal(f.states.size,0);assert.equal(f.runner.status().candidatePreparation.qualificationOnly,true);assert.equal(f.runner.status().candidatePreparation.admissionStage,'pre-discovery-qualification');
+  await f.steps(2);assert.equal(f.registry.tokenCreationProof(m)!.createdAt,AT-3600000);assert.equal(f.registry.marketEvidence(m),undefined);assert.equal(f.registry.count(),0);assert.equal(f.states.size,0);
+  await f.steps();const evidence=f.registry.marketEvidence(m)!;
+  assert.equal(f.runner.status().candidatePreparation.qualificationOnly,false);assert.equal(f.runner.status().candidatePreparation.admissionStage,'age-qualified-observation');assert.equal(f.registry.count(),1);assert.equal(evidence.activityHints,0);assert.equal(evidence.lastActivityAt,null);assert.equal(evidence.lastEconomicActivityAt,null);assert.equal(evidence.buyLamports,'0');assert.equal(f.states.has(m),true);
+  const promoted=f.records.find(r=>r.kind==='native-pumpswap-qualification-promoted')!.data;assert.equal(promoted.qualificationHintAt,AT);assert.equal(promoted.tokenCreatedAt,AT-3600000);assert.equal(promoted.marketActivityReplayed,false);
+  f.advance(1);economicHint(f,n,'2000');assert.equal(f.registry.marketEvidence(m)!.activityHints,1);assert.equal(f.registry.marketEvidence(m)!.buyLamports,'2000');assert.deepEqual(f.requests,['getSignaturesForAddress','getTransaction']);
+ }finally{await f.close();}
+});
+
+test('known old PumpSwap tokens are rejected from every ordinary ingress and schedule no qualification reads',async()=>{
+ const n=37,m=mint(n),f=fixture({pumpswapOnly:true});try{
+  f.registry.putTokenCreationProof(proof(n,AT,AT-86401000));
+  economicHint(f,n);f.runner.onMarketIdentity({mint:m,source:'pumpportal-migration',kind:'migration',signature:signature(n),receivedAt:f.now,evidence:'unverified-provider-discovery-hint'});f.runner.onMigration({feedMint:m,signature:signature(n),receivedAt:f.now});
+  await f.steps(4);assert.equal(f.registry.count(),0);assert.equal(f.registry.marketEvidence(m),undefined);assert.equal(f.registry.pumpSwapQualificationHint(m),undefined);assert.deepEqual(f.preparedCalls,[]);assert.deepEqual(f.requests,[]);assert.equal(f.states.size,0);
+ }finally{await f.close();}
+});
+
+test('a startup age cache rejects already proven old mints without a per-frame proof read',async()=>{
+ const dir=mkdtempSync(join(tmpdir(),'poe-age-cache-')),path=join(dir,'market.sqlite'),n=38,m=mint(n);let f=fixture({path,pumpswapOnly:true});
+ try{
+  f.registry.putTokenCreationProof(proof(n,AT,AT-86401000));await f.close();f=fixture({path,pumpswapOnly:true});
+  const original=f.registry.tokenCreationProof.bind(f.registry);let reads=0;f.registry.tokenCreationProof=()=>{reads++;throw Error('OFFLINE_FEED_PROOF_READ_FORBIDDEN');};
+  for(let i=0;i<1000;i++)assert.equal(f.runner.admitMarketHint({mint:m,source:'pumpapi-broad',kind:'activity',venue:'pump-amm',receivedAt:f.now}),false);
+  f.registry.tokenCreationProof=original;assert.equal(reads,0);assert.equal(f.registry.pumpSwapQualificationHint(m),undefined);assert.equal(f.registry.marketEvidence(m),undefined);
+ }finally{await f.close();rmSync(dir,{recursive:true,force:true});}
+});
+
+test('a qualified broad hint that crosses24h before preparation cannot obtain a watch or deep slot',async()=>{
+ const n=39,m=mint(n),f=fixture({pumpswapOnly:true});try{
+  f.registry.putTokenCreationProof(proof(n,AT,AT-86400000));economicHint(f,n);assert.equal(f.registry.marketEvidence(m)!.activityHints,1);
+  f.advance(1);await f.steps(4);assert.equal(f.registry.count(),0);assert.equal(f.states.size,0);assert.deepEqual(f.preparedCalls,[]);assert.deepEqual(f.requests,[]);
+  economicHint(f,n);assert.equal(f.registry.marketEvidence(m)!.activityHints,1,'expired future traffic cannot update retained market activity');
+ }finally{await f.close();}
+});
+
+test('deep observation expiry is a cached boundary check and preserves financial pending ownership',async()=>{
+ for(const owned of [false,true]){
+  const n=owned?41:40,m=mint(n);let financiallyOwned=false;const f=fixture({pumpswapOnly:true,financialOwnership:()=>financiallyOwned?'ENTRY_PENDING':null});
+  try{
+   f.registry.putTokenCreationProof(proof(n,AT,AT-86400000));f.runner.onMigration({feedMint:m,signature:signature(n),receivedAt:f.now});await f.steps(2);assert.equal(f.states.has(m),true);
+   if(owned){financiallyOwned=true;f.runner.watch.transition(m,'ENTRY_PENDING','OFFLINE_EXISTING_FINANCIAL_OWNERSHIP',f.now);}
+   f.advance(1);await f.steps();assert.equal(f.states.has(m),owned);assert.deepEqual(f.requests,[]);assert.equal(f.preparedCalls.length,1);
+   if(owned)assert.equal(f.runner.watch.lookupIdentity(m,f.now)!.state,'ENTRY_PENDING');
+  }finally{await f.close();}
+ }
+});
+
+test('legacy unknown-age market and watch history cannot enter normal preparation without a fresh qualification hint',async()=>{
+ const n=42,m=mint(n),f=fixture({pumpswapOnly:true});try{
+  f.registry.observeActivity({mint:m,source:'pumpapi-broad',kind:'activity',venue:'pump-amm',signature:signature(n),side:'buy',quoteLamports:'999000000000',receivedAt:AT,evidence:'unverified-provider-activity-hint'});
+  f.runner.watch.observeIdentity('legacy:'+m,{mint:m,pool:pool(m),availableAt:AT,evidence:'OFFLINE_RETAINED_OLD_WATCH_ROW'});
+  await f.steps(4);assert.equal(f.registry.count(),1);assert.deepEqual(f.preparedCalls,[]);assert.deepEqual(f.requests,[]);assert.equal(f.states.size,0);
+  economicHint(f,n);await f.steps();assert.deepEqual(f.preparedCalls,[m]);assert.equal(f.states.size,0,'new actual PumpSwap hint opens only minimal qualification');
+ }finally{await f.close();}
+});
+
+test('a stale original qualification receipt is never rejuvenated by delayed proof persistence',async()=>{
+ const c=creationCommitFixture('proof'),{f,lock,m}=c;try{
+  await f.steps(2);lock.release();f.advance(60001);await f.steps(3);
+  assert.equal(f.registry.tokenCreationProof(m)!.availableAt,AT);assert.equal(f.registry.pumpSwapQualificationHint(m)!.lastSeenAt,AT);assert.equal(f.registry.count(),0);assert.equal(f.states.size,0);assert.equal(f.preparedCalls.length,1);assert.equal(f.records.some(r=>r.kind==='native-pumpswap-qualification-promoted'),false);
+  economicHint(f,c.n);await f.steps(2);assert.equal(f.states.has(m),true);assert.equal(f.preparedCalls.length,2,'new broad activity requires fresh pool support after the original support expired');
+ }finally{await c.close();}
+});
+
+test('failed constructor initialization leaves no obsolete proof listener',async()=>{
+ const f=fixture({pumpswapOnly:true});try{
+  const listeners=(f.registry as any).tokenCreationProofListeners as Set<unknown>,before=listeners.size;
+  assert.throws(()=>new NativeCandidateRunner({...((f.runner as any).options),record:()=>{throw Error('OFFLINE_CONSTRUCTOR_FAILURE');}}),/OFFLINE_CONSTRUCTOR_FAILURE/);
+  assert.equal(listeners.size,before);
+ }finally{await f.close();}
 });

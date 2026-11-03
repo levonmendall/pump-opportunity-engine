@@ -18,6 +18,14 @@ export type MarketActivityHint=Omit<MarketIdentityHint,'evidence'>&{
 };
 export type MarketFeedStatus={source:MarketFeedSource;at:number;connected:boolean;scope:string;gapReason?:string};
 
+/** Minimal post-migration eligibility work, separate from general discovery.
+ * No price, amount, score, provider birth time or fabricated activity belongs
+ * here. A signature is merely context, never proof of the token's birth. */
+export type PumpSwapQualificationHint={
+ mint:string;receivedAt:number;source:'pumpportal-migration'|'pumpapi-broad';
+ signature?:string;kind:'migration'|'activity';venue?:'pump-amm';
+};
+
 /** Routing only: provider venue/migration hints authorize bounded verification,
  * never trading. Creation/curve traffic cannot enter the PumpSwap work queue. */
 export const PUMPSWAP_INTAKE_POLICY=Object.freeze({version:'pumpswap-after-migration-only-v1',venue:'pump-amm',creationSubscription:false,preMigrationPersistence:false,sharedTransport:'client-filtered; provider sends all venues'});
