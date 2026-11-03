@@ -1,0 +1,79 @@
+name: Package exact validated migration-age runtime
+on:
+  push:
+    branches: [repair/poe-migration-age-1m-24h-20261103]
+    paths: [.github/workflows/poe-migration-age-package.yml]
+permissions:
+  contents: read
+  actions: read
+jobs:
+  package:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 12
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      TARGET_SOURCE: 356083fd8f0e69297c8470d4493077a175d2bad1
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: 356083fd8f0e69297c8470d4493077a175d2bad1
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Authenticate the exact successful regression step and retained evidence
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          umask 077
+          mkdir -p /tmp/poe-migration-validation
+          python3 -B -I - <<'PY'
+          import hashlib,io,json,os,pathlib,re,urllib.request,zipfile
+          root='https://api.github.com/repos/levonmendall/pump-opportunity-engine';out=pathlib.Path('/tmp/poe-migration-validation')
+          def get(path):
+              request=urllib.request.Request(root+path,headers={'Authorization':'Bearer '+os.environ['GH_TOKEN'],'Accept':'application/vnd.github+json'})
+              with urllib.request.urlopen(request,timeout=30) as response:return response.read()
+          run=json.loads(get('/actions/runs/41588685778'));assert run['head_sha']=='212d67875ae8ce258588a688ec3762531a3f8991' and run['conclusion']=='failure'
+          jobs=json.loads(get('/actions/runs/41588685778/jobs'))['jobs'];assert len(jobs)==1
+          steps=jobs[0]['steps'];step=next(s for s in steps if s['name']=='Compile and run every application and reporting regression');assert step['conclusion']=='success'
+          artifact=json.loads(get('/actions/artifacts/13208873659'));assert artifact['workflow_run']['id']==41588685778 and not artifact['expired']
+          raw=get('/actions/artifacts/13208873659/zip');digest=hashlib.sha256(raw).hexdigest();assert digest=='586a0512c1fcafed73992082bcea3f4bd5b0b78f0ac027036ad9a90e7f9e67f3' and artifact['digest']=='sha256:'+digest
+          with zipfile.ZipFile(io.BytesIO(raw)) as z:
+              for name in ['full.log','ai-reporting.log','source-commit.txt','source.patch','typecheck.log','compile.log']:(out/name).write_bytes(z.read(name))
+          assert (out/'source-commit.txt').read_text().strip()==os.environ['TARGET_SOURCE']
+          def metrics(name):
+              s=(out/name).read_text();return {k:int(re.findall(r'(?m)^(?:# |ℹ )'+k+r'\s+(\d+)\s*$',s)[-1]) for k in ['tests','pass','fail','skipped','cancelled']}
+          assert metrics('full.log')=={'tests':3749,'pass':3749,'fail':0,'skipped':0,'cancelled':0}
+          assert metrics('ai-reporting.log')=={'tests':84,'pass':84,'fail':0,'skipped':0,'cancelled':0}
+          (out/'authenticated-regression-provenance.json').write_text(json.dumps({'repository':'levonmendall/pump-opportunity-engine','runId':41588685778,'artifactId':13208873659,'artifactSha256':digest,'step':step,'overallRunConclusion':'failure','failureWasLaterPackagingNotRegression':True},indent=2)+'\n')
+          PY
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.19.0'
+          check-latest: false
+          cache: npm
+      - name: Build unchanged source and run the standalone PAPER smoke checks
+        run: |
+          set -euo pipefail
+          umask 077
+          test "$(git rev-parse HEAD)" = "$TARGET_SOURCE"
+          npm ci --include=dev
+          test -z "$(git status --porcelain)"
+          node scripts/build-native-paper-ec2.mjs --output-directory /tmp/poe-native-paper-output-migration-age 2>&1 | tee /tmp/poe-migration-validation/package.log
+          cp -a /tmp/poe-native-paper-output-migration-age /tmp/poe-migration-validation/bundle
+          git archive HEAD src test scripts docs package.json package-lock.json tsconfig.json | gzip -n > /tmp/poe-migration-validation/source.tar.gz
+          node --import tsx --input-type=module -e "import {nativePaperConfigurationSha256} from './src/run-native-paper.ts'; console.log(nativePaperConfigurationSha256({service:true,stage:'two',deepSlots:4,strategy:'liquidity-resilient-momentum-v3.1'}))" > /tmp/poe-migration-validation/configuration-sha256.txt
+          python3 -B -I - <<'PY'
+          import pathlib,hashlib,json,os
+          p=pathlib.Path('/tmp/poe-migration-validation');source=os.environ['TARGET_SOURCE'];meta=json.loads((p/'bundle/metadata.json').read_bytes())
+          assert meta['git']['commit']==source and meta['git']['workingTreeStatus']=='' and meta['financialMode']=='PAPER' and meta['liveTradingEnabled'] is False
+          assert meta['smoke']['exitStatus']==0 and meta['smoke']['networkDisabled'] and meta['smoke']['disposableFinancialFixture'] and meta['smoke']['readonlyPersistentBackup']
+          result={'kind':'POE_MIGRATION_AGE_VALIDATED_BUILD','source':source,'base':'acb50ffee8c374b3f67ee10da0780ec69a62ba03','bundleSha256':hashlib.sha256((p/'bundle/native-paper.mjs').read_bytes()).hexdigest(),'testsPassed':3749,'validationRun':41588685778,'buildRun':int(os.environ['GITHUB_RUN_ID']),'fullLogSha256':hashlib.sha256((p/'full.log').read_bytes()).hexdigest(),'financialControlWrites':0,'ec2Changed':False,'ageBasis':'verified-pumpswap-migration','minimumAgeMs':60000,'maximumAgeMs':86400000,'deepSlots':4,'liveTrading':False}
+          (p/'build-receipt.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: poe-migration-age-validation-${{ github.run_id }}
+          path: /tmp/poe-migration-validation/
+          retention-days: 14
+          if-no-files-found: error
