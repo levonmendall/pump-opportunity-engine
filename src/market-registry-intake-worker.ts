@@ -10,7 +10,7 @@ import {pumpSwapIntakeHint,type MarketIdentityHint,type MarketActivityHint,type 
 export const MARKET_REGISTRY_INTAKE_WORKER_KIND='poe-market-registry-intake-v1' as const;
 export type MarketRegistryIntakeMessage={kind:'intake';id:number}&({operation:'identity';value:MarketIdentityHint}|{operation:'activity';value:MarketActivityHint}|{operation:'feed';value:MarketFeedStatus}|{operation:'migration';value:WatchSeed}|{operation:'qualification';value:PumpSwapQualificationHint});
 export type MarketRegistryCommittedActivity={mint:string;at:number;evidence:string};
-export type MarketRegistryIntakeOptions={path:string;maximumComputeMs?:number;pendingBytesBudget?:number;writerYieldMs?:number;writerTurn?:SharedArrayBuffer;enforceTokenAge24h?:true};
+export type MarketRegistryIntakeOptions={path:string;maximumComputeMs?:number;pendingBytesBudget?:number;writerYieldMs?:number;writerTurn?:SharedArrayBuffer;enforceTokenAge24h?:true;enforceMigrationAge?:true};
 export type MarketRegistryIntakePort=Pick<MessagePort,'on'|'postMessage'|'close'>;
 /** Runs only inside the verified native-paper bundle's worker branch. This
  * module imports no financial ledger, provider, wallet, engine or order code.
@@ -25,10 +25,10 @@ export function startMarketRegistryIntakeWorker(options:MarketRegistryIntakeOpti
  const directory=dirname(options.path),parent=lstatSync(directory),uid=process.geteuid?.()??process.getuid?.();
  if(!parent.isDirectory()||parent.isSymbolicLink()||realpathSync(directory)!==directory||parent.uid!==uid||(parent.mode&0o022)!==0)throw Error('MARKET_INTAKE_PRIVATE_DIRECTORY_REQUIRED');
  try{const file=lstatSync(options.path);if(!file.isFile()||file.isSymbolicLink()||file.uid!==uid||file.nlink!==1)throw Error('MARKET_INTAKE_PRIVATE_FILE_REQUIRED');}catch(error){if((error as {code?:unknown}).code!=='ENOENT')throw error;}
- const registry=new MarketRegistry(options.path,{concurrentIntake:true,writerRole:'intake',...(options.writerTurn?{writerTurn:options.writerTurn}:{})});
+ const registry=new MarketRegistry(options.path,{concurrentIntake:true,writerRole:'intake',...(options.enforceMigrationAge?{migrationAge:true as const}:{}),...(options.writerTurn?{writerTurn:options.writerTurn}:{})});
  type Pending={message:MarketRegistryIntakeMessage;bytes:number};const queue:Array<Pending|undefined>=[];let head=0,pendingBytes=0,scheduled:ReturnType<typeof setTimeout>|null=null,closing=false,closed=false,fatal=false;
  let received=0,committed=0,processedAcknowledged=0,qualificationReceived=0,qualificationCommitted=0,ageExcluded=0,venueExcluded=0,batches=0,contentions=0,maximumBatchMs=0,maximumComputeObservedMs=0,lastCommitAt:number|null=null;
- const stats=()=>({received,committed,processedAcknowledged,qualificationReceived,qualificationCommitted,ageExcluded,venueExcluded,enforceTokenAge24h:options.enforceTokenAge24h===true,pending:queue.length-head,pendingBytes,pendingBytesBudget:budget,batches,contentions,maximumBatchMs,maximumComputeMs:maximumComputeObservedMs,lastCommitAt,registry:registry.health()});
+ const stats=()=>({received,committed,processedAcknowledged,qualificationReceived,qualificationCommitted,ageExcluded,venueExcluded,enforceTokenAge24h:options.enforceTokenAge24h===true,enforceMigrationAge:options.enforceMigrationAge===true,pending:queue.length-head,pendingBytes,pendingBytesBudget:budget,batches,contentions,maximumBatchMs,maximumComputeMs:maximumComputeObservedMs,lastCommitAt,registry:registry.health()});
  const send=(value:unknown)=>port.postMessage(value);
  const close=()=>{if(closed)return;closed=true;if(scheduled)clearTimeout(scheduled);scheduled=null;registry.close();send({kind:'closed',stats:stats()});port.close();};
  const schedule=()=>{if(!scheduled&&!closed&&!fatal)scheduled=setTimeout(pump,yieldMs);};
@@ -36,7 +36,7 @@ export function startMarketRegistryIntakeWorker(options:MarketRegistryIntakeOpti
  function exclusion(message:MarketRegistryIntakeMessage):string|null{
   if(message.operation==='feed')return null;
   if(message.operation==='qualification')return pumpSwapIntakeHint(message.value)?null:'PUMPSWAP_VENUE_REQUIRED';
-  if(!options.enforceTokenAge24h)return null;
+  if(!options.enforceTokenAge24h&&!options.enforceMigrationAge)return null;
   // Migration messages originate only from the migration feed, but still need
   // a proven mint. A signature or migration time is never a creation proof.
   if(message.operation!=='migration'&&!pumpSwapIntakeHint(message.value))return 'PUMPSWAP_VENUE_REQUIRED';
@@ -45,6 +45,7 @@ export function startMarketRegistryIntakeWorker(options:MarketRegistryIntakeOpti
   if(!mint)return 'TOKEN_AGE_UNVERIFIED';
   // The registry validates the complete stored proof and its scalar binding.
   // Reuse that immutable proof for both clocks rather than decoding it twice.
+  if(options.enforceMigrationAge){const received=registry.marketAgeEligibility(mint,receivedAt);if(!received.allowed)return received.reason;const current=registry.marketAgeEligibility(mint,at);return current.allowed?null:current.reason;}
   const proof=registry.tokenCreationProof(mint);if(!proof)return 'TOKEN_AGE_UNVERIFIED';
   if(proof.availableAt>receivedAt||proof.createdAt>receivedAt)return 'TOKEN_AGE_INVALID';
   return receivedAt-proof.createdAt>TOKEN_AGE_POLICY.maximumAgeMs||at-proof.createdAt>TOKEN_AGE_POLICY.maximumAgeMs?'TOKEN_AGE_EXCEEDS_24H':null;

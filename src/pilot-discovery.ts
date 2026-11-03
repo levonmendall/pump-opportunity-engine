@@ -33,7 +33,7 @@ function refusal(error:unknown){const message=error instanceof Error?error.messa
  * candidates, and one finalized origin proof. A saturated page is not claimed
  * to contain the actual oldest transaction and is refused without scanning.
  */
-export async function resolvePilotMigration(seed:PilotMigrationSeed,rpc:PilotMigrationRpc,signal:AbortSignal):Promise<PilotMigrationResult>{
+export async function resolvePilotMigration(seed:PilotMigrationSeed,rpc:PilotMigrationRpc,signal:AbortSignal,allowCurrentPoolFallback=false):Promise<PilotMigrationResult>{
   const startedAt=Date.now(),startedMono=performance.now(),controller=new AbortController(),combined=AbortSignal.any([signal,controller.signal]);
   let reads=0;
   const timer=setTimeout(()=>controller.abort(),MAX_MS);
@@ -56,7 +56,7 @@ export async function resolvePilotMigration(seed:PilotMigrationSeed,rpc:PilotMig
       // A direct genuine event establishes actual roles; feedMint remains a hint.
       identity=initialDecoded.identity;originConfirmed=initial;
     }else{
-      need(initialDecoded.reason==='MIGRATION_IDENTITY_CREATION_CPI_NOT_VERIFIED',initialDecoded.reason);
+      need(initialDecoded.reason==='MIGRATION_IDENTITY_CREATION_CPI_NOT_VERIFIED'||allowCurrentPoolFallback,initialDecoded.reason);
       need(selected.feedMint!==undefined,'PILOT_MIGRATION_RETRY_FEED_MINT_REQUIRED');
       const mint=new PublicKey(selected.feedMint);need(!mint.equals(NATIVE_MINT)&&!mint.equals(PublicKey.default),'PILOT_MIGRATION_RETRY_BASE_MINT_REQUIRED');
       const pool=canonicalPumpPoolPda(mint).toBase58(),requestedAt=Date.now();
@@ -89,3 +89,7 @@ export async function resolvePilotMigration(seed:PilotMigrationSeed,rpc:PilotMig
   }catch(error){return {ok:false,reason:refusal(error)};}
   finally{clearTimeout(timer);controller.abort();}
 }
+
+/** Live migration-age scope uses the same six-read/20s verified resolver.
+ * A shared swap may locate the canonical pool history but never proves age. */
+export function resolvePumpSwapMigrationAge(seed:PilotMigrationSeed,rpc:PilotMigrationRpc,signal:AbortSignal):Promise<PilotMigrationResult>{return resolvePilotMigration(seed,rpc,signal,true);}

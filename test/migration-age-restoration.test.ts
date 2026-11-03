@@ -1,16 +1,51 @@
-from pathlib import Path
-p=Path('test/native-candidate-preparation.test.ts');s=p.read_text()
-head=s[:s.index('const AT=')]
-head=head.replace('import {mkdtempSync,rmSync}','import {mkdtempSync,rmSync,readFileSync}')
-head+="import {MIGRATION_AGE_POLICY,decodeMigrationAgeProof,migrationAgeDecision,PumpSwapMigrationAgeAdmission,type MigrationAgeProof} from '../src/migration-age-policy.js';\n"
-head+="import {decodeMigrationIdentity} from '../src/migration-identity.js';\n"
-fixture=s[s.index('const AT='):s.index('\nfunction economicHint')]
-fixture=fixture.replace('function fixture(options:{','function fixture(options:{migration?:boolean;')
-fixture=fixture.replace("sourceSlot:100,evidence:'OFFLINE_CANONICAL_POOL_BINDING'","sourceSlot:original.slot+100,evidence:'OFFLINE_CANONICAL_POOL_BINDING'")
-fixture=fixture.replace('{pumpswapOnly:options.pumpswapOnly,marketIntake:','{...(options.migration===false?{}:{enforceMigrationAge:true as const}),pumpswapOnly:true,marketIntake:')
-a=fixture.index(' const seed=');b=fixture.index('\n return ',a);fixture=fixture[:a]+fixture[b:];fixture=fixture.replace(',seed,support,',',support,')
-fixture=fixture.replace('const AT=',"const original=JSON.parse(readFileSync('evidence/integration-2026-10-26T23-32-41.255Z.ndjson','utf8').trim().split('\\n').find(line=>JSON.parse(line).kind==='migration-transaction')!).data;\nconst AT=")
-Path('test/migration-age-restoration.test.ts').write_text(head+fixture+'''
+/** Offline coordinator mechanics. These fixtures prove ordering and ownership;
+ * they do not claim live provider coverage or economically qualified trades. */
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {createHash} from 'node:crypto';
+import {mkdtempSync,rmSync,readFileSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {PublicKey} from '@solana/web3.js';
+import Database from 'better-sqlite3';
+import bs58 from 'bs58';
+import {MarketRegistry,MarketRegistryContention} from '../src/market-registry.js';
+import {NativeCandidateRunner,type NativeMarketIntake} from '../src/native-candidate-runner.js';
+import {PERSISTENT_OBSERVABLE_MARKET_POLICY} from '../src/observation-age.js';
+import {LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION} from '../src/liquidity-resilient-momentum-v3-1.js';
+import {canonicalPumpPoolPda} from '../src/sdk.js';
+import {TOKEN_AGE_POLICY,type TokenCreationProof} from '../src/token-age-policy.js';
+import type {ResearchClockNativeObservationSupport} from '../src/research-clock-pricing.js';
+import type {NativeObservationPreparationResult} from '../src/native-observation-preparation.js';
+import {projectCandidatePreparationReporting} from '../src/candidate-preparation-reporting.js';
+
+import {MIGRATION_AGE_POLICY,decodeMigrationAgeProof,migrationAgeDecision,PumpSwapMigrationAgeAdmission,type MigrationAgeProof} from '../src/migration-age-policy.js';
+import {decodeMigrationIdentity} from '../src/migration-identity.js';
+const original=JSON.parse(readFileSync('evidence/integration-2026-10-26T23-32-41.255Z.ndjson','utf8').trim().split('\n').find(line=>JSON.parse(line).kind==='migration-transaction')!).data;
+const AT=Date.parse('2026-11-01T21:00:00Z');
+const mint=(n:number)=>new PublicKey(Buffer.alloc(32,n)).toBase58();
+const signature=(n:number)=>bs58.encode(Buffer.alloc(64,n));
+const pool=(m:string)=>canonicalPumpPoolPda(new PublicKey(m)).toBase58();
+const TOKEN='TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',PUMP='6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P';
+function proof(n:number,at=AT,createdAt=AT-3600000):TokenCreationProof{return {version:TOKEN_AGE_POLICY.version,mint:mint(n),signature:signature(n),slot:100,createdAt,availableAt:at,commitment:'finalized',instruction:'create',transactionSha256:'a'.repeat(64)};}
+function creation(n:number){const m=mint(n),curve=PublicKey.findProgramAddressSync([Buffer.from('bonding-curve'),new PublicKey(m).toBuffer()],new PublicKey(PUMP))[0].toBase58();return {version:0,slot:100,blockTime:(AT-3600000)/1000,transaction:{signatures:[signature(n)],message:{accountKeys:[PUMP,TOKEN,m,mint(201),curve],instructions:[{programIdIndex:0,accounts:[2,3,4],data:bs58.encode(Buffer.concat([createHash('sha256').update('global:create').digest().subarray(0,8),Buffer.alloc(50)]))}]}},meta:{err:null,innerInstructions:[{index:0,instructions:[{programIdIndex:1,accounts:[2],data:bs58.encode(Buffer.from([20,...Buffer.alloc(34)])),stackHeight:2}]}]}};}
+function fixture(options:{migration?:boolean;proofReadyAt?:(signature:string,at:number)=>number;pumpswapOnly?:true;marketIntake?:NativeMarketIntake;history?:unknown;rpcResponse?:(method:string,params:unknown[])=>unknown;path?:string;concurrentIntake?:boolean;enforceAge?:boolean;sourceWorkAdmission?:(bound:number)=>boolean;financialOwnership?:(mint:string)=>'HELD'|'ENTRY_PENDING'|null;transaction?:unknown}={}){
+ let at=AT,runner:NativeCandidateRunner,refusal:string|null=null,retryAt:number|undefined,stopped=false,heartbeat=false,heartbeats=0;
+ const registry=new MarketRegistry(options.path??':memory:',{now:()=>at,concurrentIntake:options.concurrentIntake}),states=new Map<string,{mint:string;pool:string;minSlot?:number}>(),preparedCalls:string[]=[],adopted:ResearchClockNativeObservationSupport[]=[],requests:string[]=[],requestCalls:Array<{method:string;params:unknown[];options:Record<string,unknown>}>=[],events:string[]=[],records:Array<{kind:string;data:any}>=[];
+ const support=(m:string)=>({mint:m,pool:pool(m),at,sourceSlot:original.slot+100,evidence:'OFFLINE_CANONICAL_POOL_BINDING',summary:{marketClockUnixSeconds:Math.floor(at/1000),tokenProgram:TOKEN}} as ResearchClockNativeObservationSupport);
+ const flow={
+  async prepareObservation(scope:{mint:string},_signal?:AbortSignal,admission?:{admissionOpen?:()=>boolean}):Promise<NativeObservationPreparationResult>{assert.equal(states.has(scope.mint),false,'passive binding precedes allocation');assert.equal(admission?.admissionOpen?.(),true);preparedCalls.push(scope.mint);events.push('prepare:'+scope.mint);return refusal?{status:'unavailable',reason:refusal,...(retryAt===undefined?{}:{retryAt})}:{status:'ready',support:support(scope.mint)};},
+  adoptPreparedObservation(m:string,binding:ResearchClockNativeObservationSupport){assert.equal(states.has(m),true);events.push('adopt:'+m);adopted.push(structuredClone(binding));runner.onCurrentPoolValidated(binding);},
+  addCandidate(scope:{mint:string;pool:string;minSlot?:number}){states.set(scope.mint,{...scope});events.push('add:'+scope.mint);},removeCandidate(m:string){states.delete(m);},
+  snapshot(m:string){const scope=states.get(m);return scope?{scope,openedAt:null,subscription:null,connectionId:null,connected:false,sourceSupportFresh:true,suspended:false,hasQualityLoss:false,features:null,warm:false}:null;},notificationLedger(){return [];},requestSupportRefresh(){},requestHeartbeat(){},async service(){if(heartbeat){heartbeat=false;heartbeats++;return {kind:'heartbeat'};}return {kind:'idle'};},
+  usage(){return {candidates:states.size,retiring:0,connected:false,nextServiceAt:heartbeat?at:Infinity,nextServiceDomain:heartbeat?'control':null,nextServiceAction:heartbeat?'heartbeat':null,nextRequiredServiceAt:heartbeat?at:Infinity,nativeServiceDeadlines:heartbeat?[{action:'heartbeat',deadlineAt:at+2000}]:[],physicalTransportsSettled:stopped,fatal:null};},async stop(){stopped=true;states.clear();},
+ };
+ const rpc={tokenCreationProofReadyAt(signature:string,planningAt=at){return options.proofReadyAt?.(signature,planningAt)??planningAt;},async call(method:string,params:unknown[],_signal?:AbortSignal,callOptions:Record<string,unknown>={}){requests.push(method);requestCalls.push({method,params,options:callOptions});events.push(method);if(options.rpcResponse)return options.rpcResponse(method,params);return method==='getSignaturesForAddress'?options.history??null:options.transaction??null;},usage(){return {inFlight:0,waitingOrOperating:false,dispatchWindow:{physicalBusy:false,readyAt:at}};},cooldownUntil(){return 0;}};
+ runner=new NativeCandidateRunner({...(options.migration===false?{}:{enforceMigrationAge:true as const}),pumpswapOnly:true,marketIntake:options.marketIntake,registry,runId:'preparation-test',flow:flow as any,rpc:rpc as any,maximumDeep:4,now:()=>at,...(options.enforceAge===false?{}:{enforceTokenAge24h:true as const}),observationAgePolicy:PERSISTENT_OBSERVABLE_MARKET_POLICY.version,activeStrategy:LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION,sourceWorkAdmission:options.sourceWorkAdmission,financialOwnership:options.financialOwnership,onCandidateAllocated:id=>events.push('bridge:'+id.baseMint),record:(kind,data)=>records.push({kind,data})});
+
+ return {runner,registry,flow,rpc,states,preparedCalls,adopted,requests,requestCalls,events,records,support,get now(){return at;},get heartbeats(){return heartbeats;},requireHeartbeat:()=>{heartbeat=true;},advance:(ms:number)=>{at+=ms;},refuse:(reason:string|null,until?:number)=>{refusal=reason;retryAt=until;},steps:async(n=1)=>{for(let i=0;i<n;i++)await runner.step();},close:async()=>{await runner.stop();registry.close();}};
+}
+
 function migrationProof(n:number,migrationAt=AT-120000,availableAt=AT):MigrationAgeProof{return {version:MIGRATION_AGE_POLICY.version,mint:mint(n),pool:pool(mint(n)),signature:signature(n),slot:100,migrationAt,availableAt,confirmedTransactionSha256:'a'.repeat(64),finalizedTransactionSha256:'b'.repeat(64)};}
 function origin(age=120000){const tx=structuredClone(original);tx.blockTime=(AT-age)/1000;const signature=tx.transaction.signatures[0];return {tx,origin:{originConfirmed:{signature,availableAt:AT,transaction:tx},originFinalized:{signature,availableAt:AT,transaction:structuredClone(tx)}}};}
 function migrationHint(f:ReturnType<typeof fixture>,m:string,signature:string){f.runner.onMigration({signature,feedMint:m,receivedAt:f.now});}
@@ -109,4 +144,3 @@ test('pending financial ownership is not retired by migration expiry',async()=>{
   assert.equal(f.runner.watch.lookupIdentity(mint(31),f.now)!.state,'ENTRY_PENDING');assert.ok(f.states.has(mint(31)));assert.equal(f.registry.marketAgeEligibility(mint(31),f.now).allowed,false,'only unfilled buys lose age permission');
  }finally{await f.close();}
 });
-''')

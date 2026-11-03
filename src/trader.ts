@@ -1,5 +1,5 @@
 import {createHash} from 'node:crypto';
-import type {TokenAgeDecision} from './token-age-policy.js';
+import type {EntryAgeDecision} from './token-age-policy.js';
 import {tradeDecisionContext,tradeEntryBasis} from './trade-outcome-reporting.js';
 import type {PaperExecutionLanding} from './execution-realism.js';
 import {assertPoeOperatingAccount} from './poe-operating-account.js';
@@ -23,7 +23,7 @@ export type PilotExecutionQuote=ExecutionQuote&{executionModel?:PaperExecutionLa
 export type PilotQuoteRequest=QuoteRequest&{minSlot?:number};
 type FlatEntryReconciliationFailure='revision-changed'|'inventory-changed'|'financial-work-active'|'financial-uncertainty'|'evidence-unavailable'|'owner-or-hard-control'|'usd-unavailable'|'invalid-original-reconciliation'|'changed-after-record'|'accounting-write-failed';
 export type TraderOptions={
-  entryScope?:(mint:string,at:number)=>TokenAgeDecision;
+  entryScope?:(mint:string,at:number)=>EntryAgeDecision;
   beforeEntryReservation?:ConstructorParameters<typeof PaperExecutionCoordinator>[0]['beforeEntryReservation'];
   ledger:PaperLedger;now?:()=>number;runId?:string;
   /** Deep-analysis capacity, independent of the financial position limit. */
@@ -350,7 +350,7 @@ export class PaperTrader{
   private resilientVersion(){return this.resilient31?LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION:LIQUIDITY_RESILIENT_MOMENTUM_V3_VERSION;}
   private assessResilient(features:Parameters<typeof assessLiquidityResilientBuying>[0],at:number,mint:string){const evidence=this.options.v3Evidence?.(mint,at)??undefined;return this.resilient31?assessLiquidityResilientBuyingV31(features,at,evidence):assessLiquidityResilientBuying(features,at,evidence);}
   private entryDecision(features:Parameters<typeof evaluatePrimary>[0],context:V31RuleContext):TraderRuleDecision{
-    if(this.options.entryScope){let scope:TokenAgeDecision|null=null;try{scope=this.options.entryScope(context.mint,context.now);}catch{/* fail closed */}if(!scope?.allowed)return {qualified:false,kind:scope?.reason==='TOKEN_AGE_EXCEEDS_24H'?'market-exclusion':'missing-data',reason:scope?.reason??'TOKEN_AGE_UNVERIFIED',ruleVersion:this.effectiveVersion,at:context.now,features};}
+    if(this.options.entryScope){let scope:EntryAgeDecision|null=null;try{scope=this.options.entryScope(context.mint,context.now);}catch{/* fail closed */}if(!scope?.allowed)return {qualified:false,kind:scope?.reason==='TOKEN_AGE_EXCEEDS_24H'||scope?.reason==='MIGRATION_AGE_EXCEEDS_24H'||scope?.reason==='MIGRATION_AGE_BELOW_1M'?'market-exclusion':'missing-data',reason:scope?.reason??'TOKEN_AGE_UNVERIFIED',ruleVersion:this.effectiveVersion,at:context.now,features};}
     if(!this.adaptive)return evaluatePrimary(features,context);
     const version=this.resilient?this.resilientVersion():ADAPTIVE_MOMENTUM_V2_VERSION,eligibility=this.options.ledger.entryEligibility(context.mint,version,features.windowEndAt,context.now),state=this.options.ledger.state();
     let allowance:ReturnType<PaperLedger['entryRiskBudget']>|null=null;try{if(this.context.price)allowance=this.options.ledger.entryRiskBudget(context.now,this.context.price,this.context.marks);}catch{/* Incomplete financial valuation is no sizing authority. */}

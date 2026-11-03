@@ -1,6 +1,6 @@
 import {performance} from 'node:perf_hooks';
 import {validatePaperExecutionPlan,validatePaperExecutionLanding,validatePaperProtectionExecutionFallback,paperProtectionFallbackEvidence,executionAttempt,type PaperExecutionPlan,type PaperExecutionLanding,type PaperExecutionAttempt,type PaperProtectionExecutionFallback} from './execution-realism.js';
-import type {TokenAgeDecision} from './token-age-policy.js';
+import type {EntryAgeDecision} from './token-age-policy.js';
 import {PaperLedger,type ExecutionQuote,type Mark,type Order,type OrderOutcome,type UsdPrice} from './ledger.js';
 
 export type ExecutionContext={price:UsdPrice|null;marks:Record<string,Mark>;/** Original bank-source expiry for every required holding; never a publishing heartbeat. */sourceValidUntil?:number};
@@ -9,7 +9,7 @@ export type ExecutionResult={orderId:string;status:OrderOutcome['status']|'uncer
 export type ExecutionBatch={results:ExecutionResult[];adapterBlocked:boolean;nextDueAt:number|null;/** Present only for an explicitly bounded drain. */servicedActions?:number};
 export type ExecutionRunOptions={maxActions?:1|2|3};
 export type ExecutionOptions={
-  entryScope?:(mint:string,at:number)=>TokenAgeDecision;
+  entryScope?:(mint:string,at:number)=>EntryAgeDecision;
   /** Persist the exact entry evidence before the first durable order can exist.
    * Synchronous, no provider work; a failure leaves the financial writer untouched. */
   beforeEntryReservation?:(order:Readonly<Omit<Order,'reserved'|'allocation'>>)=>void;
