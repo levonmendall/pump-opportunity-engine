@@ -7,6 +7,7 @@ import {join} from 'node:path';
 import {NativeMarketIntake} from '../src/native-market-intake.js';
 import {startMarketRegistryIntakeWorker} from '../src/market-registry-intake-worker.js';
 import {projectIntakeWorkerReporting,projectSourceDispatchReporting,validateIntakeWorkerReporting,validateSourceDispatchReporting} from '../src/market-runtime-reporting.js';
+import {projectMarketCoverageReporting,validateMarketCoverageReporting} from '../src/market-coverage-reporting.js';
 const T=Date.parse('2026-10-30T23:00:00.000Z'),RUN='native-paper-runtime-fixture';
 const raw=()=>({version:'off-thread-full-durable-market-intake-v1',state:'ready',received:10,durableCommitted:8,pending:2,pendingBytes:256,pendingBytesBudget:1024,oldestPendingAt:T-100,maximumPendingAgeMs:100,lastCommitAt:T-10,workerGeneration:2,restarts:1,failures:1,retryAt:null,reasonCode:null,worker:{committed:5,batches:2,maximumBatchMs:7.25,contentions:1,registry:{transactions:{writeCommits:2}}},inFlightTailMeaning:'UNACKNOWLEDGED_NETWORK_INTAKE_IS_NOT_YET_DURABLE',financialWriterOpened:false});
 test('worker scope preserves pending tail, actual ACK totals and fractional batch latency without granting financial permission',()=>{
@@ -40,4 +41,18 @@ test('cheap allocation and physical subscription runway remain distinct, while o
  const old=projectSourceDispatchReporting({engineOpen:true,deepSetupAllowed:false},RUN)!;assert.equal(old.allocation125Allowed,null);assert.equal(old.physicalSetup3000Allowed,null);
  const fresh=projectSourceDispatchReporting({engineOpen:true,deepSetupAllowed:false,allocation125Allowed:true,physicalSetup3000Allowed:false},RUN)!;assert.equal(fresh.allocation125Allowed,true);assert.equal(fresh.physicalSetup3000Allowed,false);validateSourceDispatchReporting(fresh);
  const olderWire=structuredClone(old);delete olderWire.allocation125Allowed;delete olderWire.physicalSetup3000Allowed;validateSourceDispatchReporting(olderWire);
+});
+
+test('actual waiting operation explains its own bound and deadline without treating fixed legacy probes as readiness',()=>{
+ const raw={engineOpen:true,deepSetupAllowed:false,physicalSetup3000Allowed:false,allocationAllowed:true,preparedSetupAllowed:true,financialEvaluationPending:false,observedAt:T+25,waitingOperation:{observedAt:T+25,operation:'SUBSCRIPTION_ACK',requestedOperationMs:1700,availableMs:2200,deadlineAt:T+2225,bindingBlocker:'NONE',sourceAllowed:true,deadlineAllowed:true,providerReadyAt:T+10,physicalBusy:false}};
+ const p=projectSourceDispatchReporting(raw,RUN)!;assert.equal(p.preparedSetupAllowed,true);assert.equal(p.physicalSetup3000Allowed,false);assert.equal(p.waitingOperation!.requestedOperationMs,1700);assert.equal(p.waitingOperation!.availableMs,2200);assert.equal(p.waitingOperation!.operation,'SUBSCRIPTION_ACK');assert.equal(p.observedAt,new Date(T+25).toISOString());validateSourceDispatchReporting(p);
+ const coverage=projectMarketCoverageReporting({runId:RUN,marketCoverage:{version:'poe-market-coverage-v1',generatedAt:T,persistence:{state:'sqlite-wal'},resource:{sourceDispatch:raw}}},T)!;
+ assert.ok(coverage);assert.equal(coverage.generatedAt,new Date(T).toISOString());assert.equal(coverage.resource.sourceDispatch!.observedAt,new Date(T+25).toISOString(),'later diagnostics retain their own timestamp while financial/report facts keep their original time');validateMarketCoverageReporting(coverage,T);
+ const old=projectSourceDispatchReporting({physicalSetup3000Allowed:false},RUN)!;assert.equal(old.waitingOperation,null);assert.equal(old.preparedSetupAllowed,null);assert.equal(old.observedAt,null);
+});
+
+test('waiting operation diagnostics redact unknown text and reject malformed wire times and fields',()=>{
+ const raw={observedAt:T,waitingOperation:{observedAt:T,operation:'DO_NOT_EXPORT',bindingBlocker:'https://private.example/key',requestedOperationMs:1700,availableMs:-1,sourceAllowed:false,deadlineAllowed:false,physicalBusy:true,apiKey:'DO_NOT_EXPORT'}};
+ const p=projectSourceDispatchReporting(raw,RUN)!;assert.equal(p.waitingOperation!.operation,null);assert.equal(p.waitingOperation!.bindingBlocker,null);assert.equal(p.waitingOperation!.availableMs,null);assert.equal(p.waitingOperation!.sourceAllowed,false);assert.doesNotMatch(JSON.stringify(p),/DO_NOT_EXPORT|private\.example|apiKey/);
+ for(const change of [(r:any)=>r.observedAt='invalid',(r:any)=>r.waitingOperation.availableMs=-1,(r:any)=>r.waitingOperation.apiKey='secret',(r:any)=>r.waitingOperation.operation='UNKNOWN']){const bad=structuredClone(p);change(bad);assert.throws(()=>validateSourceDispatchReporting(bad),/INVALID/);}
 });

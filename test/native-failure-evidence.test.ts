@@ -19,6 +19,11 @@ function fixture(t:TestContext){
  return {root,directory,input,writer,path,advance(ms:number){at+=ms;},read(){return JSON.parse(readFileSync(path,'utf8'));},get at(){return at;}};
 }
 function packet(at=START+1,n=1,logs=['Program log: Instruction: Sell']){return {signature:'2'.repeat(63)+(n%9+1),slot:464643630,receivedAt:at,logs,reason:'LOG_NATIVE_PROTOCOL_CHILD_SHAPE',supplementaryOnly:true};}
+function auditWitness(at:number,count=2){
+ const alphabet='123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz',mint='3'.repeat(44),pool='4'.repeat(44),end=Math.floor((at-10)/10000)*10000;
+ const rows=Array.from({length:count},(_,i)=>({signature:'5'.repeat(62)+alphabet[Math.floor(i/58)]!+alphabet[i%58]!,slot:200+i,success:true,blockTime:Math.floor((at-10000)/1000),confirmationStatus:'finalized'}));
+ return {mint,availableAt:at,notBackdated:true,result:{status:'unusable',reason:'NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED',pool,target:{startAt:end-60000,endAt:end},startedAt:at-5,availableAt:at-1,strictInteriorSlots:{lower:100,upper:1000},historyRangeCovered:true,historyRows:300,interiorRows:299,requestAttempts:1,notificationSnapshot:{capturedAt:at-5,rows:297,requiredRows:297},postSnapshotTail:{generation:{mint,pool,openedAt:START,connectionId:3,subscriptionId:17},refreshedAt:at-2,rows:0},missingSuccessfulNotifications:rows,unknownSource:'https://SECRET',rawSuccessPayload:'SUCCESS_RAW_MUST_NOT_COPY'}};
+}
 function emit(f:ReturnType<typeof fixture>,p=packet(f.at)){
  const rawHash=hash({signature:p.signature,slot:p.slot,err:null,logs:p.logs});
  f.writer.observe('native-flow-refusal',{signature:p.signature,slot:p.slot,receivedAt:p.receivedAt,availableAt:p.receivedAt+1,success:true,rawHash,subscriptionMint:'3'.repeat(44),subscriptionPool:'4'.repeat(44),subscriptionId:17,connectionId:3,classification:'unusable',reason:p.reason,processingStages:{validationElapsedMs:2,maximumProcessingMs:250}});
@@ -130,4 +135,34 @@ test('replacement of the target by another file is detected before any further w
 
 test('missing or impossible receipt times and unmarked raw payloads remain explicitly unavailable',async t=>{
  const f=fixture(t);for(const value of [{...packet(f.at),receivedAt:undefined},packet(START-1),packet(START+6000),{...packet(f.at),supplementaryOnly:false}])f.writer.observe('native-flow-raw-refusal',value);await f.writer.flush();const out=f.read();assert.equal(out.rawSamples,0);assert.equal(out.counts.malformedSelectedEvents,4);assert.equal(f.writer.usage().available,true);
+});
+
+test('missing-success audit witness retains exact original scope and times without copying successful payloads or assigning packet-loss causality',async t=>{
+ const f=fixture(t);f.advance(80000);const event=auditWitness(f.at,20),before=structuredClone(event);
+ f.writer.observe('native-candidate-window-audit',event);await f.writer.flush();const out=f.read(),record=out.records[0],result=record.data.result;
+ assert.equal(out.auditSamples,1);assert.equal(out.rawSamples,0);assert.equal(record.kind,'native-candidate-window-audit');assert.equal(record.eventAt,event.availableAt);assert.equal(result.startedAt,event.result.startedAt);assert.equal(result.availableAt,event.result.availableAt);assert.deepEqual(result.target,event.result.target);assert.deepEqual(result.postSnapshotTail,event.result.postSnapshotTail);
+ assert.deepEqual(result.missingSuccessfulNotifications,event.result.missingSuccessfulNotifications.slice(0,P.maximumMissingSignaturesPerAudit));assert.equal(result.missingSuccessfulNotificationsTotal,20);assert.equal(result.missingSuccessfulNotificationsOmitted,20-P.maximumMissingSignaturesPerAudit);
+ const projected=event.result.missingSuccessfulNotifications.map(row=>({signature:row.signature,slot:row.slot,success:true,confirmationStatus:row.confirmationStatus,blockTime:row.blockTime}));assert.equal(result.missingSuccessfulNotificationsSha256,hash(projected));assert.equal(result.witnessOnly,true);assert.equal(result.sourceDeliveryCausality,'UNDETERMINED_NO_COMPLETE_RECEIPT_TRACE');assert.equal(result.complete,false);assert.equal(result.executedFlowCompletenessVerified,false);assert.equal(out.tradingAuthority,false);
+ assert.deepEqual(event,before);assert.ok(!JSON.stringify(out).includes('SECRET'));assert.ok(!JSON.stringify(out).includes('SUCCESS_RAW_MUST_NOT_COPY'));assert.ok(Buffer.byteLength(JSON.stringify(record))<=P.maximumDetailRecordBytes);
+ const revision=out.revision;f.writer.observe('native-candidate-window-audit',{...event,result:{...event.result,status:'verified'}});f.writer.observe('native-candidate-window-audit',{...event,result:{...event.result,status:'unavailable'}});f.writer.observe('native-candidate-window-audit',{...event,result:{...event.result,missingSuccessfulNotifications:[]}});await f.writer.flush();assert.equal(f.read().revision,revision,'successful, unavailable and failed-only audits are not additional retained success archives');
+});
+
+test('audit witnesses deduplicate and share the original detail transport count and byte budgets',async t=>{
+ const f=fixture(t);f.advance(80000);const first=auditWitness(f.at);f.writer.observe('native-candidate-window-audit',first);f.writer.observe('native-candidate-window-audit',first);f.writer.observe('native-candidate-window-audit',first);
+ for(let n=1;n<10;n++){f.advance(10000);f.writer.observe('native-candidate-window-audit',auditWitness(f.at));}
+ for(let n=0;n<30;n++)f.writer.observe('native-flow-protocol-refused',{at:f.at,connection:n,reason:'NATIVE_FLOW_ROUND_TRIP_UNAVAILABLE',method:'PING'});
+ await f.writer.flush();const out=f.read();assert.equal(out.auditSamples,P.maximumAuditSamples);assert.equal(out.counts.auditDuplicates,2);assert.equal(out.counts.auditSamplesOmitted,10-P.maximumAuditSamples);assert.equal(out.records.length,P.maximumTransportSamples);assert.ok(out.records.length<=40);assert.equal(f.writer.usage().transportSamples,P.maximumTransportSamples-P.maximumAuditSamples);assert.ok(out.detailRecordBytes<=P.maximumDetailBytes);assert.ok(lstatSync(f.path).size<=P.maximumFileBytes);
+});
+
+test('audit witness refuses mismatched generations and malformed interior rows instead of inventing a usable trace',async t=>{
+ const f=fixture(t);f.advance(80000);
+ for(const change of ['pool','slot','signature','time','incomplete']){const event=auditWitness(f.at);
+  if(change==='pool')event.result.postSnapshotTail.generation.pool='8'.repeat(44);
+  if(change==='slot')event.result.missingSuccessfulNotifications[0]!.slot=event.result.strictInteriorSlots.lower;
+  if(change==='signature')event.result.missingSuccessfulNotifications[0]!.signature='https://SECRET';
+  if(change==='time')event.result.availableAt=event.availableAt+1;
+  if(change==='incomplete')event.result.historyRangeCovered=false;
+  assert.doesNotThrow(()=>f.writer.observe('native-candidate-window-audit',event));
+ }
+ await f.writer.flush();const out=f.read();assert.equal(out.auditSamples,0);assert.deepEqual(out.records,[]);assert.equal(out.counts.malformedSelectedEvents,5);assert.equal(f.writer.usage().available,true);
 });

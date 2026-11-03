@@ -153,7 +153,7 @@ test('current flat entry admission reserves only its four required reads while r
  assert.equal(admitted({...usage,chapterUsage:{...usage.chapterUsage,rolling10SecondStarts:17}}),false);
  assert.equal(admitted({...usage,chapterUsage:{...usage.chapterUsage,rolling60SecondStarts:87}}),false);
  assert.equal(nativePaperSourceWorkAdmission({informationOpen:false,owned:false,entryWork:true,entryStartsRemaining:planned,usage,persistent:true}),false);
- assert.equal(nativePaperEntryWorkflowStarts(true,strategy,true),9,'owned work keeps the original envelope for cooperative protection reads');
+ assert.equal(nativePaperEntryWorkflowStarts(true,strategy,true),6,'owned work adds two cooperative protection reads to the actual four-read cold preparation path');
  assert.equal(nativePaperEntryWorkflowStarts(false,strategy,false),7);
  assert.equal(nativePaperEntryWorkflowStarts(true,'liquidity-resilient-momentum-v3',false),7);
 });

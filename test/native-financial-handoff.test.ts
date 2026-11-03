@@ -1,6 +1,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {NativeFinancialHandoff,type HandoffCertificate} from '../src/native-financial-handoff.js';
+import {nativePaperFeaturesSha256} from '../src/native-paper-contract.js';
+import {FlowWindow} from '../src/strategy.js';
 const cert=(mint='A',end=1000):HandoffCertificate=>({mint,windowEndAt:end,deadlineAt:end+9999,admittedAt:end+100,openedAt:0,featuresSha256:'a'.repeat(64)});
 test('handoff separates certificate expiry from source invalidation and never grants financial permission',()=>{
  const events:any[]=[];const m=new NativeFinancialHandoff('run',0,4,(_,v)=>events.push(v));m.observe(1200,[cert('A'),cert('B')]);m.defer(cert('A'),'proof-retention',1200);m.observe(1300,[cert('A')]);m.observe(11000,[]);
@@ -15,4 +17,27 @@ test('new audited windows are distinct and usage does not mutate elapsed blocked
 });
 test('only current bounded certificates are tracked and expired certificates cannot dispatch',()=>{
  const m=new NativeFinancialHandoff('run',0,4);assert.equal(m.observe(1200,Array.from({length:5},(_,i)=>cert(String(i)))),false);m.observe(1200,[cert()]);m.dispatch(cert(),11000);assert.equal(m.usage(11000).dispatched,0);assert.equal(m.observe(1000,[]),false);assert.equal(m.usage(11000).active.length,1);
+});
+
+function economicFixture(){
+ const mint='11111111111111111111111111111111',features=new FlowWindow(mint,0).features(60000),certificate={mint,openedAt:0,windowEndAt:features.windowEndAt,admittedAt:60010,deadlineAt:features.windowEndAt+9999,featuresSha256:nativePaperFeaturesSha256(features)};
+ const event={version:'poe-opportunity-evaluation-v1',runId:'run',stage:'execution-economics',mint,at:60200,strategyVersion:'liquidity-resilient-momentum-v3.1',features:{...features,asOf:60200},technicalFailure:false,decision:{kind:'strategy-rejection',qualified:false,reason:'v3.1-nonpositive-joint-conditional-economic-balance'}};
+ return {certificate,event};
+}
+
+test('actual matching economic receipts survive an absent optional counter and deduplicate per dispatched certificate',()=>{
+ const {certificate:c,event}=economicFixture(),records:unknown[]=[],h=new NativeFinancialHandoff('run',0,4,(_,data)=>records.push(data));h.observe(60020,[c]);
+ assert.equal(h.observeEconomicDecision('native-opportunity-evaluation',event),false,'undispatched evidence is not a completed handoff');h.dispatch(c,60100);const before=records.length;
+ assert.equal(h.observeEconomicDecision('native-opportunity-evaluation',event),true);assert.equal(h.observeEconomicDecision('native-opportunity-evaluation',event),false);assert.equal(records.length,before,'direct receipt observation is in-memory only');
+ const during=h.usage(60200);assert.equal(during.economicDecisions,1);assert.equal(during.financialEvaluations,0,'the attempt callback has not completed yet');assert.ok(!JSON.stringify(during.active).includes('economicDecisionObserved'));assert.ok(!JSON.stringify(during.active).includes('dispatchedAt'));
+ h.complete(c,60300,1,0);h.complete(c,60400,1,1);assert.equal(h.usage(60400).economicDecisions,1);assert.equal(h.usage(60400).financialEvaluations,1);
+ assert.equal(h.observeEconomicDecision('native-opportunity-evaluation',event),false,'a replay after completion cannot create another receipt');
+ const second=new NativeFinancialHandoff('run',0,4);second.observe(60020,[c]);second.dispatch(c,60100);second.observeEconomicDecision('native-opportunity-evaluation',event);second.complete(c,60300,1,1);assert.equal(second.usage(60300).economicDecisions,1,'the legacy explicit counter delta does not double-count a direct receipt');
+});
+
+test('preliminary, mismatched, late and unusable events do not become economic handoff completions',()=>{
+ const {certificate:c,event}=economicFixture();
+ for(const mutate of [(e:any)=>e.stage='preliminary',(e:any)=>e.technicalFailure=true,(e:any)=>e.decision.kind='missing-data',(e:any)=>e.runId='other-run',(e:any)=>e.mint='22222222222222222222222222222222',(e:any)=>e.features.windowEndAt+=10000,(e:any)=>e.features.largestBuyerBps=1,(e:any)=>e.at=60100-1,(e:any)=>e.at=c.deadlineAt+1,(e:any)=>e.features={windowEndAt:c.windowEndAt},(e:any)=>delete e.decision.qualified]){
+  const h=new NativeFinancialHandoff('run',0,4);h.observe(60020,[c]);h.dispatch(c,60100);const bad=structuredClone(event);mutate(bad);assert.equal(h.observeEconomicDecision('native-opportunity-evaluation',bad),false);h.complete(c,60300,1);assert.equal(h.usage(60300).economicDecisions,0);assert.equal(h.usage(60300).financialEvaluations,1);
+ }
 });

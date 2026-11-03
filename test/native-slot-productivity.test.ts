@@ -23,6 +23,27 @@ test('slot intervals are disjoint and wait percentiles use actual allocations/AC
  }finally{registry.close();}
 });
 
+test('process allocation provenance survives source recovery and distinguishes true run revisits from retained earlier-run identities',()=>{
+ const {registry,tracker}=setup(),runId='native-paper-20261030230000000';try{
+  tracker.allocated(mintA,start+100,start,7);tracker.retired(mintA,start+200,'OFFLINE replacement');tracker.allocated(mintA,start+300,start,8);tracker.retired(mintA,start+400,'OFFLINE source recovery');
+  const second=new NativeSlotProductivity({registry,sourceInstanceId:'native-runner:'+runId+':recovered-source',runId,startedAt:start+500,maximumSlots:4});second.allocated(mintA,start+600,start,9);second.allocated(mintB,start+700,start,0);
+  const snapshot=second.snapshot(start+800),provenance=snapshot.allocationProvenance!;
+  assert.deepEqual(provenance,{scope:'CURRENT_SOURCE_PROCESS',runId,startedAt:start,generatedAt:start+800,allocations:4,firstTimeObservations:2,currentRunRevisits:2,previousRunObservedFirstAllocations:1});
+  assert.equal(snapshot.counts.allocations,2);assert.equal(snapshot.counts.firstTimeObservations,2);assert.equal(snapshot.counts.currentRunRevisits,0);assert.equal(snapshot.counts.previousRunObservedFirstAllocations,1,'same-process recovery remains a prior source for instance-only counters');
+  const projected=projectNativeSlotProductivityReporting({slotProductivity:snapshot},start+800)!;assert.ok(projected);assert.equal(projected.allocationProvenance!.currentRunRevisits,2);assert.equal(projected.counts.currentRunRevisits,0);
+  const newRun=new NativeSlotProductivity({registry,sourceInstanceId:'native-runner:other-run:new-source',runId:'other-run',startedAt:start+900,maximumSlots:4});newRun.allocated(mintA,start+1000,start,10);const next=newRun.snapshot(start+1100).allocationProvenance!;assert.equal(next.allocations,1);assert.equal(next.firstTimeObservations,1);assert.equal(next.currentRunRevisits,0);assert.equal(next.previousRunObservedFirstAllocations,1);
+ }finally{registry.close();}
+});
+
+test('refused allocation rolls back both per-source and process counts and does not consume first-run identity provenance',()=>{
+ const registry=new MarketRegistry(':memory:',{now:()=>start}),runId='native-paper-provenance-rollback';let refuse=true;
+ const tracker=new NativeSlotProductivity({registry,sourceInstanceId:'native-runner:'+runId+':source',runId,startedAt:start,maximumSlots:4,record:kind=>{if(refuse&&kind==='native-slot-allocation-provenance')throw Error('OFFLINE refused allocation record');}});
+ try{
+  assert.throws(()=>tracker.allocated(mintA,start+100,start,2),/OFFLINE refused/);let snapshot=tracker.snapshot(start+200);assert.equal(snapshot.counts.allocations,0);assert.equal(snapshot.allocationProvenance!.allocations,0);
+  refuse=false;tracker.allocated(mintA,start+300,start,2);snapshot=tracker.snapshot(start+400);assert.equal(snapshot.allocationProvenance!.firstTimeObservations,1);assert.equal(snapshot.allocationProvenance!.currentRunRevisits,0);assert.equal(snapshot.allocationProvenance!.previousRunObservedFirstAllocations,1);
+ }finally{registry.close();}
+});
+
 test('provider waits and local waits stay separate; no receipt means no active-audit duration',()=>{
  const {registry,tracker}=setup();try{
   tracker.allocated(mintA,start,start,0);tracker.opened(mintA,start);tracker.warmed(mintA,start+1000);tracker.ready(mintA,start+1000,start+1000);tracker.waiting(mintA,start+1100,true,'provider-query-cooldown');tracker.waiting(mintA,start+1500,false,'financial-runway');

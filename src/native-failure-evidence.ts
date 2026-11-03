@@ -9,6 +9,7 @@ export const NATIVE_FAILURE_EVIDENCE_POLICY=Object.freeze({
  version:'poe-current-native-failure-evidence-v1',file:'native-failure-evidence.json',
  pendingFile:'native-failure-evidence.pending.json',maximumRawSamples:8,
  maximumRawBytes:512*1024,maximumTransportSamples:24,
+ maximumAuditSamples:8,maximumMissingSignaturesPerAudit:8,
  maximumDetailBytes:64*1024,maximumDetailRecordBytes:4096,maximumFileBytes:640*1024,
 });
 const P=NATIVE_FAILURE_EVIDENCE_POLICY;
@@ -52,6 +53,36 @@ function typed(input:Data,depth=0):{data:Data;omitted:number}{
  return {data,omitted};
 }
 
+/** Compact failure witness only. No successful payload, arbitrary error text,
+ * reconstructed packet receipt, or external-versus-local loss claim is copied. */
+function missingAuditWitness(value:Data):{data:Data;omitted:number}|null{
+ const r=value.result;if(!object(r)||r.status!=='unusable'||r.reason!=='NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED')return null;
+ if(Array.isArray(r.missingSuccessfulNotifications)&&r.missingSuccessfulNotifications.length===0)return null;
+ need(base58(value.mint)&&base58(r.pool)&&integer(value.availableAt)&&integer(r.startedAt)&&integer(r.availableAt)&&r.startedAt<=r.availableAt&&r.availableAt<=value.availableAt,'AUDIT_TIME');
+ const target=r.target,fences=r.strictInteriorSlots,snapshot=r.notificationSnapshot,tail=r.postSnapshotTail,missing=r.missingSuccessfulNotifications;
+ need(object(target)&&integer(target.startAt)&&integer(target.endAt)&&target.endAt-target.startAt===60000&&target.endAt<=r.startedAt
+  &&object(fences)&&integer(fences.lower)&&integer(fences.upper)&&fences.lower<fences.upper&&r.historyRangeCovered===true
+  &&object(snapshot)&&integer(snapshot.capturedAt)&&integer(snapshot.rows)&&integer(snapshot.requiredRows)
+  &&object(tail)&&(tail.refreshedAt===null||integer(tail.refreshedAt))&&integer(tail.rows)
+  &&integer(r.historyRows)&&integer(r.interiorRows)&&integer(r.requestAttempts)
+  &&Array.isArray(missing)&&missing.length>0&&missing.length<=6000,'AUDIT_WITNESS_SCHEMA');
+ const generation=tail.generation;
+ need(generation===null||object(generation)&&generation.mint===value.mint&&generation.pool===r.pool
+  &&integer(generation.openedAt)&&generation.openedAt<=target.startAt&&integer(generation.connectionId)&&integer(generation.subscriptionId),'AUDIT_GENERATION');
+ const lower=fences.lower,upper=fences.upper;
+ const rows=missing.map(row=>{need(object(row)&&base58(row.signature)&&integer(row.slot)&&row.slot>lower&&row.slot<upper
+  &&row.success===true&&['confirmed','finalized'].includes(String(row.confirmationStatus))&&(row.blockTime===null||integer(row.blockTime)),'AUDIT_MISSING_ROW');
+  return {signature:row.signature,slot:row.slot,success:true,confirmationStatus:row.confirmationStatus,blockTime:row.blockTime};});
+ const selected=rows.slice(0,P.maximumMissingSignaturesPerAudit);
+ const result={status:'unusable',reason:r.reason,complete:false,notificationCompletenessVerified:false,executedFlowCompletenessVerified:false,pool:r.pool,target:{startAt:target.startAt,endAt:target.endAt},startedAt:r.startedAt,availableAt:r.availableAt,
+  strictInteriorSlots:{lower:fences.lower,upper:fences.upper},historyRangeCovered:true,historyRows:r.historyRows,interiorRows:r.interiorRows,requestAttempts:r.requestAttempts,
+  notificationSnapshot:{capturedAt:snapshot.capturedAt,rows:snapshot.rows,requiredRows:snapshot.requiredRows},
+  postSnapshotTail:{generation:generation===null?null:{mint:generation.mint,pool:generation.pool,openedAt:generation.openedAt,connectionId:generation.connectionId,subscriptionId:generation.subscriptionId},refreshedAt:tail.refreshedAt,rows:tail.rows},
+  missingSuccessfulNotifications:selected,missingSuccessfulNotificationsTotal:rows.length,missingSuccessfulNotificationsOmitted:rows.length-selected.length,
+  missingSuccessfulNotificationsSha256:digest(encode(rows)),witnessOnly:true,sourceDeliveryCausality:'UNDETERMINED_NO_COMPLETE_RECEIPT_TRACE'};
+ return {data:{at:value.availableAt,mint:value.mint,availableAt:value.availableAt,result},omitted:Object.keys(value).filter(key=>!['mint','availableAt','result'].includes(key)).length+Object.keys(r).filter(key=>!Object.hasOwn(result,key)).length};
+}
+
 /** The caller already holds the native-engine single-writer lease. Only these
  * two fixed files belong to this helper; no directory scan or historical import. */
 export class NativeFailureEvidence {
@@ -60,10 +91,10 @@ export class NativeFailureEvidence {
  private targetStamp:Stamp|null=null;private initialized=false;private task:Promise<void>|null=null;
  private revision=1;private publishedRevision=0;private closing=false;private closed=false;
  private failure:string|null=null;private previousRunDiscarded=false;
- private raw:string[]=[];private details:string[]=[];private transport:string[]=[];
+ private raw:string[]=[];private details:string[]=[];private transport:string[]=[];private audits:string[]=[];
  private rawBytes=0;private detailBytes=0;private rawKeys=new Set<string>();private transportKeys=new Set<string>();
- private lastDetail:Stored|null=null;
- private counts={rawSamplesOmitted:0,rawDuplicates:0,detailRecordsOmitted:0,transportSamplesOmitted:0,transportDuplicates:0,malformedSelectedEvents:0,ioFailures:0};
+ private lastDetail:Stored|null=null;private auditKeys=new Set<string>();
+ private counts={rawSamplesOmitted:0,rawDuplicates:0,detailRecordsOmitted:0,transportSamplesOmitted:0,transportDuplicates:0,auditSamplesOmitted:0,auditDuplicates:0,malformedSelectedEvents:0,ioFailures:0};
  constructor(input:{directory:string;identity:NativeFailureIdentity;now?:()=>number}){
   this.now=input.now??Date.now;
   try{need(isAbsolute(input.directory)&&resolve(input.directory)===input.directory,'DIRECTORY_IDENTITY');need(identityValid(input.identity),'SOURCE_RUN_IDENTITY');this.directory=input.directory;const id=input.identity;this.identity={accountId:id.accountId,inceptionAt:id.inceptionAt,configurationSha256:id.configurationSha256,source:{commit:id.source.commit,sha256:id.source.sha256},runId:id.runId,startedAt:id.startedAt};this.schedule();}
@@ -101,9 +132,9 @@ export class NativeFailureEvidence {
   const current=await this.named(P.file);need(this.targetStamp?current&&same(this.targetStamp,current):current===null,'CHANGED_TARGET');
  }
  private serialize(){
-  const records=[...this.raw,...this.details,...this.transport].join(',');
+  const records=[...this.raw,...this.details,...this.transport,...this.audits].join(',');
   const header={schemaVersion:1,kind:P.version,identity:this.identity,capturedAt:this.now(),revision:this.revision,closed:this.closing,previousRunEvidenceImported:false,previousRunDiscarded:this.previousRunDiscarded,
-   policy:P,rawSamples:this.raw.length,rawSampleBytes:this.rawBytes,detailRecordBytes:this.detailBytes,counts:{...this.counts},
+   policy:P,rawSamples:this.raw.length,rawSampleBytes:this.rawBytes,auditSamples:this.audits.length,detailRecordBytes:this.detailBytes,counts:{...this.counts},
    completeness:'BOUNDED_FAILURE_SAMPLES_ONLY; COUNTERS_AS_OF_THIS_WRITE; NOT_A_COMPLETE_CENSUS',durability:'ATOMIC_BUFFERED_WRITE_WITHOUT_FSYNC',financialWrites:0,tradingAuthority:false};
   const raw=encode(header).slice(0,-1)+',"records":['+records+']}\n';need(Buffer.byteLength(raw)<=P.maximumFileBytes,'FILE_BOUND');return raw;
  }
@@ -140,11 +171,20 @@ export class NativeFailureEvidence {
  /** Only already-emitted bounded samples and typed failures enter this path.
   * Successful packet events, ordinary reports and controls do no work here. */
  observe(kind:string,value:unknown):void{
-  if(this.closed||this.closing||this.failure||!this.identity||kind!=='native-flow-raw-refusal'&&!DETAIL.has(kind)&&!TRANSPORT.has(kind))return;
+  if(this.closed||this.closing||this.failure||!this.identity||kind!=='native-candidate-window-audit'&&kind!=='native-flow-raw-refusal'&&!DETAIL.has(kind)&&!TRANSPORT.has(kind))return;
   try{
    need(object(value),'EVENT_OBJECT');
    if(DETAIL.has(kind)){const projected=typed(value);this.lastDetail=this.stored(kind,projected.data,projected.omitted);return;}
-   if(kind==='native-flow-raw-refusal'){
+   if(kind==='native-candidate-window-audit'){
+    const projected=missingAuditWitness(value);if(!projected)return;const result=projected.data.result as Data;
+    const key=encode([projected.data.mint,result.pool,result.target,(result.postSnapshotTail as Data).generation,result.missingSuccessfulNotificationsSha256]);
+    if(this.auditKeys.has(key)){this.count('auditDuplicates');return;}
+    const text=encode(this.stored(kind,projected.data,projected.omitted)),bytes=Buffer.byteLength(text);
+    // Share the original transport/detail budget so the existing exporter sees
+    // no more than40 records and the same64KiB detail /640KiB file limits.
+    if(this.audits.length>=P.maximumAuditSamples||this.transport.length+this.audits.length>=P.maximumTransportSamples||bytes>P.maximumDetailRecordBytes||this.detailBytes+bytes>P.maximumDetailBytes){this.count('auditSamplesOmitted');return;}
+    this.audits.push(text);this.auditKeys.add(key);this.detailBytes+=bytes;
+   }else if(kind==='native-flow-raw-refusal'){
     need(value.supplementaryOnly===true&&Array.isArray(value.logs)&&value.logs.every(v=>typeof v==='string')&&integer(value.slot)&&integer(value.receivedAt)&&typeof value.reason==='string','EXPLICIT_RAW_REFUSAL');
     const envelope=encode({kind,data:value}),bytes=Buffer.byteLength(envelope),key=digest(envelope);
     if(this.rawKeys.has(key)){this.count('rawDuplicates');return;}
@@ -159,13 +199,13 @@ export class NativeFailureEvidence {
     const projected=typed(value),record=this.stored(kind,projected.data,projected.omitted),text=encode(record),bytes=Buffer.byteLength(text);
     const key=encode([kind,record.data.reasonSha256??record.data.reason??record.data.codeSha256??record.data.code??null,record.data.connectionId??record.data.connection??null,record.data.mint??record.data.subscriptionMint??null,record.data.pool??record.data.subscriptionPool??null]);
     if(this.transportKeys.has(key)){this.count('transportDuplicates');return;}
-    if(this.transport.length>=P.maximumTransportSamples||bytes>P.maximumDetailRecordBytes||this.detailBytes+bytes>P.maximumDetailBytes){this.count('transportSamplesOmitted');return;}
+    if(this.transport.length+this.audits.length>=P.maximumTransportSamples||bytes>P.maximumDetailRecordBytes||this.detailBytes+bytes>P.maximumDetailBytes){this.count('transportSamplesOmitted');return;}
     this.transport.push(text);this.detailBytes+=bytes;this.transportKeys.add(key);
    }
    this.revision++;this.schedule();
   }catch{this.count('malformedSelectedEvents');}
  }
- usage(){return {available:this.failure===null,reason:this.failure,rawSamples:this.raw.length,rawSampleBytes:this.rawBytes,transportSamples:this.transport.length,packetDetails:this.details.length,detailRecordBytes:this.detailBytes,revision:this.revision,publishedRevision:this.publishedRevision,pending:this.task!==null,...this.counts,financialWrites:0,tradingAuthority:false};}
+ usage(){return {available:this.failure===null,reason:this.failure,rawSamples:this.raw.length,rawSampleBytes:this.rawBytes,transportSamples:this.transport.length,auditSamples:this.audits.length,packetDetails:this.details.length,detailRecordBytes:this.detailBytes,revision:this.revision,publishedRevision:this.publishedRevision,pending:this.task!==null,...this.counts,financialWrites:0,tradingAuthority:false};}
  async flush(){do{this.schedule();if(this.task)await this.task;}while(this.task||!this.failure&&!this.closed&&this.publishedRevision<this.revision);}
  async close(){if(this.closed)return;this.closing=true;this.revision++;await this.flush();this.closed=true;try{await this.directoryHandle?.close();}catch{this.counts.ioFailures++;this.failure='OPTIONAL_FAILURE_EVIDENCE_UNAVAILABLE';}this.directoryHandle=null;}
 }

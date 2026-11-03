@@ -1,3 +1,4 @@
+import {projectRegistryReportingDiagnostics,validateRegistryReportingDiagnostics,type RegistryReportingDiagnostics} from './registry-reporting-diagnostics.js';
 /** Read-only, bounded reporting of the durable discovery registry.
  * Registry lifetime begins when this store was created, not account inception.
  * Missing evidence stays unavailable; observed identities are not a market denominator. */
@@ -6,7 +7,7 @@ import {projectPipelineThroughputReporting,validatePipelineThroughputReporting,t
 export const MARKET_COVERAGE_REPORTING_VERSION='poe-market-coverage-v1' as const;
 export const MARKET_COVERAGE_FEED_SOURCES=['pumpportal-new-token','pumpportal-migration','pumpapi-broad','confirmed-migration'] as const;
 export const MARKET_COVERAGE_FEED_SCOPES=['CREATION_HINTS','MIGRATION_HINTS','SHARED_ACTIVITY_HINTS','WATCHED_ACTIVITY_HINTS','UNKNOWN'] as const;
-export const MARKET_COVERAGE_LIMITATIONS=['MARKET_DENOMINATOR_UNKNOWN','PROVIDER_HINTS_UNVERIFIED','PREMIGRATION_EXECUTION_NOT_SUPPORTED','SOURCE_OUTAGES_NOT_RECONSTRUCTED','SHARED_ACTIVITY_PARTIAL_WHEN_FEED_UNAVAILABLE','PREEXISTING_MARKET_BACKFILL_UNAVAILABLE','UNVERIFIED_ORIGIN_DISCOVERY_PENDING','SHARED_HINT_DEDUP_RETENTION_1H','REGISTRY_STORAGE_UNAVAILABLE','OTHER_UNEXPORTED_LIMITATION'] as const;
+export const MARKET_COVERAGE_LIMITATIONS=['MARKET_DENOMINATOR_UNKNOWN','PROVIDER_HINTS_UNVERIFIED','PREMIGRATION_EXECUTION_NOT_SUPPORTED','SOURCE_OUTAGES_NOT_RECONSTRUCTED','SHARED_ACTIVITY_PARTIAL_WHEN_FEED_UNAVAILABLE','PREEXISTING_MARKET_BACKFILL_UNAVAILABLE','UNVERIFIED_ORIGIN_DISCOVERY_PENDING','SHARED_HINT_DEDUP_RETENTION_1H','REGISTRY_STORAGE_UNAVAILABLE','REGISTRY_SUMMARY_UNAVAILABLE','OTHER_UNEXPORTED_LIMITATION'] as const;
 type Count=number|null;
 export type RegistryTransactionReporting={scope:'CURRENT_SOURCE_PROCESS';runId:string;attempted:number;readOnlyCommits:number;writeCommits:number;failed:number;fsyncEligibleCommits:number};
 export type MarketCoverageReporting={
@@ -15,7 +16,7 @@ export type MarketCoverageReporting={
  lifetime:{uniqueTokensDiscovered:Count;lightweightScreened:Count;lightweightWithActivity:Count;lightweightUnavailable:Count;deepAdmitted:Count;verifiedAudited:Count};
  currentHour:{startedAt:string|null;uniqueTokensDiscovered:Count};
  active:{trackedIdentities:Count;awaitingLightweight:Count;awaitingOrigin:Count;awaitingVerification:Count;awaitingDeep:Count;deepObserving:Count};
- resource:{durableVerificationBacklog:Count;oldestVerificationAt:string|null;maximumVerificationWaitMs:Count;storageFailures:Count;maximumWriteMs:number|null;meanWriteMs:number|null;registryTransactions?:RegistryTransactionReporting|null;intakeWorker?:IntakeWorkerReporting|null;sourceDispatch?:SourceDispatchReporting|null};
+ resource:{durableVerificationBacklog:Count;oldestVerificationAt:string|null;maximumVerificationWaitMs:Count;storageFailures:Count;maximumWriteMs:number|null;meanWriteMs:number|null;registryTransactions?:RegistryTransactionReporting|null;registryReporting?:RegistryReportingDiagnostics|null;intakeWorker?:IntakeWorkerReporting|null;sourceDispatch?:SourceDispatchReporting|null};
  financial:{scope:'current-source-instance';qualified:Count;entries:Count;exits:Count};
  feeds:{source:typeof MARKET_COVERAGE_FEED_SOURCES[number];connected:boolean|null;lastObservedAt:string|null;scope:typeof MARKET_COVERAGE_FEED_SCOPES[number];coverageGaps:Count}[];
  marketDenominator:null;wholeMarketCoveragePercent:null;limitations:typeof MARKET_COVERAGE_LIMITATIONS[number][];
@@ -53,11 +54,11 @@ export function projectMarketCoverageReporting(status:unknown,generated:number):
  for(const code of Array.isArray(m.limitations)?m.limitations:[])limitations.add((MARKET_COVERAGE_LIMITATIONS as readonly unknown[]).includes(code)?code:'OTHER_UNEXPORTED_LIMITATION');
  const hour=iso(h.startedAt,asOf),hourAt=hour===null?null:Date.parse(hour);
  const currentHour=hourAt!==null&&hourAt===Math.floor(asOf/3600000)*3600000?{startedAt:hour,uniqueTokensDiscovered:count(h.uniqueTokensDiscovered)}:{startedAt:null,uniqueTokensDiscovered:null};
- const pipeline=projectPipelineThroughputReporting(m.pipeline,s.runId,asOf);
+ const registryReporting=projectRegistryReportingDiagnostics(r.registryReporting,generated),nestedAt=registryReporting?generated:asOf,pipeline=projectPipelineThroughputReporting(m.pipeline,s.runId,nestedAt);
  return validateMarketCoverageReporting({version:MARKET_COVERAGE_REPORTING_VERSION,generatedAt:new Date(asOf).toISOString(),persistence:{state:p.state==='sqlite-wal'?'sqlite-wal':'unavailable',createdAt:iso(p.createdAt,asOf),updatedAt:iso(p.updatedAt,asOf)},...(pipeline?{pipeline}:{}),
   lifetime:values(l,'uniqueTokensDiscovered lightweightScreened lightweightWithActivity lightweightUnavailable deepAdmitted verifiedAudited'),currentHour,
   active:values(a,'trackedIdentities awaitingLightweight awaitingOrigin awaitingVerification awaitingDeep deepObserving'),
-  resource:{durableVerificationBacklog:count(r.durableVerificationBacklog),oldestVerificationAt:iso(r.oldestVerificationAt,asOf),maximumVerificationWaitMs:count(r.maximumVerificationWaitMs),storageFailures:count(r.storageFailures),maximumWriteMs:duration(r.maximumWriteMs),meanWriteMs:duration(r.meanWriteMs),registryTransactions:registryTransactions(r.registryTransactions,s.runId),intakeWorker:projectIntakeWorkerReporting(r.intakeWorker,s.runId,asOf),sourceDispatch:projectSourceDispatchReporting(r.sourceDispatch,s.runId)},
+  resource:{durableVerificationBacklog:count(r.durableVerificationBacklog),oldestVerificationAt:iso(r.oldestVerificationAt,asOf),maximumVerificationWaitMs:count(r.maximumVerificationWaitMs),storageFailures:count(r.storageFailures),maximumWriteMs:duration(r.maximumWriteMs),meanWriteMs:duration(r.meanWriteMs),registryTransactions:registryTransactions(r.registryTransactions,s.runId),...(registryReporting?{registryReporting}:{}),intakeWorker:projectIntakeWorkerReporting(r.intakeWorker,s.runId,nestedAt),sourceDispatch:projectSourceDispatchReporting(r.sourceDispatch,s.runId)},
   financial:{scope:'current-source-instance',qualified:count(f.qualified),entries:count(f.paperFilled),exits:count(f.exited)},feeds,marketDenominator:null,wholeMarketCoveragePercent:null,limitations:[...limitations]},generated);
  }catch{return undefined;}
 }
@@ -72,9 +73,10 @@ export function validateMarketCoverageReporting(value:unknown,generated:number):
  const l=m.lifetime;for(const key of ['lightweightScreened','lightweightWithActivity','lightweightUnavailable','deepAdmitted','verifiedAudited'])need(l[key]===null||l.uniqueTokensDiscovered===null||l[key]<=l.uniqueTokensDiscovered);
  need(l.lightweightWithActivity===null||l.lightweightScreened===null||l.lightweightWithActivity<=l.lightweightScreened);
  const h=exact(m.currentHour,'startedAt uniqueTokensDiscovered');time(h.startedAt,true);n(h.uniqueTokensDiscovered);need(h.startedAt===null?h.uniqueTokensDiscovered===null:Date.parse(h.startedAt)===Math.floor(asOf/3600000)*3600000);need(h.uniqueTokensDiscovered===null||l.uniqueTokensDiscovered===null||h.uniqueTokensDiscovered<=l.uniqueTokensDiscovered);
- const r=exact(m.resource,'durableVerificationBacklog oldestVerificationAt maximumVerificationWaitMs storageFailures maximumWriteMs meanWriteMs'+['registryTransactions','intakeWorker','sourceDispatch'].filter(key=>Object.hasOwn(record(m.resource),key)).map(key=>' '+key).join(''));time(r.oldestVerificationAt,true);for(const key of ['durableVerificationBacklog','maximumVerificationWaitMs','storageFailures'])n(r[key]);for(const key of ['maximumWriteMs','meanWriteMs'])need(r[key]===null||duration(r[key])!==null);
+ const r=exact(m.resource,'durableVerificationBacklog oldestVerificationAt maximumVerificationWaitMs storageFailures maximumWriteMs meanWriteMs'+['registryTransactions','intakeWorker','sourceDispatch','registryReporting'].filter(key=>Object.hasOwn(record(m.resource),key)).map(key=>' '+key).join(''));time(r.oldestVerificationAt,true);for(const key of ['durableVerificationBacklog','maximumVerificationWaitMs','storageFailures'])n(r[key]);for(const key of ['maximumWriteMs','meanWriteMs'])need(r[key]===null||duration(r[key])!==null);
  if(Object.hasOwn(r,'registryTransactions')&&r.registryTransactions!==null){const tx=exact(r.registryTransactions,'scope runId attempted readOnlyCommits writeCommits failed fsyncEligibleCommits');need(tx.scope==='CURRENT_SOURCE_PROCESS'&&registryTransactions(tx,tx.runId)!==null);}
- if(Object.hasOwn(r,'intakeWorker')&&r.intakeWorker!==null)validateIntakeWorkerReporting(r.intakeWorker,asOf);
+ const registryReporting=Object.hasOwn(r,'registryReporting')&&r.registryReporting!==null?validateRegistryReportingDiagnostics(r.registryReporting,generated):null,nestedAt=registryReporting?generated:asOf;if(registryReporting?.observedAt!==null&&registryReporting?.observedAt!==undefined)need(Date.parse(registryReporting.observedAt)===asOf);
+ if(Object.hasOwn(r,'intakeWorker')&&r.intakeWorker!==null)validateIntakeWorkerReporting(r.intakeWorker,nestedAt);
  if(Object.hasOwn(r,'sourceDispatch')&&r.sourceDispatch!==null)validateSourceDispatchReporting(r.sourceDispatch);
  const f=exact(m.financial,'scope qualified entries exits');need(f.scope==='current-source-instance');for(const key of ['qualified','entries','exits'])n(f[key]);
  need(Array.isArray(m.feeds)&&m.feeds.length<=MARKET_COVERAGE_FEED_SOURCES.length);const seen=new Set<string>();
@@ -82,6 +84,6 @@ export function validateMarketCoverageReporting(value:unknown,generated:number):
  need(Array.isArray(m.limitations)&&m.limitations.length<=MARKET_COVERAGE_LIMITATIONS.length&&new Set(m.limitations).size===m.limitations.length&&m.limitations.includes('MARKET_DENOMINATOR_UNKNOWN'));for(const code of m.limitations)need((MARKET_COVERAGE_LIMITATIONS as readonly unknown[]).includes(code));
  // A retained observation cannot be newer than this projection's source facts.
  for(const at of [p.createdAt,p.updatedAt,r.oldestVerificationAt,...m.feeds.map((feed:any)=>feed.lastObservedAt)])need(at===null||Date.parse(at)<=asOf);
- if(Object.hasOwn(m,'pipeline'))validatePipelineThroughputReporting(m.pipeline,asOf);
+ if(Object.hasOwn(m,'pipeline')){validatePipelineThroughputReporting(m.pipeline,nestedAt);if(registryReporting)need(m.pipeline.registryObservedAt===registryReporting.observedAt);}
  need(Buffer.byteLength(JSON.stringify(m))<=10240);return m as MarketCoverageReporting;
 }

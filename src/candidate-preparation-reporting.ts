@@ -4,6 +4,8 @@ export const CANDIDATE_PREPARATION_VERSION = 'native-candidate-preparation-v1' a
 export const CANDIDATE_PREPARATION_STATES = ['idle','awaiting-dispatch','validating-pool','awaiting-token-age','ready','awaiting-market-evidence','provider-unavailable'] as const;
 export const CANDIDATE_PREPARATION_COUNTERS = ['attempts','poolReady','poolAbsent','poolUnsupported','providerUnavailable','allocationsFromPrepared'] as const;
 export const CANDIDATE_PREPARATION_STAGES = ['pool-validation','token-age','allocation'] as const;
+export const CANDIDATE_PREPARATION_READINESS_REASONS = ['FRESH_SUPPORT_AWAITING_ALLOCATION','PREPARED_SUPPORT_EXPIRED','PREPARATION_CONSUMED_BY_ALLOCATION','NO_FRESH_PREPARED_SUPPORT'] as const;
+const READINESS_FIELDS=['freshPreparedCount','stalePreparedCount','preparedSupportExpiresAt','readinessReason'] as const;
 export type CandidatePreparationReporting = {
  version: typeof CANDIDATE_PREPARATION_VERSION;
  scope: 'CURRENT_SOURCE_INSTANCE';
@@ -13,6 +15,10 @@ export type CandidatePreparationReporting = {
  generatedAt: string;
  state: typeof CANDIDATE_PREPARATION_STATES[number];
  currentMint: string | null;
+ freshPreparedCount?:number;
+ stalePreparedCount?:number;
+ preparedSupportExpiresAt?:string|null;
+ readinessReason?:typeof CANDIDATE_PREPARATION_READINESS_REASONS[number];
  counters: Record<typeof CANDIDATE_PREPARATION_COUNTERS[number],number>;
  lastOutcome: {mint:string;pool:string;at:string;reason:string;stage:typeof CANDIDATE_PREPARATION_STAGES[number]} | null;
  progress: {lastAcknowledgedAt:string|null;lastAuditedAt:string|null;unproductiveSinceAt:string|null;serviceableSinceAt:string|null;lastAttemptAt:string|null;attemptsSinceProgress:number};
@@ -30,6 +36,13 @@ function exact(value:unknown,keys:string) {
 function iso(value:unknown,at:number):string|null {
  return integer(value) && value >= INCEPTION && value <= at ? new Date(value).toISOString() : null;
 }
+function validateReadiness(r:Record<string,any>,at:number){
+ need(integer(r.freshPreparedCount)&&integer(r.stalePreparedCount));
+ need((CANDIDATE_PREPARATION_READINESS_REASONS as readonly unknown[]).includes(r.readinessReason));
+ if(r.freshPreparedCount>0){const expiry=typeof r.preparedSupportExpiresAt==='string'?Date.parse(r.preparedSupportExpiresAt):NaN;need(integer(expiry)&&expiry>at&&expiry<=at+30000&&new Date(expiry).toISOString()===r.preparedSupportExpiresAt&&r.readinessReason==='FRESH_SUPPORT_AWAITING_ALLOCATION');}
+ else need(r.preparedSupportExpiresAt===null&&r.readinessReason!=='FRESH_SUPPORT_AWAITING_ALLOCATION');
+ if(r.readinessReason==='PREPARED_SUPPORT_EXPIRED')need(r.stalePreparedCount>0);
+}
 export function projectCandidatePreparationReporting(status:unknown,generated:number):CandidatePreparationReporting|undefined {
  const raw=record(record(status).candidatePreparation);
  if (raw.version !== CANDIDATE_PREPARATION_VERSION) return undefined;
@@ -39,9 +52,14 @@ export function projectCandidatePreparationReporting(status:unknown,generated:nu
   const outcome=raw.lastOutcome===null ? null : record(raw.lastOutcome);
   const progress=record(raw.progress);
   const optionalTime=(value:unknown)=>{if(value===null)return null;const result=iso(value,at);need(result!==null);return result;};
+  // Optional source diagnostics retain their own sample time. Old sources
+  // remain unknown; a malformed extension cannot erase valid workflow totals.
+  let readiness:Partial<CandidatePreparationReporting>={};
+  if(READINESS_FIELDS.every(key=>Object.hasOwn(raw,key))){try{const fields={freshPreparedCount:raw.freshPreparedCount,stalePreparedCount:raw.stalePreparedCount,preparedSupportExpiresAt:raw.preparedSupportExpiresAt===null?null:integer(raw.preparedSupportExpiresAt)?new Date(raw.preparedSupportExpiresAt).toISOString():undefined,readinessReason:raw.readinessReason};validateReadiness(fields,at);readiness=fields;}catch{/* Unknown readiness; unchanged original preparation facts. */}}
   return validateCandidatePreparationReporting({
    version:raw.version,scope:raw.scope,sourceInstanceId:raw.sourceInstanceId,runId:raw.runId,
    startedAt:iso(raw.startedAt,at),generatedAt:new Date(at).toISOString(),state:raw.state,currentMint:raw.currentMint,
+   ...readiness,
    counters:Object.fromEntries(CANDIDATE_PREPARATION_COUNTERS.map(key=>[key,record(raw.counters)[key]])),
    lastOutcome:outcome===null?null:{mint:outcome.mint,pool:outcome.pool,at:iso(outcome.at,at),reason:outcome.reason,stage:outcome.stage},
    progress:{lastAcknowledgedAt:optionalTime(progress.lastAcknowledgedAt),lastAuditedAt:optionalTime(progress.lastAuditedAt),unproductiveSinceAt:optionalTime(progress.unproductiveSinceAt),serviceableSinceAt:optionalTime(progress.serviceableSinceAt),lastAttemptAt:optionalTime(progress.lastAttemptAt),attemptsSinceProgress:progress.attemptsSinceProgress},
@@ -49,7 +67,8 @@ export function projectCandidatePreparationReporting(status:unknown,generated:nu
  } catch {return undefined;}
 }
 export function validateCandidatePreparationReporting(value:unknown,generated:number):CandidatePreparationReporting {
- const r=exact(value,'version scope sourceInstanceId runId startedAt generatedAt state currentMint counters lastOutcome progress');
+ const present=READINESS_FIELDS.filter(key=>Object.hasOwn(record(value),key));need(present.length===0||present.length===READINESS_FIELDS.length);
+ const r=exact(value,'version scope sourceInstanceId runId startedAt generatedAt state currentMint counters lastOutcome progress'+(present.length?' '+READINESS_FIELDS.join(' '):''));
  need(r.version===CANDIDATE_PREPARATION_VERSION && r.scope==='CURRENT_SOURCE_INSTANCE');
  need(typeof r.runId==='string' && /^[a-zA-Z0-9-]{1,128}$/.test(r.runId));
  need(typeof r.sourceInstanceId==='string' && r.sourceInstanceId.startsWith('native-runner:'+r.runId+':') && /^native-runner:[a-zA-Z0-9-]+:[a-zA-Z0-9-]+$/.test(r.sourceInstanceId));
@@ -60,6 +79,7 @@ export function validateCandidatePreparationReporting(value:unknown,generated:nu
  };
  const start=time(r.startedAt)!,at=time(r.generatedAt)!;
  need(start<=at && (CANDIDATE_PREPARATION_STATES as readonly unknown[]).includes(r.state) && (r.currentMint===null || address(r.currentMint)));
+ if(present.length)validateReadiness(r,at);
  for (const n of Object.values(exact(r.counters,CANDIDATE_PREPARATION_COUNTERS.join(' ')))) need(integer(n));
  if (r.lastOutcome!==null) {
   const outcome=exact(r.lastOutcome,'mint pool at reason stage');

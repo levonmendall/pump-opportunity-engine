@@ -8,6 +8,7 @@ import {createHash} from 'node:crypto';
 import {MarketRegistry,type RegistryParameter} from '../src/market-registry.js';
 import {PilotWatch,type WatchRow} from '../src/pilot-watch.js';
 import {PERSISTENT_OBSERVABLE_MARKET_POLICY} from '../src/observation-age.js';
+import {readWatchRegistrySnapshot,readWatchRegistryBacklog} from '../src/watch-registry-reporting.js';
 import {legacyDurableSnapshot,legacyServiceableBacklog} from './fixtures/native-watch-reporting-before-repair.js';
 
 const AT=Date.parse('2026-11-02T04:00:00Z');
@@ -46,6 +47,9 @@ test('large full-population reports preserve exact values and use indexed displa
   });
   const writesBefore=registry.health().transactions.writeCommits,actual=watch.snapshot(AT,'liquidity-resilient-momentum-v3.1');
   assert.deepEqual(actual,expected);assert.deepEqual(watch.serviceableBacklog(AT),expectedBacklog);
+  const checkpoint=watch.export(),scope={observationAgePolicy:PERSISTENT_OBSERVABLE_MARKET_POLICY,maximumDeep:4};
+  assert.deepEqual(readWatchRegistrySnapshot(registry,scope,{counters:checkpoint.counters,entryAgePromotionCount:checkpoint.entryAgePromotionCount??0},AT,'liquidity-resilient-momentum-v3.1'),actual,'detached pure reader preserves exact SQL semantics without constructing or recovering a watch');
+  assert.deepEqual(readWatchRegistryBacklog(registry,scope,AT),expectedBacklog);
   assert.equal(actual.summary.known,6201);assert.equal(actual.rows.length,64);assert.ok('projection' in actual.summary);assert.equal(actual.summary.projection.complete,false);
   const page=plans.find(plan=>plan.sql.startsWith('SELECT w.body'));
   assert.ok(page?.steps.some(step=>step.includes('watch_rows_report_page_v1')));

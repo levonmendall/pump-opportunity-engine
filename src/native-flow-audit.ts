@@ -26,7 +26,7 @@ export type NativeFlowAuditResult={
  statusDisagreements:string[];boundaryExcludedSignatures:string[];duplicateNotifications:number;retryAt:number|null;
  scope:string;limitations:readonly string[];
  notificationSnapshot:{capturedAt:number;rows:number;requiredRows:number};
- postSnapshotTail:{enabled:boolean;generation:NativeAuditNotificationGeneration|null;refreshedAt:number|null;rows:number;addedSignatures:string[];addedPackets:Array<Pick<NativeNotification,'signature'|'slot'|'receivedAt'|'availableAt'|'success'|'rawHash'>>;matchedInteriorSignatures:string[];meaning:string};
+ postSnapshotTail:{enabled:boolean;generation:NativeAuditNotificationGeneration|null;refreshedAt:number|null;rows:number;addedSignatures:string[];addedPackets:Array<Pick<NativeNotification,'signature'|'slot'|'receivedAt'|'availableAt'|'success'|'rawHash'|'observedScope'|'deliveredByMint'|'subscriptionMint'|'subscriptionPool'|'subscriptionId'|'connectionId'>>;matchedInteriorSignatures:string[];meaning:string};
 };
 export type NativeFlowAuditOptions={
  pool:string;notifications:readonly NativeNotification[];target:{startAt:number;endAt:number};
@@ -72,6 +72,19 @@ const diagnosticBlockTime=(value:unknown):number|null=>int(value)?value:null;
 function need(v:unknown,reason:string):asserts v{if(!v)throw Error('NATIVE_AUDIT_'+reason);}
 function key(value:unknown,bytes:number){try{return typeof value==='string'&&value.length<=100&&bs58.decode(value).length===bytes;}catch{return false;}}
 const safe=(e:unknown)=>e instanceof Error&&/^[A-Z][A-Z0-9_:-]{0,150}$/.test(e.message)?e.message:'NATIVE_AUDIT_UNAVAILABLE';
+
+/** Delivery and observation ownership are separate for a transaction routed
+ * through another selected pool. Only the native source's validated event
+ * copy carries the target's exact ACK generation. A mint label, old ACK or
+ * unbound nontrade cannot substitute for that binding. */
+function tailGenerationMatches(n:NativeNotification,g:NativeAuditNotificationGeneration):boolean{
+ if(n.subscriptionMint===g.mint&&n.subscriptionPool===g.pool&&n.connectionId===g.connectionId&&n.subscriptionId===g.subscriptionId)return true;
+ const observed=n.observedScope;
+ return !!observed&&n.success&&n.classification==='program-event'&&(int(n.parsedEvents)&&n.parsedEvents>0||int(n.protocolEffects)&&n.protocolEffects>0)
+  &&n.scopeEvidence==='confirmed-transaction-program-frame'&&n.countsScope==='scope-only'&&n.observedForMint===g.mint
+  &&key(n.subscriptionMint,32)&&key(n.subscriptionPool,32)&&int(n.subscriptionId)&&n.deliveredByMint===n.subscriptionMint&&n.subscriptionMint!==g.mint&&n.subscriptionPool!==g.pool&&n.subscriptionId!==g.subscriptionId&&n.connectionId===g.connectionId
+  &&observed.mint===g.mint&&observed.pool===g.pool&&observed.openedAt===g.openedAt&&observed.connectionId===g.connectionId&&observed.subscriptionId===g.subscriptionId;
+}
 
 /** Pure local eligibility only, never an audit certificate. Interior signature
  * decoding remains in the authoritative audit before any provider request;
@@ -188,9 +201,9 @@ export async function auditNativeFlowWindow(options:NativeFlowAuditOptions):Prom
    need(Array.isArray(tail)&&tail.length<=8192,'TAIL_NOTIFICATION_BOUND');result.postSnapshotTail.refreshedAt=refreshedAt;result.postSnapshotTail.rows=tail.length;
    for(const raw of tail){
     const n={...raw};need(key(n.signature,64)&&int(n.slot)&&int(n.receivedAt)&&int(n.availableAt)&&n.receivedAt<=n.availableAt&&n.availableAt>startedAt&&n.availableAt<=refreshedAt&&n.receivedAt>=generation!.openedAt&&typeof n.success==='boolean'&&typeof n.duplicate==='boolean'&&typeof n.correction==='boolean'&&/^[a-f0-9]{64}$/.test(n.rawHash)&&['failed-transaction','program-event','nontrade','unusable'].includes(n.classification),'TAIL_NOTIFICATION_SCHEMA');
-    need(n.subscriptionMint===generation!.mint&&n.subscriptionPool===generation!.pool&&n.connectionId===generation!.connectionId&&n.subscriptionId===generation!.subscriptionId,'TAIL_NOTIFICATION_GENERATION');
+    need(tailGenerationMatches(n,generation!),'TAIL_NOTIFICATION_GENERATION');
     const prior=captured.get(n.signature);if(n.correction||n.classification==='unusable'||prior&&(prior.slot!==n.slot||prior.success!==n.success||prior.rawHash!==n.rawHash))return finish('unusable','NATIVE_AUDIT_POST_SNAPSHOT_CORRECTION');
-    if(!prior){need(captured.size<8192,'TAIL_NOTIFICATION_BOUND');captured.set(n.signature,n);result.postSnapshotTail.addedSignatures.push(n.signature);result.postSnapshotTail.addedPackets.push({signature:n.signature,slot:n.slot,receivedAt:n.receivedAt,availableAt:n.availableAt,success:n.success,rawHash:n.rawHash});}
+    if(!prior){need(captured.size<8192,'TAIL_NOTIFICATION_BOUND');captured.set(n.signature,n);result.postSnapshotTail.addedSignatures.push(n.signature);result.postSnapshotTail.addedPackets.push({signature:n.signature,slot:n.slot,receivedAt:n.receivedAt,availableAt:n.availableAt,success:n.success,rawHash:n.rawHash,...(n.observedScope?{observedScope:{...n.observedScope},deliveredByMint:n.deliveredByMint,subscriptionMint:n.subscriptionMint,subscriptionPool:n.subscriptionPool,subscriptionId:n.subscriptionId,connectionId:n.connectionId}:{})});}
    }
    const addedSignatures=new Set(result.postSnapshotTail.addedSignatures);result.postSnapshotTail.matchedInteriorSignatures=interior.filter(r=>addedSignatures.has(r.signature)).map(r=>r.signature);
    options.record?.('native-flow-audit-post-snapshot-tail',{pool:options.pool,target,originalSnapshot:result.notificationSnapshot,...result.postSnapshotTail,requiredTargetSignaturesUnchanged:true,featureInformationBackdated:false});

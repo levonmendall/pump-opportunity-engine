@@ -3,6 +3,8 @@ import assert from 'node:assert/strict';
 import {EventEmitter} from 'node:events';
 import {NativeMarketIntake} from '../src/native-market-intake.js';
 import type {MarketIdentityHint,MarketActivityHint,PumpSwapQualificationHint} from '../src/market-discovery.js';
+import {MARKET_REGISTRY_REPORTING_VERSION,type MarketRegistryReportingScope} from '../src/market-registry-reporting.js';
+import {PERSISTENT_OBSERVABLE_MARKET_POLICY} from '../src/observation-age.js';
 
 class MockWorker extends EventEmitter {
  readonly sent:any[]=[];terminations=0;
@@ -16,9 +18,9 @@ const flush=()=>new Promise<void>(resolve=>setImmediate(resolve));
 async function until(condition:()=>boolean){for(let i=0;i<30&&!condition();i++)await flush();assert.equal(condition(),true,'mock worker did not receive queued intake');}
 const identity=(i:number):MarketIdentityHint=>({mint:'mint-'+i,signature:'signature-'+i,receivedAt:1000,source:'pumpportal-new-token',kind:'creation',evidence:'unverified-provider-discovery-hint'});
 const activity=(i:number):MarketActivityHint=>({mint:'mint-'+i,signature:'trade-'+i,receivedAt:1000,source:'pumpapi-broad',kind:'activity',side:'buy',quoteLamports:'1000000000',evidence:'unverified-provider-activity-hint'});
-function fixture(budgetBytes=1024){
+function fixture(budgetBytes=1024,now=()=>1000){
  const workers:MockWorker[]=[],pressure:Array<{paused:boolean;pendingBytes:number;budgetBytes:number}>=[],committed:unknown[][]=[],records:Array<{kind:string;data:any}>=[];
- const intake=new NativeMarketIntake({budgetBytes,now:()=>1000,createWorker:()=>{const worker=new MockWorker();workers.push(worker);return worker;},onPressure:value=>pressure.push(value),onCommitted:rows=>committed.push(rows),record:(kind,data)=>records.push({kind,data})});
+ const intake=new NativeMarketIntake({budgetBytes,now,createWorker:()=>{const worker=new MockWorker();workers.push(worker);return worker;},onPressure:value=>pressure.push(value),onCommitted:rows=>committed.push(rows),record:(kind,data)=>records.push({kind,data})});
  const current=()=>workers.at(-1)!;
  const close=async()=>{if(intake.usage().state==='closed')return;const worker=current();worker.ready();await flush();const closing=intake.close();worker.ack(worker.intake().map(row=>row.id));worker.emit('message',{kind:'closed'});await closing;};
  return {intake,workers,current,pressure,committed,records,close};
@@ -126,4 +128,58 @@ test('excluded ACKs release owned messages while distinguishing processed exclus
   f.current().ack([first.id],[],[{id:first.id,reason:'TOKEN_AGE_EXCEEDS_24H'}]);assert.equal(f.intake.usage().ageExcluded,1);
   f.current().ack([second.id],[],[{id:second.id,reason:'PUMPSWAP_VENUE_REQUIRED'}]);assert.equal(f.intake.usage().pending,0);assert.equal(f.intake.usage().pendingBytes,0);assert.equal(f.intake.usage().processedAcknowledged,2);assert.equal(f.intake.usage().durableCommitted,0);assert.equal(f.intake.usage().venueExcluded,1);
  }finally{await f.close();}
+});
+
+const reportingScope=():MarketRegistryReportingScope=>({registryId:'OFFLINE-registry',sourceInstanceId:'native-runner:OFFLINE:source-a',startedAt:500,observationAgePolicy:PERSISTENT_OBSERVABLE_MARKET_POLICY.version,maximumDeep:4,strategy:'liquidity-resilient-momentum-v3.1',requireOrigin:false,pumpswapOnly:false,enforceTokenAge24h:false,enforceMigrationAge:false});
+const reportReceipt=(request:any,at:number)=>({kind:'reporting-result',id:request.id,requestedAt:request.requestedAt,observedAt:at,completedAt:at,durationMs:5,snapshot:{version:MARKET_REGISTRY_REPORTING_VERSION,sourceInstanceId:request.scope.sourceInstanceId,observedAt:at,coverage:{generatedAt:at}},reasonCode:null});
+
+test('optional reporting coalesces without changing intake ACK ownership and retains original sample clocks',async()=>{
+ let at=1000;const f=fixture(100000,()=>at),scope=reportingScope();try{
+  f.current().ready();f.intake.observeIdentity(identity(1));assert.equal(f.intake.registryReporting(scope,at).health.reasonCode,'REPORTING_INTAKE_PRIORITY');assert.equal(f.current().sent.length,0,'no optional report overtakes the scheduled unsent intake turn');await flush();
+  for(let n=0;n<100;n++)assert.equal(f.intake.registryReporting(scope,at).health.reasonCode,'REPORTING_INTAKE_PRIORITY');
+  assert.equal(f.current().sent.filter(r=>r.kind==='reporting').length,0,'optional reporting cannot overtake even unsent parent-owned intake');f.current().ack(f.current().intake().map(r=>r.id));
+  for(let n=0;n<100;n++)f.intake.registryReporting(scope,at);f.intake.observeIdentity(identity(2));await flush();
+  const requests=f.current().sent.filter(r=>r.kind==='reporting');assert.equal(requests.length,1);assert.equal(f.intake.usage().pending,1);
+  f.current().emit('message',{...reportReceipt(requests[0],at),id:999});assert.equal(f.intake.registryReporting(scope,at).health.state,'UNAVAILABLE');
+  f.current().emit('message',reportReceipt(requests[0],at));const first=f.intake.registryReporting(scope,at);assert.equal(first.health.state,'FRESH');assert.equal(first.health.pending,false);assert.equal(first.health.observedAt,1000);assert.equal(f.intake.usage().durableCommitted,1);f.current().ack(f.current().intake().map(r=>r.id));
+  at=2001;const reused=f.intake.registryReporting(scope,at);assert.equal(reused.health.observedAt,1000);assert.equal(reused.health.completedAt,1000);assert.equal(reused.health.sampledAt,2001);assert.equal(reused.health.ageMs,1001);assert.equal(reused.health.pending,true);assert.equal(f.current().sent.filter(r=>r.kind==='reporting').length,2);
+  f.current().ack(f.current().intake().map(r=>r.id));assert.equal(f.intake.usage().durableCommitted,2,'summary completion cannot ACK intake');
+  at=31001;const old=f.intake.registryReporting(scope,at);assert.equal(old.health.state,'STALE');assert.equal(old.health.reasonCode,'REPORTING_SAMPLE_STALE');assert.equal(old.snapshot?.observedAt,1000);assert.equal(f.intake.available(),true,'diagnostic age is not source admission');
+ }finally{await f.close();}
+});
+
+test('source and worker generation changes cannot relabel old summary data as a fresh current sample',async t=>{
+ t.mock.timers.enable({apis:['setTimeout']});let at=1000;const f=fixture(100000,()=>at),scope=reportingScope();try{
+  const first=f.current();first.ready();f.intake.registryReporting(scope,at);first.emit('message',reportReceipt(first.sent.find(r=>r.kind==='reporting'),at));
+  first.emit('error',Error('OFFLINE worker ended'));const failed=f.intake.registryReporting(scope,at);assert.equal(failed.health.state,'STALE');assert.equal(failed.health.sampleWorkerGeneration,1);assert.equal(failed.health.observedAt,1000);
+  t.mock.timers.tick(500);at=2000;const second=f.current();second.ready();const recovery=f.intake.registryReporting(scope,at);assert.equal(recovery.health.workerGeneration,2);assert.equal(recovery.health.sampleWorkerGeneration,1);assert.equal(recovery.health.state,'STALE');
+  const request=second.sent.find(r=>r.kind==='reporting');first.emit('message',reportReceipt(request,at));assert.equal(f.intake.registryReporting(scope,at).health.state,'STALE','obsolete worker replies are ignored');
+  second.emit('message',reportReceipt(request,at));assert.equal(f.intake.registryReporting(scope,at).health.state,'FRESH');
+  const replacement=f.intake.registryReporting({...scope,sourceInstanceId:'native-runner:OFFLINE:source-b'},at);assert.equal(replacement.health.state,'UNAVAILABLE');assert.equal(replacement.snapshot,null,'source-instance cohorts cannot migrate into the replacement source');
+ }finally{await f.close();t.mock.timers.reset();}
+});
+
+test('a failed or invalid optional summary keeps the last known sample without failing healthy intake',async()=>{
+ let at=1000;const f=fixture(100000,()=>at),scope=reportingScope();try{
+  f.current().ready();f.intake.registryReporting(scope,at);let request=f.current().sent.find(r=>r.kind==='reporting');f.current().emit('message',reportReceipt(request,at));
+  at=2000;f.intake.registryReporting(scope,at);request=f.current().sent.filter(r=>r.kind==='reporting').at(-1);f.current().emit('message',{...reportReceipt(request,at),snapshot:null,reasonCode:'REPORTING_READ_BUSY'});
+  const stale=f.intake.registryReporting(scope,at);assert.equal(stale.health.state,'STALE');assert.equal(stale.health.reasonCode,'REPORTING_READ_BUSY');assert.equal(stale.health.observedAt,1000);assert.equal(f.intake.available(),true);assert.equal(f.intake.usage().failures,0);
+  at=3000;f.intake.registryReporting(scope,at);request=f.current().sent.filter(r=>r.kind==='reporting').at(-1);f.current().emit('message',{...reportReceipt(request,at),completedAt:at+1});assert.equal(f.intake.registryReporting(scope,at).health.reasonCode,'REPORTING_RESULT_INVALID');
+  f.intake.observeIdentity(identity(2));await flush();f.current().ack(f.current().intake().map(r=>r.id));assert.equal(f.intake.usage().pending,0);assert.equal(f.intake.usage().durableCommitted,1);
+ }finally{await f.close();}
+});
+
+test('an ignored or intake-starved summary times out diagnostically, retries and ignores late old IDs without restarting intake',async()=>{
+ let at=1000;const f=fixture(100000,()=>at),scope=reportingScope();try{
+  const worker=f.current();worker.ready();f.intake.registryReporting(scope,at);const old=worker.sent.find(r=>r.kind==='reporting');
+  at=31000;const timeout=f.intake.registryReporting(scope,at);assert.equal(timeout.health.state,'UNAVAILABLE');assert.equal(timeout.health.reasonCode,'REPORTING_REQUEST_TIMEOUT');assert.equal(timeout.health.pending,false);assert.equal(timeout.health.failures,1);assert.equal(f.intake.available(),true);assert.equal(worker.terminations,0);
+  f.intake.observeIdentity(identity(9));await flush();worker.ack(worker.intake().map(r=>r.id));assert.equal(f.intake.usage().durableCommitted,1);
+  at=32000;assert.equal(f.intake.registryReporting(scope,at).health.pending,true);const current=worker.sent.filter(r=>r.kind==='reporting').at(-1);assert.notEqual(current.id,old.id);
+  worker.emit('message',reportReceipt(old,at));assert.equal(f.intake.registryReporting(scope,at).health.state,'UNAVAILABLE');worker.emit('message',reportReceipt(current,at));assert.equal(f.intake.registryReporting(scope,at).health.state,'FRESH');assert.equal(f.intake.usage().restarts,0);assert.equal(f.intake.usage().failures,0);
+ }finally{await f.close();}
+});
+
+test('graceful shutdown clears an impossible pending report while retaining prior sample provenance',async()=>{
+ let at=1000;const f=fixture(100000,()=>at),scope=reportingScope();f.current().ready();f.intake.registryReporting(scope,at);const request=f.current().sent.find(r=>r.kind==='reporting');f.current().emit('message',reportReceipt(request,at));at=2000;assert.equal(f.intake.registryReporting(scope,at).health.pending,true);
+ await f.close();const closed=f.intake.registryReporting(scope,at);assert.equal(closed.health.pending,false);assert.equal(closed.health.state,'STALE');assert.equal(closed.health.observedAt,1000);assert.equal(closed.health.completedAt,1000);assert.equal(closed.health.reasonCode,'WORKER_UNAVAILABLE');
 });

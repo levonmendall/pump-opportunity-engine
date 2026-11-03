@@ -88,7 +88,7 @@ async function quoteFixture(t:TestContext,cooperative=true){
  const sourceInformationAdmission=()=>true,sourceAdmission=()=>!(owner.current==='candidate'&&!entryAdmission.valid(entryToken,f.now()))&&nativePaperSourceWorkAdmission({informationOpen:true,owned:false,entryWork:owner.current==='candidate',entryStartsRemaining:entryAdmission.remaining(entryToken,f.now()),usage:rpc.usage(),persistent:true});
  const optionalAdmission=(bound=1200)=>sourceAdmission()&&lowerView(bound).admitted&&engine.discretionaryAdmission(bound).admitted;
  const safety={recoveryComplete:true,idle:false,evidenceAvailable:true,financialAvailable:true,uncertainActions:0,newHardPauseObserved:false},bridge={trader:{entryReadinessSafety:()=>safety},protection:()=>assert.fail('active quote must not reenter protection')};
- const context:any={__name:(x:unknown)=>x,NativeProtectionDispatch,record:(kind:string,data:unknown)=>f.records.push({kind,data:structuredClone(data)}),runId:'OFFLINE-QUOTE',requestSequence:0,entryCertificate:certificate,candidateDiagnostic:(run:()=>unknown)=>run(),holder,currentLedger:f.ledger,workOwner:owner,currentRpc:rpc,service:true,Date:{now:f.now},endAt:Number.MAX_SAFE_INTEGER,stopped:false,lastCompleted:null,entryAdmission,entryToken,manifest:{controlCooldownUntil:0},PilotRpcUnavailable,nativePaperRequestOperationBound,nativePaperProtectionReadDeadline,nativePaperSourceWorkAdmission,nativePaperManagementReserve,NATIVE_PAPER_ENTRY_NATIVE_MAINTENANCE_POLICY,lowerView,sourceAdmission,sourceInformationAdmission,optionalAdmission,engine,currentNative:flow,bridge,serviceGeneration:0,manualPaused:false,safeStopRequested:false,financialCapacityReason:()=>null};
+ const context:any={__name:(x:unknown)=>x,NativeProtectionDispatch,record:(kind:string,data:unknown)=>f.records.push({kind,data:structuredClone(data)}),runId:'OFFLINE-QUOTE',requestSequence:0,entryCertificate:certificate,sourceEntryPreparation:null,candidateDiagnostic:(run:()=>unknown)=>run(),holder,currentLedger:f.ledger,workOwner:owner,currentRpc:rpc,service:true,Date:{now:f.now},endAt:Number.MAX_SAFE_INTEGER,stopped:false,lastCompleted:null,entryAdmission,entryToken,manifest:{controlCooldownUntil:0},PilotRpcUnavailable,nativePaperRequestOperationBound,nativePaperProtectionReadDeadline,nativePaperSourceWorkAdmission,nativePaperManagementReserve,NATIVE_PAPER_ENTRY_NATIVE_MAINTENANCE_POLICY,lowerView,sourceAdmission,sourceInformationAdmission,optionalAdmission,engine,currentNative:flow,bridge,serviceGeneration:0,manualPaused:false,safeStopRequested:false,financialCapacityReason:()=>null};
  const text=runNativePaper.toString(),begin=text.search(/const\s+requestOptions\s*=/),rest=text.slice(begin),end=rest.search(/;\s*const\s+market\s*=/);assert.ok(begin>=0&&end>0);
  runInNewContext(rest.slice(0,end)+';holder.scheduled=scheduled;holder.withEntryQuoteRead=withEntryQuoteRead;holder.maintenanceActive=()=>requiredEntryNativeMaintenance!==null;',context,{timeout:1000});f.route(holder.scheduled);if(cooperative)f.withQuoteRead(holder.withEntryQuoteRead);
  let preparationCallbacks=0;f.beforePreparationRead(async()=>{preparationCallbacks++;});
@@ -148,4 +148,34 @@ test('a transport fault with a matching admission error string cannot trigger na
 test('a still-blocking native deadline receives at most one maintenance turn for the original token',async t=>{
  const h=await quoteFixture(t);h.afterService(()=>{h.deadline=h.began+3450;});assert.equal(await h.quote(),null);assert.equal(h.serviceCalls,1);assert.equal(h.f.calls.length,4);assert.equal(h.entryAdmission.view(h.entryToken,h.f.now())?.spent,3);
  assert.equal(await h.quote(),null);assert.equal(h.serviceCalls,1);assert.equal(h.f.calls.length,4);assert.equal(h.holder.maintenanceActive(),false);assert.deepEqual(h.f.ledger.state(),h.before);
+});
+
+
+test('entry support advances one physical read per turn, retaining original rent timestamps for a fresh exact-size quote',async t=>{
+ const f=fixture(t,3000,false,true,true,true),mint=f.captures[1]!.proof.quote.mint;
+ let turns=0;while(!f.market.entryPreparationStatus(mint).ready){const before=f.calls.length,result=await f.market.prepareEntryCostTurn(mint,signal());assert.equal(f.calls.length-before,1);assert.ok(['ready','deferred'].includes(result.status));assert.ok(++turns<=3);}
+ assert.equal(turns,3);const original=f.market.entryPreparationStatus(mint);assert.equal(original.quoteReads,1);assert.ok(original.expiresAt);
+ const plan=await f.market.prepareEntryCosts(mint,signal()),preparedCalls=f.calls.length;assert.equal(preparedCalls,3,'materializing the plan does not reacquire valid stages');f.advance(250);
+ const q=await f.market.quote({mint,side:'buy',inputUnits:'10000000',requiredDepositLamports:plan.depositLamports},signal());assert.ok(q);assert.equal(f.calls.length-preparedCalls,1);assert.equal(q.at,f.now());
+ const evidence=f.records.findLast(row=>row.kind==='rpc-market-quote');assert.equal(evidence?.data.costs.preparationAt,plan.at);assert.deepEqual(evidence?.data.costs.rentObservationsByBytes,plan.rentObservationsByBytes);assert.equal(f.market.entryPreparationStatus(mint).expiresAt,original.expiresAt);
+ f.advance(original.expiresAt!-f.now()+1);assert.equal(f.market.entryPreparationStatus(mint).ready,false);assert.equal(f.market.entryPreparationStatus(mint).state,'layout-required');
+});
+
+test('retiring or resetting a different candidate cannot revoke valid prepared costs',async t=>{
+ const f=fixture(t,3000,false,false,true,true),a=f.captures[0]!.proof.quote.mint,b=f.captures[1]!.proof.quote.mint;
+ await f.market.prepareEntryCosts(a,signal());const plan=await f.market.prepareEntryCosts(b,signal()),before=f.market.entryPreparationStatus(b);
+ f.market.invalidateEntryPreparation(a);assert.deepEqual(f.market.entryPreparationStatus(b),before);
+ assert.equal(f.market.unregisterPool(a),true);assert.deepEqual(f.market.entryPreparationStatus(b),before);
+ const calls=f.calls.length;assert.equal((await f.market.prepareEntryCosts(b,signal())).depositLamports,plan.depositLamports);assert.equal(f.calls.length,calls);
+ f.market.invalidateEntryPreparation(b);assert.equal(f.market.entryPreparationStatus(b).ready,false,'the matching generation still revokes reuse');
+});
+
+
+test('rent-only continuation retains the second quote read after another candidate evicts pool links',async t=>{
+ const f=fixture(t,3000,false,false,true,true),a=f.captures[1]!.proof.quote.mint,b=f.captures[0]!.proof.quote.mint;
+ const first=await f.market.prepareEntryCostTurn(a,signal());assert.equal(first.status,'deferred');assert.equal(f.market.entryPreparationStatus(a).state,'rent-required');
+ await f.market.prepareEntryCostTurn(b,signal());const remaining=f.market.entryPreparationStatus(a);assert.equal(remaining.state,'rent-required');assert.equal(remaining.quoteReads,2);
+ const {nativePaperRemainingEntryWork}=await import('../src/run-native-paper.js'),work=nativePaperRemainingEntryWork({at:f.now(),owned:true,preparation:remaining});assert.equal(work.quoteReads,2);assert.equal(work.maximumAccountedStarts,remaining.remainingReads+4);
+ while(!f.market.entryPreparationStatus(a).ready)await f.market.prepareEntryCostTurn(a,signal());assert.equal(f.market.entryPreparationStatus(a).quoteReads,2,'rent reads do not recreate pool links');
+ const plan=await f.market.prepareEntryCosts(a,signal()),before=f.calls.length,q=await f.market.quote({mint:a,side:'buy',inputUnits:'10000000',requiredDepositLamports:plan.depositLamports},signal());assert.ok(q,JSON.stringify({failure:f.market.usage().entryQuoteFailures,records:f.records.slice(-5)}));assert.equal(f.calls.length-before,2);assert.equal(q.at,f.now());
 });

@@ -8,20 +8,22 @@ import {PublicKey} from '@solana/web3.js';
 import {NATIVE_MINT} from '@solana/spl-token';
 import {canonicalPumpPoolPda} from './sdk.js';
 import {decodeMigrationIdentity,type MigrationIdentity} from './migration-identity.js';
+import type {PumpSwapMigrationRecovery} from './pumpswap-migration-recovery.js';
 
 export type PilotMigrationSeed={signature:string;feedMint?:string;receivedAt:number};
 export type PilotMigrationRpc={call<T>(method:string,params?:unknown[],signal?:AbortSignal):Promise<T>};
 type Read={signature:string;commitment:'confirmed'|'finalized';requestedAt:number;availableAt:number;transaction:unknown};
 export type PilotMigrationProof={
-  source:'direct-confirmed-creation'|'bounded-canonical-SOL-history';
-  seed:PilotMigrationSeed;initialConfirmed:Read;
+  source:'direct-confirmed-creation'|'bounded-canonical-SOL-history'|'resumable-canonical-SOL-history';
+  seed:PilotMigrationSeed;initialConfirmed:Read|null;
   history:{address:string;limit:1000;requestedAt:number;availableAt:number;rows:unknown[]}|null;
   originCandidates:Array<{signature:string;slot:number;reason:string}>;
   originConfirmed:Read;originFinalized:Read;
   finalizedIdentityMatchesConfirmed:true;
   currentPoolSupportVerified:false;entryEligibilityVerified:false;
+  recovery?:{version:string;startedAt:number;historyPages:number;historyRows:number;candidateReads:number;scanPasses:number;seedConfirmedSha256:string};
 };
-export type PilotMigrationResult={ok:true;identity:MigrationIdentity;evidence:string;proof:PilotMigrationProof}|{ok:false;reason:string};
+export type PilotMigrationResult={ok:true;identity:MigrationIdentity;evidence:string;proof:PilotMigrationProof}|{ok:false;reason:string;recovery?:PumpSwapMigrationRecovery};
 const MAX_READS=6,MAX_MS=20000,MAX_PROOF_BYTES=512*1024;
 function need(value:unknown,reason:string):asserts value {if(!value)throw Error(reason);}
 function signature(value:unknown):asserts value is string {need(typeof value==='string'&&value.length<=100,'PILOT_MIGRATION_SIGNATURE');try{need(bs58.decode(value).length===64,'PILOT_MIGRATION_SIGNATURE');}catch{throw Error('PILOT_MIGRATION_SIGNATURE');}}
@@ -90,6 +92,6 @@ export async function resolvePilotMigration(seed:PilotMigrationSeed,rpc:PilotMig
   finally{clearTimeout(timer);controller.abort();}
 }
 
-/** Live migration-age scope uses the same six-read/20s verified resolver.
- * A shared swap may locate the canonical pool history but never proves age. */
-export function resolvePumpSwapMigrationAge(seed:PilotMigrationSeed,rpc:PilotMigrationRpc,signal:AbortSignal):Promise<PilotMigrationResult>{return resolvePilotMigration(seed,rpc,signal,true);}
+// Live recovery is cooperative and durable. The isolated pilot above retains
+// its original one-page protocol; neither history path itself proves age.
+export {resolvePumpSwapMigrationAge} from './pumpswap-migration-recovery.js';

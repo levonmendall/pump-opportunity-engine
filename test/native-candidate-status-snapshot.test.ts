@@ -69,6 +69,8 @@ test('later publications and standalone APIs observe new metrics and financial c
  const first=runner.status(),later=advance();
  registry.recordMetric(scope,'queueToAllocation','offline:later',200,later);
  runner.onFinancialOutcome({mint:'offline-ready',kind:'primary-evaluated',at:later,key:'offline-decision'});
+ assert.equal(runner.economicDecisionCount(),0,'the financially owned callback performs no optional registry write');
+ runner.drainFinancialOutcomes();
  const second=runner.status();
  assert.deepEqual(Object.fromEntries(reads),Object.fromEntries(WAITS.map(metric=>[metric,6])),'each publication obtains exactly one fresh summary set');
  assert.equal(first.slotProductivity.waits.queueToAllocation.count,3);

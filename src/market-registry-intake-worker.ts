@@ -5,6 +5,7 @@ import {lstatSync,realpathSync} from 'node:fs';
 import {MarketRegistry,isMarketRegistryContention} from './market-registry.js';
 import {TOKEN_AGE_POLICY} from './token-age-policy.js';
 import type {WatchSeed} from './pilot-watch.js';
+import {readMarketRegistryReporting,validMarketRegistryReportingRequest,MARKET_REGISTRY_REPORTING_POLICY,type MarketRegistryReportingRequest,type MarketRegistryReportingResult} from './market-registry-reporting.js';
 import {pumpSwapIntakeHint,type MarketIdentityHint,type MarketActivityHint,type MarketFeedStatus,type PumpSwapQualificationHint} from './market-discovery.js';
 
 export const MARKET_REGISTRY_INTAKE_WORKER_KIND='poe-market-registry-intake-v1' as const;
@@ -27,12 +28,26 @@ export function startMarketRegistryIntakeWorker(options:MarketRegistryIntakeOpti
  try{const file=lstatSync(options.path);if(!file.isFile()||file.isSymbolicLink()||file.uid!==uid||file.nlink!==1)throw Error('MARKET_INTAKE_PRIVATE_FILE_REQUIRED');}catch(error){if((error as {code?:unknown}).code!=='ENOENT')throw error;}
  const registry=new MarketRegistry(options.path,{concurrentIntake:true,writerRole:'intake',...(options.enforceMigrationAge?{migrationAge:true as const}:{}),...(options.writerTurn?{writerTurn:options.writerTurn}:{})});
  type Pending={message:MarketRegistryIntakeMessage;bytes:number};const queue:Array<Pending|undefined>=[];let head=0,pendingBytes=0,scheduled:ReturnType<typeof setTimeout>|null=null,closing=false,closed=false,fatal=false;
+ let reporting:MarketRegistryReportingRequest|null=null,reportingTurn:ReturnType<typeof setImmediate>|null=null;
  let received=0,committed=0,processedAcknowledged=0,qualificationReceived=0,qualificationCommitted=0,ageExcluded=0,venueExcluded=0,batches=0,contentions=0,maximumBatchMs=0,maximumComputeObservedMs=0,lastCommitAt:number|null=null;
  const stats=()=>({received,committed,processedAcknowledged,qualificationReceived,qualificationCommitted,ageExcluded,venueExcluded,enforceTokenAge24h:options.enforceTokenAge24h===true,enforceMigrationAge:options.enforceMigrationAge===true,pending:queue.length-head,pendingBytes,pendingBytesBudget:budget,batches,contentions,maximumBatchMs,maximumComputeMs:maximumComputeObservedMs,lastCommitAt,registry:registry.health()});
  const send=(value:unknown)=>port.postMessage(value);
- const close=()=>{if(closed)return;closed=true;if(scheduled)clearTimeout(scheduled);scheduled=null;registry.close();send({kind:'closed',stats:stats()});port.close();};
+ const close=()=>{if(closed)return;closed=true;if(scheduled)clearTimeout(scheduled);scheduled=null;if(reportingTurn)clearImmediate(reportingTurn);reportingTurn=null;reporting=null;registry.close();send({kind:'closed',stats:stats()});port.close();};
  const schedule=()=>{if(!scheduled&&!closed&&!fatal)scheduled=setTimeout(pump,yieldMs);};
  const fail=(error:unknown)=>{fatal=true;const code=(error as {code?:unknown})?.code;send({kind:'failure',reasonCode:typeof code==='string'&&/^SQLITE_[A-Z_]+$/.test(code)?code:'MARKET_INTAKE_WORKER_FAILED',retryable:false,unacknowledgedTailRetainedByParent:true,stats:stats()});};
+ // Optional diagnostics never precede an already queued durable intake ACK.
+ // One coalesced request owns no writer lease. A report refusal affects only
+ // that diagnostic sample and cannot fail, discard or acknowledge intake.
+ const scheduleReporting=()=>{if(!reporting||reportingTurn||queue.length!==head||closing||closed||fatal)return;reportingTurn=setImmediate(()=>{
+  reportingTurn=null;if(queue.length!==head||closing||closed||fatal||!reporting)return;
+  const request=reporting;reporting=null;const observedAt=Date.now(),began=performance.now();let snapshot:MarketRegistryReportingResult['snapshot']=null,reasonCode:string|null=null;
+  try{
+   if(request.requestedAt>observedAt||request.scope.enforceMigrationAge!==(options.enforceMigrationAge===true)||request.scope.enforceTokenAge24h!==(options.enforceTokenAge24h===true||options.enforceMigrationAge===true))throw Error('REPORTING_SCOPE_UNAVAILABLE');
+   snapshot=readMarketRegistryReporting(registry,request.scope,observedAt);
+   if(Buffer.byteLength(JSON.stringify(snapshot))>MARKET_REGISTRY_REPORTING_POLICY.maximumResponseBytes){snapshot=null;reasonCode='REPORTING_RESPONSE_TOO_LARGE';}
+  }catch(error){const code=(error as {code?:unknown})?.code;reasonCode=typeof code==='string'&&/^SQLITE_(BUSY|LOCKED)/.test(code)?'REPORTING_READ_BUSY':error instanceof Error&&['REPORTING_SCOPE_UNAVAILABLE','REPORTING_WATCH_STATE_UNAVAILABLE'].includes(error.message)?error.message:'REPORTING_READ_UNAVAILABLE';}
+  const result:MarketRegistryReportingResult={kind:'reporting-result',id:request.id,requestedAt:request.requestedAt,observedAt,completedAt:Date.now(),durationMs:performance.now()-began,snapshot,reasonCode};send(result);
+ });};
  function exclusion(message:MarketRegistryIntakeMessage):string|null{
   if(message.operation==='feed')return null;
   if(message.operation==='qualification')return pumpSwapIntakeHint(message.value)?null:'PUMPSWAP_VENUE_REQUIRED';
@@ -50,7 +65,7 @@ export function startMarketRegistryIntakeWorker(options:MarketRegistryIntakeOpti
   if(proof.availableAt>receivedAt||proof.createdAt>receivedAt)return 'TOKEN_AGE_INVALID';
   return receivedAt-proof.createdAt>TOKEN_AGE_POLICY.maximumAgeMs||at-proof.createdAt>TOKEN_AGE_POLICY.maximumAgeMs?'TOKEN_AGE_EXCEEDS_24H':null;
  }
- function pump(){scheduled=null;if(closed||fatal)return;if(head===queue.length){if(closing)close();return;}
+ function pump(){scheduled=null;if(closed||fatal)return;if(head===queue.length){if(closing)close();else scheduleReporting();return;}
   if(!closing&&registry.deferToMainWriter()){schedule();return;}
   const started=performance.now();let processed=0,computeElapsed=0,qualified=0;const activities=new Map<string,MarketRegistryCommittedActivity>(),excluded:Array<{id:number;reason:string}>=[];
   try{registry.transaction(()=>{const computeStarted=performance.now();
@@ -71,10 +86,11 @@ export function startMarketRegistryIntakeWorker(options:MarketRegistryIntakeOpti
   head+=processed;processedAcknowledged+=processed;committed+=processed-excluded.length;qualificationCommitted+=qualified;for(const row of excluded){if(row.reason==='PUMPSWAP_VENUE_REQUIRED')venueExcluded++;else ageExcluded++;}batches++;lastCommitAt=Date.now();maximumBatchMs=Math.max(maximumBatchMs,performance.now()-started);maximumComputeObservedMs=Math.max(maximumComputeObservedMs,computeElapsed);
   if(head===queue.length){queue.length=0;head=0;}else if(head>=1024&&head*2>=queue.length){queue.splice(0,head);head=0;}
   send({kind:'committed',ids,committedAt:lastCommitAt,eventCount:processed,excluded,activities:[...activities.values()],stats:stats()});
-  if(queue.length>head||closing)schedule();
+  if(queue.length>head||closing)schedule();else scheduleReporting();
  }
  port.on('message',(value:unknown)=>{if(closed||fatal)return;try{
   if(value&&typeof value==='object'&&(value as {kind?:unknown}).kind==='stop'){closing=true;schedule();return;}
+  if(value&&typeof value==='object'&&(value as {kind?:unknown}).kind==='reporting'){if(validMarketRegistryReportingRequest(value)&&!closing){reporting=value;scheduleReporting();}return;}
   const message=value as MarketRegistryIntakeMessage;if(closing||!message||message.kind!=='intake'||!Number.isSafeInteger(message.id)||message.id<0||!['identity','activity','feed','migration','qualification'].includes(message.operation)||!message.value||typeof message.value!=='object')throw Error('MARKET_INTAKE_MESSAGE_INVALID');
   const bytes=Buffer.byteLength(JSON.stringify(message));queue.push({message,bytes});pendingBytes+=bytes;received++;if(message.operation==='qualification')qualificationReceived++;
   // A transport memory budget requests backpressure; it is not a token limit.
