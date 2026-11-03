@@ -1,0 +1,69 @@
+name: Validate immutable migration-age PAPER release
+on:
+  push:
+    branches: [repair/poe-migration-age-1m-24h-20261103]
+    paths: [.github/workflows/poe-migration-age-exact-build.yml]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      TARGET_SOURCE: 12a54646e87a3cd0d81d6846a254d76d7947bd21
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: 12a54646e87a3cd0d81d6846a254d76d7947bd21
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.19.0'
+          check-latest: false
+          cache: npm
+      - name: Install locked dependencies and compile the exact source
+        run: |
+          set -euo pipefail
+          umask 077
+          mkdir -p /tmp/poe-migration-validation
+          test "$(git rev-parse HEAD)" = "$TARGET_SOURCE"
+          git rev-parse HEAD > /tmp/poe-migration-validation/source-commit.txt
+          git diff f1dcd4bf8b8dab39eecd089d0a739dc111ccd0dd -- src test > /tmp/poe-migration-validation/source.patch
+          npm ci --include=dev
+          npm run build 2>&1 | tee /tmp/poe-migration-validation/typecheck.log
+          npm run compile 2>&1 | tee /tmp/poe-migration-validation/compile.log
+      - name: Entire application and authenticated-reporting regressions without exclusions
+        run: |
+          set -euo pipefail
+          umask 077
+          node --import tsx --test --test-concurrency=1 test/*.test.ts 2>&1 | tee /tmp/poe-migration-validation/full.log
+          node --test test/ai-team-dashboard.test.mjs test/reviewed-source-handover.test.mjs 2>&1 | tee /tmp/poe-migration-validation/ai-reporting.log
+      - name: Build the exact PAPER executable and run the isolated package smoke
+        run: |
+          set -euo pipefail
+          umask 077
+          test -z "$(git status --porcelain)"
+          node scripts/build-native-paper-ec2.mjs --output-directory /tmp/poe-migration-bundle
+          cp -a /tmp/poe-migration-bundle /tmp/poe-migration-validation/bundle
+          git archive HEAD src test scripts docs package.json package-lock.json tsconfig.json | gzip -n > /tmp/poe-migration-validation/source.tar.gz
+          python3 -B -I - <<'PY'
+          import pathlib,hashlib,json,re,os
+          p=pathlib.Path('/tmp/poe-migration-validation');source=(p/'source-commit.txt').read_text().strip();log=(p/'full.log').read_text();meta=json.loads((p/'bundle/metadata.json').read_bytes())
+          def metric(key):
+              rows=re.findall(r'(?m)^(?:# |ℹ )'+key+r'\s+(\d+)\s*$',log);assert len(rows)==1;return int(rows[0])
+          tests=metric('tests');assert tests>=3711 and metric('pass')==tests and all(metric(k)==0 for k in ['fail','skipped','cancelled'])
+          assert source==os.environ['TARGET_SOURCE'] and meta['git']['commit']==source and meta['git']['workingTreeStatus']==''
+          assert meta['financialMode']=='PAPER' and meta['liveTradingEnabled'] is False
+          assert meta['smoke']['exitStatus']==0 and meta['smoke']['networkDisabled'] and meta['smoke']['disposableFinancialFixture'] and meta['smoke']['readonlyPersistentBackup']
+          result={'kind':'POE_MIGRATION_AGE_VALIDATED_BUILD','source':source,'base':'acb50ffee8c374b3f67ee10da0780ec69a62ba03','bundleSha256':hashlib.sha256((p/'bundle/native-paper.mjs').read_bytes()).hexdigest(),'testsPassed':tests,'validationRun':int(os.environ['GITHUB_RUN_ID']),'buildRun':int(os.environ['GITHUB_RUN_ID']),'fullLogSha256':hashlib.sha256((p/'full.log').read_bytes()).hexdigest(),'financialControlWrites':0,'ec2Changed':False,'ageBasis':'verified-pumpswap-migration','minimumAgeMs':60000,'maximumAgeMs':86400000,'deepSlots':4,'liveTrading':False}
+          (p/'build-receipt.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: poe-migration-age-validation-${{ github.run_id }}
+          path: /tmp/poe-migration-validation/
+          retention-days: 14
+          if-no-files-found: error
