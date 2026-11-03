@@ -19,7 +19,7 @@ jobs:
         with:
           ref: ${{ github.sha }}
           fetch-depth: 0
-      - name: Preserve both reviewed changes; refuse overlapping edits rather than discard either
+      - name: Preserve both reviewed changes and the exact two shared conjunctions
         run: |
           set -euo pipefail
           umask 077
@@ -34,13 +34,12 @@ jobs:
           subprocess.run(['git','merge','--no-commit','--no-ff',OTHER],check=False)
           conflicts=subprocess.check_output(['git','diff','--name-only','--diff-filter=U']).decode().splitlines()
           assert set(conflicts)<={'src/native-candidate-runner.ts','src/run-native-paper.ts','src/native-paper.ts','src/reviewed-source-handover.mjs','test/reviewed-source-handover.test.mjs'},conflicts
-          (out/'conflicts.json').write_text(json.dumps(conflicts))
+          (out/'conflicts.json').write_text(json.dumps(conflicts));combinations=0
           for path in conflicts:
               before=get(BASE,path);ours=get('HEAD',path);theirs=get(OTHER,path)
               for tag,text in [('base',before),('ours',ours),('theirs',theirs)]:
                   p=out/'merge-inputs'/tag/path;p.parent.mkdir(parents=True,exist_ok=True);p.write_text(text)
               if path.endswith('reviewed-source-handover.mjs') or path.endswith('reviewed-source-handover.test.mjs'):continue
-              # Merge only nonoverlapping lexical edits against their common base.
               tokenize=lambda s:re.findall(r'\w+|\s+|[^\w\s]',s)
               base=tokenize(before);edits=[]
               for side,text in [('ours',ours),('theirs',theirs)]:
@@ -50,22 +49,24 @@ jobs:
               unique=[]
               for e in sorted(edits,key=lambda x:(x[0],x[1],x[3])):
                   if any(e[:3]==p[:3] for p in unique):continue
-                  for p in unique:
+                  for p in list(unique):
                       overlap=max(e[0],p[0])<min(e[1],p[1]) or e[0]==e[1] and p[0]<e[0]<p[1] or p[0]==p[1] and e[0]<p[0]<e[1] or e[0]==e[1]==p[0]==p[1]
-                      if overlap:
+                      if not overlap:continue
+                      if path=='src/native-candidate-runner.ts' and e[0]==e[1]==p[0]==p[1] and ''.join(p[2])=='!this.options.enforceMigrationAge&&' and ''.join(e[2])=='discretionaryOpen&&!preparing&&':
+                          unique.remove(p);e=(e[0],e[1],p[2]+e[2],'combined');combinations+=1
+                      else:
                           (out/'overlap.json').write_text(json.dumps({'path':path,'left':p,'right':e,'context':base[max(0,e[0]-20):e[1]+20]},indent=2));raise AssertionError('OVERLAPPING_SOURCE_EDIT:'+path)
                   unique.append(e)
               for a,b,text,side in sorted(unique,key=lambda e:(e[0],e[1]),reverse=True):base[a:b]=text
               pathlib.Path(path).write_text(''.join(base));subprocess.run(['git','add',path],check=True)
-          # Retain all A6 authentication/history tests, then add migration as the next exact source.
+          assert combinations==2,'EXACT_TWO_CREATION_GUARDS_REQUIRED'
           path='src/reviewed-source-handover.mjs';s=get(OTHER,path)
           assert s.count(" to:'c46d6f301535c80027bc31b29a15681b216df62e',")==1
           s=s.replace(" to:'c46d6f301535c80027bc31b29a15681b216df62e',"," scheduling:'c46d6f301535c80027bc31b29a15681b216df62e',\n to:'12a54646e87a3cd0d81d6846a254d76d7947bd21',")
           s=s.replace('p.proofTimeout,p.to]','p.proofTimeout,p.scheduling,p.to]');pathlib.Path(path).write_text(s)
           path='test/reviewed-source-handover.test.mjs';s=get(OTHER,path)
           matches=list(re.finditer(r"(?m)^test\('",s));assert matches
-          at=matches[-1].start();prior=s[at:]
-          assert "c46d6f301535c80027bc31b29a15681b216df62e" in prior
+          at=matches[-1].start();prior=s[at:];assert 'c46d6f301535c80027bc31b29a15681b216df62e' in prior
           s=s[:at].replace('p.ageQualified,p.proofTimeout]','p.ageQualified,p.proofTimeout,p.scheduling]')+prior.replace('p.to','p.scheduling')
           new=prior.replace('p.proofTimeout','p.scheduling').replace("'acb50ffee8c374b3f67ee10da0780ec69a62ba03'","'c46d6f301535c80027bc31b29a15681b216df62e'")
           new=re.sub(r"^test\('[^']*'","test('the reviewed scheduler source advances to migration-age scope without changing the account'",new,count=1)
