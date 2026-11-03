@@ -7,6 +7,7 @@ import type {WatchRow,WatchSeed,WatchIdentityMetadata} from './pilot-watch.js';
 import type {MarketIdentityHint,MarketActivityHint,MarketFeedStatus} from './market-discovery.js';
 import {OPPORTUNITY_PRIORITY_POLICY,observationFairnessBonus} from './opportunity-priority-policy.js';
 import {TOKEN_AGE_POLICY,validTokenCreationProof,tokenAgeDecision,type TokenCreationProof} from './token-age-policy.js';
+import {MIGRATION_AGE_POLICY,validMigrationAgeProof,migrationAgeDecision,type MigrationAgeProof} from './migration-age-policy.js';
 import {TOKEN_CREATION_HISTORY_POLICY,type TokenCreationHistoryRequest,type TokenCreationHistoryPage} from './token-creation-history.js';
 
 export class MarketRegistryContention extends Error {readonly code='MARKET_REGISTRY_CONTENTION';readonly callbackStarted=false;constructor(readonly sqliteCode:string){super('Market registry writer lease unavailable before callback');this.name='MarketRegistryContention';}}
@@ -56,6 +57,8 @@ export class MarketRegistry {
  private readonly writerTurn:Int32Array|null;private readonly writerRole:'main'|'intake';private writerRequests=0;private writerTurns=0;private writerYields=0;private writerExpiries=0;
  private readonly economicFlowCache=new Map<string,EconomicFlowCache>();private economicFlowCacheBytes=0;private economicFlowCacheHits=0;private economicFlowColdQueries=0;private economicFlowIncrementalQueries=0;private readonly economicTouchedMints=new Set<string>();
  private rollbackActions:Array<()=>void>=[];private commitActions:Array<()=>void>=[];
+ private migrationAge=false;
+ private readonly migrationAgeProofListeners=new Set<(proof:Readonly<MigrationAgeProof>)=>void>();
  private readonly tokenCreationProofListeners=new Set<(proof:Readonly<TokenCreationProof>)=>void>();
  private readDepth=0;private readSnapshotCommits=0;private writerLeaseReadOnlyCommits=0;private contentionAttempts=0;private transactionAttempts=0;private readOnlyCommits=0;private writeCommits=0;private failedTransactions=0;
  // Reporting may run inside an unresolved transaction. Retain its genuine
@@ -66,8 +69,8 @@ export class MarketRegistry {
  private reportingPopulation:Record<string,number>|null=null;
  private reportingVerification:Map<number,{pending:number;ready:number;oldestReceivedAt:number|null;maxWaitMs:number}>|null=null;
  private writes=0;private writeTotalMs=0;private writeMaximumMs=0;private storageFailures=0;private transactionDepth=0;private storageAvailable=true;private lastFailureAt:number|null=null;private lastSuccessfulWriteAt:number|null=null;
- constructor(path:string,options:{now?:()=>number;concurrentIntake?:boolean;writerTurn?:SharedArrayBuffer;writerRole?:'main'|'intake'}={}){
-  this.path=path;this.locator={version:'persistent-market-registry-v1',path};this.clock=options.now??Date.now;this.concurrentIntake=options.concurrentIntake===true;this.writerRole=options.writerRole??'main';
+ constructor(path:string,options:{now?:()=>number;concurrentIntake?:boolean;writerTurn?:SharedArrayBuffer;writerRole?:'main'|'intake';migrationAge?:true}={}){
+  this.migrationAge=options.migrationAge===true;this.path=path;this.locator={version:'persistent-market-registry-v1',path};this.clock=options.now??Date.now;this.concurrentIntake=options.concurrentIntake===true;this.writerRole=options.writerRole??'main';
   if(options.writerTurn!==undefined&&(!(options.writerTurn instanceof SharedArrayBuffer)||options.writerTurn.byteLength!==8))throw Error('MARKET_REGISTRY_WRITER_TURN_BUFFER');
   this.writerTurn=this.concurrentIntake?new Int32Array(options.writerTurn??new SharedArrayBuffer(8)):null;
   if(path!==':memory:')mkdirSync(dirname(resolve(path)),{recursive:true});
@@ -85,6 +88,10 @@ export class MarketRegistry {
    CREATE TRIGGER IF NOT EXISTS pumpswap_qualification_prepared_delete_v1 AFTER DELETE ON observation_preparations BEGIN UPDATE pumpswap_qualification_hints_v1 SET pool_state='unprepared',pool_checked_at=NULL WHERE mint=OLD.mint; END;
    CREATE TABLE IF NOT EXISTS market_venue_hints(mint TEXT NOT NULL,source TEXT NOT NULL,venue TEXT NOT NULL,pool TEXT NOT NULL DEFAULT '',first_seen_at INTEGER NOT NULL,last_seen_at INTEGER NOT NULL,PRIMARY KEY(mint,source,venue,pool));
    CREATE INDEX IF NOT EXISTS market_venue_hints_recent ON market_venue_hints(mint,last_seen_at DESC);
+   CREATE TABLE IF NOT EXISTS pumpswap_migration_ages_v1(mint TEXT PRIMARY KEY,migrated_at INTEGER NOT NULL,verified_at INTEGER NOT NULL,proof TEXT NOT NULL);
+   CREATE INDEX IF NOT EXISTS pumpswap_migration_ages_time_v1 ON pumpswap_migration_ages_v1(migrated_at,mint);
+   CREATE TABLE IF NOT EXISTS pumpswap_migration_requests_v1(mint TEXT PRIMARY KEY,signature TEXT NOT NULL,received_at INTEGER NOT NULL,direct INTEGER NOT NULL,next_attempt_at INTEGER NOT NULL DEFAULT 0,attempts INTEGER NOT NULL DEFAULT 0,last_reason TEXT NOT NULL DEFAULT 'MIGRATION_AGE_UNVERIFIED');
+   CREATE INDEX IF NOT EXISTS pumpswap_migration_requests_due_v1 ON pumpswap_migration_requests_v1(next_attempt_at,direct,received_at,mint);
    CREATE TABLE IF NOT EXISTS token_creations(mint TEXT PRIMARY KEY,created_at INTEGER NOT NULL,verified_at INTEGER NOT NULL,proof TEXT NOT NULL);
    CREATE INDEX IF NOT EXISTS token_creations_age ON token_creations(created_at,mint);
    CREATE TABLE IF NOT EXISTS token_creation_requests(mint TEXT NOT NULL,signature TEXT NOT NULL,next_attempt_at INTEGER NOT NULL,terminal INTEGER NOT NULL,last_reason TEXT NOT NULL,PRIMARY KEY(mint,signature));
@@ -311,9 +318,9 @@ export class MarketRegistry {
   // retained unknown/expired WatchRows do not participate in its scan. Keep
   // every original caller predicate and all downstream ranking unchanged.
   const ageScoped=q.tokenAgeAt!==undefined&&!preparationWithTokenAge&&!preparedMintLookup,index=preparedMintLookup||ageScoped?'watch_rows_mint':'watch_rows_opportunity_v1';
-  const from=ageScoped?'token_creations selection_age INDEXED BY token_creations_age CROSS JOIN watch_rows w INDEXED BY watch_rows_mint ON w.mint=selection_age.mint':`watch_rows w INDEXED BY ${index}`;
-  const scope=ageScoped?'selection_age.created_at<=? AND selection_age.created_at>=? AND selection_age.verified_at<=? AND ':'';
-  const scopeParams=ageScoped?[at,at-TOKEN_AGE_POLICY.maximumAgeMs,at]:[];
+  const from=ageScoped?`${this.admissionAgeTable} selection_age INDEXED BY ${this.admissionAgeIndex} CROSS JOIN watch_rows w INDEXED BY watch_rows_mint ON w.mint=selection_age.mint`:`watch_rows w INDEXED BY ${index}`;
+  const scope=ageScoped?`selection_age.${this.admissionAgeColumn}<=? AND selection_age.${this.admissionAgeColumn}>=? AND selection_age.verified_at<=? AND `:'';
+  const scopeParams=ageScoped?[at-this.admissionMinimumAgeMs,at-TOKEN_AGE_POLICY.maximumAgeMs,at]:[];
   if(!this.statement(`SELECT 1 FROM ${from} WHERE ${scope}w.archived=0${q.where?` AND (${q.where})`:''} LIMIT 1`).get(...scopeParams,...(q.params??[])))return undefined;
   const recent=at-SHARED_ACTIVITY_HORIZON_MS,prior=Math.max(0,at-2*SHARED_ACTIVITY_HORIZON_MS);
   // Preparation precedes immutable age verification. Prefer candidates that
@@ -332,7 +339,7 @@ export class MarketRegistry {
       WHERE preparation_birth.mint=w.mint AND preparation_birth.kind='creation' AND preparation_birth.source IN ('pumpportal-new-token','finalized-mint-history') AND preparation_birth.signature!=''
        AND preparation_birth.first_seen_at>=? AND preparation_birth.first_seen_at<=?
        AND (preparation_retry.mint IS NULL OR (preparation_retry.terminal=0 AND preparation_retry.next_attempt_at<=?)))) THEN 1 ELSE 0 END`:'0';
-  const ageParams=preparationWithTokenAge?[at,Math.max(0,at-TOKEN_AGE_POLICY.maximumAgeMs),at,recent,at,recent,at,Math.max(0,at-TOKEN_AGE_POLICY.maximumAgeMs),at,at]:[];
+  const ageParams=preparationWithTokenAge?[at,Math.max(0,at-TOKEN_AGE_POLICY.maximumAgeMs),at,recent,at,recent,at,Math.max(0,at-TOKEN_AGE_POLICY.maximumAgeMs),at-this.admissionMinimumAgeMs,at]:[];
   // Materialize scalar eligibility once, preserving every current candidate.
   // Rank each distinct non-NULL value with its full population weight. This is
   // exactly RANK()-1-nullCount = count(smaller values); NULL stays neutral.
@@ -399,7 +406,7 @@ export class MarketRegistry {
   // A reporting population already requiring verified age can start with that
   // exact indexed population. Do not probe a creation row for every historical
   // watch identity. CROSS JOIN retains this small-to-large indexed lookup order.
-  return {from:'token_creations report_age INDEXED BY token_creations_age CROSS JOIN watch_rows w INDEXED BY watch_rows_mint',where:'report_age.created_at<=@poeReportAt AND report_age.created_at>=@poeReportFloor AND report_age.verified_at<=@poeReportAt AND w.mint=report_age.mint AND w.archived=0',bindings:[{poeReportAt:tokenAgeAt,poeReportFloor:tokenAgeAt-TOKEN_AGE_POLICY.maximumAgeMs}] as unknown[]};
+  return {from:`${this.admissionAgeTable} report_age INDEXED BY ${this.admissionAgeIndex} CROSS JOIN watch_rows w INDEXED BY watch_rows_mint`,where:`report_age.${this.admissionAgeColumn}<=@poeReportAt-${this.admissionMinimumAgeMs} AND report_age.${this.admissionAgeColumn}>=@poeReportFloor AND report_age.verified_at<=@poeReportAt AND w.mint=report_age.mint AND w.archived=0`,bindings:[{poeReportAt:tokenAgeAt,poeReportFloor:tokenAgeAt-TOKEN_AGE_POLICY.maximumAgeMs}] as unknown[]};
  }
  aggregate(expressions:Record<string,string>,where?:string,params:RegistryParameter[]=[],index?:RegistryReportingIndex,tokenAgeAt?:number):Record<string,number|null>{need(Object.keys(expressions).every(k=>/^[A-Za-z][A-Za-z0-9_]*$/.test(k)),'MARKET_REGISTRY_AGGREGATE_ALIAS');const source=this.reportingRows(index,tokenAgeAt);return this.statement(`SELECT ${Object.entries(expressions).map(([key,expr])=>`${expr} AS ${key}`).join(',')} FROM ${source.from} WHERE ${source.where}${where?` AND (${where})`:''}`).get(...source.bindings,...params) as Record<string,number|null>;}
  /** Complete reporting-only state counts, shared only by one WAL snapshot. */
@@ -531,9 +538,9 @@ export class MarketRegistry {
   // Old and unverified retained hints cannot make a no-work lookup scan the
   // historical population or consume a main-thread writer turn.
   const rows=at===undefined?this.statement(`SELECT mint,activity_at at FROM watch_activity_pending_v1 INDEXED BY ${pumpswapOnly?'watch_activity_pending_swap_order_v1':'watch_activity_pending_order_v1'} ${pumpswapOnly?'WHERE pumpswap_hint=1':''} ORDER BY watch_activity_at,signature LIMIT ?`).all(limit):this.statement(`SELECT pending.mint,pending.activity_at at
-   FROM token_creations age INDEXED BY token_creations_age CROSS JOIN watch_activity_pending_v1 pending ON pending.mint=age.mint
-   WHERE age.created_at>=? AND age.created_at<=? AND age.verified_at<=? AND pending.activity_at<=? ${pumpswapOnly?'AND pending.pumpswap_hint=1':''}
-   ORDER BY pending.watch_activity_at,pending.signature LIMIT ?`).all(Math.max(0,at-TOKEN_AGE_POLICY.maximumAgeMs),at,at,at,limit);
+   FROM ${this.admissionAgeTable} age INDEXED BY ${this.admissionAgeIndex} CROSS JOIN watch_activity_pending_v1 pending ON pending.mint=age.mint
+   WHERE age.${this.admissionAgeColumn}>=? AND age.${this.admissionAgeColumn}<=? AND age.verified_at<=? AND pending.activity_at<=? ${pumpswapOnly?'AND pending.pumpswap_hint=1':''}
+   ORDER BY pending.watch_activity_at,pending.signature LIMIT ?`).all(Math.max(0,at-TOKEN_AGE_POLICY.maximumAgeMs),at-this.admissionMinimumAgeMs,at,at,limit);
   return (rows as {mint:string;at:number}[]).map(r=>({...r,evidence:'unverified-provider-activity-hint' as const}));
  }
  /** First receipt of new content is source progress; repeated delivery time
@@ -557,7 +564,7 @@ export class MarketRegistry {
   // before materializing/sorting current hints, using compact scalar entries
   // instead of rereading every retained watch-history body on each turn.
   const unobserved=(mint:'market_tokens.mint'|'identity_provenance.mint')=>`NOT EXISTS(SELECT 1 FROM watch_rows w INDEXED BY watch_rows_current_scope_v1 WHERE w.mint=${mint} AND w.archived=0 AND (w.verified_at IS NOT NULL OR json_extract(w.body,'$.observationIdentity.basis')='canonical-pool-hint' OR w.state IN ('HELD','ENTRY_PENDING','PERMANENTLY_UNSUPPORTED')))`;
-  return this.statement(`${enforceTokenAge24h?`WITH age_scope AS MATERIALIZED (SELECT mint FROM token_creations INDEXED BY token_creations_age WHERE created_at>=? AND created_at<=? AND verified_at<=?),`:'WITH'} hints AS (
+  return this.statement(`${enforceTokenAge24h?`WITH age_scope AS MATERIALIZED (SELECT mint FROM ${this.admissionAgeTable} INDEXED BY ${this.admissionAgeIndex} WHERE ${this.admissionAgeColumn}>=? AND ${this.admissionAgeColumn}<=? AND verified_at<=?),`:'WITH'} hints AS (
    SELECT market_tokens.mint,last_activity_at received_at FROM ${enforceTokenAge24h?'age_scope scope CROSS JOIN market_tokens ON market_tokens.mint=scope.mint':'market_tokens INDEXED BY market_tokens_activity_hints_v1'} WHERE last_activity_at>=? AND last_activity_at<=? AND activity_hints>0 AND ${unobserved('market_tokens.mint')}
    UNION
    SELECT identity_provenance.mint,MAX(last_seen_at) received_at FROM ${enforceTokenAge24h?'age_scope scope CROSS JOIN identity_provenance ON identity_provenance.mint=scope.mint':'identity_provenance'} WHERE kind='migration' AND last_seen_at>=? AND last_seen_at<=? AND ${unobserved('identity_provenance.mint')} GROUP BY identity_provenance.mint
@@ -567,7 +574,7 @@ export class MarketRegistry {
    WHERE (t.last_activity_at IS NULL OR t.last_activity_at<=?)
     ${pumpswapOnly?'AND EXISTS(SELECT 1 FROM pumpswap_hint_tokens swap WHERE swap.mint=t.mint)':''}
    AND NOT EXISTS(SELECT 1 FROM distinct_events d WHERE d.kind='native-current-hint-invalid' AND d.key=t.mint)
-   ORDER BY t.activity_score DESC,hints.received_at DESC,t.mint LIMIT 1`).get(...(enforceTokenAge24h?[Math.max(0,at-TOKEN_AGE_POLICY.maximumAgeMs),at,at]:[]),at-SHARED_ACTIVITY_HORIZON_MS,at,at-SHARED_ACTIVITY_HORIZON_MS,at,at) as {mint:string;signature:string;receivedAt:number;activityAt:number|null;source:string;priority:number}|undefined;
+   ORDER BY t.activity_score DESC,hints.received_at DESC,t.mint LIMIT 1`).get(...(enforceTokenAge24h?[Math.max(0,at-TOKEN_AGE_POLICY.maximumAgeMs),at-this.admissionMinimumAgeMs,at]:[]),at-SHARED_ACTIVITY_HORIZON_MS,at,at-SHARED_ACTIVITY_HORIZON_MS,at,at) as {mint:string;signature:string;receivedAt:number;activityAt:number|null;source:string;priority:number}|undefined;
  }
  /** Durable routing hints remain explicitly unverified; they never replace
   * current canonical account validation, token age, or execution adapters. */
@@ -578,7 +585,14 @@ export class MarketRegistry {
   * by a retry, pool check, history response or publication. */
  observePumpSwapQualificationHint(hint:PumpSwapQualificationHint):boolean{return this.transaction(()=>{
   need(name(hint.mint)&&integer(hint.receivedAt)&&(hint.signature===undefined||name(hint.signature))&&(hint.source==='pumpportal-migration'&&hint.kind==='migration'||hint.source==='pumpapi-broad'&&hint.kind==='activity'&&hint.venue==='pump-amm'),'PUMPSWAP_QUALIFICATION_HINT_INVALID');
-  if(this.statement('SELECT 1 FROM token_creations WHERE mint=?').get(hint.mint))return false;
+  if(this.migrationAge&&hint.signature){
+   this.statement(`INSERT INTO pumpswap_migration_requests_v1(mint,signature,received_at,direct) VALUES(?,?,?,?)
+    ON CONFLICT(mint) DO UPDATE SET signature=CASE WHEN excluded.direct>direct THEN excluded.signature ELSE signature END,
+     received_at=CASE WHEN excluded.direct>direct THEN excluded.received_at ELSE received_at END,
+     next_attempt_at=CASE WHEN excluded.direct>direct THEN 0 ELSE next_attempt_at END,direct=MAX(direct,excluded.direct)`)
+    .run(hint.mint,hint.signature,hint.receivedAt,hint.kind==='migration'?1:0);
+  }
+  if(!this.migrationAge&&this.statement('SELECT 1 FROM token_creations WHERE mint=?').get(hint.mint))return false;
   return this.statement(`INSERT INTO pumpswap_qualification_hints_v1(mint,first_seen_at,last_seen_at,source,kind,signature) VALUES(?,?,?,?,?,?)
    ON CONFLICT(mint) DO UPDATE SET last_seen_at=excluded.last_seen_at,source=excluded.source,kind=excluded.kind,signature=excluded.signature
    WHERE excluded.last_seen_at>pumpswap_qualification_hints_v1.last_seen_at`).run(hint.mint,hint.receivedAt,hint.receivedAt,hint.source,hint.kind,hint.signature??null).changes===1;
@@ -603,7 +617,7 @@ export class MarketRegistry {
   need(integer(at),'PUMPSWAP_QUALIFICATION_TIME');const excluded=this.qualificationExclusion(excludedMints);return this.statement(`SELECT q.mint,q.first_seen_at firstSeenAt,q.last_seen_at lastSeenAt,q.source,q.kind,q.signature
    FROM pumpswap_qualification_hints_v1 q INDEXED BY pumpswap_qualification_recent_v1
    WHERE q.pool_state IN ('unprepared','pool-absent','pool-unsupported','provider-unavailable','awaiting-dispatch') AND q.last_seen_at>=? AND q.last_seen_at<=?
-    AND NOT EXISTS(SELECT 1 FROM token_creations age WHERE age.mint=q.mint)
+    AND ${this.migrationAge?this.admissionAgeSql('q.mint',String(at)):'NOT EXISTS(SELECT 1 FROM token_creations age WHERE age.mint=q.mint)'}
     AND (q.pool_state='unprepared' OR q.pool_state IN ('pool-absent','pool-unsupported') AND q.last_seen_at>q.pool_checked_at OR q.pool_state IN ('provider-unavailable','awaiting-dispatch') AND q.pool_checked_at<=?)${excluded.where}
    ORDER BY COALESCE(q.pool_checked_at,q.first_seen_at),q.first_seen_at,q.mint LIMIT 1`).get(Math.max(0,at-SHARED_ACTIVITY_HORIZON_MS),at,at-60_000,...excluded.params) as PumpSwapQualificationRecord|undefined;
  }
@@ -611,17 +625,55 @@ export class MarketRegistry {
   * ordinary identity. Prior unqualified price/volume/trades are never replayed. */
  nextQualifiedPumpSwapIdentity(at:number,excludedMints?:ReadonlySet<string>):PumpSwapQualificationRecord|undefined{
   need(integer(at),'PUMPSWAP_QUALIFICATION_TIME');const excluded=this.qualificationExclusion(excludedMints);return this.statement(`SELECT q.mint,q.first_seen_at firstSeenAt,q.last_seen_at lastSeenAt,q.source,q.kind,q.signature
-   FROM token_creations age INDEXED BY token_creations_age CROSS JOIN pumpswap_qualification_hints_v1 q ON q.mint=age.mint
-   WHERE age.created_at>=? AND age.created_at<=? AND age.verified_at<=? AND q.promoted_at IS NULL AND q.pool_state='pool-ready' AND q.last_seen_at>=? AND q.last_seen_at<=?
+   FROM ${this.admissionAgeTable} age INDEXED BY ${this.admissionAgeIndex} CROSS JOIN pumpswap_qualification_hints_v1 q ON q.mint=age.mint
+   WHERE age.${this.admissionAgeColumn}>=? AND age.${this.admissionAgeColumn}<=? AND age.verified_at<=? AND q.promoted_at IS NULL AND q.pool_state='pool-ready' AND q.last_seen_at>=? AND q.last_seen_at<=?
     AND EXISTS(SELECT 1 FROM observation_preparations p WHERE p.mint=q.mint AND p.state='pool-ready' AND p.checked_at=q.pool_checked_at)${excluded.where}
-   ORDER BY q.first_seen_at,q.mint LIMIT 1`).get(Math.max(0,at-TOKEN_AGE_POLICY.maximumAgeMs),at,at,Math.max(0,at-SHARED_ACTIVITY_HORIZON_MS),at,...excluded.params) as PumpSwapQualificationRecord|undefined;
+   ORDER BY q.first_seen_at,q.mint LIMIT 1`).get(Math.max(0,at-TOKEN_AGE_POLICY.maximumAgeMs),at-this.admissionMinimumAgeMs,at,Math.max(0,at-SHARED_ACTIVITY_HORIZON_MS),at,...excluded.params) as PumpSwapQualificationRecord|undefined;
  }
  markPumpSwapQualificationPromoted(mint:string,at:number):boolean{return this.transaction(()=>{
-  need(name(mint)&&integer(at),'PUMPSWAP_QUALIFICATION_TIME');if(!this.tokenAgeEligibility(mint,at).allowed)return false;
+  need(name(mint)&&integer(at),'PUMPSWAP_QUALIFICATION_TIME');if(!this.marketAgeEligibility(mint,at).allowed)return false;
   return this.statement(`UPDATE pumpswap_qualification_hints_v1 SET promoted_at=? WHERE mint=? AND promoted_at IS NULL AND pool_state='pool-ready' AND last_seen_at>=? AND last_seen_at<=?`).run(at,mint,Math.max(0,at-SHARED_ACTIVITY_HORIZON_MS),at).changes===1;
  });}
  putObservationPreparation(row:ObservationPreparation){this.write(()=>{need(name(row.mint)&&name(row.pool)&&integer(row.checkedAt)&&['pool-ready','pool-absent','pool-unsupported','provider-unavailable','awaiting-dispatch'].includes(row.state)&&name(row.reason)&&(row.sourceSlot===undefined||integer(row.sourceSlot)),'MARKET_OBSERVATION_PREPARATION');this.statement('INSERT INTO observation_preparations(mint,pool,checked_at,state,reason,source_slot) VALUES(?,?,?,?,?,?) ON CONFLICT(mint) DO UPDATE SET pool=excluded.pool,checked_at=excluded.checked_at,state=excluded.state,reason=excluded.reason,source_slot=excluded.source_slot').run(row.mint,row.pool,row.checkedAt,row.state,row.reason,row.sourceSlot??null);if(row.state==='pool-ready')this.statement('INSERT OR IGNORE INTO pumpswap_hint_tokens(mint,first_seen_at) VALUES(?,?)').run(row.mint,row.checkedAt);});}
  observationPreparation(mint:string):ObservationPreparation|undefined {const row=this.statement('SELECT mint,pool,checked_at checkedAt,state,reason,source_slot sourceSlot FROM observation_preparations WHERE mint=?').get(mint) as ObservationPreparation|undefined;return row?{...row,...(row.sourceSlot===null?{sourceSlot:undefined}:{})}:undefined;}
+ /** Select the owner-approved live age basis without mutating old evidence. */
+ useMigrationAge(){this.migrationAge=true;}
+ get admissionAgeTable(){return this.migrationAge?'pumpswap_migration_ages_v1':'token_creations';}
+ get admissionAgeIndex(){return this.migrationAge?'pumpswap_migration_ages_time_v1':'token_creations_age';}
+ get admissionAgeColumn(){return this.migrationAge?'migrated_at':'created_at';}
+ get admissionMinimumAgeMs(){return this.migrationAge?MIGRATION_AGE_POLICY.minimumAgeMs:0;}
+ admissionAgeSql(mint:string,at:string){return `EXISTS(SELECT 1 FROM ${this.admissionAgeTable} age WHERE age.mint=${mint} AND age.${this.admissionAgeColumn}<=${at}-${this.admissionMinimumAgeMs} AND age.${this.admissionAgeColumn}>=${at}-${MIGRATION_AGE_POLICY.maximumAgeMs} AND age.verified_at<=${at})`;}
+ marketAgeEligibility(mint:string,at:number){return this.migrationAge?migrationAgeDecision(mint,at,this.migrationAgeProof(mint)):this.tokenAgeEligibility(mint,at);}
+ migrationAgeProof(mint:string):MigrationAgeProof|null{
+  const row=this.statement('SELECT migrated_at,verified_at,proof FROM pumpswap_migration_ages_v1 WHERE mint=?').get(mint) as {migrated_at:number;verified_at:number;proof:string}|undefined;if(!row)return null;
+  const proof:unknown=JSON.parse(row.proof);need(validMigrationAgeProof(proof)&&proof.mint===mint&&proof.migrationAt===row.migrated_at&&proof.availableAt===row.verified_at,'MIGRATION_AGE_STORED_PROOF_INVALID');return proof;
+ }
+ migrationAgeProofSnapshot(at:number):readonly MigrationAgeProof[]{
+  need(integer(at),'MIGRATION_AGE_SCOPE_TIME');
+  const rows=this.statement('SELECT mint FROM pumpswap_migration_ages_v1 WHERE verified_at<=? ORDER BY migrated_at,mint').all(at) as {mint:string}[];
+  return Object.freeze(rows.map(row=>Object.freeze(this.migrationAgeProof(row.mint)!)));
+ }
+ onMigrationAgeProofCommitted(listener:(proof:Readonly<MigrationAgeProof>)=>void){this.migrationAgeProofListeners.add(listener);return()=>{this.migrationAgeProofListeners.delete(listener);};}
+ putMigrationAgeProof(proof:MigrationAgeProof){this.transaction(()=>{
+  need(validMigrationAgeProof(proof)&&proof.availableAt<=this.clock(),'MIGRATION_AGE_PROOF_INVALID');const old=this.migrationAgeProof(proof.mint);
+  need(!old||old.signature===proof.signature&&old.pool===proof.pool&&old.slot===proof.slot&&old.migrationAt===proof.migrationAt&&old.confirmedTransactionSha256===proof.confirmedTransactionSha256&&old.finalizedTransactionSha256===proof.finalizedTransactionSha256,'MIGRATION_AGE_PROOF_CONFLICT');
+  const saved=Object.freeze({...proof}),inserted=this.statement('INSERT OR IGNORE INTO pumpswap_migration_ages_v1(mint,migrated_at,verified_at,proof) VALUES(?,?,?,?)').run(saved.mint,saved.migrationAt,saved.availableAt,json(saved)).changes===1;
+  if(inserted){this.statement('UPDATE pumpswap_qualification_hints_v1 SET promoted_at=NULL WHERE mint=?').run(saved.mint);this.afterCommit(()=>{for(const listener of this.migrationAgeProofListeners)listener(saved);});}
+ });}
+ nextMigrationAgeRequest(at:number,excludedMints?:ReadonlySet<string>):WatchSeed|undefined{
+  need(integer(at),'MIGRATION_AGE_REQUEST_TIME');const excluded=this.qualificationExclusion(excludedMints);
+  return this.statement(`SELECT r.signature,r.mint feedMint,r.received_at receivedAt FROM pumpswap_migration_requests_v1 r
+   JOIN pumpswap_qualification_hints_v1 q ON q.mint=r.mint
+   WHERE r.next_attempt_at<=? AND r.received_at<=? AND (r.direct=1 AND r.received_at>=? OR q.last_seen_at>=?)
+    AND NOT EXISTS(SELECT 1 FROM pumpswap_migration_ages_v1 age WHERE age.mint=r.mint)${excluded.where}
+   ORDER BY r.direct DESC,r.next_attempt_at,r.received_at,r.mint LIMIT 1`).get(at,at,Math.max(0,at-MIGRATION_AGE_POLICY.maximumAgeMs),Math.max(0,at-SHARED_ACTIVITY_HORIZON_MS),...excluded.params) as WatchSeed|undefined;
+ }
+ deferMigrationAgeRequest(seed:WatchSeed,at:number,reason:string){this.write(()=>{need(name(seed.feedMint)&&name(seed.signature)&&integer(at)&&name(reason),'MIGRATION_AGE_REQUEST_INVALID');this.statement('UPDATE pumpswap_migration_requests_v1 SET next_attempt_at=?,attempts=attempts+1,last_reason=? WHERE mint=? AND signature=?').run(at+60_000,reason,seed.feedMint,seed.signature);});}
+ migrationAgeSummary(at:number){
+  need(integer(at),'MIGRATION_AGE_SCOPE_TIME');const counts=this.statement(`SELECT COUNT(*) verified,SUM(CASE WHEN migrated_at<=? AND migrated_at>=? AND verified_at<=? THEN 1 ELSE 0 END) eligible,SUM(CASE WHEN migrated_at>? THEN 1 ELSE 0 END) tooYoung,SUM(CASE WHEN migrated_at<? THEN 1 ELSE 0 END) expired FROM pumpswap_migration_ages_v1`).get(at-MIGRATION_AGE_POLICY.minimumAgeMs,at-MIGRATION_AGE_POLICY.maximumAgeMs,at,at-MIGRATION_AGE_POLICY.minimumAgeMs,at-MIGRATION_AGE_POLICY.maximumAgeMs) as Record<string,number|null>;
+  const pending=this.statement('SELECT COUNT(*) n FROM pumpswap_migration_requests_v1 r WHERE NOT EXISTS(SELECT 1 FROM pumpswap_migration_ages_v1 p WHERE p.mint=r.mint)').get() as {n:number};
+  return {...MIGRATION_AGE_POLICY,verified:counts.verified??0,eligible:counts.eligible??0,tooYoung:counts.tooYoung??0,expired:counts.expired??0,pendingVerification:pending.n};
+ }
  tokenCreationProof(mint:string):TokenCreationProof|null{
   const row=this.statement('SELECT created_at,verified_at,proof FROM token_creations WHERE mint=?').get(mint) as {created_at:number;verified_at:number;proof:string}|undefined;if(!row)return null;
   const proof:unknown=JSON.parse(row.proof);need(validTokenCreationProof(proof)&&proof.mint===mint&&proof.createdAt===row.created_at&&proof.availableAt===row.verified_at,'TOKEN_CREATION_STORED_PROOF_INVALID');return proof;

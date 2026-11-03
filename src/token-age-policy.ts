@@ -68,3 +68,6 @@ export function decodeTokenCreationProof(tx:any,input:{mint:string;signature:str
   need(validTokenCreationProof(proof));return proof;
  }catch{return null;}
 }
+
+/** Shared entry-scope contract; live V3.1 selects migration age explicitly. */
+export type EntryAgeDecision=TokenAgeDecision|import('./migration-age-policy.js').MigrationAgeDecision;

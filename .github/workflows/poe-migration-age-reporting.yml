@@ -1,0 +1,62 @@
+name: Validate migration-age reporting handover
+on:
+  push:
+    branches: [repair/poe-migration-age-1m-24h-20261103]
+    paths: [.github/workflows/poe-migration-age-reporting.yml]
+permissions:
+  contents: write
+jobs:
+  reporting:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 8
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Extend only the authenticated forward source route and its tests
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/poe-migration-reporting
+          python3 -B -I - <<'PY'
+          from pathlib import Path
+          p=Path('src/reviewed-source-handover.mjs');s=p.read_text()
+          old=" to:'acb50ffee8c374b3f67ee10da0780ec69a62ba03',";assert s.count(old)==1
+          s=s.replace(old," proofIsolated:'acb50ffee8c374b3f67ee10da0780ec69a62ba03',\n to:'12a54646e87a3cd0d81d6846a254d76d7947bd21',")
+          s=s.replace('p.decisions,p.ageQualified,p.to]','p.decisions,p.ageQualified,p.proofIsolated,p.to]');p.write_text(s)
+          p=Path('test/reviewed-source-handover.test.mjs');s=p.read_text();marker="test('the exact installed age-qualified runtime advances only to the reviewed qualification and reporting repair',()=>{";assert s.count(marker)==1
+          at=s.index(marker);prior=s[at:];s=s[:at].replace('p.decisions,p.ageQualified]','p.decisions,p.ageQualified,p.proofIsolated]')+prior.replace('p.to','p.proofIsolated')
+          new=prior.replace('the exact installed age-qualified runtime advances only to the reviewed qualification and reporting repair','the exact installed runtime advances to migration age without changing account, epoch or history')
+          new=new.replace('p.ageQualified','p.proofIsolated').replace("'8913a9107989ce334b03e6167a2b4fc10d6fb7f6'","'acb50ffee8c374b3f67ee10da0780ec69a62ba03'").replace("assert.equal(p.to,'acb50ffee8c374b3f67ee10da0780ec69a62ba03'","assert.equal(p.to,'12a54646e87a3cd0d81d6846a254d76d7947bd21'").replace('retain the exact installed A4 source','retain the exact installed A5 source').replace('bind the exact reviewed A5 application source','bind the exact migration-age source')
+          p.write_text(s+'\n'+new)
+          Path('.github/workflows/poe-migration-age-validation.yml').unlink()
+          Path('docs/MIGRATION_AGE_1M_24H.md').write_text('# PumpSwap migration-age admission\n\nOwner-approved market scope: verified canonical PumpSwap migration age from 60,000 through 86,400,000 milliseconds, both boundaries inclusive. Mint-creation time, discovery time and refreshed pool/activity time cannot substitute for the migration timestamp.\n\nThe upstream qualifier obtains and retains the migration proof. Deep slots carry an immutable eligibility/expiry interval and use a local clock comparison, with no age-history requests. Mint-creation transaction lookup is not an active dependency of persistent V3.1 admission. Missing migration proof defers that candidate only.\n\nPumpSwap-only scope, four observation slots, V3.1 economics, actual-size executable prices, source/audit freshness and PAPER-only execution remain unchanged. Existing holdings keep their exit policy after age expiry. Financial account and history are not reset.\n\nThe dashboard current-UTC-hour count measures newly admitted registry identities, not all on-chain launches. Runtime diagnostics separately identify migration verification pending/eligible counts.\n')
+          PY
+          git diff --check
+          git add src/reviewed-source-handover.mjs test/reviewed-source-handover.test.mjs docs/MIGRATION_AGE_1M_24H.md .github/workflows/poe-migration-age-validation.yml
+          git config user.name 'POE reviewed reporting handover'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Accept the exact migration-age runtime on the authenticated reporting channel'
+          git push origin HEAD:refs/heads/repair/poe-migration-age-1m-24h-20261103
+          git rev-parse HEAD > /tmp/poe-migration-reporting/source-commit.txt
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.19.0'
+          cache: npm
+      - name: Validate reporting, authentication and historical continuity
+        run: |
+          set -euo pipefail
+          npm ci --include=dev
+          npm run build 2>&1 | tee /tmp/poe-migration-reporting/typecheck.log
+          npm run compile 2>&1 | tee /tmp/poe-migration-reporting/compile.log
+          node --test test/ai-team-dashboard.test.mjs test/reviewed-source-handover.test.mjs 2>&1 | tee /tmp/poe-migration-reporting/reporting.log
+          node --import tsx --test --test-concurrency=1 test/reporting*.test.ts test/dashboard*.test.ts test/financial-epoch-reporting.test.ts test/lifetime-equity*.test.ts 2>&1 | tee /tmp/poe-migration-reporting/history.log
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: poe-migration-age-reporting-${{ github.run_id }}
+          path: /tmp/poe-migration-reporting/
+          retention-days: 14
+          if-no-files-found: error

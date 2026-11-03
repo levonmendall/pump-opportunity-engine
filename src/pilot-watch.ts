@@ -93,8 +93,8 @@ export class PilotWatch {
   private remove(signature:string){this.rows.delete(signature);this.originals.delete(signature);if(this.options.registry)this.deleted.add(signature);}
   private durable(){return this.options.registry!==undefined;}
   private observationIdentitySql(){return "w.mint IS NOT NULL AND w.pool IS NOT NULL AND "+(this.observationAgePolicy===PERSISTENT_OBSERVABLE_MARKET_POLICY?"((w.migration_at IS NOT NULL AND w.verified_at IS NOT NULL) OR json_extract(w.body,'$.observationIdentity.basis')='canonical-pool-hint')":"w.migration_at IS NOT NULL AND w.verified_at IS NOT NULL");}
-  private readyAnchorSql(){return "MAX(w.waiting_since,COALESCE(w.verified_at,json_extract(w.body,'$.observationIdentity.availableAt'),w.first_seen_at),COALESCE(w.migration_at,0),w.defer_until,COALESCE(json_extract(w.body,'$.reobservation.ready.at'),0)"+(this.options.enforceTokenAge24h?",COALESCE((SELECT verified_at FROM token_creations age WHERE age.mint=w.mint),0)":"")+")";}
-  private tokenAgeSql(at:string){return this.options.enforceTokenAge24h?` AND EXISTS(SELECT 1 FROM token_creations age WHERE age.mint=w.mint AND age.created_at<=${at} AND age.created_at>=${at}-${TOKEN_AGE_POLICY.maximumAgeMs} AND age.verified_at<=${at})`:'';}
+  private readyAnchorSql(){return "MAX(w.waiting_since,COALESCE(w.verified_at,json_extract(w.body,'$.observationIdentity.availableAt'),w.first_seen_at),COALESCE(w.migration_at,0),w.defer_until,COALESCE(json_extract(w.body,'$.reobservation.ready.at'),0)"+(this.options.enforceTokenAge24h?`,COALESCE((SELECT verified_at FROM ${this.options.registry!.admissionAgeTable} age WHERE age.mint=w.mint),0)`:"")+")";}
+  private tokenAgeSql(at:string){return this.options.enforceTokenAge24h?` AND ${this.options.registry!.admissionAgeSql('w.mint',at)}`:'';}
   private readySql(at:number,preparation=false){
     this.at(at);const persistent=this.observationAgePolicy===PERSISTENT_OBSERVABLE_MARKET_POLICY,age=persistent?'COALESCE(w.migration_at,0)<=?':'w.migration_at<=? AND ?<w.migration_at+CASE WHEN w.older_research=1 THEN ? ELSE ? END';
     const identity=(persistent?"(w.verified_at IS NOT NULL OR json_extract(w.body,'$.observationIdentity.basis')='canonical-pool-hint')":"w.verified_at IS NOT NULL")+(this.options.pumpswapOnly?' AND EXISTS(SELECT 1 FROM pumpswap_hint_tokens swap WHERE swap.mint=w.mint)':'');
@@ -156,7 +156,7 @@ export class PilotWatch {
     // Front-gated runtimes supply the already-validated upstream age decision.
     // Deep transitions only check its clock expiry; they do not reread a proof.
     // Standalone callers retain the existing durable eligibility check.
-    const ageAllowed=!this.options.enforceTokenAge24h||!!r.mint&&(this.options.tokenAgeEligibility?this.options.tokenAgeEligibility(r.mint,at):this.options.registry!.tokenAgeEligibility(r.mint,at).allowed);
+    const ageAllowed=!this.options.enforceTokenAge24h||!!r.mint&&(this.options.tokenAgeEligibility?this.options.tokenAgeEligibility(r.mint,at):this.options.registry!.marketAgeEligibility(r.mint,at).allowed);
     return ageAllowed&&!['EXPIRED','PERMANENTLY_UNSUPPORTED'].includes(r.state)&&this.identified(r)&&this.identityAt(r)<=at&&(r.migrationAt===null?this.observationAgePolicy===PERSISTENT_OBSERVABLE_MARKET_POLICY:observationAgeEligible(r.migrationAt,at,r.olderResearch!==undefined,this.observationAgePolicy));
   }
   private older(r:WatchRow,at:number){return this.verified(r)&&r.olderResearch!==undefined&&at-r.migrationAt!>=MAX_AGE;}
