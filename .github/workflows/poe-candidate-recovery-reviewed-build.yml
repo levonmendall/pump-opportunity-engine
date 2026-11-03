@@ -1,0 +1,81 @@
+name: Recheck exact POE candidate recovery source and timing
+on:
+  push:
+    branches: [repair/poe-candidate-pause-recovery-20261101]
+    paths: ['.github/workflows/poe-candidate-recovery-reviewed-build.yml']
+permissions:
+  contents: read
+concurrency:
+  group: poe-reviewed-candidate-recovery-20261101
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: 31efee2c44725722e7948165126e6296111f165c
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24.19.0'
+          cache: npm
+      - name: Install unchanged dependencies and preserve prior result
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          mkdir -p /tmp/poe-recovery-rechecked
+          npm ci --include=dev
+          git rev-parse HEAD > /tmp/poe-recovery-rechecked/source-commit.txt
+          git diff ef6e40b3f31c4ac618a5f6ca50387060e114ad06 -- src test docs > /tmp/poe-recovery-rechecked/source.patch
+          printf '%s\n' '{"previousRun":41261170150,"source":"31efee2c44725722e7948165126e6296111f165c","tests":3048,"passed":3046,"failed":2,"failures":["backup.test.ts: worker max timer gap 405.036161ms versus offline two-copy validation 189.413954ms","native-activity-hint-queue.test.ts: measured lock duration did not satisfy heldMs>=249"],"sourceChanged":false,"thresholdChanged":false,"testSkipped":false}' > /tmp/poe-recovery-rechecked/prior-validation.json
+      - name: Typecheck and compile exact source
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run build 2>&1 | tee /tmp/poe-recovery-rechecked/typecheck.log
+          npm run compile 2>&1 | tee /tmp/poe-recovery-rechecked/compile.log
+      - name: Recheck unchanged backup and SQLite lock timing assertions
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          node --import tsx --test --test-concurrency=1 test/backup.test.ts test/native-activity-hint-queue.test.ts 2>&1 | tee /tmp/poe-recovery-rechecked/timing-recheck.log
+      - name: Full offline regression suite without exclusions
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          node --import tsx --test --test-concurrency=1 test/*.test.ts 2>&1 | tee /tmp/poe-recovery-rechecked/full.log
+      - name: Build exact clean executable only after complete success
+        shell: bash
+        run: |
+          set -euo pipefail
+          umask 077
+          test "$(git rev-parse HEAD)" = 31efee2c44725722e7948165126e6296111f165c
+          test -z "$(git status --porcelain -- src scripts package.json package-lock.json)"
+          node scripts/build-native-paper-ec2.mjs --output-directory /tmp/poe-native-paper-output-recovery-rechecked
+          cp -a /tmp/poe-native-paper-output-recovery-rechecked /tmp/poe-recovery-rechecked/bundle
+          python3 -B -I - <<'PY'
+          import hashlib,json,pathlib,re
+          p=pathlib.Path('/tmp/poe-recovery-rechecked');source=(p/'source-commit.txt').read_text().strip();meta=json.loads((p/'bundle/metadata.json').read_bytes())
+          assert meta['git']['commit']==source and meta['git']['workingTreeStatus']==''
+          log=(p/'full.log').read_text()
+          def metric(k):
+              rows=re.findall(r'(?m)^(?:# |ℹ )'+k+r'\s+(\d+)\s*$',log);assert len(rows)==1;return int(rows[0])
+          count=metric('tests');assert count>=3048 and metric('pass')==count and all(metric(k)==0 for k in ['fail','skipped','cancelled'])
+          receipt={'kind':'POE_REVIEWED_CANDIDATE_RECOVERY_VALIDATED_BUILD','source':source,'base':'ef6e40b3f31c4ac618a5f6ca50387060e114ad06','bundleSha256':hashlib.sha256((p/'bundle/native-paper.mjs').read_bytes()).hexdigest(),'testsPassed':count,'reviewedPauseRevision':202366,'futureHardFailureRecovery':False,'tokenAgeMaximumMs':86400000,'missingEvidenceWaitBonus':0,'fourSlotsPreserved':True,'liveTradingEnabled':False,'ec2Changed':False,'ownerReleaseApprovalRequired':True,'priorNonpassingRun':41261170150,'unchangedSourceRetested':True}
+          (p/'build-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n');print(json.dumps(receipt))
+          PY
+          sha256sum /tmp/poe-recovery-rechecked/bundle/* > /tmp/poe-recovery-rechecked/SHA256SUMS
+      - name: Retain all reviewed results and executable when available
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: poe-candidate-recovery-rechecked-${{ github.run_id }}
+          path: /tmp/poe-recovery-rechecked/
+          retention-days: 30
+          if-no-files-found: error
