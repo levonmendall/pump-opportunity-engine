@@ -1,0 +1,107 @@
+name: Restore and validate exact POE migration-age source
+on:
+  push:
+    branches: [repair/poe-migration-age-1m-24h-20261103]
+    paths: [.github/workflows/poe-migration-age-validation.yml]
+permissions:
+  contents: write
+concurrency:
+  group: poe-migration-age-source-publication
+  cancel-in-progress: false
+jobs:
+  validate:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 35
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          ref: ${{ github.sha }}
+          fetch-depth: 0
+      - name: Apply reviewed readable integration scripts and verify all resulting bytes
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/poe-migration-validation
+          test "$GITHUB_REPOSITORY" = levonmendall/pump-opportunity-engine
+          test "$GITHUB_REF" = refs/heads/repair/poe-migration-age-1m-24h-20261103
+          python3 -B -I - <<'PY'
+          import pathlib,subprocess,hashlib,json,runpy
+          expected={
+           'src/dashboard.ts':'1f766d1eb40a35b42b53ff46161d8602be8bb8edc09046d0e9682151b1dd2f95',
+           'src/execution.ts':'1011f9400190f14090316ad3f997951ec11b86079731945aacef69b1d8ff7de2',
+           'src/market-registry-intake-worker.ts':'0666c061693607ab197022ac1c59d53dc96d166242a1a761b63c14d0e4c1b086',
+           'src/market-registry.ts':'144eea75a4ee824f3653b34bff7ff8aa42e05fae2ab8710a4d4997e5c8907214',
+           'src/migration-age-policy.ts':'a01e88534e715ba8c0d394cf69f2e75b0cb960c9374369bd69cc2a7802131e55',
+           'src/native-candidate-runner.ts':'5a332a7877496f78a0e26cf6748d594a100ff5955df5a04a07efd07e879c6551',
+           'src/native-paper.ts':'b798e36e57313ac5890019750a59d1cecb2694e5a5c5dfc41a2624f556999dbc',
+           'src/pilot-discovery.ts':'eb4b8f012345a5986111569dd0e5b0f8382b8ebdb7e6d2c7794b8e6632def8e5',
+           'src/pilot-watch.ts':'265868cb1d4802c4f5363239eb912cd84d5564512dd4a96198abaa974c166632',
+           'src/run-native-paper.ts':'29b24948ec4d6733d251af5b52bbdbfcecfeeb53e1bfe60d088a10acff2a578f',
+           'src/token-age-policy.ts':'e2dc9b103928e80ab86e2be37df650f22cf5ae9ccf71e3855987343ec1436804',
+           'src/trader.ts':'f4537ac1a6cb44b6bb2bf274d63b55e9983c5749fc85c47c586745acf47260b5',
+           'test/migration-age-restoration.test.ts':'860f86343cc318ff0eac51c32ccb654eadbded6069a0e0ba379d8b4e8a868eb6'}
+          for name in expected:
+              if name in ('src/migration-age-policy.ts','test/migration-age-restoration.test.ts'):continue
+              original=subprocess.check_output(['git','show','43a9c1a7543f177ad86d155e3f0159da37356194:'+name])
+              assert pathlib.Path(name).read_bytes()==original,'BASE_SOURCE_CHANGED:'+name
+          for name in ('registry.py','runner.py','tests.py'):runpy.run_path('ops/migration-age-source/'+name,run_name='__main__')
+          actual={name:hashlib.sha256(pathlib.Path(name).read_bytes()).hexdigest() for name in expected}
+          pathlib.Path('/tmp/poe-migration-validation/source-hashes.json').write_text(json.dumps(actual,indent=2)+'\n')
+          differences={name:{'expected':expected[name],'actual':actual[name]} for name in expected if expected[name]!=actual[name]}
+          assert not differences,json.dumps(differences)
+          # Temporary transport drafts are never executed or included in the release tree.
+          for path in pathlib.Path('ops/migration-age-source').iterdir():
+              assert path.is_file() and not path.is_symlink();path.unlink()
+          pathlib.Path('.github/workflows/poe-migration-age-workspace.yml').unlink()
+          PY
+          git diff --check
+          git add src test ops/migration-age-source .github/workflows/poe-migration-age-workspace.yml
+          git config user.name 'POE reviewed source publication'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'Restore verified PumpSwap migration-age admission from 1 minute through 24 hours'
+          git push origin HEAD:refs/heads/repair/poe-migration-age-1m-24h-20261103
+          git rev-parse HEAD > /tmp/poe-migration-validation/source-commit.txt
+          git diff f1dcd4bf8b8dab39eecd089d0a739dc111ccd0dd -- src test > /tmp/poe-migration-validation/source.patch
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020
+        with:
+          node-version: '24.19.0'
+          check-latest: false
+          cache: npm
+      - name: Install unchanged locked dependencies and build
+        run: |
+          set -euo pipefail
+          npm ci --include=dev
+          npm run build 2>&1 | tee /tmp/poe-migration-validation/typecheck.log
+          npm run compile 2>&1 | tee /tmp/poe-migration-validation/compile.log
+      - name: Complete application regressions without exclusions
+        run: |
+          set -euo pipefail
+          node --import tsx --test --test-concurrency=1 test/*.test.ts 2>&1 | tee /tmp/poe-migration-validation/full.log
+          node --test test/ai-team-dashboard.test.mjs test/reviewed-source-handover.test.mjs 2>&1 | tee /tmp/poe-migration-validation/ai-reporting.log
+      - name: Build exact PAPER package and run isolated executable smoke
+        run: |
+          set -euo pipefail
+          test -z "$(git status --porcelain)"
+          node scripts/build-native-paper-ec2.mjs --output-directory /tmp/poe-migration-bundle
+          cp -a /tmp/poe-migration-bundle /tmp/poe-migration-validation/bundle
+          git archive HEAD src test scripts docs package.json package-lock.json tsconfig.json | gzip -n > /tmp/poe-migration-validation/source.tar.gz
+          python3 -B -I - <<'PY'
+          import pathlib,hashlib,json,re,os
+          p=pathlib.Path('/tmp/poe-migration-validation');source=(p/'source-commit.txt').read_text().strip();log=(p/'full.log').read_text();meta=json.loads((p/'bundle/metadata.json').read_bytes())
+          def metric(key):
+              rows=re.findall(r'(?m)^(?:# |ℹ )'+key+r'\s+(\d+)\s*$',log);assert len(rows)==1;return int(rows[0])
+          tests=metric('tests');assert tests>=3711 and metric('pass')==tests and all(metric(k)==0 for k in ['fail','skipped','cancelled'])
+          assert meta['git']['commit']==source and meta['git']['workingTreeStatus']==''
+          assert meta['financialMode']=='PAPER' and meta['liveTradingEnabled'] is False
+          assert meta['smoke']['exitStatus']==0 and meta['smoke']['networkDisabled'] and meta['smoke']['disposableFinancialFixture'] and meta['smoke']['readonlyPersistentBackup']
+          result={'kind':'POE_MIGRATION_AGE_VALIDATED_BUILD','source':source,'base':'acb50ffee8c374b3f67ee10da0780ec69a62ba03','bundleSha256':hashlib.sha256((p/'bundle/native-paper.mjs').read_bytes()).hexdigest(),'testsPassed':tests,'validationRun':int(os.environ['GITHUB_RUN_ID']),'buildRun':int(os.environ['GITHUB_RUN_ID']),'fullLogSha256':hashlib.sha256((p/'full.log').read_bytes()).hexdigest(),'financialControlWrites':0,'ageBasis':'verified-pumpswap-migration','minimumAgeMs':60000,'maximumAgeMs':86400000,'deepSlots':4,'liveTrading':False}
+          (p/'validation.json').write_text(json.dumps(result,indent=2)+'\n');print(json.dumps(result))
+          PY
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        if: always()
+        with:
+          name: poe-migration-age-validation-${{ github.run_id }}
+          path: /tmp/poe-migration-validation/
+          retention-days: 14
+          if-no-files-found: error
