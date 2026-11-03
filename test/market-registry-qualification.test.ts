@@ -9,7 +9,8 @@ import {join} from 'node:path';
 import {MarketRegistry,MarketRegistryContention,SHARED_ACTIVITY_HORIZON_MS,type PumpSwapQualificationHint,type RegistryParameter} from '../src/market-registry.js';
 import {TOKEN_AGE_POLICY,type TokenCreationProof} from '../src/token-age-policy.js';
 import {TOKEN_CREATION_HISTORY_POLICY} from '../src/token-creation-history.js';
-import {PilotWatch} from '../src/pilot-watch.js';
+import {PilotWatch,type WatchRow} from '../src/pilot-watch.js';
+import {PERSISTENT_OBSERVABLE_MARKET_POLICY} from '../src/observation-age.js';
 
 const AT=Date.parse('2026-11-03T01:05:31Z'),DAY=TOKEN_AGE_POLICY.maximumAgeMs;
 const mint=(n:number)=>new PublicKey(Buffer.alloc(32,n)).toBase58(),signature=(n:number)=>bs58.encode(Buffer.alloc(64,n));
@@ -147,13 +148,13 @@ test('qualification state and pending history guards survive restart without rec
  }finally{f.registry.close();rmSync(directory,{recursive:true,force:true});}
 });
 
-test('qualification selectors seek current queue states, never the legacy prepared or WatchRow population',t=>{
+test('qualification selectors seek current queue states and covering mint scopes without scanning retained populations',t=>{
  const f=fixture();try{
   const put=f.db.prepare('INSERT INTO observation_preparations(mint,pool,checked_at,state,reason) VALUES(?,?,?,?,?)');f.registry.transaction(()=>{for(let n=0;n<10000;n++)put.run('OFFLINE-retained-'+n,'OFFLINE-pool-'+n,AT-1000,'pool-ready','OFFLINE_LEGACY');});
   f.hint(1);f.hint(2);f.prepare(2);const original=internal(f.registry).statement.bind(f.registry),plans:Array<{sql:string;steps:string[]}>=[];
   t.mock.method(internal(f.registry),'statement',(sql:string)=>{const statement=original(sql);if(!sql.includes('pumpswap_qualification_recent_v1'))return statement;return new Proxy(statement,{get(target,key){const value=Reflect.get(target,key);if(typeof value!=='function')return value;if(key!=='get')return value.bind(target);return(...args:RegistryParameter[])=>{plans.push({sql,steps:(f.db.prepare('EXPLAIN QUERY PLAN '+sql).all(...args) as {detail:string}[]).map(r=>r.detail)});return value.apply(target,args);};}});});
   assert.equal(f.registry.nextPumpSwapQualification(AT)?.mint,mint(1));assert.equal(f.registry.nextTokenCreationHistoryRequest(AT,true)?.mint,mint(2));assert.equal(f.registry.nextTokenCreationRequest(AT,true,true),undefined);
-  assert.equal(plans.length,3);for(const plan of plans){assert.ok(plan.steps.some(s=>s.includes('SEARCH q USING INDEX pumpswap_qualification_recent_v1 (pool_state=? AND last_seen_at>? AND last_seen_at<?)')));assert.ok(!plan.steps.some(s=>s.includes('SCAN p')||s.includes('watch_rows')||s.includes('market_tokens')));}
+  assert.equal(plans.length,3);for(const plan of plans){assert.ok(plan.steps.some(s=>s.includes('SEARCH q USING INDEX pumpswap_qualification_recent_v1 (pool_state=? AND last_seen_at>? AND last_seen_at<?)')));assert.ok(plan.steps.some(s=>s.includes('SEARCH scope USING COVERING INDEX watch_rows_current_scope_v1 (mint=?)')));assert.ok(!plan.steps.some(s=>s.includes('SCAN p')||s.includes('SCAN scope')||s.includes('market_tokens')));}
   assert.equal((f.db.prepare('SELECT COUNT(*) n FROM observation_preparations').get() as {n:number}).n,10001,'retained evidence remains intact');
  }finally{f.registry.close();}
 });
@@ -168,5 +169,31 @@ test('nonfinancial owned-mint exclusions let the next qualifier progress at ever
   for(const n of [1,2])f.registry.putTokenCreationProof(proof(n));
   assert.equal(f.registry.nextQualifiedPumpSwapIdentity(AT)!.mint,mint(1));assert.equal(f.registry.nextQualifiedPumpSwapIdentity(AT,excluded)!.mint,mint(2));assert.equal(f.registry.nextQualifiedPumpSwapIdentity(AT,all),undefined);
   assert.equal(f.registry.pumpSwapQualificationHint(mint(1))!.lastSeenAt,AT-1,'temporary ownership never deletes or rejuvenates a queue record');assert.equal(f.registry.nextQualifiedPumpSwapIdentity(AT,new Set())!.mint,mint(1),'releasing ownership restores the original fair order');
+ }finally{f.registry.close();}
+});
+
+test('qualification intrinsically excludes deep and owned durable states while inactive unproven scopes can progress',()=>{
+ const f=fixture();try{
+  const watch=new PilotWatch({registry:f.registry,maximumDeep:4,observationAgePolicy:PERSISTENT_OBSERVABLE_MARKET_POLICY.version,now:()=>AT,record:()=>{}}),base=watch.discover({signature:'scope-base',receivedAt:AT-1000})!;
+  const states:WatchRow['state'][]=['DEEP_OBSERVATION','QUALIFIED','HELD','ENTRY_PENDING','WATCH','EXPIRED','DEFERRED'];
+  const row=(n:number,state:WatchRow['state'],signature='scope-'+n):WatchRow=>({...base,signature,mint:mint(n),pool:mint(n+100),state,deepSince:null,observationIdentity:{basis:'canonical-pool-hint',availableAt:AT-1000,evidence:'OFFLINE retained scope'}});
+  for(let n=1;n<=states.length;n++){f.hint(n,AT-100+n);f.registry.put(row(n,states[n-1]!));}
+  f.registry.put(row(7,'HELD','archived-owned-alias'));f.registry.delete('archived-owned-alias');
+  // A retained admission receipt is not proof. An inactive record can still
+  // repair missing proof from a fresh real venue receipt without a new ban.
+  f.db.prepare('UPDATE pumpswap_qualification_hints_v1 SET promoted_at=? WHERE mint=?').run(AT-5000,mint(6));
+  const allInactive=new Set([mint(5),mint(6),mint(7)]),exceptFirst=new Set([mint(5)]),exceptFirstTwo=new Set([mint(5),mint(6)]);
+  assert.equal(f.registry.nextPumpSwapQualification(AT)?.mint,mint(5));assert.equal(f.registry.nextPumpSwapQualification(AT,exceptFirst)?.mint,mint(6));assert.equal(f.registry.nextPumpSwapQualification(AT,exceptFirstTwo)?.mint,mint(7));assert.equal(f.registry.nextPumpSwapQualification(AT,allInactive),undefined);
+  f.registry.put(row(5,'QUALIFIED','active-qualified-alias'));assert.equal(f.registry.nextPumpSwapQualification(AT)?.mint,mint(6),'any active alias protects the whole mint');
+  f.registry.delete('active-qualified-alias');assert.equal(f.registry.nextPumpSwapQualification(AT)?.mint,mint(5),'archiving an old alias restores the original fair order');
+  for(let n=1;n<=states.length;n++)f.prepare(n,AT-100+n);
+  assert.equal(f.registry.nextTokenCreationHistoryRequest(AT,true)?.mint,mint(5));assert.equal(f.registry.nextTokenCreationHistoryRequest(AT,true,exceptFirst)?.mint,mint(6));assert.equal(f.registry.nextTokenCreationHistoryRequest(AT,true,exceptFirstTwo)?.mint,mint(7));assert.equal(f.registry.nextTokenCreationHistoryRequest(AT,true,allInactive),undefined);
+  const birth=f.db.prepare('UPDATE pumpswap_qualification_hints_v1 SET birth_signature=?,birth_seen_at=? WHERE mint=?');
+  for(let n=1;n<=states.length;n++)birth.run(signature(n),AT,mint(n));
+  assert.equal(f.registry.nextTokenCreationRequest(AT,true,true)?.mint,mint(5));assert.equal(f.registry.nextTokenCreationRequest(AT,true,true,exceptFirst)?.mint,mint(6));assert.equal(f.registry.nextTokenCreationRequest(AT,true,true,exceptFirstTwo)?.mint,mint(7));assert.equal(f.registry.nextTokenCreationRequest(AT,true,true,allInactive),undefined);
+  for(let n=1;n<=states.length;n++)f.registry.putTokenCreationProof(proof(n));
+  assert.equal(f.registry.nextQualifiedPumpSwapIdentity(AT)?.mint,mint(5));assert.equal(f.registry.nextQualifiedPumpSwapIdentity(AT,exceptFirst)?.mint,mint(7));assert.equal(f.registry.nextQualifiedPumpSwapIdentity(AT,allInactive),undefined);
+  assert.equal(f.registry.pumpSwapQualificationHint(mint(6))!.lastSeenAt,AT-94,'state and proof checks do not manufacture a fresh receipt');
+  assert.equal((f.db.prepare('SELECT promoted_at FROM pumpswap_qualification_hints_v1 WHERE mint=?').get(mint(6)) as {promoted_at:number}).promoted_at,AT-5000,'successful prior promotion remains idempotent');
  }finally{f.registry.close();}
 });

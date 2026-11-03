@@ -26,9 +26,9 @@ const pool=(m:string)=>canonicalPumpPoolPda(new PublicKey(m)).toBase58();
 const TOKEN='TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA',PUMP='6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P';
 function proof(n:number,at=AT,createdAt=AT-3600000):TokenCreationProof{return {version:TOKEN_AGE_POLICY.version,mint:mint(n),signature:signature(n),slot:100,createdAt,availableAt:at,commitment:'finalized',instruction:'create',transactionSha256:'a'.repeat(64)};}
 function creation(n:number){const m=mint(n),curve=PublicKey.findProgramAddressSync([Buffer.from('bonding-curve'),new PublicKey(m).toBuffer()],new PublicKey(PUMP))[0].toBase58();return {version:0,slot:100,blockTime:(AT-3600000)/1000,transaction:{signatures:[signature(n)],message:{accountKeys:[PUMP,TOKEN,m,mint(201),curve],instructions:[{programIdIndex:0,accounts:[2,3,4],data:bs58.encode(Buffer.concat([createHash('sha256').update('global:create').digest().subarray(0,8),Buffer.alloc(50)]))}]}},meta:{err:null,innerInstructions:[{index:0,instructions:[{programIdIndex:1,accounts:[2],data:bs58.encode(Buffer.from([20,...Buffer.alloc(34)])),stackHeight:2}]}]}};}
-function fixture(options:{pumpswapOnly?:true;marketIntake?:NativeMarketIntake;history?:unknown;rpcResponse?:(method:string,params:unknown[])=>unknown;path?:string;concurrentIntake?:boolean;enforceAge?:boolean;sourceWorkAdmission?:(bound:number)=>boolean;financialOwnership?:(mint:string)=>'HELD'|'ENTRY_PENDING'|null;transaction?:unknown}={}){
+function fixture(options:{proofReadyAt?:(signature:string,at:number)=>number;pumpswapOnly?:true;marketIntake?:NativeMarketIntake;history?:unknown;rpcResponse?:(method:string,params:unknown[])=>unknown;path?:string;concurrentIntake?:boolean;enforceAge?:boolean;sourceWorkAdmission?:(bound:number)=>boolean;financialOwnership?:(mint:string)=>'HELD'|'ENTRY_PENDING'|null;transaction?:unknown}={}){
  let at=AT,runner:NativeCandidateRunner,refusal:string|null=null,retryAt:number|undefined,stopped=false,heartbeat=false,heartbeats=0;
- const registry=new MarketRegistry(options.path??':memory:',{now:()=>at,concurrentIntake:options.concurrentIntake}),states=new Map<string,{mint:string;pool:string;minSlot?:number}>(),preparedCalls:string[]=[],adopted:ResearchClockNativeObservationSupport[]=[],requests:string[]=[],events:string[]=[],records:Array<{kind:string;data:any}>=[];
+ const registry=new MarketRegistry(options.path??':memory:',{now:()=>at,concurrentIntake:options.concurrentIntake}),states=new Map<string,{mint:string;pool:string;minSlot?:number}>(),preparedCalls:string[]=[],adopted:ResearchClockNativeObservationSupport[]=[],requests:string[]=[],requestCalls:Array<{method:string;params:unknown[];options:Record<string,unknown>}>=[],events:string[]=[],records:Array<{kind:string;data:any}>=[];
  const support=(m:string)=>({mint:m,pool:pool(m),at,sourceSlot:100,evidence:'OFFLINE_CANONICAL_POOL_BINDING',summary:{marketClockUnixSeconds:Math.floor(at/1000),tokenProgram:TOKEN}} as ResearchClockNativeObservationSupport);
  const flow={
   async prepareObservation(scope:{mint:string},_signal?:AbortSignal,admission?:{admissionOpen?:()=>boolean}):Promise<NativeObservationPreparationResult>{assert.equal(states.has(scope.mint),false,'passive binding precedes allocation');assert.equal(admission?.admissionOpen?.(),true);preparedCalls.push(scope.mint);events.push('prepare:'+scope.mint);return refusal?{status:'unavailable',reason:refusal,...(retryAt===undefined?{}:{retryAt})}:{status:'ready',support:support(scope.mint)};},
@@ -37,15 +37,75 @@ function fixture(options:{pumpswapOnly?:true;marketIntake?:NativeMarketIntake;hi
   snapshot(m:string){const scope=states.get(m);return scope?{scope,openedAt:null,subscription:null,connectionId:null,connected:false,sourceSupportFresh:true,suspended:false,hasQualityLoss:false,features:null,warm:false}:null;},notificationLedger(){return [];},requestSupportRefresh(){},requestHeartbeat(){},async service(){if(heartbeat){heartbeat=false;heartbeats++;return {kind:'heartbeat'};}return {kind:'idle'};},
   usage(){return {candidates:states.size,retiring:0,connected:false,nextServiceAt:heartbeat?at:Infinity,nextServiceDomain:heartbeat?'control':null,nextServiceAction:heartbeat?'heartbeat':null,nextRequiredServiceAt:heartbeat?at:Infinity,nativeServiceDeadlines:heartbeat?[{action:'heartbeat',deadlineAt:at+2000}]:[],physicalTransportsSettled:stopped,fatal:null};},async stop(){stopped=true;states.clear();},
  };
- const rpc={async call(method:string,params:unknown[]){requests.push(method);events.push(method);if(options.rpcResponse)return options.rpcResponse(method,params);return method==='getSignaturesForAddress'?options.history??null:options.transaction??null;},usage(){return {inFlight:0,waitingOrOperating:false,dispatchWindow:{physicalBusy:false,readyAt:at}};},cooldownUntil(){return 0;}};
+ const rpc={tokenCreationProofReadyAt(signature:string,planningAt=at){return options.proofReadyAt?.(signature,planningAt)??planningAt;},async call(method:string,params:unknown[],_signal?:AbortSignal,callOptions:Record<string,unknown>={}){requests.push(method);requestCalls.push({method,params,options:callOptions});events.push(method);if(options.rpcResponse)return options.rpcResponse(method,params);return method==='getSignaturesForAddress'?options.history??null:options.transaction??null;},usage(){return {inFlight:0,waitingOrOperating:false,dispatchWindow:{physicalBusy:false,readyAt:at}};},cooldownUntil(){return 0;}};
  runner=new NativeCandidateRunner({pumpswapOnly:options.pumpswapOnly,marketIntake:options.marketIntake,registry,runId:'preparation-test',flow:flow as any,rpc:rpc as any,maximumDeep:4,now:()=>at,...(options.enforceAge===false?{}:{enforceTokenAge24h:true as const}),observationAgePolicy:PERSISTENT_OBSERVABLE_MARKET_POLICY.version,activeStrategy:LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION,sourceWorkAdmission:options.sourceWorkAdmission,financialOwnership:options.financialOwnership,onCandidateAllocated:id=>events.push('bridge:'+id.baseMint),record:(kind,data)=>records.push({kind,data})});
  const seed=(n:number,knownAge=true,creationHint=true)=>{const m=mint(n);if(knownAge)registry.putTokenCreationProof(proof(n,at));if(creationHint)runner.onMarketIdentity({mint:m,source:'pumpportal-new-token',kind:'creation',venue:'pump',signature:signature(n),receivedAt:at,evidence:'unverified-provider-discovery-hint'});if(options.pumpswapOnly)runner.onMarketIdentity({mint:m,source:'pumpportal-migration',kind:'migration',signature:signature(n+80),receivedAt:at,evidence:'unverified-provider-discovery-hint'});runner.onMigration({signature:signature(n+80),feedMint:m,receivedAt:at});runner.onMarketActivity({mint:m,source:'pumpapi-broad',kind:'activity',venue:'pump',signature:signature(n+100),side:'buy',quoteLamports:'1000',receivedAt:at,evidence:'unverified-provider-activity-hint'});return m;};
- return {runner,registry,flow,rpc,states,preparedCalls,adopted,requests,events,records,seed,support,get now(){return at;},get heartbeats(){return heartbeats;},requireHeartbeat:()=>{heartbeat=true;},advance:(ms:number)=>{at+=ms;},refuse:(reason:string|null,until?:number)=>{refusal=reason;retryAt=until;},steps:async(n=1)=>{for(let i=0;i<n;i++)await runner.step();},close:async()=>{await runner.stop();registry.close();}};
+ return {runner,registry,flow,rpc,states,preparedCalls,adopted,requests,requestCalls,events,records,seed,support,get now(){return at;},get heartbeats(){return heartbeats;},requireHeartbeat:()=>{heartbeat=true;},advance:(ms:number)=>{at+=ms;},refuse:(reason:string|null,until?:number)=>{refusal=reason;retryAt=until;},steps:async(n=1)=>{for(let i=0;i<n;i++)await runner.step();},close:async()=>{await runner.stop();registry.close();}};
 }
 
 function economicHint(f:ReturnType<typeof fixture>,n:number,quoteLamports='20000000000'){
  f.runner.onMarketActivity({mint:mint(n),pool:pool(mint(n)),source:'pumpapi-broad',kind:'activity',venue:'pump-amm',signature:signature(n+140),side:'buy',quoteLamports,receivedAt:f.now,evidence:'unverified-provider-activity-hint'});
 }
+
+test('deep age boundary uses the immutable market-admission interval without another age lookup',async()=>{
+ const f=fixture({pumpswapOnly:true});try{
+  const m=f.seed(70);await f.steps(3);assert.equal(f.states.has(m),true);
+  const candidate=(f.runner as any).candidates.get(m),scope=candidate.marketAgeAtAdmission;
+  assert.deepEqual(scope,{mint:m,createdAt:AT-3600000,availableAt:AT,expiresAt:AT-3600000+TOKEN_AGE_POLICY.maximumAgeMs});
+  assert.equal(Object.isFrozen(scope),true);
+  const fail=()=>{throw Error('OFFLINE_AGE_LOOKUP_IN_DEEP_OBSERVATION');};
+  f.registry.tokenCreationProof=fail;f.registry.tokenAgeEligibility=fail;
+  (f.runner as any).marketAgeAdmission.decision=fail;(f.runner as any).marketAgeAdmission.scope=fail;
+  assert.equal((f.runner as any).observationMember(candidate,f.now),true);
+  assert.equal(f.runner.requestTechnicalReevaluation(m,'entry-quote-unavailable',f.now,f.now),true);
+  f.advance(scope.expiresAt-f.now);assert.equal((f.runner as any).observationMember(candidate,f.now),true,'the existing inclusive24h boundary remains');
+  f.advance(1);assert.equal((f.runner as any).observationMember(candidate,f.now),false,'expiry is a clock comparison, never another lookup');
+  assert.deepEqual(f.requests,[]);
+ }finally{await f.close();}
+});
+
+for(const state of ['DEEP_OBSERVATION','QUALIFIED','HELD','ENTRY_PENDING'] as const)for(const prepared of [true,false])test('deep age boundary refuses direct creation work for retained '+state+' with preparation '+prepared,async()=>{
+ const f=fixture({pumpswapOnly:true,transaction:creation(71),history:[]});try{
+  const m=f.seed(71,false,false);await f.steps();
+  const history=f.registry.nextTokenCreationHistoryRequest(f.now,true)!;assert.ok(history);
+  const row=f.runner.watch.observeIdentity(signature(151),{mint:m,pool:pool(m),availableAt:f.now,evidence:'OFFLINE_RETAINED_SCOPE'});
+  row.state=state;row.deepSince=f.now;f.registry.put(row);
+  if(!prepared){delete (f.flow as any).prepareObservation;delete (f.flow as any).adoptPreparedObservation;}
+  const before=f.requests.length;
+  await (f.runner as any).verifyTokenCreation({mint:m,signature:signature(71)},f.now+2000);
+  await (f.runner as any).discoverTokenCreation(history,f.now+2000);
+  assert.equal(f.requests.length,before,'no creation transaction or birth-history provider call after observation ownership');
+  assert.equal(f.registry.tokenCreationRequestPending({mint:m,signature:signature(71)},f.now),false,'no uninvoked proof attempt is charged');
+  assert.equal(f.registry.tokenCreationHistoryPending(history,f.now),false,'no uninvoked history attempt is charged');
+  assert.equal(f.registry.tokenCreationProof(m),null);
+ }finally{await f.close();}
+});
+
+test('deep age boundary rejects a current candidate even if its durable row no longer names a deep state',async()=>{
+ const f=fixture({pumpswapOnly:true,transaction:creation(72)});try{
+  const m=f.seed(72);await f.steps(3);assert.equal(f.states.has(m),true);
+  const row=f.runner.watch.lookupIdentity(m,f.now)!;row.state='WATCH';row.deepSince=null;f.registry.put(row);
+  f.registry.observePumpSwapQualificationHint({mint:m,source:'pumpportal-migration',kind:'migration',signature:signature(152),receivedAt:f.now});
+  f.registry.putObservationPreparation({mint:m,pool:pool(m),checkedAt:f.now,state:'pool-ready',reason:'OFFLINE_RETAINED_QUALIFIER'});
+  await (f.runner as any).verifyTokenCreation({mint:m,signature:signature(72)},f.now+2000);
+  assert.deepEqual(f.requests,[],'the physical candidate owner excludes age acquisition before durable repair');
+ }finally{await f.close();}
+});
+
+test('deep age boundary rechecks every active durable alias immediately before dispatch',async()=>{
+ const f=fixture({pumpswapOnly:true,transaction:creation(73),history:[]});try{
+  const m=f.seed(73,false,false);await f.steps();
+  const history=f.registry.nextTokenCreationHistoryRequest(f.now,true)!;assert.ok(history);
+  const original=f.runner.watch.observeIdentity(signature(153),{mint:m,pool:pool(m),availableAt:f.now,evidence:'OFFLINE_SELECTED_QUALIFICATION'});
+  f.advance(1);f.registry.put({...original,signature:signature(154),firstSeenAt:f.now,state:'QUALIFIED',deepSince:f.now});
+  assert.equal(f.runner.watch.lookupIdentity(m,f.now)!.state,'WATCH','the ordinary identity lookup returns the older unprotected alias');
+  await (f.runner as any).verifyTokenCreation({mint:m,signature:signature(73)},f.now+2000);
+  await (f.runner as any).discoverTokenCreation(history,f.now+2000);
+  assert.deepEqual(f.requests,[],'a protected alias created after queue selection still prevents both provider reads');
+  assert.equal(f.registry.tokenCreationRequestPending({mint:m,signature:signature(73)},f.now),false);
+  assert.equal(f.registry.tokenCreationHistoryPending(history,f.now),false);
+ }finally{await f.close();}
+});
 const preparationPriority=(f:ReturnType<typeof fixture>)=>f.records.filter(r=>r.kind==='pilot-watch-opportunity-priority').at(-1)!.data;
 
 /** A real second WAL writer takes the lock only after the provider result is
@@ -63,6 +123,20 @@ function lockAfterCreationRead(f:ReturnType<typeof fixture>){
  const release=()=>{if(locked){writer.exec('ROLLBACK');locked=false;}};
  return {release,close:()=>{release();writer.close();f.rpc.call=call;}};
 }
+
+for(const retainedState of ['DEEP_OBSERVATION','QUALIFIED'] as const)test('deep age boundary discards completed pool preparation before a proof read for a new '+retainedState+' alias',async()=>{
+ const directory=mkdtempSync(join(tmpdir(),'poe-pool-age-boundary-')),f=fixture({pumpswapOnly:true,path:join(directory,'market.sqlite'),concurrentIntake:true}),lock=lockAfterPreparation(f);
+ try{
+  const m=f.seed(74,false,false);await f.steps();assert.ok((f.runner as any).pendingPreparation);lock.release();
+  const original=f.runner.watch.observeIdentity(signature(154),{mint:m,pool:pool(m),availableAt:f.now,evidence:'OFFLINE_SELECTED_QUALIFICATION'});
+  f.advance(1);f.registry.put({...original,signature:signature(155),firstSeenAt:f.now,state:retainedState,deepSince:f.now});
+  assert.equal(f.runner.watch.lookupIdentity(m,f.now)!.state,'WATCH');
+  let proofReads=0;f.registry.tokenCreationProof=()=>{proofReads++;throw Error('OFFLINE_AGE_LOOKUP_AFTER_DEEP_OWNERSHIP');};
+  assert.equal((f.runner as any).drainPreparedObservation(),true);
+  assert.equal(proofReads,0);assert.equal((f.runner as any).pendingPreparation,null);assert.equal(f.adopted.length,0);assert.equal(f.states.size,0);
+  assert.ok(f.records.some(r=>r.kind==='native-candidate-preparation-discarded'&&r.data.reason==='NATIVE_FLOW_PREPARATION_SCOPE_CHANGED'));
+ }finally{lock.close();await f.close();rmSync(directory,{recursive:true,force:true});}
+});
 
 test('absent current pools consume no deep slot, no ACK wait, and no finalized birth lookup',async()=>{
  const f=fixture();try{const m=f.seed(1,false);f.refuse('NATIVE_OBSERVATION_POOL_MISSING');await f.steps(5);
@@ -382,6 +456,20 @@ function creationCommitFixture(kind:'proof'|'history',options:NonNullable<Parame
  return {f,lock,m,n,close:async()=>{lock.close();await f.close();rmSync(dir,{recursive:true,force:true});}};
 }
 
+for(const kind of ['proof','history'] as const)test('deep age boundary discards a completed '+kind+' result before reading birth proof after observation ownership changes',async()=>{
+ const c=creationCommitFixture(kind),{f,lock,m}=c;
+ try{
+  await f.steps(2);assert.ok((f.runner as any).pendingTokenCreation);assert.equal(f.requests.length,1);
+  lock.release();
+  const row=f.runner.watch.observeIdentity(signature(c.n+80),{mint:m,pool:pool(m),availableAt:f.now,evidence:'OFFLINE_NEW_OBSERVATION_OWNER'});
+  row.state='DEEP_OBSERVATION';row.deepSince=f.now;f.registry.put(row);
+  let proofReads=0;f.registry.tokenCreationProof=()=>{proofReads++;throw Error('OFFLINE_AGE_LOOKUP_AFTER_DEEP_OWNERSHIP');};
+  assert.equal((f.runner as any).drainTokenCreation(),true);
+  assert.equal(proofReads,0);assert.equal((f.runner as any).pendingTokenCreation,null);assert.equal(f.requests.length,1);
+  assert.ok(f.records.some(r=>r.kind==='native-token-creation-result-discarded'&&r.data.reason==='NATIVE_TOKEN_CREATION_OBSERVATION_OWNERSHIP_CHANGED'));
+ }finally{await c.close();}
+});
+
 test('completed creation proof survives a busy writer once with original availability and required heartbeat service',async()=>{
  const c=creationCommitFixture('proof'),{f,lock,m}=c;
  try{await f.steps(2);assert.deepEqual(f.requests,['getTransaction']);assert.equal(f.registry.tokenCreationProof(m),null);
@@ -636,5 +724,40 @@ test('native activity hints use the ownership mirror while mandatory membership 
   const m=f.seed(51);await f.steps(2);assert.equal(f.states.has(m),true);reads=0;
   for(let i=0;i<1000;i++)f.runner.onNativeActivity({mint:m,at:f.now,evidence:'OFFLINE_NATIVE_ACTIVITY'});
   assert.equal(reads,0);await f.steps();assert.ok(reads>0,'the actual source turn independently rechecks financial ownership');
+ }finally{await f.close();}
+});
+
+
+test('creation-proof scheduling scopes only finalized birth reads and retains the physical deadline',async()=>{
+ const f=fixture({pumpswapOnly:true,transaction:creation(34),history:[{signature:signature(34),slot:100,blockTime:(AT-3600000)/1000,err:null}]});try{
+  const m=f.seed(34,false,false);await f.steps(3);
+  assert.deepEqual(f.requests,['getSignaturesForAddress','getTransaction']);
+  assert.equal(f.requestCalls[0]!.options.queryTimeoutScope,undefined,'signature discovery keeps its existing route and policy');
+  const call=f.requestCalls[1]!;assert.deepEqual(call.params,[signature(34),{encoding:'json',commitment:'finalized',maxSupportedTransactionVersion:1}]);
+  assert.equal(call.options.queryTimeoutScope,'token-creation-proof');assert.equal(call.options.timeoutMs,1200);
+  assert.equal(f.registry.tokenCreationProof(m)!.createdAt,AT-3600000);assert.equal(f.states.has(m),false,'proof response is not a deep admission');
+  await f.steps();assert.equal(f.states.has(m),true);
+ }finally{await f.close();}
+});
+
+test('creation-proof scheduling cooldown consumes no attempt and lets ready observation and heartbeat progress',async()=>{
+ let readyAt=AT+10000;
+ const f=fixture({pumpswapOnly:true,proofReadyAt:()=>readyAt,transaction:creation(35),history:[{signature:signature(35),slot:100,blockTime:(AT-3600000)/1000,err:null}]});try{
+  const pending=f.seed(35,false,false);await f.steps(2);assert.deepEqual(f.requests,['getSignaturesForAddress']);
+  const request={mint:pending,signature:signature(35)};assert.deepEqual(f.registry.nextTokenCreationRequest(f.now,true,true),request);
+  const ready=f.seed(36);f.requireHeartbeat();await f.steps(4);
+  assert.equal(f.heartbeats,1);assert.equal(f.states.has(ready),true);assert.equal(f.states.has(pending),false);
+  assert.deepEqual(f.requests,['getSignaturesForAddress']);assert.deepEqual(f.registry.nextTokenCreationRequest(f.now,true,true),request,'local cooldown does not create a durable physical-attempt delay');
+  readyAt=f.now;await f.steps();assert.deepEqual(f.requests,['getSignaturesForAddress','getTransaction']);assert.ok(f.registry.tokenCreationProof(pending));
+ }finally{await f.close();}
+});
+
+test('creation-proof scheduling rechecks changed readiness before durable attempt deferral',async()=>{
+ let checks=0,release=false;
+ const f=fixture({pumpswapOnly:true,proofReadyAt:(_signature,at)=>release||checks++===0?at:at+10000,transaction:creation(37),history:[{signature:signature(37),slot:100,blockTime:(AT-3600000)/1000,err:null}]});try{
+  const m=f.seed(37,false,false);await f.steps(2);assert.equal(checks,0);
+  await f.steps();assert.ok(checks>=2);assert.deepEqual(f.requests,['getSignaturesForAddress']);assert.equal(f.registry.tokenCreationProof(m),null);
+  assert.deepEqual(f.registry.nextTokenCreationRequest(f.now,true,true),{mint:m,signature:signature(37)});
+  release=true;await f.steps();assert.deepEqual(f.requests,['getSignaturesForAddress','getTransaction']);assert.ok(f.registry.tokenCreationProof(m));
  }finally{await f.close();}
 });
