@@ -660,6 +660,9 @@ export class PaperLedger {
       if (existing && ((existing.accountId ?? existing.fixtureId) !== accountId || existing.mode !== mode)) throw new Error('wrong fixture account or PAPER identity/mode');
       if (existing) { this.assertState(existing); this.getOperatingCosts(); }
       else if ((this.db.prepare('SELECT (SELECT count(*) FROM actions) + (SELECT count(*) FROM journal) + (SELECT count(*) FROM metadata) records').get() as { records: number }).records > 0) throw new Error('financial state missing from populated account; recovery required, never reseed');
+      // Control lineage reads must seek control kinds through retained ordinary
+      // financial history. This index changes no journal bytes or predicates.
+      this.db.exec('CREATE INDEX IF NOT EXISTS journal_kind_revision_v1 ON journal(kind,revision)');
     } catch (e) {
       try { opened?.close(); }
       finally { if (this.ownerFd !== undefined) { closeSync(this.ownerFd); this.ownerFd = undefined; } }
