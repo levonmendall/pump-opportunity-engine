@@ -3,6 +3,34 @@
 export const NATIVE_PAPER_REPORT_PHASES=['candidate-status','cash-maintenance','financial-snapshot','observation-projection','financial-history','financial-trades','financial-portfolio','publication-checkpoint'] as const;
 export type NativePaperReportPhase=typeof NATIVE_PAPER_REPORT_PHASES[number];
 export type NativePaperReportPhaseTiming={stage:NativePaperReportPhase;count:number;totalMs:number;lastMs:number;maximumMs:number};
+export const NATIVE_COMPLETED_PUBLICATION_TIMING_VERSION='native-completed-publication-timing-v1' as const;
+export type NativeCompletedPublicationTiming={
+ version:typeof NATIVE_COMPLETED_PUBLICATION_TIMING_VERSION;startedAt:number;completedAt:number;durationMs:number;
+ phases:readonly Readonly<{stage:NativePaperReportPhase;count:number;elapsedMs:number|null}>[];
+};
+/** Capture a completed report's phase deltas only after its whole publication
+ * has returned. The next ordinary status can carry this immutable record with
+ * its original clocks, separately from cumulative phase samples that already
+ * include work from the next report. Missing phases are unknown, never an old
+ * lastMs or an invented zero. This diagnostic supplies no admission decision. */
+export function nativePaperCompletedPublicationTiming(input:{startedAt:number;completedAt:number;durationMs:number;before:readonly NativePaperReportPhaseTiming[];after:readonly NativePaperReportPhaseTiming[];timingAvailable:boolean}):NativeCompletedPublicationTiming|null {
+ const whole=(n:number)=>Number.isSafeInteger(n)&&n>=0,finite=(n:number)=>Number.isFinite(n)&&n>=0;
+ if(input.timingAvailable!==true||!whole(input.startedAt)||!whole(input.completedAt)||input.completedAt<input.startedAt||!finite(input.durationMs))return null;
+ const phases=(rows:readonly NativePaperReportPhaseTiming[])=>{
+  if(!Array.isArray(rows)||rows.length>NATIVE_PAPER_REPORT_PHASES.length)return null;
+  const result=new Map<NativePaperReportPhase,NativePaperReportPhaseTiming>();
+  for(const row of rows){if(!row||!NATIVE_PAPER_REPORT_PHASES.includes(row.stage)||result.has(row.stage)||!whole(row.count)||row.count===0||![row.totalMs,row.lastMs,row.maximumMs].every(finite)||row.lastMs>row.maximumMs||row.maximumMs>row.totalMs)return null;result.set(row.stage,row);}
+  return result;
+ };
+ const before=phases(input.before),after=phases(input.after);if(!before||!after)return null;
+ const measured:NativeCompletedPublicationTiming['phases'][number][]=[];
+ for(const stage of NATIVE_PAPER_REPORT_PHASES){
+  const prior=before.get(stage),current=after.get(stage),count=(current?.count??0)-(prior?.count??0),elapsed=(current?.totalMs??0)-(prior?.totalMs??0);
+  if(!whole(count)||!finite(elapsed)||count===0&&elapsed!==0)return null;
+  measured.push(Object.freeze({stage,count,elapsedMs:count===0?null:elapsed}));
+ }
+ return Object.freeze({version:NATIVE_COMPLETED_PUBLICATION_TIMING_VERSION,startedAt:input.startedAt,completedAt:input.completedAt,durationMs:input.durationMs,phases:Object.freeze(measured)});
+}
 export const NATIVE_PAPER_REPORT_ADMISSION_RESERVE_MS=250;
 /** An observed work estimate for admission, never a promised completion time.
  * Retain the 250ms performance target, add the existing local reserve, and

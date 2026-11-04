@@ -74,3 +74,21 @@ for(const reason of ['source-refused','no-qualifying-proof','different-mint','di
 test('provider entry headroom does not delay nonfinancial proof retention',async()=>{
  const f=fixture();f.risk=false;f.auditAvailable(f.certificate);await turn();assert.equal(f.pinCalls,1);f.resolvePin();await turn();assert.equal(f.preparation.ready(f.proof!),true);assert.equal(f.context.riskCapacity(),false,'proof retention grants no entry permission');
 });
+
+test('actual maintenance checks each cached certificate generation without refreshing its original range',async()=>{
+ const source=runNativePaper.toString(),match=source.match(/proofPreparation\.maintenance\(([\s\S]*?)\);\s*void\s+serviceRecorder\.maintenance/);assert.ok(match,'actual maintenance predicate is retained');
+ for(const changed of [null,'mint','windowStartAt','windowEndAt','featuresSha256','admittedAt','deadlineAt','missing'] as const){
+  let at=65000;const releases:string[]=[],cache=new NativePaperProofPreparation(()=>at,id=>releases.push(id)),proof={proofId:'OFFLINE:maintenance',mint:'OFFLINE_MINT',startAt:0,throughAt:at,windowEndAt:60000,featuresSha256:'a'.repeat(64),certificateAt:64000,deadlineAt:69999};cache.prepare(proof,async()=>{});await turn();
+  const cert:any={mint:proof.mint,windowStartAt:proof.startAt,windowEndAt:proof.windowEndAt,featuresSha256:proof.featuresSha256,admittedAt:proof.certificateAt,deadlineAt:proof.deadlineAt};
+  if(changed&&changed!=='missing')cert[changed]=typeof cert[changed]==='number'?cert[changed]+1:cert[changed]+'changed';
+  const before=cache.usage(proof),reads:any[]=[];runInNewContext('proofPreparation.maintenance('+match[1]+');',{__name:(v:unknown)=>v,proofPreparation:cache,at,engine:{currentAuditCertificate:(mint:string,when:number)=>{reads.push({mint,at:when});return changed==='missing'?null:cert;}}},{timeout:1000});
+  assert.deepEqual(reads,[{mint:proof.mint,at}]);assert.equal(cache.ready(proof),changed===null);assert.deepEqual(releases,changed===null?[]:[proof.proofId]);if(changed===null)assert.deepEqual(cache.usage(proof),before);
+ }
+});
+
+test('actual storage housekeeping protects every current retained proof mint alongside existing financial ownership',async()=>{
+ const at=65000,cache=new NativePaperProofPreparation(()=>at),mints=['OFFLINE_A','OFFLINE_B','OFFLINE_C','OFFLINE_D'];for(const mint of mints){cache.prepare({proofId:mint,mint,startAt:0,throughAt:at,windowEndAt:60000,featuresSha256:'a'.repeat(64),certificateAt:64000,deadlineAt:69999},async()=>{});await turn();}
+ const source=runNativePaper.toString(),match=source.match(/const\s+active\s*=\s*proofPreparation\.retainedMints\(\);([\s\S]*?registryRetentionStatus\s*=\s*marketRegistry\.retentionStatus\(\);?)/);assert.ok(match,'actual disposable housekeeping uses the bounded retained set');
+ const state={positions:{OFFLINE_HELD:{units:'9'}},pending:{}},before=structuredClone(state),calls:any[]=[];runInNewContext(match[0],{__name:(v:unknown)=>v,proofPreparation:cache,at,currentLedger:{state:()=>state},financialRetention:{protectedMints:(current:unknown,retained:string[])=>{assert.equal(current,state);return new Set(['OFFLINE_HELD',...retained]);}},marketRegistry:{retireExpiredCandidates:(request:any)=>calls.push(request),retentionStatus:()=>({})},registryRetentionStatus:null},{timeout:1000});
+ assert.equal(calls.length,1);assert.deepEqual([...calls[0].protectedMints],['OFFLINE_HELD',...mints]);assert.equal(calls[0].at,at);assert.equal(calls[0].batch,128);assert.deepEqual(state,before);assert.deepEqual(cache.retainedMints(),mints);
+});
