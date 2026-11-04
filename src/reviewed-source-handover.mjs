@@ -36,11 +36,12 @@ export const HANDOVER=Object.freeze({
  operatingReliability:'a885208fb2cc6cc2548e6e761c22300c1f6d8f54',
  operatingFollowthrough:'79e07c604e520e9be3a55e273b4289093646b76e',
  financialFeasiblePeer:'65994a4ccb66a3c2f4ac09f4fa9562516afae600',
- to:'de71a4c514da11c65a066a6aef330466aacd15e4',
+ backupRecovery:'de71a4c514da11c65a066a6aef330466aacd15e4',
+ to:'be509874f060ef5ac9b3be5bd1cdc08d0e176613',
 });
 const installed=new WeakSet();
 export function attachReviewedSourceHandover(cache){
- const identity=cache.identity,p=HANDOVER,route=[p.from,p.via,p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling,p.migrationAge,p.coordinatedRepair,p.recoveryProvenance,p.migrationQuery,p.readinessReporting,p.proofHandoff,p.migrationReentry,p.operatingReliability,p.operatingFollowthrough,p.financialFeasiblePeer,p.to];
+ const identity=cache.identity,p=HANDOVER,route=[p.from,p.via,p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling,p.migrationAge,p.coordinatedRepair,p.recoveryProvenance,p.migrationQuery,p.readinessReporting,p.proofHandoff,p.migrationReentry,p.operatingReliability,p.operatingFollowthrough,p.financialFeasiblePeer,p.backupRecovery,p.to];
  if(!identity||identity.accountId!==p.accountId||identity.inceptionAt!==p.inceptionAt||identity.strategy!==p.strategy||!route.slice(0,-1).includes(identity.release))return false;
  if(installed.has(cache))return true;
  const original=cache.accept.bind(cache);
