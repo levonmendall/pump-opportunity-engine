@@ -22,23 +22,27 @@ therefore cover both a genuinely hot SIGKILL journal and a genuine committed
 SQLite PERSIST1024-byte journal with a zeroed header.
 
 The old scanner rejected that journal before SQLite recovery; merely accepting
-its name would then reach an unsuitable read-only pre-validation. Recovery now
-holds the original operation lease, checks the exact pending database/journal
-identities and refuses other unknown or mixed WAL/rollback layouts. It preserves
-the original pair, with original bytes and modification clocks, as durable
-private archive links. Only a separately copied database/journal pair is opened
+its name would then reach an unsuitable read-only pre-validation. The combined
+release reuses the subsequently approved main recovery implementation from
+de71a4c514da11c65a066a6aef330466aacd15e4, merged through39df83a6 and4c70cad8,
+including its24 journal regressions and exact reporting handover. It retains
+the original operation lease, fingerprints the complete pending family and
+preserves it by rename inside one fixed private `.poe-pending-recovery` capsule.
+Original bytes, inodes and modification clocks remain intact. The approved
+paired sidecar handling remains; unknown or unsafe input refuses. Only a
+separately copied database/journal pair is opened
 writable by SQLite. The recovered copy must pass the full existing same-account,
 inception, history, metadata, revision and snapshot-sequence validators before
 normal nonregressing promotion. Financial-source paths and original source
 inodes are excluded from the recovery namespace and writable targets.
 
-A durable incident receipt binds the original inodes/hashes and the exact
-promotion target inode/hash before active aliases can be retired. Recovery
-resumes after process death immediately after promotion or after either alias
-retirement, without another generation or loss of the archived pair. Failed
-inputs remain preserved. Retry reuses its incident; two preserved incidents,
-32 root/workspace entries and actual remaining-copy plus financial disk reserve
-bound storage. No failed evidence is deleted to make room. Existing normal
+A durable manifest binds the original inodes/hashes before relocation, and a
+validated receipt binds the exact target inode/hash before promotion. Recovery
+resumes interrupted preservation and promotion without another generation or
+loss of the archived pair. Failed inputs remain preserved. The fixed allowed
+capsule layout bounds storage to one incident and one candidate; a second
+incident refuses for review. Actual remaining-copy plus financial disk reserve
+is checked during copying. No failed evidence is deleted to make room. Existing
 single-link file checks and two-generation retention remain intact.
 
 An interrupted fresh destination can roll back to a genuinely empty SQLite
@@ -60,7 +64,7 @@ its original financial timestamps. The existing runtime chain still requires
 a new verified current-source backup afterward. The exact existing backup
 technical pause already permits automatic operating recovery only when fresh
 finance, source, provenance and admission checks pass. Owner/hard controls
-remain closed. A typed BACKUP_RETENTION_LAYOUT_REVIEW_REQUIRED cause and four
+remain closed. The approved typed BACKUP_RETENTION_LAYOUT_REQUIRED cause and four
 native-only backup state fields expose the existing owned state without new
 reporting I/O or any permission grant.
 
@@ -110,7 +114,55 @@ logs, including a new shutdown-local variable colliding with a publication
 fixture's closure locator. Immutable full/package validation, native activation
 and sustained operating acceptance remain separate release requirements.
 
-The final combined local affected regression run passed341/341 tests, with no
-failures, skips or cancellations. Typecheck and compilation passed. The native
+The earlier A2 source passed341/341 local affected tests and289/289 fixture
+follow-up tests. Its first hosted full run passed4116/4118; two stale test
+fixtures were corrected without changing runtime source. Discovery of the
+newer approved main required the additional recovery reconciliation described
+above. Its complete immutable regression and package results must be bound to
+the new combined source; prior source results do not certify it. The native
 configuration remains`f030f068a845d28f0717bf3edabe8bba0483f55cc3cc2f95a6feedb634c10d28`.
 The hosted immutable full/package gate and live acceptance are pending.
+
+## Reconciliation with approved main
+
+The combined branch retains main's entire24-case
+`test/backup-journal-recovery.test.ts` unchanged. Its fixed capsule replaces
+the undeployed A2 sibling-archive helper; the latter is removed. Main's exact
+de71 reporting handover, backup documentation and dedicated recovery gate are
+retained. The workflow branch list includes both repair branches, with every
+existing full regression, publication benchmark and isolated package smoke gate.
+
+The earlier assertions remain covered as follows; none relies on the retired
+optional `rollbackRecovery` return field.
+
+| Earlier boundary | Current actual regression |
+| --- | --- |
+| Hot journal needs writable isolated recovery; source/raw bytes, inodes and clocks unchanged | Both main's `real crash-left hot journal recovers only its candidate and preserves originals and source` and the additional hot/readonly-copy cases |
+| Crash after promotion or an original-member handoff | Main's durable relocation/promotion interruption cases plus three actual SIGKILL cases after promotion, database relocation and journal relocation |
+| Original source excluded from recovery targets | Recovery-namespace refusal and a real original source inode moved to pending after source-path replacement; bytes and live state remain unchanged |
+| Foreign account or incomplete history cannot certify | Main's foreign/corrupt cases plus two repeated real hot-journal foreign/history failures with both good generations retained |
+| Unknown or completed-copy sidecar cannot be erased | Main's `unrelated names and completed-copy journals remain refusal boundaries` and the additional unknown/completed-sidecar cases |
+| Interrupted derived WAL/SHM cleanup is limited to candidate | Main's same-family candidate replacement plus the additional normalization-interruption regression |
+| Insufficient copy reserve preserves originals and permits a genuinely later retry | Additional unavailable-reserve regression with original hashes and current source unchanged |
+| Archive/temp metadata cannot grow without bound | Main's second-incident refusal and fixed temporary-publication cases plus repeated fixed-capsule capacity/layout refusal tests |
+| A1024-byte committed PERSIST journal is not assumed hot | Main's cold PERSIST case and the additional actual1024-byte zero-header fixture |
+
+The former A2 blanket mixed-WAL refusal is not imposed on approved main's
+paired-family preservation and full-validation contract. This is an explicit
+reconciliation of two implementations, not an assertion that missing WAL
+frames were observed or reconstructed. The strict unknown/completed-sidecar
+refusals, immutable original family and full financial certification remain.
+The fixed one-incident capsule is stricter than A2's two-incident archive.
+
+The nine additional EMPTY/source-replacement regressions and all worker
+lease/cancellation checks are retained. An independent source-bound run passed
+53/53 main recovery, EMPTY, native worker and abort/footer tests before the final
+legacy-path original-inode guard; the final combined source requires its own
+recorded validation and immutable hosted package gate.
+
+The final main-based combined local run passed535/535 tests across18 affected
+TypeScript suites and124/124 application/reporting MJS tests, with zero failures,
+skips or cancellations. Full typecheck and compilation passed. These results
+include the new original-inode guard and all three real process-kill recovery
+boundaries. Hosted full regression, exact package validation, native activation
+and sustained live operation remain pending for this combined source.
