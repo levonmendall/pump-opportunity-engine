@@ -1,6 +1,7 @@
 /** Live PAPER market scope. The clock starts at the actual canonical PumpSwap
  * migration, never at mint creation, rediscovery, a pool refresh or reconnect. */
 import {createHash} from 'node:crypto';
+import {types as utilTypes} from 'node:util';
 import bs58 from 'bs58';
 import {PublicKey} from '@solana/web3.js';
 import {decodeMigrationIdentity} from './migration-identity.js';
@@ -24,14 +25,27 @@ export type MigrationOriginRead={signature:string;availableAt:number;transaction
 export type MigrationOrigin={originConfirmed:MigrationOriginRead;originFinalized:MigrationOriginRead};
 const integer=(v:unknown):v is number=>Number.isSafeInteger(v)&&Number(v)>=0;
 const digest=(v:unknown)=>createHash('sha256').update(JSON.stringify(v)).digest('hex');
+const IMMUTABLE_PROOF_FIELDS=['version','mint','pool','signature','slot','migrationAt','availableAt','confirmedTransactionSha256','finalizedTransactionSha256'] as const;
+const validatedImmutableProofs=new WeakSet<object>();
+/** Only known frozen, plain scalar data can retain structural validation.
+ * Never freeze caller input or trust accessors, prototypes, proxies or extra
+ * fields. Mutable/extended proofs retain the complete validation path. */
+export function cacheableImmutableMigrationProof(value:unknown):boolean{
+ if(!value||typeof value!=='object'||utilTypes.isProxy(value)||Object.getPrototypeOf(value)!==Object.prototype||!Object.isFrozen(value))return false;
+ const descriptors=Object.getOwnPropertyDescriptors(value);
+ return Reflect.ownKeys(descriptors).length===IMMUTABLE_PROOF_FIELDS.length&&IMMUTABLE_PROOF_FIELDS.every(key=>{const d=descriptors[key];return !!d&&Object.hasOwn(d,'value')&&d.configurable===false&&d.writable===false;});
+}
 export function validMigrationAgeProof(value:unknown):value is MigrationAgeProof{
  try{
+  if(value&&typeof value==='object'&&validatedImmutableProofs.has(value))return true;
   const p=value as MigrationAgeProof;
-  return !!p&&p.version===MIGRATION_AGE_POLICY.version&&new PublicKey(p.mint).toBase58()===p.mint
+  const valid=!!p&&p.version===MIGRATION_AGE_POLICY.version&&new PublicKey(p.mint).toBase58()===p.mint
    &&canonicalObservationPool(p.mint,p.pool)===p.pool&&typeof p.signature==='string'&&p.signature.length<=100&&bs58.decode(p.signature).length===64
    &&integer(p.slot)&&integer(p.migrationAt)&&p.migrationAt>0&&p.migrationAt%1000===0
    &&integer(p.availableAt)&&p.availableAt>=p.migrationAt
    &&[p.confirmedTransactionSha256,p.finalizedTransactionSha256].every(s=>typeof s==='string'&&/^[a-f0-9]{64}$/.test(s));
+  if(valid&&cacheableImmutableMigrationProof(p))validatedImmutableProofs.add(p);
+  return valid;
  }catch{return false;}
 }
 /** Both reads must independently establish the same actual Pump migrate CPI,

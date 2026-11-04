@@ -152,6 +152,37 @@ test('optional reporting coalesces without changing intake ACK ownership and ret
  }finally{await f.close();}
 });
 
+test('new applied ACKs allow one refreshed optional report during backlog after the scheduled intake send turn',async()=>{
+ let at=1000;const f=fixture(100000,()=>at),scope=reportingScope();try{
+  f.current().ready();for(let n=1;n<=3;n++)f.intake.observeIdentity(identity(n));await flush();
+  const ids=f.current().intake().map(row=>row.id);f.current().ack([999]);
+  f.intake.registryReporting(scope,at);assert.equal(f.current().sent.filter(row=>row.kind==='reporting').length,0,'unknown IDs cannot earn reporting credit');
+  f.current().ack([ids[0]],[],[{id:ids[0],reason:'TOKEN_AGE_EXCEEDS_24H'}]);
+  f.intake.observeIdentity(identity(4));f.intake.registryReporting(scope,at);
+  assert.equal(f.current().sent.filter(row=>row.kind==='reporting').length,0,'the already scheduled unsent intake turn retains priority');await flush();
+  for(let n=0;n<100;n++)f.intake.registryReporting(scope,at);
+  const first=f.current().sent.filter(row=>row.kind==='reporting');assert.equal(first.length,1);assert.equal(f.intake.usage().pending,3);assert.equal(f.intake.usage().processedAcknowledged,1);assert.equal(f.intake.usage().durableCommitted,0,'an exclusion ACK is not a durable discovery');
+  f.current().emit('message',reportReceipt(first[0],at));assert.equal(f.intake.registryReporting(scope,at).health.state,'FRESH');assert.equal(f.intake.usage().pending,3,'optional completion cannot ACK the retained tail');
+  at=2001;f.current().ack([ids[0]]);await flush();for(let n=0;n<100;n++)f.intake.registryReporting(scope,at);
+  assert.equal(f.current().sent.filter(row=>row.kind==='reporting').length,1,'duplicate ACKs cannot renew an already consumed opportunity');
+  f.current().ack([ids[1]]);await flush();f.intake.registryReporting(scope,at);
+  const second=f.current().sent.filter(row=>row.kind==='reporting');assert.equal(second.length,2);assert.equal(f.intake.usage().pending,2);
+  f.current().emit('message',{...reportReceipt(second[1],at),snapshot:null,reasonCode:'REPORTING_READ_BUSY'});
+  const retained=f.intake.registryReporting(scope,at);assert.equal(retained.health.observedAt,1000);assert.equal(retained.health.reasonCode,'REPORTING_READ_BUSY');assert.equal(f.intake.available(),true);assert.equal(f.intake.usage().failures,0);
+ }finally{await f.close();}
+});
+
+test('a replacement worker cannot spend reporting credit earned by the prior generation',async t=>{
+ t.mock.timers.enable({apis:['setTimeout']});let at=1000;const f=fixture(100000,()=>at),scope=reportingScope();try{
+  const prior=f.current();prior.ready();for(let n=1;n<=3;n++)f.intake.observeIdentity(identity(n));await flush();const ids=prior.intake().map(row=>row.id);
+  prior.ack([ids[0]]);await flush();assert.equal(f.intake.usage().processedAcknowledged,1);
+  prior.emit('error',Error('OFFLINE generation replacement'));t.mock.timers.tick(500);await until(()=>f.workers.length===2);at=2000;const replacement=f.current();replacement.ready();await flush();
+  f.intake.registryReporting(scope,at);assert.equal(replacement.sent.filter(row=>row.kind==='reporting').length,0,'old ACK credit must not qualify replayed unacknowledged work');
+  prior.ack([ids[1]]);f.intake.registryReporting(scope,at);assert.equal(replacement.sent.filter(row=>row.kind==='reporting').length,0,'obsolete worker ACKs cannot earn new-generation credit');
+  replacement.ack([ids[1]]);await flush();f.intake.registryReporting(scope,at);assert.equal(replacement.sent.filter(row=>row.kind==='reporting').length,1);assert.equal(f.intake.usage().pending,1);assert.equal(f.intake.usage().processedAcknowledged,2);
+ }finally{await f.close();}
+});
+
 test('source and worker generation changes cannot relabel old summary data as a fresh current sample',async t=>{
  t.mock.timers.enable({apis:['setTimeout']});let at=1000;const f=fixture(100000,()=>at),scope=reportingScope();try{
   const first=f.current();first.ready();f.intake.registryReporting(scope,at);first.emit('message',reportReceipt(first.sent.find(r=>r.kind==='reporting'),at));
