@@ -36,7 +36,7 @@ test('one V3 reporting view authenticates each epoch and each cached fill once a
  f.db.prepare=prepare;
  const anchors=queries.filter(q=>q.sql.includes('FROM actions a JOIN journal j ON j.action_id=a.id WHERE a.id=?'));
  assert.deepEqual(anchors.map(q=>q.args[0]).sort(),['epoch:'+PAPER_TEN_SOL_EPOCH_ID,'epoch:'+PAPER_V3_TEN_SOL_EPOCH_ID].sort());
- assert.equal(queries.filter(q=>q.sql==='SELECT at,kind,detail FROM journal WHERE action_id=?').length,50,'overlapping recent/cache fills reuse exact already-authenticated evidence');
+ assert.equal(queries.filter(q=>q.sql.includes('SELECT j.action_id actionId,j.revision attemptRevision')).length,50,'each cached fill rereads the joined original attempt/order/result once; overlapping recent rows reuse only this view');
  assert.equal(f.prefix(),before);assert.equal(result.input.history.points.at(-1)!.at,AT);assert.equal(result.input.tradeCache!.trades.length,50);assert.ok(result.snapshot.trades.length>=20);assert.equal(result.input.projection.operatingCostsMicroUsd,null);assert.equal(result.snapshot.balances.economicPnlUsd,null,'unknown operating costs remain unknown');
  for(const [value,kind] of [[result.input.state,'state'],[result.input.history,'history'],[result.input.tradeCache,'trades']] as const)assert.equal(hasLedgerReportingAuthentication(value,result.input.state,kind),false,'authentication expires at publication boundary');
 });

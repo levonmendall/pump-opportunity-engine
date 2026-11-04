@@ -44,3 +44,22 @@ export async function prepareV3ReportingAccount(ledger:PaperLedger,backupDirecto
  for(let n=0;n<720;n++){const observedAt=at-720000+n*1000;ledger.recordOperatingReportingPoint({at:observedAt,tradingMicroUsd:n%50===0?null:'0',economicMicroUsd:null},observedAt);}
  return {closedRoundTrips:38,cachedFills:50,sourceHistoryPoints:ledger.getOperatingReportingHistory().points.length};
 }
+
+/** Large retained-finance fixture, never production evidence. Repeats the
+ * exact original payload/hash/result of one real, idempotent reconciliation
+ * under distinct fixture IDs and contiguous revisions in a single staging
+ * transaction. The unchanged accounting values and original time are not
+ * fabricated into later observations. Timed publications run only afterward. */
+export function retainFixtureFinancialRows(ledger:PaperLedger,count:number,at:number,marks:Record<string,Mark>){
+ assert.ok(Number.isSafeInteger(count)&&count>=0&&count<=500000);
+ const db=(ledger as unknown as {db:import('better-sqlite3').Database}).db;
+ if(count){
+  const id='offline-retained-finance-template';ledger.reconcile(id,at,reportingFixturePrice(at-1000),marks);
+  const row=db.prepare('SELECT j.at,j.kind,j.detail,a.payload_hash,a.result FROM journal j JOIN actions a ON a.id=j.action_id WHERE j.action_id=?').get(id) as {at:number;kind:string;detail:string;payload_hash:string;result:string};
+  const state={...structuredClone(ledger.state())},insertAction=db.prepare('INSERT INTO actions VALUES(?,?,?)'),insertJournal=db.prepare('INSERT INTO journal VALUES(?,?,?,?,?)');
+  db.transaction(()=>{for(let n=0;n<count;n++){const action='offline-retained-finance:'+n;insertAction.run(action,row.payload_hash,row.result);insertJournal.run(++state.revision,action,row.at,row.kind,row.detail);}db.prepare('UPDATE financial_state SET body=? WHERE singleton=1').run(JSON.stringify(state));}).immediate();
+  assert.equal(ledger.state().revision,state.revision);db.pragma('wal_checkpoint(TRUNCATE)');
+ }
+ const counts=db.prepare('SELECT (SELECT count(*) FROM actions) actions,(SELECT count(*) FROM journal) journal').get() as {actions:number;journal:number};
+ return {appendedSyntheticReconciliationRows:count,...counts,originalTemplateClock:count?at:null,syntheticFixture:true,operatingDatabaseCopied:false};
+}

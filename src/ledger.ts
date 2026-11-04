@@ -67,10 +67,13 @@ export type LedgerState = {
   controls: { entriesEnabled: boolean; reason: string; changedAt: number; readinessVersion: string | null; stopRequested: boolean };
 };
 type State = LedgerState;
-type ReportingReadScope={active:boolean;body?:string;state?:Readonly<State>;history?:OperatingReportingHistory;trades?:ReportingTradeCache;verifiedTrades:Map<string,ReportingFilledTrade>};
+type ReportingReadScope={active:boolean;body?:string;state?:Readonly<State>;history?:OperatingReportingHistory;trades?:ReportingTradeCache;tradesBody?:string|null;verifiedTrades:Map<string,ReportingFilledTrade>};
+type ReportingTradeEvidence={actionId:string;attemptRevision:number;at:number;kind:string;detail:string|null;payloadHash:string|null;result:string|null;orderRevision:number|null;orderDetail:string|null};
+type AuthenticatedReportingTrade={evidence:ReportingTradeEvidence;trade:ReportingFilledTrade;financialRevision:number;inceptionAt:number};
 const reportingAuthentication=new WeakMap<object,{scope:ReportingReadScope;kind:'state'|'history'|'trades'}>();
+const deeplyFrozenReportingValues=new WeakSet<object>();
 function freezeReportingValue<T>(value:T,seen=new WeakSet<object>()):T{
-  if(value&&typeof value==='object'&&!seen.has(value)){seen.add(value);for(const item of Object.values(value))freezeReportingValue(item,seen);Object.freeze(value);}return value;
+  if(value&&typeof value==='object'&&!seen.has(value)&&!deeplyFrozenReportingValues.has(value)){seen.add(value);for(const item of Object.values(value))freezeReportingValue(item,seen);Object.freeze(value);deeplyFrozenReportingValues.add(value);}return value;
 }
 /** Internal provenance of a frozen value in one active owner-thread report.
  * Callers cannot manufacture this binding or reuse it in another publication. */
@@ -615,6 +618,12 @@ export class PaperLedger {
 
   private readonly db: Database.Database;
   private reportingReadScope:ReportingReadScope|undefined;
+  // Only immutable reporting derivatives persist between reports. Every new
+  // view still authenticates the current financial state/epoch, then rereads
+  // original metadata and joined journal/action bytes before reusing a value.
+  private reportingHistoryBytes:{body:string|null;inceptionAt:number;history:OperatingReportingHistory}|undefined;
+  private reportingTradesBytes:{body:string|null;inceptionAt:number;financialRevision:number;lastAt:number;trades:ReportingTradeCache}|undefined;
+  private readonly reportingTradeEvidence=new Map<string,AuthenticatedReportingTrade>();
   private readonly historicalClosedCycles=new Map<string,ClosedCycle|null>();
   private ownerFd: number | undefined;
   readonly sqlite: { version: string; source: string };
@@ -699,13 +708,18 @@ export class PaperLedger {
     if(row?.body!==scope.body)throw Error('REPORTING_READ_SCOPE_FINANCIAL_HEAD_CHANGED');
   }
   private requireFinancialMutationOutsideReport(){if(this.reportingReadScope)throw Error('REPORTING_READ_SCOPE_FINANCIAL_MUTATION_REFUSED');}
-  private rememberReportingHistory(history:OperatingReportingHistory){
+  private rememberReportingHistory(history:OperatingReportingHistory,body?:string|null){
     const scope=this.reportingReadScope;if(!scope)return history;
-    scope.history=freezeReportingValue(history);reportingAuthentication.set(scope.history,{scope,kind:'history'});return scope.history;
+    scope.history=freezeReportingValue(history);reportingAuthentication.set(scope.history,{scope,kind:'history'});
+    if(body!==undefined)this.reportingHistoryBytes={body,inceptionAt:scope.state!.inceptionAt,history:scope.history};
+    return scope.history;
   }
-  private rememberReportingTrades(trades:ReportingTradeCache){
+  private rememberReportingTrades(trades:ReportingTradeCache,body?:string|null){
     const scope=this.reportingReadScope;if(!scope)return trades;
-    scope.trades=freezeReportingValue(trades);reportingAuthentication.set(scope.trades,{scope,kind:'trades'});return scope.trades;
+    scope.trades=freezeReportingValue(trades);reportingAuthentication.set(scope.trades,{scope,kind:'trades'});
+    if(body!==undefined){scope.tradesBody=body;this.reportingTradesBytes={body,inceptionAt:scope.state!.inceptionAt,financialRevision:scope.state!.revision,lastAt:scope.state!.lastAt,trades:scope.trades};}
+    const retained=new Set(trades.trades.map(row=>row.actionId));for(const id of this.reportingTradeEvidence.keys())if(!retained.has(id))this.reportingTradeEvidence.delete(id);
+    return scope.trades;
   }
   private assertState(s: State) { validateFinancialState(s, this.accountId, this.mode,{allowUnavailableEntryPolicy:true}); }
   private apply<T>(id: string, kind: string, now: number, payload: unknown, fn: (s: State) => T): T {
@@ -1302,22 +1316,46 @@ export class PaperLedger {
   getReportingTrades():ReportingTradeCache {
     if(this.reportingReadScope?.trades)return this.reportingReadScope.trades;
     const state=this.state(),size=this.db.prepare("SELECT length(CAST(value AS BLOB)) size FROM metadata WHERE key='reporting_trades'").get() as {size:number}|undefined;
-    if(!size)return this.rememberReportingTrades({schemaVersion:1,accountId:state.accountId,inceptionAt:state.inceptionAt,windowLimited:false,trades:[]});
+    if(!size)return this.rememberReportingTrades({schemaVersion:1,accountId:state.accountId,inceptionAt:state.inceptionAt,windowLimited:false,trades:[]},null);
     if(size.size>128*1024)throw Error('reporting trade cache bound');
     const raw=this.db.prepare("SELECT value FROM metadata WHERE key='reporting_trades'").get() as {value:string};
-    const cache=validateReportingTradeCache(JSON.parse(raw.value),state.accountId,state.inceptionAt,state.lastAt);
-    for(const trade of cache.trades)this.validateReportingTrade(trade);return this.rememberReportingTrades(cache);
+    const prior=this.reportingReadScope&&this.reportingTradesBytes;
+    const cache=prior&&prior.body===raw.value&&prior.trades.accountId===state.accountId&&prior.inceptionAt===state.inceptionAt&&prior.financialRevision<=state.revision&&prior.lastAt<=state.lastAt?prior.trades:validateReportingTradeCache(JSON.parse(raw.value),state.accountId,state.inceptionAt,state.lastAt);
+    for(const trade of cache.trades)this.validateReportingTrade(trade);return this.rememberReportingTrades(cache,raw.value);
   }
   private validateReportingTrade(trade:ReportingFilledTrade){
     const verified=this.reportingReadScope?.verifiedTrades.get(trade.actionId);
     if(verified){if(!isDeepStrictEqual(verified,trade))throw Error('reporting trade durable evidence mismatch');return;}
-    const attempt=this.db.prepare('SELECT at,kind,detail FROM journal WHERE action_id=?').get(trade.actionId) as {at:number;kind:string;detail:string}|undefined;
-    if(!attempt||attempt.kind!=='attempt'||Buffer.byteLength(attempt.detail)>65536)throw Error('reporting trade attempt absent');
-    const payload=JSON.parse(attempt.detail),order=this.db.prepare('SELECT detail FROM journal WHERE action_id=?').get('order:'+payload.orderId) as {detail:string}|undefined;
-    if(!order||Buffer.byteLength(order.detail)>65536)throw Error('reporting trade order absent');
-    const expected=reportingFilledTrade(trade.actionId,attempt.at,payload,JSON.parse(order.detail),this.actionResult(trade.actionId));
+    // All three original authority rows are reread through their existing
+    // unique indexes. The JSON order-key extraction is bounded before use.
+    // Exact row bytes/revisions, not a TTL or unchanged financial head, permit
+    // reusing an already verified immutable trade projection.
+    const evidence=this.db.prepare(`SELECT j.action_id actionId,j.revision attemptRevision,j.at,j.kind,
+      CASE WHEN length(CAST(j.detail AS BLOB))<=65536 THEN j.detail END detail,
+      a.payload_hash payloadHash,a.result,o.revision orderRevision,
+      CASE WHEN length(CAST(o.detail AS BLOB))<=65536 THEN o.detail END orderDetail
+      FROM journal j LEFT JOIN actions a ON a.id=j.action_id
+      LEFT JOIN journal o ON o.action_id=CASE WHEN length(CAST(j.detail AS BLOB))<=65536 THEN CASE WHEN json_valid(j.detail) THEN 'order:'||json_extract(j.detail,'$.orderId') END END
+      WHERE j.action_id=?`).get(trade.actionId) as ReportingTradeEvidence|undefined;
+    if(!evidence||evidence.kind!=='attempt'||typeof evidence.detail!=='string')throw Error('reporting trade attempt absent');
+    if(typeof evidence.orderDetail!=='string')throw Error('reporting trade order absent');
+    const scope=this.reportingReadScope,prior=scope&&this.reportingTradeEvidence.get(trade.actionId),state=scope?.state;
+    if(prior&&state&&prior.inceptionAt===state.inceptionAt&&prior.financialRevision<=state.revision&&isDeepStrictEqual(prior.evidence,evidence)&&isDeepStrictEqual(prior.trade,trade)){
+      scope.verifiedTrades.set(trade.actionId,prior.trade);return;
+    }
+    this.reportingTradeEvidence.delete(trade.actionId);
+    const expected=reportingFilledTrade(trade.actionId,evidence.at,JSON.parse(evidence.detail),JSON.parse(evidence.orderDetail),typeof evidence.result==='string'?JSON.parse(evidence.result):undefined);
     if(!expected||!isDeepStrictEqual(trade,expected))throw Error('reporting trade durable evidence mismatch');
-    this.reportingReadScope?.verifiedTrades.set(trade.actionId,freezeReportingValue(structuredClone(trade)));
+    if(scope&&state){
+      const immutable=freezeReportingValue(structuredClone(trade));scope.verifiedTrades.set(trade.actionId,immutable);
+      const retainedBytes=Buffer.byteLength(evidence.detail)+Buffer.byteLength(evidence.orderDetail)+Buffer.byteLength(evidence.result??'')+Buffer.byteLength(evidence.payloadHash??'')+Buffer.byteLength(evidence.actionId);
+      // Oversized original evidence is still validated normally, but is not
+      // retained as an optimization. At most50 bounded raw proofs survive.
+      if(retainedBytes<=128*1024)this.reportingTradeEvidence.set(trade.actionId,{evidence:freezeReportingValue(evidence),trade:immutable,financialRevision:state.revision,inceptionAt:state.inceptionAt});
+      // A later metadata write may fail. Keep this private derivative cache
+      // bounded even then; eviction only requires normal reauthentication.
+      if(this.reportingTradeEvidence.size>50){let oldest:string|undefined,at=Infinity;for(const [id,row]of this.reportingTradeEvidence)if(row.evidence.at<at){oldest=id;at=row.evidence.at;}if(oldest!==undefined)this.reportingTradeEvidence.delete(oldest);}
+    }
   }
   recordReportingTrades(trades:readonly ReportingFilledTrade[]):ReportingTradeCache {
     const state=this.state();
@@ -1326,17 +1364,28 @@ export class PaperLedger {
     // Validate each supplied row even when optional explanations make the full
     // presentation exceed its byte budget. Durable actions are never pruned.
     for(const trade of trades)validateReportingTradeCache({schemaVersion:1,accountId:state.accountId,inceptionAt:state.inceptionAt,windowLimited:false,trades:[trade]},state.accountId,state.inceptionAt,state.lastAt);
-    const result=this.db.transaction(()=>{
-      this.assertReportingHead();
-      const previous=this.getReportingTrades(),byId=new Map(previous.trades.map(row=>[row.actionId,row]));
+    const merge=(previous:ReportingTradeCache)=>{
+      const byId=new Map(previous.trades.map(row=>[row.actionId,row]));
       for(const trade of trades){this.validateReportingTrade(trade);const old=byId.get(trade.actionId);if(old&&!isDeepStrictEqual(old,trade))throw Error('reporting trade cache conflict');byId.set(trade.actionId,structuredClone(trade));}
       const sorted=[...byId.values()].sort((a,b)=>Date.parse(b.at)-Date.parse(a.at)||a.actionId.localeCompare(b.actionId)),next:ReportingTradeCache={...previous,windowLimited:previous.windowLimited||sorted.length>50,trades:sorted.slice(0,50)};
+      if(isDeepStrictEqual(previous,next))return {cache:previous,body:undefined};
       while(Buffer.byteLength(JSON.stringify(next))>128*1024&&next.trades.length){next.trades.pop();next.windowLimited=true;}
+      if(isDeepStrictEqual(previous,next))return {cache:previous,body:undefined};
       validateReportingTradeCache(next,state.accountId,state.inceptionAt,state.lastAt);
-      if(!isDeepStrictEqual(previous,next))this.db.prepare("INSERT INTO metadata VALUES('reporting_trades',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").run(JSON.stringify(next));
-      return next;
-    }).immediate();
-    return this.rememberReportingTrades(result);
+      return {cache:next,body:JSON.stringify(next)};
+    };
+    if(this.reportingReadScope){
+      const previous=this.getReportingTrades(),result=merge(previous);this.assertReportingHead();
+      if(result.body===undefined)return previous; // No writer lock/commit for unchanged presentation metadata.
+      this.db.transaction(()=>{
+        this.assertReportingHead();
+        const raw=this.db.prepare("SELECT value FROM metadata WHERE key='reporting_trades'").get() as {value:string}|undefined;
+        if((raw?.value??null)!==this.reportingReadScope!.tradesBody)throw Error('REPORTING_READ_SCOPE_TRADE_METADATA_CHANGED');
+        this.db.prepare("INSERT INTO metadata VALUES('reporting_trades',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").run(result.body!);
+      }).immediate();
+      return this.rememberReportingTrades(result.cache,result.body);
+    }
+    return this.db.transaction(()=>{const result=merge(this.getReportingTrades());if(result.body!==undefined)this.db.prepare("INSERT INTO metadata VALUES('reporting_trades',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").run(result.body);return result.cache;}).immediate();
   }
   /** O(1) lookup of a durable idempotent result; no state or journal mutation. */
   actionResult(id: string): unknown | undefined {
@@ -1592,23 +1641,37 @@ export class PaperLedger {
   getOperatingReportingHistory():OperatingReportingHistory {
     if(this.reportingReadScope?.history)return this.reportingReadScope.history;
     const inceptionAt=this.state().inceptionAt,size=this.db.prepare('SELECT length(CAST(value AS BLOB)) size FROM metadata WHERE key=?').get(REPORTING_OPERATING_HISTORY_KEY) as {size:number}|undefined;
-    if(!size)return this.rememberReportingHistory({schemaVersion:2,basis:OPERATING_REPORTING_BASIS,cutoverAt:null,firstObservedAt:null,points:[{at:inceptionAt,tradingMicroUsd:'0',economicMicroUsd:null}],windowLimited:false,downsampled:false});
+    if(!size)return this.rememberReportingHistory({schemaVersion:2,basis:OPERATING_REPORTING_BASIS,cutoverAt:null,firstObservedAt:null,points:[{at:inceptionAt,tradingMicroUsd:'0',economicMicroUsd:null}],windowLimited:false,downsampled:false},null);
     if(size.size>262144)throw Error('operating reporting history metadata limit');
     const row=this.db.prepare('SELECT value FROM metadata WHERE key=?').get(REPORTING_OPERATING_HISTORY_KEY) as {value:string};
-    return this.rememberReportingHistory(validateOperatingReportingHistory(JSON.parse(row.value),inceptionAt));
+    const prior=this.reportingReadScope&&this.reportingHistoryBytes;
+    return this.rememberReportingHistory(prior&&prior.body===row.value&&prior.inceptionAt===inceptionAt?prior.history:validateOperatingReportingHistory(JSON.parse(row.value),inceptionAt),row.value);
   }
   /** Only reporting metadata is written. observedAt is the actual source
    * observation time; historical null markers denote absence, not old prices. */
   recordOperatingReportingPoint(point:ReportingPoint,observedAt:number):OperatingReportingHistory {
-    const inceptionAt=this.state().inceptionAt;this.validateReportingPoint(point,inceptionAt);
-    if(!Number.isSafeInteger(observedAt)||observedAt<point.at)throw Error('operating reporting observation time');
-    const inceptionPoint=point.at===inceptionAt&&point.tradingMicroUsd==='0'&&point.economicMicroUsd===null;
-    if(!inceptionPoint&&point.at<observedAt&&(point.tradingMicroUsd!==null||point.economicMicroUsd!==null))throw Error('operating reporting data cannot be backdated');
+    return this.recordOperatingReportingPoints([point],observedAt);
+  }
+  /** One actual observation may also need an original null-gap marker. Apply
+   * the same ordered retention decisions, but commit the bounded batch once. */
+  recordOperatingReportingPoints(points:readonly ReportingPoint[],observedAt:number):OperatingReportingHistory {
+    if(!Array.isArray(points)||points.length>3)throw Error('operating reporting point batch bound');
+    const inceptionAt=this.state().inceptionAt;
+    if(!Number.isSafeInteger(observedAt)||observedAt<inceptionAt)throw Error('operating reporting observation time');
+    for(const point of points){
+      this.validateReportingPoint(point,inceptionAt);
+      if(observedAt<point.at)throw Error('operating reporting observation time');
+      const inceptionPoint=point.at===inceptionAt&&point.tradingMicroUsd==='0'&&point.economicMicroUsd===null;
+      if(!inceptionPoint&&point.at<observedAt&&(point.tradingMicroUsd!==null||point.economicMicroUsd!==null))throw Error('operating reporting data cannot be backdated');
+    }
+    if(!points.length)return this.getOperatingReportingHistory();
     const result=this.db.transaction(()=>{
       this.assertReportingHead();
-      const h=structuredClone(this.getOperatingReportingHistory()),last=h.points.at(-1)!;
+      const previous=this.getOperatingReportingHistory(),h={...previous,points:[...previous.points]};let changed=false;
+      for(const point of points){const last=h.points.at(-1)!;
       if(point.at<last.at)throw Error('operating reporting point regression');
-      if(point.at===last.at){if(point.tradingMicroUsd!==last.tradingMicroUsd||point.economicMicroUsd!==last.economicMicroUsd)throw Error('operating reporting point conflict');return h;}
+      if(point.at===last.at){if(point.tradingMicroUsd!==last.tradingMicroUsd||point.economicMicroUsd!==last.economicMicroUsd)throw Error('operating reporting point conflict');continue;}
+      changed=true;
       if(h.cutoverAt===null)h.cutoverAt=observedAt;
       if(h.points.length===1&&point.at>inceptionAt+1)h.points.push({at:inceptionAt+1,tradingMicroUsd:null,economicMicroUsd:null});
       h.points.push({...point});
@@ -1619,10 +1682,12 @@ export class PaperLedger {
         if(remove>=0){h.points.splice(remove,1);h.downsampled=true;}
         else{const gap=h.points[1]?.at===inceptionAt+1&&h.points[1].tradingMicroUsd===null&&h.points[1].economicMicroUsd===null;h.points.splice(gap?2:1,1);h.windowLimited=true;if(!gap&&h.points[1]!.at>inceptionAt+1)h.points.splice(1,0,{at:inceptionAt+1,tradingMicroUsd:null,economicMicroUsd:null});}
       }
+      }
+      if(!changed)return {history:previous,body:undefined};
       const validated=validateOperatingReportingHistory(h,inceptionAt),body=JSON.stringify(validated);if(Buffer.byteLength(body)>262144)throw Error('operating reporting history metadata limit');
-      this.db.prepare('INSERT INTO metadata VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value').run(REPORTING_OPERATING_HISTORY_KEY,body);return validated;
+      this.db.prepare('INSERT INTO metadata VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value').run(REPORTING_OPERATING_HISTORY_KEY,body);return {history:validated,body};
     }).immediate();
-    return this.rememberReportingHistory(result);
+    return this.rememberReportingHistory(result.history,result.body);
   }
   projection(now: number, price?: UsdPrice, marks: Record<string, Mark> = {}) {
     const s = this.state();

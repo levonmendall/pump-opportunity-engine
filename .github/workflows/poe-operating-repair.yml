@@ -1,7 +1,7 @@
-name: Validate and package POE migration queue re-entry repair
+name: Validate and package POE operating reliability repairs
 on:
   push:
-    branches: [repair/poe-migration-reentry-20261104]
+    branches: [repair/poe-operating-reliability-20261104]
     # The exact runtime artifact precedes its reporting-only source handover.
     # The existing PR release gate still validates the later reporting commit.
     paths-ignore:
@@ -33,7 +33,7 @@ jobs:
           mkdir -p /tmp/poe-throughput-validation
           git rev-parse HEAD > /tmp/poe-throughput-validation/source-commit.txt
           git rev-parse HEAD^{tree} > /tmp/poe-throughput-validation/source-tree.txt
-          git merge-base --is-ancestor 3098f895d0d2fb5fa72093bca284981223555df1 HEAD
+          git merge-base --is-ancestor 19b2aaa0b716a18758a473c7e9f5b7ebf99ca25b HEAD
           npm ci --include=dev 2>&1 | tee /tmp/poe-throughput-validation/dependencies.log
           test -z "$(git status --porcelain)"
       - name: Compile and run every application and reporting regression

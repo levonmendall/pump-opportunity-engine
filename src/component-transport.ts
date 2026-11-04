@@ -71,6 +71,11 @@ export type SignatureHistoryBatchItem<T=unknown>={key:string;id:string;status:'r
 export type SignatureHistoryBatchResponse<T=unknown>={physicalRequestId:number;requestedAt:number;responseReceivedAt:number;validatedAt:number;responseBytes:number;physicalHttpStarts:1;logicalQueries:number;overloaded:boolean;items:SignatureHistoryBatchItem<T>[]};
 export type ComponentNotice={at:number;connection:number;address:string;slot:number;hash:string;account:any;changed:boolean};
 type RecordFn=(kind:string,data:unknown)=>void;
+// Only a parsed, matching, error-only JSON-RPC envelope issues this receipt.
+// A copied code/string cannot turn an unrelated exception into a cursor refusal.
+type RpcResponseError=Readonly<{method:string;code:number;physicalRequestId:number}>;
+const rpcResponseErrors=new WeakMap<Error,RpcResponseError>();
+export function componentRpcResponseError(error:unknown){return error instanceof Error?rpcResponseErrors.get(error)??null:null;}
 type Pending={id:number;method:string;address?:string;resolve:(v:any)=>void;reject:(e:Error,acknowledged?:boolean)=>void};
 type Connection={id:number;socket:WebSocket;seen:number;expectedClose:boolean;closed:boolean;closedPromise:Promise<void>;resolveClosed:()=>void};
 export class ComponentTransport {
@@ -121,12 +126,19 @@ export class ComponentTransport {
   }
   async call<T>(method:string,params:unknown[]=[],signal?:AbortSignal,options:{latestStartAt?:number;timeoutMs?:number;admissionOpen?:()=>boolean}={}):Promise<T>{
     validateRpc({method});
-    return this.budget.operate({transport:'http',method},async op=>{
+    let parsedError:Readonly<{receipt:RpcResponseError;reason:string}>|undefined;
+    try{return await this.budget.operate({transport:'http',method},async op=>{
       const {body}=await this.httpJson(op,method,{jsonrpc:'2.0',id:op.id,method,params});
       if(body?.jsonrpc!=='2.0'||body.id!==op.id||!('result'in body)&&!body.error)throw Error('COMPONENT_HTTP_ENVELOPE');
-      if(body.error){const code=body.error.code;if(!Number.isSafeInteger(code))throw Error('COMPONENT_RPC_ERROR');throw Error(code===-32005?'COMPONENT_RPC_-32005':'COMPONENT_RPC_ERROR_'+code);}
+      if(body.error){const code=body.error.code;if(!Number.isSafeInteger(code))throw Error('COMPONENT_RPC_ERROR');const error=Error(code===-32005?'COMPONENT_RPC_-32005':'COMPONENT_RPC_ERROR_'+code);
+        if(!Array.isArray(body)&&Object.hasOwn(body,'error')&&!Object.hasOwn(body,'result')&&typeof body.error==='object'&&!Array.isArray(body.error)&&typeof body.error.message==='string')parsedError=Object.freeze({receipt:Object.freeze({method,code,physicalRequestId:op.id}),reason:error.message});
+        throw error;}
       return body.result as T;
-    },signal,{timeoutMs:1000,...options});
+    },signal,{timeoutMs:1000,...options});}catch(error){
+      // The budget intentionally normalizes errors after retaining its failed
+      // book. Bind only its unchanged parsed-response reason to the new object.
+      if(parsedError&&error instanceof Error&&error.message===parsedError.reason)rpcResponseErrors.set(error,parsedError.receipt);throw error;
+    }
   }
   private readonly historyBatchCounts={plans:0,plannedLogicalQueries:0,physicalHttpStarts:0,logicalQueriesStarted:0,successfulLogicalQueries:0,rpcErrorResponses:0,providerBackoffBatches:0};
   signatureHistoryBatchUsage(){return {scope:'THIS_TRANSPORT_INSTANCE',...this.historyBatchCounts,logicalQueriesWithoutValidatedResponse:this.historyBatchCounts.logicalQueriesStarted-this.historyBatchCounts.successfulLogicalQueries-this.historyBatchCounts.rpcErrorResponses,meaning:'One physical HTTP envelope is not one provider query or billing unit; provider batch eligibility/metering is unverified.'};}

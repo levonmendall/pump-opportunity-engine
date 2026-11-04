@@ -16,7 +16,7 @@ import {PilotRpc,PilotRpcUnavailable} from '../src/pilot-rpc.js';
 import {nativePaperRpcConfiguration} from '../src/run-native-paper.js';
 import {runInNewContext} from 'node:vm';
 import {NativeProtectionDispatch} from '../src/native-protection-dispatch.js';
-import {runNativePaper,nativePaperSourceWorkAdmission,nativePaperRequestOperationBound,nativePaperProtectionReadDeadline,nativePaperManagementReserve} from '../src/run-native-paper.js';
+import {runNativePaper,nativePaperSourceWorkAdmission,nativePaperRequestOperationBound,nativePaperProtectionReadDeadline,nativePaperManagementReserve,nativePaperRemainingEntryWork} from '../src/run-native-paper.js';
 import {NativeCandidateRunner,type NativeAuditCertificate} from '../src/native-candidate-runner.js';
 import {NativePaperWorkState} from '../src/native-paper-work.js';
 import {NativePaperEntryAdmission,type NativePaperEntryAdmissionToken} from '../src/native-paper-entry-admission.js';
@@ -60,6 +60,29 @@ function fixture(t:TestContext,timeoutMs=1000,cooperative=false,paced=false,exec
   coordinator.recover();ledger.reconcile('initial-reconcile',at,price(),{});ledger.resume('fixture-ready',at,price(),{},{version:'isolated-pilot-market-fixture',evidence:'synthetic readiness for market/ledger mechanics only',marketAt:at,recoveryComplete:true,candidateWindowsReady:true,budgetAvailable:true});
   return {captures,ledger,market,coordinator,price,calls,records,get physical(){return physical;},route:(value:any)=>{adapter=value;},now:()=>at,advance:(ms:number)=>{at+=ms;},rentChanged:()=>{rentOffset++;},bumpSlot:()=>{slot++;},slot:()=>slot,setSlot:(value:number)=>{slot=value;},pause:(p:Promise<void>)=>{wait=p;},account:(address:string)=>accounts.get(address),replaceAccount:(address:string,wire:PoolWireAccount)=>{accounts.set(address,structuredClone(wire));},overrideInventory:(value:PilotInventory|null)=>{inventoryOverride=value;},onRpc:(hook:(method:string)=>void)=>{rpcHook=hook;},onPacingWait:(hook:(ms:number)=>void)=>{activity=hook;},onRecord:(hook:(kind:string)=>void)=>{recordHook=hook;},beforePreparationRead:(hook:(input:{method:string;signal:AbortSignal})=>Promise<void>)=>{preparationHook=hook;}};
 }
+
+test('preparing a second candidate preserves the first candidate single-read quote runway and original preparation expiry',async t=>{
+ const f=fixture(t,3000,false,false,false,true),first=f.captures[0]!.proof.quote.mint,second=f.captures[1]!.proof.quote.mint;
+ const original=await f.market.prepareEntryCosts(first,signal()),prepared=f.market.entryPreparationStatus(first);
+ assert.equal(prepared.quoteReads,1);assert.equal(prepared.ready,true);
+ f.advance(250);await f.market.prepareEntryCosts(second,signal());
+ const retained=f.market.entryPreparationStatus(first);
+ assert.equal(retained.quoteReads,1,'another candidate must not evict current validated dependency addresses');
+ assert.equal(retained.expiresAt,prepared.expiresAt,'no preparation clock is renewed by another candidate');
+ // Exact gross runway from the observed 54BR handoff. The old extra discovery
+ // request made 2775ms necessary with only2370ms remaining; current links need
+ // 1575ms, including the unchanged125ms post-validation reserve.
+ const work=nativePaperRemainingEntryWork({at:f.now(),owned:false,preparation:retained});
+ assert.equal(work.decisionWorkMs+125,1575);assert.ok(work.decisionWorkMs+125<=2370);
+ const before=f.calls.length,beforeFinancial=f.ledger.state();f.bumpSlot();
+ const q=await f.market.quote({mint:first,side:'buy',inputUnits:'10000000'},signal());assert.ok(q);
+ assert.deepEqual(f.calls.slice(before).map(c=>c.method),['getMultipleAccounts']);
+ assert.equal(q.slot,f.slot());assert.equal(q.at,f.now());assert.deepEqual(f.ledger.state(),beforeFinancial);
+ const costs=f.records.findLast(r=>r.kind==='rpc-market-quote')!.data.costs;
+ assert.equal(costs.preparationAt,original.at);assert.deepEqual(costs.rentObservationsByBytes,original.rentObservationsByBytes);
+ f.advance(PILOT_ENTRY_PREPARATION_POLICY.stableReuseMaxAgeMs);
+ assert.equal(f.market.entryPreparationStatus(first).ready,false,'retained address links cannot extend layout or rent evidence');
+});
 
 for(const [background,fault]of [[0,null],[6,null],[9,null],[0,'scope'],[0,'certificate'],[0,'generation'],[0,'bucket']]as const)test(`committed actual decision quote after ${background} discretionary reads ${fault?'refuses changed '+fault:'uses certified priority over peer reservations'} and preserves holding reserves`,async t=>{
  const f=fixture(t,3000,false,true),owned=f.captures[0]!.proof.quote.mint,mint=f.captures[1]!.proof.quote.mint;

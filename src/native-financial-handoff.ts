@@ -7,7 +7,11 @@ export const HANDOFF_REASONS=['await-financial-dispatch','financial-or-source-ad
 export type HandoffReason=typeof HANDOFF_REASONS[number];
 export type HandoffCertificate={mint:string;windowEndAt:number;deadlineAt:number;admittedAt:number;openedAt:number;featuresSha256:string};
 type HandoffBlocker={blockingPrerequisite:string;operation:string;requiredMs:number|null;availableMs:number;observedAt:number};
-type Active=HandoffCertificate&{key:string;firstSeenAt:number;state:'waiting'|'dispatched';reason:HandoffReason;dispatchedAt?:number;economicDecisionObserved?:true}&Partial<HandoffBlocker>;
+type EntryWorkPlan={at:number;prepared:boolean;preparationReads:number;quoteReads:number;contextStarts:number;maximumAccountedStarts:number;preparationWorkMs:number;remainingSequenceMs:number;decisionWorkMs:number;quoteOperationMs:number;preparationExpiresAt:number|null};
+type EntryAdmissionSample={observedAt:number;admitted:boolean;reason:string;bindingDeadline:string;certificateDeadlineAt:number|null;nativeServiceLatestAt:number|null;completionDeadlineAt:number|null;latestStartAt:number|null;requestedOperationMs:number;postValidationMs:number;peerAuditReservationsDeferred:number};
+export type HandoffRemainingWorkSample=Readonly<{version:'native-entry-remaining-work-v1';sampledAt:number;plan:Readonly<EntryWorkPlan>;admission:Readonly<EntryAdmissionSample>|null}>;
+type RetainedRemainingWork=Readonly<HandoffRemainingWorkSample&{certificate:Readonly<HandoffCertificate>}>;
+type Active=HandoffCertificate&{key:string;firstSeenAt:number;state:'waiting'|'dispatched';reason:HandoffReason;dispatchedAt?:number;economicDecisionObserved?:true;remainingWork?:RetainedRemainingWork|null}&Partial<HandoffBlocker>;
 const identity=(c:HandoffCertificate)=>[c.mint,c.windowEndAt,c.openedAt,c.featuresSha256].join(':');
 const uint=(n:number)=>Number.isSafeInteger(n)&&n>=0;
 const rec=(v:unknown):Record<string,any>=>v&&typeof v==='object'&&!Array.isArray(v)?v as Record<string,any>:{};
@@ -31,6 +35,21 @@ export class NativeFinancialHandoff {
  private physicalTiming=new Map<string,{at:number;method:string|null;transport:string|null}>();
  private methodTiming=new Map<string,{method:string;transport:string;starts:number;settled:number;responses:number;queue:TimingSummary;pacing:TimingSummary;physical:TimingSummary}>();
  constructor(readonly runId:string,readonly startedAt:number,private maximumActive:number,private record:(kind:string,value:unknown)=>void=()=>{}){this.at=startedAt;}
+ /** Copy only an already calculated plan/admission sample. This reads no
+  * ledger, source, provider or clock and neither repeats nor grants admission.
+  * Early refusals before planning remain null. The private receipt is excluded
+  * from usage(), so the public reporting schema is unchanged. */
+ remainingWorkDiagnostic(plan:unknown,admission:unknown,sampledAt:number):HandoffRemainingWorkSample|null{
+  const p=rec(plan),a=rec(admission),planKeys=['at','preparationReads','quoteReads','contextStarts','maximumAccountedStarts','preparationWorkMs','remainingSequenceMs','decisionWorkMs','quoteOperationMs'] as const;
+  if(!uint(sampledAt)||!planKeys.every(k=>uint(p[k]))||p.at>sampledAt||typeof p.prepared!=='boolean'||!(p.preparationExpiresAt===null||uint(p.preparationExpiresAt))||p.preparationReads>3||![1,2].includes(p.quoteReads)||![0,2].includes(p.contextStarts)||p.maximumAccountedStarts>9)return null;
+  const copied=Object.freeze(Object.fromEntries([...planKeys.map(k=>[k,p[k]]),['prepared',p.prepared],['preparationExpiresAt',p.preparationExpiresAt]]) as EntryWorkPlan);
+  const reasons=['current-audit-certificate-required','source-admission-closed','completed-certificate-financial-priority','required-native-service-deadline','original-certificate-deadline'];
+  const deadlines=['current-certificate','required-native-service','original-certificate'];
+  const nullableKeys=['certificateDeadlineAt','nativeServiceLatestAt','completionDeadlineAt','latestStartAt'] as const;
+  const known=typeof a.admitted==='boolean'&&reasons.includes(a.reason)&&deadlines.includes(a.bindingDeadline)&&['requestedOperationMs','postValidationMs','peerAuditReservationsDeferred'].every(k=>uint(a[k]))&&nullableKeys.every(k=>a[k]===null||typeof a[k]==='number'&&Number.isSafeInteger(a[k]));
+  const sample:EntryAdmissionSample|null=known?{observedAt:sampledAt,admitted:a.admitted,reason:a.reason,bindingDeadline:a.bindingDeadline,...Object.fromEntries(nullableKeys.map(k=>[k,a[k]])),requestedOperationMs:a.requestedOperationMs,postValidationMs:a.postValidationMs,peerAuditReservationsDeferred:a.peerAuditReservationsDeferred} as EntryAdmissionSample:null;
+  return Object.freeze({version:'native-entry-remaining-work-v1',sampledAt,plan:copied,admission:sample===null?null:Object.freeze(sample)});
+ }
  /** Receipt of the actual matching decision, before optional registry writes.
   * A callback return, a local refusal or a preliminary assessment supplies no
   * such receipt. No record emission, provider call or financial mutation here. */
@@ -76,18 +95,24 @@ export class NativeFinancialHandoff {
   if(certificates.length>this.maximumActive||!this.advance(at))return false;
   const current=new Map(certificates.filter(c=>c.mint&&[c.windowEndAt,c.deadlineAt,c.admittedAt,c.openedAt].every(uint)&&c.openedAt<=c.admittedAt&&c.windowEndAt<=c.admittedAt&&c.admittedAt<=at&&at<=c.deadlineAt).map(c=>[identity(c),c]));
   for(const [key,row]of this.active)if(!current.has(key)){
-   if(row.state==='waiting'){const expired=at>row.deadlineAt;if(expired)this.expiredBeforeDispatch++;else this.invalidatedBeforeDispatch++;this.record('native-paper-certificate-handoff',{at,mint:row.mint,windowEndAt:row.windowEndAt,deadlineAt:row.deadlineAt,stage:expired?'expired-before-dispatch':'invalidated-before-dispatch',lastReason:row.reason,blockingPrerequisite:row.blockingPrerequisite??null,operation:row.operation??null,requiredMs:row.requiredMs??null,availableMs:row.availableMs??null,blockerObservedAt:row.observedAt??null,financialPermission:false});}
+   if(row.state==='waiting'){const expired=at>row.deadlineAt;if(expired)this.expiredBeforeDispatch++;else this.invalidatedBeforeDispatch++;this.record('native-paper-certificate-handoff',{at,mint:row.mint,windowEndAt:row.windowEndAt,deadlineAt:row.deadlineAt,stage:expired?'expired-before-dispatch':'invalidated-before-dispatch',lastReason:row.reason,blockingPrerequisite:row.blockingPrerequisite??null,operation:row.operation??null,requiredMs:row.requiredMs??null,availableMs:row.availableMs??null,blockerObservedAt:row.observedAt??null,remainingWork:row.remainingWork??null,financialPermission:false});}
    this.active.delete(key);
   }
   for(const [key,c]of current)if(!this.active.has(key)){this.active.set(key,{...c,key,firstSeenAt:at,state:'waiting',reason:'await-financial-dispatch'});this.seen++;}
   return true;
  }
- defer(c:HandoffCertificate,reason:HandoffReason,at:number,detail?:Omit<HandoffBlocker,'observedAt'>){
+ defer(c:HandoffCertificate,reason:HandoffReason,at:number,detail?:Omit<HandoffBlocker,'observedAt'>&{observedAt?:number},remainingWork:HandoffRemainingWorkSample|null=null){
+  // An original blocker sample can precede this receipt. Reject invalid/future
+  // clocks instead of silently restamping them as new information.
+  if(detail?.observedAt!==undefined&&(!uint(detail.observedAt)||detail.observedAt>at))return;
   if(!this.advance(at))return;const row=this.active.get(identity(c));if(!row||row.state!=='waiting')return;
+  const observedAt=detail?.observedAt??at;
+  const original=remainingWork&&remainingWork.sampledAt<=at?this.remainingWorkDiagnostic(remainingWork.plan,remainingWork.admission,remainingWork.sampledAt):null;
+  row.remainingWork=original?Object.freeze({...original,certificate:Object.freeze({mint:row.mint,windowEndAt:row.windowEndAt,deadlineAt:row.deadlineAt,admittedAt:row.admittedAt,openedAt:row.openedAt,featuresSha256:row.featuresSha256})}):null;
   const changed=row.reason!==reason||detail&&row.blockingPrerequisite!==detail.blockingPrerequisite;
   if(row.reason!==reason)this.deferralTransitionsByReason[reason]++;row.reason=reason;
-  if(detail&&/^[A-Z][A-Z0-9_]{0,95}$/.test(detail.blockingPrerequisite)&&/^[A-Z][A-Z0-9_]{0,63}$/.test(detail.operation)&&(detail.requiredMs===null||Number.isFinite(detail.requiredMs)&&detail.requiredMs>=0)&&Number.isFinite(detail.availableMs)&&detail.availableMs>=0)Object.assign(row,detail,{observedAt:at});
-  if(changed)this.record('native-paper-certificate-handoff',{at,mint:row.mint,windowEndAt:row.windowEndAt,deadlineAt:row.deadlineAt,stage:'financial-deferred',reason,...(detail?{...detail,observedAt:at}:{}),financialPermission:false});
+  if(detail&&/^[A-Z][A-Z0-9_]{0,95}$/.test(detail.blockingPrerequisite)&&/^[A-Z][A-Z0-9_]{0,63}$/.test(detail.operation)&&(detail.requiredMs===null||Number.isFinite(detail.requiredMs)&&detail.requiredMs>=0)&&Number.isFinite(detail.availableMs)&&detail.availableMs>=0)Object.assign(row,detail,{observedAt});
+  if(changed)this.record('native-paper-certificate-handoff',{at,mint:row.mint,windowEndAt:row.windowEndAt,deadlineAt:row.deadlineAt,stage:'financial-deferred',reason,...(detail?{...detail,observedAt}:{}),remainingWork:row.remainingWork,financialPermission:false});
  }
  dispatch(c:HandoffCertificate,at:number){
   if(!this.advance(at))return;const row=this.active.get(identity(c));if(!row||row.state!=='waiting'||at>row.deadlineAt)return;
@@ -105,6 +130,6 @@ export class NativeFinancialHandoff {
  usage(at:number){
   const blocked={...this.blockedMsByReason};if(uint(at)&&at>=this.at)for(const row of this.active.values())if(row.state==='waiting')blocked[row.reason]+=Math.max(0,Math.min(at,row.deadlineAt)-this.at);
   const quantile=(p:number)=>{if(!this.waits.count)return null;let sum=0;const goal=Math.ceil(this.waits.count*p);for(let i=0;i<this.waits.bins.length;i++){sum+=this.waits.bins[i]!;if(sum>=goal)return i*100;}return null;};
-  return {version:NATIVE_FINANCIAL_HANDOFF_VERSION,scope:'CURRENT_SOURCE_PROCESS' as const,runId:this.runId,startedAt:this.startedAt,generatedAt:at,seen:this.seen,dispatched:this.dispatched,financialEvaluations:this.financialEvaluations,economicDecisions:this.economicDecisions,expiredBeforeDispatch:this.expiredBeforeDispatch,invalidatedBeforeDispatch:this.invalidatedBeforeDispatch,blockedMsByReason:blocked,deferralTransitionsByReason:{...this.deferralTransitionsByReason},dispatchWait:{count:this.waits.count,mean:this.waits.count?this.waits.sum/this.waits.count:null,max:this.waits.count?this.waits.max:null,p50UpperMs:quantile(.5),p95UpperMs:quantile(.95),histogramResolutionMs:100},active:[...this.active.values()].map(({key,dispatchedAt,economicDecisionObserved,...row})=>row),requestTiming:{version:REQUEST_TIMING_VERSION,runId:this.runId,startedAt:this.startedAt,generatedAt:at,...this.timingCounts,refusals:this.timingRefusals.map(row=>({...row})),methods:[...this.methodTiming.values()].map(m=>({...m,queue:{...m.queue},pacing:{...m.pacing},physical:{...m.physical}}))}};
+  return {version:NATIVE_FINANCIAL_HANDOFF_VERSION,scope:'CURRENT_SOURCE_PROCESS' as const,runId:this.runId,startedAt:this.startedAt,generatedAt:at,seen:this.seen,dispatched:this.dispatched,financialEvaluations:this.financialEvaluations,economicDecisions:this.economicDecisions,expiredBeforeDispatch:this.expiredBeforeDispatch,invalidatedBeforeDispatch:this.invalidatedBeforeDispatch,blockedMsByReason:blocked,deferralTransitionsByReason:{...this.deferralTransitionsByReason},dispatchWait:{count:this.waits.count,mean:this.waits.count?this.waits.sum/this.waits.count:null,max:this.waits.count?this.waits.max:null,p50UpperMs:quantile(.5),p95UpperMs:quantile(.95),histogramResolutionMs:100},active:[...this.active.values()].map(({key,dispatchedAt,economicDecisionObserved,remainingWork,...row})=>row),requestTiming:{version:REQUEST_TIMING_VERSION,runId:this.runId,startedAt:this.startedAt,generatedAt:at,...this.timingCounts,refusals:this.timingRefusals.map(row=>({...row})),methods:[...this.methodTiming.values()].map(m=>({...m,queue:{...m.queue},pacing:{...m.pacing},physical:{...m.physical}}))}};
  }
 }
