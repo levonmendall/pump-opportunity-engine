@@ -33,11 +33,12 @@ export const HANDOVER=Object.freeze({
  readinessReporting:'8e1f09b01f06fc01d4bcc014961f367c15ad35b4',
  proofHandoff:'8334f5a56d01706cbdacc019bbc1fe76a136df24',
  migrationReentry:'9c528bd4750c56900ce4bc53ccf594e498377d29',
- to:'a885208fb2cc6cc2548e6e761c22300c1f6d8f54',
+ operatingReliability:'a885208fb2cc6cc2548e6e761c22300c1f6d8f54',
+ to:'79e07c604e520e9be3a55e273b4289093646b76e',
 });
 const installed=new WeakSet();
 export function attachReviewedSourceHandover(cache){
- const identity=cache.identity,p=HANDOVER,route=[p.from,p.via,p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling,p.migrationAge,p.coordinatedRepair,p.recoveryProvenance,p.migrationQuery,p.readinessReporting,p.proofHandoff,p.migrationReentry,p.to];
+ const identity=cache.identity,p=HANDOVER,route=[p.from,p.via,p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling,p.migrationAge,p.coordinatedRepair,p.recoveryProvenance,p.migrationQuery,p.readinessReporting,p.proofHandoff,p.migrationReentry,p.operatingReliability,p.to];
  if(!identity||identity.accountId!==p.accountId||identity.inceptionAt!==p.inceptionAt||identity.strategy!==p.strategy||!route.slice(0,-1).includes(identity.release))return false;
  if(installed.has(cache))return true;
  const original=cache.accept.bind(cache);
