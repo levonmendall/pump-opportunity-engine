@@ -1,0 +1,130 @@
+{
+  "kind": "OFFLINE_ORIGINAL_MIGRATION_QUEUE_CHECKPOINT",
+  "scope": "Exact compact saved cursor; no original transaction body or live migration proof. The later queue head is a separate snapshot, not a contemporaneous cursor read.",
+  "cursorCapture": {
+    "adminRun": 41767285833,
+    "at": 1793762890123,
+    "source": {
+      "commit": "8e1f09b01f06fc01d4bcc014961f367c15ad35b4",
+      "sha256": "17ff3c6cc0dfaec1380914bc058a04c04e0748021930f296cbbab216d782fa23"
+    },
+    "bodyBytes": 2027,
+    "bodySha256": "bd0092851308fd0c3b4d2d06e90a4e76024f7d5e6f3fbf38b26f13d8101976df"
+  },
+  "queueCapture": {
+    "adminRun": 41769399850,
+    "at": 1793764146373,
+    "head": {
+      "attempts": 0,
+      "direct": false,
+      "lastReasonBytes": 24,
+      "lastReasonSha256": "344adba50da296a9afbd4b0d90d3506f71e0d146a46bd883fe628564980fee12",
+      "matchesOriginalTarget": false,
+      "neverAttemptedInStoredRequest": true,
+      "nextAttemptAt": 0,
+      "qualificationLastSeenAt": 1793764145074,
+      "seed": {
+        "feedMint": "7dinxiqEhbP351WD5Ve1zpQpGmahU25VdqtccTo5pump",
+        "receivedAt": 1793690300975,
+        "signature": "3GjHNKgMHqCNfaLXJXZN581nv1ncuy26dszrcD26eCX4THo6pERZbU9QN8SEqVkj8oJJ2AKQfGGgyryoCbbk9B7N"
+      }
+    },
+    "previousHeadActivityClockAvailable": false
+  },
+  "qualification": {
+    "firstSeenAt": 1793735568378,
+    "lastSeenAt": 1793759366607,
+    "poolCheckedAt": null,
+    "poolState": "unprepared",
+    "present": true,
+    "promotedAt": null
+  },
+  "request": {
+    "attempts": 1,
+    "direct": true,
+    "lastReason": {
+      "bytes": 34,
+      "code": "PILOT_MIGRATION_RECOVERY_CONTINUES",
+      "sha256": "eb9673722ecab082db47f314822fe55ee3915bc1014fb8514582cce876736f65"
+    },
+    "nextAttemptAt": 1793757335874,
+    "originalSeedMatched": true,
+    "present": true,
+    "reasonUnavailable": false,
+    "seed": {
+      "feedMint": "7PcJB8ooqEfWLPRZ6y1BYuQuAZL1Tm7csG5JqTjXpump",
+      "receivedAt": 1793735568841,
+      "signature": "42b52fExnoLg7HbCd9p2qD8x48GUF1w9PQhrAr2WHXZ9NwBUjDQJcRx9TFchnuwSXhg4TcbRAKCghNVtW3JS5QJh"
+    }
+  },
+  "checkpoint": {
+    "version": "cooperative-canonical-pool-migration-history-v1",
+    "seed": {
+      "signature": "42b52fExnoLg7HbCd9p2qD8x48GUF1w9PQhrAr2WHXZ9NwBUjDQJcRx9TFchnuwSXhg4TcbRAKCghNVtW3JS5QJh",
+      "feedMint": "7PcJB8ooqEfWLPRZ6y1BYuQuAZL1Tm7csG5JqTjXpump",
+      "receivedAt": 1793735568841
+    },
+    "pool": "8Bweyr6ziUtmgGWeEhQUMHVZf5MpgxNcZV7nVLJ1PPQp",
+    "revision": 1,
+    "startedAt": 1793757334295,
+    "updatedAt": 1793757335872,
+    "phase": "history",
+    "before": {
+      "signature": "5S6yGYuQUbvGjrJ4bphGFaTPWvHZS3C25zqqDSvCdtAbxv5GyQ9yx2judtnCQH4T4DSLLCM8rVoJW38BrkJmXmoS",
+      "slot": 465025168
+    },
+    "until": null,
+    "sameSlotCursors": [
+      "5S6yGYuQUbvGjrJ4bphGFaTPWvHZS3C25zqqDSvCdtAbxv5GyQ9yx2judtnCQH4T4DSLLCM8rVoJW38BrkJmXmoS"
+    ],
+    "candidates": [
+      {
+        "signature": "5S6yGYuQUbvGjrJ4bphGFaTPWvHZS3C25zqqDSvCdtAbxv5GyQ9yx2judtnCQH4T4DSLLCM8rVoJW38BrkJmXmoS",
+        "slot": 465025168,
+        "blockTime": 1793735990
+      },
+      {
+        "signature": "5NhX8W8LRBY8MLHBimiMgSuS7qoGVvZa9ig7Qbv2hN7paxU67xuHsSoT9YgpQ8crebgR4at3rhDmWj26mG5wb7B4",
+        "slot": 465025168,
+        "blockTime": 1793735990
+      },
+      {
+        "signature": "5ki41o2SYo5nxiL2PrfSLEQU2BJHjRG35BThLqJ15EtcAEgVRNb57ESSiXdgLdvnEwbVnFGGSvnR2ZF6fxrnG976",
+        "slot": 465025168,
+        "blockTime": 1793735990
+      },
+      {
+        "signature": "5PDUk967jyvGrx93e9Gcr3qPbye9mbpokcLmJNkDKW3GLSg3DRFp5DVSQw17ZKydbv32SsM5koiUHeA6KvsUonZL",
+        "slot": 465025168,
+        "blockTime": 1793735990
+      },
+      {
+        "signature": "5QVQGV5pfiSqEsMf2hSa9dYdGq6yuCro1ktC6pThudraqsoag5DR5xT5GQVHSgUzjKfdrxVs4kJ23jgnPGtTVJ5Z",
+        "slot": 465025168,
+        "blockTime": 1793735990
+      },
+      {
+        "signature": "52fX9XXaik5tqMe1gRmdBVVb6FyWdtvyqJLHhru2zTvZzCePcBTTYqzFap4nbCpasaKk5RfVTcTGmv6h77cw1VsB",
+        "slot": 465025168,
+        "blockTime": 1793735990
+      },
+      {
+        "signature": "4yHrn2M7szVdYcLx2umqaPsYUjouawWskBJEGvaU22Q3SaTQinwrCFFMkPR2XZErxGSGKCjSYsh1BN2VHP4ur2aZ",
+        "slot": 465025168,
+        "blockTime": 1793735990
+      },
+      {
+        "signature": "Qnsca4sthuPQBg8Yt8H6sYM2b7dAokvi9oTEQsY3ZPWfwVh5pzDUEJqJ1GbCHJBHQWLrQBLE6CoRD74ADP9Lh3v",
+        "slot": 465025168,
+        "blockTime": 1793735990
+      }
+    ],
+    "originConfirmed": null,
+    "historyPages": 1,
+    "historyRows": 1000,
+    "candidateReads": 0,
+    "scanPasses": 0,
+    "seedConfirmedSha256": "e048d812c161206531d9edeff26de96632c62c5c4aac55811e31db4794876a5f",
+    "seedNonOrigin": true
+  }
+}
