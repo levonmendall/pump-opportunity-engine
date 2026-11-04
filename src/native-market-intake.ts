@@ -24,7 +24,7 @@ export class NativeMarketIntake {
  private serial=0;private bytes=0;private received=0;private committed=0;private restarts=0;private failures=0;private retryAt:number|null=null;private reasonCode:string|null=null;private lastCommitAt:number|null=null;private workerStats:unknown=null;
  private processedAcknowledged=0;private ageExcluded=0;private venueExcluded=0;private qualificationHintsReceived=0;private qualificationHintsCoalesced=0;private qualificationCommitted=0;
  private sendTimer:ReturnType<typeof setImmediate>|null=null;private retryTimer:ReturnType<typeof setTimeout>|null=null;private closeResolve:(()=>void)|null=null;private pressureState:string|null=null;
- private reportingSerial=0;private reportingNextAt=0;private reportingFailures=0;private reportingReason:string|null=null;
+ private reportingSerial=0;private reportingAcknowledged=0;private reportingNextAt=0;private reportingFailures=0;private reportingReason:string|null=null;
  private reportingPending:{request:MarketRegistryReportingRequest;workerGeneration:number}|null=null;
  private reportingCached:{result:MarketRegistryReportingResult;scopeKey:string;workerGeneration:number}|null=null;
  private readonly spool:NativeMarketIntakeSpool|null;private startup:Promise<void>|null=null;private spoolWork:Promise<void>=Promise.resolve();private readonly spoolOwned=new Set<number>();private readonly shutdownSpoolPending=new Set<number>();private readonly savedTailIds=new Set<number>();private checkpointArmed=false;private checkpointVersion=0;private queuedCheckpointVersion=-1;private checkpointTimer:ReturnType<typeof setImmediate>|null=null;private stoppingWorkerFailed=false;private spoolLoadFailed=false;private replayed=0;private shutdownSpooled=0;private closing:Promise<void>|null=null;
@@ -47,7 +47,7 @@ export class NativeMarketIntake {
   return promise;
  }
  private restartAfterSettlement(){if(!this.retryElapsed||this.closed||this.stopping||this.worker||this.workerSettlement?.settledAt===null)return;this.retryElapsed=false;this.restarts++;this.start();}
- private start(){if(this.closed||this.workerSettlement?.settledAt===null)return;this.workerGeneration++;this.workerClosedAcknowledged=false;this.workerReadyAt=null;this.lastAckProgressAt=null;this.outstandingSent=0;this.livenessPending=null;this.livenessNextAt=0;const generation=this.workerGeneration;
+ private start(){if(this.closed||this.workerSettlement?.settledAt===null)return;this.workerGeneration++;this.reportingAcknowledged=this.processedAcknowledged;this.workerClosedAcknowledged=false;this.workerReadyAt=null;this.lastAckProgressAt=null;this.outstandingSent=0;this.livenessPending=null;this.livenessNextAt=0;const generation=this.workerGeneration;
   try{const worker=this.options.createWorker();this.worker=worker;worker.on('message',value=>{if(this.worker===worker)this.message(value);});worker.on('error',()=>{if(this.worker===worker)this.failed('WORKER_ERROR');});worker.on('exit',code=>{this.exitedWorkers.add(worker);if(this.workerSettlement?.worker===worker)this.finishWorkerSettlement(this.workerSettlement,'exit-event');if(this.worker===worker&&!this.closed&&!(this.stopping&&this.workerClosedAcknowledged))this.failed(code===0?'WORKER_EXIT_BEFORE_DRAIN':'WORKER_EXIT');});}
   catch{this.failed('WORKER_START_FAILED');}this.options.record?.('native-market-intake-worker-start',{at:this.now(),generation,financialWriterOpened:false});this.pressure();
  }
@@ -124,10 +124,14 @@ export class NativeMarketIntake {
    // generation, intake IDs, durable ACKs and any physical work are untouched.
    this.reportingPending=null;this.reportingFailures++;this.reportingReason='REPORTING_REQUEST_TIMEOUT';this.reportingNextAt=at+MARKET_REGISTRY_REPORTING_POLICY.refreshMs;
   }
-  if(this.ready&&!this.closed&&!this.stopping&&this.pending.size===0&&!this.reportingPending&&at>=this.reportingNextAt){
+  // An actual processed ACK (including a committed exclusion) earns one
+  // optional report during backlog, after the scheduled unsent intake turn.
+  // Liveness replies and old worker generations cannot earn this credit.
+  const reportingProgress=this.pending.size===0||this.sendTimer===null&&this.processedAcknowledged>this.reportingAcknowledged;
+  if(this.ready&&!this.closed&&!this.stopping&&reportingProgress&&!this.reportingPending&&at>=this.reportingNextAt){
    const request:MarketRegistryReportingRequest={kind:'reporting',id:++this.reportingSerial,requestedAt:at,scope:structuredClone(scope)};
    if(validMarketRegistryReportingRequest(request)){
-    this.reportingPending={request,workerGeneration:this.workerGeneration};this.reportingNextAt=at+MARKET_REGISTRY_REPORTING_POLICY.refreshMs;
+    this.reportingPending={request,workerGeneration:this.workerGeneration};this.reportingAcknowledged=this.processedAcknowledged;this.reportingNextAt=at+MARKET_REGISTRY_REPORTING_POLICY.refreshMs;
     try{this.worker!.postMessage(request);}catch{this.reportingPending=null;this.reportingFailures++;this.reportingReason='REPORTING_SEND_FAILED';}
    }else{this.reportingFailures++;this.reportingReason='REPORTING_REQUEST_INVALID';}
   }

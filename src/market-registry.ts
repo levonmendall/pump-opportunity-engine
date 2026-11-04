@@ -7,7 +7,7 @@ import type {WatchRow,WatchSeed,WatchIdentityMetadata} from './pilot-watch.js';
 import type {MarketIdentityHint,MarketActivityHint,MarketFeedStatus} from './market-discovery.js';
 import {OPPORTUNITY_PRIORITY_POLICY,observationFairnessBonus} from './opportunity-priority-policy.js';
 import {TOKEN_AGE_POLICY,validTokenCreationProof,tokenAgeDecision,type TokenCreationProof} from './token-age-policy.js';
-import {MIGRATION_AGE_POLICY,validMigrationAgeProof,migrationAgeDecision,type MigrationAgeProof} from './migration-age-policy.js';
+import {MIGRATION_AGE_POLICY,validMigrationAgeProof,cacheableImmutableMigrationProof,migrationAgeDecision,type MigrationAgeProof} from './migration-age-policy.js';
 import {PUMPSWAP_MIGRATION_RECOVERY_POLICY,MIGRATION_RECOVERY_CONTINUES,validPumpSwapMigrationRecovery,type PumpSwapMigrationRecovery} from './pumpswap-migration-recovery.js';
 import {TOKEN_CREATION_HISTORY_POLICY,type TokenCreationHistoryRequest,type TokenCreationHistoryPage} from './token-creation-history.js';
 
@@ -27,6 +27,7 @@ export type TokenCreationScopeEntry=Readonly<{mint:string;createdAt:number;avail
 export type PumpSwapQualificationHint={mint:string;receivedAt:number;source:'pumpportal-migration'|'pumpapi-broad';signature?:string;kind:'migration'|'activity';venue?:'pump-amm'};
 export type PumpSwapQualificationRecord={mint:string;firstSeenAt:number;lastSeenAt:number;source:PumpSwapQualificationHint['source'];kind:PumpSwapQualificationHint['kind'];signature:string|null};
 type EconomicFlowCache=Omit<EconomicFlowAfter,'complete'|'retentionStartAt'>&{decisionAt:number;counter:number;bytes:number};
+type MigrationProofValidationCache={raw:string;migratedAt:number;verifiedAt:number;proof:Readonly<MigrationAgeProof>;bytes:number};
 type RegistryTransactionCounters={readSnapshotCommits:number;writerLeaseReadOnlyCommits:number;contentionBeforeCallback:number;attempted:number;readOnlyCommits:number;writeCommits:number;failed:number;fsyncEligibleCommits:number};
 export type RegistryReportingIndex='watch_rows_report_summary_v1'|'watch_rows_report_page_v1'|'watch_rows_report_entry_age_v2'|'watch_rows_report_waiting_v2';
 export type RegistryQuery={where?:string;params?:RegistryParameter[];orderBy?:string;limit?:number;offset?:number;index?:RegistryReportingIndex;tokenAgeAt?:number};
@@ -39,6 +40,7 @@ const name=(value:unknown):value is string=>typeof value==='string'&&value.lengt
 function need(condition:unknown,reason:string):asserts condition {if(!condition)throw Error(reason);}
 export const SHARED_ACTIVITY_HORIZON_MS=60000;
 export const HINT_DEDUP_RETENTION_MS=3600000;
+export const MIGRATION_PROOF_VALIDATION_CACHE_POLICY=Object.freeze({version:'exact-row-immutable-migration-validation-v1',maximumEntries:4096,maximumEstimatedBytes:4*1024*1024});
 /** Retire only detail for a verified, expired nontrade candidate. Identity and
  * immutable age proofs remain available, so cleanup cannot make a token new. */
 export const CANDIDATE_RETENTION_POLICY=Object.freeze({version:'expired-nontrade-candidate-48h-v1',minimumTokenAgeMs:2*86_400_000,unusedGraceMs:86_400_000,maximumBatchRows:128,maximumBatchBytes:4*1024*1024,maximumScannedMints:16});
@@ -63,6 +65,7 @@ export class MarketRegistry {
  private readonly economicFlowCache=new Map<string,EconomicFlowCache>();private economicFlowCacheBytes=0;private economicFlowCacheHits=0;private economicFlowColdQueries=0;private economicFlowIncrementalQueries=0;private readonly economicTouchedMints=new Set<string>();
  private rollbackActions:Array<()=>void>=[];private commitActions:Array<()=>void>=[];
  private migrationAge=false;
+ private readonly migrationProofValidationCache=new Map<string,MigrationProofValidationCache>();private migrationProofValidationBytes=0;private migrationProofValidationHits=0;private migrationProofValidationMisses=0;private migrationProofValidationEvictions=0;
  private readonly migrationAgeProofListeners=new Set<(proof:Readonly<MigrationAgeProof>)=>void>();
  private readonly tokenCreationProofListeners=new Set<(proof:Readonly<TokenCreationProof>)=>void>();
  private readDepth=0;private readSnapshotCommits=0;private writerLeaseReadOnlyCommits=0;private contentionAttempts=0;private transactionAttempts=0;private readOnlyCommits=0;private writeCommits=0;private failedTransactions=0;
@@ -689,9 +692,29 @@ export class MarketRegistry {
  get admissionMinimumAgeMs(){return this.migrationAge?MIGRATION_AGE_POLICY.minimumAgeMs:0;}
  admissionAgeSql(mint:string,at:string){return `EXISTS(SELECT 1 FROM ${this.admissionAgeTable} age WHERE age.mint=${mint} AND age.${this.admissionAgeColumn}<=${at}-${this.admissionMinimumAgeMs} AND age.${this.admissionAgeColumn}>=${at}-${MIGRATION_AGE_POLICY.maximumAgeMs} AND age.verified_at<=${at})`;}
  marketAgeEligibility(mint:string,at:number){return this.migrationAge?migrationAgeDecision(mint,at,this.migrationAgeProof(mint)):this.tokenAgeEligibility(mint,at);}
+ migrationAgeValidationCacheUsage(){return {policy:MIGRATION_PROOF_VALIDATION_CACHE_POLICY,entries:this.migrationProofValidationCache.size,estimatedBytes:this.migrationProofValidationBytes,hits:this.migrationProofValidationHits,misses:this.migrationProofValidationMisses,evictions:this.migrationProofValidationEvictions,negativeEntries:0};}
+ private forgetMigrationProofValidation(mint:string){const old=this.migrationProofValidationCache.get(mint);if(old){this.migrationProofValidationBytes-=old.bytes;this.migrationProofValidationCache.delete(mint);}}
  migrationAgeProof(mint:string):MigrationAgeProof|null{
-  const row=this.statement('SELECT migrated_at,verified_at,proof FROM pumpswap_migration_ages_v1 WHERE mint=?').get(mint) as {migrated_at:number;verified_at:number;proof:string}|undefined;if(!row)return null;
-  const proof:unknown=JSON.parse(row.proof);need(validMigrationAgeProof(proof)&&proof.mint===mint&&proof.migrationAt===row.migrated_at&&proof.availableAt===row.verified_at,'MIGRATION_AGE_STORED_PROOF_INVALID');return proof;
+  // Read the actual row every time: absence, rollback, external commits and
+  // changed scalar bindings cannot inherit a prior validation or freshness.
+  const row=this.statement('SELECT migrated_at,verified_at,proof FROM pumpswap_migration_ages_v1 WHERE mint=?').get(mint) as {migrated_at:number;verified_at:number;proof:string}|undefined;
+  if(!row){this.forgetMigrationProofValidation(mint);return null;}
+  const cached=this.migrationProofValidationCache.get(mint);
+  if(cached&&cached.raw===row.proof&&cached.migratedAt===row.migrated_at&&cached.verifiedAt===row.verified_at){this.migrationProofValidationHits++;this.migrationProofValidationCache.delete(mint);this.migrationProofValidationCache.set(mint,cached);return cached.proof;}
+  this.forgetMigrationProofValidation(mint);this.migrationProofValidationMisses++;
+  const proof:unknown=JSON.parse(row.proof);need(validMigrationAgeProof(proof)&&proof.mint===mint&&proof.migrationAt===row.migrated_at&&proof.availableAt===row.verified_at,'MIGRATION_AGE_STORED_PROOF_INVALID');
+  // Parsed JSON has no accessors. Only the closed scalar proof schema is
+  // eligible; extended valid objects remain valid but are never cached.
+  const immutable=Object.freeze({...proof});
+  if(cacheableImmutableMigrationProof(immutable)){
+   need(validMigrationAgeProof(immutable),'MIGRATION_AGE_STORED_PROOF_INVALID');
+   const bytes=512+2*(mint.length+row.proof.length+JSON.stringify(immutable).length),policy=MIGRATION_PROOF_VALIDATION_CACHE_POLICY;
+   if(bytes<=policy.maximumEstimatedBytes){
+    while(this.migrationProofValidationCache.size&&(this.migrationProofValidationCache.size>=policy.maximumEntries||this.migrationProofValidationBytes+bytes>policy.maximumEstimatedBytes)){const first=this.migrationProofValidationCache.keys().next().value!;this.forgetMigrationProofValidation(first);this.migrationProofValidationEvictions++;}
+    this.migrationProofValidationCache.set(mint,{raw:row.proof,migratedAt:row.migrated_at,verifiedAt:row.verified_at,proof:immutable,bytes});this.migrationProofValidationBytes+=bytes;return immutable;
+   }
+  }
+  return proof;
  }
  migrationAgeProofSnapshot(at:number):readonly MigrationAgeProof[]{
   need(integer(at),'MIGRATION_AGE_SCOPE_TIME');
@@ -990,5 +1013,5 @@ export class MarketRegistry {
   const withOrigin=Number((this.statement('SELECT COUNT(*) n FROM origin_proofs o WHERE o.available=1 AND EXISTS(SELECT 1 FROM market_tokens t WHERE t.mint=o.mint)').get() as {n:number}).n);
   return {version:'poe-market-coverage-v1' as const,generatedAt:at,persistence:{state:this.storageAvailable?'sqlite-wal' as const:'unavailable' as const,createdAt:this.getMetadata<number>('createdAt')??null,updatedAt:this.getMetadata<number>('updatedAt')??this.getMetadata<number>('createdAt')??null},lifetime:{uniqueTokensDiscovered:tokens.total,lightweightScreened:this.distinctCount('lightweight-screened'),lightweightWithActivity:this.distinctCount('lightweight-with-activity'),lightweightUnavailable:tokens.total-(tokens.with_activity??0),deepAdmitted:this.distinctCount('deep-admitted'),verifiedAudited:this.distinctCount('verified-audit')},currentHour:{startedAt:hour,uniqueTokensDiscovered:Number((this.statement('SELECT COUNT(*) n FROM market_tokens WHERE first_seen_at>=? AND first_seen_at<=?').get(hour,at) as {n:number}).n)},active:{trackedIdentities:active.tracked??0,awaitingOrigin:tokens.total-withOrigin,awaitingLightweight:0,awaitingVerification:queue.pending,awaitingDeep:active.awaitingDeep??0,deepObserving:active.deep??0},lightweight:{activityHorizonMs:SHARED_ACTIVITY_HORIZON_MS,dedupRetentionMs:HINT_DEDUP_RETENTION_MS,hintDedupKeysPruned:this.getMetadata<number>('hintDedupKeysPruned')??0,staleActivityObservations:this.getMetadata<number>('staleActivityObservations')??0},resource:{registryTransactions,durableVerificationBacklog:queue.pending,oldestVerificationAt:queue.oldestReceivedAt,maximumVerificationWaitMs:queue.maxWaitMs,storageFailures:this.storageFailures,maximumWriteMs:this.writeMaximumMs,meanWriteMs:this.writes?this.writeTotalMs/this.writes:0},feeds,marketDenominator:null,wholeMarketCoveragePercent:null,limitations:['MARKET_DENOMINATOR_UNKNOWN','PROVIDER_HINTS_UNVERIFIED','PREMIGRATION_EXECUTION_NOT_SUPPORTED','SOURCE_OUTAGES_NOT_RECONSTRUCTED','SHARED_ACTIVITY_PARTIAL_WHEN_FEED_UNAVAILABLE','PREEXISTING_MARKET_BACKFILL_UNAVAILABLE','UNVERIFIED_ORIGIN_DISCOVERY_PENDING','SHARED_HINT_DEDUP_RETENTION_1H',...(!this.storageAvailable?['REGISTRY_STORAGE_UNAVAILABLE']:[])]};});
  }
- close():void{if(this.readDepth>0)throw new MarketRegistryReadOnlyViolation('Closing the registry is forbidden inside a read snapshot');this.statements.clear();this.economicFlowCache.clear();this.economicFlowCacheBytes=0;this.db.close();}
+ close():void{if(this.readDepth>0)throw new MarketRegistryReadOnlyViolation('Closing the registry is forbidden inside a read snapshot');this.statements.clear();this.migrationProofValidationCache.clear();this.migrationProofValidationBytes=0;this.economicFlowCache.clear();this.economicFlowCacheBytes=0;this.db.close();}
 }
