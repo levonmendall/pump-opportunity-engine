@@ -1,0 +1,443 @@
+{
+  "kind": "BOUNDED_ORIGINAL_H8_FINANCIAL_COHORT_TRACE",
+  "source": {
+    "commit": "a885208fb2cc6cc2548e6e761c22300c1f6d8f54",
+    "sha256": "15d1011f0265a1f6e1b9c540c2fac22b52d56c74d5900f21c6d1c0ee48f9be17"
+  },
+  "runId": "native-paper-20261104073011776",
+  "sourceGeneratedAt": 1793779146673,
+  "workflowRunId": 41796021148,
+  "workflowHead": "d334581948121412afb91e437c9a1b108c0f1965",
+  "artifactId": 13304769494,
+  "artifactZipSha256": "14b92467fa196899f79870388092f08bca5d5d49b9aa14ce5017905205660f6d",
+  "sampleSha256": "fca4d8196c8218e4c7d1a65d0ac32e3264959d0a62c571585539024b1ab94e61",
+  "window": {
+    "fromAt": 1793778250126,
+    "untilAtExclusive": 1793779150126
+  },
+  "evidenceScope": {
+    "kind": "LATEST_CURRENT_SOURCE_INTERVAL",
+    "lookbackMs": 900000,
+    "runId": "native-paper-20261104073011776"
+  },
+  "selectedRecordCounts": {
+    "native-paper-entry-proof-pinned": 6,
+    "native-paper-certificate-handoff": 12,
+    "rpc-market-quote": 2,
+    "native-opportunity-evaluation": 2,
+    "trader-decision": 2,
+    "component-job-enqueued": 99,
+    "component-physical-start": 99,
+    "http-headers": 84,
+    "component-physical-settled": 99,
+    "native-paper-request-plan": 98,
+    "component-pacing-wait": 8,
+    "component-physical-timeout": 1
+  },
+  "originalMatchingKindCounts": {
+    "native-paper-request-plan": 300,
+    "component-job-enqueued": 300,
+    "component-physical-start": 299,
+    "http-headers": 256,
+    "component-physical-settled": 299,
+    "native-paper-entry-proof-pinned": 6,
+    "native-paper-certificate-handoff": 12,
+    "component-physical-timeout": 1,
+    "component-pacing-wait": 36,
+    "native-paper-request-admission-refused": 1,
+    "component-local-admission-refused": 1,
+    "rpc-market-quote": 2,
+    "native-opportunity-evaluation": 2,
+    "trader-decision": 2
+  },
+  "originalOmittedKindCounts": {
+    "http-headers": 172,
+    "component-physical-settled": 200,
+    "native-paper-request-plan": 202,
+    "component-job-enqueued": 201,
+    "component-physical-start": 200,
+    "component-pacing-wait": 28,
+    "native-paper-request-admission-refused": 1,
+    "component-local-admission-refused": 1
+  },
+  "records": [
+    {
+      "at": 1793778914913,
+      "kind": "native-paper-entry-proof-pinned",
+      "data": {
+        "provisional": true,
+        "mint": "M3EZcEJABTFQLsHZ3znBgeD7VWYtejhQLdJ1NYmpump",
+        "windowEndAt": 1793778910000,
+        "featuresSha256": "91cd3d96977897e237324e4c1df7efc46b1b7914039aea87864f42011ce5073c",
+        "certificateAt": 1793778914818,
+        "proofId": "entry-0d11434eff757439d1d77be8b64b13f72e01056fddc6428c354ab59aeaa9a58b",
+        "manifestSha256": "7c59b215eaa46ac5e7a8bb3e4fe8fff8cb6a88b6ff4e0037ac888e75b44d8eff",
+        "bytes": 1836602,
+        "elapsedMs": 60,
+        "at": 1793778914913
+      },
+      "file": "diagnostic-000000008539.ndjson",
+      "line": 3,
+      "lineSha256": "dd2910eecd162a8c573f9bb39fed4d9e36d06697f4778e45c0fd15ac3ec9f623"
+    },
+    {
+      "at": 1793778914987,
+      "kind": "native-paper-certificate-handoff",
+      "data": {
+        "mint": "M3EZcEJABTFQLsHZ3znBgeD7VWYtejhQLdJ1NYmpump",
+        "at": 1793778914987,
+        "windowEndAt": 1793778910000,
+        "deadlineAt": 1793778919999,
+        "stage": "financial-dispatch",
+        "financialPermission": false,
+        "waitMs": 169
+      },
+      "file": "diagnostic-000000008539.ndjson",
+      "line": 5,
+      "lineSha256": "0dd0824b4267081e537c1183f4cd292d9cefb903268ac99954881a1ce88a4dce"
+    },
+    {
+      "at": 1793778915421,
+      "kind": "native-paper-certificate-handoff",
+      "data": {
+        "mint": "M3EZcEJABTFQLsHZ3znBgeD7VWYtejhQLdJ1NYmpump",
+        "at": 1793778915421,
+        "windowEndAt": 1793778910000,
+        "deadlineAt": 1793778919999,
+        "stage": "financial-dispatch-completed",
+        "financialPermission": false,
+        "financialEvaluations": 1,
+        "economicDecisions": 1
+      },
+      "file": "diagnostic-000000008539.ndjson",
+      "line": 43,
+      "lineSha256": "3c24c7f9587855ce9d679487c27e28ecca89830787849878daea74be7a80172b"
+    },
+    {
+      "at": 1793778916835,
+      "kind": "native-paper-entry-proof-pinned",
+      "data": {
+        "provisional": true,
+        "mint": "54BRDr2i4YXPv87jahfdCx6jjDkPAoB7QFCdQTqpump",
+        "windowEndAt": 1793778910000,
+        "featuresSha256": "8fd27000186a304efc256dc9781038993aadcf9097f218466a24f4b10d455e6d",
+        "certificateAt": 1793778916705,
+        "proofId": "entry-1af7cd7da9f5b8518cdd96ca86ec42f674158ae2a5adf5aaf445884fe4e24c04",
+        "manifestSha256": "74ad914f7a040a14ee41dab997d3a392eaaec41cc6019d23aea0332ac034c75f",
+        "bytes": 2078624,
+        "elapsedMs": 84,
+        "at": 1793778916835
+      },
+      "file": "diagnostic-000000008540.ndjson",
+      "line": 3,
+      "lineSha256": "0a7adeab017aaf84ba85c234110e50c315ecdcdfb64fa44c8be6d3a90910cabe"
+    },
+    {
+      "at": 1793778916874,
+      "kind": "native-paper-certificate-handoff",
+      "data": {
+        "mint": "54BRDr2i4YXPv87jahfdCx6jjDkPAoB7QFCdQTqpump",
+        "at": 1793778916874,
+        "windowEndAt": 1793778910000,
+        "deadlineAt": 1793778919999,
+        "stage": "financial-deferred",
+        "financialPermission": false,
+        "reason": "required-service-or-protection-runway",
+        "observedAt": 1793778916868,
+        "blockingPrerequisite": "ORIGINAL_CERTIFICATE_DEADLINE",
+        "operation": "ENTRY_PREPARATION",
+        "requiredMs": 1700,
+        "availableMs": 1681
+      },
+      "file": "diagnostic-000000008540.ndjson",
+      "line": 4,
+      "lineSha256": "8407231d8966b3cdde474bee86429a20d3db34c3496cf522f241ff458efa9d5e"
+    },
+    {
+      "at": 1793778920333,
+      "kind": "native-paper-certificate-handoff",
+      "data": {
+        "mint": "54BRDr2i4YXPv87jahfdCx6jjDkPAoB7QFCdQTqpump",
+        "at": 1793778920333,
+        "windowEndAt": 1793778910000,
+        "deadlineAt": 1793778919999,
+        "stage": "expired-before-dispatch",
+        "financialPermission": false,
+        "lastReason": "required-service-or-protection-runway",
+        "blockerObservedAt": 1793778919952,
+        "blockingPrerequisite": "ORIGINAL_CERTIFICATE_DEADLINE",
+        "operation": "ENTRY_PREPARATION",
+        "requiredMs": 1700,
+        "availableMs": 47
+      },
+      "file": "diagnostic-000000008540.ndjson",
+      "line": 83,
+      "lineSha256": "1d589e16be14d6313f1a5d42aa29a5a3f04f30475fc0fffec4f06a2126b11311"
+    },
+    {
+      "at": 1793778926820,
+      "kind": "native-paper-entry-proof-pinned",
+      "data": {
+        "provisional": true,
+        "mint": "54BRDr2i4YXPv87jahfdCx6jjDkPAoB7QFCdQTqpump",
+        "windowEndAt": 1793778920000,
+        "featuresSha256": "a9e2d9b9d8c98a3307663ef60fbb5831e8986862102711533f95ee41a2472e59",
+        "certificateAt": 1793778926694,
+        "proofId": "entry-56c576e93ea390aaf5556c10710a477e155ad4cd2d7400d7774cfcb6a8fff895",
+        "manifestSha256": "ba51f6d7fa27eebfd36f4fa2393c4765023d31e4c0412da090fcbe982b6f24f8",
+        "bytes": 2175121,
+        "elapsedMs": 77,
+        "at": 1793778926820
+      },
+      "file": "diagnostic-000000008541.ndjson",
+      "line": 3,
+      "lineSha256": "cd6a31b59e58bbf35536e469a6b4637907c51d728708af889a27df67743cc162"
+    },
+    {
+      "at": 1793778926877,
+      "kind": "native-paper-certificate-handoff",
+      "data": {
+        "mint": "54BRDr2i4YXPv87jahfdCx6jjDkPAoB7QFCdQTqpump",
+        "at": 1793778926877,
+        "windowEndAt": 1793778920000,
+        "deadlineAt": 1793778929999,
+        "stage": "financial-dispatch",
+        "financialPermission": false,
+        "waitMs": 183
+      },
+      "file": "diagnostic-000000008541.ndjson",
+      "line": 5,
+      "lineSha256": "aab1060f60c8834cec0df760894ca0d5fa03c3d21294f86e4e99ef25eda1ca8f"
+    },
+    {
+      "at": 1793778927546,
+      "kind": "native-paper-certificate-handoff",
+      "data": {
+        "mint": "54BRDr2i4YXPv87jahfdCx6jjDkPAoB7QFCdQTqpump",
+        "at": 1793778927546,
+        "windowEndAt": 1793778920000,
+        "deadlineAt": 1793778929999,
+        "stage": "financial-dispatch-completed",
+        "financialPermission": false,
+        "financialEvaluations": 1,
+        "economicDecisions": 1
+      },
+      "file": "diagnostic-000000008541.ndjson",
+      "line": 38,
+      "lineSha256": "021021921f166cf95568dc916755fed57a09dc0cd422270cb1f33f4c23754cf2"
+    },
+    {
+      "at": 1793779098644,
+      "kind": "native-paper-certificate-handoff",
+      "data": {
+        "mint": "8muc9DdhqWfAPcvmEebNQCG89bLiwi12T2KtBtzVpump",
+        "at": 1793779098633,
+        "windowEndAt": 1793779090000,
+        "deadlineAt": 1793779099999,
+        "stage": "financial-deferred",
+        "financialPermission": false,
+        "reason": "proof-retention",
+        "observedAt": 1793779098633,
+        "blockingPrerequisite": "PROOF_PENDING",
+        "operation": "PROOF_PREPARATION",
+        "requiredMs": null,
+        "availableMs": 1366
+      },
+      "file": "diagnostic-000000008544.ndjson",
+      "line": 52,
+      "lineSha256": "9ef79914ca84c750659a12d6c27ba11325040c250c780bbb081a0a9e72b44c56"
+    },
+    {
+      "at": 1793779100040,
+      "kind": "native-paper-certificate-handoff",
+      "data": {
+        "mint": "8muc9DdhqWfAPcvmEebNQCG89bLiwi12T2KtBtzVpump",
+        "at": 1793779100040,
+        "windowEndAt": 1793779090000,
+        "deadlineAt": 1793779099999,
+        "stage": "expired-before-dispatch",
+        "financialPermission": false,
+        "lastReason": "proof-retention",
+        "blockerObservedAt": 1793779099747,
+        "blockingPrerequisite": "PROOF_PENDING",
+        "operation": "PROOF_PREPARATION",
+        "requiredMs": null,
+        "availableMs": 252
+      },
+      "file": "diagnostic-000000008544.ndjson",
+      "line": 235,
+      "lineSha256": "8a9ab28e4259d904d3a09b558971515af4819a3276f7e52ded5bff5fef1196ef"
+    },
+    {
+      "at": 1793779100724,
+      "kind": "native-paper-entry-proof-pinned",
+      "data": {
+        "provisional": true,
+        "mint": "8muc9DdhqWfAPcvmEebNQCG89bLiwi12T2KtBtzVpump",
+        "windowEndAt": 1793779090000,
+        "featuresSha256": "f0d34789446d086c244ac8392c3f71974a70b6c7253dfad3e58948c93dce7397",
+        "certificateAt": 1793779098392,
+        "proofId": "entry-81673b79c890ddbd9db65600ca5ec63b5ccadff18a1117c56d9a8fd310c108bf",
+        "manifestSha256": "2af42ebad8ff3b8a4566e21512d84ff0280c0bb25739c2b25e4edf2b914dea16",
+        "bytes": 15874462,
+        "elapsedMs": 2251,
+        "at": 1793779100724
+      },
+      "file": "diagnostic-000000008544.ndjson",
+      "line": 355,
+      "lineSha256": "17eb5d8554192f40d36a507a63e3dbc2619cc8b89da2fbec147f3c405d02280d"
+    },
+    {
+      "at": 1793779124544,
+      "kind": "native-paper-certificate-handoff",
+      "data": {
+        "mint": "M3EZcEJABTFQLsHZ3znBgeD7VWYtejhQLdJ1NYmpump",
+        "at": 1793779124544,
+        "windowEndAt": 1793779120000,
+        "deadlineAt": 1793779129999,
+        "stage": "financial-deferred",
+        "financialPermission": false,
+        "reason": "required-service-or-protection-runway",
+        "observedAt": 1793779124537,
+        "blockingPrerequisite": "ORIGINAL_CERTIFICATE_DEADLINE",
+        "operation": "ENTRY_PREPARATION",
+        "requiredMs": 1700,
+        "availableMs": 612
+      },
+      "file": "diagnostic-000000008545.ndjson",
+      "line": 127,
+      "lineSha256": "06e019b51a40ccd2cf50760f82d2a9bbf859ec0e7a547928e58ef52e22860266"
+    },
+    {
+      "at": 1793779124551,
+      "kind": "native-paper-certificate-handoff",
+      "data": {
+        "mint": "WE52e9Bcgm2J4CG7vv4huGbGLyYas8gU5sP6wmcpump",
+        "at": 1793779124551,
+        "windowEndAt": 1793779120000,
+        "deadlineAt": 1793779129999,
+        "stage": "financial-deferred",
+        "financialPermission": false,
+        "reason": "await-earlier-candidate",
+        "observedAt": 1793779124551,
+        "blockingPrerequisite": "AWAIT_EARLIER_CANDIDATE",
+        "operation": "FINANCIAL_DECISION",
+        "requiredMs": null,
+        "availableMs": 5448
+      },
+      "file": "diagnostic-000000008545.ndjson",
+      "line": 128,
+      "lineSha256": "db471577288ed201f2243b468cfff7cf553132567d76c89651a5657f1eeb8694"
+    },
+    {
+      "at": 1793779125165,
+      "kind": "native-paper-entry-proof-pinned",
+      "data": {
+        "provisional": true,
+        "mint": "WE52e9Bcgm2J4CG7vv4huGbGLyYas8gU5sP6wmcpump",
+        "windowEndAt": 1793779120000,
+        "featuresSha256": "64bb312922e07ffd3a00706659265add25afb78bb262baa3c8677d84aa1ea1de",
+        "certificateAt": 1793779123994,
+        "proofId": "entry-f5763a2b8b644dcf1c78ed7d55f1d789950cc6aba19622b51de10cb5a6f51461",
+        "manifestSha256": "bb188b2d7d4d030105dc6a5b85e1ad25381126868f06c0d7704bc372a661b7bf",
+        "bytes": 23359008,
+        "elapsedMs": 1140,
+        "at": 1793779125165
+      },
+      "file": "diagnostic-000000008545.ndjson",
+      "line": 518,
+      "lineSha256": "84523176184e224667ea2bcef00feb80b54b05d2518b4b88e4455d9cc663fb0f"
+    },
+    {
+      "at": 1793779126181,
+      "kind": "native-paper-entry-proof-pinned",
+      "data": {
+        "provisional": true,
+        "mint": "M3EZcEJABTFQLsHZ3znBgeD7VWYtejhQLdJ1NYmpump",
+        "windowEndAt": 1793779120000,
+        "featuresSha256": "2415de7bee20c1e28708fd63c8a8161a3da937bf986db98dda8740f4dbfd6c3a",
+        "certificateAt": 1793779124368,
+        "proofId": "entry-ed8f52f1730d1709b5162d2a94b9f489f7ae76d163fd51ffc59713c02b3b448a",
+        "manifestSha256": "db57fd39fbcdce69c1b776289f87c710de0d793c6e1661c1f980d991facea21d",
+        "bytes": 24014080,
+        "elapsedMs": 948,
+        "at": 1793779126181
+      },
+      "file": "diagnostic-000000008546.ndjson",
+      "line": 199,
+      "lineSha256": "8cb36a113912c197a2f727c3798fe8ba1b6b64294ffce842aa1d52f0e7450b8f"
+    },
+    {
+      "at": 1793779130818,
+      "kind": "native-paper-certificate-handoff",
+      "data": {
+        "mint": "M3EZcEJABTFQLsHZ3znBgeD7VWYtejhQLdJ1NYmpump",
+        "at": 1793779130818,
+        "windowEndAt": 1793779120000,
+        "deadlineAt": 1793779129999,
+        "stage": "expired-before-dispatch",
+        "financialPermission": false,
+        "lastReason": "required-service-or-protection-runway",
+        "blockerObservedAt": 1793779129870,
+        "blockingPrerequisite": "ORIGINAL_CERTIFICATE_DEADLINE",
+        "operation": "ENTRY_PREPARATION",
+        "requiredMs": 1700,
+        "availableMs": 129
+      },
+      "file": "diagnostic-000000008546.ndjson",
+      "line": 1057,
+      "lineSha256": "a1c679701f2c2c5827d6d881b2eb09b5be66be6e7fb580464013ebdcb4e961fb"
+    },
+    {
+      "at": 1793779130818,
+      "kind": "native-paper-certificate-handoff",
+      "data": {
+        "mint": "WE52e9Bcgm2J4CG7vv4huGbGLyYas8gU5sP6wmcpump",
+        "at": 1793779130818,
+        "windowEndAt": 1793779120000,
+        "deadlineAt": 1793779129999,
+        "stage": "expired-before-dispatch",
+        "financialPermission": false,
+        "lastReason": "await-earlier-candidate",
+        "blockerObservedAt": 1793779129911,
+        "blockingPrerequisite": "AWAIT_EARLIER_CANDIDATE",
+        "operation": "FINANCIAL_DECISION",
+        "requiredMs": null,
+        "availableMs": 88
+      },
+      "file": "diagnostic-000000008546.ndjson",
+      "line": 1058,
+      "lineSha256": "e159ab37f5c2d37dc823eeee493eb666ea0e710641ce5e7be1ebec1cadfe670a"
+    }
+  ],
+  "interpretation": {
+    "observedDeadlineFailures": [
+      "54BR at07:55:16.868 preparation operation1700ms/available1681ms; original certificate expired07:55:19.999",
+      "8muc certificate07:58:18.392 proof pin completed07:58:20.724 after original19.999 deadline;15874462bytes/2251ms observed pin duration",
+      "M3EZ at07:58:44.537 current complete sequence could not fit: preparation operation1700ms/available612ms after other reservations; waiting WE52 proof complete45.165; both original49.999 deadlines expired"
+    ],
+    "actualWaitingPeerPreparationExported": false,
+    "actualAvoidableLiveTradeOrDecisionClaimed": false,
+    "providerOutageClaimed": false,
+    "subsequentPingTimeoutAt": 1793779133304,
+    "subsequentPingTimeoutExplainsEarlierExpiries": false,
+    "mechanismReproduction": "The actual launcher selector and financial/source/provider gate closures with actual proof cache/handoff/deadline/reserve classes and explicitly synthetic peer preparation prove the local head-of-line defect. They do not reconstruct missing live peer preparation."
+  },
+  "limitations": [
+    "Latest 15 minutes of the fresh identified process, clipped to its start; this is not the older acceptance interval.",
+    "Count/time/byte bounds, rotation, appends, partial tails and omitted records limit coverage. Prefix coverage is not whole-window completeness.",
+    "Log rows are bounded by current source start and recorder receipt time. Rows lacking a runId are not independently signed by that source.",
+    "Status counters may be cumulative or restored. Current-run handoff and failure scope is preserved; no failed windows are added across overlapping categories.",
+    "The current native status retains at most50 merged preliminary/financial summaries stripped to at/mint/stage/reason. Quote/window/economic provenance is not present there. Original row times may predate the selected log window; no row is restamped.",
+    "Technical, permission, held-position and primary economic records are distinct. A callback or quote witness is not a usable completed economic decision.",
+    "rpc-market-quote/local-reprice precede final freshness/construction checks. A retained trader quote and matching execution-economics/handoff are stronger distinct witnesses.",
+    "A trader decision and execution-economics receipt still precede final cleanQuote/reconciliation/reservation. Later refusal rows remain separate; a qualified assessment is not an order or fill.",
+    "A handoff financialPermission:false denies authority from that receipt; current engine permission is separately reported.",
+    "Handoff known durations are nonnegative; unmeasured proof/peer requiredMs remains null. Request remaining times preserve original signed values.",
+    "Request IDs explicitly join scheduling and physical operations. Quote records have no request ID; do not invent an explicit physical-to-quote join.",
+    "Handoff log rows omit openedAt/featuresSha256. Only unambiguous emitted run/mint/window/deadline joins are available; current active metadata does not supply missing historical generation identity.",
+    "No ordinary preparation events, successful raw notification payloads, HTTP endpoints/headers, wallet secrets or financial database are exported.",
+    "Newest-eight-segment selection and recorder rotation can leave much less than15minutes; missing/omitted rows cannot establish no failure or complete throughput.",
+    "No provider, financial, permission, configuration, service, or native-runtime mutation is performed."
+  ]
+}

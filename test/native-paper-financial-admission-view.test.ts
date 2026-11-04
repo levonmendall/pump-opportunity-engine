@@ -25,7 +25,7 @@ function fixture(){
   args:{strategy:'liquidity-resilient-momentum-v3.1'},LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION:'liquidity-resilient-momentum-v3.1',nativePaperRemainingEntryWork,
   market:{entryPreparationStatus:(_mint:string,when:number)=>{reads.push({kind:'support',at:when});return {...preparation};}},NATIVE_DEADLINE_POLICY,pilotLowerPriorityAdmission,PILOT_TIMING,
   endAt:2_000_000,lastCompleted:100_000,financialCapacityReason:()=>permission,configuration:{binding:{maxPositions:null}},RESEARCH_CLOCK_COHERENT_POOL_CAPACITY,
-  nativePaperManagementReserve,service:true,entryStartsRemaining:()=>9,
+  nativePaperManagementReserve,service:true,entryStartsRemaining:()=>9,marketIntake:{available:()=>true},
  };
  const sourceText=runNativePaper.toString(),begin=sourceText.search(/const\s+financialWorkAdmissionView\s*=/),tail=sourceText.slice(begin),end=tail.search(/;\s*const\s+makeEngine\s*=/);
  assert.ok(begin>=0&&end>0,'actual admission diagnostic closure is identified');

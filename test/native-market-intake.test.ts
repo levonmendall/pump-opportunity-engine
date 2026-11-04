@@ -5,6 +5,10 @@ import {NativeMarketIntake} from '../src/native-market-intake.js';
 import type {MarketIdentityHint,MarketActivityHint,PumpSwapQualificationHint} from '../src/market-discovery.js';
 import {MARKET_REGISTRY_REPORTING_VERSION,type MarketRegistryReportingScope} from '../src/market-registry-reporting.js';
 import {PERSISTENT_OBSERVABLE_MARKET_POLICY} from '../src/observation-age.js';
+import {mkdtempSync,readFileSync,existsSync,rmSync,writeFileSync,statSync,symlinkSync} from 'node:fs';
+import {tmpdir} from 'node:os';
+import {join} from 'node:path';
+import {NativeMarketIntakeSpool} from '../src/native-market-intake-spool.js';
 
 class MockWorker extends EventEmitter {
  readonly sent:any[]=[];terminations=0;
@@ -18,9 +22,9 @@ const flush=()=>new Promise<void>(resolve=>setImmediate(resolve));
 async function until(condition:()=>boolean){for(let i=0;i<30&&!condition();i++)await flush();assert.equal(condition(),true,'mock worker did not receive queued intake');}
 const identity=(i:number):MarketIdentityHint=>({mint:'mint-'+i,signature:'signature-'+i,receivedAt:1000,source:'pumpportal-new-token',kind:'creation',evidence:'unverified-provider-discovery-hint'});
 const activity=(i:number):MarketActivityHint=>({mint:'mint-'+i,signature:'trade-'+i,receivedAt:1000,source:'pumpapi-broad',kind:'activity',side:'buy',quoteLamports:'1000000000',evidence:'unverified-provider-activity-hint'});
-function fixture(budgetBytes=1024,now=()=>1000){
+function fixture(budgetBytes=1024,now=()=>1000,spoolPath?:string){
  const workers:MockWorker[]=[],pressure:Array<{paused:boolean;pendingBytes:number;budgetBytes:number}>=[],committed:unknown[][]=[],records:Array<{kind:string;data:any}>=[];
- const intake=new NativeMarketIntake({budgetBytes,now,createWorker:()=>{const worker=new MockWorker();workers.push(worker);return worker;},onPressure:value=>pressure.push(value),onCommitted:rows=>committed.push(rows),record:(kind,data)=>records.push({kind,data})});
+ const intake=new NativeMarketIntake({budgetBytes,now,...(spoolPath?{spoolPath}:{}),createWorker:()=>{const worker=new MockWorker();workers.push(worker);return worker;},onPressure:value=>pressure.push(value),onCommitted:rows=>committed.push(rows),record:(kind,data)=>records.push({kind,data})});
  const current=()=>workers.at(-1)!;
  const close=async()=>{if(intake.usage().state==='closed')return;const worker=current();worker.ready();await flush();const closing=intake.close();worker.ack(worker.intake().map(row=>row.id));worker.emit('message',{kind:'closed'});await closing;};
  return {intake,workers,current,pressure,committed,records,close};
@@ -182,4 +186,31 @@ test('an ignored or intake-starved summary times out diagnostically, retries and
 test('graceful shutdown clears an impossible pending report while retaining prior sample provenance',async()=>{
  let at=1000;const f=fixture(100000,()=>at),scope=reportingScope();f.current().ready();f.intake.registryReporting(scope,at);const request=f.current().sent.find(r=>r.kind==='reporting');f.current().emit('message',reportReceipt(request,at));at=2000;assert.equal(f.intake.registryReporting(scope,at).health.pending,true);
  await f.close();const closed=f.intake.registryReporting(scope,at);assert.equal(closed.health.pending,false);assert.equal(closed.health.state,'STALE');assert.equal(closed.health.observedAt,1000);assert.equal(closed.health.completedAt,1000);assert.equal(closed.health.reasonCode,'WORKER_UNAVAILABLE');
+});
+
+async function diskUntil(condition:()=>boolean){for(let i=0;i<1000&&!condition();i++)await flush();assert.ok(condition(),'asynchronous shutdown spool did not settle');}
+test('bounded shutdown durably hands off only unacknowledged receipts, replays original clocks and clears after their ACKs',async t=>{
+ t.mock.timers.enable({apis:['setTimeout']});const dir=mkdtempSync(join(tmpdir(),'poe-intake-tail-')),path=join(dir,'market-intake-tail.json'),f=fixture(100000,()=>1000,path);let replacement:ReturnType<typeof fixture>|undefined;
+ try{
+  f.intake.observeIdentity(identity(1));f.intake.observeActivity(activity(2));f.intake.observeQualification(qualification(1000));await diskUntil(()=>f.workers.length===1);f.current().ready();await until(()=>f.current().intake().length===3);const original=f.current().intake();f.current().ack([original[0].id]);
+  const closing=f.intake.close();assert.equal(f.intake.close(),closing,'concurrent close callers share the same durable handoff');await flush();t.mock.timers.tick(30000);await closing;
+  const saved=JSON.parse(readFileSync(path,'utf8'));assert.deepEqual(saved.rows.map((row:any)=>row.message),original.slice(1));assert.deepEqual(saved.rows.map((row:any)=>row.queuedAt),[1000,1000]);assert.equal(statSync(path).mode&0o777,0o600);assert.equal(f.intake.usage().durableCommitted,1);assert.equal(f.intake.usage().shutdownTail.durablySpooledOnClose,2);assert.equal(f.records.find(row=>row.kind==='native-market-intake-undrained-shutdown')?.data.shutdownTailDurablySpooled,2);
+  replacement=fixture(100000,()=>90000,path);replacement.intake.observeIdentity(identity(4));await diskUntil(()=>replacement!.workers.length===1);replacement.current().ready();await until(()=>replacement!.current().intake().length===3);const replay=replacement.current().intake();assert.deepEqual(replay.slice(0,2),original.slice(1),'shutdown tail must not receive new receipt timestamps or IDs');assert.ok(replay[2].id>Math.max(...original.map(row=>row.id)),'new intake cannot collide with restored IDs');assert.equal(replacement.intake.usage().shutdownTail.replayed,2);assert.equal(replacement.intake.usage().maximumPendingAgeMs,89000);assert.equal(replacement.intake.usage().durableCommitted,0,'spool persistence is not market qualification or a durable registry commit');
+  replacement.current().ack([replay[0].id]);assert.equal(existsSync(path),true,'partial replay cannot retire the outstanding shutdown file');replacement.current().ack([replay[1].id],[],[{id:replay[1].id,reason:'TOKEN_AGE_EXCEEDS_24H'}]);await diskUntil(()=>!existsSync(path));assert.equal(replacement.intake.usage().pending,1);assert.equal(replacement.intake.usage().ageExcluded,1);assert.equal(replacement.intake.usage().shutdownTail.awaitingAcknowledgment,0);await replacement.close();
+ }finally{if(replacement&&replacement.intake.usage().state!=='closed')await replacement.close();if(f.intake.usage().state!=='closed'){const closing=f.intake.close();await flush();t.mock.timers.tick(30000);await closing;}t.mock.timers.reset();rmSync(dir,{recursive:true,force:true});}
+});
+
+test('worker failure during shutdown preserves its owned tail for the next process instead of treating failure as drain',async()=>{
+ const dir=mkdtempSync(join(tmpdir(),'poe-intake-tail-failure-')),path=join(dir,'market-intake-tail.json'),f=fixture(100000,()=>1000,path);
+ try{await diskUntil(()=>f.workers.length===1);f.intake.observeMigration({signature:'tail-migration',feedMint:'tail-mint',receivedAt:999});f.current().ready();await until(()=>f.current().intake().length===1);const original=f.current().intake()[0],closing=f.intake.close();f.current().emit('error',Error('worker unavailable during stop'));await closing;assert.deepEqual(await new NativeMarketIntakeSpool(path).load(),[{message:original,queuedAt:1000}]);assert.equal(f.intake.usage().durableCommitted,0);assert.equal(f.intake.usage().shutdownTail.durablySpooledOnClose,1);}finally{rmSync(dir,{recursive:true,force:true});}
+});
+
+test('unreadable shutdown tail closes discovery admission and is never replaced or discarded',async()=>{
+ const dir=mkdtempSync(join(tmpdir(),'poe-intake-tail-invalid-')),path=join(dir,'market-intake-tail.json'),original='{"version":"invalid"}';writeFileSync(path,original,{mode:0o600});const f=fixture(100000,()=>1000,path);
+ try{await diskUntil(()=>f.intake.usage().shutdownTail.loadFailed);assert.equal(f.intake.available(),false);assert.equal(f.workers.length,0);assert.equal(f.intake.usage().reasonCode,'SHUTDOWN_TAIL_UNAVAILABLE');await f.intake.close();assert.equal(readFileSync(path,'utf8'),original);assert.equal(f.intake.usage().durableCommitted,0);}finally{rmSync(dir,{recursive:true,force:true});}
+});
+
+test('failed shutdown persistence rejects close without claiming a saved tail or touching an aliased file',async()=>{
+ const dir=mkdtempSync(join(tmpdir(),'poe-intake-tail-write-failure-')),path=join(dir,'market-intake-tail.json'),financial=join(dir,'ledger.sqlite'),f=fixture(100000,()=>1000,path);
+ try{await diskUntil(()=>f.workers.length===1);f.intake.observeIdentity(identity(1));f.current().ready();await until(()=>f.current().intake().length===1);writeFileSync(financial,'financial-sentinel',{mode:0o600});symlinkSync(financial,path);const closing=f.intake.close();f.current().emit('error',Error('worker stopped without ACK'));await assert.rejects(closing,/SPOOL_FILE/);assert.equal(readFileSync(financial,'utf8'),'financial-sentinel');assert.equal(f.intake.usage().shutdownTail.durablySpooledOnClose,0);assert.equal(f.intake.usage().durableCommitted,0);assert.equal(f.records.some(row=>row.kind==='native-market-intake-shutdown-tail-write-unavailable'),true);}finally{rmSync(dir,{recursive:true,force:true});}
 });

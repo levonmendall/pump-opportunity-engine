@@ -19,6 +19,42 @@ test('static classifications redact arbitrary errors and wire rejects extra secr
  const r=raw() as any;r.reasonCode='https://private.example?key=DO_NOT_EXPORT';r.worker.privateError='DO_NOT_EXPORT';const p=projectIntakeWorkerReporting(r,RUN,T)!;assert.equal(p.reasonCode,'OTHER_UNEXPORTED_REASON');assert.doesNotMatch(JSON.stringify(p),/DO_NOT_EXPORT|private\.example/);
  for(const change of [(v:any)=>v.apiKey='private',(v:any)=>v.durableCommitted=9,(v:any)=>v.worker.registryWriteCommits=-1]){const bad=structuredClone(p);change(bad);assert.throws(()=>validateIntakeWorkerReporting(bad,T),/INVALID/);}
 });
+test('actual producer exclusion ACKs remain visible without becoming durable discoveries',async()=>{
+ const events=new EventEmitter(),sent:any[]=[];
+ const handle={on:(name:string,listener:(value:any)=>void)=>{events.on(name,listener);return handle;},postMessage:(value:any)=>{sent.push(value);if(value.kind==='stop')queueMicrotask(()=>events.emit('message',{kind:'closed'}));},terminate:async()=>0};
+ const intake=new NativeMarketIntake({createWorker:()=>handle,now:()=>T,onCommitted:()=>{},onPressure:()=>{}});
+ try{
+  events.emit('message',{kind:'ready'});
+  for(let n=0;n<2;n++)intake.observeIdentity({mint:String(n),receivedAt:T,source:'pumpapi-broad',kind:'activity',evidence:'unverified-provider-discovery-hint'});
+  await new Promise<void>(resolve=>setImmediate(resolve));
+  const ids=sent.filter(row=>row.kind==='intake').map(row=>row.id);
+  events.emit('message',{kind:'committed',ids,excluded:[{id:ids[0],reason:'TOKEN_AGE_EXCEEDS_24H'},{id:ids[1],reason:'PUMPSWAP_VENUE_REQUIRED'}],committedAt:T,stats:{}});
+  const usage=intake.usage(),p=projectIntakeWorkerReporting(usage,RUN,T)!;
+  assert.ok(p,'legitimate exclusion ACKs must not erase the entire intake report');
+  assert.equal(p.received,2);assert.equal(p.processedAcknowledged,2);assert.equal(p.ageExcluded,1);assert.equal(p.venueExcluded,1);assert.equal(p.durableCommitted,0);assert.equal(p.pending,0);assert.equal(p.financialWriterOpened,false);
+  const coverage=projectMarketCoverageReporting({runId:RUN,marketCoverage:{version:'poe-market-coverage-v1',generatedAt:T,persistence:{state:'sqlite-wal'},resource:{intakeWorker:usage}}},T)!;
+  assert.equal(coverage.resource.intakeWorker!.processedAcknowledged,2);validateMarketCoverageReporting(coverage,T);
+ }finally{await intake.close();}
+});
+test('extended ACK accounting rejects contradictions while historical intake wire remains valid',()=>{
+ const p=projectIntakeWorkerReporting({...raw(),processedAcknowledged:8,ageExcluded:0,venueExcluded:0},RUN,T)!;
+ validateIntakeWorkerReporting(p,T);validateIntakeWorkerReporting(projectIntakeWorkerReporting(raw(),RUN,T),T);
+ for(const change of [(v:any)=>v.processedAcknowledged=7,(v:any)=>v.ageExcluded=1,(v:any)=>delete v.venueExcluded,(v:any)=>v.venueExcluded=-1,(v:any)=>{v.pending=null;v.processedAcknowledged=11;v.durableCommitted=null;v.ageExcluded=null;v.venueExcluded=null;}]){
+  const bad=structuredClone(p);change(bad);assert.throws(()=>validateIntakeWorkerReporting(bad,T),/INVALID/);
+ }
+ const unknown=projectIntakeWorkerReporting({...raw(),processedAcknowledged:'unavailable',ageExcluded:0,venueExcluded:0},RUN,T)!;
+ assert.equal(unknown.processedAcknowledged,null,'missing evidence is not replaced by invented ACKs');
+});
+test('shutdown tail diagnostic distinguishes saved graceful-stop work from registry commits and crash coverage',()=>{
+ const tail={enabled:true,replayed:2,awaitingAcknowledgment:1,durablySpooledOnClose:0,loadFailed:false,scope:'GRACEFUL_SHUTDOWN_ONLY_NOT_CRASH_JOURNAL'};
+ const p=projectIntakeWorkerReporting({...raw(),processedAcknowledged:8,ageExcluded:0,venueExcluded:0,shutdownTail:{...tail,privatePath:'DO_NOT_EXPORT'}},RUN,T)!;
+ assert.deepEqual(p.shutdownTail,tail);assert.equal(p.durableCommitted,8);assert.doesNotMatch(JSON.stringify(p),/DO_NOT_EXPORT|privatePath/);validateIntakeWorkerReporting(p,T);
+ for(const change of [(v:any)=>v.shutdownTail.scope='CRASH_JOURNAL',(v:any)=>v.shutdownTail.awaitingAcknowledgment=3,(v:any)=>v.shutdownTail.durablySpooledOnClose=3,(v:any)=>v.shutdownTail.enabled=false,(v:any)=>v.shutdownTail.apiKey='secret']){
+  const bad=structuredClone(p);change(bad);assert.throws(()=>validateIntakeWorkerReporting(bad,T),/INVALID/);
+ }
+ const failed=projectIntakeWorkerReporting({...raw(),reasonCode:'SHUTDOWN_TAIL_UNAVAILABLE',shutdownTail:{...tail,replayed:0,awaitingAcknowledgment:0,loadFailed:true}},RUN,T)!;
+ assert.equal(failed.reasonCode,'SHUTDOWN_TAIL_UNAVAILABLE');assert.equal(failed.shutdownTail!.loadFailed,true);
+});
 test('source dispatch preserves false gates and redacts unrecognized outcomes without creating an admission decision',()=>{
  const p=projectSourceDispatchReporting({sourceInformationAdmission:true,sourceAdmission:false,sourceClosed:false,admissionSuspensionPresent:true,engineOpen:true,deepSetupAllowed:false,sourceWorkAllowed:false,hasNativeFatal:false,workOwner:'idle',lastOutcome:'PILOT_RPC private.example DO_NOT_EXPORT'},RUN)!;
  assert.equal(p.sourceAdmission,false);assert.equal(p.deepSetupAllowed,false);assert.equal(p.lastOutcome,'OTHER_UNEXPORTED_OUTCOME');assert.doesNotMatch(JSON.stringify(p),/DO_NOT_EXPORT|private\.example/);validateSourceDispatchReporting(p);assert.equal(projectSourceDispatchReporting(null,RUN),null);const bad=structuredClone(p) as any;bad.privateError='secret';assert.throws(()=>validateSourceDispatchReporting(bad),/INVALID/);

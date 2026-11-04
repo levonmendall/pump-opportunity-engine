@@ -20,13 +20,12 @@ function fixture(){
  };
  const source=runNativePaper.toString(),begin=source.search(/const\s+financialCapacityReason\s*=/),rest=source.slice(begin),end=rest.search(/;\s*bridge\s*=\s*new NativePaper/);
  assert.ok(begin>=0&&end>0,'actual capacity predicate and wrapper are identified');
- runInNewContext(rest.slice(0,end)+';holder.reason=financialCapacityReason;holder.allowed=financialCapacity;',context,{timeout:1000});
- return {flags,context,markers,rpc,state,reportingHealth,reason:holder.reason as (at:number,requireProjection?:boolean)=>string|null,allowed:holder.allowed as (at:number,requireProjection?:boolean)=>boolean,get supervisionCalls(){return supervisionCalls;}};
+ runInNewContext(rest.slice(0,end)+';holder.reason=financialCapacityReason;holder.allowed=financialCapacity;holder.entryReason=entryCapacityReason;',context,{timeout:1000});
+ return {flags,context,markers,rpc,state,reportingHealth,reason:holder.reason as (at:number,requireProjection?:boolean)=>string|null,allowed:holder.allowed as (at:number,requireProjection?:boolean)=>boolean,entryReason:holder.entryReason as (at:number,requireProjection?:boolean)=>string|null,get supervisionCalls(){return supervisionCalls;}};
 }
 
 const cases:Array<[string,(f:ReturnType<typeof fixture>)=>void]>=[
  ['FINANCIAL_PUBLICATION_UNAVAILABLE',f=>f.reportingHealth.observe(10,false)],
- ['MARKET_INTAKE_UNAVAILABLE',f=>{f.flags.intake=false;}],
  ['MANAGEMENT_ONLY',f=>{f.context.managementOnly=true;}],
  ['OWNER_PAUSE',f=>{f.context.manualPaused=true;}],
  ['OWNER_STOP',f=>{f.context.safeStopRequested=true;}],
@@ -64,4 +63,8 @@ test('completed slow publications remain valid while invalid measurements and di
 test('bounded nonservice admission retains its original processing guard',()=>{
  const f=fixture();f.context.service=false;f.flags.bounded=false;assert.equal(f.reason(1000),'BOUNDED_PROCESSING_RESERVE');assert.equal(f.allowed(1000),false);
  f.flags.bounded=true;assert.equal(f.allowed(1000),true);
+});
+
+test('unavailable discovery intake closes candidate entries while healthy financial recovery remains admitted',()=>{
+ const f=fixture(),before=structuredClone(f.state);f.flags.intake=false;assert.equal(f.entryReason(1000),'MARKET_INTAKE_UNAVAILABLE');assert.equal(f.reason(1000),null);assert.equal(f.allowed(1000),true);assert.deepEqual(f.state,before);
 });
