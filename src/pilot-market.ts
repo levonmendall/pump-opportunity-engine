@@ -10,7 +10,7 @@ import type {ExecutionQuote,Order,Position,UsdPrice} from './ledger.js';
 import type {ReadOnlyRpc} from './network.js';
 import {quotePool,buyFromState,decodeSupportedPoolAccounts,type PoolWireAccount} from './pool.js';
 import {PUMP_AMM_SDK,canonicalPumpPoolPda} from './sdk.js';
-import {ResearchClockPositionPricer,type ResearchClockBuyQuote} from './research-clock-pricing.js';
+import {ResearchClockPositionPricer,RESEARCH_CLOCK_OBSERVATION_POOL_CAPACITY,type ResearchClockBuyQuote} from './research-clock-pricing.js';
 import {ResearchHeldMarket} from './research-held-market.js';
 import {marketPoolContextEvidence,marketPoolMinimumContextSlot,type PaperAccountPlan,type VerifiedMarketPool} from './rpc-market.js';
 import type {SizeQuote,SizeRequest} from './trader.js';
@@ -283,7 +283,12 @@ export class PilotMarket {
       const pool=this.pools.get(mint)!,canonical=('pool'in pool?pool.pool:undefined)??canonicalPumpPoolPda(new PublicKey(mint)).toBase58(),now=this.clock();
       let layout=this.preparationLayouts.get(mint);
       if(!layout||layout.generation!==generation||layout.preparationEpoch!==preparationEpoch||layout.pool!==canonical||layout.at>now||now-layout.at>PILOT_ENTRY_PREPARATION_POLICY.stableReuseMaxAgeMs){
-        const supported=await this.pricer.validateMany([{mint:new PublicKey(mint),minSlot:this.floor(mint)}],signal),support=supported.validations[mint];
+        // Individual preparation turns must not evict another current prepared
+        // candidate's validated address links. Retain only this bounded fresh
+        // layout cohort at its original timestamps; no reserve/price bytes or
+        // expired rent are made current by another candidate's preparation.
+        const observationMints=[...this.preparationLayouts].filter(([other,value])=>other!==mint&&this.pools.has(other)&&value.generation===generation&&value.preparationEpoch===(this.preparationEpochs.get(other)??0)&&value.at<=now&&now-value.at<=PILOT_ENTRY_PREPARATION_POLICY.stableReuseMaxAgeMs).sort((a,b)=>b[1].at-a[1].at||a[0].localeCompare(b[0])).slice(0,RESEARCH_CLOCK_OBSERVATION_POOL_CAPACITY-1).map(([other])=>other);
+        const supported=await this.pricer.validateMany([{mint:new PublicKey(mint),minSlot:this.floor(mint)}],signal,undefined,{observationMints}),support=supported.validations[mint];
         need(support,'PILOT_MARKET_ENTRY_SUPPORT_UNAVAILABLE');const state=support.summary;
         // validateMany already verified the coherent confirmed bank/Clock.
         // This retained result supplies only stable layout, not a 2s quote.

@@ -455,6 +455,36 @@ test('alternating buys, three held quotes and six observations preserves their e
   for(const r of f.requests)await p.quoteBuy({...r,buyLamports:10000000n});assert.equal(Object.keys(p.usage().highestBuySlots).length,1);assert.ok(Object.keys(p.usage().cachedPoolSlots).length<=RESEARCH_CLOCK_COHERENT_POOL_CAPACITY+7);
 }));
 
+test('four separately prepared candidates each retain a one-read fresh quote without borrowing another pool state',async()=>withObservationTime(async f=>{
+ const p=new ResearchClockPositionPricer(f.rpc,f.rec),selected=f.requests.slice(0,4),retained:string[]=[];
+ for(const request of selected){
+  const before=f.calls.length,result=await p.validateMany([request],undefined,undefined,{observationMints:retained});
+  assert.ok(result.validations[request.mint.toBase58()]);assert.equal(f.calls.length-before,1);retained.push(request.mint.toBase58());
+ }
+ assert.deepEqual(Object.keys(p.usage().cachedPoolSlots).sort(),[...retained].sort());
+ for(const request of selected){
+  const before=f.calls.length,quote=await p.quoteBuy({...request,buyLamports:10000000n});
+  assert.equal(f.calls.length-before,1);assert.equal(quote.mint,request.mint.toBase58());assert.equal(quote.clockSlot,quote.slot);
+  const addresses=f.calls.at(-1)!.params[0] as string[];
+  assert.equal(addresses.length,8);assert.ok(addresses.includes(SYSVAR_CLOCK_PUBKEY.toBase58()));assert.ok(addresses.includes(canonicalPumpPoolPda(request.mint).toBase58()));
+ }
+ // Current contradictory dependency bytes still revoke only the affected
+ // pool's links, regardless of how recently another candidate was prepared.
+ const first=selected[0]!,wire=copy(f.accounts.get(f.states[0]!.addresses[0]))!,raw=Buffer.from(wire.data[0],'base64');raw[175]=raw[175]!^1;wire.data[0]=raw.toString('base64');f.accounts.set(f.states[0]!.addresses[0],wire);
+ await assert.rejects(p.quoteBuy({...first,buyLamports:10000000n}),/POOL_LINKS_CHANGED/);
+ assert.equal(Object.hasOwn(p.usage().cachedPoolSlots,first.mint.toBase58()),false);
+ const before=f.calls.length;await p.quoteBuy({...selected[1]!,buyLamports:10000000n});assert.equal(f.calls.length-before,1);
+}));
+
+test('explicit preparation retention stays within the existing observation capacity and cannot bypass admission',async()=>withObservationTime(async f=>{
+ const p=new ResearchClockPositionPricer(f.rpc,f.rec);await p.validateMany(f.requests.slice(0,4));const before=f.calls.length,links=copy(p.usage().cachedPoolSlots);
+ await assert.rejects(p.validateMany([f.requests[0]!],undefined,undefined,{observationMints:[...f.requests.map(r=>r.mint.toBase58()),new PublicKey(Buffer.alloc(32,221)).toBase58()]}),/OBSERVATION_RETENTION_CAPACITY_OR_IDENTITY/);
+ await assert.rejects(p.validateMany([f.requests[4]!],undefined,{latestStartAt:Date.now()+1000,admissionOpen:()=>false},{observationMints:f.requests.slice(0,4).map(r=>r.mint.toBase58())}),/ADMISSION_CLOSED/);
+ assert.equal(f.calls.length,before);assert.deepEqual(p.usage().cachedPoolSlots,links);
+ // Ordinary full-cohort callers keep their existing replacement semantics.
+ await p.validateMany([f.requests[5]!]);assert.deepEqual(Object.keys(p.usage().cachedPoolSlots),[f.requests[5]!.mint.toBase58()]);
+}));
+
 
 test('an unavailable optional buy does not discard independently owned held and observation links',async()=>withObservationTime(async f=>{
   const p=new ResearchClockPositionPricer(f.rpc,f.rec);await p.validateMany(f.requests);

@@ -23,7 +23,8 @@ const MAX_UNITS=(1n<<64n)-1n;
 // allocation/exposure policy. The actual union is checked before dispatch too.
 export const RESEARCH_CLOCK_RPC_ACCOUNT_CAPACITY=100;
 export const RESEARCH_CLOCK_COHERENT_POOL_CAPACITY=Math.floor((RESEARCH_CLOCK_RPC_ACCOUNT_CAPACITY-4)/4);
-const OBSERVATION_POOL_CAPACITY=6;
+export const RESEARCH_CLOCK_OBSERVATION_POOL_CAPACITY=6;
+const OBSERVATION_POOL_CAPACITY=RESEARCH_CLOCK_OBSERVATION_POOL_CAPACITY;
 const LINK_CACHE_CAPACITY=RESEARCH_CLOCK_COHERENT_POOL_CAPACITY+OBSERVATION_POOL_CAPACITY+1;
 function need(value:unknown,reason:string):asserts value {if(!value)throw Error(reason);}
 function checkedBatch(batch:Batch,count:number,minSlot:number){
@@ -141,13 +142,18 @@ export class ResearchClockPositionPricer {
    * canonical base vaults; the fresh mint owner selects the actual one. Real
    * vault hints may omit the alternate account. Every accepted dependency and
    * Clock is still read and validated afresh together in one physical request. */
-  async validateMany(requests:readonly ResearchClockObservationRequest[],signal?:AbortSignal,admission?:Admission):Promise<ResearchClockObservationBatch>{
+  async validateMany(requests:readonly ResearchClockObservationRequest[],signal?:AbortSignal,admission?:Admission,retention?:{observationMints:readonly string[]}):Promise<ResearchClockObservationBatch>{
     need(!this.busy,'RESEARCH_CLOCK_CONCURRENT_QUOTE');
     need(requests.length>0&&requests.length<=OBSERVATION_POOL_CAPACITY,'OBSERVATION_BATCH_CAPACITY');
     const selected=requests.map(r=>{const hint=r.dependencyHints;let dependencyHints:ResearchClockDependencyHints|undefined;if(hint){try{const baseVault=new PublicKey(hint.baseVault).toBase58(),quoteVault=new PublicKey(hint.quoteVault).toBase58();need(baseVault===hint.baseVault&&quoteVault===hint.quoteVault&&baseVault!==quoteVault,'RESEARCH_CLOCK_DEPENDENCY_HINTS');dependencyHints={baseVault,quoteVault};}catch{throw Error('RESEARCH_CLOCK_DEPENDENCY_HINTS');}}return {mint:new PublicKey(r.mint),minSlot:r.minSlot??0,...(dependencyHints?{dependencyHints}:{})};});
     const names=selected.map(r=>r.mint.toBase58());need(new Set(names).size===names.length,'DUPLICATE_OBSERVATION_MINT');
     for(const r of selected)need(Number.isSafeInteger(r.minSlot)&&r.minSlot>=0,'INVALID_MINIMUM_SLOT');
-    const result=await this.readMany(selected,'observation',signal,admission);
+    // One-at-a-time entry preparation is part of a bounded current cohort.
+    // Its other already validated addresses remain useful, but this option
+    // adds no read, quote, freshness claim or admission for those other pools.
+    const observationMints=retention?[...new Set([...names,...retention.observationMints])]:names;
+    need(observationMints.length<=OBSERVATION_POOL_CAPACITY&&observationMints.every(mint=>typeof mint==='string'&&new PublicKey(mint).toBase58()===mint),'OBSERVATION_RETENTION_CAPACITY_OR_IDENTITY');
+    const result=await this.readMany(selected,'observation',signal,admission,observationMints);
     return {validations:result.validations,unavailable:result.unavailable,context:result.context};
   }
   /** Passive current-pool binding for native events. Origin/vault hints and
@@ -162,7 +168,7 @@ export class ResearchClockPositionPricer {
     const result=await this.readMany(selected,'native-observation',signal,admission);
     return {validations:result.nativeValidations,unavailable:result.unavailable,context:result.context};
   }
-  private async readMany(selected:readonly {mint:PublicKey;minSlot:number;units?:bigint;buyLamports?:bigint;dependencyHints?:ResearchClockDependencyHints}[],purpose:'quote'|'observation'|'buy'|'native-observation',signal?:AbortSignal,admission?:Admission){
+  private async readMany(selected:readonly {mint:PublicKey;minSlot:number;units?:bigint;buyLamports?:bigint;dependencyHints?:ResearchClockDependencyHints}[],purpose:'quote'|'observation'|'buy'|'native-observation',signal?:AbortSignal,admission?:Admission,observationMints?:readonly string[]){
     this.busy=true;let sourceReadAttempted=false;const names=selected.map(r=>r.mint.toBase58()),observing=purpose==='observation'||purpose==='native-observation';
     const quotes:Record<string,ResearchClockQuote>={},buys:Record<string,ResearchClockBuyQuote>={},validations:Record<string,ResearchClockObservationSupport>={},nativeValidations:Record<string,ResearchClockNativeObservationSupport>={},unavailable:Record<string,string>={};
     try{
@@ -172,7 +178,7 @@ export class ResearchClockPositionPricer {
       checkAdmission();
       // Separate bounded working sets preserve links across alternating held and
       // observation calls. Only links survive; reserve/fee/price bytes never do.
-      const held=purpose==='quote'?new Set(names):this.heldActive,observed=observing?new Set(names):this.observationActive;
+      const held=purpose==='quote'?new Set(names):this.heldActive,observed=observing?new Set(observationMints??names):this.observationActive;
       let buying=purpose==='buy'?new Set(names):this.buyActive,active=new Set([...held,...observed,...buying]);
       // Replaceable entry links cannot evict the established held/observation
       // working sets. At the provider-derived capacity, only entry links give way.
@@ -183,7 +189,7 @@ export class ResearchClockPositionPricer {
       for(const mint of this.cached.keys())if(!active.has(mint))this.cached.delete(mint);
       for(const mint of this.rejectedDependencyHints.keys())if(!active.has(mint))this.rejectedDependencyHints.delete(mint);
       for(const mint of this.constructionBatches.keys())if(!active.has(mint))this.constructionBatches.delete(mint);
-      const slots=purpose==='quote'?this.holdingSlots:purpose==='buy'?this.buySlots:this.observationSlots;for(const mint of slots.keys())if(!names.includes(mint))slots.delete(mint);
+      const slots=purpose==='quote'?this.holdingSlots:purpose==='buy'?this.buySlots:this.observationSlots;for(const mint of slots.keys())if(observing?!observed.has(mint):!names.includes(mint))slots.delete(mint);
       let floor=Math.max(this.highestSlot,...selected.map(r=>Math.max(r.minSlot,this.holdingSlots.get(r.mint.toBase58())??0,this.observationSlots.get(r.mint.toBase58())??0,this.buySlots.get(r.mint.toBase58())??0)));
       const fingerprint=(hint:ResearchClockDependencyHints)=>hint.baseVault+':'+hint.quoteVault;
       const hinted=purpose==='observation'?selected.filter(r=>!this.cached.has(r.mint.toBase58())&&r.dependencyHints&&this.rejectedDependencyHints.get(r.mint.toBase58())!==fingerprint(r.dependencyHints)):[];
