@@ -44,6 +44,49 @@ test('provider failure before ACK keeps ordinary retry behavior instead of becom
  assert.equal(f.runner.watch.lookupIdentity(mint,f.now)!.reobservation,undefined);f.advance(30000);await f.steps(3);assert.ok(f.states.has(mint));await f.runner.stop();
 });
 
+test('a completed technical gap waits for new evidence rather than an unrelated thirty-second revisit timer',async()=>{
+ const f=fixture({maximumDeep:1,durableMarketPolicy:true,fairEconomicCompletions:true,forcePredictiveFeatures:true}),mint=f.seed(171);
+ try{
+  await f.steps(8);f.advance(70000);f.refresh();await f.steps(5);assert.ok(f.runner.currentAuditCertificate(mint,f.now));
+  const failedAt=f.now;f.runner.onGap({mint,at:failedAt,reason:'NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED'});
+  const failed=f.runner.watch.lookupIdentity(mint,f.now)!;assert.equal(failed.reobservation!.kind,'technical-unavailable');assert.ok(failed.reobservation!.windowEndAt);
+  assert.equal(f.runner.watch.next(f.now,new Set(),{requireOrigin:false}),null,'elapsed time alone supplies no source recovery');
+  f.advance(1);assert.equal(f.runner.watch.noteRelevantEvidence(mint,{kind:'source-recovery',at:f.now,fingerprint:'OFFLINE independently verified missing transaction delivery recovered'},f.now),true);
+  assert.equal(f.runner.watch.next(f.now,new Set(),{requireOrigin:false})?.mint,mint,'actual new evidence is serviceable before thirty seconds');
+  assert.equal(f.runner.currentAuditCertificate(mint,f.now),null,'the old certificate never gains permission');
+  (f.runner as any).allocate(f.now);assert.equal(f.states.has(mint),false,'unacknowledged retirement still occupies the physical slot');
+  for(let n=0;n<12&&!f.states.has(mint);n++){f.advance(250);await f.runner.step();}assert.ok(f.states.has(mint));assert.ok(f.now-failedAt<30000);assert.equal(f.runner.currentAuditCertificate(mint,f.now),null,'the replacement must warm and audit a fresh window');
+ }finally{await f.runner.stop();}
+});
+
+test('retiring repeated unavailable audits preserves the evidence gate without a second fifteen-second timer',async()=>{
+ const f=fixture({maximumDeep:1,durableMarketPolicy:true,fairEconomicCompletions:true,forcePredictiveFeatures:true,auditRpcError:'COMPONENT_RPC_ERROR_-32016'}),mint=f.seed(172);
+ try{
+  await f.steps(8);f.advance(70000);
+  for(let n=0;n<3;n++){if(n)f.advance(10000);f.refresh();await f.steps(5);}
+  const status=f.runner.status(),row=f.runner.watch.lookupIdentity(mint,f.now)!;assert.equal(status.counters.auditUnavailable,3);assert.equal(status.counters.auditedWindows,0);assert.equal(f.states.has(mint),false);
+  assert.equal(row.reobservation!.kind,'technical-unavailable');assert.equal(f.runner.watch.next(f.now,new Set(),{requireOrigin:false}),null);
+  f.advance(1);assert.equal(f.runner.watch.noteRelevantEvidence(mint,{kind:'source-recovery',at:f.now,fingerprint:'OFFLINE independent confirmed history provider response recovered'},f.now),true);
+  assert.equal(f.runner.watch.next(f.now,new Set(),{requireOrigin:false})?.mint,mint);assert.ok(f.now-row.reobservation!.decisionAt<15000);assert.equal(f.runner.currentAuditCertificate(mint,f.now),null);
+ }finally{await f.runner.stop();}
+});
+
+test('a global gap records new technical outcomes for every current scope instead of reusing an earlier ready gate',async()=>{
+ const f=fixture({maximumDeep:2,durableMarketPolicy:true,fairEconomicCompletions:true,forcePredictiveFeatures:true}),mints=[f.seed(173),f.seed(174)];
+ try{
+  await f.steps(10);f.advance(70000);f.refresh();await f.steps(8);
+  const first=mints[0]!;assert.ok(f.runner.currentAuditCertificate(first,f.now));f.runner.onGap({mint:first,at:f.now,reason:'NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED'});
+  f.advance(1);f.runner.watch.noteRelevantEvidence(first,{kind:'source-recovery',at:f.now,fingerprint:'OFFLINE first verified recovery'},f.now);
+  for(let n=0;n<12&&!f.states.has(first);n++){f.advance(250);await f.runner.step();}assert.ok(f.states.has(first));await f.steps(3);
+  const earlier=f.runner.watch.lookupIdentity(first,f.now)!.reobservation!;assert.ok(earlier.ready,'earlier allocation has a consumed ready gate');
+  f.advance(70000);f.refresh();await f.steps(8);const failedAt=f.now;f.runner.onGap({at:failedAt,reason:'NATIVE_FLOW_DISCONNECTED'});
+  assert.equal(f.states.size,0);assert.equal(f.runner.watch.next(f.now,new Set(),{requireOrigin:false}),null);
+  for(const mint of mints){const row=f.runner.watch.lookupIdentity(mint,f.now)!;assert.equal(row.reobservation!.decisionAt,failedAt);assert.equal(row.reobservation!.ready,null);assert.equal(row.deferUntil,failedAt);assert.equal(f.runner.currentAuditCertificate(mint,f.now),null);}
+  f.advance(1);f.runner.watch.noteRelevantEvidence(first,{kind:'source-recovery',at:f.now,fingerprint:'OFFLINE global connection independently recovered with verified state'},f.now);
+  assert.equal(f.runner.watch.next(f.now,new Set(),{requireOrigin:false})?.mint,first,'only the actually recovered scope regains serviceability');
+ }finally{await f.runner.stop();}
+});
+
 test('a real registry writer refusal cannot lose optional native activity; applying later retains original event time',async()=>{
  const dir=mkdtempSync(join(tmpdir(),'poe-native-activity-retry-')),path=join(dir,'market.sqlite'),registry=new MarketRegistry(path,{concurrentIntake:true}),lock=new Database(path);const f=fixture({durableMarketPolicy:true,fairEconomicCompletions:true,registry});
  try{

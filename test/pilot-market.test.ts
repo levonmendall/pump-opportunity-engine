@@ -151,6 +151,28 @@ function syntheticLegacyBase(f:ReturnType<typeof fixture>,capture:ReturnType<typ
   const vaultWire=structuredClone(f.account(oldVault))!;vaultWire.owner=TOKEN_PROGRAM_ID.toBase58();vaultWire.data[0]=Buffer.from(vaultWire.data[0],'base64').subarray(0,165).toString('base64');f.replaceAccount(legacyVault,vaultWire);
 }
 
+for(const cold of [false,true])test(`one candidate's ${cold?'cold layout mismatch':'changed pool links'} preserves peer rent evidence and quote runway`,async t=>{
+  const f=fixture(t,3000,false,false,false,true),peer=f.captures[0]!.proof.quote.mint,capture=f.captures[1]!,changed=capture.proof.quote.mint;
+  const original=await f.market.prepareEntryCosts(peer,signal());await f.market.prepareEntryCosts(changed,signal());
+  const peerBefore=f.market.entryPreparationStatus(peer),financialBefore=f.ledger.state();
+  syntheticLegacyBase(f,capture);
+  // Explicitly exercise both production invalidation paths: a retained link
+  // observes changed vaults, while an evicted link reads the new layout before
+  // comparing it with the earlier preparation. Only the changed link is cold.
+  if(cold)(f.market as any).pricer.cached.delete(changed);
+  assert.equal(await f.market.quote({mint:changed,side:'buy',inputUnits:'10000000'},signal()),null);
+  assert.equal(f.market.usage().entryQuoteFailures.last!.reasonCode,cold?'PILOT_MARKET_ACCOUNT_LENGTH':'POOL_LINKS_CHANGED');
+  assert.equal(f.market.entryPreparationStatus(changed).ready,false,'contradictory current evidence still revokes its own preparation');
+  assert.deepEqual(f.market.entryPreparationStatus(peer),peerBefore,'a rejected peer cannot evict original valid rent observations');
+  const before=f.calls.length;f.bumpSlot();
+  const quote=await f.market.quote({mint:peer,side:'buy',inputUnits:'10000000'},signal());assert.ok(quote);
+  assert.deepEqual(f.calls.slice(before).map(row=>row.method),['getMultipleAccounts']);
+  const costs=f.records.findLast(row=>row.kind==='rpc-market-quote')!.data.costs;
+  assert.deepEqual(costs.rentObservationsByBytes,original.rentObservationsByBytes);
+  assert.equal(costs.preparationAt,original.at);assert.deepEqual(f.ledger.state(),financialBefore);
+  f.advance(10001);assert.equal(f.market.entryPreparationStatus(peer).ready,false,'peer retention never extends the original freshness bound');
+});
+
 for(const legacy of [true,false])test(`current decision rent reuse removes ${legacy?1:2} duplicate rent calls and preserves original cost times with a fresh SDK quote`,async t=>{
   const f=fixture(t,1000,false,false,true,true),capture=f.captures[1]!,mint=capture.proof.quote.mint;if(legacy)syntheticLegacyBase(f,capture);
   const plan=await f.market.prepareEntryCosts(mint,signal()),before=f.ledger.state(),rentReads=f.calls.filter(c=>c.method==='getMinimumBalanceForRentExemption').length;assert.equal(rentReads,legacy?1:2);
