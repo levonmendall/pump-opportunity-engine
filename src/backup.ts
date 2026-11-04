@@ -62,6 +62,7 @@ const BACKUP_FAILURE_MESSAGES=new Map([
   ['backup sequence differs from captured readonly financial snapshot','BACKUP_CAPTURED_SEQUENCE_MISMATCH'],
   ['backup would regress durable history','BACKUP_HISTORY_REGRESSION'],
   ['pending backup requires explicit recovery; nothing overwritten','BACKUP_PENDING_RECOVERY_REQUIRED'],
+  ['backup shutdown requested; pending artifacts preserved','BACKUP_SHUTDOWN_REQUESTED'],
 ]);
 const BACKUP_SQLITE_CODES=new Set(['SQLITE_BUSY','SQLITE_LOCKED','SQLITE_IOERR','SQLITE_CORRUPT','SQLITE_NOTADB','SQLITE_FULL','SQLITE_READONLY','SQLITE_READONLY_ROLLBACK','SQLITE_CANTOPEN']);
 /** No arbitrary error text, file path, provider URL or credential is exported. */
@@ -77,7 +78,7 @@ export type BackupRuntimePreparation={admission:()=>boolean;measure:<T>(work:()=
 type Options={directory:string;sourcePath:string;identity:BackupIdentity;maxBytes?:number;persistent?:boolean;minimumFreeBytes?:number};
 export type BackupArtifactTask={task:'prepare';minimumRevision:number;expectedSource:{dev:number;ino:number}}|{task:'acquire'|'copy'|'finish'|'abort'|'recover'};
 export type BackupOperationLease={fd:number;dev:number;ino:number};
-export type BackupWorkerData={options:Options;operation:BackupOperationLease;cancellation:SharedArrayBuffer};
+export type BackupWorkerData={options:Options;operation:BackupOperationLease;cancellation:SharedArrayBuffer;sourceIdentities?:ReadonlyArray<{dev:number;ino:number}>};
 export type BackupArtifactRequest={id:number;deadlineAtMonoNs:bigint;task:BackupArtifactTask};
 const PREFIX='poe-financial-',PENDING='poe-financial-pending.sqlite';
 const OPERATION_LOCK='.poe-backup.lock';
@@ -85,11 +86,12 @@ const NAME=/^poe-financial-([0-9]{20})\.sqlite$/;
 
 type RecoverySource={dev:string;ino:string};
 type RecoveryFile=RecoverySource&{suffix:string;size:number;mtimeNs:string;ctimeNs:string;sha256:string};
-type RecoveryManifest={version:1;identity:BackupIdentity;source:RecoverySource;files:RecoveryFile[]};
+type RecoveryManifest={version:1;identity:BackupIdentity;source:RecoverySource|null;files:RecoveryFile[]};
 type RecoveryValidated={version:1;manifestSha256:string;file:RecoveryFile;target:string;revision:number;lastAt:number;snapshotSequence:string|null};
 type RecoveryCompleted={version:1;manifestSha256:string;disposition:'PROMOTED'|'PRESERVED_INCOMPLETE_STAGING';validatedSha256:string|null};
+type RecoveryFreshSource={version:1;manifestSha256:string;generation:string;revision:number;lastAt:number;source:RecoverySource};
 const RECOVERY='.poe-pending-recovery',RECOVERY_SUFFIXES=['','-journal','-wal','-shm'] as const;
-const RECOVERY_NAMES=new Set(['manifest.json','validated.json','completed.json','manifest.json.tmp','validated.json.tmp','completed.json.tmp',...RECOVERY_SUFFIXES.flatMap(s=>['original.sqlite'+s,'candidate.sqlite'+s])]);
+const RECOVERY_NAMES=new Set(['manifest.json','validated.json','completed.json','fresh-source.json','manifest.json.tmp','validated.json.tmp','completed.json.tmp','fresh-source.json.tmp',...RECOVERY_SUFFIXES.flatMap(s=>['original.sqlite'+s,'candidate.sqlite'+s])]);
 
 
 /** One bounded worker per operation. The parent owns the original lease FD
@@ -99,12 +101,12 @@ class ArtifactWorker{
   private readonly cancellation=new Int32Array(new SharedArrayBuffer(4));
   private readonly exited:Promise<void>;private closing:Promise<void>|null=null;
   private failed=false;private active=false;private sequence=0;
-  constructor(options:Options,operation:BackupOperationLease){
+  constructor(options:Options,operation:BackupOperationLease,sourceIdentities:ReadonlyArray<{dev:number;ino:number}>=[]){
     const source=import.meta.url.endsWith('.ts');
     // Register inside the source worker before resolving .js imports to .ts;
     // inheriting the parent's tsx preload alone does not register that thread.
     const register=source?'data:text/javascript,'+encodeURIComponent(`import {register} from ${JSON.stringify(import.meta.resolve('tsx/esm/api'))};register();`):'';
-    this.worker=new Worker(new URL(source?'./backup-worker.ts':'./backup-worker.js',import.meta.url),{workerData:{options,operation,cancellation:this.cancellation.buffer} satisfies BackupWorkerData,execArgv:source?['--import',register]:[],env:{}});
+    this.worker=new Worker(new URL(source?'./backup-worker.ts':'./backup-worker.js',import.meta.url),{workerData:{options,operation,cancellation:this.cancellation.buffer,sourceIdentities} satisfies BackupWorkerData,execArgv:source?['--import',register]:[],env:{}});
     this.worker.on('error',()=>{this.failed=true;});
     this.exited=new Promise(resolve=>this.worker.once('exit',()=>{this.failed=true;resolve();}));
   }
@@ -140,17 +142,24 @@ class ArtifactWorker{
 export class FinancialBackupStore{
   readonly directory:string;
   readonly identity:BackupIdentity;
-  private readonly sourcePath:string;
+  private readonly sourcePath:string;private readonly sourceIdentities:Array<{dev:number;ino:number}>=[];
   private readonly maxBytes:number;
   private readonly persistent:boolean;private readonly minimumFreeBytes:number;
   private staged:{path:string;own:Stats;source:Stats;completed:FinancialBackup[];minimumRevision:number;validated:boolean;copy?:ReadonlyFinancialSnapshotCopy}|undefined;
   private recoverySource:RecoverySource|undefined;
+  private incompleteSourceLoaded=false;private incompleteSource:RecoverySource|null=null;
   private workerOperation:BackupOperationLease|undefined;private workerLeaseAcquired=false;private workerCancelled:(()=>boolean)|undefined;
+  private shutdownRequested=false;private readonly activeWorkers=new Set<ArtifactWorker>();
+  get stopping(){return this.shutdownRequested;}
+  /** Parent retains its original lease until physical worker exit and the
+   * owning operation continuation settle. No replacement/final copy starts. */
+  async cancelActive(){this.shutdownRequested=true;await Promise.allSettled([...this.activeWorkers].map(worker=>worker.close()));}
+  private async closeWorker(worker:ArtifactWorker|undefined){try{await worker?.close();}finally{if(worker)this.activeWorkers.delete(worker);}}
   constructor(options:Options){
     this.directory=resolve(options.directory);
     const source=resolve(options.sourcePath);let sourceParent=dirname(source);
     try{sourceParent=realpathSync(sourceParent);}catch(error){if(!(error instanceof Error&&'code' in error&&['ENOENT','EACCES'].includes(String(error.code))))throw error;}
-    this.sourcePath=join(sourceParent,basename(source));
+    this.sourcePath=join(sourceParent,basename(source));try{const anchored=lstatSync(this.sourcePath);this.sourceIdentities.push({dev:anchored.dev,ino:anchored.ino});}catch(error){if(!(error instanceof Error&&'code'in error&&['ENOENT','EACCES'].includes(String(error.code))))throw error;}
     this.identity={...options.identity};this.persistent=options.persistent===true;this.minimumFreeBytes=options.minimumFreeBytes??256*1024*1024;this.maxBytes=this.persistent?Number.MAX_SAFE_INTEGER:options.maxBytes??64*1024*1024;
     if(options.persistent!==undefined&&typeof options.persistent!=='boolean'||!Number.isSafeInteger(this.minimumFreeBytes)||this.minimumFreeBytes<1024*1024||!Number.isSafeInteger(this.maxBytes)||this.maxBytes<4096||!this.persistent&&this.maxBytes>1024*1024*1024)throw new Error('bounded backup size required');
     if(!Number.isSafeInteger(this.identity.inceptionAt)||this.identity.inceptionAt<0||!['PAPER','DISPOSABLE_PAPER'].includes(this.identity.mode)||!this.identity.accountId)throw new Error('actual backup identity required');
@@ -329,20 +338,23 @@ export class FinancialBackupStore{
     this.recoveryDirectory();const original=this.recoveryMetadata('manifest.json');
     if(!original)throw new Error('backup recovery capsule initialization incomplete; originals preserved');
     const m=original.value as RecoveryManifest;
-    if(!m||typeof m!=='object'||Object.keys(m).sort().join(',')!=='files,identity,source,version'||m.version!==1||!isDeepStrictEqual(m.identity,this.identity)||!m.source||Object.keys(m.source).sort().join(',')!=='dev,ino'||![m.source.dev,m.source.ino].every(x=>typeof x==='string'&&/^(0|[1-9][0-9]*)$/.test(x))||!Array.isArray(m.files)||m.files.length<2||m.files.length>4||m.files.some(x=>!this.recoveryRecord(x))||m.files.map(x=>x.suffix).join(',')!==RECOVERY_SUFFIXES.filter(s=>m.files.some(x=>x.suffix===s)).join(',')||!m.files.some(x=>x.suffix==='')||!m.files.some(x=>x.suffix==='-journal'))throw new Error('backup recovery capsule metadata invalid; originals preserved');
+    if(!m||typeof m!=='object'||Object.keys(m).sort().join(',')!=='files,identity,source,version'||m.version!==1||!isDeepStrictEqual(m.identity,this.identity)||!(m.source===null||typeof m.source==='object'&&Object.keys(m.source).sort().join(',')==='dev,ino'&&[m.source.dev,m.source.ino].every(x=>typeof x==='string'&&/^(0|[1-9][0-9]*)$/.test(x)))||!Array.isArray(m.files)||m.files.length<1||m.files.length>4||m.files.some(x=>!this.recoveryRecord(x))||m.files.map(x=>x.suffix).join(',')!==RECOVERY_SUFFIXES.filter(s=>m.files.some(x=>x.suffix===s)).join(',')||!m.files.some(x=>x.suffix==='')||!m.files.some(x=>x.suffix==='-journal')&&!(m.files.length===1&&m.files[0]!.size===0))throw new Error('backup recovery capsule metadata invalid; originals preserved');
     const checked=this.recoveryMetadata('validated.json'),done=this.recoveryMetadata('completed.json');let validated:RecoveryValidated|null=null,completed:RecoveryCompleted|null=null;
     if(checked){const v=checked.value as RecoveryValidated;if(!v||Object.keys(v).sort().join(',')!=='file,lastAt,manifestSha256,revision,snapshotSequence,target,version'||v.version!==1||v.manifestSha256!==original.sha256||!this.recoveryRecord(v.file,'')||!NAME.test(v.target)||!Number.isSafeInteger(v.revision)||v.revision<0||!Number.isSafeInteger(v.lastAt)||v.lastAt<0||!(v.snapshotSequence===null||typeof v.snapshotSequence==='string'&&/^(0|[1-9][0-9]*)$/.test(v.snapshotSequence)))throw new Error('backup recovery capsule metadata invalid; originals preserved');validated=v;}
     if(done){const v=done.value as RecoveryCompleted;if(!v||Object.keys(v).sort().join(',')!=='disposition,manifestSha256,validatedSha256,version'||v.version!==1||v.manifestSha256!==original.sha256||!(v.disposition==='PROMOTED'&&validated&&v.validatedSha256===checked!.sha256||v.disposition==='PRESERVED_INCOMPLETE_STAGING'&&!validated&&v.validatedSha256===null))throw new Error('backup recovery capsule metadata invalid; originals preserved');completed=v;}
-    return {manifest:m,manifestSha256:original.sha256,validated,validatedSha256:checked?.sha256??null,completed};
+    const freshRecord=this.recoveryMetadata('fresh-source.json');let fresh:RecoveryFreshSource|null=null;
+    if(freshRecord){const v=freshRecord.value as RecoveryFreshSource;if(!v||Object.keys(v).sort().join(',')!=='generation,lastAt,manifestSha256,revision,source,version'||v.version!==1||v.manifestSha256!==original.sha256||completed?.disposition!=='PRESERVED_INCOMPLETE_STAGING'||!m.source||!isDeepStrictEqual(v.source,m.source)||!NAME.test(PREFIX+v.generation+'.sqlite')||!Number.isSafeInteger(v.revision)||v.revision<0||!Number.isSafeInteger(v.lastAt)||v.lastAt<0)throw new Error('backup recovery capsule metadata invalid; originals preserved');fresh=v;}
+    return {manifest:m,manifestSha256:original.sha256,validated,validatedSha256:checked?.sha256??null,completed,fresh};
   }
   private recoveryFileIdentity(path:string,expected:RecoveryFile){
-    this.privateFile(path);const s=lstatSync(path,{bigint:true});
+    const privateStat=this.privateFile(path);this.recoveryNotSource(privateStat);const s=lstatSync(path,{bigint:true});
     if(s.dev.toString()!==expected.dev||s.ino.toString()!==expected.ino||s.size!==BigInt(expected.size)||s.mtimeNs.toString()!==expected.mtimeNs)throw new Error('backup recovery original identity changed; originals preserved');
   }
   private fingerprintRecoveryFile(path:string,suffix:string):RecoveryFile{
-    this.recoveryFence();this.privateFile(path);const fd=openSync(path,constants.O_RDONLY|constants.O_NOFOLLOW);
+    this.recoveryFence();this.recoveryNotSource(this.privateFile(path));const fd=openSync(path,constants.O_RDONLY|constants.O_NOFOLLOW);
     try{
       const before=fstatSync(fd,{bigint:true}),named=lstatSync(path,{bigint:true});if(before.dev!==named.dev||before.ino!==named.ino||before.size>BigInt(this.maxBytes))throw new Error('backup recovery original identity changed; originals preserved');
+      fsyncSync(fd);
       const digest=createHash('sha256'),buffer=Buffer.alloc(1024*1024);let offset=0;
       while(offset<Number(before.size)){this.recoveryFence();const n=readSync(fd,buffer,0,Math.min(buffer.length,Number(before.size)-offset),offset);if(n<=0)throw new Error('backup recovery original identity changed; originals preserved');digest.update(buffer.subarray(0,n));offset+=n;}
       const after=fstatSync(fd,{bigint:true}),current=lstatSync(path,{bigint:true});if(before.dev!==after.dev||before.ino!==after.ino||before.size!==after.size||before.mtimeNs!==after.mtimeNs||before.ctimeNs!==after.ctimeNs||current.dev!==before.dev||current.ino!==before.ino||current.size!==before.size||current.mtimeNs!==before.mtimeNs||current.ctimeNs!==before.ctimeNs)throw new Error('backup recovery original identity changed; originals preserved');
@@ -357,7 +369,7 @@ export class FinancialBackupStore{
    * file outside this capsule, so conservatively refuse its magic at EOF. */
   private rejectSuperJournal(path:string){
     const file=this.privateFile(path);if(file.size<16)return;const fd=openSync(path,constants.O_RDONLY|constants.O_NOFOLLOW),tail=Buffer.alloc(16);
-    try{const s=fstatSync(fd);if(s.dev!==file.dev||s.ino!==file.ino||readSync(fd,tail,0,16,file.size-16)!==16)throw new Error('backup recovery journal changed; originals preserved');if(tail.subarray(8).equals(Buffer.from('d9d505f920a163d7','hex')))throw new Error('backup recovery super-journal reference refused; originals preserved');}finally{closeSync(fd);}
+    try{const s=fstatSync(fd);if(s.dev!==file.dev||s.ino!==file.ino||readSync(fd,tail,0,16,file.size-16)!==16)throw new Error('backup recovery journal changed; originals preserved');if(tail.subarray(8).equals(Buffer.from('d9d505f920a163d7','hex')))throw new Error('backup recovery super-journal reference refused; originals preserved');const after=fstatSync(fd),named=this.privateFile(path);if(after.size!==s.size||after.mtimeMs!==s.mtimeMs||after.ctimeMs!==s.ctimeMs||named.dev!==s.dev||named.ino!==s.ino)throw new Error('backup recovery journal changed; originals preserved');}finally{closeSync(fd);}
   }
   private moveRecoveryOriginal(from:string,to:string){
     this.recoveryFence();renameSync(from,to);this.syncRecoveryDirectory();this.syncDirectory();
@@ -374,7 +386,7 @@ export class FinancialBackupStore{
     for(const suffix of RECOVERY_SUFFIXES){const row=manifest.files.find(x=>x.suffix===suffix),path=this.recoveryPath('original.sqlite'+suffix);if(row)this.recoveryFileIdentity(path,row);else if(this.optionalRecoveryFile(path))throw new Error('backup recovery family changed; originals preserved');}
   }
   private clearRecoveryCandidate(){
-    for(const suffix of RECOVERY_SUFFIXES){const path=this.recoveryPath('candidate.sqlite'+suffix);if(this.optionalRecoveryFile(path)){this.recoveryFence();unlinkSync(path);}}
+    for(const suffix of RECOVERY_SUFFIXES){const path=this.recoveryPath('candidate.sqlite'+suffix),file=this.optionalRecoveryFile(path);if(file){this.recoveryNotSource(file);this.recoveryFence();unlinkSync(path);}}
     this.syncRecoveryDirectory();
   }
   private clearValidatedCandidateSidecars(){
@@ -387,14 +399,14 @@ export class FinancialBackupStore{
   private copyRecoveryCandidate(manifest:RecoveryManifest){
     const total=manifest.files.reduce((n,row)=>n+row.size,0),disk=statfsSync(this.directory),free=disk.bavail*disk.bsize;
     if(!Number.isSafeInteger(total)||!Number.isSafeInteger(free)||free<total+this.minimumFreeBytes)throw new Error('backup disk headroom unavailable; financial source and prior backups retained');
-    for(const row of manifest.files){
+    let copied=0;for(const row of manifest.files){
       this.recoveryFence();const from=this.recoveryPath('original.sqlite'+row.suffix),to=this.recoveryPath('candidate.sqlite'+row.suffix);this.recoveryFileIdentity(from,row);
       const input=openSync(from,constants.O_RDONLY|constants.O_NOFOLLOW);let output:number|undefined;
       try{
         output=openSync(to,constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);
         const stat=fstatSync(input,{bigint:true});if(stat.dev.toString()!==row.dev||stat.ino.toString()!==row.ino)throw new Error('backup recovery original identity changed; originals preserved');
         const digest=createHash('sha256'),buffer=Buffer.alloc(1024*1024);let offset=0;
-        while(offset<row.size){this.recoveryFence();const n=readSync(input,buffer,0,Math.min(buffer.length,row.size-offset),offset);if(n<=0)throw new Error('backup recovery original identity changed; originals preserved');digest.update(buffer.subarray(0,n));for(let at=0;at<n;){this.recoveryFence();const written=writeSync(output,buffer,at,n-at);if(written<=0)throw new Error('backup recovery candidate copy incomplete; originals preserved');at+=written;}offset+=n;}
+        while(offset<row.size){this.recoveryFence();const remaining=statfsSync(this.directory),available=remaining.bavail*remaining.bsize;if(!Number.isSafeInteger(available)||available<total-copied+this.minimumFreeBytes)throw new Error('backup disk headroom unavailable; financial source and prior backups retained');const n=readSync(input,buffer,0,Math.min(buffer.length,row.size-offset),offset);if(n<=0)throw new Error('backup recovery original identity changed; originals preserved');digest.update(buffer.subarray(0,n));for(let at=0;at<n;){this.recoveryFence();const written=writeSync(output,buffer,at,n-at);if(written<=0)throw new Error('backup recovery candidate copy incomplete; originals preserved');at+=written;copied+=written;}offset+=n;}
         const after=fstatSync(input,{bigint:true});if(after.size!==stat.size||after.mtimeNs!==stat.mtimeNs||after.ctimeNs!==stat.ctimeNs||digest.digest('hex')!==row.sha256)throw new Error('backup recovery original bytes changed; originals preserved');fsyncSync(output);
       }finally{if(output!==undefined)closeSync(output);closeSync(input);}
       this.recoveryFileIdentity(from,row);
@@ -404,7 +416,7 @@ export class FinancialBackupStore{
   /** Reading the candidate read-write lets SQLite perform its own hot rollback.
    * Originals and the live financial source are never opened for writing here. */
   private recoverCandidateIsEmpty(path:string){
-    this.recoveryFence();this.rejectSuperJournal(path+'-journal');const db=new Database(path,{fileMustExist:true,timeout:100});
+    this.recoveryFence();if(this.optionalRecoveryFile(path+'-journal'))this.rejectSuperJournal(path+'-journal');const db=new Database(path,{fileMustExist:true,timeout:100});
     try{
       const schema=db.prepare('SELECT count(*) AS count FROM sqlite_schema').get() as {count:number};
       if(schema.count!==0||db.pragma('page_count',{simple:true})!==0||db.pragma('freelist_count',{simple:true})!==0)return false;
@@ -429,22 +441,24 @@ export class FinancialBackupStore{
   }
   private recoverJournalFamily(scan:ReturnType<FinancialBackupStore['scan']>,completed:FinancialBackup[]):FinancialBackup|null{
     const rootPending=join(this.directory,PENDING),source=this.privateFile(this.sourcePath);
-    this.recoverySource={dev:String(source.dev),ino:String(source.ino)};
+    const agreedSource=this.sourceIdentities.length>0&&this.sourceIdentities.every(v=>v.dev===source.dev&&v.ino===source.ino)?{dev:String(source.dev),ino:String(source.ino)}:null;
+    this.recoverySource=agreedSource??undefined;
     try{
       if(!scan.capsule||this.recoveryInitializing()){
         const files=RECOVERY_SUFFIXES.flatMap(s=>this.optionalRecoveryFile(rootPending+s)?[this.fingerprintRecoveryFile(rootPending+s,s)]:[]);
-        if(!files.some(x=>x.suffix==='')||!files.some(x=>x.suffix==='-journal'))throw new Error('backup recovery paired pending journal required; originals preserved');
-        this.rejectSuperJournal(rootPending+'-journal');this.recoveryFence();if(!scan.capsule){mkdirSync(this.recoveryPath(),{mode:0o700});this.syncDirectory();}
-        this.writeRecoveryMetadata('manifest.json',{version:1,identity:this.identity,source:this.recoverySource,files} satisfies RecoveryManifest);
+        if(!files.some(x=>x.suffix==='')||!files.some(x=>x.suffix==='-journal')&&!(files.length===1&&files[0]!.size===0))throw new Error('backup recovery paired pending journal required; originals preserved');
+        if(files.some(x=>x.suffix==='-journal'))this.rejectSuperJournal(rootPending+'-journal');this.recoveryFence();if(!scan.capsule){mkdirSync(this.recoveryPath(),{mode:0o700});this.syncDirectory();}
+        this.writeRecoveryMetadata('manifest.json',{version:1,identity:this.identity,source:agreedSource,files} satisfies RecoveryManifest);
       }
-      const state=this.recoveryCapsule();this.recoverySource=state.manifest.source;this.recoveryFence();
+      const state=this.recoveryCapsule();this.recoverySource=state.manifest.source??undefined;this.recoveryFence();
       if(state.completed)throw new Error('backup recovery capsule already occupied; second journal preserved');
-      this.relocateRecoveryOriginals(state.manifest);this.rejectSuperJournal(this.recoveryPath('original.sqlite-journal'));
+      this.relocateRecoveryOriginals(state.manifest);if(state.manifest.files.some(x=>x.suffix==='-journal'))this.rejectSuperJournal(this.recoveryPath('original.sqlite-journal'));
       if(state.validated)return this.finishRecoveryPromotion(state,completed);
       this.clearRecoveryCandidate();this.copyRecoveryCandidate(state.manifest);
       const candidate=this.recoveryPath('candidate.sqlite');
       if(this.recoverCandidateIsEmpty(candidate)){
         if(completed.length===0)throw new Error('backup empty recovery requires verified prior backup; originals preserved');
+        if(!state.manifest.source)throw new Error('backup source inode changed; prior backups preserved');this.stagedSourceCurrent();
         this.clearValidatedCandidateSidecars();this.recoveryFence();this.writeRecoveryMetadata('completed.json',{version:1,manifestSha256:state.manifestSha256,disposition:'PRESERVED_INCOMPLETE_STAGING',validatedSha256:null} satisfies RecoveryCompleted);
         return null;
       }
@@ -460,7 +474,7 @@ export class FinancialBackupStore{
   private normalize(path:string){
     // SQLite backup inherits a WAL header. Normalize ONLY this completed staging
     // copy so read-only consumers do not create persistent WAL/SHM sidecars.
-    const db=new Database(path,{fileMustExist:true,timeout:100});
+    this.recoveryNotSource(this.privateFile(path));if(this.optionalRecoveryFile(path+'-journal'))this.rejectSuperJournal(path+'-journal');const db=new Database(path,{fileMustExist:true,timeout:100});
     try{
       db.pragma('wal_checkpoint(TRUNCATE)');
       if(db.pragma('journal_mode=DELETE',{simple:true})!=='delete')throw new Error('backup journal normalization failed');
@@ -473,6 +487,7 @@ export class FinancialBackupStore{
     if(!held.isFile()||held.uid!==process.getuid?.()||(held.mode&0o777)!==0o600||held.nlink!==1||held.size>this.maxBytes||held.dev!==named.dev||held.ino!==named.ino||held.dev!==operation.dev||held.ino!==operation.ino)throw new Error('backup operation lease inode changed; nothing removed');
   }
   private openOperation():BackupOperationLease{
+    if(this.shutdownRequested)throw Error('backup shutdown requested; pending artifacts preserved');
     this.checkDirectory();const fd=openSync(join(this.directory,OPERATION_LOCK),constants.O_CREAT|constants.O_RDWR|constants.O_NOFOLLOW,0o600);
     try{const held=fstatSync(fd),operation={fd,dev:held.dev,ino:held.ino};this.validateOperationLease(operation);return operation;}catch(error){closeSync(fd);throw error;}
   }
@@ -486,11 +501,15 @@ export class FinancialBackupStore{
     }catch(error){closeSync(fd);throw error;}
   }
   /** Worker borrows the original validated FD. Only its parent closes it. */
-  bindWorkerOperation(operation:BackupOperationLease,cancelled:()=>boolean){
+  bindWorkerOperation(operation:BackupOperationLease,cancelled:()=>boolean,sourceIdentities:ReadonlyArray<{dev:number;ino:number}>=[]){
     if(isMainThread||this.workerOperation||!Number.isSafeInteger(operation.fd)||operation.fd<0)throw new Error('backup worker operation scope required');
-    this.validateOperationLease(operation);this.workerOperation={...operation};this.workerCancelled=cancelled;
+    this.validateOperationLease(operation);if(sourceIdentities.length>4||sourceIdentities.some(s=>!Number.isSafeInteger(s.dev)||s.dev<0||!Number.isSafeInteger(s.ino)||s.ino<1))throw Error('backup source identity scope required');for(const source of sourceIdentities)if(!this.sourceIdentities.some(s=>s.dev===source.dev&&s.ino===source.ino))this.sourceIdentities.push({...source});this.workerOperation={...operation};this.workerCancelled=cancelled;
   }
   private workerFence(){
+    if((!this.workerOperation||this.workerLeaseAcquired)&&!this.incompleteSourceLoaded){
+      this.incompleteSourceLoaded=true;const scan=this.scan();if(scan.capsule&&!this.recoveryInitializing()){const state=this.recoveryCapsule();if(state.completed?.disposition==='PRESERVED_INCOMPLETE_STAGING'&&!state.fresh){if(!state.manifest.source)throw Error('backup source inode changed; prior backups preserved');this.incompleteSource=state.manifest.source;}}
+    }
+    if(this.incompleteSource){const source=this.privateFile(this.sourcePath);if(String(source.dev)!==this.incompleteSource.dev||String(source.ino)!==this.incompleteSource.ino)throw Error('backup source inode changed; prior backups preserved');}
     if(this.workerCancelled?.())throw new Error('backup artifact request cancelled or expired; pending artifacts preserved');
     if(this.workerOperation)this.validateOperationLease(this.workerOperation);
   }
@@ -507,6 +526,14 @@ export class FinancialBackupStore{
     if(this.recoverySource){const current=this.privateFile(this.sourcePath);if(String(current.dev)!==this.recoverySource.dev||String(current.ino)!==this.recoverySource.ino)throw new Error('backup source inode changed; prior backups preserved');}
     const staged=this.staged;if(!staged)return;const source=this.privateFile(this.sourcePath);
     if(source.dev!==staged.source.dev||source.ino!==staged.source.ino)throw new Error('backup source inode changed; prior backups preserved');
+  }
+  private recoveryNotSource(file:Stats){if(this.sourceIdentities.some(source=>source.dev===file.dev&&source.ino===file.ino))throw Error('backup recovery cannot modify financial source');}
+  private completeIncompleteSource(backup:FinancialBackup){
+    const scan=this.scan();if(!scan.capsule||this.recoveryInitializing())return;const state=this.recoveryCapsule();
+    if(state.completed?.disposition!=='PRESERVED_INCOMPLETE_STAGING'||state.fresh)return;
+    const source=backup.sourceSnapshot?.source,expected=state.manifest.source,current=this.privateFile(this.sourcePath);
+    if(!source||!expected||String(source.dev)!==expected.dev||String(source.ino)!==expected.ino||String(current.dev)!==expected.dev||String(current.ino)!==expected.ino)throw Error('backup source inode changed; prior backups preserved');
+    this.writeRecoveryMetadata('fresh-source.json',{version:1,manifestSha256:state.manifestSha256,generation:backup.generation,revision:backup.revision,lastAt:backup.lastAt,source:expected} satisfies RecoveryFreshSource);this.incompleteSource=null;
   }
   private promote(valid:FinancialBackup,completed:FinancialBackup[]):FinancialBackup{
     this.workerFence();this.stagedSourceCurrent();
@@ -546,15 +573,15 @@ export class FinancialBackupStore{
       const failure=error instanceof BackupPreparationDeferred?error:new BackupOperationError(phase,error);
       try{await worker?.request({task:'abort'});}catch{/* A dead/timed-out worker leaves pending evidence for recovery. */}
       throw failure;
-    }finally{try{await worker?.close();}finally{if(operation)closeSync(operation.fd);}}
+    }finally{try{await this.closeWorker(worker);}finally{if(operation)closeSync(operation.fd);}}
   }
-  private artifactWorker(operation:BackupOperationLease){return new ArtifactWorker({directory:this.directory,sourcePath:this.sourcePath,identity:this.identity,maxBytes:this.persistent?undefined:this.maxBytes,persistent:this.persistent,minimumFreeBytes:this.minimumFreeBytes},operation);}
+  private artifactWorker(operation:BackupOperationLease){if(this.shutdownRequested)throw Error('backup shutdown requested; pending artifacts preserved');const worker=new ArtifactWorker({directory:this.directory,sourcePath:this.sourcePath,identity:this.identity,maxBytes:this.persistent?undefined:this.maxBytes,persistent:this.persistent,minimumFreeBytes:this.minimumFreeBytes},operation,this.sourceIdentities);this.activeWorkers.add(worker);return worker;}
   /** Runtime-safe pending maintenance; all SQLite artifact work runs off-thread. */
   async maintainPending():Promise<FinancialBackup|null>{
     let phase:BackupFailurePhase='operation-open',operation:BackupOperationLease|undefined,worker:ArtifactWorker|undefined;
     try{operation=this.openOperation();phase='worker-acquire';worker=this.artifactWorker(operation);await worker.request({task:'acquire'});phase='pending-recovery';return await worker.request({task:'recover'});}
     catch(error){throw new BackupOperationError(phase,error);}
-    finally{try{await worker?.close();}finally{if(operation)closeSync(operation.fd);}}
+    finally{try{await this.closeWorker(worker);}finally{if(operation)closeSync(operation.fd);}}
   }
   /** Internal worker entry. The parent holds the operation lease across phases. */
   async runArtifactTask(message:BackupArtifactTask):Promise<FinancialBackup|null>{
@@ -584,7 +611,7 @@ export class FinancialBackupStore{
       this.stagedSourceCurrent();this.normalize(staged.path);this.workerFence();
       const valid=this.inspect(staged.path,'0',true,staged.copy);if(valid.revision<staged.minimumRevision)throw new Error('backup predates source observation');
       this.workerFence();this.stagedSourceCurrent();
-      staged.validated=true;const result=this.promote(valid,staged.completed),sourceSnapshot=staged.copy?structuredClone(staged.copy):undefined;this.staged=undefined;return {...result,...(sourceSnapshot?{sourceSnapshot}:{})};
+      staged.validated=true;const result=this.promote(valid,staged.completed),sourceSnapshot=staged.copy?structuredClone(staged.copy):undefined,complete={...result,...(sourceSnapshot?{sourceSnapshot}:{})};if(sourceSnapshot)this.completeIncompleteSource(complete);this.staged=undefined;return complete;
     }
     // Only this operation's incomplete inode is disposable; completed/foreign
     // files and a validated copy awaiting promotion are always preserved.
@@ -604,7 +631,8 @@ export class FinancialBackupStore{
   private recoverPendingOwned():FinancialBackup|null{
       const scan=this.scan();if(scan.capsuleRefusal)throw scan.capsuleRefusal;if(!scan.pending)return null;
       const completed=this.validatedRetention(scan),path=join(this.directory,PENDING);
-      if(scan.capsule&&(this.recoveryInitializing()||!this.recoveryCapsule().completed)||this.optionalRecoveryFile(path+'-journal'))return this.recoverJournalFamily(scan,completed);
+      if(scan.capsule&&(this.recoveryInitializing()||!this.recoveryCapsule().completed)||this.optionalRecoveryFile(path+'-journal')||this.optionalRecoveryFile(path)?.size===0)return this.recoverJournalFamily(scan,completed);
+      this.recoveryNotSource(this.privateFile(path));
       this.inspect(path,'0',false);this.normalize(path);
       return this.promote(this.inspect(path,'0'),completed);
   }

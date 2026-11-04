@@ -20,7 +20,7 @@ function fixture(){
   ownership:()=>null,
  };
  const context:any={__name:(value:unknown)=>value,holder,Date:{now:()=>at},service:true,proofPreparation:preparation,
-  sourceInformationAdmission:()=>admitted,engine:{currentAuditCertificate:()=>admitted&&at<=certificate.deadlineAt?certificate:null},riskCapacity:()=>risk,certifiedAdmission:(current:NativeAuditCertificate)=>admitted&&current===certificate&&at<=certificate.deadlineAt,
+  financialCapacityReason:()=>null,sourceInformationAdmission:()=>admitted,engine:{currentAuditCertificate:()=>admitted&&at<=certificate.deadlineAt?certificate:null},riskCapacity:()=>risk,certifiedAdmission:(current:NativeAuditCertificate)=>admitted&&current===certificate&&at<=certificate.deadlineAt,
   nativePaperCurrentQualificationProof:(owner:any,mint:string)=>nativePaperCurrentQualificationProof(owner,mint,()=>at),currentBridge:bridge,
   serviceRecorder:{pinProvisionalRange:async(id:string,start:number,through:number,deadline:number)=>{pinCalls++;events.push({kind:'pin-start',at,id,start,through,deadline});await pinPending;return {complete:true,proofId:id,manifestSha256:'b'.repeat(64),bytes:1234};}},
   need:(condition:unknown,reason:string)=>{if(!condition)throw Error(reason);},hash:(value:string)=>value,record:(kind:string,data:any)=>events.push({kind,data}),

@@ -193,6 +193,13 @@ existing creation and validation check before the runtime can report backup
 readiness. Populated foreign-account databases, corruption, unknown files,
 unsafe metadata, and ambiguous recovery state still refuse and remain preserved.
 
+The same narrow path handles a zero-byte pending file left after real prepare
+but before copying. Its original source agreement is recorded durably; a source
+replacement cannot gain acceptance by restarting a store or worker. A separate
+`fresh-source.json` receipt resolves that fence only after an actual persistent
+current-source snapshot has passed the ordinary full validation and promotion.
+An empty file and a prior completed backup never produce that receipt.
+
 The manifest makes same-family interrupted work resumable. Half-completed
 preservation cannot make the active directory appear clean. The capsule is
 bounded to one incident and one recovery candidate; successful normal backup

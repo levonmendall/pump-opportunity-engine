@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {readFileSync} from 'node:fs';
 import {createContext,Script} from 'node:vm';
+import {projectFinancialReadinessReporting} from '../src/financial-readiness-reporting.js';
 
 const dashboardSource=readFileSync(new URL('../src/dashboard.ts',import.meta.url),'utf8');
 const holographicSource=readFileSync(new URL('../src/dashboard-holographic.ts',import.meta.url),'utf8');
@@ -181,4 +182,17 @@ test('pipeline queue deltas use distinct same-source snapshots; first samples an
  const second=drawMetrics(next);assert.equal(second.get('Eligible / serviceable / capacity queue change'),'2 / 1 / 1');assert.equal(second.get('Queue comparison interval'),'15.000 s between registry samples');assert.equal(drawMetrics(next).get('Eligible / serviceable / capacity queue change'),'2 / 1 / 1','duplicate generation preserves actual preceding sample');
  assert.equal(drawMetrics(coverage).get('Eligible / serviceable / capacity queue change'),'Unavailable / Unavailable / Unavailable','regressed snapshot cannot claim a forward change');
  next.pipeline.sourceInstanceId='native-runner:fixture:second';assert.equal(drawMetrics(next).get('Eligible / serviceable / capacity queue change'),'Unavailable / Unavailable / Unavailable','source recovery does not blend queues');
+});
+
+
+test('financial readiness displays the precise backup prerequisite between handoffs at its original source clock',()=>{
+ const sourceAt=Date.parse('2026-11-04T09:05:47.213Z'),raw={runId:'native-paper-20261104084359513',startedAt:Date.parse('2026-11-04T08:43:59.513Z'),generatedAt:sourceAt,entriesEnabled:false,financial:{controls:{entriesEnabled:false,stopRequested:false},daily:{paused:true,reconciledAt:sourceAt-1000}},financialReadiness:{derivedEntryReason:'POE_ENTRY_MONITORING_UNAVAILABLE',monitoringAdmissionReason:'BACKUP_UNAVAILABLE'},reporting:{}};
+ const readiness=projectFinancialReadinessReporting(raw,sourceAt)!;assert.ok(readiness);
+ const root=new FakeElement(),start=dashboardSource.indexOf('function renderMetrics('),through=dashboardSource.indexOf('// Display only the durable',start);
+ const add=(parent:FakeElement,_tag:string,value?:unknown,klass?:string)=>{const child=new FakeElement();child.className=klass??'';child.textContent=value===undefined?'':String(value);parent.children.push(child);return child;};
+ const context=createContext({byId:()=>root,add,Number,Math});new Script(dashboardSource.slice(start,through)).runInContext(context);
+ const drawReadiness=(current:unknown)=>{(context as any).renderMetrics({}, {}, {financialReadiness:current,candidates:{},quality:{limitations:[]},provider:{},resources:{cpuOneCoreFraction:null},protection:{},times:{},run:{}});const facts=new Map<string,string>();const walk=(node:FakeElement)=>{if(node.className==='metric')facts.set(node.children[0]!.textContent,node.children[1]!.textContent);node.children.forEach(walk);};walk(root);return facts;};
+ const blocked=drawReadiness(readiness);assert.equal(blocked.get('Monitoring admission prerequisite'),'BACKUP_UNAVAILABLE');assert.equal(blocked.get('Financial readiness observed at'),'2026-11-04T09:05:47.213Z');assert.equal(blocked.get('Current entry restriction'),'POE_ENTRY_MONITORING_UNAVAILABLE');assert.equal(blocked.get('Durable entry control / current derived permission'),'false / false');
+ const legacy=structuredClone(readiness);delete legacy.monitoringAdmissionReasonCode;assert.equal(drawReadiness(legacy).get('Monitoring admission prerequisite'),'Unavailable');
+ const reportedClear={...readiness,monitoringAdmissionReasonCode:null};assert.equal(drawReadiness(reportedClear).get('Monitoring admission prerequisite'),'None reported');assert.equal(readiness.monitoringAdmissionReasonCode,'BACKUP_UNAVAILABLE');
 });

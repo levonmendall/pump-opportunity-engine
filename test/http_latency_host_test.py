@@ -22,6 +22,21 @@ def read_child_stat(path):
     try:return path.read_text()
     except (FileNotFoundError,ProcessLookupError):return None
 
+def wait_child_and_lease(fd,path,deadline):
+    # Releasing inherited FDs and becoming absent/zombie are separate kernel
+    # observations. Keep our reacquired lease held until BOTH are confirmed;
+    # neither observation alone permits the test to report settlement.
+    lease_acquired=False;child_stat=None
+    while time.monotonic()<deadline:
+        if not lease_acquired:
+            try:fcntl.flock(fd,fcntl.LOCK_EX|fcntl.LOCK_NB);lease_acquired=True
+            except BlockingIOError:pass
+        child_stat=read_child_stat(path)
+        child_settled=child_stat is None or child_stat.rsplit(')',1)[1].split()[0]=='Z'
+        if lease_acquired and child_settled:return lease_acquired,child_stat
+        time.sleep(.01)
+    raise TimeoutError('child/lease settlement unverified: leaseAcquired='+str(lease_acquired)+'; childStat='+str(child_stat))
+
 class HostContract(unittest.TestCase):
     def fixture(self):
         return {'accountId':m.ACCOUNT_ID,'inceptionAt':m.INCEPTION,'mode':'paper','running':False,'liveTradingEnabled':False,'source':m.SOURCE.copy(),'runId':'native-paper-20261028210805129','positions':{},'pending':{},'runtimePid':99999999,'generatedAt':100000,'usage':{'rpc':{'cooldownUntil':0}}},{'physicalSettlementConfirmed':True,'positions':0,'pending':0,'financialHistoryPreserved':True}
@@ -58,6 +73,21 @@ class HostContract(unittest.TestCase):
         for state in ['123 (fixture) S 0','123 (fixture) Z 0']:
             with patch.object(pathlib.Path,'read_text',return_value=state):
                 self.assertEqual(read_child_stat(pathlib.Path('/proc/fixture/stat')),state)
+    def test_released_lease_waits_for_physical_exit_and_remains_held(self):
+        with patch.object(fcntl,'flock')as flock,patch(__name__+'.read_child_stat',side_effect=['123 (fixture) R 0','123 (fixture) Z 0']),patch.object(time,'monotonic',side_effect=[0,.01]),patch.object(time,'sleep')as sleep:
+            lease,child_stat=wait_child_and_lease(123,pathlib.Path('/proc/fixture/stat'),1)
+        self.assertTrue(lease);self.assertEqual(child_stat,'123 (fixture) Z 0')
+        flock.assert_called_once_with(123,fcntl.LOCK_EX|fcntl.LOCK_NB);sleep.assert_called_once_with(.01)
+    def test_physical_exit_does_not_release_an_unverified_lease(self):
+        with patch.object(fcntl,'flock',side_effect=BlockingIOError),patch(__name__+'.read_child_stat',return_value=None),patch.object(time,'monotonic',side_effect=[0,1]),patch.object(time,'sleep'):
+            with self.assertRaisesRegex(TimeoutError,'leaseAcquired=False'):wait_child_and_lease(123,pathlib.Path('/proc/fixture/stat'),1)
+    def test_lease_release_does_not_certify_a_surviving_child(self):
+        with patch.object(fcntl,'flock')as flock,patch(__name__+'.read_child_stat',return_value='123 (fixture) R 0'),patch.object(time,'monotonic',side_effect=[0,1]),patch.object(time,'sleep'):
+            with self.assertRaisesRegex(TimeoutError,'leaseAcquired=True; childStat=123'):wait_child_and_lease(123,pathlib.Path('/proc/fixture/stat'),1)
+        flock.assert_called_once_with(123,fcntl.LOCK_EX|fcntl.LOCK_NB)
+    def test_unknown_child_observation_failure_cannot_certify_settlement(self):
+        with patch.object(fcntl,'flock'),patch(__name__+'.read_child_stat',side_effect=PermissionError),patch.object(time,'monotonic',return_value=0):
+            with self.assertRaises(PermissionError):wait_child_and_lease(123,pathlib.Path('/proc/fixture/stat'),1)
     def test_launcher_parent_death_closes_child_and_inherited_lease(self):
         with tempfile.TemporaryDirectory(prefix='poe-latency-launch-fixture-')as d:
             lock=pathlib.Path(d)/'lease';lock.write_bytes(b'');os.chmod(lock,0o600)
@@ -75,13 +105,14 @@ p=m.launch_probe([sys.executable,'-c','import time;time.sleep(60)'],out,[lease])
                     with self.assertRaises(BlockingIOError):fcntl.flock(fd,fcntl.LOCK_EX|fcntl.LOCK_NB)
                     os.kill(p.pid,signal.SIGKILL);p.wait(timeout=2)
                     deadline=time.monotonic()+2
-                    while time.monotonic()<deadline:
-                        try:fcntl.flock(fd,fcntl.LOCK_EX|fcntl.LOCK_NB);break
-                        except BlockingIOError:time.sleep(.01)
-                    else:self.fail('child retained lease after parent death')
                     path=pathlib.Path('/proc')/str(child)/'stat'
-                    child_stat=read_child_stat(path)
+                    lease_acquired,child_stat=wait_child_and_lease(fd,path,deadline)
+                    self.assertTrue(lease_acquired)
                     self.assertTrue(child_stat is None or child_stat.rsplit(')',1)[1].split()[0]=='Z')
+                    contender=os.open(lock,os.O_RDWR)
+                    try:
+                        with self.assertRaises(BlockingIOError):fcntl.flock(contender,fcntl.LOCK_EX|fcntl.LOCK_NB)
+                    finally:os.close(contender)
                 finally:os.close(fd)
             finally:
                 if p.poll()is None:p.kill();p.wait(timeout=2)

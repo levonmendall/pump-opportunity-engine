@@ -66,6 +66,12 @@ test('a real failed copy retains its phase and sanitized cause while preserving 
  const deferred=backupFailureDiagnostic(new BackupPreparationDeferred());assert.equal(deferred.code,'BACKUP_RUNTIME_PREPARATION_DEFERRED');assert.equal(deferred.financialFailure,false,'failure diagnostics do not relabel an unstarted deferral');
 });
 
+test('the demonstrated retention-layout refusal retains its exact phase and typed cause without weakening the failure',()=>{
+ const message='backup retention layout needs review; nothing removed',diagnostic=backupFailureDiagnostic(new BackupOperationError('pending-recovery',Error(message)));
+ assert.deepEqual(diagnostic,{version:'financial-backup-failure-v1',phase:'pending-recovery',code:'BACKUP_RETENTION_LAYOUT_REQUIRED',errorSha256:'fb16d5e5a475ebe39e46148d9301622c67bf1b9b8c6f9f4ba10055902c28833f',sqliteCode:null,financialFailure:true});
+ assert.equal(JSON.stringify(diagnostic).includes(message),false);
+});
+
 test('actual worker SQLite corruption retains a bounded diagnostic and never invalidates or removes a different verified generation',async t=>{
  const f=fixture(t),first=await f.store.create(f.ledger),second=await f.store.create(f.ledger),before=f.ledger.state(),goodHash=hash(second.path);
  const original=readFileSync(first.path);assert.ok(original.length>4096);writeFileSync(first.path,original.subarray(0,4096));
@@ -136,4 +142,19 @@ test('worker rejects replacement of the named lock while the parent retains its 
  const f=fixture(t),good=await f.store.create(f.ledger),oldLock=join(f.store.directory,'fixture-original-lock'),lock=join(f.store.directory,LOCK);
  const captured=observeWorker(f.store,async(task,run)=>{const result=await run();if(task.task==='acquire'){renameSync(lock,oldLock);writeFileSync(lock,'',{mode:0o600});}return result;});
  await assert.rejects(f.store.create(f.ledger),/lease inode changed/);assert.notEqual(lstatSync(lock).ino,captured().operation.ino);assert.equal(lstatSync(oldLock).ino,captured().operation.ino);assert.equal(existsSync(good.path),true);assert.equal(f.ledger.state().revision,0);
+});
+
+test('shutdown cancellation physically exits its worker but retains the parent lease until the owned operation settles',async t=>{
+ const f=fixture(t),good=await f.store.create(f.ledger),goodHash=hash(good.path),before=f.ledger.state(),copied=deferred(),deliver=deferred();let finished=false;
+ const captured=observeWorker(f.store,async(task,run)=>{const result=await run();if(task.task==='copy'){copied.resolve();await deliver.promise;}return result;});
+ const pending=f.store.create(f.ledger).finally(()=>{finished=true;});await copied.promise;assert.equal(lockStatus(f.store.directory),1);await f.store.cancelActive();assert.equal(captured().worker.worker.threadId,-1,'the actual worker has exited before cancellation reports settlement');assert.equal(finished,false);assert.equal(lockStatus(f.store.directory),1,'the parent retains its original lease until the operation continuation settles');
+ await assert.rejects(f.store.create(f.ledger),/shutdown requested/);deliver.resolve();await assert.rejects(pending,/worker unavailable/);assert.equal(lockStatus(f.store.directory),0);assert.deepEqual(f.ledger.state(),before);assert.equal(hash(good.path),goodHash);assert.equal(f.store.stopping,true);
+});
+
+test('real cancellation after prepare preserves zero-byte staging and a new process requires a fresh validated source copy',async t=>{
+ const f=fixture(t),good=await f.store.create(f.ledger),goodHash=hash(good.path),before=f.ledger.state();let cancelled=false;
+ observeWorker(f.store,async(task,run)=>{const result=await run();if(task.task==='prepare'&&!cancelled){cancelled=true;await f.store.cancelActive();throw Error('OFFLINE_CANCELLED_AFTER_REAL_PREPARE');}return result;});
+ await assert.rejects(f.store.create(f.ledger),/OFFLINE_CANCELLED_AFTER_REAL_PREPARE/);const pending=join(f.store.directory,PENDING);assert.equal(lstatSync(pending).size,0);assert.equal(existsSync(pending+'-journal'),false);assert.equal(hash(good.path),goodHash);assert.deepEqual(f.ledger.state(),before);
+ const restarted=new FinancialBackupStore(f.options);assert.equal(await restarted.maintainPending(),null,'an empty staging file is never a verified financial backup');assert.equal(existsSync(pending),false);assert.equal(restarted.latest().backup!.generation,good.generation);const work=join(f.store.directory,'.poe-pending-recovery'),manifest=JSON.parse(readFileSync(join(work,'manifest.json'),'utf8')),completed=JSON.parse(readFileSync(join(work,'completed.json'),'utf8'));assert.ok(manifest.source);assert.equal(completed.disposition,'PRESERVED_INCOMPLETE_STAGING');assert.equal(existsSync(join(work,'fresh-source.json')),false);assert.equal(lstatSync(join(work,'original.sqlite')).size,0);
+ f.ledger.pause('fixture-real-after-empty-cancel',AT+1,'DISPOSABLE current source progress');const fresh=await restarted.create(f.ledger);assert.ok(fresh.sourceSnapshot);assert.ok(fresh.revision>good.revision);assert.equal(fresh.lastAt,AT+1);assert.equal(JSON.parse(readFileSync(join(work,'fresh-source.json'),'utf8')).generation,fresh.generation);assert.equal(hash(good.path),goodHash);
 });

@@ -27,7 +27,7 @@ function fixture(enforceTokenAge24h=false,path=':memory:'){
  const age=(i:number,createdAt=AT-3600000,availableAt=AT-1000)=>registry.putTokenCreationProof({version:TOKEN_AGE_POLICY.version,mint:mint(i),signature:signature(i),slot:i+1,createdAt,availableAt,commitment:'finalized',instruction:'create',transactionSha256:createHash('sha256').update('OFFLINE-proof-'+i).digest('hex')});
  const birth=(i:number,when=AT-1000)=>registry.observeIdentity({mint:mint(i),source:'pumpportal-new-token',kind:'creation',signature:signature(i),at:when});
  const current=registry.nextOpportunity.bind(registry);let parityCalls=0;
- registry.nextOpportunity=(q,at,anchor,preparation,preparedMintLookup)=>{const expected=legacyOpportunitySelection.call(internal(registry),q,at,anchor,preparation),actual=current(q,at,anchor,preparation,preparedMintLookup);assert.deepEqual(actual,expected,'selected full row and every hint match the frozen deployed query in one transaction');parityCalls++;return actual;};
+ registry.nextOpportunity=(q,at,anchor,preparation,preparedMintLookup,purpose)=>{const expected=legacyOpportunitySelection.call(internal(registry),q,at,anchor,preparation),actual=current(q,at,anchor,preparation,preparedMintLookup,purpose),prior=actual?{...actual,hints:(({competition:_competition,...original})=>original)(actual.hints)}:actual;assert.deepEqual(prior,expected,'selected full row and every hint match the frozen deployed query in one transaction');parityCalls++;return actual;};
  const next=(at=AT,excluded=new Set<string>(),options:Parameters<PilotWatch['next']>[2]={})=>watch.next(at,excluded,options);
  const priority=()=>events.filter(r=>r.kind==='pilot-watch-opportunity-priority').at(-1)?.data as (ObservationPriorityHints&{stage?:string})|undefined;
  return {registry,watch,seed,hint,age,birth,next,priority,events,parityCalls:()=>parityCalls};
@@ -39,6 +39,57 @@ test('all-null dimensions remain neutral and preserve all waiting, first-seen an
   assert.equal(f.next()!.mint,mint(2));assert.equal(f.priority()!.economicMerit,0.5);assert.equal(f.priority()!.fairnessBonus,0);assert.equal(f.priority()!.hasCurrentEconomicEvidence,false);
   assert.equal(f.next(AT,new Set([mint(2)]))!.mint,mint(1));assert.equal(f.next(AT,new Set([mint(1),mint(2)]))!.mint,mint(4));
   assert.equal(f.next(AT,new Set([mint(1),mint(2),mint(3),mint(4)])),null);assert.equal(f.parityCalls(),4);
+ }finally{f.registry.close();}
+});
+
+test('same-query competition records exact qualified-row count and only the top eight in unchanged tie order',()=>{
+ const f=fixture();try{
+  for(let i=0;i<14;i++)f.seed(i);
+  const before=f.registry.health().transactions;
+  const chosen=f.next()!,p=f.priority()!,c=p.competition!;
+  assert.equal(chosen.mint,mint(0));assert.equal(c.selectionAt,AT);assert.equal(c.purpose,'ALLOCATION_SELECTION');
+  assert.equal(c.scope,'CALLER_FILTERED_WATCH_ROWS');assert.equal(c.populationUnit,'RANKED_WATCH_ROWS');
+  assert.equal(c.rankedPopulationCount,14);assert.equal(c.peerLimit,8);assert.equal(c.omittedPeerCount,6);
+  assert.deepEqual(c.peers.map(row=>row.mint),Array.from({length:8},(_,i)=>mint(i)));
+  assert.deepEqual(c.peers.map(row=>row.rank),[1,2,3,4,5,6,7,8]);
+  for(const row of c.peers){assert.equal(row.pool,'OFFLINE-pool-'+c.peers.indexOf(row));assert.equal(row.economicMerit,0.5);assert.equal(row.fairnessBonus,0);assert.equal(row.priority,0.5);assert.equal(row.hasCurrentEconomicEvidence,false);}
+  assert.equal(c.actualAllocationClaimed,false);assert.equal(c.wholeMarketCoverageClaimed,false);assert.equal(c.financialPermission,false);
+  assert.equal(f.registry.health().transactions.writeCommits,before.writeCommits,'telemetry never changes watch or financial state');
+ }finally{f.registry.close();}
+});
+
+test('competition excludes actual held, gated, deferred and caller-excluded rows before counting and ranking',()=>{
+ const f=fixture();try{
+  for(let i=0;i<12;i++)f.seed(i);
+  const held=f.registry.lookup(mint(0))!;f.registry.put({...held,state:'HELD'});
+  const deferred=f.registry.lookup(mint(1))!;f.registry.put({...deferred,deferUntil:AT+1});
+  f.watch.noteEvaluation(mint(2),{kind:'technical-unavailable',windowEndAt:null,evidence:'NATIVE_OBSERVATION_POOL_MISSING'},AT);
+  f.watch.transition(mint(2),'DEFERRED','OFFLINE unchanged pool refusal',AT);
+  const excluded=new Set([mint(3)]);assert.equal(f.next(AT,excluded)!.mint,mint(4));
+  const c=f.priority()!.competition!;assert.equal(c.rankedPopulationCount,8);assert.equal(c.omittedPeerCount,0);
+  assert.deepEqual(c.peers.map(row=>row.mint),Array.from({length:8},(_,i)=>mint(i+4)));
+ }finally{f.registry.close();}
+});
+
+test('prepared competition describes only actual prepared-ready scope and marks preparation separately',()=>{
+ const f=fixture(true);try{
+  for(let i=0;i<24;i++)f.seed(i);for(const i of[20,21,22,23])f.age(i);
+  assert.equal(f.next(AT,new Set([mint(20)]),{preparedMints:[20,21,22,23].map(mint)})!.mint,mint(21));
+  const c=f.priority()!.competition!;assert.equal(c.scope,'PREPARED_MINTS_CALLER_FILTERED');assert.equal(c.rankedPopulationCount,3);
+  assert.deepEqual(c.peers.map(row=>row.mint),[21,22,23].map(mint));
+  f.next(AT,new Set(),{preparation:true});assert.equal(f.priority()!.competition!.purpose,'PREPARATION');
+  f.next();assert.equal(f.priority()!.competition!.purpose,'ALLOCATION_SELECTION');assert.equal(f.priority()!.competition!.scope,'AGE_SCOPED_CALLER_FILTERED');
+  assert.equal(f.priority()!.competition!.rankedPopulationCount,4);
+ }finally{f.registry.close();}
+});
+
+test('competition reports no-bonus leader and bounded fairness from the exact selected scalar rows',()=>{
+ const f=fixture();try{
+  for(let i=0;i<48;i++){f.seed(i,{waitingSince:i===46?AT-60000:AT,observationIdentity:{basis:'canonical-pool-hint',availableAt:i===46?AT-60000:AT,evidence:'OFFLINE fairness anchor'}});f.hint(i,'recent',AT-1000,String((i+1)*1000000));}
+  const selected=f.next()!,p=f.priority()!,c=p.competition!;assert.equal(selected.mint,mint(46));assert.equal(c.peers[0]!.mint,selected.mint);
+  assert.equal(c.peers[0]!.fairnessBonus,p.fairnessBonus);assert.equal(c.peers[0]!.economicMerit,p.economicMerit);assert.equal(c.peers[0]!.priority,p.priority);
+  assert.equal(c.peers[1]!.mint,p.economicLeaderMint);assert.equal(c.rankedPopulationCount,48);assert.equal(c.omittedPeerCount,40);
+  for(let n=1;n<c.peers.length;n++)assert.ok(c.peers[n-1]!.priority>=c.peers[n]!.priority);
  }finally{f.registry.close();}
 });
 
@@ -111,7 +162,7 @@ test('selection builds one scalar eligibility population and fetches only the fi
  const f=fixture();try{
   f.registry.transaction(()=>{for(let i=0;i<2048;i++)f.seed(i);});for(let i=0;i<24;i++){f.hint(i,'prior',AT-90000,'1000000000');f.hint(i,'recent',AT-1000,String((i%5)*1000000000));}
   const before=f.registry.health().transactions,raw=internal(f.registry),statement=raw.statement.bind(f.registry);let sql='',params:RegistryParameter[]=[];
-  raw.statement=(text:string)=>{const s=statement(text);if(!text.startsWith('WITH eligible AS MATERIALIZED'))return s;return new Proxy(s,{get(target,key){const value=Reflect.get(target,key);if(typeof value!=='function')return value;if(key!=='get')return value.bind(target);return(...values:RegistryParameter[])=>{sql=text;params=values;return value.apply(target,values);};}});};
+  raw.statement=(text:string)=>{const s=statement(text);if(!text.startsWith('WITH eligible AS MATERIALIZED'))return s;return new Proxy(s,{get(target,key){const value=Reflect.get(target,key);if(typeof value!=='function')return value;if(key!=='get'&&key!=='all')return value.bind(target);return(...values:RegistryParameter[])=>{sql=text;params=values;return value.apply(target,values);};}});};
   assert.ok(f.next());const plan=(raw.db.prepare('EXPLAIN QUERY PLAN '+sql).all(...params) as {detail:string}[]).map(r=>r.detail);
   assert.equal(plan.filter(d=>d==='MATERIALIZE eligible').length,1);assert.equal(plan.filter(d=>d.includes('SEARCH w USING INDEX watch_rows_opportunity_v1')).length,1);assert.ok(plan.some(d=>d.includes('MATERIALIZE dimension_counts')||d.includes('CO-ROUTINE dimension_counts')));assert.ok(plan.some(d=>d.includes('SEARCH selected USING INDEX sqlite_autoindex_watch_rows_1 (signature=?)')));
   assert.equal(f.registry.count(),2049,'every identity remains retained');const after=f.registry.health().transactions;assert.equal(after.writeCommits,before.writeCommits);assert.equal(after.fsyncEligibleCommits,before.fsyncEligibleCommits);assert.equal(after.writerLeaseReadOnlyCommits,before.writerLeaseReadOnlyCommits+1,'watch selection keeps its existing writer-lease transaction');
@@ -122,7 +173,7 @@ test('one-to-four prepared mints use exact indexed lookups with exclusions and a
  const f=fixture(true);try{
   f.registry.transaction(()=>{for(let i=0;i<2048;i++)f.seed(i);});const prepared=Array.from({length:4},(_,n)=>2044+n);for(const i of prepared)f.age(i);
   const raw=internal(f.registry),statement=raw.statement.bind(f.registry),plans:string[][]=[];
-  raw.statement=sql=>{const s=statement(sql);if(!sql.startsWith('WITH eligible AS MATERIALIZED'))return s;return new Proxy(s,{get(target,key){const value=Reflect.get(target,key);if(typeof value!=='function')return value;if(key!=='get')return value.bind(target);return(...params:RegistryParameter[])=>{plans.push((raw.db.prepare('EXPLAIN QUERY PLAN '+sql).all(...params) as {detail:string}[]).map(r=>r.detail));return value.apply(target,params);};}});};
+  raw.statement=sql=>{const s=statement(sql);if(!sql.startsWith('WITH eligible AS MATERIALIZED'))return s;return new Proxy(s,{get(target,key){const value=Reflect.get(target,key);if(typeof value!=='function')return value;if(key!=='get'&&key!=='all')return value.bind(target);return(...params:RegistryParameter[])=>{plans.push((raw.db.prepare('EXPLAIN QUERY PLAN '+sql).all(...params) as {detail:string}[]).map(r=>r.detail));return value.apply(target,params);};}});};
   assert.equal(f.next(AT,new Set(),{preparedMints:[mint(prepared[0]!)]})!.mint,mint(prepared[0]!));
   assert.equal(f.next(AT,new Set([mint(prepared[0]!)]),{preparedMints:prepared.map(mint)})!.mint,mint(prepared[1]!));
   const first=f.registry.lookup(mint(prepared[1]!))!;f.registry.put({...first,deferUntil:AT+1});assert.equal(f.next(AT,new Set([mint(prepared[0]!)]),{preparedMints:prepared.map(mint)})!.mint,mint(prepared[2]!));
@@ -135,7 +186,7 @@ test('ordinary age-qualified selection seeks current proofs before retained unkn
  const f=fixture(true);try{
   f.registry.transaction(()=>{for(let i=0;i<4096;i++)f.seed(i);});
   const raw=internal(f.registry),statement=raw.statement.bind(f.registry),plans:Array<{sql:string;steps:string[]}>=[];
-  raw.statement=sql=>{const s=statement(sql);if(!sql.includes('FROM token_creations selection_age'))return s;return new Proxy(s,{get(target,key){const value=Reflect.get(target,key);if(typeof value!=='function')return value;if(key!=='get')return value.bind(target);return(...params:RegistryParameter[])=>{plans.push({sql,steps:(raw.db.prepare('EXPLAIN QUERY PLAN '+sql).all(...params) as {detail:string}[]).map(r=>r.detail)});return value.apply(target,params);};}});};
+  raw.statement=sql=>{const s=statement(sql);if(!sql.includes('FROM token_creations selection_age'))return s;return new Proxy(s,{get(target,key){const value=Reflect.get(target,key);if(typeof value!=='function')return value;if(key!=='get'&&key!=='all')return value.bind(target);return(...params:RegistryParameter[])=>{plans.push({sql,steps:(raw.db.prepare('EXPLAIN QUERY PLAN '+sql).all(...params) as {detail:string}[]).map(r=>r.detail)});return value.apply(target,params);};}});};
   assert.equal(f.next(),null,'a zero-young population needs no historical WatchRow scan');
   f.age(4090,AT-TOKEN_AGE_POLICY.maximumAgeMs);f.age(4091);f.age(4092,AT-TOKEN_AGE_POLICY.maximumAgeMs-1000);f.age(4093,AT-1000,AT+1);
   f.hint(0,'unknown-high-merit',AT-1000,'999999999999999');f.hint(4090,'young-small',AT-1000,'1000000000');f.hint(4091,'young-large',AT-1000,'2000000000');f.hint(4092,'expired-high-merit',AT-1000,'999999999999999');
@@ -165,7 +216,7 @@ test('ranking and final body stay inside existing writer authority while another
  const dir=mkdtempSync(join(tmpdir(),'poe-OFFLINE-selection-authority-')),path=join(dir,'market.sqlite'),f=fixture(false,path),writer=new MarketRegistry(path,{now:()=>AT,concurrentIntake:true});
  try{
   f.seed(1);f.seed(2);f.hint(1,'recent',AT-1000,'2000000000');f.hint(2,'recent',AT-1000,'1000000000');const raw=internal(f.registry),original=raw.statement.bind(f.registry);let attempted=false,callbackStarted=false;
-  raw.statement=sql=>{const s=original(sql);if(!sql.startsWith('WITH eligible AS MATERIALIZED'))return s;return new Proxy(s,{get(target,key){const value=Reflect.get(target,key);if(typeof value!=='function')return value;if(key!=='get')return value.bind(target);return(...args:RegistryParameter[])=>{if(!attempted){attempted=true;assert.throws(()=>writer.transaction(()=>{callbackStarted=true;writer.put({...writer.lookup(mint(1))!,deferUntil:AT+1000});}),isMarketRegistryContention);}return value.apply(target,args);};}});};
+  raw.statement=sql=>{const s=original(sql);if(!sql.startsWith('WITH eligible AS MATERIALIZED'))return s;return new Proxy(s,{get(target,key){const value=Reflect.get(target,key);if(typeof value!=='function')return value;if(key!=='get'&&key!=='all')return value.bind(target);return(...args:RegistryParameter[])=>{if(!attempted){attempted=true;assert.throws(()=>writer.transaction(()=>{callbackStarted=true;writer.put({...writer.lookup(mint(1))!,deferUntil:AT+1000});}),isMarketRegistryContention);}return value.apply(target,args);};}});};
   const selected=f.next()!;assert.equal(attempted,true);assert.equal(callbackStarted,false);assert.equal(selected.mint,mint(1));assert.equal(selected.deferUntil,0);
   writer.put({...writer.lookup(mint(1))!,deferUntil:AT+1000});assert.equal(f.next()!.mint,mint(2),'a later selection observes the committed change without cached eligibility');
  }finally{writer.close();f.registry.close();rmSync(dir,{recursive:true,force:true});}
