@@ -499,13 +499,13 @@ test('authenticated H6 to H8 preserves durable lifetime history across two fresh
 });
 
 test('exact installed H8 advances only to H9 without resetting account, epoch, original clocks or large sequence',()=>{
- assert.equal(p.operatingReliability,'a885208fb2cc6cc2548e6e761c22300c1f6d8f54');assert.equal(p.to,'79e07c604e520e9be3a55e273b4289093646b76e');assert.match(p.to,/^[a-f0-9]{40}$/);assert.notEqual(p.to,p.operatingReliability);
+ assert.equal(p.operatingReliability,'a885208fb2cc6cc2548e6e761c22300c1f6d8f54');assert.equal(p.operatingFollowthrough,'79e07c604e520e9be3a55e273b4289093646b76e');assert.match(p.operatingFollowthrough,/^[a-f0-9]{40}$/);assert.notEqual(p.operatingFollowthrough,p.operatingReliability);
  const c=new SnapshotCache({...identity(),release:p.operatingReliability});assert.equal(attachReviewedSourceHandover(c),true);
  const prior={...sample('9007199254741000',p.operatingReliability,T-120000),financialEpoch:v3Epoch()};c.accept(prior,T);const before=c.read(),history=c.equityHistory();
  for(const mutate of [s=>{s.account.id='other';},s=>{s.account.inceptionAt='2026-10-27T22:07:36.212Z';},s=>{s.source.strategy='other';},s=>{s.sequence=prior.sequence;},s=>{s.sequence='9007199254740999';},s=>{delete s.financialEpoch;},s=>{s.financialEpoch=s.financialEpoch.priorEpoch;},s=>{s.financialEpoch.priorEpoch.backupSha256='e'.repeat(64);},s=>{s.liveTrading=true;},s=>{s.source.release='f'.repeat(40);},s=>{s.times.generatedAt=iso(T+30001);}]){
-  const bad={...sample('9007199254741001',p.to,T-1000),financialEpoch:structuredClone(prior.financialEpoch)};mutate(bad);assert.throws(()=>c.accept(bad,T));assert.equal(c.identity.release,p.operatingReliability);assert.deepEqual(c.read(),before);assert.deepEqual(c.equityHistory(),history);
+  const bad={...sample('9007199254741001',p.operatingFollowthrough,T-1000),financialEpoch:structuredClone(prior.financialEpoch)};mutate(bad);assert.throws(()=>c.accept(bad,T));assert.equal(c.identity.release,p.operatingReliability);assert.deepEqual(c.read(),before);assert.deepEqual(c.equityHistory(),history);
  }
- assert.equal(c.accept(prior,T),'duplicate');const next={...sample('9007199254741001',p.to,T-1000),financialEpoch:structuredClone(prior.financialEpoch)},saved=structuredClone(next);
+ assert.equal(c.accept(prior,T),'duplicate');const next={...sample('9007199254741001',p.operatingFollowthrough,T-1000),financialEpoch:structuredClone(prior.financialEpoch)},saved=structuredClone(next);
  assert.equal(c.accept(next,T),'accepted');assert.deepEqual(c.read().snapshot,saved);assert.deepEqual(next,saved);assert.deepEqual(c.equityHistory().financialEpoch,history.financialEpoch);
  for(const point of history.points)assert.deepEqual(c.equityHistory().points.find(value=>value.at===point.at),point);
  for(const release of [p.from,p.migrationAge,p.coordinatedRepair,p.recoveryProvenance,p.readinessReporting,p.proofHandoff,p.operatingReliability,p.migrationReentry])assert.throws(()=>c.accept({...next,sequence:'9007199254741002',source:{...next.source,release}},T),/source version/);
@@ -520,15 +520,50 @@ test('authenticated H8 to H9 preserves durable lifetime history across two fresh
  const prior={...sample('9007199254741000',p.operatingReliability,T-120000),financialEpoch:epoch};assert.equal((await post('/api/snapshot',prior)).status,200);
  const durable={schemaVersion:1,accountId:p.accountId,inceptionAt:p.inceptionAt,source:'original-ec2-verified-equity',lastSequence:prior.sequence,downsampled:false,financialEpoch:structuredClone(epoch),points:[{at:p.inceptionAt,equityUsd:1000,segment:0,kind:'inception'},{at:epoch.priorEpoch.activatedAt,equityUsd:epoch.priorEpoch.initialUsd,segment:1,kind:'epoch-start'},{at:epoch.activatedAt,equityUsd:epoch.initialUsd,segment:2,kind:'epoch-start'},{at:prior.times.generatedAt,equityUsd:1000,segment:3,kind:'observed'}]};
  assert.equal((await post('/api/equity-history',durable)).status,200);const history=app.cache.equityHistory(),before=app.cache.read();assert.equal(history.retention,'durable-with-preserved-receiver');assert.ok(history.preservedReceiverPoints>0);
- const first={...sample('9007199254741001',p.to,T-1000),financialEpoch:structuredClone(epoch)},second={...sample('9007199254741002',p.to,T),financialEpoch:structuredClone(epoch)},captures=[];
+ const first={...sample('9007199254741001',p.operatingFollowthrough,T-1000),financialEpoch:structuredClone(epoch)},second={...sample('9007199254741002',p.operatingFollowthrough,T),financialEpoch:structuredClone(epoch)},captures=[];
  assert.equal((await post('/api/snapshot',first,'Bearer wrong')).status,401);assert.equal((await post('/api/snapshot',{...first,sequence:prior.sequence})).status,409);assert.equal(app.cache.identity.release,p.operatingReliability);assert.deepEqual(app.cache.read(),before);assert.deepEqual(app.cache.equityHistory(),history);
+ for(const next of [first,second]){
+  assert.equal((await post('/api/snapshot',next)).status,200);const response=await(await fetch(base+'/api/snapshot')).json();captures.push(response);
+  assert.equal(response.snapshot.source.release,p.operatingFollowthrough);assert.equal(response.snapshot.sequence,next.sequence);assert.deepEqual(response.snapshot.account,prior.account);assert.deepEqual(response.snapshot.times,next.times);assert.ok(Date.now()-Date.parse(response.snapshot.times.generatedAt)<90000);
+  assert.deepEqual(response.snapshot.financialEpoch,epoch);assert.deepEqual(response.equityHistory.financialEpoch,epoch);assert.equal(response.equityHistory.retention,'durable-with-preserved-receiver');for(const point of history.points)assert.deepEqual(response.equityHistory.points.find(value=>value.at===point.at),point);
+ }
+ assert.ok(BigInt(captures[1].snapshot.sequence)>BigInt(captures[0].snapshot.sequence));assert.ok(Date.parse(captures[1].snapshot.times.generatedAt)>Date.parse(captures[0].snapshot.times.generatedAt));assert.notEqual(captures[0].fingerprint,captures[1].fingerprint);
+ assert.equal((await post('/api/snapshot',{...second,sequence:'9007199254741003',source:{...second.source,release:p.operatingReliability}})).status,400);
+ const continued={...durable,lastSequence:second.sequence,points:[...durable.points,...[first,second].map(s=>({at:s.times.generatedAt,equityUsd:1000,segment:3,kind:'observed'}))]};assert.equal((await post('/api/equity-history',continued)).status,200);
+ const after=app.cache.equityHistory();assert.equal(app.cache.identity.release,p.operatingFollowthrough);assert.deepEqual(after.financialEpoch,epoch);for(const point of history.points)assert.deepEqual(after.points.find(value=>value.at===point.at),point);assert.equal(after.points.at(-1).at,second.times.generatedAt);
+});
+
+test('exact installed H9 advances only to H10 without resetting account, epoch, original clocks or large sequence',()=>{
+ assert.equal(p.operatingFollowthrough,'79e07c604e520e9be3a55e273b4289093646b76e');assert.equal(p.to,'65994a4ccb66a3c2f4ac09f4fa9562516afae600');assert.match(p.to,/^[a-f0-9]{40}$/);assert.notEqual(p.to,p.operatingFollowthrough);
+ const c=new SnapshotCache({...identity(),release:p.operatingFollowthrough});assert.equal(attachReviewedSourceHandover(c),true);
+ const prior={...sample('9007199254741000',p.operatingFollowthrough,T-120000),financialEpoch:v3Epoch()};c.accept(prior,T);const before=c.read(),history=c.equityHistory();
+ for(const mutate of [s=>{s.account.id='other';},s=>{s.account.inceptionAt='2026-10-27T22:07:36.212Z';},s=>{s.source.strategy='other';},s=>{s.sequence=prior.sequence;},s=>{s.sequence='9007199254740999';},s=>{delete s.financialEpoch;},s=>{s.financialEpoch=s.financialEpoch.priorEpoch;},s=>{s.financialEpoch.priorEpoch.backupSha256='e'.repeat(64);},s=>{s.liveTrading=true;},s=>{s.source.release='f'.repeat(40);},s=>{s.times.generatedAt=iso(T+30001);}]){
+  const bad={...sample('9007199254741001',p.to,T-1000),financialEpoch:structuredClone(prior.financialEpoch)};mutate(bad);assert.throws(()=>c.accept(bad,T));assert.equal(c.identity.release,p.operatingFollowthrough);assert.deepEqual(c.read(),before);assert.deepEqual(c.equityHistory(),history);
+ }
+ assert.equal(c.accept(prior,T),'duplicate');const next={...sample('9007199254741001',p.to,T-1000),financialEpoch:structuredClone(prior.financialEpoch)},saved=structuredClone(next);
+ assert.equal(c.accept(next,T),'accepted');assert.deepEqual(c.read().snapshot,saved);assert.deepEqual(next,saved);assert.deepEqual(c.equityHistory().financialEpoch,history.financialEpoch);
+ for(const point of history.points)assert.deepEqual(c.equityHistory().points.find(value=>value.at===point.at),point);
+ for(const release of [p.from,p.migrationAge,p.coordinatedRepair,p.recoveryProvenance,p.readinessReporting,p.proofHandoff,p.operatingReliability,p.operatingFollowthrough,p.migrationReentry])assert.throws(()=>c.accept({...next,sequence:'9007199254741002',source:{...next.source,release}},T),/source version/);
+});
+
+test('authenticated H9 to H10 preserves durable lifetime history across two fresh advancing source captures',async t=>{
+ const secret='offline-h10-continuity-ingestion-secret',app=createDashboard({...identity(),release:p.operatingFollowthrough,viewerUser:'',viewerPassword:'',publicViewer:true,ingestionSecret:secret});
+ assert.equal(attachReviewedSourceHandover(app.cache),true);const restored=restoreRenderReceiverHistory(app.cache);assert.equal(restored.captureCount,2);assert.equal(restored.currentSnapshotCreated,false);assert.ok(restored.points>0);
+ app.server.listen(0,'127.0.0.1');await once(app.server,'listening');t.after(async()=>{app.server.closeAllConnections();await new Promise(resolve=>app.server.close(resolve));});
+ const base='http://127.0.0.1:'+app.server.address().port,post=(path,value,authorization='Bearer '+secret)=>fetch(base+path,{method:'POST',headers:{'content-type':'application/json',authorization},body:JSON.stringify(value)});
+ const epoch=v3Epoch();epoch.priorEpoch.activatedAt='2026-10-30T15:30:23.584Z';epoch.priorEpoch.priceAt='2026-10-30T15:30:23.484Z';epoch.activatedAt='2026-10-30T19:15:05.083Z';epoch.priceAt='2026-10-30T19:15:04.983Z';
+ const prior={...sample('9007199254741000',p.operatingFollowthrough,T-120000),financialEpoch:epoch};assert.equal((await post('/api/snapshot',prior)).status,200);
+ const durable={schemaVersion:1,accountId:p.accountId,inceptionAt:p.inceptionAt,source:'original-ec2-verified-equity',lastSequence:prior.sequence,downsampled:false,financialEpoch:structuredClone(epoch),points:[{at:p.inceptionAt,equityUsd:1000,segment:0,kind:'inception'},{at:epoch.priorEpoch.activatedAt,equityUsd:epoch.priorEpoch.initialUsd,segment:1,kind:'epoch-start'},{at:epoch.activatedAt,equityUsd:epoch.initialUsd,segment:2,kind:'epoch-start'},{at:prior.times.generatedAt,equityUsd:1000,segment:3,kind:'observed'}]};
+ assert.equal((await post('/api/equity-history',durable)).status,200);const history=app.cache.equityHistory(),before=app.cache.read();assert.equal(history.retention,'durable-with-preserved-receiver');assert.ok(history.preservedReceiverPoints>0);
+ const first={...sample('9007199254741001',p.to,T-1000),financialEpoch:structuredClone(epoch)},second={...sample('9007199254741002',p.to,T),financialEpoch:structuredClone(epoch)},captures=[];
+ assert.equal((await post('/api/snapshot',first,'Bearer wrong')).status,401);assert.equal((await post('/api/snapshot',{...first,sequence:prior.sequence})).status,409);assert.equal(app.cache.identity.release,p.operatingFollowthrough);assert.deepEqual(app.cache.read(),before);assert.deepEqual(app.cache.equityHistory(),history);
  for(const next of [first,second]){
   assert.equal((await post('/api/snapshot',next)).status,200);const response=await(await fetch(base+'/api/snapshot')).json();captures.push(response);
   assert.equal(response.snapshot.source.release,p.to);assert.equal(response.snapshot.sequence,next.sequence);assert.deepEqual(response.snapshot.account,prior.account);assert.deepEqual(response.snapshot.times,next.times);assert.ok(Date.now()-Date.parse(response.snapshot.times.generatedAt)<90000);
   assert.deepEqual(response.snapshot.financialEpoch,epoch);assert.deepEqual(response.equityHistory.financialEpoch,epoch);assert.equal(response.equityHistory.retention,'durable-with-preserved-receiver');for(const point of history.points)assert.deepEqual(response.equityHistory.points.find(value=>value.at===point.at),point);
  }
  assert.ok(BigInt(captures[1].snapshot.sequence)>BigInt(captures[0].snapshot.sequence));assert.ok(Date.parse(captures[1].snapshot.times.generatedAt)>Date.parse(captures[0].snapshot.times.generatedAt));assert.notEqual(captures[0].fingerprint,captures[1].fingerprint);
- assert.equal((await post('/api/snapshot',{...second,sequence:'9007199254741003',source:{...second.source,release:p.operatingReliability}})).status,400);
+ assert.equal((await post('/api/snapshot',{...second,sequence:'9007199254741003',source:{...second.source,release:p.operatingFollowthrough}})).status,400);
  const continued={...durable,lastSequence:second.sequence,points:[...durable.points,...[first,second].map(s=>({at:s.times.generatedAt,equityUsd:1000,segment:3,kind:'observed'}))]};assert.equal((await post('/api/equity-history',continued)).status,200);
  const after=app.cache.equityHistory();assert.equal(app.cache.identity.release,p.to);assert.deepEqual(after.financialEpoch,epoch);for(const point of history.points)assert.deepEqual(after.points.find(value=>value.at===point.at),point);assert.equal(after.points.at(-1).at,second.times.generatedAt);
 });
