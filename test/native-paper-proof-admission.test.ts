@@ -17,7 +17,7 @@ function fixture(){
  const events:any[]=[],holder:any={},health=new NativePaperReportingHealth();health.observe(1,true);
  const cache=new NativePaperProofPreparation(()=>at),rpc={closed:false,fatal:null as string|null,cooldownUntil:0};
  const context:any={__name:(v:unknown)=>v,holder,Date:{now:()=>at},service:true,stopped:false,backupReady:false,backupTask:null,nextBackupAttemptAt:0,lastBackup:0,
-  reportingHealth:health,currentLedger:{state:()=>state},currentRpc:{usage:()=>rpc},marketIntake:null,managementOnly:false,manualPaused:false,safeStopRequested:false,
+  manualAdmissionPause:{entryReason:()=>null},reportingHealth:health,currentLedger:{state:()=>state},currentRpc:{usage:()=>rpc},marketIntake:null,managementOnly:false,manualPaused:false,safeStopRequested:false,
   existsSync:()=>false,join:(a:string,b:string)=>a+'/'+b,root:'/OFFLINE',admissionPausePath:'/OFFLINE/admission',sourceClosed:false,
   currentNative:{usage:()=>({fatal:null})},nativePaperFinancialProviderAvailable,financialProjectionReady:true,pilotOpenProtectionGaps:()=>[],completed:new Map(),startedAt:1,
   serviceResources:{view:()=>({newRiskAllowed:true})},serviceEvidenceHealthy:true,serviceSupervision:()=>({newRiskAllowed:true}),

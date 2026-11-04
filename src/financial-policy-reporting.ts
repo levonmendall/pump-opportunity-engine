@@ -8,7 +8,11 @@ export type FinancialRiskReporting={
  entry:{targetBps:500;targetConsumedCostMicroUsd:string|null;targetConsumedCostSol:string|null;unreservedCashSol:string;cashLimitedConsumedCostSol:string|null;refundableDepositsIncluded:false;executabilityClaimed:false};
  daily:{day:string;limitBps:1000|null;highWaterMicroUsd:string|null;highWaterAt:string|null;currentEquityMicroUsd:string|null;drawdownMicroUsd:string|null;drawdownBps:number|null;remainingBeforePauseMicroUsd:string|null;lossPaused:boolean;historyCoverage:'verified-retained-same-day'|'first-complete-observation'|'unavailable';basis:'complete-observed-executable-equity-current-usd'};
 };
-export type FinancialPolicyReporting={version:typeof FINANCIAL_POLICY_REPORTING_VERSION;risk:FinancialRiskReporting|null;execution:FinancialExecutionReporting|null;valuation:FinancialValuationReporting|null};
+export const OPERATING_CAPACITY_REPORTING_VERSION='poe-effective-holding-capacity-v1' as const;
+export const OPERATING_TWO_HOLDING_POLICY_VERSION='owner-paper-two-holdings-v1' as const;
+export type OperatingCapacityReporting={version:typeof OPERATING_CAPACITY_REPORTING_VERSION;scope:'CURRENT_SOURCE_SNAPSHOT';asOf:string;operatingPolicyVersion:typeof OPERATING_TWO_HOLDING_POLICY_VERSION;policyMaximumPositions:2;historicalMaximumPositions:number|null;maximumPositions:number;heldPositions:number;pendingBuyOrders:number;occupiedPositions:number;available:boolean;occupiedCapacity:'held-positions-plus-pending-buy-reservations';existingObligations:'retain-and-manage-without-forced-liquidation';grantsFinancialPermission:false};
+export type MigrationAdmissionReporting={version:'verified-pumpswap-migration-1m-24h-v1';scope:'CURRENT_SOURCE_SNAPSHOT';asOf:string;basis:'verified-canonical-PumpSwap-migration-block-time';minimumAgeMs:60000;maximumAgeMs:86400000;boundary:'inclusive-at-1-minute-and-24-hours';grantsFinancialPermission:false};
+export type FinancialPolicyReporting={version:typeof FINANCIAL_POLICY_REPORTING_VERSION;risk:FinancialRiskReporting|null;execution:FinancialExecutionReporting|null;valuation:FinancialValuationReporting|null;operatingCapacity?:OperatingCapacityReporting|null;marketAdmissionAge?:MigrationAdmissionReporting|null};
 export const EQUITY_RISK_REASON_CODES=['EQUITY_RISK_INITIALIZING','EQUITY_RISK_HISTORY_UNAVAILABLE','EQUITY_RISK_VALUATION_UNAVAILABLE','EQUITY_RISK_RECONCILIATION_STALE','EQUITY_RISK_DAILY_DRAWDOWN','EQUITY_RISK_POLICY_INVALID'] as const;
 const INCEPTION=Date.parse('2026-10-26T22:07:36.212Z'),MAX=(1n<<127n)-1n;
 const record=(v:unknown):Record<string,any>=>!!v&&typeof v==='object'&&!Array.isArray(v)?v as Record<string,any>:{};
@@ -52,18 +56,43 @@ function projectRisk(value:unknown,generated:number):FinancialRiskReporting|null
   return validateFinancialRiskReporting({version:r.version,state:r.state,reasonCode:r.reasonCode,asOf:iso(r.asOf,generated),entry:{targetBps:e.targetBps,targetConsumedCostMicroUsd:e.targetConsumedCostMicroUsd,targetConsumedCostSol:e.targetConsumedCostLamports===null?null:sol(e.targetConsumedCostLamports),unreservedCashSol:sol(e.unreservedCashLamports),cashLimitedConsumedCostSol:e.cashLimitedConsumedCostLamports===null?null:sol(e.cashLimitedConsumedCostLamports),refundableDepositsIncluded:e.refundableDepositsIncluded,executabilityClaimed:e.executabilityClaimed},daily:{day:d.day,limitBps:d.limitBps,highWaterMicroUsd:d.highWaterMicroUsd,highWaterAt:d.highWaterAt===null?null:iso(d.highWaterAt,generated),currentEquityMicroUsd:d.currentEquityMicroUsd,drawdownMicroUsd:d.drawdownMicroUsd,drawdownBps:d.drawdownBps,remainingBeforePauseMicroUsd:d.remainingBeforePauseMicroUsd,lossPaused:d.lossPaused,historyCoverage:d.historyCoverage,basis:d.basis}},generated);
  }catch{return null;}
 }
+export function validateOperatingCapacityReporting(value:unknown,generated:number):OperatingCapacityReporting {
+ const c=exact(value,'version scope asOf operatingPolicyVersion policyMaximumPositions historicalMaximumPositions maximumPositions heldPositions pendingBuyOrders occupiedPositions available occupiedCapacity existingObligations grantsFinancialPermission');
+ need(c.version===OPERATING_CAPACITY_REPORTING_VERSION&&c.scope==='CURRENT_SOURCE_SNAPSHOT'&&c.operatingPolicyVersion===OPERATING_TWO_HOLDING_POLICY_VERSION&&c.policyMaximumPositions===2&&c.occupiedCapacity==='held-positions-plus-pending-buy-reservations'&&c.existingObligations==='retain-and-manage-without-forced-liquidation'&&c.grantsFinancialPermission===false);time(c.asOf,generated);
+ for(const key of ['maximumPositions','heldPositions','pendingBuyOrders','occupiedPositions'])count(c[key]);if(c.historicalMaximumPositions!==null)count(c.historicalMaximumPositions);
+ need(c.maximumPositions===(c.historicalMaximumPositions===null?2:Math.min(c.historicalMaximumPositions,2))&&c.occupiedPositions===c.heldPositions+c.pendingBuyOrders&&typeof c.available==='boolean'&&(!c.available||c.occupiedPositions<c.maximumPositions));
+ return c as OperatingCapacityReporting;
+}
+function projectOperatingCapacity(value:unknown,status:Record<string,any>,generated:number):OperatingCapacityReporting|null {
+ try{const c=record(value),p=exact(c.policy,'version maximumPositions occupiedCapacity existingObligations financialPolicy');
+  need(p.version===OPERATING_TWO_HOLDING_POLICY_VERSION&&p.maximumPositions===2&&p.occupiedCapacity==='held-positions-plus-pending-buy-reservations'&&p.existingObligations==='retain-and-manage-without-forced-liquidation'&&p.financialPolicy==='unchanged-v3-500bps-no-daily-stop'&&c.operatingPolicyVersion===p.version);
+  need(Object.hasOwn(status,'positions')&&Object.hasOwn(status,'pending')&&status.positions&&typeof status.positions==='object'&&!Array.isArray(status.positions)&&status.pending&&typeof status.pending==='object'&&!Array.isArray(status.pending));
+  const orders=Object.values(status.pending);need(orders.every(order=>['buy','sell'].includes(record(order).side)));
+  need(c.heldPositions===Object.keys(status.positions).length&&c.pendingBuyOrders===orders.filter(order=>record(order).side==='buy').length);
+  return validateOperatingCapacityReporting({version:OPERATING_CAPACITY_REPORTING_VERSION,scope:'CURRENT_SOURCE_SNAPSHOT',asOf:iso(status.generatedAt,generated),operatingPolicyVersion:c.operatingPolicyVersion,policyMaximumPositions:2,historicalMaximumPositions:c.historicalMaximumPositions,maximumPositions:c.maximumPositions,heldPositions:c.heldPositions,pendingBuyOrders:c.pendingBuyOrders,occupiedPositions:c.occupiedPositions,available:c.available,occupiedCapacity:p.occupiedCapacity,existingObligations:p.existingObligations,grantsFinancialPermission:false},generated);
+ }catch{return null;}
+}
+export function validateMigrationAdmissionReporting(value:unknown,generated:number):MigrationAdmissionReporting {
+ const p=exact(value,'version scope asOf basis minimumAgeMs maximumAgeMs boundary grantsFinancialPermission');
+ need(p.version==='verified-pumpswap-migration-1m-24h-v1'&&p.scope==='CURRENT_SOURCE_SNAPSHOT'&&p.basis==='verified-canonical-PumpSwap-migration-block-time'&&p.minimumAgeMs===60000&&p.maximumAgeMs===86400000&&p.boundary==='inclusive-at-1-minute-and-24-hours'&&p.grantsFinancialPermission===false);time(p.asOf,generated);return p as MigrationAdmissionReporting;
+}
+function projectMigrationAdmission(value:unknown,status:Record<string,any>,generated:number):MigrationAdmissionReporting|null {
+ try{const p=record(value);return validateMigrationAdmissionReporting({version:p.version,scope:'CURRENT_SOURCE_SNAPSHOT',asOf:iso(status.generatedAt,generated),basis:p.basis,minimumAgeMs:p.minimumAgeMs,maximumAgeMs:p.maximumAgeMs,boundary:p.boundary,grantsFinancialPermission:false},generated);}catch{return null;}
+}
 /** A missing or malformed optional policy never changes the financial snapshot,
  * manufactures a risk allowance, or masks its actual entry blocker. */
 export function projectFinancialPolicyReporting(status:unknown,generated:number):FinancialPolicyReporting|undefined {
  const s=record(status),financial=record(s.financial),market=record(record(s.usage).market);
- if(!Object.hasOwn(financial,'equityRisk')&&!Object.hasOwn(market,'executionModel')&&!Object.hasOwn(record(record(s.usage).usd),'lastObservation'))return undefined;
- return {version:FINANCIAL_POLICY_REPORTING_VERSION,risk:projectRisk(financial.equityRisk,generated),execution:projectExecution(market.executionModel,generated),valuation:projectValuation(record(s.usage).usd,generated)};
+ if(!Object.hasOwn(financial,'equityRisk')&&!Object.hasOwn(market,'executionModel')&&!Object.hasOwn(record(record(s.usage).usd),'lastObservation')&&!Object.hasOwn(s,'operatingCapacity')&&!Object.hasOwn(s,'marketAdmissionAgePolicy'))return undefined;
+ return {version:FINANCIAL_POLICY_REPORTING_VERSION,risk:projectRisk(financial.equityRisk,generated),execution:projectExecution(market.executionModel,generated),valuation:projectValuation(record(s.usage).usd,generated),...(Object.hasOwn(s,'operatingCapacity')?{operatingCapacity:projectOperatingCapacity(s.operatingCapacity,s,generated)}:{}),...(Object.hasOwn(s,'marketAdmissionAgePolicy')?{marketAdmissionAge:projectMigrationAdmission(s.marketAdmissionAgePolicy,s,generated)}:{})};
 }
 export function validateFinancialPolicyReporting(value:unknown,generated:number):FinancialPolicyReporting {
- const p=exact(value,'version risk execution valuation');need(p.version===FINANCIAL_POLICY_REPORTING_VERSION);
+ const p=exact(value,'version risk execution valuation'+(Object.hasOwn(record(value),'operatingCapacity')?' operatingCapacity':'')+(Object.hasOwn(record(value),'marketAdmissionAge')?' marketAdmissionAge':''));need(p.version===FINANCIAL_POLICY_REPORTING_VERSION);
  if(p.risk!==null)validateFinancialRiskReporting(p.risk,generated);
  if(p.execution!==null)validateFinancialExecutionReporting(p.execution,generated);
  if(p.valuation!==null)validateFinancialValuationReporting(p.valuation,generated);
+ if(Object.hasOwn(p,'operatingCapacity')&&p.operatingCapacity!==null)validateOperatingCapacityReporting(p.operatingCapacity,generated);
+ if(Object.hasOwn(p,'marketAdmissionAge')&&p.marketAdmissionAge!==null)validateMigrationAdmissionReporting(p.marketAdmissionAge,generated);
  need(JSON.stringify(p).length<=8192);return p as FinancialPolicyReporting;
 }
 export const FINANCIAL_EXECUTION_REPORTING_VERSION='paper-chain-conditioned-v1' as const;

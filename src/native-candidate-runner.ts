@@ -106,7 +106,7 @@ export class NativeCandidateRunner{
  private readonly financialOutcomeCounts={enqueued:0,duplicatesWhilePending:0,drained:0,contentionDeferrals:0,overflowed:0,invalid:0};
  private financialOutcomeFailure:'REGISTRY_WRITE_FAILED'|null=null;
  private readonly audit:typeof auditNativeFlowWindow;private readonly resolve:typeof resolvePilotMigration;
- private registryHousekeepingDeferred=false;
+ private registryHousekeepingDeferred=false;private registryAllocationCommitDeferred=false;
  private stopped=false;private working=false;private sourceAdmissionStopReason:string|null=null;private maximumSimultaneous=0;private lastDispatchAt=0;private lastOutcome:string|null=null;private nextCeilingRefreshAt=0;private lastAuditAt:number|null=null;private lastPredictiveAt:number|null=null;private lastAdmissionDeferralBucket=-1;
  private readonly activeDecisions:Array<{at:number;mint:string;stage:string;reason:string}>=[];
  private readonly activeCounters={adaptivePredictiveAssessments:0,adaptivePredictiveNotRejected:0,adaptivePredictiveFailed:0,adaptivePredictiveUnavailable:0};
@@ -284,11 +284,18 @@ export class NativeCandidateRunner{
   return this.candidateEvaluationOrder(this.certifiedCandidateMints(at),at).some(mint=>this.options.financialEvaluationPending!(mint,at));
  }
  private registryHousekeeping(phase:'native-activity'|'migration-delivery'|'pool-progress'|'committed-activity'|'allocation'|'qualification-promotion',work:()=>void){
-  if(this.registryHousekeepingDeferred)return;
+  if(this.registryHousekeepingDeferred&&(phase!=='allocation'||this.registryAllocationCommitDeferred))return;
+  const before=this.registry.health().transactions;
   try{work();}catch(error){
    if(!isMarketRegistryContention(error))throw error;
+   const after=this.registry.health().transactions;
+   // Only an isolated refused BEGIN proves the optional callback never ran.
+   // A completed/failed callback or any mixed transaction progress retains the
+   // coherence barrier before another candidate can acquire slot ownership.
+   const preCallbackOnly=after.attempted===before.attempted+1&&after.failed===before.failed+1&&after.contentionBeforeCallback===before.contentionBeforeCallback+1&&after.readSnapshotCommits===before.readSnapshotCommits&&after.readOnlyCommits===before.readOnlyCommits&&after.writerLeaseReadOnlyCommits===before.writerLeaseReadOnlyCommits&&after.writeCommits===before.writeCommits&&after.fsyncEligibleCommits===before.fsyncEligibleCommits;
+   if(!preCallbackOnly)this.registryAllocationCommitDeferred=true;
    this.registryHousekeepingDeferred=true;
-   this.record('native-candidate-registry-contention',{at:this.now(),phase,reason:'MARKET_REGISTRY_CONTENTION',sqliteCode:error.sqliteCode,callbackStarted:false,providerRequestStarted:false,financialExposure:false,optionalHousekeepingDeferred:true});
+   this.record('native-candidate-registry-contention',{at:this.now(),phase,reason:'MARKET_REGISTRY_CONTENTION',sqliteCode:error.sqliteCode,callbackStarted:preCallbackOnly?false:null,providerRequestStarted:false,financialExposure:false,optionalHousekeepingDeferred:true});
   }
  }
  /** Yield only after synchronous registry operations have returned. The owner
@@ -998,17 +1005,17 @@ export class NativeCandidateRunner{
  }
  /** One scheduled unit of work. No independent request queue or provider budget. */
  async step(signal?:AbortSignal){
-  if(!this.open()||this.working)return 'closed';this.working=true;this.registryHousekeepingDeferred=false;
+  if(!this.open()||this.working)return 'closed';this.working=true;this.registryHousekeepingDeferred=false;this.registryAllocationCommitDeferred=false;
   try{
    if(this.options.sourceWorkCheckpoint&&!await this.sourceCheckpoint(signal))return 'wait';
-   if(!this.drainFinancialOutcomes())this.registryHousekeepingDeferred=true;
+   if(!this.drainFinancialOutcomes())this.registryHousekeepingDeferred=this.registryAllocationCommitDeferred=true;
    if(!this.drainGapRetirements()){this.lastOutcome='MARKET_REGISTRY_CONTENTION';return 'wait';}
    if(!this.reconcileObservationMembership()){this.lastOutcome='MARKET_REGISTRY_CONTENTION';return 'wait';}
    this.reconcileFlowOpen();
    // Give a completed provider result the next writer opportunity before
    // optional intake bookkeeping. A busy writer must not stop native service.
-   if(!this.drainTokenCreation())this.registryHousekeepingDeferred=true;
-   if(!this.drainPreparedObservation())this.registryHousekeepingDeferred=true;
+   if(!this.drainTokenCreation())this.registryHousekeepingDeferred=this.registryAllocationCommitDeferred=true;
+   if(!this.drainPreparedObservation())this.registryHousekeepingDeferred=this.registryAllocationCommitDeferred=true;
    if(this.options.sourceWorkCheckpoint&&!await this.sourceCheckpoint(signal))return 'wait';
    this.registryHousekeeping('native-activity',()=>this.drainNativeActivity());
    if(this.options.sourceWorkCheckpoint&&!await this.sourceCheckpoint(signal))return 'wait';

@@ -26,7 +26,7 @@ function fixture(budgetBytes=1024,now=()=>1000,spoolPath?:string){
  const workers:MockWorker[]=[],pressure:Array<{paused:boolean;pendingBytes:number;budgetBytes:number}>=[],committed:unknown[][]=[],records:Array<{kind:string;data:any}>=[];
  const intake=new NativeMarketIntake({budgetBytes,now,...(spoolPath?{spoolPath}:{}),createWorker:()=>{const worker=new MockWorker();workers.push(worker);return worker;},onPressure:value=>pressure.push(value),onCommitted:rows=>committed.push(rows),record:(kind,data)=>records.push({kind,data})});
  const current=()=>workers.at(-1)!;
- const close=async()=>{if(intake.usage().state==='closed')return;const worker=current();worker.ready();await flush();const closing=intake.close();worker.ack(worker.intake().map(row=>row.id));worker.emit('message',{kind:'closed'});await closing;};
+ const close=async()=>{if(intake.usage().state==='closed')return;await flush();const worker=current();worker.ready();await flush();const closing=intake.close();worker.ack(worker.intake().map(row=>row.id));worker.emit('message',{kind:'closed'});await closing;};
  return {intake,workers,current,pressure,committed,records,close};
 }
 
@@ -58,7 +58,7 @@ test('ordinary worker errors retain unacknowledged messages and resend their exa
   for(let i=0;i<3;i++)f.intake.observeIdentity(identity(i));const first=f.current();first.ready();await until(()=>first.intake().length===3);const initial=first.intake();first.ack([initial[0]!.id]);
   first.emit('error',Error('ordinary unavailable worker'));assert.equal(f.intake.usage().state,'recovering');assert.equal(f.intake.usage().pending,2);assert.equal(f.intake.usage().durableCommitted,1);assert.equal(f.pressure.at(-1)!.paused,true);assert.equal(first.terminations,1);
   first.ack([initial[1]!.id]);assert.equal(f.intake.usage().pending,2,'an obsolete worker cannot release current parent ownership');
-  t.mock.timers.tick(500);assert.equal(f.workers.length,2);const replacement=f.current();replacement.ready();await until(()=>replacement.intake().length===2);
+  t.mock.timers.tick(500);await until(()=>f.workers.length===2);assert.equal(f.workers.length,2);const replacement=f.current();replacement.ready();await until(()=>replacement.intake().length===2);
   assert.deepEqual(replacement.intake(),initial.slice(1));assert.equal(f.intake.usage().restarts,1);assert.equal(f.intake.usage().failures,1);
   replacement.ack(replacement.intake().map(row=>row.id));assert.equal(f.intake.usage().pending,0);assert.equal(f.intake.usage().durableCommitted,3);assert.equal(f.pressure.at(-1)!.paused,false);
  }finally{if(f.workers.length===1)t.mock.timers.tick(500);await f.close();t.mock.timers.reset();}
@@ -68,7 +68,7 @@ test('a worker error before its queued send turn produces one failure and preser
  t.mock.timers.enable({apis:['setTimeout']});const f=fixture();try{
   f.intake.observeIdentity(identity(8));const first=f.current();first.ready();first.emit('error',Error('worker failed before send turn'));await flush();
   assert.equal(f.intake.usage().failures,1,'a stale scheduled send must not report a second failure against a missing worker');assert.equal(f.intake.usage().pending,1);assert.equal(f.intake.usage().durableCommitted,0);
-  t.mock.timers.tick(500);f.current().ready();await until(()=>f.current().intake().length===1);assert.equal(f.current().intake()[0]!.value.mint,'mint-8');f.current().ack([f.current().intake()[0]!.id]);
+  t.mock.timers.tick(500);await until(()=>f.workers.length===2);f.current().ready();await until(()=>f.current().intake().length===1);assert.equal(f.current().intake()[0]!.value.mint,'mint-8');f.current().ack([f.current().intake()[0]!.id]);
  }finally{if(f.workers.length===1)t.mock.timers.tick(500);await f.close();t.mock.timers.reset();}
 });
 
@@ -76,7 +76,7 @@ test('premature worker closure cannot count an unacknowledged tail as durable an
  t.mock.timers.enable({apis:['setTimeout']});const f=fixture();try{
   f.intake.observeActivity(activity(5));f.current().ready();await until(()=>f.current().intake().length===1);const message=f.current().intake()[0];f.current().emit('message',{kind:'closed'});
   assert.equal(f.intake.usage().reasonCode,'WORKER_CLOSED_WITH_UNACKNOWLEDGED_INTAKE');assert.equal(f.intake.usage().pending,1);assert.equal(f.intake.usage().durableCommitted,0);
-  t.mock.timers.tick(500);f.current().ready();await until(()=>f.current().intake().length===1);assert.deepEqual(f.current().intake()[0],message);f.current().ack([message.id]);
+  t.mock.timers.tick(500);await until(()=>f.workers.length===2);f.current().ready();await until(()=>f.current().intake().length===1);assert.deepEqual(f.current().intake()[0],message);f.current().ack([message.id]);
   assert.equal(f.intake.usage().durableCommitted,1);assert.equal(f.records.some(row=>row.kind==='native-market-intake-worker-unavailable'&&row.data.unacknowledgedTailRetained),true);
  }finally{if(f.workers.length===1)t.mock.timers.tick(500);await f.close();t.mock.timers.reset();}
 });
@@ -119,7 +119,7 @@ test('qualification restart replays the exact outstanding ID before its coalesce
  t.mock.timers.enable({apis:['setTimeout']});const f=fixture(100000);try{
   f.intake.observeQualification(qualification(1000));const first=f.current();first.ready();await until(()=>first.intake().length===1);const original=first.intake()[0];f.intake.observeQualification(qualification(1100));f.intake.observeQualification(qualification(1200));await flush();
   first.emit('error',Error('qualification commit ACK lost'));assert.equal(f.intake.usage().pending,2);first.ack([original.id]);assert.equal(f.intake.usage().pending,2);
-  t.mock.timers.tick(500);const replacement=f.current();replacement.ready();await until(()=>replacement.intake().length===1);assert.deepEqual(replacement.intake()[0],original);assert.equal(f.intake.usage().qualification.inFlight,1);
+  t.mock.timers.tick(500);await until(()=>f.workers.length===2);const replacement=f.current();replacement.ready();await until(()=>replacement.intake().length===1);assert.deepEqual(replacement.intake()[0],original);assert.equal(f.intake.usage().qualification.inFlight,1);
   replacement.ack([original.id]);await until(()=>replacement.intake().length===2);const successor=replacement.intake()[1];assert.equal(successor.id,original.id+1);assert.equal(successor.value.receivedAt,1200);replacement.ack([successor.id]);assert.equal(f.intake.usage().pending,0);assert.equal(f.intake.usage().qualification.durableCommitted,2);assert.equal(f.committed.length,0);
  }finally{if(f.workers.length===1)t.mock.timers.tick(500);await f.close();t.mock.timers.reset();}
 });
@@ -156,7 +156,7 @@ test('source and worker generation changes cannot relabel old summary data as a 
  t.mock.timers.enable({apis:['setTimeout']});let at=1000;const f=fixture(100000,()=>at),scope=reportingScope();try{
   const first=f.current();first.ready();f.intake.registryReporting(scope,at);first.emit('message',reportReceipt(first.sent.find(r=>r.kind==='reporting'),at));
   first.emit('error',Error('OFFLINE worker ended'));const failed=f.intake.registryReporting(scope,at);assert.equal(failed.health.state,'STALE');assert.equal(failed.health.sampleWorkerGeneration,1);assert.equal(failed.health.observedAt,1000);
-  t.mock.timers.tick(500);at=2000;const second=f.current();second.ready();const recovery=f.intake.registryReporting(scope,at);assert.equal(recovery.health.workerGeneration,2);assert.equal(recovery.health.sampleWorkerGeneration,1);assert.equal(recovery.health.state,'STALE');
+  t.mock.timers.tick(500);await until(()=>f.workers.length===2);at=2000;const second=f.current();second.ready();const recovery=f.intake.registryReporting(scope,at);assert.equal(recovery.health.workerGeneration,2);assert.equal(recovery.health.sampleWorkerGeneration,1);assert.equal(recovery.health.state,'STALE');
   const request=second.sent.find(r=>r.kind==='reporting');first.emit('message',reportReceipt(request,at));assert.equal(f.intake.registryReporting(scope,at).health.state,'STALE','obsolete worker replies are ignored');
   second.emit('message',reportReceipt(request,at));assert.equal(f.intake.registryReporting(scope,at).health.state,'FRESH');
   const replacement=f.intake.registryReporting({...scope,sourceInstanceId:'native-runner:OFFLINE:source-b'},at);assert.equal(replacement.health.state,'UNAVAILABLE');assert.equal(replacement.snapshot,null,'source-instance cohorts cannot migrate into the replacement source');

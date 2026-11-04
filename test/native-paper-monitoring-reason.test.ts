@@ -6,10 +6,10 @@ import {NativePaperReportingHealth,nativePaperFinancialProviderAvailable,runNati
 
 function fixture(){
  const holder:any={},state={positions:{}},rpc={closed:false,fatal:null as string|null,cooldownUntil:0},reportingHealth=new NativePaperReportingHealth();reportingHealth.observe(10,true);
- const flags={intake:true,nativeFatal:false,protectionOverdue:false,resource:true,evidenceCapacity:true,supervision:true,bounded:true,blocks:1024,diskBlockBytes:1024*1024};
+ const flags={markerUnavailable:false,intake:true,nativeFatal:false,protectionOverdue:false,resource:true,evidenceCapacity:true,supervision:true,bounded:true,blocks:1024,diskBlockBytes:1024*1024};
  const markers=new Set<string>();let supervisionCalls=0;
  const context:any={__name:(value:unknown)=>value,holder,reportingHealth,currentLedger:{state:()=>state},currentRpc:{usage:()=>rpc},
-  marketIntake:{available:()=>flags.intake},managementOnly:false,manualPaused:false,safeStopRequested:false,
+  manualAdmissionPause:{entryReason:()=>flags.markerUnavailable?'MANUAL_ADMISSION_MARKER_UNAVAILABLE':null},marketIntake:{available:()=>flags.intake},managementOnly:false,manualPaused:false,safeStopRequested:false,
   existsSync:(path:string)=>markers.has(path),join:(a:string,b:string)=>a+'/'+b,root:'/OFFLINE',admissionPausePath:'/OFFLINE/admission',stopped:false,sourceClosed:false,
   currentNative:{usage:()=>({fatal:flags.nativeFatal?'OFFLINE_FAILURE':null})},nativePaperFinancialProviderAvailable,service:true,financialProjectionReady:true,
   pilotOpenProtectionGaps:()=>[{overdue:flags.protectionOverdue}],completed:new Map(),startedAt:1,
@@ -27,6 +27,7 @@ function fixture(){
 const cases:Array<[string,(f:ReturnType<typeof fixture>)=>void]>=[
  ['FINANCIAL_PUBLICATION_UNAVAILABLE',f=>f.reportingHealth.observe(10,false)],
  ['MANAGEMENT_ONLY',f=>{f.context.managementOnly=true;}],
+ ['MANUAL_ADMISSION_MARKER_UNAVAILABLE',f=>{f.flags.markerUnavailable=true;}],
  ['OWNER_PAUSE',f=>{f.context.manualPaused=true;}],
  ['OWNER_STOP',f=>{f.context.safeStopRequested=true;}],
  ['STOP_REQUEST',f=>{f.markers.add('/OFFLINE/stop.request');}],

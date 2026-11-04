@@ -1,4 +1,5 @@
 import {CANDIDATE_SOURCE_RECOVERY_PAUSE} from './candidate-source-recovery.js';
+import {paperEntryCapacity,paperOperatingCapacityPolicy,type PaperOperatingCapacityPolicy} from './paper-operating-capacity.js';
 import {REVIEWED_SOURCE_PAUSE,reviewedSourcePauseLineage} from './reviewed-source-pause.js';
 import {isReviewedManualCloseControlRestoration} from './manual-close-control-provenance.js';
 export {CANDIDATE_SOURCE_RECOVERY_PAUSE} from './candidate-source-recovery.js';
@@ -628,7 +629,9 @@ export class PaperLedger {
   private ownerFd: number | undefined;
   readonly sqlite: { version: string; source: string };
 
-  constructor(path: string, readonly accountId: string, readonly mode: LedgerMode = 'PAPER') {
+  private readonly operatingCapacityPolicy:PaperOperatingCapacityPolicy|null;
+  constructor(path: string, readonly accountId: string, readonly mode: LedgerMode = 'PAPER',runtime:{operatingCapacityPolicy?:PaperOperatingCapacityPolicy}={}) {
+    this.operatingCapacityPolicy=paperOperatingCapacityPolicy(runtime.operatingCapacityPolicy);
     if (mode === 'DISPOSABLE_PAPER' ? !/^fixture-[a-z0-9-]{1,80}$/.test(accountId) : mode !== 'PAPER' || !/^poe-[a-z0-9-]{1,80}$/.test(accountId)) throw new Error('explicit POE or disposable fixture identity required');
     if (mode === 'PAPER' && (path === ':memory:' || path.length === 0)) throw new Error('durable PAPER account path required');
     const database = path === ':memory:' ? path : canonicalDatabase(path);
@@ -811,6 +814,10 @@ export class PaperLedger {
     return {kind:'active'};
   }
   v3RiskPolicyActive(){const s=this.state();return isV3PaperRiskState(s)&&this.equityRiskStatus(s).kind==='active';}
+  /** Runtime configuration only: never persisted into an existing epoch or
+   * inferred from its historical maxPositions:null binding. */
+  entryCapacity(maximumPositions:number|null,state:Readonly<LedgerState>=this.state()){return paperEntryCapacity(state,maximumPositions,this.operatingCapacityPolicy,maximumPositions!==null||isV3PaperRiskState(state)&&this.equityRiskStatus(state).kind==='active');}
+  operatingEntryCapacityPolicy(){return this.operatingCapacityPolicy;}
   private newRiskDay(s:State,now:number):EquityRiskState['daily']{return {day:utcDay(now),highWaterMicroUsd:null,highWaterAt:null,lossPaused:false,historyState:'scanning',historyCoverage:'unavailable',historyCutoffRevision:s.revision,historyCursorRevision:0,historyReceipts:0,historyDigest:digest({version:s.equityRisk?.version??PAPER_EQUITY_RISK_VERSION,day:utcDay(now),accountId:s.accountId,inceptionAt:s.inceptionAt,cutoffRevision:s.revision})};}
   private scanRiskHistory(s:State,now:number){
     const risk=s.equityRisk;if(!risk)return;const d=risk.daily;if(d.historyState!=='scanning')return;
@@ -1185,7 +1192,7 @@ export class PaperLedger {
         if (s.lockedDeposits[input.mint] && dep > 0n) throw new Error('existing account deposit cannot be charged twice');
         if (!s.equityRisk && Object.keys(s.lockedDeposits).length >= 128 && !s.lockedDeposits[input.mint]) throw new Error('unresolved deposit capacity');
         const pendingBuys = Object.values(s.pending).filter(o => o.side === 'buy');
-        if (!isV3PaperRiskState(s)&&Object.keys(s.positions).length + pendingBuys.length >= (s.equityRisk?2:3)) throw new Error('position capacity');
+        if (!paperEntryCapacity(s,isV3PaperRiskState(s)?null:(s.equityRisk?2:3),this.operatingCapacityPolicy).available) throw new Error('position capacity');
         reserved += spend + dep;
         if(s.equityRisk){if(gas+spend>consumedEntryAllowance(equity,p))throw Error('5% current equity consumed-entry limit');allocation=entryAllocation(equity,p,now,gas+spend,s.equityRisk.version);}
         else if (usd(reserved, p) > 50_000_000n) throw new Error('$50 initial commitment limit');

@@ -1,3 +1,4 @@
+import {paperEntryCapacity} from './paper-operating-capacity.js';
 import {createHash} from 'node:crypto';
 import type {EntryAgeDecision} from './token-age-policy.js';
 import {tradeDecisionContext,tradeEntryBasis} from './trade-outcome-reporting.js';
@@ -364,7 +365,7 @@ export class PaperTrader{
     if(this.options.candidateReadiness!==undefined){try{if(this.options.candidateReadiness(c.mint,at)!==true)return false;checkedAt=this.clock();if(Math.floor(checkedAt/PROVISIONAL_RULE.bucketMs)!==Math.floor(at/PROVISIONAL_RULE.bucketMs))return false;}catch{return false;}}
     const state=this.options.ledger.state(),pending=Object.values(state.pending);
     const policyReady=this.resilient?state.equityRisk?.version===PAPER_V3_EQUITY_RISK_VERSION&&this.options.ledger.v3RiskPolicyActive():!this.adaptive||state.equityRisk?.version===ADAPTIVE_MOMENTUM_V2_POLICY.sizing.policyVersion;
-    const capacity=this.resilient?true:Object.keys(state.positions).length+pending.filter(o=>o.side==='buy').length<(this.pilotConfig?.maxPositions??3);
+    const capacity=paperEntryCapacity(state,this.resilient?null:(this.pilotConfig?.maxPositions??3),this.options.ledger.operatingEntryCapacityPolicy(),policyReady).available;
     return !!(!this.entryPolicyActivationUnavailable&&policyReady&&this.context.price&&(!Object.keys(state.positions).length||this.sourceCurrent(checkedAt))&&(!this.pilot||this.pilotDepositFor(c.mint)!==null)&&capacity&&!pending.some(o=>o.mint===c.mint)&&!this.evidenceUnavailable&&!this.financialUnavailable&&!this.uncertainOrders.size&&this.candidates.get(c.mint)===c&&c.active&&!c.informationPending&&this.options.ledger.projection(checkedAt,this.context.price,this.context.marks).entriesEnabled&&!(state.mode==='PAPER'&&!this.pilot&&PROVISIONAL_RULE.version.endsWith('unfrozen')));
   }
   /** Read-only quote latency must not make a flat account's earlier genuine

@@ -7,6 +7,7 @@ import {runNativePaper,nativePaperCurrentQualificationProof,nativePaperRemaining
 import {NativeCandidateRunner,NATIVE_DEADLINE_POLICY,type NativeAuditCertificate} from '../src/native-candidate-runner.js';
 import {pilotLowerPriorityAdmission,PILOT_TIMING} from '../src/pilot.js';
 import {RESEARCH_CLOCK_COHERENT_POOL_CAPACITY} from '../src/research-clock-pricing.js';
+import {PAPER_TWO_HOLDING_OPERATING_POLICY,paperEntryCapacity} from '../src/paper-operating-capacity.js';
 
 function fixture(){
  let at=100_000,source=true,permission:string|null=null,nativeAt:number|null=null,available=true,pendingAt:number|null=null;
@@ -20,7 +21,7 @@ function fixture(){
  const owner:any={open:()=>source,deadlineView:()=>({requiredNativeAt:nativeAt,readyCount:1}),currentAuditCertificate:(mint:string,when:number)=>mint===certificate.mint&&when<=certificate.deadlineAt?certificate:null};
  owner.financialAdmission=(c:NativeAuditCertificate,bound:number,when:number)=>NativeCandidateRunner.prototype.financialAdmission.call(owner,c,bound,when);
  const context:any={__name:(value:unknown)=>value,holder,Date:{now:()=>at+60_000},financialHandoff:{usage:()=>({active:[historical]})},financialEvaluationCandidates:new Set([certificate.mint]),engine:owner,
-  currentLedger:{state:()=>state,v3RiskPolicyActive:()=>true},currentRpc:{usage:()=>usage,available:()=>available},sourceInformationAdmission:()=>source,
+  currentLedger:{state:()=>state,v3RiskPolicyActive:()=>true,entryCapacity:(maximum:number|null,current=state)=>paperEntryCapacity(current,maximum,PAPER_TWO_HOLDING_OPERATING_POLICY)},currentRpc:{usage:()=>usage,available:()=>available},sourceInformationAdmission:()=>source,
   nativePaperCurrentQualificationProof,currentBridge:{qualificationProof:(_mint:string,when:number)=>{reads.push({kind:'proof',at:when});return proof;},trader:{nextDueAt:()=>pendingAt}},proofPreparation:{usage:()=>retained},
   args:{strategy:'liquidity-resilient-momentum-v3.1'},LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION:'liquidity-resilient-momentum-v3.1',nativePaperRemainingEntryWork,
   market:{entryPreparationStatus:(_mint:string,when:number)=>{reads.push({kind:'support',at:when});return {...preparation};}},NATIVE_DEADLINE_POLICY,pilotLowerPriorityAdmission,PILOT_TIMING,

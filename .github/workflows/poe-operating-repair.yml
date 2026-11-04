@@ -78,7 +78,7 @@ jobs:
           assert meta['smoke']['disposableFinancialFixture'] and meta['smoke']['readonlyPersistentBackup']
           digest=lambda path:hashlib.sha256(path.read_bytes()).hexdigest()
           configuration=(p/'configuration-sha256.txt').read_text().strip()
-          assert configuration=='f030f068a845d28f0717bf3edabe8bba0483f55cc3cc2f95a6feedb634c10d28'
+          assert configuration=='c8587da718318096c2a05c023fcd1745f51a6486ac1c6b7be18aee6e7a86022f'
           receipt={'kind':'POE_THROUGHPUT_VALIDATED_BUILD','source':source,'sourceTree':(p/'source-tree.txt').read_text().strip(),'base':'8334f5a56d01706cbdacc019bbc1fe76a136df24','bundleSha256':digest(p/'bundle/native-paper.mjs'),'configurationSha256':configuration,'testsPassed':full['pass'],'reportingTestsPassed':reporting['pass'],'validationRun':int(os.environ['GITHUB_RUN_ID']),'buildRun':int(os.environ['GITHUB_RUN_ID']),'fullLogSha256':digest(p/'full.log'),'reportingLogSha256':digest(p/'ai-reporting.log'),'financialControlWrites':0,'ec2Changed':False,'ageBasis':'verified-pumpswap-migration','minimumAgeMs':60000,'maximumAgeMs':86400000,'deepSlots':4,'strategy':'liquidity-resilient-momentum-v3.1','liveTrading':False}
           (p/'build-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
           print(json.dumps(receipt))

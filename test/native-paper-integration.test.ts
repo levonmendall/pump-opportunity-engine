@@ -150,7 +150,7 @@ test('real native runner certificates restore temporary cash readiness without S
  * there is no copied admission implementation that can silently diverge. */
 function runtimeFinancialAdmission(f:ReturnType<typeof fixture>,rpc:PilotRpc){
  const reportingHealth=new NativePaperReportingHealth(),holder={} as {financial:(at:number)=>boolean;risk:(at:number)=>boolean},context:any={
-  __name:(value:unknown)=>value,holder,currentLedger:f.ledger,currentRpc:rpc,currentNative:f.flow,reportingHealth,
+  __name:(value:unknown)=>value,holder,currentLedger:f.ledger,currentRpc:rpc,currentNative:f.flow,reportingHealth,manualAdmissionPause:{entryReason:()=>null},
   configuration:{binding:resolvePilotStage('two').binding},process,cpu:process.cpuUsage(),manualPaused:false,safeStopRequested:false,
   financialProjectionReady:true,sourceAdmission:()=>true,completed:new Map(),startedAt:f.at,endAt:Number.MAX_SAFE_INTEGER,
   PILOT_TIMING,pilotOpenProtectionGaps,nativePaperManagementReserve,entryStartsRemaining:()=>7,service:true,

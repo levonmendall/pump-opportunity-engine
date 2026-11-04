@@ -61,3 +61,14 @@ test('monitoring diagnostics preserve legacy absence and reported null, redact u
  for(const mutate of [(r:any)=>{r.monitoringAdmissionReasonCode='PRIVATE_ERROR_DO_NOT_EXPORT';},(r:any)=>{r.monitoringAdmissionReasonCode=undefined;},(r:any)=>{r.monitoringAdmissionReasonCode='BACKUP_UNAVAILABLE';},(r:any)=>{r.monitoringAdmissionReasonCode={reason:'BACKUP_UNAVAILABLE'};}]){const bad=structuredClone(clear);mutate(bad);assert.throws(()=>validateFinancialReadinessReporting(bad,T),/FINANCIAL_READINESS/);}
  const contradictory=status() as any;for(const reason of ['BACKUP_UNAVAILABLE',undefined]){contradictory.financialReadiness.monitoringAdmissionReason=reason;assert.equal(projectFinancialReadinessReporting(contradictory,T),undefined,'malformed optional diagnostics cannot silently certify current permission');}
 });
+
+test('a marker read failure has its own optional diagnostic without inventing owner intent or financial failure',()=>{
+ const raw=status() as any;raw.entriesEnabled=false;raw.financialReadiness.derivedEntryReason='POE_ENTRY_MANUAL_PAUSE';raw.financialReadiness.monitoringAdmissionReason='MANUAL_ADMISSION_MARKER_UNAVAILABLE';
+ const original=structuredClone(raw),projected=projectFinancialReadinessReporting(raw,T)!;assert.ok(projected);
+ assert.equal(projected.monitoringAdmissionReasonCode,'MANUAL_ADMISSION_MARKER_UNAVAILABLE');assert.equal(projected.permission.currentEntriesEnabled,false);
+ assert.equal(projected.permission.durableEntriesEnabled,true);assert.equal(projected.maintenance!.financialFailures,0);assert.equal(projected.reconciliation.ageMs,1251);assert.deepEqual(raw,original);
+ const operating=projectOperatingIntelligence(raw);validateOperatingIntelligence(operating,iso(T));assert.equal(operating.financialReadiness!.monitoringAdmissionReasonCode,'MANUAL_ADMISSION_MARKER_UNAVAILABLE');
+ raw.financialReadiness.monitoringAdmissionReason=null;raw.financialReadiness.derivedEntryReason=null;raw.entriesEnabled=true;
+ assert.equal(projectFinancialReadinessReporting(raw,T)!.monitoringAdmissionReasonCode,null);
+ delete raw.financialReadiness.monitoringAdmissionReason;assert.equal(Object.hasOwn(projectFinancialReadinessReporting(raw,T)!,'monitoringAdmissionReasonCode'),false);
+});

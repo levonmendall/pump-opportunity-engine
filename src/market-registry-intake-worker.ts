@@ -11,6 +11,8 @@ import {pumpSwapIntakeHint,type MarketIdentityHint,type MarketActivityHint,type 
 export const MARKET_REGISTRY_INTAKE_WORKER_KIND='poe-market-registry-intake-v1' as const;
 export type MarketRegistryIntakeMessage={kind:'intake';id:number}&({operation:'identity';value:MarketIdentityHint}|{operation:'activity';value:MarketActivityHint}|{operation:'feed';value:MarketFeedStatus}|{operation:'migration';value:WatchSeed}|{operation:'qualification';value:PumpSwapQualificationHint});
 export type MarketRegistryCommittedActivity={mint:string;at:number;evidence:string};
+export type MarketRegistryLivenessRequest={kind:'liveness';id:number;workerGeneration:number;requestedAt:number};
+export type MarketRegistryLivenessResult={kind:'liveness-result';id:number;workerGeneration:number;requestedAt:number;observedAt:number;pending:number;processedAcknowledged:number;contentions:number;lastCommitAt:number|null};
 export type MarketRegistryIntakeOptions={path:string;maximumComputeMs?:number;pendingBytesBudget?:number;writerYieldMs?:number;writerTurn?:SharedArrayBuffer;enforceTokenAge24h?:true;enforceMigrationAge?:true};
 export type MarketRegistryIntakePort=Pick<MessagePort,'on'|'postMessage'|'close'>;
 /** Runs only inside the verified native-paper bundle's worker branch. This
@@ -89,6 +91,13 @@ export function startMarketRegistryIntakeWorker(options:MarketRegistryIntakeOpti
   if(queue.length>head||closing)schedule();else scheduleReporting();
  }
  port.on('message',(value:unknown)=>{if(closed||fatal)return;try{
+  if(value&&typeof value==='object'&&(value as {kind?:unknown}).kind==='liveness'){
+   const request=value as MarketRegistryLivenessRequest,observedAt=Date.now();
+   if(Object.keys(request).sort().join(' ')!=='id kind requestedAt workerGeneration'||![request.id,request.workerGeneration,request.requestedAt].every(n=>Number.isSafeInteger(n)&&n>=0)||request.workerGeneration<1||request.requestedAt>observedAt)return;
+   // This proves only that the actual worker serviced its port. It neither
+   // reads SQLite nor acknowledges a durable intake ID or market observation.
+   const result:MarketRegistryLivenessResult={kind:'liveness-result',id:request.id,workerGeneration:request.workerGeneration,requestedAt:request.requestedAt,observedAt,pending:queue.length-head,processedAcknowledged,contentions,lastCommitAt};send(result);return;
+  }
   if(value&&typeof value==='object'&&(value as {kind?:unknown}).kind==='stop'){closing=true;schedule();return;}
   if(value&&typeof value==='object'&&(value as {kind?:unknown}).kind==='reporting'){if(validMarketRegistryReportingRequest(value)&&!closing){reporting=value;scheduleReporting();}return;}
   const message=value as MarketRegistryIntakeMessage;if(closing||!message||message.kind!=='intake'||!Number.isSafeInteger(message.id)||message.id<0||!['identity','activity','feed','migration','qualification'].includes(message.operation)||!message.value||typeof message.value!=='object')throw Error('MARKET_INTAKE_MESSAGE_INVALID');

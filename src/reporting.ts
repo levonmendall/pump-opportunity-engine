@@ -161,6 +161,7 @@ export function validateSnapshot(value: unknown, expected: ReportingIdentity, no
   oneOf(m.budgetStatus, ['available','degraded','unavailable']); text(m.coverage, 512); text(m.latency, 256);
   if(hasIntelligence){if(expected.accountId!==ORIGINAL_POE_ACCOUNT||expected.inceptionAt!==ORIGINAL_POE_INCEPTION)throw Error('operating intelligence requires original account');const intelligence=validateOperatingIntelligence(s.intelligence,ts.generatedAt as string);if(intelligence.run.strategyVersion!==source.strategy)throw Error('operating strategy/source mismatch');const atoms=(v:string)=>{const [whole,part='']=v.split('.');return BigInt(whole!)*1000000000n+BigInt(part.padEnd(9,'0'));};if(intelligence.pendingOrders.reduce((n,o)=>n+atoms(o.reservedSol),0n)!==atoms(b.reservedSol as string))throw Error('operating reservation mismatch');if((s.positions as unknown[]).length>0&&intelligence.protection.state==='flat')throw Error('operating ownership mismatch');
     const readiness=intelligence.financialReadiness;
+    if(intelligence.operatingSupervision&&intelligence.operatingSupervision.sourceCommit!==source.release)throw Error('operating supervision/source mismatch');
     if(readiness){
       if(readiness.permission.currentEntriesEnabled!==null&&readiness.permission.currentEntriesEnabled!==(status.entries==='enabled'))throw Error('financial readiness permission/source mismatch');
       if(readiness.reconciliation.at!==null&&readiness.reconciliation.at!==ts.reconciledAt)throw Error('financial readiness reconciliation/source mismatch');
