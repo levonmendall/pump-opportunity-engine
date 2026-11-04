@@ -357,3 +357,11 @@ for(const installed of [p.migrationAge,p.recoveryProvenance])test('authenticated
  assert.equal((await post('/api/equity-history',continued)).status,200,'the ordinary complete-history republisher remains accepted after source handover');
  assert.equal(app.cache.identity.release,p.to);assert.deepEqual(app.cache.equityHistory().financialEpoch,epoch);assert.equal(app.cache.equityHistory().points.at(-1).at,next.times.generatedAt);
 });
+
+
+test('installed H4 reporting advances only to the exact H5 source-support isolation runtime',()=>{
+ assert.equal(p.to,'873da573b62dcaac4f652891e2b9f4d741640d28');assert.equal(p.sourceSupport,'d82a0beb34a871a2d6adaff67c0bf16a08e5e680');
+ const c=new SnapshotCache({...identity(),release:p.to});assert.equal(attachReviewedSourceHandover(c),true);const prior={...sample('9007199254741100',p.to,T-120000),financialEpoch:v3Epoch()};c.accept(prior,T);const before=c.read(),history=c.equityHistory();
+ for(const mutate of [s=>{s.account.id='other';},s=>{s.source.strategy='other';},s=>{s.sequence=prior.sequence;},s=>{delete s.financialEpoch;},s=>{s.financialEpoch.backupSha256='f'.repeat(64);},s=>{s.liveTrading=true;}]){const invalid={...sample('9007199254741101',p.sourceSupport),financialEpoch:structuredClone(prior.financialEpoch)};mutate(invalid);assert.throws(()=>c.accept(invalid,T));assert.equal(c.identity.release,p.to);assert.deepEqual(c.read(),before);assert.deepEqual(c.equityHistory(),history);}
+ const next={...sample('9007199254741101',p.sourceSupport),financialEpoch:structuredClone(prior.financialEpoch)};assert.equal(c.accept(next,T),'accepted');assert.equal(c.identity.release,p.sourceSupport);assert.deepEqual(c.read().snapshot.account,prior.account);assert.deepEqual(c.equityHistory().financialEpoch,history.financialEpoch);for(const point of history.points)assert.deepEqual(c.equityHistory().points.find(value=>value.at===point.at),point);assert.throws(()=>c.accept({...next,sequence:'9007199254741102',source:{...next.source,release:p.to}},T),/source version/);
+});

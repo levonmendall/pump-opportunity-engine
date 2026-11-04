@@ -30,10 +30,11 @@ export const HANDOVER=Object.freeze({
  coordinatedRepair:'c92a2b95b1c175bf67b65cbe072c9e5f5080303d',
  recoveryProvenance:'69a8c2f8c0d79370a422c1d4cfa6fd60830087e6',
  to:'873da573b62dcaac4f652891e2b9f4d741640d28',
+ sourceSupport:'d82a0beb34a871a2d6adaff67c0bf16a08e5e680',
 });
 const installed=new WeakSet();
 export function attachReviewedSourceHandover(cache){
- const identity=cache.identity,p=HANDOVER,route=[p.from,p.via,p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling,p.migrationAge,p.coordinatedRepair,p.recoveryProvenance,p.to];
+ const identity=cache.identity,p=HANDOVER,route=[p.from,p.via,p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling,p.migrationAge,p.coordinatedRepair,p.recoveryProvenance,p.to,p.sourceSupport];
  if(!identity||identity.accountId!==p.accountId||identity.inceptionAt!==p.inceptionAt||identity.strategy!==p.strategy||!route.slice(0,-1).includes(identity.release))return false;
  if(installed.has(cache))return true;
  const original=cache.accept.bind(cache);
