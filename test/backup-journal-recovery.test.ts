@@ -20,9 +20,13 @@ type Fixture=ReturnType<typeof setup>;
 function setup(t:TestContext,id='fixture-journal-recovery'){
   const dir=mkdtempSync(join(tmpdir(),'poe-journal-recovery-DISPOSABLE-')),state=join(dir,'state');
   mkdirSync(state,{mode:0o700});
-  const path=join(state,'ledger.sqlite'),ledger=new DisposableLedger(path,id);
+  const path=join(state,'ledger.sqlite');
+  // SQLite sidecars inherit the original database mode; make it private before opening.
+  writeFileSync(path,'',{mode:0o600,flag:'wx'});
+  const ledger=new DisposableLedger(path,id);
   chmodSync(path,0o600);
   ledger.initialize({at:AT,microUsdPerSol:'100000000',source:'DISPOSABLE journal recovery fixture'},AT);
+  for(const suffix of ['','-wal','-shm'])if(existsSync(path+suffix))assert.equal(lstatSync(path+suffix).mode&0o777,0o600,'fixture source and sidecars must already be private');
   const identity={accountId:id,mode:'DISPOSABLE_PAPER' as const,inceptionAt:AT};
   const options={directory:join(dir,'backups'),sourcePath:path,identity};
   const store=new FinancialBackupStore(options);
@@ -69,8 +73,11 @@ function coldJournal(path:string){
   try{
     assert.equal(db.pragma('journal_mode=PERSIST',{simple:true}),'persist');
     db.pragma('synchronous=FULL');
-    const state=backupState(path);
-    db.prepare('UPDATE financial_state SET body=? WHERE singleton=1').run(JSON.stringify(state,null,2));
+    const original=(db.prepare('SELECT body FROM financial_state WHERE singleton=1').get() as {body:string}).body;
+    const state=JSON.parse(original),pretty=JSON.stringify(state,null,2);
+    // A reused backup may already have pretty JSON. Force a real, semantically equal write.
+    const replacement=original===pretty?JSON.stringify(state):pretty;assert.notEqual(replacement,original);
+    db.prepare('UPDATE financial_state SET body=? WHERE singleton=1').run(replacement);
   }finally{db.close();}
   chmodSync(path,0o600);chmodSync(path+'-journal',0o600);
   const raw=readFileSync(path+'-journal');
@@ -158,7 +165,9 @@ function assertRequiresRollback(f:Fixture){
 }
 async function seedEmptyCrash(f:Fixture){
   const db=(f.ledger as unknown as {db:Database.Database}).db;
-  db.transaction(()=>{for(let i=0;i<1000;i++)f.ledger.pause('DISPOSABLE-copy-history-'+i,AT+i+1,'DISPOSABLE copy history '+'.'.repeat(470));})();
+  db.transaction(()=>{for(let i=0;i<6000;i++)f.ledger.pause('DISPOSABLE-copy-history-'+i,AT+i+1,'DISPOSABLE copy history '+'.'.repeat(470));})();
+  // Exceed the default destination pager cache so a partial native backup must spill before commit.
+  assert.ok(Number(db.pragma('page_count',{simple:true}))*Number(db.pragma('page_size',{simple:true}))>4*1024*1024,'real financial fixture exceeds the destination cache');
   writeFileSync(f.pending,'',{mode:0o600,flag:'wx'});
   const ready=await crashWithHotJournal(f.pending,'empty-copy',f.path);
   assert.ok(ready.totalPages!>100&&ready.remainingPages!>0,'the killed native backup really had uncopied pages');
@@ -216,7 +225,7 @@ test('empty staging cannot be cleared without a fully validated prior same-accou
 });
 
 test('foreign populated pending database and its real journal are preserved and never promoted',async t=>{
-  const f=setup(t),foreign=setup(t,'fixture-FOREIGN-journal'),good=await f.store.create(f.ledger),other=await foreign.store.create(foreign.ledger);
+  const f=setup(t),foreign=setup(t,'fixture-foreign-journal'),good=await f.store.create(f.ledger),other=await foreign.store.create(foreign.ledger);
   copyFileSync(other.path,f.pending);chmodSync(f.pending,0o600);coldJournal(f.pending);
   const originals=originalFamily(f),before=sourceState(f),goodHash=hash(good.path);
   await assert.rejects(f.store.maintainPending(),/identity|account/);

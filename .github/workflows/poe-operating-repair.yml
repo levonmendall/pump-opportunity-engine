@@ -39,6 +39,7 @@ jobs:
       - name: Reproduce interrupted backup recovery and refusal boundaries
         run: |
           set -euo pipefail
+          umask 077
           node --import tsx --test --test-concurrency=1 test/backup-journal-recovery.test.ts 2>&1 | tee /tmp/poe-throughput-validation/backup-journal-recovery.log
       - name: Compile and run every application and reporting regression
         run: |
