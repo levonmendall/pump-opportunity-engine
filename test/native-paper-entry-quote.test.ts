@@ -171,11 +171,17 @@ test('retiring or resetting a different candidate cannot revoke valid prepared c
 });
 
 
-test('rent-only continuation retains the second quote read after another candidate evicts pool links',async t=>{
- const f=fixture(t,3000,false,false,true,true),a=f.captures[1]!.proof.quote.mint,b=f.captures[0]!.proof.quote.mint;
+test('rent-only continuation retains the second quote read after genuine source-cache invalidation',async t=>{
+ const f=fixture(t,3000,false,false,true,true),a=f.captures[1]!.proof.quote.mint,b=f.captures[0]!.proof.quote.mint,beforeState=f.ledger.state();
  const first=await f.market.prepareEntryCostTurn(a,signal());assert.equal(first.status,'deferred');assert.equal(f.market.entryPreparationStatus(a).state,'rent-required');
- await f.market.prepareEntryCostTurn(b,signal());const remaining=f.market.entryPreparationStatus(a);assert.equal(remaining.state,'rent-required');assert.equal(remaining.quoteReads,2);
+ await f.market.prepareEntryCostTurn(b,signal());const retained=f.market.entryPreparationStatus(a);assert.equal(retained.state,'rent-required');assert.equal(retained.quoteReads,1,'preparing a peer preserves valid address links');
+ const peerPlan=await f.market.prepareEntryCosts(b,signal());assert.deepEqual(f.market.entryPreparationStatus(a),retained,'peer rent reads preserve the original partial preparation');
+ // A genuine failed source read still invalidates cached address links. Keep
+ // the rent-only continuation regression without requiring obsolete eviction.
+ f.onRpc(method=>{if(method==='getMultipleAccounts')throw Error('DISPOSABLE_TRANSPORT_FAILURE');});
+ assert.equal(await f.market.quote({mint:b,side:'buy',inputUnits:'10000000',requiredDepositLamports:peerPlan.depositLamports},signal()),null);f.onRpc(()=>{});
+ const remaining=f.market.entryPreparationStatus(a);assert.equal(remaining.state,'rent-required');assert.equal(remaining.quoteReads,2);assert.equal(remaining.expiresAt,retained.expiresAt);
  const {nativePaperRemainingEntryWork}=await import('../src/run-native-paper.js'),work=nativePaperRemainingEntryWork({at:f.now(),owned:true,preparation:remaining});assert.equal(work.quoteReads,2);assert.equal(work.maximumAccountedStarts,remaining.remainingReads+4);
  while(!f.market.entryPreparationStatus(a).ready)await f.market.prepareEntryCostTurn(a,signal());assert.equal(f.market.entryPreparationStatus(a).quoteReads,2,'rent reads do not recreate pool links');
- const plan=await f.market.prepareEntryCosts(a,signal()),before=f.calls.length,q=await f.market.quote({mint:a,side:'buy',inputUnits:'10000000',requiredDepositLamports:plan.depositLamports},signal());assert.ok(q,JSON.stringify({failure:f.market.usage().entryQuoteFailures,records:f.records.slice(-5)}));assert.equal(f.calls.length-before,2);assert.equal(q.at,f.now());
+ const plan=await f.market.prepareEntryCosts(a,signal()),before=f.calls.length,q=await f.market.quote({mint:a,side:'buy',inputUnits:'10000000',requiredDepositLamports:plan.depositLamports},signal());assert.ok(q,JSON.stringify({failure:f.market.usage().entryQuoteFailures,records:f.records.slice(-5)}));assert.equal(f.calls.length-before,2);assert.equal(q.at,f.now());assert.deepEqual(f.ledger.state(),beforeState);
 });
