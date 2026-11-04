@@ -88,6 +88,7 @@ export class PilotMarket {
   private active=false;
   private holdingActive=false;
   private preparing=false;
+  private liveEntryPreparationSignal:AbortSignal|null=null;
   private preparationReadsRemaining:number|null=null;
   private protectionYield=false;
   private prepared=0;
@@ -137,6 +138,10 @@ export class PilotMarket {
   /** A timeout does not prove physical settlement. Retire replaceable pool
    * state only after every earlier market continuation actually releases it. */
   retirementReady(){return !this.active&&!this.holdingActive;}
+  /** A live, bounded layout/rent preparation is read-only work. Its physical
+   * lock still prevents retirement and financial permission. Aborted, timed
+   * out, holding, yielded-protection and unknown continuations do not qualify. */
+  readOnlyEntryPreparationActive(){return this.active&&this.preparing&&!this.holdingActive&&!this.protectionYield&&this.liveEntryPreparationSignal!==null&&!this.liveEntryPreparationSignal.aborted;}
   /** Fresh already-owned holding state; this accessor never schedules a read. */
   currentObservation(mint:string,units:string){return this.held.currentObservation(mint,units);}
   /** Release only a retired, unowned pool's replaceable market state. Locked
@@ -234,13 +239,14 @@ export class PilotMarket {
     const maximumMs=options?.maximumMs??this.options.timeoutMs??3000;
     need(Number.isSafeInteger(maximumMs)&&maximumMs>0&&maximumMs<=PILOT_ENTRY_PREPARATION_POLICY.maximumAggregateMs,'PILOT_MARKET_PREPARATION_BOUND_REQUIRED');
     this.active=true;this.preparing=true;const controller=new AbortController(),combined=AbortSignal.any([signal,controller.signal]);
+    this.liveEntryPreparationSignal=combined;
     const operation=this.prepareEntryCostsOperation(mint,combined).finally(()=>{this.active=false;this.preparing=false;});
     let timer:ReturnType<typeof setTimeout>|undefined,listener:(()=>void)|undefined;
     try{return await Promise.race([operation,new Promise<never>((_resolve,reject)=>{
       listener=()=>reject(Error('PILOT_MARKET_PREPARATION_ABORTED'));combined.addEventListener('abort',listener,{once:true});
       timer=setTimeout(()=>controller.abort(),maximumMs);if(combined.aborted)listener();
     })]);}
-    finally{clearTimeout(timer);if(listener)combined.removeEventListener('abort',listener);controller.abort();}
+    finally{clearTimeout(timer);if(listener)combined.removeEventListener('abort',listener);controller.abort();if(this.liveEntryPreparationSignal===combined)this.liveEntryPreparationSignal=null;}
   }
   /** A current work plan, never a quote. Reuse is bound to the original pool,
    * generation, inventory and receipt times. The quote count includes a cold
