@@ -1,0 +1,9 @@
+{
+  "kind": "POE_H5_SOURCE_SUPPORT_TIMEOUT_REGRESSION_CONTRACT",
+  "base": "873da573b62dcaac4f652891e2b9f4d741640d28",
+  "scope": "candidate-source-support",
+  "globalEscalation": {"distinctQueries": 3, "windowMs": 10000},
+  "financialScopesUnchanged": ["candidate", "protection", "pending", "entry-preparation"],
+  "financialRecoveryPolicyUnchanged": true,
+  "paperOnly": true
+}
