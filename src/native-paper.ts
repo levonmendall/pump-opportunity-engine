@@ -155,7 +155,7 @@ export class NativePaper {
  private completeEconomicRejection(input:NativeEconomicRejection){const request=structuredClone(input);if(this.options.onEconomicRejection)this.registryFollowups.submit('economic-rejection',request.mint,request.at,()=>this.options.onEconomicRejection!(request));}
  drainSchedulingFollowups(){if(!this.trader.entryReadinessSafety().idle||this.options.market.retirementReady?.()===false)return false;return this.registryFollowups.drain();}
  schedulingFollowupDiagnostics(){return this.registryFollowups.view();}
- private entryCapacity(){const state=this.options.ledger.state(),heldPositions=Object.keys(state.positions).length,pendingBuyOrders=Object.values(state.pending).filter(o=>o.side==='buy').length;return {heldPositions,pendingBuyOrders,maximumPositions:this.maximumPositions,available:this.maximumPositions===null?this.options.ledger.v3RiskPolicyActive():heldPositions+pendingBuyOrders<this.maximumPositions};}
+ private entryCapacity(){return this.options.ledger.entryCapacity(this.maximumPositions);}
  ready(mint:string,at=this.now()){
   const view=this.options.source.snapshot(mint,at),certificate=this.options.certificate(mint,at),pool=this.pools.get(mint),features=this.trader.candidateFeatures(mint,at);
   return !!(view&&pool&&nativePaperEvidenceReady({contractVersion:NATIVE_PAPER_DATA_CONTRACT_VERSION,certificate,at,mint,pool:pool.identity.pool,dataContract:view.dataContract,openedAt:view.openedAt,connectionId:view.connectionId,subscriptionId:view.subscription,features,connected:view.connected,sourceSupportFresh:view.sourceSupportFresh,hasQualityLoss:view.hasQualityLoss}));
