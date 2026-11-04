@@ -161,6 +161,40 @@ unvalidated staging inode and owned sidecars. An uncertain or validated artifact
 is preserved; it is not a guessed cleanup target. Concurrent recovery while a
 backup is active is refused by the same operation lock.
 
+## Interrupted rollback-journal recovery
+
+A crash during the pending copy or its normalization can leave the exact
+`poe-financial-pending.sqlite-journal` sidecar. The sidecar is part of that
+pending database; it must never be removed or separated as guessed cleanup.
+A journal's name or size does not establish whether it is hot or whether its
+database is a valid financial backup.
+
+The recovery worker uses the existing exclusive backup-operation lease and a
+single fixed private recovery capsule. It records the exact original file
+family in a durable manifest and preserves that family together. SQLite may
+roll back only a separately owned candidate copy. The original financial
+ledger, completed backups, and preserved interrupted file family are not
+SQLite recovery targets.
+
+The candidate must pass the existing integrity, schema, account, inception,
+complete financial-history, reporting-history and monotonic revision/sequence
+checks before promotion. A clean empty database produced by rollback is an
+incomplete staging copy, never a valid backup. The narrow empty-staging path
+requires an existing verified same-account completed backup and the unchanged
+current source inode; it preserves the interrupted family and allows the
+ordinary fresh-source backup attempt to proceed. That new copy must pass every
+existing creation and validation check before the runtime can report backup
+readiness. Populated foreign-account databases, corruption, unknown files,
+unsafe metadata, and ambiguous recovery state still refuse and remain preserved.
+
+The manifest makes same-family interrupted work resumable. Half-completed
+preservation cannot make the active directory appear clean. The capsule is
+bounded to one incident and one recovery candidate; successful normal backup
+rotation does not create additional capsules. A second distinct journal
+incident while that capsule is occupied requires review and is refused with an
+attributable reason. This is a bounded recovery facility, not an unlimited
+archive or a substitute for current-source validation.
+
 ## Verification and restore
 
 The large-backup regression retains its original adaptive timer-gap bound and

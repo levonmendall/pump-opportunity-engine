@@ -2,7 +2,7 @@ import Database from 'better-sqlite3';
 import {createHash} from 'node:crypto';
 import {isDeepStrictEqual} from 'node:util';
 import {validateReportingTradeCache,reportingFilledTrade} from './reporting.js';
-import {chmodSync,closeSync,constants,fstatSync,fsyncSync,lstatSync,mkdirSync,openSync,opendirSync,readSync,realpathSync,renameSync,statSync,statfsSync,unlinkSync,type Stats} from 'node:fs';
+import {chmodSync,closeSync,constants,fstatSync,fsyncSync,lstatSync,mkdirSync,openSync,opendirSync,readSync,realpathSync,renameSync,statSync,statfsSync,unlinkSync,writeSync,type Stats} from 'node:fs';
 import {basename,dirname,join,resolve} from 'node:path';
 import {spawnSync} from 'node:child_process';
 import {isMainThread,Worker} from 'node:worker_threads';
@@ -23,6 +23,29 @@ export class BackupOperationError extends Error{
 }
 const SNAPSHOT_FAILURE_CODES=new Set(['BACKUP_SNAPSHOT_RESERVE_REQUIRED','BACKUP_SNAPSHOT_POLICY_LIMIT_REQUIRED','BACKUP_SNAPSHOT_DISTINCT_BOUND_FILES_REQUIRED','BACKUP_SNAPSHOT_EXPECTED_IDENTITY_REQUIRED','BACKUP_SNAPSHOT_MONOTONIC_CLOCK_REQUIRED','BACKUP_SNAPSHOT_LIFETIME_EXCEEDED','BACKUP_SNAPSHOT_CANCELLATION_STATE_REQUIRED','BACKUP_SNAPSHOT_CANCELLED','BACKUP_SNAPSHOT_DISK_MEASUREMENT_REQUIRED','BACKUP_SNAPSHOT_FILE_IDENTITY_REQUIRED','BACKUP_SNAPSHOT_PRIVATE_DIRECTORY_REQUIRED','BACKUP_SNAPSHOT_CANONICAL_PATH_REQUIRED','BACKUP_SNAPSHOT_PRIVATE_SIDECAR_REQUIRED','BACKUP_SNAPSHOT_WAL_GROWTH_EXCEEDED','BACKUP_SNAPSHOT_COPY_SIZE_REQUIRED','BACKUP_SNAPSHOT_DISK_RESERVE_REQUIRED','BACKUP_SNAPSHOT_EMPTY_OWNED_PENDING_REQUIRED','BACKUP_SNAPSHOT_READONLY_CONNECTION_REQUIRED','BACKUP_SNAPSHOT_READONLY_WAL_REQUIRED','BACKUP_SNAPSHOT_BOUNDED_STATE_REQUIRED','BACKUP_SNAPSHOT_ACCOUNT_REVISION_REQUIRED','BACKUP_SNAPSHOT_JOURNAL_HEAD_REQUIRED','BACKUP_SNAPSHOT_SEQUENCE_REQUIRED','BACKUP_SNAPSHOT_FIXED_PAGE_COUNT_REQUIRED','BACKUP_SNAPSHOT_COPY_INCOMPLETE','BACKUP_SNAPSHOT_CAPTURE_REQUIRED']);
 const BACKUP_FAILURE_MESSAGES=new Map([
+  ["backup retention layout needs review; nothing removed","BACKUP_RETENTION_LAYOUT_REQUIRED"],
+  ["backup directory entry bound exceeded; nothing removed","BACKUP_DIRECTORY_ENTRY_BOUND_EXCEEDED"],
+  ["backup recovery capsule identity invalid; originals preserved","BACKUP_RECOVERY_CAPSULE_IDENTITY_INVALID"],
+  ["backup recovery capsule layout invalid; originals preserved","BACKUP_RECOVERY_CAPSULE_LAYOUT_INVALID"],
+  ["backup recovery capsule metadata invalid; originals preserved","BACKUP_RECOVERY_CAPSULE_METADATA_INVALID"],
+  ["backup recovery capsule metadata changed; originals preserved","BACKUP_RECOVERY_CAPSULE_METADATA_CHANGED"],
+  ["backup recovery capsule metadata write failed; originals preserved","BACKUP_RECOVERY_CAPSULE_METADATA_WRITE_FAILED"],
+  ["backup recovery capsule initialization incomplete; originals preserved","BACKUP_RECOVERY_CAPSULE_INITIALIZATION_INCOMPLETE"],
+  ["backup recovery original identity changed; originals preserved","BACKUP_RECOVERY_ORIGINAL_IDENTITY_CHANGED"],
+  ["backup recovery original bytes changed; originals preserved","BACKUP_RECOVERY_ORIGINAL_BYTES_CHANGED"],
+  ["backup recovery journal changed; originals preserved","BACKUP_RECOVERY_JOURNAL_CHANGED"],
+  ["backup recovery super-journal reference refused; originals preserved","BACKUP_RECOVERY_SUPER_JOURNAL_REFUSED"],
+  ["backup recovery family changed; originals preserved","BACKUP_RECOVERY_FAMILY_CHANGED"],
+  ["backup recovery family location ambiguous; originals preserved","BACKUP_RECOVERY_FAMILY_LOCATION_AMBIGUOUS"],
+  ["backup recovery candidate copy incomplete; originals preserved","BACKUP_RECOVERY_CANDIDATE_COPY_INCOMPLETE"],
+  ["backup recovery validated receipt required; originals preserved","BACKUP_RECOVERY_VALIDATED_RECEIPT_REQUIRED"],
+  ["backup recovery promotion location ambiguous; originals preserved","BACKUP_RECOVERY_PROMOTION_LOCATION_AMBIGUOUS"],
+  ["backup recovery validated sidecar unexpected; originals preserved","BACKUP_RECOVERY_VALIDATED_SIDECAR_UNEXPECTED"],
+  ["backup recovery validated receipt mismatch; originals preserved","BACKUP_RECOVERY_VALIDATED_RECEIPT_MISMATCH"],
+  ["backup recovery promotion target changed; originals preserved","BACKUP_RECOVERY_PROMOTION_TARGET_CHANGED"],
+  ["backup recovery paired pending journal required; originals preserved","BACKUP_RECOVERY_PAIRED_JOURNAL_REQUIRED"],
+  ["backup recovery capsule already occupied; second journal preserved","BACKUP_RECOVERY_CAPSULE_OCCUPIED"],
+  ["backup empty recovery requires verified prior backup; originals preserved","BACKUP_RECOVERY_EMPTY_REQUIRES_PRIOR_BACKUP"],
   ['backup artifact work exceeded 30s; pending artifacts preserved','BACKUP_WORKER_DEADLINE_EXCEEDED'],
   ['backup artifact request cancelled or expired; pending artifacts preserved','BACKUP_WORKER_CANCELLED_OR_EXPIRED'],
   ['backup artifact worker failed; pending artifacts preserved','BACKUP_WORKER_FAILED'],
@@ -40,7 +63,7 @@ const BACKUP_FAILURE_MESSAGES=new Map([
   ['backup would regress durable history','BACKUP_HISTORY_REGRESSION'],
   ['pending backup requires explicit recovery; nothing overwritten','BACKUP_PENDING_RECOVERY_REQUIRED'],
 ]);
-const BACKUP_SQLITE_CODES=new Set(['SQLITE_BUSY','SQLITE_LOCKED','SQLITE_IOERR','SQLITE_CORRUPT','SQLITE_NOTADB','SQLITE_FULL','SQLITE_READONLY','SQLITE_CANTOPEN']);
+const BACKUP_SQLITE_CODES=new Set(['SQLITE_BUSY','SQLITE_LOCKED','SQLITE_IOERR','SQLITE_CORRUPT','SQLITE_NOTADB','SQLITE_FULL','SQLITE_READONLY','SQLITE_READONLY_ROLLBACK','SQLITE_CANTOPEN']);
 /** No arbitrary error text, file path, provider URL or credential is exported. */
 export function backupFailureDiagnostic(error:unknown){
   const cause=error instanceof BackupOperationError?error.cause:error,message=cause instanceof Error?cause.message:'NON_ERROR_BACKUP_FAILURE';
@@ -59,6 +82,15 @@ export type BackupArtifactRequest={id:number;deadlineAtMonoNs:bigint;task:Backup
 const PREFIX='poe-financial-',PENDING='poe-financial-pending.sqlite';
 const OPERATION_LOCK='.poe-backup.lock';
 const NAME=/^poe-financial-([0-9]{20})\.sqlite$/;
+
+type RecoverySource={dev:string;ino:string};
+type RecoveryFile=RecoverySource&{suffix:string;size:number;mtimeNs:string;ctimeNs:string;sha256:string};
+type RecoveryManifest={version:1;identity:BackupIdentity;source:RecoverySource;files:RecoveryFile[]};
+type RecoveryValidated={version:1;manifestSha256:string;file:RecoveryFile;target:string;revision:number;lastAt:number;snapshotSequence:string|null};
+type RecoveryCompleted={version:1;manifestSha256:string;disposition:'PROMOTED'|'PRESERVED_INCOMPLETE_STAGING';validatedSha256:string|null};
+const RECOVERY='.poe-pending-recovery',RECOVERY_SUFFIXES=['','-journal','-wal','-shm'] as const;
+const RECOVERY_NAMES=new Set(['manifest.json','validated.json','completed.json','manifest.json.tmp','validated.json.tmp','completed.json.tmp',...RECOVERY_SUFFIXES.flatMap(s=>['original.sqlite'+s,'candidate.sqlite'+s])]);
+
 
 /** One bounded worker per operation. The parent owns the original lease FD
  * until every source-copy operation and the worker itself physically settle. */
@@ -112,6 +144,7 @@ export class FinancialBackupStore{
   private readonly maxBytes:number;
   private readonly persistent:boolean;private readonly minimumFreeBytes:number;
   private staged:{path:string;own:Stats;source:Stats;completed:FinancialBackup[];minimumRevision:number;validated:boolean;copy?:ReadonlyFinancialSnapshotCopy}|undefined;
+  private recoverySource:RecoverySource|undefined;
   private workerOperation:BackupOperationLease|undefined;private workerLeaseAcquired=false;private workerCancelled:(()=>boolean)|undefined;
   constructor(options:Options){
     this.directory=resolve(options.directory);
@@ -145,19 +178,24 @@ export class FinancialBackupStore{
     if(this.persistent){const disk=statfsSync(this.directory),free=disk.bavail*disk.bsize;if(!Number.isSafeInteger(free)||free<size+this.minimumFreeBytes)throw new Error('backup disk headroom unavailable; financial source and prior backups retained');}
   }
   private scan(){
-    this.checkDirectory();const dir=opendirSync(this.directory),completed:{name:string;generation:string}[]=[],unknown:string[]=[];let pending=false;
+    this.checkDirectory();const dir=opendirSync(this.directory),completed:{name:string;generation:string}[]=[],unknown:string[]=[];let pending=false,capsule=false,capsuleRefusal:Error|undefined;
     try{
       for(let count=0;;count++){
         const entry=dir.readSync();if(!entry)break;if(count>=32)throw new Error('backup directory entry bound exceeded; nothing removed');
         const match=NAME.exec(entry.name);
         if(match)completed.push({name:entry.name,generation:match[1]!});
-        else if(entry.name===PENDING||entry.name===PENDING+'-wal'||entry.name===PENDING+'-shm')pending=true;
+        else if(entry.name===PENDING||entry.name===PENDING+'-wal'||entry.name===PENDING+'-shm'||entry.name===PENDING+'-journal')pending=true;
+        else if(entry.name===RECOVERY)capsule=true;
         else if(entry.name===OPERATION_LOCK){try{this.privateFile(join(this.directory,OPERATION_LOCK));}catch{unknown.push(entry.name);}}
         else unknown.push(entry.name);
       }
     }finally{dir.closeSync();}
     completed.sort((a,b)=>a.generation.localeCompare(b.generation));
-    return {completed,unknown,pending};
+    if(capsule){
+      try{if(this.recoveryInitializing())pending=true;else{const state=this.recoveryCapsule();if(state.completed)this.ensureCompletedRecoveryOriginals(state.manifest);else pending=true;}}
+      catch(error){unknown.push(RECOVERY);pending=true;capsuleRefusal=error instanceof Error?error:new Error('backup recovery capsule metadata invalid; originals preserved');}
+    }
+    return {completed,unknown,pending,capsule,capsuleRefusal};
   }
   private inspect(path:string,generation:string,requireStandalone=true,expected?:ReadonlyFinancialSnapshotCopy):FinancialBackup{
     const file=this.privateFile(path);let source:Stats|undefined;
@@ -231,11 +269,194 @@ export class FinancialBackupStore{
     }
     return {backup,rejected,pending:scan.pending};
   }
-  private ready(){
-    const scan=this.scan();if(scan.completed.length>2||scan.unknown.length)throw new Error('backup retention layout needs review; nothing removed');
-    const completed=scan.completed.map(item=>this.inspect(join(this.directory,item.name),item.generation));
-    return {scan,completed};
+  private validatedRetention(scan:ReturnType<FinancialBackupStore['scan']>){
+    if(scan.completed.length>2||scan.unknown.length)throw new Error('backup retention layout needs review; nothing removed');
+    return scan.completed.map(item=>this.inspect(join(this.directory,item.name),item.generation));
   }
+  private ready(){
+    const scan=this.scan();if(scan.capsuleRefusal)throw scan.capsuleRefusal;
+    if(scan.capsule&&(this.recoveryInitializing()||!this.recoveryCapsule().completed))throw new Error('pending backup requires explicit recovery; nothing overwritten');
+    const completed=this.validatedRetention(scan);return {scan,completed};
+  }
+
+  private recoveryPath(name=''){return join(this.directory,RECOVERY,name);}
+  private recoveryDirectory(){
+    const path=this.recoveryPath(),s=lstatSync(path);
+    if(!s.isDirectory()||s.isSymbolicLink()||s.uid!==process.getuid?.()||(s.mode&0o777)!==0o700||realpathSync(path)!==path)throw new Error('backup recovery capsule identity invalid; originals preserved');
+    const dir=opendirSync(path);try{for(let count=0;;count++){const e=dir.readSync();if(!e)break;if(count>=RECOVERY_NAMES.size||!RECOVERY_NAMES.has(e.name))throw new Error('backup recovery capsule layout invalid; originals preserved');this.privateFile(join(path,e.name));}}finally{dir.closeSync();}
+  }
+  private optionalRecoveryFile(path:string):Stats|undefined{
+    try{return this.privateFile(path);}catch(error){if(error instanceof Error&&'code'in error&&error.code==='ENOENT')return;throw error;}
+  }
+  private recoveryFence(){this.workerFence();this.stagedSourceCurrent();}
+  private recoveryMetadata(name:string):{raw:string;value:unknown;sha256:string}|null{
+    const path=this.recoveryPath(name),file=this.optionalRecoveryFile(path);if(!file)return null;
+    if(file.size>16_384)throw new Error('backup recovery capsule metadata invalid; originals preserved');
+    const fd=openSync(path,constants.O_RDONLY|constants.O_NOFOLLOW),bytes=Buffer.alloc(file.size);
+    try{const before=fstatSync(fd);if(before.dev!==file.dev||before.ino!==file.ino||readSync(fd,bytes,0,bytes.length,0)!==bytes.length)throw new Error('backup recovery capsule metadata changed; originals preserved');const after=fstatSync(fd),named=this.privateFile(path);if(before.size!==after.size||before.mtimeMs!==after.mtimeMs||before.ctimeMs!==after.ctimeMs||named.dev!==before.dev||named.ino!==before.ino)throw new Error('backup recovery capsule metadata changed; originals preserved');}finally{closeSync(fd);}
+    const raw=bytes.toString('utf8');let value:unknown;try{value=JSON.parse(raw);}catch{throw new Error('backup recovery capsule metadata invalid; originals preserved');}
+    return {raw,value,sha256:createHash('sha256').update(bytes).digest('hex')};
+  }
+  private writeRecoveryMetadata(name:string,value:unknown){
+    this.recoveryFence();const bytes=Buffer.from(JSON.stringify(value)+'\n');if(bytes.length>16_384)throw new Error('backup recovery capsule metadata invalid; originals preserved');
+    const final=this.recoveryPath(name),temporary=this.recoveryPath(name+'.tmp');
+    if(this.optionalRecoveryFile(final))throw new Error('backup recovery capsule metadata changed; originals preserved');
+    // Only fixed, private scratch metadata can be replaced. The immutable final
+    // record is never opened for writing or truncated.
+    if(this.optionalRecoveryFile(temporary))unlinkSync(temporary);
+    const fd=openSync(temporary,constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);
+    try{for(let at=0;at<bytes.length;){this.recoveryFence();const n=writeSync(fd,bytes,at,bytes.length-at);if(n<=0)throw new Error('backup recovery capsule metadata write failed; originals preserved');at+=n;}fsyncSync(fd);}finally{closeSync(fd);}
+    this.publishRecoveryMetadata(name);
+  }
+  private publishRecoveryMetadata(name:string){
+    this.recoveryFence();if(this.optionalRecoveryFile(this.recoveryPath(name)))throw new Error('backup recovery capsule metadata changed; originals preserved');
+    this.privateFile(this.recoveryPath(name+'.tmp'));renameSync(this.recoveryPath(name+'.tmp'),this.recoveryPath(name));this.syncRecoveryDirectory();
+  }
+  private recoveryInitializing(){
+    this.recoveryDirectory();if(this.optionalRecoveryFile(this.recoveryPath('manifest.json')))return false;
+    // An interrupted mkdir/temp write cannot have moved an original: relocation
+    // starts only after the immutable manifest was published and synced.
+    const dir=opendirSync(this.recoveryPath());
+    try{for(let count=0;;count++){const e=dir.readSync();if(!e)break;if(count>=1||e.name!=='manifest.json.tmp')throw new Error('backup recovery capsule initialization incomplete; originals preserved');}}
+    finally{dir.closeSync();}return true;
+  }
+  private syncRecoveryDirectory(){const fd=openSync(this.recoveryPath(),constants.O_RDONLY|constants.O_NOFOLLOW);try{fsyncSync(fd);}finally{closeSync(fd);}}
+  private recoveryRecord(value:unknown,suffix?:string):value is RecoveryFile{
+    if(!value||typeof value!=='object'||Array.isArray(value))return false;const v=value as RecoveryFile;
+    return Object.keys(v).sort().join(',')==='ctimeNs,dev,ino,mtimeNs,sha256,size,suffix'&&typeof v.suffix==='string'&&RECOVERY_SUFFIXES.some(s=>s===v.suffix)&&(suffix===undefined||v.suffix===suffix)&&[v.dev,v.ino,v.mtimeNs,v.ctimeNs].every(x=>typeof x==='string'&&/^(0|[1-9][0-9]*)$/.test(x))&&Number.isSafeInteger(v.size)&&v.size>=0&&v.size<=this.maxBytes&&typeof v.sha256==='string'&&/^[0-9a-f]{64}$/.test(v.sha256);
+  }
+  private recoveryCapsule(){
+    this.recoveryDirectory();const original=this.recoveryMetadata('manifest.json');
+    if(!original)throw new Error('backup recovery capsule initialization incomplete; originals preserved');
+    const m=original.value as RecoveryManifest;
+    if(!m||typeof m!=='object'||Object.keys(m).sort().join(',')!=='files,identity,source,version'||m.version!==1||!isDeepStrictEqual(m.identity,this.identity)||!m.source||Object.keys(m.source).sort().join(',')!=='dev,ino'||![m.source.dev,m.source.ino].every(x=>typeof x==='string'&&/^(0|[1-9][0-9]*)$/.test(x))||!Array.isArray(m.files)||m.files.length<2||m.files.length>4||m.files.some(x=>!this.recoveryRecord(x))||m.files.map(x=>x.suffix).join(',')!==RECOVERY_SUFFIXES.filter(s=>m.files.some(x=>x.suffix===s)).join(',')||!m.files.some(x=>x.suffix==='')||!m.files.some(x=>x.suffix==='-journal'))throw new Error('backup recovery capsule metadata invalid; originals preserved');
+    const checked=this.recoveryMetadata('validated.json'),done=this.recoveryMetadata('completed.json');let validated:RecoveryValidated|null=null,completed:RecoveryCompleted|null=null;
+    if(checked){const v=checked.value as RecoveryValidated;if(!v||Object.keys(v).sort().join(',')!=='file,lastAt,manifestSha256,revision,snapshotSequence,target,version'||v.version!==1||v.manifestSha256!==original.sha256||!this.recoveryRecord(v.file,'')||!NAME.test(v.target)||!Number.isSafeInteger(v.revision)||v.revision<0||!Number.isSafeInteger(v.lastAt)||v.lastAt<0||!(v.snapshotSequence===null||typeof v.snapshotSequence==='string'&&/^(0|[1-9][0-9]*)$/.test(v.snapshotSequence)))throw new Error('backup recovery capsule metadata invalid; originals preserved');validated=v;}
+    if(done){const v=done.value as RecoveryCompleted;if(!v||Object.keys(v).sort().join(',')!=='disposition,manifestSha256,validatedSha256,version'||v.version!==1||v.manifestSha256!==original.sha256||!(v.disposition==='PROMOTED'&&validated&&v.validatedSha256===checked!.sha256||v.disposition==='PRESERVED_INCOMPLETE_STAGING'&&!validated&&v.validatedSha256===null))throw new Error('backup recovery capsule metadata invalid; originals preserved');completed=v;}
+    return {manifest:m,manifestSha256:original.sha256,validated,validatedSha256:checked?.sha256??null,completed};
+  }
+  private recoveryFileIdentity(path:string,expected:RecoveryFile){
+    this.privateFile(path);const s=lstatSync(path,{bigint:true});
+    if(s.dev.toString()!==expected.dev||s.ino.toString()!==expected.ino||s.size!==BigInt(expected.size)||s.mtimeNs.toString()!==expected.mtimeNs)throw new Error('backup recovery original identity changed; originals preserved');
+  }
+  private fingerprintRecoveryFile(path:string,suffix:string):RecoveryFile{
+    this.recoveryFence();this.privateFile(path);const fd=openSync(path,constants.O_RDONLY|constants.O_NOFOLLOW);
+    try{
+      const before=fstatSync(fd,{bigint:true}),named=lstatSync(path,{bigint:true});if(before.dev!==named.dev||before.ino!==named.ino||before.size>BigInt(this.maxBytes))throw new Error('backup recovery original identity changed; originals preserved');
+      const digest=createHash('sha256'),buffer=Buffer.alloc(1024*1024);let offset=0;
+      while(offset<Number(before.size)){this.recoveryFence();const n=readSync(fd,buffer,0,Math.min(buffer.length,Number(before.size)-offset),offset);if(n<=0)throw new Error('backup recovery original identity changed; originals preserved');digest.update(buffer.subarray(0,n));offset+=n;}
+      const after=fstatSync(fd,{bigint:true}),current=lstatSync(path,{bigint:true});if(before.dev!==after.dev||before.ino!==after.ino||before.size!==after.size||before.mtimeNs!==after.mtimeNs||before.ctimeNs!==after.ctimeNs||current.dev!==before.dev||current.ino!==before.ino||current.size!==before.size||current.mtimeNs!==before.mtimeNs||current.ctimeNs!==before.ctimeNs)throw new Error('backup recovery original identity changed; originals preserved');
+      fsyncSync(fd);this.recoveryFence();
+      return {suffix,dev:before.dev.toString(),ino:before.ino.toString(),size:Number(before.size),mtimeNs:before.mtimeNs.toString(),ctimeNs:before.ctimeNs.toString(),sha256:digest.digest('hex')};
+    }finally{closeSync(fd);}
+  }
+  private authenticateRecoveryFile(path:string,expected:RecoveryFile){
+    this.recoveryFileIdentity(path,expected);if(this.fingerprintRecoveryFile(path,expected.suffix).sha256!==expected.sha256)throw new Error('backup recovery original bytes changed; originals preserved');
+  }
+  /** The producer never uses ATTACH. A SQLite super-journal footer can name a
+   * file outside this capsule, so conservatively refuse its magic at EOF. */
+  private rejectSuperJournal(path:string){
+    const file=this.privateFile(path);if(file.size<16)return;const fd=openSync(path,constants.O_RDONLY|constants.O_NOFOLLOW),tail=Buffer.alloc(16);
+    try{const s=fstatSync(fd);if(s.dev!==file.dev||s.ino!==file.ino||readSync(fd,tail,0,16,file.size-16)!==16)throw new Error('backup recovery journal changed; originals preserved');if(tail.subarray(8).equals(Buffer.from('d9d505f920a163d7','hex')))throw new Error('backup recovery super-journal reference refused; originals preserved');}finally{closeSync(fd);}
+  }
+  private moveRecoveryOriginal(from:string,to:string){
+    this.recoveryFence();renameSync(from,to);this.syncRecoveryDirectory();this.syncDirectory();
+  }
+  private relocateRecoveryOriginals(manifest:RecoveryManifest){
+    for(const suffix of RECOVERY_SUFFIXES){const row=manifest.files.find(x=>x.suffix===suffix),from=join(this.directory,PENDING+suffix),to=this.recoveryPath('original.sqlite'+suffix),a=this.optionalRecoveryFile(from),b=this.optionalRecoveryFile(to);
+      if(!row){if(a||b)throw new Error('backup recovery family changed; originals preserved');continue;}
+      if(Boolean(a)===Boolean(b))throw new Error('backup recovery family location ambiguous; originals preserved');
+      this.authenticateRecoveryFile(a?from:to,row);if(a)this.moveRecoveryOriginal(from,to);
+    }
+    this.recoveryFence();
+  }
+  private ensureCompletedRecoveryOriginals(manifest:RecoveryManifest){
+    for(const suffix of RECOVERY_SUFFIXES){const row=manifest.files.find(x=>x.suffix===suffix),path=this.recoveryPath('original.sqlite'+suffix);if(row)this.recoveryFileIdentity(path,row);else if(this.optionalRecoveryFile(path))throw new Error('backup recovery family changed; originals preserved');}
+  }
+  private clearRecoveryCandidate(){
+    for(const suffix of RECOVERY_SUFFIXES){const path=this.recoveryPath('candidate.sqlite'+suffix);if(this.optionalRecoveryFile(path)){this.recoveryFence();unlinkSync(path);}}
+    this.syncRecoveryDirectory();
+  }
+  private clearValidatedCandidateSidecars(){
+    // SQLite has settled and the candidate has passed full standalone (or exact
+    // empty) validation. These are our disposable copy's residual sidecars;
+    // the original family remains intact and is never opened by SQLite.
+    for(const suffix of RECOVERY_SUFFIXES.slice(1)){const path=this.recoveryPath('candidate.sqlite'+suffix);if(this.optionalRecoveryFile(path)){this.recoveryFence();unlinkSync(path);}}
+    this.syncRecoveryDirectory();
+  }
+  private copyRecoveryCandidate(manifest:RecoveryManifest){
+    const total=manifest.files.reduce((n,row)=>n+row.size,0),disk=statfsSync(this.directory),free=disk.bavail*disk.bsize;
+    if(!Number.isSafeInteger(total)||!Number.isSafeInteger(free)||free<total+this.minimumFreeBytes)throw new Error('backup disk headroom unavailable; financial source and prior backups retained');
+    for(const row of manifest.files){
+      this.recoveryFence();const from=this.recoveryPath('original.sqlite'+row.suffix),to=this.recoveryPath('candidate.sqlite'+row.suffix);this.recoveryFileIdentity(from,row);
+      const input=openSync(from,constants.O_RDONLY|constants.O_NOFOLLOW);let output:number|undefined;
+      try{
+        output=openSync(to,constants.O_WRONLY|constants.O_CREAT|constants.O_EXCL|constants.O_NOFOLLOW,0o600);
+        const stat=fstatSync(input,{bigint:true});if(stat.dev.toString()!==row.dev||stat.ino.toString()!==row.ino)throw new Error('backup recovery original identity changed; originals preserved');
+        const digest=createHash('sha256'),buffer=Buffer.alloc(1024*1024);let offset=0;
+        while(offset<row.size){this.recoveryFence();const n=readSync(input,buffer,0,Math.min(buffer.length,row.size-offset),offset);if(n<=0)throw new Error('backup recovery original identity changed; originals preserved');digest.update(buffer.subarray(0,n));for(let at=0;at<n;){this.recoveryFence();const written=writeSync(output,buffer,at,n-at);if(written<=0)throw new Error('backup recovery candidate copy incomplete; originals preserved');at+=written;}offset+=n;}
+        const after=fstatSync(input,{bigint:true});if(after.size!==stat.size||after.mtimeNs!==stat.mtimeNs||after.ctimeNs!==stat.ctimeNs||digest.digest('hex')!==row.sha256)throw new Error('backup recovery original bytes changed; originals preserved');fsyncSync(output);
+      }finally{if(output!==undefined)closeSync(output);closeSync(input);}
+      this.recoveryFileIdentity(from,row);
+    }
+    this.syncRecoveryDirectory();this.recoveryFence();
+  }
+  /** Reading the candidate read-write lets SQLite perform its own hot rollback.
+   * Originals and the live financial source are never opened for writing here. */
+  private recoverCandidateIsEmpty(path:string){
+    this.recoveryFence();this.rejectSuperJournal(path+'-journal');const db=new Database(path,{fileMustExist:true,timeout:100});
+    try{
+      const schema=db.prepare('SELECT count(*) AS count FROM sqlite_schema').get() as {count:number};
+      if(schema.count!==0||db.pragma('page_count',{simple:true})!==0||db.pragma('freelist_count',{simple:true})!==0)return false;
+      if(db.pragma('integrity_check',{simple:true})!=='ok')throw new Error('backup integrity failure');
+      return true;
+    }finally{db.close();this.recoveryFence();}
+  }
+  private recoveryTarget(completed:FinancialBackup[]){
+    const next=(BigInt(completed.at(-1)?.generation??'0')+1n).toString().padStart(20,'0');if(next.length>20)throw new Error('backup generation exhausted');return PREFIX+next+'.sqlite';
+  }
+  private finishRecoveryPromotion(state:ReturnType<FinancialBackupStore['recoveryCapsule']>,completed:FinancialBackup[]):FinancialBackup{
+    const receipt=state.validated;if(!receipt)throw new Error('backup recovery validated receipt required; originals preserved');
+    const candidate=this.recoveryPath('candidate.sqlite'),target=join(this.directory,receipt.target),a=this.optionalRecoveryFile(candidate),b=this.optionalRecoveryFile(target);
+    if(Boolean(a)===Boolean(b))throw new Error('backup recovery promotion location ambiguous; originals preserved');
+    for(const suffix of RECOVERY_SUFFIXES.slice(1))if(this.optionalRecoveryFile(candidate+suffix))throw new Error('backup recovery validated sidecar unexpected; originals preserved');
+    const path=a?candidate:target;this.authenticateRecoveryFile(path,receipt.file);const valid=this.inspect(path,a?'0':NAME.exec(receipt.target)![1]!);
+    if(valid.revision!==receipt.revision||valid.lastAt!==receipt.lastAt||valid.snapshotSequence!==receipt.snapshotSequence)throw new Error('backup recovery validated receipt mismatch; originals preserved');
+    if(a&&this.recoveryTarget(completed)!==receipt.target)throw new Error('backup recovery promotion target changed; originals preserved');
+    const promoted=a?this.promote(valid,completed):valid;this.syncRecoveryDirectory();this.recoveryFence();
+    this.writeRecoveryMetadata('completed.json',{version:1,manifestSha256:state.manifestSha256,disposition:'PROMOTED',validatedSha256:state.validatedSha256} satisfies RecoveryCompleted);
+    return promoted;
+  }
+  private recoverJournalFamily(scan:ReturnType<FinancialBackupStore['scan']>,completed:FinancialBackup[]):FinancialBackup|null{
+    const rootPending=join(this.directory,PENDING),source=this.privateFile(this.sourcePath);
+    this.recoverySource={dev:String(source.dev),ino:String(source.ino)};
+    try{
+      if(!scan.capsule||this.recoveryInitializing()){
+        const files=RECOVERY_SUFFIXES.flatMap(s=>this.optionalRecoveryFile(rootPending+s)?[this.fingerprintRecoveryFile(rootPending+s,s)]:[]);
+        if(!files.some(x=>x.suffix==='')||!files.some(x=>x.suffix==='-journal'))throw new Error('backup recovery paired pending journal required; originals preserved');
+        this.rejectSuperJournal(rootPending+'-journal');this.recoveryFence();if(!scan.capsule){mkdirSync(this.recoveryPath(),{mode:0o700});this.syncDirectory();}
+        this.writeRecoveryMetadata('manifest.json',{version:1,identity:this.identity,source:this.recoverySource,files} satisfies RecoveryManifest);
+      }
+      const state=this.recoveryCapsule();this.recoverySource=state.manifest.source;this.recoveryFence();
+      if(state.completed)throw new Error('backup recovery capsule already occupied; second journal preserved');
+      this.relocateRecoveryOriginals(state.manifest);this.rejectSuperJournal(this.recoveryPath('original.sqlite-journal'));
+      if(state.validated)return this.finishRecoveryPromotion(state,completed);
+      this.clearRecoveryCandidate();this.copyRecoveryCandidate(state.manifest);
+      const candidate=this.recoveryPath('candidate.sqlite');
+      if(this.recoverCandidateIsEmpty(candidate)){
+        if(completed.length===0)throw new Error('backup empty recovery requires verified prior backup; originals preserved');
+        this.clearValidatedCandidateSidecars();this.recoveryFence();this.writeRecoveryMetadata('completed.json',{version:1,manifestSha256:state.manifestSha256,disposition:'PRESERVED_INCOMPLETE_STAGING',validatedSha256:null} satisfies RecoveryCompleted);
+        return null;
+      }
+      this.normalize(candidate);this.recoveryFence();const valid=this.inspect(candidate,'0');this.clearValidatedCandidateSidecars();const file=this.fingerprintRecoveryFile(candidate,'');
+      const receipt:RecoveryValidated={version:1,manifestSha256:state.manifestSha256,file,target:this.recoveryTarget(completed),revision:valid.revision,lastAt:valid.lastAt,snapshotSequence:valid.snapshotSequence};
+      this.writeRecoveryMetadata('validated.json',receipt);const checked=this.recoveryMetadata('validated.json')!;
+      const promoted=this.promote(valid,completed);this.syncRecoveryDirectory();this.recoveryFence();
+      this.writeRecoveryMetadata('completed.json',{version:1,manifestSha256:state.manifestSha256,disposition:'PROMOTED',validatedSha256:checked.sha256} satisfies RecoveryCompleted);
+      return promoted;
+    }finally{this.recoverySource=undefined;}
+  }
+
   private normalize(path:string){
     // SQLite backup inherits a WAL header. Normalize ONLY this completed staging
     // copy so read-only consumers do not create persistent WAL/SHM sidecars.
@@ -283,6 +504,7 @@ export class FinancialBackupStore{
     this.workerFence();this.workerLeaseAcquired=true;
   }
   private stagedSourceCurrent(){
+    if(this.recoverySource){const current=this.privateFile(this.sourcePath);if(String(current.dev)!==this.recoverySource.dev||String(current.ino)!==this.recoverySource.ino)throw new Error('backup source inode changed; prior backups preserved');}
     const staged=this.staged;if(!staged)return;const source=this.privateFile(this.sourcePath);
     if(source.dev!==staged.source.dev||source.ino!==staged.source.ino)throw new Error('backup source inode changed; prior backups preserved');
   }
@@ -375,9 +597,10 @@ export class FinancialBackupStore{
     try{return this.recoverPendingOwned();}finally{closeSync(operation);}
   }
   private recoverPendingOwned():FinancialBackup|null{
-      if(!this.scan().pending)return null;
-      const {completed}=this.ready();
-      const path=join(this.directory,PENDING);this.inspect(path,'0',false);this.normalize(path);
+      const scan=this.scan();if(scan.capsuleRefusal)throw scan.capsuleRefusal;if(!scan.pending)return null;
+      const completed=this.validatedRetention(scan),path=join(this.directory,PENDING);
+      if(scan.capsule&&(this.recoveryInitializing()||!this.recoveryCapsule().completed)||this.optionalRecoveryFile(path+'-journal'))return this.recoverJournalFamily(scan,completed);
+      this.inspect(path,'0',false);this.normalize(path);
       return this.promote(this.inspect(path,'0'),completed);
   }
 }
