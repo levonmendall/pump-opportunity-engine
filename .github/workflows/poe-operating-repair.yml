@@ -1,7 +1,7 @@
 name: Validate and package POE operating reliability repairs
 on:
   push:
-    branches: [repair/poe-operating-reliability-20261104, repair/poe-operating-followthrough-20261104, repair/financial-feasible-peer]
+    branches: [repair/poe-operating-reliability-20261104, repair/poe-operating-followthrough-20261104, repair/financial-feasible-peer, repair/backup-readiness-followthrough]
     # The exact runtime artifact precedes its reporting-only source handover.
     # The existing PR release gate still validates the later reporting commit.
     paths-ignore:

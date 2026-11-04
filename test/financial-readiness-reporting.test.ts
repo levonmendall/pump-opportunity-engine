@@ -38,3 +38,26 @@ test('report phase timings capture thrown work without changing its exception an
  assert.deepEqual(timings.usage(),[{stage:'financial-history',count:1,totalMs:12.25,lastMs:12.25,maximumMs:12.25}]);const copy=timings.usage();copy[0]!.lastMs=100;assert.equal(timings.usage()[0]!.lastMs,12.25);
  const unavailableClock=new NativePaperReportTimings(()=>{throw Error('OFFLINE measurement clock');});assert.equal(unavailableClock.measure('financial-snapshot',()=>17),17);assert.deepEqual(unavailableClock.usage(),[]);
 });
+
+test('backup-blocked monitoring retains its precise prerequisite and source clock without granting permission',()=>{
+ // Same prerequisite/permission shape as the retained H9 2026-11-04 09:05:47.213 source episode.
+ const raw=status() as any;raw.entriesEnabled=false;raw.financial.controls.entriesEnabled=false;raw.financial.daily.paused=true;
+ raw.financialReadiness.derivedEntryReason='POE_ENTRY_MONITORING_UNAVAILABLE';raw.financialReadiness.monitoringAdmissionReason='BACKUP_UNAVAILABLE';
+ const before=structuredClone(raw),projected=projectFinancialReadinessReporting(raw,T)!;
+ assert.ok(projected);assert.equal(projected.monitoringAdmissionReasonCode,'BACKUP_UNAVAILABLE');assert.equal(projected.generatedAt,iso(T));assert.equal(projected.runId,raw.runId);
+ assert.equal(projected.permission.derivedReasonCode,'POE_ENTRY_MONITORING_UNAVAILABLE');assert.equal(projected.permission.currentEntriesEnabled,false);assert.equal(projected.permission.durableEntriesEnabled,false);assert.equal(projected.permission.dailyPaused,true);
+ assert.deepEqual(raw,before);assert.equal(projected.maintenance!.reconciled,5);assert.equal(projected.reconciliation.at,iso(T-1251));
+ const operating=projectOperatingIntelligence(raw);validateOperatingIntelligence(operating,iso(T));assert.equal(operating.financialReadiness!.monitoringAdmissionReasonCode,'BACKUP_UNAVAILABLE');
+});
+
+test('monitoring diagnostics preserve legacy absence and reported null, redact unknown causes, and reject contradictory wire permission',()=>{
+ const legacy=projectFinancialReadinessReporting(status(),T)!;assert.equal(Object.hasOwn(legacy,'monitoringAdmissionReasonCode'),false);validateFinancialReadinessReporting(legacy,T);
+ const raw=status() as any;raw.financialReadiness.monitoringAdmissionReason=null;
+ const clear=projectFinancialReadinessReporting(raw,T)!;assert.equal(Object.hasOwn(clear,'monitoringAdmissionReasonCode'),true);assert.equal(clear.monitoringAdmissionReasonCode,null);assert.equal(clear.permission.currentEntriesEnabled,true);
+ raw.entriesEnabled=false;raw.financialReadiness.derivedEntryReason='POE_ENTRY_MONITORING_UNAVAILABLE';raw.financialReadiness.monitoringAdmissionReason='https://private.invalid/DO_NOT_EXPORT';
+ const unknown=projectFinancialReadinessReporting(raw,T)!;assert.equal(unknown.monitoringAdmissionReasonCode,'OTHER_UNEXPORTED_REASON');assert.equal(JSON.stringify(unknown).includes('DO_NOT_EXPORT'),false);
+ raw.financialReadiness.monitoringAdmissionReason=undefined;assert.equal(projectFinancialReadinessReporting(raw,T)!.monitoringAdmissionReasonCode,'OTHER_UNEXPORTED_REASON','a present malformed value never claims an explicitly clear prerequisite');
+ for(const code of ['PROVIDER_RESTRICTION','DISK_RESERVE','SERVICE_SUPERVISION_UNAVAILABLE','MARKET_INTAKE_UNAVAILABLE']){raw.financialReadiness.monitoringAdmissionReason=code;assert.equal(projectFinancialReadinessReporting(raw,T)!.monitoringAdmissionReasonCode,code);}
+ for(const mutate of [(r:any)=>{r.monitoringAdmissionReasonCode='PRIVATE_ERROR_DO_NOT_EXPORT';},(r:any)=>{r.monitoringAdmissionReasonCode=undefined;},(r:any)=>{r.monitoringAdmissionReasonCode='BACKUP_UNAVAILABLE';},(r:any)=>{r.monitoringAdmissionReasonCode={reason:'BACKUP_UNAVAILABLE'};}]){const bad=structuredClone(clear);mutate(bad);assert.throws(()=>validateFinancialReadinessReporting(bad,T),/FINANCIAL_READINESS/);}
+ const contradictory=status() as any;for(const reason of ['BACKUP_UNAVAILABLE',undefined]){contradictory.financialReadiness.monitoringAdmissionReason=reason;assert.equal(projectFinancialReadinessReporting(contradictory,T),undefined,'malformed optional diagnostics cannot silently certify current permission');}
+});

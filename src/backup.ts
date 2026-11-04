@@ -9,9 +9,10 @@ import {isMainThread,Worker} from 'node:worker_threads';
 import {validateFinancialState,validateOperatingReportingHistory,REPORTING_OPERATING_HISTORY_KEY,type LedgerMode,type LedgerState,type PaperLedger,type ReportingHistory} from './ledger.js';
 import {validateOperatingCosts,type OperatingCostState} from './costs.js';
 import {copyReadonlyFinancialSnapshot,type ReadonlyFinancialSnapshotCopy} from './backup-source-snapshot.js';
+import {recoverPendingRollbackJournal,rejectBackupSuperJournal,preservedIncompleteSource,completePreservedIncompleteSource} from './backup-rollback-recovery.js';
 
 export type BackupIdentity={accountId:string;mode:LedgerMode;inceptionAt:number};
-export type FinancialBackup=BackupIdentity&{path:string;generation:string;revision:number;lastAt:number;snapshotSequence:string|null;sourceSnapshot?:ReadonlyFinancialSnapshotCopy};
+export type FinancialBackup=BackupIdentity&{path:string;generation:string;revision:number;lastAt:number;snapshotSequence:string|null;sourceSnapshot?:ReadonlyFinancialSnapshotCopy;rollbackRecovery?:{version:string;archiveDirectory:string;originalDatabaseSha256:string;originalJournalSha256:string;originalDatabaseMtimeMs:number;originalJournalMtimeMs:number}};
 export type BackupSelection={backup:FinancialBackup|null;rejected:{file:string;reason:'invalid-backup'|'unrecognized-path'}[];pending:boolean};
 type Source=Pick<PaperLedger,'state'|'backup'>;
 export class BackupPreparationDeferred extends Error{constructor(){super('BACKUP_RUNTIME_PREPARATION_DEFERRED');}}
@@ -39,6 +40,8 @@ const BACKUP_FAILURE_MESSAGES=new Map([
   ['backup sequence differs from captured readonly financial snapshot','BACKUP_CAPTURED_SEQUENCE_MISMATCH'],
   ['backup would regress durable history','BACKUP_HISTORY_REGRESSION'],
   ['pending backup requires explicit recovery; nothing overwritten','BACKUP_PENDING_RECOVERY_REQUIRED'],
+  ['backup retention layout needs review; nothing removed','BACKUP_RETENTION_LAYOUT_REVIEW_REQUIRED'],
+  ['backup shutdown requested; pending artifacts preserved','BACKUP_SHUTDOWN_REQUESTED'],
 ]);
 const BACKUP_SQLITE_CODES=new Set(['SQLITE_BUSY','SQLITE_LOCKED','SQLITE_IOERR','SQLITE_CORRUPT','SQLITE_NOTADB','SQLITE_FULL','SQLITE_READONLY','SQLITE_CANTOPEN']);
 /** No arbitrary error text, file path, provider URL or credential is exported. */
@@ -54,7 +57,7 @@ export type BackupRuntimePreparation={admission:()=>boolean;measure:<T>(work:()=
 type Options={directory:string;sourcePath:string;identity:BackupIdentity;maxBytes?:number;persistent?:boolean;minimumFreeBytes?:number};
 export type BackupArtifactTask={task:'prepare';minimumRevision:number;expectedSource:{dev:number;ino:number}}|{task:'acquire'|'copy'|'finish'|'abort'|'recover'};
 export type BackupOperationLease={fd:number;dev:number;ino:number};
-export type BackupWorkerData={options:Options;operation:BackupOperationLease;cancellation:SharedArrayBuffer};
+export type BackupWorkerData={options:Options;operation:BackupOperationLease;cancellation:SharedArrayBuffer;sourceIdentities?:ReadonlyArray<{dev:number;ino:number}>};
 export type BackupArtifactRequest={id:number;deadlineAtMonoNs:bigint;task:BackupArtifactTask};
 const PREFIX='poe-financial-',PENDING='poe-financial-pending.sqlite';
 const OPERATION_LOCK='.poe-backup.lock';
@@ -67,12 +70,12 @@ class ArtifactWorker{
   private readonly cancellation=new Int32Array(new SharedArrayBuffer(4));
   private readonly exited:Promise<void>;private closing:Promise<void>|null=null;
   private failed=false;private active=false;private sequence=0;
-  constructor(options:Options,operation:BackupOperationLease){
+  constructor(options:Options,operation:BackupOperationLease,sourceIdentities:ReadonlyArray<{dev:number;ino:number}>=[]){
     const source=import.meta.url.endsWith('.ts');
     // Register inside the source worker before resolving .js imports to .ts;
     // inheriting the parent's tsx preload alone does not register that thread.
     const register=source?'data:text/javascript,'+encodeURIComponent(`import {register} from ${JSON.stringify(import.meta.resolve('tsx/esm/api'))};register();`):'';
-    this.worker=new Worker(new URL(source?'./backup-worker.ts':'./backup-worker.js',import.meta.url),{workerData:{options,operation,cancellation:this.cancellation.buffer} satisfies BackupWorkerData,execArgv:source?['--import',register]:[],env:{}});
+    this.worker=new Worker(new URL(source?'./backup-worker.ts':'./backup-worker.js',import.meta.url),{workerData:{options,operation,cancellation:this.cancellation.buffer,sourceIdentities} satisfies BackupWorkerData,execArgv:source?['--import',register]:[],env:{}});
     this.worker.on('error',()=>{this.failed=true;});
     this.exited=new Promise(resolve=>this.worker.once('exit',()=>{this.failed=true;resolve();}));
   }
@@ -108,20 +111,28 @@ class ArtifactWorker{
 export class FinancialBackupStore{
   readonly directory:string;
   readonly identity:BackupIdentity;
-  private readonly sourcePath:string;
+  private readonly sourcePath:string;private readonly sourceIdentities:Array<{dev:number;ino:number}>=[];
   private readonly maxBytes:number;
   private readonly persistent:boolean;private readonly minimumFreeBytes:number;
   private staged:{path:string;own:Stats;source:Stats;completed:FinancialBackup[];minimumRevision:number;validated:boolean;copy?:ReadonlyFinancialSnapshotCopy}|undefined;
+  private incompleteSourceLoaded=false;private incompleteSource:{dev:number;ino:number}|null=null;
   private workerOperation:BackupOperationLease|undefined;private workerLeaseAcquired=false;private workerCancelled:(()=>boolean)|undefined;
+  private shutdownRequested=false;private readonly activeWorkers=new Set<ArtifactWorker>();
+  get stopping(){return this.shutdownRequested;}
+  /** Cancellation retains parent lease ownership until every native thread has
+   * physically exited. It never starts a replacement/final backup. */
+  async cancelActive(){this.shutdownRequested=true;await Promise.allSettled([...this.activeWorkers].map(worker=>worker.close()));}
+  private async closeWorker(worker:ArtifactWorker|undefined){try{await worker?.close();}finally{if(worker)this.activeWorkers.delete(worker);}}
   constructor(options:Options){
     this.directory=resolve(options.directory);
     const source=resolve(options.sourcePath);let sourceParent=dirname(source);
     try{sourceParent=realpathSync(sourceParent);}catch(error){if(!(error instanceof Error&&'code' in error&&['ENOENT','EACCES'].includes(String(error.code))))throw error;}
-    this.sourcePath=join(sourceParent,basename(source));
+    this.sourcePath=join(sourceParent,basename(source));try{const anchored=lstatSync(this.sourcePath);this.sourceIdentities.push({dev:anchored.dev,ino:anchored.ino});}catch(error){if(!(error instanceof Error&&'code'in error&&['ENOENT','EACCES'].includes(String(error.code))))throw error;}
     this.identity={...options.identity};this.persistent=options.persistent===true;this.minimumFreeBytes=options.minimumFreeBytes??256*1024*1024;this.maxBytes=this.persistent?Number.MAX_SAFE_INTEGER:options.maxBytes??64*1024*1024;
     if(options.persistent!==undefined&&typeof options.persistent!=='boolean'||!Number.isSafeInteger(this.minimumFreeBytes)||this.minimumFreeBytes<1024*1024||!Number.isSafeInteger(this.maxBytes)||this.maxBytes<4096||!this.persistent&&this.maxBytes>1024*1024*1024)throw new Error('bounded backup size required');
     if(!Number.isSafeInteger(this.identity.inceptionAt)||this.identity.inceptionAt<0||!['PAPER','DISPOSABLE_PAPER'].includes(this.identity.mode)||!this.identity.accountId)throw new Error('actual backup identity required');
     if(this.sourcePath.startsWith(this.directory+'/'))throw new Error('backup directory must not contain source financial state');
+    if(this.sourcePath===this.directory+'.pending-recovery'||this.sourcePath.startsWith(this.directory+'.pending-recovery/'))throw new Error('backup recovery directory must not contain source financial state');
     if(realpathSync(dirname(this.directory))!==dirname(this.directory))throw new Error('canonical backup parent required');
     try{mkdirSync(this.directory,{mode:0o700});}catch(error){if(!(error instanceof Error&&'code' in error&&error.code==='EEXIST'))throw error;}
     this.checkDirectory();
@@ -151,7 +162,7 @@ export class FinancialBackupStore{
         const entry=dir.readSync();if(!entry)break;if(count>=32)throw new Error('backup directory entry bound exceeded; nothing removed');
         const match=NAME.exec(entry.name);
         if(match)completed.push({name:entry.name,generation:match[1]!});
-        else if(entry.name===PENDING||entry.name===PENDING+'-wal'||entry.name===PENDING+'-shm')pending=true;
+        else if(entry.name===PENDING||entry.name===PENDING+'-wal'||entry.name===PENDING+'-shm'||entry.name===PENDING+'-journal')pending=true;
         else if(entry.name===OPERATION_LOCK){try{this.privateFile(join(this.directory,OPERATION_LOCK));}catch{unknown.push(entry.name);}}
         else unknown.push(entry.name);
       }
@@ -239,7 +250,7 @@ export class FinancialBackupStore{
   private normalize(path:string){
     // SQLite backup inherits a WAL header. Normalize ONLY this completed staging
     // copy so read-only consumers do not create persistent WAL/SHM sidecars.
-    const db=new Database(path,{fileMustExist:true,timeout:100});
+    rejectBackupSuperJournal(path+'-journal');const db=new Database(path,{fileMustExist:true,timeout:100});
     try{
       db.pragma('wal_checkpoint(TRUNCATE)');
       if(db.pragma('journal_mode=DELETE',{simple:true})!=='delete')throw new Error('backup journal normalization failed');
@@ -252,6 +263,7 @@ export class FinancialBackupStore{
     if(!held.isFile()||held.uid!==process.getuid?.()||(held.mode&0o777)!==0o600||held.nlink!==1||held.size>this.maxBytes||held.dev!==named.dev||held.ino!==named.ino||held.dev!==operation.dev||held.ino!==operation.ino)throw new Error('backup operation lease inode changed; nothing removed');
   }
   private openOperation():BackupOperationLease{
+    if(this.shutdownRequested)throw Error('backup shutdown requested; pending artifacts preserved');
     this.checkDirectory();const fd=openSync(join(this.directory,OPERATION_LOCK),constants.O_CREAT|constants.O_RDWR|constants.O_NOFOLLOW,0o600);
     try{const held=fstatSync(fd),operation={fd,dev:held.dev,ino:held.ino};this.validateOperationLease(operation);return operation;}catch(error){closeSync(fd);throw error;}
   }
@@ -265,11 +277,12 @@ export class FinancialBackupStore{
     }catch(error){closeSync(fd);throw error;}
   }
   /** Worker borrows the original validated FD. Only its parent closes it. */
-  bindWorkerOperation(operation:BackupOperationLease,cancelled:()=>boolean){
+  bindWorkerOperation(operation:BackupOperationLease,cancelled:()=>boolean,sourceIdentities:ReadonlyArray<{dev:number;ino:number}>=[]){
     if(isMainThread||this.workerOperation||!Number.isSafeInteger(operation.fd)||operation.fd<0)throw new Error('backup worker operation scope required');
-    this.validateOperationLease(operation);this.workerOperation={...operation};this.workerCancelled=cancelled;
+    this.validateOperationLease(operation);if(sourceIdentities.length>4||sourceIdentities.some(s=>!Number.isSafeInteger(s.dev)||s.dev<0||!Number.isSafeInteger(s.ino)||s.ino<1))throw Error('backup source identity scope required');for(const source of sourceIdentities)if(!this.sourceIdentities.some(s=>s.dev===source.dev&&s.ino===source.ino))this.sourceIdentities.push({...source});this.workerOperation={...operation};this.workerCancelled=cancelled;
   }
   private workerFence(){
+    if((!this.workerOperation||this.workerLeaseAcquired)&&!this.incompleteSourceLoaded){this.incompleteSource=preservedIncompleteSource(this.directory,this.identity);this.incompleteSourceLoaded=true;}if(this.incompleteSource){const source=this.privateFile(this.sourcePath);if(source.dev!==this.incompleteSource.dev||source.ino!==this.incompleteSource.ino)throw Error('backup source inode changed; prior backups preserved');}
     if(this.workerCancelled?.())throw new Error('backup artifact request cancelled or expired; pending artifacts preserved');
     if(this.workerOperation)this.validateOperationLease(this.workerOperation);
   }
@@ -280,13 +293,13 @@ export class FinancialBackupStore{
     // settlement while its fixed nonblocking child is still in native work.
     const result=spawnSync('/usr/bin/flock',['-xn','3'],{stdio:['ignore','ignore','ignore',this.workerOperation.fd],timeout:5000});
     if(result.error||result.status!==0)throw new Error('backup operation already active or standard Linux flock unavailable');
-    this.workerFence();this.workerLeaseAcquired=true;
+    this.workerLeaseAcquired=true;this.workerFence();
   }
   private stagedSourceCurrent(){
     const staged=this.staged;if(!staged)return;const source=this.privateFile(this.sourcePath);
     if(source.dev!==staged.source.dev||source.ino!==staged.source.ino)throw new Error('backup source inode changed; prior backups preserved');
   }
-  private promote(valid:FinancialBackup,completed:FinancialBackup[]):FinancialBackup{
+  private promote(valid:FinancialBackup,completed:FinancialBackup[],beforePromote?:(target:string,generation:string)=>void):FinancialBackup{
     this.workerFence();this.stagedSourceCurrent();
     const completedFd=openSync(valid.path,constants.O_RDONLY|constants.O_NOFOLLOW);try{fsyncSync(completedFd);}finally{closeSync(completedFd);}
     this.workerFence();this.stagedSourceCurrent();
@@ -295,6 +308,7 @@ export class FinancialBackupStore{
     const next=(BigInt(newest?.generation??'0')+1n).toString().padStart(20,'0');if(next.length>20)throw new Error('backup generation exhausted');
     const target=join(this.directory,PREFIX+next+'.sqlite');
     try{lstatSync(target);throw new Error('unexpected backup promotion target; nothing overwritten');}catch(error){if(!(error instanceof Error&&'code' in error&&error.code==='ENOENT'))throw error;}
+    beforePromote?.(target,next);
     // The new staging copy is already validated. Remove at most one old verified
     // same-account copy before promotion, retaining another complete good backup.
     if(completed.length===2){this.inspect(completed[0]!.path,completed[0]!.generation);this.workerFence();this.stagedSourceCurrent();unlinkSync(completed[0]!.path);this.syncDirectory();}
@@ -324,15 +338,15 @@ export class FinancialBackupStore{
       const failure=error instanceof BackupPreparationDeferred?error:new BackupOperationError(phase,error);
       try{await worker?.request({task:'abort'});}catch{/* A dead/timed-out worker leaves pending evidence for recovery. */}
       throw failure;
-    }finally{try{await worker?.close();}finally{if(operation)closeSync(operation.fd);}}
+    }finally{try{await this.closeWorker(worker);}finally{if(operation)closeSync(operation.fd);}}
   }
-  private artifactWorker(operation:BackupOperationLease){return new ArtifactWorker({directory:this.directory,sourcePath:this.sourcePath,identity:this.identity,maxBytes:this.persistent?undefined:this.maxBytes,persistent:this.persistent,minimumFreeBytes:this.minimumFreeBytes},operation);}
+  private artifactWorker(operation:BackupOperationLease){if(this.shutdownRequested)throw Error('backup shutdown requested; pending artifacts preserved');const worker=new ArtifactWorker({directory:this.directory,sourcePath:this.sourcePath,identity:this.identity,maxBytes:this.persistent?undefined:this.maxBytes,persistent:this.persistent,minimumFreeBytes:this.minimumFreeBytes},operation,this.sourceIdentities);this.activeWorkers.add(worker);return worker;}
   /** Runtime-safe pending maintenance; all SQLite artifact work runs off-thread. */
   async maintainPending():Promise<FinancialBackup|null>{
     let phase:BackupFailurePhase='operation-open',operation:BackupOperationLease|undefined,worker:ArtifactWorker|undefined;
     try{operation=this.openOperation();phase='worker-acquire';worker=this.artifactWorker(operation);await worker.request({task:'acquire'});phase='pending-recovery';return await worker.request({task:'recover'});}
     catch(error){throw new BackupOperationError(phase,error);}
-    finally{try{await worker?.close();}finally{if(operation)closeSync(operation.fd);}}
+    finally{try{await this.closeWorker(worker);}finally{if(operation)closeSync(operation.fd);}}
   }
   /** Internal worker entry. The parent holds the operation lease across phases. */
   async runArtifactTask(message:BackupArtifactTask):Promise<FinancialBackup|null>{
@@ -362,11 +376,11 @@ export class FinancialBackupStore{
       this.stagedSourceCurrent();this.normalize(staged.path);this.workerFence();
       const valid=this.inspect(staged.path,'0',true,staged.copy);if(valid.revision<staged.minimumRevision)throw new Error('backup predates source observation');
       this.workerFence();this.stagedSourceCurrent();
-      staged.validated=true;const result=this.promote(valid,staged.completed),sourceSnapshot=staged.copy?structuredClone(staged.copy):undefined;this.staged=undefined;return {...result,...(sourceSnapshot?{sourceSnapshot}:{})};
+      staged.validated=true;const result=this.promote(valid,staged.completed),sourceSnapshot=staged.copy?structuredClone(staged.copy):undefined,receipt={...result,...(sourceSnapshot?{sourceSnapshot}:{})};if(sourceSnapshot)completePreservedIncompleteSource(this.directory,this.identity,this.sourcePath,receipt);this.staged=undefined;return receipt;
     }
     // Only this operation's incomplete inode is disposable; completed/foreign
     // files and a validated copy awaiting promotion are always preserved.
-    try{const current=lstatSync(staged.path);if(!staged.validated&&current.dev===staged.own.dev&&current.ino===staged.own.ino){for(const suffix of ['-wal','-shm','']){const path=staged.path+suffix;try{const s=lstatSync(path);if(s.isFile()&&!s.isSymbolicLink()&&s.uid===process.getuid?.()&&s.nlink===1&&(s.mode&0o077)===0)unlinkSync(path);}catch{}}}}catch{}
+    try{const current=lstatSync(staged.path);if(!staged.validated&&current.dev===staged.own.dev&&current.ino===staged.own.ino){let journalAbsent=false;try{lstatSync(staged.path+'-journal');}catch(error){journalAbsent=error instanceof Error&&'code'in error&&error.code==='ENOENT';}if(journalAbsent)for(const suffix of ['-wal','-shm','']){const path=staged.path+suffix;try{const s=lstatSync(path);if(s.isFile()&&!s.isSymbolicLink()&&s.uid===process.getuid?.()&&s.nlink===1&&(s.mode&0o077)===0)unlinkSync(path);}catch{}}}}catch{}
     this.staged=undefined;return null;
   }
   /** Explicitly complete a crash-left staging artifact only after identity checks. */
@@ -375,6 +389,8 @@ export class FinancialBackupStore{
     try{return this.recoverPendingOwned();}finally{closeSync(operation);}
   }
   private recoverPendingOwned():FinancialBackup|null{
+      const recovered=recoverPendingRollbackJournal({directory:this.directory,sourcePath:this.sourcePath,sourceIdentities:this.sourceIdentities,identity:this.identity,minimumFreeBytes:this.minimumFreeBytes,fence:()=>this.workerFence(),completed:()=>this.ready().completed,normalize:path=>this.normalize(path),inspect:(path,generation)=>this.inspect(path,generation),promote:(valid,completed,before)=>this.promote(valid,completed,before)});
+      if(recovered)return 'kind'in recovered?null:recovered;
       if(!this.scan().pending)return null;
       const {completed}=this.ready();
       const path=join(this.directory,PENDING);this.inspect(path,'0',false);this.normalize(path);

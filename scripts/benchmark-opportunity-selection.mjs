@@ -11,6 +11,7 @@ import {PERSISTENT_OBSERVABLE_MARKET_POLICY} from '../src/observation-age.ts';
 import {legacyOpportunitySelection} from '../test/fixtures/opportunity-selection-before-r6.ts';
 
 const AT=Date.parse('2026-11-02T05:55:00Z'),WATCH_ROWS=66344,PREPARATION_ELIGIBLE=59211,MARKET_IDENTITIES=161479,ACTIVE_MINTS=5000;
+const originalPriority=value=>value?(({competition:_competition,...original})=>original)(value):value;
 const directory=mkdtempSync(join(tmpdir(),'poe-OFFLINE-opportunity-selection-')),path=join(directory,'registry.sqlite');
 const registry=new MarketRegistry(path,{now:()=>AT,concurrentIntake:true});let priority;
 const watch=new PilotWatch({registry,maximumDeep:4,enforceTokenAge24h:true,observationAgePolicy:PERSISTENT_OBSERVABLE_MARKET_POLICY.version,now:()=>AT,record:(kind,data)=>{if(kind==='pilot-watch-opportunity-priority')priority=data;}});
@@ -25,7 +26,7 @@ try{
   for(let i=0;i<ACTIVE_MINTS;i++)for(let j=0;j<4;j++)registry.observeActivity({mint:'OFFLINE-mint-'+i,pool:'OFFLINE-pool-'+i,signature:'OFFLINE-event-'+i+'-'+j,source:'OFFLINE-broad',at:AT-[90000,80000,50000,1000][j],side:j%2?'sell':'buy',quoteLamports:String(((i*17+j*11)%997+1)*1000000),quoteMint:'So11111111111111111111111111111111111111112',tokenAmount:String((i+j*3)%13+1)});
  });
  const buildMs=performance.now()-buildStart,source=registry.nextOpportunity.bind(registry),statement=registry.statement.bind(registry),runs=[],plans={};let mode='deployed-algorithm',query;
- registry.statement=sql=>{const s=statement(sql);if(!sql.startsWith('WITH eligible AS'))return s;return new Proxy(s,{get(target,key){const value=Reflect.get(target,key);if(typeof value!=='function')return value;if(key!=='get')return value.bind(target);return(...params)=>{query={sql,params};return value.apply(target,params);};}});};
+ registry.statement=sql=>{const s=statement(sql);if(!sql.startsWith('WITH eligible AS'))return s;return new Proxy(s,{get(target,key){const value=Reflect.get(target,key);if(typeof value!=='function')return value;if(key!=='get'&&key!=='all')return value.bind(target);return(...params)=>{query={sql,params};return value.apply(target,params);};}});};
  const hashes=()=>Object.fromEntries(['watch_rows','watch_history'].map(table=>[table,registry.db.prepare('SELECT COUNT(*) n,SUM(length(body)) bytes FROM '+table).get()]));
  const before=hashes(),writesBefore=registry.health().transactions.writeCommits;let expected,indexUpgradeMs;
  for(const variant of ['deployed-algorithm','weighted-rank-selection']){
@@ -35,7 +36,7 @@ try{
   const samplesMs=[],cpuSamplesMs=[];
   for(let trial=0;trial<3;trial++){
    const start=performance.now(),used=process.cpuUsage(),row=watch.next(AT,new Set(),{preparation:true}),cpu=process.cpuUsage(used);samplesMs.push(performance.now()-start);cpuSamplesMs.push((cpu.user+cpu.system)/1000);
-   const selected={row,priority};if(expected)assert.deepEqual(selected,expected,'full winner body and every ranking/route hint remain exact');else expected=selected;
+   const selected={row,priority:originalPriority(priority)};if(expected)assert.deepEqual(selected,expected,'full winner body and every original ranking/route hint remain exact');else expected=selected;
    if(!plans[mode])plans[mode]={sqlSha256:createHash('sha256').update(query.sql).digest('hex'),steps:registry.db.prepare('EXPLAIN QUERY PLAN '+query.sql).all(...query.params).map(r=>r.detail)};
   }
   runs.push({variant,samplesMs,cpuSamplesMs,meanMs:samplesMs.reduce((a,b)=>a+b,0)/samplesMs.length,maximumMs:Math.max(...samplesMs)});
@@ -50,7 +51,7 @@ try{
  const preparedWritesBefore=registry.health().transactions.writeCommits;
  for(const shape of [{name:'one-prepared',mints:preparedMints.slice(0,1),excluded:[]},{name:'four-prepared',mints:preparedMints,excluded:[]},{name:'four-prepared-one-excluded',mints:preparedMints,excluded:preparedMints.slice(0,1)}]){
   registry.nextOpportunity=(...args)=>legacyOpportunitySelection.call(registry,...args);const oldRow=watch.next(AT,new Set(shape.excluded),{preparedMints:shape.mints}),oldPriority=priority;registry.nextOpportunity=source;
-  const samplesMs=[];for(let trial=0;trial<3;trial++){const start=performance.now(),row=watch.next(AT,new Set(shape.excluded),{preparedMints:shape.mints});samplesMs.push(performance.now()-start);assert.deepEqual({row,priority},{row:oldRow,priority:oldPriority});}
+  const samplesMs=[];for(let trial=0;trial<3;trial++){const start=performance.now(),row=watch.next(AT,new Set(shape.excluded),{preparedMints:shape.mints});samplesMs.push(performance.now()-start);assert.deepEqual({row,priority:originalPriority(priority)},{row:oldRow,priority:originalPriority(oldPriority)});}
   const steps=registry.db.prepare('EXPLAIN QUERY PLAN '+query.sql).all(...query.params).map(r=>r.detail);assert.ok(steps.some(s=>s.includes('SEARCH w USING INDEX watch_rows_mint (mint=? AND archived=?)')));assert.ok(steps.every(s=>!s.includes('watch_rows_opportunity_v1')));
   preparedScopeRuns.push({shape:shape.name,samplesMs,exactDeployedResultParity:true,usesExistingMintIndex:true});
  }

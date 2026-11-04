@@ -295,8 +295,8 @@ test('flat technical recovery counts new cash reconciliations and original USD t
  const event=f.rows.filter(r=>r.kind==='native-paper-financial-readiness-recovered'&&r.data.technicalProtectionRecovery).at(-1)!.data;assert.deepEqual(event.positionUnits,{});assert.equal(event.technicalProtectionRecovery.lastQuoteAt,f.price!.at);assert.equal(event.candidateWindowClaimed,false);assert.equal(f.rows.filter(r=>r.kind==='trader-held-evaluation').length,0);assert.deepEqual(f.calls,{context:0,preparation:0,quote:0,execution:0});
 });
 
-test('runtime resource pauses recover only with fresh financial/source admission and survive an ordinary restart',async t=>{
- for(const reason of ['resource pressure; new candidate risk closed','rolling resource or evidence pressure; exposure retained'])await t.test(reason,async st=>{
+test('known runtime technical pauses recover only with fresh financial/source admission and survive an ordinary restart',async t=>{
+ for(const reason of ['resource pressure; new candidate risk closed','rolling resource or evidence pressure; exposure retained','consistent backup unavailable; exposure retained'])await t.test(reason,async st=>{
   for(const gate of ['healthy','admission','connection','clock','usd','restart']as const)await st.test(gate,tt=>{
    const f=fixture(tt,false,true);assert.equal(f.refresh().recovered,true);f.bridge.trader.pauseNewEntries(reason);const before=f.ledger.state();
    assert.equal(before.controls.entriesEnabled,false);assert.equal(f.bridge.trader.entryReadinessSafety().automaticRecoveryAllowed,true);
