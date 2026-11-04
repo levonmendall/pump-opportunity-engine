@@ -223,6 +223,22 @@ test('missing independent pool history invalidates candidate data instead of bec
  const f=fixture({missingAudit:true});f.importActual();await f.runner.step();await f.warm();const s=f.runner.status();assert.equal(s.counters.auditUnusable,1);assert.equal(s.counters.qualityGaps,1);assert.equal(s.counters.predictiveFailed,0);assert.equal(s.counters.auditedWindows,0);assert.equal(s.candidates.length,0);assert.ok(f.records.some(r=>r.kind==='native-candidate-quality-gap'&&/HISTORY_SIGNATURE_NOT_OBSERVED/.test(r.data.reason)));await f.runner.stop();
 });
 
+for(const throws of [false,true])test(`synthetic missing-history audit flushes optional bounded ingress evidence without changing the result (diagnostic throws=${throws})`,async()=>{
+ const f=fixture({missingAudit:true}),queries:unknown[]=[];
+ Object.assign(f.flow,{notificationIngressEvidence(query:unknown){queries.push(structuredClone(query));if(throws)throw Error('SYNTHETIC_DIAGNOSTIC_UNAVAILABLE');return {kind:'NATIVE_MISSING_HISTORY_ROUTER_WITNESS',originalAuditOutcomeUnchanged:true,financialQualification:false,matches:[]};}});
+ f.importActual();await f.runner.step();await f.warm();const events=f.records.filter(r=>r.kind==='native-candidate-window-audit');assert.equal(events.length,1);const event=events[0]!.data,result=event.result;
+ assert.equal(result.status,'unusable');assert.equal(result.reason,'NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED');assert.equal(queries.length,1);
+ assert.deepEqual(queries[0],{target:result.target,availableAt:result.availableAt,generation:result.postSnapshotTail.generation,missingSignatures:result.missingSuccessfulNotifications.slice(0,8).map((r:any)=>r.signature),missingSignaturesTotal:result.missingSuccessfulNotifications.length});
+ assert.equal(event.notificationIngress.originalAuditOutcomeUnchanged,true);assert.equal(event.availableAt,f.records.find(r=>r.kind==='native-candidate-quality-gap')!.data.at);assert.equal(event.notBackdated,true);
+ if(throws)assert.deepEqual(event.notificationIngress,{kind:'NATIVE_MISSING_HISTORY_ROUTER_WITNESS',status:'UNAVAILABLE',reason:'INGRESS_DIAGNOSTIC_UNAVAILABLE',originalAuditOutcomeUnchanged:true});
+ const state=f.runner.status();assert.equal(state.counters.auditUnusable,1);assert.equal(state.counters.qualityGaps,1);assert.equal(state.counters.auditedWindows,0);assert.equal(state.counters.predictiveFailed,0);assert.deepEqual(state.decisions,[]);assert.equal(state.financialExecutionAuthorized,false);await f.runner.stop();
+});
+
+test('successful synthetic audit never invokes or records missing-history ingress diagnostics',async()=>{
+ const f=fixture();let calls=0;Object.assign(f.flow,{notificationIngressEvidence(){calls++;throw Error('MUST_NOT_RUN_ON_SUCCESS');}});f.importActual();await f.runner.step();await f.warm();
+ assert.equal(calls,0);assert.equal(f.runner.status().counters.auditedWindows,1);const event=f.records.find(r=>r.kind==='native-candidate-window-audit')!;assert.equal(Object.hasOwn(event.data,'notificationIngress'),false);await f.runner.stop();
+});
+
 test('retired audit failure causes reach the original observation projection without inserting financial decisions or qualification',async()=>{
  const f=fixture({missingAudit:true});const mint=f.importActual();await f.runner.step();await f.warm();const s=f.runner.status(),diagnostic=s.watch.summary.auditDiagnostics;
  assert.equal(s.candidates.length,0);assert.equal(s.counters.auditUnusable,1);assert.equal(s.counters.qualityGaps,1);assert.equal(diagnostic.byReason.NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED,2);assert.equal(diagnostic.byKind['audit-unusable'],1);assert.equal(diagnostic.byKind['quality-gap'],1);assert.equal(diagnostic.recent.at(-1)!.mint,mint);assert.equal(diagnostic.recent[0]!.deadlineAt,diagnostic.recent.at(-1)!.deadlineAt,'gap copies the actual audit deadline, not a reconstructed bucket boundary');assert.deepEqual(s.decisions,[],'failed audit is not an admitted predictive or financial decision');

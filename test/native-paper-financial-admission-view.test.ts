@@ -3,7 +3,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import {runInNewContext} from 'node:vm';
-import {runNativePaper,nativePaperCurrentQualificationProof,nativePaperRemainingEntryWork,nativePaperManagementReserve} from '../src/run-native-paper.js';
+import {runNativePaper,nativePaperCurrentQualificationProof,nativePaperRemainingEntryWork,nativePaperManagementReserve,NativePaperProofPreparation} from '../src/run-native-paper.js';
 import {NativeCandidateRunner,NATIVE_DEADLINE_POLICY,type NativeAuditCertificate} from '../src/native-candidate-runner.js';
 import {pilotLowerPriorityAdmission,PILOT_TIMING} from '../src/pilot.js';
 import {RESEARCH_CLOCK_COHERENT_POOL_CAPACITY} from '../src/research-clock-pricing.js';
@@ -52,7 +52,7 @@ test('support that expires before decision describes full remaining preparation 
 
 test('proof readiness uses original identity and availability at sample time, independent of provider pacing',()=>{
  const f=fixture();f.retained.availableAt=100_100;f.usage.rpcDispatchWindow.readyAt=103_000;f.usage.rpcDispatchWindow.physicalBusy=true;
- const pending=f.view();assert.equal(pending.operation,'PROOF_PREPARATION');assert.equal(pending.bindingBlocker,'PROOF_PENDING');assert.equal(pending.requestedOperationMs,250);assert.equal(pending.availableMs,10_000);assert.equal(pending.physicalBusy,true);
+ const pending=f.view();assert.equal(pending.operation,'PROOF_PREPARATION');assert.equal(pending.bindingBlocker,'PROOF_PENDING');assert.equal(pending.requestedOperationMs,null);assert.equal(pending.deadlineAllowed,null);assert.equal(pending.availableMs,10_000);assert.equal(pending.physicalBusy,true);
  f.at=100_100;assert.equal(f.view().operation,'FINANCIAL_DECISION');assert.equal(f.view().bindingBlocker,'PHYSICAL_CAPACITY');
  f.retained.proofId='DIFFERENT_CERTIFICATE';assert.equal(f.view().operation,'PROOF_PREPARATION');
 });
@@ -81,4 +81,17 @@ test('current plan replaces the old blanket provider charge while financial perm
 
 test('a replacement certificate cannot inherit an old handoff row or its timing',()=>{
  const f=fixture();f.certificate.featuresSha256='b'.repeat(64);assert.equal(f.view(),null);
+});
+
+test('actual cached peer selection cannot replace the target certificate readiness diagnostic',async()=>{
+ const f=fixture(),cache=new NativePaperProofPreparation(()=>f.at),turn=()=>new Promise<void>(resolve=>setImmediate(resolve));f.context.proofPreparation=cache;
+ cache.prepare(f.proof,async()=>{});await turn();const peer={...f.proof,proofId:'OFFLINE_PEER_PROOF',mint:'OFFLINE_PEER'};cache.prepare(peer,async()=>{});await turn();
+ assert.equal(cache.usage()?.proofId,peer.proofId);const before=cache.usage(f.proof),view=f.view();assert.equal(view.operation,'FINANCIAL_DECISION');assert.equal(view.bindingBlocker,'NONE');assert.deepEqual(cache.usage(f.proof),before,'diagnosis preserves original retention availability');
+});
+
+test('an unchanged terminal target failure remains unavailable after a peer completes and never grants permission',async()=>{
+ const f=fixture(),cache=new NativePaperProofPreparation(()=>f.at),turn=()=>new Promise<void>(resolve=>setImmediate(resolve));f.context.proofPreparation=cache;
+ let pins=0;cache.prepare(f.proof,async()=>{pins++;throw Error('OFFLINE retention unavailable');});await turn();const peer={...f.proof,proofId:'OFFLINE_PEER_PROOF',mint:'OFFLINE_PEER'};cache.prepare(peer,async()=>{});await turn();
+ for(let i=0;i<3;i++){const view=f.view();assert.equal(view.operation,'PROOF_PREPARATION');assert.equal(view.bindingBlocker,'PROOF_RETENTION_UNAVAILABLE');assert.equal(view.requestedOperationMs,null);assert.equal(view.deadlineAllowed,null);assert.equal(view.availableMs,10000);cache.prepare(f.proof,async()=>{pins++;});}
+ await turn();assert.equal(pins,1);assert.equal(cache.ready(f.proof),false);f.permission='OWNER_PAUSE';assert.equal(f.view().bindingBlocker,'FINANCIAL_PERMISSION','real owner controls remain the binding blocker');
 });

@@ -1,7 +1,7 @@
-name: Validate and package POE readiness and reporting repair
+name: Validate and package POE proof handoff and timing repair
 on:
   push:
-    branches: [repair/poe-readiness-reporting-20261104]
+    branches: [repair/poe-proof-handoff-20261104]
     # The exact runtime artifact precedes its reporting-only source handover.
     # The existing PR release gate still validates the later reporting commit.
     paths-ignore:
@@ -33,7 +33,7 @@ jobs:
           mkdir -p /tmp/poe-throughput-validation
           git rev-parse HEAD > /tmp/poe-throughput-validation/source-commit.txt
           git rev-parse HEAD^{tree} > /tmp/poe-throughput-validation/source-tree.txt
-          git merge-base --is-ancestor fd67391848b355a404f0f5f266684e37fe64aa21 HEAD
+          git merge-base --is-ancestor e2194800e1201e269fc856841fda751b9fffe616 HEAD
           npm ci --include=dev 2>&1 | tee /tmp/poe-throughput-validation/dependencies.log
           test -z "$(git status --porcelain)"
       - name: Compile and run every application and reporting regression
@@ -63,7 +63,7 @@ jobs:
               text=(p/name).read_text()
               return {key:int(re.findall(r'(?m)^(?:# |ℹ )'+key+r'\s+(\d+)\s*$',text)[-1]) for key in ['tests','pass','fail','skipped','cancelled']}
           full,reporting=metrics('full.log'),metrics('ai-reporting.log')
-          for result,minimum in [(full,3915),(reporting,98)]:
+          for result,minimum in [(full,3940),(reporting,103)]:
               assert result['tests']>=minimum and result['tests']==result['pass']
               assert result['fail']==result['skipped']==result['cancelled']==0
           meta=json.loads((p/'bundle/metadata.json').read_bytes())
@@ -74,7 +74,7 @@ jobs:
           digest=lambda path:hashlib.sha256(path.read_bytes()).hexdigest()
           configuration=(p/'configuration-sha256.txt').read_text().strip()
           assert configuration=='f030f068a845d28f0717bf3edabe8bba0483f55cc3cc2f95a6feedb634c10d28'
-          receipt={'kind':'POE_THROUGHPUT_VALIDATED_BUILD','source':source,'sourceTree':(p/'source-tree.txt').read_text().strip(),'base':'873da573b62dcaac4f652891e2b9f4d741640d28','bundleSha256':digest(p/'bundle/native-paper.mjs'),'configurationSha256':configuration,'testsPassed':full['pass'],'reportingTestsPassed':reporting['pass'],'validationRun':int(os.environ['GITHUB_RUN_ID']),'buildRun':int(os.environ['GITHUB_RUN_ID']),'fullLogSha256':digest(p/'full.log'),'reportingLogSha256':digest(p/'ai-reporting.log'),'financialControlWrites':0,'ec2Changed':False,'ageBasis':'verified-pumpswap-migration','minimumAgeMs':60000,'maximumAgeMs':86400000,'deepSlots':4,'strategy':'liquidity-resilient-momentum-v3.1','liveTrading':False}
+          receipt={'kind':'POE_THROUGHPUT_VALIDATED_BUILD','source':source,'sourceTree':(p/'source-tree.txt').read_text().strip(),'base':'8e1f09b01f06fc01d4bcc014961f367c15ad35b4','bundleSha256':digest(p/'bundle/native-paper.mjs'),'configurationSha256':configuration,'testsPassed':full['pass'],'reportingTestsPassed':reporting['pass'],'validationRun':int(os.environ['GITHUB_RUN_ID']),'buildRun':int(os.environ['GITHUB_RUN_ID']),'fullLogSha256':digest(p/'full.log'),'reportingLogSha256':digest(p/'ai-reporting.log'),'financialControlWrites':0,'ec2Changed':False,'ageBasis':'verified-pumpswap-migration','minimumAgeMs':60000,'maximumAgeMs':86400000,'deepSlots':4,'strategy':'liquidity-resilient-momentum-v3.1','liveTrading':False}
           (p/'build-receipt.json').write_text(json.dumps(receipt,indent=2)+'\n')
           print(json.dumps(receipt))
           PY

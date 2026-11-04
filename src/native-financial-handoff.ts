@@ -6,7 +6,7 @@ export const NATIVE_FINANCIAL_HANDOFF_VERSION='native-financial-handoff-v1' as c
 export const HANDOFF_REASONS=['await-financial-dispatch','financial-or-source-admission','proof-retention','required-service-or-protection-runway','await-earlier-candidate','provider-capacity','holding-protection','pending-orders','source-unavailable','reporting-health','financial-permission','entry-preparation'] as const;
 export type HandoffReason=typeof HANDOFF_REASONS[number];
 export type HandoffCertificate={mint:string;windowEndAt:number;deadlineAt:number;admittedAt:number;openedAt:number;featuresSha256:string};
-type HandoffBlocker={blockingPrerequisite:string;operation:string;requiredMs:number;availableMs:number;observedAt:number};
+type HandoffBlocker={blockingPrerequisite:string;operation:string;requiredMs:number|null;availableMs:number;observedAt:number};
 type Active=HandoffCertificate&{key:string;firstSeenAt:number;state:'waiting'|'dispatched';reason:HandoffReason;dispatchedAt?:number;economicDecisionObserved?:true}&Partial<HandoffBlocker>;
 const identity=(c:HandoffCertificate)=>[c.mint,c.windowEndAt,c.openedAt,c.featuresSha256].join(':');
 const uint=(n:number)=>Number.isSafeInteger(n)&&n>=0;
@@ -86,7 +86,7 @@ export class NativeFinancialHandoff {
   if(!this.advance(at))return;const row=this.active.get(identity(c));if(!row||row.state!=='waiting')return;
   const changed=row.reason!==reason||detail&&row.blockingPrerequisite!==detail.blockingPrerequisite;
   if(row.reason!==reason)this.deferralTransitionsByReason[reason]++;row.reason=reason;
-  if(detail&&/^[A-Z][A-Z0-9_]{0,95}$/.test(detail.blockingPrerequisite)&&/^[A-Z][A-Z0-9_]{0,63}$/.test(detail.operation)&&[detail.requiredMs,detail.availableMs].every(n=>Number.isFinite(n)&&n>=0))Object.assign(row,detail,{observedAt:at});
+  if(detail&&/^[A-Z][A-Z0-9_]{0,95}$/.test(detail.blockingPrerequisite)&&/^[A-Z][A-Z0-9_]{0,63}$/.test(detail.operation)&&(detail.requiredMs===null||Number.isFinite(detail.requiredMs)&&detail.requiredMs>=0)&&Number.isFinite(detail.availableMs)&&detail.availableMs>=0)Object.assign(row,detail,{observedAt:at});
   if(changed)this.record('native-paper-certificate-handoff',{at,mint:row.mint,windowEndAt:row.windowEndAt,deadlineAt:row.deadlineAt,stage:'financial-deferred',reason,...(detail?{...detail,observedAt:at}:{}),financialPermission:false});
  }
  dispatch(c:HandoffCertificate,at:number){

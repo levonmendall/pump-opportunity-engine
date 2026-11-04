@@ -4,9 +4,10 @@
  * against a disposable ledger. No production success or economic edge follows. */
 import { test, type TestContext } from 'node:test';
 import assert from 'node:assert/strict';
-import { writeFileSync } from 'node:fs';
+import { writeFileSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { runInNewContext } from 'node:vm';
+import { createHash } from 'node:crypto';
 import { coordinatedNativeReplayFixture } from './helpers/coordinated-native-replay-fixture.js';
 import { PilotRpc, PilotRpcUnavailable } from '../src/pilot-rpc.js';
 import { NativePaperWorkState } from '../src/native-paper-work.js';
@@ -14,15 +15,21 @@ import { NativePaperEntryAdmission, type NativePaperEntryAdmissionToken } from '
 import { NativeProtectionDispatch } from '../src/native-protection-dispatch.js';
 import { NativeFinancialHandoff } from '../src/native-financial-handoff.js';
 import { NativeOperatingCycles } from '../src/native-operating-cycles.js';
+import { NativePaperProofPreparation } from '../src/native-paper-proof-preparation.js';
+import type { NativeQualificationProof } from '../src/native-paper.js';
+import { BoundedRotatingRecorder } from '../src/retained-recorder.js';
 import { nativeHeldAuditScheduling } from '../src/native-held-audit-scheduling.js';
 import { NativePaperReportTimings, nativePaperReportingSample, nativePaperReportAdmissionBound } from '../src/native-paper-reporting-timing.js';
 import { pilotLowerPriorityAdmission } from '../src/pilot.js';
 import { runNativePaper, nativePaperRpcConfiguration, nativePaperRequestOperationBound, nativePaperProtectionReadDeadline, nativePaperSourceWorkAdmission, nativePaperManagementReserve, nativePaperRemainingEntryWork, NativePaperReportingHealth, nativePaperReportingAdmission } from '../src/run-native-paper.js';
-async function coordinatedReplay(t: TestContext, physicalReplacement = false) {
+async function coordinatedReplay(t: TestContext, physicalReplacement = false, retainedPeerProofs = false) {
     const owner = new NativePaperWorkState(), entryAdmission = new NativePaperEntryAdmission();
     let entryToken: NativePaperEntryAdmissionToken | null = null, lastCompleted: number | null = null, lastProtectionStart = 0, cycles: NativeOperatingCycles | undefined;
     let handoff: NativeFinancialHandoff;
     let actualEconomicReceipts = 0;
+    let proofRecorder: BoundedRotatingRecorder | undefined;
+    let proofPins = 0, completedProofReuses = 0, productionProofUses = 0;
+    const proofReleases: string[] = [];
     let sourceAdmission = () => true, sourceWorkAdmission = (_bound: number) => true, riskAdmission = () => true;
     let f: Awaited<ReturnType<typeof coordinatedNativeReplayFixture>>;
     f = await coordinatedNativeReplayFixture(t, true, false, {
@@ -44,6 +51,7 @@ async function coordinatedReplay(t: TestContext, physicalReplacement = false) {
         afterRecord: (kind, data: any) => {
             if (!f)
                 return;
+            if (proofRecorder) assert.equal(proofRecorder.record(kind, data), true, 'bounded offline operating evidence remains available');
             if (kind === 'trader-held-evaluation' && data.usable) {
                 const held = f.ledger.state().positions[data.mint];
                 if (held && held.units === data.units && data.quoteAt <= f.at && f.at - data.quoteAt <= 2000 && data.sourceValidUntil >= f.at) {
@@ -175,6 +183,10 @@ async function coordinatedReplay(t: TestContext, physicalReplacement = false) {
     let preparedAllocationsBeforeRetirement = 0;
     let originalRetirementDeadlineAt: number | null = null;
     try {
+        if (retainedPeerProofs) {
+            proofRecorder = new BoundedRotatingRecorder({ directory: join(f.dir, 'OFFLINE-proof-evidence'), segmentBytes: 65536, diagnosticBytes: 16 * 1024 * 1024, minRetentionMs: 300000, minimumDiskReserveBytes: 0, now: () => f.at, monotonic: () => f.at - began });
+            assert.equal(proofRecorder.record('OFFLINE-observation-start', { at: began, fourSlots: f.states.size }), true);
+        }
         await protect();
         while (f.at < targetWindow + 1000) {
             if (physicalReplacement && replacementMint === null && f.at >= targetWindow - 15000) replacementMint = f.seedPeer(8);
@@ -272,6 +284,51 @@ async function coordinatedReplay(t: TestContext, physicalReplacement = false) {
         }
         assert.equal(reserve.entryAllowed, true, JSON.stringify({ at: f.at, reserve, preparation }));
         assert.equal(f.engine.financialAdmission(certificate, remaining.decisionWorkMs).admitted, true, JSON.stringify(f.engine.financialAdmission(certificate, remaining.decisionWorkMs)));
+        if (retainedPeerProofs) {
+            const digest = (value: string) => createHash('sha256').update(value).digest('hex');
+            const proofs = new NativePaperProofPreparation(() => f.at, id => { proofReleases.push(id); assert.equal(proofRecorder!.releaseUnusedProof('entry-' + digest(id)), true); });
+            const tasks: Promise<void>[] = [];
+            const pin = (proof: NativeQualificationProof) => {
+                const task = (async () => {
+                    proofPins++;
+                    const result = await proofRecorder!.pinProvisionalRange('entry-' + digest(proof.proofId), proof.startAt, proof.throughAt, proof.deadlineAt);
+                    assert.equal(result.complete, true, result.reason);
+                })();
+                tasks.push(task);
+                return task;
+            };
+            const settle = async () => { await new Promise<void>(resolve => setImmediate(resolve)); await Promise.all(tasks); await new Promise<void>(resolve => setImmediate(resolve)); };
+            const a = f.bridge.qualificationProof(mint!)!;
+            assert.ok(a, 'the actual qualified source/strategy certificate supplies proof A');
+            assert.equal(proofs.prepare(a, pin), false); await settle(); assert.equal(proofs.ready(a), true);
+            const manifestPath = join(f.dir, 'OFFLINE-proof-evidence', 'proof-' + digest('entry-' + digest(a.proofId)), 'manifest.json');
+            const originalManifest = readFileSync(manifestPath);
+            let b: NativeQualificationProof | null = null;
+            for (let n = 0; n < 16 && !b && f.at + remaining.decisionWorkMs + 125 < a.deadlineAt; n++) {
+                if (f.at - lastProtectionStart >= 2000 || earlyAuditProtection()) await protect();
+                owner.set('source'); await f.engine.step(); report();
+                b = f.engine.certifiedCandidateMints().filter(peer => peer !== mint).map(peer => f.bridge.qualificationProof(peer)).find(proof => proof !== null) ?? null;
+                f.at += 50;
+            }
+            assert.ok(b, 'a distinct genuinely audited peer supplies proof B before the original A deadline');
+            assert.equal(f.states.size, 4); assert.equal(proofs.prepare(b, pin), false);
+            assert.equal(proofs.ready({ ...a, throughAt: f.at }), true, 'pending peer retention cannot evict completed A');
+            await settle(); assert.equal(proofs.ready(b), true);
+            const currentA = f.bridge.qualificationProof(mint!)!;
+            assert.ok(currentA && currentA.throughAt > a.throughAt);
+            assert.equal(currentA.proofId, a.proofId); assert.equal(currentA.deadlineAt, a.deadlineAt);
+            assert.equal(proofs.prepare(currentA, pin), true); completedProofReuses++;
+            assert.equal(proofPins, 2); assert.deepEqual(proofReleases, []); assert.deepEqual(readFileSync(manifestPath), originalManifest);
+            // Attach the normal optional constructor callback to this disposable
+            // owner after its initial holding bootstrap. The real candidate path
+            // must consume the exact retained proof before its final quote.
+            const options = (f.bridge as unknown as { options: { pinQualification?: (proof: NativeQualificationProof) => void } }).options;
+            options.pinQualification = proof => { assert.equal(proofs.ready(proof), true); assert.equal(proof.proofId, a.proofId); productionProofUses++; };
+            if (f.at - lastProtectionStart >= 2000 || !lowerView(remaining.quoteOperationMs).admitted) await protect();
+            owner.set('source');
+            assert.equal(f.engine.financialAdmission(certificate, remaining.decisionWorkMs).admitted, true, 'peer retention does not renew A to fit its final economic work');
+            assert.equal(f.market.entryPreparationStatus(mint!).expiresAt, preparation.expiresAt);
+        }
         handoff.observe(f.at, [certificate]);
         handoff.dispatch(certificate, f.at);
         entryToken = entryAdmission.begin({ mint: mint!, at: f.at, windowEndAt: certificate.windowEndAt, deadlineAt: certificate.deadlineAt, maximumAccountedStarts: remaining.maximumAccountedStarts, fullyAdmitted: reserve.entryAllowed });
@@ -429,16 +486,19 @@ async function coordinatedReplay(t: TestContext, physicalReplacement = false) {
         assert.ok(maxReportMs > 250);
         assert.equal(handoffUsage.economicDecisions, 1);
         assert.equal(handoffUsage.expiredBeforeDispatch, 0);
-        t.diagnostic(JSON.stringify({ scope: 'OFFLINE coordinated V3.1 replay; synthetic bank/Clock/flow/reserves/candidate identities; no live acceptance or market edge', durationMs: f.at - began, observationSlots: 4, audits: f.engine.status().counters.auditedWindows - initialAudits, economicDecisions: f.engine.economicDecisionCount() - initialEconomic, actualEconomicReceipts, preparedTurns: preparationTurns, decisionPhysicalStarts: 3, physicalStarts: usage.newUnits, controlStarts, physicalReplacement, retirementAckAt, originalRetirementDeadlineAt, replacementAckAt, originalPeerCertificates: physicalReplacement ? certificates.length : null, expiredPeerWindows: expiredPeerWindows.length, maximumPhysicalInFlight, maximumStartsPer10Seconds, maximumStartsPerMinute, reports, maximumReportMs: maxReportMs, reportDeferrals, completedProtectionCycles: cycleUsage.observations, maximumCompletedProtectionGapMs: cycleUsage.maxMs, protectionBreaches: cycleUsage.breaches, reconciliationAtDecision: cycleUsage.decisionReconciliation, originalCertificateDeadlinePreserved: true, preparationExpiryPreserved: true, providerNetworkRequests: 0 }));
+        if (retainedPeerProofs) { assert.equal(completedProofReuses, 1); assert.equal(proofPins, 2); assert.equal(productionProofUses, 1); assert.deepEqual(proofReleases, []); }
+        t.diagnostic(JSON.stringify({ scope: 'OFFLINE coordinated V3.1 replay; synthetic bank/Clock/flow/reserves/candidate identities; no live acceptance or market edge', durationMs: f.at - began, observationSlots: 4, audits: f.engine.status().counters.auditedWindows - initialAudits, economicDecisions: f.engine.economicDecisionCount() - initialEconomic, actualEconomicReceipts, preparedTurns: preparationTurns, decisionPhysicalStarts: 3, physicalStarts: usage.newUnits, controlStarts, physicalReplacement, retainedPeerProofs, proofPins, completedProofReuses, productionProofUses, retirementAckAt, originalRetirementDeadlineAt, replacementAckAt, originalPeerCertificates: physicalReplacement ? certificates.length : null, expiredPeerWindows: expiredPeerWindows.length, maximumPhysicalInFlight, maximumStartsPer10Seconds, maximumStartsPerMinute, reports, maximumReportMs: maxReportMs, reportDeferrals, completedProtectionCycles: cycleUsage.observations, maximumCompletedProtectionGapMs: cycleUsage.maxMs, protectionBreaches: cycleUsage.breaches, reconciliationAtDecision: cycleUsage.decisionReconciliation, originalCertificateDeadlinePreserved: true, preparationExpiryPreserved: true, providerNetworkRequests: 0 }));
     }
     finally {
         if (entryToken)
             entryAdmission.close(entryToken);
         owner.set('source');
         await f.engine.stop();
+        await proofRecorder?.close();
         rpc.close();
     }
 }
 
 test('OFFLINE healthy four-slot V3.1 replay keeps a holding protected while audits, preparation, reporting and exact-size economics progress', async t => coordinatedReplay(t));
 test('OFFLINE real negative economics retires only its own scope and four-slot replacement preparation waits for physical unsubscribe ACK while a holding remains protected', async t => coordinatedReplay(t, true));
+test('OFFLINE four-slot held replay retains completed proof A through peer B and reuses A for timely exact-size economics', async t => coordinatedReplay(t, false, true));
