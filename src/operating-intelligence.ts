@@ -15,7 +15,7 @@ export const ORIGINAL_POE_ACCOUNT='poe-3123e352-4581-455b-85db-acd7e825e99e';
 export const ORIGINAL_POE_INCEPTION='2026-10-26T22:07:36.212Z';
 export const OPERATING_INTELLIGENCE_VERSION='poe-operating-intelligence-v1';
 const OPERATING_INTELLIGENCE_MAX_BYTES=32*1024;
-const RECENT_DECISIONS_LIMITATION='Public recent decisions are abbreviated to fit the existing 32 KiB report limit; source decision evidence and totals are unchanged.';
+const RECENT_DECISIONS_LIMITATION='Public recent decisions are abbreviated; full source evidence is retained.';
 type Count=number|null;
 const EVIDENCE_PRESSURE_CODES=['FILESYSTEM_RESERVE','RECORD_BOUND','YOUNG_DIAGNOSTIC_CAPACITY','YOUNG_SEGMENT_CAPACITY','DIAGNOSTIC_HEADROOM','DIAGNOSTIC_SEGMENT_HEADROOM','INTERRUPTED_ESSENTIAL_PROOF','CHECKPOINT_UNAVAILABLE','RECORD_IO_OR_INTEGRITY_FAILURE','FILESYSTEM_UNAVAILABLE','RETENTION_IO_OR_INTEGRITY_FAILURE','RECOVERY_CHECKPOINT_UNAVAILABLE','OTHER_UNEXPORTED_REASON'] as const;
 const RECOVERY_REASON_CODES=['ROLLING_RESOURCE_OR_EVIDENCE_PRESSURE','CANDIDATE_PROVIDER_FAILURE','CANDIDATE_STEP_UNAVAILABLE','OTHER_UNEXPORTED_REASON'] as const;
@@ -130,31 +130,36 @@ function protectionRpcNotes(rpc:Record<string,any>,sourceStart:number,at:number,
  if(last||entryNote)notes.push([last,entryNote].filter(Boolean).join(' '));
  return notes;
 }
-/** The recent public decision list is a display view, not a trading input or
- * durable audit. Its row limit alone does not bound the combined diagnostics.
- * Keep a contiguous newest suffix within the existing receiver byte limit;
- * never remove current financial/source facts, pending orders or warnings.
- * If the protected facts or disclosure cannot fit, preserve the original for
- * the existing publisher validation to refuse. Reporting pressure must not
- * throw here and terminate the financial source process. */
+/** Completed diagnostic rows and recent decisions are display views, not
+ * financial inputs or durable evidence. Remove only oldest completed rows,
+ * retaining a newest suffix and every current fact, counter, maximum, warning
+ * and pending obligation. The unchanged publisher gate refuses an irreducible
+ * protected core; reporting pressure must not terminate the financial source. */
 export function boundOperatingIntelligence(value:OperatingIntelligence):OperatingIntelligence{
  if(Buffer.byteLength(JSON.stringify(value))<=OPERATING_INTELLIGENCE_MAX_BYTES)return value;
- const limitations=[...value.quality.limitations];
- if(limitations.length<10)limitations.push(RECENT_DECISIONS_LIMITATION);
- else{
-  const index=limitations.findIndex(note=>note.length+1+RECENT_DECISIONS_LIMITATION.length<=512);
-  if(index<0)return value;
-  limitations[index]+=' '+RECENT_DECISIONS_LIMITATION;
+ const result:OperatingIntelligence={...value,quality:{...value.quality,limitations:[...value.quality.limitations]},decisions:value.decisions.slice(),
+  ...(value.financialHandoff?{financialHandoff:{...value.financialHandoff,...(value.financialHandoff.requestTiming?{requestTiming:{...value.financialHandoff.requestTiming,refusals:value.financialHandoff.requestTiming.refusals.slice()}}:{})}}:{}),
+  protection:{...value.protection,...(value.protection.completedProtectionCycles?{completedProtectionCycles:{...value.protection.completedProtectionCycles,recent:value.protection.completedProtectionCycles.recent.slice()}}:{})}};
+ const omitted=[0,0,0];
+ const disclose=()=>{
+  const note=RECENT_DECISIONS_LIMITATION+` Display rows omitted: decisions=${omitted[0]}, request refusals=${omitted[1]}, completed protection=${omitted[2]}.`;
+  const limitations=[...value.quality.limitations];
+  if(limitations.length<10)limitations.push(note);
+  else{const index=limitations.findIndex(row=>row.length+1+note.length<=512);if(index<0)return false;limitations[index]+=' '+note;}
+  result.quality.limitations=limitations;return true;
+ };
+ if(!disclose())return value;
+ type Detail={at?:unknown;transportStarted?:unknown;physicalSettlementClaimed?:unknown};
+ const views:{rows:Detail[];index:number;completed:(row:Detail)=>boolean}[]=[{rows:result.decisions,index:0,completed:()=>true}];
+ const timing=result.financialHandoff?.requestTiming,protection=result.protection.completedProtectionCycles;
+ if(timing)views.push({rows:timing.refusals,index:1,completed:row=>row.transportStarted===false&&row.physicalSettlementClaimed===false});
+ if(protection)views.push({rows:protection.recent,index:2,completed:()=>true});
+ while(Buffer.byteLength(JSON.stringify(result))>OPERATING_INTELLIGENCE_MAX_BYTES){
+  const candidates=views.flatMap(view=>{const row=view.rows[0],at=row&&typeof row.at==='string'?Date.parse(row.at):NaN;return row&&view.completed(row)&&Number.isFinite(at)?[{view,at}]:[];});
+  candidates.sort((a,b)=>a.at-b.at||a.view.index-b.view.index);
+  const oldest=candidates[0];if(!oldest)return value;
+  oldest.view.rows.shift();omitted[oldest.view.index]!++;if(!disclose())return value;
  }
- const result:OperatingIntelligence={...value,quality:{...value.quality,limitations},decisions:[]};
- let bytes=Buffer.byteLength(JSON.stringify(result)),first=value.decisions.length;
- if(bytes>OPERATING_INTELLIGENCE_MAX_BYTES)return value;
- for(let index=value.decisions.length-1;index>=0;index--){
-  const added=Buffer.byteLength(JSON.stringify(value.decisions[index]))+(first<value.decisions.length?1:0);
-  if(bytes+added>OPERATING_INTELLIGENCE_MAX_BYTES)break;
-  bytes+=added;first=index;
- }
- result.decisions=value.decisions.slice(first);
  return result;
 }
 /** Null is an unavailable fact, never a manufactured zero. */
