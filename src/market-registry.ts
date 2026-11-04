@@ -608,13 +608,21 @@ export class MarketRegistry {
    this.statement(`INSERT INTO pumpswap_migration_requests_v1(mint,signature,received_at,direct,next_attempt_at) VALUES(?,?,?,?,?)
     ON CONFLICT(mint) DO UPDATE SET signature=CASE WHEN excluded.direct>direct THEN excluded.signature ELSE signature END,
      received_at=CASE WHEN excluded.direct>direct THEN excluded.received_at ELSE received_at END,
-     next_attempt_at=CASE WHEN excluded.direct>direct THEN excluded.next_attempt_at ELSE next_attempt_at END,direct=MAX(direct,excluded.direct)`)
+     next_attempt_at=CASE WHEN excluded.direct>direct THEN excluded.next_attempt_at ELSE next_attempt_at END,direct=MAX(direct,excluded.direct) WHERE excluded.direct>direct`)
     .run(hint.mint,hint.signature,hint.receivedAt,hint.kind==='migration'?1:0,hint.receivedAt);
    // A genuine direct hint can replace a swap seed. A late old continuation
    // must then fail its seed/revision compare-and-swap, including after restart.
    if(hint.kind==='migration')this.statement(`DELETE FROM pumpswap_migration_recovery_v1 WHERE mint=? AND NOT EXISTS(
     SELECT 1 FROM pumpswap_migration_requests_v1 r WHERE r.mint=pumpswap_migration_recovery_v1.mint AND r.signature=pumpswap_migration_recovery_v1.signature AND r.received_at=pumpswap_migration_recovery_v1.received_at)`).run(hint.mint);
   }
+  // A real new activity receipt starts a new queue wait only after prior
+  // activity eligibility expired. Keep immutable seed/cursor times and any
+  // future retry; continuously eligible work retains its waiting priority.
+  if(this.migrationAge&&hint.kind==='activity')this.statement(`UPDATE pumpswap_migration_requests_v1 SET next_attempt_at=?
+   WHERE mint=? AND received_at<=? AND next_attempt_at<? AND (direct=0 OR received_at<?)
+   AND EXISTS(SELECT 1 FROM pumpswap_qualification_hints_v1 prior
+    WHERE prior.mint=pumpswap_migration_requests_v1.mint AND prior.last_seen_at<?)`)
+   .run(hint.receivedAt,hint.mint,hint.receivedAt,hint.receivedAt,Math.max(0,hint.receivedAt-MIGRATION_AGE_POLICY.maximumAgeMs),Math.max(0,hint.receivedAt-SHARED_ACTIVITY_HORIZON_MS));
   if(!this.migrationAge&&this.statement('SELECT 1 FROM token_creations WHERE mint=?').get(hint.mint))return false;
   return this.statement(`INSERT INTO pumpswap_qualification_hints_v1(mint,first_seen_at,last_seen_at,source,kind,signature) VALUES(?,?,?,?,?,?)
    ON CONFLICT(mint) DO UPDATE SET last_seen_at=excluded.last_seen_at,source=excluded.source,kind=excluded.kind,signature=excluded.signature

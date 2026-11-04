@@ -5,6 +5,7 @@ import assert from 'node:assert/strict';
 import {readFileSync,mkdtempSync,rmSync} from 'node:fs';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
+import {createHash} from 'node:crypto';
 import bs58 from 'bs58';
 import Database from 'better-sqlite3';
 import {MarketRegistry,MarketRegistryContention} from '../src/market-registry.js';
@@ -134,4 +135,143 @@ test('pre-callback writer contention retains a completed page for one later atom
  try{
   observe(r,f.seed);const saved=progress(await resolvePumpSwapMigrationAge(f.seed,f.rpc,signal()));other.exec('BEGIN IMMEDIATE');assert.throws(()=>r.commitMigrationAgeRecovery(f.seed,saved,at,MIGRATION_RECOVERY_CONTINUES),MarketRegistryContention);assert.equal(r.migrationAgeRecovery(f.seed),null);other.exec('ROLLBACK');at++;const reads=f.calls.length;assert.equal(r.commitMigrationAgeRecovery(f.seed,saved,at,MIGRATION_RECOVERY_CONTINUES),true);assert.deepEqual(r.migrationAgeRecovery(f.seed),saved);assert.equal(f.calls.length,reads);
  }finally{if(other.inTransaction)other.exec('ROLLBACK');other.close();r.close();rmSync(directory,{recursive:true,force:true});}
+});
+
+// These are queue scheduling fixtures, not claims about the full live backlog.
+// The compact checkpoint retains its exact original bytes/hash. The two live
+// snapshots were taken at different times; replay joins them only synthetically.
+const queueRecorded=JSON.parse(readFileSync('test/fixtures/migration-queue-checkpoint.json','utf8'));
+const queueAt:number=queueRecorded.queueCapture.at;
+const checkpoint=queueRecorded.checkpoint as PumpSwapMigrationRecovery;
+const checkpointHash=(value:unknown)=>createHash('sha256').update(JSON.stringify(value)).digest('hex');
+type QueueRow={mint:string;signature:string;received_at:number;direct:number;next_attempt_at:number;attempts:number;last_reason:string};
+const queueDb=(r:MarketRegistry)=>(r as unknown as {db:Database.Database}).db;
+const queueRow=(r:MarketRegistry,mint:string)=>queueDb(r).prepare('SELECT * FROM pumpswap_migration_requests_v1 WHERE mint=?').get(mint) as QueueRow;
+function queueMint(n:number){const bytes=Buffer.alloc(32,3);bytes.writeUInt32LE(n);return bs58.encode(bytes);}
+function coldQueue(r:MarketRegistry,n:number,at:number,legacy=true){
+ const seed={signature:signature(1000000+n),feedMint:queueMint(1000000+n),receivedAt:at-8*3600000-n};observe(r,seed);
+ if(legacy)queueDb(r).prepare('UPDATE pumpswap_migration_requests_v1 SET next_attempt_at=0 WHERE mint=?').run(seed.feedMint);
+ return seed;
+}
+function activity(r:MarketRegistry,seed:PilotMigrationSeed,at:number,withSignature=true){return r.observePumpSwapQualificationHint({mint:seed.feedMint!,...(withSignature?{signature:seed.signature}:{}),receivedAt:at,source:'pumpapi-broad',kind:'activity',venue:'pump-amm'});}
+function restoreRecorded(r:MarketRegistry){
+ assert.equal(checkpointHash(checkpoint),queueRecorded.cursorCapture.bodySha256);
+ assert.equal(Buffer.byteLength(JSON.stringify(checkpoint)),queueRecorded.cursorCapture.bodyBytes);
+ assert.equal(validPumpSwapMigrationRecovery(checkpoint,checkpoint.seed,queueAt),true);
+ const q=queueRecorded.qualification,s=checkpoint.seed;
+ observe(r,{...s,receivedAt:q.firstSeenAt});observe(r,s,true);activity(r,s,q.lastSeenAt);
+ r.deferMigrationAgeRequest(s,checkpoint.startedAt,'MIGRATION_AGE_REQUEST_PENDING');
+ assert.equal(r.commitMigrationAgeRecovery(s,checkpoint,queueRecorded.request.nextAttemptAt-1,MIGRATION_RECOVERY_CONTINUES),true);
+ assert.equal(queueRow(r,s.feedMint!).attempts,queueRecorded.request.attempts);assert.equal(checkpointHash(r.migrationAgeRecovery(s)),queueRecorded.cursorCapture.bodySha256);
+}
+
+for(const legacy of [true,false])test('new activity cannot backdate '+(legacy?'a legacy-zero':'an ordinary old')+' request ahead of an already-due saved cursor',()=>{
+ const r=new MarketRegistry(':memory:',{now:()=>queueAt,migrationAge:true});try{
+  restoreRecorded(r);const head=queueRecorded.queueCapture.head,seed={signature:head.seed.signature,feedMint:head.seed.feedMint,receivedAt:head.seed.receivedAt};observe(r,seed);
+  if(legacy)queueDb(r).prepare('UPDATE pumpswap_migration_requests_v1 SET next_attempt_at=0 WHERE mint=?').run(seed.feedMint);
+  assert.deepEqual(r.nextMigrationAgeRequest(queueAt),checkpoint.seed);
+  const before=queueRow(r,seed.feedMint),priorCommits=r.health().transactions.writeCommits;
+  assert.equal(activity(r,seed,head.qualificationLastSeenAt),true);
+  assert.equal(queueRow(r,seed.feedMint).next_attempt_at,head.qualificationLastSeenAt);assert.equal(r.health().transactions.writeCommits,priorCommits+1,'re-entry shares the existing receipt transaction');
+  assert.deepEqual({...queueRow(r,seed.feedMint),next_attempt_at:before.next_attempt_at},before,'only scheduling time may change');
+  assert.deepEqual(r.nextMigrationAgeRequest(queueAt),checkpoint.seed);assert.equal(checkpointHash(r.migrationAgeRecovery(checkpoint.seed)),queueRecorded.cursorCapture.bodySha256);assert.equal(r.migrationAgeProof(seed.feedMint),null);
+ }finally{r.close();}
+});
+
+test('continuously eligible activity keeps priority at the inclusive one-minute boundary and duplicate/out-of-order receipts cannot move it',()=>{
+ const r=new MarketRegistry(':memory:',{now:()=>AT,migrationAge:true});try{
+  const seed=coldQueue(r,10,AT);activity(r,seed,AT-60_000);queueDb(r).prepare('UPDATE pumpswap_migration_requests_v1 SET next_attempt_at=0 WHERE mint=?').run(seed.feedMint);
+  activity(r,seed,AT);assert.equal(queueRow(r,seed.feedMint).next_attempt_at,0);
+  const before=queueRow(r,seed.feedMint);assert.equal(activity(r,seed,AT),false);assert.equal(activity(r,seed,AT-1),false);assert.deepEqual(queueRow(r,seed.feedMint),before);
+  activity(r,seed,AT+1);assert.equal(queueRow(r,seed.feedMint).next_attempt_at,0);assert.equal(r.pumpSwapQualificationHint(seed.feedMint)!.lastSeenAt,AT+1);
+  const stale=coldQueue(r,11,AT);activity(r,stale,AT-60_001);queueDb(r).prepare('UPDATE pumpswap_migration_requests_v1 SET next_attempt_at=0 WHERE mint=?').run(stale.feedMint);activity(r,stale,AT);assert.equal(queueRow(r,stale.feedMint).next_attempt_at,AT);
+ }finally{r.close();}
+});
+
+test('a current direct hint preserves priority through its exact 24-hour boundary without becoming a migration age proof',()=>{
+ const r=new MarketRegistry(':memory:',{now:()=>AT,migrationAge:true});try{
+  for(const extra of [0,1]){const seed={signature:signature(9001000+extra),feedMint:queueMint(9001000+extra),receivedAt:AT-86_400_000-extra};observe(r,seed,true);activity(r,seed,AT);
+   assert.equal(queueRow(r,seed.feedMint).next_attempt_at,extra?AT:seed.receivedAt);assert.equal(queueRow(r,seed.feedMint).received_at,seed.receivedAt);assert.equal(queueRow(r,seed.feedMint).direct,1);assert.equal(r.migrationAgeProof(seed.feedMint),null);assert.equal(r.marketAgeEligibility(seed.feedMint,AT).allowed,false);
+  }
+ }finally{r.close();}
+});
+
+test('a signature-free fresh activity receipt requeues only the existing immutable request; duplicate signature-free receipts add no write',()=>{
+ const r=new MarketRegistry(':memory:',{now:()=>AT,migrationAge:true});try{
+  const seed=coldQueue(r,20,AT),before=queueRow(r,seed.feedMint);assert.equal(activity(r,seed,AT,false),true);
+  assert.deepEqual(queueRow(r,seed.feedMint),{...before,next_attempt_at:AT});assert.equal(r.pumpSwapQualificationHint(seed.feedMint)!.signature,null);
+  const writes=r.health().transactions.writeCommits,changes=Number((queueDb(r).prepare('SELECT total_changes() n').get() as {n:number}).n);
+  assert.equal(activity(r,seed,AT,false),false);assert.equal(activity(r,seed,AT-1,false),false);assert.equal(r.health().transactions.writeCommits,writes);assert.equal(Number((queueDb(r).prepare('SELECT total_changes() n').get() as {n:number}).n),changes);
+  const unknown={signature:signature(900999),feedMint:queueMint(900999),receivedAt:AT};activity(r,unknown,AT,false);assert.equal(queueRow(r,unknown.feedMint),undefined,'activity without a seed must not invent a history request');
+ }finally{r.close();}
+});
+
+test('unchanged request upserts coalesce without losing a new activity receipt or a genuine direct seed upgrade',()=>{
+ const r=new MarketRegistry(':memory:',{now:()=>AT,migrationAge:true});try{
+  const seed={signature:signature(9100000),feedMint:queueMint(9100000),receivedAt:AT-1000};observe(r,seed);const original=queueRow(r,seed.feedMint),writes=r.health().transactions.writeCommits;
+  observe(r,seed);activity(r,seed,seed.receivedAt-1);assert.equal(r.health().transactions.writeCommits,writes);assert.deepEqual(queueRow(r,seed.feedMint),original);
+  const newActivitySignature=signature(9100001);activity(r,{...seed,signature:newActivitySignature},AT);assert.equal(r.pumpSwapQualificationHint(seed.feedMint)!.signature,newActivitySignature);assert.deepEqual(queueRow(r,seed.feedMint),original);
+  const direct={...seed,signature:signature(9100002),receivedAt:AT+1};observe(r,direct,true);assert.equal(r.isCurrentMigrationAgeRequest(seed),false);assert.equal(r.isCurrentMigrationAgeRequest(direct),true);assert.equal(queueRow(r,seed.feedMint).next_attempt_at,direct.receivedAt);assert.equal(queueRow(r,seed.feedMint).direct,1);
+  const after=queueRow(r,seed.feedMint),commits=r.health().transactions.writeCommits;observe(r,direct,true);activity(r,seed,AT);assert.deepEqual(queueRow(r,seed.feedMint),after);assert.equal(r.health().transactions.writeCommits,commits);
+ }finally{r.close();}
+});
+
+test('reactivation does not shorten a future retry, create an attempt, change its reason, or bypass caller exclusion',()=>{
+ const r=new MarketRegistry(':memory:',{now:()=>AT,migrationAge:true});try{
+  const seed=coldQueue(r,30,AT);r.deferMigrationAgeRequest(seed,AT-1000,'PILOT_MIGRATION_LOOKUP_UNAVAILABLE');const before=queueRow(r,seed.feedMint);
+  activity(r,seed,AT);assert.deepEqual(queueRow(r,seed.feedMint),before);assert.equal(r.nextMigrationAgeRequest(AT),undefined);
+  assert.deepEqual(r.nextMigrationAgeRequest(before.next_attempt_at),seed);assert.equal(r.nextMigrationAgeRequest(before.next_attempt_at,new Set([seed.feedMint])),undefined);
+ }finally{r.close();}
+});
+
+test('inactive partial recovery retains exact seed, cursor, revision and original timestamps through re-entry and database restart',()=>{
+ const directory=mkdtempSync(join(tmpdir(),'poe-migration-reentry-')),path=join(directory,'market.sqlite');let r=new MarketRegistry(path,{now:()=>queueAt,migrationAge:true});
+ try{
+  restoreRecorded(r);const seed=checkpoint.seed;queueDb(r).prepare('UPDATE pumpswap_migration_requests_v1 SET direct=0 WHERE mint=?').run(seed.feedMint!);const before=queueRow(r,seed.feedMint!);
+  activity(r,seed,queueAt,false);assert.deepEqual(queueRow(r,seed.feedMint!),{...before,next_attempt_at:queueAt});assert.equal(checkpointHash(r.migrationAgeRecovery(seed)),queueRecorded.cursorCapture.bodySha256);
+  r.close();r=new MarketRegistry(path,{now:()=>queueAt,migrationAge:true});assert.deepEqual(r.migrationAgeRecovery(seed),checkpoint);assert.deepEqual(r.nextMigrationAgeRequest(queueAt),seed);assert.equal(r.migrationAgeProof(seed.feedMint!),null);
+  assert.equal(r.commitMigrationAgeRecovery(seed,checkpoint,queueAt,MIGRATION_RECOVERY_CONTINUES),false,'re-entry cannot make an old revision current');
+  const direct={...seed,signature:signature(990001),receivedAt:queueAt+1};observe(r,direct,true);assert.equal(r.isCurrentMigrationAgeRequest(seed),false);assert.equal(r.migrationAgeRecovery(seed),null);assert.deepEqual(r.nextMigrationAgeRequest(queueAt+1),direct);
+ }finally{r.close();rmSync(directory,{recursive:true,force:true});}
+});
+
+test('re-entry rank and qualification receipt roll back together if the receipt write fails',()=>{
+ const r=new MarketRegistry(':memory:',{now:()=>AT,migrationAge:true});try{
+  const seed=coldQueue(r,40,AT),request=queueRow(r,seed.feedMint),prior=r.pumpSwapQualificationHint(seed.feedMint);
+  queueDb(r).exec("CREATE TEMP TRIGGER fixture_receipt_failure BEFORE UPDATE ON pumpswap_qualification_hints_v1 BEGIN SELECT RAISE(ABORT,'FIXTURE_RECEIPT_WRITE_FAILURE'); END");
+  assert.throws(()=>activity(r,seed,AT),/FIXTURE_RECEIPT_WRITE_FAILURE/);assert.deepEqual(queueRow(r,seed.feedMint),request);assert.deepEqual(r.pumpSwapQualificationHint(seed.feedMint),prior);
+  queueDb(r).exec('DROP TRIGGER fixture_receipt_failure');assert.equal(activity(r,seed,AT),true);assert.equal(queueRow(r,seed.feedMint).next_attempt_at,AT);
+ }finally{r.close();}
+});
+
+test('writer contention defers the complete activity transition and preserves its recoverable request',()=>{
+ const directory=mkdtempSync(join(tmpdir(),'poe-reentry-contention-')),path=join(directory,'market.sqlite'),r=new MarketRegistry(path,{now:()=>AT,migrationAge:true,concurrentIntake:true}),other=new Database(path);
+ try{
+  const seed=coldQueue(r,50,AT),before=queueRow(r,seed.feedMint);other.exec('BEGIN IMMEDIATE');assert.throws(()=>activity(r,seed,AT),MarketRegistryContention);assert.deepEqual(queueRow(r,seed.feedMint),before);other.exec('ROLLBACK');
+  assert.equal(activity(r,seed,AT),true);assert.equal(queueRow(r,seed.feedMint).next_attempt_at,AT);assert.deepEqual(r.nextMigrationAgeRequest(AT),seed);
+ }finally{if(other.inTransaction)other.exec('ROLLBACK');other.close();r.close();rmSync(directory,{recursive:true,force:true});}
+});
+
+for(const fullPages of [1,4])test('bounded '+fullPages+'-page recovery interleaves reactivated cold requests and a fresh direct hint without losing its original page',async t=>{
+ let at=AT;const f=fixture(),directory=mkdtempSync(join(tmpdir(),'poe-reentry-pages-')),path=join(directory,'market.sqlite');let r=new MarketRegistry(path,{now:()=>at,migrationAge:true});t.mock.method(Date,'now',()=>at);
+ try{
+  const pages=Array.from({length:fullPages},(_,page)=>Array.from({length:1000},(_,i)=>({signature:signature(2000000+page*1000+i),slot:f.origin.slot+10000-page*1000-i,err:null,blockTime:f.origin.blockTime+10})));
+  f.setHistory(params=>{const index=params.before?pages.findIndex(p=>p.at(-1)!.signature===params.before)+1:0;assert.ok(index>=0);return index<pages.length?pages[index]:[f.originRow];});
+  const cold=Array.from({length:24},(_,i)=>coldQueue(r,100+i,AT)),fresh={signature:signature(8000001),feedMint:queueMint(8000001),receivedAt:AT+2000};observe(r,f.seed);
+  const seenCold=new Set<string>(),targetTurns:number[]=[];let directTurn:number|null=null,proofTurn:number|null=null;
+  for(let n=0;n<120;n++){
+   at=AT+n*2000;if(n>=1&&n<=cold.length)activity(r,cold[n-1]!,at);if(n===1)observe(r,fresh,true);
+   const selected=r.nextMigrationAgeRequest(at);assert.ok(selected);
+   r.deferMigrationAgeRequest(selected,at,'MIGRATION_AGE_REQUEST_PENDING');
+   if(selected.feedMint===f.mint){
+    targetTurns.push(n);const reads=f.calls.length,result=await turn(r,f,at);assert.ok(f.calls.length-reads<=PUMPSWAP_MIGRATION_RECOVERY_POLICY.maximumReadsPerTurn);
+    if(result.ok){proofTurn=n;assert.equal(result.proof.recovery!.historyPages,fullPages+1);assert.equal(result.proof.currentPoolSupportVerified,false);assert.equal(result.proof.entryEligibilityVerified,false);assert.equal(r.migrationAgeProof(f.mint)!.migrationAt,f.origin.blockTime*1000);}
+    if(n===0){const saved=r.migrationAgeRecovery(f.seed)!;assert.equal(saved.historyRows,1000);r.close();r=new MarketRegistry(path,{now:()=>at,migrationAge:true});assert.deepEqual(r.migrationAgeRecovery(f.seed),saved);}
+   }else if(selected.feedMint===fresh.feedMint){directTurn??=n;}else{seenCold.add(selected.feedMint!);}
+   if(proofTurn!==null&&directTurn!==null&&seenCold.size===cold.length)break;
+  }
+  assert.ok(proofTurn!==null);assert.ok(directTurn!==null);assert.equal(seenCold.size,24);assert.equal(targetTurns[1],1,'new activity must not backdate cold work ahead of the existing cursor');assert.ok(directTurn<=4,'bounded continuation may not monopolize a fresh direct hint');assert.ok(proofTurn<24,'reactivated cold stream must not repeatedly overtake this already-waiting work');
+  assert.ok(targetTurns.some((n,i)=>i>0&&n-targetTurns[i-1]!>1),'other requests receive real turns between continuation turns');
+  assert.equal(f.calls.filter(c=>c.method==='getTransaction'&&c.params[0]===f.seed.signature).length,1);assert.equal(f.calls.filter(c=>c.method==='getSignaturesForAddress').length,fullPages+1);assert.equal(f.calls.at(-2)!.params[1].commitment,'confirmed');assert.equal(f.calls.at(-1)!.params[1].commitment,'finalized');assert.equal(r.migrationAgeRecovery(f.seed),null);assert.ok(r.migrationAgeProof(f.mint));
+ }finally{r.close();rmSync(directory,{recursive:true,force:true});}
 });

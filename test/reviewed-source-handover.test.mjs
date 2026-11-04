@@ -66,7 +66,7 @@ test('existing source can advance through every installed recovery and exact fee
  assert.equal(c.accept(sample('8',p.ageQualified,T-50),T),'accepted');assert.equal(c.identity.release,p.ageQualified);
  assert.throws(()=>c.accept(sample('9',p.decisions),T),/source version/);
  assert.equal(c.accept(sample('9',p.to),T),'accepted');assert.equal(c.identity.release,p.to);
- for(const old of [p.from,p.via,p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling,p.migrationAge,p.coordinatedRepair,p.recoveryProvenance,p.migrationQuery,p.readinessReporting])assert.throws(()=>c.accept(sample('9',old),T),/source version/);
+ for(const old of [p.from,p.via,p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling,p.migrationAge,p.coordinatedRepair,p.recoveryProvenance,p.migrationQuery,p.readinessReporting,p.proofHandoff])assert.throws(()=>c.accept(sample('9',old),T),/source version/);
 });
 test('a receiver configured at the installed recovery accepts only the exact newer repair',()=>{
  const c=new SnapshotCache({...identity(),release:p.via});assert.equal(attachReviewedSourceHandover(c),true);
@@ -85,15 +85,15 @@ test('retained startup identity can skip a reviewed intermediate and accept curr
  assert.equal(c.accept(sample('35',p.cadence,T-125),T),'accepted');assert.equal(c.identity.release,p.cadence);
  assert.equal(c.accept(sample('36',p.ageQualified,T-50),T),'accepted');assert.equal(c.identity.release,p.ageQualified);
  assert.equal(c.accept(sample('37',p.to),T),'accepted');assert.equal(c.identity.release,p.to);assert.equal(c.read().snapshot.sequence,'37');
- for(const old of [p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling,p.migrationAge,p.coordinatedRepair,p.recoveryProvenance,p.migrationQuery,p.readinessReporting])assert.throws(()=>c.accept(sample('37',old),T),/source version/);
+ for(const old of [p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling,p.migrationAge,p.coordinatedRepair,p.recoveryProvenance,p.migrationQuery,p.readinessReporting,p.proofHandoff])assert.throws(()=>c.accept(sample('37',old),T),/source version/);
 });
-for(const installed of [p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling,p.migrationAge,p.coordinatedRepair,p.recoveryProvenance,p.migrationQuery,p.readinessReporting])test('a receiver configured at '+installed.slice(0,8)+' validates the exact repair before switching',()=>{
+for(const installed of [p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling,p.migrationAge,p.coordinatedRepair,p.recoveryProvenance,p.migrationQuery,p.readinessReporting,p.proofHandoff])test('a receiver configured at '+installed.slice(0,8)+' validates the exact repair before switching',()=>{
  const c=new SnapshotCache({...identity(),release:installed});assert.equal(attachReviewedSourceHandover(c),true);c.accept(sample('40',installed,T-1000),T);const before=c.read();
  const invalid=sample('41',p.to);invalid.account.inceptionAt='2026-10-27T22:07:36.212Z';assert.throws(()=>c.accept(invalid,T));assert.equal(c.identity.release,installed);assert.deepEqual(c.read(),before);
  assert.throws(()=>c.accept(sample('40',p.to),T));assert.equal(c.identity.release,installed);assert.deepEqual(c.read(),before);
  assert.equal(c.accept(sample('41',p.to),T),'accepted');assert.equal(c.identity.release,p.to);
 });
-for(const intermediate of [p.via,p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling,p.migrationAge,p.coordinatedRepair,p.recoveryProvenance,p.migrationQuery,p.readinessReporting])test('an invalid intermediate '+intermediate.slice(0,8)+' report never changes the source or retained snapshot',()=>{
+for(const intermediate of [p.via,p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling,p.migrationAge,p.coordinatedRepair,p.recoveryProvenance,p.migrationQuery,p.readinessReporting,p.proofHandoff])test('an invalid intermediate '+intermediate.slice(0,8)+' report never changes the source or retained snapshot',()=>{
  const c=fixture();c.accept(sample('1'),T);const before=c.read();const bad=sample('2',intermediate);bad.liveTrading=true;
  assert.throws(()=>c.accept(bad,T));assert.equal(c.identity.release,p.from);assert.deepEqual(c.read(),before);
  assert.equal(c.accept(sample('2',p.to),T),'accepted');
@@ -126,7 +126,7 @@ for(const [name,mutate]of[
  const valid={...sample('62',p.to),financialEpoch:structuredClone(prior.financialEpoch)};
  assert.equal(c.accept(valid,T),'accepted');assert.equal(c.identity.release,p.to);assert.deepEqual(c.read().snapshot.financialEpoch,prior.financialEpoch);
 });
-for(const installed of [p.from,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling,p.migrationAge,p.coordinatedRepair,p.recoveryProvenance,p.migrationQuery,p.readinessReporting])test('existing HTTP authentication runs before forward transition from '+installed.slice(0,8),async t=>{
+for(const installed of [p.from,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling,p.migrationAge,p.coordinatedRepair,p.recoveryProvenance,p.migrationQuery,p.readinessReporting,p.proofHandoff])test('existing HTTP authentication runs before forward transition from '+installed.slice(0,8),async t=>{
  const secret='offline-independent-ingestion-secret';const app=createDashboard({...identity(),release:installed,viewerUser:'',viewerPassword:'',publicViewer:true,ingestionSecret:secret});
  attachReviewedSourceHandover(app.cache);app.server.listen(0,'127.0.0.1');await once(app.server,'listening');
  t.after(async()=>{app.server.closeAllConnections();await new Promise(r=>app.server.close(r));});
@@ -394,13 +394,13 @@ test('authenticated H4 to H5 preserves durable lifetime history across two fresh
 });
 
 test('exact installed H5 advances only to H6 without resetting account, epoch, original clocks or large sequence',()=>{
- assert.equal(p.readinessReporting,'8e1f09b01f06fc01d4bcc014961f367c15ad35b4');assert.equal(p.to,'8334f5a56d01706cbdacc019bbc1fe76a136df24');assert.match(p.to,/^[a-f0-9]{40}$/);assert.notEqual(p.to,p.readinessReporting);
+ assert.equal(p.readinessReporting,'8e1f09b01f06fc01d4bcc014961f367c15ad35b4');assert.equal(p.proofHandoff,'8334f5a56d01706cbdacc019bbc1fe76a136df24');assert.match(p.proofHandoff,/^[a-f0-9]{40}$/);assert.notEqual(p.proofHandoff,p.readinessReporting);
  const c=new SnapshotCache({...identity(),release:p.readinessReporting});assert.equal(attachReviewedSourceHandover(c),true);
  const prior={...sample('9007199254741000',p.readinessReporting,T-120000),financialEpoch:v3Epoch()};c.accept(prior,T);const before=c.read(),history=c.equityHistory();
  for(const mutate of [s=>{s.account.id='other';},s=>{s.account.inceptionAt='2026-10-27T22:07:36.212Z';},s=>{s.source.strategy='other';},s=>{s.sequence=prior.sequence;},s=>{s.sequence='9007199254740999';},s=>{delete s.financialEpoch;},s=>{s.financialEpoch=s.financialEpoch.priorEpoch;},s=>{s.financialEpoch.priorEpoch.backupSha256='e'.repeat(64);},s=>{s.liveTrading=true;},s=>{s.source.release='f'.repeat(40);},s=>{s.times.generatedAt=iso(T+30001);}]){
-  const bad={...sample('9007199254741001',p.to,T-1000),financialEpoch:structuredClone(prior.financialEpoch)};mutate(bad);assert.throws(()=>c.accept(bad,T));assert.equal(c.identity.release,p.readinessReporting);assert.deepEqual(c.read(),before);assert.deepEqual(c.equityHistory(),history);
+  const bad={...sample('9007199254741001',p.proofHandoff,T-1000),financialEpoch:structuredClone(prior.financialEpoch)};mutate(bad);assert.throws(()=>c.accept(bad,T));assert.equal(c.identity.release,p.readinessReporting);assert.deepEqual(c.read(),before);assert.deepEqual(c.equityHistory(),history);
  }
- assert.equal(c.accept(prior,T),'duplicate');const next={...sample('9007199254741001',p.to,T-1000),financialEpoch:structuredClone(prior.financialEpoch)},saved=structuredClone(next);
+ assert.equal(c.accept(prior,T),'duplicate');const next={...sample('9007199254741001',p.proofHandoff,T-1000),financialEpoch:structuredClone(prior.financialEpoch)},saved=structuredClone(next);
  assert.equal(c.accept(next,T),'accepted');assert.deepEqual(c.read().snapshot,saved);assert.deepEqual(next,saved);assert.deepEqual(c.equityHistory().financialEpoch,history.financialEpoch);
  for(const point of history.points)assert.deepEqual(c.equityHistory().points.find(value=>value.at===point.at),point);
  for(const release of [p.from,p.migrationAge,p.coordinatedRepair,p.recoveryProvenance,p.readinessReporting])assert.throws(()=>c.accept({...next,sequence:'9007199254741002',source:{...next.source,release}},T),/source version/);
@@ -415,15 +415,50 @@ test('authenticated H5 to H6 preserves durable lifetime history across two fresh
  const prior={...sample('9007199254741000',p.readinessReporting,T-120000),financialEpoch:epoch};assert.equal((await post('/api/snapshot',prior)).status,200);
  const durable={schemaVersion:1,accountId:p.accountId,inceptionAt:p.inceptionAt,source:'original-ec2-verified-equity',lastSequence:prior.sequence,downsampled:false,financialEpoch:structuredClone(epoch),points:[{at:p.inceptionAt,equityUsd:1000,segment:0,kind:'inception'},{at:epoch.priorEpoch.activatedAt,equityUsd:epoch.priorEpoch.initialUsd,segment:1,kind:'epoch-start'},{at:epoch.activatedAt,equityUsd:epoch.initialUsd,segment:2,kind:'epoch-start'},{at:prior.times.generatedAt,equityUsd:1000,segment:3,kind:'observed'}]};
  assert.equal((await post('/api/equity-history',durable)).status,200);const history=app.cache.equityHistory(),before=app.cache.read();assert.equal(history.retention,'durable-with-preserved-receiver');assert.ok(history.preservedReceiverPoints>0);
- const first={...sample('9007199254741001',p.to,T-1000),financialEpoch:structuredClone(epoch)},second={...sample('9007199254741002',p.to,T),financialEpoch:structuredClone(epoch)},captures=[];
+ const first={...sample('9007199254741001',p.proofHandoff,T-1000),financialEpoch:structuredClone(epoch)},second={...sample('9007199254741002',p.proofHandoff,T),financialEpoch:structuredClone(epoch)},captures=[];
  assert.equal((await post('/api/snapshot',first,'Bearer wrong')).status,401);assert.equal((await post('/api/snapshot',{...first,sequence:prior.sequence})).status,409);assert.equal(app.cache.identity.release,p.readinessReporting);assert.deepEqual(app.cache.read(),before);assert.deepEqual(app.cache.equityHistory(),history);
+ for(const next of [first,second]){
+  assert.equal((await post('/api/snapshot',next)).status,200);const response=await(await fetch(base+'/api/snapshot')).json();captures.push(response);
+  assert.equal(response.snapshot.source.release,p.proofHandoff);assert.equal(response.snapshot.sequence,next.sequence);assert.deepEqual(response.snapshot.account,prior.account);assert.deepEqual(response.snapshot.times,next.times);assert.ok(Date.now()-Date.parse(response.snapshot.times.generatedAt)<90000);
+  assert.deepEqual(response.snapshot.financialEpoch,epoch);assert.deepEqual(response.equityHistory.financialEpoch,epoch);assert.equal(response.equityHistory.retention,'durable-with-preserved-receiver');for(const point of history.points)assert.deepEqual(response.equityHistory.points.find(value=>value.at===point.at),point);
+ }
+ assert.ok(BigInt(captures[1].snapshot.sequence)>BigInt(captures[0].snapshot.sequence));assert.ok(Date.parse(captures[1].snapshot.times.generatedAt)>Date.parse(captures[0].snapshot.times.generatedAt));assert.notEqual(captures[0].fingerprint,captures[1].fingerprint);
+ assert.equal((await post('/api/snapshot',{...second,sequence:'9007199254741003',source:{...second.source,release:p.readinessReporting}})).status,400);
+ const continued={...durable,lastSequence:second.sequence,points:[...durable.points,...[first,second].map(s=>({at:s.times.generatedAt,equityUsd:1000,segment:3,kind:'observed'}))]};assert.equal((await post('/api/equity-history',continued)).status,200);
+ const after=app.cache.equityHistory();assert.equal(app.cache.identity.release,p.proofHandoff);assert.deepEqual(after.financialEpoch,epoch);for(const point of history.points)assert.deepEqual(after.points.find(value=>value.at===point.at),point);assert.equal(after.points.at(-1).at,second.times.generatedAt);
+});
+
+test('exact installed H6 advances only to H7 without resetting account, epoch, original clocks or large sequence',()=>{
+ assert.equal(p.proofHandoff,'8334f5a56d01706cbdacc019bbc1fe76a136df24');assert.equal(p.to,'9c528bd4750c56900ce4bc53ccf594e498377d29');assert.match(p.to,/^[a-f0-9]{40}$/);assert.notEqual(p.to,p.proofHandoff);
+ const c=new SnapshotCache({...identity(),release:p.proofHandoff});assert.equal(attachReviewedSourceHandover(c),true);
+ const prior={...sample('9007199254741000',p.proofHandoff,T-120000),financialEpoch:v3Epoch()};c.accept(prior,T);const before=c.read(),history=c.equityHistory();
+ for(const mutate of [s=>{s.account.id='other';},s=>{s.account.inceptionAt='2026-10-27T22:07:36.212Z';},s=>{s.source.strategy='other';},s=>{s.sequence=prior.sequence;},s=>{s.sequence='9007199254740999';},s=>{delete s.financialEpoch;},s=>{s.financialEpoch=s.financialEpoch.priorEpoch;},s=>{s.financialEpoch.priorEpoch.backupSha256='e'.repeat(64);},s=>{s.liveTrading=true;},s=>{s.source.release='f'.repeat(40);},s=>{s.times.generatedAt=iso(T+30001);}]){
+  const bad={...sample('9007199254741001',p.to,T-1000),financialEpoch:structuredClone(prior.financialEpoch)};mutate(bad);assert.throws(()=>c.accept(bad,T));assert.equal(c.identity.release,p.proofHandoff);assert.deepEqual(c.read(),before);assert.deepEqual(c.equityHistory(),history);
+ }
+ assert.equal(c.accept(prior,T),'duplicate');const next={...sample('9007199254741001',p.to,T-1000),financialEpoch:structuredClone(prior.financialEpoch)},saved=structuredClone(next);
+ assert.equal(c.accept(next,T),'accepted');assert.deepEqual(c.read().snapshot,saved);assert.deepEqual(next,saved);assert.deepEqual(c.equityHistory().financialEpoch,history.financialEpoch);
+ for(const point of history.points)assert.deepEqual(c.equityHistory().points.find(value=>value.at===point.at),point);
+ for(const release of [p.from,p.migrationAge,p.coordinatedRepair,p.recoveryProvenance,p.readinessReporting,p.proofHandoff])assert.throws(()=>c.accept({...next,sequence:'9007199254741002',source:{...next.source,release}},T),/source version/);
+});
+
+test('authenticated H6 to H7 preserves durable lifetime history across two fresh advancing source captures',async t=>{
+ const secret='offline-h7-continuity-ingestion-secret',app=createDashboard({...identity(),release:p.proofHandoff,viewerUser:'',viewerPassword:'',publicViewer:true,ingestionSecret:secret});
+ assert.equal(attachReviewedSourceHandover(app.cache),true);const restored=restoreRenderReceiverHistory(app.cache);assert.equal(restored.captureCount,2);assert.equal(restored.currentSnapshotCreated,false);assert.ok(restored.points>0);
+ app.server.listen(0,'127.0.0.1');await once(app.server,'listening');t.after(async()=>{app.server.closeAllConnections();await new Promise(resolve=>app.server.close(resolve));});
+ const base='http://127.0.0.1:'+app.server.address().port,post=(path,value,authorization='Bearer '+secret)=>fetch(base+path,{method:'POST',headers:{'content-type':'application/json',authorization},body:JSON.stringify(value)});
+ const epoch=v3Epoch();epoch.priorEpoch.activatedAt='2026-10-30T15:30:23.584Z';epoch.priorEpoch.priceAt='2026-10-30T15:30:23.484Z';epoch.activatedAt='2026-10-30T19:15:05.083Z';epoch.priceAt='2026-10-30T19:15:04.983Z';
+ const prior={...sample('9007199254741000',p.proofHandoff,T-120000),financialEpoch:epoch};assert.equal((await post('/api/snapshot',prior)).status,200);
+ const durable={schemaVersion:1,accountId:p.accountId,inceptionAt:p.inceptionAt,source:'original-ec2-verified-equity',lastSequence:prior.sequence,downsampled:false,financialEpoch:structuredClone(epoch),points:[{at:p.inceptionAt,equityUsd:1000,segment:0,kind:'inception'},{at:epoch.priorEpoch.activatedAt,equityUsd:epoch.priorEpoch.initialUsd,segment:1,kind:'epoch-start'},{at:epoch.activatedAt,equityUsd:epoch.initialUsd,segment:2,kind:'epoch-start'},{at:prior.times.generatedAt,equityUsd:1000,segment:3,kind:'observed'}]};
+ assert.equal((await post('/api/equity-history',durable)).status,200);const history=app.cache.equityHistory(),before=app.cache.read();assert.equal(history.retention,'durable-with-preserved-receiver');assert.ok(history.preservedReceiverPoints>0);
+ const first={...sample('9007199254741001',p.to,T-1000),financialEpoch:structuredClone(epoch)},second={...sample('9007199254741002',p.to,T),financialEpoch:structuredClone(epoch)},captures=[];
+ assert.equal((await post('/api/snapshot',first,'Bearer wrong')).status,401);assert.equal((await post('/api/snapshot',{...first,sequence:prior.sequence})).status,409);assert.equal(app.cache.identity.release,p.proofHandoff);assert.deepEqual(app.cache.read(),before);assert.deepEqual(app.cache.equityHistory(),history);
  for(const next of [first,second]){
   assert.equal((await post('/api/snapshot',next)).status,200);const response=await(await fetch(base+'/api/snapshot')).json();captures.push(response);
   assert.equal(response.snapshot.source.release,p.to);assert.equal(response.snapshot.sequence,next.sequence);assert.deepEqual(response.snapshot.account,prior.account);assert.deepEqual(response.snapshot.times,next.times);assert.ok(Date.now()-Date.parse(response.snapshot.times.generatedAt)<90000);
   assert.deepEqual(response.snapshot.financialEpoch,epoch);assert.deepEqual(response.equityHistory.financialEpoch,epoch);assert.equal(response.equityHistory.retention,'durable-with-preserved-receiver');for(const point of history.points)assert.deepEqual(response.equityHistory.points.find(value=>value.at===point.at),point);
  }
  assert.ok(BigInt(captures[1].snapshot.sequence)>BigInt(captures[0].snapshot.sequence));assert.ok(Date.parse(captures[1].snapshot.times.generatedAt)>Date.parse(captures[0].snapshot.times.generatedAt));assert.notEqual(captures[0].fingerprint,captures[1].fingerprint);
- assert.equal((await post('/api/snapshot',{...second,sequence:'9007199254741003',source:{...second.source,release:p.readinessReporting}})).status,400);
+ assert.equal((await post('/api/snapshot',{...second,sequence:'9007199254741003',source:{...second.source,release:p.proofHandoff}})).status,400);
  const continued={...durable,lastSequence:second.sequence,points:[...durable.points,...[first,second].map(s=>({at:s.times.generatedAt,equityUsd:1000,segment:3,kind:'observed'}))]};assert.equal((await post('/api/equity-history',continued)).status,200);
  const after=app.cache.equityHistory();assert.equal(app.cache.identity.release,p.to);assert.deepEqual(after.financialEpoch,epoch);for(const point of history.points)assert.deepEqual(after.points.find(value=>value.at===point.at),point);assert.equal(after.points.at(-1).at,second.times.generatedAt);
 });
