@@ -261,10 +261,11 @@ export class NativePaper {
  maintainOperatingFinancialReadiness(price:UsdPrice|null,recover=true){
   const at=this.now(),state=this.options.ledger.state(),safety=this.trader.entryReadinessSafety();
   const technicalAuthority=this.options.operatingFinancialReadiness&&NATIVE_PAPER_PROTECTION_PAUSE_REASONS.includes(state.controls.reason as never)?this.options.ledger.technicalProtectionRecoveryAuthority(at):null;
-  const refuse=(reasonCode:string,resetTechnical=true)=>{this.operatingReadinessDiagnostic={at,stateRevision:state.revision,reasonCode};if(resetTechnical&&technicalAuthority?.verified)this.trader.technicalProtectionRecoveryProof(technicalAuthority,false,at);return {kind:'not-ready' as const,recovered:false,reasonCode};};
+  const refuse=(reasonCode:string,resetTechnical=true)=>{this.operatingReadinessDiagnostic={at,stateRevision:state.revision,reasonCode};if(resetTechnical)this.trader.technicalProtectionRecoveryProof(technicalAuthority??{verified:false,reason:reasonCode},false,at);return {kind:'not-ready' as const,recovered:false,reasonCode};};
   if(!this.options.operatingFinancialReadiness)return refuse('OPERATING_READINESS_NOT_SELECTED');
   if(this.resilient&&!this.options.ledger.v3RiskPolicyActive())return refuse('OPERATING_READINESS_V3_EPOCH_AND_POLICY_REQUIRED');
-  if(Object.keys(state.pending).length||!safety.idle||this.options.market.retirementReady?.()===false){refuse('OPERATING_READINESS_FINANCIAL_WORK_ACTIVE');return {kind:'busy' as const,recovered:false};}
+  const marketBusy=this.options.market.retirementReady?.()===false,readOnlyPreparation=marketBusy&&this.options.market.readOnlyEntryPreparationActive?.()===true;
+  if(Object.keys(state.pending).length||!safety.idle||marketBusy&&!readOnlyPreparation){refuse('OPERATING_READINESS_FINANCIAL_WORK_ACTIVE');return {kind:'busy' as const,recovered:false};}
   if(!recover||state.controls.entriesEnabled)return refuse('OPERATING_READINESS_NOT_REQUIRED');
   const technicalAllowed=technicalAuthority?.verified===true;
   if(state.controls.stopRequested||(!safety.automaticRecoveryAllowed||safety.newHardPauseObserved||!NATIVE_PAPER_FINANCIAL_READINESS_POLICY.recoverablePauseReasons.includes(state.controls.reason as never))&&!technicalAllowed)return refuse(!state.controls.stopRequested&&technicalAuthority&&!technicalAuthority.verified?technicalAuthority.reason:'OPERATING_READINESS_OWNER_OR_HARD_CONTROL');
@@ -279,6 +280,11 @@ export class NativePaper {
   if(!Number.isSafeInteger(receivedAt)||!Number.isSafeInteger(validUntil)||!Number.isSafeInteger(bankClockAt)||Number(bankClockAt)>Number(receivedAt)||Number(receivedAt)>at||Number(validUntil)<at||Number(validUntil)!==Number(bankClockAt)+30000)return refuse('OPERATING_READINESS_CURRENT_SOURCE_CLOCK_REQUIRED');
   if(keys.some(mint=>!marks[mint]||marks[mint]!.pricedBaseUnits!==positionUnits[mint]||marks[mint]!.at<state.positions[mint]!.enteredAt||marks[mint]!.at>at||at-marks[mint]!.at>2000)||Object.keys(marks).length!==keys.length)return refuse('OPERATING_READINESS_EXACT_HELD_MARKS_REQUIRED');
   const projection=this.options.ledger.projection(at,price,marks);if(!projection.usdValuationAvailable||projection.unknownMarks)return refuse('OPERATING_READINESS_CURRENT_INVENTORY_REQUIRED');
+  // Source-owned layout/rent preparation can overlap independent cash
+  // reconciliation. After every real health gate above passes, it is a wait,
+  // not failed protection. Do not advance/issue a proof or resume while busy;
+  // the next actual completion still enforces the original four-second gap.
+  if(readOnlyPreparation){refuse('OPERATING_READINESS_READ_ONLY_ENTRY_PREPARATION_WAIT',false);return {kind:'busy' as const,recovered:false};}
   const technicalProof=technicalAllowed?this.trader.technicalProtectionRecoveryProof(technicalAuthority,true,at):null;if(technicalAllowed&&!technicalProof)return refuse('OPERATING_READINESS_SUSTAINED_PROTECTION_RECOVERY_REQUIRED',false);
   const readiness:OperatingFinancialReadiness={...(technicalProof?{technicalProtectionRecovery:technicalProof}:{}),version:OPERATING_FINANCIAL_READINESS_VERSION,purpose:'financial-permission-only',evidence:'current original financial reconciliation, exact complete inventory and original verified bank Clock source; no candidate window, signal, entry price or order asserted',accountId:state.accountId,stateRevision:state.revision,reconciledAt:state.daily.reconciledAt,positionUnits,source:{kind:keys.length?'complete-held-liquidation-context':'selected-native-support',bankClockAt:Number(bankClockAt),receivedAt:Number(receivedAt),validUntil:Number(validUntil)},recoveryComplete:true,financialInventoryReady:true,budgetAvailable:true};
   let result;try{result=this.options.ledger.resume('native-paper-operating-financial-ready:'+state.revision+':'+at,at,price,marks,readiness);}catch(error){this.operatingReadinessDiagnostic={at,stateRevision:state.revision,reasonCode:'OPERATING_READINESS_FINANCIAL_OPERATION_FAILED'};this.trader.financialMaintenanceFailed('operating-financial-permission',error,state.revision);return {kind:'financial-unavailable' as const,recovered:false};}

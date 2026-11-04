@@ -3,16 +3,20 @@ import {financialEpochLineage,financialEpochReport,type FinancialEpochReport} fr
 import {assertPoeOperatingAccount} from './poe-operating-account.js';
 import {lifetimeTradingReporting,operatingPnlReporting} from './operating-pnl-reporting.js';
 import {createHash} from 'node:crypto';
-import {validateOperatingReportingHistory,type LedgerState,type Mark,type PaperLedger,type ReportingHistory,type ReportingPoint,type UsdPrice} from './ledger.js';
+import {hasLedgerReportingAuthentication,validateOperatingReportingHistory,type LedgerState,type Mark,type PaperLedger,type ReportingHistory,type ReportingPoint,type UsdPrice} from './ledger.js';
 import {validateSnapshot,validateReportingTradeCache,reportingFilledTrade,type ReportingFilledTrade,type ReportingTradeCache,type ReportingIdentity,type Snapshot} from './reporting.js';
 
 type Projection=ReturnType<PaperLedger['projection']>;
 type JournalRow={revision:number;action_id:string;at:number;kind:string;detail:string};
 type Decision={mint:string;at:number;stage:string;reason:string};
+type FilledTradesProjection={trades:ReportingFilledTrade[];unresolvedFilledRows:number};
+type FilledTradesBinding={state:Readonly<LedgerState>;at:number;journal:readonly unknown[];actionResults:ReadonlyMap<string,unknown>;results:readonly [string,unknown][]};
+const filledTradesBindings=new WeakMap<FilledTradesProjection,FilledTradesBinding>();
+function freezeProjectedValue<T>(value:T,seen=new WeakSet<object>()):T{if(value&&typeof value==='object'&&!seen.has(value)){seen.add(value);for(const v of Object.values(value))freezeProjectedValue(v,seen);Object.freeze(value);}return value;}
 export type PilotPortfolioInput={
  authoritativeOperating?:true;at:number;running:boolean;state:Readonly<LedgerState>;projection:Projection;identity:ReportingIdentity;sequence:string;
  price:UsdPrice|null;marks:Readonly<Record<string,Mark>>;sourceValidUntil?:number;history:ReportingHistory;
- journal:readonly unknown[];actionResults:ReadonlyMap<string,unknown>;tradeCache?:ReportingTradeCache;decisions:readonly Decision[];
+ journal:readonly unknown[];actionResults:ReadonlyMap<string,unknown>;tradeCache?:ReportingTradeCache;filledTradesProjection?:FilledTradesProjection;decisions:readonly Decision[];
  funnel:Snapshot['funnel'];connected:boolean;warming:boolean;usefulProgressAt:number|null;blocker:string|null;
  metrics:{eventLoopLagMs:number|null;processingLagMs:number|null;providerEvents:number;rpcRequests:number;rpcAvailable:boolean};
 };
@@ -40,7 +44,7 @@ export function pilotReportingPoints(history:ReportingHistory,input:{at:number;i
 
 /** Rows are capped upstream at50. A real fill needs both its durable outcome
  * and its order/attempt payload; absent bounded history is disclosed, not guessed. */
-export function projectPilotFilledTrades(input:Pick<PilotPortfolioInput,'journal'|'actionResults'|'state'|'at'>){
+export function projectPilotFilledTrades(input:Pick<PilotPortfolioInput,'journal'|'actionResults'|'state'|'at'>):FilledTradesProjection{
  need(input.journal.length<=50,'PILOT_REPORTING_JOURNAL_BOUND');
  const rows:JournalRow[]=input.journal.map(value=>{const r=value as JournalRow;need(r&&integer(r.revision)&&text(r.action_id,160)&&integer(r.at)&&text(r.kind,80)&&typeof r.detail==='string'&&Buffer.byteLength(r.detail)<=65536,'PILOT_REPORTING_JOURNAL');return r;});
  const orders=new Map<string,any>();for(const row of rows)if(row.kind==='order'){const d=JSON.parse(row.detail);if(d.input&&text(d.input.id,128))orders.set(d.input.id,d);}
@@ -49,7 +53,19 @@ export function projectPilotFilledTrades(input:Pick<PilotPortfolioInput,'journal
   const d=JSON.parse(row.detail),trade=reportingFilledTrade(row.action_id,row.at,d,orders.get(d.orderId),result);
   if(!trade||row.at<input.state.inceptionAt||row.at>input.at){unresolvedFilledRows++;continue;}trades.push(trade);
  }
- return {trades:trades.sort((a,b)=>Date.parse(b.at)-Date.parse(a.at)).slice(0,50),unresolvedFilledRows};
+ const projected={trades:trades.sort((a,b)=>Date.parse(b.at)-Date.parse(a.at)).slice(0,50),unresolvedFilledRows};
+ if(hasLedgerReportingAuthentication(input.state,input.state,'state')){
+  // Only this synchronous publication can reuse the projection. Original
+  // row objects/results are frozen; the map itself is rechecked by identity.
+  freezeProjectedValue(input.journal);const results=[...input.actionResults].map(([id,result])=>[id,freezeProjectedValue(result)] as [string,unknown]);
+  freezeProjectedValue(projected);filledTradesBindings.set(projected,{state:input.state,at:input.at,journal:input.journal,actionResults:input.actionResults,results});
+ }
+ return projected;
+}
+function currentFilledTradesProjection(input:PilotPortfolioInput):FilledTradesProjection{
+ const value=input.filledTradesProjection,binding=value&&filledTradesBindings.get(value);
+ if(binding&&binding.state===input.state&&binding.at===input.at&&binding.journal===input.journal&&binding.actionResults===input.actionResults&&binding.results.length===input.actionResults.size&&binding.results.every(([id,result])=>input.actionResults.has(id)&&input.actionResults.get(id)===result)&&hasLedgerReportingAuthentication(input.state,input.state,'state'))return value!;
+ return projectPilotFilledTrades(input);
 }
 
 type ValuationInput=Pick<PilotPortfolioInput,'at'|'state'|'projection'|'price'|'marks'|'sourceValidUntil'>;
@@ -89,14 +105,14 @@ export function epochOperatingPnlHistory(points:Snapshot['pnl'],epoch:FinancialE
 
 export function buildPilotPortfolio(input:PilotPortfolioInput):Snapshot {
  const {state:s,projection:p,identity,at}=input;
- if(input.authoritativeOperating){assertPoeOperatingAccount(s);validateOperatingReportingHistory(input.history,s.inceptionAt);}
+ if(input.authoritativeOperating){assertPoeOperatingAccount(s);if(!hasLedgerReportingAuthentication(input.history,s,'history'))validateOperatingReportingHistory(input.history,s.inceptionAt);}
  need(integer(at)&&s.mode==='PAPER'&&(input.authoritativeOperating===true||/^poe-pilot-[a-z0-9-]+$/.test(s.accountId))&&p.accountId===s.accountId&&identity.accountId===s.accountId&&identity.inceptionAt===iso(s.inceptionAt)&&p.inceptionAt===s.inceptionAt&&s.initialMicroUsd==='1000000000','PILOT_REPORTING_IDENTITY');
  const {currentPrice,validMark,marksUsable,marketAt,reconciled}=portfolioValidity(input),operating=input.authoritativeOperating?operatingPnlReporting({at,projection:p,price:input.price,valuationUsable:marksUsable}):null;
  const epoch=s.paperEpoch?financialEpochReport(s.paperEpoch,at):undefined;
  const epochHistory=epochOperatingPnlHistory(input.history.points.map(point=>({at:iso(point.at),tradingUsd:micro(point.tradingMicroUsd),economicUsd:micro(point.economicMicroUsd)})),epoch);
  const history=epochHistory.length<=720?epochHistory:[...new Map([...epochHistory.slice(0,2),...epochHistory.filter(point=>epoch&&financialEpochLineage(epoch).some(receipt=>Math.abs(Date.parse(point.at)-Date.parse(receipt.activatedAt))<=1)),...epochHistory.slice(-(718-(epoch?financialEpochLineage(epoch).length*2:0)))].map(point=>[point.at,point])).values()].sort((a,b)=>Date.parse(a.at)-Date.parse(b.at));
- const projected=projectPilotFilledTrades(input),unresolvedFilledRows=projected.unresolvedFilledRows;
- const cached=input.tradeCache?validateReportingTradeCache(input.tradeCache,s.accountId,s.inceptionAt,at).trades:projected.trades;const trades=cached.map(({actionId,...trade})=>trade);
+ const projected=currentFilledTradesProjection(input),unresolvedFilledRows=projected.unresolvedFilledRows;
+ const cached=input.tradeCache?(hasLedgerReportingAuthentication(input.tradeCache,s,'trades')?input.tradeCache:validateReportingTradeCache(input.tradeCache,s.accountId,s.inceptionAt,at)).trades:projected.trades;const trades=cached.map(({actionId,...trade})=>trade);
  const snapshot:Snapshot={...(epoch?{financialEpoch:epoch}:{}),...(input.authoritativeOperating?{lifetimeTrading:lifetimeTradingReporting({at,projection:p,price:input.price,valuationUsable:marksUsable})}:{}),project:'pump-opportunity-engine',mode:'PAPER',liveTrading:false,schemaVersion:1,
   account:{id:s.accountId,inceptionAt:identity.inceptionAt,initialUsd:1000},sequence:input.sequence,source:{release:identity.release,strategy:identity.strategy},
   times:{generatedAt:iso(at),marketAt:marketAt===null?null:iso(marketAt),reconciledAt:s.daily.reconciledAt?iso(s.daily.reconciledAt):null,usefulProgressAt:input.usefulProgressAt===null?null:iso(input.usefulProgressAt)},

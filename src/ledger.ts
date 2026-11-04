@@ -67,6 +67,17 @@ export type LedgerState = {
   controls: { entriesEnabled: boolean; reason: string; changedAt: number; readinessVersion: string | null; stopRequested: boolean };
 };
 type State = LedgerState;
+type ReportingReadScope={active:boolean;body?:string;state?:Readonly<State>;history?:OperatingReportingHistory;trades?:ReportingTradeCache;verifiedTrades:Map<string,ReportingFilledTrade>};
+const reportingAuthentication=new WeakMap<object,{scope:ReportingReadScope;kind:'state'|'history'|'trades'}>();
+function freezeReportingValue<T>(value:T,seen=new WeakSet<object>()):T{
+  if(value&&typeof value==='object'&&!seen.has(value)){seen.add(value);for(const item of Object.values(value))freezeReportingValue(item,seen);Object.freeze(value);}return value;
+}
+/** Internal provenance of a frozen value in one active owner-thread report.
+ * Callers cannot manufacture this binding or reuse it in another publication. */
+export function hasLedgerReportingAuthentication(value:unknown,state:Readonly<LedgerState>,kind:'state'|'history'|'trades'):boolean{
+  if(!value||typeof value!=='object')return false;const proof=reportingAuthentication.get(value);
+  return !!proof&&proof.kind===kind&&proof.scope.active&&proof.scope.state===state&&proof.scope[kind]===value;
+}
 /** Structural policy selector; admission additionally verifies its durable
  * epoch/policy anchor through PaperLedger. Legacy policy remains unchanged. */
 export function isV3PaperEpochState(s:Pick<LedgerState,'paperEpoch'>){return s.paperEpoch?.id===PAPER_V3_TEN_SOL_EPOCH_ID&&s.paperEpoch.version===PAPER_V3_EPOCH_VERSION;}
@@ -603,6 +614,7 @@ export class PaperLedger {
   }
 
   private readonly db: Database.Database;
+  private reportingReadScope:ReportingReadScope|undefined;
   private readonly historicalClosedCycles=new Map<string,ClosedCycle|null>();
   private ownerFd: number | undefined;
   readonly sqlite: { version: string; source: string };
@@ -651,15 +663,53 @@ export class PaperLedger {
     return row ? JSON.parse(row.body) as State : undefined;
   }
   state(): Readonly<State> {
+    const scope=this.reportingReadScope;if(scope?.state)return scope.state;
+    if(scope){
+      const row=this.db.prepare('SELECT body FROM financial_state WHERE singleton=1').get() as {body:string}|undefined;
+      if(!row)throw Error('PAPER account not initialized');
+      scope.state=freezeReportingValue(this.validateReadState(JSON.parse(row.body)));scope.body=row.body;
+      reportingAuthentication.set(scope.state,{scope,kind:'state'});return scope.state;
+    }
     const s = this.read();
+    return this.validateReadState(s);
+  }
+  private validateReadState(s:State|undefined):Readonly<State>{
     if (!s) throw new Error('PAPER account not initialized');
     if(s.paperEpoch)this.validateEpochAnchor(s);else if(this.db.prepare('SELECT 1 FROM actions WHERE id IN (?,?) UNION ALL SELECT 1 FROM journal WHERE action_id IN (?,?) LIMIT 1').get('epoch:'+PAPER_TEN_SOL_EPOCH_ID,'epoch:'+PAPER_V3_TEN_SOL_EPOCH_ID,'epoch:'+PAPER_TEN_SOL_EPOCH_ID,'epoch:'+PAPER_V3_TEN_SOL_EPOCH_ID))throw Error('PAPER_EPOCH_STATE_MISSING_FROM_RECORDED_HISTORY');
     if(s.paperEpoch?.id===PAPER_TEN_SOL_EPOCH_ID&&this.db.prepare('SELECT 1 FROM journal WHERE action_id=? LIMIT 1').get('epoch:'+PAPER_V3_TEN_SOL_EPOCH_ID))throw Error('PAPER_V3_EPOCH_STATE_REGRESSED');
     return s;
   }
-  private validateEpochAnchor(s:State){validateLedgerEpochAnchor(this.db,s);}
+  private validateEpochAnchor(s:State){if(this.reportingReadScope?.state!==s)validateLedgerEpochAnchor(this.db,s);}
+  /** Synchronous report preparation under the existing sole financial owner.
+   * This is NOT a long SQLite transaction: the existing short reporting-only
+   * metadata transactions remain independent, and publication happens after
+   * this scope returns. Financial callbacks/epoch changes are forbidden here.
+   * Exact raw head bytes are checked before metadata writes and on return. */
+  withReportingReadView<T>(operation:()=>T):T{
+    if(this.reportingReadScope||this.db.inTransaction)throw Error('REPORTING_READ_SCOPE_NESTED');
+    if(operation.constructor.name==='AsyncFunction')throw Error('REPORTING_READ_SCOPE_SYNCHRONOUS_REQUIRED');
+    const scope:ReportingReadScope={active:true,verifiedTrades:new Map()};this.reportingReadScope=scope;
+    try{const result=operation();if(result&&typeof (result as {then?:unknown}).then==='function')throw Error('REPORTING_READ_SCOPE_SYNCHRONOUS_REQUIRED');this.assertReportingHead();return result;}
+    finally{scope.active=false;this.reportingReadScope=undefined;}
+  }
+  private assertReportingHead(){
+    const scope=this.reportingReadScope;if(!scope)return;
+    if(scope.body===undefined||!scope.state)throw Error('REPORTING_READ_SCOPE_FINANCIAL_STATE_REQUIRED');
+    const row=this.db.prepare('SELECT body FROM financial_state WHERE singleton=1').get() as {body:string}|undefined;
+    if(row?.body!==scope.body)throw Error('REPORTING_READ_SCOPE_FINANCIAL_HEAD_CHANGED');
+  }
+  private requireFinancialMutationOutsideReport(){if(this.reportingReadScope)throw Error('REPORTING_READ_SCOPE_FINANCIAL_MUTATION_REFUSED');}
+  private rememberReportingHistory(history:OperatingReportingHistory){
+    const scope=this.reportingReadScope;if(!scope)return history;
+    scope.history=freezeReportingValue(history);reportingAuthentication.set(scope.history,{scope,kind:'history'});return scope.history;
+  }
+  private rememberReportingTrades(trades:ReportingTradeCache){
+    const scope=this.reportingReadScope;if(!scope)return trades;
+    scope.trades=freezeReportingValue(trades);reportingAuthentication.set(scope.trades,{scope,kind:'trades'});return scope.trades;
+  }
   private assertState(s: State) { validateFinancialState(s, this.accountId, this.mode,{allowUnavailableEntryPolicy:true}); }
   private apply<T>(id: string, kind: string, now: number, payload: unknown, fn: (s: State) => T): T {
+    this.requireFinancialMutationOutsideReport();
     if (!id || id.length > 160 || !Number.isSafeInteger(now)) throw new Error('invalid action identity/time');
     if (JSON.stringify(payload).length > 65_536) throw new Error('financial action payload limit');
     const hash = digest({ kind, payload });
@@ -681,6 +731,7 @@ export class PaperLedger {
   }
 
   initialize(price: UsdPrice, at: number, gasReserve = '5000000') {
+    this.requireFinancialMutationOutsideReport();
     return this.db.transaction(() => {
       const old = this.read();
       if (old) return old; // Never reseed or require a new conversion on recovery.
@@ -1249,20 +1300,24 @@ export class PaperLedger {
   }
   /** Replaceable max50 filled-trade projection, verified by indexed durable actions. */
   getReportingTrades():ReportingTradeCache {
+    if(this.reportingReadScope?.trades)return this.reportingReadScope.trades;
     const state=this.state(),size=this.db.prepare("SELECT length(CAST(value AS BLOB)) size FROM metadata WHERE key='reporting_trades'").get() as {size:number}|undefined;
-    if(!size)return {schemaVersion:1,accountId:state.accountId,inceptionAt:state.inceptionAt,windowLimited:false,trades:[]};
+    if(!size)return this.rememberReportingTrades({schemaVersion:1,accountId:state.accountId,inceptionAt:state.inceptionAt,windowLimited:false,trades:[]});
     if(size.size>128*1024)throw Error('reporting trade cache bound');
     const raw=this.db.prepare("SELECT value FROM metadata WHERE key='reporting_trades'").get() as {value:string};
     const cache=validateReportingTradeCache(JSON.parse(raw.value),state.accountId,state.inceptionAt,state.lastAt);
-    for(const trade of cache.trades)this.validateReportingTrade(trade);return cache;
+    for(const trade of cache.trades)this.validateReportingTrade(trade);return this.rememberReportingTrades(cache);
   }
   private validateReportingTrade(trade:ReportingFilledTrade){
+    const verified=this.reportingReadScope?.verifiedTrades.get(trade.actionId);
+    if(verified){if(!isDeepStrictEqual(verified,trade))throw Error('reporting trade durable evidence mismatch');return;}
     const attempt=this.db.prepare('SELECT at,kind,detail FROM journal WHERE action_id=?').get(trade.actionId) as {at:number;kind:string;detail:string}|undefined;
     if(!attempt||attempt.kind!=='attempt'||Buffer.byteLength(attempt.detail)>65536)throw Error('reporting trade attempt absent');
     const payload=JSON.parse(attempt.detail),order=this.db.prepare('SELECT detail FROM journal WHERE action_id=?').get('order:'+payload.orderId) as {detail:string}|undefined;
     if(!order||Buffer.byteLength(order.detail)>65536)throw Error('reporting trade order absent');
     const expected=reportingFilledTrade(trade.actionId,attempt.at,payload,JSON.parse(order.detail),this.actionResult(trade.actionId));
     if(!expected||!isDeepStrictEqual(trade,expected))throw Error('reporting trade durable evidence mismatch');
+    this.reportingReadScope?.verifiedTrades.set(trade.actionId,freezeReportingValue(structuredClone(trade)));
   }
   recordReportingTrades(trades:readonly ReportingFilledTrade[]):ReportingTradeCache {
     const state=this.state();
@@ -1271,7 +1326,8 @@ export class PaperLedger {
     // Validate each supplied row even when optional explanations make the full
     // presentation exceed its byte budget. Durable actions are never pruned.
     for(const trade of trades)validateReportingTradeCache({schemaVersion:1,accountId:state.accountId,inceptionAt:state.inceptionAt,windowLimited:false,trades:[trade]},state.accountId,state.inceptionAt,state.lastAt);
-    return this.db.transaction(()=>{
+    const result=this.db.transaction(()=>{
+      this.assertReportingHead();
       const previous=this.getReportingTrades(),byId=new Map(previous.trades.map(row=>[row.actionId,row]));
       for(const trade of trades){this.validateReportingTrade(trade);const old=byId.get(trade.actionId);if(old&&!isDeepStrictEqual(old,trade))throw Error('reporting trade cache conflict');byId.set(trade.actionId,structuredClone(trade));}
       const sorted=[...byId.values()].sort((a,b)=>Date.parse(b.at)-Date.parse(a.at)||a.actionId.localeCompare(b.actionId)),next:ReportingTradeCache={...previous,windowLimited:previous.windowLimited||sorted.length>50,trades:sorted.slice(0,50)};
@@ -1280,6 +1336,7 @@ export class PaperLedger {
       if(!isDeepStrictEqual(previous,next))this.db.prepare("INSERT INTO metadata VALUES('reporting_trades',?) ON CONFLICT(key) DO UPDATE SET value=excluded.value").run(JSON.stringify(next));
       return next;
     }).immediate();
+    return this.rememberReportingTrades(result);
   }
   /** O(1) lookup of a durable idempotent result; no state or journal mutation. */
   actionResult(id: string): unknown | undefined {
@@ -1414,6 +1471,7 @@ export class PaperLedger {
    * SQLite snapshot and zero unresolved obligations precede the append. No
    * historical row, identity, cost metadata, or lifetime counter is rewritten. */
   async beginAuthorizedTenSolEpoch(input:{authorization:typeof PAPER_TEN_SOL_EPOCH_AUTHORIZATION;price:UsdPrice;backupDirectory:string;assetDisposition?:typeof PAPER_EPOCH_ASSET_SEGREGATION},clock:()=>number=Date.now):Promise<{epoch:PaperEpoch;backup:PaperEpochBackupReceipt;alreadyApplied:boolean}> {
+    this.requireFinancialMutationOutsideReport();
     if(input.authorization!==PAPER_TEN_SOL_EPOCH_AUTHORIZATION)throw Error('PAPER_EPOCH_OWNER_AUTHORIZATION_REQUIRED');
     const id='epoch:'+PAPER_TEN_SOL_EPOCH_ID,existing=this.state();
     if(existing.paperEpoch){this.validateEpochAnchor(existing);const prior=this.actionResult(id) as {epoch:PaperEpoch;backup:PaperEpochBackupReceipt};return {...structuredClone(prior),alreadyApplied:true};}
@@ -1441,6 +1499,7 @@ export class PaperLedger {
    * The old epoch, latches, policies and every lifetime row remain recoverable.
    * Reruns return the original receipt without another contribution or reset. */
   async beginAuthorizedV3TenSolEpoch(input:{authorization:typeof PAPER_V3_TEN_SOL_EPOCH_AUTHORIZATION;price:UsdPrice;backupDirectory:string;assetDisposition?:typeof PAPER_EPOCH_ASSET_SEGREGATION},clock:()=>number=Date.now):Promise<{epoch:V3PaperEpoch;backup:PaperEpochBackupReceipt;alreadyApplied:boolean;riskPolicy:typeof PAPER_V3_EQUITY_RISK_POLICY;equityRisk:EquityRiskState}> {
+    this.requireFinancialMutationOutsideReport();
     if(input.authorization!==PAPER_V3_TEN_SOL_EPOCH_AUTHORIZATION)throw Error('PAPER_V3_EPOCH_OWNER_AUTHORIZATION_REQUIRED');
     const id='epoch:'+PAPER_V3_TEN_SOL_EPOCH_ID,existing=this.state();
     if(existing.paperEpoch?.id===PAPER_V3_TEN_SOL_EPOCH_ID){
@@ -1465,10 +1524,11 @@ export class PaperLedger {
     });
     this.validateEpochAnchor(this.state());return {...result,alreadyApplied:false};
   }
-  async backup(path: string) { await this.db.backup(path); }
+  async backup(path: string) { this.requireFinancialMutationOutsideReport();await this.db.backup(path); }
   nextSnapshotSequence() {
     this.state();
     return this.db.transaction(() => {
+      this.assertReportingHead();
       const row = this.db.prepare("SELECT value FROM metadata WHERE key='snapshot_sequence'").get() as { value: string } | undefined;
       if (row && !/^(0|[1-9][0-9]{0,39})$/.test(row.value)) throw new Error('reporting sequence metadata invalid');
       const next = (BigInt(row?.value ?? '0') + 1n).toString();
@@ -1530,11 +1590,12 @@ export class PaperLedger {
     }).immediate();
   }
   getOperatingReportingHistory():OperatingReportingHistory {
+    if(this.reportingReadScope?.history)return this.reportingReadScope.history;
     const inceptionAt=this.state().inceptionAt,size=this.db.prepare('SELECT length(CAST(value AS BLOB)) size FROM metadata WHERE key=?').get(REPORTING_OPERATING_HISTORY_KEY) as {size:number}|undefined;
-    if(!size)return {schemaVersion:2,basis:OPERATING_REPORTING_BASIS,cutoverAt:null,firstObservedAt:null,points:[{at:inceptionAt,tradingMicroUsd:'0',economicMicroUsd:null}],windowLimited:false,downsampled:false};
+    if(!size)return this.rememberReportingHistory({schemaVersion:2,basis:OPERATING_REPORTING_BASIS,cutoverAt:null,firstObservedAt:null,points:[{at:inceptionAt,tradingMicroUsd:'0',economicMicroUsd:null}],windowLimited:false,downsampled:false});
     if(size.size>262144)throw Error('operating reporting history metadata limit');
     const row=this.db.prepare('SELECT value FROM metadata WHERE key=?').get(REPORTING_OPERATING_HISTORY_KEY) as {value:string};
-    return validateOperatingReportingHistory(JSON.parse(row.value),inceptionAt);
+    return this.rememberReportingHistory(validateOperatingReportingHistory(JSON.parse(row.value),inceptionAt));
   }
   /** Only reporting metadata is written. observedAt is the actual source
    * observation time; historical null markers denote absence, not old prices. */
@@ -1543,8 +1604,9 @@ export class PaperLedger {
     if(!Number.isSafeInteger(observedAt)||observedAt<point.at)throw Error('operating reporting observation time');
     const inceptionPoint=point.at===inceptionAt&&point.tradingMicroUsd==='0'&&point.economicMicroUsd===null;
     if(!inceptionPoint&&point.at<observedAt&&(point.tradingMicroUsd!==null||point.economicMicroUsd!==null))throw Error('operating reporting data cannot be backdated');
-    return this.db.transaction(()=>{
-      const h=this.getOperatingReportingHistory(),last=h.points.at(-1)!;
+    const result=this.db.transaction(()=>{
+      this.assertReportingHead();
+      const h=structuredClone(this.getOperatingReportingHistory()),last=h.points.at(-1)!;
       if(point.at<last.at)throw Error('operating reporting point regression');
       if(point.at===last.at){if(point.tradingMicroUsd!==last.tradingMicroUsd||point.economicMicroUsd!==last.economicMicroUsd)throw Error('operating reporting point conflict');return h;}
       if(h.cutoverAt===null)h.cutoverAt=observedAt;
@@ -1560,6 +1622,7 @@ export class PaperLedger {
       const validated=validateOperatingReportingHistory(h,inceptionAt),body=JSON.stringify(validated);if(Buffer.byteLength(body)>262144)throw Error('operating reporting history metadata limit');
       this.db.prepare('INSERT INTO metadata VALUES(?,?) ON CONFLICT(key) DO UPDATE SET value=excluded.value').run(REPORTING_OPERATING_HISTORY_KEY,body);return validated;
     }).immediate();
+    return this.rememberReportingHistory(result);
   }
   projection(now: number, price?: UsdPrice, marks: Record<string, Mark> = {}) {
     const s = this.state();
@@ -1612,6 +1675,7 @@ export class PaperLedger {
   }
   integrity() { return this.db.pragma('integrity_check', { simple: true }); }
   close() {
+    this.requireFinancialMutationOutsideReport();
     try { this.db.close(); }
     finally { if (this.ownerFd !== undefined) { closeSync(this.ownerFd); this.ownerFd = undefined; } }
   }
