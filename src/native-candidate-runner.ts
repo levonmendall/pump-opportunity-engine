@@ -236,6 +236,14 @@ export class NativeCandidateRunner{
   return {version:'native-candidate-preparation-v1' as const,scope:'CURRENT_SOURCE_INSTANCE' as const,sourceInstanceId:this.runScope,runId:this.options.runId??null,startedAt:this.preparationStartedAt,generatedAt:at,state,currentMint:this.preparationMint,qualificationOnly:this.preparationQualificationOnly,admissionStage:this.preparationQualificationOnly?'pre-discovery-qualification' as const:'age-qualified-observation' as const,freshPreparedCount:fresh.length,stalePreparedCount:stale,preparedSupportExpiresAt:fresh.length?Math.min(...fresh.map(s=>Math.min(s.at+30000,s.summary.marketClockUnixSeconds*1000+30000))):null,readinessReason:fresh.length?'FRESH_SUPPORT_AWAITING_ALLOCATION':stale?'PREPARED_SUPPORT_EXPIRED':this.preparationMint&&this.candidates.has(this.preparationMint)?'PREPARATION_CONSUMED_BY_ALLOCATION':'NO_FRESH_PREPARED_SUPPORT',counters:{...this.preparationCounters},lastOutcome:this.preparationOutcome?{...this.preparationOutcome}:null,progress:{...this.preparationProgress}};
  }
  private record(kind:string,data:unknown){this.options.record(kind,data);}
+ /** A durable completed-evaluation gate already requires genuinely new
+  * information. A second fixed timer delays a recovered candidate without
+  * adding evidence. Physical provider cooldowns and subscription settlement
+  * remain independently enforced by their actual owners. */
+ private revisitDelay(mint:string,legacyDelayMs:number){
+  const candidate=this.candidates.get(mint),gate=this.watch.lookupIdentity(mint,this.now())?.reobservation;
+  return this.currentPoolObservation&&candidate&&gate&&gate.ready===null&&gate.decisionAt>=candidate.allocatedAt?0:legacyDelayMs;
+ }
  private noteFailure(kind:NativeCandidateFailureKind,mint:string|undefined,reason:unknown,at:number,c?:Candidate,target?:{end:number;deadlineAt:number},result?:NativeFlowAuditResult){
   const end=target?.end??c?.auditSession?.windowEndAt??c?.lastReadyWindowEnd,trace=c?.auditDispatch&&c.auditDispatch.windowEndAt===end?c.auditDispatch:undefined,deadlineAt=target?.deadlineAt??c?.auditSession?.deadlineAt??trace?.deadlineAt;
   if(mint){this.productivity.unusable(mint,at,String(reason));if(end)this.productivity.failed(mint,end,at,kind,String(reason));if(c&&(end||this.currentPoolObservation&&PRE_OBSERVATION_POOL_REFUSALS.has(String(reason)))&&(this.watch.lookupIdentity(mint,at)?.verifiedAt!==null||this.currentPoolObservation))this.watch.noteEvaluation(mint,{kind:'technical-unavailable',windowEndAt:end||null,evidence:end?String(reason).slice(0,512):JSON.stringify({reason:String(reason),pool:c.identity.pool,supportRefusedAt:at,completedWindow:false})},at);}
@@ -534,7 +542,7 @@ export class NativeCandidateRunner{
     // Acquire the existing immediate writer lease before any callback mutates
     // counters, slot state or flow ownership. Only refusal before that callback
     // is retried; storage/logic failures retain their ordinary recovery path.
-    this.registry.transaction(()=>{callbackStarted=true;const row=pending.row;this.counters.qualityGaps++;this.noteFailure('quality-gap',row.mint,row.reason,row.at,row.mint?this.candidates.get(row.mint):undefined);this.record('native-candidate-quality-gap',{...row,freshWindowRequired:true,financialExecutionAuthorized:false});for(const target of targets){const gate=this.watch.lookupIdentity(target.mint,this.now())?.reobservation;this.retire(target.mint,row.reason,Math.max(row.at,this.now()),this.currentPoolObservation&&PRE_OBSERVATION_POOL_REFUSALS.has(row.reason)&&gate?.kind==='technical-unavailable'&&gate.windowEndAt===null?0:30000);}});
+    this.registry.transaction(()=>{callbackStarted=true;const row=pending.row;this.counters.qualityGaps++;for(const target of targets)this.noteFailure('quality-gap',target.mint,row.reason,row.at,target.candidate);this.record('native-candidate-quality-gap',{...row,freshWindowRequired:true,financialExecutionAuthorized:false});for(const target of targets)this.retire(target.mint,row.reason,Math.max(row.at,this.now()),this.revisitDelay(target.mint,30000));});
     this.pendingGapRetirements.shift();
    }catch(error){if(callbackStarted||!isMarketRegistryContention(error)){this.pendingGapRetirements.shift();throw error;}if(!pending.contentionReported){pending.contentionReported=true;this.record('native-candidate-gap-retirement-deferred',{at:this.now(),mints:targets.map(t=>t.mint),reason:'MARKET_REGISTRY_CONTENTION',sqliteCode:error.sqliteCode,callbackStarted:false,pendingRetirementRetained:true,providerRequestStarted:false,financialExposure:false});}return false;}
   }
@@ -870,7 +878,7 @@ export class NativeCandidateRunner{
   let callbackStarted=false;
   try{this.registry.transaction(()=>{
    callbackStarted=true;delete c.auditSession;c.nextAuditAt=Math.max(c.nextAuditAt,end+PROVISIONAL_RULE.bucketMs);
-   if(!diagnostic){this.finishAuditDispatch(c,error??'NATIVE_AUDIT_SESSION_UNAVAILABLE');this.counters.auditUnavailable++;this.noteFailure('audit-unavailable',mint,error??'NATIVE_AUDIT_SESSION_UNAVAILABLE',this.now(),c,{end,deadlineAt:active.deadlineAt});c.auditFailures++;this.record('native-candidate-window-audit-unavailable',{mint,at:this.now(),targetEndAt:end,reason:error??'NATIVE_AUDIT_SESSION_UNAVAILABLE',deadlineAt:active.deadlineAt,partialHistoryNeverComplete:true});if(c.auditFailures>=3)this.retire(mint,error??'NATIVE_AUDIT_SESSION_UNAVAILABLE',this.now(),15000);return;}
+   if(!diagnostic){this.finishAuditDispatch(c,error??'NATIVE_AUDIT_SESSION_UNAVAILABLE');this.counters.auditUnavailable++;this.noteFailure('audit-unavailable',mint,error??'NATIVE_AUDIT_SESSION_UNAVAILABLE',this.now(),c,{end,deadlineAt:active.deadlineAt});c.auditFailures++;this.record('native-candidate-window-audit-unavailable',{mint,at:this.now(),targetEndAt:end,reason:error??'NATIVE_AUDIT_SESSION_UNAVAILABLE',deadlineAt:active.deadlineAt,partialHistoryNeverComplete:true});if(c.auditFailures>=3)this.retire(mint,error??'NATIVE_AUDIT_SESSION_UNAVAILABLE',this.now(),this.revisitDelay(mint,15000));return;}
    const currentGeneration=sameGeneration();
    // A known gap in this same generation still requires retirement after its
    // decision deadline. A late verified result never gains financial freshness.
@@ -905,7 +913,7 @@ export class NativeCandidateRunner{
   if(this.candidates.get(mint)!==c)return;
   if(!this.observationMember(c,availableAt)){this.retire(mint,'audit result lost deep-observation membership; fresh allocation required',availableAt,0);return;}
   if(sessionFailure){this.counters.predictiveUnavailable++;this.noteFailure('predictive-unavailable',mint,sessionFailure,availableAt,c,{end,deadlineAt:end+NATIVE_CANDIDATE_AUDIT_PROFILE.maximumAuditSpanMs},result);this.record('native-predictive-unavailable',{mint,at:availableAt,reason:sessionFailure,targetEndAt:end,auditPreserved:true});return;}
-  if(result.status!=='verified'){if(result.status==='unusable'){this.counters.auditUnusable++;this.noteFailure('audit-unusable',mint,result.reason,availableAt,c,{end,deadlineAt:end+NATIVE_CANDIDATE_AUDIT_PROFILE.maximumAuditSpanMs},result);this.onGap({mint,at:availableAt,reason:result.reason});}else{this.counters.auditUnavailable++;this.noteFailure('audit-unavailable',mint,result.reason,availableAt,c,{end,deadlineAt:end+NATIVE_CANDIDATE_AUDIT_PROFILE.maximumAuditSpanMs},result);c.auditFailures++;if(c.auditFailures>=3)this.retire(mint,result.reason,availableAt,15000);}return;}
+  if(result.status!=='verified'){if(result.status==='unusable'){this.counters.auditUnusable++;this.noteFailure('audit-unusable',mint,result.reason,availableAt,c,{end,deadlineAt:end+NATIVE_CANDIDATE_AUDIT_PROFILE.maximumAuditSpanMs},result);this.onGap({mint,at:availableAt,reason:result.reason});}else{this.counters.auditUnavailable++;this.noteFailure('audit-unavailable',mint,result.reason,availableAt,c,{end,deadlineAt:end+NATIVE_CANDIDATE_AUDIT_PROFILE.maximumAuditSpanMs},result);c.auditFailures++;if(c.auditFailures>=3)this.retire(mint,result.reason,availableAt,this.revisitDelay(mint,15000));}return;}
   const current=this.options.flow.snapshot(mint,availableAt);
   if(!current?.warm||!current.features||current.features.windowEndAt!==end){this.counters.predictiveUnavailable++;this.noteFailure('predictive-unavailable',mint,'AUDIT_COMPLETED_AFTER_DECISION_BUCKET',availableAt,c,{end,deadlineAt:end+NATIVE_CANDIDATE_AUDIT_PROFILE.maximumAuditSpanMs},result);this.record('native-predictive-unavailable',{mint,at:availableAt,reason:'audit-completed-after-target-window-decision-bucket',targetEndAt:end,currentEndAt:current?.features?.windowEndAt??null,auditPreserved:true});return;}
   this.watch.noteWindow(mint,availableAt);
@@ -939,7 +947,7 @@ export class NativeCandidateRunner{
    const currentGeneration=()=>{const view=this.options.flow.snapshot(mint,this.now());return this.candidates.get(mint)===c&&c.openedAt===generation.openedAt&&view?.scope.mint===mint&&view.scope.pool===generation.pool&&view.openedAt===generation.openedAt&&view.connectionId===generation.connectionId&&view.subscription===generation.subscription;};
    if(!currentGeneration())return;
    try{if(admittedCertificate)this.options.onAuditAvailable?.(structuredClone(admittedCertificate));}
-   finally{if(retireAfterNotification&&currentGeneration())this.retire(mint,'audited predictive observation completed; fair watch revisit',availableAt,this.options.activeStrategy===LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION&&activeAssessment.status==='failed'?0:30000);}
+   finally{if(retireAfterNotification&&currentGeneration())this.retire(mint,'audited predictive observation completed; fair watch revisit',availableAt,this.options.activeStrategy===LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION&&activeAssessment.status==='failed'?0:this.revisitDelay(mint,30000));}
   });
  }
  private async evaluate(c:Candidate,deadlineAt:number,signal?:AbortSignal){

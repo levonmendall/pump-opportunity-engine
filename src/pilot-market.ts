@@ -379,7 +379,7 @@ export class PilotMarket {
       need(required.toString()===plan.depositLamports,'PILOT_MARKET_ENTRY_DEPOSIT_MISMATCH');currentCosts();
       input.minSlot=this.floor(input.mint,input.minSlot);
       attempt.phase='pool-state';const state=await this.pricer.quoteBuy({mint:new PublicKey(input.mint),buyLamports:integer(input.inputUnits),minSlot:input.minSlot},signal);
-      if(state.baseAssociatedAccount.accountLengthBytes!==plan.accountLengths.base||state.quoteAssociatedAccount.accountLengthBytes!==plan.accountLengths.quote||plan.layout&&(plan.layout.generation!==generation||plan.layout.pool!==state.pool||plan.layout.tokenProgram!==state.tokenProgram)){this.preparationLayouts.delete(input.mint);this.preparationRents.clear();throw Error('PILOT_MARKET_ACCOUNT_LENGTH');}
+      if(state.baseAssociatedAccount.accountLengthBytes!==plan.accountLengths.base||state.quoteAssociatedAccount.accountLengthBytes!==plan.accountLengths.quote||plan.layout&&(plan.layout.generation!==generation||plan.layout.pool!==state.pool||plan.layout.tokenProgram!==state.tokenProgram)){this.clearPreparation(input.mint);throw Error('PILOT_MARKET_ACCOUNT_LENGTH');}
       currentCosts();
       attempt.phase='freshness';const at=this.freshClock(state,input.mint,signal);need(generation===this.generation&&this.freshPlan(input.mint).evidence===plan.evidence&&state.slot>=this.floor(input.mint,input.minSlot),'PILOT_MARKET_ENTRY_STATE_CHANGED');
       const costs={depositLamports:required.toString(),plan:accountPlan,rents,rentObservationsByBytes,rentSource:reusePreparation?'validated-entry-preparation':'fresh-quote-rent',preparationEvidence:plan.evidence,preparationAt:plan.at,rentMaximumAgeMs:PILOT_ENTRY_PREPARATION_POLICY.stableReuseMaxAgeMs,gas:this.options.gas,gasLamports:this.gasLamports,classification:'simulated' as const};
@@ -394,7 +394,7 @@ export class PilotMarket {
       this.freshClock(state,input.mint,signal);currentCosts();need(generation===this.generation&&this.freshPlan(input.mint).evidence===plan.evidence&&state.slot>=this.floor(input.mint,input.minSlot),'PILOT_MARKET_ENTRY_STATE_CHANGED');
       this.entryRepriceSources.set(input.mint,{quote:structuredClone(q),state:structuredClone(state),generation,planEvidence:plan.evidence,accountPlanAt:accountPlan.at});
       this.entrySnapshots.set(input.mint,structuredClone(q));return q;
-    }catch(error){if(error instanceof Error&&['POOL_LINKS_CHANGED','BAD_VAULT_ADDRESS','UNSUPPORTED_TOKEN_PROGRAM','QUOTE_PROGRAM_NOT_LEGACY_SOL'].includes(error.message)){this.preparationLayouts.delete(request.mint);this.preparationRents.clear();}this.entryQuoteFailure(attempt,error);return null;}
+    }catch(error){if(error instanceof Error&&['POOL_LINKS_CHANGED','BAD_VAULT_ADDRESS','UNSUPPORTED_TOKEN_PROGRAM','QUOTE_PROGRAM_NOT_LEGACY_SOL'].includes(error.message))this.clearPreparation(request.mint);this.entryQuoteFailure(attempt,error);return null;}
   }
   /** A smaller decision-size quote from the baseline's already validated bank
    * state. This performs SDK arithmetic and unsigned construction only. Original
