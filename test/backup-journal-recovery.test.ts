@@ -84,7 +84,7 @@ function coldJournal(path:string){
   assert.ok(raw.length>512,'a real committed PERSIST journal remains');
   assert.ok(raw.subarray(0,8).equals(Buffer.alloc(8)),'SQLite invalidated the cold journal header');
 }
-type CrashReady={kind:'hot';mode:'financial'|'empty-copy';pendingBytes:number;journalBytes:number;totalPages?:number;remainingPages?:number};
+type CrashReady={kind:'hot';mode:'financial'|'empty-copy';pendingBytes:number;journalBytes:number;journalHeaderHex:string;totalPages?:number;remainingPages?:number;cacheSize?:number};
 /** The child is killed with SIGKILL, not worker.terminate(): SQLite cannot run
  * connection finalizers or JavaScript cleanup and remove/rollback this journal. */
 async function crashWithHotJournal(pending:string,mode:CrashReady['mode'],sourcePath?:string):Promise<CrashReady>{
@@ -93,11 +93,15 @@ async function crashWithHotJournal(pending:string,mode:CrashReady['mode'],source
     "import {chmodSync,lstatSync,readFileSync,writeSync} from 'node:fs';",
     'const [pending,mode,sourcePath]=process.argv.slice(1);',
     "const magic=Buffer.from('d9d505f920a163d7','hex');",
+    'let lastPartial=null,maxPendingBytes=0,maxJournalBytes=0;',
     'function pin(extra={}){',
     "  let raw;try{raw=readFileSync(pending+'-journal');}catch{return false;}",
+    '  const journalHeaderHex=raw.subarray(0,28).toString("hex");',
+    "  const pendingBytes=lstatSync(pending).size;maxPendingBytes=Math.max(maxPendingBytes,pendingBytes);maxJournalBytes=Math.max(maxJournalBytes,raw.length);",
+    "  lastPartial={pendingBytes,journalBytes:raw.length,maxPendingBytes,maxJournalBytes,journalHeaderHex,...extra};",
     '  if(raw.length<=512||!raw.subarray(0,8).equals(magic))return false;',
     "  chmodSync(pending,0o600);chmodSync(pending+'-journal',0o600);",
-    "  writeSync(1,JSON.stringify({kind:'hot',mode,pendingBytes:lstatSync(pending).size,journalBytes:raw.length,...extra})+'\\n');",
+    "  writeSync(1,JSON.stringify({kind:'hot',mode,...lastPartial})+'\\n');",
     '  Atomics.wait(new Int32Array(new SharedArrayBuffer(4)),0,0);',
     "  throw new Error('DISPOSABLE unexpected crash barrier resume');",
     '}',
@@ -113,11 +117,12 @@ async function crashWithHotJournal(pending:string,mode:CrashReady['mode'],source
     "    if(!pin())throw new Error('SQLite did not spill a real hot financial journal');",
     "  }else if(mode==='empty-copy'){",
     '    const db=new Database(sourcePath,{readonly:true,fileMustExist:true});',
+    '    const cacheSize=db.pragma("cache_size",{simple:true});',
     '    await db.backup(pending,{progress(progress){',
-    '      if(progress.remainingPages>0)pin({totalPages:progress.totalPages,remainingPages:progress.remainingPages});',
+    '      if(progress.remainingPages>0)pin({totalPages:progress.totalPages,remainingPages:progress.remainingPages,cacheSize});',
     '      return 16;',
     '    }});',
-    "    throw new Error('SQLite backup completed before leaving a hot destination journal');",
+    "    throw new Error('SQLite backup completed before leaving a hot destination journal: '+JSON.stringify(lastPartial));",
     "  }else throw new Error('closed fixture mode required');",
     "}catch(error){writeSync(1,JSON.stringify({kind:'error',message:String(error)})+'\\n');process.exit(1);}",
   ].join('\n');
@@ -165,13 +170,25 @@ function assertRequiresRollback(f:Fixture){
 }
 async function seedEmptyCrash(f:Fixture){
   const db=(f.ledger as unknown as {db:Database.Database}).db;
-  db.transaction(()=>{for(let i=0;i<6000;i++)f.ledger.pause('DISPOSABLE-copy-history-'+i,AT+i+1,'DISPOSABLE copy history '+'.'.repeat(470));})();
-  // Exceed the default destination pager cache so a partial native backup must spill before commit.
-  assert.ok(Number(db.pragma('page_count',{simple:true}))*Number(db.pragma('page_size',{simple:true}))>4*1024*1024,'real financial fixture exceeds the destination cache');
+  // The pinned addon compiles SQLITE_DEFAULT_CACHE_SIZE=-16000, not SQLite's upstream default.
+  const pageSize=Number(db.pragma('page_size',{simple:true})),cacheSize=Number(db.pragma('cache_size',{simple:true}));
+  assert.equal(cacheSize,-16000,'the pinned native backup destination uses this compiled default');
+  const destinationCacheBytes=-cacheSize*1024,targetBytes=destinationCacheBytes+8*1024*1024;
+  let rows=0;
+  db.transaction(()=>{
+    while(rows<40_000&&Number(db.pragma('page_count',{simple:true}))*pageSize<=targetBytes){
+      for(let i=0;i<500&&rows<40_000;i++,rows++)f.ledger.pause('DISPOSABLE-copy-history-'+rows,AT+rows+1,'DISPOSABLE copy history '+'.'.repeat(470));
+    }
+  })();
+  const sourceBytes=Number(db.pragma('page_count',{simple:true}))*pageSize;
+  assert.ok(sourceBytes>targetBytes&&sourceBytes<32*1024*1024,'bounded real financial fixture exceeds the actual destination cache with spill headroom');
   writeFileSync(f.pending,'',{mode:0o600,flag:'wx'});
   const ready=await crashWithHotJournal(f.pending,'empty-copy',f.path);
+  assert.equal(ready.cacheSize,cacheSize);assert.ok(ready.journalHeaderHex.startsWith(MAGIC.toString('hex')));
   assert.ok(ready.totalPages!>100&&ready.remainingPages!>0,'the killed native backup really had uncopied pages');
-  const originals=originalFamily(f),path=copyFamilyToProbe(f,'empty-rollback-probe'),probe=new Database(path,{fileMustExist:true});
+  console.log(JSON.stringify({...ready,kind:'POE_DISPOSABLE_INTERRUPTED_BACKUP_FIXTURE',rows,sourceBytes,destinationCacheBytes}));
+  const originals=originalFamily(f);assertRequiresRollback(f);
+  const path=copyFamilyToProbe(f,'empty-rollback-probe'),probe=new Database(path,{fileMustExist:true});
   try{
     assert.equal(probe.pragma('integrity_check',{simple:true}),'ok');
     assert.equal((probe.prepare('SELECT count(*) AS count FROM sqlite_schema').get() as {count:number}).count,0);
