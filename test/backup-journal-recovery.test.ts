@@ -453,3 +453,46 @@ test('journal recovery diagnostics retain closed reasons and original phase whil
     assert.deepEqual(Object.keys(projected).sort(),['code','errorSha256','financialFailure','phase','sqliteCode','version']);
   }
 });
+
+test('copy-error abort preserves its real cold-journal family for ordinary recovery and a new validated backup',async t=>{
+  const f=setup(t),good=await f.store.create(f.ledger),before=sourceState(f),goodHash=hash(good.path);
+  let originals:Original[]=[];
+  await assert.rejects(f.store.create({
+    state:()=>f.ledger.state(),
+    async backup(path){
+      assert.equal(path,f.pending);await f.ledger.backup(path);coldJournal(path);
+      originals=originalFamily(f);assert.ok(originals.some(x=>x.suffix==='-journal'));
+      throw new Error('DISPOSABLE source-copy callback failure after journal creation');
+    },
+  }),/DISPOSABLE source-copy callback failure/);
+  assert.ok(originals.length>=2);preserved(f,originals);
+  assert.equal(existsSync(f.pending),true);assert.equal(existsSync(f.pending+'-journal'),true);
+  assert.equal(hash(good.path),goodHash);assert.deepEqual(sourceState(f),before);
+  const recovered=await f.store.maintainPending();assert.ok(recovered);
+  preserved(f,originals,true);assert.deepEqual(backupState(recovered.path),before.state);
+  const fresh=await f.store.create(f.ledger);
+  assert.deepEqual(backupState(fresh.path),before.state);assert.equal(f.store.latest().backup?.path,fresh.path);
+  preserved(f,originals,true);assert.deepEqual(sourceState(f),before);
+});
+
+test('copy-error abort preserves an unsafe journal path and never follows its outside target',async t=>{
+  const f=setup(t),good=await f.store.create(f.ledger),before=sourceState(f),goodHash=hash(good.path);
+  const outside=join(f.dir,'DISPOSABLE-outside-abort-journal');
+  writeFileSync(outside,'DISPOSABLE external evidence',{mode:0o600});const outsideHash=hash(outside);
+  let pendingHash:string|undefined,pendingInode:bigint|undefined;
+  await assert.rejects(f.store.create({
+    state:()=>f.ledger.state(),
+    async backup(path){
+      await f.ledger.backup(path);
+      pendingHash=hash(path);pendingInode=lstatSync(path,{bigint:true}).ino;
+      symlinkSync(outside,path+'-journal');
+      throw new Error('DISPOSABLE source-copy callback failure with unsafe journal');
+    },
+  }),/DISPOSABLE source-copy callback failure/);
+  assert.equal(hash(f.pending),pendingHash);assert.equal(lstatSync(f.pending,{bigint:true}).ino,pendingInode);
+  assert.equal(lstatSync(f.pending+'-journal').isSymbolicLink(),true);assert.equal(readlinkSync(f.pending+'-journal'),outside);
+  assert.equal(hash(outside),outsideHash);assert.equal(hash(good.path),goodHash);
+  await assert.rejects(f.store.maintainPending(),/private|canonical/);
+  assert.equal(hash(f.pending),pendingHash);assert.equal(hash(outside),outsideHash);
+  assert.equal(lstatSync(f.pending+'-journal').isSymbolicLink(),true);assert.deepEqual(sourceState(f),before);
+});

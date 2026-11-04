@@ -169,6 +169,12 @@ pending database; it must never be removed or separated as guessed cleanup.
 A journal's name or size does not establish whether it is hot or whether its
 database is a valid financial backup.
 
+If ordinary copy failure reaches abort cleanup while any pending journal path
+exists, cleanup preserves the whole pending file family. Unsafe or unreadable
+journal metadata also preserves the family; cleanup must not strand a journal
+by first deleting its database. The existing cleanup remains unchanged when
+the journal path is confirmed absent.
+
 The recovery worker uses the existing exclusive backup-operation lease and a
 single fixed private recovery capsule. It records the exact original file
 family in a durable manifest and preserves that family together. SQLite may

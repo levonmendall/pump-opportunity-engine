@@ -588,7 +588,12 @@ export class FinancialBackupStore{
     }
     // Only this operation's incomplete inode is disposable; completed/foreign
     // files and a validated copy awaiting promotion are always preserved.
-    try{const current=lstatSync(staged.path);if(!staged.validated&&current.dev===staged.own.dev&&current.ino===staged.own.ino){for(const suffix of ['-wal','-shm','']){const path=staged.path+suffix;try{const s=lstatSync(path);if(s.isFile()&&!s.isSymbolicLink()&&s.uid===process.getuid?.()&&s.nlink===1&&(s.mode&0o077)===0)unlinkSync(path);}catch{}}}}catch{}
+    try{const current=lstatSync(staged.path);if(!staged.validated&&current.dev===staged.own.dev&&current.ino===staged.own.ino){
+      // Any journal path (including unsafe or unreadable metadata) belongs to
+      // an uncertain family. Never strand it by removing its database first.
+      let journalAbsent=false;try{lstatSync(staged.path+'-journal');}catch(error){journalAbsent=error instanceof Error&&'code'in error&&error.code==='ENOENT';}
+      if(journalAbsent)for(const suffix of ['-wal','-shm','']){const path=staged.path+suffix;try{const s=lstatSync(path);if(s.isFile()&&!s.isSymbolicLink()&&s.uid===process.getuid?.()&&s.nlink===1&&(s.mode&0o077)===0)unlinkSync(path);}catch{}}
+    }}catch{}
     this.staged=undefined;return null;
   }
   /** Explicitly complete a crash-left staging artifact only after identity checks. */

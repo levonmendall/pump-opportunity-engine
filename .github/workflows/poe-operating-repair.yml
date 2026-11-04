@@ -36,6 +36,10 @@ jobs:
           git merge-base --is-ancestor 19b2aaa0b716a18758a473c7e9f5b7ebf99ca25b HEAD
           npm ci --include=dev 2>&1 | tee /tmp/poe-throughput-validation/dependencies.log
           test -z "$(git status --porcelain)"
+      - name: Reproduce interrupted backup recovery and refusal boundaries
+        run: |
+          set -euo pipefail
+          node --import tsx --test --test-concurrency=1 test/backup-journal-recovery.test.ts 2>&1 | tee /tmp/poe-throughput-validation/backup-journal-recovery.log
       - name: Compile and run every application and reporting regression
         run: |
           set -euo pipefail
