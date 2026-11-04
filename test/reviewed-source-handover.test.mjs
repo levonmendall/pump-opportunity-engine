@@ -394,7 +394,7 @@ test('authenticated H4 to H5 preserves durable lifetime history across two fresh
 });
 
 test('exact installed H5 advances only to H6 without resetting account, epoch, original clocks or large sequence',()=>{
- assert.equal(p.readinessReporting,'8e1f09b01f06fc01d4bcc014961f367c15ad35b4');assert.equal(p.to,'e017e93bf369f227d87c08e5bbb663b0dd5099de');assert.match(p.to,/^[a-f0-9]{40}$/);assert.notEqual(p.to,p.readinessReporting);
+ assert.equal(p.readinessReporting,'8e1f09b01f06fc01d4bcc014961f367c15ad35b4');assert.equal(p.to,'8334f5a56d01706cbdacc019bbc1fe76a136df24');assert.match(p.to,/^[a-f0-9]{40}$/);assert.notEqual(p.to,p.readinessReporting);
  const c=new SnapshotCache({...identity(),release:p.readinessReporting});assert.equal(attachReviewedSourceHandover(c),true);
  const prior={...sample('9007199254741000',p.readinessReporting,T-120000),financialEpoch:v3Epoch()};c.accept(prior,T);const before=c.read(),history=c.equityHistory();
  for(const mutate of [s=>{s.account.id='other';},s=>{s.account.inceptionAt='2026-10-27T22:07:36.212Z';},s=>{s.source.strategy='other';},s=>{s.sequence=prior.sequence;},s=>{s.sequence='9007199254740999';},s=>{delete s.financialEpoch;},s=>{s.financialEpoch=s.financialEpoch.priorEpoch;},s=>{s.financialEpoch.priorEpoch.backupSha256='e'.repeat(64);},s=>{s.liveTrading=true;},s=>{s.source.release='f'.repeat(40);},s=>{s.times.generatedAt=iso(T+30001);}]){
