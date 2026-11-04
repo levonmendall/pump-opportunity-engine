@@ -1388,3 +1388,16 @@ test('an open source-information gate never authorizes a history dispatch when d
  try{f.importActual();await f.runner.step();f.advance(70000);f.refresh();f.setAllow(false);await f.runner.step();assert.equal(f.rpcCalls.length,0);assert.equal(f.runner.status().counters.auditedWindows,0);}
  finally{await f.runner.stop();}
 });
+
+test('releasing only transient financial priority preserves an original certified observation through a real peer audit turn',async()=>{
+ const {f,mint,certificate}=await completedFinancialFixture();try{
+  const priority=new Set([mint]);(f.runner as any).options.financialEvaluationPending=(selected:string)=>priority.has(selected);
+  f.advance(Math.max(0,certificate.windowEndAt+3500-f.now));f.setHeadroom(10000);
+  assert.equal(f.runner.hasPendingFinancialEvaluation(f.now),true);const original=structuredClone(f.runner.currentAuditCertificate(mint,f.now));
+  priority.delete(mint);assert.equal(f.runner.hasPendingFinancialEvaluation(f.now),false);
+  await f.runner.step();assert.deepEqual(f.runner.currentAuditCertificate(mint,f.now),original,'scheduling priority owns neither certificate nor physical generation');
+  assert.ok(f.runner.status().candidates.some(row=>row.mint===mint));assert.equal(f.runner.financialAdmission(certificate,1200,f.now).admitted,true);
+  priority.add(mint);assert.equal(f.runner.hasPendingFinancialEvaluation(f.now),true,'still-current evidence can compete again after external stable preparation progresses');
+  f.advance(certificate.deadlineAt-f.now+1);assert.equal(f.runner.currentAuditCertificate(mint,f.now),null);assert.equal(f.runner.financialAdmission({...certificate,deadlineAt:f.now+10000},1,f.now).admitted,false,'later priority cannot extend or replace immutable evidence');
+ }finally{await f.runner.stop();}
+});

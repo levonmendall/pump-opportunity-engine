@@ -79,6 +79,7 @@ export class MarketRegistry {
   this.db=new Database(path);this.db.pragma('journal_mode = WAL');this.db.pragma('synchronous = FULL');this.db.pragma('busy_timeout = 25');this.db.pragma('foreign_keys = ON');
   this.db.exec(`
    CREATE TABLE IF NOT EXISTS registry_metadata(key TEXT PRIMARY KEY,body TEXT NOT NULL);
+   CREATE TABLE IF NOT EXISTS market_feed_receipts_v1(source TEXT NOT NULL,at INTEGER NOT NULL,connected INTEGER NOT NULL,scope TEXT NOT NULL,PRIMARY KEY(source,at,connected,scope));
    CREATE TABLE IF NOT EXISTS pumpswap_hint_tokens(mint TEXT PRIMARY KEY,first_seen_at INTEGER NOT NULL);
    CREATE TABLE IF NOT EXISTS observation_preparations(mint TEXT PRIMARY KEY,pool TEXT NOT NULL,checked_at INTEGER NOT NULL,state TEXT NOT NULL,reason TEXT NOT NULL,source_slot INTEGER);
    CREATE INDEX IF NOT EXISTS observation_preparations_state ON observation_preparations(state,mint);
@@ -952,7 +953,16 @@ export class MarketRegistry {
  retentionStatus(){const totals=this.getMetadata<CandidateRetentionTotals>('candidateRetention')??{last:null,retiredHistoryRows:0,compactedWatchRows:0,retiredBodyBytes:0};return {policy:CANDIDATE_RETENTION_POLICY,...totals,retiredBytesMeaning:'Logical removed body bytes; SQLite pages are reusable and file size may not shrink immediately.',reusablePages:Number(this.db.pragma('freelist_count',{simple:true})),pageBytes:Number(this.db.pragma('page_size',{simple:true}))};}
  observeActivityBatch(inputs:ActivityInput[]):void{this.transaction(()=>{for(const input of inputs)this.observeActivity(input);});}
  observeFeed(feed:MarketFeedStatus):void{this.recordFeed(feed);}
- recordFeed(feed:MarketFeedStatus):void{this.write(()=>{need((FEEDS as readonly string[]).includes(feed.source)&&integer(feed.at),'MARKET_REGISTRY_FEED');const scope=SCOPES.includes(feed.scope)?feed.scope:feed.source==='pumpportal-new-token'?'CREATION_HINTS':feed.source==='pumpportal-migration'?'MIGRATION_HINTS':'SHARED_ACTIVITY_HINTS';this.statement('INSERT INTO market_feeds(source,connected,last_observed_at,scope,coverage_gaps,last_gap_at) VALUES(?,?,?,?,?,?) ON CONFLICT(source) DO UPDATE SET connected=excluded.connected,last_observed_at=MAX(last_observed_at,excluded.last_observed_at),scope=excluded.scope,coverage_gaps=coverage_gaps+CASE WHEN connected=1 AND excluded.connected=0 THEN 1 ELSE 0 END,last_gap_at=CASE WHEN connected=1 AND excluded.connected=0 THEN excluded.last_observed_at ELSE last_gap_at END').run(feed.source,feed.connected?1:0,feed.at,scope,feed.connected?0:1,feed.connected?null:feed.at);});}
+ /** Replayed original receipts cannot regress a newer connection state or
+  * count the same gap twice. Keep only current-clock transition identities;
+  * strictly older receipts are already superseded by the retained feed row. */
+ recordFeed(feed:MarketFeedStatus):void{this.write(()=>{
+  need((FEEDS as readonly string[]).includes(feed.source)&&integer(feed.at),'MARKET_REGISTRY_FEED');const scope=SCOPES.includes(feed.scope)?feed.scope:feed.source==='pumpportal-new-token'?'CREATION_HINTS':feed.source==='pumpportal-migration'?'MIGRATION_HINTS':'SHARED_ACTIVITY_HINTS';
+  const previous=this.statement('SELECT last_observed_at FROM market_feeds WHERE source=?').get(feed.source) as {last_observed_at:number}|undefined;if(previous&&feed.at<previous.last_observed_at)return;
+  if(!this.statement('INSERT OR IGNORE INTO market_feed_receipts_v1(source,at,connected,scope) VALUES(?,?,?,?)').run(feed.source,feed.at,feed.connected?1:0,scope).changes)return;
+  this.statement('INSERT INTO market_feeds(source,connected,last_observed_at,scope,coverage_gaps,last_gap_at) VALUES(?,?,?,?,?,?) ON CONFLICT(source) DO UPDATE SET connected=excluded.connected,last_observed_at=MAX(last_observed_at,excluded.last_observed_at),scope=excluded.scope,coverage_gaps=coverage_gaps+CASE WHEN connected=1 AND excluded.connected=0 THEN 1 ELSE 0 END,last_gap_at=CASE WHEN connected=1 AND excluded.connected=0 THEN excluded.last_observed_at ELSE last_gap_at END').run(feed.source,feed.connected?1:0,feed.at,scope,feed.connected?0:1,feed.connected?null:feed.at);
+  this.statement('DELETE FROM market_feed_receipts_v1 WHERE source=? AND at<?').run(feed.source,feed.at);
+ });}
  /** First-observed unique-identity cohort and first local classification
   * completions, not market activity messages or repeated screens. */
  cohortCounts(startedAt:number,untilAt:number):{discoveredDistinct:number;lightweightArrivals:number;lightweightCompleted:number}{
