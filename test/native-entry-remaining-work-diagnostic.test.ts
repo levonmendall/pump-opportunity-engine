@@ -30,17 +30,18 @@ async function preparationCase(input:{permission?:string;nativeAt?:number;staleZ
  const c=certificate(),{engine,admissions}=realEngine(c,input.nativeAt??null),events:any[]=[],handoff=new NativeFinancialHandoff('offline',0,4,(_,value)=>events.push(value));
  handoff.observe(AT-1,[c]);const target={mint:c.mint,openedAt:c.openedAt,windowEndAt:c.windowEndAt,deadlineAt:c.deadlineAt,certificate:c};engine.financialPreparationTargets=()=>[target];
  let preparationReads=0,invalidations=0,providerCalls=0,clockReads=0;
+ const observations=Object.freeze({layout:Object.freeze({requestedAt:AT-150,receivedAt:AT-100}),shortRent:Object.freeze({requestedAt:AT-8900,receivedAt:AT-8800}),otherRent:Object.freeze({requestedAt:AT-150,receivedAt:AT-100})}),preparationRequests:Array<{mint:string;observedAt:number;requiredValidThroughAt:number}>=[];
  const context:any={__name:(v:unknown)=>v,Date:{now:()=>++clockReads===1?AT:AT+(input.deferDelayMs??0)},service:true,serviceGeneration:1,
   args:{strategy:LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION},LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION,
   currentEngine:engine,currentLedger:{state:()=>({positions:{},pending:{}})},currentBridge:{ownership:()=>false},
   financialCapacityReason:()=>input.permission??null,sourceAdmission:()=>true,lowerView:()=>({admitted:true}),
-  market:{entryPreparationStatus:()=>{preparationReads++;return input.staleZeroRead&&!invalidations?{remainingReads:0,quoteReads:2,expiresAt:AT+1200,ready:true,state:'ready'}:{remainingReads:3,quoteReads:2,expiresAt:null,ready:false,state:'layout-required'};},invalidateEntryPreparation:()=>{invalidations++;},prepareEntryCostTurn:async()=>{providerCalls++;throw Error('must not invoke an infeasible turn');}},
+  market:{entryPreparationStatus:(mint:string,observedAt:number,requiredValidThroughAt=observedAt)=>{preparationReads++;preparationRequests.push({mint,observedAt,requiredValidThroughAt});if(!input.staleZeroRead)return {remainingReads:3,quoteReads:2,expiresAt:null,ready:false,state:'layout-required'};const expiresAt=observations.shortRent.receivedAt+10000,short=expiresAt<Math.max(observedAt,requiredValidThroughAt);return {remainingReads:short?1:0,quoteReads:2,expiresAt,ready:!short,state:short?'rent-required':'ready'};},invalidateEntryPreparation:()=>{invalidations++;},prepareEntryCostTurn:async()=>{providerCalls++;throw Error('must not invoke an infeasible turn');}},
   currentRpc:{usage:()=>({})},nativePaperRemainingEntryWork,nativePaperManagementReserve:()=>({entryAllowed:true}),NATIVE_DEADLINE_POLICY,
   financialHandoff:handoff,nativePaperHandoffCategory,candidate:c.mint,handoffCertificate:c,preparationRequired:true,
   workOwner:{enter:()=>{throw Error('no ownership change on refusal');}},record:()=>{throw Error('no per-loop runtime record');},AbortController};
  const snippets=preparationSnippet();
  await runInNewContext('(async()=>{'+snippets.preparation+'for(let once=0;once<1;once++){'+snippets.handoff+'}})()',context,{timeout:1000});
- return {c,events,handoff,admissions,preparationReads,invalidations,providerCalls};
+ return {c,events,handoff,admissions,preparationReads,invalidations,providerCalls,observations,preparationRequests};
 }
 
 test('actual refused preparation retains original whole plan and admitted operation without pretending the sequence fits',async()=>{
@@ -83,9 +84,12 @@ test('an actual native deadline refusal retains its original binding deadline an
  assert.equal(row.remainingWork.certificate.deadlineAt,AT+3000,'native deadline never overwrites original certificate expiry');assert.equal(f.providerCalls,0);
 });
 
-test('existing stale-cache invalidation retains the recomputed refused plan without extending expiry',async()=>{
- const f=await preparationCase({staleZeroRead:true}),row=f.events[0];assert.equal(f.invalidations,1);assert.equal(f.preparationReads,2);assert.equal(f.admissions.length,1);
- assert.equal(row.remainingWork.plan.preparationReads,3);assert.equal(row.remainingWork.plan.preparationExpiresAt,null);assert.equal(row.remainingWork.plan.remainingSequenceMs,6550);assert.equal(row.remainingWork.certificate.deadlineAt,f.c.deadlineAt);
+test('a known short rent is replanned at the original decision horizon without blanket invalidation or timestamp renewal',async()=>{
+ const f=await preparationCase({staleZeroRead:true}),row=f.events[0];assert.equal(f.events.length,1);assert.equal(f.invalidations,0,'a known insufficient rent does not discard valid layout or peer facts');assert.equal(f.preparationReads,3);assert.equal(f.admissions.length,1);assert.equal(f.providerCalls,0,'the full remaining sequence must fit before a physical refresh starts');
+ assert.deepEqual(f.preparationRequests,[{mint:f.c.mint,observedAt:AT,requiredValidThroughAt:AT},{mint:f.c.mint,observedAt:AT,requiredValidThroughAt:AT+2775},{mint:f.c.mint,observedAt:AT,requiredValidThroughAt:AT+4475}]);
+ const work=row.remainingWork;assert.equal(work.sampledAt,AT);assert.equal(work.plan.at,AT);assert.equal(work.plan.prepared,false);assert.equal(work.plan.preparationReads,1);assert.equal(work.plan.quoteReads,2);assert.equal(work.plan.preparationWorkMs,1700);assert.equal(work.plan.decisionWorkMs,2650);assert.equal(work.plan.remainingSequenceMs,4350);assert.equal(work.plan.maximumAccountedStarts,3);assert.equal(work.plan.preparationExpiresAt,AT+1200,'the too-short original observation keeps its original expiry');
+ assert.deepEqual(f.observations,{layout:{requestedAt:AT-150,receivedAt:AT-100},shortRent:{requestedAt:AT-8900,receivedAt:AT-8800},otherRent:{requestedAt:AT-150,receivedAt:AT-100}});assert.equal(work.admission.admitted,true,'one1700ms read fits, while the full4350ms sequence does not');assert.equal(row.blockingPrerequisite,'ORIGINAL_CERTIFICATE_DEADLINE');assert.equal(row.operation,'ENTRY_PREPARATION');assert.equal(row.requiredMs,1700);assert.equal(row.availableMs,350);assert.equal(work.certificate.deadlineAt,AT+3000);assert.equal(row.financialPermission,false);assert.equal(f.handoff.usage(AT).dispatched,0);assert.equal(f.handoff.usage(AT).financialEvaluations,0);
+ f.handoff.observe(f.c.deadlineAt+1,[]);const expired=f.events.at(-1);assert.equal(expired.stage,'expired-before-dispatch');assert.equal(expired.remainingWork.plan.preparationExpiresAt,AT+1200);assert.equal(expired.remainingWork.sampledAt,AT);assert.equal(expired.remainingWork.certificate.deadlineAt,f.c.deadlineAt);assert.equal(f.providerCalls,0);assert.equal(f.invalidations,0);
 });
 
 test('coalescing stores immutable last original work for expiry without changing public schema or emitting per-loop records',()=>{
