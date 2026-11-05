@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {NativeFinancialHandoff,type HandoffCertificate} from '../src/native-financial-handoff.js';
+import {NativeFinancialHandoff,nativeFinancialCertificateReceipt,type HandoffCertificate} from '../src/native-financial-handoff.js';
 import {nativePaperFeaturesSha256} from '../src/native-paper-contract.js';
 import {FlowWindow} from '../src/strategy.js';
 const cert=(mint='A',end=1000):HandoffCertificate=>({mint,windowEndAt:end,deadlineAt:end+9999,admittedAt:end+100,openedAt:0,featuresSha256:'a'.repeat(64)});
@@ -40,4 +40,30 @@ test('preliminary, mismatched, late and unusable events do not become economic h
  for(const mutate of [(e:any)=>e.stage='preliminary',(e:any)=>e.technicalFailure=true,(e:any)=>e.decision.kind='missing-data',(e:any)=>e.runId='other-run',(e:any)=>e.mint='22222222222222222222222222222222',(e:any)=>e.features.windowEndAt+=10000,(e:any)=>e.features.largestBuyerBps=1,(e:any)=>e.at=60100-1,(e:any)=>e.at=c.deadlineAt+1,(e:any)=>e.features={windowEndAt:c.windowEndAt},(e:any)=>delete e.decision.qualified]){
   const h=new NativeFinancialHandoff('run',0,4);h.observe(60020,[c]);h.dispatch(c,60100);const bad=structuredClone(event);mutate(bad);assert.equal(h.observeEconomicDecision('native-opportunity-evaluation',bad),false);h.complete(c,60300,1);assert.equal(h.usage(60300).economicDecisions,0);assert.equal(h.usage(60300).financialEvaluations,1);
  }
+});
+
+test('every terminal retains the same immutable original certificate even without a remaining-work sample',()=>{
+ for(const outcome of ['completed','expired','invalidated']as const){
+  const c=cert(),original=structuredClone(c),events:any[]=[],h=new NativeFinancialHandoff('run',0,4,(_,row)=>events.push(row));h.observe(1200,[c]);
+  if(outcome==='completed'){h.dispatch(c,1300);h.complete(c,1600,1,0);}
+  else h.observe(outcome==='expired'?c.deadlineAt+1:1300,[]);
+  const terminal=events.at(-1),diagnostic=nativeFinancialCertificateReceipt(original);
+  assert.deepEqual(terminal.certificate,original);assert.equal(terminal.certificateIdentitySha256,diagnostic.certificateIdentitySha256);assert.equal(terminal.firstSeenAt,1200);assert.equal(terminal.financialPermission,false);
+  if(outcome==='completed'){assert.equal(terminal.dispatchWaitMs,200);assert.equal(terminal.decisionElapsedMs,300);assert.equal(terminal.completedBeforeOriginalDeadline,true);}
+  else assert.equal(terminal.remainingWork,null);
+  assert.deepEqual(c,original);assert.equal(h.usage(20000).active.length,0);
+ }
+ const c=cert();assert.notEqual(nativeFinancialCertificateReceipt(c).certificateIdentitySha256,nativeFinancialCertificateReceipt({...c,admittedAt:c.admittedAt+1}).certificateIdentitySha256);assert.notEqual(nativeFinancialCertificateReceipt(c).certificateIdentitySha256,nativeFinancialCertificateReceipt({...c,deadlineAt:c.deadlineAt+1}).certificateIdentitySha256);
+});
+
+test('private terminal timing joins exact request plans and retains observed blocker intervals without changing public keys',()=>{
+ const c=cert(),events:any[]=[],h=new NativeFinancialHandoff('run',0,4,(_,row)=>events.push(row));h.observe(1200,[c]);
+ h.observeTiming('native-paper-request-plan',{at:1201,requestId:'run:request:1',mint:c.mint,owner:'source',method:'getMultipleAccounts',certificate:c,requestedOperationMs:1700});
+ h.observeTiming('native-paper-request-plan',{at:1202,requestId:'run:request:2',mint:c.mint,owner:'source',method:'getMultipleAccounts',certificate:{...c,featuresSha256:'b'.repeat(64)},requestedOperationMs:1700});
+ h.defer(c,'entry-preparation',1300,{blockingPrerequisite:'ENTRY_PREPARATION_PENDING',operation:'ENTRY_PREPARATION',requiredMs:1700,availableMs:9699});
+ h.defer(c,'required-service-or-protection-runway',1500,{blockingPrerequisite:'REQUIRED_NATIVE_SERVICE_DEADLINE',operation:'ENTRY_PREPARATION',requiredMs:1700,availableMs:9499});
+ const active=h.usage(1500).active[0]!;assert.equal('reasonMs'in active,false);assert.equal('requestIds'in active,false);assert.equal('certificateIdentitySha256'in active,false);
+ h.observe(c.deadlineAt+1,[]);const terminal=events.at(-1);
+ assert.equal(terminal.unobservedBeforeFirstSeenMs,100);assert.deepEqual(terminal.requestIds,['run:request:1']);assert.deepEqual(terminal.blockedMsByReason,{'await-financial-dispatch':100,'entry-preparation':200,'required-service-or-protection-runway':9499});
+ assert.equal(Object.values(terminal.blockedMsByReason).reduce((sum:any,n:any)=>sum+n,0),c.deadlineAt-1200);assert.equal(terminal.certificate.deadlineAt,c.deadlineAt);assert.equal(terminal.operation,'ENTRY_PREPARATION');assert.equal(terminal.physicalSettlementClaimed,undefined);
 });

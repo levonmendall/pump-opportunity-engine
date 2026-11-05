@@ -170,17 +170,56 @@ test('retiring or resetting a different candidate cannot revoke valid prepared c
  f.market.invalidateEntryPreparation(b);assert.equal(f.market.entryPreparationStatus(b).ready,false,'the matching generation still revokes reuse');
 });
 
+test('different mints share only fresh network rent facts, retaining their original receive clocks',async t=>{
+ const f=fixture(t,3000,false,false,true,true),a=f.captures[0]!.proof.quote.mint,b=f.captures[1]!.proof.quote.mint,ledger=f.ledger.state();
+ const first=await f.market.prepareEntryCosts(a,signal()),before=f.calls.length;
+ f.advance(500);const second=await f.market.prepareEntryCosts(b,signal()),newCalls=f.calls.slice(before);
+ const shared=Object.keys(second.rentLamportsByBytes).filter(bytes=>first.rentLamportsByBytes[bytes]!==undefined);assert.ok(shared.length>0);
+ assert.equal(second.rentReuseScope,'same-rpc-generation-confirmed-byte-length-original-10s');
+ for(const bytes of shared){assert.equal(newCalls.some(c=>c.method==='getMinimumBalanceForRentExemption'&&c.params[0]===Number(bytes)),false);assert.deepEqual(second.rentObservationsByBytes![bytes],first.rentObservationsByBytes![bytes]);}
+ assert.ok(newCalls.some(c=>c.method==='getMultipleAccounts'),'the peer still validates its own coherent layout');
+ assert.notEqual(first.layout!.pool,second.layout!.pool);assert.notEqual(first.evidence,second.evidence);assert.deepEqual(f.ledger.state(),ledger);
+ const rentCalls=()=>f.calls.filter(c=>c.method==='getMinimumBalanceForRentExemption').length;
+ const prior=rentCalls();f.market.invalidateEntryPreparation(a);await f.market.prepareEntryCosts(a,signal());assert.equal(rentCalls(),prior,'resetting a candidate does not revoke the still-fresh independent network fact');
+ f.advance(PILOT_ENTRY_PREPARATION_POLICY.stableReuseMaxAgeMs+1);await f.market.prepareEntryCosts(a,signal());assert.ok(rentCalls()>prior,'the original ten-second lifetime still forces a new rent read');
+ const afterExpiry=rentCalls();f.market.invalidate('OFFLINE source/RPC generation changed');await f.market.prepareEntryCosts(b,signal());assert.ok(rentCalls()>afterExpiry,'a new source generation cannot inherit rent');
+});
 
-test('rent-only continuation retains the second quote read after genuine source-cache invalidation',async t=>{
+test('a different validated account byte length cannot inherit another length rent value',async t=>{
+ const f=fixture(t,3000,false,false,true,true),a=f.captures[0]!.proof.quote.mint,b=f.captures[1]!.proof.quote.mint;
+ await f.market.prepareEntryCosts(a,signal());
+ // Exercise the cost-cache boundary with a deliberately synthetic validated
+ // length. SDK/on-chain support for this injected layout is not claimed.
+ const pricer=(f.market as unknown as {pricer:ResearchClockPositionPricer}).pricer,validate=pricer.validateMany.bind(pricer);
+ t.mock.method(pricer,'validateMany',async(...args:Parameters<ResearchClockPositionPricer['validateMany']>)=>{const value=await validate(...args),row=value.validations[b];if(row)row.summary.baseAssociatedAccount.accountLengthBytes=181;return value;});
+ const before=f.calls.length,plan=await f.market.prepareEntryCosts(b,signal());
+ assert.equal(plan.accountLengths.base,181);assert.ok(f.calls.slice(before).some(c=>c.method==='getMinimumBalanceForRentExemption'&&c.params[0]===181));
+ assert.equal(plan.rentLamportsByBytes['181'],'1000181');assert.equal(plan.rentObservationsByBytes!['181']!.receivedAt,f.now());
+});
+
+test('shared rent cache is bounded by existing observation support capacity and failed reads are never cached',async t=>{
+ const f=fixture(t,3000,false,false,true,true),mint=f.captures[0]!.proof.quote.mint,pricer=(f.market as unknown as {pricer:ResearchClockPositionPricer}).pricer,validate=pricer.validateMany.bind(pricer);let bytes=181;
+ // Synthetic supported-layout responses isolate the cache's size boundary;
+ // this does not assert SDK support for arbitrary account extensions.
+ t.mock.method(pricer,'validateMany',async(...args:Parameters<ResearchClockPositionPricer['validateMany']>)=>{const value=await validate(...args),row=value.validations[mint];if(row)row.summary.baseAssociatedAccount.accountLengthBytes=bytes;return value;});
+ const cache=(f.market as unknown as {preparationRents:Map<string,unknown>}).preparationRents;
+ for(bytes=181;bytes<194;bytes++){f.market.invalidateEntryPreparation(mint);await f.market.prepareEntryCosts(mint,signal());assert.ok(cache.size<=12);}
+ assert.equal(cache.size,12);bytes=181;f.market.invalidateEntryPreparation(mint);const before=f.calls.length;await f.market.prepareEntryCosts(mint,signal());assert.ok(f.calls.slice(before).some(row=>row.method==='getMinimumBalanceForRentExemption'&&row.params[0]===181),'an evicted size is physically read again');
+ bytes=205;f.market.invalidateEntryPreparation(mint);f.onRpc(method=>{if(method==='getMinimumBalanceForRentExemption')throw Error('OFFLINE_RENT_REFUSAL');});await assert.rejects(f.market.prepareEntryCosts(mint,signal()),/OFFLINE_RENT_REFUSAL/);f.onRpc(()=>{});
+ const failedAt=f.calls.length;await f.market.prepareEntryCosts(mint,signal());assert.ok(f.calls.slice(failedAt).some(row=>row.method==='getMinimumBalanceForRentExemption'&&row.params[0]===205),'a refused read grants no network fact to reuse');assert.ok(cache.size<=12);
+});
+
+
+test('shared rent support retains the second quote read after genuine source-cache invalidation',async t=>{
  const f=fixture(t,3000,false,false,true,true),a=f.captures[1]!.proof.quote.mint,b=f.captures[0]!.proof.quote.mint,beforeState=f.ledger.state();
  const first=await f.market.prepareEntryCostTurn(a,signal());assert.equal(first.status,'deferred');assert.equal(f.market.entryPreparationStatus(a).state,'rent-required');
  await f.market.prepareEntryCostTurn(b,signal());const retained=f.market.entryPreparationStatus(a);assert.equal(retained.state,'rent-required');assert.equal(retained.quoteReads,1,'preparing a peer preserves valid address links');
- const peerPlan=await f.market.prepareEntryCosts(b,signal());assert.deepEqual(f.market.entryPreparationStatus(a),retained,'peer rent reads preserve the original partial preparation');
+ const peerPlan=await f.market.prepareEntryCosts(b,signal()),shared=f.market.entryPreparationStatus(a);assert.equal(shared.ready,true,'the peer supplies the same fresh network rent facts');assert.equal(shared.expiresAt,retained.expiresAt,'the original layout clock is not extended');
  // A genuine failed source read still invalidates cached address links. Keep
  // the rent-only continuation regression without requiring obsolete eviction.
  f.onRpc(method=>{if(method==='getMultipleAccounts')throw Error('DISPOSABLE_TRANSPORT_FAILURE');});
  assert.equal(await f.market.quote({mint:b,side:'buy',inputUnits:'10000000',requiredDepositLamports:peerPlan.depositLamports},signal()),null);f.onRpc(()=>{});
- const remaining=f.market.entryPreparationStatus(a);assert.equal(remaining.state,'rent-required');assert.equal(remaining.quoteReads,2);assert.equal(remaining.expiresAt,retained.expiresAt);
+ const remaining=f.market.entryPreparationStatus(a);assert.equal(remaining.state,'ready');assert.equal(remaining.quoteReads,2);assert.equal(remaining.expiresAt,retained.expiresAt);
  const {nativePaperRemainingEntryWork}=await import('../src/run-native-paper.js'),work=nativePaperRemainingEntryWork({at:f.now(),owned:true,preparation:remaining});assert.equal(work.quoteReads,2);assert.equal(work.maximumAccountedStarts,remaining.remainingReads+4);
  while(!f.market.entryPreparationStatus(a).ready)await f.market.prepareEntryCostTurn(a,signal());assert.equal(f.market.entryPreparationStatus(a).quoteReads,2,'rent reads do not recreate pool links');
  const plan=await f.market.prepareEntryCosts(a,signal()),before=f.calls.length,q=await f.market.quote({mint:a,side:'buy',inputUnits:'10000000',requiredDepositLamports:plan.depositLamports},signal());assert.ok(q,JSON.stringify({failure:f.market.usage().entryQuoteFailures,records:f.records.slice(-5)}));assert.equal(f.calls.length-before,2);assert.equal(q.at,f.now());assert.deepEqual(f.ledger.state(),beforeState);

@@ -6,8 +6,10 @@ import {syncBuiltinESMExports} from 'node:module';
 import {createHash} from 'node:crypto';
 import {tmpdir} from 'node:os';
 import {join} from 'node:path';
+import bs58 from 'bs58';
 import {NativeFailureEvidence,NATIVE_FAILURE_EVIDENCE_POLICY as P,type NativeFailureIdentity} from '../src/native-failure-evidence.js';
 import {BoundedRotatingRecorder} from '../src/retained-recorder.js';
+import {NativeNotificationIngress} from '../src/native-notification-ingress.js';
 
 const ACCOUNT='poe-3123e352-4581-455b-85db-acd7e825e99e',START=1793653415048;
 const id=(startedAt=START,commit='a'.repeat(40)):NativeFailureIdentity=>({accountId:ACCOUNT,inceptionAt:1793052456212,configurationSha256:'c'.repeat(64),source:{commit,sha256:'b'.repeat(64)},startedAt,runId:'native-paper-'+new Date(startedAt).toISOString().replace(/[^0-9]/g,'')});
@@ -20,9 +22,16 @@ function fixture(t:TestContext){
 }
 function packet(at=START+1,n=1,logs=['Program log: Instruction: Sell']){return {signature:'2'.repeat(63)+(n%9+1),slot:464643630,receivedAt:at,logs,reason:'LOG_NATIVE_PROTOCOL_CHILD_SHAPE',supplementaryOnly:true};}
 function auditWitness(at:number,count=2){
- const alphabet='123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz',mint='3'.repeat(44),pool='4'.repeat(44),end=Math.floor((at-10)/10000)*10000;
- const rows=Array.from({length:count},(_,i)=>({signature:'5'.repeat(62)+alphabet[Math.floor(i/58)]!+alphabet[i%58]!,slot:200+i,success:true,blockTime:Math.floor((at-10000)/1000),confirmationStatus:'finalized'}));
+ const mint='3'.repeat(44),pool='4'.repeat(44),end=Math.floor((at-10)/10000)*10000;
+ const rows=Array.from({length:count},(_,i)=>({signature:bs58.encode(Buffer.alloc(64,i+1)),slot:200+i,success:true,blockTime:Math.floor((at-10000)/1000),confirmationStatus:'finalized'}));
  return {mint,availableAt:at,notBackdated:true,result:{status:'unusable',reason:'NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED',pool,target:{startAt:end-60000,endAt:end},startedAt:at-5,availableAt:at-1,strictInteriorSlots:{lower:100,upper:1000},historyRangeCovered:true,historyRows:300,interiorRows:299,requestAttempts:1,notificationSnapshot:{capturedAt:at-5,rows:297,requiredRows:297},postSnapshotTail:{generation:{mint,pool,openedAt:START,connectionId:3,subscriptionId:17},refreshedAt:at-2,rows:0},missingSuccessfulNotifications:rows,unknownSource:'https://SECRET',rawSuccessPayload:'SUCCESS_RAW_MUST_NOT_COPY'}};
+}
+function ingressWitness(event:ReturnType<typeof auditWitness>,count=1){
+ const router=new NativeNotificationIngress(START),generation=event.result.postSnapshotTail.generation;
+ for(let n=0;n<count;n++){
+  const missing=event.result.missingSuccessfulNotifications[n%event.result.missingSuccessfulNotifications.length]!,row=router.observe({body:{params:{subscription:generation.subscriptionId,result:{context:{slot:missing.slot},value:{signature:missing.signature,err:null}}}},receivedAt:event.result.target.startAt+100+n,routedAt:event.result.availableAt-1,connectionId:generation.connectionId,generation,stage:'INITIAL_CALLBACK'});router.finish(row,'ACTIVE_PROCESSOR');
+ }
+ return router.evidence({target:event.result.target,availableAt:event.result.availableAt,generation,missingSignatures:event.result.missingSuccessfulNotifications.slice(0,8).map(row=>row.signature),missingSignaturesTotal:event.result.missingSuccessfulNotifications.length},event.availableAt);
 }
 function emit(f:ReturnType<typeof fixture>,p=packet(f.at)){
  const rawHash=hash({signature:p.signature,slot:p.slot,err:null,logs:p.logs});
@@ -147,11 +156,48 @@ test('missing-success audit witness retains exact original scope and times witho
  const revision=out.revision;f.writer.observe('native-candidate-window-audit',{...event,result:{...event.result,status:'verified'}});f.writer.observe('native-candidate-window-audit',{...event,result:{...event.result,status:'unavailable'}});f.writer.observe('native-candidate-window-audit',{...event,result:{...event.result,missingSuccessfulNotifications:[]}});await f.writer.flush();assert.equal(f.read().revision,revision,'successful, unavailable and failed-only audits are not additional retained success archives');
 });
 
-test('audit witnesses deduplicate and share the original detail transport count and byte budgets',async t=>{
+test('rolling recent audit witnesses deduplicate within retention and share unchanged transport and byte budgets',async t=>{
  const f=fixture(t);f.advance(80000);const first=auditWitness(f.at);f.writer.observe('native-candidate-window-audit',first);f.writer.observe('native-candidate-window-audit',first);f.writer.observe('native-candidate-window-audit',first);
  for(let n=1;n<10;n++){f.advance(10000);f.writer.observe('native-candidate-window-audit',auditWitness(f.at));}
  for(let n=0;n<30;n++)f.writer.observe('native-flow-protocol-refused',{at:f.at,connection:n,reason:'NATIVE_FLOW_ROUND_TRIP_UNAVAILABLE',method:'PING'});
- await f.writer.flush();const out=f.read();assert.equal(out.auditSamples,P.maximumAuditSamples);assert.equal(out.counts.auditDuplicates,2);assert.equal(out.counts.auditSamplesOmitted,10-P.maximumAuditSamples);assert.equal(out.records.length,P.maximumTransportSamples);assert.ok(out.records.length<=40);assert.equal(f.writer.usage().transportSamples,P.maximumTransportSamples-P.maximumAuditSamples);assert.ok(out.detailRecordBytes<=P.maximumDetailBytes);assert.ok(lstatSync(f.path).size<=P.maximumFileBytes);
+ await f.writer.flush();const out=f.read();assert.equal(out.auditSamples,P.maximumAuditSamples);assert.equal(out.counts.auditDuplicates,2);assert.equal(out.counts.auditSamplesOmitted,0);assert.equal(out.counts.auditSamplesEvicted,10-P.maximumAuditSamples);assert.equal(out.policy.auditRetention,'LATEST_UNIQUE_CURRENT_RUN_ARRIVAL_ORDER');assert.equal(out.records.length,P.maximumTransportSamples);assert.ok(out.records.length<=40);assert.equal(f.writer.usage().transportSamples,P.maximumTransportSamples-P.maximumAuditSamples);assert.ok(out.detailRecordBytes<=P.maximumDetailBytes);assert.ok(lstatSync(f.path).size<=P.maximumFileBytes);
+ assert.deepEqual(out.records.filter((r:any)=>r.kind==='native-candidate-window-audit').map((r:any)=>r.eventAt),Array.from({length:8},(_,n)=>first.availableAt+(n+2)*10000));
+ f.writer.observe('native-candidate-window-audit',first);await f.writer.flush();assert.equal(f.read().counts.auditDuplicates,2,'evicted keys do not grow into a lifetime exclusion set');assert.equal(f.read().counts.auditSamplesEvicted,3);assert.equal(f.read().records.at(-1).eventAt,first.availableAt,'arrival-order policy retains the unchanged original event clock');
+});
+
+test('already emitted router matches retain exact original clocks, generation and diagnostic-only flags',async t=>{
+ const f=fixture(t);f.advance(80000);const original=auditWitness(f.at),source=ingressWitness(original),event={...original,notificationIngress:{...source,arbitraryUrl:'https://SECRET',rawLogs:['SUCCESS_RAW_MUST_NOT_COPY']}};
+ f.writer.observe('native-candidate-window-audit',event);source.matches[0]!.receivedAt=0;await f.writer.flush();const out=f.read(),record=out.records[0],ingress=record.data.notificationIngress;
+ assert.equal(ingress.kind,'NATIVE_MISSING_HISTORY_ROUTER_WITNESS');assert.deepEqual(ingress.target,original.result.target);assert.deepEqual(ingress.requestedGeneration,original.result.postSnapshotTail.generation);assert.equal(ingress.auditAvailableAt,original.result.availableAt);assert.equal(ingress.observedAt,event.availableAt);assert.equal(ingress.matches[0].receivedAt,original.result.target.startAt+100);assert.equal(ingress.matches[0].routedAt,original.result.availableAt-1);assert.equal(ingress.matches[0].disposition,'ACTIVE_PROCESSOR');assert.equal(ingress.matches[0].generationAtRoutingEqualsRequested,true);assert.equal(ingress.retainedRouterIntervalComplete,true);
+ for(const key of ['wholeSocketReceiptTrace','missingTransactionRelevanceEstablished','providerLossProved','localLossProved','financialQualification'])assert.equal(ingress[key],false);assert.equal(ingress.originalAuditOutcomeUnchanged,true);assert.equal(record.data.result.status,'unusable');assert.equal(record.data.result.executedFlowCompletenessVerified,false);assert.ok(!JSON.stringify(out).includes('SECRET'));assert.ok(!JSON.stringify(out).includes('SUCCESS_RAW_MUST_NOT_COPY'));assert.ok(Buffer.byteLength(JSON.stringify(record))<=P.maximumDetailRecordBytes);
+});
+
+test('bounded router match omissions and hashes remain explicit inside the original per-record cap',async t=>{
+ const f=fixture(t);f.advance(80000);const original=auditWitness(f.at,8),source=ingressWitness(original,16),before=structuredClone(source);f.writer.observe('native-candidate-window-audit',{...original,notificationIngress:source});await f.writer.flush();const record=f.read().records[0],ingress=record.data.notificationIngress;
+ assert.ok(Buffer.byteLength(JSON.stringify(record))<=P.maximumDetailRecordBytes);assert.equal(record.data.result.missingSuccessfulNotifications.length,8);assert.equal(ingress.sourceMatchesSha256,hash(before.matches));assert.ok(ingress.recordBudgetMatchesOmitted>0);assert.equal(ingress.matchingRows,16);
+ if(ingress.status==='SUMMARY_ONLY_RECORD_BUDGET'){assert.equal(ingress.matchingRowsOmitted,16);assert.match(ingress.sourceWitnessSha256,/^[a-f0-9]{64}$/);}else{assert.ok(ingress.matches.length<16);assert.equal(ingress.matchingRowsOmitted,16-ingress.matches.length);assert.equal(ingress.recordBudgetMatchesOmitted,16-ingress.matches.length);}
+ assert.deepEqual(source,before);assert.equal(ingress.providerLossProved,false);assert.equal(record.data.result.complete,false);assert.equal(f.read().counts.auditSamplesOmitted,0);
+});
+
+test('malformed or overstated router diagnostics cannot erase a valid refusal or claim financial authority',async t=>{
+ const f=fixture(t);f.advance(80000);
+ for(const change of ['generation','target','clock','provider','scope','oversized','interval']){
+  const original=auditWitness(f.at),source=ingressWitness(original);
+  if(change==='generation')source.requestedGeneration!.pool='8'.repeat(44);
+  if(change==='target')source.target.endAt++;
+  if(change==='clock')source.observedAt=f.at+1;
+  if(change==='provider')source.providerLossProved=true;
+  if(change==='scope')source.matches[0]!.generationAtRoutingEqualsRequested=false;
+  if(change==='oversized')source.matches=Array.from({length:17},()=>source.matches[0]!);
+  if(change==='interval')source.retention.clockFaults=1;
+  f.writer.observe('native-candidate-window-audit',{...original,notificationIngress:source});f.advance(10000);
+ }
+ await f.writer.flush();const out=f.read();assert.equal(out.auditSamples,7);assert.equal(out.counts.malformedSelectedEvents,0);for(const record of out.records){assert.equal(record.data.result.status,'unusable');assert.equal(record.data.notificationIngress.status,'UNAVAILABLE');assert.equal(record.data.notificationIngress.reason,'INGRESS_DIAGNOSTIC_SCHEMA_REFUSED');assert.equal(record.data.notificationIngress.financialQualification,false);}
+});
+
+test('recent audit evidence replaces old transport under shared capacity without increasing records or bytes',async t=>{
+ const f=fixture(t);f.advance(80000);for(let n=0;n<P.maximumTransportSamples;n++)f.writer.observe('native-flow-protocol-refused',{at:f.at,connection:n,reason:'NATIVE_FLOW_ROUND_TRIP_UNAVAILABLE',method:'PING'});
+ for(let n=0;n<10;n++){f.writer.observe('native-candidate-window-audit',auditWitness(f.at));f.advance(10000);}await f.writer.flush();const out=f.read();assert.equal(out.auditSamples,8);assert.equal(f.writer.usage().transportSamples,16);assert.equal(out.counts.transportSamplesEvictedForAudit,8);assert.equal(out.counts.auditSamplesEvicted,2);assert.equal(out.counts.auditSamplesOmitted,0);assert.equal(out.records.length,24);assert.ok(out.detailRecordBytes<=P.maximumDetailBytes);assert.ok(lstatSync(f.path).size<=P.maximumFileBytes);
 });
 
 test('audit witness refuses mismatched generations and malformed interior rows instead of inventing a usable trace',async t=>{

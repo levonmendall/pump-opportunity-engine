@@ -10,6 +10,7 @@ export const NATIVE_FAILURE_EVIDENCE_POLICY=Object.freeze({
  pendingFile:'native-failure-evidence.pending.json',maximumRawSamples:8,
  maximumRawBytes:512*1024,maximumTransportSamples:24,
  maximumAuditSamples:8,maximumMissingSignaturesPerAudit:8,
+ auditRetention:'LATEST_UNIQUE_CURRENT_RUN_ARRIVAL_ORDER',maximumIngressMatches:16,
  maximumDetailBytes:64*1024,maximumDetailRecordBytes:4096,maximumFileBytes:640*1024,
 });
 const P=NATIVE_FAILURE_EVIDENCE_POLICY;
@@ -53,9 +54,38 @@ function typed(input:Data,depth=0):{data:Data;omitted:number}{
  return {data,omitted};
 }
 
+/** The router has already emitted these bounded diagnostic identities. Copy
+ * only its typed fields; neither a match nor its absence supplies audit data. */
+function auditIngressWitness(input:unknown,context:{mint:string;pool:string;target:Data;generation:unknown;availableAt:number;missing:string[];total:number;capturedAt:number}):Data{
+ const unavailable=(reason:string)=>({kind:'NATIVE_MISSING_HISTORY_ROUTER_WITNESS',status:'UNAVAILABLE',reason,originalAuditOutcomeUnchanged:true,financialQualification:false});
+ try{
+  need(object(input),'INGRESS_OBJECT');
+  if(input.status==='UNAVAILABLE')return unavailable('INGRESS_DIAGNOSTIC_UNAVAILABLE');
+  const generation=(value:unknown):Data|null=>{if(value===null)return null;need(object(value)&&base58(value.mint)&&base58(value.pool)&&integer(value.openedAt)&&integer(value.connectionId)&&integer(value.subscriptionId),'INGRESS_GENERATION');return {mint:value.mint,pool:value.pool,openedAt:value.openedAt,connectionId:value.connectionId,subscriptionId:value.subscriptionId};};
+  const requested=generation(input.requestedGeneration),expected=generation(context.generation),same=(a:unknown,b:unknown)=>encode(a)===encode(b),target=input.target,interval=input.requestedRoutingInterval,retention=input.retention;
+  need(input.kind==='NATIVE_MISSING_HISTORY_ROUTER_WITNESS'&&input.version==='bounded-json-notification-router-v1'&&object(target)&&target.startAt===context.target.startAt&&target.endAt===context.target.endAt
+   &&input.auditAvailableAt===context.availableAt&&integer(input.observedAt)&&input.observedAt>=context.availableAt&&input.observedAt<=context.capturedAt&&same(requested,expected)
+   &&object(interval)&&interval.fromAt===(requested?.openedAt??context.target.startAt)&&interval.untilAt===context.availableAt
+   &&Array.isArray(input.missingSignatures)&&same(input.missingSignatures,context.missing)&&input.missingSignaturesTotal===context.total&&input.missingSignaturesOmitted===context.total-context.missing.length
+   &&object(retention)&&Array.isArray(input.matches)&&input.matches.length<=P.maximumIngressMatches,'INGRESS_SCOPE');
+  const retained:Data={};for(const key of ['startedAt','rowsObserved','retainedRows','evictedRows','initialCallbacks','earlyAckReplays','noncanonicalSignatures','clockFaults']){need(integer(retention[key]),'INGRESS_RETENTION');retained[key]=retention[key];}
+  need(retention.evictedThroughRoutedAt===null||integer(retention.evictedThroughRoutedAt),'INGRESS_RETENTION');retained.evictedThroughRoutedAt=retention.evictedThroughRoutedAt;
+  need(Number(retention.retainedRows)<=2048&&Number(retention.retainedRows)<=Number(retention.rowsObserved)&&integer(input.matchingRows)&&input.matchingRows>=input.matches.length&&input.matchingRowsOmitted===input.matchingRows-input.matches.length&&integer(input.retainedRowsForRequestedGeneration)&&input.retainedRowsForRequestedGeneration<=Number(retention.retainedRows)&&typeof input.retainedRouterIntervalComplete==='boolean','INGRESS_COUNTS');
+  need(input.retainedRouterIntervalComplete!==true||retention.clockFaults===0&&Number(retention.startedAt)<=Number(interval.fromAt)&&(retention.evictedThroughRoutedAt===null||Number(retention.evictedThroughRoutedAt)<Number(interval.fromAt)),'INGRESS_COMPLETE_ROUTER_INTERVAL');
+  const stages=new Set(['INITIAL_CALLBACK','EARLY_ACK_REPLAY']),dispositions=new Set(['ROUTING','ACTIVE_PROCESSOR','QUEUED_BEFORE_ACK','ACK_RETIRED','UNRECOGNIZED_SUBSCRIPTION','EARLY_QUEUE_CAPACITY','IGNORED_SUSPENDED','IGNORED_UNREGISTERED','ROUTER_REFUSED']),refusals=new Set(['NATIVE_FLOW_RPC_ENVELOPE','NATIVE_FLOW_NOTIFICATION_SCHEMA','NATIVE_FLOW_UNSCOPED_NOTIFICATION','NATIVE_FLOW_SIGNATURE','NATIVE_FLOW_CLEANUP_DEADLINE_OR_GENERATION','OTHER_ROUTER_REFUSAL']);
+  const matches=input.matches.map(raw=>{need(object(raw)&&integer(raw.sequence)&&raw.sequence>0&&typeof raw.signature==='string'&&context.missing.includes(raw.signature)&&integer(raw.connectionId)&&stages.has(String(raw.stage))&&dispositions.has(String(raw.disposition))&&(raw.refusalCode===null||refusals.has(String(raw.refusalCode))),'INGRESS_MATCH');
+   for(const key of ['slot','receivedAt','routedAt','subscriptionId'])need(raw[key]===null||integer(raw[key]),'INGRESS_MATCH_TIME');need(raw.success===null||typeof raw.success==='boolean','INGRESS_MATCH_STATUS');
+   const routedGeneration=generation(raw.generationAtRouting),equals=requested===null?null:requested!==null&&routedGeneration!==null&&same(requested,routedGeneration),afterAck=requested===null||raw.receivedAt===null?null:Number(raw.receivedAt)>=Number(requested.openedAt),inInterval=raw.routedAt!==null&&Number(raw.routedAt)>=Number(interval.fromAt)&&Number(raw.routedAt)<=context.availableAt;
+   need(raw.generationAtRoutingEqualsRequested===equals&&raw.receivedAfterRequestedAck===afterAck&&raw.inRequestedRoutingInterval===inInterval,'INGRESS_MATCH_BINDING');
+   return {sequence:raw.sequence,signature:raw.signature,slot:raw.slot,success:raw.success,receivedAt:raw.receivedAt,routedAt:raw.routedAt,connectionId:raw.connectionId,subscriptionId:raw.subscriptionId,generationAtRouting:routedGeneration,stage:raw.stage,disposition:raw.disposition,refusalCode:raw.refusalCode,generationAtRoutingEqualsRequested:equals,receivedAfterRequestedAck:afterAck,inRequestedRoutingInterval:inInterval};});
+  for(const key of ['wholeSocketReceiptTrace','missingTransactionRelevanceEstablished','providerLossProved','localLossProved','financialQualification'])need(input[key]===false,'INGRESS_NO_AUTHORITY');need(input.originalAuditOutcomeUnchanged===true,'INGRESS_NO_AUTHORITY');
+  return {kind:input.kind,version:input.version,target:{startAt:target.startAt,endAt:target.endAt},auditAvailableAt:input.auditAvailableAt,observedAt:input.observedAt,requestedGeneration:requested,requestedRoutingInterval:{fromAt:interval.fromAt,untilAt:interval.untilAt},missingSignatures:[...context.missing],missingSignaturesTotal:context.total,missingSignaturesOmitted:context.total-context.missing.length,retention:retained,matchingRows:input.matchingRows,matchingRowsOmitted:input.matchingRowsOmitted,retainedRowsForRequestedGeneration:input.retainedRowsForRequestedGeneration,retainedRouterIntervalComplete:input.retainedRouterIntervalComplete,matches,sourceMatchesSha256:digest(encode(matches)),recordBudgetMatchesOmitted:0,wholeSocketReceiptTrace:false,missingTransactionRelevanceEstablished:false,providerLossProved:false,localLossProved:false,financialQualification:false,originalAuditOutcomeUnchanged:true};
+ }catch{return unavailable('INGRESS_DIAGNOSTIC_SCHEMA_REFUSED');}
+}
+
 /** Compact failure witness only. No successful payload, arbitrary error text,
  * reconstructed packet receipt, or external-versus-local loss claim is copied. */
-function missingAuditWitness(value:Data):{data:Data;omitted:number}|null{
+function missingAuditWitness(value:Data,capturedAt:number):{data:Data;omitted:number}|null{
  const r=value.result;if(!object(r)||r.status!=='unusable'||r.reason!=='NATIVE_AUDIT_HISTORY_SIGNATURE_NOT_OBSERVED')return null;
  if(Array.isArray(r.missingSuccessfulNotifications)&&r.missingSuccessfulNotifications.length===0)return null;
  need(base58(value.mint)&&base58(r.pool)&&integer(value.availableAt)&&integer(r.startedAt)&&integer(r.availableAt)&&r.startedAt<=r.availableAt&&r.availableAt<=value.availableAt,'AUDIT_TIME');
@@ -80,7 +110,8 @@ function missingAuditWitness(value:Data):{data:Data;omitted:number}|null{
   postSnapshotTail:{generation:generation===null?null:{mint:generation.mint,pool:generation.pool,openedAt:generation.openedAt,connectionId:generation.connectionId,subscriptionId:generation.subscriptionId},refreshedAt:tail.refreshedAt,rows:tail.rows},
   missingSuccessfulNotifications:selected,missingSuccessfulNotificationsTotal:rows.length,missingSuccessfulNotificationsOmitted:rows.length-selected.length,
   missingSuccessfulNotificationsSha256:digest(encode(rows)),witnessOnly:true,sourceDeliveryCausality:'UNDETERMINED_NO_COMPLETE_RECEIPT_TRACE'};
- return {data:{at:value.availableAt,mint:value.mint,availableAt:value.availableAt,result},omitted:Object.keys(value).filter(key=>!['mint','availableAt','result'].includes(key)).length+Object.keys(r).filter(key=>!Object.hasOwn(result,key)).length};
+ const notificationIngress=value.notificationIngress===undefined?undefined:auditIngressWitness(value.notificationIngress,{mint:value.mint as string,pool:r.pool as string,target,generation,availableAt:r.availableAt as number,missing:selected.map(row=>row.signature as string),total:rows.length,capturedAt});
+ return {data:{at:value.availableAt,mint:value.mint,availableAt:value.availableAt,result,...(notificationIngress===undefined?{}:{notificationIngress})},omitted:Object.keys(value).filter(key=>!['mint','availableAt','result','notificationIngress'].includes(key)).length+Object.keys(r).filter(key=>!Object.hasOwn(result,key)).length};
 }
 
 /** The caller already holds the native-engine single-writer lease. Only these
@@ -94,7 +125,8 @@ export class NativeFailureEvidence {
  private raw:string[]=[];private details:string[]=[];private transport:string[]=[];private audits:string[]=[];
  private rawBytes=0;private detailBytes=0;private rawKeys=new Set<string>();private transportKeys=new Set<string>();
  private lastDetail:Stored|null=null;private auditKeys=new Set<string>();
- private counts={rawSamplesOmitted:0,rawDuplicates:0,detailRecordsOmitted:0,transportSamplesOmitted:0,transportDuplicates:0,auditSamplesOmitted:0,auditDuplicates:0,malformedSelectedEvents:0,ioFailures:0};
+ private auditOrderKeys:string[]=[];private transportOrderKeys:string[]=[];
+ private counts={rawSamplesOmitted:0,rawDuplicates:0,detailRecordsOmitted:0,transportSamplesOmitted:0,transportDuplicates:0,transportSamplesEvictedForAudit:0,auditSamplesOmitted:0,auditDuplicates:0,auditSamplesEvicted:0,malformedSelectedEvents:0,ioFailures:0};
  constructor(input:{directory:string;identity:NativeFailureIdentity;now?:()=>number}){
   this.now=input.now??Date.now;
   try{need(isAbsolute(input.directory)&&resolve(input.directory)===input.directory,'DIRECTORY_IDENTITY');need(identityValid(input.identity),'SOURCE_RUN_IDENTITY');this.directory=input.directory;const id=input.identity;this.identity={accountId:id.accountId,inceptionAt:id.inceptionAt,configurationSha256:id.configurationSha256,source:{commit:id.source.commit,sha256:id.source.sha256},runId:id.runId,startedAt:id.startedAt};this.schedule();}
@@ -176,14 +208,27 @@ export class NativeFailureEvidence {
    need(object(value),'EVENT_OBJECT');
    if(DETAIL.has(kind)){const projected=typed(value);this.lastDetail=this.stored(kind,projected.data,projected.omitted);return;}
    if(kind==='native-candidate-window-audit'){
-    const projected=missingAuditWitness(value);if(!projected)return;const result=projected.data.result as Data;
+    const projected=missingAuditWitness(value,this.now());if(!projected)return;const result=projected.data.result as Data;
     const key=encode([projected.data.mint,result.pool,result.target,(result.postSnapshotTail as Data).generation,result.missingSuccessfulNotificationsSha256]);
     if(this.auditKeys.has(key)){this.count('auditDuplicates');return;}
-    const text=encode(this.stored(kind,projected.data,projected.omitted)),bytes=Buffer.byteLength(text);
+    let text=encode(this.stored(kind,projected.data,projected.omitted)),bytes=Buffer.byteLength(text);const ingress=projected.data.notificationIngress as Data|undefined,sourceWitnessSha256=ingress?digest(encode(ingress)):undefined;
+    // The existing4KiB event limit remains authoritative. The source match
+    // hash covers every typed emitted match, including explicitly omitted rows.
+    while(bytes>P.maximumDetailRecordBytes&&ingress&&Array.isArray(ingress.matches)&&ingress.matches.length){ingress.matches.pop();ingress.recordBudgetMatchesOmitted=Number(ingress.recordBudgetMatchesOmitted)+1;ingress.matchingRowsOmitted=Number(ingress.matchingRowsOmitted)+1;text=encode(this.stored(kind,projected.data,projected.omitted));bytes=Buffer.byteLength(text);}
+    if(bytes>P.maximumDetailRecordBytes&&ingress&&Array.isArray(ingress.matches)){
+     projected.data.notificationIngress={kind:ingress.kind,version:ingress.version,status:'SUMMARY_ONLY_RECORD_BUDGET',sourceWitnessSha256,sourceMatchesSha256:ingress.sourceMatchesSha256,matchingRows:ingress.matchingRows,matchingRowsOmitted:ingress.matchingRows,recordBudgetMatchesOmitted:ingress.recordBudgetMatchesOmitted,wholeSocketReceiptTrace:false,providerLossProved:false,localLossProved:false,financialQualification:false,originalAuditOutcomeUnchanged:true};text=encode(this.stored(kind,projected.data,projected.omitted));bytes=Buffer.byteLength(text);
+    }
     // Share the original transport/detail budget so the existing exporter sees
     // no more than40 records and the same64KiB detail /640KiB file limits.
-    if(this.audits.length>=P.maximumAuditSamples||this.transport.length+this.audits.length>=P.maximumTransportSamples||bytes>P.maximumDetailRecordBytes||this.detailBytes+bytes>P.maximumDetailBytes){this.count('auditSamplesOmitted');return;}
-    this.audits.push(text);this.auditKeys.add(key);this.detailBytes+=bytes;
+    if(bytes>P.maximumDetailRecordBytes){this.count('auditSamplesOmitted');return;}
+    // Reserve no extra bytes or records. New audit witnesses replace the
+    // oldest audit at the audit cap, or oldest transport under shared pressure.
+    while(this.audits.length>=P.maximumAuditSamples||this.transport.length+this.audits.length>=P.maximumTransportSamples||this.detailBytes+bytes>P.maximumDetailBytes){
+     if(this.audits.length>=P.maximumAuditSamples||!this.transport.length&&this.audits.length){const old=this.audits.shift()!;this.auditKeys.delete(this.auditOrderKeys.shift()!);this.detailBytes-=Buffer.byteLength(old);this.counts.auditSamplesEvicted++;}
+     else if(this.transport.length){const old=this.transport.shift()!;this.transportKeys.delete(this.transportOrderKeys.shift()!);this.detailBytes-=Buffer.byteLength(old);this.counts.transportSamplesEvictedForAudit++;}
+     else{this.count('auditSamplesOmitted');return;}
+    }
+    this.audits.push(text);this.auditKeys.add(key);this.auditOrderKeys.push(key);this.detailBytes+=bytes;
    }else if(kind==='native-flow-raw-refusal'){
     need(value.supplementaryOnly===true&&Array.isArray(value.logs)&&value.logs.every(v=>typeof v==='string')&&integer(value.slot)&&integer(value.receivedAt)&&typeof value.reason==='string','EXPLICIT_RAW_REFUSAL');
     const envelope=encode({kind,data:value}),bytes=Buffer.byteLength(envelope),key=digest(envelope);
@@ -200,7 +245,7 @@ export class NativeFailureEvidence {
     const key=encode([kind,record.data.reasonSha256??record.data.reason??record.data.codeSha256??record.data.code??null,record.data.connectionId??record.data.connection??null,record.data.mint??record.data.subscriptionMint??null,record.data.pool??record.data.subscriptionPool??null]);
     if(this.transportKeys.has(key)){this.count('transportDuplicates');return;}
     if(this.transport.length+this.audits.length>=P.maximumTransportSamples||bytes>P.maximumDetailRecordBytes||this.detailBytes+bytes>P.maximumDetailBytes){this.count('transportSamplesOmitted');return;}
-    this.transport.push(text);this.detailBytes+=bytes;this.transportKeys.add(key);
+    this.transport.push(text);this.detailBytes+=bytes;this.transportKeys.add(key);this.transportOrderKeys.push(key);
    }
    this.revision++;this.schedule();
   }catch{this.count('malformedSelectedEvents');}

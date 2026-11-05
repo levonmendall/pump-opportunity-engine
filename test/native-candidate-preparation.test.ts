@@ -232,7 +232,10 @@ test('certified financial priority preserves existing ready audit work',async()=
  let due=false;const f=fixture({pumpswapOnly:true,financialEvaluationPending:()=>due});try{
   const first=f.seed(117),peer=f.seed(118);await f.steps(3);certifiedGeneration(f,[first,peer],[first]);due=true;const pending=pendingBirthLookup(f,119),evaluated:string[]=[];
   (f.runner as any).evaluate=async(candidate:{identity:{baseMint:string}})=>{evaluated.push(candidate.identity.baseMint);};
-  await f.steps();assert.deepEqual(evaluated,[peer]);assert.deepEqual(f.requests,[]);assert.equal(f.registry.tokenCreationRequestPending(pending.proof,f.now),false);assert.ok(f.runner.currentAuditCertificate(first,f.now));
+  const candidate=(f.runner as any).candidates.get(peer),openedAt=candidate.openedAt,nextAuditAt=candidate.nextAuditAt,session=candidate.auditSession,originalCertificate=f.runner.currentAuditCertificate(first,f.now),originalFeatures=(f.flow.snapshot(peer) as unknown as {features:{windowEndAt:number}}).features;
+  await f.steps();assert.deepEqual(evaluated,[],'the existing financial certificate precedes a peer audit dispatch');assert.deepEqual(f.requests,[]);assert.equal(f.registry.tokenCreationRequestPending(pending.proof,f.now),false);assert.ok(f.runner.currentAuditCertificate(first,f.now));
+  assert.equal((f.runner as any).candidates.get(peer),candidate);assert.equal(candidate.openedAt,openedAt);assert.equal(candidate.nextAuditAt,nextAuditAt);assert.equal(candidate.auditSession,session);assert.equal(candidate.lastReadyWindowEnd,originalFeatures!.windowEndAt);assert.equal(candidate.lastAssessmentEnd,0);assert.deepEqual(f.flow.snapshot(peer)!.features,originalFeatures,'waiting preserves the original ready feature window');assert.ok((f.runner as any).readyAudits(f.now).includes(candidate));assert.deepEqual(f.runner.currentAuditCertificate(first,f.now),originalCertificate);
+  due=false;await f.steps();assert.deepEqual(evaluated,[peer],'the same ready audit resumes after financial ownership releases priority');assert.deepEqual(f.requests,[]);assert.equal(candidate.openedAt,openedAt);assert.equal(f.registry.tokenCreationRequestPending(pending.proof,f.now),false);
  }finally{await f.close();}
 });
 
