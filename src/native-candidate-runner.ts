@@ -108,6 +108,7 @@ export class NativeCandidateRunner{
  private readonly audit:typeof auditNativeFlowWindow;private readonly resolve:typeof resolvePilotMigration;
  private registryHousekeepingDeferred=false;private registryAllocationCommitDeferred=false;
  private allocationBudgetYieldedMints:string[]=[];
+ private financialView:{at:number;snapshots:Map<string,ReturnType<Flow['snapshot']>>;certificates:Map<string,{candidate:Candidate;original:NativeAuditCertificate;value:NativeAuditCertificate|null}>;deadline:NativeDeadlineView|null}|null=null;
  private stopped=false;private working=false;private sourceAdmissionStopReason:string|null=null;private maximumSimultaneous=0;private lastDispatchAt=0;private lastOutcome:string|null=null;private nextCeilingRefreshAt=0;private lastAuditAt:number|null=null;private lastPredictiveAt:number|null=null;private lastAdmissionDeferralBucket=-1;
  private readonly activeDecisions:Array<{at:number;mint:string;stage:string;reason:string}>=[];
  private readonly activeCounters={adaptivePredictiveAssessments:0,adaptivePredictiveNotRejected:0,adaptivePredictiveFailed:0,adaptivePredictiveUnavailable:0};
@@ -673,6 +674,10 @@ export class NativeCandidateRunner{
  /** A bounded shared deadline view, also used by the outer PAPER loop. Future
   * first windows are represented before any assessment has ever completed. */
  deadlineView(at=this.now()):NativeDeadlineView{
+  const scope=this.financialView;if(scope?.at===at&&scope.deadline)return scope.deadline;
+  const value=this.buildDeadlineView(at);if(scope?.at===at)scope.deadline=value;return value;
+ }
+ private buildDeadlineView(at:number):NativeDeadlineView{
   const bucket=PROVISIONAL_RULE.bucketMs,targets:NativeDeadlineTarget[]=[];
   for(const c of this.candidates.values()){
    if(c.openedAt===null)continue;
@@ -1256,9 +1261,28 @@ export class NativeCandidateRunner{
  /** Exact current source certificate; no later audit, stale generation or
   * merely warm feature view can authorize an external PAPER decision. */
  currentAuditCertificate(mint:string,at=this.now()):NativeAuditCertificate|null{
-  const c=this.candidates.get(mint),certificate=this.certificates.get(mint);if(!c||!certificate||!Number.isSafeInteger(at)||at>this.now()||at<certificate.admittedAt||at>certificate.deadlineAt||!this.observationMember(c,at))return null;
-  const view=this.options.flow.snapshot(mint,at);if(!view?.warm||!view.features||view.openedAt!==certificate.openedAt||view.connectionId!==certificate.connectionId||view.subscription!==certificate.subscriptionId||view.features.windowStartAt!==certificate.windowStartAt||view.features.windowEndAt!==certificate.windowEndAt||nativePaperFeaturesSha256(view.features)!==certificate.featuresSha256)return null;
-  return structuredClone(certificate);
+  const c=this.candidates.get(mint),certificate=this.certificates.get(mint);if(!c||!certificate||!Number.isSafeInteger(at)||at>this.now()||at<certificate.admittedAt||at>certificate.deadlineAt)return null;
+  const scope=this.financialView,prior=scope?.at===at?scope.certificates.get(mint):undefined;
+  if(prior&&prior.candidate===c&&prior.original===certificate&&!this.retirementRequests.has(mint)&&!this.pendingGapRetirements.some(p=>p.targets.some(t=>t.mint===mint&&t.candidate===c)))return prior.value?structuredClone(prior.value):null;
+  if(!this.observationMember(c,at))return null;
+  const view=this.financialSnapshot(mint,at),valid=!!(view?.warm&&view.features&&view.openedAt===certificate.openedAt&&view.connectionId===certificate.connectionId&&view.subscription===certificate.subscriptionId&&view.features.windowStartAt===certificate.windowStartAt&&view.features.windowEndAt===certificate.windowEndAt&&nativePaperFeaturesSha256(view.features)===certificate.featuresSha256),value=valid?structuredClone(certificate):null;
+  if(scope?.at===at)scope.certificates.set(mint,{candidate:c,original:certificate,value});return value?structuredClone(value):null;
+ }
+ /** One synchronous decision-planning turn. Socket callbacks and timers cannot
+  * interleave here; an await is explicitly forbidden. The exact-time view is
+  * discarded before any provider/financial operation, whose current evidence
+  * admission remains independent. It carries no cross-turn authority. */
+ withFinancialView<T>(at:number,read:()=>T):T{
+  need(Number.isSafeInteger(at)&&at>=0&&at<=this.now()&&this.financialView===null,'NATIVE_FINANCIAL_VIEW_SCOPE');
+  this.financialView={at,snapshots:new Map(),certificates:new Map(),deadline:null};
+  try{const value=read();need(!(value&&typeof(value as {then?:unknown}).then==='function'),'NATIVE_FINANCIAL_VIEW_MUST_BE_SYNCHRONOUS');return value;}finally{this.financialView=null;}
+ }
+ /** The bridge and certificate checks share the same source observation only
+  * inside an exact-time synchronous financial view. Outside it every call
+  * obtains the actual current flow, including correction/gap/generation state. */
+ financialSnapshot(mint:string,at=this.now()):ReturnType<Flow['snapshot']>{
+  const scope=this.financialView;if(scope?.at!==at)return this.options.flow.snapshot(mint,at);
+  if(!scope.snapshots.has(mint))scope.snapshots.set(mint,this.options.flow.snapshot(mint,at));return scope.snapshots.get(mint)!;
  }
  /** Financial ownership is read from the sole caller-owned ledger. Source
   * retirement releases selected flow while retaining every owned pool proof. */

@@ -24,7 +24,7 @@ function fixture(){
   currentLedger:{state:()=>state,v3RiskPolicyActive:()=>true,entryCapacity:(maximum:number|null,current=state)=>paperEntryCapacity(current,maximum,PAPER_TWO_HOLDING_OPERATING_POLICY)},currentRpc:{usage:()=>usage,available:()=>available},sourceInformationAdmission:()=>source,
   nativePaperCurrentQualificationProof,currentBridge:{qualificationProof:(_mint:string,when:number)=>{reads.push({kind:'proof',at:when});return proof;},trader:{nextDueAt:()=>pendingAt}},proofPreparation:{usage:()=>retained},
   args:{strategy:'liquidity-resilient-momentum-v3.1'},LIQUIDITY_RESILIENT_MOMENTUM_V31_VERSION:'liquidity-resilient-momentum-v3.1',nativePaperRemainingEntryWork,
-  market:{entryPreparationStatus:(_mint:string,when:number)=>{reads.push({kind:'support',at:when});return {...preparation};}},NATIVE_DEADLINE_POLICY,pilotLowerPriorityAdmission,PILOT_TIMING,
+  market:{entryPreparationStatus:(_mint:string,when:number,through=when)=>{reads.push({kind:'support',at:when});return preparation.expiresAt<through?{...preparation,state:'layout-required',remainingReads:3,ready:false,expiresAt:null}:{...preparation};}},NATIVE_DEADLINE_POLICY,pilotLowerPriorityAdmission,PILOT_TIMING,
   endAt:2_000_000,lastCompleted:100_000,financialCapacityReason:()=>permission,configuration:{binding:{maxPositions:null}},RESEARCH_CLOCK_COHERENT_POOL_CAPACITY,
   nativePaperManagementReserve,service:true,entryStartsRemaining:()=>9,marketIntake:{available:()=>true},
  };

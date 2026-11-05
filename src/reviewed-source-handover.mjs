@@ -42,11 +42,12 @@ export const HANDOVER=Object.freeze({
  operatingIntakeThroughput:'0b63766f30cdf9932fb60a6af779e63a68400f1b',
  operatingReportBudget:'370f8c42609a04d8977fb1a98b8e53d1c9b64684',
  operatingReportBudgetFinal:'07d7dadb24963fafab340b1f9270cdcff850ab2d',
- to:'965dcd9d39fc8b84d0b1026fb25b80dfce410a4a',
+ financialThroughput:'965dcd9d39fc8b84d0b1026fb25b80dfce410a4a',
+ to:'569cc2dfb6d2f6d15af48bfe3304a0607a355787',
 });
 const installed=new WeakSet();
 export function attachReviewedSourceHandover(cache){
- const identity=cache.identity,p=HANDOVER,route=[p.from,p.via,p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling,p.migrationAge,p.coordinatedRepair,p.recoveryProvenance,p.migrationQuery,p.readinessReporting,p.proofHandoff,p.migrationReentry,p.operatingReliability,p.operatingFollowthrough,p.financialFeasiblePeer,p.backupRecovery,p.operatingRecovery,p.operatingCapacity,p.operatingIntakeThroughput,p.operatingReportBudget,p.operatingReportBudgetFinal,p.to];
+ const identity=cache.identity,p=HANDOVER,route=[p.from,p.via,p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling,p.migrationAge,p.coordinatedRepair,p.recoveryProvenance,p.migrationQuery,p.readinessReporting,p.proofHandoff,p.migrationReentry,p.operatingReliability,p.operatingFollowthrough,p.financialFeasiblePeer,p.backupRecovery,p.operatingRecovery,p.operatingCapacity,p.operatingIntakeThroughput,p.operatingReportBudget,p.operatingReportBudgetFinal,p.financialThroughput,p.to];
  if(!identity||identity.accountId!==p.accountId||identity.inceptionAt!==p.inceptionAt||identity.strategy!==p.strategy||!route.slice(0,-1).includes(identity.release))return false;
  if(installed.has(cache))return true;
  const original=cache.accept.bind(cache);
