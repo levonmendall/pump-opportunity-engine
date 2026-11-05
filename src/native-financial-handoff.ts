@@ -1,5 +1,6 @@
 import {REQUEST_TIMING_VERSION,REQUEST_TIMING_METHODS,REQUEST_ADMISSION_REASONS,REQUEST_TIMING_STAGES} from './financial-handoff-reporting.js';
 import {nativePaperFeaturesSha256} from './native-paper-contract.js';
+import {createHash} from 'node:crypto';
 /** Diagnostic ownership of currently usable audit certificates only. This
  * never authorizes a financial action or extends an evidence deadline. */
 export const NATIVE_FINANCIAL_HANDOFF_VERSION='native-financial-handoff-v1' as const;
@@ -11,8 +12,15 @@ type EntryWorkPlan={at:number;prepared:boolean;preparationReads:number;quoteRead
 type EntryAdmissionSample={observedAt:number;admitted:boolean;reason:string;bindingDeadline:string;certificateDeadlineAt:number|null;nativeServiceLatestAt:number|null;completionDeadlineAt:number|null;latestStartAt:number|null;requestedOperationMs:number;postValidationMs:number;peerAuditReservationsDeferred:number};
 export type HandoffRemainingWorkSample=Readonly<{version:'native-entry-remaining-work-v1';sampledAt:number;plan:Readonly<EntryWorkPlan>;admission:Readonly<EntryAdmissionSample>|null}>;
 type RetainedRemainingWork=Readonly<HandoffRemainingWorkSample&{certificate:Readonly<HandoffCertificate>}>;
-type Active=HandoffCertificate&{key:string;firstSeenAt:number;state:'waiting'|'dispatched';reason:HandoffReason;dispatchedAt?:number;economicDecisionObserved?:true;remainingWork?:RetainedRemainingWork|null}&Partial<HandoffBlocker>;
+type Active=HandoffCertificate&{key:string;firstSeenAt:number;state:'waiting'|'dispatched';reason:HandoffReason;reasonMs:Partial<Record<HandoffReason,number>>;dispatchedAt?:number;economicDecisionObserved?:true;remainingWork?:RetainedRemainingWork|null}&Partial<HandoffBlocker>;
 const identity=(c:HandoffCertificate)=>[c.mint,c.windowEndAt,c.openedAt,c.featuresSha256].join(':');
+/** Exact immutable original certificate fields used to join dispatch, request
+ * planning and terminal evidence. This is diagnostic identity, not permission. */
+export function nativeFinancialCertificateReceipt(c:HandoffCertificate){
+ const certificate={mint:c.mint,windowEndAt:c.windowEndAt,deadlineAt:c.deadlineAt,admittedAt:c.admittedAt,openedAt:c.openedAt,featuresSha256:c.featuresSha256};
+ const certificateIdentitySha256=createHash('sha256').update(JSON.stringify(certificate)).digest('hex');
+ return {certificateIdentitySha256,certificate};
+}
 const uint=(n:number)=>Number.isSafeInteger(n)&&n>=0;
 const rec=(v:unknown):Record<string,any>=>v&&typeof v==='object'&&!Array.isArray(v)?v as Record<string,any>:{};
 const numeric=(v:unknown,signed=false)=>typeof v==='number'&&Number.isFinite(v)&&Math.abs(v)<=Number.MAX_SAFE_INTEGER&&(signed||v>=0)?v:null;
@@ -32,6 +40,7 @@ export class NativeFinancialHandoff {
  private timingCounts={gateRefusals:0,componentRefusals:0,physicalStarts:0,physicalSettlements:0,completeResponses:0,unmatchedSettlements:0};
  private timingRefusals:Record<string,unknown>[]=[];
  private timingPlans=new Map<string,Record<string,any>>();
+ private requestCertificates=new Map<string,string>();
  private physicalTiming=new Map<string,{at:number;method:string|null;transport:string|null}>();
  private methodTiming=new Map<string,{method:string;transport:string;starts:number;settled:number;responses:number;queue:TimingSummary;pacing:TimingSummary;physical:TimingSummary}>();
  constructor(readonly runId:string,readonly startedAt:number,private maximumActive:number,private record:(kind:string,value:unknown)=>void=()=>{}){this.at=startedAt;}
@@ -70,6 +79,8 @@ export class NativeFinancialHandoff {
   const requestId=typeof(d.callerRequestId??d.requestId)==='string'&&String(d.callerRequestId??d.requestId).startsWith(this.runId+':request:')&&/^\d+$/.test(String(d.callerRequestId??d.requestId).slice((this.runId+':request:').length))?String(d.callerRequestId??d.requestId):null;
   const prior=requestId?this.timingPlans.get(requestId):undefined,context=prior&&prior.contextAt<=at?prior:undefined,method=choice(d.method??rec(d.kind).method??context?.method,REQUEST_TIMING_METHODS),transport=choice(rec(d.kind).transport,['http','ws-upgrade','ws']);
   if(kind==='native-paper-request-plan'||kind==='native-paper-request-admission-refused'){
+   const original=rec(d.certificate);
+   if(requestId&&typeof original.mint==='string'&&typeof original.featuresSha256==='string'&&/^[a-f0-9]{64}$/.test(original.featuresSha256)&&['windowEndAt','deadlineAt','admittedAt','openedAt'].every(key=>uint(original[key]))){this.requestCertificates.set(requestId,nativeFinancialCertificateReceipt(original as HandoffCertificate).certificateIdentitySha256);while(this.requestCertificates.size>64)this.requestCertificates.delete(this.requestCertificates.keys().next().value!);}
    const row={...(context??{}),contextAt:at,requestId,requestedAt:numeric(d.requestedAt??context?.requestedAt??d.at),mint:typeof d.mint==='string'&&/^[1-9A-HJ-NP-Za-km-z]{32,44}$/.test(d.mint)?d.mint:context?.mint??null,owner:choice(d.owner,['idle','candidate','source','protection','pending']),method,reason:choice(d.reason,REQUEST_ADMISSION_REASONS)??(kind==='native-paper-request-admission-refused'?'OTHER_UNEXPORTED_REASON':null),...Object.fromEntries(timingDeadlineKeys.map(k=>[k,numeric(d[k]??context?.[k])])),requestedOperationMs:numeric(d.requestedOperationMs??d.operationBoundMs??context?.requestedOperationMs),remainingCertificateMs:numeric(d.remainingCertificateMs,true)};
    if(requestId){this.timingPlans.delete(requestId);this.timingPlans.set(requestId,row);while(this.timingPlans.size>64)this.timingPlans.delete(this.timingPlans.keys().next().value!);}
    if(kind==='native-paper-request-plan')return;
@@ -90,15 +101,16 @@ export class NativeFinancialHandoff {
   if(!start)this.timingCounts.unmatchedSettlements++;if(stats){stats.settled++;if(d.responseComplete===true)stats.responses++;add(stats.physical,numeric(d.physicalElapsedMs));}if(physicalKey)this.physicalTiming.delete(physicalKey);
  }
  private addTimingRefusal(row:Record<string,unknown>){this.timingRefusals.push(row);this.timingRefusals.sort((a,b)=>Number(a.at)-Number(b.at));if(this.timingRefusals.length>8)this.timingRefusals.splice(0,this.timingRefusals.length-8);}
- private advance(at:number){if(!uint(at)||at<this.at)return false;for(const row of this.active.values())if(row.state==='waiting')this.blockedMsByReason[row.reason]+=Math.max(0,Math.min(at,row.deadlineAt)-this.at);this.at=at;return true;}
+ private certificateDiagnostic(row:Active){const receipt=nativeFinancialCertificateReceipt(row);return {...receipt,firstSeenAt:row.firstSeenAt,unobservedBeforeFirstSeenMs:row.firstSeenAt-row.admittedAt,blockedMsByReason:{...row.reasonMs},requestIds:[...this.requestCertificates].filter(([,identity])=>identity===receipt.certificateIdentitySha256).map(([id])=>id)};}
+ private advance(at:number){if(!uint(at)||at<this.at)return false;for(const row of this.active.values())if(row.state==='waiting'){const elapsed=Math.max(0,Math.min(at,row.deadlineAt)-this.at);this.blockedMsByReason[row.reason]+=elapsed;row.reasonMs[row.reason]=(row.reasonMs[row.reason]??0)+elapsed;}this.at=at;return true;}
  observe(at:number,certificates:readonly HandoffCertificate[]){
   if(certificates.length>this.maximumActive||!this.advance(at))return false;
   const current=new Map(certificates.filter(c=>c.mint&&[c.windowEndAt,c.deadlineAt,c.admittedAt,c.openedAt].every(uint)&&c.openedAt<=c.admittedAt&&c.windowEndAt<=c.admittedAt&&c.admittedAt<=at&&at<=c.deadlineAt).map(c=>[identity(c),c]));
   for(const [key,row]of this.active)if(!current.has(key)){
-   if(row.state==='waiting'){const expired=at>row.deadlineAt;if(expired)this.expiredBeforeDispatch++;else this.invalidatedBeforeDispatch++;this.record('native-paper-certificate-handoff',{at,mint:row.mint,windowEndAt:row.windowEndAt,deadlineAt:row.deadlineAt,stage:expired?'expired-before-dispatch':'invalidated-before-dispatch',lastReason:row.reason,blockingPrerequisite:row.blockingPrerequisite??null,operation:row.operation??null,requiredMs:row.requiredMs??null,availableMs:row.availableMs??null,blockerObservedAt:row.observedAt??null,remainingWork:row.remainingWork??null,financialPermission:false});}
+   if(row.state==='waiting'){const expired=at>row.deadlineAt;if(expired)this.expiredBeforeDispatch++;else this.invalidatedBeforeDispatch++;this.record('native-paper-certificate-handoff',{at,mint:row.mint,windowEndAt:row.windowEndAt,deadlineAt:row.deadlineAt,...this.certificateDiagnostic(row),waitMs:at-row.admittedAt,stage:expired?'expired-before-dispatch':'invalidated-before-dispatch',lastReason:row.reason,blockingPrerequisite:row.blockingPrerequisite??null,operation:row.operation??null,requiredMs:row.requiredMs??null,availableMs:row.availableMs??null,blockerObservedAt:row.observedAt??null,remainingWork:row.remainingWork??null,financialPermission:false});}
    this.active.delete(key);
   }
-  for(const [key,c]of current)if(!this.active.has(key)){this.active.set(key,{...c,key,firstSeenAt:at,state:'waiting',reason:'await-financial-dispatch'});this.seen++;}
+  for(const [key,c]of current)if(!this.active.has(key)){this.active.set(key,{...c,key,firstSeenAt:at,state:'waiting',reason:'await-financial-dispatch',reasonMs:{}});this.seen++;}
   return true;
  }
  defer(c:HandoffCertificate,reason:HandoffReason,at:number,detail?:Omit<HandoffBlocker,'observedAt'>&{observedAt?:number},remainingWork:HandoffRemainingWorkSample|null=null){
@@ -112,12 +124,12 @@ export class NativeFinancialHandoff {
   const changed=row.reason!==reason||detail&&row.blockingPrerequisite!==detail.blockingPrerequisite;
   if(row.reason!==reason)this.deferralTransitionsByReason[reason]++;row.reason=reason;
   if(detail&&/^[A-Z][A-Z0-9_]{0,95}$/.test(detail.blockingPrerequisite)&&/^[A-Z][A-Z0-9_]{0,63}$/.test(detail.operation)&&(detail.requiredMs===null||Number.isFinite(detail.requiredMs)&&detail.requiredMs>=0)&&Number.isFinite(detail.availableMs)&&detail.availableMs>=0)Object.assign(row,detail,{observedAt});
-  if(changed)this.record('native-paper-certificate-handoff',{at,mint:row.mint,windowEndAt:row.windowEndAt,deadlineAt:row.deadlineAt,stage:'financial-deferred',reason,...(detail?{...detail,observedAt}:{}),remainingWork:row.remainingWork,financialPermission:false});
+  if(changed)this.record('native-paper-certificate-handoff',{at,mint:row.mint,windowEndAt:row.windowEndAt,deadlineAt:row.deadlineAt,...this.certificateDiagnostic(row),stage:'financial-deferred',reason,...(detail?{...detail,observedAt}:{}),remainingWork:row.remainingWork,financialPermission:false});
  }
  dispatch(c:HandoffCertificate,at:number){
   if(!this.advance(at))return;const row=this.active.get(identity(c));if(!row||row.state!=='waiting'||at>row.deadlineAt)return;
   row.state='dispatched';row.dispatchedAt=at;this.dispatched++;const wait=at-row.admittedAt;this.waits.count++;this.waits.sum+=wait;this.waits.max=Math.max(this.waits.max,wait);const bin=Math.min(100,Math.ceil(wait/100));this.waits.bins[bin]=(this.waits.bins[bin]??0)+1;
-  this.record('native-paper-certificate-handoff',{at,mint:row.mint,windowEndAt:row.windowEndAt,deadlineAt:row.deadlineAt,stage:'financial-dispatch',waitMs:wait,financialPermission:false});
+  this.record('native-paper-certificate-handoff',{at,mint:row.mint,windowEndAt:row.windowEndAt,deadlineAt:row.deadlineAt,...this.certificateDiagnostic(row),stage:'financial-dispatch',waitMs:wait,financialPermission:false});
  }
  complete(c:HandoffCertificate,at:number,evaluations:number,economicDecisions=0){
   if(!this.advance(at))return;const row=this.active.get(identity(c));if(!row||row.state!=='dispatched')return;
@@ -125,11 +137,11 @@ export class NativeFinancialHandoff {
   // Older callers may supply a separately observed counter delta. A matching
   // direct receipt is already counted and wins over that optional projection.
   const observed=row.economicDecisionObserved?1:uint(economicDecisions)?economicDecisions:0;if(!row.economicDecisionObserved)this.economicDecisions+=observed;
-  this.active.delete(row.key);this.record('native-paper-certificate-handoff',{at,mint:row.mint,windowEndAt:row.windowEndAt,deadlineAt:row.deadlineAt,stage:'financial-dispatch-completed',financialEvaluations:uint(evaluations)?evaluations:0,economicDecisions:observed,financialPermission:false});
+  this.active.delete(row.key);this.record('native-paper-certificate-handoff',{at,mint:row.mint,windowEndAt:row.windowEndAt,deadlineAt:row.deadlineAt,...this.certificateDiagnostic(row),dispatchedAt:row.dispatchedAt,dispatchWaitMs:row.dispatchedAt!-row.admittedAt,decisionElapsedMs:at-row.dispatchedAt!,completedBeforeOriginalDeadline:at<=row.deadlineAt,stage:'financial-dispatch-completed',financialEvaluations:uint(evaluations)?evaluations:0,economicDecisions:observed,financialPermission:false});
  }
  usage(at:number){
   const blocked={...this.blockedMsByReason};if(uint(at)&&at>=this.at)for(const row of this.active.values())if(row.state==='waiting')blocked[row.reason]+=Math.max(0,Math.min(at,row.deadlineAt)-this.at);
   const quantile=(p:number)=>{if(!this.waits.count)return null;let sum=0;const goal=Math.ceil(this.waits.count*p);for(let i=0;i<this.waits.bins.length;i++){sum+=this.waits.bins[i]!;if(sum>=goal)return i*100;}return null;};
-  return {version:NATIVE_FINANCIAL_HANDOFF_VERSION,scope:'CURRENT_SOURCE_PROCESS' as const,runId:this.runId,startedAt:this.startedAt,generatedAt:at,seen:this.seen,dispatched:this.dispatched,financialEvaluations:this.financialEvaluations,economicDecisions:this.economicDecisions,expiredBeforeDispatch:this.expiredBeforeDispatch,invalidatedBeforeDispatch:this.invalidatedBeforeDispatch,blockedMsByReason:blocked,deferralTransitionsByReason:{...this.deferralTransitionsByReason},dispatchWait:{count:this.waits.count,mean:this.waits.count?this.waits.sum/this.waits.count:null,max:this.waits.count?this.waits.max:null,p50UpperMs:quantile(.5),p95UpperMs:quantile(.95),histogramResolutionMs:100},active:[...this.active.values()].map(({key,dispatchedAt,economicDecisionObserved,remainingWork,...row})=>row),requestTiming:{version:REQUEST_TIMING_VERSION,runId:this.runId,startedAt:this.startedAt,generatedAt:at,...this.timingCounts,refusals:this.timingRefusals.map(row=>({...row})),methods:[...this.methodTiming.values()].map(m=>({...m,queue:{...m.queue},pacing:{...m.pacing},physical:{...m.physical}}))}};
+  return {version:NATIVE_FINANCIAL_HANDOFF_VERSION,scope:'CURRENT_SOURCE_PROCESS' as const,runId:this.runId,startedAt:this.startedAt,generatedAt:at,seen:this.seen,dispatched:this.dispatched,financialEvaluations:this.financialEvaluations,economicDecisions:this.economicDecisions,expiredBeforeDispatch:this.expiredBeforeDispatch,invalidatedBeforeDispatch:this.invalidatedBeforeDispatch,blockedMsByReason:blocked,deferralTransitionsByReason:{...this.deferralTransitionsByReason},dispatchWait:{count:this.waits.count,mean:this.waits.count?this.waits.sum/this.waits.count:null,max:this.waits.count?this.waits.max:null,p50UpperMs:quantile(.5),p95UpperMs:quantile(.95),histogramResolutionMs:100},active:[...this.active.values()].map(({key,dispatchedAt,economicDecisionObserved,remainingWork,reasonMs,...row})=>row),requestTiming:{version:REQUEST_TIMING_VERSION,runId:this.runId,startedAt:this.startedAt,generatedAt:at,...this.timingCounts,refusals:this.timingRefusals.map(row=>({...row})),methods:[...this.methodTiming.values()].map(m=>({...m,queue:{...m.queue},pacing:{...m.pacing},physical:{...m.physical}}))}};
  }
 }

@@ -56,11 +56,13 @@ async function reportingBindings(){
   const module=await import(specifier.startsWith('.')?new URL(specifier.replace(/\.js$/,'.ts'),sourceUrl).href:specifier);
   for(const item of requested)bindings[item.name.text]=module[item.propertyName?.text??item.name.text];
  }
- const local=parsed.statements.filter(statement=>ts.isFunctionDeclaration(statement)&&['need','atomic'].includes(statement.name?.text??'')||ts.isVariableStatement(statement)&&statement.declarationList.declarations.some(declaration=>ts.isIdentifier(declaration.name)&&declaration.name.text==='hash')).map(s=>s.getText(parsed)).join('\n');
+ const local=parsed.statements.filter(statement=>ts.isFunctionDeclaration(statement)&&['need','atomic','atomicCurrentReadModel'].includes(statement.name?.text??'')||ts.isVariableStatement(statement)&&statement.declarationList.declarations.some(declaration=>ts.isIdentifier(declaration.name)&&declaration.name.text==='hash')).map(s=>s.getText(parsed)).join('\n');
  const helpers=ts.transpileModule(local,{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
  const fn=runtime.runNativePaper.toString();
  const extract=(start:string,end:string)=>{const begin=fn.search(new RegExp('const\\s+'+start+'\\s*=')),tail=fn.slice(begin),finish=tail.search(new RegExp(';\\s*const\\s+'+end+'\\s*='));assert.ok(begin>=0&&finish>0,'actual '+start+' closure present');return tail.slice(0,finish+1);};
- return {bindings,code:helpers+'\n'+extract('checkpoint','startBackup')+'\n'+extract('report','maybeReport')+'\nreturn {report,checkpoint,financialReady:()=>financialProjectionReady,setBackup:(value)=>{backupReady=value.ready;backupTask=value.pending?{}:null;lastBackup=value.lastSuccessfulAt??0;nextBackupAttemptAt=value.nextAttemptAt??0;}};'};
+ const counterDeclarations:string[]=[];const visit=(node:ts.Node)=>{if(ts.isVariableDeclaration(node)&&ts.isIdentifier(node.name)&&['nativeCounterKeys','feedCounterKeys'].includes(node.name.text))counterDeclarations.push('const '+node.getText(parsed)+';');ts.forEachChild(node,visit);};visit(parsed);assert.equal(counterDeclarations.length,2);
+ const counters=ts.transpileModule(counterDeclarations.join('\n'),{compilerOptions:{target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
+ return {bindings,code:helpers+'\n'+counters+'\n'+extract('serviceStatistics','checkpoint')+'\n'+extract('checkpoint','startBackup')+'\n'+extract('report','maybeReport')+'\nreturn {report,checkpoint,financialReady:()=>financialProjectionReady,setBackup:(value)=>{backupReady=value.ready;backupTask=value.pending?{}:null;lastBackup=value.lastSuccessfulAt??0;nextBackupAttemptAt=value.nextAttemptAt??0;}};'};
 }
 
 async function fixture(t:TestContext){
@@ -121,7 +123,17 @@ async function fixture(t:TestContext){
   intakeSupervisionCallbackFailures:0,operatingSupervision:null,manualAdmissionPause,
   writePoePublicStatus:(input:Parameters<typeof writePoePublicStatus>[0])=>{assert.equal((ledger as unknown as {reportingReadScope?:unknown}).reportingReadScope,undefined,'read view must end before filesystem publication');return writePoePublicStatus({...input,path:join(publicRoot,'status.json')});},
   writePoeStorageRetentionReport:(input:Parameters<typeof writePoeStorageRetentionReport>[0])=>writePoeStorageRetentionReport({...input,publicStatusPath:join(publicRoot,'status.json')})};
- const owner=Function(...Object.keys(context),code)(...Object.values(context)) as {report:(running:boolean)=>any;financialReady:()=>boolean;setBackup:(value:{ready:boolean;pending:boolean;lastSuccessfulAt:number|null;nextAttemptAt:number|null})=>void};
+ // Execute the actual source helper above, rather than substituting a cheap
+ // service-statistics projection that misses repeated native/feed work.
+ delete context.serviceStatistics;
+ const publicationIo:{kind:'sync'|'rename';path:string}[]=[],descriptors=new Map<number,string>();let failCheckpoint=false;
+ Object.assign(context,{
+  openSync:(...args:any[])=>{const fd=(bindings.openSync as (...args:any[])=>number)(...args);descriptors.set(fd,String(args[0]));return fd;},
+  closeSync:(fd:number)=>{try{return (bindings.closeSync as (fd:number)=>void)(fd);}finally{descriptors.delete(fd);}},
+  fsyncSync:(fd:number)=>{publicationIo.push({kind:'sync',path:descriptors.get(fd)??'UNKNOWN_DESCRIPTOR'});return (bindings.fsyncSync as (fd:number)=>void)(fd);},
+  renameSync:(from:string,to:string)=>{if(failCheckpoint&&to===join(runDir,'watch-checkpoint.json')){failCheckpoint=false;throw Error('OFFLINE_DURABLE_CHECKPOINT_FAILURE');}publicationIo.push({kind:'rename',path:to});return (bindings.renameSync as (from:string,to:string)=>void)(from,to);},
+ });
+ const owner=Object.assign(Function(...Object.keys(context),code)(...Object.values(context)),{publicationIo,failNextCheckpoint:()=>{failCheckpoint=true;}}) as {report:(running:boolean)=>any;financialReady:()=>boolean;setBackup:(value:{ready:boolean;pending:boolean;lastSuccessfulAt:number|null;nextAttemptAt:number|null})=>void;publicationIo:typeof publicationIo;failNextCheckpoint:()=>void};
  const startupBegan=performance.now(),startup=owner.report(true),startupPublicationMs=performance.now()-startupBegan;
  assert.equal(startup.marketRegistryDiagnostics.reporting.state,'UNAVAILABLE');assert.equal(startup.watch.known,null);assert.equal(startup.marketCoverage.pipeline.population.retained,null);assert.equal(owner.financialReady(),true,'missing optional diagnostics cannot invalidate current financial publication');assert.equal(startup.snapshot.positions.length,1);assert.ok(startup.snapshot.trades.length>=20);assert.equal(ledger.getReportingTrades().trades.length,50);
  await refreshRegistry();
@@ -132,7 +144,13 @@ test('actual full publication with retained market load includes financial proje
  const f=await fixture(t),samples:number[]=[],reports:any[]=[],reportCases:string[]=[],phaseSamples:{label:string;at:number;fullElapsedMs:number;phases:{stage:string;count:number;elapsedMs:number}[]}[]=[];
  const publish=(label:string,held:number)=>{
   const before=f.ledger.state(),prefix=f.financialPrefix();
+  f.owner.publicationIo.length=0;
   const phaseBefore=f.reportTimings.usage(),began=performance.now(),status=f.owner.report(true),elapsed=performance.now()-began;samples.push(elapsed);reports.push(status);reportCases.push(label);
+  const io=f.owner.publicationIo,watch=io.findIndex(e=>e.kind==='rename'&&e.path===join(f.runDir,'watch-checkpoint.json')),watchBarrier=io.findIndex(e=>e.kind==='sync'&&e.path===f.runDir),manifest=io.findIndex(e=>e.kind==='rename'&&e.path===join(f.root,'account.json')),manifestBarrier=io.findIndex(e=>e.kind==='sync'&&e.path===f.root),views=io.flatMap((e,i)=>e.kind==='rename'&&[join(f.root,'snapshot.json'),join(f.root,'status.json')].includes(e.path)?[i]:[]);
+  assert.ok(watch>=0&&watchBarrier>watch&&manifest>watchBarrier&&manifestBarrier>manifest,'the actual watch and account checkpoint retain ordered directory durability barriers');
+  assert.equal(views.length,2);assert.ok(views.every(i=>i>manifestBarrier),'current financial read models are not published before their durable recovery checkpoint');
+  assert.ok(io.some(e=>e.kind==='sync'&&e.path.startsWith(join(f.root,'account.json.pending-'))));assert.ok(io.some(e=>e.kind==='sync'&&e.path.startsWith(join(f.runDir,'watch-checkpoint.json.pending-'))));
+  assert.ok(!io.some(e=>e.kind==='sync'&&[join(f.root,'snapshot.json.pending-'),join(f.root,'status.json.pending-')].some(prefix=>e.path.startsWith(prefix))),'replaceable current views add no financial-event-loop fsync barriers');
   phaseSamples.push({label,at:f.at(),fullElapsedMs:elapsed,phases:f.reportTimings.usage().map(p=>{const previous=phaseBefore.find(x=>x.stage===p.stage)!;return {stage:p.stage,count:p.count-previous.count,elapsedMs:p.totalMs-previous.totalMs};})});
   assert.equal(f.owner.financialReady(),true,JSON.stringify(status.portfolioProjectionFailure));assert.ok(status.snapshot);assert.equal(status.snapshot.positions.length,held);assert.ok(status.snapshot.trades.length>=20,'bounded public view preserves many authenticated retained fills');assert.equal(f.ledger.getReportingTrades().trades.length,50);
   assert.equal(status.marketRegistryDiagnostics.reporting.state,'FRESH');assert.ok(status.marketRegistryDiagnostics.reporting.observedAt<=f.at()&&status.marketRegistryDiagnostics.reporting.observedAt>=f.at()-1000,'the worker retains its actual independently sampled clock');assert.equal(status.watch.known,watchIdentities+1);assert.equal(status.watchRows.length,64);assert.equal(status.marketCoverage.pipeline.population.retained,retainedIdentities);assert.equal(status.marketCoverage.active.awaitingVerification,verificationBacklog);assert.equal(status.reporting.localPublicStatusAvailable,true);
@@ -162,4 +180,9 @@ test('actual full publication with retained market load includes financial proje
  f.advance(500);f.refreshFinance();f.owner.setBackup({ready:false,pending:false,lastSuccessfulAt:backupAt,nextAttemptAt:retryAt});
  const later=f.owner.report(true);assert.equal(later.generatedAt,waiting.generatedAt+500);assert.deepEqual(later.financialReadiness.backup,{ready:false,pending:false,lastSuccessfulAt:backupAt,nextAttemptAt:retryAt},'settlement and later reporting never renew original backup/retry clocks');
  f.owner.setBackup({ready:false,pending:false,lastSuccessfulAt:null,nextAttemptAt:null});assert.deepEqual(f.owner.report(true).financialReadiness.backup,{ready:false,pending:false,lastSuccessfulAt:null,nextAttemptAt:null},'absence is exported as absence, never as a current successful backup');
+ const priorView=readFileSync(join(f.root,'snapshot.json')),priorStatus=readFileSync(join(f.root,'status.json')),stateBeforeFailure=f.ledger.state(),prefixBeforeFailure=f.financialPrefix(),health=new runtime.NativePaperReportingHealth();health.observe(1,true);
+ f.advance(1);f.owner.failNextCheckpoint();assert.throws(()=>health.complete(()=>f.owner.report(true),()=>f.owner.financialReady()),/OFFLINE_DURABLE_CHECKPOINT_FAILURE/);
+ assert.equal(health.entryAllowed,false,'a checkpoint failure cannot grant fresh publication readiness');assert.deepEqual(readFileSync(join(f.root,'snapshot.json')),priorView);assert.deepEqual(readFileSync(join(f.root,'status.json')),priorStatus,'no current-view bytes replace the previous complete view before checkpoint success');
+ assert.deepEqual(f.ledger.state(),stateBeforeFailure);assert.equal(f.financialPrefix(),prefixBeforeFailure,'failed reporting does not mutate any original financial action/journal row');
+ f.owner.publicationIo.length=0;f.owner.report(false);assert.ok(f.owner.publicationIo.some(e=>e.kind==='sync'&&e.path.startsWith(join(f.runDir,'result.json.pending-'))),'the final source result remains fully durable');assert.ok(f.owner.publicationIo.some(e=>e.kind==='sync'&&e.path===f.runDir));
 });

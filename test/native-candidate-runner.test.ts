@@ -215,6 +215,19 @@ test('current V3.1 uses strict actual-generation notification fences without a r
  const opened=f.records.find(row=>row.kind==='native-candidate-audit-session-open')!;assert.equal(opened.data.fenceKind,'current-generation-notifications');const audit=f.records.find(row=>row.kind==='native-candidate-window-audit')!.data.result;assert.equal(audit.anchorKind,'notification');assert.equal(audit.contextFences,null);assert.ok(audit.requiredSignatures.length>0);assert.equal(audit.executedFlowCompletenessVerified,true);assert.equal(f.rpcCalls[0]!.method,'getSignaturesForAddress');assert.equal((f.rpcCalls[0]!.params[1] as any).before,audit.anchor.signature);await f.runner.stop();
 });
 
+test('a busy physical gate does not move a source-owned first-ready window fence into later traffic',async()=>{
+ const f=fixture({durableMarketPolicy:true,fairEconomicCompletions:true,forcePredictiveFeatures:true,scopedNotifications:true}),mint=f.seed(1);
+ try{
+  await f.steps(2);f.advance(70000);f.refresh();const firstReadyAt=f.now,originalView=f.flow.snapshot(mint)!,originalAnchor=f.states.get(mint)!.notes.at(-1)!;
+  f.setPhysicalBusy(true);await f.runner.step();assert.equal(f.auditCalls,0);assert.equal(f.rpcCalls.length,0);
+  f.advance(4000);f.refresh();assert.equal(f.flow.snapshot(mint)!.features!.windowEndAt,originalView.features!.windowEndAt);assert.ok(f.states.get(mint)!.notes.at(-1)!.slot>originalAnchor.slot);
+  f.setPhysicalBusy(false);await f.steps(3);const opened=f.records.find(row=>row.kind==='native-candidate-audit-session-open')!.data;
+  assert.equal(opened.fenceSelectedAt,firstReadyAt);assert.equal(opened.fenceLatchedAtReadiness,true);assert.ok(opened.at>=firstReadyAt+4000);assert.equal(opened.deadlineAt,originalView.features!.windowEndAt+9999);
+  const audit=f.records.find(row=>row.kind==='native-candidate-window-audit')!.data.result;
+  assert.equal(audit.status,'verified');assert.equal(audit.anchor.signature,originalAnchor.signature);assert.equal(audit.strictInteriorSlots.upper,originalAnchor.slot);assert.equal((f.rpcCalls[0]!.params[1] as any).before,originalAnchor.signature);assert.equal(f.rpcCalls.length,1);
+ }finally{await f.runner.stop();}
+});
+
 for(const missingInterior of [false,true])test(`an ahead-of-stream bank ceiling cannot replace actual window boundaries${missingInterior?' or excuse a missing interior success':''}`,async()=>{
  const f=fixture({durableMarketPolicy:true,fairEconomicCompletions:true,forcePredictiveFeatures:true,scopedNotifications:true}),mint=f.seed(1);await f.steps(2);f.advance(70000);f.refresh();
  const state=f.states.get(mint)!,features=f.flow.snapshot(mint)!.features!,end=features.windowEndAt,start=features.windowStartAt,captured=structuredClone(state.notes),anchor=captured.at(-1)!;

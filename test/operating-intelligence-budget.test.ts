@@ -128,6 +128,18 @@ test('actual completed-diagnostic pressure fits the unchanged stock publisher wh
  validateOperatingIntelligence(bounded,snapshot.times.generatedAt);
 });
 
+test('incremental UTF-8 accounting preserves the exact installed completed-row projection',()=>{
+ const original=frozen(actualBudgetSnapshot().intelligence) as OperatingIntelligence,result=boundOperatingIntelligence(original);
+ // Captured from the installed07d projection over the immutable original
+ // fixture, before the serialization-cost optimization. This covers all three
+ // interleaved histories, escaped/UTF-8 text and multi-digit disclosures.
+ const body=JSON.stringify(result);
+ assert.equal(Buffer.byteLength(body),32627);
+ assert.equal(createHash('sha256').update(body).digest('hex'),'730d1fba396e3abfc795f60e4a65fac55df3b2186b7dfe46c4c878316cb427e9');
+ assert.equal(actualBudgetProtected(result),actualBudgetProtected(original));
+ validateOperatingIntelligence(result,actualBudgetSnapshot().times.generatedAt);
+});
+
 test('completed display lists retain exact newest suffixes and disclose each omission without modifying original warnings',()=>{
  const original=frozen(actualBudgetSnapshot().intelligence) as OperatingIntelligence,bounded=boundOperatingIntelligence(original);
  const oldLists=[original.decisions,original.financialHandoff!.requestTiming!.refusals,original.protection.completedProtectionCycles!.recent];

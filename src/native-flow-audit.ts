@@ -2,6 +2,7 @@
  * request, timeout, cooldown and physical-settlement counter. No own client,
  * retries, historical trade reconstruction or financial writer lives here. */
 import bs58 from 'bs58';
+import {createHash} from 'node:crypto';
 import type {NativeNotification} from './pilot-native-flow.js';
 import type {PilotRpcCallOptions} from './pilot-rpc.js';
 
@@ -12,6 +13,17 @@ export type NativeAuditHistoryCache={pool:string;validatedAt:number;rows:NativeA
 type Fence={signature:string;slot:number;receivedAt:number;availableAt:number};
 export type NativeAuditContextFences={lower:{slot:number;availableAt:number;bankClockAt?:number};upper:{slot:number;availableAt:number;bankClockAt:number}};
 export type NativeAuditNotificationGeneration={mint:string;pool:string;openedAt:number;connectionId:number;subscriptionId:number};
+/** A process-local first-ready boundary. JSON/checkpoints cannot restore its
+ * authority: only a source snapshot accepted by the existing selector creates
+ * the private retained packet binding. It supplies no transaction or feature. */
+export type NativeAuditNotificationFenceWitness=Readonly<{
+ version:'native-audit-first-ready-fences-v1';selectedAt:number;
+ target:Readonly<{startAt:number;endAt:number}>;generation:Readonly<NativeAuditNotificationGeneration>;
+ anchor:Readonly<Fence>;lowerFence:Readonly<Fence>;
+ requiredSignatures:number;requiredInformationSha256:string;
+}>;
+type NotificationFenceAuthority={anchor:NativeNotification;lowerFence:NativeNotification;encoded:string};
+const notificationFenceAuthorities=new WeakMap<NativeAuditNotificationFenceWitness,NotificationFenceAuthority>();
 export type NativeNotificationAuditFenceSelection=
  |{available:true;anchor:NativeNotification;lowerFence:NativeNotification}
  |{available:false;reason:string};
@@ -45,6 +57,9 @@ export type NativeFlowAuditOptions={
   * boundaries instead of requesting another bank Clock. The actual audit
   * repeats the identical selector against its immutable notification snapshot. */
  notificationFenceGeneration?:NativeAuditNotificationGeneration;
+ /** First boundary actually selected at source readiness. The authoritative
+  * auditor rechecks its exact target, generation and required information. */
+ notificationFenceWitness?:NativeAuditNotificationFenceWitness;
  postSnapshotNotifications?:(startedAt:number)=>readonly NativeNotification[];
  record?:(kind:string,data:unknown)=>void;
  /** Already decoded/validated coherent confirmed SDK+Clock contexts. A slot
@@ -72,6 +87,54 @@ const diagnosticBlockTime=(value:unknown):number|null=>int(value)?value:null;
 function need(v:unknown,reason:string):asserts v{if(!v)throw Error('NATIVE_AUDIT_'+reason);}
 function key(value:unknown,bytes:number){try{return typeof value==='string'&&value.length<=100&&bs58.decode(value).length===bytes;}catch{return false;}}
 const safe=(e:unknown)=>e instanceof Error&&/^[A-Z][A-Z0-9_:-]{0,150}$/.test(e.message)?e.message:'NATIVE_AUDIT_UNAVAILABLE';
+const encode=(value:unknown)=>JSON.stringify(value);
+const sameGeneration=(a:NativeAuditNotificationGeneration,b:NativeAuditNotificationGeneration)=>a.mint===b.mint&&a.pool===b.pool&&a.openedAt===b.openedAt&&a.connectionId===b.connectionId&&a.subscriptionId===b.subscriptionId;
+function targetInformation(notifications:readonly NativeNotification[],target:{startAt:number;endAt:number}){
+ const unique=new Map<string,NativeNotification>();
+ for(const n of notifications){const prior=unique.get(n.signature);if(!prior||n.availableAt<prior.availableAt)unique.set(n.signature,n);}
+ const rows=[...unique.values()].filter(n=>n.availableAt>=target.startAt&&n.availableAt<target.endAt).sort((a,b)=>a.signature<b.signature?-1:a.signature>b.signature?1:0);
+ const sha256=createHash('sha256').update(encode(rows.map(n=>[n.signature,n.slot,n.receivedAt,n.availableAt,n.success,n.rawHash,n.correction,n.classification]))).digest('hex');
+ return {count:rows.length,sha256};
+}
+
+/** Latch the EXISTING selector once at actual first auditable readiness. Later
+ * scheduler delay must not expand a completed target's census into new traffic.
+ * A missing row already within these fences remains just as blocking. */
+export function sealNativeNotificationAuditFences(input:{notifications:readonly NativeNotification[];target:{startAt:number;endAt:number};at:number;generation:NativeAuditNotificationGeneration}):
+ |{available:true;witness:NativeAuditNotificationFenceWitness}|{available:false;reason:string}{
+ const selected=selectNativeNotificationAuditFences(input);if(!selected.available)return selected;
+ if(input.at>input.target.endAt+9999)return {available:false,reason:'NATIVE_AUDIT_NOTIFICATION_FENCE_SEAL_DEADLINE'};
+ const information=targetInformation(input.notifications,input.target);
+ const witness:NativeAuditNotificationFenceWitness=Object.freeze({version:'native-audit-first-ready-fences-v1',selectedAt:input.at,
+  target:Object.freeze({...input.target}),generation:Object.freeze({...input.generation}),
+  anchor:Object.freeze({signature:selected.anchor.signature,slot:selected.anchor.slot,receivedAt:selected.anchor.receivedAt,availableAt:selected.anchor.availableAt}),
+  lowerFence:Object.freeze({signature:selected.lowerFence.signature,slot:selected.lowerFence.slot,receivedAt:selected.lowerFence.receivedAt,availableAt:selected.lowerFence.availableAt}),
+  requiredSignatures:information.count,requiredInformationSha256:information.sha256});
+ notificationFenceAuthorities.set(witness,{anchor:structuredClone(selected.anchor),lowerFence:structuredClone(selected.lowerFence),encoded:encode(witness)});
+ return {available:true,witness};
+}
+
+/** Preserve an in-process seal when a deferred session takes its immutable
+ * input copy. A serialized or caller-made lookalike cannot gain authority. */
+export function copyNativeNotificationAuditFenceWitness(witness:NativeAuditNotificationFenceWitness):NativeAuditNotificationFenceWitness{
+ const authority=notificationFenceAuthorities.get(witness);need(authority&&authority.encoded===encode(witness),'UNRECOGNIZED_NOTIFICATION_FENCE_WITNESS');
+ const copy:NativeAuditNotificationFenceWitness=Object.freeze({...witness,target:Object.freeze({...witness.target}),generation:Object.freeze({...witness.generation}),anchor:Object.freeze({...witness.anchor}),lowerFence:Object.freeze({...witness.lowerFence})});
+ notificationFenceAuthorities.set(copy,{anchor:structuredClone(authority.anchor),lowerFence:structuredClone(authority.lowerFence),encoded:encode(copy)});return copy;
+}
+
+function sealedNotificationFences(witness:NativeAuditNotificationFenceWitness,notifications:readonly NativeNotification[],target:{startAt:number;endAt:number},generation:NativeAuditNotificationGeneration|undefined,at:number){
+ const authority=notificationFenceAuthorities.get(witness);need(authority&&authority.encoded===encode(witness),'UNRECOGNIZED_NOTIFICATION_FENCE_WITNESS');
+ need(witness.version==='native-audit-first-ready-fences-v1'&&generation&&sameGeneration(witness.generation,generation)&&witness.target.startAt===target.startAt&&witness.target.endAt===target.endAt&&witness.selectedAt>=target.endAt&&witness.selectedAt<=at,'NOTIFICATION_FENCE_WITNESS_BINDING');
+ const information=targetInformation(notifications,target);need(information.count===witness.requiredSignatures&&information.sha256===witness.requiredInformationSha256,'LATCHED_TARGET_INFORMATION_CHANGED');
+ for(const n of notifications){
+  // Buffered wire-before-end information must never disappear merely because
+  // it became processable after the seal. Its original clocks are retained.
+  need(!(n.receivedAt>=target.startAt&&n.receivedAt<target.endAt&&(n.slot<=witness.lowerFence.slot||n.slot>=witness.anchor.slot)),'LATCHED_WIRE_TARGET_OUTSIDE_FENCES');
+  const original=n.signature===authority.anchor.signature?authority.anchor:n.signature===authority.lowerFence.signature?authority.lowerFence:null;
+  if(original)need(n.slot===original.slot&&n.success===original.success&&n.rawHash===original.rawHash&&!n.correction&&n.classification!=='unusable','LATCHED_FENCE_CORRECTION');
+ }
+ return authority;
+}
 
 /** Delivery and observation ownership are separate for a transaction routed
  * through another selected pool. Only the native source's validated event
@@ -107,7 +170,7 @@ export function selectNativeNotificationAuditFences(input:{notifications:readonl
   if(!prior||n.availableAt<prior.availableAt)captured.set(n.signature,n);
  }
  const rows=[...captured.values()],required=rows.filter(n=>n.availableAt>=target.startAt&&n.availableAt<target.endAt),minimum=required.length?Math.min(...required.map(n=>n.slot)):Infinity,maximum=required.length?Math.max(...required.map(n=>n.slot)):-1;
- const boundary=(n:NativeNotification)=>!n.correction&&n.classification!=='unusable'&&(!generation||n.receivedAt>=generation.openedAt&&n.availableAt>=generation.openedAt&&n.connectionId===generation.connectionId&&n.subscriptionId===generation.subscriptionId&&n.subscriptionMint===generation.mint&&n.subscriptionPool===generation.pool);
+ const boundary=(n:NativeNotification)=>!n.duplicate&&!n.correction&&n.classification!=='unusable'&&(!generation||n.receivedAt>=generation.openedAt&&n.availableAt>=generation.openedAt&&n.connectionId===generation.connectionId&&n.subscriptionId===generation.subscriptionId&&n.subscriptionMint===generation.mint&&n.subscriptionPool===generation.pool);
  const anchor=rows.filter(n=>boundary(n)&&n.receivedAt>=target.endAt&&n.availableAt>=target.endAt&&n.slot>maximum).sort((a,b)=>b.receivedAt-a.receivedAt||b.availableAt-a.availableAt)[0];
  if(!anchor)return unavailable('POST_WINDOW_SLOT_FENCE_UNAVAILABLE');
  const lowerFence=rows.filter(n=>boundary(n)&&n.receivedAt<target.startAt&&n.availableAt<target.startAt&&n.slot<minimum&&n.slot<anchor.slot).sort((a,b)=>b.slot-a.slot||b.availableAt-a.availableAt)[0];
@@ -130,6 +193,7 @@ export async function auditNativeFlowWindow(options:NativeFlowAuditOptions):Prom
   if(generation)need(key(generation.mint,32)&&generation.pool===options.pool&&int(generation.openedAt)&&generation.openedAt<=target.startAt&&int(generation.connectionId)&&int(generation.subscriptionId),'TAIL_GENERATION');
   const fenceGeneration=options.notificationFenceGeneration?{...options.notificationFenceGeneration}:undefined;
   if(fenceGeneration)need(!options.contextFences&&fenceGeneration.pool===options.pool&&(!generation||fenceGeneration.mint===generation.mint&&fenceGeneration.openedAt===generation.openedAt&&fenceGeneration.connectionId===generation.connectionId&&fenceGeneration.subscriptionId===generation.subscriptionId),'NOTIFICATION_FENCE_GENERATION');
+  if(options.notificationFenceWitness)need(fenceGeneration&&!options.contextFences,'NOTIFICATION_FENCE_WITNESS_OPTIONS');
   result.postSnapshotTail.generation=generation;
   need(int(target.startAt)&&int(target.endAt)&&target.endAt-target.startAt===60000&&target.startAt%10000===0&&target.endAt%10000===0&&target.endAt<=startedAt,'INVALID_TARGET');
   need(Array.isArray(options.notifications)&&options.notifications.length<=8192,'NOTIFICATION_BOUND');
@@ -143,6 +207,7 @@ export async function auditNativeFlowWindow(options:NativeFlowAuditOptions):Prom
    const n={...raw};need(key(n.signature,64)&&int(n.slot)&&int(n.receivedAt)&&int(n.availableAt)&&n.receivedAt<=n.availableAt&&n.availableAt<=startedAt&&typeof n.success==='boolean'&&typeof n.duplicate==='boolean'&&typeof n.correction==='boolean'&&/^[a-f0-9]{64}$/.test(n.rawHash)&&['failed-transaction','program-event','nontrade','unusable'].includes(n.classification),'NOTIFICATION_SCHEMA');
    all.push(n);const prior=captured.get(n.signature);if(prior){result.duplicateNotifications++;if(prior.slot!==n.slot||prior.success!==n.success||prior.rawHash!==n.rawHash||n.correction)return finish('unusable','NATIVE_AUDIT_CAPTURED_CORRECTION');if(n.availableAt<prior.availableAt)captured.set(n.signature,n);}else captured.set(n.signature,n);
   }
+  const sealed=options.notificationFenceWitness?sealedNotificationFences(options.notificationFenceWitness,[...captured.values()],target,fenceGeneration,startedAt):null;
   const required=[...captured.values()].filter(n=>n.availableAt>=target.startAt&&n.availableAt<target.endAt);result.requiredSignatures=required.map(n=>n.signature);result.notificationSnapshot.requiredRows=required.length;
   if(all.some(n=>n.availableAt>=target.startAt&&n.availableAt<target.endAt&&(n.classification==='unusable'||n.correction)))return finish('unusable','NATIVE_AUDIT_UNUSABLE_TARGET_INFORMATION');
   const minimumRequired=required.length?Math.min(...required.map(n=>n.slot)):Infinity;
@@ -157,7 +222,7 @@ export async function auditNativeFlowWindow(options:NativeFlowAuditOptions):Prom
    const anchor=[...captured.values()].filter(n=>n.receivedAt>=target.endAt&&n.slot>=upperSlot&&!n.correction&&n.classification!=='unusable').sort((a,b)=>b.receivedAt-a.receivedAt)[0];
    if(anchor){result.anchor={signature:anchor.signature,slot:anchor.slot,receivedAt:anchor.receivedAt,availableAt:anchor.availableAt};before=anchor.signature;previousSlot=anchor.slot;}else previousSlot=Infinity;
   }else{
-   const fences=selectNativeNotificationAuditFences({notifications:[...captured.values()],target,at:startedAt,...(fenceGeneration?{generation:fenceGeneration}:{})});
+   const fences=sealed?{available:true as const,anchor:sealed.anchor,lowerFence:sealed.lowerFence}:selectNativeNotificationAuditFences({notifications:[...captured.values()],target,at:startedAt,...(fenceGeneration?{generation:fenceGeneration}:{})});
    if(!fences.available)return finish('unavailable',fences.reason);
    const {anchor,lowerFence:lower}=fences;
    result.anchor={signature:anchor.signature,slot:anchor.slot,receivedAt:anchor.receivedAt,availableAt:anchor.availableAt};result.lowerFence={signature:lower.signature,slot:lower.slot,receivedAt:lower.receivedAt,availableAt:lower.availableAt};result.anchorKind='notification';lowerSlot=lower.slot;upperSlot=anchor.slot;before=anchor.signature;previousSlot=anchor.slot;
@@ -203,6 +268,7 @@ export async function auditNativeFlowWindow(options:NativeFlowAuditOptions):Prom
     const n={...raw};need(key(n.signature,64)&&int(n.slot)&&int(n.receivedAt)&&int(n.availableAt)&&n.receivedAt<=n.availableAt&&n.availableAt>startedAt&&n.availableAt<=refreshedAt&&n.receivedAt>=generation!.openedAt&&typeof n.success==='boolean'&&typeof n.duplicate==='boolean'&&typeof n.correction==='boolean'&&/^[a-f0-9]{64}$/.test(n.rawHash)&&['failed-transaction','program-event','nontrade','unusable'].includes(n.classification),'TAIL_NOTIFICATION_SCHEMA');
     need(tailGenerationMatches(n,generation!),'TAIL_NOTIFICATION_GENERATION');
     const prior=captured.get(n.signature);if(n.correction||n.classification==='unusable'||prior&&(prior.slot!==n.slot||prior.success!==n.success||prior.rawHash!==n.rawHash))return finish('unusable','NATIVE_AUDIT_POST_SNAPSHOT_CORRECTION');
+    if(sealed&&!prior&&n.receivedAt>=target.startAt&&n.receivedAt<target.endAt&&(n.slot<=lowerSlot||n.slot>=upperSlot))return finish('unusable','NATIVE_AUDIT_LATCHED_WIRE_TARGET_OUTSIDE_FENCES');
     if(!prior){need(captured.size<8192,'TAIL_NOTIFICATION_BOUND');captured.set(n.signature,n);result.postSnapshotTail.addedSignatures.push(n.signature);result.postSnapshotTail.addedPackets.push({signature:n.signature,slot:n.slot,receivedAt:n.receivedAt,availableAt:n.availableAt,success:n.success,rawHash:n.rawHash,...(n.observedScope?{observedScope:{...n.observedScope},deliveredByMint:n.deliveredByMint,subscriptionMint:n.subscriptionMint,subscriptionPool:n.subscriptionPool,subscriptionId:n.subscriptionId,connectionId:n.connectionId}:{})});}
    }
    const addedSignatures=new Set(result.postSnapshotTail.addedSignatures);result.postSnapshotTail.matchedInteriorSignatures=interior.filter(r=>addedSignatures.has(r.signature)).map(r=>r.signature);

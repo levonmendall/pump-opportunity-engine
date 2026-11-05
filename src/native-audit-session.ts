@@ -1,7 +1,7 @@
 /** Deferred pages for the existing auditor. This owns no client, queue, timer,
  * provider allowance or physical-operation settlement. The caller dispatches
  * at most one exposed page through its existing scheduler and physical gate. */
-import {auditNativeFlowWindow,type NativeFlowAuditOptions,type NativeFlowAuditResult} from './native-flow-audit.js';
+import {auditNativeFlowWindow,copyNativeNotificationAuditFenceWitness,type NativeFlowAuditOptions,type NativeFlowAuditResult} from './native-flow-audit.js';
 import type {PilotRpcCallOptions} from './pilot-rpc.js';
 
 export type NativeAuditSessionOptions=Omit<NativeFlowAuditOptions,'call'|'maximumElapsedMs'|'maximumPages'> & {
@@ -26,7 +26,7 @@ export class NativeAuditSession {
   if(!int(maximumPages)||maximumPages<1||maximumPages>6)throw Error('NATIVE_AUDIT_SESSION_PAGE_BOUND');this.maximumPages=maximumPages;
   // The source generation and fences are captured once. Fresh response and
   // helper completion times remain actual; advancing a page never backdates.
-  const captured={...original,target:{...original.target},notifications:structuredClone(original.notifications),...(original.reusableHistory?{reusableHistory:structuredClone(original.reusableHistory)}:{}),...(original.contextFences?{contextFences:structuredClone(original.contextFences)}:{}),admission:original.admission?{...original.admission}:undefined,...(original.notificationGeneration?{notificationGeneration:{...original.notificationGeneration}}:{}),...(original.notificationFenceGeneration?{notificationFenceGeneration:{...original.notificationFenceGeneration}}:{}),...(original.postSnapshotNotifications?{postSnapshotNotifications:(startedAt:number)=>{if(this.expired())throw Error(this.failure??'NATIVE_AUDIT_SESSION_ABORTED');return original.postSnapshotNotifications!(startedAt);}}:{})};
+  const captured={...original,target:{...original.target},notifications:structuredClone(original.notifications),...(original.reusableHistory?{reusableHistory:structuredClone(original.reusableHistory)}:{}),...(original.contextFences?{contextFences:structuredClone(original.contextFences)}:{}),admission:original.admission?{...original.admission}:undefined,...(original.notificationGeneration?{notificationGeneration:{...original.notificationGeneration}}:{}),...(original.notificationFenceGeneration?{notificationFenceGeneration:{...original.notificationFenceGeneration}}:{}),...(original.notificationFenceWitness?{notificationFenceWitness:copyNativeNotificationAuditFenceWitness(original.notificationFenceWitness)}:{}),...(original.postSnapshotNotifications?{postSnapshotNotifications:(startedAt:number)=>{if(this.expired())throw Error(this.failure??'NATIVE_AUDIT_SESSION_ABORTED');return original.postSnapshotNotifications!(startedAt);}}:{})};
   this.helper=audit({...captured,now:this.now,signal:this.signal,maximumPages,maximumElapsedMs:this.deadlineAt-this.startedAt,call:<T>(method:string,params:unknown[],signal?:AbortSignal,admission?:PilotRpcCallOptions)=>this.defer<T>(method,params,signal,admission)}).then(result=>{
    this.diagnostic=structuredClone(result);
    if(!this.expired()&&result.availableAt<=this.deadlineAt)this.value=structuredClone(result);

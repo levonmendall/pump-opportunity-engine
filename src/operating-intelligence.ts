@@ -136,7 +136,8 @@ function protectionRpcNotes(rpc:Record<string,any>,sourceStart:number,at:number,
  * and pending obligation. The unchanged publisher gate refuses an irreducible
  * protected core; reporting pressure must not terminate the financial source. */
 export function boundOperatingIntelligence(value:OperatingIntelligence):OperatingIntelligence{
- if(Buffer.byteLength(JSON.stringify(value))<=OPERATING_INTELLIGENCE_MAX_BYTES)return value;
+ const bytes=(value:unknown)=>Buffer.byteLength(JSON.stringify(value));
+ const originalBytes=bytes(value);if(originalBytes<=OPERATING_INTELLIGENCE_MAX_BYTES)return value;
  const result:OperatingIntelligence={...value,quality:{...value.quality,limitations:[...value.quality.limitations]},decisions:value.decisions.slice(),
   ...(value.financialHandoff?{financialHandoff:{...value.financialHandoff,...(value.financialHandoff.requestTiming?{requestTiming:{...value.financialHandoff.requestTiming,refusals:value.financialHandoff.requestTiming.refusals.slice()}}:{})}}:{}),
   protection:{...value.protection,...(value.protection.completedProtectionCycles?{completedProtectionCycles:{...value.protection.completedProtectionCycles,recent:value.protection.completedProtectionCycles.recent.slice()}}:{})}};
@@ -148,19 +149,31 @@ export function boundOperatingIntelligence(value:OperatingIntelligence):Operatin
   else{const index=limitations.findIndex(row=>row.length+1+note.length<=512);if(index<0)return false;limitations[index]+=' '+note;}
   result.quality.limitations=limitations;return true;
  };
+ let limitationBytes=bytes(value.quality.limitations);
  if(!disclose())return value;
+ let remainingBytes=originalBytes+bytes(result.quality.limitations)-limitationBytes;
+ limitationBytes=bytes(result.quality.limitations);
  type Detail={at?:unknown;transportStarted?:unknown;physicalSettlementClaimed?:unknown};
  const views:{rows:Detail[];index:number;completed:(row:Detail)=>boolean}[]=[{rows:result.decisions,index:0,completed:()=>true}];
  const timing=result.financialHandoff?.requestTiming,protection=result.protection.completedProtectionCycles;
  if(timing)views.push({rows:timing.refusals,index:1,completed:row=>row.transportStarted===false&&row.physicalSettlementClaimed===false});
  if(protection)views.push({rows:protection.recent,index:2,completed:()=>true});
- while(Buffer.byteLength(JSON.stringify(result))>OPERATING_INTELLIGENCE_MAX_BYTES){
+ // Arrays are ordinary source-owned JSON display rows. Removing one first row
+ // removes its exact UTF-8 JSON bytes and, when another row remains, one comma.
+ // Only the bounded disclosure text can otherwise change. Avoid repeatedly
+ // serializing every protected fact for every removed completed display row.
+ while(remainingBytes>OPERATING_INTELLIGENCE_MAX_BYTES){
   const candidates=views.flatMap(view=>{const row=view.rows[0],at=row&&typeof row.at==='string'?Date.parse(row.at):NaN;return row&&view.completed(row)&&Number.isFinite(at)?[{view,at}]:[];});
   candidates.sort((a,b)=>a.at-b.at||a.view.index-b.view.index);
   const oldest=candidates[0];if(!oldest)return value;
+  remainingBytes-=bytes(oldest.view.rows[0])+(oldest.view.rows.length>1?1:0);
   oldest.view.rows.shift();omitted[oldest.view.index]!++;if(!disclose())return value;
+  const nextLimitationBytes=bytes(result.quality.limitations);remainingBytes+=nextLimitationBytes-limitationBytes;limitationBytes=nextLimitationBytes;
  }
- return result;
+ // Keep the real complete-object budget check as the final authority. An
+ // unexpected serialization shape must still fail closed without altering the
+ // protected core or widening the existing publisher contract.
+ return bytes(result)<=OPERATING_INTELLIGENCE_MAX_BYTES?result:value;
 }
 /** Null is an unavailable fact, never a manufactured zero. */
 export function projectOperatingIntelligence(value:unknown):OperatingIntelligence{
