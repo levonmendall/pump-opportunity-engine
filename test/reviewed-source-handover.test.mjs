@@ -762,7 +762,7 @@ function financialThroughputSourceSnapshot(sequence,at){
 }
 test('installed07d advances only to exact financial-throughput source with original risk, PAPER and age predicates',()=>{
  assert.equal(p.operatingReportBudgetFinal,'07d7dadb24963fafab340b1f9270cdcff850ab2d');
- assert.equal(p.to,'25590c0e4a44ff4b544c1a205ea33c84d1dbd78d');assert.notEqual(p.to,p.operatingReportBudgetFinal);
+ assert.equal(p.to,'965dcd9d39fc8b84d0b1026fb25b80dfce410a4a');assert.notEqual(p.to,p.operatingReportBudgetFinal);
  const c=new SnapshotCache({...identity(),release:p.operatingReportBudgetFinal});assert.equal(attachReviewedSourceHandover(c),true);
  const prior={...sample('9007199254741000',p.operatingReportBudgetFinal,T-120000),financialEpoch:v3Epoch()};c.accept(prior,T);const before=c.read(),history=c.equityHistory();
  for(const mutate of [s=>{s.account.id='other';},s=>{s.account.inceptionAt=iso(T);},s=>{s.source.strategy='other';},s=>{s.source.release='f'.repeat(40);},s=>{s.mode='LIVE';},s=>{s.liveTrading=true;},s=>{s.sequence=prior.sequence;},s=>{delete s.financialEpoch;},s=>{s.financialEpoch.priorEpoch.backupSha256='e'.repeat(64);},s=>{s.times.generatedAt=iso(T+30001);},s=>{s.intelligence.financialPolicy.risk.entry.targetBps=1000;},s=>{s.intelligence.financialPolicy.risk.entry.executabilityClaimed=true;},s=>{s.intelligence.financialPolicy.operatingCapacity.maximumPositions=3;},s=>{s.intelligence.financialPolicy.operatingCapacity.grantsFinancialPermission=true;},s=>{s.intelligence.financialPolicy.marketAdmissionAge.minimumAgeMs=0;},s=>{s.intelligence.financialPolicy.marketAdmissionAge.maximumAgeMs=172800000;}]){
