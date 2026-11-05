@@ -39,11 +39,12 @@ export const HANDOVER=Object.freeze({
  backupRecovery:'de71a4c514da11c65a066a6aef330466aacd15e4',
  operatingRecovery:'be509874f060ef5ac9b3be5bd1cdc08d0e176613',
  operatingCapacity:'427c5a9f8fb8ae81f6793a1581502a71beaaa1d9',
- to:'0b63766f30cdf9932fb60a6af779e63a68400f1b',
+ operatingIntakeThroughput:'0b63766f30cdf9932fb60a6af779e63a68400f1b',
+ to:'370f8c42609a04d8977fb1a98b8e53d1c9b64684',
 });
 const installed=new WeakSet();
 export function attachReviewedSourceHandover(cache){
- const identity=cache.identity,p=HANDOVER,route=[p.from,p.via,p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling,p.migrationAge,p.coordinatedRepair,p.recoveryProvenance,p.migrationQuery,p.readinessReporting,p.proofHandoff,p.migrationReentry,p.operatingReliability,p.operatingFollowthrough,p.financialFeasiblePeer,p.backupRecovery,p.operatingRecovery,p.operatingCapacity,p.to];
+ const identity=cache.identity,p=HANDOVER,route=[p.from,p.via,p.previous,p.current,p.preparation,p.discovery,p.cadence,p.selection,p.retention,p.sustained,p.efficiency,p.publication,p.decisions,p.ageQualified,p.proofTimeout,p.scheduling,p.migrationAge,p.coordinatedRepair,p.recoveryProvenance,p.migrationQuery,p.readinessReporting,p.proofHandoff,p.migrationReentry,p.operatingReliability,p.operatingFollowthrough,p.financialFeasiblePeer,p.backupRecovery,p.operatingRecovery,p.operatingCapacity,p.operatingIntakeThroughput,p.to];
  if(!identity||identity.accountId!==p.accountId||identity.inceptionAt!==p.inceptionAt||identity.strategy!==p.strategy||!route.slice(0,-1).includes(identity.release))return false;
  if(installed.has(cache))return true;
  const original=cache.accept.bind(cache);
