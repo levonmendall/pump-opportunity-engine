@@ -79,10 +79,11 @@ test('migration delivery ACK is durable, ordered, replay-safe and atomically ret
 
 test('sustained queued intake and repeated main writer turns both make committed progress without dropped ACKs',async()=>{
  const dir=mkdtempSync(join(tmpdir(),'poe-market-turn-progress-')),path=join(dir,'market-registry.sqlite');const main=new MarketRegistry(path,{concurrentIntake:true}),lock=new Database(path),buffer=main.writerTurnBuffer()!,turn=new Int32Array(buffer),w=makeWorker(path,buffer,.05);lock.pragma('busy_timeout = 25');try{
-  await w.until(()=>w.messages.some(m=>m.kind==='ready'));lock.exec('BEGIN IMMEDIATE');assert.throws(()=>main.setMetadata('must-not-run',true),isMarketRegistryContention);lock.exec('ROLLBACK');
+  const fixtureWriter=()=>w.until(()=>{try{lock.exec('BEGIN IMMEDIATE');return true;}catch(error){if((error as {code?:unknown}).code==='SQLITE_BUSY')return false;throw error;}},'fixture writer lease');
+  await w.until(()=>w.messages.some(m=>m.kind==='ready'));await fixtureWriter();assert.throws(()=>main.setMetadata('must-not-run',true),isMarketRegistryContention);lock.exec('ROLLBACK');
   for(let i=0;i<1000;i++)w.worker.postMessage({kind:'intake',id:i,operation:'identity',value:{mint:'progress-'+i,receivedAt:Date.now(),source:'test'}});
   let workerCommitted=0;for(let round=0;round<8;round++){
-   if(round){lock.exec('BEGIN IMMEDIATE');assert.throws(()=>main.setMetadata('must-not-run',true),isMarketRegistryContention);lock.exec('ROLLBACK');}
+   if(round){await fixtureWriter();assert.throws(()=>main.setMetadata('must-not-run',true),isMarketRegistryContention);lock.exec('ROLLBACK');}
    await w.until(()=>Atomics.load(turn,0)===2,'main turn '+round);main.setMetadata('main-turn-'+round,round);assert.equal(Atomics.load(turn,0),0);
    await w.until(()=>w.messages.filter(m=>m.kind==='committed').reduce((n,m)=>n+m.ids.length,0)>workerCommitted,'worker progress '+round);workerCommitted=w.messages.filter(m=>m.kind==='committed').reduce((n,m)=>n+m.ids.length,0);
   }
