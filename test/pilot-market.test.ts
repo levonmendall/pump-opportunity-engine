@@ -452,6 +452,62 @@ test('stable preparation reuse retains original program/layout/rent provenance a
  syntheticLegacyBase(f,capture);assert.equal(await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal()),null);assert.equal(f.market.usage().entryQuoteFailures.last!.reasonCode,'POOL_LINKS_CHANGED');const fresh=await f.market.prepareEntryCosts(mint,signal());assert.notEqual(fresh.layout!.tokenProgram,first.layout!.tokenProgram);assert.equal(fresh.accountLengths.base,165);assert.ok(await f.market.quote({mint,side:'buy',inputUnits:'10000000'},signal()));
 });
 
+test('a required decision horizon refreshes only almost-expired shared rent and ends repeated READY churn',async t=>{
+ const f=fixture(t,3000,false,false,false,true),[seed,mint]=f.captures.map(row=>row.proof.quote.mint),beforeFinancial=f.ledger.state();
+ syntheticLegacyBase(f,f.captures[0]!);
+ const seedPlan=await f.market.prepareEntryCosts(seed!,signal());f.advance(8000);
+ const original=await f.market.prepareEntryCosts(mint!,signal()),originalExpiry=f.market.entryPreparationStatus(mint!).expiresAt;
+ assert.deepEqual(original.rentObservationsByBytes![165],seedPlan.rentObservationsByBytes![165]);
+ assert.ok(original.rentObservationsByBytes![170]!.receivedAt>original.rentObservationsByBytes![165]!.receivedAt);
+ f.advance(1000);const repeatedCalls=f.calls.length;
+ for(let turn=0;turn<3;turn++){const result=await f.market.prepareEntryCostTurn(mint!,signal());assert.equal(result.status,'ready');assert.equal(result.work.expiresAt,originalExpiry);if(turn<2)f.advance(250);}
+ assert.equal(f.calls.length,repeatedCalls,'ordinary reuse retains the original rent observation even when little lifetime remains');
+ const requiredValidThroughAt=f.now()+3150,remaining=f.market.entryPreparationStatus(mint!,f.now(),requiredValidThroughAt);
+ assert.equal(remaining.ready,false);assert.equal(remaining.state,'rent-required');assert.equal(remaining.remainingReads,1);
+ assert.equal(remaining.expiresAt,originalExpiry,'asking for a future use cannot renew the old observation');
+ f.rentChanged();f.onRpc(method=>{if(method==='getMinimumBalanceForRentExemption'){f.advance(1200);f.bumpSlot();}});
+ const requestedAt=f.now(),calls=f.calls.length,result=await f.market.prepareEntryCostTurn(mint!,signal(),1700,{requiredValidThroughAt});
+ assert.equal(result.status,'ready');if(result.status!=='ready')throw Error('fresh rent did not complete preparation');
+ assert.deepEqual(f.calls.slice(calls).map(row=>[row.method,row.params[0]]),[['getMinimumBalanceForRentExemption',165]]);
+ assert.deepEqual(result.plan.layout,original.layout,'a sufficient mint-specific layout survives a rent-only refresh');
+ assert.deepEqual(result.plan.rentObservationsByBytes![170],original.rentObservationsByBytes![170]);
+ assert.deepEqual(result.plan.rentObservationsByBytes![165],{requestedAt,receivedAt:f.now()});
+ assert.notEqual(result.plan.rentLamportsByBytes[165],original.rentLamportsByBytes[165],'the replacement comes from the new provider result');
+ assert.ok(result.work.expiresAt!>=requiredValidThroughAt);
+ assert.equal(nativePaperRemainingEntryWork({at:f.now(),owned:false,preparation:result.work}).prepared,true);
+ f.onRpc(method=>{if(method==='getMultipleAccounts'){f.advance(1200);f.bumpSlot();}});
+ const quoteCalls=f.calls.length,q=await f.market.quote({mint:mint!,side:'buy',inputUnits:'50000000',requiredDepositLamports:result.plan.depositLamports},signal());assert.ok(q);
+ assert.deepEqual(f.calls.slice(quoteCalls).map(row=>row.method),['getMultipleAccounts']);assert.equal(q.inputUnits,'50000000');assert.equal(q.at,f.now());assert.equal(q.slot,f.slot());
+ const costs=f.records.findLast(row=>row.kind==='rpc-market-quote')!.data.costs;
+ assert.deepEqual(costs.rentObservationsByBytes,result.plan.rentObservationsByBytes);assert.deepEqual(f.ledger.state(),beforeFinancial);
+});
+
+test('a sufficient preparation horizon reuses every original stable clock without another read',async t=>{
+ const f=fixture(t,3000,false,false,false,true),mint=f.captures[1]!.proof.quote.mint,first=await f.market.prepareEntryCosts(mint,signal()),expiry=f.market.entryPreparationStatus(mint).expiresAt;
+ f.advance(1500);const calls=f.calls.length,requiredValidThroughAt=f.now()+3150;
+ assert.equal(f.market.entryPreparationStatus(mint,f.now(),requiredValidThroughAt).ready,true);
+ const result=await f.market.prepareEntryCostTurn(mint,signal(),1700,{requiredValidThroughAt});assert.equal(result.status,'ready');if(result.status!=='ready')throw Error('unexpired facts not reused');
+ assert.equal(f.calls.length,calls);assert.deepEqual(result.plan.layout,first.layout);assert.deepEqual(result.plan.rentObservationsByBytes,first.rentObservationsByBytes);assert.equal(result.work.expiresAt,expiry);
+});
+
+test('a short layout horizon refreshes only layout and retains sufficient original network rent',async t=>{
+ const f=fixture(t,3000,false,false,false,true),mint=f.captures[1]!.proof.quote.mint;
+ f.onRpc(method=>{if(method==='getMinimumBalanceForRentExemption')f.advance(2000);});
+ const original=await f.market.prepareEntryCosts(mint,signal(),{maximumMs:5000});f.onRpc(()=>{});f.advance(4500);
+ const requiredValidThroughAt=f.now()+3150,status=f.market.entryPreparationStatus(mint,f.now(),requiredValidThroughAt),calls=f.calls.length;
+ assert.equal(status.state,'layout-required');assert.equal(status.remainingReads,1,'only the layout expires before the real remaining sequence');
+ f.onRpc(method=>{if(method==='getMultipleAccounts'){f.advance(1200);f.bumpSlot();}});
+ const result=await f.market.prepareEntryCostTurn(mint,signal(),1700,{requiredValidThroughAt});assert.equal(result.status,'ready');if(result.status!=='ready')throw Error('layout refresh did not complete');
+ assert.deepEqual(f.calls.slice(calls).map(row=>row.method),['getMultipleAccounts']);assert.deepEqual(result.plan.rentObservationsByBytes,original.rentObservationsByBytes);
+ assert.ok(Date.parse(result.plan.layout!.receivedAt)>Date.parse(original.layout!.receivedAt));assert.ok(result.work.expiresAt!>=requiredValidThroughAt);
+});
+
+test('an impossible preparation horizon refuses before any provider read or stable observation renewal',async t=>{
+ const f=fixture(t,3000,false,false,false,true),mint=f.captures[1]!.proof.quote.mint,original=await f.market.prepareEntryCosts(mint,signal()),before=f.market.entryPreparationStatus(mint),calls=f.calls.length;
+ await assert.rejects(f.market.prepareEntryCostTurn(mint,signal(),1700,{requiredValidThroughAt:f.now()+PILOT_ENTRY_PREPARATION_POLICY.stableReuseMaxAgeMs+1}),/PREPARATION_HORIZON/);
+ assert.equal(f.calls.length,calls);assert.deepEqual(f.market.entryPreparationStatus(mint),before);assert.deepEqual((f.market as any).plans.get(mint),original);
+});
+
 test('a locally deferred stable preparation resumes completed facts without renewing their original validity',async t=>{
  const f=fixture(t),mint=f.captures[1]!.proof.quote.mint;let rent=0;f.onRpc(method=>{if(method==='getMinimumBalanceForRentExemption'&&++rent===2)throw new PilotRpcUnavailable('COMPONENT_ADMISSION_CLOSED');});await assert.rejects(f.market.prepareEntryCosts(mint,signal()),/COMPONENT_ADMISSION_CLOSED/);
  const layoutAt=f.calls[0]!.at,firstRentAt=f.calls[1]!.at,count=f.calls.length;f.advance(500);f.onRpc(()=>{});const recovered=await f.market.prepareEntryCosts(mint,signal());assert.equal(f.calls.length-count,1);assert.equal(f.calls.at(-1)!.method,'getMinimumBalanceForRentExemption');assert.equal(Date.parse(recovered.layout!.receivedAt),layoutAt);assert.equal(recovered.rentObservationsByBytes![170]!.receivedAt,firstRentAt);

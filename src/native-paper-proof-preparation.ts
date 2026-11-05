@@ -1,7 +1,7 @@
 import type {NativeQualificationProof} from './native-paper.js';
 
 const MAX_RETAINED_PROOFS=4;
-type Task={proof:Readonly<NativeQualificationProof>;state:'pending'|'complete'|'failed';availableAt:number|null;error:string|null;invalidated:boolean;released:boolean};
+type Task={proof:Readonly<NativeQualificationProof>;state:'pending'|'complete'|'failed';availableAt:number|null;error:string|null;invalidated:boolean;released:boolean;settlement:Promise<void>|null};
 const integer=(value:number)=>Number.isSafeInteger(value)&&value>=0;
 const identityFields=['proofId','mint','startAt','windowEndAt','featuresSha256','certificateAt','deadlineAt']as const;
 const sameCertificate=(a:NativeQualificationProof,b:NativeQualificationProof)=>identityFields.every(key=>a[key]===b[key]);
@@ -50,18 +50,25 @@ export class NativePaperProofPreparation{
   // deadline. Only obsolete released records may make room for a new mint.
   if(this.tasks.size>=MAX_RETAINED_PROOFS)for(const [id,task]of this.tasks){if(task.invalidated&&task.released){this.tasks.delete(id);break;}}
   if(this.tasks.size>=MAX_RETAINED_PROOFS)return false;
-  const task:Task={proof:Object.freeze({...proof}),state:'pending',availableAt:null,error:null,invalidated:false,released:false};
+  const task:Task={proof:Object.freeze({...proof}),state:'pending',availableAt:null,error:null,invalidated:false,released:false,settlement:null};
   this.tasks.set(proof.proofId,task);this.selectedProofId=proof.proofId;
   const settled=(state:'complete'|'failed')=>{
    task.state=state;task.availableAt=this.now();if(state==='failed')task.error='qualification-proof-retention-unavailable';
    if(!this.current(task,task.availableAt))task.invalidated=true;
    this.retire(task);
   };
-  void Promise.resolve().then(()=>{
+  task.settlement=Promise.resolve().then(()=>{
    if(!this.current(task,this.now())){task.invalidated=true;throw Error('qualification-proof-retention-unavailable');}
    return pin(task.proof);
   }).then(()=>settled('complete'),()=>settled('failed'));
   return false;
+ }
+ /** Existing filesystem work only: no new task, deadline or permission. The
+  * caller must bound its wait by current financial/native/holding obligations
+  * and revalidate the original certificate and all admission after settlement. */
+ whenSettled(proof:NativeQualificationProof){
+  const task=this.tasks.get(proof.proofId),at=this.now();
+  return task&&this.usableRequest(proof,at)&&sameCertificate(task.proof,proof)&&this.current(task,at)?task.settlement:null;
  }
  ready(proof:NativeQualificationProof){
   const at=this.now(),task=this.tasks.get(proof.proofId);
