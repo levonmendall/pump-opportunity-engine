@@ -107,6 +107,7 @@ export class NativeCandidateRunner{
  private financialOutcomeFailure:'REGISTRY_WRITE_FAILED'|null=null;
  private readonly audit:typeof auditNativeFlowWindow;private readonly resolve:typeof resolvePilotMigration;
  private registryHousekeepingDeferred=false;private registryAllocationCommitDeferred=false;
+ private allocationBudgetYieldedMints:string[]=[];
  private stopped=false;private working=false;private sourceAdmissionStopReason:string|null=null;private maximumSimultaneous=0;private lastDispatchAt=0;private lastOutcome:string|null=null;private nextCeilingRefreshAt=0;private lastAuditAt:number|null=null;private lastPredictiveAt:number|null=null;private lastAdmissionDeferralBucket=-1;
  private readonly activeDecisions:Array<{at:number;mint:string;stage:string;reason:string}>=[];
  private readonly activeCounters={adaptivePredictiveAssessments:0,adaptivePredictiveNotRejected:0,adaptivePredictiveFailed:0,adaptivePredictiveUnavailable:0};
@@ -791,10 +792,17 @@ export class NativeCandidateRunner{
   // Fresh support is already available. Allocation is local bookkeeping;
   // upgrade and subscribe each retain their own bounded service turn and ACK.
   const preparedMode=this.preparationEnabled(),preparedMints=preparedMode?this.freshPrepared(at):undefined;if(preparedMode&&(!preparedMints?.length||!this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.nativeOperationMs)||!this.discretionaryAdmission(NATIVE_DEADLINE_POLICY.nativeOperationMs,at).admitted))return;
-  const began=performance.now(),maximum=this.options.maximumDeep??6,excluded=new Set([...this.candidates.keys(),...this.financialOwnerHints]);
+  const began=performance.now(),maximum=this.options.maximumDeep??6,excluded=new Set([...this.candidates.keys(),...this.financialOwnerHints]);let allocated=0;
   if(this.currentPoolObservation)this.releaseArchiveDeferrals(at);
   for(let i=this.candidates.size;i<maximum;i++){
-   if(performance.now()-began>=NATIVE_DEADLINE_POLICY.postValidationMs||!this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.postValidationMs)||!this.discretionaryAdmission(NATIVE_DEADLINE_POLICY.postValidationMs,this.now()).admitted)break;
+   if(performance.now()-began>=NATIVE_DEADLINE_POLICY.postValidationMs){
+    // A completed local allocation can consume this turn's CPU budget while
+    // already prepared peers remain. Preserve that cause separately from a
+    // writer, protection, identity or service refusal; none authorizes retry.
+    if(preparedMode&&allocated>0&&this.options.flow.usage().candidates+this.options.flow.usage().retiring<maximum)this.allocationBudgetYieldedMints=(preparedMints??[]).filter(mint=>!this.candidates.has(mint)&&!this.financialOwnerHints.has(mint)&&preparedObservationFresh(this.preparedObservations.get(mint),this.now()));
+    break;
+   }
+   if(!this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.postValidationMs)||!this.discretionaryAdmission(NATIVE_DEADLINE_POLICY.postValidationMs,this.now()).admitted)break;
    at=this.now();
    if(this.options.flow.usage().candidates+this.options.flow.usage().retiring>=maximum)break;
    // One newly evidenced identity joins the same competition per vacant slot.
@@ -822,6 +830,7 @@ export class NativeCandidateRunner{
      }catch(error){this.retire(id.baseMint,'native allocation setup failed; fresh allocation required',this.now(),0);throw error;}
     });
    });
+   allocated++;
   }
  }
  /** This prerequisite is independent of scheduler admission. A complete raw
@@ -1011,7 +1020,7 @@ export class NativeCandidateRunner{
  }
  /** One scheduled unit of work. No independent request queue or provider budget. */
  async step(signal?:AbortSignal){
-  if(!this.open()||this.working)return 'closed';this.working=true;this.registryHousekeepingDeferred=false;this.registryAllocationCommitDeferred=false;
+  if(!this.open()||this.working)return 'closed';this.working=true;this.registryHousekeepingDeferred=false;this.registryAllocationCommitDeferred=false;this.allocationBudgetYieldedMints=[];
   try{
    if(this.options.sourceWorkCheckpoint&&!await this.sourceCheckpoint(signal))return 'wait';
    if(!this.drainFinancialOutcomes())this.registryHousekeepingDeferred=this.registryAllocationCommitDeferred=true;
@@ -1095,6 +1104,15 @@ export class NativeCandidateRunner{
    const auditDeadline=Math.min(Math.floor(at/PROVISIONAL_RULE.bucketMs)*PROVISIONAL_RULE.bucketMs+PROVISIONAL_RULE.bucketMs-1,serviceDeadline);
    if(dispatchable.length&&auditDeadline-at>=NATIVE_CANDIDATE_AUDIT_PROFILE.operationBoundMs+125)jobs.push({id:'audit:'+dispatchable[0]!.identity.baseMint,kind:'enrichment',enqueuedAt:at,eligibleAt:at,deadlineAt:auditDeadline,operationBoundMs:NATIVE_CANDIDATE_AUDIT_PROFILE.operationBoundMs});
    const verification=this.discretionaryAdmission(NATIVE_DEADLINE_POLICY.discretionaryReadMs,at),discretionaryOpen=!this.hasPendingFinancialEvaluation(at);
+   // Required native work, current financial certificates and ready audits
+   // have already had priority. Give the owner a cooperative turn before new
+   // optional provider preparation when useful original prepared work yielded
+   // only because its125ms allocation quantum ended. Actual capacity and
+   // freshness are rechecked; writer/protection/service refusals never set it.
+   if(this.allocationBudgetYieldedMints.length&&!ready.length&&discretionaryOpen){
+    const allocationUsage=this.options.rpc.usage(),allocationGate=allocationUsage.rpcDispatchWindow??allocationUsage.dispatchWindow;
+    if(this.options.flow.usage().candidates+this.options.flow.usage().retiring<(this.options.maximumDeep??6)&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.nativeOperationMs)&&this.discretionaryAdmission(NATIVE_DEADLINE_POLICY.nativeOperationMs,this.now()).admitted&&!allocationUsage.waitingOrOperating&&allocationUsage.inFlight===0&&(!allocationGate||!allocationGate.physicalBusy&&allocationGate.readyAt<=this.now())&&this.allocationBudgetYieldedMints.some(mint=>!this.candidates.has(mint)&&!this.financialOwnerHints.has(mint)&&preparedObservationFresh(this.preparedObservations.get(mint),this.now()))){this.lastOutcome='prepared-allocation-budget-yield';return this.lastOutcome;}
+   }
    if(discretionaryOpen&&!this.verificationSession&&!ready.length&&verification.admitted&&this.sourceWorkAllowed(NATIVE_DEADLINE_POLICY.discretionaryReadMs)&&(!rpcGate||!rpcGate.physicalBusy&&rpcGate.readyAt<=at))this.enqueueActivityOrigin(at);
    const qualificationExcluded=this.qualificationExclusions();
    // A vacant slot's already age-qualified candidate precedes optional birth
